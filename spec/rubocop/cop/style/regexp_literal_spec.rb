@@ -40,8 +40,14 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     it 'respects the configuration when auto-correcting' do
-      new_source = autocorrect_source('/a/')
-      expect(new_source).to eq('%r[a]')
+      expect_offense(<<~RUBY)
+        /a/
+        ^^^ Use `%r` around regular expression.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %r[a]
+      RUBY
     end
   end
 
@@ -52,8 +58,14 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     it 'respects the configuration when auto-correcting' do
-      new_source = autocorrect_source('/\//')
-      expect(new_source).to eq('%r/\//')
+      expect_offense(<<~'RUBY')
+        /\//
+        ^^^^ Use `%r` around regular expression.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %r/\//
+      RUBY
     end
   end
 
@@ -67,18 +79,15 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line `//` regex with slashes' do
-      let(:source) { 'foo = /home\//' }
-
       it 'registers an offense' do
         expect_offense(<<~'RUBY')
           foo = /home\//
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('foo = %r{home/}')
+        expect_correction(<<~'RUBY')
+          foo = %r{home/}
+        RUBY
       end
 
       describe 'when configured to allow inner slashes' do
@@ -91,18 +100,15 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line `//` regex with slashes and interpolation' do
-      let(:source) { 'foo = /users\/#{user.id}\/forms/' }
-
       it 'registers an offense' do
         expect_offense(<<~'RUBY')
           foo = /users\/#{user.id}\/forms/
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%r` around regular expression.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('foo = %r{users/#{user.id}/forms}')
+        expect_correction(<<~'RUBY')
+          foo = %r{users/#{user.id}/forms}
+        RUBY
       end
 
       describe 'when configured to allow inner slashes' do
@@ -115,18 +121,21 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line `%r//` regex with slashes' do
-      let(:source) { 'foo = %r/\//' }
-
       it 'is accepted' do
-        expect_no_offenses(source)
+        expect_no_offenses('foo = %r/\\//')
       end
 
       context 'when configured to allow inner slashes' do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'remains slashes after auto-correction' do
-          new_source = autocorrect_source(source)
-          expect(new_source).to eq('foo = /\//')
+          expect_offense(<<~'RUBY')
+            foo = %r/\//
+                  ^^^^^^ Use `//` around regular expression.
+          RUBY
+          expect_correction(<<~'RUBY')
+            foo = /\//
+          RUBY
         end
       end
     end
@@ -143,23 +152,16 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a multi-line `//` regex with slashes' do
-      let(:source) do
-        <<~'RUBY'
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY')
           foo = /
+                ^ Use `%r` around regular expression.
             https?:\/\/
             example\.com
           /x
         RUBY
-      end
 
-      it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<~'RUBY')
+        expect_correction(<<~'RUBY')
           foo = %r{
             https?://
             example\.com
@@ -182,24 +184,19 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line %r regex without slashes' do
-      let(:source) { 'foo = %r{a}' }
-
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           foo = %r{a}
                 ^^^^^ Use `//` around regular expression.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('foo = /a/')
+        expect_correction(<<~RUBY)
+          foo = /a/
+        RUBY
       end
     end
 
     describe 'a single-line %r regex with slashes' do
-      let(:source) { 'foo = %r{home/}' }
-
       it 'is accepted' do
         expect_no_offenses('foo = %r{home/}')
       end
@@ -212,48 +209,36 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
             foo = %r{home/}
                   ^^^^^^^^^ Use `//` around regular expression.
           RUBY
-        end
 
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-          expect(new_source).to eq('foo = /home\//')
+          expect_correction(<<~'RUBY')
+            foo = /home\//
+          RUBY
         end
       end
     end
 
     describe 'a multi-line %r regex without slashes' do
-      let(:source) do
-        <<~'RUBY'.chomp
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY')
           foo = %r{
+                ^^^ Use `//` around regular expression.
             foo
             bar
           }x
         RUBY
-      end
 
-      it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.messages).to eq(['Use `//` around regular expression.'])
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq("foo = /\n  foo\n  bar\n/x")
+        expect_correction(<<~'RUBY')
+          foo = /
+            foo
+            bar
+          /x
+        RUBY
       end
     end
 
     describe 'a multi-line %r regex with slashes' do
-      let(:source) do
-        <<~'RUBY'
-          foo = %r{
-            https?://
-            example\.com
-          }x
-        RUBY
-      end
-
       it 'is accepted' do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           foo = %r{
             https?://
             example\.com
@@ -265,13 +250,15 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         before { cop_config['AllowInnerSlashes'] = true }
 
         it 'registers an offense' do
-          inspect_source(source)
-          expect(cop.messages).to eq(['Use `//` around regular expression.'])
-        end
+          expect_offense(<<~'RUBY')
+            foo = %r{
+                  ^^^ Use `//` around regular expression.
+              https?://
+              example\.com
+            }x
+          RUBY
 
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-          expect(new_source).to eq(<<~'RUBY')
+          expect_correction(<<~'RUBY')
             foo = /
               https?:\/\/
               example\.com
@@ -286,76 +273,61 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_r' } }
 
     describe 'a single-line `//` regex without slashes' do
-      let(:source) { 'foo = /a/' }
-
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           foo = /a/
                 ^^^ Use `%r` around regular expression.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('foo = %r{a}')
+        expect_correction(<<~RUBY)
+          foo = %r{a}
+        RUBY
       end
     end
 
     describe 'a single-line `//` regex with slashes' do
-      let(:source) { 'foo = /home\//' }
-
       it 'registers an offense' do
         expect_offense(<<~'RUBY')
           foo = /home\//
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('foo = %r{home/}')
+        expect_correction(<<~'RUBY')
+          foo = %r{home/}
+        RUBY
       end
     end
 
     describe 'a multi-line `//` regex without slashes' do
-      let(:source) do
-        <<~'RUBY'.chomp
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY')
           foo = /
+                ^ Use `%r` around regular expression.
             foo
             bar
           /x
         RUBY
-      end
 
-      it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq("foo = %r{\n  foo\n  bar\n}x")
+        expect_correction(<<~'RUBY')
+          foo = %r{
+            foo
+            bar
+          }x
+        RUBY
       end
     end
 
     describe 'a multi-line `//` regex with slashes' do
-      let(:source) do
-        <<~'RUBY'
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY')
           foo = /
+                ^ Use `%r` around regular expression.
             https?:\/\/
             example\.com
           /x
         RUBY
-      end
 
-      it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<~'RUBY')
+        expect_correction(<<~'RUBY')
           foo = %r{
             https?://
             example\.com
@@ -409,18 +381,15 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line `//` regex with slashes' do
-      let(:source) { 'foo = /home\//' }
-
       it 'registers an offense' do
         expect_offense(<<~'RUBY')
           foo = /home\//
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('foo = %r{home/}')
+        expect_correction(<<~'RUBY')
+          foo = %r{home/}
+        RUBY
       end
 
       describe 'when configured to allow inner slashes' do
@@ -433,44 +402,35 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a multi-line `//` regex without slashes' do
-      let(:source) do
-        <<~'RUBY'.chomp
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY')
           foo = /
+                ^ Use `%r` around regular expression.
             foo
             bar
           /x
         RUBY
-      end
 
-      it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq("foo = %r{\n  foo\n  bar\n}x")
+        expect_correction(<<~'RUBY')
+          foo = %r{
+            foo
+            bar
+          }x
+        RUBY
       end
     end
 
     describe 'a multi-line `//` regex with slashes' do
-      let(:source) do
-        <<~'RUBY'
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY')
           foo = /
+                ^ Use `%r` around regular expression.
             https?:\/\/
             example\.com
           /x
         RUBY
-      end
 
-      it 'registers an offense' do
-        inspect_source(source)
-        expect(cop.messages).to eq(['Use `%r` around regular expression.'])
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq(<<~'RUBY')
+        expect_correction(<<~'RUBY')
           foo = %r{
             https?://
             example\.com
@@ -480,24 +440,19 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     describe 'a single-line %r regex without slashes' do
-      let(:source) { 'foo = %r{a}' }
-
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           foo = %r{a}
                 ^^^^^ Use `//` around regular expression.
         RUBY
-      end
 
-      it 'auto-corrects' do
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('foo = /a/')
+        expect_correction(<<~RUBY)
+          foo = /a/
+        RUBY
       end
     end
 
     describe 'a single-line %r regex with slashes' do
-      let(:source) { 'foo = %r{home/}' }
-
       it 'is accepted' do
         expect_no_offenses('foo = %r{home/}')
       end
@@ -510,11 +465,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
             foo = %r{home/}
                   ^^^^^^^^^ Use `//` around regular expression.
           RUBY
-        end
 
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-          expect(new_source).to eq('foo = /home\//')
+          expect_correction(<<~'RUBY')
+            foo = /home\//
+          RUBY
         end
       end
     end

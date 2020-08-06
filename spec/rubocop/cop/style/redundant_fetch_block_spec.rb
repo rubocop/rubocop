@@ -115,13 +115,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock do
     end
 
     it 'does not register an offense when using `#fetch` with interpolated Symbol in the block' do
-      inspect_source('hash.fetch(:key) { :"value_#{value}" }')
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses('hash.fetch(:key) { :"value_#{value}" }')
     end
 
     it 'does not register an offense when using `#fetch` with an argument in the block' do
-      inspect_source('hash.fetch(:key) { |k| "missing-#{k}" }')
-      expect(cop.offenses.size).to eq(0)
+      expect_no_offenses('hash.fetch(:key) { |k| "missing-#{k}" }')
     end
 
     it 'does not register an offense when using `#fetch` with `Rails.cache`' do
