@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
     expect_no_offenses(<<~RUBY)
       if cond
         1
-      elseif x == y
+      elsif x == y
         2
       else
         3
