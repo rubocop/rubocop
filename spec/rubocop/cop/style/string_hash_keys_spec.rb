@@ -10,6 +10,10 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys do
       { 'one' => 1 }
         ^^^^^ Prefer symbols instead of strings as hash keys.
     RUBY
+
+    expect_correction(<<~RUBY)
+      { :one => 1 }
+    RUBY
   end
 
   it 'registers an offense when using strings as keys mixed with other keys' do
@@ -17,21 +21,21 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys do
       { 'one' => 1, two: 2, 3 => 3 }
         ^^^^^ Prefer symbols instead of strings as hash keys.
     RUBY
-  end
 
-  it 'autocorrects strings as keys into symbols' do
-    new_source = autocorrect_source("{ 'one' => 1 }")
-    expect(new_source).to eq '{ :one => 1 }'
-  end
-
-  it 'autocorrects strings as keys mixed with other keys into symbols' do
-    new_source = autocorrect_source("{ 'one' => 1, two: 2, 3 => 3 }")
-    expect(new_source).to eq '{ :one => 1, two: 2, 3 => 3 }'
+    expect_correction(<<~RUBY)
+      { :one => 1, two: 2, 3 => 3 }
+    RUBY
   end
 
   it 'autocorrects strings as keys into symbols with the correct syntax' do
-    new_source = autocorrect_source("{ 'one two :' => 1 }")
-    expect(new_source).to eq '{ :"one two :" => 1 }'
+    expect_offense(<<~RUBY)
+      { 'one two :' => 1 }
+        ^^^^^^^^^^^ Prefer symbols instead of strings as hash keys.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      { :"one two :" => 1 }
+    RUBY
   end
 
   it 'does not register an offense when not using strings as keys' do
