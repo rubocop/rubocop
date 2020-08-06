@@ -11,8 +11,9 @@ module RuboCop
       #
       #   # good
       #   object.some_method
-      class MethodCallWithoutArgsParentheses < Cop
+      class MethodCallWithoutArgsParentheses < Base
         include IgnoredMethods
+        extend AutoCorrector
 
         MSG = 'Do not use parentheses for method calls with ' \
               'no arguments.'
@@ -23,11 +24,7 @@ module RuboCop
           return if ignored_method?(node.method_name)
           return if same_name_assignment?(node)
 
-          add_offense(node, location: node.loc.begin.join(node.loc.end))
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(offense_range(node)) do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end
@@ -68,6 +65,10 @@ module RuboCop
           var_nodes = *mlhs_node
 
           var_nodes.any? { |n| n.to_a.first == variable_name }
+        end
+
+        def offense_range(node)
+          node.loc.begin.join(node.loc.end)
         end
       end
     end

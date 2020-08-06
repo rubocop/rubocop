@@ -46,7 +46,7 @@ module RuboCop
       #   # good
       #   foo || raise('exception') if something
       #   ok
-      class GuardClause < Cop
+      class GuardClause < Base
         include MinBodyLength
         include StatementModifier
 
@@ -105,9 +105,8 @@ module RuboCop
             example = "#{conditional_keyword} #{condition.source}; " \
                       "#{scope_exiting_keyword}; end"
           end
-          add_offense(node,
-                      location: :keyword,
-                      message: format(MSG, example: example))
+
+          add_offense(node.loc.keyword, message: format(MSG, example: example))
         end
 
         def guard_clause_source(guard_clause)

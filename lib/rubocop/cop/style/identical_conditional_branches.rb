@@ -62,7 +62,7 @@ module RuboCop
       #     do_x
       #     do_z
       #   end
-      class IdenticalConditionalBranches < Cop
+      class IdenticalConditionalBranches < Base
         MSG = 'Move `%<source>s` out of the conditional.'
 
         def on_if(node)

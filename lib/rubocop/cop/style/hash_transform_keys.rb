@@ -23,9 +23,10 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}.transform_keys { |k| foo(k) }
       #   {a: 1, b: 2}.transform_keys { |k| k.to_s }
-      class HashTransformKeys < Cop
-        extend TargetRubyVersion
+      class HashTransformKeys < Base
         include HashTransformMethod
+        extend TargetRubyVersion
+        extend AutoCorrector
 
         minimum_target_ruby_version 2.5
 

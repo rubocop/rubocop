@@ -58,7 +58,7 @@ module RuboCop
       #     action_b
       #   end
       #
-      class IfInsideElse < Cop
+      class IfInsideElse < Base
         MSG = 'Convert `if` nested inside `else` to `elsif`.'
 
         def on_if(node)
@@ -69,7 +69,7 @@ module RuboCop
           return unless else_branch&.if_type? && else_branch&.if?
           return if allow_if_modifier_in_else_branch?(else_branch)
 
-          add_offense(else_branch, location: :keyword)
+          add_offense(else_branch.loc.keyword)
         end
 
         private

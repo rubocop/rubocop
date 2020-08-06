@@ -38,9 +38,10 @@ module RuboCop
       #     end
       #   end
       #
-      class For < Cop
+      class For < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         EACH_LENGTH = 'each'.length
         PREFER_EACH = 'Prefer `each` over `for`.'
@@ -48,8 +49,10 @@ module RuboCop
 
         def on_for(node)
           if style == :each
-            add_offense(node, message: PREFER_EACH) do
-              opposite_style_detected
+            return unless opposite_style_detected
+
+            add_offense(node, message: PREFER_EACH) do |corrector|
+              ForToEachCorrector.new(node).call(corrector)
             end
           else
             correct_style_detected
@@ -60,27 +63,20 @@ module RuboCop
           return unless suspect_enumerable?(node)
 
           if style == :for
-            add_offense(node, message: PREFER_FOR) do
-              opposite_style_detected
+            return unless opposite_style_detected
+
+            add_offense(node, message: PREFER_FOR) do |corrector|
+              EachToForCorrector.new(node).call(corrector)
             end
           else
             correct_style_detected
           end
         end
 
-        def autocorrect(node)
-          if style == :each
-            ForToEachCorrector.new(node)
-          else
-            EachToForCorrector.new(node)
-          end
-        end
-
         private
 
         def suspect_enumerable?(node)
-          node.multiline? &&
-            node.send_node.method?(:each) && !node.send_node.arguments?
+          node.multiline? && node.send_node.method?(:each) && !node.send_node.arguments?
         end
       end
     end
