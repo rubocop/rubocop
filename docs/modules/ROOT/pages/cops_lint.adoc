@@ -779,6 +779,34 @@ end
 alias bar foo
 ----
 
+== Lint/DuplicateRequire
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.90
+| -
+|===
+
+This cop checks for duplicate `require`s and `require_relative`s.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+require 'foo'
+require 'bar'
+require 'foo'
+
+# good
+require 'foo'
+require 'bar'
+----
+
 == Lint/DuplicateRescueException
 
 |===
