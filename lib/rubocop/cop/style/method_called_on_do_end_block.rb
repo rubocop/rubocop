@@ -12,7 +12,7 @@ module RuboCop
       #   a do
       #     b
       #   end.c
-      class MethodCalledOnDoEndBlock < Cop
+      class MethodCalledOnDoEndBlock < Base
         include RangeHelp
 
         MSG = 'Avoid chaining a method call on a do...end block.'
@@ -37,7 +37,7 @@ module RuboCop
           range = range_between(receiver.loc.end.begin_pos,
                                 node.source_range.end_pos)
 
-          add_offense(nil, location: range)
+          add_offense(range)
         end
         alias on_csend on_send
       end

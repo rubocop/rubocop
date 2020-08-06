@@ -14,27 +14,23 @@ module RuboCop
       #   # good
       #   bar = foo.minmax
       #   return foo.minmax
-      class MinMax < Cop
+      class MinMax < Base
+        extend AutoCorrector
+
         MSG = 'Use `%<receiver>s.minmax` instead of `%<offender>s`.'
 
         def on_array(node)
           min_max_candidate(node) do |receiver|
             offender = offending_range(node)
 
-            add_offense(node, location: offender,
-                              message: message(offender, receiver))
+            add_offense(offender, message: message(offender, receiver)) do |corrector|
+              receiver = node.children.first.receiver
+
+              corrector.replace(offending_range(node), "#{receiver.source}.minmax")
+            end
           end
         end
         alias on_return on_array
-
-        def autocorrect(node)
-          receiver = node.children.first.receiver
-
-          lambda do |corrector|
-            corrector.replace(offending_range(node),
-                              "#{receiver.source}.minmax")
-          end
-        end
 
         private
 

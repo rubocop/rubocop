@@ -23,8 +23,9 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}.transform_values { |v| foo(v) }
       #   {a: 1, b: 2}.transform_values { |v| v * v }
-      class HashTransformValues < Cop
+      class HashTransformValues < Base
         include HashTransformMethod
+        extend AutoCorrector
 
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block

@@ -84,9 +84,10 @@ module RuboCop
       #           last_descriptive_var_name)
       #     do_something
       #   end
-      class MethodDefParentheses < Cop
+      class MethodDefParentheses < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_PRESENT = 'Use def without parentheses.'
         MSG_MISSING = 'Use def with parentheses when there are ' \
@@ -108,17 +109,6 @@ module RuboCop
           end
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.args_type?
-              # offense is registered on args node when parentheses are unwanted
-              correct_arguments(node, corrector)
-            else
-              correct_definition(node, corrector)
-            end
-          end
-        end
 
         private
 
@@ -150,14 +140,19 @@ module RuboCop
         def missing_parentheses(node)
           location = node.arguments.source_range
 
-          add_offense(node, location: location, message: MSG_MISSING) do
-            unexpected_style_detected(:require_no_parentheses)
+          return unless unexpected_style_detected(:require_no_parentheses)
+
+          add_offense(location, message: MSG_MISSING) do |corrector|
+            correct_definition(node, corrector)
           end
         end
 
         def unwanted_parentheses(args)
-          add_offense(args, message: MSG_PRESENT) do
-            unexpected_style_detected(:require_parentheses)
+          return unless unexpected_style_detected(:require_parentheses)
+
+          add_offense(args, message: MSG_PRESENT) do |corrector|
+            # offense is registered on args node when parentheses are unwanted
+            correct_arguments(args, corrector)
           end
         end
       end

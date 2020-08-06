@@ -40,7 +40,7 @@ module RuboCop
       #   class C
       #     prepend M
       #   end
-      class MixinUsage < Cop
+      class MixinUsage < Base
         MSG = '`%<statement>s` is used at the top level. Use inside `class` ' \
               'or `module`.'
 

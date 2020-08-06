@@ -39,7 +39,7 @@ module RuboCop
       #
       #   # good
       #   a.fdiv(b)
-      class FloatDivision < Cop
+      class FloatDivision < Base
         include ConfigurableEnforcedStyle
         MESSAGES = {
           left_coerce: 'Prefer using `.to_f` on the left side.',

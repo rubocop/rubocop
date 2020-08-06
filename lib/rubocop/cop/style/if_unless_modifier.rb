@@ -30,10 +30,11 @@ module RuboCop
       #   if long_condition
       #     do_something_in_a_method_with_a_long_name(arg)
       #   end
-      class IfUnlessModifier < Cop
+      class IfUnlessModifier < Base
         include StatementModifier
         include LineLengthHelp
         include IgnoredPattern
+        extend AutoCorrector
 
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
                            'single-line body. Another good alternative is ' \
@@ -49,21 +50,21 @@ module RuboCop
                 end
           return unless msg
 
-          add_offense(node,
-                      location: :keyword,
-                      message: format(msg, keyword: node.keyword))
+          add_offense(node.loc.keyword, message: format(msg, keyword: node.keyword)) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           replacement = if node.modifier_form?
                           to_normal_form(node)
                         else
                           to_modifier_form(node)
                         end
-          ->(corrector) { corrector.replace(node, replacement) }
+          corrector.replace(node, replacement)
         end
-
-        private
 
         def too_long_due_to_modifier?(node)
           node.modifier_form? && too_long_single_line?(node) &&

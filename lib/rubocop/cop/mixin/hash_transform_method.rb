@@ -26,13 +26,6 @@ module RuboCop
         end
       end
 
-      def autocorrect(node)
-        lambda do |corrector|
-          correction = prepare_correction(node)
-          execute_correction(corrector, node, correction)
-        end
-      end
-
       private
 
       # @abstract Implemented with `def_node_matcher`
@@ -61,10 +54,11 @@ module RuboCop
         # `transform_values` if value transformation uses key.
         return if captures.transformation_uses_both_args?
 
-        add_offense(
-          node,
-          message: "Prefer `#{new_method_name}` over `#{match_desc}`."
-        )
+        message = "Prefer `#{new_method_name}` over `#{match_desc}`."
+        add_offense(node, message: message) do |corrector|
+          correction = prepare_correction(node)
+          execute_correction(corrector, node, correction)
+        end
       end
 
       # @abstract

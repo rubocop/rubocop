@@ -118,8 +118,8 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     let(:cop_class) { RuboCop::Cop::Style::For }
 
     it 'registers offense with its name' do
-      cop.add_offense(nil, location: location, message: 'message')
-      expect(cop.offenses.first.cop_name).to eq('Style/For')
+      offenses = cop.add_offense(location, message: 'message')
+      expect(offenses.first.cop_name).to eq('Style/For')
     end
   end
 

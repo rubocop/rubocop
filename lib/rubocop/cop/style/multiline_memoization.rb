@@ -30,8 +30,9 @@ module RuboCop
       #     bar
       #     baz
       #   )
-      class MultilineMemoization < Cop
+      class MultilineMemoization < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'
 
@@ -40,16 +41,12 @@ module RuboCop
 
           return unless bad_rhs?(rhs)
 
-          add_offense(rhs, location: node.source_range)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.source_range) do |corrector|
             if style == :keyword
-              keyword_autocorrect(node, corrector)
+              keyword_autocorrect(rhs, corrector)
             else
-              corrector.replace(node.loc.begin, '(')
-              corrector.replace(node.loc.end, ')')
+              corrector.replace(rhs.loc.begin, '(')
+              corrector.replace(rhs.loc.end, ')')
             end
           end
         end
