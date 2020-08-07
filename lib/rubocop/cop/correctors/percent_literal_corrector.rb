@@ -71,7 +71,7 @@ module RuboCop
                                     prev_line_num,
                                     base_line_num,
                                     index)
-          prev_line_num = word_node.first_line
+          prev_line_num = word_node.last_line
           content = fix_escaped_content(word_node, escape, delimiters)
           line_breaks + content
         end

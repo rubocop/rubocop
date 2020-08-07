@@ -58,9 +58,16 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
-    it 'registers an offense for strings with embedded newlines and tabs' do
-      inspect_source(%(["one\n", "hi\tthere"]))
-      expect(cop.offenses.size).to eq(1)
+    it 'uses %W when autocorrecting strings with embedded newlines and tabs' do
+      expect_offense(<<~RUBY)
+        ["one
+        ^^^^^ Use `%w` or `%W` for an array of words.
+        ", "hi\tthere"]
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %W(one\n hi\tthere)
+      RUBY
     end
 
     it 'registers an offense for strings with newline and tab escapes' do

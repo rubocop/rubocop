@@ -39,6 +39,18 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(new_source).to eq('%i(one)')
     end
 
+    it 'autocorrects arrays of symbols with embedded newlines and tabs' do
+      expect_offense(<<~RUBY, tab: "\t")
+        [:"%{tab}", :"two
+        ^^^^{tab}^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+        ", :three]
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %I(\t two\n three)
+      RUBY
+    end
+
     it 'autocorrects arrays of symbols with new line' do
       new_source = autocorrect_source("[:one,\n:two, :three,\n:four]")
       expect(new_source).to eq("%i(one\ntwo three\nfour)")
