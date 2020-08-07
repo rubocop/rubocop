@@ -1,95 +1,211 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
-  let(:error_message) { 'Reverse the order of the operands `%s`.' }
-
-  shared_examples 'accepts' do |code|
-    let(:source) { code }
-
-    it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
-    end
-  end
-
-  shared_examples 'offense' do |code|
-    let(:source) { code }
-
-    it "registers an offense for #{code}" do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message).to(
-        eq(format(error_message, code))
-      )
-    end
-  end
-
-  shared_examples 'autocorrect' do |code, corrected|
-    let(:source) { code }
-
-    it 'autocorrects code' do
-      expect(autocorrect_source(source)).to eq(corrected)
-    end
-  end
-
-  before { inspect_source(source) }
-
   context 'enforce not yoda' do
     let(:cop_config) do
       { 'EnforcedStyle' => 'forbid_for_all_comparison_operators' }
     end
 
-    it_behaves_like 'accepts', 'b.value == 2'
-    it_behaves_like 'accepts', 'b&.value == 2'
-    it_behaves_like 'accepts', '@value == 2'
-    it_behaves_like 'accepts', '@@value == 2'
-    it_behaves_like 'accepts', 'b = 1; b == 2'
-    it_behaves_like 'accepts', '$var == 5'
-    it_behaves_like 'accepts', 'foo == "bar"'
-    it_behaves_like 'accepts', '"#{interpolation}" == foo'
-    it_behaves_like 'accepts', '/#{interpolation}/ == foo'
-    it_behaves_like 'accepts', 'foo[0] > "bar" || baz != "baz"'
-    it_behaves_like 'accepts', 'node = last_node.parent'
-    it_behaves_like 'accepts', '(first_line - second_line) > 0'
-    it_behaves_like 'accepts', '5 == 6'
-    it_behaves_like 'accepts', '[1, 2, 3] <=> [4, 5, 6]'
-    it_behaves_like 'accepts', '!true'
-    it_behaves_like 'accepts', 'not true'
-    it_behaves_like 'accepts', '0 <=> val'
-    it_behaves_like 'accepts', '"foo" === bar'
-    it_behaves_like 'accepts', '__FILE__ == $0'
-    it_behaves_like 'accepts', '__FILE__ != $0'
-    it_behaves_like 'accepts', '__FILE__ == $PROGRAM_NAME'
-    it_behaves_like 'accepts', '__FILE__ != $PROGRAM_NAME'
+    it 'accepts method call on receiver on left' do
+      expect_no_offenses('b.value == 2')
+    end
 
-    it_behaves_like 'offense', '"foo" == bar'
-    it_behaves_like 'offense', 'nil == bar'
-    it_behaves_like 'offense', 'false == active?'
-    it_behaves_like 'offense', '15 != @foo'
-    it_behaves_like 'offense', '42 < bar'
+    it 'accepts safe navigation on left' do
+      expect_no_offenses('b&.value == 2')
+    end
 
-    context 'autocorrection' do
-      it_behaves_like(
-        'autocorrect', 'if 10 == my_var; end', 'if my_var == 10; end'
-      )
+    it 'accepts instance variable on left' do
+      expect_no_offenses('@value == 2')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'if 2 < bar;end', 'if bar > 2;end'
-      )
+    it 'accepts class variable on left' do
+      expect_no_offenses('@@value == 2')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'foo = 42 if 42 > bar', 'foo = 42 if bar < 42'
-      )
+    it 'accepts variable on left after assign' do
+      expect_no_offenses('b = 1; b == 2')
+    end
 
-      it_behaves_like(
-        'autocorrect', '42 <= foo ? bar : baz', 'foo >= 42 ? bar : baz'
-      )
+    it 'accepts global variable on left' do
+      expect_no_offenses('$var == 5')
+    end
 
-      it_behaves_like(
-        'autocorrect', '42 >= foo ? bar : baz', 'foo <= 42 ? bar : baz'
-      )
+    it 'accepts string literal on right' do
+      expect_no_offenses('foo == "bar"')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'nil != foo ? bar : baz', 'foo != nil ? bar : baz'
-      )
+    it 'accepts interpolated string on left' do
+      expect_no_offenses('"#{interpolation}" == foo')
+    end
+
+    it 'accepts interpolated regex on left' do
+      expect_no_offenses('/#{interpolation}/ == foo')
+    end
+
+    it 'accepts accessor and variable on left in boolean expression' do
+      expect_no_offenses('foo[0] > "bar" || baz != "baz"')
+    end
+
+    it 'accepts assignment' do
+      expect_no_offenses('node = last_node.parent')
+    end
+
+    it 'accepts subtraction expression on left of comparison' do
+      expect_no_offenses('(first_line - second_line) > 0')
+    end
+
+    it 'accepts number on both sides' do
+      expect_no_offenses('5 == 6')
+    end
+
+    it 'accepts array of numbers on both sides' do
+      expect_no_offenses('[1, 2, 3] <=> [4, 5, 6]')
+    end
+
+    it 'accepts negation' do
+      expect_no_offenses('!true')
+      expect_no_offenses('not true')
+    end
+
+    it 'accepts number on left of <=>' do
+      expect_no_offenses('0 <=> val')
+    end
+
+    it 'accepts string literal on left of case equality check' do
+      expect_no_offenses('"foo" === bar')
+    end
+
+    it 'accepts __FILE__ on left in program name check' do
+      expect_no_offenses('__FILE__ == $0')
+      expect_no_offenses('__FILE__ == $PROGRAM_NAME')
+    end
+
+    it 'accepts __FILE__ on left in negated program name check' do
+      expect_no_offenses('__FILE__ != $0')
+      expect_no_offenses('__FILE__ != $PROGRAM_NAME')
+    end
+
+    it 'registers an offense for string literal on left' do
+      expect_offense(<<~RUBY)
+        "foo" == bar
+        ^^^^^^^^^^^^ Reverse the order of the operands `"foo" == bar`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar == "foo"
+      RUBY
+    end
+
+    it 'registers an offense for nil on left' do
+      expect_offense(<<~RUBY)
+        nil == bar
+        ^^^^^^^^^^ Reverse the order of the operands `nil == bar`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar == nil
+      RUBY
+    end
+
+    it 'registers an offense for boolean literal on left' do
+      expect_offense(<<~RUBY)
+        false == active?
+        ^^^^^^^^^^^^^^^^ Reverse the order of the operands `false == active?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        active? == false
+      RUBY
+    end
+
+    it 'registers an offense number on left' do
+      expect_offense(<<~RUBY)
+        15 != @foo
+        ^^^^^^^^^^ Reverse the order of the operands `15 != @foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @foo != 15
+      RUBY
+    end
+
+    it 'registers an offense number on left of comparison' do
+      expect_offense(<<~RUBY)
+        42 < bar
+        ^^^^^^^^ Reverse the order of the operands `42 < bar`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar > 42
+      RUBY
+    end
+
+    context 'within an if or ternary statement' do
+      it 'registers an offense for number on left in if condition' do
+        expect_offense(<<~RUBY)
+          if 10 == my_var; end
+             ^^^^^^^^^^^^ Reverse the order of the operands `10 == my_var`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if my_var == 10; end
+        RUBY
+      end
+
+      it 'registers an offense for number on left of comparison in if condition' do
+        expect_offense(<<~RUBY)
+          if 2 < bar;end
+             ^^^^^^^ Reverse the order of the operands `2 < bar`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if bar > 2;end
+        RUBY
+      end
+
+      it 'registers an offense for number on left in modifier if' do
+        expect_offense(<<~RUBY)
+          foo = 42 if 42 > bar
+                      ^^^^^^^^ Reverse the order of the operands `42 > bar`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = 42 if bar < 42
+        RUBY
+      end
+
+      it 'registers an offense for number on left of <= in ternary condition' do
+        expect_offense(<<~RUBY)
+          42 <= foo ? bar : baz
+          ^^^^^^^^^ Reverse the order of the operands `42 <= foo`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo >= 42 ? bar : baz
+        RUBY
+      end
+
+      it 'registers an offense for number on left of >= in ternary condition' do
+        expect_offense(<<~RUBY)
+          42 >= foo ? bar : baz
+          ^^^^^^^^^ Reverse the order of the operands `42 >= foo`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo <= 42 ? bar : baz
+        RUBY
+      end
+
+      it 'registers an offense for nil on left in ternary condition' do
+        expect_offense(<<~RUBY)
+          nil != foo ? bar : baz
+          ^^^^^^^^^^ Reverse the order of the operands `nil != foo`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo != nil ? bar : baz
+        RUBY
+      end
     end
 
     context 'with EnforcedStyle: forbid_for_equality_operators_only' do
@@ -97,11 +213,39 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
         { 'EnforcedStyle' => 'forbid_for_equality_operators_only' }
       end
 
-      it_behaves_like 'accepts', '42 < bar'
-      it_behaves_like 'accepts', 'nil >= baz'
-      it_behaves_like 'accepts', '3 < a && a < 5'
-      it_behaves_like 'offense', '42 != answer'
-      it_behaves_like 'offense', 'false == foo'
+      it 'accepts number on left of comparison' do
+        expect_no_offenses('42 < bar')
+      end
+
+      it 'accepts nil on left of comparison' do
+        expect_no_offenses('nil >= baz')
+      end
+
+      it 'accepts mixed order in comparisons' do
+        expect_no_offenses('3 < a && a < 5')
+      end
+
+      it 'registers an offense for negated equality check' do
+        expect_offense(<<~RUBY)
+          42 != answer
+          ^^^^^^^^^^^^ Reverse the order of the operands `42 != answer`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          answer != 42
+        RUBY
+      end
+
+      it 'registers an offense for equality check' do
+        expect_offense(<<~RUBY)
+          false == foo
+          ^^^^^^^^^^^^ Reverse the order of the operands `false == foo`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo == false
+        RUBY
+      end
     end
   end
 
@@ -110,53 +254,188 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
       { 'EnforcedStyle' => 'require_for_all_comparison_operators' }
     end
 
-    it_behaves_like 'accepts', '2 == b.value'
-    it_behaves_like 'accepts', '2 == b&.value'
-    it_behaves_like 'accepts', '2 == @value'
-    it_behaves_like 'accepts', '2 == @@value'
-    it_behaves_like 'accepts', 'b = 1; 2 == b'
-    it_behaves_like 'accepts', '5 == $var'
-    it_behaves_like 'accepts', '"bar" == foo'
-    it_behaves_like 'accepts', '"bar" > foo[0] || "bar" != baz'
-    it_behaves_like 'accepts', 'node = last_node.parent'
-    it_behaves_like 'accepts', '0 < (first_line - second_line)'
-    it_behaves_like 'accepts', '5 == 6'
-    it_behaves_like 'accepts', '[1, 2, 3] <=> [4, 5, 6]'
-    it_behaves_like 'accepts', '!true'
-    it_behaves_like 'accepts', 'not true'
-    it_behaves_like 'accepts', '0 <=> val'
-    it_behaves_like 'accepts', 'bar === "foo"'
+    it 'accepts method call on receiver on right' do
+      expect_no_offenses('2 == b.value')
+    end
 
-    it_behaves_like 'offense', 'bar == "foo"'
-    it_behaves_like 'offense', 'bar == nil'
-    it_behaves_like 'offense', 'active? == false'
-    it_behaves_like 'offense', '@foo != 15'
-    it_behaves_like 'offense', 'bar > 42'
+    it 'accepts safe navigation on right' do
+      expect_no_offenses('2 == b&.value')
+    end
 
-    context 'autocorrection' do
-      it_behaves_like(
-        'autocorrect', 'if my_var == 10; end', 'if 10 == my_var; end'
-      )
+    it 'accepts instance variable on right' do
+      expect_no_offenses('2 == @value')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'if bar > 2;end', 'if 2 < bar;end'
-      )
+    it 'accepts class variable on right' do
+      expect_no_offenses('2 == @@value')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'foo = 42 if bar < 42', 'foo = 42 if 42 > bar'
-      )
+    it 'accepts variable on right after assignment' do
+      expect_no_offenses('b = 1; 2 == b')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'foo >= 42 ? bar : baz', '42 <= foo ? bar : baz'
-      )
+    it 'accepts global variable on right' do
+      expect_no_offenses('5 == $var')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'foo <= 42 ? bar : baz', '42 >= foo ? bar : baz'
-      )
+    it 'accepts string literal on left' do
+      expect_no_offenses('"bar" == foo')
+    end
 
-      it_behaves_like(
-        'autocorrect', 'foo != nil ? bar : baz', 'nil != foo ? bar : baz'
-      )
+    it 'accepts accessor and variable on right in boolean expression' do
+      expect_no_offenses('"bar" > foo[0] || "bar" != baz')
+    end
+
+    it 'accepts assignment' do
+      expect_no_offenses('node = last_node.parent')
+    end
+
+    it 'accepts subtraction on right of comparison' do
+      expect_no_offenses('0 < (first_line - second_line)')
+    end
+
+    it 'accepts numbers on both sides' do
+      expect_no_offenses('5 == 6')
+    end
+
+    it 'accepts arrays of numbers on both sides' do
+      expect_no_offenses('[1, 2, 3] <=> [4, 5, 6]')
+    end
+
+    it 'accepts negation' do
+      expect_no_offenses('!true')
+      expect_no_offenses('not true')
+    end
+
+    it 'accepts number on left of <=>' do
+      expect_no_offenses('0 <=> val')
+    end
+
+    it 'accepts string literal on right of case equality check' do
+      expect_no_offenses('bar === "foo"')
+    end
+
+    it 'registers an offense for string literal on right' do
+      expect_offense(<<~RUBY)
+        bar == "foo"
+        ^^^^^^^^^^^^ Reverse the order of the operands `bar == "foo"`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "foo" == bar
+      RUBY
+    end
+
+    it 'registers an offense for nil on right' do
+      expect_offense(<<~RUBY)
+        bar == nil
+        ^^^^^^^^^^ Reverse the order of the operands `bar == nil`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        nil == bar
+      RUBY
+    end
+
+    it 'registers an offense for boolean literal on right' do
+      expect_offense(<<~RUBY)
+        active? == false
+        ^^^^^^^^^^^^^^^^ Reverse the order of the operands `active? == false`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        false == active?
+      RUBY
+    end
+
+    it 'registers an offense for number on right' do
+      expect_offense(<<~RUBY)
+        @foo != 15
+        ^^^^^^^^^^ Reverse the order of the operands `@foo != 15`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        15 != @foo
+      RUBY
+    end
+
+    it 'registers an offense for number on right of comparison' do
+      expect_offense(<<~RUBY)
+        bar > 42
+        ^^^^^^^^ Reverse the order of the operands `bar > 42`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        42 < bar
+      RUBY
+    end
+
+    context 'within an if or ternary statement' do
+      it 'registers an offense number on right in if condition' do
+        expect_offense(<<~RUBY)
+          if my_var == 10; end
+             ^^^^^^^^^^^^ Reverse the order of the operands `my_var == 10`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if 10 == my_var; end
+        RUBY
+      end
+
+      it 'registers an offense number on right of comparison in if condition' do
+        expect_offense(<<~RUBY)
+          if bar > 2;end
+             ^^^^^^^ Reverse the order of the operands `bar > 2`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if 2 < bar;end
+        RUBY
+      end
+
+      it 'registers an offense for number on right in modifier if' do
+        expect_offense(<<~RUBY)
+          foo = 42 if bar < 42
+                      ^^^^^^^^ Reverse the order of the operands `bar < 42`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = 42 if 42 > bar
+        RUBY
+      end
+
+      it 'registers an offense for number on right of >= in ternary condition' do
+        expect_offense(<<~RUBY)
+          foo >= 42 ? bar : baz
+          ^^^^^^^^^ Reverse the order of the operands `foo >= 42`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          42 <= foo ? bar : baz
+        RUBY
+      end
+
+      it 'registers an offense for number on right of <= in ternary condition' do
+        expect_offense(<<~RUBY)
+          foo <= 42 ? bar : baz
+          ^^^^^^^^^ Reverse the order of the operands `foo <= 42`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          42 >= foo ? bar : baz
+        RUBY
+      end
+
+      it 'registers an offense for nil on right in ternary condition' do
+        expect_offense(<<~RUBY)
+          foo != nil ? bar : baz
+          ^^^^^^^^^^ Reverse the order of the operands `foo != nil`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          nil != foo ? bar : baz
+        RUBY
+      end
     end
 
     context 'with EnforcedStyle: require_for_equality_operators_only' do
@@ -164,11 +443,39 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
         { 'EnforcedStyle' => 'require_for_equality_operators_only' }
       end
 
-      it_behaves_like 'accepts', 'bar > 42'
-      it_behaves_like 'accepts', 'bar <= nil'
-      it_behaves_like 'accepts', 'a > 3 && 5 > a'
-      it_behaves_like 'offense', 'answer != 42'
-      it_behaves_like 'offense', 'foo == false'
+      it 'accepts number on right of comparison' do
+        expect_no_offenses('bar > 42')
+      end
+
+      it 'accepts nil on right of comparison' do
+        expect_no_offenses('bar <= nil')
+      end
+
+      it 'accepts mixed order in comparisons' do
+        expect_no_offenses('a > 3 && 5 > a')
+      end
+
+      it 'registers an offense for negated equality check' do
+        expect_offense(<<~RUBY)
+          answer != 42
+          ^^^^^^^^^^^^ Reverse the order of the operands `answer != 42`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          42 != answer
+        RUBY
+      end
+
+      it 'registers an offense for equality check' do
+        expect_offense(<<~RUBY)
+          foo == false
+          ^^^^^^^^^^^^ Reverse the order of the operands `foo == false`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          false == foo
+        RUBY
+      end
     end
   end
 end

@@ -10,10 +10,8 @@ RSpec.describe RuboCop::Cop::Style::WhenThen do
             ^ Do not use `when x;`. Use `when x then` instead.
       end
     RUBY
-  end
 
-  it 'accepts when x then' do
-    expect_no_offenses(<<~RUBY)
+    expect_correction(<<~RUBY)
       case a
       when b then c
       end
@@ -29,19 +27,6 @@ RSpec.describe RuboCop::Cop::Style::WhenThen do
       case e
       when f
         g; h
-      end
-    RUBY
-  end
-
-  it 'auto-corrects "when x;" with "when x then"' do
-    new_source = autocorrect_source(<<~RUBY)
-      case a
-      when b; c
-      end
-    RUBY
-    expect(new_source).to eq(<<~RUBY)
-      case a
-      when b then c
       end
     RUBY
   end
