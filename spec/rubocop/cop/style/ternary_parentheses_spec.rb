@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
-  before do
-    inspect_source(source)
-  end
-
   let(:redundant_parens_enabled) { false }
   let(:other_cops) do
     {
@@ -12,46 +8,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
     }
   end
 
-  shared_examples 'code with offense' do |code, expected|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq([message])
-      end
-
-      if expected
-        it 'auto-corrects' do
-          expect(autocorrect_source(code)).to eq(expected)
-        end
-
-        it 'claims to auto-correct' do
-          autocorrect_source(code)
-          expect(cop.offenses.last.status).to eq(:corrected)
-        end
-      else
-        it 'does not auto-correct' do
-          expect(autocorrect_source(code)).to eq(code)
-        end
-
-        it 'does not claim to auto-correct' do
-          autocorrect_source(code)
-          expect(cop.offenses.last.status).to eq(:uncorrected)
-        end
-      end
-    end
-  end
-
-  shared_examples 'code without offense' do |code|
-    let(:source) { code }
-
-    it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
-    end
-  end
-
-  shared_examples 'safe assignment disabled' do |style|
+  shared_examples 'safe assignment disabled' do |style, message|
     let(:cop_config) do
       {
         'EnforcedStyle' => style,
@@ -59,197 +16,427 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       }
     end
 
-    it_behaves_like 'code with offense',
-                    'foo = (bar = find_bar) ? a : b'
+    it 'registers an offense for parens around assignment' do
+      expect_offense(<<~RUBY)
+        foo = (bar = find_bar) ? a : b
+              ^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
 
-    it_behaves_like 'code with offense',
-                    'foo = bar = (baz = find_baz) ? a : b'
+      expect_no_corrections
+    end
 
-    it_behaves_like 'code with offense',
-                    'foo = (bar = baz = find_baz) ? a : b'
+    it 'registers an offense for parens around inner assignment' do
+      expect_offense(<<~RUBY)
+        foo = bar = (baz = find_baz) ? a : b
+                    ^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense for parens around outer assignment' do
+      expect_offense(<<~RUBY)
+        foo = (bar = baz = find_baz) ? a : b
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_no_corrections
+    end
   end
 
   context 'when configured to enforce parentheses inclusion' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 
-    let(:message) { 'Use parentheses for ternary conditions.' }
-
     context 'with a simple condition' do
-      it_behaves_like 'code with offense',
-                      'foo = bar? ? a : b',
-                      'foo = (bar?) ? a : b'
+      it 'registers an offense for query method in condition' do
+        expect_offense(<<~RUBY)
+          foo = bar? ? a : b
+                ^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = yield ? a : b',
-                      'foo = (yield) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (bar?) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = bar[:baz] ? a : b',
-                      'foo = (bar[:baz]) ? a : b'
+      it 'registers an offense for yield in condition' do
+        expect_offense(<<~RUBY)
+          foo = yield ? a : b
+                ^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (yield) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for accessor in condition' do
+        expect_offense(<<~RUBY)
+          foo = bar[:baz] ? a : b
+                ^^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (bar[:baz]) ? a : b
+        RUBY
+      end
     end
 
     context 'with a complex condition' do
-      it_behaves_like 'code with offense',
-                      'foo = 1 + 1 == 2 ? a : b',
-                      'foo = (1 + 1 == 2) ? a : b'
+      it 'registers an offense for arithmetic condition' do
+        expect_offense(<<~RUBY)
+          foo = 1 + 1 == 2 ? a : b
+                ^^^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar && baz ? a : b',
-                      'foo = (bar && baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (1 + 1 == 2) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = foo1 == foo2 ? a : b',
-                      'foo = (foo1 == foo2) ? a : b'
+      it 'registers an offense for boolean expression' do
+        expect_offense(<<~RUBY)
+          foo = bar && baz ? a : b
+                ^^^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar.baz? ? a : b',
-                      'foo = (bar.baz?) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (bar && baz) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = bar && (baz || bar) ? a : b',
-                      'foo = (bar && (baz || bar)) ? a : b'
+      it 'registers an offense for equality check' do
+        expect_offense(<<~RUBY)
+          foo = foo1 == foo2 ? a : b
+                ^^^^^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar or baz ? a : b',
-                      'foo = bar or (baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (foo1 == foo2) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'not bar ? a : b',
-                      'not (bar) ? a : b'
+      it 'registers an offense when calling method on a receiver' do
+        expect_offense(<<~RUBY)
+          foo = bar.baz? ? a : b
+                ^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (bar.baz?) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for boolean expression containing parens' do
+        expect_offense(<<~RUBY)
+          foo = bar && (baz || bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (bar && (baz || bar)) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for boolean expression using keyword' do
+        expect_offense(<<~RUBY)
+          foo = bar or baz ? a : b
+                       ^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = bar or (baz) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for negated condition' do
+        expect_offense(<<~RUBY)
+          not bar ? a : b
+              ^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          not (bar) ? a : b
+        RUBY
+      end
     end
 
     context 'with an assignment condition' do
-      it_behaves_like 'code with offense',
-                      'foo = bar = baz ? a : b',
-                      'foo = bar = (baz) ? a : b'
+      it 'registers an offense for double assignment' do
+        expect_offense(<<~RUBY)
+          foo = bar = baz ? a : b
+                      ^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar = baz = find_baz ? a : b',
-                      'foo = bar = baz = (find_baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar = (baz) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = bar = baz == 1 ? a : b',
-                      'foo = bar = (baz == 1) ? a : b'
+      it 'registers an offense for triple assignment' do
+        expect_offense(<<~RUBY)
+          foo = bar = baz = find_baz ? a : b
+                            ^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code without offense',
-                      'foo = (bar = baz = find_baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar = baz = (find_baz) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for double assignment with ' \
+         'equality check in condition' do
+        expect_offense(<<~RUBY)
+          foo = bar = baz == 1 ? a : b
+                      ^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = bar = (baz == 1) ? a : b
+        RUBY
+      end
+
+      it 'accepts safe assignment in condition' do
+        expect_no_offenses('foo = (bar = baz = find_baz) ? a : b')
+      end
     end
   end
 
   context 'when configured to enforce parentheses omission' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_no_parentheses' } }
 
-    let(:message) { 'Omit parentheses for ternary conditions.' }
-
     context 'with a simple condition' do
-      it_behaves_like 'code with offense',
-                      'foo = (bar?) ? a : b',
-                      'foo = bar? ? a : b'
+      it 'registers an offense for query method in condition' do
+        expect_offense(<<~RUBY)
+          foo = (bar?) ? a : b
+                ^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = (yield) ? a : b',
-                      'foo = yield ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar? ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = (bar[:baz]) ? a : b',
-                      'foo = bar[:baz] ? a : b'
+      it 'registers an offense for yield in condition' do
+        expect_offense(<<~RUBY)
+          foo = (yield) ? a : b
+                ^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense', <<~RUBY, <<~CORRECTION
-        (foo ||
-          bar) ? a : b
-      RUBY
-        foo ||
-          bar ? a : b
-      CORRECTION
+        expect_correction(<<~RUBY)
+          foo = yield ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code without offense', <<~RUBY
-        (
-          foo || bar
-        ) ? a : b
-      RUBY
+      it 'registers an offense for accessor in condition' do
+        expect_offense(<<~RUBY)
+          foo = (bar[:baz]) ? a : b
+                ^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = bar[:baz] ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for multi-line boolean expression' do
+        expect_offense(<<~RUBY)
+          (foo ||
+          ^^^^^^^ Omit parentheses for ternary conditions.
+            bar) ? a : b
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo ||
+            bar ? a : b
+        RUBY
+      end
+
+      it 'accepts multi-line boolean expression starting on following line' do
+        expect_no_offenses(<<~RUBY)
+          (
+            foo || bar
+          ) ? a : b
+        RUBY
+      end
     end
 
     context 'with a complex condition' do
-      it_behaves_like 'code with offense',
-                      'foo = (1 + 1 == 2) ? a : b',
-                      'foo = 1 + 1 == 2 ? a : b'
+      it 'registers an offense for arithmetic expression' do
+        expect_offense(<<~RUBY)
+          foo = (1 + 1 == 2) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = (foo1 == foo2) ? a : b',
-                      'foo = foo1 == foo2 ? a : b'
+        expect_correction(<<~RUBY)
+          foo = 1 + 1 == 2 ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = (bar && baz) ? a : b',
-                      'foo = bar && baz ? a : b'
+      it 'registers an offense for equality check' do
+        expect_offense(<<~RUBY)
+          foo = (foo1 == foo2) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = (bar.baz?) ? a : b',
-                      'foo = bar.baz? ? a : b'
+        expect_correction(<<~RUBY)
+          foo = foo1 == foo2 ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      'foo = bar && (baz || bar) ? a : b'
+      it 'registers an offense for boolean expression' do
+        expect_offense(<<~RUBY)
+          foo = (bar && baz) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = (foo or bar) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar && baz ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = (not bar) ? a : b'
+      it 'registers an offense for query method on object' do
+        expect_offense(<<~RUBY)
+          foo = (bar.baz?) ? a : b
+                ^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = bar.baz? ? a : b
+        RUBY
+      end
+
+      it 'accepts parens around inner boolean expression' do
+        expect_no_offenses('foo = bar && (baz || bar) ? a : b')
+      end
+
+      it 'registers an offense for boolean expression using keyword' do
+        expect_offense(<<~RUBY)
+          foo = (foo or bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense for negated condition' do
+        expect_offense(<<~RUBY)
+          foo = (not bar) ? a : b
+                ^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
     end
 
     context 'with an assignment condition' do
-      it_behaves_like 'code without offense',
-                      'foo = (bar = find_bar) ? a : b'
+      it 'accepts safe assignment' do
+        expect_no_offenses('foo = (bar = find_bar) ? a : b')
+      end
 
-      it_behaves_like 'code without offense',
-                      'foo = bar = (baz = find_baz) ? a : b'
+      it 'accepts safe assignment as part of multiple assignment' do
+        expect_no_offenses('foo = bar = (baz = find_baz) ? a : b')
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = bar = (baz == 1) ? a : b',
-                      'foo = bar = baz == 1 ? a : b'
+      it 'registers an offense for equality check' do
+        expect_offense(<<~RUBY)
+          foo = bar = (baz == 1) ? a : b
+                      ^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code without offense',
-                      'foo = (bar = baz = find_baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar = baz == 1 ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'safe assignment disabled', 'require_no_parentheses'
+      it 'accepts double safe assignment' do
+        expect_no_offenses('foo = (bar = baz = find_baz) ? a : b')
+      end
+
+      it_behaves_like 'safe assignment disabled',
+                      'require_no_parentheses',
+                      'Omit parentheses for ternary conditions.'
     end
 
     context 'with an unparenthesized method call condition' do
-      it_behaves_like 'code with offense',
-                      'foo = (defined? bar) ? a : b'
+      it 'registers an offense for defined check' do
+        expect_offense(<<~RUBY)
+          foo = (defined? bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = (baz? bar) ? a : b'
+        expect_no_corrections
+      end
+
+      it 'registers an offense when calling method with a parameter' do
+        expect_offense(<<~RUBY)
+          foo = (baz? bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_no_corrections
+      end
 
       context 'when calling method on a receiver' do
-        it_behaves_like 'code with offense',
-                        'foo = (baz.foo? bar) ? a : b'
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            foo = (baz.foo? bar) ? a : b
+                  ^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+          RUBY
+
+          expect_no_corrections
+        end
       end
 
       context 'when calling method on a literal receiver' do
-        it_behaves_like 'code with offense',
-                        'foo = ("bar".foo? bar) ? a : b'
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            foo = ("bar".foo? bar) ? a : b
+                  ^^^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+          RUBY
+
+          expect_no_corrections
+        end
       end
 
       context 'when calling method on a constant receiver' do
-        it_behaves_like 'code with offense',
-                        'foo = (Bar.foo? bar) ? a : b'
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            foo = (Bar.foo? bar) ? a : b
+                  ^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+          RUBY
+
+          expect_no_corrections
+        end
       end
 
       context 'when calling method with multiple arguments' do
-        it_behaves_like 'code with offense',
-                        'foo = (baz.foo? bar, baz) ? a : b'
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            foo = (baz.foo? bar, baz) ? a : b
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+          RUBY
+
+          expect_no_corrections
+        end
       end
     end
 
-    context 'with condition including a range' do
-      it_behaves_like 'code without offense',
-                      '(foo..bar).include?(baz) ? a : b'
+    it 'accepts condition including a range' do
+      expect_no_offenses('(foo..bar).include?(baz) ? a : b')
     end
 
     context 'with no space between the parentheses and question mark' do
-      it_behaves_like 'code with offense',
-                      '(foo)? a : b',
-                      'foo ? a : b'
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          (foo)? a : b
+          ^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo ? a : b
+        RUBY
+      end
     end
   end
 
@@ -258,94 +445,192 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       { 'EnforcedStyle' => 'require_parentheses_when_complex' }
     end
 
-    let(:message) do
-      'Only use parentheses for ternary expressions with complex conditions.'
-    end
-
     context 'with a simple condition' do
-      it_behaves_like 'code with offense',
-                      'foo = (bar?) ? a : b',
-                      'foo = bar? ? a : b'
+      it 'registers an offense for query method in condition' do
+        expect_offense(<<~RUBY)
+          foo = (bar?) ? a : b
+                ^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = (yield) ? a : b',
-                      'foo = yield ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar? ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = (bar[:baz]) ? a : b',
-                      'foo = bar[:baz] ? a : b'
+      it 'registers an offense for yield in condition' do
+        expect_offense(<<~RUBY)
+          foo = (yield) ? a : b
+                ^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar or (baz) ? a : b',
-                      'foo = bar or baz ? a : b'
+        expect_correction(<<~RUBY)
+          foo = yield ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = (bar&.baz) ? a : b',
-                      'foo = bar&.baz ? a : b'
-    end
+      it 'registers an offense for accessor in condition' do
+        expect_offense(<<~RUBY)
+          foo = (bar[:baz]) ? a : b
+                ^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-    context 'with a complex condition' do
-      it_behaves_like 'code with offense',
-                      'foo = (bar.baz?) ? a : b',
-                      'foo = bar.baz? ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar[:baz] ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code without offense',
-                      'foo = (baz or bar) ? a : b'
+      it 'registers an offense with preceding boolean keyword expression' do
+        expect_offense(<<~RUBY)
+          foo = bar or (baz) ? a : b
+                       ^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code without offense',
-                      'foo = (bar && (baz || bar)) ? a : b'
-    end
+        expect_correction(<<~RUBY)
+          foo = bar or baz ? a : b
+        RUBY
+      end
 
-    context 'with an assignment condition' do
-      it_behaves_like 'code without offense',
-                      'foo = (bar = find_bar) ? a : b'
+      it 'registers an offense for save navigation' do
+        expect_offense(<<~RUBY)
+          foo = (bar&.baz) ? a : b
+                ^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code without offense',
-                      'foo = baz = (bar = find_bar) ? a : b'
-
-      it_behaves_like 'code without offense',
-                      'foo = bar = (bar == 1) ? a : b'
-
-      it_behaves_like 'code without offense',
-                      'foo = (bar = baz = find_bar) ? a : b'
-
-      it_behaves_like 'safe assignment disabled',
-                      'require_parentheses_when_complex'
-    end
-
-    context 'with method call condition' do
-      it_behaves_like 'code with offense',
-                      'foo = (defined? bar) ? a : b'
-
-      it_behaves_like 'code with offense',
-                      '(%w(a b).include? params[:t]) ? "ab" : "c"'
-
-      it_behaves_like 'code with offense',
-                      '(%w(a b).include? params[:t], 3) ? "ab" : "c"'
-
-      it_behaves_like 'code with offense',
-                      '(%w(a b).include?(params[:t], x)) ? "ab" : "c"',
-                      '%w(a b).include?(params[:t], x) ? "ab" : "c"'
-
-      it_behaves_like 'code with offense',
-                      '(%w(a b).include? "a") ? "ab" : "c"'
-
-      it_behaves_like 'code with offense',
-                      '(%w(a b).include?("a")) ? "ab" : "c"',
-                      '%w(a b).include?("a") ? "ab" : "c"'
-
-      it_behaves_like 'code with offense',
-                      'foo = (baz? bar) ? a : b'
-
-      context 'when calling method on a receiver' do
-        it_behaves_like 'code with offense',
-                        'foo = (baz.foo? bar) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar&.baz ? a : b
+        RUBY
       end
     end
 
-    context 'with condition including a range' do
-      it_behaves_like 'code without offense',
-                      '(foo..bar).include?(baz) ? a : b'
+    context 'with a complex condition' do
+      it 'registers an offense when calling method on a receiver' do
+        expect_offense(<<~RUBY)
+          foo = (bar.baz?) ? a : b
+                ^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = bar.baz? ? a : b
+        RUBY
+      end
+
+      it 'accepts boolean expression using keywords' do
+        expect_no_offenses('foo = (baz or bar) ? a : b')
+      end
+
+      it 'accepts boolean expression' do
+        expect_no_offenses('foo = (bar && (baz || bar)) ? a : b')
+      end
+    end
+
+    context 'with an assignment condition' do
+      it 'accepts safe assignment' do
+        expect_no_offenses('foo = (bar = find_bar) ? a : b')
+      end
+
+      it 'accepts safe assignment as part of multiple assignment' do
+        expect_no_offenses('foo = baz = (bar = find_bar) ? a : b')
+      end
+
+      it 'accepts equality check' do
+        expect_no_offenses('foo = bar = (bar == 1) ? a : b')
+      end
+
+      it 'accepts accepts safe multiple assignment' do
+        expect_no_offenses('foo = (bar = baz = find_bar) ? a : b')
+      end
+
+      it_behaves_like 'safe assignment disabled',
+                      'require_parentheses_when_complex',
+                      'Only use parentheses for ternary expressions with complex conditions.'
+    end
+
+    context 'with method call condition' do
+      it 'registers an offense for defined check' do
+        expect_offense(<<~RUBY)
+          foo = (defined? bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      context 'with accessor in method call parameters' do
+        it 'registers an offense for array include? without parens' do
+          expect_offense(<<~RUBY)
+            (%w(a b).include? params[:t]) ? "ab" : "c"
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'registers an offense for array include? with ' \
+          'multiple parameters without parens' do
+          expect_offense(<<~'RUBY')
+            (%w(a b).include? params[:t], 3) ? "ab" : "c"
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'registers an offense for array include? with ' \
+          'multiple parameters with parens' do
+          expect_offense(<<~RUBY)
+            (%w(a b).include?(params[:t], x)) ? "ab" : "c"
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            %w(a b).include?(params[:t], x) ? "ab" : "c"
+          RUBY
+        end
+      end
+
+      context 'without accessor in method call parameters' do
+        it 'registers an offense for array include? without parens' do
+          expect_offense(<<~RUBY)
+            (%w(a b).include? "a") ? "ab" : "c"
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'registers an offense for array include? with parens' do
+          expect_offense(<<~RUBY)
+            (%w(a b).include?("a")) ? "ab" : "c"
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            %w(a b).include?("a") ? "ab" : "c"
+          RUBY
+        end
+      end
+
+      it 'registers an offense when calling method with a parameter' do
+        expect_offense(<<~RUBY)
+          foo = (baz? bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense when calling method on a receiver' do
+        expect_offense(<<~RUBY)
+          foo = (baz.foo? bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_no_corrections
+      end
+    end
+
+    it 'accepts condition including a range' do
+      expect_no_offenses('(foo..bar).include?(baz) ? a : b')
     end
   end
 
@@ -354,59 +639,133 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       { 'EnforcedStyle' => 'require_parentheses_when_complex' }
     end
 
-    let(:message) do
-      'Use parentheses for ternary expressions with complex conditions.'
-    end
-
     context 'with complex condition' do
-      it_behaves_like 'code with offense',
-                      'foo = 1 + 1 == 2 ? a : b',
-                      'foo = (1 + 1 == 2) ? a : b'
+      it 'registers an offense for arithmetic and equality check' do
+        expect_offense(<<~RUBY)
+          foo = 1 + 1 == 2 ? a : b
+                ^^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar && baz ? a : b',
-                      'foo = (bar && baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (1 + 1 == 2) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = bar && baz || bar ? a : b',
-                      'foo = (bar && baz || bar) ? a : b'
+      it 'registers an offense for boolean expression' do
+        expect_offense(<<~RUBY)
+          foo = bar && baz ? a : b
+                ^^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar && (baz != bar) ? a : b',
-                      'foo = (bar && (baz != bar)) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (bar && baz) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = 1 < (bar.baz?) ? a : b',
-                      'foo = (1 < (bar.baz?)) ? a : b'
+      it 'registers an offense for compound boolean expression' do
+        expect_offense(<<~RUBY)
+          foo = bar && baz || bar ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = 1 <= (bar ** baz) ? a : b',
-                      'foo = (1 <= (bar ** baz)) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (bar && baz || bar) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = 1 >= bar * baz ? a : b',
-                      'foo = (1 >= bar * baz) ? a : b'
+      it 'registers an offense for boolean expression with inner parens' do
+        expect_offense(<<~RUBY)
+          foo = bar && (baz != bar) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar + baz ? a : b',
-                      'foo = (bar + baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (bar && (baz != bar)) ? a : b
+        RUBY
+      end
 
-      it_behaves_like 'code with offense',
-                      'foo = bar - baz ? a : b',
-                      'foo = (bar - baz) ? a : b'
+      it 'registers an offense for comparison with method call on receiver' do
+        expect_offense(<<~RUBY)
+          foo = 1 < (bar.baz?) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code with offense',
-                      'foo = bar < baz ? a : b',
-                      'foo = (bar < baz) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = (1 < (bar.baz?)) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense comparison with exponentiation' do
+        expect_offense(<<~RUBY)
+          foo = 1 <= (bar ** baz) ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (1 <= (bar ** baz)) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for comparison with multiplication' do
+        expect_offense(<<~RUBY)
+          foo = 1 >= bar * baz ? a : b
+                ^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (1 >= bar * baz) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for addition expression' do
+        expect_offense(<<~RUBY)
+          foo = bar + baz ? a : b
+                ^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (bar + baz) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for subtraction expression' do
+        expect_offense(<<~RUBY)
+          foo = bar - baz ? a : b
+                ^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (bar - baz) ? a : b
+        RUBY
+      end
+
+      it 'registers an offense for comparison' do
+        expect_offense(<<~RUBY)
+          foo = bar < baz ? a : b
+                ^^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = (bar < baz) ? a : b
+        RUBY
+      end
     end
 
     context 'with an assignment condition' do
-      it_behaves_like 'code with offense',
-                      'foo = bar = baz == 1 ? a : b',
-                      'foo = bar = (baz == 1) ? a : b'
+      it 'registers an offense for equality check' do
+        expect_offense(<<~RUBY)
+          foo = bar = baz == 1 ? a : b
+                      ^^^^^^^^^^^^^^^^ Use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-      it_behaves_like 'code without offense',
-                      'foo = (bar = baz == 1) ? a : b'
+        expect_correction(<<~RUBY)
+          foo = bar = (baz == 1) ? a : b
+        RUBY
+      end
+
+      it 'accepts safe assignment' do
+        expect_no_offenses('foo = (bar = baz == 1) ? a : b')
+      end
     end
   end
 
@@ -418,7 +777,9 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         { 'EnforcedStyle' => 'require_parentheses' }
       end
 
-      it_behaves_like 'code without offense', 'foo = bar? ? a : b'
+      it 'accepts' do
+        expect_no_offenses('foo = bar? ? a : b')
+      end
     end
 
     context 'when `EnforcedStyle: require_parentheses_when_complex`' do
@@ -426,7 +787,9 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         { 'EnforcedStyle' => 'require_parentheses_when_complex' }
       end
 
-      it_behaves_like 'code without offense', '!condition.nil? ? foo : bar'
+      it 'accepts' do
+        expect_no_offenses('!condition.nil? ? foo : bar')
+      end
     end
   end
 end

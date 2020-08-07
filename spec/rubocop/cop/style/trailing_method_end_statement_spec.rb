@@ -6,12 +6,19 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
   end
+  let(:trailing_whitespace) { ' ' }
 
   it 'register offense with trailing end on 2 line method' do
     expect_offense(<<~RUBY)
       def some_method
       foo; end
            ^^^ Place the end statement of a multi-line method on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def some_method
+      foo;#{trailing_whitespace}
+      end
     RUBY
   end
 
@@ -22,6 +29,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
       { foo: bar }; end
                     ^^^ Place the end statement of a multi-line method on its own line.
     RUBY
+
+    expect_correction(<<~RUBY)
+      def a
+        b
+      { foo: bar };#{trailing_whitespace}
+      end
+    RUBY
   end
 
   it 'register offense with trailing end on method with comment' do
@@ -30,6 +44,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
         b = calculation
         [b] end # because b
             ^^^ Place the end statement of a multi-line method on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def c
+        b = calculation
+        [b]#{trailing_whitespace}
+      end # because b
     RUBY
   end
 
@@ -41,6 +62,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
         end end
             ^^^ Place the end statement of a multi-line method on its own line.
     RUBY
+
+    expect_correction(<<~RUBY)
+      def d
+        block do
+          foo
+        end#{trailing_whitespace}
+      end
+    RUBY
   end
 
   it 'register offense with trailing end inside class' do
@@ -49,6 +78,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
         def some_method
         foo; end
              ^^^ Place the end statement of a multi-line method on its own line.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        def some_method
+        foo;#{trailing_whitespace}
+        end
       end
     RUBY
   end
@@ -65,78 +102,25 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
     RUBY
   end
 
-  it 'auto-corrects trailing end in 2 line method' do
-    corrected = autocorrect_source(<<~RUBY)
-      def some_method
-        []; end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      def some_method
-        []; 
-      end
-    RUBY
-  end
-
-  it 'auto-corrects trailing end in 3 line method' do
-    corrected = autocorrect_source(<<~RUBY)
-      def do_this(x)
-        y = x + 5
-        y / 2; end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      def do_this(x)
-        y = x + 5
-        y / 2; 
-      end
-    RUBY
-  end
-
-  it 'auto-corrects trailing end with comment' do
-    corrected = autocorrect_source(<<~RUBY)
-      def f(x, y)
-        process(x)
-        process(y) end # comment
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      def f(x, y)
-        process(x)
-        process(y) 
-      end # comment
-    RUBY
-  end
-
-  it 'auto-corrects trailing end on method with block' do
-    corrected = autocorrect_source(<<~RUBY)
-      def d
-        block do
-          foo
-        end end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      def d
-        block do
-          foo
-        end 
-      end
-    RUBY
-  end
-
   it 'auto-corrects all trailing ends for larger example' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       class Foo
         def some_method
           [] end
+             ^^^ Place the end statement of a multi-line method on its own line.
         def another_method
           {} end
+             ^^^ Place the end statement of a multi-line method on its own line.
       end
     RUBY
-    expect(corrected).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       class Foo
         def some_method
-          [] 
+          []#{trailing_whitespace}
         end
         def another_method
-          {} 
+          {}#{trailing_whitespace}
         end
       end
     RUBY
