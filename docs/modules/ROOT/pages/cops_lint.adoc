@@ -1600,6 +1600,38 @@ the receiver of the call is a HEREDOC.
 
 * https://rubystyle.guide#heredoc-method-calls
 
+== Lint/IdentityComparison
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.91
+| -
+|===
+
+Prefer `equal?` over `==` when comparing `object_id`.
+
+`Object#equal?` is provided to compare objects for identity, and in contrast
+`Object#==` is provided for the purpose of doing value comparison.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo.object_id == bar.object_id
+
+# good
+foo.equal?(bar)
+----
+
+=== References
+
+* https://rubystyle.guide#identity-comparison
+
 == Lint/ImplicitStringConcatenation
 
 |===

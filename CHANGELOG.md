@@ -6,6 +6,7 @@
 
 * New option `--cache-root` and support for the `RUBOCOP_CACHE_ROOT` environment variable. Both can be used to override the `AllCops: CacheRootDirectory` config, especially in a CI setting. ([@sascha-wolf][])
 * [#8582](https://github.com/rubocop-hq/rubocop/issues/8582): Add new `Layout/BeginEndAlignment` cop. ([@koic][])
+* [#8699](https://github.com/rubocop-hq/rubocop/pull/8699): Add new `Lint/IdentityComparison` cop. ([@koic][])
 
 ### Bug fixes
 

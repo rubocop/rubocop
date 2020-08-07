@@ -1548,6 +1548,12 @@ Lint/HeredocMethodCallPosition:
   StyleGuide: '#heredoc-method-calls'
   VersionAdded: '0.68'
 
+Lint/IdentityComparison:
+  Description: 'Prefer `equal?` over `==` when comparing `object_id`.'
+  Enabled: pending
+  StyleGuide: '#identity-comparison'
+  VersionAdded: '0.91'
+
 Lint/ImplicitStringConcatenation:
   Description: >-
                  Checks for adjacent string literals on the same line, which

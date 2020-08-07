@@ -216,6 +216,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintfloatoutofrange[Lint/FloatOutOfRange]
 * xref:cops_lint.adoc#lintformatparametermismatch[Lint/FormatParameterMismatch]
 * xref:cops_lint.adoc#lintheredocmethodcallposition[Lint/HeredocMethodCallPosition]
+* xref:cops_lint.adoc#lintidentitycomparison[Lint/IdentityComparison]
 * xref:cops_lint.adoc#lintimplicitstringconcatenation[Lint/ImplicitStringConcatenation]
 * xref:cops_lint.adoc#lintineffectiveaccessmodifier[Lint/IneffectiveAccessModifier]
 * xref:cops_lint.adoc#lintinheritexception[Lint/InheritException]
