@@ -71,7 +71,7 @@ module RuboCop
           parent = node.parent
           return false unless parent && %i[send super zsuper].include?(parent.type)
 
-          node.object_id == parent.arguments.first.object_id &&
+          node.equal?(parent.arguments.first) &&
             !parentheses?(node.parent)
         end
 
