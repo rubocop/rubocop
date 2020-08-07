@@ -1315,7 +1315,7 @@ RSpec.describe RuboCop::ConfigLoader do
         YAML
       end
 
-      context 'when it is fully required', broken_on: :ruby_head do
+      context 'when it is fully required' do
         it 'de-serializes Regexp class' do
           in_its_own_process_with('safe_yaml') do
             configuration = described_class.load_file('.rubocop.yml')
@@ -1326,7 +1326,7 @@ RSpec.describe RuboCop::ConfigLoader do
         end
       end
 
-      context 'when safe_yaml is required without monkey patching', broken_on: :ruby_head do
+      context 'when safe_yaml is required without monkey patching' do
         it 'de-serializes Regexp class' do
           in_its_own_process_with('safe_yaml/load') do
             configuration = described_class.load_file('.rubocop.yml')
