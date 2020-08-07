@@ -350,6 +350,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylecollectionmethods[Style/CollectionMethods]
 * xref:cops_style.adoc#stylecolonmethodcall[Style/ColonMethodCall]
 * xref:cops_style.adoc#stylecolonmethoddefinition[Style/ColonMethodDefinition]
+* xref:cops_style.adoc#stylecombinableloops[Style/CombinableLoops]
 * xref:cops_style.adoc#stylecommandliteral[Style/CommandLiteral]
 * xref:cops_style.adoc#stylecommentannotation[Style/CommentAnnotation]
 * xref:cops_style.adoc#stylecommentedkeyword[Style/CommentedKeyword]

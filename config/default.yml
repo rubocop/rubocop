@@ -2721,6 +2721,14 @@ Style/ColonMethodDefinition:
   Enabled: true
   VersionAdded: '0.52'
 
+Style/CombinableLoops:
+  Description: >-
+                  Checks for places where multiple consecutive loops over the same data
+                  can be combined into a single loop.
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.90'
+
 Style/CommandLiteral:
   Description: 'Use `` or %x around command literals.'
   StyleGuide: '#percent-x'
