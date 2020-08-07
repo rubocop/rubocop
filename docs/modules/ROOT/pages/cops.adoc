@@ -509,6 +509,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylesolenestedconditional[Style/SoleNestedConditional]
 * xref:cops_style.adoc#stylespecialglobalvars[Style/SpecialGlobalVars]
 * xref:cops_style.adoc#stylestabbylambdaparentheses[Style/StabbyLambdaParentheses]
+* xref:cops_style.adoc#stylestaticclass[Style/StaticClass]
 * xref:cops_style.adoc#stylestderrputs[Style/StderrPuts]
 * xref:cops_style.adoc#stylestringconcatenation[Style/StringConcatenation]
 * xref:cops_style.adoc#stylestringhashkeys[Style/StringHashKeys]

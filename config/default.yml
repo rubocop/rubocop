@@ -4249,6 +4249,13 @@ Style/StabbyLambdaParentheses:
     - require_parentheses
     - require_no_parentheses
 
+Style/StaticClass:
+  Description: 'Prefer modules to classes with only class methods.'
+  StyleGuide: '#modules-vs-classes'
+  Enabled: false
+  Safe: false
+  VersionAdded: '1.3'
+
 Style/StderrPuts:
   Description: 'Use `warn` instead of `$stderr.puts`.'
   StyleGuide: '#warn'
