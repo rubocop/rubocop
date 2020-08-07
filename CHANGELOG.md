@@ -10,6 +10,7 @@
 * [#8478](https://github.com/rubocop-hq/rubocop/issues/8478): Relax `Lint/BinaryOperatorWithIdenticalOperands` for mathematical operations. ([@marcandre][])
 * [#8480](https://github.com/rubocop-hq/rubocop/issues/8480): Tweak callback list of `Lint/MissingSuper`. ([@marcandre][])
 * [#8481](https://github.com/rubocop-hq/rubocop/pull/8481): Fix autocorrect for elements with newlines in `Style/SymbolArray` and `Style/WordArray`. ([@biinari][])
+* [#8475](https://github.com/rubocop-hq/rubocop/issues/8475): Fix a false positive for `Style/HashAsLastArrayItem` when there are duplicate hashes in the array. ([@wcmonty][])
 
 ## 0.89.0 (2020-08-05)
 
@@ -4764,3 +4765,4 @@
 [@volfgox]: https://github.com/volfgox
 [@dsavochkin]: https://github.com/dmytro-savochkin
 [@sonalinavlakhe]: https://github.com/sonalinavlakhe
+[@wcmonty]: https://github.com/wcmonty
