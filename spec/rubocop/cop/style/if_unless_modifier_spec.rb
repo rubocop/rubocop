@@ -76,7 +76,6 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
 
       describe 'IgnoreCopDirectives' do
-        let(:comment) { '# rubocop:disable Style/For' }
         let(:body) { "puts '#{spaces(57)}'" }
 
         context 'and the long line is allowed because IgnoreCopDirectives is ' \
@@ -85,7 +84,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
             expect("#{body} if condition".length).to eq(77) # That's 79 including indentation.
             expect_no_offenses(<<~RUBY)
               def f
-                #{body} if condition #{comment}
+                #{body} if condition # rubocop:disable Style/For
               end
             RUBY
           end
@@ -104,7 +103,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
           it 'registers an offense' do
             expect_offense(<<~RUBY, body: body)
               def f
-                %{body} if condition #{comment}
+                %{body} if condition # rubocop:disable Style/For
                 _{body} ^^ Modifier form of `if` makes the line too long.
               end
             RUBY
@@ -113,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
               def f
                 if condition
                   #{body}
-                end #{comment}
+                end # rubocop:disable Style/For
               end
             RUBY
           end
@@ -158,10 +157,10 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   end
 
   context 'multiline if that fits on one line' do
-    let(:condition) { 'a' * 38 }
-    let(:body) { 'b' * 38 }
-
     it 'registers an offense' do
+      condition = 'a' * 38
+      body = 'b' * 38
+
       # This if statement fits exactly on one line if written as a
       # modifier.
       expect("#{body} if #{condition}".length).to eq(80)
@@ -313,9 +312,9 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     let(:body) { 'b' * 36 }
 
     context 'when a multiline if fits on one line' do
-      let(:conditional) { "/#{'a' * 36}/" }
-
       it 'registers an offense' do
+        conditional = "/#{'a' * 36}/"
+
         expect("  #{body} if #{conditional}".length).to eq(80)
 
         expect_offense(<<-RUBY.strip_margin('|'))
@@ -330,9 +329,9 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
 
     context "when a multiline if doesn't fit on one line" do
-      let(:conditional) { "/#{'a' * 37}/" }
-
       it 'accepts' do
+        conditional = "/#{'a' * 37}/"
+
         expect("  #{body} if #{conditional}".length).to eq(81)
 
         expect_no_offenses(<<-RUBY.strip_margin('|'))
@@ -525,9 +524,9 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       let(:body) { 'bbb' }
 
       context 'it fits on one line' do
-        let(:condition) { 'aaa' }
-
         it 'registers an offense' do
+          condition = 'aaa'
+
           # This if statement fits exactly on one line if written as a
           # modifier.
           expect("#{body} if #{condition}".length).to eq(10)
@@ -546,11 +545,10 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
 
       context "it doesn't fit on one line" do
-        let(:condition) { 'aaaa' }
-
         it "doesn't register an offense" do
-          # This if statement fits exactly on one line if written as a
-          # modifier.
+          condition = 'aaaa'
+
+          # This if statement fits exactly on one line if written as a modifier.
           expect("#{body} if #{condition}".length).to eq(11)
 
           expect_no_offenses(<<~RUBY)
