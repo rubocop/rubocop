@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Cop, :config do
-  let(:location) do
-    source_range(0...1)
-  end
+  let(:source) { 'code = {some: :ruby}' }
+  let(:location) { source_range(0...1) }
+
+  before { cop.send(:begin_investigation, processed_source) }
 
   it 'initially has 0 offenses' do
     expect(cop.offenses.empty?).to be(true)
