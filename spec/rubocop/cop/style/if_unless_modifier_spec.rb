@@ -4,26 +4,24 @@
 # Note: most of these tests probably belong in the shared context "condition modifier cop"
 ######
 RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
-  let(:ignore_cop_directives) { true }
-  let(:allow_uri) { true }
-  let(:line_length_config) do
+  def spaces(count)
+    ' ' * count
+  end
+
+  let(:other_cops) do
     {
-      'Enabled' => true,
-      'Max' => 80,
-      'AllowURI' => allow_uri,
-      'IgnoreCopDirectives' => ignore_cop_directives,
-      'URISchemes' => %w[http https]
+      'Layout/LineLength' => {
+        'Max' => 80, 'IgnoreCopDirectives' => true, 'AllowURI' => true
+      }
     }
   end
-  let(:other_cops) { { 'Layout/LineLength' => line_length_config } }
 
   extra = ' Another good alternative is the usage of control flow `&&`/`||`.'
   it_behaves_like 'condition modifier cop', :if, extra
   it_behaves_like 'condition modifier cop', :unless, extra
 
   context 'modifier if that does not fit on one line' do
-    let(:spaces) { ' ' * 59 }
-    let(:body) { "puts '#{spaces}'" }
+    let(:body) { "puts '#{spaces(59)}'" }
     let(:source) { "#{body} if condition" }
     let(:long_url) do
       'https://some.example.com/with/a/rather?long&and=very&complicated=path'
@@ -44,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
           def f
             # Comment 1
             if condition
-              puts '#{spaces}'
+              puts '#{spaces(59)}'
             end # Comment 2
           end
         RUBY
@@ -59,7 +57,9 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
 
       context 'and the long line is too long because AllowURI is false' do
-        let(:allow_uri) { false }
+        let(:other_cops) do
+          { 'Layout/LineLength' => { 'Max' => 80, 'AllowURI' => false } }
+        end
 
         it 'registers an offense' do
           expect_offense(<<~RUBY)
@@ -76,9 +76,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
 
       describe 'IgnoreCopDirectives' do
-        let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }
-        let(:body) { "puts '#{spaces}'" }
+        let(:body) { "puts '#{spaces(57)}'" }
 
         context 'and the long line is allowed because IgnoreCopDirectives is ' \
                 'true' do
@@ -94,7 +93,13 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
 
         context 'and the long line is too long because IgnoreCopDirectives ' \
                 'is false' do
-          let(:ignore_cop_directives) { false }
+          let(:other_cops) do
+            {
+              'Layout/LineLength' => {
+                'IgnoreCopDirectives' => false, 'Max' => 80
+              }
+            }
+          end
 
           it 'registers an offense' do
             expect_offense(<<~RUBY, body: body)
@@ -117,7 +122,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
 
     context 'when Layout/LineLength is disabled in configuration' do
-      let(:line_length_config) { { 'Enabled' => false, 'Max' => 80 } }
+      let(:other_cops) { {} }
 
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
@@ -188,8 +193,6 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
 
   context 'modifier if that does not fit on one line, but is not the only' \
           ' statement on the line' do
-    let(:spaces) { ' ' * 59 }
-
     # long lines which have multiple statements on the same line can be flagged
     #   by Layout/LineLength, Style/Semicolon, etc.
     # if they are handled by Style/IfUnlessModifier, there is a danger of
@@ -197,7 +200,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def f
-          puts '#{spaces}' if condition; some_method_call
+          puts '#{spaces(59)}' if condition; some_method_call
         end
       RUBY
     end
@@ -583,7 +586,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   end
 
   context 'when Layout/LineLength is disabled' do
-    let(:line_length_config) { { 'Enabled' => false } }
+    let(:other_cops) { {} }
 
     it 'registers an offense even for a long modifier statement' do
       expect_offense(<<~RUBY)
