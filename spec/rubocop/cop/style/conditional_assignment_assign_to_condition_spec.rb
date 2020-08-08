@@ -282,6 +282,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('comparison methods', '===')
   it_behaves_like('comparison methods', '<=')
   it_behaves_like('comparison methods', '>=')
+  it_behaves_like('comparison methods', '<')
+  it_behaves_like('comparison methods', '>')
 
   context 'empty branch' do
     it 'allows an empty if statement' do
@@ -721,8 +723,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('all assignment types', '>>=')
   it_behaves_like('all assignment types', '||=')
   it_behaves_like('all assignment types', '&&=')
-  it_behaves_like('all assignment types', '+=')
-  it_behaves_like('all assignment types', '-=')
   it_behaves_like('all assignment types', '<<', add_parens: true)
 
   it 'registers an offense for assignment in if elsif else' do

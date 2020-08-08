@@ -233,7 +233,7 @@ module RuboCop
         def_node_matcher :assignment_type?, <<~PATTERN
           {
             #{ASSIGNMENT_TYPES.join(' ')}
-            (send _recv {:[]= :<< :=~ :!~ :<=> #end_with_eq?} ...)
+            (send _recv {:[]= :<< :=~ :!~ :<=> #end_with_eq? :< :>} ...)
           }
         PATTERN
 

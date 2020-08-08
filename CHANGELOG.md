@@ -11,6 +11,10 @@
 * [#8480](https://github.com/rubocop-hq/rubocop/issues/8480): Tweak callback list of `Lint/MissingSuper`. ([@marcandre][])
 * [#8481](https://github.com/rubocop-hq/rubocop/pull/8481): Fix autocorrect for elements with newlines in `Style/SymbolArray` and `Style/WordArray`. ([@biinari][])
 
+### Changes
+
+* [#8487](https://github.com/rubocop-hq/rubocop/pull/8487): Detect `<` and `>` as comparison operators in `Style/ConditionalAssignment` cop. ([@biinari][])
+
 ## 0.89.0 (2020-08-05)
 
 ### New features
