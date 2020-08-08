@@ -723,8 +723,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('all assignment types', '>>=')
   it_behaves_like('all assignment types', '||=')
   it_behaves_like('all assignment types', '&&=')
-  it_behaves_like('all assignment types', '+=')
-  it_behaves_like('all assignment types', '-=')
   it_behaves_like('all assignment types', '<<', add_parens: true)
 
   it 'registers an offense for assignment in if elsif else' do
