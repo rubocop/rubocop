@@ -73,7 +73,7 @@ module RuboCop
         # `can't add a new key into hash during iteration` error
         hash_keys = hash.keys
         hash_keys.each do |key|
-          q = Cop::Cop.qualified_cop_name(key, path)
+          q = Cop::Registry.qualified_cop_name(key, path)
           next if q == key
 
           hash[q] = hash.delete(key)

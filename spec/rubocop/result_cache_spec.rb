@@ -7,8 +7,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     described_class.new(file, team, options, config_store, cache_root)
   end
 
-  let(:cops) { RuboCop::Cop::Cop.all }
-  let(:registry) { RuboCop::Cop::Cop.registry }
+  let(:cops) { RuboCop::Cop::Registry.all }
+  let(:registry) { RuboCop::Cop::Registry.global }
   let(:team) do
     RuboCop::Cop::Team.mobilize(
       registry,

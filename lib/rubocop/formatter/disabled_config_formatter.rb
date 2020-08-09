@@ -114,7 +114,7 @@ module RuboCop
       def output_cop_comments(output_buffer, cfg, cop_name, offense_count)
         output_buffer.puts "# Offense count: #{offense_count}" if @show_offense_counts
 
-        cop_class = Cop::Cop.registry.find_by_cop_name(cop_name)
+        cop_class = Cop::Registry.global.find_by_cop_name(cop_name)
         output_buffer.puts '# Cop supports --auto-correct.' if cop_class&.support_autocorrect?
 
         default_cfg = default_config(cop_name)

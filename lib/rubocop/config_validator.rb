@@ -84,7 +84,7 @@ module RuboCop
       unknown_cops = []
       invalid_cop_names.each do |name|
         # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Cop.registry.contains_cop_matching?([name])
+        next if Cop::Registry.global.contains_cop_matching?([name])
 
         # Special case for inherit_mode, which is a directive that we keep in
         # the configuration (even though it's not a cop), because it's easier

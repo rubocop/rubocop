@@ -306,7 +306,7 @@ module RuboCop
     def mobilized_cop_classes(config)
       @mobilized_cop_classes ||= {}
       @mobilized_cop_classes[config.object_id] ||= begin
-        cop_classes = Cop::Cop.all
+        cop_classes = Cop::Registry.all
 
         OptionsValidator.new(@options).validate_cop_options
 

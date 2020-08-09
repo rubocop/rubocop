@@ -94,7 +94,7 @@ module RuboCop
             ['']
           else
             list.split(',').map do |c|
-              Cop::Cop.qualified_cop_name(c, "--#{option} option")
+              Cop::Registry.qualified_cop_name(c, "--#{option} option")
             end
           end
       end
@@ -239,8 +239,8 @@ module RuboCop
       def validate_cop_list(names)
         return unless names
 
-        cop_names = Cop::Cop.registry.names
-        departments = Cop::Cop.registry.departments.map(&:to_s)
+        cop_names = Cop::Registry.global.names
+        departments = Cop::Registry.global.departments.map(&:to_s)
 
         names.each do |name|
           next if cop_names.include?(name)
