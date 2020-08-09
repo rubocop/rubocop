@@ -13,8 +13,9 @@ module RuboCop
       #   # good
       #   x if y.z.nil?
       #
-      class RedundantParentheses < Cop
+      class RedundantParentheses < Base
         include Parentheses
+        extend AutoCorrector
 
         def_node_matcher :square_brackets?,
                          '(send {(send _recv _msg) str array hash} :[] ...)'
@@ -30,10 +31,6 @@ module RuboCop
                                     node.parent.until_post_type?)
 
           check(node)
-        end
-
-        def autocorrect(node)
-          ParenthesesCorrector.correct(node)
         end
 
         private
@@ -123,7 +120,9 @@ module RuboCop
         end
 
         def offense(node, msg)
-          add_offense(node, message: "Don't use parentheses around #{msg}.")
+          add_offense(node, message: "Don't use parentheses around #{msg}.") do |corrector|
+            ParenthesesCorrector.correct(corrector, node)
+          end
         end
 
         def suspect_unary?(node)

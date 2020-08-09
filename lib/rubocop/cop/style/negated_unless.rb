@@ -58,19 +58,19 @@ module RuboCop
       #   unless !foo
       #     bar
       #   end
-      class NegatedUnless < Cop
+      class NegatedUnless < Base
         include ConfigurableEnforcedStyle
         include NegativeConditional
+        extend AutoCorrector
 
         def on_if(node)
           return if node.if? || node.elsif? || node.ternary?
           return if correct_style?(node)
 
-          check_negative_conditional(node)
-        end
-
-        def autocorrect(node)
-          ConditionCorrector.correct_negative_condition(node)
+          message = message(node)
+          check_negative_conditional(node, message: message) do |corrector|
+            ConditionCorrector.correct_negative_condition(corrector, node)
+          end
         end
 
         private

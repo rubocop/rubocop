@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for checking `rescue` nodes.
     module RescueNode
-      def investigate(processed_source)
+      def on_new_investigation
         @modifier_locations = processed_source
                               .tokens
                               .select(&:rescue_modifier?)

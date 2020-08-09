@@ -12,23 +12,21 @@ module RuboCop
       #
       #   # good
       #   puts Regexp.last_match(1)
-      class PerlBackrefs < Cop
+      class PerlBackrefs < Base
+        extend AutoCorrector
+
         MSG = 'Avoid the use of Perl-style backrefs.'
 
         def on_nth_ref(node)
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             backref, = *node
             parent_type = node.parent ? node.parent.type : nil
+
             if %i[dstr xstr regexp].include?(parent_type)
-              corrector.replace(node,
-                                "{Regexp.last_match(#{backref})}")
+              corrector.replace(node, "{Regexp.last_match(#{backref})}")
+
             else
-              corrector.replace(node,
-                                "Regexp.last_match(#{backref})")
+              corrector.replace(node, "Regexp.last_match(#{backref})")
             end
           end
         end
