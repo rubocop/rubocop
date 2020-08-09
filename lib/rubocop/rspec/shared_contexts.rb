@@ -44,8 +44,6 @@ end
 RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   ### Meant to be overridden at will
 
-  let(:source) { 'code = {some: :ruby}' }
-
   let(:cop_class) do
     unless described_class.is_a?(Class) && described_class < RuboCop::Cop::Base
       raise 'Specify which cop class to use (e.g `let(:cop_class) { RuboCop::Cop::Base }`, ' \
@@ -97,9 +95,7 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   end
 
   let(:cop) do
-    cop_class.new(config, cop_options).tap do |cop|
-      cop.send :begin_investigation, processed_source
-    end
+    cop_class.new(config, cop_options)
   end
 end
 
