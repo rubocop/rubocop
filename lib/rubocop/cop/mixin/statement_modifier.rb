@@ -72,7 +72,7 @@ module RuboCop
         return true if parent.assignment? || parent.operator_keyword?
         return true if %i[array pair].include?(parent.type)
 
-        node.parent.send_type? && !node.parent.parenthesized?
+        node.parent.send_type?
       end
 
       def max_line_length

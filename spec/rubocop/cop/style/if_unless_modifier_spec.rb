@@ -457,7 +457,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   end
 
   context 'if-end is argument to a parenthesized method call' do
-    it "doesn't add redundant parentheses" do
+    it 'adds parentheses because otherwise it would cause SyntaxError' do
       expect_offense(<<~RUBY)
         puts("string", if a
                        ^^ Favor modifier `if` usage when having a single-line body. [...]
@@ -466,7 +466,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        puts("string", 1 if a)
+        puts("string", (1 if a))
       RUBY
     end
   end
