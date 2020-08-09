@@ -10,7 +10,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   #
   def initialize(departments: [])
     @departments = departments.map(&:to_sym).sort!
-    @cops = RuboCop::Cop::Cop.registry
+    @cops = RuboCop::Cop::Registry.global
     @config = RuboCop::ConfigLoader.default_configuration
   end
 

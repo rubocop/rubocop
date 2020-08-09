@@ -250,7 +250,7 @@ module RuboCop
         end
 
         def all_cop_names
-          @all_cop_names ||= Cop.registry.names
+          @all_cop_names ||= Registry.global.names
         end
 
         def ends_its_line?(range)

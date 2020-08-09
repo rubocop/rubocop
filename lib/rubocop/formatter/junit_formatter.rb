@@ -34,7 +34,7 @@ module RuboCop
         # https://github.com/mikian/rubocop-junit-formatter/blob/v0.1.4/lib/rubocop/formatter/junit_formatter.rb#L9
         #
         # In the future, it would be preferable to return only enabled cops.
-        Cop::Cop.all.each do |cop|
+        Cop::Registry.all.each do |cop|
           target_offenses = offenses_for_cop(offenses, cop)
 
           next unless relevant_for_output?(options, target_offenses)

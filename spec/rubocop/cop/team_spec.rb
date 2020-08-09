@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Team do
   subject(:team) { described_class.mobilize(cop_classes, config, options) }
 
-  let(:cop_classes) { RuboCop::Cop::Cop.registry }
+  let(:cop_classes) { RuboCop::Cop::Registry.global }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
   let(:options) { {} }
   let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Team do
   describe '#forces' do
     subject(:forces) { team.forces }
 
-    let(:cop_classes) { RuboCop::Cop::Cop.registry }
+    let(:cop_classes) { RuboCop::Cop::Registry.global }
 
     it 'returns force instances' do
       expect(forces.empty?).to be(false)
