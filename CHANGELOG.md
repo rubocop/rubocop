@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### Changes
+* [#8362](https://github.com/rubocop-hq/rubocop/issues/8362): Add numbers of correctable offenses to summary. ([@nguyenquangminh0711][])
+
 ## 0.89.1 (2020-08-10)
 
 ### Bug fixes
@@ -4773,3 +4776,4 @@
 [@dsavochkin]: https://github.com/dmytro-savochkin
 [@sonalinavlakhe]: https://github.com/sonalinavlakhe
 [@wcmonty]: https://github.com/wcmonty
+[@nguyenquangminh0711]: https://github.com/nguyenquangminh0711
