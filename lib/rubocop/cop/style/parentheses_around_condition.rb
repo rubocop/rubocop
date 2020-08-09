@@ -53,9 +53,10 @@ module RuboCop
       #      y > 10)
       #   end
       #
-      class ParenthesesAroundCondition < Cop
+      class ParenthesesAroundCondition < Base
         include SafeAssignment
         include Parentheses
+        extend AutoCorrector
 
         def on_if(node)
           return if node.ternary?
@@ -67,10 +68,6 @@ module RuboCop
           process_control_op(node)
         end
         alias on_until on_while
-
-        def autocorrect(node)
-          ParenthesesCorrector.correct(node)
-        end
 
         private
 
@@ -85,7 +82,10 @@ module RuboCop
             return if modifier_op?(first_child)
             return if parens_allowed?(cond)
 
-            add_offense(cond)
+            message = message(cond)
+            add_offense(cond, message: message) do |corrector|
+              ParenthesesCorrector.correct(corrector, cond)
+            end
           end
         end
 

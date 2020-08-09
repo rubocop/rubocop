@@ -22,8 +22,9 @@ module RuboCop
       #   else
       #     doo
       #   end
-      class OneLineConditional < Cop
+      class OneLineConditional < Base
         include OnNormalIfUnless
+        extend AutoCorrector
 
         MSG = 'Favor the ternary operator (`?:`) ' \
               'over `%<keyword>s/then/else/end` constructs.'
@@ -31,11 +32,8 @@ module RuboCop
         def on_normal_if_unless(node)
           return unless node.single_line? && node.else_branch
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          message = message(node)
+          add_offense(node, message: message) do |corrector|
             corrector.replace(node, replacement(node))
           end
         end

@@ -26,7 +26,9 @@ module RuboCop
       #
       #   # good - set name to 'Bozhidar', only if it's nil or false
       #   name ||= 'Bozhidar'
-      class OrAssignment < Cop
+      class OrAssignment < Base
+        extend AutoCorrector
+
         MSG = 'Use the double pipe equals operator `||=` instead.'
 
         def_node_matcher :ternary_assignment?, <<~PATTERN
@@ -47,34 +49,35 @@ module RuboCop
         def on_if(node)
           return unless unless_assignment?(node)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def on_lvasgn(node)
           return unless (else_branch = ternary_assignment?(node))
           return if else_branch.if_type?
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         alias on_ivasgn on_lvasgn
         alias on_cvasgn on_lvasgn
         alias on_gvasgn on_lvasgn
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           if ternary_assignment?(node)
             variable, default = take_variable_and_default_from_ternary(node)
           else
             variable, default = take_variable_and_default_from_unless(node)
           end
 
-          lambda do |corrector|
-            corrector.replace(node,
-                              "#{variable} ||= #{default.source}")
-          end
+          corrector.replace(node, "#{variable} ||= #{default.source}")
         end
-
-        private
 
         def take_variable_and_default_from_ternary(node)
           variable, if_statement = *node

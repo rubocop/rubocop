@@ -13,28 +13,27 @@ module RuboCop
       #
       #   # good
       #   something if b && a
-      class NestedModifier < Cop
+      class NestedModifier < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Avoid using nested modifiers.'
 
         def on_while(node)
           check(node)
         end
+        alias on_until on_while
+        alias on_if on_while
 
-        def on_until(node)
-          check(node)
-        end
-
-        def on_if(node)
-          check(node)
-        end
+        private
 
         def check(node)
           return if part_of_ignored_node?(node)
           return unless modifier?(node) && modifier?(node.parent)
 
-          add_offense(node, location: :keyword)
+          add_offense(node.loc.keyword) do |corrector|
+            autocorrect(corrector, node)
+          end
           ignore_node(node)
         end
 
@@ -42,15 +41,13 @@ module RuboCop
           node&.basic_conditional? && node&.modifier_form?
         end
 
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           return unless node.if_type? && node.parent.if_type?
 
           range = range_between(node.loc.keyword.begin_pos,
                                 node.parent.condition.source_range.end_pos)
 
-          lambda do |corrector|
-            corrector.replace(range, new_expression(node))
-          end
+          corrector.replace(range, new_expression(node))
         end
 
         def new_expression(inner_node)

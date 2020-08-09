@@ -71,11 +71,12 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     it 'does not report corrected when the code was not modified' do
-      source = 'return nil unless (line =~ //) != nil'
-      corrected = autocorrect_source(source)
+      expect_offense(<<~RUBY)
+        return nil unless (line =~ //) != nil
+                                       ^^ Prefer `!expression.nil?` over `expression != nil`.
+      RUBY
 
-      expect(corrected).to eq(source)
-      expect(cop.corrections.empty?).to be(true)
+      expect_no_corrections
     end
   end
 

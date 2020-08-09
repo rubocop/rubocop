@@ -33,8 +33,9 @@ module RuboCop
       #
       #   # good
       #   num = 01234
-      class NumericLiteralPrefix < Cop
+      class NumericLiteralPrefix < Base
         include IntegerNode
+        extend AutoCorrector
 
         OCTAL_ZERO_ONLY_REGEX = /^0[Oo][0-7]+$/.freeze
         OCTAL_REGEX = /^0O?[0-7]+$/.freeze
@@ -53,14 +54,8 @@ module RuboCop
 
           return unless type
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            type = literal_type(node)
-            corrector.replace(node,
-                              send(:"format_#{type}", node.source))
+          add_offense(node) do |corrector|
+            corrector.replace(node, send(:"format_#{type}", node.source))
           end
         end
 
