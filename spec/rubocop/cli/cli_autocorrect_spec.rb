@@ -1410,7 +1410,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
       W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
 
-      1 file inspected, 3 offenses detected
+      1 file inspected, 3 offenses detected, 3 more offenses can be corrected with `rubocop -A`
     RESULT
   end
 

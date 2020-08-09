@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
   describe '#report_summary' do
     context 'when no files inspected' do
       it 'handles pluralization correctly' do
-        formatter.report_summary(0, 0, 0)
+        formatter.report_summary(0, 0, 0, 0)
         expect(output.string).to eq(<<~OUTPUT)
 
           0 files inspected, no offenses detected
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
 
     context 'when a file inspected and no offenses detected' do
       it 'handles pluralization correctly' do
-        formatter.report_summary(1, 0, 0)
+        formatter.report_summary(1, 0, 0, 0)
         expect(output.string).to eq(<<~OUTPUT)
 
           1 file inspected, no offenses detected
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
 
     context 'when a offense detected' do
       it 'handles pluralization correctly' do
-        formatter.report_summary(1, 1, 0)
+        formatter.report_summary(1, 1, 0, 0)
         expect(output.string).to eq(<<~OUTPUT)
 
           1 file inspected, 1 offense detected
@@ -113,9 +113,19 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       end
     end
 
+    context 'when a offense detected and a offense auto-correctable' do
+      it 'handles pluralization correctly' do
+        formatter.report_summary(1, 1, 0, 1)
+        expect(output.string).to eq(<<~OUTPUT)
+
+          1 file inspected, 1 offense detected, 1 offense auto-correctable
+        OUTPUT
+      end
+    end
+
     context 'when 2 offenses detected' do
       it 'handles pluralization correctly' do
-        formatter.report_summary(2, 2, 0)
+        formatter.report_summary(2, 2, 0, 0)
         expect(output.string).to eq(<<~OUTPUT)
 
           2 files inspected, 2 offenses detected
@@ -123,9 +133,19 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       end
     end
 
+    context 'when 2 offenses detected and 2 offenses auto-correctable' do
+      it 'handles pluralization correctly' do
+        formatter.report_summary(2, 2, 0, 2)
+        expect(output.string).to eq(<<~OUTPUT)
+
+          2 files inspected, 2 offenses detected, 2 offenses auto-correctable
+        OUTPUT
+      end
+    end
+
     context 'when an offense is corrected' do
       it 'prints about correction' do
-        formatter.report_summary(1, 1, 1)
+        formatter.report_summary(1, 1, 1, 0)
         expect(output.string).to eq(<<~OUTPUT)
 
           1 file inspected, 1 offense detected, 1 offense corrected
@@ -135,10 +155,20 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
 
     context 'when 2 offenses are corrected' do
       it 'handles pluralization correctly' do
-        formatter.report_summary(1, 1, 2)
+        formatter.report_summary(1, 1, 2, 0)
         expect(output.string).to eq(<<~OUTPUT)
 
           1 file inspected, 1 offense detected, 2 offenses corrected
+        OUTPUT
+      end
+    end
+
+    context 'when 2 offenses are corrected and 2 offenses auto-correctable' do
+      it 'handles pluralization correctly' do
+        formatter.report_summary(1, 1, 2, 2)
+        expect(output.string).to eq(<<~OUTPUT)
+
+          1 file inspected, 1 offense detected, 2 offenses corrected, 2 offenses auto-correctable
         OUTPUT
       end
     end
