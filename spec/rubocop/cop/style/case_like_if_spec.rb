@@ -77,6 +77,15 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
     RUBY
   end
 
+  it 'does not register an offense when one of the branches contains `==` with class reference' do
+    expect_no_offenses(<<~RUBY)
+      if x == 1
+      elsif x == Foo
+      else
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `==` with constant containing 1 letter in name' do
     expect_no_offenses(<<~RUBY)
       if x == F

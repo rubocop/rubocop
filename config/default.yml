@@ -2596,6 +2596,7 @@ Style/CaseLikeIf:
   Description: 'This cop identifies places where `if-elsif` constructions can be replaced with `case-when`.'
   StyleGuide: '#case-vs-if-else'
   Enabled: 'pending'
+  Safe: false
   VersionAdded: '0.88'
 
 Style/CharacterLiteral:
