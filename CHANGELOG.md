@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.89.1 (2020-08-10)
+
 ### Bug fixes
 
 * [#8463](https://github.com/rubocop-hq/rubocop/pull/8463): Fix false positives for `Lint/OutOfRangeRegexpRef` when a regexp is defined and matched in separate steps. ([@eugeneius][])
