@@ -159,9 +159,10 @@ module RuboCop
           case node.method_name
           when :is_a?
             node.arguments.first if node.receiver == target
-          when :==, :eql?, :equal?, :=~, :match, :match?
-            lhs, _method, rhs = *node
-            condition_from_binary_op(lhs, rhs, target)
+          when :==, :eql?, :equal?
+            condition_from_equality_node(node, target)
+          when :=~, :match, :match?
+            condition_from_match_node(node, target)
           when :===
             lhs, _method, rhs = *node
             lhs if rhs == target
@@ -171,6 +172,17 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity
+
+        def condition_from_equality_node(node, target)
+          lhs, _method, rhs = *node
+          condition = condition_from_binary_op(lhs, rhs, target)
+          condition if condition && !class_reference?(condition)
+        end
+
+        def condition_from_match_node(node, target)
+          lhs, _method, rhs = *node
+          condition_from_binary_op(lhs, rhs, target)
+        end
 
         def condition_from_binary_op(lhs, rhs, target)
           lhs = deparenthesize(lhs)
@@ -200,6 +212,10 @@ module RuboCop
           # We can no be sure if, e.g. `C`, represents a constant or a class reference
           name.length > 1 &&
             name == name.upcase
+        end
+
+        def class_reference?(node)
+          node.const_type? && node.children[1].match?(/[[:lower:]]/)
         end
 
         def deparenthesize(node)

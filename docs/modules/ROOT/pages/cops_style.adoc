@@ -865,8 +865,8 @@ some_string =~ /something/
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Pending
-| Yes
-| Yes
+| No
+| Yes (Unsafe)
 | 0.88
 | -
 |===
