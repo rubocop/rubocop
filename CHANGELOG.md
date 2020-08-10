@@ -15,7 +15,7 @@
 * Add new `Lint/TrailingCommaInAttributeDeclaration` cop. ([@drenmi][])
 * [#8578](https://github.com/rubocop-hq/rubocop/pull/8578): Add `:restore_registry` context and `stub_cop_class` helper class. ([@marcandre][])
 * [#8579](https://github.com/rubocop-hq/rubocop/pull/8579): Add `Cop.documentation_url`.  ([@marcandre][])
-
+* [#8510](https://github.com/rubocop-hq/rubocop/pull/8510):  Add `RegexpNode#each_capture` and `parsed_tree`. ([@marcandre][])
 
 ### Bug fixes
 
