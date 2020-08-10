@@ -28,7 +28,7 @@ module RuboCop
       #   foo.reduce do |c, d|
       #     c + d
       #   end
-      class SingleLineBlockParams < Cop
+      class SingleLineBlockParams < Base
         MSG = 'Name `%<method>s` block params `|%<params>s|`.'
 
         def on_block(node)
@@ -39,7 +39,9 @@ module RuboCop
 
           return if args_match?(node.send_node.method_name, node.arguments)
 
-          add_offense(node.arguments)
+          message = message(node.arguments)
+
+          add_offense(node.arguments, message: message)
         end
 
         private

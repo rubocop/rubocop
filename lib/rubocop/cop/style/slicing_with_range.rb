@@ -12,7 +12,8 @@ module RuboCop
       #
       #   # good
       #   items[1..]
-      class SlicingWithRange < Cop
+      class SlicingWithRange < Base
+        extend AutoCorrector
         extend TargetRubyVersion
 
         minimum_target_ruby_version 2.6
@@ -25,12 +26,8 @@ module RuboCop
           return unless node.method?(:[]) && node.arguments.count == 1
           return unless range_till_minus_one?(node.arguments.first)
 
-          add_offense(node.arguments.first)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.end)
+          add_offense(node.first_argument) do |corrector|
+            corrector.remove(node.first_argument.end)
           end
         end
       end

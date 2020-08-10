@@ -19,8 +19,9 @@ module RuboCop
       #       42
       #     end
       #   end
-      class StructInheritance < Cop
+      class StructInheritance < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = "Don't extend an instance initialized by `Struct.new`. " \
               'Use a block to customize the struct.'
@@ -28,11 +29,7 @@ module RuboCop
         def on_class(node)
           return unless struct_constructor?(node.parent_class)
 
-          add_offense(node, location: node.parent_class.source_range)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.parent_class.source_range) do |corrector|
             corrector.remove(range_with_surrounding_space(range: node.loc.keyword, newlines: false))
             corrector.replace(node.loc.operator, '=')
 

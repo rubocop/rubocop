@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   Foo.__send__(:bar)
       #   quuz.public_send(:fred)
-      class Send < Cop
+      class Send < Base
         MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
               '`send`.'
 
@@ -22,7 +22,7 @@ module RuboCop
         def on_send(node)
           return unless sending?(node) && node.arguments?
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector)
         end
         alias on_csend on_send
       end

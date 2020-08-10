@@ -56,8 +56,9 @@ module RuboCop
       #   puts $'
       #   puts $+
       #
-      class SpecialGlobalVars < Cop
+      class SpecialGlobalVars < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_BOTH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
         'module (don\'t forget to require it) or `%<regular>s` over ' \
@@ -120,13 +121,14 @@ module RuboCop
             correct_style_detected
           else
             opposite_style_detected
-            add_offense(node)
+
+            add_offense(node, message: message(global_var)) do |corrector|
+              autocorrect(corrector, node, global_var)
+            end
           end
         end
 
-        def message(node)
-          global_var, = *node
-
+        def message(global_var)
           if style == :use_english_names
             format_english_message(global_var)
           else
@@ -136,17 +138,10 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            global_var, = *node
+        def autocorrect(corrector, node, global_var)
+          node = node.parent while node.parent&.begin_type? && node.parent.children.one?
 
-            while node.parent&.begin_type? &&
-                  node.parent.children.one?
-              node = node.parent
-            end
-
-            corrector.replace(node, replacement(node, global_var))
-          end
+          corrector.replace(node, replacement(node, global_var))
         end
 
         private

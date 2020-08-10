@@ -31,9 +31,10 @@ module RuboCop
       #   # good
       #   ENV.fetch(:key, VALUE)
       #
-      class RedundantFetchBlock < Cop
+      class RedundantFetchBlock < Base
         include FrozenStringLiteral
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<good>s` instead of `%<bad>s`.'
 
@@ -52,17 +53,7 @@ module RuboCop
             good = build_good_method(send, body)
             bad = build_bad_method(send, body)
 
-            add_offense(
-              node,
-              location: range,
-              message: format(MSG, good: good, bad: bad)
-            )
-          end
-        end
-
-        def autocorrect(node)
-          redundant_fetch_block_candidate?(node) do |send, body|
-            lambda do |corrector|
+            add_offense(range, message: format(MSG, good: good, bad: bad)) do |corrector|
               receiver, _, key = send.children
               default_value = body ? body.source : 'nil'
 

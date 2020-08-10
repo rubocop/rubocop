@@ -54,7 +54,9 @@ module RuboCop
       #       baz
       #     end
       #   end
-      class RedundantBegin < Cop
+      class RedundantBegin < Base
+        extend AutoCorrector
+
         MSG = 'Redundant `begin` block detected.'
 
         def on_def(node)
@@ -71,19 +73,15 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.begin)
-            corrector.remove(node.loc.end)
-          end
-        end
-
         private
 
         def check(node)
           return unless node.body&.kwbegin_type?
 
-          add_offense(node.body, location: :begin)
+          add_offense(node.body.loc.begin) do |corrector|
+            corrector.remove(node.body.loc.begin)
+            corrector.remove(node.body.loc.end)
+          end
         end
       end
     end
