@@ -14,32 +14,22 @@ module RuboCop
       #   # good
       #   'name'.to_sym
       #   'var'.preferred_method
-      class StringMethods < Cop
+      class StringMethods < Base
         include MethodPreference
+        extend AutoCorrector
 
         MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
 
         def on_send(node)
-          return unless preferred_method(node.method_name)
+          return unless (preferred_method = preferred_method(node.method_name))
 
-          add_offense(node, location: :selector)
-        end
-        alias on_csend on_send
+          message = format(MSG, prefer: preferred_method, current: node.method_name)
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.selector,
-                              preferred_method(node.method_name))
+          add_offense(node.loc.selector, message: message) do |corrector|
+            corrector.replace(node.loc.selector, preferred_method(node.method_name))
           end
         end
-
-        private
-
-        def message(node)
-          format(MSG,
-                 prefer: preferred_method(node.method_name),
-                 current: node.method_name)
-        end
+        alias on_csend on_send
       end
     end
   end

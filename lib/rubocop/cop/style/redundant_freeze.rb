@@ -11,7 +11,8 @@ module RuboCop
       #
       #   # good
       #   CONST = 1
-      class RedundantFreeze < Cop
+      class RedundantFreeze < Base
+        extend AutoCorrector
         include FrozenStringLiteral
 
         MSG = 'Do not freeze immutable objects, as freezing them has no ' \
@@ -22,11 +23,7 @@ module RuboCop
                         (immutable_literal?(node.receiver) ||
                          operation_produces_immutable_object?(node.receiver))
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             corrector.remove(node.loc.dot)
             corrector.remove(node.loc.selector)
           end

@@ -26,12 +26,13 @@ module RuboCop
       # @example AllowAsExpressionSeparator: true
       #   # good
       #   foo = 1; bar = 2
-      class Semicolon < Cop
+      class Semicolon < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Do not use semicolons to terminate expressions.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
           @processed_source = processed_source
@@ -66,12 +67,6 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          return unless range
-
-          ->(corrector) { corrector.remove(range) }
-        end
-
         private
 
         def check_for_line_terminator_or_opener
@@ -93,7 +88,9 @@ module RuboCop
           range = source_range(@processed_source.buffer, line, column)
           # Don't attempt to autocorrect if semicolon is separating statements
           # on the same line
-          add_offense(autocorrect ? range : nil, location: range)
+          add_offense(range) do |corrector|
+            corrector.remove(range) if autocorrect
+          end
         end
       end
     end

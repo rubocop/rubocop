@@ -32,8 +32,9 @@ module RuboCop
       #   raise StandardError.new("message")
       #   raise MyCustomError.new(arg1, arg2, arg3)
       #   fail "message"
-      class RaiseArgs < Cop
+      class RaiseArgs < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         EXPLODED_MSG = 'Provide an exception class and message ' \
           'as arguments to `%<method>s`.'
@@ -49,16 +50,6 @@ module RuboCop
           when :exploded
             check_exploded(node)
           end
-        end
-
-        def autocorrect(node)
-          replacement = if style == :compact
-                          correction_exploded_to_compact(node)
-                        else
-                          correction_compact_to_exploded(node)
-                        end
-
-          ->(corrector) { corrector.replace(node, replacement) }
         end
 
         private
@@ -91,8 +82,12 @@ module RuboCop
 
         def check_compact(node)
           if node.arguments.size > 1
-            add_offense(node) do
-              opposite_style_detected
+            return unless opposite_style_detected
+
+            add_offense(node, message: format(COMPACT_MSG, method: node.method_name)) do |corrector|
+              replacement = correction_exploded_to_compact(node)
+
+              corrector.replace(node, replacement)
             end
           else
             correct_style_detected
@@ -105,11 +100,13 @@ module RuboCop
           first_arg = node.first_argument
 
           return unless first_arg.send_type? && first_arg.method?(:new)
-
           return if acceptable_exploded_args?(first_arg.arguments)
+          return unless opposite_style_detected
 
-          add_offense(node) do
-            opposite_style_detected
+          add_offense(node, message: format(EXPLODED_MSG, method: node.method_name)) do |corrector|
+            replacement = correction_compact_to_exploded(node)
+
+            corrector.replace(node, replacement)
           end
         end
 
@@ -130,14 +127,6 @@ module RuboCop
         def requires_parens?(parent)
           parent.and_type? || parent.or_type? ||
             parent.if_type? && parent.ternary?
-        end
-
-        def message(node)
-          if style == :compact
-            format(COMPACT_MSG, method: node.method_name)
-          else
-            format(EXPLODED_MSG, method: node.method_name)
-          end
         end
       end
     end
