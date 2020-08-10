@@ -3101,15 +3101,17 @@ Style/HashSyntax:
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
 Style/HashTransformKeys:
-  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Description: 'Prefer `transform_keys` over `each_with_object`, `map`, or `to_h`.'
   Enabled: 'pending'
   VersionAdded: '0.80'
+  VersionChanged: '0.90'
   Safe: false
 
 Style/HashTransformValues:
-  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  Description: 'Prefer `transform_values` over `each_with_object`, `map`, or `to_h`.'
   Enabled: 'pending'
   VersionAdded: '0.80'
+  VersionChanged: '0.90'
   Safe: false
 
 Style/IdenticalConditionalBranches:
