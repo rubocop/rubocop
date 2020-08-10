@@ -30,15 +30,16 @@ module RuboCop
 
         def on_send(node)
           return unless regular_method_call_with_arguments?(node)
-          return unless expect_params_after_method_name?(node)
 
           first_arg = node.first_argument.source_range
           first_arg_with_space = range_with_surrounding_space(range: first_arg,
                                                               side: :left)
           space = range_between(first_arg_with_space.begin_pos,
                                 first_arg.begin_pos)
+          return if space.length == 1
+          return unless expect_params_after_method_name?(node)
 
-          add_offense(space, location: space) if space.length != 1
+          add_offense(space, location: space)
         end
         alias on_csend on_send
 
