@@ -5,6 +5,7 @@
 ### Changes
 
 * [#8362](https://github.com/rubocop-hq/rubocop/issues/8362): Add numbers of correctable offenses to summary. ([@nguyenquangminh0711][])
+* [#8513](https://github.com/rubocop-hq/rubocop/pull/8513): Clarify the ruby warning mentioned in the `Lint/ShadowingOuterLocalVariable` documentation. ([@chocolateboy][])
 
 ## 0.89.1 (2020-08-10)
 
@@ -4778,3 +4779,4 @@
 [@sonalinavlakhe]: https://github.com/sonalinavlakhe
 [@wcmonty]: https://github.com/wcmonty
 [@nguyenquangminh0711]: https://github.com/nguyenquangminh0711
+[@chocolateboy]: https://github.com/chocolateboy
