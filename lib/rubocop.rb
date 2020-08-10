@@ -9,6 +9,7 @@ require 'regexp_parser'
 require 'unicode/display_width/no_string_ext'
 require 'rubocop-ast'
 require_relative 'rubocop/ast_aliases'
+require_relative 'rubocop/ext/regexp_node'
 
 require_relative 'rubocop/version'
 
