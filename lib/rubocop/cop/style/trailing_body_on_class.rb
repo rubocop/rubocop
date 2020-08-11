@@ -15,20 +15,17 @@ module RuboCop
       #     def foo; end
       #   end
       #
-      class TrailingBodyOnClass < Cop
+      class TrailingBodyOnClass < Base
         include Alignment
         include TrailingBody
+        extend AutoCorrector
 
         MSG = 'Place the first line of class body on its own line.'
 
         def on_class(node)
           return unless trailing_body?(node)
 
-          add_offense(node, location: first_part_of(node.to_a.last))
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(first_part_of(node.to_a.last)) do |corrector|
             LineBreakCorrector.correct_trailing_body(
               configured_width: configured_indentation_width,
               corrector: corrector,

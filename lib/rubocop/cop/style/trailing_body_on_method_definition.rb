@@ -24,9 +24,10 @@ module RuboCop
       #     b[c: x]
       #   end
       #
-      class TrailingBodyOnMethodDefinition < Cop
+      class TrailingBodyOnMethodDefinition < Base
         include Alignment
         include TrailingBody
+        extend AutoCorrector
 
         MSG = "Place the first line of a multi-line method definition's " \
               'body on its own line.'
@@ -34,12 +35,7 @@ module RuboCop
         def on_def(node)
           return unless trailing_body?(node)
 
-          add_offense(node, location: first_part_of(node.body))
-        end
-        alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(first_part_of(node.body)) do |corrector|
             LineBreakCorrector.correct_trailing_body(
               configured_width: configured_indentation_width,
               corrector: corrector,
@@ -48,6 +44,7 @@ module RuboCop
             )
           end
         end
+        alias on_defs on_def
       end
     end
   end

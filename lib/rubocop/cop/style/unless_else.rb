@@ -19,8 +19,9 @@ module RuboCop
       #   else
       #     # do a different thing...
       #   end
-      class UnlessElse < Cop
+      class UnlessElse < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Do not use `unless` with `else`. Rewrite these with the ' \
               'positive case first.'
@@ -28,14 +29,10 @@ module RuboCop
         def on_if(node)
           return unless node.unless? && node.else?
 
-          add_offense(node)
-        end
+          add_offense(node) do |corrector|
+            body_range = range_between_condition_and_else(node, node.condition)
+            else_range = range_between_else_and_end(node)
 
-        def autocorrect(node)
-          body_range = range_between_condition_and_else(node, node.condition)
-          else_range = range_between_else_and_end(node)
-
-          lambda do |corrector|
             corrector.replace(node.loc.keyword, 'if')
             corrector.replace(body_range, else_range.source)
             corrector.replace(else_range, body_range.source)

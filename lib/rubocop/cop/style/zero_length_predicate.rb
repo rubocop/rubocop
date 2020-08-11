@@ -25,7 +25,9 @@ module RuboCop
       #   !{a: 1, b: 2}.empty?
       #   !string.empty?
       #   !hash.empty?
-      class ZeroLengthPredicate < Cop
+      class ZeroLengthPredicate < Base
+        extend AutoCorrector
+
         ZERO_MSG = 'Use `empty?` instead of `%<lhs>s %<opr>s %<rhs>s`.'
         NONZERO_MSG = 'Use `!empty?` instead of ' \
                       '`%<lhs>s %<opr>s %<rhs>s`.'
@@ -35,12 +37,6 @@ module RuboCop
         def on_send(node)
           check_zero_length_predicate(node)
           check_nonzero_length_predicate(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, replacement(node))
-          end
         end
 
         private
@@ -56,9 +52,10 @@ module RuboCop
           return if non_polymorphic_collection?(node.parent)
 
           add_offense(
-            node.parent,
-            message: format(ZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
-          )
+            node.parent, message: format(ZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
+          ) do |corrector|
+            corrector.replace(node.parent, replacement(node.parent))
+          end
         end
 
         def check_nonzero_length_predicate(node)
@@ -72,9 +69,10 @@ module RuboCop
           return if non_polymorphic_collection?(node.parent)
 
           add_offense(
-            node.parent,
-            message: format(NONZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
-          )
+            node.parent, message: format(NONZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
+          ) do |corrector|
+            corrector.replace(node.parent, replacement(node.parent))
+          end
         end
 
         def_node_matcher :zero_length_predicate, <<~PATTERN
