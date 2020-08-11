@@ -52,9 +52,10 @@ module RuboCop
       #   # good
       #   99 == foo
       #   "bar" != foo
-      class YodaCondition < Cop
+      class YodaCondition < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Reverse the order of the operands `%<source>s`.'
 
@@ -80,11 +81,7 @@ module RuboCop
           return if equality_only? && non_equality_operator?(node) ||
                     file_constant_equal_program_name?(node)
 
-          valid_yoda?(node) || add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          valid_yoda?(node) || add_offense(node) do |corrector|
             corrector.replace(actual_code_range(node), corrected_code(node))
           end
         end
