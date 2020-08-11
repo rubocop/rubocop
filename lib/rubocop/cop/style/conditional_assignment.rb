@@ -208,10 +208,11 @@ module RuboCop
       #     some_other_method
       #     bar = 2
       #   end
-      class ConditionalAssignment < Cop
+      class ConditionalAssignment < Base
         include ConditionalAssignmentHelper
         include ConfigurableEnforcedStyle
         include IgnoredNode
+        extend AutoCorrector
 
         MSG = 'Use the return of the conditional for variable assignment ' \
               'and comparison.'
@@ -275,14 +276,6 @@ module RuboCop
           check_node(node, branches)
         end
 
-        def autocorrect(node)
-          if assignment_type?(node)
-            move_assignment_inside_condition(node)
-          else
-            move_assignment_outside_condition(node)
-          end
-        end
-
         private
 
         def check_assignment_to_condition(node)
@@ -298,7 +291,9 @@ module RuboCop
           return unless else_branch
           return if allowed_single_line?([*branches, else_branch])
 
-          add_offense(node, message: ASSIGN_TO_CONDITION_MSG)
+          add_offense(node, message: ASSIGN_TO_CONDITION_MSG) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def candidate_node?(node)
@@ -326,25 +321,25 @@ module RuboCop
           assignment
         end
 
-        def move_assignment_outside_condition(node)
+        def move_assignment_outside_condition(corrector, node)
           if node.case_type?
-            CaseCorrector.correct(self, node)
+            CaseCorrector.correct(corrector, self, node)
           elsif node.ternary?
-            TernaryCorrector.correct(node)
+            TernaryCorrector.correct(corrector, node)
           elsif node.if? || node.unless?
-            IfCorrector.correct(self, node)
+            IfCorrector.correct(corrector, self, node)
           end
         end
 
-        def move_assignment_inside_condition(node)
+        def move_assignment_inside_condition(corrector, node)
           *_assignment, condition = *node
 
           if ternary_condition?(condition)
-            TernaryCorrector.move_assignment_inside_condition(node)
+            TernaryCorrector.move_assignment_inside_condition(corrector, node)
           elsif condition.case_type?
-            CaseCorrector.move_assignment_inside_condition(node)
+            CaseCorrector.move_assignment_inside_condition(corrector, node)
           elsif condition.if_type?
-            IfCorrector.move_assignment_inside_condition(node)
+            IfCorrector.move_assignment_inside_condition(corrector, node)
           end
         end
 
@@ -371,7 +366,17 @@ module RuboCop
           return if allowed_single_line?(branches)
           return if correction_exceeds_line_limit?(node, branches)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          if assignment_type?(node)
+            move_assignment_inside_condition(corrector, node)
+          else
+            move_assignment_outside_condition(corrector, node)
+          end
         end
 
         def allowed_statements?(branches)
@@ -499,24 +504,20 @@ module RuboCop
           include ConditionalAssignmentHelper
           include ConditionalCorrectorHelper
 
-          def correct(node)
-            lambda do |corrector|
-              corrector.replace(node, correction(node))
-            end
+          def correct(corrector, node)
+            corrector.replace(node, correction(node))
           end
 
-          def move_assignment_inside_condition(node)
+          def move_assignment_inside_condition(corrector, node)
             *_var, rhs = *node
             if_branch, else_branch = extract_branches(node)
             assignment = assignment(node)
 
-            lambda do |corrector|
-              remove_parentheses(corrector, rhs) if Util.parentheses?(rhs)
-              corrector.remove(assignment)
+            remove_parentheses(corrector, rhs) if Util.parentheses?(rhs)
+            corrector.remove(assignment)
 
-              move_branch_inside_condition(corrector, if_branch, assignment)
-              move_branch_inside_condition(corrector, else_branch, assignment)
-            end
+            move_branch_inside_condition(corrector, if_branch, assignment)
+            move_branch_inside_condition(corrector, else_branch, assignment)
           end
 
           private
@@ -565,22 +566,19 @@ module RuboCop
           include ConditionalAssignmentHelper
           include ConditionalCorrectorHelper
 
-          def correct(cop, node)
-            ->(corrector) { correct_if_branches(corrector, cop, node) }
+          def correct(corrector, cop, node)
+            correct_if_branches(corrector, cop, node)
           end
 
-          def move_assignment_inside_condition(node)
+          def move_assignment_inside_condition(corrector, node)
             column = node.loc.expression.column
             *_var, condition = *node
             assignment = assignment(node)
 
-            lambda do |corrector|
-              corrector.remove(assignment)
+            corrector.remove(assignment)
 
-              condition.branches.flatten.each do |branch|
-                move_branch_inside_condition(corrector, branch, condition,
-                                             assignment, column)
-              end
+            condition.branches.flatten.each do |branch|
+              move_branch_inside_condition(corrector, branch, condition, assignment, column)
             end
           end
 
@@ -614,31 +612,25 @@ module RuboCop
           include ConditionalAssignmentHelper
           include ConditionalCorrectorHelper
 
-          def correct(cop, node)
+          def correct(corrector, cop, node)
             when_branches, else_branch = extract_tail_branches(node)
 
-            lambda do |corrector|
-              corrector.insert_before(node, lhs(else_branch))
-              correct_branches(corrector, when_branches)
-              replace_branch_assignment(corrector, else_branch)
+            corrector.insert_before(node, lhs(else_branch))
+            correct_branches(corrector, when_branches)
+            replace_branch_assignment(corrector, else_branch)
 
-              corrector.insert_before(node.loc.end,
-                                      indent(cop, lhs(else_branch)))
-            end
+            corrector.insert_before(node.loc.end, indent(cop, lhs(else_branch)))
           end
 
-          def move_assignment_inside_condition(node)
+          def move_assignment_inside_condition(corrector, node)
             column = node.loc.expression.column
             *_var, condition = *node
             assignment = assignment(node)
 
-            lambda do |corrector|
-              corrector.remove(assignment)
+            corrector.remove(assignment)
 
-              extract_branches(condition).flatten.each do |branch|
-                move_branch_inside_condition(corrector, branch, condition,
-                                             assignment, column)
-              end
+            extract_branches(condition).flatten.each do |branch|
+              move_branch_inside_condition(corrector, branch, condition, assignment, column)
             end
           end
 
@@ -656,17 +648,14 @@ module RuboCop
             [when_branches, case_node.else_branch]
           end
 
-          def move_branch_inside_condition(corrector, branch, condition,
-                                           assignment, column)
+          def move_branch_inside_condition(corrector, branch, condition, assignment, column)
             branch_assignment = tail(branch)
-            corrector.insert_before(branch_assignment,
-                                    assignment.source)
+            corrector.insert_before(branch_assignment, assignment.source)
 
             remove_whitespace_in_branches(corrector, branch, condition, column)
 
             parent_keyword = branch.parent.loc.keyword
-            corrector.remove_preceding(parent_keyword,
-                                       parent_keyword.column - column)
+            corrector.remove_preceding(parent_keyword, parent_keyword.column - column)
           end
         end
       end
