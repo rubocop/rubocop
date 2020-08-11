@@ -19,7 +19,7 @@ module RuboCop
         /^\s*#/.match?(line_source)
       end
 
-      # @deprecated Use `ProcessedSource#line_with_comment?`, `contains_comment` or similar
+      # @deprecated Use `ProcessedSource#line_with_comment?`, `contains_comment?` or similar
       def comment_lines?(node)
         processed_source[line_range(node)].any? { |line| comment_line?(line) }
       end
