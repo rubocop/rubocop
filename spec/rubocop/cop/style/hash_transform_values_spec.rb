@@ -133,4 +133,25 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       {a: 1, b: 2}.transform_values {|v| foo(v)}.to_h {|k, v| [v, k]}
     RUBY
   end
+
+  context 'when using Ruby 2.6 or newer', :ruby26 do
+    it 'flags _.to_h{...} when transform_values could be used' do
+      expect_offense(<<~RUBY)
+        x.to_h {|k, v| [k, foo(v)]}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.transform_values {|v| foo(v)}
+      RUBY
+    end
+  end
+
+  context 'below Ruby 2.6', :ruby25 do
+    it 'does not flag _.to_h{...}' do
+      expect_no_offenses(<<~RUBY)
+        x.to_h {|k, v| [k, foo(v)]}
+      RUBY
+    end
+  end
 end

@@ -171,4 +171,25 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       expect_no_offenses('x.each_with_object({}) {|(k, v), h| h[foo(k)] = v}')
     end
   end
+
+  context 'when using Ruby 2.6 or newer', :ruby26 do
+    it 'flags _.to_h{...} when transform_keys could be used' do
+      expect_offense(<<~RUBY)
+        x.to_h {|k, v| [k.to_sym, v]}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `to_h {...}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.transform_keys {|k| k.to_sym}
+      RUBY
+    end
+  end
+
+  context 'below Ruby 2.6', :ruby25 do
+    it 'does not flag _.to_h{...}' do
+      expect_no_offenses(<<~RUBY)
+        x.to_h {|k, v| [k.to_sym, v]}
+      RUBY
+    end
+  end
 end
