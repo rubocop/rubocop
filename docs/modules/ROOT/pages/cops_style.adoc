@@ -3259,7 +3259,7 @@ format('%s', 'Hello')
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| No
+| Yes
 | Yes (Unsafe)
 | 0.36
 | 0.79
