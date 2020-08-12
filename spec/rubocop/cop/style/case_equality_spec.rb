@@ -14,9 +14,8 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
               ^^^ Avoid the use of the case equality operator `===`.
       RUBY
 
-      expect_correction(<<~RUBY)
-        var =~ /OMG/
-      RUBY
+      # This correction is expected to be supported by `Performance/Regexp`.
+      expect_no_corrections
     end
 
     it 'registers an offense and corrects for === when the receiver is a range' do

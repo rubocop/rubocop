@@ -825,7 +825,7 @@ Array === something
 # good
 something.is_a?(Array)
 (1..100).include?(7)
-some_string =~ /something/
+/something/.match?(some_string)
 ----
 
 ==== AllowOnConstant
@@ -842,7 +842,7 @@ some_string =~ /something/
 # good
 Array === something
 (1..100).include?(7)
-some_string =~ /something/
+/something/.match?(some_string)
 ----
 
 === Configurable attributes
