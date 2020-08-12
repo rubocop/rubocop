@@ -18,6 +18,7 @@
 * [#8362](https://github.com/rubocop-hq/rubocop/issues/8362): Add numbers of correctable offenses to summary. ([@nguyenquangminh0711][])
 * [#8513](https://github.com/rubocop-hq/rubocop/pull/8513): Clarify the ruby warning mentioned in the `Lint/ShadowingOuterLocalVariable` documentation. ([@chocolateboy][])
 * [#8517](https://github.com/rubocop-hq/rubocop/pull/8517): Make `Style/HashTransformKeys` and `Style/HashTransformValues` aware of `to_h` with block. ([@eugeneius][])
+* [#8529](https://github.com/rubocop-hq/rubocop/pull/8529): Mark `Lint/FrozenStringLiteralComment` as `Safe`, but with unsafe auto-correction. ([@marcandre][])
 
 ## 0.89.1 (2020-08-10)
 

@@ -3033,7 +3033,7 @@ Style/FrozenStringLiteralComment:
     # `never` will enforce that the frozen string literal comment does not
     # exist in a file.
     - never
-  Safe: false
+  SafeAutoCorrect: false
 
 Style/GlobalStdStream:
   Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
