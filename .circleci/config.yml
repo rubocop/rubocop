@@ -1,3 +1,5 @@
+###
+# Please keep /.mergify.yml synced!
 version: 2
 
 jruby_env: &jruby_env
