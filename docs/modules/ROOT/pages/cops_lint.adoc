@@ -225,7 +225,7 @@ BigDecimal(123.456, 3)
 
 This cop checks for places where binary operator has identical operands.
 
-It covers arithmetic operators: `+`, `-`, `*`, `/`, `%`, `**`;
+It covers arithmetic operators: `+`, `-`, `/`, `%`, `**`;
 comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;
 bitwise operators: `|`, `^`, `&`, `<<`, `>>`;
 boolean operators: `&&`, `||`

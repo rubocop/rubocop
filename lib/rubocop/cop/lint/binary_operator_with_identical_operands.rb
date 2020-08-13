@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for places where binary operator has identical operands.
       #
-      # It covers arithmetic operators: `+`, `-`, `*`, `/`, `%`, `**`;
+      # It covers arithmetic operators: `+`, `-`, `/`, `%`, `**`;
       # comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;
       # bitwise operators: `|`, `^`, `&`, `<<`, `>>`;
       # boolean operators: `&&`, `||`
@@ -35,7 +35,9 @@ module RuboCop
           return unless node.binary_operation?
 
           lhs, operation, rhs = *node
-          return if MATH_OPERATORS.include?(node.method_name) && lhs.basic_literal?
+          if operation == :* || MATH_OPERATORS.include?(node.method_name) && lhs.basic_literal?
+            return
+          end
 
           add_offense(node, message: format(MSG, op: operation)) if lhs == rhs
         end

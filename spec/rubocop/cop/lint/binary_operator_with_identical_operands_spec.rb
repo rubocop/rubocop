@@ -32,6 +32,12 @@ RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands do
     RUBY
   end
 
+  it 'does not register an offense when using `*` operator with same variable operand' do
+    expect_no_offenses(<<~RUBY)
+      x * x
+    RUBY
+  end
+
   it 'does not crash on operator without any argument' do
     expect_no_offenses(<<~RUBY)
       foo.*
