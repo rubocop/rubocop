@@ -31,4 +31,10 @@ RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands do
       x = 1 << 1
     RUBY
   end
+
+  it 'does not crash on operator without any argument' do
+    expect_no_offenses(<<~RUBY)
+      foo.*
+    RUBY
+  end
 end
