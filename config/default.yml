@@ -1465,6 +1465,12 @@ Lint/EmptyExpression:
   Enabled: true
   VersionAdded: '0.45'
 
+Lint/EmptyFile:
+  Description: 'Enforces that Ruby source files are not empty.'
+  Enabled: pending
+  AllowComments: true
+  VersionAdded: '0.90'
+
 Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
   Enabled: true
