@@ -1109,6 +1109,57 @@ if (some_expression)
 end
 ----
 
+== Lint/EmptyFile
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.90
+| -
+|===
+
+This cop enforces that Ruby source files are not empty.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+# Empty file
+
+# good
+# File containing non commented source lines
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+# File consisting only of comments
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+# File consisting only of comments
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
+
 == Lint/EmptyInterpolation
 
 |===

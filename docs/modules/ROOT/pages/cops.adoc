@@ -204,6 +204,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintemptyconditionalbody[Lint/EmptyConditionalBody]
 * xref:cops_lint.adoc#lintemptyensure[Lint/EmptyEnsure]
 * xref:cops_lint.adoc#lintemptyexpression[Lint/EmptyExpression]
+* xref:cops_lint.adoc#lintemptyfile[Lint/EmptyFile]
 * xref:cops_lint.adoc#lintemptyinterpolation[Lint/EmptyInterpolation]
 * xref:cops_lint.adoc#lintemptywhen[Lint/EmptyWhen]
 * xref:cops_lint.adoc#lintensurereturn[Lint/EnsureReturn]
