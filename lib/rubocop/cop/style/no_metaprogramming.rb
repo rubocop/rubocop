@@ -41,37 +41,58 @@ module RuboCop
           (send _ :define_singleton_method ...)
         PATTERN
 
+        INCLUDED_MSG = 'self.included modifies the behavior of classes at runtime. Please avoid'\
+          ' using if possible.'
+
+        INHERITED_MSG = 'self.inherited modifies the behavior of classes at runtime. Please avoid'\
+          ' using if possible.'
+
+        METHOD_MISSING_MSG = 'Please do not use method_missing. Instead, explicitly define the'\
+          ' methods you expect to receive.'
+
+        DEFINE_METHOD_MSG = 'Please do not define methods dynamically, instead define them using'\
+          ' `def` and explicitly. This helps readability for both humans and machines.'
+
+        DEFINE_SINGLETON_MSG = 'Please do not use define_singleton_method. Instead, define the'\
+          ' method explicitly using `def self.my_method; end`'
+
+        INSTANCE_EVAL_MSG = 'Please do not use instance_eval to augment behavior onto an instance.'\
+          ' Instead, define the method you want to use in the class definition.'
+
+        CLASS_EVAL_MSG = 'Please do not use class_eval to augment behavior onto a class. Instead,'\
+          ' define the method you want to use in the class definition.'
+
         def on_defs(node)
           included_definition?(node) do
-            add_offense(node, message: 'self.included modifies the behavior of classes at runtime. Please avoid using if possible.')
+            add_offense(node, message: INCLUDED_MSG)
           end
 
           inherited_definition?(node) do
-            add_offense(node, message: 'self.inherited modifies the behavior of classes at runtime. Please avoid using if possible.')
+            add_offense(node, message: INHERITED_MSG)
           end
         end
 
         def on_def(node)
           using_method_missing?(node) do
-            add_offense(node, message: 'Please do not use method_missing. Instead, explicitly define the methods you expect to receive.')
+            add_offense(node, message: METHOD_MISSING_MSG)
           end
         end
 
         def on_send(node)
           using_define_method?(node) do
-            add_offense(node, message: 'Please do not define methods dynamically, instead define them using `def` and explicitly. This helps readability for both humans and machines.')
+            add_offense(node, message: DEFINE_METHOD_MSG)
           end
 
           using_define_singleton_method_on_klass_instance?(node) do
-            add_offense(node, message: 'Please do not use define_singleton_method. Instead, define the method explicitly using `def self.my_method; end`')
+            add_offense(node, message: DEFINE_SINGLETON_MSG)
           end
 
           using_instance_eval?(node) do
-            add_offense(node, message: 'Please do not use instance_eval to augment behavior onto an instance. Instead, define the method you want to use in the class definition.')
+            add_offense(node, message: INSTANCE_EVAL_MSG)
           end
 
           using_class_eval?(node) do
-            add_offense(node, message: 'Please do not use class_eval to augment behavior onto a class. Instead, define the method you want to use in the class definition.')
+            add_offense(node, message: CLASS_EVAL_MSG)
           end
         end
       end
