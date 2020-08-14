@@ -3,6 +3,15 @@
 module RuboCop
   module Cop
     module Style
+      # Discourages the use of metaprogramming. It's designed
+      # to be enabled in select folders within your application. It was
+      # originally developed with the idea of "Business logic should minimize
+      # the amount of metaprogramming."
+      #
+      # This cop specifically will warn on usage of `.included`, `.inherited`,
+      # `#method_missing`, `.define_method`, `#instance_eval`, `.class_eval`,
+      # and `.define_singleton_method`.
+      #
       class NoMetaprogramming < Base
         def_node_matcher :included_definition?, <<~PATTERN
           (defs self :included ...)

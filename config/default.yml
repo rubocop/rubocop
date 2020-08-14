@@ -3540,6 +3540,13 @@ Style/NilComparison:
     - predicate
     - comparison
 
+Style/NoMetaprogramming:
+  Description: 'Discourages the use of metaprogramming.'
+  StyleGuide: '#no-metaprogramming'
+  Enabled: false
+  VersionAdded: '0.88'
+  VersionChanged: '0.88'
+
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
   StyleGuide: '#no-non-nil-checks'
