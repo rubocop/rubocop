@@ -6,6 +6,7 @@
 
 * [#8474](https://github.com/rubocop-hq/rubocop/pull/8474): Add new `Lint/DuplicateRequire` cop. ([@fatkodima][])
 * [#8531](https://github.com/rubocop-hq/rubocop/issues/8531): Add new `Lint/EmptyFile` cop. ([@fatkodima][])
+* [#8538](https://github.com/rubocop-hq/rubocop/pull/8538): Add new `Style/NoMetaprogramming` cop. ([@kellysutton][])
 
 ### Bug fixes
 
@@ -4792,3 +4793,4 @@
 [@wcmonty]: https://github.com/wcmonty
 [@nguyenquangminh0711]: https://github.com/nguyenquangminh0711
 [@chocolateboy]: https://github.com/chocolateboy
+[@kellysutton]: https://github.com/kellysutton

@@ -3544,8 +3544,8 @@ Style/NoMetaprogramming:
   Description: 'Discourages the use of metaprogramming.'
   StyleGuide: '#no-metaprogramming'
   Enabled: false
-  VersionAdded: '0.88'
-  VersionChanged: '0.88'
+  VersionAdded: '0.89'
+  VersionChanged: '0.89'
 
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
