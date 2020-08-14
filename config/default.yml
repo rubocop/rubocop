@@ -3542,7 +3542,7 @@ Style/NilComparison:
 
 Style/NoMetaprogramming:
   Description: 'Discourages the use of metaprogramming.'
-  StyleGuide: '#no-metaprogramming'
+  StyleGuide: '#no-needless-metaprogramming'
   Enabled: false
   VersionAdded: '0.89'
   VersionChanged: '0.89'
