@@ -22,7 +22,6 @@ module RuboCop
       #
       class EmptyFile < Base
         include RangeHelp
-        extend AutoCorrector
 
         MSG = 'Empty file detected.'
 
