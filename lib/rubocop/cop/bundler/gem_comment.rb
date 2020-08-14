@@ -70,13 +70,17 @@ module RuboCop
         def on_send(node)
           return unless gem_declaration?(node)
           return if ignored_gem?(node)
-          return if commented?(node)
+          return if commented_any_descendant?(node)
           return if cop_config[CHECKED_OPTIONS_CONFIG].any? && !checked_options_present?(node)
 
           add_offense(node)
         end
 
         private
+
+        def commented_any_descendant?(node)
+          commented?(node) || node.each_descendant.any? { |n| commented?(n) }
+        end
 
         def commented?(node)
           preceding_lines = preceding_lines(node)
@@ -86,12 +90,12 @@ module RuboCop
         # The args node1 & node2 may represent a RuboCop::AST::Node
         # or a Parser::Source::Comment. Both respond to #loc.
         def precede?(node1, node2)
-          node2.loc.line - node1.loc.line == 1
+          node2.loc.line - node1.loc.line <= 1
         end
 
         def preceding_lines(node)
           processed_source.ast_with_comments[node].select do |line|
-            line.loc.line < node.loc.line
+            line.loc.line <= node.loc.line
           end
         end
 
