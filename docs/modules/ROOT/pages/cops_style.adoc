@@ -6510,10 +6510,6 @@ bar.baz > 0
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `false`
-| Boolean
-
 | EnforcedStyle
 | `predicate`
 | `predicate`, `comparison`
