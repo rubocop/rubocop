@@ -18,6 +18,7 @@
 * [#8507](https://github.com/rubocop-hq/rubocop/issues/8507): Fix `Style/RescueModifier` to handle parentheses around rescue modifiers. ([@dsavochkin][])
 * [#8527](https://github.com/rubocop-hq/rubocop/pull/8527): Prevent an incorrect auto-correction for `Style/CaseEquality` cop when comparing with `===` against a regular expression receiver. ([@koic][])
 * [#8524](https://github.com/rubocop-hq/rubocop/issues/8524): Fix `Layout/EmptyLinesAroundClassBody`  and `Layout/EmptyLinesAroundModuleBody` to correctly handle an access modifier as a first child. ([@dsavochkin][])
+* [#8518](https://github.com/rubocop-hq/rubocop/issues/8518): Fix `Lint/ConstantResolution` cop reporting offense for `module` and `class` definitions. ([@tejasbubane][])
 
 ### Changes
 
