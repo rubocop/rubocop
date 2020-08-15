@@ -3593,7 +3593,6 @@ Style/NumericPredicate:
   # object. Switching these methods has to be done with knowledge of the types
   # of the variables which rubocop doesn't have.
   SafeAutoCorrect: false
-  AutoCorrect: false
   Enabled: true
   VersionAdded: '0.42'
   VersionChanged: '0.59'
