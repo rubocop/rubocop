@@ -1867,6 +1867,11 @@ Lint/TopLevelReturnWithArgument:
   Enabled: 'pending'
   VersionAdded: '0.89'
 
+Lint/TrailingCommaInAttributeDeclaration:
+  Description: 'This cop checks for trailing commas in attribute declarations.'
+  Enabled: pending
+  VersionAdded: '0.90'
+
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true

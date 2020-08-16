@@ -3793,6 +3793,45 @@ always ignored. This is detected automatically since Ruby 2.7.
 return 1 # 1 is always ignored.
 ----
 
+== Lint/TrailingCommaInAttributeDeclaration
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.90
+| -
+|===
+
+This cop checks for trailing commas in attribute declarations, such as
+`#attr_reader`. Leaving a trailing comma will nullify the next method
+definition by overriding it with a getter method.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Foo
+  attr_reader :foo,
+
+  def bar
+    puts "Unreachable."
+  end
+end
+
+# good
+class Foo
+  attr_reader :foo
+
+  def bar
+    puts "No problem!"
+  end
+end
+----
+
 == Lint/UnderscorePrefixedVariableName
 
 |===

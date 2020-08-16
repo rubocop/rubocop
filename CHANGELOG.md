@@ -6,6 +6,7 @@
 
 * [#8474](https://github.com/rubocop-hq/rubocop/pull/8474): Add new `Lint/DuplicateRequire` cop. ([@fatkodima][])
 * [#8531](https://github.com/rubocop-hq/rubocop/issues/8531): Add new `Lint/EmptyFile` cop. ([@fatkodima][])
+* Add new `Lint/TrailingCommaInAttributeDeclaration` cop. ([@drenmi][])
 
 ### Bug fixes
 
