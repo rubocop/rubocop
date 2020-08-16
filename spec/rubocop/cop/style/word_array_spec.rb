@@ -317,7 +317,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       cop2 = described_class.new(config)
       RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
       RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-      # Don't use `inspect_source`; it resets `config_to_allow_offenses` each
+      # Don't use `expect_offense`; it resets `config_to_allow_offenses` each
       #   time, which suppresses the bug we are checking for
       _investigate(cop1, parse_source("['g', 'h']"))
       _investigate(cop2, parse_source('%w(a b c)'))
