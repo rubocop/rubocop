@@ -52,20 +52,40 @@ module RuboCop
         end
 
         def autocorrect(node)
+          parenthesized = parenthesized?(node)
+          lambda do |corrector|
+            corrector.replace(node, corrected_block(node, parenthesized))
+            ParenthesesCorrector.correct(corrector, node.parent) if parenthesized
+          end
+        end
+
+        private
+
+        def parenthesized?(node)
+          node.parent && parentheses?(node.parent)
+        end
+
+        def corrected_block(node, parenthesized)
           operation, rescue_modifier, = *node
           *_, rescue_args = *rescue_modifier
 
-          indent = indentation(node)
-          correction =
-            "begin\n" \
-            "#{operation.source.gsub(/^/, indent)}" \
-            "\n#{offset(node)}rescue\n" \
-            "#{rescue_args.source.gsub(/^/, indent)}" \
-            "\n#{offset(node)}end"
+          node_indentation, node_offset = indentation_and_offset(node, parenthesized)
 
-          lambda do |corrector|
-            corrector.replace(node, correction)
+          "begin\n" \
+            "#{operation.source.gsub(/^/, node_indentation)}" \
+            "\n#{node_offset}rescue\n" \
+            "#{rescue_args.source.gsub(/^/, node_indentation)}" \
+            "\n#{node_offset}end"
+        end
+
+        def indentation_and_offset(node, parenthesized)
+          node_indentation = indentation(node)
+          node_offset = offset(node)
+          if parenthesized
+            node_indentation = node_indentation[0...-1]
+            node_offset = node_offset[0...-1]
           end
+          [node_indentation, node_offset]
         end
       end
     end
