@@ -275,6 +275,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintuselessaccessmodifier[Lint/UselessAccessModifier]
 * xref:cops_lint.adoc#lintuselessassignment[Lint/UselessAssignment]
 * xref:cops_lint.adoc#lintuselesselsewithoutrescue[Lint/UselessElseWithoutRescue]
+* xref:cops_lint.adoc#lintuselessmethoddefinition[Lint/UselessMethodDefinition]
 * xref:cops_lint.adoc#lintuselesssettercall[Lint/UselessSetterCall]
 * xref:cops_lint.adoc#lintvoid[Lint/Void]
 

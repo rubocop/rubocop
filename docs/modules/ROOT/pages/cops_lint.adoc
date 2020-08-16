@@ -4558,6 +4558,77 @@ else
 end
 ----
 
+== Lint/UselessMethodDefinition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.90
+| -
+|===
+
+This cop checks for useless method definitions, specifically: empty constructors
+and methods just delegating to `super`.
+
+This cop is marked as unsafe as it can trigger false positives for cases when
+an empty constructor just overrides the parent constructor, which is bad anyway.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def initialize
+end
+
+def method
+  super
+end
+
+# good
+def initialize
+  initialize_internals
+end
+
+def method
+  super
+  do_something_else
+end
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+def initialize
+  # Comment.
+end
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+def initialize
+  # Comment.
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
+
 == Lint/UselessSetterCall
 
 |===

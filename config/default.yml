@@ -1942,6 +1942,13 @@ Lint/UselessElseWithoutRescue:
   Enabled: true
   VersionAdded: '0.17'
 
+Lint/UselessMethodDefinition:
+  Description: 'Checks for useless method definitions.'
+  Enabled: pending
+  VersionAdded: '0.90'
+  Safe: false
+  AllowComments: true
+
 Lint/UselessSetterCall:
   Description: 'Checks for useless setter call to a local variable.'
   Enabled: true
