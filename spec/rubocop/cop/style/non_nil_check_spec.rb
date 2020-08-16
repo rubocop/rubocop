@@ -65,9 +65,8 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       RUBY
     end
 
-    it 'does not blow up when autocorrecting implicit receiver' do
-      corrected = autocorrect_source('!nil?')
-      expect(corrected).to eq '!nil?'
+    it 'does not register an offense with implicit receiver' do
+      expect_no_offenses('!nil?')
     end
 
     it 'does not report corrected when the code was not modified' do

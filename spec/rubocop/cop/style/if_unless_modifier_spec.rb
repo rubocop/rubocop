@@ -601,20 +601,22 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
 
   context 'when if-end condition is assigned to a variable' do
     context 'with variable being on the same line' do
-      let(:source) do
-        <<~RUBY
-          x = if a
-            #{'b' * body_length}
-          end
-        RUBY
-      end
+      let(:body) { 'b' * body_length }
 
       context 'when it is short enough to fit on a single line' do
         let(:body_length) { 69 }
 
         it 'corrects it to the single-line form' do
-          corrected = autocorrect_source(source)
-          expect(corrected).to eq "x = (#{'b' * body_length} if a)\n"
+          expect_offense(<<~RUBY, body: body)
+            x = if a
+                ^^ Favor modifier `if` usage [...]
+              %{body}
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x = (#{body} if a)
+          RUBY
         end
       end
 
@@ -622,27 +624,34 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         let(:body_length) { 70 }
 
         it 'accepts it in the multiline form' do
-          expect_no_offenses(source)
+          expect_no_offenses(<<~RUBY)
+            x = if a
+              #{body}
+            end
+          RUBY
         end
       end
     end
 
     context 'with variable being on the previous line' do
-      let(:source) do
-        <<~RUBY
-          x =
-            if a
-              #{'b' * body_length}
-            end
-        RUBY
-      end
+      let(:body) { 'b' * body_length }
 
       context 'when it is short enough to fit on a single line' do
         let(:body_length) { 71 }
 
         it 'corrects it to the single-line form' do
-          corrected = autocorrect_source(source)
-          expect(corrected).to eq "x =\n  (#{'b' * body_length} if a)\n"
+          expect_offense(<<~RUBY, body: body)
+            x =
+              if a
+              ^^ Favor modifier `if` usage [...]
+                %{body}
+              end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x =
+              (#{body} if a)
+          RUBY
         end
       end
 
@@ -650,29 +659,38 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         let(:body_length) { 72 }
 
         it 'accepts it in the multiline form' do
-          expect_no_offenses(source)
+          expect_no_offenses(<<~RUBY)
+            x =
+              if a
+                #{body}
+              end
+          RUBY
         end
       end
     end
   end
 
   context 'when if-end condition is an element of an array' do
-    let(:source) do
-      <<~RUBY
-        [
-          if a
-            #{'b' * body_length}
-          end
-        ]
-      RUBY
-    end
+    let(:body) { 'b' * body_length }
 
     context 'when short enough to fit on a single line' do
       let(:body_length) { 71 }
 
       it 'corrects it to the single-line form' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq "[\n  (#{'b' * body_length} if a)\n]\n"
+        expect_offense(<<~RUBY, body: body)
+          [
+            if a
+            ^^ Favor modifier `if` usage [...]
+              %{body}
+            end
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            (#{body} if a)
+          ]
+        RUBY
       end
     end
 
@@ -680,28 +698,38 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       let(:body_length) { 72 }
 
       it 'accepts it in the multiline form' do
-        expect_no_offenses(source)
+        expect_no_offenses(<<~RUBY)
+          [
+            if a
+              #{body}
+            end
+          ]
+        RUBY
       end
     end
   end
 
   context 'when if-end condition is a value in a hash' do
-    let(:source) do
-      <<~RUBY
-        {
-          x: if a
-               #{'b' * body_length}
-             end
-        }
-      RUBY
-    end
+    let(:body) { 'b' * body_length }
 
     context 'when it is short enough to fit on a single line' do
       let(:body_length) { 68 }
 
       it 'corrects it to the single-line form' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq "{\n  x: (#{'b' * body_length} if a)\n}\n"
+        expect_offense(<<~RUBY, body: body)
+          {
+            x: if a
+               ^^ Favor modifier `if` usage [...]
+                 %{body}
+               end
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {
+            x: (#{body} if a)
+          }
+        RUBY
       end
     end
 
@@ -709,26 +737,34 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       let(:body_length) { 69 }
 
       it 'accepts it in the multiline form' do
-        expect_no_offenses(source)
+        expect_no_offenses(<<~RUBY)
+          {
+            x: if a
+                 #{body}
+               end
+          }
+        RUBY
       end
     end
   end
 
   context 'when if-end condition has a first line comment' do
-    let(:source) do
-      <<~RUBY
-        if foo # #{'c' * comment_length}
-          bar
-        end
-      RUBY
-    end
+    let(:comment) { 'c' * comment_length }
 
     context 'when it is short enough to fit on a single line' do
       let(:comment_length) { 67 }
 
       it 'corrects it to the single-line form' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq "bar if foo # #{'c' * comment_length}\n"
+        expect_offense(<<~RUBY, comment: comment)
+          if foo # %{comment}
+          ^^ Favor modifier `if` usage [...]
+            bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar if foo # #{comment}
+        RUBY
       end
     end
 
@@ -736,28 +772,36 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       let(:comment_length) { 68 }
 
       it 'accepts it in the multiline form' do
-        expect_no_offenses(source)
+        expect_no_offenses(<<~RUBY)
+          if foo # #{comment}
+            bar
+          end
+        RUBY
       end
     end
   end
 
   context 'when if-end condition has some code after the end keyword' do
-    let(:source) do
-      <<~RUBY
-        [
-          1, if foo
-               #{'b' * body_length}
-             end, 300_000_000
-        ]
-      RUBY
-    end
+    let(:body) { 'b' * body_length }
 
     context 'when it is short enough to fit on a single line' do
       let(:body_length) { 53 }
 
       it 'corrects it to the single-line form' do
-        corrected = autocorrect_source(source)
-        expect(corrected).to eq "[\n  1, (#{'b' * body_length} if foo), 300_000_000\n]\n"
+        expect_offense(<<~RUBY, body: body)
+          [
+            1, if foo
+               ^^ Favor modifier `if` usage [...]
+                 %{body}
+               end, 300_000_000
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            1, (#{body} if foo), 300_000_000
+          ]
+        RUBY
       end
     end
 
@@ -765,7 +809,13 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       let(:body_length) { 54 }
 
       it 'accepts it in the multiline form' do
-        expect_no_offenses(source)
+        expect_no_offenses(<<~RUBY)
+          [
+            1, if foo
+                 #{body}
+               end, 300_000_000
+          ]
+        RUBY
       end
     end
   end
