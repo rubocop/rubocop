@@ -3844,6 +3844,12 @@ Style/RedundantSelf:
   VersionAdded: '0.10'
   VersionChanged: '0.13'
 
+Style/RedundantSelfAssignment:
+  Description: 'Checks for places where redundant assignments are made for in place modification methods.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.90'
+
 Style/RedundantSort:
   Description: >-
                   Use `min` instead of `sort.first`,

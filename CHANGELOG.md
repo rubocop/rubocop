@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#8451](https://github.com/rubocop-hq/rubocop/issues/8451): Add new `Style/RedundantSelfAssignment` cop. ([@fatkodima][])
 * [#8474](https://github.com/rubocop-hq/rubocop/pull/8474): Add new `Lint/DuplicateRequire` cop. ([@fatkodima][])
 * [#8531](https://github.com/rubocop-hq/rubocop/issues/8531): Add new `Lint/EmptyFile` cop. ([@fatkodima][])
 
