@@ -14,6 +14,7 @@
 * [#8534](https://github.com/rubocop-hq/rubocop/issues/8534): Fix `Lint/BinaryOperatorWithIdenticalOperands` for binary operators used as unary operators. ([@marcandre][])
 * [#8537](https://github.com/rubocop-hq/rubocop/pull/8537): Allow a trailing comment as a description comment for `Bundler/GemComment`. ([@pocke][])
 * [#8507](https://github.com/rubocop-hq/rubocop/issues/8507): Fix `Style/RescueModifier` to handle parentheses around rescue modifiers. ([@dsavochkin][])
+* [#8527](https://github.com/rubocop-hq/rubocop/pull/8527): Prevent an incorrect auto-correction for `Style/CaseEquality` cop when comparing with `===` against a regular expression receiver. ([@koic][])
 
 ### Changes
 
