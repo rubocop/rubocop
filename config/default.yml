@@ -1427,6 +1427,11 @@ Lint/DuplicateMethods:
   Enabled: true
   VersionAdded: '0.29'
 
+Lint/DuplicateRequire:
+  Description: 'Check for duplicate `require`s and `require_relative`s.'
+  Enabled: pending
+  VersionAdded: '0.90'
+
 Lint/DuplicateRescueException:
   Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
   Enabled: pending
@@ -1459,6 +1464,12 @@ Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'
   Enabled: true
   VersionAdded: '0.45'
+
+Lint/EmptyFile:
+  Description: 'Enforces that Ruby source files are not empty.'
+  Enabled: pending
+  AllowComments: true
+  VersionAdded: '0.90'
 
 Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
@@ -2591,6 +2602,7 @@ Style/CaseLikeIf:
   Description: 'This cop identifies places where `if-elsif` constructions can be replaced with `case-when`.'
   StyleGuide: '#case-vs-if-else'
   Enabled: 'pending'
+  Safe: false
   VersionAdded: '0.88'
 
 Style/CharacterLiteral:
@@ -3021,7 +3033,7 @@ Style/FrozenStringLiteralComment:
     # `never` will enforce that the frozen string literal comment does not
     # exist in a file.
     - never
-  Safe: false
+  SafeAutoCorrect: false
 
 Style/GlobalStdStream:
   Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
@@ -3101,15 +3113,17 @@ Style/HashSyntax:
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
 Style/HashTransformKeys:
-  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Description: 'Prefer `transform_keys` over `each_with_object`, `map`, or `to_h`.'
   Enabled: 'pending'
   VersionAdded: '0.80'
+  VersionChanged: '0.90'
   Safe: false
 
 Style/HashTransformValues:
-  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  Description: 'Prefer `transform_values` over `each_with_object`, `map`, or `to_h`.'
   Enabled: 'pending'
   VersionAdded: '0.80'
+  VersionChanged: '0.90'
   Safe: false
 
 Style/IdenticalConditionalBranches:
@@ -3579,7 +3593,6 @@ Style/NumericPredicate:
   # object. Switching these methods has to be done with knowledge of the types
   # of the variables which rubocop doesn't have.
   SafeAutoCorrect: false
-  AutoCorrect: false
   Enabled: true
   VersionAdded: '0.42'
   VersionChanged: '0.59'

@@ -5,10 +5,22 @@
 ### New features
 
 * [#8451](https://github.com/rubocop-hq/rubocop/issues/8451): Add new `Style/RedundantSelfAssignment` cop. ([@fatkodima][])
+* [#8474](https://github.com/rubocop-hq/rubocop/pull/8474): Add new `Lint/DuplicateRequire` cop. ([@fatkodima][])
+* [#8531](https://github.com/rubocop-hq/rubocop/issues/8531): Add new `Lint/EmptyFile` cop. ([@fatkodima][])
+
+### Bug fixes
+
+* [#8508](https://github.com/rubocop-hq/rubocop/pull/8508): Fix a false positive for `Style/CaseLikeIf` when conditional contains comparison with a class. Mark `Style/CaseLikeIf` as not safe. ([@fatkodima][])
+* [#8534](https://github.com/rubocop-hq/rubocop/issues/8534): Fix `Lint/BinaryOperatorWithIdenticalOperands` for binary operators used as unary operators. ([@marcandre][])
+* [#8537](https://github.com/rubocop-hq/rubocop/pull/8537): Allow a trailing comment as a description comment for `Bundler/GemComment`. ([@pocke][])
+* [#8507](https://github.com/rubocop-hq/rubocop/issues/8507): Fix `Style/RescueModifier` to handle parentheses around rescue modifiers. ([@dsavochkin][])
 
 ### Changes
 
 * [#8362](https://github.com/rubocop-hq/rubocop/issues/8362): Add numbers of correctable offenses to summary. ([@nguyenquangminh0711][])
+* [#8513](https://github.com/rubocop-hq/rubocop/pull/8513): Clarify the ruby warning mentioned in the `Lint/ShadowingOuterLocalVariable` documentation. ([@chocolateboy][])
+* [#8517](https://github.com/rubocop-hq/rubocop/pull/8517): Make `Style/HashTransformKeys` and `Style/HashTransformValues` aware of `to_h` with block. ([@eugeneius][])
+* [#8529](https://github.com/rubocop-hq/rubocop/pull/8529): Mark `Lint/FrozenStringLiteralComment` as `Safe`, but with unsafe auto-correction. ([@marcandre][])
 
 ## 0.89.1 (2020-08-10)
 
@@ -4782,3 +4794,4 @@
 [@sonalinavlakhe]: https://github.com/sonalinavlakhe
 [@wcmonty]: https://github.com/wcmonty
 [@nguyenquangminh0711]: https://github.com/nguyenquangminh0711
+[@chocolateboy]: https://github.com/chocolateboy

@@ -222,8 +222,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts comma inside a heredoc in brackets' do
         expect_no_offenses(<<~RUBY)
-          new_source = autocorrect_source(
-            autocorrect_source(<<~SOURCE)
+          expect_no_offenses(
+            expect_no_offenses(<<~SOURCE)
               run(
                     :foo, defaults.merge(
                                           bar: 3))

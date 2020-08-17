@@ -1,3 +1,5 @@
+###
+# Please keep /.mergify.yml synced!
 name: CI
 
 on: [push, pull_request]
@@ -18,7 +20,7 @@ jobs:
         ruby: [ 2.4, 2.5, 2.6, 2.7, head ]
         include:
           - { os: windows, ruby: mingw }
-        exclude: 
+        exclude:
           - { os: windows, ruby: head  }
 
     steps:

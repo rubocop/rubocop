@@ -24,7 +24,9 @@ module RuboCop
       #   require_relative '../foo'
       #   require_relative '../foo.so'
       #
-      class RedundantFileExtensionInRequire < Cop
+      class RedundantFileExtensionInRequire < Base
+        extend AutoCorrector
+
         MSG = 'Redundant `.rb` file extension detected.'
 
         def_node_matcher :require_call?, <<~PATTERN
@@ -33,15 +35,13 @@ module RuboCop
 
         def on_send(node)
           require_call?(node) do |name_node|
-            add_offense(name_node) if name_node.value.end_with?('.rb')
-          end
-        end
+            return unless name_node.value.end_with?('.rb')
 
-        def autocorrect(node)
-          correction = node.value.sub(/\.rb\z/, '')
+            add_offense(name_node) do |corrector|
+              correction = name_node.value.sub(/\.rb\z/, '')
 
-          lambda do |corrector|
-            corrector.replace(node, "'#{correction}'")
+              corrector.replace(name_node, "'#{correction}'")
+            end
           end
         end
       end

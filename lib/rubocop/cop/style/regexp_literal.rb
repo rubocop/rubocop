@@ -81,41 +81,30 @@ module RuboCop
       # @example AllowInnerSlashes: true
       #   # good
       #   x =~ /home\//
-      class RegexpLiteral < Cop
+      class RegexpLiteral < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_USE_SLASHES = 'Use `//` around regular expression.'
         MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'
 
         def on_regexp(node)
-          if slash_literal?(node)
-            check_slash_literal(node)
-          else
-            check_percent_r_literal(node)
-          end
-        end
+          message = if slash_literal?(node)
+                      MSG_USE_PERCENT_R unless allowed_slash_literal?(node)
+                    else
+                      MSG_USE_SLASHES unless allowed_percent_r_literal?(node)
+                    end
 
-        def autocorrect(node)
-          lambda do |corrector|
+          return unless message
+
+          add_offense(node, message: message) do |corrector|
             correct_delimiters(node, corrector)
             correct_inner_slashes(node, corrector)
           end
         end
 
         private
-
-        def check_slash_literal(node)
-          return if allowed_slash_literal?(node)
-
-          add_offense(node, message: MSG_USE_PERCENT_R)
-        end
-
-        def check_percent_r_literal(node)
-          return if allowed_percent_r_literal?(node)
-
-          add_offense(node, message: MSG_USE_SLASHES)
-        end
 
         def allowed_slash_literal?(node)
           style == :slashes && !contains_disallowed_slash?(node) ||

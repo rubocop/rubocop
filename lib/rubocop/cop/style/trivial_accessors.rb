@@ -27,8 +27,9 @@ module RuboCop
       #   class << self
       #     attr_reader :baz
       #   end
-      class TrivialAccessors < Cop
+      class TrivialAccessors < Base
         include AllowedMethods
+        extend AutoCorrector
 
         MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'
 
@@ -40,17 +41,6 @@ module RuboCop
           on_method_def(node)
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          parent = node.parent
-          return if parent&.send_type?
-
-          if node.def_type?
-            autocorrect_instance(node)
-          elsif node.defs_type? && node.children.first.self_type?
-            autocorrect_class(node)
-          end
-        end
 
         private
 
@@ -76,9 +66,20 @@ module RuboCop
                  end
           return unless kind
 
-          add_offense(node,
-                      location: :keyword,
-                      message: format(MSG, kind: kind))
+          add_offense(node.loc.keyword, message: format(MSG, kind: kind)) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          parent = node.parent
+          return if parent&.send_type?
+
+          if node.def_type?
+            autocorrect_instance(corrector, node)
+          elsif node.defs_type? && node.children.first.self_type?
+            autocorrect_class(corrector, node)
+          end
         end
 
         def exact_name_match?
@@ -156,31 +157,26 @@ module RuboCop
           "attr_#{kind} :#{method_name.to_s.chomp('=')}"
         end
 
-        def autocorrect_instance(node)
+        def autocorrect_instance(corrector, node)
           kind = trivial_accessor_kind(node)
 
           return unless names_match?(node) && !node.predicate_method? && kind
 
-          lambda do |corrector|
-            corrector.replace(node,
-                              accessor(kind, node.method_name))
-          end
+          corrector.replace(node, accessor(kind, node.method_name))
         end
 
-        def autocorrect_class(node)
+        def autocorrect_class(corrector, node)
           kind = trivial_accessor_kind(node)
 
           return unless names_match?(node) && kind
 
-          lambda do |corrector|
-            indent = ' ' * node.loc.column
-            corrector.replace(
-              node.source_range,
-              ['class << self',
-               "#{indent}  #{accessor(kind, node.method_name)}",
-               "#{indent}end"].join("\n")
-            )
-          end
+          indent = ' ' * node.loc.column
+          corrector.replace(
+            node.source_range,
+            ['class << self',
+             "#{indent}  #{accessor(kind, node.method_name)}",
+             "#{indent}end"].join("\n")
+          )
         end
 
         def top_level_node?(node)

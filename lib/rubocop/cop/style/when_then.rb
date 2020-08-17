@@ -17,17 +17,15 @@ module RuboCop
       #   when 1 then 'baz'
       #   when 2 then 'bar'
       #   end
-      class WhenThen < Cop
+      class WhenThen < Base
+        extend AutoCorrector
+
         MSG = 'Do not use `when x;`. Use `when x then` instead.'
 
         def on_when(node)
           return if node.multiline? || node.then? || !node.body
 
-          add_offense(node, location: :begin)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.loc.begin) do |corrector|
             corrector.replace(node.loc.begin, ' then')
           end
         end
