@@ -139,6 +139,8 @@ module RuboCop
 
         expect(actual_annotations).to eq(expected_annotations), ''
         expect(offenses.map(&:severity).uniq).to eq([severity]) if severity
+
+        offenses
       end
 
       def expect_correction(correction, loop: true)
