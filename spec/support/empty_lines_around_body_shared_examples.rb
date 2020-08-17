@@ -4,7 +4,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
   context 'when EnforcedStyle is empty_lines_special' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines_special' } }
 
-    context 'when first child is method' do
+    context 'when first child is a method' do
       it "requires blank line at the beginning and ending of #{type} body" do
         expect_no_offenses(<<~RUBY)
           #{type} SomeObject
@@ -105,6 +105,43 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
               end
             RUBY
           end
+        end
+      end
+    end
+
+    context 'when first child is an access modifier' do
+      context "with blank lines at the beginning and ending of #{type} body" do
+        it 'registers no offense' do
+          expect_no_offenses(<<~RUBY)
+            #{type} SomeObject
+
+              private
+              def do_something; end
+
+            end
+          RUBY
+        end
+      end
+
+      context "with no blank lines at the beginning and ending of #{type} body" do
+        it 'registers and corrects an offense' do
+          expect_offense(<<~RUBY)
+            #{type} SomeObject
+              private
+            ^ #{missing_begin}
+              def do_something; end
+            end
+            ^ #{missing_end}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{type} SomeObject
+
+              private
+              def do_something; end
+
+            end
+          RUBY
         end
       end
     end
