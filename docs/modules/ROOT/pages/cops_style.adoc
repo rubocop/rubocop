@@ -6218,10 +6218,10 @@ end
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Disabled
-| Yes
 | No
-| 0.88
-| 0.88
+| No
+| 0.89
+| 0.89
 |===
 
 Discourages the use of metaprogramming. It's designed
@@ -6235,7 +6235,7 @@ and `.define_singleton_method`.
 
 === References
 
-* https://rubystyle.guide#no-metaprogramming
+* https://rubystyle.guide#no-needless-metaprogramming
 
 == Style/NonNilCheck
 
