@@ -3544,6 +3544,7 @@ Style/NoMetaprogramming:
   Description: 'Discourages the use of metaprogramming.'
   StyleGuide: '#no-needless-metaprogramming'
   Enabled: false
+  Safe: false
   VersionAdded: '0.89'
   VersionChanged: '0.89'
 
