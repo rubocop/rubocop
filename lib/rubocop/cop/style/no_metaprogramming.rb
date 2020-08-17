@@ -25,18 +25,6 @@ module RuboCop
           (def :method_missing ...)
         PATTERN
 
-        def_node_matcher :using_define_method?, <<~PATTERN
-          (send _ :define_method ...)
-        PATTERN
-
-        def_node_matcher :using_instance_eval?, <<~PATTERN
-          (send _ :instance_eval ...)
-        PATTERN
-
-        def_node_matcher :using_class_eval?, <<~PATTERN
-          (send _ :class_eval ...)
-        PATTERN
-
         def_node_matcher :using_define_singleton_method_on_klass_instance?, <<~PATTERN
           (send _ :define_singleton_method ...)
         PATTERN
@@ -50,17 +38,16 @@ module RuboCop
         METHOD_MISSING_MSG = 'Please do not use method_missing. Instead, explicitly define the'\
           ' methods you expect to receive.'
 
-        DEFINE_METHOD_MSG = 'Please do not define methods dynamically, instead define them using'\
-          ' `def` and explicitly. This helps readability for both humans and machines.'
-
-        DEFINE_SINGLETON_MSG = 'Please do not use define_singleton_method. Instead, define the'\
-          ' method explicitly using `def self.my_method; end`'
-
-        INSTANCE_EVAL_MSG = 'Please do not use instance_eval to augment behavior onto an instance.'\
-          ' Instead, define the method you want to use in the class definition.'
-
-        CLASS_EVAL_MSG = 'Please do not use class_eval to augment behavior onto a class. Instead,'\
-          ' define the method you want to use in the class definition.'
+        ON_SEND_ERROR_MAP = {
+          class_eval: 'Please do not use class_eval to augment behavior onto a class. Instead,'\
+          ' define the method you want to use in the class definition.',
+          define_method: 'Please do not define methods dynamically, instead define them using'\
+          ' `def` and explicitly. This helps readability for both humans and machines.',
+          define_singleton_method: 'Please do not use define_singleton_method. Instead, define the'\
+          ' method explicitly using `def self.my_method; end`',
+          instance_eval: 'Please do not use instance_eval to augment behavior onto an instance.'\
+          ' Instead, define the method you want to use in the class definition.',
+        }.freeze
 
         def on_defs(node)
           included_definition?(node) do
@@ -79,20 +66,8 @@ module RuboCop
         end
 
         def on_send(node)
-          using_define_method?(node) do
-            add_offense(node, message: DEFINE_METHOD_MSG)
-          end
-
-          using_define_singleton_method_on_klass_instance?(node) do
-            add_offense(node, message: DEFINE_SINGLETON_MSG)
-          end
-
-          using_instance_eval?(node) do
-            add_offense(node, message: INSTANCE_EVAL_MSG)
-          end
-
-          using_class_eval?(node) do
-            add_offense(node, message: CLASS_EVAL_MSG)
+          if ON_SEND_ERROR_MAP.has_key?(node.method_name)
+            add_offense(node, message: ON_SEND_ERROR_MAP[node.method_name])
           end
         end
       end
