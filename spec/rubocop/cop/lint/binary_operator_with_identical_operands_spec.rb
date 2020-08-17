@@ -4,15 +4,18 @@ RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when binary operator has identical nodes' do
-    offenses = inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       x == x
+      ^^^^^^ Binary operator `==` has identical operands.
       y = x && x
+          ^^^^^^ Binary operator `&&` has identical operands.
       y = a.x + a.x
+          ^^^^^^^^^ Binary operator `+` has identical operands.
       a.x(arg) > a.x(arg)
+      ^^^^^^^^^^^^^^^^^^^ Binary operator `>` has identical operands.
       a.(x) > a.(x)
+      ^^^^^^^^^^^^^ Binary operator `>` has identical operands.
     RUBY
-
-    expect(offenses.size).to eq(5)
   end
 
   it 'does not register an offense when using binary operator with different operands' do
