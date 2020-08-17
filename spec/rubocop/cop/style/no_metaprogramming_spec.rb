@@ -44,6 +44,96 @@ RSpec.describe RuboCop::Cop::Style::NoMetaprogramming do
     it { expect_offense source }
   end
 
+  context 'when using method_added' do
+    let(:source) do
+      <<~RUBY
+        class Foo
+          def self.method_added(method_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please do not use method_added, as it can change the behavior of the class at runtime.
+            puts "Adding a new method"
+          end
+        end
+      RUBY
+    end
+
+    it { expect_offense source }
+  end
+
+  context 'when using method_removed' do
+    let(:source) do
+      <<~RUBY
+        class Foo
+          def self.method_removed(method_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please do not use method_removed, as it can change the behavior of the class at runtime.
+            puts "Removing a method"
+          end
+        end
+      RUBY
+    end
+
+    it { expect_offense source }
+  end
+
+  context 'when using method_undefined' do
+    let(:source) do
+      <<~RUBY
+        class Foo
+          def self.method_undefined(method_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please do not use method_undefined, as it can change the behavior of the class at runtime.
+            puts "Undefining a method"
+          end
+        end
+      RUBY
+    end
+
+    it { expect_offense source }
+  end
+
+  context 'when using singleton_method_added' do
+    let(:source) do
+      <<~RUBY
+        class Foo
+          def self.singleton_method_added(method_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please do not use singleton_method_added, as it can change the behavior of the class at runtime.
+            puts "Undefining a method"
+          end
+        end
+      RUBY
+    end
+
+    it { expect_offense source }
+  end
+
+  context 'when using singleton_method_removed' do
+    let(:source) do
+      <<~RUBY
+        class Foo
+          def self.singleton_method_removed(method_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please do not use singleton_method_removed, as it can change the behavior of the class at runtime.
+            puts "Undefining a method"
+          end
+        end
+      RUBY
+    end
+
+    it { expect_offense source }
+  end
+
+  context 'when using singleton_method_undefined' do
+    let(:source) do
+      <<~RUBY
+        class Foo
+          def self.singleton_method_undefined(method_name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please do not use singleton_method_undefined, as it can change the behavior of the class at runtime.
+            puts "Undefining a method"
+          end
+        end
+      RUBY
+    end
+
+    it { expect_offense source }
+  end
+
   context 'when a rails concern' do
     let(:source) do
       <<~RUBY
