@@ -13,30 +13,19 @@ module RuboCop
       # and `.define_singleton_method`.
       #
       class NoMetaprogramming < Base
-        def_node_matcher :included_definition?, <<~PATTERN
-          (defs self :included ...)
-        PATTERN
-
-        def_node_matcher :inherited_definition?, <<~PATTERN
-          (defs self :inherited ...)
-        PATTERN
-
         def_node_matcher :using_method_missing?, <<~PATTERN
           (def :method_missing ...)
         PATTERN
 
-        def_node_matcher :using_define_singleton_method_on_klass_instance?, <<~PATTERN
-          (send _ :define_singleton_method ...)
-        PATTERN
-
-        INCLUDED_MSG = 'self.included modifies the behavior of classes at runtime. Please avoid'\
-          ' using if possible.'
-
-        INHERITED_MSG = 'self.inherited modifies the behavior of classes at runtime. Please avoid'\
-          ' using if possible.'
-
         METHOD_MISSING_MSG = 'Please do not use method_missing. Instead, explicitly define the'\
           ' methods you expect to receive.'
+
+        ON_DEFS_ERROR_MAP = {
+          included: 'self.included modifies the behavior of classes at runtime. Please avoid'\
+          ' using if possible.',
+          inherited: 'self.inherited modifies the behavior of classes at runtime. Please avoid'\
+          ' using if possible.',
+        }.freeze
 
         ON_SEND_ERROR_MAP = {
           class_eval: 'Please do not use class_eval to augment behavior onto a class. Instead,'\
@@ -46,16 +35,12 @@ module RuboCop
           define_singleton_method: 'Please do not use define_singleton_method. Instead, define the'\
           ' method explicitly using `def self.my_method; end`',
           instance_eval: 'Please do not use instance_eval to augment behavior onto an instance.'\
-          ' Instead, define the method you want to use in the class definition.',
+          ' Instead, define the method you want to use in the class definition.'
         }.freeze
 
         def on_defs(node)
-          included_definition?(node) do
-            add_offense(node, message: INCLUDED_MSG)
-          end
-
-          inherited_definition?(node) do
-            add_offense(node, message: INHERITED_MSG)
+          if ON_DEFS_ERROR_MAP.has_key?(node.method_name)
+            add_offense(node, message: ON_DEFS_ERROR_MAP[node.method_name])
           end
         end
 
