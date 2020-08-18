@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
+  let(:no_space_in_empty_message) { 'Do not use space inside empty array brackets.' }
+  let(:no_space_message) { 'Do not use space inside array brackets.' }
+  let(:one_space_message) { 'Use one space inside empty array brackets.' }
+  let(:use_space_message) { 'Use space inside array brackets.' }
+
   it 'does not register offense for any kind of reference brackets' do
     expect_no_offenses(<<~RUBY)
       a[1]
@@ -20,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     it 'registers an offense and corrects empty brackets with 1 space inside' do
       expect_offense(<<~RUBY)
         a = [ ]
-            ^^^ Do not use space inside empty array brackets.
+            ^^^ #{no_space_in_empty_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -32,7 +37,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with multiple spaces inside' do
       expect_offense(<<~RUBY)
         a = [     ]
-            ^^^^^^^ Do not use space inside empty array brackets.
+            ^^^^^^^ #{no_space_in_empty_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -43,7 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     it 'registers an offense and corrects multiline spaces' do
       expect_offense(<<~RUBY)
         a = [
-            ^ Do not use space inside empty array brackets.
+            ^ #{no_space_in_empty_message}
         ]
       RUBY
 
@@ -64,7 +69,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with no space inside' do
       expect_offense(<<~RUBY)
         a = []
-            ^^ Use one space inside empty array brackets.
+            ^^ #{one_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -76,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with more than one space inside' do
       expect_offense(<<~RUBY)
         a = [      ]
-            ^^^^^^^^ Use one space inside empty array brackets.
+            ^^^^^^^^ #{one_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -199,7 +204,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with leading whitespace' do
       expect_offense(<<~RUBY)
         [ 2, 3, 4]
-         ^ Do not use space inside array brackets.
+         ^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -211,7 +216,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with trailing whitespace' do
       expect_offense(<<~RUBY)
         [b, c, d   ]
-                ^^^ Do not use space inside array brackets.
+                ^^^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -222,7 +227,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     it 'registers an offense and corrects an array when two on one line' do
       expect_offense(<<~RUBY)
         ['qux', 'baz'  ] - ['baz']
-                     ^^ Do not use space inside array brackets.
+                     ^^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -235,7 +240,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
         ['ok',
          'still good',
          'not good' ]
-                   ^ Do not use space inside array brackets.
+                   ^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -250,7 +255,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_offense(<<~RUBY)
         [:good,
          :bad  ].compact
-             ^^ Do not use space inside array brackets.
+             ^^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -262,7 +267,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     it 'registers an offense and corrects 2 arrays on one line' do
       expect_offense(<<~RUBY)
         [2,3,4] - [ 3,4]
-                   ^ Do not use space inside array brackets.
+                   ^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -274,7 +279,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
        'an argument with trailing whitespace after a heredoc is started' do
       expect_offense(<<~RUBY)
         ActiveRecord::Base.connection.execute(<<-SQL, [self.class.to_s ]).first["count"]
-                                                                      ^ Do not use space inside array brackets.
+                                                                      ^ #{no_space_message}
           SELECT COUNT(widgets.id) FROM widgets
           WHERE widget_type = $1
         SQL
@@ -382,7 +387,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with no leading whitespace' do
       expect_offense(<<~RUBY)
         [2, 3, 4 ]
-        ^ Use space inside array brackets.
+        ^ #{use_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -394,7 +399,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with no trailing whitespace' do
       expect_offense(<<~RUBY)
         [ b, c, d]
-                 ^ Use space inside array brackets.
+                 ^ #{use_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -406,7 +411,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'when there is more than one array on a line' do
       expect_offense(<<~RUBY)
         [ 'qux', 'baz'] - [ 'baz' ]
-                      ^ Use space inside array brackets.
+                      ^ #{use_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -419,7 +424,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
         [ 'ok',
           'still good',
           'not good']
-                    ^ Use space inside array brackets.
+                    ^ #{use_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -434,7 +439,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_offense(<<~RUBY)
         [ :good,
           :bad].compact
-              ^ Use space inside array brackets.
+              ^ #{use_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -446,7 +451,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     it 'register an offense and corrects when 2 arrays are on one line' do
       expect_offense(<<~RUBY)
         [ 2, 3, 4 ] - [3, 4 ]
-                      ^ Use space inside array brackets.
+                      ^ #{use_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -493,7 +498,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     it 'registers an offense and corrects space between 2 closing brackets' do
       expect_offense(<<~RUBY)
         [ 1, [ 2,3,4 ], [ 5,6,7 ] ]
-                                 ^ Do not use space inside array brackets.
+                                 ^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -504,7 +509,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     it 'registers an offense and corrects space between 2 opening brackets' do
       expect_offense(<<~RUBY)
         [ [ 2,3,4 ], [ 5,6,7 ], 8 ]
-         ^ Do not use space inside array brackets.
+         ^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -524,7 +529,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
         expect_offense(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ] ]
-                          ^ Do not use space inside array brackets.
+                          ^ #{no_space_message}
         RUBY
 
         expect_correction(<<~RUBY, loop: false)
@@ -538,8 +543,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with extra spaces' do
       expect_offense(<<~RUBY)
         [ [ a, b ], [ 1, 7 ] ]
-                            ^ Do not use space inside array brackets.
-         ^ Do not use space inside array brackets.
+                            ^ #{no_space_message}
+         ^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -551,13 +556,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       'with extra spaces' do
       expect_offense(<<~RUBY)
         [ [a, b ], [foo, [bar, baz] ] ]
-                                     ^ Do not use space inside array brackets.
-                                   ^ Do not use space inside array brackets.
-                                  ^ Use space inside array brackets.
-                         ^ Use space inside array brackets.
-                   ^ Use space inside array brackets.
-          ^ Use space inside array brackets.
-         ^ Do not use space inside array brackets.
+                                     ^ #{no_space_message}
+                                   ^ #{no_space_message}
+                                  ^ #{use_space_message}
+                         ^ #{use_space_message}
+                   ^ #{use_space_message}
+          ^ #{use_space_message}
+         ^ #{no_space_message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -566,31 +571,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
 
     context 'multiline array does not collapse successive left-brackets' do
-      it 'registers an offense' do
-        # In this example, we cannot use `expect_offense` because the offense
-        # has no highlight (actually, a zero-width `column_range`) so our caret
-        # would not match.
-        inspect_source(<<~RUBY)
+      it 'registers an offense, and auto-corrects' do
+        expect_offense(<<~RUBY)
           multiline = [
+                       ^{} #{no_space_message}
             [ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]]
         RUBY
 
-        expect(cop.offenses.size).to eq(1)
-        offense = cop.offenses.first
-        expect(offense.line).to eq(1)
-        expect(offense.column_range).to eq(13...13) # thus, can't expect_offense
-        expect(offense.message).to eq('Do not use space inside array brackets.')
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source(<<~RUBY)
-          multiline = [
-            [ 1, 2, 3, 4 ],
-            [ 3, 4, 5, 6 ]]
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           multiline = [
             [ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ] ]
@@ -599,35 +588,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
 
     context 'multiline array does not collapse any successive brackets' do
-      it 'registers an offense' do
-        # In this example, we cannot use `expect_offense` because the offense
-        # has no highlight (actually, a zero-width `column_range`) so our caret
-        # would not match.
-        inspect_source(<<~RUBY)
+      it 'registers an offense, but does not autocorrect' do
+        expect_offense(<<~RUBY)
           array = [
+                   ^{} #{no_space_message}
             [ a ],
             [ b, c ]
           ]
         RUBY
 
-        expect(cop.offenses.size).to eq(1)
-        offense = cop.offenses.first
-        expect(offense.line).to eq(1)
-        expect(offense.column_range).to eq(9...9) # thus, can't expect_offense
-        expect(offense.message).to eq('Do not use space inside array brackets.')
-      end
-
-      it 'does not auto-corrects' do
-        source = <<~RUBY
-          array = [
-            [ a ],
-            [ b, c ]
-          ]
-        RUBY
-
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(source)
+        expect_no_corrections
       end
     end
   end
