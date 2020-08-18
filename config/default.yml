@@ -3232,6 +3232,12 @@ Style/IpAddresses:
     - "::"
     # :: is a valid IPv6 address, but could potentially be legitimately in code
 
+Style/KeywordParametersOrder:
+  Description: 'Enforces that optional keyword parameters are placed at the end of the parameters list.'
+  StyleGuide: '#keyword-parameters-order'
+  Enabled: pending
+  VersionAdded: '0.90'
+
 Style/Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
   StyleGuide: '#lambda-multi-line'

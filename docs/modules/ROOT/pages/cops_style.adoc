@@ -4331,6 +4331,44 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | Array
 |===
 
+== Style/KeywordParametersOrder
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.90
+| -
+|===
+
+This cop enforces that optional keyword parameters are placed at the
+end of the parameters list.
+
+This improves readability, because when looking through the source,
+it is expected to find required parameters at the beginning of parameters list
+and optional parameters at the end.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def some_method(first: false, second:, third: 10)
+  # body omitted
+end
+
+# good
+def some_method(second:, first: false, third: 10)
+  # body omitted
+end
+----
+
+=== References
+
+* https://rubystyle.guide#keyword-parameters-order
+
 == Style/Lambda
 
 |===
