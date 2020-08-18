@@ -402,6 +402,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleinlinecomment[Style/InlineComment]
 * xref:cops_style.adoc#styleinversemethods[Style/InverseMethods]
 * xref:cops_style.adoc#styleipaddresses[Style/IpAddresses]
+* xref:cops_style.adoc#stylekeywordparametersorder[Style/KeywordParametersOrder]
 * xref:cops_style.adoc#stylelambda[Style/Lambda]
 * xref:cops_style.adoc#stylelambdacall[Style/LambdaCall]
 * xref:cops_style.adoc#stylelineendconcatenation[Style/LineEndConcatenation]

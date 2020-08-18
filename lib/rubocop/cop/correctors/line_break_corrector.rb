@@ -25,8 +25,8 @@ module RuboCop
           remove_semicolon(node, corrector)
         end
 
-        def break_line_before(range:, node:, corrector:, indent_steps: 1,
-                              configured_width:)
+        def break_line_before(range:, node:, corrector:, configured_width:,
+                              indent_steps: 1)
           corrector.insert_before(
             range,
             "\n#{' ' * (node.loc.keyword.column +
