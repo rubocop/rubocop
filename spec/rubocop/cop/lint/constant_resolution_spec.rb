@@ -27,6 +27,15 @@ RSpec.describe RuboCop::Cop::Lint::ConstantResolution, :config do
     RUBY
   end
 
+  context 'module & class definitions' do
+    it 'does not register offense' do
+      expect_no_offenses(<<~RUBY)
+        module Foo; end
+        class Bar; end
+      RUBY
+    end
+  end
+
   context 'with Only set' do
     let(:cop_config) { { 'Only' => ['MY_CONST'] } }
 
