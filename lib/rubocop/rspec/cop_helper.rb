@@ -17,7 +17,10 @@ module CopHelper
     RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
     RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
     processed_source = parse_source(source, file)
-    raise 'Error parsing example code' unless processed_source.valid_syntax?
+    unless processed_source.valid_syntax?
+      raise 'Error parsing example code: ' \
+        "#{processed_source.diagnostics.map(&:render).join("\n")}"
+    end
 
     _investigate(cop, processed_source)
   end

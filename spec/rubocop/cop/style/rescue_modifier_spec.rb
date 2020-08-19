@@ -80,6 +80,21 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     RUBY
   end
 
+  it 'handles parentheses around a rescue modifier' do
+    expect_offense(<<~RUBY)
+      (foo rescue nil)
+       ^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      rescue
+        nil
+      end
+    RUBY
+  end
+
   it 'does not register an offense for normal rescue' do
     expect_no_offenses(<<~RUBY)
       begin

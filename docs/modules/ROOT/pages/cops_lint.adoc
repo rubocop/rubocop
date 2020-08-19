@@ -1116,7 +1116,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| No
 | 0.90
 | -
 |===
@@ -3793,6 +3793,45 @@ always ignored. This is detected automatically since Ruby 2.7.
 return 1 # 1 is always ignored.
 ----
 
+== Lint/TrailingCommaInAttributeDeclaration
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.90
+| -
+|===
+
+This cop checks for trailing commas in attribute declarations, such as
+`#attr_reader`. Leaving a trailing comma will nullify the next method
+definition by overriding it with a getter method.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Foo
+  attr_reader :foo,
+
+  def bar
+    puts "Unreachable."
+  end
+end
+
+# good
+class Foo
+  attr_reader :foo
+
+  def bar
+    puts "No problem!"
+  end
+end
+----
+
 == Lint/UnderscorePrefixedVariableName
 
 |===
@@ -4557,6 +4596,77 @@ else
   do_something_else
 end
 ----
+
+== Lint/UselessMethodDefinition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.90
+| -
+|===
+
+This cop checks for useless method definitions, specifically: empty constructors
+and methods just delegating to `super`.
+
+This cop is marked as unsafe as it can trigger false positives for cases when
+an empty constructor just overrides the parent constructor, which is bad anyway.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def initialize
+end
+
+def method
+  super
+end
+
+# good
+def initialize
+  initialize_internals
+end
+
+def method
+  super
+  do_something_else
+end
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+def initialize
+  # Comment.
+end
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+def initialize
+  # Comment.
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
 
 == Lint/UselessSetterCall
 

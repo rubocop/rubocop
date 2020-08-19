@@ -19,7 +19,8 @@ module RuboCop
         private
 
         def_node_matcher :constant_definition?, '{class module}'
-        def_node_matcher :empty_line_required?, '{def defs class module}'
+        def_node_matcher :empty_line_required?,
+                         '{def defs class module (send nil? {:private :protected :public})}'
 
         def check(node, body, adjusted_first_line: nil)
           return if valid_body_style?(body)

@@ -145,11 +145,14 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
         # Build an amount of code large enough to register an offense.
         code = ['  x = Hash.new if 1 == 1 || 2 == 2'] * max
 
-        offenses = inspect_source(['def method_name', *code, 'end'].join("\n"))
+        expect_offense(<<~RUBY)
+          def method_name
+          ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [#{presentation}]
+            #{code.join("\n  ")}
+          end
+        RUBY
 
-        expect(offenses.sort.map(&:message))
-          .to eq(['Assignment Branch Condition size for method_name is too ' \
-                  "high. [#{presentation}]"])
+        expect_no_corrections
       end
     end
   end

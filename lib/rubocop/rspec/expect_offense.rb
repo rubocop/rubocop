@@ -128,7 +128,10 @@ module RuboCop
         @processed_source = parse_source(expected_annotations.plain_source,
                                          file)
 
-        raise 'Error parsing example code' unless @processed_source.valid_syntax?
+        unless @processed_source.valid_syntax?
+          raise 'Error parsing example code: ' \
+            "#{@processed_source.diagnostics.map(&:render).join("\n")}"
+        end
 
         offenses = _investigate(cop, @processed_source)
         actual_annotations =
@@ -136,6 +139,8 @@ module RuboCop
 
         expect(actual_annotations).to eq(expected_annotations), ''
         expect(offenses.map(&:severity).uniq).to eq([severity]) if severity
+
+        offenses
       end
 
       def expect_correction(correction, loop: true)

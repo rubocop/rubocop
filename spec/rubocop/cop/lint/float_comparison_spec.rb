@@ -4,36 +4,42 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when comparing with float' do
-    offenses = inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       x == 0.1
+      ^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       0.1 == x
+      ^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       x != 0.1
+      ^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       0.1 != x
+      ^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       x.eql?(0.1)
+      ^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       0.1.eql?(x)
+      ^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
     RUBY
-
-    expect(offenses.size).to eq(6)
   end
 
   it 'registers an offense when comparing with float returning method' do
-    offenses = inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       x == Float(1)
+      ^^^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       x == '0.1'.to_f
+      ^^^^^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       x == 1.fdiv(2)
+      ^^^^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
     RUBY
-
-    expect(offenses.size).to eq(3)
   end
 
   it 'registers an offense when comparing with arightmetic operator on floats' do
-    offenses = inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       x == 0.1 + y
+      ^^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       x == y + Float('0.1')
+      ^^^^^^^^^^^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
       x == y + z * (foo(arg) + '0.1'.to_f)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.
     RUBY
-
-    expect(offenses.size).to eq(3)
   end
 
   it 'registers an offense when comparing with method on float receiver' do

@@ -825,7 +825,7 @@ Array === something
 # good
 something.is_a?(Array)
 (1..100).include?(7)
-some_string =~ /something/
+/something/.match?(some_string)
 ----
 
 ==== AllowOnConstant
@@ -842,7 +842,7 @@ some_string =~ /something/
 # good
 Array === something
 (1..100).include?(7)
-some_string =~ /something/
+/something/.match?(some_string)
 ----
 
 === Configurable attributes
@@ -3259,7 +3259,7 @@ format('%s', 'Hello')
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| No
+| Yes
 | Yes (Unsafe)
 | 0.36
 | 0.79
@@ -6535,10 +6535,6 @@ bar.baz > 0
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `false`
-| Boolean
-
 | EnforcedStyle
 | `predicate`
 | `predicate`, `comparison`
@@ -7927,6 +7923,46 @@ end
 === References
 
 * https://rubystyle.guide#no-self-unless-required
+
+== Style/RedundantSelfAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.90
+| -
+|===
+
+This cop checks for places where redundant assignments are made for in place
+modification methods.
+
+This cop is marked as unsafe, because it can produce false positives for
+user defined methods having one of the expected names, but not modifying
+its receiver in place.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+args = args.concat(ary)
+hash = hash.merge!(other)
+
+# good
+args.concat(foo)
+args += foo
+hash.merge!(other)
+
+# bad
+self.foo = foo.concat(ary)
+
+# good
+foo.concat(ary)
+self.foo += ary
+----
 
 == Style/RedundantSort
 

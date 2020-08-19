@@ -11,7 +11,11 @@ RSpec.describe RuboCop::ConfigLoader do
     described_class.default_configuration = nil
   end
 
-  after { described_class.debug = false }
+  after do
+    described_class.debug = false
+    # Remove custom configuration
+    described_class.default_configuration = nil
+  end
 
   let(:default_config) { described_class.default_configuration }
 

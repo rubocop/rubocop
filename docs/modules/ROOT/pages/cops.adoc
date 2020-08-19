@@ -264,6 +264,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintsyntax[Lint/Syntax]
 * xref:cops_lint.adoc#linttojson[Lint/ToJSON]
 * xref:cops_lint.adoc#linttoplevelreturnwithargument[Lint/TopLevelReturnWithArgument]
+* xref:cops_lint.adoc#linttrailingcommainattributedeclaration[Lint/TrailingCommaInAttributeDeclaration]
 * xref:cops_lint.adoc#lintunderscoreprefixedvariablename[Lint/UnderscorePrefixedVariableName]
 * xref:cops_lint.adoc#lintunifiedinteger[Lint/UnifiedInteger]
 * xref:cops_lint.adoc#lintunreachablecode[Lint/UnreachableCode]
@@ -275,6 +276,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintuselessaccessmodifier[Lint/UselessAccessModifier]
 * xref:cops_lint.adoc#lintuselessassignment[Lint/UselessAssignment]
 * xref:cops_lint.adoc#lintuselesselsewithoutrescue[Lint/UselessElseWithoutRescue]
+* xref:cops_lint.adoc#lintuselessmethoddefinition[Lint/UselessMethodDefinition]
 * xref:cops_lint.adoc#lintuselesssettercall[Lint/UselessSetterCall]
 * xref:cops_lint.adoc#lintvoid[Lint/Void]
 
@@ -466,6 +468,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleredundantregexpescape[Style/RedundantRegexpEscape]
 * xref:cops_style.adoc#styleredundantreturn[Style/RedundantReturn]
 * xref:cops_style.adoc#styleredundantself[Style/RedundantSelf]
+* xref:cops_style.adoc#styleredundantselfassignment[Style/RedundantSelfAssignment]
 * xref:cops_style.adoc#styleredundantsort[Style/RedundantSort]
 * xref:cops_style.adoc#styleredundantsortby[Style/RedundantSortBy]
 * xref:cops_style.adoc#styleregexpliteral[Style/RegexpLiteral]
