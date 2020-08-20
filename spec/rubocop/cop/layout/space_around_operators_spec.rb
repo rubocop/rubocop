@@ -245,18 +245,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   describe 'missing space around operators' do
     shared_examples 'modifier with missing space' do |keyword|
       it "registers an offense in presence of modifier #{keyword} statement" do
-        src = <<~RUBY
+        expect_offense(<<~RUBY)
           a=1 #{keyword} condition
+           ^ Surrounding space missing for operator `=`.
           c=2
+           ^ Surrounding space missing for operator `=`.
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.map(&:line)).to eq([1, 2])
-        expect(cop.messages).to eq(
-          ['Surrounding space missing for operator `=`.'] * 2
-        )
 
-        new_source = autocorrect_source(src)
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a = 1 #{keyword} condition
           c = 2
         RUBY
@@ -595,18 +591,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators do
   describe 'extra space around operators' do
     shared_examples 'modifier with extra space' do |keyword|
       it "registers an offense in presence of modifier #{keyword} statement" do
-        src = <<~RUBY
+        expect_offense(<<~RUBY)
           a =  1 #{keyword} condition
+            ^ Operator `=` should be surrounded by a single space.
           c =   2
+            ^ Operator `=` should be surrounded by a single space.
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.map(&:line)).to eq([1, 2])
-        expect(cop.messages).to eq(
-          ['Operator `=` should be surrounded by a single space.'] * 2
-        )
 
-        new_source = autocorrect_source(src)
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           a = 1 #{keyword} condition
           c = 2
         RUBY
