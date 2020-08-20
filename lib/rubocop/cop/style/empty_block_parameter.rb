@@ -21,9 +21,10 @@ module RuboCop
       #
       #   # good
       #   a { do_something }
-      class EmptyBlockParameter < Cop
+      class EmptyBlockParameter < Base
         include EmptyParameter
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Omit pipes for the empty block parameters.'
 
@@ -32,15 +33,13 @@ module RuboCop
           check(node) unless send_node.send_type? && send_node.lambda_literal?
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            block = node.parent
-            range = range_between(
-              block.loc.begin.end_pos,
-              node.loc.expression.end_pos
-            )
-            corrector.remove(range)
-          end
+        private
+
+        def autocorrect(corrector, node)
+          block = node.parent
+          range = range_between(block.loc.begin.end_pos, node.loc.expression.end_pos)
+
+          corrector.remove(range)
         end
       end
     end
