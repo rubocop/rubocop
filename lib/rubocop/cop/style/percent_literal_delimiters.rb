@@ -23,8 +23,9 @@ module RuboCop
       #
       #   # bad
       #   %I(alpha beta)
-      class PercentLiteralDelimiters < Cop
+      class PercentLiteralDelimiters < Base
         include PercentLiteral
+        extend AutoCorrector
 
         def on_array(node)
           process(node, '%w', '%W', '%i', '%I')
@@ -47,25 +48,6 @@ module RuboCop
           process(node, '%x')
         end
 
-        def message(node)
-          type = type(node)
-          delimiters = preferred_delimiters_for(type)
-
-          "`#{type}`-literals should be delimited by " \
-          "`#{delimiters[0]}` and `#{delimiters[1]}`."
-        end
-
-        def autocorrect(node)
-          type = type(node)
-
-          opening_delimiter, closing_delimiter = preferred_delimiters_for(type)
-
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, "#{type}#{opening_delimiter}")
-            corrector.replace(node.loc.end, closing_delimiter)
-          end
-        end
-
         private
 
         def on_percent_literal(node)
@@ -74,7 +56,19 @@ module RuboCop
                     contains_preferred_delimiter?(node, type) ||
                     include_same_character_as_used_for_delimiter?(node, type)
 
-          add_offense(node)
+          add_offense(node, message: message(type)) do |corrector|
+            opening_delimiter, closing_delimiter = preferred_delimiters_for(type)
+
+            corrector.replace(node.loc.begin, "#{type}#{opening_delimiter}")
+            corrector.replace(node.loc.end, closing_delimiter)
+          end
+        end
+
+        def message(type)
+          delimiters = preferred_delimiters_for(type)
+
+          "`#{type}`-literals should be delimited by " \
+          "`#{delimiters[0]}` and `#{delimiters[1]}`."
         end
 
         def preferred_delimiters_for(type)

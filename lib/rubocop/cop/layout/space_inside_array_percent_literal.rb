@@ -12,9 +12,10 @@ module RuboCop
       #   %w(foo  bar  baz)
       #   # good
       #   %i(foo bar baz)
-      class SpaceInsideArrayPercentLiteral < Cop
+      class SpaceInsideArrayPercentLiteral < Base
         include MatchRange
         include PercentLiteral
+        extend AutoCorrector
 
         MSG = 'Use only a single space inside array percent literal.'
         MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX =
@@ -26,13 +27,7 @@ module RuboCop
 
         def on_percent_literal(node)
           each_unnecessary_space_match(node) do |range|
-            add_offense(node, location: range)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            each_unnecessary_space_match(node) do |range|
+            add_offense(range) do |corrector|
               corrector.replace(range, ' ')
             end
           end

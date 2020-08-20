@@ -15,8 +15,9 @@ module RuboCop
       #
       #   # good if @var is already a String
       #   @var
-      class RedundantInterpolation < Cop
+      class RedundantInterpolation < Base
         include PercentLiteral
+        extend AutoCorrector
 
         MSG = 'Prefer `to_s` over string interpolation.'
 
@@ -25,18 +26,18 @@ module RuboCop
         end
 
         def on_dstr(node)
-          add_offense(node) if single_interpolation?(node)
-        end
+          return unless single_interpolation?(node)
 
-        def autocorrect(node)
-          embedded_node = node.children.first
+          add_offense(node) do |corrector|
+            embedded_node = node.children.first
 
-          if variable_interpolation?(embedded_node)
-            autocorrect_variable_interpolation(embedded_node, node)
-          elsif single_variable_interpolation?(embedded_node)
-            autocorrect_single_variable_interpolation(embedded_node, node)
-          else
-            autocorrect_other(embedded_node, node)
+            if variable_interpolation?(embedded_node)
+              autocorrect_variable_interpolation(corrector, embedded_node, node)
+            elsif single_variable_interpolation?(embedded_node)
+              autocorrect_single_variable_interpolation(corrector, embedded_node, node)
+            else
+              autocorrect_other(corrector, embedded_node, node)
+            end
           end
         end
 
@@ -70,27 +71,27 @@ module RuboCop
             percent_literal?(node.parent)
         end
 
-        def autocorrect_variable_interpolation(embedded_node, node)
+        def autocorrect_variable_interpolation(corrector, embedded_node, node)
           replacement = "#{embedded_node.loc.expression.source}.to_s"
-          ->(corrector) { corrector.replace(node, replacement) }
+
+          corrector.replace(node, replacement)
         end
 
-        def autocorrect_single_variable_interpolation(embedded_node, node)
+        def autocorrect_single_variable_interpolation(corrector, embedded_node, node)
           variable_loc = embedded_node.children.first.loc
           replacement = "#{variable_loc.expression.source}.to_s"
-          ->(corrector) { corrector.replace(node, replacement) }
+
+          corrector.replace(node, replacement)
         end
 
-        def autocorrect_other(embedded_node, node)
+        def autocorrect_other(corrector, embedded_node, node)
           loc = node.loc
           embedded_loc = embedded_node.loc
 
-          lambda do |corrector|
-            corrector.replace(loc.begin, '')
-            corrector.replace(loc.end, '')
-            corrector.replace(embedded_loc.begin, '(')
-            corrector.replace(embedded_loc.end, ').to_s')
-          end
+          corrector.replace(loc.begin, '')
+          corrector.replace(loc.end, '')
+          corrector.replace(embedded_loc.begin, '(')
+          corrector.replace(embedded_loc.end, ').to_s')
         end
       end
     end
