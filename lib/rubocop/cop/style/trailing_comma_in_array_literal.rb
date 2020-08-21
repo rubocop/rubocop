@@ -81,17 +81,14 @@ module RuboCop
       #     1,
       #     2
       #   ]
-      class TrailingCommaInArrayLiteral < Cop
+      class TrailingCommaInArrayLiteral < Base
         include TrailingComma
+        extend AutoCorrector
 
         def on_array(node)
           return unless node.square_brackets?
 
           check_literal(node, 'item of %<article>s array')
-        end
-
-        def autocorrect(range)
-          PunctuationCorrector.swap_comma(range)
         end
       end
     end

@@ -140,7 +140,9 @@ module RuboCop
           unit: format(kind, article: article) + extra_info.to_s
         )
 
-        add_offense(range, location: range, message: msg)
+        add_offense(range, message: msg) do |corrector|
+          PunctuationCorrector.swap_comma(corrector, range)
+        end
       end
 
       def put_comma(items, kind)
@@ -148,13 +150,11 @@ module RuboCop
         return if last_item.block_pass_type?
 
         range = autocorrect_range(last_item)
-        msg = format(
-          MSG,
-          command: 'Put a',
-          unit: format(kind, article: 'a multiline')
-        )
+        msg = format(MSG, command: 'Put a', unit: format(kind, article: 'a multiline'))
 
-        add_offense(range, location: range, message: msg)
+        add_offense(range, message: msg) do |corrector|
+          PunctuationCorrector.swap_comma(corrector, range)
+        end
       end
 
       def autocorrect_range(item)

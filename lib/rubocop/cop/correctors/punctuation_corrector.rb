@@ -13,14 +13,12 @@ module RuboCop
           ->(corrector) { corrector.replace(token.pos, "#{token.pos.source} ") }
         end
 
-        def swap_comma(range)
+        def swap_comma(corrector, range)
           return unless range
 
-          lambda do |corrector|
-            case range.source
-            when ',' then corrector.remove(range)
-            else          corrector.insert_after(range, ',')
-            end
+          case range.source
+          when ',' then corrector.remove(range)
+          else          corrector.insert_after(range, ',')
           end
         end
       end

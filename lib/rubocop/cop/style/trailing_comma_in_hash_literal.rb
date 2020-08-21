@@ -84,15 +84,12 @@ module RuboCop
       #     foo: 1,
       #     bar: 2
       #   }
-      class TrailingCommaInHashLiteral < Cop
+      class TrailingCommaInHashLiteral < Base
         include TrailingComma
+        extend AutoCorrector
 
         def on_hash(node)
           check_literal(node, 'item of %<article>s hash')
-        end
-
-        def autocorrect(range)
-          PunctuationCorrector.swap_comma(range)
         end
       end
     end
