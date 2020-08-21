@@ -84,8 +84,9 @@ module RuboCop
       #     1,
       #     2
       #   )
-      class TrailingCommaInArguments < Cop
+      class TrailingCommaInArguments < Base
         include TrailingComma
+        extend AutoCorrector
 
         def on_send(node)
           return unless node.arguments? && node.parenthesized?
@@ -95,10 +96,6 @@ module RuboCop
                 node.source_range.end_pos)
         end
         alias on_csend on_send
-
-        def autocorrect(range)
-          PunctuationCorrector.swap_comma(range)
-        end
 
         def self.autocorrect_incompatible_with
           [Layout::HeredocArgumentClosingParenthesis]
