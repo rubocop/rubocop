@@ -44,7 +44,7 @@ module RuboCop
           # Requires `then` for write `when` and its body on the same line.
           return if require_then?(node)
 
-          # With more than one statements after then, there's not offense
+          # For arrays and hashes there's no offense
           return if accept_node_type?(node.body)
 
           range = node.loc.begin
@@ -64,7 +64,7 @@ module RuboCop
         end
 
         def accept_node_type?(node)
-          node&.begin_type? || node&.array_type? || node&.hash_type?
+          node&.array_type? || node&.hash_type?
         end
       end
     end
