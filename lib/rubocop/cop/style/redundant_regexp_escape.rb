@@ -32,9 +32,10 @@ module RuboCop
       #
       #   # good
       #   /[+\-]\d/
-      class RedundantRegexpEscape < Cop
+      class RedundantRegexpEscape < Base
         include RangeHelp
         include RegexpLiteralHelp
+        extend AutoCorrector
 
         MSG_REDUNDANT_ESCAPE = 'Redundant escape inside regexp literal'
 
@@ -46,19 +47,9 @@ module RuboCop
           each_escape(node) do |char, index, within_character_class|
             next if allowed_escape?(node, char, within_character_class)
 
-            add_offense(
-              node,
-              location: escape_range_at_index(node, index),
-              message: MSG_REDUNDANT_ESCAPE
-            )
-          end
-        end
+            location = escape_range_at_index(node, index)
 
-        def autocorrect(node)
-          lambda do |corrector|
-            each_escape(node) do |char, index, within_character_class|
-              next if allowed_escape?(node, char, within_character_class)
-
+            add_offense(location, message: MSG_REDUNDANT_ESCAPE) do |corrector|
               corrector.remove_leading(escape_range_at_index(node, index), 1)
             end
           end
