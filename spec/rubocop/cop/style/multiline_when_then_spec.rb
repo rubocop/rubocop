@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
     RUBY
   end
 
-  it 'registers an offense for multiline when statement with then' do
+  it 'registers an offense for multiline (one line in a body) when statement with then' do
     expect_offense(<<~RUBY)
       case foo
       when bar then
@@ -31,6 +31,25 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
       case foo
       when bar
       do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense for multiline (two lines in a body) when statement with then' do
+    expect_offense(<<~RUBY)
+      case foo
+      when bar then
+               ^^^^ Do not use `then` for multiline `when` statement.
+      do_something1
+      do_something2
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case foo
+      when bar
+      do_something1
+      do_something2
       end
     RUBY
   end
