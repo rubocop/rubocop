@@ -22,8 +22,9 @@ module RuboCop
       #   # good
       #   something.
       #     method
-      class DotPosition < Cop
+      class DotPosition < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         def on_send(node)
           return unless node.dot? || ampersand_dot?(node)
@@ -31,29 +32,32 @@ module RuboCop
           if proper_dot_position?(node)
             correct_style_detected
           else
-            add_offense(node, location: :dot) { opposite_style_detected }
+            return unless opposite_style_detected
+
+            dot = node.loc.dot
+            message = message(dot)
+
+            add_offense(dot, message: message) do |corrector|
+              autocorrect(corrector, dot, node)
+            end
           end
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          lambda do |corrector|
-            dot = node.loc.dot.source
-            corrector.remove(node.loc.dot)
-            case style
-            when :leading
-              corrector.insert_before(selector_range(node), dot)
-            when :trailing
-              corrector.insert_after(node.receiver, dot)
-            end
+        private
+
+        def autocorrect(corrector, dot, node)
+          corrector.remove(dot)
+          case style
+          when :leading
+            corrector.insert_before(selector_range(node), dot.source)
+          when :trailing
+            corrector.insert_after(node.receiver, dot.source)
           end
         end
 
-        private
-
-        def message(node)
-          dot = node.loc.dot.source
-          "Place the #{dot} on the " +
+        def message(dot)
+          "Place the #{dot.source} on the " +
             case style
             when :leading
               'next line, together with the method name.'

@@ -203,7 +203,6 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
             end
           end
         RUBY
-        expect(cop.messages).to eq([missing_begin])
       end
 
       it 'registers offenses for namespaced class body not ending '\

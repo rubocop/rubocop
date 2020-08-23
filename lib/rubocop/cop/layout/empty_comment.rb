@@ -60,47 +60,54 @@ module RuboCop
       #   class Foo
       #   end
       #
-      class EmptyComment < Cop
+      class EmptyComment < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Source code comment is empty.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           if allow_margin_comment?
             comments = concat_consecutive_comments(processed_source.comments)
 
-            comments.each do |comment|
-              next unless empty_comment_only?(comment[0])
-
-              comment[1].each do |offense_comment|
-                add_offense(offense_comment)
-              end
-            end
+            investigate(comments)
           else
             processed_source.comments.each do |comment|
               next unless empty_comment_only?(comment_text(comment))
 
-              add_offense(comment)
+              add_offense(comment) do |corrector|
+                autocorrect(corrector, comment)
+              end
             end
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            previous_token = previous_token(node)
-            range = if previous_token && node.loc.line == previous_token.line
-                      range_with_surrounding_space(range: node.loc.expression,
-                                                   newlines: false)
-                    else
-                      range_by_whole_lines(node.loc.expression,
-                                           include_final_newline: true)
-                    end
+        private
 
-            corrector.remove(range)
+        def investigate(comments)
+          comments.each do |comment|
+            next unless empty_comment_only?(comment[0])
+
+            comment[1].each do |offense_comment|
+              add_offense(offense_comment) do |corrector|
+                autocorrect(corrector, offense_comment)
+              end
+            end
           end
         end
 
-        private
+        def autocorrect(corrector, node)
+          previous_token = previous_token(node)
+          range = if previous_token && node.loc.line == previous_token.line
+                    range_with_surrounding_space(range: node.loc.expression,
+                                                 newlines: false)
+                  else
+                    range_by_whole_lines(node.loc.expression,
+                                         include_final_newline: true)
+                  end
+
+          corrector.remove(range)
+        end
 
         def concat_consecutive_comments(comments)
           consecutive_comments =

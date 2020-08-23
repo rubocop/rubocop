@@ -60,9 +60,10 @@ module RuboCop
       #   def do_something
       #   end
       #
-      class EmptyLinesAroundAttributeAccessor < Cop
+      class EmptyLinesAroundAttributeAccessor < Base
         include RangeHelp
         include AllowedMethods
+        extend AutoCorrector
 
         MSG = 'Add an empty line after attribute accessor.'
 
@@ -73,11 +74,7 @@ module RuboCop
           next_line_node = next_line_node(node)
           return unless require_empty_line?(next_line_node)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             range = range_by_whole_lines(node.source_range)
 
             corrector.insert_after(range, "\n")
