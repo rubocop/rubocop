@@ -46,7 +46,9 @@ module RuboCop
                           source: align_with.source,
                           align_line: align_with.line,
                           align_col: align_with.column)
-        add_offense(node, location: end_loc, message: msg)
+        add_offense(end_loc, message: msg) do |corrector|
+          autocorrect(corrector, node)
+        end
       end
 
       def accept_end_kw_alignment?(end_loc)

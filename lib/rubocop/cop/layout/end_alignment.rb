@@ -67,10 +67,11 @@ module RuboCop
       #   variable =
       #     if true
       #     end
-      class EndAlignment < Cop
+      class EndAlignment < Base
         include CheckAssignment
         include EndKeywordAlignment
         include RangeHelp
+        extend AutoCorrector
 
         def on_class(node)
           check_other_alignment(node)
@@ -100,13 +101,11 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.align_end(processed_source,
-                                       node,
-                                       alignment_node(node))
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.align_end(corrector, processed_source, node, alignment_node(node))
+        end
 
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
