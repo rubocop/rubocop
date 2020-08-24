@@ -19,6 +19,7 @@ module RuboCop
       #     end
       #   end
       #
+      # @api private
       class ColonMethodDefinition < Base
         extend AutoCorrector
 

@@ -42,6 +42,8 @@ module RuboCop
       #     end
       #   end
       #   end
+      #
+      # @api private
       class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
         include EndKeywordAlignment
         include Alignment

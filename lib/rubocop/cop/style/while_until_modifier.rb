@@ -24,6 +24,8 @@ module RuboCop
       #
       #   # good
       #   x += 1 until x > 10
+      #
+      # @api private
       class WhileUntilModifier < Base
         include StatementModifier
         extend AutoCorrector

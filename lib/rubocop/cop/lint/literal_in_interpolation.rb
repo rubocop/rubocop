@@ -16,6 +16,8 @@ module RuboCop
       #   # good
       #
       #   "result is 10"
+      #
+      # @api private
       class LiteralInInterpolation < Base
         include Interpolation
         include RangeHelp

@@ -31,6 +31,8 @@ module RuboCop
       #       do_something(bar)
       #     end
       #   end
+      #
+      # @api private
       class ShadowingOuterLocalVariable < Base
         MSG = 'Shadowing outer local variable - `%<variable>s`.'
 

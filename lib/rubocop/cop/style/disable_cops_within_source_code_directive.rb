@@ -20,6 +20,7 @@ module RuboCop
       #   def fixed_method_name_and_no_rubocop_comments
       #   end
       #
+      # @api private
       class DisableCopsWithinSourceCodeDirective < Base
         extend AutoCorrector
 

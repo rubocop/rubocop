@@ -91,6 +91,7 @@ module RuboCop
       #     end
       #   end
       #
+      # @api private
       class DocumentationMethod < Base
         include DocumentationComment
         include DefNode

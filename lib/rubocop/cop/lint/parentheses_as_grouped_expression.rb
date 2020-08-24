@@ -15,6 +15,8 @@ module RuboCop
       #   do_something(foo)
       #   do_something (2 + 3) * 4
       #   do_something (foo * bar).baz
+      #
+      # @api private
       class ParenthesesAsGroupedExpression < Base
         include RangeHelp
         extend AutoCorrector

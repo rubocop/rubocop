@@ -22,6 +22,8 @@ module RuboCop
       #   a = 1
       #   b = 2
       #   c = 3
+      #
+      # @api private
       class ParallelAssignment < Base
         include RescueNode
         extend AutoCorrector

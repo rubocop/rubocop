@@ -13,6 +13,8 @@ module RuboCop
       #
       #   # good
       #   def +(other); end
+      #
+      # @api private
       class BinaryOperatorParameterName < Base
         MSG = 'When defining the `%<opr>s` operator, ' \
               'name its argument `other`.'

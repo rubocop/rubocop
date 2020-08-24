@@ -17,6 +17,7 @@ module RuboCop
       #       :a,
       #       :b]
       #
+      # @api private
       class FirstArrayElementLineBreak < Cop
         include FirstElementLineBreak
 

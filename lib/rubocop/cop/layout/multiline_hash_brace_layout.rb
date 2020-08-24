@@ -88,6 +88,8 @@ module RuboCop
       #     # good
       #     { a: 1,
       #       b: 2 }
+      #
+      # @api private
       class MultilineHashBraceLayout < Cop
         include MultilineLiteralBraceLayout
 

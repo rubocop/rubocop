@@ -21,6 +21,7 @@ module RuboCop
       #     # ...
       #   end
       #
+      # @api private
       class MissingRespondToMissing < Base
         MSG =
           'When using `method_missing`, define `respond_to_missing?`.'

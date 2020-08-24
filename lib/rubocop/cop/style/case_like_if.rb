@@ -26,6 +26,7 @@ module RuboCop
       #     final_action
       #   end
       #
+      # @api private
       class CaseLikeIf < Base
         include RangeHelp
         extend AutoCorrector

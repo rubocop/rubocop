@@ -100,6 +100,8 @@ module RuboCop
       #   def foo(a,
       #     b)
       #   end
+      #
+      # @api private
       class MultilineMethodDefinitionBraceLayout < Cop
         include MultilineLiteralBraceLayout
 

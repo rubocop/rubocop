@@ -22,6 +22,8 @@ module RuboCop
       #   if some_condition
       #     do_something
       #   end
+      #
+      # @api private
       class ConditionPosition < Base
         include RangeHelp
         extend AutoCorrector

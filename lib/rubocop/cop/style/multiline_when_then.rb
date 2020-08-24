@@ -28,6 +28,7 @@ module RuboCop
       #                              arg2)
       #   end
       #
+      # @api private
       class MultilineWhenThen < Base
         include RangeHelp
         extend AutoCorrector

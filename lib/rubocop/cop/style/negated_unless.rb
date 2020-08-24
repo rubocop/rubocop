@@ -58,6 +58,8 @@ module RuboCop
       #   unless !foo
       #     bar
       #   end
+      #
+      # @api private
       class NegatedUnless < Base
         include ConfigurableEnforcedStyle
         include NegativeConditional

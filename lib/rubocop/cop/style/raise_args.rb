@@ -32,6 +32,8 @@ module RuboCop
       #   raise StandardError.new("message")
       #   raise MyCustomError.new(arg1, arg2, arg3)
       #   fail "message"
+      #
+      # @api private
       class RaiseArgs < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

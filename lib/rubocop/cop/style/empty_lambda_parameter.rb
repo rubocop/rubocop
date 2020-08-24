@@ -16,6 +16,8 @@ module RuboCop
       #
       #   # good
       #   -> (arg) { do_something(arg) }
+      #
+      # @api private
       class EmptyLambdaParameter < Base
         include EmptyParameter
         include RangeHelp

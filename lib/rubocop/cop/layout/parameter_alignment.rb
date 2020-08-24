@@ -68,6 +68,8 @@ module RuboCop
       #        baz)
       #     123
       #   end
+      #
+      # @api private
       class ParameterAlignment < Cop
         include Alignment
 

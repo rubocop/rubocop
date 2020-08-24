@@ -30,6 +30,7 @@ module RuboCop
       #        bar
       #      SQL
       #
+      # @api private
       class HeredocMethodCallPosition < Base
         include RangeHelp
         extend AutoCorrector

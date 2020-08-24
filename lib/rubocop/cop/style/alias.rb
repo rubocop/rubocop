@@ -22,6 +22,8 @@ module RuboCop
       #
       #   # good
       #   alias_method :bar, :foo
+      #
+      # @api private
       class Alias < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

@@ -11,6 +11,8 @@ module RuboCop
       #
       #   eval(something)
       #   binding.eval(something)
+      #
+      # @api private
       class Eval < Base
         MSG = 'The use of `eval` is a serious security risk.'
 

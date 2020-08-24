@@ -17,6 +17,8 @@ module RuboCop
       #   when 1 then 'baz'
       #   when 2 then 'bar'
       #   end
+      #
+      # @api private
       class WhenThen < Base
         extend AutoCorrector
 

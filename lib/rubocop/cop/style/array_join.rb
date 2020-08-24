@@ -17,6 +17,7 @@ module RuboCop
       #   # good
       #   %w(foo bar baz).join(",")
       #
+      # @api private
       class ArrayJoin < Base
         extend AutoCorrector
 

@@ -39,6 +39,8 @@ module RuboCop
       #   rescue SomeException
       #     handle_error
       #   end
+      #
+      # @api private
       class RescueModifier < Cop
         include Alignment
         include RescueNode

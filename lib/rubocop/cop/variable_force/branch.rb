@@ -168,6 +168,8 @@ module RuboCop
         # else
         #   truthy_body
         # end
+        #
+        # @api private
         class If < Base
           include SimpleConditional
 
@@ -179,6 +181,8 @@ module RuboCop
         # while conditional_clause
         #   loop_body
         # end
+        #
+        # @api private
         class While < Base
           include SimpleConditional
 
@@ -189,6 +193,8 @@ module RuboCop
         # until conditional_clause
         #   loop_body
         # end
+        #
+        # @api private
         class Until < Base
           include SimpleConditional
 
@@ -199,6 +205,8 @@ module RuboCop
         # begin
         #   loop_body
         # end while conditional_clause
+        #
+        # @api private
         class WhilePost < Base
           include SimpleConditional
 
@@ -209,6 +217,8 @@ module RuboCop
         # begin
         #   loop_body
         # end until conditional_clause
+        #
+        # @api private
         class UntilPost < Base
           include SimpleConditional
 
@@ -221,6 +231,8 @@ module RuboCop
         # else
         #   else_body
         # end
+        #
+        # @api private
         class Case < Base
           define_predicate :target?,      child_index: 0
           define_predicate :when_clause?, child_index: 1..-2
@@ -234,6 +246,8 @@ module RuboCop
         # for element in collection
         #   loop_body
         # end
+        #
+        # @api private
         class For < Base
           define_predicate :element?,    child_index: 0
           define_predicate :collection?, child_index: 1
@@ -252,6 +266,8 @@ module RuboCop
         end
 
         # left_body && right_body
+        #
+        # @api private
         class And < Base
           include LogicalOperator
 
@@ -260,6 +276,8 @@ module RuboCop
         end
 
         # left_body || right_body
+        #
+        # @api private
         class Or < Base
           include LogicalOperator
 
@@ -284,6 +302,8 @@ module RuboCop
         #   else
         #     else_body
         #   end
+        #
+        # @api private
         class Rescue < Base
           include ExceptionHandler
 
@@ -301,6 +321,8 @@ module RuboCop
         #   ensure
         #     ensure_body
         #   end
+        #
+        # @api private
         class Ensure < Base
           include ExceptionHandler
 

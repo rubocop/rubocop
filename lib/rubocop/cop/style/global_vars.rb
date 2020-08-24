@@ -19,6 +19,8 @@ module RuboCop
       #   FOO = 2
       #   foo = 2
       #   $stdin.read
+      #
+      # @api private
       class GlobalVars < Base
         MSG = 'Do not introduce global variables.'
 

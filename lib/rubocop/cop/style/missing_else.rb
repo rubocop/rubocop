@@ -93,6 +93,8 @@ module RuboCop
       #   else
       #     # the content of `else` branch will be determined by Style/EmptyElse
       #   end
+      #
+      # @api private
       class MissingElse < Base
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle

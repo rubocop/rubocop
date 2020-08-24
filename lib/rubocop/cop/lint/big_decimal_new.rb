@@ -14,6 +14,7 @@ module RuboCop
       #   # good
       #   BigDecimal(123.456, 3)
       #
+      # @api private
       class BigDecimalNew < Base
         extend AutoCorrector
 

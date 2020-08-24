@@ -16,6 +16,8 @@ module RuboCop
       #   File.open('file') do |f|
       #     # ...
       #   end
+      #
+      # @api private
       class AutoResourceCleanup < Base
         MSG = 'Use the block version of `%<class>s.%<method>s`.'
 

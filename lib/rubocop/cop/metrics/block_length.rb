@@ -29,6 +29,8 @@ module RuboCop
       #       content.
       #     HEREDOC
       #   end                 # 5 points
+      #
+      # @api private
       class BlockLength < Base
         include CodeLength
 

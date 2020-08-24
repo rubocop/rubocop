@@ -208,6 +208,8 @@ module RuboCop
       #     some_other_method
       #     bar = 2
       #   end
+      #
+      # @api private
       class ConditionalAssignment < Cop
         include ConditionalAssignmentHelper
         include ConfigurableEnforcedStyle

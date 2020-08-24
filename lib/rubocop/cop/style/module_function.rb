@@ -71,6 +71,8 @@ module RuboCop
       #
       # These offenses are not safe to auto-correct since there are different
       # implications to each approach.
+      #
+      # @api private
       class ModuleFunction < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

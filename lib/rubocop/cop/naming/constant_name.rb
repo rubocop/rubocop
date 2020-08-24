@@ -17,6 +17,8 @@ module RuboCop
       #
       #   # good
       #   INCH_IN_CM = 2.54
+      #
+      # @api private
       class ConstantName < Base
         MSG = 'Use SCREAMING_SNAKE_CASE for constants.'
         # Use POSIX character classes, so we allow accented characters rather

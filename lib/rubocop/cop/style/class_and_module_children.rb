@@ -21,6 +21,8 @@ module RuboCop
       #   end
       #
       # The compact style is only forced for classes/modules with one child.
+      #
+      # @api private
       class ClassAndModuleChildren < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

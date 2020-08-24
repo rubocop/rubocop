@@ -14,6 +14,8 @@ module RuboCop
       #   %w/swim run bike/
       #   %w[shirt pants shoes]
       #   %W(apple #{fruit} grape)
+      #
+      # @api private
       class RedundantCapitalW < Base
         include PercentLiteral
         extend AutoCorrector

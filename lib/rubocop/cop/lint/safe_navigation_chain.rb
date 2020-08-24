@@ -23,6 +23,8 @@ module RuboCop
       #
       #   x&.foo&.bar
       #   x&.foo || bar
+      #
+      # @api private
       class SafeNavigationChain < Base
         include NilMethods
 

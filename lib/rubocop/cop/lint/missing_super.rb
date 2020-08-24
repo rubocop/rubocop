@@ -37,6 +37,7 @@ module RuboCop
       #     end
       #   end
       #
+      # @api private
       class MissingSuper < Base
         CONSTRUCTOR_MSG = 'Call `super` to initialize state of the parent class.'
         CALLBACK_MSG    = 'Call `super` to invoke callback defined in the parent class.'

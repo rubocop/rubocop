@@ -31,6 +31,8 @@ module RuboCop
       #   def foo
       #     bar
       #   end
+      #
+      # @api private
       class IndentationStyle < Cop
         include Alignment
         include ConfigurableEnforcedStyle

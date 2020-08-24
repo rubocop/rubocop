@@ -18,6 +18,7 @@ module RuboCop
       #
       #   puts $1 # => foo
       #
+      # @api private
       class OutOfRangeRegexpRef < Base
         MSG = 'Do not use out of range reference for the Regexp.'
 

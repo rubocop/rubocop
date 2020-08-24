@@ -34,6 +34,8 @@ module RuboCop
       #   rescue NameError
       #     baz
       #   end
+      #
+      # @api private
       class RescueType < Base
         include RescueNode
         extend AutoCorrector

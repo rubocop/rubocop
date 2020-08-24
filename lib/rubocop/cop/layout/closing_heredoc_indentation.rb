@@ -46,6 +46,7 @@ module RuboCop
       #         Hi
       #       EOS
       #
+      # @api private
       class ClosingHeredocIndentation < Base
         include Heredoc
         extend AutoCorrector

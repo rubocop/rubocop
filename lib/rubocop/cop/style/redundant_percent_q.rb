@@ -17,6 +17,7 @@ module RuboCop
       #   time = "8 o'clock"
       #   question = '"What did you say?"'
       #
+      # @api private
       class RedundantPercentQ < Cop
         MSG = 'Use `%<q_type>s` only for strings that contain both ' \
               'single quotes and double quotes%<extra>s.'

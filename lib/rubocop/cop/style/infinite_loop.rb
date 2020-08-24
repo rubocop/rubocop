@@ -15,6 +15,8 @@ module RuboCop
       #   loop do
       #     work
       #   end
+      #
+      # @api private
       class InfiniteLoop < Base
         extend AutoCorrector
 

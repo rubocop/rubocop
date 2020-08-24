@@ -33,6 +33,8 @@ module RuboCop
       #
       #   private def foo
       #           end
+      #
+      # @api private
       class DefEndAlignment < Base
         include EndKeywordAlignment
         include RangeHelp

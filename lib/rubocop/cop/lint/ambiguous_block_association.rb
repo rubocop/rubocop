@@ -24,6 +24,8 @@ module RuboCop
       #   # good
       #   # Lambda arguments require no disambiguation
       #   foo = ->(bar) { bar.baz }
+      #
+      # @api private
       class AmbiguousBlockAssociation < Base
         MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \
               'block will be associated with the `%<method>s` method ' \

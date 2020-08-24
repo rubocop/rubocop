@@ -27,6 +27,7 @@ module RuboCop
       #   # frozen_string_literal: true
       #   p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
       #
+      # @api private
       class OrderedMagicComments < Base
         include FrozenStringLiteral
         extend AutoCorrector

@@ -51,6 +51,7 @@ module RuboCop
       #   # good
       #   Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
       #
+      # @api private
       class NonDeterministicRequireOrder < Base
         extend AutoCorrector
 

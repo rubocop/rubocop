@@ -13,6 +13,8 @@ module RuboCop
     # 3   just/ok.rb
     # --
     # 29  Total
+    #
+    # @api private
     class WorstOffendersFormatter < BaseFormatter
       attr_reader :offense_counts
 

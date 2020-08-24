@@ -22,6 +22,8 @@ module RuboCop
       #   alive_threads.map do |t|
       #     t.object_id
       #   end
+      #
+      # @api private
       class MultilineBlockChain < Cop
         include RangeHelp
 

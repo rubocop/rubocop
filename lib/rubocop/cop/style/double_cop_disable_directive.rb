@@ -24,6 +24,7 @@ module RuboCop
       #   def f # rubocop:disable Style/For, Metrics/AbcSize
       #   end
       #
+      # @api private
       class DoubleCopDisableDirective < Base
         extend AutoCorrector
 

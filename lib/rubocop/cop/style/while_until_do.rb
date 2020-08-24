@@ -28,6 +28,8 @@ module RuboCop
       #   until x.empty?
       #     do_something(x.pop)
       #   end
+      #
+      # @api private
       class WhileUntilDo < Base
         extend AutoCorrector
 

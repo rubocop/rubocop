@@ -175,6 +175,7 @@ module RuboCop
       #   do_something({foo: 1,
       #     bar: 2})
       #
+      # @api private
       class HashAlignment < Cop
         include HashAlignmentStyles
         include RangeHelp

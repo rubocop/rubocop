@@ -11,6 +11,8 @@ module RuboCop
       # towards the nesting level. Set to `true` to count blocks as well.
       #
       # The maximum level of nesting allowed is configurable.
+      #
+      # @api private
       class BlockNesting < Base
         include ConfigurableMax
 

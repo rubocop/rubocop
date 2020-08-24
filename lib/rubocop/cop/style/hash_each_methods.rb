@@ -17,6 +17,8 @@ module RuboCop
       #   # good
       #   hash.each_key { |k| p k }
       #   hash.each_value { |v| p v }
+      #
+      # @api private
       class HashEachMethods < Base
         include Lint::UnusedArgument
         extend AutoCorrector

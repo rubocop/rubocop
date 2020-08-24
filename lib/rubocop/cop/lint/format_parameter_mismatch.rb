@@ -34,6 +34,8 @@ module RuboCop
       #   # good
       #
       #   format('Numbered format: %1$s and numbered %2$s', a_value, another)
+      #
+      # @api private
       class FormatParameterMismatch < Base
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \

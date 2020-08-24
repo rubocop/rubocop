@@ -20,6 +20,8 @@ module RuboCop
       #   # good
       #
       #   %w(foo bar)
+      #
+      # @api private
       class PercentStringArray < Base
         include PercentLiteral
         extend AutoCorrector

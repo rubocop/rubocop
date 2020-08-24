@@ -25,6 +25,7 @@ module RuboCop
       #     spec.add_runtime_dependency 'gem_a'
       #   end
       #
+      # @api private
       class RubyVersionGlobalsUsage < Cop
         MSG = 'Do not use `RUBY_VERSION` in gemspec file.'
 

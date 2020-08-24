@@ -48,6 +48,8 @@ module RuboCop
       #
       #   # good
       #   a ** b
+      #
+      # @api private
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
         include RangeHelp

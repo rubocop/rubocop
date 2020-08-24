@@ -76,6 +76,7 @@ module RuboCop
       #   # good
       #   [1, 2, 3].each {|n| n * 2 }
       #
+      # @api private
       class SpaceInsideBlockBraces < Cop
         include ConfigurableEnforcedStyle
         include SurroundingSpace

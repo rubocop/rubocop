@@ -43,6 +43,7 @@ module RuboCop
       #     handle_standard_error
       #   end
       #
+      # @api private
       class ShadowedException < Base
         include RescueNode
         include RangeHelp

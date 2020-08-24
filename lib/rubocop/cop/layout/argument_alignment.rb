@@ -37,6 +37,8 @@ module RuboCop
       #
       #   foo :bar,
       #       :baz
+      #
+      # @api private
       class ArgumentAlignment < Cop
         include Alignment
 

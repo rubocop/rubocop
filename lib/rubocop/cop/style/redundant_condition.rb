@@ -30,6 +30,7 @@ module RuboCop
       #     c
       #   end
       #
+      # @api private
       class RedundantCondition < Base
         include RangeHelp
         extend AutoCorrector

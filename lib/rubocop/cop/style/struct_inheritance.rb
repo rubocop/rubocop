@@ -19,6 +19,8 @@ module RuboCop
       #       42
       #     end
       #   end
+      #
+      # @api private
       class StructInheritance < Base
         include RangeHelp
         extend AutoCorrector

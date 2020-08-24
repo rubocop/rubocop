@@ -40,6 +40,7 @@ module RuboCop
       #   # good
       #   Pathname.new(__dir__).expand_path
       #
+      # @api private
       class ExpandPathArguments < Base
         include RangeHelp
         extend AutoCorrector

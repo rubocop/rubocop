@@ -32,6 +32,8 @@ module RuboCop
       #   private
       #     def smooth; end
       #   end
+      #
+      # @api private
       class AccessModifierIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle

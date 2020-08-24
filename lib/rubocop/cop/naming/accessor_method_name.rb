@@ -21,6 +21,8 @@ module RuboCop
       #   # good
       #   def attribute
       #   end
+      #
+      # @api private
       class AccessorMethodName < Base
         MSG_READER = 'Do not prefix reader method names with `get_`.'
         MSG_WRITER = 'Do not prefix writer method names with `set_`.'

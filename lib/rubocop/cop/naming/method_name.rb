@@ -28,6 +28,8 @@ module RuboCop
       #
       #   # good
       #   def fooBar; end
+      #
+      # @api private
       class MethodName < Base
         include ConfigurableNaming
         include IgnoredPattern

@@ -17,6 +17,8 @@ module RuboCop
       #
       #   # good
       #   'a'..'z'
+      #
+      # @api private
       class SpaceInsideRangeLiteral < Cop
         MSG = 'Space inside range literal.'
 

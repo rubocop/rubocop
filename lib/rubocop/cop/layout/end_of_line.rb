@@ -37,6 +37,7 @@ module RuboCop
       #   # good
       #   puts 'Hello' # Return character is CR+LF on all platfoms.
       #
+      # @api private
       class EndOfLine < Cop
         include ConfigurableEnforcedStyle
         include RangeHelp

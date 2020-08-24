@@ -15,6 +15,8 @@ module RuboCop
       #   else
       #     a2
       #   end
+      #
+      # @api private
       class NestedTernaryOperator < Base
         extend AutoCorrector
 

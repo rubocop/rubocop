@@ -32,6 +32,7 @@ module RuboCop
       #     true
       #   end
       #
+      # @api private
       class CommentIndentation < Cop
         include Alignment
 

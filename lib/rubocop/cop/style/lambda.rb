@@ -46,6 +46,8 @@ module RuboCop
       #   f = ->(x) do
       #         x
       #       end
+      #
+      # @api private
       class Lambda < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

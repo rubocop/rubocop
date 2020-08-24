@@ -16,6 +16,8 @@ module RuboCop
       #   a = []
       #   h = {}
       #   s = ''
+      #
+      # @api private
       class EmptyLiteral < Base
         include FrozenStringLiteral
         include RangeHelp

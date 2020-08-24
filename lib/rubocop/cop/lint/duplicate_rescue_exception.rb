@@ -25,6 +25,7 @@ module RuboCop
       #     handle_other_exception
       #   end
       #
+      # @api private
       class DuplicateRescueException < Base
         include RescueNode
 

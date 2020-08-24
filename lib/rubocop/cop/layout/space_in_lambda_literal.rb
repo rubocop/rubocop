@@ -19,6 +19,8 @@ module RuboCop
       #
       #     # good
       #     a = -> (x, y) { x + y }
+      #
+      # @api private
       class SpaceInLambdaLiteral < Cop
         include ConfigurableEnforcedStyle
         include RangeHelp

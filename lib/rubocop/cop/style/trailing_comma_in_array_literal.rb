@@ -81,6 +81,8 @@ module RuboCop
       #     1,
       #     2
       #   ]
+      #
+      # @api private
       class TrailingCommaInArrayLiteral < Base
         include TrailingComma
         extend AutoCorrector

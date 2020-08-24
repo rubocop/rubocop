@@ -22,6 +22,8 @@ module RuboCop
       #   # good
       #   bar while foo
       #   bar while !foo && baz
+      #
+      # @api private
       class NegatedWhile < Base
         include NegativeConditional
         extend AutoCorrector

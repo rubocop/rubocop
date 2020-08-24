@@ -22,6 +22,7 @@ module RuboCop
       #   RUBY
       #
       #
+      # @api private
       class HeredocIndentation < Cop
         include Heredoc
 

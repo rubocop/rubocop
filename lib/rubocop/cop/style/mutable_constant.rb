@@ -50,6 +50,8 @@ module RuboCop
       #       puts 1
       #     end
       #   end.freeze
+      #
+      # @api private
       class MutableConstant < Base
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle

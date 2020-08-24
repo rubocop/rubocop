@@ -30,6 +30,8 @@ module RuboCop
       #     some_var = 1
       #     do_something(some_var)
       #   end
+      #
+      # @api private
       class UselessAssignment < Base
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 

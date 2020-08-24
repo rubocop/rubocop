@@ -41,6 +41,8 @@ module RuboCop
       #   second_param)
       #     123
       #   end
+      #
+      # @api private
       class FirstParameterIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle

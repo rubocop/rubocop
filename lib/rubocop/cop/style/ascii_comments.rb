@@ -15,6 +15,8 @@ module RuboCop
       #
       #   # good
       #   # Translates from English to Japanese
+      #
+      # @api private
       class AsciiComments < Base
         include RangeHelp
 

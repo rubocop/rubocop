@@ -11,6 +11,8 @@ module RuboCop
       #
       #   # good
       #   x = 1; y = 2
+      #
+      # @api private
       class SpaceAfterSemicolon < Cop
         include SpaceAfterPunctuation
 

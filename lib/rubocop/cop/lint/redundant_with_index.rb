@@ -26,6 +26,7 @@ module RuboCop
       #     v
       #   end
       #
+      # @api private
       class RedundantWithIndex < Base
         include RangeHelp
         extend AutoCorrector

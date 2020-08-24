@@ -20,6 +20,8 @@ module RuboCop
       #       # ...
       #     end
       #   end
+      #
+      # @api private
       class ClassMethods < Base
         extend AutoCorrector
 

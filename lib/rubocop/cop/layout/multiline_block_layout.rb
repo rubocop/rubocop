@@ -48,6 +48,8 @@ module RuboCop
       #     foo(i)
       #     bar(i)
       #   }
+      #
+      # @api private
       class MultilineBlockLayout < Cop
         include RangeHelp
 

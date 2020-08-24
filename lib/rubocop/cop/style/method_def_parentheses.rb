@@ -84,6 +84,8 @@ module RuboCop
       #           last_descriptive_var_name)
       #     do_something
       #   end
+      #
+      # @api private
       class MethodDefParentheses < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

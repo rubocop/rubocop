@@ -16,6 +16,8 @@ module RuboCop
       #
       #   # Good
       #   raise 'message'
+      #
+      # @api private
       class RedundantException < Base
         extend AutoCorrector
 

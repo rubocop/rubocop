@@ -21,6 +21,7 @@ module RuboCop
       #   something y, z
       #   something 'hello'
       #
+      # @api private
       class SpaceBeforeFirstArg < Cop
         include PrecedingFollowingAlignment
         include RangeHelp

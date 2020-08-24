@@ -26,6 +26,8 @@ module RuboCop
       #   end
       #   class module_parent::MyModule
       #   end
+      #
+      # @api private
       class ClassAndModuleCamelCase < Base
         MSG = 'Use CamelCase for classes and modules.'
 

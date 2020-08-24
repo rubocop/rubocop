@@ -11,6 +11,8 @@ module RuboCop
       #
       #   # good
       #   !something
+      #
+      # @api private
       class SpaceAfterNot < Cop
         include RangeHelp
 

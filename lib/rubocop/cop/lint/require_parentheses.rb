@@ -27,6 +27,8 @@ module RuboCop
       #   if day.is?(:tuesday) && month == :jan
       #     # ...
       #   end
+      #
+      # @api private
       class RequireParentheses < Base
         include RangeHelp
 

@@ -13,6 +13,7 @@ module RuboCop
       #   # good
       #   node.send_type?
       #
+      # @api private
       class NodeTypePredicate < Base
         extend AutoCorrector
 

@@ -13,6 +13,8 @@ module RuboCop
       #
       #   # good
       #   def f(a:, b: 2); {a: 3}; end
+      #
+      # @api private
       class SpaceAfterColon < Cop
         MSG = 'Space missing after colon.'
 

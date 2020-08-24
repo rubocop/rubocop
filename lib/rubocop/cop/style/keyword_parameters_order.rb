@@ -21,6 +21,7 @@ module RuboCop
       #     # body omitted
       #   end
       #
+      # @api private
       class KeywordParametersOrder < Base
         include RangeHelp
         extend AutoCorrector

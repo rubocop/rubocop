@@ -35,6 +35,8 @@ module RuboCop
       #       return if need_return?
       #     end
       #   end
+      #
+      # @api private
       class EmptyLineAfterGuardClause < Base
         include RangeHelp
         extend AutoCorrector

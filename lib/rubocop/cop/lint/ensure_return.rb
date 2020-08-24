@@ -44,6 +44,8 @@ module RuboCop
       #   ensure
       #     cleanup
       #   end
+      #
+      # @api private
       class EnsureReturn < Base
         extend AutoCorrector
         include RangeHelp

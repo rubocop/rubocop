@@ -31,6 +31,8 @@ module RuboCop
       #     def do_something
       #     end
       #   RUBY
+      #
+      # @api private
       class EvalWithLocation < Base
         MSG = 'Pass `__FILE__` and `__LINE__` to `eval` method, ' \
               'as they are used by backtraces.'

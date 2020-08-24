@@ -28,6 +28,8 @@ module RuboCop
       #   foo.reduce do |c, d|
       #     c + d
       #   end
+      #
+      # @api private
       class SingleLineBlockParams < Base
         MSG = 'Name `%<method>s` block params `|%<params>s|`.'
 

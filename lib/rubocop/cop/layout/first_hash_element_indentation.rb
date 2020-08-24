@@ -77,6 +77,8 @@ module RuboCop
       #   and_now_for_something = {
       #                             completely: :different
       #                           }
+      #
+      # @api private
       class FirstHashElementIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle

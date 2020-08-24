@@ -23,6 +23,7 @@ module RuboCop
       #   var.kind_of?(Time)
       #   var.kind_of?(String)
       #
+      # @api private
       class ClassCheck < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

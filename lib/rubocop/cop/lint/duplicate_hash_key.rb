@@ -18,6 +18,8 @@ module RuboCop
       #   # good
       #
       #   hash = { food: 'apple', other_food: 'orange' }
+      #
+      # @api private
       class DuplicateHashKey < Base
         include Duplication
 

@@ -14,6 +14,8 @@ module RuboCop
       #
       #   # good
       #   raise ArgumentError, 'Error message here'
+      #
+      # @api private
       class ImplicitRuntimeError < Base
         MSG = 'Use `%<method>s` with an explicit exception class and message,' \
               ' rather than just a message.'

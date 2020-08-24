@@ -18,6 +18,7 @@ module RuboCop
       #   # okish - deep copy hack
       #   Marshal.load(Marshal.dump({}))
       #
+      # @api private
       class MarshalLoad < Base
         MSG = 'Avoid using `Marshal.%<method>s`.'
 

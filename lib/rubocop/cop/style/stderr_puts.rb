@@ -14,6 +14,7 @@ module RuboCop
       #   # good
       #   warn('hello')
       #
+      # @api private
       class StderrPuts < Base
         include RangeHelp
         extend AutoCorrector

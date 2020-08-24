@@ -15,6 +15,7 @@ module RuboCop
       #   YAML.safe_load("--- foo")
       #   YAML.dump("foo")
       #
+      # @api private
       class YAMLLoad < Base
         extend AutoCorrector
 

@@ -88,6 +88,8 @@ module RuboCop
       #   # good
       #   foo(a,
       #     b)
+      #
+      # @api private
       class MultilineMethodCallBraceLayout < Cop
         include MultilineLiteralBraceLayout
 
