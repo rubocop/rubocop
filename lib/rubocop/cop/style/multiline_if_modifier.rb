@@ -14,6 +14,8 @@ module RuboCop
       #
       #   # good
       #   { result: 'ok' } if cond
+      #
+      # @api private
       class MultilineIfModifier < Base
         include StatementModifier
         include Alignment

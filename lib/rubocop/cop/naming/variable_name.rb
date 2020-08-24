@@ -19,6 +19,8 @@ module RuboCop
       #
       #   # good
       #   fooBar = 1
+      #
+      # @api private
       class VariableName < Base
         include ConfigurableNaming
 

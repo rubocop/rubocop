@@ -22,6 +22,8 @@ module RuboCop
       #   if (some_expression)
       #     bar
       #   end
+      #
+      # @api private
       class EmptyExpression < Base
         MSG = 'Avoid empty expressions.'
 

@@ -11,6 +11,8 @@ module RuboCop
       #
       #   # good
       #   CONST = 1
+      #
+      # @api private
       class RedundantFreeze < Base
         extend AutoCorrector
         include FrozenStringLiteral

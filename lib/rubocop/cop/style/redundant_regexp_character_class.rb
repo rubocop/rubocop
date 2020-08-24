@@ -21,6 +21,8 @@ module RuboCop
       #
       #   # good
       #   r = /[ab]/
+      #
+      # @api private
       class RedundantRegexpCharacterClass < Base
         include MatchRange
         include RegexpLiteralHelp

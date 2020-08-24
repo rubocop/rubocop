@@ -8,6 +8,8 @@ module RuboCop
     # @deprecated Use Cop::Base instead
     # Legacy scaffold for Cops.
     # See https://docs.rubocop.org/rubocop/cop_api_v1_changelog.html
+    #
+    # @api private
     class Cop < Base
       attr_reader :offenses
 

@@ -9,6 +9,8 @@ module RuboCop
     #
     # /some/file
     # /some/other/file
+    #
+    # @api private
     class FileListFormatter < BaseFormatter
       def file_finished(file, offenses)
         return if offenses.empty?

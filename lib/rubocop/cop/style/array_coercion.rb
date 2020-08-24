@@ -16,6 +16,7 @@ module RuboCop
       #   # good (and a bit more readable)
       #   Array(paths).each { |path| do_something(path) }
       #
+      # @api private
       class ArrayCoercion < Base
         extend AutoCorrector
 

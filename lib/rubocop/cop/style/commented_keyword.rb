@@ -33,6 +33,8 @@ module RuboCop
       #   class X # :nodoc:
       #     y
       #   end
+      #
+      # @api private
       class CommentedKeyword < Cop
         MSG = 'Do not place comments on the same line as the ' \
               '`%<keyword>s` keyword.'

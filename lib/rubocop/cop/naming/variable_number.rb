@@ -37,6 +37,8 @@ module RuboCop
       #   variableone = 1
       #
       #   variable_one = 1
+      #
+      # @api private
       class VariableNumber < Base
         include ConfigurableNumbering
 

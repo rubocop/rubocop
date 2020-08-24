@@ -20,6 +20,8 @@ module RuboCop
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
       #   block_given?
+      #
+      # @api private
       class DeprecatedClassMethods < Base
         extend AutoCorrector
 

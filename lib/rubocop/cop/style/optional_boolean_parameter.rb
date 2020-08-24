@@ -23,6 +23,7 @@ module RuboCop
       #     puts bar
       #   end
       #
+      # @api private
       class OptionalBooleanParameter < Base
         MSG = 'Use keyword arguments when defining method with boolean argument.'
         BOOLEAN_TYPES = %i[true false].freeze

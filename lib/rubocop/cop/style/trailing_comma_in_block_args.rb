@@ -40,6 +40,8 @@ module RuboCop
       #   add do
       #     foo + bar
       #   end
+      #
+      # @api private
       class TrailingCommaInBlockArgs < Base
         extend AutoCorrector
 

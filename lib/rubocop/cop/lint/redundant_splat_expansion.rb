@@ -49,6 +49,8 @@ module RuboCop
       #   else
       #     baz
       #   end
+      #
+      # @api private
       class RedundantSplatExpansion < Base
         extend AutoCorrector
 

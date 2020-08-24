@@ -41,6 +41,8 @@ module RuboCop
       #
       #   # good
       #   something.to_time
+      #
+      # @api private
       class DateTime < Base
         CLASS_MSG = 'Prefer Time over DateTime.'
         COERCION_MSG = 'Do not use #to_datetime.'

@@ -19,6 +19,8 @@ module RuboCop
       #   File.open(something)
       #   IO.popen(something)
       #   URI.parse(something).open
+      #
+      # @api private
       class Open < Base
         MSG = 'The use of `Kernel#open` is a serious security risk.'
 

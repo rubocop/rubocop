@@ -14,6 +14,8 @@ module RuboCop
       #   # good
       #   [1, 2]
       #   { foo:bar, }
+      #
+      # @api private
       class SpaceAfterComma < Cop
         include SpaceAfterPunctuation
 

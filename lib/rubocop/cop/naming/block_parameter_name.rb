@@ -35,6 +35,8 @@ module RuboCop
       #   foo { |speed, distance| speed * distance }
       #
       #   baz { |age, height, gender| do_stuff(age, height, gender) }
+      #
+      # @api private
       class BlockParameterName < Base
         include UncommunicativeName
 

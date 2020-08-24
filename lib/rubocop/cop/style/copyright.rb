@@ -15,6 +15,7 @@ module RuboCop
       # that RuboCop scans, a comment that matches this regex must be found or
       # an offense is reported.
       #
+      # @api private
       class Copyright < Base
         include RangeHelp
         extend AutoCorrector

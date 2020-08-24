@@ -47,6 +47,7 @@ module RuboCop
       #     return x, y
       #   end
       #
+      # @api private
       class RedundantReturn < Cop
         include RangeHelp
 

@@ -17,6 +17,7 @@ module RuboCop
       #   def to_json(*_args)
       #   end
       #
+      # @api private
       class ToJSON < Base
         extend AutoCorrector
 

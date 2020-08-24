@@ -58,6 +58,7 @@ module RuboCop
       #     fail "TODO"
       #   end
       #
+      # @api private
       class UnusedMethodArgument < Base
         include UnusedArgument
         extend AutoCorrector

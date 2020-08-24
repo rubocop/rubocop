@@ -37,6 +37,7 @@ module RuboCop
       #     end
       #   end
       #
+      # @api private
       class RedundantAssignment < Base
         extend AutoCorrector
 

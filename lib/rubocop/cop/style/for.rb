@@ -38,6 +38,7 @@ module RuboCop
       #     end
       #   end
       #
+      # @api private
       class For < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

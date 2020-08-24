@@ -16,6 +16,8 @@ module RuboCop
       #
       #   # good
       #   [1, 2].each_with_object({}) { |e, a| a[e] = e }
+      #
+      # @api private
       class EachWithObject < Base
         extend AutoCorrector
         include RangeHelp

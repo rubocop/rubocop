@@ -28,6 +28,7 @@ module RuboCop
       #   if x == nil
       #   end
       #
+      # @api private
       class NilComparison < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

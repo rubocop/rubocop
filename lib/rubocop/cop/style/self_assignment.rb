@@ -12,6 +12,8 @@ module RuboCop
       #
       #   # good
       #   x += 1
+      #
+      # @api private
       class SelfAssignment < Base
         extend AutoCorrector
 

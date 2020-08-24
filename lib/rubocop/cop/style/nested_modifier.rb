@@ -13,6 +13,8 @@ module RuboCop
       #
       #   # good
       #   something if b && a
+      #
+      # @api private
       class NestedModifier < Base
         include RangeHelp
         extend AutoCorrector

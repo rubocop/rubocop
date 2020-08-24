@@ -12,6 +12,8 @@ module RuboCop
       #
       #   # bad
       #   method1(method2 arg)
+      #
+      # @api private
       class NestedParenthesizedCalls < Base
         include RangeHelp
         include AllowedMethods

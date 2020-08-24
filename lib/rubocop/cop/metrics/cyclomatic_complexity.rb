@@ -29,6 +29,8 @@ module RuboCop
       #
       #     self
       #   end                                       # total: 6
+      #
+      # @api private
       class CyclomaticComplexity < Base
         include MethodComplexity
         include Utils::IteratingBlock

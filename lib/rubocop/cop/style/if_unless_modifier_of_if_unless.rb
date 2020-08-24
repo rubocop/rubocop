@@ -22,6 +22,8 @@ module RuboCop
       #  if running?
       #    tired? ? 'stop' : 'go faster'
       #  end
+      #
+      # @api private
       class IfUnlessModifierOfIfUnless < Base
         include StatementModifier
         extend AutoCorrector

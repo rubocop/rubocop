@@ -18,6 +18,8 @@ module RuboCop
       #
       #   # good
       #      var = "This is the #{ space } example"
+      #
+      # @api private
       class SpaceInsideStringInterpolation < Cop
         include Interpolation
         include SurroundingSpace

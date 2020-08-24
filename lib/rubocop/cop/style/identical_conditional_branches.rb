@@ -62,6 +62,8 @@ module RuboCop
       #     do_x
       #     do_z
       #   end
+      #
+      # @api private
       class IdenticalConditionalBranches < Base
         MSG = 'Move `%<source>s` out of the conditional.'
 

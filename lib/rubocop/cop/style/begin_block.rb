@@ -10,6 +10,7 @@ module RuboCop
       #   # bad
       #   BEGIN { test }
       #
+      # @api private
       class BeginBlock < Base
         MSG = 'Avoid the use of `BEGIN` blocks.'
 

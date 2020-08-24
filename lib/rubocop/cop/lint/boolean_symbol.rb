@@ -21,6 +21,8 @@ module RuboCop
       #
       #   # good
       #   false
+      #
+      # @api private
       class BooleanSymbol < Base
         extend AutoCorrector
 

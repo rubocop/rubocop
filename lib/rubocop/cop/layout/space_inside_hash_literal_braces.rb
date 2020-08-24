@@ -63,6 +63,7 @@ module RuboCop
       #   foo = {  }
       #   foo = {     }
       #
+      # @api private
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         include ConfigurableEnforcedStyle

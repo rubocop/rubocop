@@ -55,6 +55,7 @@ module RuboCop
       #   # good
       #   Login
       #
+      # @api private
       class ConstantResolution < Base
         MSG = 'Fully qualify this constant to avoid possibly ambiguous resolution.'
 

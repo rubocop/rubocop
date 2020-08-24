@@ -20,6 +20,7 @@ module RuboCop
       #     do_something_else
       #   end
       #
+      # @api private
       class DuplicateElsifCondition < Base
         MSG = 'Duplicate `elsif` condition detected.'
 

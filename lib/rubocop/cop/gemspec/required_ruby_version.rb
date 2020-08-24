@@ -45,6 +45,8 @@ module RuboCop
       #   Gem::Specification.new do |spec|
       #     spec.required_ruby_version = '~> 2.5'
       #   end
+      #
+      # @api private
       class RequiredRubyVersion < Cop
         include RangeHelp
 

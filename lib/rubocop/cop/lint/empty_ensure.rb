@@ -42,6 +42,8 @@ module RuboCop
       #   ensure
       #     do_something_else
       #   end
+      #
+      # @api private
       class EmptyEnsure < Base
         extend AutoCorrector
 

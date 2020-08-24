@@ -19,6 +19,7 @@ module RuboCop
       #   some_str = 'ala' \
       #              'bala'
       #
+      # @api private
       class LineEndConcatenation < Base
         include RangeHelp
         extend AutoCorrector

@@ -15,6 +15,8 @@ module RuboCop
       #
       #   # good if @var is already a String
       #   @var
+      #
+      # @api private
       class RedundantInterpolation < Base
         include PercentLiteral
         extend AutoCorrector

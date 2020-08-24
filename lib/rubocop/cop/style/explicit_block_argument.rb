@@ -35,6 +35,7 @@ module RuboCop
       #     9.times(&block)
       #   end
       #
+      # @api private
       class ExplicitBlockArgument < Base
         include RangeHelp
         extend AutoCorrector

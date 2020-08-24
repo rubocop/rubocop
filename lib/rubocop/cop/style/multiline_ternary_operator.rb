@@ -22,6 +22,8 @@ module RuboCop
       #   else
       #     c
       #   end
+      #
+      # @api private
       class MultilineTernaryOperator < Base
         extend AutoCorrector
 

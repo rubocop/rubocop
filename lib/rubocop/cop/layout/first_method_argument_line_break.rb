@@ -20,6 +20,8 @@ module RuboCop
       #     # ignored
       #     method foo, bar,
       #       baz
+      #
+      # @api private
       class FirstMethodArgumentLineBreak < Cop
         include FirstElementLineBreak
 

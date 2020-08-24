@@ -68,6 +68,7 @@ module RuboCop
       #   )
       #
       #
+      # @api private
       class ClosingParenthesisIndentation < Cop
         include Alignment
 

@@ -37,6 +37,7 @@ module RuboCop
       #   items.select
       #   items.include?
       #
+      # @api private
       class CollectionMethods < Base
         include MethodPreference
         extend AutoCorrector

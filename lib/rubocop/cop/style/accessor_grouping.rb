@@ -31,6 +31,7 @@ module RuboCop
       #     attr_reader :baz
       #   end
       #
+      # @api private
       class AccessorGrouping < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

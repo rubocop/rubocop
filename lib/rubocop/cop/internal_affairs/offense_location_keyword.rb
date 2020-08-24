@@ -13,6 +13,8 @@ module RuboCop
       #
       #   # good
       #   add_offense(node, location: :selector)
+      #
+      # @api private
       class OffenseLocationKeyword < Base
         extend AutoCorrector
 

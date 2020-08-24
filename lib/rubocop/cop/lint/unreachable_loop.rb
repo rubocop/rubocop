@@ -70,6 +70,7 @@ module RuboCop
       #     raise NotFoundError
       #   end
       #
+      # @api private
       class UnreachableLoop < Base
         MSG = 'This loop will have at most one iteration.'
 

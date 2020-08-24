@@ -26,6 +26,8 @@ module RuboCop
       #         bar
       #       do_something
       #     end
+      #
+      # @api private
       class FirstMethodParameterLineBreak < Cop
         include FirstElementLineBreak
 

@@ -11,6 +11,8 @@ module RuboCop
       #
       #   # good
       #   something.map(&:upcase)
+      #
+      # @api private
       class SymbolProc < Base
         include RangeHelp
         include IgnoredMethods

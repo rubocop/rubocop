@@ -27,6 +27,8 @@ module RuboCop
       #   <<-sql
       #     SELECT * FROM foo
       #   sql
+      #
+      # @api private
       class HeredocDelimiterCase < Base
         include Heredoc
         include ConfigurableEnforcedStyle

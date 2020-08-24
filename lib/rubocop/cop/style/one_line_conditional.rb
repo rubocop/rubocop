@@ -30,6 +30,8 @@ module RuboCop
       #   else
       #     baz
       #   end
+      #
+      # @api private
       class OneLineConditional < Base
         include ConfigurableEnforcedStyle
         include OnNormalIfUnless

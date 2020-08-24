@@ -14,6 +14,8 @@ module RuboCop
       #   # good
       #   bar = foo.minmax
       #   return foo.minmax
+      #
+      # @api private
       class MinMax < Base
         extend AutoCorrector
 

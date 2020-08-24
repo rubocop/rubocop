@@ -32,6 +32,8 @@ module RuboCop
       # !!something and !something.nil? are not the same thing.
       # As you're unlikely to write code that can accept values of any type
       # this is rarely a problem in practice.
+      #
+      # @api private
       class DoubleNegation < Base
         include ConfigurableEnforcedStyle
 

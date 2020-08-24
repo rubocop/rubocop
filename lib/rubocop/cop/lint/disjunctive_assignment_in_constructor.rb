@@ -22,6 +22,8 @@ module RuboCop
       #   def initialize
       #     @x = 1
       #   end
+      #
+      # @api private
       class DisjunctiveAssignmentInConstructor < Base
         extend AutoCorrector
 

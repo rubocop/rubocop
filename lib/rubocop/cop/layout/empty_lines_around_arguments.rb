@@ -38,6 +38,7 @@ module RuboCop
       #     x: y
       #   )
       #
+      # @api private
       class EmptyLinesAroundArguments < Base
         include RangeHelp
         extend AutoCorrector

@@ -16,6 +16,8 @@ module RuboCop
       #   if /foo/ =~ $_
       #     do_something
       #   end
+      #
+      # @api private
       class RegexpAsCondition < Base
         extend AutoCorrector
 

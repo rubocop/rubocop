@@ -19,6 +19,8 @@ module RuboCop
       #   def fry(temperature: 300)
       #     # ...
       #   end
+      #
+      # @api private
       class OptionHash < Base
         MSG = 'Prefer keyword arguments to options hashes.'
 

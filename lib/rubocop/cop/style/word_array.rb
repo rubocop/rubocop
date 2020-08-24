@@ -27,6 +27,8 @@ module RuboCop
       #
       #   # bad
       #   %w[foo bar baz]
+      #
+      # @api private
       class WordArray < Cop
         include ArrayMinSize
         include ArraySyntax

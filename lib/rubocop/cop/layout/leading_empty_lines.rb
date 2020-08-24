@@ -27,6 +27,8 @@ module RuboCop
       #   # good
       #   # (start of file)
       #   # a comment
+      #
+      # @api private
       class LeadingEmptyLines < Cop
         MSG = 'Unnecessary blank line at the beginning of the source.'
 

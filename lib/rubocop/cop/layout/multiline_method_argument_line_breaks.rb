@@ -19,6 +19,8 @@ module RuboCop
       #     b,
       #     c
       #   )
+      #
+      # @api private
       class MultilineMethodArgumentLineBreaks < Cop
         include(MultilineElementLineBreaks)
 

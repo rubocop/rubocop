@@ -49,6 +49,7 @@ module RuboCop
       #   #ruby=2.7.0
       #   #ruby-gemset=myproject
       #
+      # @api private
       class LeadingCommentSpace < Cop
         include RangeHelp
 

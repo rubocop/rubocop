@@ -20,6 +20,8 @@ module RuboCop
       #     b: 2,
       #     c: 3
       #   }
+      #
+      # @api private
       class MultilineHashKeyLineBreaks < Cop
         include MultilineElementLineBreaks
 

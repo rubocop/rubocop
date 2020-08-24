@@ -12,6 +12,7 @@ module RuboCop
       #   # good
       #   node.method?(:do_something)
       #
+      # @api private
       class MethodNameEqual < Base
         include RangeHelp
         extend AutoCorrector

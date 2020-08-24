@@ -64,6 +64,8 @@ module RuboCop
       #   rescue
       #     # do nothing
       #   end
+      #
+      # @api private
       class SuppressedException < Base
         MSG = 'Do not suppress exceptions.'
 

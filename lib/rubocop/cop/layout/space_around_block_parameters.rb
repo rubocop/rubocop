@@ -24,6 +24,8 @@ module RuboCop
       #   # good
       #   {}.each { | x, y | puts x }
       #   ->( x, y ) { puts x }
+      #
+      # @api private
       class SpaceAroundBlockParameters < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

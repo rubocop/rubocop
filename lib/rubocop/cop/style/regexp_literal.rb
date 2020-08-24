@@ -81,6 +81,8 @@ module RuboCop
       # @example AllowInnerSlashes: true
       #   # good
       #   x =~ /home\//
+      #
+      # @api private
       class RegexpLiteral < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

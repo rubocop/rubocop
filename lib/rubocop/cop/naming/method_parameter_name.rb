@@ -43,6 +43,8 @@ module RuboCop
       #   def baz(age_a, height_b, gender_c)
       #     do_stuff(age_a, height_b, gender_c)
       #   end
+      #
+      # @api private
       class MethodParameterName < Base
         include UncommunicativeName
 

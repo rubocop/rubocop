@@ -58,6 +58,8 @@ module RuboCop
       #
       #     do_something2
       #   end
+      #
+      # @api private
       class EmptyLinesAroundExceptionHandlingKeywords < Base
         include EmptyLinesAroundBody
         extend AutoCorrector

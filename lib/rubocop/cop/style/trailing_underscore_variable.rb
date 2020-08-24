@@ -28,6 +28,7 @@ module RuboCop
       #   # bad
       #   a, b, _something = foo()
       #
+      # @api private
       class TrailingUnderscoreVariable < Base
         include SurroundingSpace
         include RangeHelp

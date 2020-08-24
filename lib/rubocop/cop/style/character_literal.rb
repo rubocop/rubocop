@@ -14,6 +14,8 @@ module RuboCop
       #
       #   # good
       #   ?\C-\M-d
+      #
+      # @api private
       class CharacterLiteral < Cop
         include StringHelp
 

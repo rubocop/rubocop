@@ -14,6 +14,8 @@ require 'rexml/document'
 module RuboCop
   module Formatter
     # This formatter formats the report data in JUnit format.
+    #
+    # @api private
     class JUnitFormatter < BaseFormatter
       def initialize(output, options = {})
         super

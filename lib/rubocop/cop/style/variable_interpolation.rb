@@ -15,6 +15,8 @@ module RuboCop
       #   "His name is #{$name}"
       #   /check #{$pattern}/
       #   "Let's go to the #{@store}"
+      #
+      # @api private
       class VariableInterpolation < Base
         include Interpolation
         extend AutoCorrector

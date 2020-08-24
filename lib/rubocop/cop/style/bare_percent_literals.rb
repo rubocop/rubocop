@@ -23,6 +23,7 @@ module RuboCop
       #   %Q|He said: "#{greeting}"|
       #   %q/She said: 'Hi'/
       #
+      # @api private
       class BarePercentLiterals < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

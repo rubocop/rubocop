@@ -24,6 +24,8 @@ module RuboCop
       #   end
       #
       #   something = 123 if test
+      #
+      # @api private
       class SpaceAroundKeyword < Cop
         MSG_BEFORE = 'Space before keyword `%<range>s` is missing.'
         MSG_AFTER = 'Space after keyword `%<range>s` is missing.'

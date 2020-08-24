@@ -25,6 +25,8 @@ module RuboCop
       #   !{a: 1, b: 2}.empty?
       #   !string.empty?
       #   !hash.empty?
+      #
+      # @api private
       class ZeroLengthPredicate < Base
         extend AutoCorrector
 

@@ -21,6 +21,8 @@ module RuboCop
       #   rescue
       #     puts 'error'
       #   end
+      #
+      # @api private
       class RescueEnsureAlignment < Cop
         include RangeHelp
 

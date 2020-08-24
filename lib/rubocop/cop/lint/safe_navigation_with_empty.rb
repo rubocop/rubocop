@@ -19,6 +19,7 @@ module RuboCop
       #   return if foo && foo.empty?
       #   return unless foo && foo.empty?
       #
+      # @api private
       class SafeNavigationWithEmpty < Base
         extend AutoCorrector
 

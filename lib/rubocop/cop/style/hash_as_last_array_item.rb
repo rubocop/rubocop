@@ -20,6 +20,7 @@ module RuboCop
       #   # good
       #   [1, 2, one: 1, two: 2]
       #
+      # @api private
       class HashAsLastArrayItem < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

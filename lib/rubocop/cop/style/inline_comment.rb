@@ -17,6 +17,8 @@ module RuboCop
       #   foo.each do |f|
       #     f.bar # Trailing inline comment
       #   end
+      #
+      # @api private
       class InlineComment < Base
         MSG = 'Avoid trailing inline comments.'
 

@@ -49,6 +49,7 @@ module RuboCop
       #     end
       #   end
       #
+      # @api private
       class CombinableLoops < Base
         MSG = 'Combine this loop with the previous loop.'
 

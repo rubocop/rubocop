@@ -31,6 +31,8 @@ module RuboCop
       #   foo = if expression
       #     'bar'
       #   end
+      #
+      # @api private
       class MultilineAssignmentLayout < Cop
         include CheckAssignment
         include ConfigurableEnforcedStyle

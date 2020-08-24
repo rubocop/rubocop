@@ -46,6 +46,8 @@ module RuboCop
       #                  .a
       #                  .b
       #                  .c
+      #
+      # @api private
       class MultilineMethodCallIndentation < Cop
         include ConfigurableEnforcedStyle
         include Alignment

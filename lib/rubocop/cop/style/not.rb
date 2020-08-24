@@ -13,6 +13,7 @@ module RuboCop
       #   # good
       #   x = !something
       #
+      # @api private
       class Not < Base
         include RangeHelp
         extend AutoCorrector

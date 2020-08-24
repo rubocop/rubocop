@@ -15,6 +15,8 @@ module RuboCop
       #   # good
       #   if x.even?
       #   end
+      #
+      # @api private
       class EvenOdd < Base
         extend AutoCorrector
 

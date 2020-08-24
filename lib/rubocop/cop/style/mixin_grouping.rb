@@ -30,6 +30,8 @@ module RuboCop
       #   class Foo
       #     extend Qox, Bar
       #   end
+      #
+      # @api private
       class MixinGrouping < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

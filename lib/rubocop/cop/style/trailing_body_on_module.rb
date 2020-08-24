@@ -15,6 +15,7 @@ module RuboCop
       #     extend self
       #   end
       #
+      # @api private
       class TrailingBodyOnModule < Base
         include Alignment
         include TrailingBody

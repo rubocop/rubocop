@@ -54,6 +54,8 @@ module RuboCop
       #       baz
       #     end
       #   end
+      #
+      # @api private
       class RedundantBegin < Base
         extend AutoCorrector
 

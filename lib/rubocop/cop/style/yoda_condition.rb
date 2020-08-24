@@ -52,6 +52,8 @@ module RuboCop
       #   # good
       #   99 == foo
       #   "bar" != foo
+      #
+      # @api private
       class YodaCondition < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

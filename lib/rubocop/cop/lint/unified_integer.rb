@@ -17,6 +17,8 @@ module RuboCop
       #   # good
       #
       #   1.is_a?(Integer)
+      #
+      # @api private
       class UnifiedInteger < Base
         extend AutoCorrector
 

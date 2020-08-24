@@ -50,6 +50,7 @@ module RuboCop
       #        123,
       #      )
       #
+      # @api private
       class HeredocArgumentClosingParenthesis < Cop
         include RangeHelp
 

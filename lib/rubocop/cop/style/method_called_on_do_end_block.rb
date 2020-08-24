@@ -21,6 +21,8 @@ module RuboCop
       #     b
       #   end
       #   foo.c
+      #
+      # @api private
       class MethodCalledOnDoEndBlock < Base
         include RangeHelp
 

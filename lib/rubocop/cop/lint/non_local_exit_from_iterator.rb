@@ -38,6 +38,7 @@ module RuboCop
       #     end
       #   end
       #
+      # @api private
       class NonLocalExitFromIterator < Base
         MSG = 'Non-local exit from iterator, without return value. ' \
               '`next`, `break`, `Array#find`, `Array#any?`, etc. ' \

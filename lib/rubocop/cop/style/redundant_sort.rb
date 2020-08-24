@@ -49,6 +49,7 @@ module RuboCop
       #   # good
       #   arr.max_by(&:foo)
       #
+      # @api private
       class RedundantSort < Cop
         include RangeHelp
 

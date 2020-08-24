@@ -8,6 +8,8 @@ module RuboCop
     # A basic formatter that displays only files with offenses.
     # Offenses are displayed at compact form - just the
     # location of the problem and the associated message.
+    #
+    # @api private
     class SimpleTextFormatter < BaseFormatter
       include Colorizable
       include PathUtil

@@ -20,6 +20,8 @@ module RuboCop
       #   Integer('10', 10)
       #   Float('10.2')
       #   Complex('10')
+      #
+      # @api private
       class NumberConversion < Base
         extend AutoCorrector
 

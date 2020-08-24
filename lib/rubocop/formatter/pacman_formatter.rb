@@ -7,6 +7,8 @@ module RuboCop
     # Otherwise it will print a Ghost.
     # This is inspired by the Pacman formatter for RSpec by Carlos Rojas.
     # https://github.com/go-labs/rspec_pacman_formatter
+    #
+    # @api private
     class PacmanFormatter < ClangStyleFormatter
       include TextUtil
       attr_accessor :progress_line

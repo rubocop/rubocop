@@ -28,6 +28,7 @@ module RuboCop
       #     x = 0
       #   RUBY
       #
+      # @api private
       class TrailingWhitespace < Cop
         include RangeHelp
 

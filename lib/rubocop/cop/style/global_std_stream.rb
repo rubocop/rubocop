@@ -27,6 +27,7 @@ module RuboCop
       #     out.puts('hello')
       #   end
       #
+      # @api private
       class GlobalStdStream < Base
         extend AutoCorrector
 

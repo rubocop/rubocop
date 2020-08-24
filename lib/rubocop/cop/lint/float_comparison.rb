@@ -28,6 +28,7 @@ module RuboCop
       #   # Or some other epsilon based type of comparison:
       #   # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
       #
+      # @api private
       class FloatComparison < Base
         MSG = 'Avoid (in)equality comparisons of floats as they are unreliable.'
 

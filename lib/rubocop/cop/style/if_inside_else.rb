@@ -58,6 +58,7 @@ module RuboCop
       #     action_b
       #   end
       #
+      # @api private
       class IfInsideElse < Base
         MSG = 'Convert `if` nested inside `else` to `elsif`.'
 

@@ -23,6 +23,8 @@ module RuboCop
       #
       #   # bad
       #   %I(alpha beta)
+      #
+      # @api private
       class PercentLiteralDelimiters < Base
         include PercentLiteral
         extend AutoCorrector
