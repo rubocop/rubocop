@@ -166,12 +166,11 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       end
     end
 
-    context 'when cop supports autocorrection' do
+    context 'when cop supports autocorrection', :restore_registry do
       let(:cop_class) do
-        stub_cop = Class.new(RuboCop::Cop::Cop) do
+        stub_cop_class('RuboCop::Cop::Test::StubCop', inherit: described_class) do
           def autocorrect(node); end
         end
-        stub_const('RuboCop::Cop::Test::StubCop', stub_cop)
       end
 
       context 'when offense was corrected' do

@@ -13,6 +13,7 @@
 * [#8472](https://github.com/rubocop-hq/rubocop/issues/8472): Add new `Lint/UselessMethodDefinition` cop. ([@fatkodima][])
 * [#8531](https://github.com/rubocop-hq/rubocop/issues/8531): Add new `Lint/EmptyFile` cop. ([@fatkodima][])
 * Add new `Lint/TrailingCommaInAttributeDeclaration` cop. ([@drenmi][])
+* [#8578](https://github.com/rubocop-hq/rubocop/pull/8578): Add `:restore_registry` context and `stub_cop_class` helper class. ([@marcandre][])
 
 ### Bug fixes
 

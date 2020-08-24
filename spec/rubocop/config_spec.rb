@@ -845,7 +845,7 @@ RSpec.describe RuboCop::Config do
     end
   end
 
-  describe '#for_department' do
+  describe '#for_department', :restore_registry do
     let(:hash) do
       {
         'Foo' => { 'Bar' => 42, 'Baz' => true },
@@ -853,14 +853,8 @@ RSpec.describe RuboCop::Config do
       }
     end
 
-    around do |test|
-      RuboCop::Cop::Registry.with_temporary_global do
-        test.run
-      end
-    end
-
     before do
-      stub_const('RuboCop::Foo::Foo', Class.new(RuboCop::Cop::Base))
+      stub_cop_class('RuboCop::Foo::Foo')
     end
 
     it "always returns the department's config" do

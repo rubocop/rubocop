@@ -249,14 +249,11 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
-  context 'with auto-correct supported cop' do
+  context 'with auto-correct supported cop', :restore_registry do
     before do
-      stub_const('Test::Cop3',
-                 Class.new(::RuboCop::Cop::Cop) do
-                   def autocorrect
-                     # Dummy method to respond to #support_autocorrect?
-                   end
-                 end)
+      stub_cop_class('Test::Cop3') do
+        extend RuboCop::Cop::AutoCorrector
+      end
 
       formatter.started(['test_auto_correct.rb'])
       formatter.file_started('test_auto_correct.rb', {})

@@ -621,11 +621,7 @@ RSpec.describe RuboCop::ConfigLoader do
       include_examples 'resolves enabled/disabled for all cops', true, false
     end
 
-    context 'when a third party require defines a new gem' do
-      around do |example|
-        RuboCop::Cop::Registry.with_temporary_global { example.run }
-      end
-
+    context 'when a third party require defines a new gem', :restore_registry do
       context 'when the gem is not loaded' do
         before do
           create_file('.rubocop.yml', <<~YAML)
