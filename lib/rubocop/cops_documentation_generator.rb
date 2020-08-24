@@ -2,6 +2,7 @@
 
 # Class for generating documentation of all cops departments
 class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
+  include ::RuboCop::Cop::Documentation
   # This class will only generate documentation for cops that belong to one of
   # the departments given in the `departments` array. E.g. if we only wanted
   # documentation for Lint cops:
@@ -210,7 +211,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     selected_cops.each do |cop|
       content << print_cop_with_doc(cop)
     end
-    file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/cops_#{department.downcase}.adoc"
+    file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/#{department_to_basename(department)}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
       file.write("#{content.strip}\n")
@@ -243,7 +244,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def table_of_content_for_department(department)
     type_title = department[0].upcase + department[1..-1]
-    filename = "cops_#{department.downcase}.adoc"
+    filename = "#{department_to_basename(department)}.adoc"
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
     cops_of_department(department).each do |cop|
       anchor = cop.cop_name.sub('/', '').downcase

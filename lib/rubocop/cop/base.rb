@@ -56,6 +56,14 @@ module RuboCop
         []
       end
 
+      # Cops (other than builtin) are encouraged to implement this
+      # @return [String, nil]
+      #
+      # @api public
+      def self.documentation_url
+        Documentation.url_for(self) if builtin?
+      end
+
       def initialize(config = nil, options = nil)
         @config = config || Config.new
         @options = options || { debug: false }
@@ -296,6 +304,14 @@ module RuboCop
       end
 
       ### Actually private methods
+
+      def self.builtin?
+        return false unless (m = instance_methods(false).first) # any custom method will do
+
+        path, _line = instance_method(m).source_location
+        path.start_with?(__dir__)
+      end
+      private_class_method :builtin?
 
       def reset_investigation
         @currently_disabled_lines = @current_offenses = @processed_source = @current_corrector = nil
