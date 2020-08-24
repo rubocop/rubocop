@@ -14,6 +14,8 @@
 * [#8531](https://github.com/rubocop-hq/rubocop/issues/8531): Add new `Lint/EmptyFile` cop. ([@fatkodima][])
 * Add new `Lint/TrailingCommaInAttributeDeclaration` cop. ([@drenmi][])
 * [#8578](https://github.com/rubocop-hq/rubocop/pull/8578): Add `:restore_registry` context and `stub_cop_class` helper class. ([@marcandre][])
+* [#8579](https://github.com/rubocop-hq/rubocop/pull/8579): Add `Cop.documentation_url`.  ([@marcandre][])
+
 
 ### Bug fixes
 

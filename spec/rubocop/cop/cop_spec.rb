@@ -56,6 +56,22 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
   end
 
+  describe '.documentation_url' do
+    subject(:url) { cop_class.documentation_url }
+
+    describe 'for a builtin cop class' do
+      let(:cop_class) { RuboCop::Cop::Layout::BlockEndNewline }
+
+      it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength
+    end
+
+    describe 'for a custom cop class', :restore_registry do
+      let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
+
+      it { is_expected.to eq nil }
+    end
+  end
+
   it 'keeps track of offenses' do
     cop.add_offense(nil, location: location, message: 'message')
 
