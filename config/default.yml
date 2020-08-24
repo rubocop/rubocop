@@ -3636,12 +3636,13 @@ Style/NumericPredicate:
 
 Style/OneLineConditional:
   Description: >-
-                 Favor the ternary operator(?:) over
-                 if/then/else/end constructs.
+                 Favor the ternary operator (?:) or multi-line constructs over
+                 single-line if/then/else/end constructs.
   StyleGuide: '#ternary-operator'
   Enabled: true
+  AlwaysCorrectToMultiline: false
   VersionAdded: '0.9'
-  VersionChanged: '0.38'
+  VersionChanged: '0.90'
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."

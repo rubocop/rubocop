@@ -23,6 +23,7 @@
 * [#8524](https://github.com/rubocop-hq/rubocop/issues/8524): Fix `Layout/EmptyLinesAroundClassBody`  and `Layout/EmptyLinesAroundModuleBody` to correctly handle an access modifier as a first child. ([@dsavochkin][])
 * [#8518](https://github.com/rubocop-hq/rubocop/issues/8518): Fix `Lint/ConstantResolution` cop reporting offense for `module` and `class` definitions. ([@tejasbubane][])
 * [#8158](https://github.com/rubocop-hq/rubocop/issues/8158): Fix `Style/MultilineWhenThen` cop to correctly handle cases with multiline body. ([@dsavochkin][])
+* [#7705](https://github.com/rubocop-hq/rubocop/issues/7705): Fix `Style/OneLineConditional` cop to handle if/then/elsif/then/else/end cases. Add `AlwaysCorrectToMultiline` config option to this cop to always convert offenses to the multi-line form (false by default). ([@Lykos][], [@dsavochkin][])
 
 ### Changes
 
@@ -4804,3 +4805,4 @@
 [@wcmonty]: https://github.com/wcmonty
 [@nguyenquangminh0711]: https://github.com/nguyenquangminh0711
 [@chocolateboy]: https://github.com/chocolateboy
+[@Lykos]: https://github.com/Lykos
