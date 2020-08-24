@@ -211,13 +211,13 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
-    context 'when done twice' do
+    context 'when done twice', :restore_registry do
       let(:persisting_cop_class) do
-        klass = Class.new(RuboCop::Cop::Base)
-        klass.exclude_from_registry
-        klass.define_singleton_method(:support_multiple_source?) { true }
-        stub_const('Test::Persisting', klass)
-        klass
+        stub_cop_class('Test::Persisting') do
+          def self.support_multiple_source?
+            true
+          end
+        end
       end
       let(:cop_classes) { [persisting_cop_class, RuboCop::Cop::Base] }
 
@@ -358,14 +358,13 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
-    context 'when cop with different checksum joins' do
+    context 'when cop with different checksum joins', :restore_registry do
       before do
-        stub_const('Test::CopWithExternalDeps',
-                   Class.new(::RuboCop::Cop::Cop) do
-                     def external_dependency_checksum
-                       'something other than nil'
-                     end
-                   end)
+        stub_cop_class('Test::CopWithExternalDeps') do
+          def external_dependency_checksum
+            'something other than nil'
+          end
+        end
       end
 
       let(:new_cop_classes) do
