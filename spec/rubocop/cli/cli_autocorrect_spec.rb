@@ -1607,4 +1607,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
     expect(source_file.read).to eq(corrected)
   end
+
+  it 'does not correct Style/IfUnlessModifier offense disabled by a comment directive and ' \
+     'does not fire Lint/RedundantCopDisableDirective offense even though that directive ' \
+     'would make the modifier form too long' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/FrozenStringLiteralComment:
+        Enabled: false
+    YAML
+
+    source_file = Pathname('example.rb')
+    source = <<~RUBY
+      if i > 1 # rubocop:disable Style/IfUnlessModifier
+        raise '_______________________________________________________________________'
+      end
+    RUBY
+    create_file(source_file, source)
+
+    status = cli.run(['--auto-correct-all'])
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(source)
+  end
 end
