@@ -131,6 +131,9 @@ module RuboCop
         def allowed_send_node?(node)
           @allowed_send_nodes.include?(node) ||
             @local_variables_scopes[node].include?(node.method_name) ||
+            node.each_ancestor.any? do |ancestor|
+              @local_variables_scopes[ancestor].include?(node.method_name)
+            end ||
             KERNEL_METHODS.include?(node.method_name)
         end
 

@@ -28,6 +28,7 @@
 * [#8518](https://github.com/rubocop-hq/rubocop/issues/8518): Fix `Lint/ConstantResolution` cop reporting offense for `module` and `class` definitions. ([@tejasbubane][])
 * [#8158](https://github.com/rubocop-hq/rubocop/issues/8158): Fix `Style/MultilineWhenThen` cop to correctly handle cases with multiline body. ([@dsavochkin][])
 * [#7705](https://github.com/rubocop-hq/rubocop/issues/7705): Fix `Style/OneLineConditional` cop to handle if/then/elsif/then/else/end cases. Add `AlwaysCorrectToMultiline` config option to this cop to always convert offenses to the multi-line form (false by default). ([@Lykos][], [@dsavochkin][])
+* [#8585](https://github.com/rubocop-hq/rubocop/pull/8585): Fix false positive in `Style/RedundantSelf` cop with nested `self` access. ([@marcotc][])
 
 ### Changes
 
