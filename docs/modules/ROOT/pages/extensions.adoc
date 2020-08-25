@@ -39,6 +39,8 @@ Performance optimization analysis
 Rails-specific analysis
 * https://github.com/rubocop-hq/rubocop-rspec[rubocop-rspec] -
 RSpec-specific analysis
+* https://github.com/rubocop-hq/rubocop-minitest[rubocop-minitest] -
+Minitest-specific analysis
 * https://github.com/covermymeds/rubocop-thread_safety[rubocop-thread_safety] -
 Thread-safety analysis
 * https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
