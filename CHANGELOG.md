@@ -31,6 +31,7 @@
 * [#8590](https://github.com/rubocop-hq/rubocop/issues/8590): Fix an error when auto-correcting encoding mismatch file. ([@koic][])
 * [#8321](https://github.com/rubocop-hq/rubocop/issues/8321): Enable auto-correction for `Layout/{Def}EndAlignment`, `Lint/EmptyEnsure`. ([@marcandre][])
 * [#8583](https://github.com/rubocop-hq/rubocop/issues/8583): Fix `Style/RedundantRegexpEscape` false positive for line continuations. ([@owst][])
+* [#8593](https://github.com/rubocop-hq/rubocop/issues/8593): Fix `Style/RedundantRegexpCharacterClass` false positive for interpolated multi-line expressions. ([@owst][])
 
 ### Changes
 
