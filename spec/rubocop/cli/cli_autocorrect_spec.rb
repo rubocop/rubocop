@@ -745,7 +745,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         bar
       rescue StandardError
         baz
-        end
+      end
 
       def func
         x; y; rescue StandardError; z
@@ -1111,7 +1111,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       module A
         module B
-      end end
+        end end
     RUBY
     uncorrected = $stdout.string.split($RS).select do |line|
       line.include?('example.rb:') && !line.include?('[Corrected]')
