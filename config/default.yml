@@ -399,7 +399,6 @@ Layout/DefEndAlignment:
   SupportedStylesAlignWith:
     - start_of_line
     - def
-  AutoCorrect: false
   Severity: warning
 
 Layout/DotPosition:
@@ -555,7 +554,6 @@ Layout/EndAlignment:
     - keyword
     - variable
     - start_of_line
-  AutoCorrect: false
   Severity: warning
 
 Layout/EndOfLine:
@@ -1458,7 +1456,6 @@ Lint/EmptyEnsure:
   Enabled: true
   VersionAdded: '0.10'
   VersionChanged: '0.48'
-  AutoCorrect: false
 
 Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'
