@@ -224,6 +224,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
+  context 'with a multi-line interpolation' do
+    it 'ignores offenses in the interpolated expression' do
+      expect_no_offenses(<<~'RUBY')
+        /#{Regexp.union(
+          %w"( ) { } [ ] < > $ ! ^ ` ... + * ? ,"
+        )}/o
+      RUBY
+    end
+  end
+
   context 'with a character class containing a space' do
     context 'when not using free-spaced mode' do
       it 'registers an offense and corrects' do
