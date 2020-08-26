@@ -11,6 +11,7 @@ desc 'Check files modified in commit (default: HEAD) with rspec and rubocop'
 RuboCop::RakeTask.new(:check_commit, :commit) do |t, args|
   commit = args[:commit] || 'HEAD'
   paths = commit_paths(commit)
+  paths.reject { |p| p.start_with?(/docs|Gemfile|README|CHANGELOG/) }
   specs = paths.select { |p| p.start_with?('spec') }
 
   puts "Checking: #{paths.join(' ')}"
