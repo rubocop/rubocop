@@ -117,6 +117,7 @@ module RuboCop
       def autocorrect(processed_source, report)
         @updated_source_file = false
         return unless autocorrect?
+        return if report.processed_source.parser_error
 
         new_source = autocorrect_report(report)
 
