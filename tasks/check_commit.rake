@@ -14,8 +14,12 @@ RuboCop::RakeTask.new(:check_commit, :commit) do |t, args|
   paths.reject { |p| p.start_with?(/docs|Gemfile|README|CHANGELOG/) }
   specs = paths.select { |p| p.start_with?('spec') }
 
-  puts "Checking: #{paths.join(' ')}"
-  RuboCop::SpecRunner.new(specs).run_specs
+  if specs.empty?
+    puts 'Caution: No spec was changed!'
+  else
+    puts "Checking: #{paths.join(' ')}"
+    RuboCop::SpecRunner.new(specs, parallel: false).run_specs
+  end
 
   t.patterns = paths
 end
