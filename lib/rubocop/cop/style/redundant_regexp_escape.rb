@@ -38,7 +38,7 @@ module RuboCop
 
         MSG_REDUNDANT_ESCAPE = 'Redundant escape inside regexp literal'
 
-        ALLOWED_ALWAYS_ESCAPES = ' []^\\#'.chars.freeze
+        ALLOWED_ALWAYS_ESCAPES = " \n[]^\\#".chars.freeze
         ALLOWED_WITHIN_CHAR_CLASS_METACHAR_ESCAPES = '-'.chars.freeze
         ALLOWED_OUTSIDE_CHAR_CLASS_METACHAR_ESCAPES = '.*+?{}()|$'.chars.freeze
 
