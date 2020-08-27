@@ -20,8 +20,8 @@ module RuboCop
       #
       #   # With parentheses, there's no ambiguity.
       #   do_something(*some_array)
-      class AmbiguousOperator < Cop
-        include ParserDiagnostic
+      class AmbiguousOperator < Base
+        extend AutoCorrector
 
         AMBIGUITIES = {
           '+'  => { actual: 'positive number', possible: 'addition' },
@@ -38,17 +38,22 @@ module RuboCop
                      'a whitespace to the right of the `%<operator>s` if it ' \
                      'should be a %<possible>s.'
 
-        def autocorrect(node)
-          lambda do |corrector|
-            add_parentheses(node, corrector)
+        def on_new_investigation
+          processed_source.diagnostics.each do |diagnostic|
+            next unless diagnostic.reason == :ambiguous_prefix
+
+            offense_node = find_offense_node_by(diagnostic)
+            message = message(diagnostic)
+
+            add_offense(
+              diagnostic.location, message: message, severity: diagnostic.level
+            ) do |corrector|
+              add_parentheses(offense_node, corrector)
+            end
           end
         end
 
         private
-
-        def relevant_diagnostic?(diagnostic)
-          diagnostic.reason == :ambiguous_prefix
-        end
 
         def find_offense_node_by(diagnostic)
           ast = processed_source.ast
@@ -68,7 +73,7 @@ module RuboCop
           end
         end
 
-        def alternative_message(diagnostic)
+        def message(diagnostic)
           operator = diagnostic.location.source
           hash = AMBIGUITIES[operator]
           format(MSG_FORMAT, hash)

@@ -8,12 +8,20 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
       a = 12345
           ^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = 12_345
+    RUBY
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
     expect_offense(<<~RUBY)
       a = 123456.789
           ^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = 123_456.789
     RUBY
   end
 
@@ -25,12 +33,18 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
-    inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       a = 123_456_78_90_00
+          ^^^^^^^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
       b = 1_8192
+          ^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
-    expect(cop.offenses.size).to eq(2)
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+    expect_correction(<<~RUBY)
+      a = 123_456_789_000
+      b = 18_192
+    RUBY
   end
 
   it 'accepts long numbers with underscore' do
@@ -71,51 +85,69 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
       d = 12345e3
           ^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
     RUBY
-  end
 
-  it 'autocorrects a long integer offense' do
-    corrected = autocorrect_source('a = 123456')
-    expect(corrected).to eq 'a = 123_456'
-  end
-
-  it 'autocorrects an integer with misplaced underscore' do
-    corrected = autocorrect_source('a = 123_456_78_90_00')
-    expect(corrected).to eq 'a = 123_456_789_000'
+    expect_correction(<<~RUBY)
+      a = 10e10
+      b = 3e12345
+      c = 12.345e3
+      d = 12_345e3
+    RUBY
   end
 
   it 'autocorrects negative numbers' do
-    corrected = autocorrect_source('a = -123456')
-    expect(corrected).to eq 'a = -123_456'
-  end
+    expect_offense(<<~RUBY)
+      a = -123456
+          ^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+    RUBY
 
-  it 'autocorrects floating-point numbers' do
-    corrected = autocorrect_source('a = 123456.78')
-    expect(corrected).to eq 'a = 123_456.78'
+    expect_correction(<<~RUBY)
+      a = -123_456
+    RUBY
   end
 
   it 'autocorrects negative floating-point numbers' do
-    corrected = autocorrect_source('a = -123456.78')
-    expect(corrected).to eq 'a = -123_456.78'
+    expect_offense(<<~RUBY)
+      a = -123456.78
+          ^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = -123_456.78
+    RUBY
   end
 
   it 'autocorrects numbers with spaces between leading minus and numbers' do
-    corrected = autocorrect_source("a = -\n  12345")
-    expect(corrected).to eq 'a = -12_345'
-  end
+    expect_offense(<<~RUBY)
+      a = -
+          ^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+        12345
+    RUBY
 
-  it 'autocorrects numeric literal with exponent' do
-    corrected = autocorrect_source('a = 12345e3')
-    expect(corrected).to eq 'a = 12_345e3'
+    expect_correction(<<~RUBY)
+      a = -12_345
+    RUBY
   end
 
   it 'autocorrects numeric literal with exponent and dot' do
-    corrected = autocorrect_source('a = 12345.6e3')
-    expect(corrected).to eq 'a = 12_345.6e3'
+    expect_offense(<<~RUBY)
+      a = 12345.6e3
+          ^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = 12_345.6e3
+    RUBY
   end
 
   it 'autocorrects numeric literal with exponent (large E) and dot' do
-    corrected = autocorrect_source('a = 12345.6E3')
-    expect(corrected).to eq 'a = 12_345.6E3'
+    expect_offense(<<~RUBY)
+      a = 12345.6E3
+          ^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = 12_345.6E3
+    RUBY
   end
 
   context 'strict' do
@@ -130,6 +162,10 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
       expect_offense(<<~RUBY)
         a = 123_456_78_90_00
             ^^^^^^^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = 123_456_789_000
       RUBY
     end
   end

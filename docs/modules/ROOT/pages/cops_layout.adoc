@@ -951,10 +951,6 @@ private def foo
 | `start_of_line`
 | `start_of_line`, `def`
 
-| AutoCorrect
-| `false`
-| Boolean
-
 | Severity
 | `warning`
 | String
@@ -1247,6 +1243,74 @@ end
 === References
 
 * https://rubystyle.guide#separate-magic-comments-from-code
+
+== Layout/EmptyLineAfterMultilineCondition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| Yes
+| 0.90
+| -
+|===
+
+This cop enforces empty line after multiline condition.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if multiline &&
+  condition
+  do_something
+end
+
+# good
+if multiline &&
+  condition
+
+  do_something
+end
+
+# bad
+case x
+when foo,
+  bar
+  do_something
+end
+
+# good
+case x
+when foo,
+  bar
+
+  do_something
+end
+
+# bad
+begin
+  do_something
+rescue FooError,
+  BarError
+  handle_error
+end
+
+# good
+begin
+  do_something
+rescue FooError,
+  BarError
+
+  handle_error
+end
+----
+
+=== References
+
+* https://github.com/airbnb/ruby#multiline-if-newline
 
 == Layout/EmptyLineBetweenDefs
 
@@ -2073,10 +2137,6 @@ variable =
 | EnforcedStyleAlignWith
 | `keyword`
 | `keyword`, `variable`, `start_of_line`
-
-| AutoCorrect
-| `false`
-| Boolean
 
 | Severity
 | `warning`
@@ -5852,7 +5912,7 @@ foo = {     }
 
 === References
 
-* https://rubystyle.guide#spaces-operators
+* https://rubystyle.guide#spaces-braces
 
 == Layout/SpaceInsideParens
 

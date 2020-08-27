@@ -20,7 +20,9 @@ module RuboCop
       #   Integer('10', 10)
       #   Float('10.2')
       #   Complex('10')
-      class NumberConversion < Cop
+      class NumberConversion < Base
+        extend AutoCorrector
+
         CONVERSION_METHOD_CLASS_MAPPING = {
           to_i: "#{Integer.name}(%<number_object>s, 10)",
           to_f: "#{Float.name}(%<number_object>s)",
@@ -49,14 +51,9 @@ module RuboCop
               to_method: to_method,
               corrected_method: correct_method(node, receiver)
             )
-            add_offense(node, message: message)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node,
-                              correct_method(node, node.receiver))
+            add_offense(node, message: message) do |corrector|
+              corrector.replace(node, correct_method(node, node.receiver))
+            end
           end
         end
 

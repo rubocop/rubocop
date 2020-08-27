@@ -27,32 +27,70 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         [:one, :two, :three]
         ^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
       RUBY
-    end
 
-    it 'autocorrects arrays of symbols' do
-      new_source = autocorrect_source('[:one, :two, :three]')
-      expect(new_source).to eq('%i(one two three)')
+      expect_correction(<<~RUBY)
+        %i(one two three)
+      RUBY
     end
 
     it 'autocorrects arrays of one symbol' do
-      new_source = autocorrect_source('[:one]')
-      expect(new_source).to eq('%i(one)')
+      expect_offense(<<~RUBY)
+        [:one]
+        ^^^^^^ Use `%i` or `%I` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %i(one)
+      RUBY
+    end
+
+    it 'autocorrects arrays of symbols with embedded newlines and tabs' do
+      expect_offense(<<~RUBY, tab: "\t")
+        [:"%{tab}", :"two
+        ^^^^{tab}^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+        ", :three]
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %I(\t two\n three)
+      RUBY
     end
 
     it 'autocorrects arrays of symbols with new line' do
-      new_source = autocorrect_source("[:one,\n:two, :three,\n:four]")
-      expect(new_source).to eq("%i(one\ntwo three\nfour)")
+      expect_offense(<<~RUBY)
+        [:one,
+        ^^^^^^ Use `%i` or `%I` for an array of symbols.
+        :two, :three,
+        :four]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %i(one
+        two three
+        four)
+      RUBY
     end
 
     it 'uses %I when appropriate' do
-      new_source = autocorrect_source('[:"\\t", :"\\n", :three]')
-      expect(new_source).to eq('%I(\\t \\n three)')
+      expect_offense(<<~'RUBY')
+        [:"\t", :"\n", :three]
+        ^^^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %I(\t \n three)
+      RUBY
     end
 
     it "doesn't break when a symbol contains )" do
-      source = '[:one, :")", :three, :"(", :"]", :"["]'
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq('%i(one \\) three \\( ] [)')
+      expect_offense(<<~RUBY)
+        [:one, :")", :three, :"(", :"]", :"["]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %i(one \) three \( ] [)
+      RUBY
     end
 
     it 'does not register an offense for array with non-syms' do
@@ -77,11 +115,16 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         foo([:bar, :baz]) { qux }
             ^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo(%i(bar baz)) { qux }
+      RUBY
     end
 
     it 'detects right value for MinSize to use for --auto-gen-config' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         [:one, :two, :three]
+        ^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
         %i(a b c d)
       RUBY
 
@@ -90,8 +133,9 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         [:one, :two, :three]
+        ^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
         %i(a b)
       RUBY
 
@@ -110,20 +154,27 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       end
 
       it 'autocorrects an array with delimiters' do
-        source = '[:one, :")", :three, :"(", :"]", :"["]'
-        new_source = autocorrect_source(source)
-        expect(new_source).to eq('%i[one ) three ( \\] \\[]')
+        expect_offense(<<~RUBY)
+          [:one, :")", :three, :"(", :"]", :"["]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          %i[one ) three ( \] \[]
+        RUBY
       end
 
       it 'autocorrects an array in multiple lines' do
-        new_source = autocorrect_source(<<-RUBY)
+        expect_offense(<<-RUBY)
           [
+          ^ Use `%i` or `%I` for an array of symbols.
           :foo,
           :bar,
           :baz
           ]
         RUBY
-        expect(new_source).to eq(<<-RUBY)
+
+        expect_correction(<<-RUBY)
           %i[
           foo
           bar
@@ -133,12 +184,14 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       end
 
       it 'autocorrects an array using partial newlines' do
-        new_source = autocorrect_source(<<-RUBY)
+        expect_offense(<<-RUBY)
           [:foo, :bar, :baz,
+          ^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
           :boz, :buz,
           :biz]
         RUBY
-        expect(new_source).to eq(<<-RUBY)
+
+        expect_correction(<<-RUBY)
           %i[foo bar baz
           boz buz
           biz]
@@ -159,16 +212,32 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         %i(one two three)
         ^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
       RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :two, :three]
+      RUBY
     end
 
     it 'autocorrects an array starting with %i' do
-      new_source = autocorrect_source('%i(one @two $three four-five)')
-      expect(new_source).to eq("[:one, :@two, :$three, :'four-five']")
+      expect_offense(<<~RUBY)
+        %i(one @two $three four-five)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :@two, :$three, :'four-five']
+      RUBY
     end
 
     it 'autocorrects an array has interpolations' do
-      new_source = autocorrect_source('%I(#{foo} #{foo}bar foo#{bar} foo)')
-      expect(new_source).to eq('[:"#{foo}", :"#{foo}bar", :"foo#{bar}", :foo]')
+      expect_offense(<<~'RUBY')
+        %I(#{foo} #{foo}bar foo#{bar} foo)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        [:"#{foo}", :"#{foo}bar", :"foo#{bar}", :foo]
+      RUBY
     end
   end
 
@@ -178,7 +247,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         'EnforcedStyle' => 'percent' }
     end
 
-    it 'does not autocorrects array of one symbol if MinSize > 1' do
+    it 'does not autocorrect array of one symbol if MinSize > 1' do
       expect_no_offenses('[:one]')
     end
   end

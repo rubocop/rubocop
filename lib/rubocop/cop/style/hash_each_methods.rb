@@ -17,8 +17,9 @@ module RuboCop
       #   # good
       #   hash.each_key { |k| p k }
       #   hash.each_value { |v| p v }
-      class HashEachMethods < Cop
+      class HashEachMethods < Base
         include Lint::UnusedArgument
+        extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
@@ -30,12 +31,6 @@ module RuboCop
           register_kv_offense(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            correct_key_value_each(node, corrector)
-          end
-        end
-
         private
 
         def register_kv_offense(node)
@@ -45,7 +40,9 @@ module RuboCop
             msg = format(message, prefer: "each_#{method[0..-2]}",
                                   current: "#{method}.each")
 
-            add_offense(target, location: kv_range(target), message: msg)
+            add_offense(kv_range(target), message: msg) do |corrector|
+              correct_key_value_each(target, corrector)
+            end
           end
         end
 

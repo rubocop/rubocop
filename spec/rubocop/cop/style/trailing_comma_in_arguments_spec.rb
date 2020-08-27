@@ -7,6 +7,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         some_method(a, b, c, )
                            ^ Avoid comma after the last parameter of a method call#{extra_info}.
       RUBY
+
+      expect_correction(<<~RUBY)
+        some_method(a, b, c )
+      RUBY
     end
 
     it 'registers an offense for trailing comma preceded by whitespace' \
@@ -15,6 +19,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         some_method(a, b, c , )
                             ^ Avoid comma after the last parameter of a method call#{extra_info}.
       RUBY
+
+      expect_correction(<<~RUBY)
+        some_method(a, b, c  )
+      RUBY
     end
 
     it 'registers an offense for trailing comma in a method call with hash' \
@@ -22,6 +30,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       expect_offense(<<~RUBY)
         some_method(a, b, c: 0, d: 1, )
                                     ^ Avoid comma after the last parameter of a method call#{extra_info}.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        some_method(a, b, c: 0, d: 1 )
       RUBY
     end
 
@@ -53,17 +65,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       RUBY
     end
 
-    it 'auto-corrects unwanted comma in a method call' do
-      new_source = autocorrect_source('some_method(a, b, c, )')
-      expect(new_source).to eq('some_method(a, b, c )')
-    end
-
-    it 'auto-corrects unwanted comma in a method call with hash parameters at' \
-       ' the end' do
-      new_source = autocorrect_source('some_method(a, b, c: 0, d: 1, )')
-      expect(new_source).to eq('some_method(a, b, c: 0, d: 1 )')
-    end
-
     it 'accepts heredoc without trailing comma' do
       expect_no_offenses(<<~RUBY)
         route(1, <<-HELP.chomp)
@@ -78,6 +79,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           receiver&.some_method(a, b, c, )
                                        ^ Avoid comma after the last parameter of a method call#{extra_info}.
         RUBY
+
+        expect_correction(<<~RUBY)
+          receiver&.some_method(a, b, c )
+        RUBY
       end
 
       it 'registers an offense for trailing comma in a method call with hash' \
@@ -86,19 +91,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           receiver&.some_method(a, b, c: 0, d: 1, )
                                                 ^ Avoid comma after the last parameter of a method call#{extra_info}.
         RUBY
-      end
 
-      it 'auto-corrects unwanted comma in a method call' do
-        new_source = autocorrect_source('receiver&.some_method(a, b, c, )')
-        expect(new_source).to eq('receiver&.some_method(a, b, c )')
-      end
-
-      it 'auto-corrects unwanted comma in a method call with hash parameters' \
-        ' at the end' do
-        new_source = autocorrect_source(
-          'receiver&.some_method(a, b, c: 0, d: 1, )'
-        )
-        expect(new_source).to eq('receiver&.some_method(a, b, c: 0, d: 1 )')
+        expect_correction(<<~RUBY)
+          receiver&.some_method(a, b, c: 0, d: 1 )
+        RUBY
       end
     end
   end
@@ -171,6 +167,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         d: 1,)
                             ^ Avoid comma after the last parameter of a method call.
         RUBY
+
+        expect_correction(<<~RUBY)
+          some_method(
+                        a,
+                        b,
+                        c: 0,
+                        d: 1)
+        RUBY
       end
 
       it 'accepts a method call with ' \
@@ -218,8 +222,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
 
       it 'accepts comma inside a heredoc in brackets' do
         expect_no_offenses(<<~RUBY)
-          new_source = autocorrect_source(
-            autocorrect_source(<<~SOURCE)
+          expect_no_offenses(
+            expect_no_offenses(<<~SOURCE)
               run(
                     :foo, defaults.merge(
                                           bar: 3))
@@ -239,16 +243,18 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'auto-corrects unwanted comma after modified heredoc parameter' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~'RUBY')
           some_method(
-            <<-LOREM.delete("\\n"),
+            <<-LOREM.delete("\n"),
+                                 ^ Avoid comma after the last parameter of a method call.
               Something with a , in it
             LOREM
           )
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~'RUBY')
           some_method(
-            <<-LOREM.delete("\\n")
+            <<-LOREM.delete("\n")
               Something with a , in it
             LOREM
           )
@@ -278,17 +284,20 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         end
 
         it 'auto-corrects unwanted comma inside string interpolation' do
-          new_source = autocorrect_source(<<~RUBY)
+          expect_offense(<<~'RUBY')
             some_method(
               bar: <<-BAR,
-                \#{other_method(a, b,)} foo, bar
+                #{other_method(a, b,)} foo, bar
+                                   ^ Avoid comma after the last parameter of a method call.
               BAR
               baz: <<-BAZ
-                \#{third_method(c, d,)} foo, bar
+                #{third_method(c, d,)} foo, bar
+                                   ^ Avoid comma after the last parameter of a method call.
               BAZ
             )
           RUBY
-          expect(new_source).to eq(<<~RUBY)
+
+          expect_correction(<<~RUBY)
             some_method(
               bar: <<-BAR,
                 \#{other_method(a, b)} foo, bar
@@ -299,24 +308,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
             )
           RUBY
         end
-      end
-
-      it 'auto-corrects unwanted comma in a method call with hash parameters' \
-         ' at the end' do
-        new_source = autocorrect_source(<<~RUBY)
-          some_method(
-                        a,
-                        b,
-                        c: 0,
-                        d: 1,)
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          some_method(
-                        a,
-                        b,
-                        c: 0,
-                        d: 1)
-        RUBY
       end
     end
 
@@ -342,6 +333,15 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         c: 0,
                         d: 1
                         ^^^^ Put a comma after the last parameter of a multiline method call.
+                     )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          some_method(
+                        a,
+                        b,
+                        c: 0,
+                        d: 1,
                      )
         RUBY
       end
@@ -404,26 +404,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'auto-corrects missing comma in a method call with hash parameters' \
-         ' at the end' do
-        new_source = autocorrect_source(<<~RUBY)
-          some_method(
-                        a,
-                        b,
-                        c: 0,
-                        d: 1
-                     )
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          some_method(
-                        a,
-                        b,
-                        c: 0,
-                        d: 1,
-                     )
-        RUBY
-      end
-
       it 'accepts a multiline call with a single argument and trailing comma' do
         expect_no_offenses(<<~RUBY)
           method(
@@ -469,6 +449,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         c: "d")
                         ^^^^^^ Put a comma after the last parameter of a multiline method call.
           RUBY
+
+          expect_correction(<<~RUBY)
+            some_method(a: "b",
+                        c: "d",)
+          RUBY
         end
       end
 
@@ -483,6 +468,15 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         ^^^^ Put a comma after the last parameter of a multiline method call.
                      )
         RUBY
+
+        expect_correction(<<~RUBY)
+          some_method(
+                        a,
+                        b,
+                        c: 0,
+                        d: 1,
+                     )
+        RUBY
       end
 
       it 'registers an offense for no trailing comma in a method call with' \
@@ -490,6 +484,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         expect_offense(<<~RUBY)
           some_method(a, b
                          ^ Put a comma after the last parameter of a multiline method call.
+                     )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          some_method(a, b,
                      )
         RUBY
       end
@@ -551,37 +550,19 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'auto-corrects missing comma after a heredoc' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           route(1, <<-HELP.chomp
+                   ^^^^^^^^^^^^^ Put a comma after the last parameter of a multiline method call.
           ...
           HELP
           )
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           route(1, <<-HELP.chomp,
           ...
           HELP
           )
-        RUBY
-      end
-
-      it 'auto-corrects missing comma in a method call with hash parameters' \
-         ' at the end' do
-        new_source = autocorrect_source(<<~RUBY)
-          some_method(
-                        a,
-                        b,
-                        c: 0,
-                        d: 1
-                     )
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          some_method(
-                        a,
-                        b,
-                        c: 0,
-                        d: 1,
-                     )
         RUBY
       end
 

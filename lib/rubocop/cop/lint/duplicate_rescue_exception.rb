@@ -43,17 +43,6 @@ module RuboCop
             end
           end
         end
-
-        private
-
-        def rescued_exceptions(resbody)
-          rescue_group, = *resbody
-          if rescue_group
-            rescue_group.values
-          else
-            []
-          end
-        end
       end
     end
   end

@@ -9,6 +9,12 @@ module RuboCop
         on_bad_each_with_object(node) do |*match|
           handle_possible_offense(node, match, 'each_with_object')
         end
+
+        return if target_ruby_version < 2.6
+
+        on_bad_to_h(node) do |*match|
+          handle_possible_offense(node, match, 'to_h {...}')
+        end
       end
 
       def on_send(node)
@@ -23,13 +29,6 @@ module RuboCop
       def on_csend(node)
         on_bad_map_to_h(node) do |*match|
           handle_possible_offense(node, match, 'map {...}.to_h')
-        end
-      end
-
-      def autocorrect(node)
-        lambda do |corrector|
-          correction = prepare_correction(node)
-          execute_correction(corrector, node, correction)
         end
       end
 
@@ -50,6 +49,11 @@ module RuboCop
         raise NotImplementedError
       end
 
+      # @abstract Implemented with `def_node_matcher`
+      def on_bad_to_h(_node)
+        raise NotImplementedError
+      end
+
       def handle_possible_offense(node, match, match_desc)
         captures = extract_captures(match)
 
@@ -61,10 +65,11 @@ module RuboCop
         # `transform_values` if value transformation uses key.
         return if captures.transformation_uses_both_args?
 
-        add_offense(
-          node,
-          message: "Prefer `#{new_method_name}` over `#{match_desc}`."
-        )
+        message = "Prefer `#{new_method_name}` over `#{match_desc}`."
+        add_offense(node, message: message) do |corrector|
+          correction = prepare_correction(node)
+          execute_correction(corrector, node, correction)
+        end
       end
 
       # @abstract
@@ -88,6 +93,8 @@ module RuboCop
           Autocorrection.from_hash_brackets_map(node, match)
         elsif (match = on_bad_map_to_h(node))
           Autocorrection.from_map_to_h(node, match)
+        elsif (match = on_bad_to_h(node))
+          Autocorrection.from_to_h(node, match)
         else
           raise 'unreachable'
         end
@@ -141,6 +148,10 @@ module RuboCop
           end
 
           new(match, node.children.first, 0, strip_trailing_chars)
+        end
+
+        def self.from_to_h(node, match)
+          new(match, node, 0, 0)
         end
 
         def strip_prefix_and_suffix(node, corrector)

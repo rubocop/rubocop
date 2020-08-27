@@ -40,7 +40,7 @@ module RuboCop
           parent = node.parent
           return false unless parent
 
-          parent.array_type? && parent.values.last == node
+          parent.array_type? && parent.children.last.equal?(node)
         end
 
         def check_braces(node)

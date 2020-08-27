@@ -23,7 +23,9 @@ module RuboCop
       #   # good
       #   rand(1..6)
       #   rand(1...7)
-      class RandomWithOffset < Cop
+      class RandomWithOffset < Base
+        extend AutoCorrector
+
         MSG = 'Prefer ranges when generating random numbers instead of ' \
           'integers with offsets.'
 
@@ -56,25 +58,13 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless node.receiver
           return unless integer_op_rand?(node) ||
                         rand_op_integer?(node) ||
                         rand_modified?(node)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if integer_op_rand?(node)
-              corrector.replace(node,
-                                corrected_integer_op_rand(node))
-            elsif rand_op_integer?(node)
-              corrector.replace(node,
-                                corrected_rand_op_integer(node))
-            elsif rand_modified?(node)
-              corrector.replace(node,
-                                corrected_rand_modified(node))
-            end
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
@@ -84,6 +74,16 @@ module RuboCop
           {(send (send $_ _ $_) ...)
            (send _ _ (send $_ _ $_))}
         PATTERN
+
+        def autocorrect(corrector, node)
+          if integer_op_rand?(node)
+            corrector.replace(node, corrected_integer_op_rand(node))
+          elsif rand_op_integer?(node)
+            corrector.replace(node, corrected_rand_op_integer(node))
+          elsif rand_modified?(node)
+            corrector.replace(node, corrected_rand_modified(node))
+          end
+        end
 
         def corrected_integer_op_rand(node)
           random_call(node) do |prefix_node, random_node|

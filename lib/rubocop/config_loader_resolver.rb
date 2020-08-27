@@ -213,8 +213,8 @@ module RuboCop
       end
     end
 
-    def transform(config)
-      config.transform_values { |params| yield(params) }
+    def transform(config, &block)
+      config.transform_values(&block)
     end
 
     def gem_config_path(gem_name, relative_config_path)

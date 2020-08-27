@@ -143,10 +143,11 @@ module RuboCop
       #
       #   # good
       #   Array 1
-      class MethodCallWithArgsParentheses < Cop
+      class MethodCallWithArgsParentheses < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods
         include IgnoredPattern
+        extend AutoCorrector
 
         def initialize(*)
           super

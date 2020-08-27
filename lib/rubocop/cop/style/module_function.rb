@@ -71,8 +71,9 @@ module RuboCop
       #
       # These offenses are not safe to auto-correct since there are different
       # implications to each approach.
-      class ModuleFunction < Cop
+      class ModuleFunction < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MODULE_FUNCTION_MSG =
           'Use `module_function` instead of `extend self`.'
@@ -89,18 +90,14 @@ module RuboCop
           return unless node.body&.begin_type?
 
           each_wrong_style(node.body.children) do |child_node|
-            add_offense(child_node)
-          end
-        end
+            add_offense(child_node) do |corrector|
+              next if style == :forbidden
 
-        def autocorrect(node)
-          return if style == :forbidden
-
-          lambda do |corrector|
-            if extend_self_node?(node)
-              corrector.replace(node, 'module_function')
-            else
-              corrector.replace(node, 'extend self')
+              if extend_self_node?(child_node)
+                corrector.replace(child_node, 'module_function')
+              else
+                corrector.replace(child_node, 'extend self')
+              end
             end
           end
         end
@@ -139,7 +136,7 @@ module RuboCop
           end
         end
 
-        def message(_node)
+        def message(_range)
           return FORBIDDEN_MSG if style == :forbidden
 
           style == :module_function ? MODULE_FUNCTION_MSG : EXTEND_SELF_MSG

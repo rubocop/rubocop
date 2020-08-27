@@ -58,7 +58,7 @@ module RuboCop
       #   1e4
       #   12e5
       #
-      class ExponentialNotation < Cop
+      class ExponentialNotation < Base
         include ConfigurableEnforcedStyle
         MESSAGES = {
           scientific: 'Use a mantissa in [1, 10[.',

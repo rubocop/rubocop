@@ -57,7 +57,7 @@ module RuboCop
         def initialize(config = nil, options = nil)
           super
           @allowed_send_nodes = []
-          @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }
+          @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }.compare_by_identity
         end
 
         # Assignment of self.x
@@ -123,7 +123,7 @@ module RuboCop
         private
 
         def add_scope(node, local_variables = [])
-          node.descendants.each do |child_node|
+          node.each_descendant do |child_node|
             @local_variables_scopes[child_node] = local_variables
           end
         end

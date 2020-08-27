@@ -10,11 +10,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           raise RuntimeError, msg
           ^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
         RUBY
-      end
 
-      it 'auto-corrects to compact style' do
-        new_source = autocorrect_source('raise RuntimeError, msg')
-        expect(new_source).to eq('raise RuntimeError.new(msg)')
+        expect_correction(<<~RUBY)
+          raise RuntimeError.new(msg)
+        RUBY
       end
     end
 
@@ -67,17 +66,8 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
             raise Ex.new(msg)
           end
         RUBY
-      end
 
-      it 'auto-corrects to compact style' do
-        new_source = autocorrect_source(<<~RUBY)
-          if a
-            raise RuntimeError, msg
-          else
-            raise Ex.new(msg)
-          end
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           if a
             raise RuntimeError.new(msg)
           else
@@ -93,13 +83,8 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           raise RuntimeError, msg, caller
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
         RUBY
-      end
 
-      it 'does not auto-correct to compact style' do
-        initial_source = 'raise RuntimeError, msg, caller'
-
-        new_source = autocorrect_source(initial_source)
-        expect(new_source).to eq(initial_source)
+        expect_no_corrections
       end
     end
 
@@ -124,11 +109,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           RUBY
           expect(cop.config_to_allow_offenses)
             .to eq('EnforcedStyle' => 'compact')
-        end
 
-        it 'auto-corrects to exploded style' do
-          new_source = autocorrect_source('raise Ex.new(msg)')
-          expect(new_source).to eq('raise Ex, msg')
+          expect_correction(<<~RUBY)
+            raise Ex, msg
+          RUBY
         end
       end
 
@@ -140,11 +124,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           RUBY
           expect(cop.config_to_allow_offenses)
             .to eq('EnforcedStyle' => 'compact')
-        end
 
-        it 'auto-corrects to exploded style' do
-          new_source = autocorrect_source('raise Ex.new')
-          expect(new_source).to eq('raise Ex')
+          expect_correction(<<~RUBY)
+            raise Ex
+          RUBY
         end
       end
 
@@ -199,17 +182,8 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           end
         RUBY
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-      end
 
-      it 'auto-corrects to exploded style' do
-        new_source = autocorrect_source(<<~RUBY)
-          if a
-            raise RuntimeError, msg
-          else
-            raise Ex.new(msg)
-          end
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           if a
             raise RuntimeError, msg
           else
@@ -221,14 +195,15 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     context 'when an exception object is assigned to a local variable' do
       it 'auto-corrects to exploded style' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           def do_something
             klass = RuntimeError
             raise klass.new('hi')
+            ^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           end
         RUBY
 
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           def do_something
             klass = RuntimeError
             raise klass, 'hi'

@@ -26,7 +26,7 @@ module RuboCop
       #     public_constant :BAZ
       #   end
       #
-      class ConstantVisibility < Cop
+      class ConstantVisibility < Base
         MSG = 'Explicitly make `%<constant_name>s` public or private using ' \
               'either `#public_constant` or `#private_constant`.'
 
@@ -34,7 +34,8 @@ module RuboCop
           return unless class_or_module_scope?(node)
           return if visibility_declaration?(node)
 
-          add_offense(node)
+          message = message(node)
+          add_offense(node, message: message)
         end
 
         private

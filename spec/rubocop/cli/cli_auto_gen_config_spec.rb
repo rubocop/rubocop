@@ -199,7 +199,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             == example.rb ==
             C:  2: 91: Layout/LineLength: Line is too long. [99/90]
 
-            1 file inspected, 1 offense detected
+            1 file inspected, 1 offense detected, 1 offense auto-correctable
           OUTPUT
         end
       end
@@ -1111,7 +1111,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Inspecting 1 file
           C
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense auto-correctable
           Created .rubocop_todo.yml.
         OUTPUT
       end

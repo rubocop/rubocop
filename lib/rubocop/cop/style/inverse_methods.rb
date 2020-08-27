@@ -33,9 +33,10 @@ module RuboCop
       #     next if f.zero?
       #     f != 1
       #   end
-      class InverseMethods < Cop
+      class InverseMethods < Base
         include IgnoredNode
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'
         CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
@@ -64,16 +65,15 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return if part_of_ignored_node?(node)
-
           inverse_candidate?(node) do |_method_call, lhs, method, rhs|
             return unless inverse_methods.key?(method)
-            return if possible_class_hierarchy_check?(lhs, rhs, method)
             return if negated?(node)
+            return if part_of_ignored_node?(node)
+            return if possible_class_hierarchy_check?(lhs, rhs, method)
 
-            add_offense(node,
-                        message: format(MSG, method: method,
-                                             inverse: inverse_methods[method]))
+            add_offense(node, message: message(method, inverse_methods[method])) do |corrector|
+              correct_inverse_method(corrector, node)
+            end
           end
         end
 
@@ -87,40 +87,28 @@ module RuboCop
             # offense, such as `y.reject { |key, _value| !(key =~ /c\d/) }`,
             # can cause auto-correction to apply improper corrections.
             ignore_node(block)
-            add_offense(node,
-                        message: format(MSG, method: method,
-                                             inverse: inverse_blocks[method]))
+            add_offense(node, message: message(method, inverse_blocks[method])) do |corrector|
+              correct_inverse_block(corrector, node)
+            end
           end
         end
 
-        def autocorrect(node)
-          if node.block_type?
-            correct_inverse_block(node)
-          elsif node.send_type?
-            correct_inverse_method(node)
-          end
-        end
+        private
 
-        def correct_inverse_method(node)
+        def correct_inverse_method(corrector, node)
           method_call, _lhs, method, _rhs = inverse_candidate?(node)
           return unless method_call && method
 
-          lambda do |corrector|
-            corrector.remove(not_to_receiver(node, method_call))
-            corrector.replace(method_call.loc.selector,
-                              inverse_methods[method].to_s)
-            remove_end_parenthesis(corrector, node, method, method_call)
-          end
+          corrector.remove(not_to_receiver(node, method_call))
+          corrector.replace(method_call.loc.selector, inverse_methods[method].to_s)
+          remove_end_parenthesis(corrector, node, method, method_call)
         end
 
-        def correct_inverse_block(node)
+        def correct_inverse_block(corrector, node)
           method_call, method, block = inverse_block?(node)
 
-          lambda do |corrector|
-            corrector.replace(method_call.loc.selector,
-                              inverse_blocks[method].to_s)
-            correct_inverse_selector(block, corrector)
-          end
+          corrector.replace(method_call.loc.selector, inverse_blocks[method].to_s)
+          correct_inverse_selector(block, corrector)
         end
 
         def correct_inverse_selector(block, corrector)
@@ -139,8 +127,6 @@ module RuboCop
             corrector.remove(selector_loc)
           end
         end
-
-        private
 
         def inverse_methods
           @inverse_methods ||= cop_config['InverseMethods']
@@ -190,6 +176,10 @@ module RuboCop
                         method_call.parent.begin_type?
 
           corrector.remove(end_parentheses(node, method_call))
+        end
+
+        def message(method, inverse)
+          format(MSG, method: method, inverse: inverse)
         end
       end
     end

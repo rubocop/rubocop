@@ -49,7 +49,7 @@ module RuboCop
       #   end
       #
       #   alias bar foo
-      class DuplicateMethods < Cop
+      class DuplicateMethods < Base
         MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
               '%<current>s.'
 
@@ -153,7 +153,7 @@ module RuboCop
                   end
             message = message_for_dup(node, method_name)
 
-            add_offense(node, location: loc, message: message)
+            add_offense(loc, message: message)
           else
             @definitions[method_name] = node
           end

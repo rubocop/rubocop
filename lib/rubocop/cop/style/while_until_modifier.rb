@@ -24,37 +24,23 @@ module RuboCop
       #
       #   # good
       #   x += 1 until x > 10
-      class WhileUntilModifier < Cop
+      class WhileUntilModifier < Base
         include StatementModifier
+        extend AutoCorrector
 
         MSG = 'Favor modifier `%<keyword>s` usage when ' \
               'having a single-line body.'
 
         def on_while(node)
-          check(node)
-        end
+          return unless node.multiline? && single_line_as_modifier?(node)
 
-        def on_until(node)
-          check(node)
-        end
+          add_offense(node.loc.keyword, message: format(MSG, keyword: node.keyword)) do |corrector|
+            oneline = "#{node.body.source} #{node.keyword} #{node.condition.source}"
 
-        def autocorrect(node)
-          oneline = "#{node.body.source} #{node.keyword} " \
-                    "#{node.condition.source}"
-
-          lambda do |corrector|
             corrector.replace(node, oneline)
           end
         end
-
-        private
-
-        def check(node)
-          return unless node.multiline? && single_line_as_modifier?(node)
-
-          add_offense(node, location: :keyword,
-                            message: format(MSG, keyword: node.keyword))
-        end
+        alias on_until on_while
       end
     end
   end

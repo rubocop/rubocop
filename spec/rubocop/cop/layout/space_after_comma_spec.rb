@@ -8,17 +8,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma do
   end
   let(:brace_config) { {} }
 
-  shared_examples 'ends with an item' do |items, correct_items|
-    it 'registers an offense' do
-      inspect_source(source.call(items))
-      expect(cop.messages).to eq(
-        ['Space missing after comma.']
-      )
-    end
+  shared_examples 'ends with an item' do |items, annotation_start, correct_items|
+    it 'registers an offense and does autocorrection' do
+      expect_offense(<<~RUBY)
+        #{source.call(items)}
+        #{' ' * annotation_start}^ Space missing after comma.
+      RUBY
 
-    it 'does auto-correction' do
-      new_source = autocorrect_source(source.call(items))
-      expect(new_source).to eq source.call(correct_items)
+      expect_correction(<<~RUBY)
+        #{source.call(correct_items)}
+      RUBY
     end
   end
 
@@ -29,23 +28,23 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma do
   end
 
   context 'block argument commas without space' do
-    let(:source) { ->(args) { "each { |#{args}| }" } }
+    let(:source) { ->(items) { "each { |#{items}| }" } }
 
-    it_behaves_like 'ends with an item', 's,t', 's, t'
+    it_behaves_like 'ends with an item', 's,t', 9, 's, t'
     it_behaves_like 'trailing comma', 's, t,'
   end
 
   context 'array index commas without space' do
     let(:source) { ->(items) { "formats[#{items}]" } }
 
-    it_behaves_like 'ends with an item', '0,1', '0, 1'
+    it_behaves_like 'ends with an item', '0,1', 9, '0, 1'
     it_behaves_like 'trailing comma', '0,'
   end
 
   context 'method call arg commas without space' do
     let(:source) { ->(args) { "a(#{args})" } }
 
-    it_behaves_like 'ends with an item', '1,2', '1, 2'
+    it_behaves_like 'ends with an item', '1,2', 3, '1, 2'
   end
 
   context 'inside hash braces' do

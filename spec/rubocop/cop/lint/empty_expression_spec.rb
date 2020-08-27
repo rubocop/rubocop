@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyExpression do
       RUBY
     end
 
-    it 'registers an offense inside `elseif`' do
+    it 'registers an offense inside `elsif`' do
       expect_offense(<<~RUBY)
         if foo
           1

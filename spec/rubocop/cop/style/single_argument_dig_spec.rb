@@ -66,4 +66,12 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig do
       end
     end
   end
+
+  context 'when without a receiver' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        dig(:key)
+      RUBY
+    end
+  end
 end

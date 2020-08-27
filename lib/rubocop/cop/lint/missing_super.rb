@@ -45,13 +45,19 @@ module RuboCop
 
         OBJECT_LIFECYCLE_CALLBACKS  = %i[method_missing respond_to_missing?].freeze
         CLASS_LIFECYCLE_CALLBACKS   = %i[inherited].freeze
-        MODULE_LIFECYCLE_CALLBACKS  = %i[included extended prepended].freeze
+        METHOD_LIFECYCLE_CALLBACKS  = %i[method_added method_removed method_undefined
+                                         singleton_method_added singleton_method_removed
+                                         singleton_method_undefined].freeze
+
+        CALLBACKS = (OBJECT_LIFECYCLE_CALLBACKS +
+                      CLASS_LIFECYCLE_CALLBACKS +
+                      METHOD_LIFECYCLE_CALLBACKS).to_set.freeze
 
         def on_def(node)
           return unless offender?(node)
 
-          if node.method?(:initialize)
-            add_offense(node, message: CONSTRUCTOR_MSG) if inside_class_with_stateful_parent?(node)
+          if node.method?(:initialize) && inside_class_with_stateful_parent?(node)
+            add_offense(node, message: CONSTRUCTOR_MSG)
           elsif callback_method_def?(node)
             add_offense(node, message: CALLBACK_MSG)
           end
@@ -70,15 +76,9 @@ module RuboCop
         end
 
         def callback_method_def?(node)
-          method_name = node.method_name
+          return unless CALLBACKS.include?(node.method_name)
 
-          if OBJECT_LIFECYCLE_CALLBACKS.include?(method_name) ||
-             CLASS_LIFECYCLE_CALLBACKS.include?(method_name)
-
-            node.each_ancestor(:class, :sclass, :module).first
-          elsif MODULE_LIFECYCLE_CALLBACKS.include?(method_name)
-            node.each_ancestor(:module).first
-          end
+          node.each_ancestor(:class, :sclass, :module).first
         end
 
         def contains_super?(node)

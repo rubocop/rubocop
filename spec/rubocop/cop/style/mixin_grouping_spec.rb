@@ -1,156 +1,100 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
-  before do
-    inspect_source(source)
-  end
-
-  shared_examples 'code with offense' do |code, expected|
-    context "when checking #{code}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(offenses)
-        expect(cop.messages).to eq([message] * offenses)
-      end
-
-      if expected
-        it 'auto-corrects' do
-          expect(autocorrect_source(code)).to eq(expected)
-        end
-      else
-        it 'does not auto-correct' do
-          expect(autocorrect_source(code)).to eq(code)
-        end
-      end
-    end
-  end
-
-  shared_examples 'code without offense' do |code|
-    let(:source) { code }
-
-    it 'does not register an offense' do
-      expect(cop.offenses.empty?).to be(true)
-    end
-  end
-
   context 'when configured with separated style' do
     let(:cop_config) { { 'EnforcedStyle' => 'separated' } }
 
-    let(:offenses) { 1 }
-
     context 'when using `include`' do
-      let(:message) { 'Put `include` mixins in separate statements.' }
+      it 'registers an offense for several mixins in one call' do
+        expect_offense(<<~RUBY)
+          class Foo
+            include Bar, Qux
+            ^^^^^^^^^^^^^^^^ Put `include` mixins in separate statements.
+          end
+        RUBY
 
-      context 'with several mixins in one call' do
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar, Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  include Qux',
-                         '  include Bar',
-                         'end'].join("\n")
+        expect_correction(<<~RUBY)
+          class Foo
+            include Qux
+            include Bar
+          end
+        RUBY
       end
 
-      context 'with single mixins in separate calls' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'allows include call as an argument to another method' do
+        expect_no_offenses('expect(foo).to include { { bar: baz } }')
+      end
+
+      it 'registers an offense for several mixins in separate calls' do
+        expect_offense(<<~RUBY)
           class Foo
+            include Bar, Baz
+            ^^^^^^^^^^^^^^^^ Put `include` mixins in separate statements.
+            include Qux
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            include Baz
             include Bar
             include Qux
           end
         RUBY
       end
-
-      context 'when include call is an argument to another method' do
-        it_behaves_like 'code without offense',
-                        'expect(foo).to include { { bar: baz } }'
-      end
-
-      context 'with several mixins in separate calls' do
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar, Baz',
-                         '  include Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  include Baz',
-                         '  include Bar',
-                         '  include Qux',
-                         'end'].join("\n")
-      end
     end
 
     context 'when using `extend`' do
-      let(:message) { 'Put `extend` mixins in separate statements.' }
-
-      context 'with several mixins in one call' do
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  extend Bar, Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  extend Qux',
-                         '  extend Bar',
-                         'end'].join("\n")
-      end
-
-      context 'with single mixins in separate calls' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'registers an offense for several mixins in one call' do
+        expect_offense(<<~RUBY)
           class Foo
-            extend Bar
+            extend Bar, Qux
+            ^^^^^^^^^^^^^^^ Put `extend` mixins in separate statements.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
             extend Qux
+            extend Bar
           end
         RUBY
       end
     end
 
     context 'when using `prepend`' do
-      let(:message) { 'Put `prepend` mixins in separate statements.' }
-
-      context 'with several mixins in one call' do
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  prepend Bar, Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  prepend Qux',
-                         '  prepend Bar',
-                         'end'].join("\n")
-      end
-
-      context 'with single mixins in separate calls' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'registers an offense for several mixins in one call' do
+        expect_offense(<<~RUBY)
           class Foo
-            prepend Bar
+            prepend Bar, Qux
+            ^^^^^^^^^^^^^^^^ Put `prepend` mixins in separate statements.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
             prepend Qux
+            prepend Bar
           end
         RUBY
       end
     end
 
     context 'when using a mix of diffent methods' do
-      context 'with some calls having several mixins' do
-        let(:message) { 'Put `include` mixins in separate statements.' }
-
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar, Baz',
-                         '  extend Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  include Baz',
-                         '  include Bar',
-                         '  extend Qux',
-                         'end'].join("\n")
-      end
-
-      context 'with all calls having one mixin' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'registers an offense for some calls having several mixins' do
+        expect_offense(<<~RUBY)
           class Foo
+            include Bar, Baz
+            ^^^^^^^^^^^^^^^^ Put `include` mixins in separate statements.
+            extend Qux
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            include Baz
             include Bar
-            prepend Baz
-            extend Baz
+            extend Qux
           end
         RUBY
       end
@@ -161,156 +105,158 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'grouped' } }
 
     context 'when using include' do
-      context 'with single mixins in separate calls' do
-        let(:offenses) { 3 }
-        let(:message) { 'Put `include` mixins in a single statement.' }
-
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar',
-                         '  include Baz',
-                         '  include Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  include Qux, Baz, Bar',
-                         'end'].join("\n")
-      end
-
-      context 'with several mixins in one call' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'registers an offense for single mixins in separate calls' do
+        expect_offense(<<~RUBY)
           class Foo
-            include Bar, Qux
+            include Bar
+            ^^^^^^^^^^^ Put `include` mixins in a single statement.
+            include Baz
+            ^^^^^^^^^^^ Put `include` mixins in a single statement.
+            include Qux
+            ^^^^^^^^^^^ Put `include` mixins in a single statement.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            include Qux, Baz, Bar
           end
         RUBY
       end
 
-      context 'when include has an explicit receiver' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'allows include with an explicit receiver' do
+        expect_no_offenses(<<~RUBY)
           config.include Foo
           config.include Bar
         RUBY
       end
 
-      context 'with several mixins in separate calls' do
-        let(:offenses) { 3 }
-        let(:message) { 'Put `include` mixins in a single statement.' }
+      it 'registers an offense for several mixins in separate calls' do
+        expect_offense(<<~RUBY)
+          class Foo
+            include Bar, Baz
+            ^^^^^^^^^^^^^^^^ Put `include` mixins in a single statement.
+            include FooBar, FooBaz
+            ^^^^^^^^^^^^^^^^^^^^^^ Put `include` mixins in a single statement.
+            include Qux, FooBarBaz
+            ^^^^^^^^^^^^^^^^^^^^^^ Put `include` mixins in a single statement.
+          end
+        RUBY
 
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar, Baz',
-                         '  include FooBar, FooBaz',
-                         '  include Qux, FooBarBaz',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  include Qux, FooBarBaz, FooBar, FooBaz, Bar, Baz',
-                         'end'].join("\n")
+        expect_correction(<<~RUBY)
+          class Foo
+            include Qux, FooBarBaz, FooBar, FooBaz, Bar, Baz
+          end
+        RUBY
       end
     end
 
     context 'when using `extend`' do
-      context 'with single mixins in separate calls' do
-        let(:offenses) { 2 }
-        let(:message) { 'Put `extend` mixins in a single statement.' }
-
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  extend Bar',
-                         '  extend Baz',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  extend Baz, Bar',
-                         'end'].join("\n")
-      end
-
-      context 'with several mixins in one call' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'registers an offense for single mixins in separate calls' do
+        expect_offense(<<~RUBY)
           class Foo
-            extend Bar, Qux
+            extend Bar
+            ^^^^^^^^^^ Put `extend` mixins in a single statement.
+            extend Baz
+            ^^^^^^^^^^ Put `extend` mixins in a single statement.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            extend Baz, Bar
           end
         RUBY
       end
     end
 
     context 'when using `prepend`' do
-      context 'with single mixins in separate calls' do
-        let(:offenses) { 2 }
-        let(:message) { 'Put `prepend` mixins in a single statement.' }
-
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  prepend Bar',
-                         '  prepend Baz',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  prepend Baz, Bar',
-                         'end'].join("\n")
-      end
-
-      context 'with single mixins in separate calls, intersperced' do
-        let(:offenses) { 3 }
-        let(:message) { 'Put `prepend` mixins in a single statement.' }
-
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  prepend Bar',
-                         '  prepend Baz',
-                         '  do_something_else',
-                         '  prepend Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  prepend Qux, Baz, Bar',
-                         '  do_something_else',
-                         '  ', # extra line left by prepend Qux
-                         'end'].join("\n")
-      end
-
-      context 'with mixins with receivers' do
-        let(:offenses) { 2 }
-        let(:message) { 'Put `prepend` mixins in a single statement.' }
-
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  prepend Bar',
-                         '  Other.prepend Baz',
-                         '  do_something_else',
-                         '  prepend Qux',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  prepend Qux, Bar',
-                         '  Other.prepend Baz',
-                         '  do_something_else',
-                         '  ', # extra line left by prepend Qux
-                         'end'].join("\n")
-      end
-
-      context 'with several mixins in one call' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'registers an offense for single mixins in separate calls' do
+        expect_offense(<<~RUBY)
           class Foo
-            prepend Bar, Qux
+            prepend Bar
+            ^^^^^^^^^^^ Put `prepend` mixins in a single statement.
+            prepend Baz
+            ^^^^^^^^^^^ Put `prepend` mixins in a single statement.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            prepend Baz, Bar
+          end
+        RUBY
+      end
+
+      it 'registers an offense for single mixins in separate calls, interspersed' do
+        expect_offense(<<~RUBY)
+          class Foo
+            prepend Bar
+            ^^^^^^^^^^^ Put `prepend` mixins in a single statement.
+            prepend Baz
+            ^^^^^^^^^^^ Put `prepend` mixins in a single statement.
+            do_something_else
+            prepend Qux
+            ^^^^^^^^^^^ Put `prepend` mixins in a single statement.
+          end
+        RUBY
+
+        # empty line left by prepend Qux
+        expect_correction(<<~RUBY)
+          class Foo
+            prepend Qux, Baz, Bar
+            do_something_else
+            
+          end
+        RUBY
+      end
+
+      it 'registers an offense when other mixins have receivers' do
+        expect_offense(<<~RUBY)
+          class Foo
+            prepend Bar
+            ^^^^^^^^^^^ Put `prepend` mixins in a single statement.
+            Other.prepend Baz
+            do_something_else
+            prepend Qux
+            ^^^^^^^^^^^ Put `prepend` mixins in a single statement.
+          end
+        RUBY
+
+        # empty line left by prpend Qux
+        expect_correction(<<~RUBY)
+          class Foo
+            prepend Qux, Bar
+            Other.prepend Baz
+            do_something_else
+            
           end
         RUBY
       end
     end
 
     context 'when using a mix of diffent methods' do
-      context 'with some duplicated mixin methods' do
-        let(:offenses) { 2 }
-        let(:message) { 'Put `include` mixins in a single statement.' }
+      it 'registers an offense with some duplicated mixin methods' do
+        expect_offense(<<~RUBY)
+          class Foo
+            include Bar
+            ^^^^^^^^^^^ Put `include` mixins in a single statement.
+            include Baz
+            ^^^^^^^^^^^ Put `include` mixins in a single statement.
+            extend Baz
+          end
+        RUBY
 
-        it_behaves_like 'code with offense',
-                        ['class Foo',
-                         '  include Bar',
-                         '  include Baz',
-                         '  extend Baz',
-                         'end'].join("\n"),
-                        ['class Foo',
-                         '  include Baz, Bar',
-                         '  extend Baz',
-                         'end'].join("\n")
+        expect_correction(<<~RUBY)
+          class Foo
+            include Baz, Bar
+            extend Baz
+          end
+        RUBY
       end
 
-      context 'with all different mixin methods' do
-        it_behaves_like 'code without offense', <<~RUBY
+      it 'allows all different mixin methods' do
+        expect_no_offenses(<<~RUBY)
           class Foo
             include Bar
             prepend Baz

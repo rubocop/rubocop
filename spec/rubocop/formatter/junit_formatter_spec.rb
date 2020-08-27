@@ -7,6 +7,8 @@ RSpec.describe RuboCop::Formatter::JUnitFormatter, :config do
   let(:cop_class) { RuboCop::Cop::Layout::SpaceInsideBlockBraces }
   let(:source) { %w[foo bar baz].join("\n") }
 
+  before { cop.send(:begin_investigation, processed_source) }
+
   describe '#file_finished' do
     before do
       cop.add_offense(

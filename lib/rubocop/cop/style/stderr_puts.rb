@@ -14,8 +14,9 @@ module RuboCop
       #   # good
       #   warn('hello')
       #
-      class StderrPuts < Cop
+      class StderrPuts < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG =
           'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
@@ -30,11 +31,8 @@ module RuboCop
         def on_send(node)
           return unless stderr_puts?(node)
 
-          add_offense(node, location: stderr_puts_range(node))
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          message = message(node)
+          add_offense(stderr_puts_range(node), message: message) do |corrector|
             corrector.replace(stderr_puts_range(node), 'warn')
           end
         end

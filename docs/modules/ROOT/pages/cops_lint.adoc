@@ -211,6 +211,46 @@ BigDecimal.new(123.456, 3)
 BigDecimal(123.456, 3)
 ----
 
+== Lint/BinaryOperatorWithIdenticalOperands
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.89
+| -
+|===
+
+This cop checks for places where binary operator has identical operands.
+
+It covers arithmetic operators: `+`, `-`, `*`, `/`, `%`, `**`;
+comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;
+bitwise operators: `|`, `^`, `&`, `<<`, `>>`;
+boolean operators: `&&`, `||`
+and "spaceship" operator - `<=>`.
+
+This cop is marked as unsafe as it does not consider side effects when calling methods
+and thus can generate false positives:
+  if wr.take_char == '\0' && wr.take_char == '\0'
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+x.top >= x.top
+
+if a.x != 0 && a.x != 0
+  do_something
+end
+
+def childs?
+  left_child || left_child
+end
+----
+
 == Lint/BooleanSymbol
 
 |===
@@ -739,6 +779,34 @@ end
 alias bar foo
 ----
 
+== Lint/DuplicateRequire
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.90
+| -
+|===
+
+This cop checks for duplicate `require`s and `require_relative`s.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+require 'foo'
+require 'bar'
+require 'foo'
+
+# good
+require 'foo'
+require 'bar'
+----
+
 == Lint/DuplicateRescueException
 
 |===
@@ -853,6 +921,90 @@ else
 end
 ----
 
+== Lint/EmptyConditionalBody
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if condition
+end
+
+# bad
+unless condition
+end
+
+# bad
+if condition
+  do_something
+elsif other_condition
+end
+
+# good
+if condition
+  do_something
+end
+
+# good
+unless condition
+  do_something
+end
+
+# good
+if condition
+  do_something
+elsif other_condition
+  do_something_else
+end
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+if condition
+  do_something
+elsif other_condition
+  # noop
+end
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+if condition
+  do_something
+elsif other_condition
+  # noop
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
+
 == Lint/EmptyEnsure
 
 |===
@@ -911,16 +1063,6 @@ ensure
 end
 ----
 
-=== Configurable attributes
-
-|===
-| Name | Default value | Configurable values
-
-| AutoCorrect
-| `false`
-| Boolean
-|===
-
 == Lint/EmptyExpression
 
 |===
@@ -956,6 +1098,57 @@ if (some_expression)
   bar
 end
 ----
+
+== Lint/EmptyFile
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.90
+| -
+|===
+
+This cop enforces that Ruby source files are not empty.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+# Empty file
+
+# good
+# File containing non commented source lines
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+# File consisting only of comments
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+# File consisting only of comments
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
 
 == Lint/EmptyInterpolation
 
@@ -1228,6 +1421,51 @@ end
 === References
 
 * https://rubystyle.guide#no-flip-flops
+
+== Lint/FloatComparison
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for the presence of precise comparison of floating point numbers.
+
+Floating point values are inherently inaccurate, and comparing them for exact equality
+is almost never the desired semantics. Comparison via the `==/!=` operators checks
+floating-point value representation to be exactly the same, which is very unlikely
+if you perform any arithmetic operations involving precision loss.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+x == 0.1
+x != 0.1
+
+# good - using BigDecimal
+x.to_d == 0.1.to_d
+
+# good
+(x - 0.1).abs < Float::EPSILON
+
+# good
+tolerance = 0.0001
+(x - 0.1).abs < tolerance
+
+# Or some other epsilon based type of comparison:
+# https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
+----
+
+=== References
+
+* https://rubystyle.guide#float-comparison
 
 == Lint/FloatOutOfRange
 
@@ -1523,7 +1761,7 @@ C = Class.new(StandardError)
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| Yes
+| No
 | Yes (Unsafe)
 | 0.50
 | 0.87
@@ -1626,9 +1864,9 @@ This cop checks for interpolated literals.
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
-| -
+| 0.89
 |===
 
 This cop checks for uses of `begin...end while/until something`.
@@ -2185,6 +2423,36 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 # encoding: ascii
 # frozen_string_literal: true
 p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
+----
+
+== Lint/OutOfRangeRegexpRef
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.89
+| -
+|===
+
+This cops looks for references of Regexp captures that are out of range
+and thus always returns nil.
+
+=== Examples
+
+[source,ruby]
+----
+/(foo)bar/ =~ 'foobar'
+
+# bad - always returns nil
+
+puts $2 # => nil
+
+# good
+
+puts $1 # => foo
 ----
 
 == Lint/ParenthesesAsGroupedExpression
@@ -3282,10 +3550,10 @@ end
 | -
 |===
 
-This cop looks for use of the same name as outer local variables
-for block arguments or block local variables.
-This is a mimic of the warning
-"shadowing outer local variable - foo" from `ruby -cw`.
+This cop checks for the use of local variable names from an outer scope
+in block arguments or block-local variables. This mirrors the warning
+given by `ruby -cw` prior to Ruby 2.6:
+"shadowing outer local variable - foo".
 
 === Examples
 
@@ -3515,6 +3783,45 @@ always ignored. This is detected automatically since Ruby 2.7.
 return 1 # 1 is always ignored.
 ----
 
+== Lint/TrailingCommaInAttributeDeclaration
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.90
+| -
+|===
+
+This cop checks for trailing commas in attribute declarations, such as
+`#attr_reader`. Leaving a trailing comma will nullify the next method
+definition by overriding it with a getter method.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Foo
+  attr_reader :foo,
+
+  def bar
+    puts "Unreachable."
+  end
+end
+
+# good
+class Foo
+  attr_reader :foo
+
+  def bar
+    puts "No problem!"
+  end
+end
+----
+
 == Lint/UnderscorePrefixedVariableName
 
 |===
@@ -3658,6 +3965,89 @@ end
 
 def some_method
   do_something
+end
+----
+
+== Lint/UnreachableLoop
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+This cop checks for loops that will have at most one iteration.
+
+A loop that can never reach the second iteration is a possible error in the code.
+In rare cases where only one iteration (or at most one iteration) is intended behavior,
+the code should be refactored to use `if` conditionals.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+while node
+  do_something(node)
+  node = node.parent
+  break
+end
+
+# good
+while node
+  do_something(node)
+  node = node.parent
+end
+
+# bad
+def verify_list(head)
+  item = head
+  begin
+    if verify(item)
+      return true
+    else
+      return false
+    end
+  end while(item)
+end
+
+# good
+def verify_list(head)
+  item = head
+  begin
+    if verify(item)
+      item = item.next
+    else
+      return false
+    end
+  end while(item)
+
+  true
+end
+
+# bad
+def find_something(items)
+  items.each do |item|
+    if something?(item)
+      return item
+    else
+      raise NotFoundError
+    end
+  end
+end
+
+# good
+def find_something(items)
+  items.each do |item|
+    if something?(item)
+      return item
+    end
+  end
+  raise NotFoundError
 end
 ----
 
@@ -4154,29 +4544,6 @@ end
 
 * https://rubystyle.guide#underscore-unused-vars
 
-== Lint/UselessComparison
-
-|===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
-
-| Enabled
-| Yes
-| No
-| 0.11
-| -
-|===
-
-This cop checks for comparison of something with itself.
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-
-x.top >= x.top
-----
-
 == Lint/UselessElseWithoutRescue
 
 |===
@@ -4219,6 +4586,77 @@ else
   do_something_else
 end
 ----
+
+== Lint/UselessMethodDefinition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.90
+| -
+|===
+
+This cop checks for useless method definitions, specifically: empty constructors
+and methods just delegating to `super`.
+
+This cop is marked as unsafe as it can trigger false positives for cases when
+an empty constructor just overrides the parent constructor, which is bad anyway.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def initialize
+end
+
+def method
+  super
+end
+
+# good
+def initialize
+  initialize_internals
+end
+
+def method
+  super
+  do_something_else
+end
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+def initialize
+  # Comment.
+end
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+def initialize
+  # Comment.
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
 
 == Lint/UselessSetterCall
 

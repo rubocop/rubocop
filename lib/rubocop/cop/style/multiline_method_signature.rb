@@ -18,7 +18,7 @@ module RuboCop
       #           baz)
       #   end
       #
-      class MultilineMethodSignature < Cop
+      class MultilineMethodSignature < Base
         MSG = 'Avoid multi-line method signatures.'
 
         def on_def(node)

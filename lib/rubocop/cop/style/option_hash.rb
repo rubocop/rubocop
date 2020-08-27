@@ -19,7 +19,7 @@ module RuboCop
       #   def fry(temperature: 300)
       #     # ...
       #   end
-      class OptionHash < Cop
+      class OptionHash < Base
         MSG = 'Prefer keyword arguments to options hashes.'
 
         def_node_matcher :option_hash, <<~PATTERN

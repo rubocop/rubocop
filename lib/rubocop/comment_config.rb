@@ -128,9 +128,7 @@ module RuboCop
     end
 
     def each_directive
-      return if processed_source.comments.nil?
-
-      processed_source.each_comment do |comment|
+      processed_source.comments.each do |comment|
         directive = directive_parts(comment)
         next unless directive
 
@@ -153,11 +151,11 @@ module RuboCop
     end
 
     def qualified_cop_name(cop_name)
-      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.file_path)
+      Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path)
     end
 
     def all_cop_names
-      @all_cop_names ||= Cop::Cop.registry.names - [REDUNDANT_DISABLE]
+      @all_cop_names ||= Cop::Registry.global.names - [REDUNDANT_DISABLE]
     end
 
     def comment_only_line?(line_number)

@@ -133,8 +133,9 @@ module RuboCop
       #   end
       #
       # @see https://rubystyle.guide#consistent-classes
-      class ClassStructure < Cop
+      class ClassStructure < Base
         include VisibilityHelp
+        extend AutoCorrector
 
         HUMANIZED_NODE_TYPE = {
           casgn: :constants,
@@ -155,14 +156,18 @@ module RuboCop
             if index < previous
               message = format(MSG, category: category,
                                     previous: expected_order[previous])
-              add_offense(node, message: message)
+              add_offense(node, message: message) do |corrector|
+                autocorrect(corrector, node)
+              end
             end
             previous = index
           end
         end
 
+        private
+
         # Autocorrect by swapping between two nodes autocorrecting them
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           node_classification = classify(node)
           previous = left_siblings_of(node).find do |sibling|
             classification = classify(sibling)
@@ -172,13 +177,9 @@ module RuboCop
           current_range = source_range_with_comment(node)
           previous_range = source_range_with_comment(previous)
 
-          lambda do |corrector|
-            corrector.insert_before(previous_range, current_range.source)
-            corrector.remove(current_range)
-          end
+          corrector.insert_before(previous_range, current_range.source)
+          corrector.remove(current_range)
         end
-
-        private
 
         # Classifies a node to match with something in the {expected_order}
         # @param node to be analysed
@@ -269,15 +270,11 @@ module RuboCop
         end
 
         def begin_pos_with_comment(node)
-          annotation_line = node.first_line - 1
           first_comment = nil
+          (node.first_line - 1).downto(1) do |annotation_line|
+            break unless (comment = processed_source.comment_at_line(annotation_line))
 
-          processed_source.comments_before_line(annotation_line)
-                          .reverse_each do |comment|
-            if comment.location.line == annotation_line
-              first_comment = comment
-              annotation_line -= 1
-            end
+            first_comment = comment
           end
 
           start_line_position(first_comment || node)

@@ -15,28 +15,24 @@ module RuboCop
       # that RuboCop scans, a comment that matches this regex must be found or
       # an offense is reported.
       #
-      class Copyright < Cop
+      class Copyright < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Include a copyright notice matching /%<notice>s/ before ' \
               'any code.'
         AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in ' \
                                     'your RuboCop config'
 
-        def investigate(processed_source)
-          return if notice.empty?
-          return if notice_found?(processed_source)
+        def on_new_investigation
+          return if notice.empty? || notice_found?(processed_source)
 
-          range = source_range(processed_source.buffer, 1, 0)
-          add_offense(insert_notice_before(processed_source),
-                      location: range, message: format(MSG, notice: notice))
-        end
+          add_offense(offense_range, message: format(MSG, notice: notice)) do |corrector|
+            verify_autocorrect_notice!
 
-        def autocorrect(token)
-          verify_autocorrect_notice!
-
-          lambda do |corrector|
+            token = insert_notice_before(processed_source)
             range = token.nil? ? range_between(0, 0) : token.pos
+
             corrector.insert_before(range, "#{autocorrect_notice}\n")
           end
         end
@@ -49,6 +45,10 @@ module RuboCop
 
         def autocorrect_notice
           cop_config['AutocorrectNotice']
+        end
+
+        def offense_range
+          source_range(processed_source.buffer, 1, 0)
         end
 
         def verify_autocorrect_notice!

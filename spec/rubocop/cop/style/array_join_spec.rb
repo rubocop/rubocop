@@ -8,24 +8,30 @@ RSpec.describe RuboCop::Cop::Style::ArrayJoin do
       %w(one two three) * ", "
                         ^ Favor `Array#join` over `Array#*`.
     RUBY
-  end
 
-  it "autocorrects '*' to 'join' when there are spaces" do
-    corrected =
-      autocorrect_source('%w(one two three) * ", "')
-    expect(corrected).to eq '%w(one two three).join(", ")'
+    expect_correction(<<~RUBY)
+      %w(one two three).join(", ")
+    RUBY
   end
 
   it "autocorrects '*' to 'join' when there are no spaces" do
-    corrected =
-      autocorrect_source('%w(one two three)*", "')
-    expect(corrected).to eq '%w(one two three).join(", ")'
+    expect_offense(<<~RUBY)
+      %w(one two three)*", "
+                       ^ Favor `Array#join` over `Array#*`.
+    RUBY
+    expect_correction(<<~RUBY)
+      %w(one two three).join(", ")
+    RUBY
   end
 
   it "autocorrects '*' to 'join' when setting to a variable" do
-    corrected =
-      autocorrect_source('foo = %w(one two three)*", "')
-    expect(corrected).to eq 'foo = %w(one two three).join(", ")'
+    expect_offense(<<~RUBY)
+      foo = %w(one two three)*", "
+                             ^ Favor `Array#join` over `Array#*`.
+    RUBY
+    expect_correction(<<~RUBY)
+      foo = %w(one two three).join(", ")
+    RUBY
   end
 
   it 'does not register an offense for numbers' do

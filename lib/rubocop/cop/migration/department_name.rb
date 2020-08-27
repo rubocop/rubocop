@@ -20,7 +20,7 @@ module RuboCop
         DISABLING_COPS_CONTENT_TOKEN = %r{[A-z]+/[A-z]+|all}.freeze
 
         def on_new_investigation
-          processed_source.each_comment do |comment|
+          processed_source.comments.each do |comment|
             next if comment.text !~ DISABLE_COMMENT_FORMAT
 
             offset = Regexp.last_match(1).length
@@ -51,7 +51,7 @@ module RuboCop
 
           add_offense(range) do |corrector|
             cop_name = range.source
-            qualified_cop_name = Cop.registry.qualified_cop_name(cop_name, nil, false)
+            qualified_cop_name = Registry.global.qualified_cop_name(cop_name, nil, warn: false)
 
             unless qualified_cop_name.include?('/')
               qualified_cop_name = qualified_legacy_cop_name(cop_name)

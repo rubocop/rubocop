@@ -14,6 +14,14 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
       method rescue handle
       ^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
     RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        method
+      rescue
+        handle
+      end
+    RUBY
   end
 
   it 'registers an offense for modifier rescue around parallel assignment' do
@@ -39,6 +47,18 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
         normal_handle
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        begin
+          test
+        rescue
+          modifier_handle
+        end
+      rescue
+        normal_handle
+      end
+    RUBY
   end
 
   it 'handles modifier rescue in a method' do
@@ -46,6 +66,31 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
       def a_method
         test rescue nil
         ^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def a_method
+        begin
+          test
+        rescue
+          nil
+        end
+      end
+    RUBY
+  end
+
+  it 'handles parentheses around a rescue modifier' do
+    expect_offense(<<~RUBY)
+      (foo rescue nil)
+       ^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      rescue
+        nil
       end
     RUBY
   end
@@ -133,72 +178,17 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   context 'autocorrect' do
-    it 'corrects basic rescue modifier' do
-      new_source = autocorrect_source(<<~RUBY)
-        foo rescue bar
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        begin
-          foo
-        rescue
-          bar
-        end
-      RUBY
-    end
-
     it 'corrects complex rescue modifier' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         foo || bar rescue bar
+        ^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         begin
           foo || bar
         rescue
           bar
-        end
-      RUBY
-    end
-
-    it 'corrects rescue modifier nested inside of def' do
-      source = <<~RUBY
-        def foo
-          test rescue modifier_handle
-        end
-      RUBY
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
-        def foo
-          begin
-            test
-          rescue
-            modifier_handle
-          end
-        end
-      RUBY
-    end
-
-    it 'corrects nested rescue modifier' do
-      source = <<~RUBY
-        begin
-          test rescue modifier_handle
-        rescue
-          normal_handle
-        end
-      RUBY
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
-        begin
-          begin
-            test
-          rescue
-            modifier_handle
-          end
-        rescue
-          normal_handle
         end
       RUBY
     end

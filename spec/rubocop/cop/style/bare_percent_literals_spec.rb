@@ -44,11 +44,9 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %(hi)
           ^^ Use `%Q` instead of `%`.
         RUBY
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source('%(hi)')
-        expect(new_source).to eq('%Q(hi)')
+        expect_correction(<<~RUBY)
+          %Q(hi)
+        RUBY
       end
 
       it 'accepts %Q()' do
@@ -64,11 +62,9 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %(#{x})
           ^^ Use `%Q` instead of `%`.
         RUBY
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source('%(#{x})')
-        expect(new_source).to eq('%Q(#{x})')
+        expect_correction(<<~'RUBY')
+          %Q(#{x})
+        RUBY
       end
 
       it 'accepts %Q()' do
@@ -88,11 +84,9 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %Q(hi)
           ^^^ Use `%` instead of `%Q`.
         RUBY
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source('%Q(hi)')
-        expect(new_source).to eq('%(hi)')
+        expect_correction(<<~RUBY)
+          %(hi)
+        RUBY
       end
 
       it 'accepts %()' do
@@ -108,11 +102,9 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %Q(#{x})
           ^^^ Use `%` instead of `%Q`.
         RUBY
-      end
-
-      it 'auto-corrects' do
-        new_source = autocorrect_source('%Q(#{x})')
-        expect(new_source).to eq('%(#{x})')
+        expect_correction(<<~'RUBY')
+          %(#{x})
+        RUBY
       end
 
       it 'accepts %()' do

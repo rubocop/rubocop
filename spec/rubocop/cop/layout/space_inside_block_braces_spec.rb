@@ -345,14 +345,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
 
         it 'registers an offense when braces are not aligned in ' \
            'multiline block' do
-          inspect_source(<<~RUBY)
+          expect_offense(<<~RUBY)
             items.map {|item|
               item.do_something
+                               ^{} Space inside } detected.
               }
           RUBY
-
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages).to eq(['Space inside } detected.'])
         end
       end
     end

@@ -15,8 +15,9 @@ module RuboCop
       #   do_something(foo)
       #   do_something (2 + 3) * 4
       #   do_something (foo * bar).baz
-      class ParenthesesAsGroupedExpression < Cop
+      class ParenthesesAsGroupedExpression < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = '`(...)` interpreted as grouped expression.'
 
@@ -28,18 +29,11 @@ module RuboCop
 
           range = space_range(node.first_argument.source_range, space_length)
 
-          add_offense(node, location: range)
-        end
-        alias on_csend on_send
-
-        def autocorrect(node)
-          space_length = spaces_before_left_parenthesis(node)
-          range = space_range(node.first_argument.source_range, space_length)
-
-          lambda do |corrector|
+          add_offense(range) do |corrector|
             corrector.remove(range)
           end
         end
+        alias on_csend on_send
 
         private
 

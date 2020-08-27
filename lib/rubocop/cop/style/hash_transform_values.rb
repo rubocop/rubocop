@@ -18,13 +18,16 @@ module RuboCop
       # @example
       #   # bad
       #   {a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[k] = foo(v) }
-      #   {a: 1, b: 2}.map { |k, v| [k, v * v] }
+      #   Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
+      #   {a: 1, b: 2}.map { |k, v| [k, v * v] }.to_h
+      #   {a: 1, b: 2}.to_h { |k, v| [k, v * v] }
       #
       #   # good
       #   {a: 1, b: 2}.transform_values { |v| foo(v) }
       #   {a: 1, b: 2}.transform_values { |v| v * v }
-      class HashTransformValues < Cop
+      class HashTransformValues < Base
         include HashTransformMethod
+        extend AutoCorrector
 
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block
@@ -62,6 +65,17 @@ module RuboCop
                 (arg $_))
               (array $(lvar _key) $_))
             :to_h)
+        PATTERN
+
+        def_node_matcher :on_bad_to_h, <<~PATTERN
+          (block
+            ({send csend}
+              !{(send _ :each_with_index) (array ...)}
+              :to_h)
+            (args
+              (arg _key)
+              (arg $_))
+            (array $(lvar _key) $_))
         PATTERN
 
         private

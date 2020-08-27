@@ -37,7 +37,9 @@ module RuboCop
       #     end
       #   end
       #
-      class RedundantAssignment < Cop
+      class RedundantAssignment < Base
+        extend AutoCorrector
+
         MSG = 'Redundant assignment before returning detected.'
 
         def_node_matcher :redundant_assignment?, <<~PATTERN
@@ -48,14 +50,6 @@ module RuboCop
           check_branch(node.body)
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
-            expression = node.children[1]
-            corrector.replace(node, expression.source)
-            corrector.remove(right_sibling_of(node))
-          end
-        end
 
         private
 
@@ -97,7 +91,11 @@ module RuboCop
 
         def check_begin_node(node)
           if (assignment = redundant_assignment?(node))
-            add_offense(assignment)
+            add_offense(assignment) do |corrector|
+              expression = assignment.children[1]
+              corrector.replace(assignment, expression.source)
+              corrector.remove(right_sibling_of(assignment))
+            end
           else
             last_expr = node.children.last
             check_branch(last_expr)

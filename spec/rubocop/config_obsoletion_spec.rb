@@ -70,6 +70,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/SpaceBeforeModifierKeyword' => { 'Enabled': true },
           'Lint/InvalidCharacterLiteral' => { 'Enabled': true },
           'Style/MethodMissingSuper' => { 'Enabled': true },
+          'Lint/UselessComparison' => { 'Enabled': true },
           'Lint/RescueWithoutErrorClass' => { 'Enabled': true },
           'Lint/SpaceBeforeFirstArg' => { 'Enabled': true },
           'Style/SpaceAfterControlKeyword' => { 'Enabled': true },
@@ -198,6 +199,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Lint/SpaceBeforeFirstArg` cop has been removed since it was a duplicate of `Layout/SpaceBeforeFirstArg`. Please use `Layout/SpaceBeforeFirstArg` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodMissingSuper` cop has been removed since it has been superseded by `Lint/MissingSuper`. Please use `Lint/MissingSuper` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/UselessComparison` cop has been removed since it has been superseded by `Lint/BinaryOperatorWithIdenticalOperands`. Please use `Lint/BinaryOperatorWithIdenticalOperands` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodMissing` cop has been split into `Style/MethodMissingSuper` and `Style/MissingRespondToMissing`.
           (obsolete configuration found in example/.rubocop.yml, please update it)

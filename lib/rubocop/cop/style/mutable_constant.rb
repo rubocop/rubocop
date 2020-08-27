@@ -50,9 +50,10 @@ module RuboCop
       #       puts 1
       #     end
       #   end.freeze
-      class MutableConstant < Cop
+      class MutableConstant < Base
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Freeze mutable objects assigned to constants.'
 
@@ -67,23 +68,6 @@ module RuboCop
           return unless lhs&.casgn_type?
 
           on_assignment(value)
-        end
-
-        def autocorrect(node)
-          expr = node.source_range
-
-          lambda do |corrector|
-            splat_value = splat_value(node)
-            if splat_value
-              correct_splat_expansion(corrector, expr, splat_value)
-            elsif node.array_type? && !node.bracketed?
-              corrector.wrap(expr, '[', ']')
-            elsif requires_parentheses?(node)
-              corrector.wrap(expr, '(', ')')
-            end
-
-            corrector.insert_after(expr, '.freeze')
-          end
         end
 
         private
@@ -101,7 +85,9 @@ module RuboCop
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
         end
 
         def check(value)
@@ -112,7 +98,24 @@ module RuboCop
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          expr = node.source_range
+
+          splat_value = splat_value(node)
+          if splat_value
+            correct_splat_expansion(corrector, expr, splat_value)
+          elsif node.array_type? && !node.bracketed?
+            corrector.wrap(expr, '[', ']')
+          elsif requires_parentheses?(node)
+            corrector.wrap(expr, '(', ')')
+          end
+
+          corrector.insert_after(expr, '.freeze')
         end
 
         def mutable_literal?(value)

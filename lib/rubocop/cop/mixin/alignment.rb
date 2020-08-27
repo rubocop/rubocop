@@ -64,8 +64,9 @@ module RuboCop
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end
 
+      # @deprecated Use processed_source.comment_at_line(line)
       def end_of_line_comment(line)
-        processed_source.find_comment { |c| c.loc.line == line }
+        processed_source.line_with_comment?(line)
       end
     end
   end

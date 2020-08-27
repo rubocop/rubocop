@@ -38,7 +38,7 @@ module RuboCop
               '`%<keyword>s` keyword.'
 
         def investigate(processed_source)
-          processed_source.each_comment do |comment|
+          processed_source.comments.each do |comment|
             add_offense(comment) if offensive?(comment)
           end
         end

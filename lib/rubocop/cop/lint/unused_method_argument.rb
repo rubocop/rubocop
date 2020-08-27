@@ -58,19 +58,24 @@ module RuboCop
       #     fail "TODO"
       #   end
       #
-      class UnusedMethodArgument < Cop
+      class UnusedMethodArgument < Base
         include UnusedArgument
+        extend AutoCorrector
 
         def_node_matcher :not_implemented?, <<~PATTERN
           {(send nil? :raise (const {nil? cbase} :NotImplementedError))
            (send nil? :fail ...)}
         PATTERN
 
-        def autocorrect(node)
-          UnusedArgCorrector.correct(processed_source, node)
+        def self.joining_forces
+          VariableForce
         end
 
         private
+
+        def autocorrect(corrector, node)
+          UnusedArgCorrector.correct(corrector, processed_source, node)
+        end
 
         def check_argument(variable)
           return unless variable.method_argument?

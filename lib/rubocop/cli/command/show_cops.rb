@@ -22,7 +22,7 @@ module RuboCop
         private
 
         def print_available_cops
-          registry = Cop::Cop.registry
+          registry = Cop::Registry.global
           show_all = @options[:show_cops].empty?
 
           if show_all

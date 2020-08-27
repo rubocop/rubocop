@@ -74,10 +74,8 @@ module RuboCop
       end
 
       def inside_comment?(range, comma_offset)
-        processed_source.comments.any? do |comment|
-          comment_offset = comment.loc.expression.begin_pos - range.begin_pos
-          comment_offset >= 0 && comment_offset < comma_offset
-        end
+        comment = processed_source.comment_at_line(range.line)
+        comment && comment.loc.expression.begin_pos < range.begin_pos + comma_offset
       end
 
       # Returns true if the node has round/square/curly brackets.
@@ -142,7 +140,9 @@ module RuboCop
           unit: format(kind, article: article) + extra_info.to_s
         )
 
-        add_offense(range, location: range, message: msg)
+        add_offense(range, message: msg) do |corrector|
+          PunctuationCorrector.swap_comma(corrector, range)
+        end
       end
 
       def put_comma(items, kind)
@@ -150,13 +150,11 @@ module RuboCop
         return if last_item.block_pass_type?
 
         range = autocorrect_range(last_item)
-        msg = format(
-          MSG,
-          command: 'Put a',
-          unit: format(kind, article: 'a multiline')
-        )
+        msg = format(MSG, command: 'Put a', unit: format(kind, article: 'a multiline'))
 
-        add_offense(range, location: range, message: msg)
+        add_offense(range, message: msg) do |corrector|
+          PunctuationCorrector.swap_comma(corrector, range)
+        end
       end
 
       def autocorrect_range(item)

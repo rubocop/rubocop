@@ -12,19 +12,15 @@ module RuboCop
             return if eligible_for_parentheses_omission?(node)
             return unless node.arguments? && !node.parenthesized?
 
-            add_offense(node)
-          end
-          alias on_csend on_send
-          alias on_super on_send
-          alias on_yield on_send
-
-          def autocorrect(node)
-            lambda do |corrector|
+            add_offense(node) do |corrector|
               corrector.replace(args_begin(node), '(')
 
               corrector.insert_after(args_end(node), ')') unless args_parenthesized?(node)
             end
           end
+          alias on_csend on_send
+          alias on_super on_send
+          alias on_yield on_send
 
           def message(_node = nil)
             'Use parentheses for method calls with arguments.'

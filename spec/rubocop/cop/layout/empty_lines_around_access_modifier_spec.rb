@@ -6,31 +6,47 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
     %w[private protected public module_function].each do |access_modifier|
       it "requires blank line before #{access_modifier}" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           class Test
             something
+            #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line before and after `#{access_modifier}`.
+
+            def test; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+            something
+
             #{access_modifier}
 
             def test; end
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(["Keep a blank line before and after `#{access_modifier}`."])
       end
 
       it "requires blank line after #{access_modifier}" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           class Test
             something
 
             #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line before and after `#{access_modifier}`.
             def test; end
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(["Keep a blank line before and after `#{access_modifier}`."])
+
+        expect_correction(<<~RUBY)
+          class Test
+            something
+
+            #{access_modifier}
+ 
+            def test; end
+          end
+        RUBY
       end
 
       it "ignores comment line before #{access_modifier}" do
@@ -89,56 +105,18 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it "autocorrects blank line before #{access_modifier}" do
-        corrected = autocorrect_source(<<~RUBY)
-          class Test
-            something
-            #{access_modifier}
-
-            def test; end
-          end
-        RUBY
-        expect(corrected).to eq(<<~RUBY)
-          class Test
-            something
-
-            #{access_modifier}
-
-            def test; end
-          end
-        RUBY
-      end
-
-      it 'autocorrects blank line after #{access_modifier}' do
-        corrected = autocorrect_source(<<~RUBY)
-          class Test
-            something
-
-            #{access_modifier}
-            def test; end
-          end
-        RUBY
-        expect(corrected).to eq(<<~RUBY)
-          class Test
-            something
-
-            #{access_modifier}
-
-            def test; end
-          end
-        RUBY
-      end
-
       it 'autocorrects blank line after #{access_modifier} with comment' do
-        corrected = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           class Test
             something
 
             #{access_modifier} # let's modify the rest
+            #{'^' * access_modifier.size} Keep a blank line before and after `#{access_modifier}`.
             def test; end
           end
         RUBY
-        expect(corrected).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           class Test
             something
 
@@ -217,16 +195,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
       it "requires blank line after, but not before, #{access_modifier} " \
          'when at the beginning of class/module' do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           class Test
             #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line after `#{access_modifier}`.
             def test
             end
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(["Keep a blank line after `#{access_modifier}`."])
       end
 
       context 'at the beginning of block' do
@@ -252,16 +228,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           end
 
           it "requires blank line after, but not before, #{access_modifier}" do
-            inspect_source(<<~RUBY)
+            expect_offense(<<~RUBY)
               included do
                 #{access_modifier}
+                #{'^' * access_modifier.size} Keep a blank line after `#{access_modifier}`.
                 def test
                 end
               end
             RUBY
-            expect(cop.offenses.size).to eq(1)
-            expect(cop.messages)
-              .to eq(["Keep a blank line after `#{access_modifier}`."])
           end
         end
 
@@ -321,16 +295,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
       end
 
       it 'requires blank line when next line started with end' do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           class Test
             #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line after `#{access_modifier}`.
             end_this!
           end
         RUBY
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(["Keep a blank line after `#{access_modifier}`."])
       end
 
       it 'recognizes blank lines with DOS style line endings' do
@@ -362,33 +333,18 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
       end
 
       it "registers an offense for blank line after #{access_modifier}" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           class Test
             something
 
             #{access_modifier}
-
+            #{'^' * access_modifier.size} Remove a blank line after `#{access_modifier}`.
+            
             def test; end
           end
         RUBY
 
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(["Remove a blank line after `#{access_modifier}`."])
-      end
-
-      it "autocorrects remove blank line after #{access_modifier}" do
-        corrected = autocorrect_source(<<~RUBY)
-          class Test
-            something
-
-            #{access_modifier}
-
-            def test; end
-          end
-        RUBY
-
-        expect(corrected).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           class Test
             something
 
@@ -422,28 +378,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
     %w[private protected public module_function].each do |access_modifier|
       it "registers an offense for missing blank line before #{access_modifier}" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           class Test
             something
             #{access_modifier}
-            def test; end
-          end
-        RUBY
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages)
-          .to eq(["Keep a blank line before `#{access_modifier}`."])
-      end
-
-      it 'autocorrects blank line before #{access_modifier}' do
-        corrected = autocorrect_source(<<~RUBY)
-          class Test
-            something
-            #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line before `#{access_modifier}`.
             def test; end
           end
         RUBY
 
-        expect(corrected).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           class Test
             something
 

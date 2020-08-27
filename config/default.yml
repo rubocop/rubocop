@@ -210,9 +210,10 @@ Gemspec/OrderedDependencies:
     - '**/*.gemspec'
 
 Gemspec/RequiredRubyVersion:
-  Description: 'Checks that `required_ruby_version` of gemspec and `TargetRubyVersion` of .rubocop.yml are equal.'
+  Description: 'Checks that `required_ruby_version` of gemspec is specified and equal to `TargetRubyVersion` of .rubocop.yml.'
   Enabled: true
   VersionAdded: '0.52'
+  VersionChanged: '0.89'
   Include:
     - '**/*.gemspec'
 
@@ -398,7 +399,6 @@ Layout/DefEndAlignment:
   SupportedStylesAlignWith:
     - start_of_line
     - def
-  AutoCorrect: false
   Severity: warning
 
 Layout/DotPosition:
@@ -434,6 +434,14 @@ Layout/EmptyLineAfterMagicComment:
   StyleGuide: '#separate-magic-comments-from-code'
   Enabled: true
   VersionAdded: '0.49'
+
+Layout/EmptyLineAfterMultilineCondition:
+  Description: 'Enforces empty line after multiline condition.'
+  # This is disabled, because this style is not very common in practice.
+  Enabled: false
+  VersionAdded: '0.90'
+  Reference:
+    - https://github.com/airbnb/ruby#multiline-if-newline
 
 Layout/EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
@@ -554,7 +562,6 @@ Layout/EndAlignment:
     - keyword
     - variable
     - start_of_line
-  AutoCorrect: false
   Severity: warning
 
 Layout/EndOfLine:
@@ -1234,7 +1241,7 @@ Layout/SpaceInsideBlockBraces:
 
 Layout/SpaceInsideHashLiteralBraces:
   Description: "Use spaces inside hash literal braces - or don't."
-  StyleGuide: '#spaces-operators'
+  StyleGuide: '#spaces-braces'
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: space
@@ -1355,6 +1362,12 @@ Lint/BigDecimalNew:
   Enabled: true
   VersionAdded: '0.53'
 
+Lint/BinaryOperatorWithIdenticalOperands:
+  Description: 'This cop checks for places where binary operator has identical operands.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
+
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
   Enabled: true
@@ -1420,6 +1433,11 @@ Lint/DuplicateMethods:
   Enabled: true
   VersionAdded: '0.29'
 
+Lint/DuplicateRequire:
+  Description: 'Check for duplicate `require`s and `require_relative`s.'
+  Enabled: pending
+  VersionAdded: '0.90'
+
 Lint/DuplicateRescueException:
   Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
   Enabled: pending
@@ -1435,17 +1453,28 @@ Lint/ElseLayout:
   Enabled: true
   VersionAdded: '0.17'
 
+Lint/EmptyConditionalBody:
+  Description: 'This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.'
+  Enabled: 'pending'
+  AllowComments: true
+  VersionAdded: '0.89'
+
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
   VersionAdded: '0.10'
   VersionChanged: '0.48'
-  AutoCorrect: false
 
 Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'
   Enabled: true
   VersionAdded: '0.45'
+
+Lint/EmptyFile:
+  Description: 'Enforces that Ruby source files are not empty.'
+  Enabled: pending
+  AllowComments: true
+  VersionAdded: '0.90'
 
 Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
@@ -1477,6 +1506,12 @@ Lint/FlipFlop:
   StyleGuide: '#no-flip-flops'
   Enabled: true
   VersionAdded: '0.16'
+
+Lint/FloatComparison:
+  Description: 'Checks for the presence of precise comparison of floating point numbers.'
+  StyleGuide: '#float-comparison'
+  Enabled: pending
+  VersionAdded: '0.89'
 
 Lint/FloatOutOfRange:
   Description: >-
@@ -1525,7 +1560,7 @@ Lint/InheritException:
 Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs.'
   Enabled: true
-  SafeAutoCorrect: false
+  Safe: false
   VersionAdded: '0.50'
   VersionChanged: '0.87'
 
@@ -1547,6 +1582,7 @@ Lint/Loop:
   StyleGuide: '#loop-with-break'
   Enabled: true
   VersionAdded: '0.9'
+  VersionChanged: '0.89'
 
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
@@ -1619,6 +1655,12 @@ Lint/OrderedMagicComments:
   Description: 'Checks the proper ordering of magic comments and whether a magic comment is not placed before a shebang.'
   Enabled: true
   VersionAdded: '0.53'
+
+Lint/OutOfRangeRegexpRef:
+  Description: 'Checks for out of range reference for Regexp because it always returns nil.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
 
 Lint/ParenthesesAsGroupedExpression:
   Description: >-
@@ -1830,6 +1872,11 @@ Lint/TopLevelReturnWithArgument:
   Enabled: 'pending'
   VersionAdded: '0.89'
 
+Lint/TrailingCommaInAttributeDeclaration:
+  Description: 'This cop checks for trailing commas in attribute declarations.'
+  Enabled: pending
+  VersionAdded: '0.90'
+
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
@@ -1845,6 +1892,11 @@ Lint/UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
   VersionAdded: '0.9'
+
+Lint/UnreachableLoop:
+  Description: 'This cop checks for loops that will have at most one iteration.'
+  Enabled: pending
+  VersionAdded: '0.89'
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
@@ -1895,15 +1947,17 @@ Lint/UselessAssignment:
   Enabled: true
   VersionAdded: '0.11'
 
-Lint/UselessComparison:
-  Description: 'Checks for comparison of something with itself.'
-  Enabled: true
-  VersionAdded: '0.11'
-
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
   Enabled: true
   VersionAdded: '0.17'
+
+Lint/UselessMethodDefinition:
+  Description: 'Checks for useless method definitions.'
+  Enabled: pending
+  VersionAdded: '0.90'
+  Safe: false
+  AllowComments: true
 
 Lint/UselessSetterCall:
   Description: 'Checks for useless setter call to a local variable.'
@@ -2015,7 +2069,7 @@ Metrics/PerceivedComplexity:
   VersionAdded: '0.25'
   VersionChanged: '0.81'
   IgnoredMethods: []
-  Max: 7
+  Max: 8
 
 ################## Migration #############################
 
@@ -2565,6 +2619,7 @@ Style/CaseLikeIf:
   Description: 'This cop identifies places where `if-elsif` constructions can be replaced with `case-when`.'
   StyleGuide: '#case-vs-if-else'
   Enabled: 'pending'
+  Safe: false
   VersionAdded: '0.88'
 
 Style/CharacterLiteral:
@@ -2621,6 +2676,16 @@ Style/ClassMethods:
   VersionAdded: '0.9'
   VersionChanged: '0.20'
 
+Style/ClassMethodsDefinitions:
+  Description: 'Enforces using `def self.method_name` or `class << self` to define class methods.'
+  StyleGuide: '#def-self-class-methods'
+  Enabled: false
+  VersionAdded: '0.89'
+  EnforcedStyle:  def_self
+  SupportedStyles:
+    - def_self
+    - self_class
+
 Style/ClassVars:
   Description: 'Avoid the use of class variables.'
   StyleGuide: '#no-class-vars'
@@ -2660,6 +2725,14 @@ Style/ColonMethodDefinition:
   StyleGuide: '#colon-method-definition'
   Enabled: true
   VersionAdded: '0.52'
+
+Style/CombinableLoops:
+  Description: >-
+                  Checks for places where multiple consecutive loops over the same data
+                  can be combined into a single loop.
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.90'
 
 Style/CommandLiteral:
   Description: 'Use `` or %x around command literals.'
@@ -2904,6 +2977,16 @@ Style/ExpandPathArguments:
   Enabled: true
   VersionAdded: '0.53'
 
+Style/ExplicitBlockArgument:
+  Description: >-
+                  Consider using explicit block argument to avoid writing block literal
+                  that just passes its arguments to another block.
+  StyleGuide: '#block-argument'
+  Enabled: pending
+  # May change the yielding arity.
+  Safe: false
+  VersionAdded: '0.89'
+
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
   StyleGuide: '#exponential-notation'
@@ -2985,7 +3068,13 @@ Style/FrozenStringLiteralComment:
     # `never` will enforce that the frozen string literal comment does not
     # exist in a file.
     - never
-  Safe: false
+  SafeAutoCorrect: false
+
+Style/GlobalStdStream:
+  Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
+  StyleGuide: '#global-stdout'
+  Enabled: pending
+  VersionAdded: '0.89'
 
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
@@ -3059,15 +3148,17 @@ Style/HashSyntax:
   PreferHashRocketsForNonAlnumEndingSymbols: false
 
 Style/HashTransformKeys:
-  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Description: 'Prefer `transform_keys` over `each_with_object`, `map`, or `to_h`.'
   Enabled: 'pending'
   VersionAdded: '0.80'
+  VersionChanged: '0.90'
   Safe: false
 
 Style/HashTransformValues:
-  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  Description: 'Prefer `transform_values` over `each_with_object`, `map`, or `to_h`.'
   Enabled: 'pending'
   VersionAdded: '0.80'
+  VersionChanged: '0.90'
   Safe: false
 
 Style/IdenticalConditionalBranches:
@@ -3163,6 +3254,12 @@ Style/IpAddresses:
   AllowedAddresses:
     - "::"
     # :: is a valid IPv6 address, but could potentially be legitimately in code
+
+Style/KeywordParametersOrder:
+  Description: 'Enforces that optional keyword parameters are placed at the end of the parameters list.'
+  StyleGuide: '#keyword-parameters-order'
+  Enabled: pending
+  VersionAdded: '0.90'
 
 Style/Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
@@ -3537,7 +3634,6 @@ Style/NumericPredicate:
   # object. Switching these methods has to be done with knowledge of the types
   # of the variables which rubocop doesn't have.
   SafeAutoCorrect: false
-  AutoCorrect: false
   Enabled: true
   VersionAdded: '0.42'
   VersionChanged: '0.59'
@@ -3553,12 +3649,13 @@ Style/NumericPredicate:
 
 Style/OneLineConditional:
   Description: >-
-                 Favor the ternary operator(?:) over
-                 if/then/else/end constructs.
+                 Favor the ternary operator (?:) or multi-line constructs over
+                 single-line if/then/else/end constructs.
   StyleGuide: '#ternary-operator'
   Enabled: true
+  AlwaysCorrectToMultiline: false
   VersionAdded: '0.9'
-  VersionChanged: '0.38'
+  VersionChanged: '0.90'
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
@@ -3582,6 +3679,13 @@ Style/OptionalArguments:
   Safe: false
   VersionAdded: '0.33'
   VersionChanged: '0.83'
+
+Style/OptionalBooleanParameter:
+  Description: 'Use keyword arguments when defining method with boolean argument.'
+  StyleGuide: '#boolean-keyword-arguments'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.89'
 
 Style/OrAssignment:
   Description: 'Recommend usage of double pipe equals (||=) where applicable.'
@@ -3782,6 +3886,12 @@ Style/RedundantSelf:
   VersionAdded: '0.10'
   VersionChanged: '0.13'
 
+Style/RedundantSelfAssignment:
+  Description: 'Checks for places where redundant assignments are made for in place modification methods.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.90'
+
 Style/RedundantSort:
   Description: >-
                   Use `min` instead of `sort.first`,
@@ -3933,6 +4043,14 @@ Style/SlicingWithRange:
   Enabled: pending
   VersionAdded: '0.83'
   Safe: false
+
+Style/SoleNestedConditional:
+  Description: >-
+                  Finds sole nested conditional nodes
+                  which can be merged into outer conditional node.
+  Enabled: pending
+  VersionAdded: '0.89'
+  AllowModifier: false
 
 Style/SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'

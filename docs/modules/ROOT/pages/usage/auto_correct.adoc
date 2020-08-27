@@ -29,8 +29,7 @@ $ rubocop --auto-correct
 ----
 
 In RuboCop 0.60, we began to annotate cops as `Safe` or not safe. The definition of
-safety is that the cop doesn't generate false positives and doesn't suggest changes
-that are not equivalent to the original code. On top of that there's `SafeAutoCorrect`
+safety is that the cop doesn't generate false positives. On top of that there's `SafeAutoCorrect`
 that might be set to `false` in cases where only the auto-correct performed by a cop
 is unsafe, but that the offense detection logic is safe. To sum it up:
 
@@ -50,28 +49,53 @@ in the default configuration.
 
 [source,ruby]
 ----
-array = []
-array << 'Foo' <<
-         'Bar' <<
-         'Baz'
-puts array.join('-')
+class Miner
+  def dig(how_deep)
+    # ...
+  end
+end
+
+
+Miner.new.dig(42) # => Style/SingleArgumentDig
+                  # => Use Miner.new[] instead of dig
 ----
 
-`Style/LineEndConcatenation` will correct the above to:
+This is the wrong diagnostic; this (contrived) use of `dig` is not an issue,
+and there might not be an alternative. This cop is marked as `Safe: false`.
 
 [source,ruby]
 ----
-array = []
-array << 'Foo' \
-  'Bar' \
-  'Baz'
-puts array.join('-')
+# example.rb:
+str = 'hello' # => Missing magic comment `# frozen_string_literal: true`
+str << 'world'
+
+# auto-corrects to:
+# frozen_string_literal: true
+
+str = 'hello'
+str << 'world' # => now fails because `str` is frozen
+
+# must be manually corrected to:
+# frozen_string_literal: true
+
+str = +'hello' # => We want an unfrozen string literal here...
+str << 'world' # => ok
+---
+
+This diagnostic is valid since the magic comment is indeed missing (thus `Safe: true`),
+but the auto-correction is not; some string literals need to be prefixed with `+` to avoid
+having them frozen.
+
+To run all auto-corrections (safe and unsafe):
+
+[source,sh]
+----
+$ rubocop -A
+# or
+$ rubocop --auto-correct-all
 ----
 
-Therefore, in this (unusual) scenario, `Style/LineEndConcatenation` is unsafe.
-
-(This is a contrived example. Real code would use `%w` for an array of string
-literals.)
+It is recommended to be even more vigilant when using this option and review carefully the changes.
 
 == Generating comments
 

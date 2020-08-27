@@ -5,129 +5,123 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional do
 
   let(:config) { RuboCop::Config.new }
 
-  before { inspect_source(source) }
+  it 'registers an offense for ternary with boolean results' do
+    expect_offense(<<~RUBY)
+      x == y ? true : false
+      ^^^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `x == y`.
+    RUBY
 
-  shared_examples 'code with offense' do |code, expected, message_expression|
-    context "when checking #{code.inspect}" do
-      let(:source) { code }
-
-      it 'registers an offense' do
-        expected_message =
-          'This conditional expression '\
-          "can just be replaced by `#{message_expression || expected}`."
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq([expected_message])
-      end
-
-      it 'auto-corrects' do
-        expect(autocorrect_source(code)).to eq(expected)
-      end
-
-      it 'claims to auto-correct' do
-        autocorrect_source(code)
-        expect(cop.offenses.last.status).to eq(:corrected)
-      end
-    end
+    expect_correction(<<~RUBY)
+      x == y
+    RUBY
   end
 
-  shared_examples 'code without offense' do |code|
-    let(:source) { code }
+  it 'registers an offense for ternary with negated boolean results' do
+    expect_offense(<<~RUBY)
+      x == y ? false : true
+      ^^^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `!(x == y)`.
+    RUBY
 
-    context "when checking #{code.inspect}" do
-      it 'does not register an offense' do
-        expect(cop.offenses.empty?).to be(true)
-      end
-    end
+    expect_correction(<<~RUBY)
+      !(x == y)
+    RUBY
   end
 
-  it_behaves_like 'code with offense',
-                  'x == y ? true : false',
-                  'x == y'
+  it 'allows ternary with non-boolean results' do
+    expect_no_offenses('x == y ? 1 : 10')
+  end
 
-  it_behaves_like 'code with offense',
-                  'x == y ? false : true',
-                  '!(x == y)'
+  it 'registers an offense for if/else with boolean results' do
+    expect_offense(<<~RUBY)
+      if x == y
+      ^^^^^^^^^ This conditional expression can just be replaced by `x == y`.
+        true
+      else
+        false
+      end
+    RUBY
 
-  it_behaves_like 'code without offense',
-                  'x == y ? 1 : 10'
+    expect_correction(<<~RUBY)
+      x == y
+    RUBY
+  end
 
-  it_behaves_like 'code with offense',
-                  <<~RUBY,
-                    if x == y
-                      true
-                    else
-                      false
-                    end
-                  RUBY
-                  "x == y\n",
-                  'x == y'
+  it 'registers an offense for if/else with negated boolean results' do
+    expect_offense(<<~RUBY)
+      if x == y
+      ^^^^^^^^^ This conditional expression can just be replaced by `!(x == y)`.
+        false
+      else
+        true
+      end
+    RUBY
 
-  it_behaves_like 'code with offense',
-                  <<~RUBY,
-                    if x == y
-                      false
-                    else
-                      true
-                    end
-                  RUBY
-                  "!(x == y)\n",
-                  '!(x == y)'
+    expect_correction(<<~RUBY)
+      !(x == y)
+    RUBY
+  end
 
-  it_behaves_like 'code with offense',
-                  <<~RUBY,
-                    if cond
-                      false
-                    elsif x == y
-                      true
-                    else
-                      false
-                    end
-                  RUBY
-                  <<~RUBY,
-                    if cond
-                      false
-                    else
-                      x == y
-                    end
-                  RUBY
-                  "\nelse\n  x == y"
+  it 'registers an offense for if/elsif/else with boolean results' do
+    expect_offense(<<~RUBY)
+      if cond
+        false
+      elsif x == y
+      ^^^^^^^^^^^^ This conditional expression can just be replaced by [...]
+        true
+      else
+        false
+      end
+    RUBY
 
-  it_behaves_like 'code with offense',
-                  <<~RUBY,
-                    if cond
-                      false
-                    elsif x == y
-                      false
-                    else
-                      true
-                    end
-                  RUBY
-                  <<~RUBY,
-                    if cond
-                      false
-                    else
-                      !(x == y)
-                    end
-                  RUBY
-                  "\nelse\n  !(x == y)"
+    expect_correction(<<~RUBY)
+      if cond
+        false
+      else
+        x == y
+      end
+    RUBY
+  end
 
-  it_behaves_like 'code without offense',
-                  <<~RUBY
-                    if x == y
-                      1
-                    else
-                      2
-                    end
-                  RUBY
+  it 'registers an offense for if/elsif/else with negated boolean results' do
+    expect_offense(<<~RUBY)
+      if cond
+        false
+      elsif x == y
+      ^^^^^^^^^^^^ This conditional expression can just be replaced by [...]
+        false
+      else
+        true
+      end
+    RUBY
 
-  it_behaves_like 'code without offense',
-                  <<~RUBY
-                    if cond
-                      1
-                    elseif x == y
-                      2
-                    else
-                      3
-                    end
-                  RUBY
+    expect_correction(<<~RUBY)
+      if cond
+        false
+      else
+        !(x == y)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for if/else with non-boolean results' do
+    expect_no_offenses(<<~RUBY)
+      if x == y
+        1
+      else
+        2
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for if/elsif/else with non-boolean results' do
+    expect_no_offenses(<<~RUBY)
+      if cond
+        1
+      elsif x == y
+        2
+      else
+        3
+      end
+    RUBY
+  end
 end

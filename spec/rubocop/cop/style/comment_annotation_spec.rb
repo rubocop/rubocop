@@ -6,16 +6,15 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
   end
 
   context 'missing colon' do
-    it 'registers an offense' do
+    it 'registers an offense and adds colon' do
       expect_offense(<<~RUBY)
         # TODO make better
           ^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a colon, and a space, then a note describing the problem.
       RUBY
-    end
 
-    it 'autocorrects' do
-      corrected = autocorrect_source('# TODO make better')
-      expect(corrected).to eq('# TODO: make better')
+      expect_correction(<<~RUBY)
+        # TODO: make better
+      RUBY
     end
   end
 
@@ -27,68 +26,59 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
         # ISSUE wrong order
           ^^^^^^ Annotation keywords like `ISSUE` should be all upper case, followed by a colon, and a space, then a note describing the problem.
       RUBY
-    end
 
-    it 'autocorrects a missing colon after keyword' do
-      corrected = autocorrect_source('# ISSUE wrong order')
-      expect(corrected).to eq('# ISSUE: wrong order')
+      expect_correction(<<~RUBY)
+        # ISSUE: wrong order
+      RUBY
     end
   end
 
   context 'missing space after colon' do
-    it 'registers an offense' do
+    it 'registers an offense and adds space' do
       expect_offense(<<~RUBY)
         # TODO:make better
           ^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a colon, and a space, then a note describing the problem.
       RUBY
-    end
 
-    it 'autocorrects' do
-      corrected = autocorrect_source('# TODO:make better')
-      expect(corrected).to eq('# TODO: make better')
+      expect_correction(<<~RUBY)
+        # TODO: make better
+      RUBY
     end
   end
 
   context 'lower case keyword' do
-    it 'registers an offense' do
+    it 'registers an offense and upcases' do
       expect_offense(<<~RUBY)
         # fixme: does not work
           ^^^^^^^ Annotation keywords like `fixme` should be all upper case, followed by a colon, and a space, then a note describing the problem.
       RUBY
-    end
 
-    it 'autocorrects' do
-      corrected = autocorrect_source('# fixme: does not work')
-      expect(corrected).to eq('# FIXME: does not work')
+      expect_correction(<<~RUBY)
+        # FIXME: does not work
+      RUBY
     end
   end
 
   context 'capitalized keyword' do
-    it 'registers an offense' do
+    it 'registers an offense and upcases' do
       expect_offense(<<~RUBY)
         # Optimize: does not work
           ^^^^^^^^^^ Annotation keywords like `Optimize` should be all upper case, followed by a colon, and a space, then a note describing the problem.
       RUBY
-    end
 
-    it 'autocorrects' do
-      corrected = autocorrect_source('# Optimize: does not work')
-      expect(corrected).to eq('# OPTIMIZE: does not work')
+      expect_correction(<<~RUBY)
+        # OPTIMIZE: does not work
+      RUBY
     end
   end
 
   context 'upper case keyword with colon by no note' do
-    it 'registers an offense' do
+    it 'registers an offense without auto-correction' do
       expect_offense(<<~RUBY)
         # HACK:
           ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
       RUBY
-    end
-
-    it 'does not autocorrects' do
-      source = '# HACK:'
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq(source)
+      expect_no_corrections
     end
   end
 

@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Team do
   subject(:team) { described_class.mobilize(cop_classes, config, options) }
 
-  let(:cop_classes) { RuboCop::Cop::Cop.registry }
+  let(:cop_classes) { RuboCop::Cop::Registry.global }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
   let(:options) { {} }
   let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
@@ -156,6 +156,24 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
+    context 'when autocorrection is enabled and file encoding is mismatch' do
+      let(:options) { { auto_correct: true } }
+
+      before do
+        create_file(file_path, <<~RUBY)
+          # encoding: Shift_JIS
+          puts 'Ｔｈｉｓ ｆｉｌｅ ｅｎｃｏｄｉｎｇ ｉｓ ＵＴＦ－８．'
+        RUBY
+      end
+
+      it 'no error occurs' do
+        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
+        team.inspect_file(source)
+
+        expect(team.errors.empty?).to be(true)
+      end
+    end
+
     context 'when Cop#on_* raises an error' do
       include_context 'mock console output'
       before do
@@ -211,13 +229,13 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
-    context 'when done twice' do
+    context 'when done twice', :restore_registry do
       let(:persisting_cop_class) do
-        klass = Class.new(RuboCop::Cop::Base)
-        klass.exclude_from_registry
-        klass.define_singleton_method(:support_multiple_source?) { true }
-        stub_const('Test::Persisting', klass)
-        klass
+        stub_cop_class('Test::Persisting') do
+          def self.support_multiple_source?
+            true
+          end
+        end
       end
       let(:cop_classes) { [persisting_cop_class, RuboCop::Cop::Base] }
 
@@ -279,7 +297,7 @@ RSpec.describe RuboCop::Cop::Team do
   describe '#forces' do
     subject(:forces) { team.forces }
 
-    let(:cop_classes) { RuboCop::Cop::Cop.registry }
+    let(:cop_classes) { RuboCop::Cop::Registry.global }
 
     it 'returns force instances' do
       expect(forces.empty?).to be(false)
@@ -358,14 +376,13 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
-    context 'when cop with different checksum joins' do
+    context 'when cop with different checksum joins', :restore_registry do
       before do
-        stub_const('Test::CopWithExternalDeps',
-                   Class.new(::RuboCop::Cop::Cop) do
-                     def external_dependency_checksum
-                       'something other than nil'
-                     end
-                   end)
+        stub_cop_class('Test::CopWithExternalDeps') do
+          def external_dependency_checksum
+            'something other than nil'
+          end
+        end
       end
 
       let(:new_cop_classes) do

@@ -5,33 +5,39 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   shared_examples 'all variable types' do |variable|
     it 'registers an offense assigning any variable type to ternary' do
-      inspect_source("#{variable} = foo? ? 1 : 2")
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = foo? ? 1 : 2
+        ^{variable}^^^^^^^^^^^^^^^ Assign variables inside of conditionals
+      RUBY
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
-    end
-
-    it 'allows assigning any variable type inside ternary' do
-      expect_no_offenses(<<~RUBY)
+      expect_correction(<<~RUBY)
         foo? ? #{variable} = 1 : #{variable} = 2
       RUBY
     end
 
     it 'registers an offense assigning any variable type to if else' do
-      source = <<~RUBY
-        #{variable} = if foo
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = if foo
+        ^{variable}^^^^^^^^^ Assign variables inside of conditionals
                         1
                       else
                         2
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
+      expect_correction(<<~RUBY)
+        if foo
+          #{variable} = 1
+        else
+          #{variable} = 2
+        end
+      RUBY
     end
 
     it 'registers an offense assigning any variable type to if elsif else' do
-      source = <<~RUBY
-        #{variable} = if foo
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = if foo
+        ^{variable}^^^^^^^^^ Assign variables inside of conditionals
                         1
                       elsif baz
                         2
@@ -39,42 +45,34 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         3
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
+      expect_correction(<<~RUBY)
+        if foo
+          #{variable} = 1
+        elsif baz
+          #{variable} = 2
+        else
+          #{variable} = 3
+        end
+      RUBY
     end
 
     it 'registers an offense assigning any variable type to if else' \
       'with multiple assignment' do
-      source = <<~RUBY
-        #{variable}, #{variable} = if foo
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable}, %{variable} = if foo
+        ^{variable}^^^{variable}^^^^^^^^^ Assign variables inside of conditionals
                         something
                       else
                         something_else
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
-    end
-
-    it 'allows assigning any variable type inside if else' \
-      'with multiple assignment' do
-      expect_no_offenses(<<~RUBY)
+      expect_correction(<<~RUBY)
         if foo
           #{variable}, #{variable} = something
         else
           #{variable}, #{variable} = something_else
-        end
-      RUBY
-    end
-
-    it 'allows assigning any variable type inside if else' do
-      expect_no_offenses(<<~RUBY)
-        if foo
-          #{variable} = 1
-        else
-          #{variable} = 2
         end
       RUBY
     end
@@ -88,20 +86,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense assigning any variable type to unless else' do
-      source = <<~RUBY
-        #{variable} = unless foo
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = unless foo
+        ^{variable}^^^^^^^^^^^^^ Assign variables inside of conditionals
                         1
                       else
                         2
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
-    end
-
-    it 'allows assigning any variable type inside unless else' do
-      expect_no_offenses(<<~RUBY)
+      expect_correction(<<~RUBY)
         unless foo
           #{variable} = 1
         else
@@ -111,26 +105,26 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense for assigning any variable type to case when' do
-      source = <<~RUBY
-        #{variable} = case foo
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = case foo
+        ^{variable}^^^^^^^^^^^ Assign variables inside of conditionals
                       when "a"
                         1
-                      else
+                      when "b"
                         2
+                      else
+                        3
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
-    end
-
-    it 'allows assigning any variable type inside case when' do
-      expect_no_offenses(<<~RUBY)
+      expect_correction(<<~RUBY)
         case foo
         when "a"
           #{variable} = 1
-        else
+        when "b"
           #{variable} = 2
+        else
+          #{variable} = 3
         end
       RUBY
     end
@@ -144,101 +138,37 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         end
       RUBY
     end
-
-    context 'auto-correct' do
-      it 'corrects assigning any variable type to ternary' do
-        new_source = autocorrect_source("#{variable} = foo? ? 1 : 2")
-
-        expect(new_source).to eq("foo? ? #{variable} = 1 : #{variable} = 2")
-      end
-
-      it 'corrects assigning any variable type to if elsif else' do
-        source = <<~RUBY
-          #{variable} = if foo
-                          1
-                        elsif baz
-                          2
-                        else
-                          3
-                        end
-        RUBY
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          if foo
-            #{variable} = 1
-          elsif baz
-            #{variable} = 2
-          else
-            #{variable} = 3
-          end
-        RUBY
-      end
-
-      it 'corrects assigning any variable type to unless else' do
-        source = <<~RUBY
-          #{variable} = unless foo
-                          1
-                        else
-                          2
-                        end
-        RUBY
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          unless foo
-            #{variable} = 1
-          else
-            #{variable} = 2
-          end
-        RUBY
-      end
-
-      it 'corrects assigning any variable type to case when' do
-        source = <<~RUBY
-          #{variable} = case foo
-                        when "a"
-                          1
-                        when "b"
-                          2
-                        else
-                          3
-                        end
-        RUBY
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          case foo
-          when "a"
-            #{variable} = 1
-          when "b"
-            #{variable} = 2
-          else
-            #{variable} = 3
-          end
-        RUBY
-      end
-    end
   end
 
   shared_examples 'all assignment types' do |assignment|
     it 'registers an offense for any assignment to ternary' do
-      inspect_source("bar #{assignment} (foo? ? 1 : 2)")
+      expect_offense(<<~RUBY, assignment: assignment)
+        bar %{assignment} (foo? ? 1 : 2)
+        ^^^^^{assignment}^^^^^^^^^^^^^^^ Assign variables inside of conditionals
+      RUBY
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
+      expect_correction(<<~RUBY)
+        foo? ? bar #{assignment} 1 : bar #{assignment} 2
+      RUBY
     end
 
     it 'registers an offense any assignment to if else' do
-      source = <<~RUBY
-        bar #{assignment} if foo
+      expect_offense(<<~RUBY, assignment: assignment)
+        bar %{assignment} if foo
+        ^^^^^{assignment}^^^^^^^ Assign variables inside of conditionals
                         1
                       else
                         2
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
+      expect_correction(<<~RUBY)
+        if foo
+          bar #{assignment} 1
+        else
+          bar #{assignment} 2
+        end
+      RUBY
     end
 
     it 'allows any assignment to if without else' do
@@ -250,104 +180,179 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'registers an offense for any assignment to unless else' do
-      source = <<~RUBY
-        bar #{assignment} unless foo
+      expect_offense(<<~RUBY, assignment: assignment)
+        bar %{assignment} unless foo
+        ^^^^^{assignment}^^^^^^^^^^^ Assign variables inside of conditionals
                         1
                       else
                         2
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
+      expect_correction(<<~RUBY)
+        unless foo
+          bar #{assignment} 1
+        else
+          bar #{assignment} 2
+        end
+      RUBY
     end
 
     it 'registers an offense any assignment to case when' do
-      source = <<~RUBY
-        bar #{assignment} case foo
+      expect_offense(<<~RUBY, assignment: assignment)
+        bar %{assignment} case foo
+        ^^^^^{assignment}^^^^^^^^^ Assign variables inside of conditionals
                       when "a"
                         1
                       else
                         2
                       end
       RUBY
-      inspect_source(source)
 
-      expect(cop.messages).to eq(['Assign variables inside of conditionals'])
-    end
-
-    context 'auto-correct' do
-      it 'corrects any assignment to ternary' do
-        new_source = autocorrect_source("bar #{assignment} (foo? ? 1 : 2)")
-
-        expect(new_source)
-          .to eq("foo? ? bar #{assignment} 1 : bar #{assignment} 2")
-      end
-
-      it 'corrects any assignment to if else' do
-        source = <<~RUBY
-          bar #{assignment} if foo
-                          1
-                        else
-                          2
-                        end
-        RUBY
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          if foo
-            bar #{assignment} 1
-          else
-            bar #{assignment} 2
-          end
-        RUBY
-      end
-
-      it 'corrects any assignment to unless else' do
-        source = <<~RUBY
-          bar #{assignment} unless foo
-                          1
-                        else
-                          2
-                        end
-        RUBY
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          unless foo
-            bar #{assignment} 1
-          else
-            bar #{assignment} 2
-          end
-        RUBY
-      end
-
-      it 'corrects any assignment to case when' do
-        source = <<~RUBY
-          bar #{assignment} case foo
-                        when "a"
-                          1
-                        else
-                          2
-                        end
-        RUBY
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          case foo
-          when "a"
-            bar #{assignment} 1
-          else
-            bar #{assignment} 2
-          end
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        case foo
+        when "a"
+          bar #{assignment} 1
+        else
+          bar #{assignment} 2
+        end
+      RUBY
     end
   end
 
-  shared_examples 'multiline all variable types' do |variable, expected|
+  shared_examples 'multiline all variable types offense' do |variable|
     it 'assigning any variable type to a multiline if else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = if foo
+        ^{variable}^^^^^^^^^ Assign variables inside of conditionals
+                        something
+                        1
+                      else
+                        something_else
+                        2
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          something
+          #{variable} = 1
+        else
+          something_else
+          #{variable} = 2
+        end
+      RUBY
+    end
+
+    it 'assigning any variable type to an if else with multiline ' \
+       'in one branch' do
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = if foo
+        ^{variable}^^^^^^^^^ Assign variables inside of conditionals
+                        1
+                      else
+                        something_else
+                        2
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          #{variable} = 1
+        else
+          something_else
+          #{variable} = 2
+        end
+      RUBY
+    end
+
+    it 'assigning any variable type to a multiline if elsif else' do
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = if foo
+        ^{variable}^^^^^^^^^ Assign variables inside of conditionals
+                        something
+                        1
+                      elsif bar
+                        something_other
+                        2
+                      elsif baz
+                        something_other_again
+                        3
+                      else
+                        something_else
+                        4
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          something
+          #{variable} = 1
+        elsif bar
+          something_other
+          #{variable} = 2
+        elsif baz
+          something_other_again
+          #{variable} = 3
+        else
+          something_else
+          #{variable} = 4
+        end
+      RUBY
+    end
+
+    it 'assigning any variable type to a multiline unless else' do
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = unless foo
+        ^{variable}^^^^^^^^^^^^^ Assign variables inside of conditionals
+                        something
+                        1
+                      else
+                        something_else
+                        2
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless foo
+          something
+          #{variable} = 1
+        else
+          something_else
+          #{variable} = 2
+        end
+      RUBY
+    end
+
+    it 'assigning any variable type to a multiline case when' do
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = case foo
+        ^{variable}^^^^^^^^^^^ Assign variables inside of conditionals
+                      when "a"
+                        something
+                        1
+                      else
+                        something_else
+                        2
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        when "a"
+          something
+          #{variable} = 1
+        else
+          something_else
+          #{variable} = 2
+        end
+      RUBY
+    end
+  end
+
+  shared_examples 'multiline all variable types allow' do |variable|
+    it 'assigning any variable type to a multiline if else' do
+      expect_no_offenses(<<~RUBY)
         #{variable} = if foo
                         something
                         1
@@ -356,14 +361,11 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
 
     it 'assigning any variable type to an if else with multiline ' \
        'in one branch' do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         #{variable} = if foo
                         1
                       else
@@ -371,13 +373,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
 
     it 'assigning any variable type to a multiline if elsif else' do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         #{variable} = if foo
                         something
                         1
@@ -392,13 +391,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         4
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
 
     it 'assigning any variable type to a multiline unless else' do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         #{variable} = unless foo
                         something
                         1
@@ -407,13 +403,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
 
     it 'assigning any variable type to a multiline case when' do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         #{variable} = case foo
                       when "a"
                         something
@@ -423,15 +416,85 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
   end
 
-  shared_examples 'multiline all assignment types' do |assignment, expected|
+  shared_examples 'multiline all assignment types offense' do |assignment|
     it 'any assignment to a multiline if else' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY, assignment: assignment)
+        bar %{assignment} if foo
+        ^^^^^{assignment}^^^^^^^ Assign variables inside of conditionals
+                        something
+                        1
+                      else
+                        something_else
+                        2
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          something
+          bar #{assignment} 1
+        else
+          something_else
+          bar #{assignment} 2
+        end
+      RUBY
+    end
+
+    it 'any assignment to a multiline unless else' do
+      expect_offense(<<~RUBY, assignment: assignment)
+        bar %{assignment} unless foo
+        ^^^^^{assignment}^^^^^^^^^^^ Assign variables inside of conditionals
+                        something
+                        1
+                      else
+                        something_else
+                        2
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless foo
+          something
+          bar #{assignment} 1
+        else
+          something_else
+          bar #{assignment} 2
+        end
+      RUBY
+    end
+
+    it 'any assignment to a multiline case when' do
+      expect_offense(<<~RUBY, assignment: assignment)
+        bar %{assignment} case foo
+        ^^^^^{assignment}^^^^^^^^^ Assign variables inside of conditionals
+                      when "a"
+                        something
+                        1
+                      else
+                        something_else
+                        2
+                      end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        when "a"
+          something
+          bar #{assignment} 1
+        else
+          something_else
+          bar #{assignment} 2
+        end
+      RUBY
+    end
+  end
+
+  shared_examples 'multiline all assignment types allow' do |assignment|
+    it 'any assignment to a multiline if else' do
+      expect_no_offenses(<<~RUBY)
         bar #{assignment} if foo
                         something
                         1
@@ -440,13 +503,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
 
     it 'any assignment to a multiline unless else' do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         bar #{assignment} unless foo
                         something
                         1
@@ -455,13 +515,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
 
     it 'any assignment to a multiline case when' do
-      source = <<~RUBY
+      expect_no_offenses(<<~RUBY)
         bar #{assignment} case foo
                       when "a"
                         something
@@ -471,24 +528,21 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                         2
                       end
       RUBY
-      inspect_source(source)
-
-      expect(cop.messages).to eq(expected)
     end
   end
 
   shared_examples 'single line condition auto-correct' do
     it 'corrects assignment to an if else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals
                 1
               else
                 2
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         if foo
           bar = 1
         else
@@ -498,8 +552,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an if elsif else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals
                 1
               elsif foobar
                 2
@@ -507,9 +562,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 3
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         if foo
           bar = 1
         elsif foobar
@@ -521,8 +575,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an if elsif else with multiple elsifs' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals
                 1
               elsif foobar
                 2
@@ -532,9 +587,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 4
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         if foo
           bar = 1
         elsif foobar
@@ -548,16 +602,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an unless else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = unless foo
+        ^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
                 1
               else
                 2
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         unless foo
           bar = 1
         else
@@ -567,17 +621,17 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = case foo
+        ^^^^^^^^^^^^^^ Assign variables inside of conditionals
               when foobar
                 1
               else
                 2
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         case foo
         when foobar
           bar = 1
@@ -588,8 +642,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else with multiple whens' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = case foo
+        ^^^^^^^^^^^^^^ Assign variables inside of conditionals
               when foobar
                 1
               when baz
@@ -598,9 +653,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 3
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         case foo
         when foobar
           bar = 1
@@ -613,9 +667,14 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a ternary operator' do
-      new_source = autocorrect_source('bar = foo? ? 1 : 2')
+      expect_offense(<<~RUBY)
+        bar = foo? ? 1 : 2
+        ^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
+      RUBY
 
-      expect(new_source).to eq('foo? ? bar = 1 : bar = 2')
+      expect_correction(<<~RUBY)
+        foo? ? bar = 1 : bar = 2
+      RUBY
     end
   end
 
@@ -647,13 +706,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all variable types', '$BAR')
     it_behaves_like('all variable types', 'foo.bar')
 
-    it_behaves_like('multiline all variable types', 'bar', [])
-    it_behaves_like('multiline all variable types', 'BAR', [])
-    it_behaves_like('multiline all variable types', 'FOO::BAR', [])
-    it_behaves_like('multiline all variable types', '@bar', [])
-    it_behaves_like('multiline all variable types', '@@bar', [])
-    it_behaves_like('multiline all variable types', '$BAR', [])
-    it_behaves_like('multiline all variable types', 'foo.bar', [])
+    it_behaves_like('multiline all variable types allow', 'bar')
+    it_behaves_like('multiline all variable types allow', 'BAR')
+    it_behaves_like('multiline all variable types allow', 'FOO::BAR')
+    it_behaves_like('multiline all variable types allow', '@bar')
+    it_behaves_like('multiline all variable types allow', '@@bar')
+    it_behaves_like('multiline all variable types allow', '$BAR')
+    it_behaves_like('multiline all variable types allow', 'foo.bar')
 
     it_behaves_like('all assignment types', '=')
     it_behaves_like('all assignment types', '==')
@@ -677,27 +736,27 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all assignment types', '-=')
     it_behaves_like('all assignment types', '<<')
 
-    it_behaves_like('multiline all assignment types', '=', [])
-    it_behaves_like('multiline all assignment types', '==', [])
-    it_behaves_like('multiline all assignment types', '===', [])
-    it_behaves_like('multiline all assignment types', '+=', [])
-    it_behaves_like('multiline all assignment types', '-=', [])
-    it_behaves_like('multiline all assignment types', '*=', [])
-    it_behaves_like('multiline all assignment types', '**=', [])
-    it_behaves_like('multiline all assignment types', '/=', [])
-    it_behaves_like('multiline all assignment types', '%=', [])
-    it_behaves_like('multiline all assignment types', '^=', [])
-    it_behaves_like('multiline all assignment types', '&=', [])
-    it_behaves_like('multiline all assignment types', '|=', [])
-    it_behaves_like('multiline all assignment types', '<=', [])
-    it_behaves_like('multiline all assignment types', '>=', [])
-    it_behaves_like('multiline all assignment types', '<<=', [])
-    it_behaves_like('multiline all assignment types', '>>=', [])
-    it_behaves_like('multiline all assignment types', '||=', [])
-    it_behaves_like('multiline all assignment types', '&&=', [])
-    it_behaves_like('multiline all assignment types', '+=', [])
-    it_behaves_like('multiline all assignment types', '-=', [])
-    it_behaves_like('multiline all assignment types', '<<', [])
+    it_behaves_like('multiline all assignment types allow', '=')
+    it_behaves_like('multiline all assignment types allow', '==')
+    it_behaves_like('multiline all assignment types allow', '===')
+    it_behaves_like('multiline all assignment types allow', '+=')
+    it_behaves_like('multiline all assignment types allow', '-=')
+    it_behaves_like('multiline all assignment types allow', '*=')
+    it_behaves_like('multiline all assignment types allow', '**=')
+    it_behaves_like('multiline all assignment types allow', '/=')
+    it_behaves_like('multiline all assignment types allow', '%=')
+    it_behaves_like('multiline all assignment types allow', '^=')
+    it_behaves_like('multiline all assignment types allow', '&=')
+    it_behaves_like('multiline all assignment types allow', '|=')
+    it_behaves_like('multiline all assignment types allow', '<=')
+    it_behaves_like('multiline all assignment types allow', '>=')
+    it_behaves_like('multiline all assignment types allow', '<<=')
+    it_behaves_like('multiline all assignment types allow', '>>=')
+    it_behaves_like('multiline all assignment types allow', '||=')
+    it_behaves_like('multiline all assignment types allow', '&&=')
+    it_behaves_like('multiline all assignment types allow', '+=')
+    it_behaves_like('multiline all assignment types allow', '-=')
+    it_behaves_like('multiline all assignment types allow', '<<')
 
     it 'allows a method call in the subject of a ternary operator' do
       expect_no_offenses('bar << foo? ? 1 : 2')
@@ -708,6 +767,10 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       expect_offense(<<~RUBY)
         self.attributes = foo? ? 1 : 2
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo? ? self.attributes = 1 : self.attributes = 2
       RUBY
     end
 
@@ -720,6 +783,14 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                     2
                   end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if bar?
+          foo[:a] = 1
+        else
+          foo[:a] = 2
+        end
+      RUBY
     end
 
     it 'registers an offense for assignment to an if then else' do
@@ -728,6 +799,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         ^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
               else 2
               end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo then bar = 1
+        else bar = 2
+        end
       RUBY
     end
 
@@ -739,6 +816,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
               else 2
               end
       RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        when bar then baz = 1
+        else baz = 2
+        end
+      RUBY
     end
 
     context 'for loop' do
@@ -747,87 +831,25 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       end
     end
 
-    context 'auto-correct' do
-      it_behaves_like('single line condition auto-correct')
+    it_behaves_like('single line condition auto-correct')
 
-      it 'corrects assignment to an if then else' do
-        source = <<~RUBY
-          bar = if foo then 1
-                else 2
-                end
-        RUBY
-
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          if foo then bar = 1
-          else bar = 2
-          end
-        RUBY
-      end
-
-      it 'corrects assignment to case when then else' do
-        source = <<~RUBY
-          baz = case foo
-                when bar then 1
-                else 2
-                end
-        RUBY
-
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          case foo
-          when bar then baz = 1
-          else baz = 2
-          end
-        RUBY
-      end
-
-      it 'corrects assignment using a method that ends with an equal sign' do
-        new_source = autocorrect_source('self.attributes = foo? ? 1 : 2')
-
-        expect(new_source)
-          .to eq('foo? ? self.attributes = 1 : self.attributes = 2')
-      end
-
-      it 'corrects assignment using []=' do
-        source = <<~RUBY
-          foo[:a] = if bar?
+    it 'corrects assignment to a namespaced constant' do
+      expect_offense(<<~RUBY)
+        FOO::BAR = if baz?
+        ^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
                       1
                     else
                       2
                     end
-        RUBY
-        new_source = autocorrect_source(source)
+      RUBY
 
-        expect(new_source).to eq(<<~RUBY)
-          if bar?
-            foo[:a] = 1
-          else
-            foo[:a] = 2
-          end
-        RUBY
-      end
-
-      it 'corrects assignment to a namespaced constant' do
-        source = <<~RUBY
-          FOO::BAR = if baz?
-                       1
-                     else
-                       2
-                     end
-        RUBY
-        new_source = autocorrect_source(source)
-
-        expect(new_source).to eq(<<~RUBY)
-          if baz?
-            FOO::BAR = 1
-          else
-            FOO::BAR = 2
-          end
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        if baz?
+          FOO::BAR = 1
+        else
+          FOO::BAR = 2
+        end
+      RUBY
     end
 
     it 'corrects assignment when without `else` branch' do
@@ -878,20 +900,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all variable types', '$BAR')
     it_behaves_like('all variable types', 'foo.bar')
 
-    it_behaves_like('multiline all variable types', 'bar',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all variable types', 'BAR',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all variable types', 'FOO::BAR',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all variable types', '@bar',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all variable types', '@@bar',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all variable types', '$BAR',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all variable types', 'foo.bar',
-                    ['Assign variables inside of conditionals'])
+    it_behaves_like('multiline all variable types offense', 'bar')
+    it_behaves_like('multiline all variable types offense', 'BAR')
+    it_behaves_like('multiline all variable types offense', 'FOO::BAR')
+    it_behaves_like('multiline all variable types offense', '@bar')
+    it_behaves_like('multiline all variable types offense', '@@bar')
+    it_behaves_like('multiline all variable types offense', '$BAR')
+    it_behaves_like('multiline all variable types offense', 'foo.bar')
 
     it_behaves_like('all assignment types', '=')
     it_behaves_like('all assignment types', '==')
@@ -915,54 +930,34 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all assignment types', '-=')
     it_behaves_like('all assignment types', '<<')
 
-    it_behaves_like('multiline all assignment types', '=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '==',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '===',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '+=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '-=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '*=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '**=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '/=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '%=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '^=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '&=',
-                    [described_class::ASSIGN_TO_CONDITION_MSG])
-    it_behaves_like('multiline all assignment types', '|=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '<=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '>=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '<<=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '>>=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '||=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '&&=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '+=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '-=',
-                    ['Assign variables inside of conditionals'])
-    it_behaves_like('multiline all assignment types', '<<',
-                    ['Assign variables inside of conditionals'])
+    it_behaves_like('multiline all assignment types offense', '=')
+    it_behaves_like('multiline all assignment types offense', '==')
+    it_behaves_like('multiline all assignment types offense', '===')
+    it_behaves_like('multiline all assignment types offense', '+=')
+    it_behaves_like('multiline all assignment types offense', '-=')
+    it_behaves_like('multiline all assignment types offense', '*=')
+    it_behaves_like('multiline all assignment types offense', '**=')
+    it_behaves_like('multiline all assignment types offense', '/=')
+    it_behaves_like('multiline all assignment types offense', '%=')
+    it_behaves_like('multiline all assignment types offense', '^=')
+    it_behaves_like('multiline all assignment types offense', '&=')
+    it_behaves_like('multiline all assignment types offense', '|=')
+    it_behaves_like('multiline all assignment types offense', '<=')
+    it_behaves_like('multiline all assignment types offense', '>=')
+    it_behaves_like('multiline all assignment types offense', '<<=')
+    it_behaves_like('multiline all assignment types offense', '>>=')
+    it_behaves_like('multiline all assignment types offense', '||=')
+    it_behaves_like('multiline all assignment types offense', '&&=')
+    it_behaves_like('multiline all assignment types offense', '+=')
+    it_behaves_like('multiline all assignment types offense', '-=')
+    it_behaves_like('multiline all assignment types offense', '<<')
 
     it_behaves_like('single line condition auto-correct')
 
     it 'corrects assignment to a multiline if else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals
                 something
                 1
               else
@@ -970,9 +965,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 2
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         if foo
           something
           bar = 1
@@ -984,8 +978,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a multiline if elsif else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals
                 something
                 1
               elsif foobar
@@ -996,9 +991,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 3
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         if foo
           something
           bar = 1
@@ -1013,8 +1007,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an if elsif else with multiple elsifs' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals
                 something
                 1
               elsif foobar
@@ -1028,9 +1023,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 4
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         if foo
           something
           bar = 1
@@ -1048,8 +1042,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to an unless else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = unless foo
+        ^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
                 something
                 1
               else
@@ -1057,9 +1052,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 2
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         unless foo
           something
           bar = 1
@@ -1071,8 +1065,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else condition' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = case foo
+        ^^^^^^^^^^^^^^ Assign variables inside of conditionals
               when foobar
                 something
                 1
@@ -1081,9 +1076,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 2
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         case foo
         when foobar
           something
@@ -1096,8 +1090,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'corrects assignment to a case when else with multiple whens' do
-      source = <<~RUBY
+      expect_offense(<<~RUBY)
         bar = case foo
+        ^^^^^^^^^^^^^^ Assign variables inside of conditionals
               when foobar
                 something
                 1
@@ -1109,9 +1104,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
                 3
               end
       RUBY
-      new_source = autocorrect_source(source)
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         case foo
         when foobar
           something

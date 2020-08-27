@@ -459,7 +459,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     end
 
     it 'does not check binary operations when string wrapped with backslash' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~'RUBY')
         flash[:error] = 'Here is a string ' \
                         'That spans' <<
           'multiple lines'

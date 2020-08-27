@@ -11,7 +11,11 @@ RSpec.describe RuboCop::ConfigLoader do
     described_class.default_configuration = nil
   end
 
-  after { described_class.debug = false }
+  after do
+    described_class.debug = false
+    # Remove custom configuration
+    described_class.default_configuration = nil
+  end
 
   let(:default_config) { described_class.default_configuration }
 
@@ -617,11 +621,7 @@ RSpec.describe RuboCop::ConfigLoader do
       include_examples 'resolves enabled/disabled for all cops', true, false
     end
 
-    context 'when a third party require defines a new gem' do
-      around do |example|
-        RuboCop::Cop::Registry.with_temporary_global { example.run }
-      end
-
+    context 'when a third party require defines a new gem', :restore_registry do
       context 'when the gem is not loaded' do
         before do
           create_file('.rubocop.yml', <<~YAML)

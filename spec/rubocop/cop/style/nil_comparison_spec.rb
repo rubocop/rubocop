@@ -9,6 +9,10 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
         x == nil
           ^^ Prefer the use of the `nil?` predicate.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.nil?
+      RUBY
     end
 
     it 'registers an offense for === nil' do
@@ -16,16 +20,10 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
         x === nil
           ^^^ Prefer the use of the `nil?` predicate.
       RUBY
-    end
 
-    it 'autocorrects by replacing == nil with .nil?' do
-      corrected = autocorrect_source('x == nil')
-      expect(corrected).to eq 'x.nil?'
-    end
-
-    it 'autocorrects by replacing === nil with .nil?' do
-      corrected = autocorrect_source('x === nil')
-      expect(corrected).to eq 'x.nil?'
+      expect_correction(<<~RUBY)
+        x.nil?
+      RUBY
     end
   end
 
@@ -37,11 +35,10 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
         x.nil?
           ^^^^ Prefer the use of the `==` comparison.
       RUBY
-    end
 
-    it 'autocorrects by replacing.nil? with == nil' do
-      corrected = autocorrect_source('x.nil?')
-      expect(corrected).to eq 'x == nil'
+      expect_correction(<<~RUBY)
+        x == nil
+      RUBY
     end
   end
 end

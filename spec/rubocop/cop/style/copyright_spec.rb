@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-def expect_copyright_offense(cop, source)
-  inspect_source(source)
-  expect(cop.offenses.size).to eq(1)
-end
-
 RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   let(:cop_config) { { 'Notice' => 'Copyright (\(c\) )?2015 Acme Inc' } }
 
@@ -40,19 +35,17 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   context 'when the copyright notice is missing' do
     let(:source) { <<~RUBY }
       # test
+      ^ Include a copyright notice matching [...]
       # test2
       names = Array.new
       names << 'James'
     RUBY
 
     it 'adds an offense' do
-      expect_copyright_offense(cop, source)
-    end
-
-    it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<~RUBY)
+      expect_offense(source)
+      expect_correction(<<~RUBY)
         # Copyright (c) 2015 Acme Inc.
         # test
         # test2
@@ -65,34 +58,30 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
        'not match the Notice pattern' do
       cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
       expect do
-        autocorrect_source(source)
+        expect_offense(source)
       end.to raise_error(RuboCop::Warning)
     end
 
     it 'fails to autocorrect if no AutocorrectNotice is given' do
       # cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
       expect do
-        autocorrect_source(source)
+        expect_offense(source)
       end.to raise_error(RuboCop::Warning)
     end
   end
 
   context 'when the copyright notice comes after any code' do
-    let(:source) { <<~RUBY }
-      # test2
-      names = Array.new
-      # Copyright (c) 2015 Acme Inc.
-      names << 'James'
-    RUBY
-
     it 'adds an offense' do
-      expect_copyright_offense(cop, source)
-    end
-
-    it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<~RUBY)
+      expect_offense(<<~RUBY)
+        # test2
+        ^ Include a copyright notice matching [...]
+        names = Array.new
+        # Copyright (c) 2015 Acme Inc.
+        names << 'James'
+      RUBY
+      expect_correction(<<~RUBY)
         # Copyright (c) 2015 Acme Inc.
         # test2
         names = Array.new
@@ -103,36 +92,30 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   end
 
   context 'when the source code file is empty' do
-    let(:source) { '' }
-
     it 'adds an offense' do
-      expect_copyright_offense(cop, source)
-    end
-
-    it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source))
-        .to eq("# Copyright (c) 2015 Acme Inc.\n")
+      expect_offense(<<~'RUBY')
+        ^ Include a copyright notice matching [...]
+      RUBY
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2015 Acme Inc.
+      RUBY
     end
   end
 
   context 'when the copyright notice is missing and ' \
           'the source code file starts with a shebang' do
-    let(:source) { <<~RUBY }
-      #!/usr/bin/env ruby
-      names = Array.new
-      names << 'James'
-    RUBY
-
     it 'adds an offense' do
-      expect_copyright_offense(cop, source)
-    end
-
-    it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<~RUBY)
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        ^ Include a copyright notice matching [...]
+        names = Array.new
+        names << 'James'
+      RUBY
+      expect_correction(<<~RUBY)
         #!/usr/bin/env ruby
         # Copyright (c) 2015 Acme Inc.
         names = Array.new
@@ -143,20 +126,16 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
 
   context 'when the copyright notice is missing and ' \
           'the source code file starts with an encoding comment' do
-    let(:source) { <<~RUBY }
-      # encoding: utf-8
-      names = Array.new
-      names << 'James'
-    RUBY
-
     it 'adds an offense' do
-      expect_copyright_offense(cop, source)
-    end
-
-    it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<~RUBY)
+      expect_offense(<<~RUBY)
+        # encoding: utf-8
+        ^ Include a copyright notice matching [...]
+        names = Array.new
+        names << 'James'
+      RUBY
+      expect_correction(<<~RUBY)
         # encoding: utf-8
         # Copyright (c) 2015 Acme Inc.
         names = Array.new
@@ -168,21 +147,17 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
   context 'when the copyright notice is missing and ' \
           'the source code file starts with shebang and ' \
           'an encoding comment' do
-    let(:source) { <<~RUBY }
-      #!/usr/bin/env ruby
-      # encoding: utf-8
-      names = Array.new
-      names << 'James'
-    RUBY
-
     it 'adds an offense' do
-      expect_copyright_offense(cop, source)
-    end
-
-    it 'correctly autocorrects the source code' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect(autocorrect_source(source)).to eq(<<~RUBY)
+      expect_offense(<<~RUBY)
+        #!/usr/bin/env ruby
+        ^ Include a copyright notice matching [...]
+        # encoding: utf-8
+        names = Array.new
+        names << 'James'
+      RUBY
+      expect_correction(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
         # Copyright (c) 2015 Acme Inc.

@@ -4,26 +4,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for consecutive empty lines' do
-    inspect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       test = 5
 
 
-
-      top
-    RUBY
-    expect(cop.offenses.size).to eq(2)
-  end
-
-  it 'auto-corrects consecutive empty lines' do
-    corrected = autocorrect_source(<<~RUBY)
-      test = 5
-
-
-
+      ^{} Extra blank line detected.
       top
     RUBY
 
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       test = 5
 
       top

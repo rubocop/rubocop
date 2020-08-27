@@ -45,23 +45,19 @@ module RuboCop
       #     end
       #   end
       #
-      class ClassVars < Cop
-        MSG = 'Replace class var %<class_var>s with a class ' \
-              'instance var.'
+      class ClassVars < Base
+        MSG = 'Replace class var %<class_var>s with a class instance var.'
 
         def on_cvasgn(node)
-          add_offense(node, location: :name)
+          add_offense(node.loc.name, message: format(MSG, class_var: node.children.first))
         end
 
         def on_send(node)
           return unless node.method?(:class_variable_set)
 
-          add_offense(node.first_argument)
-        end
-
-        def message(node)
-          class_var, = *node
-          format(MSG, class_var: class_var)
+          add_offense(
+            node.first_argument, message: format(MSG, class_var: node.first_argument.source)
+          )
         end
       end
     end

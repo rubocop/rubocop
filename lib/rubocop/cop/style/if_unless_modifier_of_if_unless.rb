@@ -22,20 +22,16 @@ module RuboCop
       #  if running?
       #    tired? ? 'stop' : 'go faster'
       #  end
-      class IfUnlessModifierOfIfUnless < Cop
+      class IfUnlessModifierOfIfUnless < Base
         include StatementModifier
+        extend AutoCorrector
 
         MSG = 'Avoid modifier `%<keyword>s` after another conditional.'
 
         def on_if(node)
           return unless node.modifier_form? && node.body.if_type?
 
-          add_offense(node, location: :keyword,
-                            message: format(MSG, keyword: node.keyword))
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.loc.keyword, message: format(MSG, keyword: node.keyword)) do |corrector|
             keyword = node.if? ? 'if' : 'unless'
 
             corrector.replace(node, <<~RUBY.chop)

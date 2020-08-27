@@ -3,17 +3,35 @@
 RSpec.describe RuboCop::Cop::Lint::Loop do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for begin/end/while' do
+  it 'registers an offense and corrects for begin/end/while' do
     expect_offense(<<~RUBY)
-      begin something; top; end while test
-                                ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+      begin
+        something
+      end while test
+          ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      loop do
+        something
+      break unless test
+      end
     RUBY
   end
 
   it 'registers an offense for begin/end/until' do
     expect_offense(<<~RUBY)
-      begin something; top; end until test
-                                ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+      begin
+        something
+      end until test
+          ^^^^^ Use `Kernel#loop` with `break` rather than `begin/end/until`(or `while`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      loop do
+        something
+      break if test
+      end
     RUBY
   end
 

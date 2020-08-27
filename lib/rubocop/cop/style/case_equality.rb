@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   something.is_a?(Array)
       #   (1..100).include?(7)
-      #   some_string =~ /something/
+      #   /something/.match?(some_string)
       #
       # @example AllowOnConstant
       #   # Style/CaseEquality:
@@ -27,7 +27,7 @@ module RuboCop
       #   # good
       #   Array === something
       #   (1..100).include?(7)
-      #   some_string =~ /something/
+      #   /something/.match?(some_string)
       #
       class CaseEquality < Base
         extend AutoCorrector
@@ -58,7 +58,12 @@ module RuboCop
         def replacement(lhs, rhs)
           case lhs.type
           when :regexp
-            "#{rhs.source} =~ #{lhs.source}"
+            # The automatic correction from `a === b` to `a.match?(b)` needs to
+            # consider `Regexp.last_match?`, `$~`, `$1`, and etc.
+            # This correction is expected to be supported by `Performance/Regexp` cop.
+            # See: https://github.com/rubocop-hq/rubocop-performance/issues/152
+            #
+            # So here is noop.
           when :begin
             child = lhs.children.first
             "#{lhs.source}.include?(#{rhs.source})" if child&.range_type?

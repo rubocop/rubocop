@@ -68,6 +68,12 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment do
     RUBY
   end
 
+  it 'does not register an offense when using constant var or-assignment for constant from another scope' do
+    expect_no_offenses(<<~RUBY)
+      Foo ||= ::Foo
+    RUBY
+  end
+
   it 'registers an offense when using multiple var self-assignment' do
     expect_offense(<<~RUBY)
       foo, bar = foo, bar

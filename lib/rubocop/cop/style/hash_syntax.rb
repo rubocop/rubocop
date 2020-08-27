@@ -73,7 +73,7 @@ module RuboCop
             ruby19_no_mixed_keys_check(pairs)
           elsif style == :no_mixed_keys
             no_mixed_keys_check(pairs)
-          else
+          elsif node.source.include?('=>')
             ruby19_check(pairs)
           end
         end
@@ -140,11 +140,12 @@ module RuboCop
         def acceptable_19_syntax_symbol?(sym_name)
           sym_name.sub!(/\A:/, '')
 
-          if cop_config['PreferHashRocketsForNonAlnumEndingSymbols']
-            # Prefer { :production? => false } over { production?: false } and
-            # similarly for other non-alnum final characters (except quotes,
-            # to prefer { "x y": 1 } over { :"x y" => 1 }).
-            return false unless /[\p{Alnum}"']\z/.match?(sym_name)
+          if cop_config['PreferHashRocketsForNonAlnumEndingSymbols'] &&
+             # Prefer { :production? => false } over { production?: false } and
+             # similarly for other non-alnum final characters (except quotes,
+             # to prefer { "x y": 1 } over { :"x y" => 1 }).
+             !/[\p{Alnum}"']\z/.match?(sym_name)
+            return false
           end
 
           # Most hash keys can be matched against a simple regex.

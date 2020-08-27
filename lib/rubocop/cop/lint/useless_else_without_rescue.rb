@@ -29,24 +29,15 @@ module RuboCop
       #   else
       #     do_something_else
       #   end
-      class UselessElseWithoutRescue < Cop
-        include ParserDiagnostic
-
+      class UselessElseWithoutRescue < Base
         MSG = '`else` without `rescue` is useless.'
 
-        private
+        def on_new_investigation
+          processed_source.diagnostics.each do |diagnostic|
+            next unless diagnostic.reason == :useless_else
 
-        def relevant_diagnostic?(diagnostic)
-          diagnostic.reason == :useless_else
-        end
-
-        def find_offense_node_by(diagnostic)
-          # TODO: When implementing auto-correction, this method should return
-          # an offense node passed as first argument of `add_offense` method.
-        end
-
-        def alternative_message(_diagnostic)
-          MSG
+            add_offense(diagnostic.location, severity: diagnostic.level)
+          end
         end
       end
     end

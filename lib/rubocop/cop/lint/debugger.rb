@@ -32,7 +32,7 @@ module RuboCop
       #   def some_method
       #     do_something
       #   end
-      class Debugger < Cop
+      class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
 
         DEBUGGER_METHODS = %i[

@@ -16,10 +16,11 @@ module RuboCop
       #   # good
       #
       #   "result is 10"
-      class LiteralInInterpolation < Cop
+      class LiteralInInterpolation < Base
         include Interpolation
         include RangeHelp
         include PercentLiteral
+        extend AutoCorrector
 
         MSG = 'Literal interpolation detected.'
         COMPOSITE = %i[array hash pair irange erange].freeze
@@ -30,14 +31,13 @@ module RuboCop
           return if special_keyword?(final_node)
           return unless prints_as_self?(final_node)
 
-          add_offense(final_node)
-        end
+          add_offense(final_node) do |corrector|
+            return if final_node.dstr_type? # nested, fixed in next iteration
 
-        def autocorrect(node)
-          return if node.dstr_type? # nested, fixed in next iteration
+            value = autocorrected_value(final_node)
 
-          value = autocorrected_value(node)
-          ->(corrector) { corrector.replace(node.parent, value) }
+            corrector.replace(final_node.parent, value)
+          end
         end
 
         private

@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'rescue a exception without causing constant name deprecation warning' do
       expect do
-        inspect_source(<<~RUBY)
+        expect_no_offenses(<<~RUBY)
           def foo
             something
           rescue TimeoutError

@@ -8,8 +8,8 @@ module RuboCop
         self.command_name = :version
 
         def run
-          puts RuboCop::Version.version(false) if @options[:version]
-          puts RuboCop::Version.version(true) if @options[:verbose_version]
+          puts RuboCop::Version.version(debug: false) if @options[:version]
+          puts RuboCop::Version.version(debug: true) if @options[:verbose_version]
         end
       end
     end

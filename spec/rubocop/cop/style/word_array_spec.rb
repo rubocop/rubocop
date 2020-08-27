@@ -28,12 +28,20 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ['one', 'two', 'three']
         ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
+
+      expect_correction(<<~RUBY)
+        %w(one two three)
+      RUBY
     end
 
     it 'registers an offense for arrays of double quoted strings' do
       expect_offense(<<~RUBY)
         ["one", "two", "three"]
         ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %w(one two three)
       RUBY
     end
 
@@ -42,13 +50,50 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ['foo', 'bar', 'foo-bar']
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
+
+      expect_correction(<<~RUBY)
+        %w(foo bar foo-bar)
+      RUBY
     end
 
-    it 'registers an offense for arrays of unicode word characters' do
-      expect_offense(<<~RUBY)
-        ["ВУЗ", "вуз", "中文网"]
-        ^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
-      RUBY
+    context 'when the default external encoding is UTF-8' do
+      around do |example|
+        orig_encoding = Encoding.default_external
+        Encoding.default_external = Encoding::UTF_8
+        example.run
+        Encoding.default_external = orig_encoding
+      end
+
+      it 'registers an offense for arrays of unicode word characters' do
+        expect_offense(<<~RUBY, wide: '中文网')
+          ["ВУЗ", "вуз", "%{wide}"]
+          ^^^^^^^^^^^^^^^^^{wide}^^ Use `%w` or `%W` for an array of words.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          %w(ВУЗ вуз 中文网)
+        RUBY
+      end
+    end
+
+    context 'when the default external encoding is US-ASCII' do
+      around do |example|
+        orig_encoding = Encoding.default_external
+        Encoding.default_external = Encoding::US_ASCII
+        example.run
+        Encoding.default_external = orig_encoding
+      end
+
+      it 'registers an offense for arrays of unicode word characters' do
+        expect_offense(<<~RUBY, wide: '中文网')
+          ["ВУЗ", "вуз", "%{wide}"]
+          ^^^^^^^^^^^^^^^^^{wide}^^ Use `%w` or `%W` for an array of words.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          %W(\u0412\u0423\u0417 \u0432\u0443\u0437 \u4E2D\u6587\u7F51)
+        RUBY
+      end
     end
 
     it 'registers an offense for arrays with character constants' do
@@ -56,11 +101,22 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ["one", ?\n]
         ^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
+
+      expect_correction(<<~'RUBY')
+        %W(one \n)
+      RUBY
     end
 
-    it 'registers an offense for strings with embedded newlines and tabs' do
-      inspect_source(%(["one\n", "hi\tthere"]))
-      expect(cop.offenses.size).to eq(1)
+    it 'uses %W when autocorrecting strings with embedded newlines and tabs' do
+      expect_offense(<<~RUBY)
+        ["one
+        ^^^^^ Use `%w` or `%W` for an array of words.
+        ", "hi\tthere"]
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %W(one\n hi\tthere)
+      RUBY
     end
 
     it 'registers an offense for strings with newline and tab escapes' do
@@ -68,11 +124,10 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ["one\n", "hi\tthere"]
         ^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
-    end
 
-    it 'uses %W when autocorrecting strings with newlines and tabs' do
-      new_source = autocorrect_source(%(["one\\n", "hi\\tthere"]))
-      expect(new_source).to eq('%W(one\\n hi\\tthere)')
+      expect_correction(<<~'RUBY')
+        %W(one\n hi\tthere)
+      RUBY
     end
 
     it 'does not register an offense for array of non-words' do
@@ -104,6 +159,10 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect_offense(<<~RUBY)
         foo(['bar', 'baz']) { qux }
             ^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(%w(bar baz)) { qux }
       RUBY
     end
 
@@ -142,40 +201,62 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'auto-corrects an array of words' do
-      new_source = autocorrect_source("['one', %q(two), 'three']")
-      expect(new_source).to eq('%w(one two three)')
+      expect_offense(<<~RUBY)
+        ['one', %q(two), 'three']
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %w(one two three)
+      RUBY
     end
 
     it 'auto-corrects an array with one element' do
-      new_source = autocorrect_source("['one']")
-      expect(new_source).to eq('%w(one)')
+      expect_offense(<<~RUBY)
+        ['one']
+        ^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %w(one)
+      RUBY
     end
 
     it 'auto-corrects an array of words and character constants' do
-      new_source = autocorrect_source('[%|one|, %Q(two), ?\n, ?\t]')
-      expect(new_source).to eq('%W(one two \n \t)')
+      expect_offense(<<~'RUBY')
+        [%|one|, %Q(two), ?\n, ?\t]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %W(one two \n \t)
+      RUBY
     end
 
     it 'keeps the line breaks in place after auto-correct' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         ['one',
+        ^^^^^^^ Use `%w` or `%W` for an array of words.
         'two', 'three']
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+
+      expect_correction(<<~RUBY)
         %w(one
         two three)
       RUBY
     end
 
     it 'auto-corrects an array of words in multiple lines' do
-      new_source = autocorrect_source(<<-RUBY)
+      expect_offense(<<-RUBY)
         [
+        ^ Use `%w` or `%W` for an array of words.
         "foo",
         "bar",
         "baz"
         ]
       RUBY
-      expect(new_source).to eq(<<-RUBY)
+
+      expect_correction(<<-RUBY)
         %w(
         foo
         bar
@@ -185,12 +266,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'auto-corrects an array of words using partial newlines' do
-      new_source = autocorrect_source(<<-RUBY)
+      expect_offense(<<-RUBY)
         ["foo", "bar", "baz",
+        ^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
         "boz", "buz",
         "biz"]
       RUBY
-      expect(new_source).to eq(<<-RUBY)
+
+      expect_correction(<<-RUBY)
         %w(foo bar baz
         boz buz
         biz)
@@ -198,8 +281,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects right value of MinSize to use for --auto-gen-config' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         ['one', 'two', 'three']
+        ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+        %w(a b c d)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %w(one two three)
         %w(a b c d)
       RUBY
 
@@ -208,8 +297,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         ['one', 'two', 'three']
+        ^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+        %w(a b)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %w(one two three)
         %w(a b)
       RUBY
 
@@ -222,7 +317,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       cop2 = described_class.new(config)
       RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
       RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-      # Don't use `inspect_source`; it resets `config_to_allow_offenses` each
+      # Don't use `expect_offense`; it resets `config_to_allow_offenses` each
       #   time, which suppresses the bug we are checking for
       _investigate(cop1, parse_source("['g', 'h']"))
       _investigate(cop2, parse_source('%w(a b c)'))
@@ -255,37 +350,65 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         %w(one two three)
         ^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
       RUBY
-    end
 
-    it 'auto-corrects a %w() array' do
-      new_source = autocorrect_source('%w(one two three)')
-      expect(new_source).to eq("['one', 'two', 'three']")
+      expect_correction(<<~RUBY)
+        ['one', 'two', 'three']
+      RUBY
     end
 
     it 'autocorrects a %w() array which uses single quotes' do
-      new_source = autocorrect_source("%w(one's two's three's)")
-      expect(new_source).to eq('["one\'s", "two\'s", "three\'s"]')
+      expect_offense(<<~RUBY)
+        %w(one's two's three's)
+        ^^^^^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ["one's", "two's", "three's"]
+      RUBY
     end
 
     it 'autocorrects a %W() array which uses escapes' do
-      new_source = autocorrect_source('%W(\\n \\t \\b \\v \\f)')
-      expect(new_source).to eq('["\n", "\t", "\b", "\v", "\f"]')
+      expect_offense(<<~'RUBY')
+        %W(\n \t \b \v \f)
+        ^^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        ["\n", "\t", "\b", "\v", "\f"]
+      RUBY
     end
 
     it 'autocorrects a %w() array which uses string with hyphen' do
-      new_source = autocorrect_source('%w(foo bar foo-bar)')
-      expect(new_source).to eq("['foo', 'bar', 'foo-bar']")
+      expect_offense(<<~RUBY)
+        %w(foo bar foo-bar)
+        ^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ['foo', 'bar', 'foo-bar']
+      RUBY
     end
 
     it 'autocorrects a %W() array which uses string with hyphen' do
-      new_source = autocorrect_source('%W(foo bar #{foo}-bar)')
-      expect(new_source).to eq("['foo', 'bar', \"#\{foo}-bar\"]")
+      expect_offense(<<~'RUBY')
+        %W(foo bar #{foo}-bar)
+        ^^^^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        ['foo', 'bar', "#{foo}-bar"]
+      RUBY
     end
 
     it 'autocorrects a %W() array which uses string interpolation' do
-      new_source = autocorrect_source('%W(#{foo}bar baz)')
+      expect_offense(<<~'RUBY')
+        %W(#{foo}bar baz)
+        ^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
+      RUBY
 
-      expect(new_source).to eq('["#{foo}bar", \'baz\']')
+      expect_correction(<<~'RUBY')
+        ["#{foo}bar", 'baz']
+      RUBY
     end
 
     it "doesn't fail on strings which are not valid UTF-8" do
@@ -319,11 +442,10 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ['a@example.com', 'b@example.com']
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
-    end
 
-    it 'auto-corrects an array of email addresses' do
-      new_source = autocorrect_source("['a@example.com', 'b@example.com']")
-      expect(new_source).to eq('%w(a@example.com b@example.com)')
+      expect_correction(<<~RUBY)
+        %w(a@example.com b@example.com)
+      RUBY
     end
   end
 
@@ -331,7 +453,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'WordRegex' => 'just_a_string' } }
 
     it 'still parses the code without raising an error' do
-      expect { inspect_source('') }.not_to raise_error
+      expect { expect_no_offenses('') }.not_to raise_error
     end
   end
 
@@ -339,13 +461,25 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\S+/ } }
 
     it 'uses %W when autocorrecting strings with non-printable chars' do
-      new_source = autocorrect_source('["\x1f\x1e", "hello"]')
-      expect(new_source).to eq('%W(\u001F\u001E hello)')
+      expect_offense(<<~'RUBY')
+        ["\x1f\x1e", "hello"]
+        ^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %W(\u001F\u001E hello)
+      RUBY
     end
 
     it 'uses %w for strings which only appear to have an escape' do
-      new_source = autocorrect_source("['hi\\tthere', 'again\\n']")
-      expect(new_source).to eq('%w(hi\\tthere again\\n)')
+      expect_offense(<<~'RUBY')
+        ['hi\tthere', 'again\n']
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %w(hi\tthere again\n)
+      RUBY
     end
   end
 
@@ -353,13 +487,20 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /[\w \[\]()]/ } }
 
     it "doesn't break when words contain whitespace" do
-      new_source = autocorrect_source("['hi there', 'something\telse']")
-      expect(new_source).to eq("['hi there', 'something\telse']")
+      expect_no_offenses(<<~RUBY)
+        ['hi there', 'something\telse']
+      RUBY
     end
 
     it "doesn't break when words contain delimiters" do
-      new_source = autocorrect_source("[')', ']', '(']")
-      expect(new_source).to eq('%w(\\) ] \\()')
+      expect_offense(<<~RUBY)
+        [')', ']', '(']
+        ^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        %w(\) ] \()
+      RUBY
     end
 
     context 'when PreferredDelimiters is specified' do
@@ -374,8 +515,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       end
 
       it 'autocorrects an array with delimiters' do
-        new_source = autocorrect_source("[')', ']', '(', '[']")
-        expect(new_source).to eq('%w[) \\] ( \\[]')
+        expect_offense(<<~RUBY)
+          [')', ']', '(', '[']
+          ^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          %w[) \] ( \[]
+        RUBY
       end
     end
   end

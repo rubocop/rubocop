@@ -58,9 +58,10 @@ module RuboCop
       #   foo.baz = bar if foo
       #   foo.baz + bar if foo
       #   foo.bar > 2 if foo
-      class SafeNavigation < Cop
+      class SafeNavigation < Base
         include NilMethods
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'
@@ -104,28 +105,28 @@ module RuboCop
           return if chain_size(method_chain, method) > 1
           return if unsafe_method_used?(method_chain, method)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def use_var_only_in_unless_modifier?(node, variable)
           node.if_type? && node.unless? && !method_called?(variable)
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           body = node.node_parts[1]
           method_call = method_call(node)
 
-          lambda do |corrector|
-            corrector.remove(begin_range(node, body))
-            corrector.remove(end_range(node, body))
-            corrector.insert_before(method_call.loc.dot, '&')
-            handle_comments(corrector, node, method_call)
+          corrector.remove(begin_range(node, body))
+          corrector.remove(end_range(node, body))
+          corrector.insert_before(method_call.loc.dot, '&')
+          handle_comments(corrector, node, method_call)
 
-            add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
-          end
+          add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
         end
-
-        private
 
         def handle_comments(corrector, node, method_call)
           comments = comments(node)
@@ -136,10 +137,10 @@ module RuboCop
         end
 
         def comments(node)
-          processed_source.comments.select do |comment|
-            comment.loc.first_line > node.loc.first_line &&
-              comment.loc.last_line < node.loc.last_line
-          end
+          processed_source.each_comment_in_lines(
+            node.loc.first_line...
+            node.loc.last_line
+          ).to_a
         end
 
         def allowed_if_condition?(node)

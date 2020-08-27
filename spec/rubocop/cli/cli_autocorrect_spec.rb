@@ -745,7 +745,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         bar
       rescue StandardError
         baz
-        end
+      end
 
       def func
         x; y; rescue StandardError; z
@@ -1111,7 +1111,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       module A
         module B
-      end end
+        end end
     RUBY
     uncorrected = $stdout.string.split($RS).select do |line|
       line.include?('example.rb:') && !line.include?('[Corrected]')
@@ -1410,7 +1410,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
       W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
 
-      1 file inspected, 3 offenses detected
+      1 file inspected, 3 offenses detected, 3 more offenses can be corrected with `rubocop -A`
     RESULT
   end
 

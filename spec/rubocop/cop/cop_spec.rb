@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Cop, :config do
-  let(:location) do
-    source_range(0...1)
-  end
+  let(:source) { 'code = {some: :ruby}' }
+  let(:location) { source_range(0...1) }
+
+  before { cop.send(:begin_investigation, processed_source) }
 
   it 'initially has 0 offenses' do
     expect(cop.offenses.empty?).to be(true)
@@ -52,6 +53,22 @@ RSpec.describe RuboCop::Cop::Cop, :config do
         described_class.qualified_cop_name('Style/SafeNavigation', '--only')
 
       expect(qualified_cop_name).to eq('Style/SafeNavigation')
+    end
+  end
+
+  describe '.documentation_url' do
+    subject(:url) { cop_class.documentation_url }
+
+    describe 'for a builtin cop class' do
+      let(:cop_class) { RuboCop::Cop::Layout::BlockEndNewline }
+
+      it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength
+    end
+
+    describe 'for a custom cop class', :restore_registry do
+      let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
+
+      it { is_expected.to eq nil }
     end
   end
 
@@ -118,8 +135,8 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     let(:cop_class) { RuboCop::Cop::Style::For }
 
     it 'registers offense with its name' do
-      cop.add_offense(nil, location: location, message: 'message')
-      expect(cop.offenses.first.cop_name).to eq('Style/For')
+      offenses = cop.add_offense(location, message: 'message')
+      expect(offenses.first.cop_name).to eq('Style/For')
     end
   end
 
@@ -165,8 +182,12 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       end
     end
 
-    context 'when cop supports autocorrection' do
-      let(:cop_class) { RuboCop::Cop::Style::Alias }
+    context 'when cop supports autocorrection', :restore_registry do
+      let(:cop_class) do
+        stub_cop_class('RuboCop::Cop::Test::StubCop', inherit: described_class) do
+          def autocorrect(node); end
+        end
+      end
 
       context 'when offense was corrected' do
         before do

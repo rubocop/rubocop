@@ -17,7 +17,7 @@ module RuboCop
       #
       #   def foobar(a = 1, b = 2, c = 3)
       #   end
-      class OptionalArguments < Cop
+      class OptionalArguments < Base
         MSG = 'Optional arguments should appear at the end ' \
               'of the argument list.'
 

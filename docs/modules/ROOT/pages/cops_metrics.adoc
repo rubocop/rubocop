@@ -472,6 +472,6 @@ end                             # 7 complexity points
 | Array
 
 | Max
-| `7`
+| `8`
 | Integer
 |===

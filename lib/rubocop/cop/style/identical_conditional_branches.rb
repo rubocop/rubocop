@@ -62,7 +62,7 @@ module RuboCop
       #     do_x
       #     do_z
       #   end
-      class IdenticalConditionalBranches < Cop
+      class IdenticalConditionalBranches < Base
         MSG = 'Move `%<source>s` out of the conditional.'
 
         def on_if(node)
@@ -81,7 +81,7 @@ module RuboCop
 
         private
 
-        def check_branches(branches) # rubocop:todo Metrics/CyclomaticComplexity
+        def check_branches(branches) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else` or a branch that contains only comments.
           return if branches.any?(&:nil?)

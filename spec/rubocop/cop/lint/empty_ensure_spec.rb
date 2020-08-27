@@ -7,15 +7,17 @@ RSpec.describe RuboCop::Cop::Lint::EmptyEnsure do
     expect_offense(<<~RUBY)
       begin
         something
-      ensure
+      ensure # hello
       ^^^^^^ Empty `ensure` block detected.
+        # world
       end
     RUBY
 
     expect_correction(<<~RUBY)
       begin
         something
-
+       # hello
+        # world
       end
     RUBY
   end

@@ -33,6 +33,14 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
       end
     end
 
+    context 'and the gem is commented on the same line' do
+      it 'does not register any offenses' do
+        expect_no_offenses(<<~RUBY, 'Gemfile')
+          gem 'rubocop' # Style-guide enforcer.
+        RUBY
+      end
+    end
+
     context 'and the gem is permitted' do
       it 'does not register any offenses' do
         expect_no_offenses(<<~RUBY, 'Gemfile')

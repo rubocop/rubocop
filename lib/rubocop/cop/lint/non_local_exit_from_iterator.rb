@@ -38,7 +38,7 @@ module RuboCop
       #     end
       #   end
       #
-      class NonLocalExitFromIterator < Cop
+      class NonLocalExitFromIterator < Base
         MSG = 'Non-local exit from iterator, without return value. ' \
               '`next`, `break`, `Array#find`, `Array#any?`, etc. ' \
               'is preferred.'
@@ -57,7 +57,7 @@ module RuboCop
             next unless node.arguments?
 
             if chained_send?(node.send_node)
-              add_offense(return_node, location: :keyword)
+              add_offense(return_node.loc.keyword)
               break
             end
           end

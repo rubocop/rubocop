@@ -221,8 +221,9 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
 
   it 'does not raise an error for an implicit match conditional' do
     expect do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         class Test
+        ^^^^^ Missing top-level class documentation comment.
           if //
           end
         end
@@ -280,16 +281,16 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
       end
 
       it "ignores sparse comments inside #{keyword} node" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY, keyword: keyword)
           module TestModule
-            #{keyword} Test
+            %{keyword} Test
+            ^{keyword} Missing top-level #{keyword} documentation comment.
               def method
               end
               # sparse comment
             end
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
       end
     end
   end
@@ -315,16 +316,16 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
       end
 
       it "registers an offense for nested #{keyword} without documentation" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY, keyword: keyword)
           module TestModule #:nodoc:
             TEST = 20
-            #{keyword} Test
+            %{keyword} Test
+            ^{keyword} Missing top-level #{keyword} documentation comment.
               def method
               end
             end
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
       end
 
       context 'with `all` modifier' do

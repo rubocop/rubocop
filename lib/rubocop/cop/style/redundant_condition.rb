@@ -30,8 +30,9 @@ module RuboCop
       #     c
       #   end
       #
-      class RedundantCondition < Cop
+      class RedundantCondition < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use double pipes `||` instead.'
         REDUNDANT_CONDITION = 'This condition is not needed.'
@@ -40,11 +41,9 @@ module RuboCop
           return if node.elsif_conditional?
           return unless offense?(node)
 
-          add_offense(node, location: range_of_offense(node))
-        end
+          message = message(node)
 
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(range_of_offense(node), message: message) do |corrector|
             if node.ternary?
               correct_ternary(corrector, node)
             elsif node.modifier_form? || !node.else_branch
@@ -68,7 +67,7 @@ module RuboCop
         end
 
         def range_of_offense(node)
-          return :expression unless node.ternary?
+          return node.loc.expression unless node.ternary?
 
           range_between(node.loc.question.begin_pos, node.loc.colon.end_pos)
         end

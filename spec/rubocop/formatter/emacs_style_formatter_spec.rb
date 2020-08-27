@@ -7,6 +7,8 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
   let(:source) { %w[a b cdefghi].join("\n") }
   let(:output) { StringIO.new }
 
+  before { cop.send(:begin_investigation, processed_source) }
+
   describe '#file_finished' do
     it 'displays parsable text' do
       cop.add_offense(

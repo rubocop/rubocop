@@ -1,0 +1,43 @@
+pull_request_rules:
+  - name: automatic merge for master when reviewed and CI passes
+    actions:
+      merge:
+        method: rebase
+    conditions:
+      - base=master
+      - label=auto-merge
+      - "#review-requested=0"
+      - "#changes-requested-reviews-by=0"
+      - "status-success=windows 2.4"
+      - "status-success=windows 2.5"
+      - "status-success=windows 2.6"
+      - "status-success=windows 2.7"
+      - "status-success=windows mingw"
+      - "status-success=ci/circleci: cc-setup"
+      - "status-success=ci/circleci: cc-upload-coverage"
+      - "status-success=ci/circleci: documentation-checks"
+      - "status-success=ci/circleci: jruby-9.2-ascii_spec"
+      - "status-success=ci/circleci: jruby-9.2-rubocop"
+      - "status-success=ci/circleci: jruby-9.2-spec"
+      - "status-success=ci/circleci: ruby-2.4-ascii_spec"
+      - "status-success=ci/circleci: ruby-2.4-rubocop"
+      - "status-success=ci/circleci: ruby-2.4-spec"
+      - "status-success=ci/circleci: ruby-2.5-ascii_spec"
+      - "status-success=ci/circleci: ruby-2.5-rubocop"
+      - "status-success=ci/circleci: ruby-2.5-spec"
+      - "status-success=ci/circleci: ruby-2.6-ascii_spec"
+      - "status-success=ci/circleci: ruby-2.6-rubocop"
+      - "status-success=ci/circleci: ruby-2.6-spec"
+      - "status-success=ci/circleci: ruby-2.7-ascii_spec"
+      - "status-success=ci/circleci: ruby-2.7-rubocop"
+      - "status-success=ci/circleci: ruby-2.7-spec"
+      - "status-success=ci/circleci: ruby-head-ascii_spec"
+      - "status-success=ci/circleci: ruby-head-rubocop"
+      - "status-success=ci/circleci: ruby-head-spec"
+  - name: delete head branch after auto-merge
+    conditions:
+      - merged
+      - label=auto-merge
+    actions:
+      delete_head_branch: {}
+

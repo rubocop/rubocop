@@ -29,8 +29,9 @@ module RuboCop
       #
       #   def b
       #   end
-      class EmptyLineBetweenDefs < Cop
+      class EmptyLineBetweenDefs < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use empty lines between method definitions.'
 
@@ -57,10 +58,12 @@ module RuboCop
                     cop_config['AllowAdjacentOneLineDefs']
 
           location = nodes.last.loc.keyword.join(nodes.last.loc.name)
-          add_offense(nodes.last, location: location)
+          add_offense(location) do |corrector|
+            autocorrect(corrector, nodes.last)
+          end
         end
 
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           prev_def = prev_node(node)
 
           # finds position of first newline
@@ -71,9 +74,9 @@ module RuboCop
           count = blank_lines_count_between(prev_def, node)
 
           if count > maximum_empty_lines
-            autocorrect_remove_lines(newline_pos, count)
+            autocorrect_remove_lines(corrector, newline_pos, count)
           else
-            autocorrect_insert_lines(newline_pos, count)
+            autocorrect_insert_lines(corrector, newline_pos, count)
           end
         end
 
@@ -131,20 +134,18 @@ module RuboCop
           node.loc.end.line
         end
 
-        def autocorrect_remove_lines(newline_pos, count)
+        def autocorrect_remove_lines(corrector, newline_pos, count)
           difference = count - maximum_empty_lines
           range_to_remove = range_between(newline_pos, newline_pos + difference)
-          lambda do |corrector|
-            corrector.remove(range_to_remove)
-          end
+
+          corrector.remove(range_to_remove)
         end
 
-        def autocorrect_insert_lines(newline_pos, count)
+        def autocorrect_insert_lines(corrector, newline_pos, count)
           difference = minimum_empty_lines - count
           where_to_insert = range_between(newline_pos, newline_pos + 1)
-          lambda do |corrector|
-            corrector.insert_after(where_to_insert, "\n" * difference)
-          end
+
+          corrector.insert_after(where_to_insert, "\n" * difference)
         end
       end
     end

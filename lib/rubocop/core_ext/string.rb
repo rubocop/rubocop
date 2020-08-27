@@ -17,7 +17,7 @@ class String
     # @example
     #   '  test'.blank? #=> false
     def blank?
-      empty? || strip.empty?
+      empty? || lstrip.empty?
     end
   end
 end

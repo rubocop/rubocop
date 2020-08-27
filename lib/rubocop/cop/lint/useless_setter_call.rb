@@ -28,7 +28,7 @@ module RuboCop
       #     x.attr = 5
       #     x
       #   end
-      class UselessSetterCall < Cop
+      class UselessSetterCall < Base
         MSG = 'Useless setter call to local variable `%<variable>s`.'
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
@@ -43,11 +43,9 @@ module RuboCop
           variable_name, = *receiver
           return unless tracker.contain_local_object?(variable_name)
 
-          add_offense(
-            receiver,
-            location: :name,
-            message: format(MSG, variable: receiver.loc.name.source)
-          )
+          loc_name = receiver.loc.name
+
+          add_offense(loc_name, message: format(MSG, variable: loc_name.source))
         end
         alias on_defs on_def
 

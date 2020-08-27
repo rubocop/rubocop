@@ -22,7 +22,9 @@ module RuboCop
       #
       #   # good
       #   10.times {}
-      class EachForSimpleLoop < Cop
+      class EachForSimpleLoop < Base
+        extend AutoCorrector
+
         MSG = 'Use `Integer#times` for a simple loop which iterates a fixed ' \
               'number of times.'
 
@@ -33,17 +35,12 @@ module RuboCop
 
           range = send_node.receiver.source_range.join(send_node.loc.selector)
 
-          add_offense(node, location: range)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(range) do |corrector|
             range_type, min, max = offending_each_range(node)
 
             max += 1 if range_type == :irange
 
-            corrector.replace(node.send_node,
-                              "#{max - min}.times")
+            corrector.replace(node.send_node, "#{max - min}.times")
           end
         end
 

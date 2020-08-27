@@ -40,11 +40,21 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
   end
 end
 
+RSpec.shared_context 'maintain registry', :restore_registry do
+  around(:each) do |example|
+    RuboCop::Cop::Registry.with_temporary_global { example.run }
+  end
+
+  def stub_cop_class(name, inherit: RuboCop::Cop::Base, &block)
+    klass = Class.new(inherit, &block)
+    stub_const(name, klass)
+    klass
+  end
+end
+
 # This context assumes nothing and defines `cop`, among others.
 RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   ### Meant to be overridden at will
-
-  let(:source) { 'code = {some: :ruby}' }
 
   let(:cop_class) do
     unless described_class.is_a?(Class) && described_class < RuboCop::Cop::Base
@@ -97,9 +107,7 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   end
 
   let(:cop) do
-    cop_class.new(config, cop_options).tap do |cop|
-      cop.send :begin_investigation, processed_source
-    end
+    cop_class.new(config, cop_options)
   end
 end
 

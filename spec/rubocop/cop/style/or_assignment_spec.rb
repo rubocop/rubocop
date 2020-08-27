@@ -11,12 +11,20 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
         foo = foo ? foo : 'default'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense with instance variables' do
       expect_offense(<<~RUBY)
         @foo = @foo ? @foo : 'default'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @foo ||= 'default'
       RUBY
     end
 
@@ -25,6 +33,10 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
         @@foo = @@foo ? @@foo : 'default'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
       RUBY
+
+      expect_correction(<<~RUBY)
+        @@foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense with global variables' do
@@ -32,22 +44,10 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
         $foo = $foo ? $foo : 'default'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
       RUBY
-    end
 
-    it 'autocorrects normal variables to `var ||= something`' do
-      expect(autocorrect_source('x = x ? x : 3')).to eq('x ||= 3')
-    end
-
-    it 'autocorrects instance variables to `var ||= something`' do
-      expect(autocorrect_source('@x = @x ? @x : 3')).to eq('@x ||= 3')
-    end
-
-    it 'autocorrects class variables to `var ||= something`' do
-      expect(autocorrect_source('@@x = @@x ? @@x : 3')).to eq('@@x ||= 3')
-    end
-
-    it 'autocorrects global variables to `var ||= something`' do
-      expect(autocorrect_source('$x = $x ? $x : 3')).to eq('$x ||= 3')
+      expect_correction(<<~RUBY)
+        $foo ||= 'default'
+      RUBY
     end
 
     it 'does not register an offense if any of the variables are different' do
@@ -66,6 +66,10 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
                 'default'
               end
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense with instance variables' do
@@ -76,6 +80,10 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
                else
                  'default'
                end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @foo ||= 'default'
       RUBY
     end
 
@@ -88,6 +96,10 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
                   'default'
                 end
       RUBY
+
+      expect_correction(<<~RUBY)
+        @@foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense with global variables' do
@@ -99,45 +111,9 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
                  'default'
                end
       RUBY
-    end
 
-    it 'autocorrects normal variables to `var ||= something`' do
-      expect(autocorrect_source(<<~RUBY)).to eq("x ||= 3\n")
-        x = if x
-              x
-            else
-              3
-            end
-      RUBY
-    end
-
-    it 'autocorrects instance variables to `var ||= something`' do
-      expect(autocorrect_source(<<~RUBY)).to eq("@x ||= 3\n")
-        @x = if @x
-               @x
-             else
-               3
-             end
-      RUBY
-    end
-
-    it 'autocorrects class variables to `var ||= something`' do
-      expect(autocorrect_source(<<~RUBY)).to eq("@@x ||= 3\n")
-        @@x = if @@x
-                @@x
-              else
-                3
-              end
-      RUBY
-    end
-
-    it 'autocorrects global variables to `var ||= something`' do
-      expect(autocorrect_source(<<~RUBY)).to eq("$x ||= 3\n")
-        $x = if $x
-               $x
-             else
-               3
-             end
+      expect_correction(<<~RUBY)
+        $foo ||= 'default'
       RUBY
     end
 
@@ -165,12 +141,20 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
         foo = 'default' unless foo
         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense for instance variables' do
       expect_offense(<<~RUBY)
         @foo = 'default' unless @foo
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @foo ||= 'default'
       RUBY
     end
 
@@ -179,6 +163,10 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
         @@foo = 'default' unless @@foo
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
       RUBY
+
+      expect_correction(<<~RUBY)
+        @@foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense for global variables' do
@@ -186,22 +174,10 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
         $foo = 'default' unless $foo
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
       RUBY
-    end
 
-    it 'autocorrects normal variables to `var ||= something`' do
-      expect(autocorrect_source('x = 3 unless x')).to eq('x ||= 3')
-    end
-
-    it 'autocorrects instance variables to `var ||= something`' do
-      expect(autocorrect_source('@x = 3 unless @x')).to eq('@x ||= 3')
-    end
-
-    it 'autocorrects class variables to `var ||= something`' do
-      expect(autocorrect_source('@@x = 3 unless @@x')).to eq('@@x ||= 3')
-    end
-
-    it 'autocorrects global variables to `var ||= something`' do
-      expect(autocorrect_source('$x = 3 unless $x')).to eq('$x ||= 3')
+      expect_correction(<<~RUBY)
+        $foo ||= 'default'
+      RUBY
     end
 
     it 'does not register an offense if any of the variables are different' do
@@ -223,6 +199,11 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
           foo = 'default'
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo = nil
+        foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense for instance variables' do
@@ -232,6 +213,11 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
         ^^^^^^^^^^^ Use the double pipe equals operator `||=` instead.
           @foo = 'default'
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @foo = nil
+        @foo ||= 'default'
       RUBY
     end
 
@@ -243,6 +229,11 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
           @@foo = 'default'
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        @@foo = nil
+        @@foo ||= 'default'
+      RUBY
     end
 
     it 'registers an offense for global variables' do
@@ -253,46 +244,11 @@ RSpec.describe RuboCop::Cop::Style::OrAssignment do
           $foo = 'default'
         end
       RUBY
-    end
 
-    it 'autocorrects normal variables to `var ||= something`' do
-      new_source_normal = autocorrect_source(<<~RUBY)
-        foo = nil
-        unless foo
-          foo = 3
-        end
-      RUBY
-      expect(new_source_normal).to eq("foo = nil\nfoo ||= 3\n")
-    end
-
-    it 'autocorrects instance variables to `var ||= something`' do
-      new_source_instance = autocorrect_source(<<~RUBY)
-        @foo = nil
-        unless @foo
-          @foo = 3
-        end
-      RUBY
-      expect(new_source_instance).to eq("@foo = nil\n@foo ||= 3\n")
-    end
-
-    it 'autocorrects class variables to `var ||= something`' do
-      new_source_class = autocorrect_source(<<~RUBY)
-        @@foo = nil
-        unless @@foo
-          @@foo = 3
-        end
-      RUBY
-      expect(new_source_class).to eq("@@foo = nil\n@@foo ||= 3\n")
-    end
-
-    it 'autocorrects global variables to `var ||= something`' do
-      new_source_global = autocorrect_source(<<~RUBY)
+      expect_correction(<<~RUBY)
         $foo = nil
-        unless $foo
-          $foo = 3
-        end
+        $foo ||= 'default'
       RUBY
-      expect(new_source_global).to eq("$foo = nil\n$foo ||= 3\n")
     end
 
     it 'does not register an offense if any of the variables are different' do

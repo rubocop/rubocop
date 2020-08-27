@@ -19,7 +19,8 @@ module RuboCop
         private
 
         def_node_matcher :constant_definition?, '{class module}'
-        def_node_matcher :empty_line_required?, '{def defs class module}'
+        def_node_matcher :empty_line_required?,
+                         '{def defs class module (send nil? {:private :protected :public})}'
 
         def check(node, body, adjusted_first_line: nil)
           return if valid_body_style?(body)
@@ -100,7 +101,9 @@ module RuboCop
 
           offset = style == :empty_lines && msg.include?('end.') ? 2 : 1
           range = source_range(processed_source.buffer, line + offset, 0)
-          add_offense([style, range], location: range, message: msg)
+          add_offense(range, message: msg) do |corrector|
+            EmptyLineCorrector.correct(corrector, [style, range])
+          end
         end
 
         def check_deferred_empty_line(body)
@@ -112,11 +115,9 @@ module RuboCop
 
           range = source_range(processed_source.buffer, line + 2, 0)
 
-          add_offense(
-            [:empty_lines, range],
-            location: range,
-            message: deferred_message(node)
-          )
+          add_offense(range, message: deferred_message(node)) do |corrector|
+            EmptyLineCorrector.correct(corrector, [:empty_lines, range])
+          end
         end
 
         def namespace?(body, with_one_child: false)

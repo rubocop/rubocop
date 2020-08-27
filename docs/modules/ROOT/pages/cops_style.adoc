@@ -825,7 +825,7 @@ Array === something
 # good
 something.is_a?(Array)
 (1..100).include?(7)
-some_string =~ /something/
+/something/.match?(some_string)
 ----
 
 ==== AllowOnConstant
@@ -842,7 +842,7 @@ some_string =~ /something/
 # good
 Array === something
 (1..100).include?(7)
-some_string =~ /something/
+/something/.match?(some_string)
 ----
 
 === Configurable attributes
@@ -865,8 +865,8 @@ some_string =~ /something/
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Pending
-| Yes
-| Yes
+| No
+| Yes (Unsafe)
 | 0.88
 | -
 |===
@@ -1087,6 +1087,97 @@ end
 
 * https://rubystyle.guide#def-self-class-methods
 
+== Style/ClassMethodsDefinitions
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| Yes
+| 0.89
+| -
+|===
+
+This cop enforces using `def self.method_name` or `class << self` to define class methods.
+
+=== Examples
+
+==== EnforcedStyle: def_self (default)
+
+[source,ruby]
+----
+# bad
+class SomeClass
+  class << self
+    attr_accessor :class_accessor
+
+    def class_method
+      # ...
+    end
+  end
+end
+
+# good
+class SomeClass
+  def self.class_method
+    # ...
+  end
+
+  class << self
+    attr_accessor :class_accessor
+  end
+end
+
+# good - contains private method
+class SomeClass
+  class << self
+    attr_accessor :class_accessor
+
+    private
+
+    def private_class_method
+      # ...
+    end
+  end
+end
+----
+
+==== EnforcedStyle: self_class
+
+[source,ruby]
+----
+# bad
+class SomeClass
+  def self.class_method
+    # ...
+  end
+end
+
+# good
+class SomeClass
+  class << self
+    def class_method
+      # ...
+    end
+  end
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `def_self`
+| `def_self`, `self_class`
+|===
+
+=== References
+
+* https://rubystyle.guide#def-self-class-methods
+
 == Style/ClassVars
 
 |===
@@ -1282,6 +1373,68 @@ end
 === References
 
 * https://rubystyle.guide#colon-method-definition
+
+== Style/CombinableLoops
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.90
+| -
+|===
+
+This cop checks for places where multiple consecutive loops over the same data
+can be combined into a single loop. It is very likely that combining them
+will make the code more efficient and more concise.
+
+It is marked as unsafe, because the first loop might modify
+a state that the second loop depends on; these two aren't combinable.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def method
+  items.each do |item|
+    do_something(item)
+  end
+
+  items.each do |item|
+    do_something_else(item)
+  end
+end
+
+# good
+def method
+  items.each do |item|
+    do_something(item)
+    do_something_else(item)
+  end
+end
+
+# bad
+def method
+  for item in items do
+    do_something(item)
+  end
+
+  for item in items do
+    do_something_else(item)
+  end
+end
+
+# good
+def method
+  for item in items do
+    do_something(item)
+    do_something_else(item)
+  end
+end
+----
 
 == Style/CommandLiteral
 
@@ -2813,6 +2966,58 @@ Pathname.new(__FILE__).parent.expand_path
 Pathname.new(__dir__).expand_path
 ----
 
+== Style/ExplicitBlockArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.89
+| -
+|===
+
+This cop enforces the use of explicit block argument to avoid writing
+block literal that just passes its arguments to another block.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def with_tmp_dir
+  Dir.mktmpdir do |tmp_dir|
+    Dir.chdir(tmp_dir) { |dir| yield dir } # block just passes arguments
+  end
+end
+
+# bad
+def nine_times
+  9.times { yield }
+end
+
+# good
+def with_tmp_dir(&block)
+  Dir.mktmpdir do |tmp_dir|
+    Dir.chdir(tmp_dir, &block)
+  end
+end
+
+with_tmp_dir do |dir|
+  puts "dir is accessible as a parameter and pwd is set: #{dir}"
+end
+
+# good
+def nine_times(&block)
+  9.times(&block)
+end
+----
+
+=== References
+
+* https://rubystyle.guide#block-argument
+
 == Style/ExponentialNotation
 
 |===
@@ -3207,7 +3412,7 @@ format('%s', 'Hello')
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| No
+| Yes
 | Yes (Unsafe)
 | 0.36
 | 0.79
@@ -3307,6 +3512,50 @@ end
 | `always`
 | `always`, `always_true`, `never`
 |===
+
+== Style/GlobalStdStream
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.89
+| -
+|===
+
+This cop enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.
+`STDOUT/STDERR/STDIN` are constants, and while you can actually
+reassign (possibly to redirect some stream) constants in Ruby, you'll get
+an interpreter warning if you do so.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+STDOUT.puts('hello')
+
+hash = { out: STDOUT, key: value }
+
+def m(out = STDOUT)
+  out.puts('hello')
+end
+
+# good
+$stdout.puts('hello')
+
+hash = { out: $stdout, key: value }
+
+def m(out = $stdout)
+  out.puts('hello')
+end
+----
+
+=== References
+
+* https://rubystyle.guide#global-stdout
 
 == Style/GlobalVars
 
@@ -3698,7 +3947,7 @@ NOTE: Required Ruby version: 2.5
 | No
 | Yes (Unsafe)
 | 0.80
-| -
+| 0.90
 |===
 
 This cop looks for uses of `_.each_with_object({}) {...}`,
@@ -3719,7 +3968,9 @@ This cop should only be enabled on Ruby version 2.5 or newer
 ----
 # bad
 {a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[foo(k)] = v }
-{a: 1, b: 2}.map { |k, v| [k.to_s, v] }
+Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
+{a: 1, b: 2}.map { |k, v| [k.to_s, v] }.to_h
+{a: 1, b: 2}.to_h { |k, v| [k.to_s, v] }
 
 # good
 {a: 1, b: 2}.transform_keys { |k| foo(k) }
@@ -3735,7 +3986,7 @@ This cop should only be enabled on Ruby version 2.5 or newer
 | No
 | Yes (Unsafe)
 | 0.80
-| -
+| 0.90
 |===
 
 This cop looks for uses of `_.each_with_object({}) {...}`,
@@ -3756,7 +4007,9 @@ This cop should only be enabled on Ruby version 2.4 or newer
 ----
 # bad
 {a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[k] = foo(v) }
-{a: 1, b: 2}.map { |k, v| [k, v * v] }
+Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
+{a: 1, b: 2}.map { |k, v| [k, v * v] }.to_h
+{a: 1, b: 2}.to_h { |k, v| [k, v * v] }
 
 # good
 {a: 1, b: 2}.transform_values { |v| foo(v) }
@@ -4231,6 +4484,44 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | Array
 |===
 
+== Style/KeywordParametersOrder
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.90
+| -
+|===
+
+This cop enforces that optional keyword parameters are placed at the
+end of the parameters list.
+
+This improves readability, because when looking through the source,
+it is expected to find required parameters at the beginning of parameters list
+and optional parameters at the end.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def some_method(first: false, second:, third: 10)
+  # body omitted
+end
+
+# good
+def some_method(second:, first: false, third: 10)
+  # body omitted
+end
+----
+
+=== References
+
+* https://rubystyle.guide#keyword-parameters-order
+
 == Style/Lambda
 
 |===
@@ -4684,9 +4975,19 @@ when reading code.
 
 [source,ruby]
 ----
+# bad
 a do
   b
 end.c
+
+# good
+a { b }.c
+
+# good
+foo = a do
+  b
+end
+foo.c
 ----
 
 === References
@@ -6410,10 +6711,6 @@ bar.baz > 0
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `false`
-| Boolean
-
 | EnforcedStyle
 | `predicate`
 | `predicate`, `comparison`
@@ -6440,32 +6737,50 @@ bar.baz > 0
 | Yes
 | Yes
 | 0.9
-| 0.38
+| 0.90
 |===
 
-TODO: Make configurable.
-Checks for uses of if/then/else/end on a single line.
+Checks for uses of if/then/else/end constructs on a single line.
+AlwaysCorrectToMultiline config option can be set to true to auto-convert all offenses to
+multi-line constructs. When AlwaysCorrectToMultiline is false (default case) the
+auto-correct will first try converting them to ternary operators.
 
 === Examples
 
 [source,ruby]
 ----
 # bad
-if foo then boo else doo end
-unless foo then boo else goo end
+if foo then bar else baz end
+
+# bad
+unless foo then baz else bar end
 
 # good
-foo ? boo : doo
-boo if foo
-if foo then boo end
+foo ? bar : baz
+
+# good
+bar if foo
+
+# good
+if foo then bar end
 
 # good
 if foo
-  boo
+  bar
 else
-  doo
+  baz
 end
 ----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AlwaysCorrectToMultiline
+| `false`
+| Boolean
+|===
 
 === References
 
@@ -6546,6 +6861,46 @@ end
 === References
 
 * https://rubystyle.guide#optional-arguments
+
+== Style/OptionalBooleanParameter
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.89
+| -
+|===
+
+This cop checks for places where keyword arguments can be used instead of
+boolean arguments when defining methods.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def some_method(bar = false)
+  puts bar
+end
+
+# bad - common hack before keyword args were introduced
+def some_method(options = {})
+  bar = options.fetch(:bar, false)
+  puts bar
+end
+
+# good
+def some_method(bar: false)
+  puts bar
+end
+----
+
+=== References
+
+* https://rubystyle.guide#boolean-keyword-arguments
 
 == Style/OrAssignment
 
@@ -7763,6 +8118,46 @@ end
 
 * https://rubystyle.guide#no-self-unless-required
 
+== Style/RedundantSelfAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.90
+| -
+|===
+
+This cop checks for places where redundant assignments are made for in place
+modification methods.
+
+This cop is marked as unsafe, because it can produce false positives for
+user defined methods having one of the expected names, but not modifying
+its receiver in place.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+args = args.concat(ary)
+hash = hash.merge!(other)
+
+# good
+args.concat(foo)
+args += foo
+hash.merge!(other)
+
+# bad
+self.foo = foo.concat(ary)
+
+# good
+foo.concat(ary)
+self.foo += ary
+----
+
 == Style/RedundantSort
 
 |===
@@ -8771,6 +9166,69 @@ items[1..-1]
 # good
 items[1..]
 ----
+
+== Style/SoleNestedConditional
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.89
+| -
+|===
+
+If the branch of a conditional consists solely of a conditional node,
+its conditions can be combined with the conditions of the outer branch.
+This helps to keep the nesting level from getting too deep.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if condition_a
+  if condition_b
+    do_something
+  end
+end
+
+# good
+if condition_a && condition_b
+  do_something
+end
+----
+
+==== AllowModifier: false (default)
+
+[source,ruby]
+----
+# bad
+if condition_a
+  do_something if condition_b
+end
+----
+
+==== AllowModifier: true
+
+[source,ruby]
+----
+# good
+if condition_a
+  do_something if condition_b
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowModifier
+| `false`
+| Boolean
+|===
 
 == Style/SpecialGlobalVars
 

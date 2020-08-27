@@ -41,13 +41,12 @@ module RuboCop
         def on_new_investigation
           return unless offenses_to_check
 
-          comments = processed_source.comments
           cop_disabled_line_ranges = processed_source.disabled_line_ranges
 
           redundant_cops = Hash.new { |h, k| h[k] = Set.new }
 
           each_redundant_disable(cop_disabled_line_ranges,
-                                 offenses_to_check, comments) do |comment, redundant_cop|
+                                 offenses_to_check) do |comment, redundant_cop|
             redundant_cops[comment].add(redundant_cop)
           end
 
@@ -88,25 +87,25 @@ module RuboCop
                                        newlines: false)
         end
 
-        def each_redundant_disable(cop_disabled_line_ranges, offenses, comments,
+        def each_redundant_disable(cop_disabled_line_ranges, offenses,
                                    &block)
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
             each_already_disabled(line_ranges,
-                                  disabled_ranges, comments) do |comment|
+                                  disabled_ranges) do |comment|
               yield comment, cop
             end
 
-            each_line_range(line_ranges, disabled_ranges, offenses, comments,
+            each_line_range(line_ranges, disabled_ranges, offenses,
                             cop, &block)
           end
         end
 
-        def each_line_range(line_ranges, disabled_ranges, offenses, comments,
+        def each_line_range(line_ranges, disabled_ranges, offenses,
                             cop)
           line_ranges.each_with_index do |line_range, ix|
-            comment = comments.find { |c| c.loc.line == line_range.begin }
+            comment = processed_source.comment_at_line(line_range.begin)
             next if ignore_offense?(disabled_ranges, line_range)
 
             redundant_cop = find_redundant(comment, offenses, cop, line_range,
@@ -115,7 +114,7 @@ module RuboCop
           end
         end
 
-        def each_already_disabled(line_ranges, disabled_ranges, comments)
+        def each_already_disabled(line_ranges, disabled_ranges)
           line_ranges.each_cons(2) do |previous_range, range|
             next if ignore_offense?(disabled_ranges, range)
             next if previous_range.end != range.begin
@@ -124,18 +123,16 @@ module RuboCop
             # the end of the previous range, it means that the cop was
             # already disabled by an earlier comment. So it's redundant
             # whether there are offenses or not.
-            redundant_comment = comments.find do |c|
-              c.loc.line == range.begin &&
-                # Comments disabling all cops don't count since it's reasonable
-                # to disable a few select cops first and then all cops further
-                # down in the code.
-                !all_disabled?(c)
-            end
-            yield redundant_comment if redundant_comment
+            comment = processed_source.comment_at_line(range.begin)
+
+            # Comments disabling all cops don't count since it's reasonable
+            # to disable a few select cops first and then all cops further
+            # down in the code.
+            yield comment if comment && !all_disabled?(comment)
           end
         end
 
-        # rubocop:todo Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def find_redundant(comment, offenses, cop, line_range, next_line_range)
           if all_disabled?(comment)
             # If there's a disable all comment followed by a comment
@@ -153,7 +150,7 @@ module RuboCop
             cop if cop_offenses.none? { |o| line_range.cover?(o.line) }
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def all_disabled?(comment)
           /rubocop\s*:\s*(?:disable|todo)\s+all\b/.match?(comment.text)
@@ -250,7 +247,7 @@ module RuboCop
         end
 
         def all_cop_names
-          @all_cop_names ||= Cop.registry.names
+          @all_cop_names ||= Registry.global.names
         end
 
         def ends_its_line?(range)

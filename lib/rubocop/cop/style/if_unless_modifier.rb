@@ -30,10 +30,11 @@ module RuboCop
       #   if long_condition
       #     do_something_in_a_method_with_a_long_name(arg)
       #   end
-      class IfUnlessModifier < Cop
+      class IfUnlessModifier < Base
         include StatementModifier
         include LineLengthHelp
         include IgnoredPattern
+        extend AutoCorrector
 
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
                            'single-line body. Another good alternative is ' \
@@ -42,28 +43,28 @@ module RuboCop
           'Modifier form of `%<keyword>s` makes the line too long.'
 
         def on_if(node)
-          msg = if single_line_as_modifier?(node)
-                  MSG_USE_MODIFIER unless named_capture_in_condition?(node)
+          msg = if single_line_as_modifier?(node) && !named_capture_in_condition?(node)
+                  MSG_USE_MODIFIER
                 elsif too_long_due_to_modifier?(node)
                   MSG_USE_NORMAL
                 end
           return unless msg
 
-          add_offense(node,
-                      location: :keyword,
-                      message: format(msg, keyword: node.keyword))
+          add_offense(node.loc.keyword, message: format(msg, keyword: node.keyword)) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           replacement = if node.modifier_form?
                           to_normal_form(node)
                         else
                           to_modifier_form(node)
                         end
-          ->(corrector) { corrector.replace(node, replacement) }
+          corrector.replace(node, replacement)
         end
-
-        private
 
         def too_long_due_to_modifier?(node)
           node.modifier_form? && too_long_single_line?(node) &&
@@ -148,26 +149,6 @@ module RuboCop
             sibling.source_range.first_line == line_no
         end
 
-        def parenthesize?(node)
-          # Parenthesize corrected expression if changing to modifier-if form
-          # would change the meaning of the parent expression
-          # (due to the low operator precedence of modifier-if)
-          parent = node.parent
-          return false if parent.nil?
-          return true if parent.assignment? || parent.operator_keyword?
-
-          node.parent.send_type? && !node.parent.parenthesized?
-        end
-
-        def to_modifier_form(node)
-          expression = [node.body.source,
-                        node.keyword,
-                        node.condition.source,
-                        first_line_comment(node)].compact.join(' ')
-
-          parenthesize?(node) ? "(#{expression})" : expression
-        end
-
         def to_normal_form(node)
           indentation = ' ' * node.source_range.column
           <<~RUBY.chomp
@@ -178,10 +159,7 @@ module RuboCop
         end
 
         def first_line_comment(node)
-          comment =
-            processed_source.find_comment { |c| c.loc.line == node.loc.line }
-
-          comment ? comment.loc.expression.source : nil
+          processed_source.comment_at_line(node.loc.line)&.text
         end
       end
     end

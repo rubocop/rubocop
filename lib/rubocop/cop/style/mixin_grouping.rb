@@ -30,8 +30,9 @@ module RuboCop
       #   class Foo
       #     extend Qox, Bar
       #   end
-      class MixinGrouping < Cop
+      class MixinGrouping < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MIXIN_METHODS = %i[extend include prepend].freeze
         MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'
@@ -46,23 +47,6 @@ module RuboCop
         end
 
         alias on_module on_class
-
-        def autocorrect(node)
-          range = node.loc.expression
-          if separated_style?
-            correction = separate_mixins(node)
-          else
-            mixins = sibling_mixins(node)
-            if node == mixins.first
-              correction = group_mixins(node, mixins)
-            else
-              range = range_to_remove_for_subsequent_mixin(mixins, node)
-              correction = ''
-            end
-          end
-
-          ->(corrector) { corrector.replace(range, correction) }
-        end
 
         private
 
@@ -89,13 +73,33 @@ module RuboCop
         def check_grouped_style(send_node)
           return if sibling_mixins(send_node).size == 1
 
-          add_offense(send_node)
+          message = format(MSG, mixin: send_node.method_name, suffix: 'a single statement')
+
+          add_offense(send_node, message: message) do |corrector|
+            range = send_node.loc.expression
+            mixins = sibling_mixins(send_node)
+            if send_node == mixins.first
+              correction = group_mixins(send_node, mixins)
+            else
+              range = range_to_remove_for_subsequent_mixin(mixins, send_node)
+              correction = ''
+            end
+
+            corrector.replace(range, correction)
+          end
         end
 
         def check_separated_style(send_node)
           return if send_node.arguments.one?
 
-          add_offense(send_node)
+          message = format(MSG, mixin: send_node.method_name, suffix: 'separate statements')
+
+          add_offense(send_node, message: message) do |corrector|
+            range = send_node.loc.expression
+            correction = separate_mixins(send_node)
+
+            corrector.replace(range, correction)
+          end
         end
 
         def sibling_mixins(send_node)
@@ -105,13 +109,6 @@ module RuboCop
           siblings.select do |sibling_node|
             sibling_node.method?(send_node.method_name)
           end
-        end
-
-        def message(send_node)
-          suffix =
-            separated_style? ? 'separate statements' : 'a single statement'
-
-          format(MSG, mixin: send_node.method_name, suffix: suffix)
         end
 
         def grouped_style?

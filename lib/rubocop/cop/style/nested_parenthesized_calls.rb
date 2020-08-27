@@ -12,9 +12,10 @@ module RuboCop
       #
       #   # bad
       #   method1(method2 arg)
-      class NestedParenthesizedCalls < Cop
+      class NestedParenthesizedCalls < Base
         include RangeHelp
         include AllowedMethods
+        extend AutoCorrector
 
         MSG = 'Add parentheses to nested method call `%<source>s`.'
 
@@ -24,28 +25,29 @@ module RuboCop
           node.each_child_node(:send, :csend) do |nested|
             next if allowed_omission?(nested)
 
-            add_offense(nested,
-                        location: nested.source_range,
-                        message: format(MSG, source: nested.source))
+            message = format(MSG, source: nested.source)
+            add_offense(nested.source_range, message: message) do |corrector|
+              autocorrect(corrector, nested)
+            end
           end
         end
         alias on_csend on_send
 
-        def autocorrect(nested)
+        private
+
+        def autocorrect(corrector, nested)
           first_arg = nested.first_argument.source_range
           last_arg = nested.last_argument.source_range
 
           leading_space =
             range_with_surrounding_space(range: first_arg.begin,
-                                         side: :left)
+                                         side: :left,
+                                         whitespace: true,
+                                         continuations: true)
 
-          lambda do |corrector|
-            corrector.replace(leading_space, '(')
-            corrector.insert_after(last_arg, ')')
-          end
+          corrector.replace(leading_space, '(')
+          corrector.insert_after(last_arg, ')')
         end
-
-        private
 
         def allowed_omission?(send_node)
           !send_node.arguments? || send_node.parenthesized? ||

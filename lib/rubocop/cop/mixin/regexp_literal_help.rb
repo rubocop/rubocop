@@ -27,7 +27,7 @@ module RuboCop
         # part of the pattern source, but need to preserve their width, to allow offsets to
         # correctly line up with the original source: spaces have no effect, and preserve width.
         if child.begin_type?
-          replace_match_with_spaces(source, /.*/) # replace all content
+          replace_match_with_spaces(source, /.*/m) # replace all content
         elsif freespace_mode
           replace_match_with_spaces(source, /(?<!\\)#.*/) # replace any comments
         else

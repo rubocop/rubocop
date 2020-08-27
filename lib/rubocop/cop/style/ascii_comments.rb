@@ -15,17 +15,17 @@ module RuboCop
       #
       #   # good
       #   # Translates from English to Japanese
-      class AsciiComments < Cop
+      class AsciiComments < Base
         include RangeHelp
 
         MSG = 'Use only ascii symbols in comments.'
 
-        def investigate(processed_source)
-          processed_source.each_comment do |comment|
+        def on_new_investigation
+          processed_source.comments.each do |comment|
             next if comment.text.ascii_only?
             next if only_allowed_non_ascii_chars?(comment.text)
 
-            add_offense(comment, location: first_offense_range(comment))
+            add_offense(first_offense_range(comment))
           end
         end
 

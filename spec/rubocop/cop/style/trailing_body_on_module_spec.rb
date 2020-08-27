@@ -6,6 +6,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
   end
+  let(:trailing_whitespace) { ' ' }
 
   it 'registers an offense when body trails after module definition' do
     expect_offense(<<~RUBY)
@@ -14,6 +15,15 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
       end
       module Bar extend self
                  ^^^^^^^^^^^ Place the first line of module body on its own line.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module Foo#{trailing_whitespace}
+        body
+      end
+      module Bar#{trailing_whitespace}
+        extend self
       end
     RUBY
   end
@@ -27,12 +37,27 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      module Foo#{trailing_whitespace}
+        body
+        def bar
+          qux
+        end
+      end
+    RUBY
   end
 
   it 'registers offense when module definition uses semicolon' do
     expect_offense(<<~RUBY)
       module Foo; do_stuff
                   ^^^^^^^^ Place the first line of module body on its own line.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module Foo#{trailing_whitespace}
+        do_stuff
       end
     RUBY
   end
@@ -45,54 +70,48 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
     RUBY
   end
 
-  it 'auto-corrects body after module definition' do
-    corrected = autocorrect_source(<<~RUBY)
-      module Foo extend self 
-      end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      module Foo 
-        extend self 
-      end
-    RUBY
-  end
-
   it 'auto-corrects with comment after body' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       module BarQux; foo # comment
+                     ^^^ Place the first line of module body on its own line.
       end
     RUBY
-    expect(corrected).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       # comment
-      module BarQux 
-        foo 
+      module BarQux#{trailing_whitespace}
+        foo#{trailing_whitespace}
       end
     RUBY
   end
 
   it 'auto-corrects when there are multiple semicolons' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       module Bar; def bar; end
+                  ^^^^^^^^^^^^ Place the first line of module body on its own line.
       end
     RUBY
-    expect(corrected).to eq(<<~RUBY)
-      module Bar 
+
+    expect_correction(<<~RUBY)
+      module Bar#{trailing_whitespace}
         def bar; end
       end
     RUBY
   end
 
   context 'when module is not on first line of processed_source' do
-    it 'auto-correct offense' do
-      corrected = autocorrect_source(<<~RUBY)
+    it 'auto-corrects offense' do
+      expect_offense(<<~RUBY)
 
-        module Foo; body 
+        module Foo; body#{trailing_whitespace}
+                    ^^^^ Place the first line of module body on its own line.
         end
       RUBY
-      expect(corrected).to eq(<<~RUBY)
 
-        module Foo 
-          body 
+      expect_correction(<<~RUBY)
+
+        module Foo#{trailing_whitespace}
+          body#{trailing_whitespace}
         end
       RUBY
     end

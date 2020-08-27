@@ -35,10 +35,13 @@ module RuboCop
       #   # good
       #   puts '%10s' % 'hoge'
       #
-      class FormatString < Cop
+      class FormatString < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Favor `%<prefer>s` over `%<current>s`.'
+
+        FORMAT_METHODS = %i[format sprintf %].freeze
 
         def_node_matcher :formatter, <<~PATTERN
           {
@@ -53,45 +56,44 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless FORMAT_METHODS.include?(node.method_name)
+
           formatter(node) do |selector|
             detected_style = selector == :% ? :percent : selector
 
             return if detected_style == style
 
-            add_offense(node, location: :selector,
-                              message: message(detected_style))
+            add_offense(node.loc.selector, message: message(detected_style)) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
+        private
+
         def message(detected_style)
-          format(MSG,
-                 prefer: method_name(style),
-                 current: method_name(detected_style))
+          format(MSG, prefer: method_name(style), current: method_name(detected_style))
         end
 
         def method_name(style_name)
           style_name == :percent ? 'String#%' : style_name
         end
 
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           return if variable_argument?(node)
 
-          lambda do |corrector|
-            case node.method_name
-            when :%
-              autocorrect_from_percent(corrector, node)
+          case node.method_name
+          when :%
+            autocorrect_from_percent(corrector, node)
+          when :format, :sprintf
+            case style
+            when :percent
+              autocorrect_to_percent(corrector, node)
             when :format, :sprintf
-              case style
-              when :percent
-                autocorrect_to_percent(corrector, node)
-              when :format, :sprintf
-                corrector.replace(node.loc.selector, style.to_s)
-              end
+              corrector.replace(node.loc.selector, style.to_s)
             end
           end
         end
-
-        private
 
         def autocorrect_from_percent(corrector, node)
           percent_rhs = node.first_argument

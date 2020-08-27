@@ -33,6 +33,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless node.receiver
+
           expression = single_argument_dig?(node)
           return unless expression
 
