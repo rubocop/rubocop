@@ -41,6 +41,7 @@
 * [#8513](https://github.com/rubocop-hq/rubocop/pull/8513): Clarify the ruby warning mentioned in the `Lint/ShadowingOuterLocalVariable` documentation. ([@chocolateboy][])
 * [#8517](https://github.com/rubocop-hq/rubocop/pull/8517): Make `Style/HashTransformKeys` and `Style/HashTransformValues` aware of `to_h` with block. ([@eugeneius][])
 * [#8529](https://github.com/rubocop-hq/rubocop/pull/8529): Mark `Lint/FrozenStringLiteralComment` as `Safe`, but with unsafe auto-correction. ([@marcandre][])
+* [#8602](https://github.com/rubocop-hq/rubocop/pull/8602): Fix usage of `to_enum(:scan, regexp)` to work on TruffleRuby. ([@jaimerave][])
 
 ## 0.89.1 (2020-08-10)
 
@@ -4817,3 +4818,4 @@
 [@nguyenquangminh0711]: https://github.com/nguyenquangminh0711
 [@chocolateboy]: https://github.com/chocolateboy
 [@Lykos]: https://github.com/Lykos
+[@jaimerave]: https://github.com/jaimerave
