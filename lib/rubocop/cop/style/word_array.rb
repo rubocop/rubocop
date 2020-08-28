@@ -29,11 +29,12 @@ module RuboCop
       #   %w[foo bar baz]
       #
       # @api private
-      class WordArray < Cop
+      class WordArray < Base
         include ArrayMinSize
         include ArraySyntax
         include ConfigurableEnforcedStyle
         include PercentArray
+        extend AutoCorrector
 
         PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'
         ARRAY_MSG = 'Use `[]` for an array of words.'
@@ -46,30 +47,13 @@ module RuboCop
           if bracketed_array_of?(:str, node)
             return if complex_content?(node.values)
 
-            check_bracketed_array(node)
+            check_bracketed_array(node, 'w')
           elsif node.percent_literal?(:string)
             check_percent_array(node)
           end
         end
 
-        def autocorrect(node)
-          if style == :percent
-            PercentLiteralCorrector
-              .new(@config, @preferred_delimiters)
-              .correct(node, 'w')
-          else
-            correct_bracketed(node)
-          end
-        end
-
         private
-
-        def check_bracketed_array(node)
-          return if allowed_bracket_array?(node)
-
-          array_style_detected(:brackets, node.values.size)
-          add_offense(node) if style == :percent
-        end
 
         def complex_content?(strings)
           strings.any? do |s|
@@ -83,7 +67,7 @@ module RuboCop
           Regexp.new(cop_config['WordRegex'])
         end
 
-        def correct_bracketed(node)
+        def correct_bracketed(corrector, node)
           words = node.children.map do |word|
             if word.dstr_type?
               string_literal = to_string_literal(word.source)
@@ -94,9 +78,7 @@ module RuboCop
             end
           end
 
-          lambda do |corrector|
-            corrector.replace(node, "[#{words.join(', ')}]")
-          end
+          corrector.replace(node, "[#{words.join(', ')}]")
         end
       end
     end
