@@ -90,8 +90,9 @@ module RuboCop
       #       b: 2 }
       #
       # @api private
-      class MultilineHashBraceLayout < Cop
+      class MultilineHashBraceLayout < Base
         include MultilineLiteralBraceLayout
+        extend AutoCorrector
 
         SAME_LINE_MESSAGE = 'Closing hash brace must be on the same line as ' \
           'the last hash element when opening brace is on the same line as ' \
@@ -109,10 +110,6 @@ module RuboCop
 
         def on_hash(node)
           check_brace_layout(node)
-        end
-
-        def autocorrect(node)
-          MultilineLiteralBraceCorrector.new(node, processed_source)
         end
       end
     end
