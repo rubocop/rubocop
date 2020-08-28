@@ -29,10 +29,11 @@ module RuboCop
       #   end
       #
       # @api private
-      class SpaceAroundEqualsInParameterDefault < Cop
+      class SpaceAroundEqualsInParameterDefault < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Surrounding space %<type>s in default value assignment.'
 
@@ -40,13 +41,6 @@ module RuboCop
           index = index_of_first_token(node)
           arg, equals, value = processed_source.tokens[index, 3]
           check_optarg(arg, equals, value)
-        end
-
-        def autocorrect(range)
-          m = range.source.match(/=\s*(\S+)/)
-          rest = m ? m.captures[0] : ''
-          replacement = style == :space ? ' = ' : '='
-          ->(corrector) { corrector.replace(range, replacement + rest) }
         end
 
         private
@@ -67,14 +61,25 @@ module RuboCop
         def incorrect_style_detected(arg, value, space_on_both_sides,
                                      no_surrounding_space)
           range = range_between(arg.end_pos, value.begin_pos)
-          add_offense(range, location: range) do
-            if style == :space && no_surrounding_space ||
-               style == :no_space && space_on_both_sides
-              opposite_style_detected
-            else
-              unrecognized_style_detected
-            end
+
+          if style == :space && no_surrounding_space ||
+             style == :no_space && space_on_both_sides
+            return unless opposite_style_detected
+          else
+            return unless unrecognized_style_detected
           end
+
+          add_offense(range) do |corrector|
+            autocorrect(corrector, range)
+          end
+        end
+
+        def autocorrect(corrector, range)
+          m = range.source.match(/=\s*(\S+)/)
+          rest = m ? m.captures[0] : ''
+          replacement = style == :space ? ' = ' : '='
+
+          corrector.replace(range, replacement + rest)
         end
 
         def space_on_both_sides?(arg, equals)

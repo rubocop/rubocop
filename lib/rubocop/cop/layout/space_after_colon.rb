@@ -15,7 +15,9 @@ module RuboCop
       #   def f(a:, b: 2); {a: 3}; end
       #
       # @api private
-      class SpaceAfterColon < Cop
+      class SpaceAfterColon < Base
+        extend AutoCorrector
+
         MSG = 'Space missing after colon.'
 
         def on_pair(node)
@@ -23,7 +25,7 @@ module RuboCop
 
           colon = node.loc.operator
 
-          add_offense(colon, location: colon) unless followed_by_space?(colon)
+          register_offense(colon) unless followed_by_space?(colon)
         end
 
         def on_kwoptarg(node)
@@ -31,14 +33,16 @@ module RuboCop
           # optional keyword argument's name, so must construct one.
           colon = node.loc.name.end.resize(1)
 
-          add_offense(colon, location: colon) unless followed_by_space?(colon)
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.insert_after(range, ' ') }
+          register_offense(colon) unless followed_by_space?(colon)
         end
 
         private
+
+        def register_offense(colon)
+          add_offense(colon) do |corrector|
+            corrector.insert_after(colon, ' ')
+          end
+        end
 
         def followed_by_space?(colon)
           /\s/.match?(colon.source_buffer.source[colon.end_pos])

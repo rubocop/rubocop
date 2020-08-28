@@ -81,8 +81,11 @@ module RuboCop
 
       def space_offense(node, token, side, message, command)
         range = side_space_range(range: token.pos, side: side)
-        add_offense(node, location: range,
-                          message: format(message, command: command))
+        add_offense(range, message: format(message, command: command)) do |corrector|
+          autocorrect(corrector, node) unless ignored_node?(node)
+
+          ignore_node(node)
+        end
       end
 
       def empty_offenses(node, left, right, message)
@@ -96,8 +99,9 @@ module RuboCop
       end
 
       def empty_offense(node, range, message, command)
-        add_offense(node, location: range,
-                          message: format(message, command: command))
+        add_offense(range, message: format(message, command: command)) do |corrector|
+          autocorrect(corrector, node)
+        end
       end
 
       def empty_brackets?(left_bracket_token, right_bracket_token)

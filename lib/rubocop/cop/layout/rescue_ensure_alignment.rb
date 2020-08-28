@@ -23,8 +23,9 @@ module RuboCop
       #   end
       #
       # @api private
-      class RescueEnsureAlignment < Cop
+      class RescueEnsureAlignment < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
               'aligned with `%<beginning>s` at ' \
@@ -43,19 +44,7 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          whitespace = whitespace_range(node)
-          # Some inline node is sitting before current node.
-          return nil unless whitespace.source.strip.empty?
-
-          alignment_node = alignment_node(node)
-          return false if alignment_node.nil?
-
-          new_column = alignment_node.loc.column
-          ->(corrector) { corrector.replace(whitespace, ' ' * new_column) }
-        end
-
-        def investigate(processed_source)
+        def on_new_investigation
           @modifier_locations =
             processed_source.tokens.each_with_object([]) do |token, locations|
               next unless token.rescue_modifier?
@@ -75,15 +64,23 @@ module RuboCop
           alignment_loc = alignment_node.loc.expression
           kw_loc        = node.loc.keyword
 
-          return if
-            alignment_loc.column == kw_loc.column ||
-            alignment_loc.line   == kw_loc.line
+          return if alignment_loc.column == kw_loc.column || alignment_loc.line == kw_loc.line
 
           add_offense(
-            node,
-            location: kw_loc,
-            message: format_message(alignment_node, alignment_loc, kw_loc)
-          )
+            kw_loc, message: format_message(alignment_node, alignment_loc, kw_loc)
+          ) do |corrector|
+            autocorrect(corrector, node, alignment_node)
+          end
+        end
+
+        def autocorrect(corrector, node, alignment_node)
+          whitespace = whitespace_range(node)
+          # Some inline node is sitting before current node.
+          return nil unless whitespace.source.strip.empty?
+
+          new_column = alignment_node.loc.column
+
+          corrector.replace(whitespace, ' ' * new_column)
         end
 
         def format_message(alignment_node, alignment_loc, kw_loc)
