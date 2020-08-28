@@ -50,10 +50,11 @@ module RuboCop
       #   a ** b
       #
       # @api private
-      class SpaceAroundOperators < Cop
+      class SpaceAroundOperators < Base
         include PrecedingFollowingAlignment
         include RangeHelp
         include RationalLiteral
+        extend AutoCorrector
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
         EXCESSIVE_SPACE = '  '
@@ -134,18 +135,6 @@ module RuboCop
         alias on_and_asgn on_assignment
         alias on_op_asgn  on_special_asgn
 
-        def autocorrect(range)
-          lambda do |corrector|
-            if /\*\*/.match?(range.source) && !space_around_exponent_operator?
-              corrector.replace(range, '**')
-            elsif range.source.end_with?("\n")
-              corrector.replace(range, " #{range.source.strip}\n")
-            else
-              enclose_operator_with_space(corrector, range)
-            end
-          end
-        end
-
         private
 
         def regular_operator?(send_node)
@@ -163,13 +152,25 @@ module RuboCop
           return if with_space.source.start_with?("\n")
 
           offense(type, operator, with_space, right_operand) do |msg|
-            add_offense(with_space, location: operator, message: msg)
+            add_offense(operator, message: msg) do |corrector|
+              autocorrect(corrector, with_space)
+            end
           end
         end
 
         def offense(type, operator, with_space, right_operand)
           msg = offense_message(type, operator, with_space, right_operand)
           yield msg if msg
+        end
+
+        def autocorrect(corrector, range)
+          if /\*\*/.match?(range.source) && !space_around_exponent_operator?
+            corrector.replace(range, '**')
+          elsif range.source.end_with?("\n")
+            corrector.replace(range, " #{range.source.strip}\n")
+          else
+            enclose_operator_with_space(corrector, range)
+          end
         end
 
         def enclose_operator_with_space(corrector, range)

@@ -20,11 +20,12 @@ module RuboCop
       #      var = "This is the #{ space } example"
       #
       # @api private
-      class SpaceInsideStringInterpolation < Cop
+      class SpaceInsideStringInterpolation < Base
         include Interpolation
         include SurroundingSpace
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         NO_SPACE_MSG = 'Space inside string interpolation detected.'
         SPACE_MSG = 'Missing space inside string interpolation detected.'
@@ -42,19 +43,17 @@ module RuboCop
           end
         end
 
-        def autocorrect(begin_node)
-          lambda do |corrector|
-            delims = delimiters(begin_node)
+        private
 
-            if style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector, *delims)
-            else
-              SpaceCorrector.add_space(processed_source, corrector, *delims)
-            end
+        def autocorrect(corrector, begin_node)
+          delims = delimiters(begin_node)
+
+          if style == :no_space
+            SpaceCorrector.remove_space(processed_source, corrector, *delims)
+          else
+            SpaceCorrector.add_space(processed_source, corrector, *delims)
           end
         end
-
-        private
 
         def delimiters(begin_node)
           left = processed_source.tokens[index_of_first_token(begin_node)]

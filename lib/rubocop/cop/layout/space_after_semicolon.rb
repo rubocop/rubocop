@@ -13,12 +13,9 @@ module RuboCop
       #   x = 1; y = 2
       #
       # @api private
-      class SpaceAfterSemicolon < Cop
+      class SpaceAfterSemicolon < Base
         include SpaceAfterPunctuation
-
-        def autocorrect(semicolon)
-          PunctuationCorrector.add_space(semicolon)
-        end
+        extend AutoCorrector
 
         def space_style_before_rcurly
           cfg = config.for_cop('Layout/SpaceInsideBlockBraces')
