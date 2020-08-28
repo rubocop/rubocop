@@ -24,8 +24,9 @@ module RuboCop
       #
       #   # good
       #   x != y
-      class RedundantConditional < Cop
+      class RedundantConditional < Base
         include Alignment
+        extend AutoCorrector
 
         operators = RuboCop::AST::Node::COMPARISON_OPERATORS.to_a
         COMPARISON_OPERATOR_MATCHER = "{:#{operators.join(' :')}}"
@@ -36,11 +37,9 @@ module RuboCop
         def on_if(node)
           return unless offense?(node)
 
-          add_offense(node)
-        end
+          message = message(node)
 
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node, message: message) do |corrector|
             corrector.replace(node, replacement_condition(node))
           end
         end

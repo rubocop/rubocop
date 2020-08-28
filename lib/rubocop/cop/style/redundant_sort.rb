@@ -49,8 +49,9 @@ module RuboCop
       #   # good
       #   arr.max_by(&:foo)
       #
-      class RedundantSort < Cop
+      class RedundantSort < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<suggestion>s` instead of '\
               '`%<sorter>s...%<accessor_source>s`.'
@@ -82,34 +83,22 @@ module RuboCop
             return
           end
 
-          add_offense(ancestor,
-                      location: offense_range(sort_node, ancestor),
-                      message: message(ancestor,
-                                       sorter,
-                                       accessor))
-        end
+          message = message(ancestor, sorter, accessor)
 
-        def autocorrect(node)
-          sort_node, sorter, accessor = redundant_sort?(node)
-
-          lambda do |corrector|
-            # Remove accessor, e.g. `first` or `[-1]`.
-            corrector.remove(
-              range_between(
-                accessor_start(node),
-                node.loc.expression.end_pos
-              )
-            )
-
-            # Replace "sort" or "sort_by" with the appropriate min/max method.
-            corrector.replace(
-              sort_node.loc.selector,
-              suggestion(sorter, accessor, arg_value(node))
-            )
+          add_offense(offense_range(sort_node, ancestor), message: message) do |corrector|
+            autocorrect(corrector, ancestor, sort_node, sorter, accessor)
           end
         end
 
         private
+
+        def autocorrect(corrector, node, sort_node, sorter, accessor)
+          # Remove accessor, e.g. `first` or `[-1]`.
+          corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
+
+          # Replace "sort" or "sort_by" with the appropriate min/max method.
+          corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
+        end
 
         def offense_range(sort_node, ancestor)
           range_between(sort_node.loc.selector.begin_pos, ancestor.loc.expression.end_pos)

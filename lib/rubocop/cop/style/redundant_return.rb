@@ -47,8 +47,9 @@ module RuboCop
       #     return x, y
       #   end
       #
-      class RedundantReturn < Cop
+      class RedundantReturn < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Redundant `return` detected.'
         MULTI_RETURN_MSG = 'To return multiple values, use an array.'
@@ -57,16 +58,6 @@ module RuboCop
           check_branch(node.body)
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.arguments?
-              correct_with_arguments(node, corrector)
-            else
-              correct_without_arguments(node, corrector)
-            end
-          end
-        end
 
         private
 
@@ -121,7 +112,13 @@ module RuboCop
           return if cop_config['AllowMultipleReturnValues'] &&
                     node.children.size > 1
 
-          add_offense(node, location: :keyword)
+          add_offense(node.loc.keyword, message: message(node)) do |corrector|
+            if node.arguments?
+              correct_with_arguments(node, corrector)
+            else
+              correct_without_arguments(node, corrector)
+            end
+          end
         end
 
         def check_case_node(node)
