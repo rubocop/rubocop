@@ -176,9 +176,10 @@ module RuboCop
       #     bar: 2})
       #
       # @api private
-      class HashAlignment < Cop
+      class HashAlignment < Base
         include HashAlignmentStyles
         include RangeHelp
+        extend AutoCorrector
 
         MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
                       'they span more than one line.',
@@ -211,13 +212,6 @@ module RuboCop
                         .any? { |a| a.checkable_layout?(node) }
 
           check_pairs(node)
-        end
-
-        def autocorrect(node)
-          delta = column_deltas[alignment_for(node).first.class][node]
-          return if delta.nil?
-
-          correct_node(node, delta)
         end
 
         attr_accessor :offences_by, :column_deltas
@@ -255,7 +249,11 @@ module RuboCop
         def add_offences
           format, offences = offences_by.min_by { |_, v| v.length }
           (offences || []).each do |offence|
-            add_offense(offence, message: MESSAGES[format])
+            add_offense(offence, message: MESSAGES[format]) do |corrector|
+              delta = column_deltas[alignment_for(offence).first.class][offence]
+
+              correct_node(corrector, offence, delta) unless delta.nil?
+            end
           end
         end
 
@@ -294,25 +292,26 @@ module RuboCop
             new_alignment('EnforcedColonStyle')
         end
 
-        def correct_node(node, delta)
+        def correct_node(corrector, node, delta)
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get the
           # last value of each. A local variable fixes the problem.
 
           if !node.value
-            correct_no_value(delta[:key] || 0, node.source_range)
+            delta_value = delta[:key] || 0
+            correct_no_value(corrector, delta_value, node.source_range)
           else
-            correct_key_value(delta, node.key.source_range,
+            correct_key_value(corrector, delta, node.key.source_range,
                               node.value.source_range,
                               node.loc.operator)
           end
         end
 
-        def correct_no_value(key_delta, key)
-          ->(corrector) { adjust(corrector, key_delta, key) }
+        def correct_no_value(corrector, key_delta, key)
+          adjust(corrector, key_delta, key)
         end
 
-        def correct_key_value(delta, key, value, separator)
+        def correct_key_value(corrector, delta, key, value, separator)
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get the
           # last value of each. Some local variables fix the problem.
@@ -323,11 +322,9 @@ module RuboCop
           key_column = key.column
           key_delta = -key_column if key_delta < -key_column
 
-          lambda do |corrector|
-            adjust(corrector, key_delta, key)
-            adjust(corrector, separator_delta, separator)
-            adjust(corrector, value_delta, value)
-          end
+          adjust(corrector, key_delta, key)
+          adjust(corrector, separator_delta, separator)
+          adjust(corrector, value_delta, value)
         end
 
         def new_alignment(key)

@@ -22,8 +22,9 @@ module RuboCop
       #       baz
       #
       # @api private
-      class FirstMethodArgumentLineBreak < Cop
+      class FirstMethodArgumentLineBreak < Base
         include FirstElementLineBreak
+        extend AutoCorrector
 
         MSG = 'Add a line break before the first argument of a ' \
               'multi-line method argument list.'
@@ -44,10 +45,6 @@ module RuboCop
         end
         alias on_csend on_send
         alias on_super on_send
-
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
-        end
       end
     end
   end

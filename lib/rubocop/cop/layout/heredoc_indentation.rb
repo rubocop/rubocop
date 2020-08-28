@@ -23,8 +23,9 @@ module RuboCop
       #
       #
       # @api private
-      class HeredocIndentation < Cop
+      class HeredocIndentation < Base
         include Heredoc
+        extend AutoCorrector
 
         TYPE_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
                    'heredoc by using `<<~` instead of `%<current_indent_type>s`.'
@@ -35,8 +36,9 @@ module RuboCop
           return if body.strip.empty?
 
           body_indent_level = indent_level(body)
+          heredoc_indent_type = heredoc_indent_type(node)
 
-          if heredoc_indent_type(node) == '~'
+          if heredoc_indent_type == '~'
             expected_indent_level = base_indent_level(node) + indentation_width
             return if expected_indent_level == body_indent_level
           else
@@ -45,12 +47,16 @@ module RuboCop
 
           return if line_too_long?(node)
 
-          add_offense(node, location: :heredoc_body)
+          register_offense(node, heredoc_indent_type)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if heredoc_indent_type(node) == '~'
+        private
+
+        def register_offense(node, heredoc_indent_type)
+          message = message(heredoc_indent_type)
+
+          add_offense(node.loc.heredoc_body, message: message) do |corrector|
+            if heredoc_indent_type == '~'
               adjust_squiggly(corrector, node)
             else
               adjust_minus(corrector, node)
@@ -58,10 +64,8 @@ module RuboCop
           end
         end
 
-        private
-
-        def message(node)
-          current_indent_type = "<<#{heredoc_indent_type(node)}"
+        def message(heredoc_indent_type)
+          current_indent_type = "<<#{heredoc_indent_type}"
 
           if current_indent_type == '<<~'
             width_message(indentation_width)
