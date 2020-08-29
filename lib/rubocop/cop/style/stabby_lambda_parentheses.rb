@@ -19,8 +19,6 @@ module RuboCop
       #
       #   # good
       #   ->a,b,c { a + b + c}
-      #
-      # @api private
       class StabbyLambdaParentheses < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

@@ -40,7 +40,6 @@ module RuboCop
       #     def baz; end
       #   end
       #
-      # @api private
       class EmptyLinesAroundAccessModifier < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

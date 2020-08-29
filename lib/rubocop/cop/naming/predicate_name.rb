@@ -27,8 +27,6 @@ module RuboCop
       #   # good
       #   def value?
       #   end
-      #
-      # @api private
       class PredicateName < Base
         include AllowedMethods
 

@@ -25,8 +25,6 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}.transform_values { |v| foo(v) }
       #   {a: 1, b: 2}.transform_values { |v| v * v }
-      #
-      # @api private
       class HashTransformValues < Base
         include HashTransformMethod
         extend AutoCorrector

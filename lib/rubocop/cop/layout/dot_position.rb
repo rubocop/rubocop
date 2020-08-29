@@ -22,8 +22,6 @@ module RuboCop
       #   # good
       #   something.
       #     method
-      #
-      # @api private
       class DotPosition < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

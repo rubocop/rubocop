@@ -21,7 +21,6 @@ module RuboCop
       #   g.clone #=> #<struct Good id=1, name="foo">
       #   g.count #=> 2
       #
-      # @api private
       class StructNewOverride < Base
         MSG = '`%<member_name>s` member overrides `Struct#%<method_name>s`' \
               ' and it may be unexpected.'

@@ -28,8 +28,6 @@ module RuboCop
       #     x.attr = 5
       #     x
       #   end
-      #
-      # @api private
       class UselessSetterCall < Base
         MSG = 'Useless setter call to local variable `%<variable>s`.'
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze

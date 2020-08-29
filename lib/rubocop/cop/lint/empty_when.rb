@@ -44,7 +44,6 @@ module RuboCop
       #     # do nothing
       #   end
       #
-      # @api private
       class EmptyWhen < Base
         MSG = 'Avoid `when` branches without a body.'
 

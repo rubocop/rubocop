@@ -32,8 +32,6 @@ module RuboCop
       #   def some_method
       #     do_something
       #   end
-      #
-      # @api private
       class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
 

@@ -24,8 +24,6 @@ module RuboCop
       #   blah { |i|
       #     foo(i)
       #   }
-      #
-      # @api private
       class BlockEndNewline < Cop
         include Alignment
 

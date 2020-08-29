@@ -36,7 +36,6 @@ module RuboCop
       #     'http://au.example.com'
       #   end
       #
-      # @api private
       class HashLikeCase < Base
         MSG = 'Consider replacing `case-when` with a hash lookup.'
 

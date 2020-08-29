@@ -5,8 +5,6 @@ module RuboCop
     module Lint
       # This cop repacks Parser's diagnostics/errors
       # into RuboCop's offenses.
-      #
-      # @api private
       class Syntax < Base
         def on_other_file
           add_offense_from_error(processed_source.parser_error) if processed_source.parser_error

@@ -21,8 +21,6 @@ module RuboCop
       #     something
       #   RUBY
       #
-      #
-      # @api private
       class HeredocIndentation < Base
         include Heredoc
         extend AutoCorrector

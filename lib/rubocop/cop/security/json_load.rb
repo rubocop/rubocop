@@ -22,7 +22,6 @@ module RuboCop
       #   # good
       #   JSON.parse("{}")
       #
-      # @api private
       class JSONLoad < Base
         extend AutoCorrector
 

@@ -14,8 +14,6 @@ module RuboCop
       #   # good
       #   [1, 2]
       #   { foo:bar, }
-      #
-      # @api private
       class SpaceAfterComma < Base
         include SpaceAfterPunctuation
         extend AutoCorrector

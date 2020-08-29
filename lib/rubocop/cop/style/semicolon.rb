@@ -26,8 +26,6 @@ module RuboCop
       # @example AllowAsExpressionSeparator: true
       #   # good
       #   foo = 1; bar = 2
-      #
-      # @api private
       class Semicolon < Base
         include RangeHelp
         extend AutoCorrector

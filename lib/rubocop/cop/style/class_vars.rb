@@ -45,7 +45,6 @@ module RuboCop
       #     end
       #   end
       #
-      # @api private
       class ClassVars < Base
         MSG = 'Replace class var %<class_var>s with a class instance var.'
 

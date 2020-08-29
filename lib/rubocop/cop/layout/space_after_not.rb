@@ -11,8 +11,6 @@ module RuboCop
       #
       #   # good
       #   !something
-      #
-      # @api private
       class SpaceAfterNot < Base
         include RangeHelp
         extend AutoCorrector

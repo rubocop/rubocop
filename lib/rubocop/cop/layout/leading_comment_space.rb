@@ -49,7 +49,6 @@ module RuboCop
       #   #ruby=2.7.0
       #   #ruby-gemset=myproject
       #
-      # @api private
       class LeadingCommentSpace < Base
         include RangeHelp
         extend AutoCorrector

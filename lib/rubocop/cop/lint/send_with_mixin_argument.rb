@@ -34,7 +34,6 @@ module RuboCop
       #   Foo.prepend Bar
       #   Foo.extend Bar
       #
-      # @api private
       class SendWithMixinArgument < Base
         include RangeHelp
         extend AutoCorrector

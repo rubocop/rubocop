@@ -15,8 +15,6 @@ module RuboCop
       #
       #   # good
       #   array.sort
-      #
-      # @api private
       class RedundantSortBy < Cop
         include RangeHelp
 

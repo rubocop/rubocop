@@ -143,8 +143,6 @@ module RuboCop
       #
       #   # good
       #   Array 1
-      #
-      # @api private
       class MethodCallWithArgsParentheses < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods

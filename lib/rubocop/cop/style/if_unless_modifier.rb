@@ -30,8 +30,6 @@ module RuboCop
       #   if long_condition
       #     do_something_in_a_method_with_a_long_name(arg)
       #   end
-      #
-      # @api private
       class IfUnlessModifier < Base
         include StatementModifier
         include LineLengthHelp

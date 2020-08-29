@@ -11,8 +11,6 @@ module RuboCop
       #
       #   # good
       #   object.some_method
-      #
-      # @api private
       class MethodCallWithoutArgsParentheses < Base
         include IgnoredMethods
         extend AutoCorrector

@@ -20,8 +20,6 @@ module RuboCop
       #     b,
       #     c
       #   ]
-      #
-      # @api private
       class MultilineArrayLineBreaks < Base
         include MultilineElementLineBreaks
         extend AutoCorrector

@@ -89,8 +89,6 @@ module RuboCop
       #   if condition
       #     statement
       #   end
-      #
-      # @api private
       class EmptyElse < Base
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle

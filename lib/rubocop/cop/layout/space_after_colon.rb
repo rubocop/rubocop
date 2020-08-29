@@ -13,8 +13,6 @@ module RuboCop
       #
       #   # good
       #   def f(a:, b: 2); {a: 3}; end
-      #
-      # @api private
       class SpaceAfterColon < Base
         extend AutoCorrector
 

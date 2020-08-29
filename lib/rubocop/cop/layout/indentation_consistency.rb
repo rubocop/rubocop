@@ -118,8 +118,6 @@ module RuboCop
       #       def bar
       #       end
       #   end
-      #
-      # @api private
       class IndentationConsistency < Cop
         include Alignment
         include ConfigurableEnforcedStyle

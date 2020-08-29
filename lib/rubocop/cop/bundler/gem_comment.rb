@@ -58,7 +58,6 @@ module RuboCop
       #   # Version 2.1 introduces breaking change baz
       #   gem 'bar', '< 2.1'
       #
-      # @api private
       class GemComment < Cop
         include DefNode
 

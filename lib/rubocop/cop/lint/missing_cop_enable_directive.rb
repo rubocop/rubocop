@@ -42,7 +42,6 @@ module RuboCop
       #   # Including this, that's 3 lines on which the cop is disabled.
       #   # rubocop:enable Layout/SpaceAroundOperators
       #
-      # @api private
       class MissingCopEnableDirective < Base
         include RangeHelp
 

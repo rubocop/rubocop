@@ -17,7 +17,6 @@ module RuboCop
       #     def foo; end
       #   end
       #
-      # @api private
       class InitialIndentation < Base
         include RangeHelp
         extend AutoCorrector

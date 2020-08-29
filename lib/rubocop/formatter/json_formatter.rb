@@ -6,8 +6,6 @@ require 'pathname'
 module RuboCop
   module Formatter
     # This formatter formats the report data in JSON format.
-    #
-    # @api private
     class JSONFormatter < BaseFormatter
       include PathUtil
 

@@ -132,7 +132,6 @@ module RuboCop
       #     puts foo
       #   end
       #
-      # @api private
       class BlockDelimiters < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods

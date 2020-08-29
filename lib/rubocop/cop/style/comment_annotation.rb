@@ -30,8 +30,6 @@ module RuboCop
       #
       #   # good
       #   # OPTIMIZE: does not work
-      #
-      # @api private
       class CommentAnnotation < Base
         include AnnotationComment
         include RangeHelp

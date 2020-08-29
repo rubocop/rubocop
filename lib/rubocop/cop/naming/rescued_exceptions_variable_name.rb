@@ -53,7 +53,6 @@ module RuboCop
       #     # do something
       #   end
       #
-      # @api private
       class RescuedExceptionsVariableName < Base
         extend AutoCorrector
 

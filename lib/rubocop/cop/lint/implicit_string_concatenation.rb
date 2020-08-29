@@ -22,8 +22,6 @@ module RuboCop
       #     'Item 1' \
       #     'Item 2'
       #   ]
-      #
-      # @api private
       class ImplicitStringConcatenation < Base
         MSG = 'Combine %<string1>s and %<string2>s into a single string ' \
               'literal, rather than using implicit string concatenation.'

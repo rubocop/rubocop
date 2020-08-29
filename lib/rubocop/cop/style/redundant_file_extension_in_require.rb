@@ -24,7 +24,6 @@ module RuboCop
       #   require_relative '../foo'
       #   require_relative '../foo.so'
       #
-      # @api private
       class RedundantFileExtensionInRequire < Base
         extend AutoCorrector
 

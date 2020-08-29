@@ -56,7 +56,6 @@ module RuboCop
       #   puts $'
       #   puts $+
       #
-      # @api private
       class SpecialGlobalVars < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

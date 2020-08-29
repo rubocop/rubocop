@@ -15,7 +15,6 @@ module RuboCop
       #   require 'foo'
       #   require 'bar'
       #
-      # @api private
       class DuplicateRequire < Base
         MSG = 'Duplicate `%<method>s` detected.'
         REQUIRE_METHODS = %i[require require_relative].freeze

@@ -18,7 +18,6 @@ module RuboCop
       #     attr_accessor :bar
       #   end
       #
-      # @api private
       class BisectedAttrAccessor < Base
         include VisibilityHelp
         extend AutoCorrector

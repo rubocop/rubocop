@@ -53,7 +53,6 @@ module RuboCop
       #      y > 10)
       #   end
       #
-      # @api private
       class ParenthesesAroundCondition < Base
         include SafeAssignment
         include Parentheses

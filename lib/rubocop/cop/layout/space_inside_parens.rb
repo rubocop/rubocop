@@ -31,7 +31,6 @@ module RuboCop
       #   g = ( a + 3 )
       #   y()
       #
-      # @api private
       class SpaceInsideParens < Base
         include SurroundingSpace
         include RangeHelp

@@ -13,8 +13,6 @@ module RuboCop
       #   # good
       #   Foo.__send__(:bar)
       #   quuz.public_send(:fred)
-      #
-      # @api private
       class Send < Base
         MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
               '`send`.'

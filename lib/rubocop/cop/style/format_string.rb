@@ -35,7 +35,6 @@ module RuboCop
       #   # good
       #   puts '%10s' % 'hoge'
       #
-      # @api private
       class FormatString < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

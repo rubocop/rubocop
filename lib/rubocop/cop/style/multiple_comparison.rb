@@ -14,8 +14,6 @@ module RuboCop
       #   # good
       #   a = 'a'
       #   foo if ['a', 'b', 'c'].include?(a)
-      #
-      # @api private
       class MultipleComparison < Base
         MSG = 'Avoid comparing a variable with multiple items ' \
           'in a conditional, use `Array#include?` instead.'

@@ -9,8 +9,6 @@ require_relative 'text_util'
 module RuboCop
   module Formatter
     # This formatter saves the output as an html file.
-    #
-    # @api private
     class HTMLFormatter < BaseFormatter
       ELLIPSES = '<span class="extra-code">...</span>'
       TEMPLATE_PATH =

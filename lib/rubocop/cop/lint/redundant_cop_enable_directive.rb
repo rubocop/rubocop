@@ -34,8 +34,6 @@ module RuboCop
       #   foo = "1"
       #   # rubocop:enable all
       #   baz
-      #
-      # @api private
       class RedundantCopEnableDirective < Base
         include RangeHelp
         include SurroundingSpace

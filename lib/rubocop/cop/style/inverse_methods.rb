@@ -33,8 +33,6 @@ module RuboCop
       #     next if f.zero?
       #     f != 1
       #   end
-      #
-      # @api private
       class InverseMethods < Base
         include IgnoredNode
         include RangeHelp

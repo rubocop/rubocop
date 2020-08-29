@@ -26,7 +26,6 @@ module RuboCop
       #     public_constant :BAZ
       #   end
       #
-      # @api private
       class ConstantVisibility < Base
         MSG = 'Explicitly make `%<constant_name>s` public or private using ' \
               'either `#public_constant` or `#private_constant`.'

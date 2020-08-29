@@ -23,7 +23,6 @@ module RuboCop
       #   keys = %i[key1 key2]
       #   { key1: { key2: 'value' } }.dig(*keys)
       #
-      # @api private
       class SingleArgumentDig < Base
         extend AutoCorrector
 

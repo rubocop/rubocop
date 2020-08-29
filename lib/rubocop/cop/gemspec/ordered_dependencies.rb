@@ -50,8 +50,6 @@ module RuboCop
       #   spec.add_dependency 'rubocop'
       #   # For tests
       #   spec.add_dependency 'rspec'
-      #
-      # @api private
       class OrderedDependencies < Cop
         include ConfigurableEnforcedStyle
         include OrderedGemNode

@@ -22,8 +22,6 @@ module RuboCop
       #     next acc if i.odd?
       #     acc + i
       #   end
-      #
-      # @api private
       class NextWithoutAccumulator < Base
         MSG = 'Use `next` with an accumulator argument in a `reduce`.'
 

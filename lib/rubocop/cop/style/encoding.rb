@@ -9,8 +9,6 @@ module RuboCop
       #   # encoding: UTF-8
       #   # coding: UTF-8
       #   # -*- coding: UTF-8 -*-
-      #
-      # @api private
       class Encoding < Base
         include RangeHelp
         extend AutoCorrector

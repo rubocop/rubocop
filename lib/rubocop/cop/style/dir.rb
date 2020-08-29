@@ -16,8 +16,6 @@ module RuboCop
       #
       #   # good
       #   path = __dir__
-      #
-      # @api private
       class Dir < Base
         extend AutoCorrector
 

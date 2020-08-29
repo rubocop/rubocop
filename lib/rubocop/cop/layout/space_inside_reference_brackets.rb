@@ -53,7 +53,6 @@ module RuboCop
       #   # good
       #   foo[ ]
       #
-      # @api private
       class SpaceInsideReferenceBrackets < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle

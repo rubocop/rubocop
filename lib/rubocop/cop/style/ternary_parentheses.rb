@@ -54,7 +54,6 @@ module RuboCop
       #   # bad
       #   foo = (bar = baz) ? a : b
       #
-      # @api private
       class TernaryParentheses < Base
         include SafeAssignment
         include ConfigurableEnforcedStyle

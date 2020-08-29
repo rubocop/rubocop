@@ -20,8 +20,6 @@ module RuboCop
       #   class Person
       #     # Some code
       #   end
-      #
-      # @api private
       class EmptyLineAfterMagicComment < Base
         include RangeHelp
         extend AutoCorrector

@@ -21,8 +21,6 @@ module RuboCop
       #
       #   # good
       #   require 'unloaded_feature'
-      #
-      # @api private
       class RedundantRequireStatement < Base
         include RangeHelp
         extend AutoCorrector

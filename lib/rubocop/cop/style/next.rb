@@ -46,8 +46,6 @@ module RuboCop
       #     next unless a == 1
       #     puts a
       #   end
-      #
-      # @api private
       class Next < Base
         include ConfigurableEnforcedStyle
         include MinBodyLength

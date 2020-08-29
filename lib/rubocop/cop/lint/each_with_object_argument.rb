@@ -21,8 +21,6 @@ module RuboCop
       #
       #   num = 0
       #   sum = numbers.each_with_object(num) { |e, a| a += e }
-      #
-      # @api private
       class EachWithObjectArgument < Base
         MSG = 'The argument to each_with_object cannot be immutable.'
 

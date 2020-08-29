@@ -23,8 +23,6 @@ module RuboCop
       #   # good
       #   rand(1..6)
       #   rand(1...7)
-      #
-      # @api private
       class RandomWithOffset < Base
         extend AutoCorrector
 

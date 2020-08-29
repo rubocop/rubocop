@@ -3,8 +3,6 @@
 module RuboCop
   module Formatter
     # Does not show individual offenses in the console.
-    #
-    # @api private
     class AutoGenConfigFormatter < ProgressFormatter
       def finished(inspected_files)
         output.puts

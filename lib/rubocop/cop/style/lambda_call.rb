@@ -18,8 +18,6 @@ module RuboCop
       #
       #  # good
       #  lambda.(x, y)
-      #
-      # @api private
       class LambdaCall < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

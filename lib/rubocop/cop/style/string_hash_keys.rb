@@ -12,8 +12,6 @@ module RuboCop
       #
       #   # good
       #   { one: 1, two: 2, three: 3 }
-      #
-      # @api private
       class StringHashKeys < Base
         extend AutoCorrector
 

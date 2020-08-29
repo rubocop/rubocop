@@ -31,7 +31,6 @@ module RuboCop
       #   # good
       #   ENV.fetch(:key, VALUE)
       #
-      # @api private
       class RedundantFetchBlock < Base
         include FrozenStringLiteral
         include RangeHelp

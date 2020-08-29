@@ -11,8 +11,6 @@ module RuboCop
       #
       #   # good
       #   x = 1; y = 2
-      #
-      # @api private
       class SpaceBeforeSemicolon < Base
         include SpaceBeforePunctuation
         extend AutoCorrector

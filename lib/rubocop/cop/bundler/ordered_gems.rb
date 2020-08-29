@@ -24,8 +24,6 @@ module RuboCop
       #   gem 'rubocop'
       #   # For tests
       #   gem 'rspec'
-      #
-      # @api private
       class OrderedGems < Cop
         include ConfigurableEnforcedStyle
         include OrderedGemNode

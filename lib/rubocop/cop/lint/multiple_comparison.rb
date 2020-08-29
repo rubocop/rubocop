@@ -21,8 +21,6 @@ module RuboCop
       #
       #   x < y && y < z
       #   10 <= x && x <= 20
-      #
-      # @api private
       class MultipleComparison < Base
         extend AutoCorrector
 

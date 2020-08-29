@@ -32,7 +32,6 @@ module RuboCop
       #     do_something if condition_b
       #   end
       #
-      # @api private
       class SoleNestedConditional < Base
         MSG = 'Consider merging nested conditions into '\
               'outer `%<conditional_type>s` conditions.'

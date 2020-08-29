@@ -124,8 +124,6 @@ module RuboCop
       #
       #     delegate :method_a, to: :method_b
       #   end
-      #
-      # @api private
       class UselessAccessModifier < Base
         include RangeHelp
         extend AutoCorrector

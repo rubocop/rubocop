@@ -26,8 +26,6 @@ module RuboCop
       #         bar
       #       do_something
       #     end
-      #
-      # @api private
       class FirstMethodParameterLineBreak < Base
         include FirstElementLineBreak
         extend AutoCorrector

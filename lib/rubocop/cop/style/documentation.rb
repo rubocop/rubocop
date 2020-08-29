@@ -55,7 +55,6 @@ module RuboCop
       #       Public = Class.new
       #     end
       #
-      # @api private
       class Documentation < Base
         include DocumentationComment
 

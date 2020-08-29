@@ -58,7 +58,6 @@ module RuboCop
       #     end
       #   end
       #
-      # @api private
       class ClassMethodsDefinitions < Base
         include ConfigurableEnforcedStyle
         include CommentsHelp

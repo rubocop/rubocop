@@ -12,8 +12,6 @@ module RuboCop
       #
       #   # good
       #   1 + 1 # this operation does ...
-      #
-      # @api private
       class SpaceBeforeComment < Base
         extend AutoCorrector
 

@@ -25,8 +25,6 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      #
-      # @api private
       class RedundantCopDisableDirective < Base
         include RangeHelp
         extend AutoCorrector

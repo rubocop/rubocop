@@ -16,8 +16,6 @@ module RuboCop
       #     {
       #       a: 1,
       #       b: 2 }
-      #
-      # @api private
       class FirstHashElementLineBreak < Base
         include FirstElementLineBreak
         extend AutoCorrector

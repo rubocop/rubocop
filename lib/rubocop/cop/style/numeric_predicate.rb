@@ -41,8 +41,6 @@ module RuboCop
       #   foo == 0
       #   0 > foo
       #   bar.baz > 0
-      #
-      # @api private
       class NumericPredicate < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods

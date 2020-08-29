@@ -38,7 +38,6 @@ module RuboCop
       #   if !x.nil?
       #   end
       #
-      # @api private
       class NonNilCheck < Base
         extend AutoCorrector
 

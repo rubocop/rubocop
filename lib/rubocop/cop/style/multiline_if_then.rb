@@ -16,8 +16,6 @@ module RuboCop
       #   if cond then a
       #   elsif cond then b
       #   end
-      #
-      # @api private
       class MultilineIfThen < Base
         include OnNormalIfUnless
         include RangeHelp

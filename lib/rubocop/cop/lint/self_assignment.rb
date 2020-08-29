@@ -16,7 +16,6 @@ module RuboCop
       #   foo, bar = bar, foo
       #   Foo = Bar
       #
-      # @api private
       class SelfAssignment < Base
         MSG = 'Self-assignment detected.'
 

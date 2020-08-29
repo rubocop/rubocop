@@ -19,8 +19,6 @@ module RuboCop
       #     b,
       #     c
       #   )
-      #
-      # @api private
       class MultilineMethodArgumentLineBreaks < Base
         include MultilineElementLineBreaks
         extend AutoCorrector

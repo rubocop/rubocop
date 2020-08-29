@@ -52,7 +52,6 @@ module RuboCop
       #     # noop
       #   end
       #
-      # @api private
       class EmptyConditionalBody < Base
         MSG = 'Avoid `%<keyword>s` branches without a body.'
 

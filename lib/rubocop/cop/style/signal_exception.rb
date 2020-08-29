@@ -104,8 +104,6 @@ module RuboCop
       #
       #   explicit_receiver.fail
       #   explicit_receiver.raise
-      #
-      # @api private
       class SignalException < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

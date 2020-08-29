@@ -41,8 +41,6 @@ module RuboCop
       #
       #   # good
       #   7.times{}
-      #
-      # @api private
       class SpaceBeforeBlockBraces < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
