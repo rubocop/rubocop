@@ -61,17 +61,18 @@ module RuboCop
 
           location = nodes.last.loc.keyword.join(nodes.last.loc.name)
           add_offense(location) do |corrector|
-            autocorrect(corrector, nodes.last)
+            autocorrect(corrector, *nodes)
           end
         end
 
-        def autocorrect(corrector, node)
-          prev_def = prev_node(node)
-
+        def autocorrect(corrector, prev_def, node)
           # finds position of first newline
           end_pos = prev_def.loc.end.end_pos
           source_buffer = prev_def.loc.end.source_buffer
           newline_pos = source_buffer.source.index("\n", end_pos)
+
+          # Handle the case when multiple one-liners are on the same line.
+          newline_pos = end_pos + 1 if newline_pos > node.source_range.begin_pos
 
           count = blank_lines_count_between(prev_def, node)
 
@@ -116,16 +117,12 @@ module RuboCop
           Array(cop_config['NumberOfEmptyLines']).last
         end
 
-        def prev_node(node)
-          return nil unless node.sibling_index.positive?
-
-          node.parent.children[node.sibling_index - 1]
-        end
-
         def lines_between_defs(first_def_node, second_def_node)
-          line_range = def_end(first_def_node)..(def_start(second_def_node) - 2)
+          begin_line_num = def_end(first_def_node)
+          end_line_num = def_start(second_def_node) - 2
+          return [] if end_line_num.negative?
 
-          processed_source.lines[line_range]
+          processed_source.lines[begin_line_num..end_line_num]
         end
 
         def def_start(node)
