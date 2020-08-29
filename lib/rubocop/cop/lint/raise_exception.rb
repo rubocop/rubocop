@@ -27,8 +27,6 @@ module RuboCop
       #       raise Exception # This exception means `Gem::Exception`.
       #     end
       #   end
-      #
-      # @api private
       class RaiseException < Base
         extend AutoCorrector
 

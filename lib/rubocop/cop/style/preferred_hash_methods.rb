@@ -25,8 +25,6 @@ module RuboCop
       #  # good
       #  Hash#has_key?
       #  Hash#has_value?
-      #
-      # @api private
       class PreferredHashMethods < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

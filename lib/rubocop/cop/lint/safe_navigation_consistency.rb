@@ -26,7 +26,6 @@ module RuboCop
       #   # good
       #   foo&.bar && (foobar.baz || foo&.baz)
       #
-      # @api private
       class SafeNavigationConsistency < Base
         include IgnoredNode
         include NilMethods

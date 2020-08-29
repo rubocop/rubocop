@@ -35,8 +35,6 @@ module RuboCop
       #   else
       #     puts 'more'
       #   end
-      #
-      # @api private
       class EmptyCaseCondition < Base
         include RangeHelp
         extend AutoCorrector

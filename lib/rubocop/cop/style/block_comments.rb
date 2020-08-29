@@ -16,7 +16,6 @@ module RuboCop
       #   # Multiple lines
       #   # of comments...
       #
-      # @api private
       class BlockComments < Base
         include RangeHelp
         extend AutoCorrector

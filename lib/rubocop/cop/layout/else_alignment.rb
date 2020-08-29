@@ -29,8 +29,6 @@ module RuboCop
       #   else
       #     code
       #   end
-      #
-      # @api private
       class ElseAlignment < Cop
         include EndKeywordAlignment
         include Alignment

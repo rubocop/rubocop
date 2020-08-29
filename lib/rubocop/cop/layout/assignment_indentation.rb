@@ -21,8 +21,6 @@ module RuboCop
       #
       # The indentation of the remaining lines can be corrected with
       # other cops such as `IndentationConsistency` and `EndAlignment`.
-      #
-      # @api private
       class AssignmentIndentation < Cop
         include CheckAssignment
         include Alignment

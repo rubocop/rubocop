@@ -29,8 +29,6 @@ module RuboCop
       #   while true
       #     break if condition
       #   end
-      #
-      # @api private
       class LiteralAsCondition < Base
         include RangeHelp
 

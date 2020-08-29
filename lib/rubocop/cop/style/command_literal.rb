@@ -75,8 +75,6 @@ module RuboCop
       # @example AllowInnerBackticks: true
       #   # good
       #   `echo \`ls\``
-      #
-      # @api private
       class CommandLiteral < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

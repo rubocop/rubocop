@@ -41,8 +41,6 @@ module RuboCop
       #       self.bar == bar  # Resolves name clash with argument of the block.
       #     end
       #   end
-      #
-      # @api private
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'
         KERNEL_METHODS = Kernel.methods(false)

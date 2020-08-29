@@ -14,7 +14,6 @@ module RuboCop
       #   email_with_name = "#{user.name} <#{user.email}>"
       #   email_with_name = format('%s <%s>', user.name, user.email)
       #
-      # @api private
       class StringConcatenation < Base
         include Util
         extend AutoCorrector

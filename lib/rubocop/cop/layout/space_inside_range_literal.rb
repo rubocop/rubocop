@@ -17,8 +17,6 @@ module RuboCop
       #
       #   # good
       #   'a'..'z'
-      #
-      # @api private
       class SpaceInsideRangeLiteral < Base
         extend AutoCorrector
 

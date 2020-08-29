@@ -21,8 +21,6 @@ module RuboCop
       #
       #   # With parentheses, there's no ambiguity.
       #   do_something(/pattern/i)
-      #
-      # @api private
       class AmbiguousRegexpLiteral < Base
         extend AutoCorrector
 

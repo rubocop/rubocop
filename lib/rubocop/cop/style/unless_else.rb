@@ -19,8 +19,6 @@ module RuboCop
       #   else
       #     # do a different thing...
       #   end
-      #
-      # @api private
       class UnlessElse < Base
         include RangeHelp
         extend AutoCorrector

@@ -25,8 +25,6 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}.transform_keys { |k| foo(k) }
       #   {a: 1, b: 2}.transform_keys { |k| k.to_s }
-      #
-      # @api private
       class HashTransformKeys < Base
         include HashTransformMethod
         extend TargetRubyVersion

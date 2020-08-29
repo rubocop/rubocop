@@ -21,8 +21,6 @@ module RuboCop
       #
       #   # good
       #   a { do_something }
-      #
-      # @api private
       class EmptyBlockParameter < Base
         include EmptyParameter
         include RangeHelp

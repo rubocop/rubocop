@@ -49,8 +49,6 @@ module RuboCop
       #   end
       #
       #   alias bar foo
-      #
-      # @api private
       class DuplicateMethods < Base
         MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
               '%<current>s.'

@@ -20,8 +20,6 @@ module RuboCop
       #     # ignored
       #     method foo, bar,
       #       baz
-      #
-      # @api private
       class FirstMethodArgumentLineBreak < Base
         include FirstElementLineBreak
         extend AutoCorrector

@@ -67,7 +67,6 @@ module RuboCop
       #   foo = [ ]
       #   bar = [ ]
       #
-      # @api private
       class SpaceInsideArrayLiteralBrackets < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle

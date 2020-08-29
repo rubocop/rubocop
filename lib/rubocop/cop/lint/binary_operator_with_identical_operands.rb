@@ -27,7 +27,6 @@ module RuboCop
       #     left_child || left_child
       #   end
       #
-      # @api private
       class BinaryOperatorWithIdenticalOperands < Base
         MSG = 'Binary operator `%<op>s` has identical operands.'
         MATH_OPERATORS = %i[+ - * / % ** << >> | ^].to_set.freeze

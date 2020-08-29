@@ -37,8 +37,6 @@ module RuboCop
       #
       #   # good
       #   format('%s', 'Hello')
-      #
-      # @api private
       class FormatStringToken < Base
         include ConfigurableEnforcedStyle
 

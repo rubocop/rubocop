@@ -12,8 +12,6 @@ module RuboCop
       #   %w(foo  bar  baz)
       #   # good
       #   %i(foo bar baz)
-      #
-      # @api private
       class SpaceInsideArrayPercentLiteral < Base
         include MatchRange
         include PercentLiteral

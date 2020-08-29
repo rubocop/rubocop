@@ -36,8 +36,6 @@ module RuboCop
       #   # good
       #   if foo && bar
       #   end
-      #
-      # @api private
       class AndOr < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

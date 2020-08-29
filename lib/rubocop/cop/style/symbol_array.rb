@@ -27,8 +27,6 @@ module RuboCop
       #
       #   # bad
       #   %i[foo bar baz]
-      #
-      # @api private
       class SymbolArray < Base
         include ArrayMinSize
         include ArraySyntax

@@ -48,8 +48,6 @@ module RuboCop
       #     foo(i)
       #     bar(i)
       #   }
-      #
-      # @api private
       class MultilineBlockLayout < Base
         include RangeHelp
         extend AutoCorrector

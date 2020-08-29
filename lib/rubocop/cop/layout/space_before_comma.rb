@@ -16,7 +16,6 @@ module RuboCop
       #   a(1, 2)
       #   each { |a, b| }
       #
-      # @api private
       class SpaceBeforeComma < Base
         include SpaceBeforePunctuation
         extend AutoCorrector

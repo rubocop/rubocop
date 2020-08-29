@@ -12,8 +12,6 @@ module RuboCop
       #
       #   # good
       #   puts Regexp.last_match(1)
-      #
-      # @api private
       class PerlBackrefs < Base
         extend AutoCorrector
 

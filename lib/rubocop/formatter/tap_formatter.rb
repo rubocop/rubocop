@@ -4,8 +4,6 @@ module RuboCop
   module Formatter
     # This formatter formats report data using the Test Anything Protocol.
     # TAP allows for to communicate tests results in a language agnostics way.
-    #
-    # @api private
     class TapFormatter < ClangStyleFormatter
       def started(target_files)
         super

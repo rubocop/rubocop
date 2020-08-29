@@ -27,8 +27,6 @@ module RuboCop
       #   # good
       #   # (start of file)
       #   # a comment
-      #
-      # @api private
       class LeadingEmptyLines < Base
         extend AutoCorrector
 

@@ -13,7 +13,6 @@ module RuboCop
       #   # good
       #   URI::DEFAULT_PARSER.make_regexp('http://example.com')
       #
-      # @api private
       class UriRegexp < Base
         extend AutoCorrector
 

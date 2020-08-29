@@ -62,8 +62,6 @@ module RuboCop
       #     private :bar, :baz
       #
       #   end
-      #
-      # @api private
       class AccessModifierDeclarations < Base
         include ConfigurableEnforcedStyle
 

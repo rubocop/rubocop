@@ -20,8 +20,6 @@ module RuboCop
       #
       #   # With parentheses, there's no ambiguity.
       #   do_something(*some_array)
-      #
-      # @api private
       class AmbiguousOperator < Base
         extend AutoCorrector
 

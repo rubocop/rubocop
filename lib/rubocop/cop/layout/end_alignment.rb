@@ -67,8 +67,6 @@ module RuboCop
       #   variable =
       #     if true
       #     end
-      #
-      # @api private
       class EndAlignment < Base
         include CheckAssignment
         include EndKeywordAlignment

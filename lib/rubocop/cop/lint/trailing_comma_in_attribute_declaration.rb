@@ -27,7 +27,6 @@ module RuboCop
       #     end
       #   end
       #
-      # @api private
       class TrailingCommaInAttributeDeclaration < Base
         extend AutoCorrector
         include RangeHelp

@@ -60,7 +60,6 @@ module RuboCop
       #   class Foo
       #   end
       #
-      # @api private
       class EmptyComment < Base
         include RangeHelp
         extend AutoCorrector

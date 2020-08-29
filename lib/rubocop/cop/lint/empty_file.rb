@@ -20,7 +20,6 @@ module RuboCop
       #   # bad
       #   # File consisting only of comments
       #
-      # @api private
       class EmptyFile < Base
         include RangeHelp
 

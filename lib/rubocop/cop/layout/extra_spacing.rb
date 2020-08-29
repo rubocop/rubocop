@@ -28,8 +28,6 @@ module RuboCop
       #   object.method(arg)         # this is a comment
       #   another_object.method(arg) # this is another comment
       #   some_object.method(arg)    # this is some comment
-      #
-      # @api private
       class ExtraSpacing < Base
         extend AutoCorrector
         include PrecedingFollowingAlignment

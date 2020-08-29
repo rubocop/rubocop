@@ -19,7 +19,6 @@ module RuboCop
       #   add_offense(node, message: CUSTOM_MSG)
       #   add_offense(node, message: message(other_node))
       #
-      # @api private
       class RedundantMessageArgument < Base
         include RangeHelp
         extend AutoCorrector

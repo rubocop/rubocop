@@ -13,8 +13,6 @@ module RuboCop
       #
       #   # good
       #   'abc'.strip
-      #
-      # @api private
       class Strip < Base
         include RangeHelp
         extend AutoCorrector

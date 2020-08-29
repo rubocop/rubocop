@@ -59,7 +59,6 @@ module RuboCop
       #     ERB.new(str, nil, '-', '@output_buffer')
       #   end
       #
-      # @api private
       class ErbNewArguments < Base
         include RangeHelp
         extend TargetRubyVersion

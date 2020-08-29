@@ -58,8 +58,6 @@ module RuboCop
       #     bar: "0000000000",
       #     baz: "0000000000",
       #   }
-      #
-      # @api private
       class LineLength < Cop
         include CheckLineBreakable
         include ConfigurableMax

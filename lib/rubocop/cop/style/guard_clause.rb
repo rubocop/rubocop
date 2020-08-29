@@ -47,8 +47,6 @@ module RuboCop
       #   # good
       #   foo || raise('exception') if something
       #   ok
-      #
-      # @api private
       class GuardClause < Base
         include MinBodyLength
         include StatementModifier

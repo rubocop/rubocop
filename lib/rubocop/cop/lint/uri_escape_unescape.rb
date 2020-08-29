@@ -29,8 +29,6 @@ module RuboCop
       #   CGI.unescape(enc_uri)
       #   URI.decode_www_form(enc_uri)
       #   URI.decode_www_form_component(enc_uri)
-      #
-      # @api private
       class UriEscapeUnescape < Base
         ALTERNATE_METHODS_OF_URI_ESCAPE = %w[
           CGI.escape

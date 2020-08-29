@@ -12,8 +12,6 @@ module RuboCop
       #
       #   # good
       #   items[1..]
-      #
-      # @api private
       class SlicingWithRange < Base
         extend AutoCorrector
         extend TargetRubyVersion

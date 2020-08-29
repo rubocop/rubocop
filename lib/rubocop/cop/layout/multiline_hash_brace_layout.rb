@@ -88,8 +88,6 @@ module RuboCop
       #     # good
       #     { a: 1,
       #       b: 2 }
-      #
-      # @api private
       class MultilineHashBraceLayout < Base
         include MultilineLiteralBraceLayout
         extend AutoCorrector

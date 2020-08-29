@@ -18,7 +18,6 @@ module RuboCop
       #           baz)
       #   end
       #
-      # @api private
       class MultilineMethodSignature < Base
         MSG = 'Avoid multi-line method signatures.'
 

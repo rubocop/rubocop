@@ -24,8 +24,6 @@ module RuboCop
       #   lib/layout_manager.rb
       #
       #   anything/using_snake_case.rake
-      #
-      # @api private
       class FileName < Base
         include RangeHelp
 

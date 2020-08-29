@@ -28,8 +28,6 @@ module RuboCop
       #   def foo(arg)
       #     return nil if arg
       #   end
-      #
-      # @api private
       class ReturnNil < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

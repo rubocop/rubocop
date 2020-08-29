@@ -7,8 +7,6 @@ module RuboCop
       # configured maximum. The ABC size is based on assignments, branches
       # (method calls), and conditions. See http://c2.com/cgi/wiki?AbcMetric
       # and https://en.wikipedia.org/wiki/ABC_Software_Metric.
-      #
-      # @api private
       class AbcSize < Base
         include MethodComplexity
 

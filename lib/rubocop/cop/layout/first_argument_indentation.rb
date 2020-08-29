@@ -141,7 +141,6 @@ module RuboCop
       #     nested_first_param),
       #   second_param
       #
-      # @api private
       class FirstArgumentIndentation < Cop
         include Alignment
         include ConfigurableEnforcedStyle

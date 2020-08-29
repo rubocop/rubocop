@@ -17,8 +17,6 @@ module RuboCop
       #   # good
       #
       #   "result is #{something}"
-      #
-      # @api private
       class RedundantStringCoercion < Base
         include Interpolation
         extend AutoCorrector

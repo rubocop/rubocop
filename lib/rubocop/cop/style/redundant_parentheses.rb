@@ -13,7 +13,6 @@ module RuboCop
       #   # good
       #   x if y.z.nil?
       #
-      # @api private
       class RedundantParentheses < Base
         include Parentheses
         extend AutoCorrector

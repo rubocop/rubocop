@@ -29,8 +29,6 @@ module RuboCop
       #   else
       #     do_something_else
       #   end
-      #
-      # @api private
       class UselessElseWithoutRescue < Base
         MSG = '`else` without `rescue` is useless.'
 

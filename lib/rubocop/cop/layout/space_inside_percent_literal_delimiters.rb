@@ -16,8 +16,6 @@ module RuboCop
       #
       #   # bad
       #   %x(  ls -l )
-      #
-      # @api private
       class SpaceInsidePercentLiteralDelimiters < Base
         include MatchRange
         include PercentLiteral

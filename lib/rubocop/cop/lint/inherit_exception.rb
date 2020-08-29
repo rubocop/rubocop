@@ -33,8 +33,6 @@ module RuboCop
       #   class C < StandardError; end
       #
       #   C = Class.new(StandardError)
-      #
-      # @api private
       class InheritException < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

@@ -52,7 +52,6 @@ module RuboCop
       #     foo
       #   end
       #
-      # @api private
       class UnusedBlockArgument < Base
         include UnusedArgument
         extend AutoCorrector

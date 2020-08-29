@@ -25,8 +25,6 @@ module RuboCop
       #
       #   # good
       #   gem 'rubocop', groups: [:development, :test]
-      #
-      # @api private
       class DuplicatedGem < Cop
         include RangeHelp
 

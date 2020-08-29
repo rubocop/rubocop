@@ -14,7 +14,6 @@ module RuboCop
       #   attr_accessor :something
       #   attr_reader :one, :two, :three
       #
-      # @api private
       class Attr < Base
         include RangeHelp
         extend AutoCorrector

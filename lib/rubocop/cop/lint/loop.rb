@@ -42,8 +42,6 @@ module RuboCop
       #     do_something
       #     break if some_condition
       #   end
-      #
-      # @api private
       class Loop < Base
         extend AutoCorrector
 

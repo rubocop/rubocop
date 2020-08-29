@@ -64,8 +64,6 @@ module RuboCop
       #       # ...
       #     end
       #   end
-      #
-      # @api private
       class EmptyLinesAroundClassBody < Base
         include EmptyLinesAroundBody
         extend AutoCorrector

@@ -52,7 +52,6 @@ module RuboCop
       #
       #   FOÖ = "foo"
       #
-      # @api private
       class AsciiIdentifiers < Base
         include RangeHelp
 

@@ -100,8 +100,6 @@ module RuboCop
       #   def foo(a,
       #     b)
       #   end
-      #
-      # @api private
       class MultilineMethodDefinitionBraceLayout < Base
         include MultilineLiteralBraceLayout
         extend AutoCorrector

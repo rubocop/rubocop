@@ -5,8 +5,6 @@ module RuboCop
     # This formatter display dots for files with no offenses and
     # letters for files with problems in the them. In the end it
     # appends the regular report data in the clang style format.
-    #
-    # @api private
     class ProgressFormatter < ClangStyleFormatter
       include TextUtil
 

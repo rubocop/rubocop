@@ -17,7 +17,6 @@ module RuboCop
       #   # good
       #   'foo'.unpack1('h*')
       #
-      # @api private
       class UnpackFirst < Base
         extend AutoCorrector
 

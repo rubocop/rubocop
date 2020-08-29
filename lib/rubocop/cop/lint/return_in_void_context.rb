@@ -31,8 +31,6 @@ module RuboCop
       #   def foo=(bar)
       #     return
       #   end
-      #
-      # @api private
       class ReturnInVoidContext < Base
         MSG = 'Do not return a value in `%<method>s`.'
 

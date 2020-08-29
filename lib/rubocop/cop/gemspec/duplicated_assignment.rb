@@ -34,8 +34,6 @@ module RuboCop
       #     spec.add_runtime_dependency('parallel', '~> 1.10')
       #     spec.add_runtime_dependency('parser', '>= 2.3.3.1', '< 3.0')
       #   end
-      #
-      # @api private
       class DuplicatedAssignment < Cop
         include RangeHelp
 

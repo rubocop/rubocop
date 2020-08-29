@@ -11,8 +11,6 @@ module RuboCop
     # 3   OneLineConditional
     # --
     # 29  Total
-    #
-    # @api private
     class OffenseCountFormatter < BaseFormatter
       attr_reader :offense_counts
 

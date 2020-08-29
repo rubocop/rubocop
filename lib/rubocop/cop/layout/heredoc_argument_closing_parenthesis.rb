@@ -50,7 +50,6 @@ module RuboCop
       #        123,
       #      )
       #
-      # @api private
       class HeredocArgumentClosingParenthesis < Base
         include RangeHelp
         extend AutoCorrector

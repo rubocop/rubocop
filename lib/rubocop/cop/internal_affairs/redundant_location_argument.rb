@@ -16,7 +16,6 @@ module RuboCop
       #   add_offense(node)
       #   add_offense(node, location: :selector)
       #
-      # @api private
       class RedundantLocationArgument < Base
         include RangeHelp
         extend AutoCorrector

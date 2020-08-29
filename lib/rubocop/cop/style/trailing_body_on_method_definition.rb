@@ -24,7 +24,6 @@ module RuboCop
       #     b[c: x]
       #   end
       #
-      # @api private
       class TrailingBodyOnMethodDefinition < Base
         include Alignment
         include TrailingBody

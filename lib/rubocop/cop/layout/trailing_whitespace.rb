@@ -28,7 +28,6 @@ module RuboCop
       #     x = 0
       #   RUBY
       #
-      # @api private
       class TrailingWhitespace < Base
         include RangeHelp
         extend AutoCorrector

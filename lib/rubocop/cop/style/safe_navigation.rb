@@ -58,8 +58,6 @@ module RuboCop
       #   foo.baz = bar if foo
       #   foo.baz + bar if foo
       #   foo.bar > 2 if foo
-      #
-      # @api private
       class SafeNavigation < Base
         include NilMethods
         include RangeHelp

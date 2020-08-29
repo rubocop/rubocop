@@ -60,7 +60,6 @@ module RuboCop
       #   def do_something
       #   end
       #
-      # @api private
       class EmptyLinesAroundAttributeAccessor < Base
         include RangeHelp
         include AllowedMethods

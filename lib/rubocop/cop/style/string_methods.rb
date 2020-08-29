@@ -14,8 +14,6 @@ module RuboCop
       #   # good
       #   'name'.to_sym
       #   'var'.preferred_method
-      #
-      # @api private
       class StringMethods < Base
         include MethodPreference
         extend AutoCorrector

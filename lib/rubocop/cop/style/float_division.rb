@@ -39,8 +39,6 @@ module RuboCop
       #
       #   # good
       #   a.fdiv(b)
-      #
-      # @api private
       class FloatDivision < Base
         include ConfigurableEnforcedStyle
         MESSAGES = {

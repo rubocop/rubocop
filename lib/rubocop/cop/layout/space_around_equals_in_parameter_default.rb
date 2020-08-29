@@ -27,8 +27,6 @@ module RuboCop
       #   def some_method(arg1=:default, arg2=nil, arg3=[])
       #     # do something...
       #   end
-      #
-      # @api private
       class SpaceAroundEqualsInParameterDefault < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle

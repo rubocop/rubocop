@@ -24,7 +24,6 @@ module RuboCop
       #   # bad
       #   def no_op; end
       #
-      # @api private
       class SingleLineMethods < Base
         include Alignment
         extend AutoCorrector

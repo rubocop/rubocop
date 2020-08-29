@@ -5,8 +5,6 @@ module RuboCop
     module Migration
       # Check that cop names in rubocop:disable comments are given with
       # department name.
-      #
-      # @api private
       class DepartmentName < Base
         include RangeHelp
         extend AutoCorrector

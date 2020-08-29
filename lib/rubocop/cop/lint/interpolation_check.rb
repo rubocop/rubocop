@@ -16,8 +16,6 @@ module RuboCop
       #   # good
       #
       #   foo = "something with #{interpolation} inside"
-      #
-      # @api private
       class InterpolationCheck < Base
         extend AutoCorrector
 

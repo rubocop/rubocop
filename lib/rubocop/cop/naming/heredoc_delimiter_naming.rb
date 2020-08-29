@@ -23,8 +23,6 @@ module RuboCop
       #   <<-EOS
       #     SELECT * FROM foo
       #   EOS
-      #
-      # @api private
       class HeredocDelimiterNaming < Base
         include Heredoc
 

@@ -24,8 +24,6 @@ module RuboCop
       #   end
       #
       #   something = 123 if test
-      #
-      # @api private
       class SpaceAroundKeyword < Base
         extend AutoCorrector
 
