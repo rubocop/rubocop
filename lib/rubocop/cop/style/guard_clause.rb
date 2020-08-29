@@ -17,6 +17,7 @@ module RuboCop
       #   # good
       #   def test
       #     return unless something
+      #
       #     work
       #   end
       #
