@@ -13,23 +13,18 @@ module RuboCop
         @preferred_delimiters = preferred_delimiters
       end
 
-      def correct(node, char)
+      def correct(corrector, node, char)
         escape = escape_words?(node)
         char = char.upcase if escape
         delimiters = delimiters_for("%#{char}")
         contents = new_contents(node, escape, delimiters)
-        wrap_contents(node, contents, char, delimiters)
+        wrap_contents(corrector, node, contents, char, delimiters)
       end
 
       private
 
-      def wrap_contents(node, contents, char, delimiters)
-        lambda do |corrector|
-          corrector.replace(
-            node,
-            "%#{char}#{delimiters[0]}#{contents}#{delimiters[1]}"
-          )
-        end
+      def wrap_contents(corrector, node, contents, char, delimiters)
+        corrector.replace(node, "%#{char}#{delimiters[0]}#{contents}#{delimiters[1]}")
       end
 
       def escape_words?(node)

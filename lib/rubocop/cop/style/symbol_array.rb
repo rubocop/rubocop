@@ -29,11 +29,12 @@ module RuboCop
       #   %i[foo bar baz]
       #
       # @api private
-      class SymbolArray < Cop
+      class SymbolArray < Base
         include ArrayMinSize
         include ArraySyntax
         include ConfigurableEnforcedStyle
         include PercentArray
+        extend AutoCorrector
 
         PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
         ARRAY_MSG = 'Use `[]` for an array of symbols.'
@@ -46,19 +47,9 @@ module RuboCop
           if bracketed_array_of?(:sym, node)
             return if symbols_contain_spaces?(node)
 
-            check_bracketed_array(node)
+            check_bracketed_array(node, 'i')
           elsif node.percent_literal?(:symbol)
             check_percent_array(node)
-          end
-        end
-
-        def autocorrect(node)
-          if style == :percent
-            PercentLiteralCorrector
-              .new(@config, @preferred_delimiters)
-              .correct(node, 'i')
-          else
-            correct_bracketed(node)
           end
         end
 
@@ -71,7 +62,7 @@ module RuboCop
           end
         end
 
-        def correct_bracketed(node)
+        def correct_bracketed(corrector, node)
           syms = node.children.map do |c|
             if c.dsym_type?
               string_literal = to_string_literal(c.source)
@@ -82,9 +73,7 @@ module RuboCop
             end
           end
 
-          lambda do |corrector|
-            corrector.replace(node, "[#{syms.join(', ')}]")
-          end
+          corrector.replace(node, "[#{syms.join(', ')}]")
         end
 
         def to_symbol_literal(string)
