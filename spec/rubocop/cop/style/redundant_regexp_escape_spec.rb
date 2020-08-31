@@ -87,18 +87,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
-      context "with an escaped '+' inside a character class inside a group" do
-        it 'registers an offense and corrects' do
-          expect_offense(<<~'RUBY')
-            foo = /([\+])/
-                     ^^ Redundant escape inside regexp literal
-          RUBY
+    context "with an escaped '+' inside a character class inside a group" do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          foo = /([\+])/
+                   ^^ Redundant escape inside regexp literal
+        RUBY
 
-          expect_correction(<<~RUBY)
-            foo = /([+])/
-          RUBY
-        end
+        expect_correction(<<~RUBY)
+          foo = /([+])/
+        RUBY
       end
+    end
 
     context 'with an escaped . inside a character class beginning with :' do
       it 'registers an offense and corrects' do
