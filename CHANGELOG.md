@@ -35,6 +35,7 @@
 * [#8321](https://github.com/rubocop-hq/rubocop/issues/8321): Enable auto-correction for `Layout/{Def}EndAlignment`, `Lint/EmptyEnsure`. ([@marcandre][])
 * [#8583](https://github.com/rubocop-hq/rubocop/issues/8583): Fix `Style/RedundantRegexpEscape` false positive for line continuations. ([@owst][])
 * [#8593](https://github.com/rubocop-hq/rubocop/issues/8593): Fix `Style/RedundantRegexpCharacterClass` false positive for interpolated multi-line expressions. ([@owst][])
+* [#8624](https://github.com/rubocop-hq/rubocop/pull/8624): Fix an error with the `Style/CaseLikeIf` cop where it does not properly handle overridden equality methods with no arguments. ([@Skipants][])
 
 ### Changes
 
@@ -4821,3 +4822,4 @@
 [@chocolateboy]: https://github.com/chocolateboy
 [@Lykos]: https://github.com/Lykos
 [@jaimerave]: https://github.com/jaimerave
+[@Skipants]: https://github.com/Skipants
