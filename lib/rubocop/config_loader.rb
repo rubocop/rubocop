@@ -129,9 +129,9 @@ module RuboCop
 
       def default_configuration
         @default_configuration ||= begin
-                                     print 'Default ' if debug?
-                                     load_file(DEFAULT_FILE)
-                                   end
+          print 'Default ' if debug?
+          load_file(DEFAULT_FILE)
+        end
       end
 
       # Returns the path rubocop inferred as the root of the project. No file
