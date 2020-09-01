@@ -3,6 +3,7 @@
 module RuboCop
   class CLI
     # Home of subcommands in the CLI.
+    # @api private
     module Command
       class << self
         # Find the command with a given name and run it in an environment.

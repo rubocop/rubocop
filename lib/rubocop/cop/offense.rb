@@ -64,6 +64,7 @@ module RuboCop
 
       PseudoSourceRange = Struct.new(:line, :column, :source_line, :begin_pos,
                                      :end_pos)
+      private_constant :PseudoSourceRange
 
       NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 1).freeze
 

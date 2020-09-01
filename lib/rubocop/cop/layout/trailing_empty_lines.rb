@@ -37,11 +37,12 @@ module RuboCop
       #   class Foo; end
       #   # EOF
       #
-      class TrailingEmptyLines < Cop
+      class TrailingEmptyLines < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
-        def investigate(processed_source)
+        def on_new_investigation
           buffer = processed_source.buffer
           return if buffer.source.empty?
 
@@ -57,28 +58,22 @@ module RuboCop
 
           return unless blank_lines != wanted_blank_lines
 
-          offense_detected(buffer, wanted_blank_lines, blank_lines,
-                           whitespace_at_end)
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
-          end
+          offense_detected(buffer, wanted_blank_lines, blank_lines, whitespace_at_end)
         end
 
         private
 
-        def offense_detected(buffer, wanted_blank_lines, blank_lines,
-                             whitespace_at_end)
+        def offense_detected(buffer, wanted_blank_lines, blank_lines, whitespace_at_end)
           begin_pos = buffer.source.length - whitespace_at_end.length
           autocorrect_range = range_between(begin_pos, buffer.source.length)
           begin_pos += 1 unless whitespace_at_end.empty?
           report_range = range_between(begin_pos, buffer.source.length)
 
-          add_offense(autocorrect_range,
-                      location: report_range,
-                      message: message(wanted_blank_lines, blank_lines))
+          add_offense(
+            report_range, message: message(wanted_blank_lines, blank_lines)
+          ) do |corrector|
+            corrector.replace(autocorrect_range, style == :final_newline ? "\n" : "\n\n")
+          end
         end
 
         def ends_in_end?(processed_source)

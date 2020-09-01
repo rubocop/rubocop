@@ -24,7 +24,9 @@ module RuboCop
       #   end
       #
       #   something = 123 if test
-      class SpaceAroundKeyword < Cop
+      class SpaceAroundKeyword < Base
+        extend AutoCorrector
+
         MSG_BEFORE = 'Space before keyword `%<range>s` is missing.'
         MSG_AFTER = 'Space after keyword `%<range>s` is missing.'
 
@@ -129,14 +131,6 @@ module RuboCop
           check(node, [:keyword].freeze)
         end
 
-        def autocorrect(range)
-          if space_before_missing?(range)
-            ->(corrector) { corrector.insert_before(range, ' ') }
-          else
-            ->(corrector) { corrector.insert_after(range, ' ') }
-          end
-        end
-
         private
 
         def check(node, locations, begin_keyword = DO)
@@ -162,8 +156,11 @@ module RuboCop
 
         def check_end(node, range, begin_keyword)
           return if begin_keyword == DO && !do?(node)
+          return unless space_before_missing?(range)
 
-          offense(range, MSG_BEFORE) if space_before_missing?(range)
+          add_offense(range, message: format(MSG_BEFORE, range: range.source)) do |corrector|
+            corrector.insert_before(range, ' ')
+          end
         end
 
         def do?(node)
@@ -171,15 +168,17 @@ module RuboCop
         end
 
         def check_keyword(node, range)
-          offense(range, MSG_BEFORE) if space_before_missing?(range) &&
-                                        !preceded_by_operator?(node, range)
-          offense(range, MSG_AFTER) if space_after_missing?(range)
-        end
+          if space_before_missing?(range) && !preceded_by_operator?(node, range)
+            add_offense(range, message: format(MSG_BEFORE, range: range.source)) do |corrector|
+              corrector.insert_before(range, ' ')
+            end
+          end
 
-        def offense(range, msg)
-          add_offense(range,
-                      location: range,
-                      message: format(msg, range: range.source))
+          return unless space_after_missing?(range)
+
+          add_offense(range, message: format(MSG_AFTER, range: range.source)) do |corrector|
+            corrector.insert_after(range, ' ')
+          end
         end
 
         def space_before_missing?(range)

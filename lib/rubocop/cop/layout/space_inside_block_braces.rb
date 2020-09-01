@@ -76,10 +76,11 @@ module RuboCop
       #   # good
       #   [1, 2, 3].each {|n| n * 2 }
       #
-      class SpaceInsideBlockBraces < Cop
+      class SpaceInsideBlockBraces < Base
         include ConfigurableEnforcedStyle
         include SurroundingSpace
         include RangeHelp
+        extend AutoCorrector
 
         def on_block(node)
           return if node.keywords?
@@ -95,17 +96,6 @@ module RuboCop
           right_brace = node.loc.end
 
           check_inside(node, left_brace, right_brace)
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            case range.source
-            when /\s/ then corrector.remove(range)
-            when '{}' then corrector.replace(range, '{ }')
-            when '{|' then corrector.replace(range, '{ |')
-            else           corrector.insert_before(range, ' ')
-            end
-          end
         end
 
         private
@@ -216,7 +206,9 @@ module RuboCop
 
         def no_space(begin_pos, end_pos, msg)
           if style == :space
-            offense(begin_pos, end_pos, msg) { opposite_style_detected }
+            return unless opposite_style_detected
+
+            offense(begin_pos, end_pos, msg)
           else
             correct_style_detected
           end
@@ -224,15 +216,24 @@ module RuboCop
 
         def space(begin_pos, end_pos, msg)
           if style == :no_space
-            offense(begin_pos, end_pos, msg) { opposite_style_detected }
+            return unless opposite_style_detected
+
+            offense(begin_pos, end_pos, msg)
           else
             correct_style_detected
           end
         end
 
-        def offense(begin_pos, end_pos, msg, &block)
+        def offense(begin_pos, end_pos, msg)
           range = range_between(begin_pos, end_pos)
-          add_offense(range, location: range, message: msg, &block)
+          add_offense(range, message: msg) do |corrector|
+            case range.source
+            when /\s/ then corrector.remove(range)
+            when '{}' then corrector.replace(range, '{ }')
+            when '{|' then corrector.replace(range, '{ |')
+            else           corrector.insert_before(range, ' ')
+            end
+          end
         end
 
         def style_for_empty_braces

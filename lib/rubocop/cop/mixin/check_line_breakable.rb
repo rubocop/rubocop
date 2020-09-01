@@ -54,6 +54,7 @@ module RuboCop
 
       private
 
+      # @api private
       def extract_breakable_node_from_elements(node, elements, max)
         return unless breakable_collection?(node, elements)
         return if safe_to_ignore?(node)
@@ -65,6 +66,7 @@ module RuboCop
         extract_first_element_over_column_limit(node, elements, max)
       end
 
+      # @api private
       def extract_first_element_over_column_limit(node, elements, max)
         line = node.first_line
         i = 0
@@ -74,10 +76,12 @@ module RuboCop
         elements[i - 1]
       end
 
+      # @api private
       def within_column_limit?(element, max, line)
         element && element.loc.column < max && element.loc.line == line
       end
 
+      # @api private
       def safe_to_ignore?(node)
         return true unless max
         return true if already_on_multiple_lines?(node)
@@ -93,6 +97,7 @@ module RuboCop
         false
       end
 
+      # @api private
       def breakable_collection?(node, elements)
         # For simplicity we only want to insert breaks in normal
         # hashes wrapped in a set of curly braces like {foo: 1}.
@@ -109,6 +114,7 @@ module RuboCop
         starts_with_bracket && has_second_element
       end
 
+      # @api private
       def contained_by_breakable_collection_on_same_line?(node)
         node.each_ancestor.find do |ancestor|
           # Ignore ancestors on different lines.
@@ -128,6 +134,7 @@ module RuboCop
         false
       end
 
+      # @api private
       def contained_by_multiline_collection_that_could_be_broken_up?(node)
         node.each_ancestor.find do |ancestor|
           if (ancestor.hash_type? || ancestor.array_type?) &&
@@ -144,6 +151,7 @@ module RuboCop
         false
       end
 
+      # @api private
       def children_could_be_broken_up?(children)
         return false if all_on_same_line?(children)
 
@@ -156,12 +164,14 @@ module RuboCop
         false
       end
 
+      # @api private
       def all_on_same_line?(nodes)
         return true if nodes.empty?
 
         nodes.first.first_line == nodes.last.last_line
       end
 
+      # @api private
       def process_args(args)
         # If there is a trailing hash arg without explicit braces, like this:
         #
@@ -174,6 +184,7 @@ module RuboCop
         args
       end
 
+      # @api private
       def already_on_multiple_lines?(node)
         node.first_line != node.last_line
       end

@@ -8,11 +8,14 @@ module RuboCop
   class ConfigValidator
     extend Forwardable
 
+    # @api private
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
+    # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
                          Reference Safe SafeAutoCorrect].freeze
+    # @api private
     NEW_COPS_VALUES = %w[pending disable enable].freeze
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops

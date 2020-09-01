@@ -8,12 +8,17 @@ module RuboCop
       include MultilineLiteralBraceLayout
       include RangeHelp
 
-      def initialize(node, processed_source)
+      def self.correct(corrector, node, processed_source)
+        new(corrector, node, processed_source).call
+      end
+
+      def initialize(corrector, node, processed_source)
+        @corrector = corrector
         @node = node
         @processed_source = processed_source
       end
 
-      def call(corrector)
+      def call
         if closing_brace_on_same_line?(node)
           correct_same_line_brace(corrector)
         else
@@ -29,7 +34,7 @@ module RuboCop
 
       private
 
-      attr_reader :node, :processed_source
+      attr_reader :corrector, :node, :processed_source
 
       def correct_same_line_brace(corrector)
         corrector.insert_before(node.loc.end, "\n")

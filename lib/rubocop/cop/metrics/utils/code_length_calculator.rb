@@ -11,6 +11,7 @@ module RuboCop
 
           FOLDABLE_TYPES = %i[array hash heredoc].freeze
           CLASSLIKE_TYPES = %i[class module].freeze
+          private_constant :FOLDABLE_TYPES, :CLASSLIKE_TYPES
 
           def initialize(node, processed_source, count_comments: false, foldable_types: [])
             @node = node

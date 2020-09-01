@@ -100,8 +100,9 @@ module RuboCop
       #   def foo(a,
       #     b)
       #   end
-      class MultilineMethodDefinitionBraceLayout < Cop
+      class MultilineMethodDefinitionBraceLayout < Base
         include MultilineLiteralBraceLayout
+        extend AutoCorrector
 
         SAME_LINE_MESSAGE = 'Closing method definition brace must be on the ' \
           'same line as the last parameter when opening brace is on the same ' \
@@ -121,10 +122,6 @@ module RuboCop
           check_brace_layout(node.arguments)
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          MultilineLiteralBraceCorrector.new(node, processed_source)
-        end
       end
     end
   end

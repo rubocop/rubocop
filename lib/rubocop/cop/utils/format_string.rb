@@ -111,11 +111,9 @@ module RuboCop
         private
 
         def parse
-          @source.to_enum(:scan, SEQUENCE).map do
-            FormatSequence.new(
-              Regexp.last_match
-            )
-          end
+          matches = []
+          @source.scan(SEQUENCE) { matches << FormatSequence.new(Regexp.last_match) }
+          matches
         end
 
         def mixed_formats?

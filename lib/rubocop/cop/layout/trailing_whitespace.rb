@@ -28,12 +28,13 @@ module RuboCop
       #     x = 0
       #   RUBY
       #
-      class TrailingWhitespace < Cop
+      class TrailingWhitespace < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Trailing whitespace detected.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           heredoc_ranges = extract_heredoc_ranges(processed_source.ast)
           processed_source.lines.each_with_index do |line, index|
             lineno = index + 1
@@ -41,16 +42,11 @@ module RuboCop
             next unless line.end_with?(' ', "\t")
             next if skip_heredoc? && inside_heredoc?(heredoc_ranges, lineno)
 
-            range = source_range(processed_source.buffer,
-                                 lineno,
-                                 (line.rstrip.length)...(line.length))
-
-            add_offense(range, location: range)
+            range = offense_range(lineno, line)
+            add_offense(range) do |corrector|
+              corrector.remove(range)
+            end
           end
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
         end
 
         private
@@ -70,6 +66,10 @@ module RuboCop
             body = node.location.heredoc_body
             (body.first_line...body.last_line)
           end
+        end
+
+        def offense_range(lineno, line)
+          source_range(processed_source.buffer, lineno, (line.rstrip.length)...(line.length))
         end
       end
     end

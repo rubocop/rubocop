@@ -48,8 +48,9 @@ module RuboCop
       #     foo(i)
       #     bar(i)
       #   }
-      class MultilineBlockLayout < Cop
+      class MultilineBlockLayout < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Block body expression is on the same line as ' \
               'the block start.'
@@ -68,23 +69,6 @@ module RuboCop
           return unless node.body && node.loc.begin.line == node.body.first_line
 
           add_offense_for_expression(node, node.body, MSG)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            unless args_on_beginning_line?(node)
-              autocorrect_arguments(corrector, node)
-              expr_before_body = node.arguments.source_range.end
-            end
-
-            return unless node.body
-
-            expr_before_body ||= node.loc.begin
-
-            if expr_before_body.line == node.body.first_line
-              autocorrect_body(corrector, node, node.body)
-            end
-          end
         end
 
         private
@@ -116,7 +100,25 @@ module RuboCop
         def add_offense_for_expression(node, expr, msg)
           expression = expr.source_range
           range = range_between(expression.begin_pos, expression.end_pos)
-          add_offense(node, location: range, message: msg)
+
+          add_offense(range, message: msg) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          unless args_on_beginning_line?(node)
+            autocorrect_arguments(corrector, node)
+            expr_before_body = node.arguments.source_range.end
+          end
+
+          return unless node.body
+
+          expr_before_body ||= node.loc.begin
+
+          return unless expr_before_body.line == node.body.first_line
+
+          autocorrect_body(corrector, node, node.body)
         end
 
         def autocorrect_arguments(corrector, node)

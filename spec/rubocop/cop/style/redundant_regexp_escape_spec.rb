@@ -16,6 +16,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
+    context 'with a line continuation' do
+      it 'does not register an offense' do
+        expect_no_offenses("foo = /a\\\nb/")
+      end
+    end
+
+    context 'with a line continuation within a character class' do
+      it 'does not register an offense' do
+        expect_no_offenses("foo = /[a\\\nb]/")
+      end
+    end
+
     [
       ('a'..'z').to_a - %w[c n p u x],
       ('A'..'Z').to_a - %w[C M P],
@@ -276,6 +288,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
           expect_no_offenses("foo = /\\#{char}/")
         end
       end
+
+      # Avoid an empty character class
+      next if char == "\n"
 
       context "with an escaped '#{char}' inside a character class" do
         it 'does not register an offense' do

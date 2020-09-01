@@ -17,6 +17,7 @@ module RuboCop
       end
     end
 
+    # @api private
     MAX_ITERATIONS = 200
 
     attr_reader :errors, :warnings

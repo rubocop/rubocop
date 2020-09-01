@@ -34,14 +34,25 @@ module RuboCop
 
       def check_percent_array(node)
         array_style_detected(:percent, node.values.size)
-        add_offense(node) if style == :brackets
+
+        return unless style == :brackets
+
+        add_offense(node) do |corrector|
+          correct_bracketed(corrector, node)
+        end
       end
 
-      def check_bracketed_array(node)
+      def check_bracketed_array(node, literal_prefix)
         return if allowed_bracket_array?(node)
 
         array_style_detected(:brackets, node.values.size)
-        add_offense(node) if style == :percent
+
+        return unless style == :percent
+
+        add_offense(node) do |corrector|
+          percent_literal_corrector = PercentLiteralCorrector.new(@config, @preferred_delimiters)
+          percent_literal_corrector.correct(corrector, node, literal_prefix)
+        end
       end
     end
   end

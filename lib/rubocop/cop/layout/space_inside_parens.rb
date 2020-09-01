@@ -31,34 +31,29 @@ module RuboCop
       #   g = ( a + 3 )
       #   y()
       #
-      class SpaceInsideParens < Cop
+      class SpaceInsideParens < Base
         include SurroundingSpace
         include RangeHelp
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG       = 'Space inside parentheses detected.'
         MSG_SPACE = 'No space inside parentheses detected.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           @processed_source = processed_source
 
           if style == :space
             each_missing_space(processed_source.tokens) do |range|
-              add_offense(range, location: range, message: MSG_SPACE)
+              add_offense(range, message: MSG_SPACE) do |corrector|
+                corrector.insert_before(range, ' ')
+              end
             end
           else
             each_extraneous_space(processed_source.tokens) do |range|
-              add_offense(range, location: range)
-            end
-          end
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            if style == :space
-              corrector.insert_before(range, ' ')
-            else
-              corrector.remove(range)
+              add_offense(range) do |corrector|
+                corrector.remove(range)
+              end
             end
           end
         end

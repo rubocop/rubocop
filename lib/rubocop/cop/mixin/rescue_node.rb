@@ -17,6 +17,15 @@ module RuboCop
         node&.resbody_type? &&
           @modifier_locations.include?(node.loc.keyword)
       end
+
+      def rescued_exceptions(resbody)
+        rescue_group, = *resbody
+        if rescue_group
+          rescue_group.values
+        else
+          []
+        end
+      end
     end
   end
 end

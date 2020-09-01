@@ -11,7 +11,7 @@ module RuboCop
       #
       #   # Detected since Ruby 2.7
       #   return 1 # 1 is always ignored.
-      class TopLevelReturnWithArgument < Cop
+      class TopLevelReturnWithArgument < Base
         # This cop works by validating the ancestors of the return node. A
         # top-level return node's ancestors should not be of block, def, or
         # defs type.

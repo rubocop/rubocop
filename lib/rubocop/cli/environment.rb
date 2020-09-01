@@ -3,6 +3,7 @@
 module RuboCop
   class CLI
     # Execution environment for a CLI command.
+    # @api private
     class Environment
       attr_reader :options, :config_store, :paths
 

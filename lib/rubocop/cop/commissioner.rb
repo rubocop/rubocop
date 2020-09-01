@@ -7,6 +7,9 @@ module RuboCop
     class Commissioner
       include RuboCop::AST::Traversal
 
+      RESTRICTED_CALLBACKS = %i[on_send on_csend].freeze
+      private_constant :RESTRICTED_CALLBACKS
+
       # How a Commissioner returns the results of the investigation
       # as a list of Cop::InvestigationReport and any errors caught
       # during the investigation.
@@ -42,7 +45,8 @@ module RuboCop
         @cops = cops
         @forces = forces
         @options = options
-        @callbacks = {}
+        @callbacks = Hash.new { |h, k| h[k] = cops_callbacks_for(k) }
+        @restricted_map = {}
 
         reset
       end
@@ -57,10 +61,17 @@ module RuboCop
         method_name = :"on_#{node_type}"
         next unless method_defined?(method_name)
 
-        define_method(method_name) do |node|
-          trigger_responding_cops(method_name, node)
-          super(node) unless NO_CHILD_NODES.include?(node_type)
+        if RESTRICTED_CALLBACKS.include?(method_name)
+          trigger_restricted = "trigger_restricted_cops(:on_#{node_type}, node)"
         end
+
+        class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
+          def on_#{node_type}(node)
+            trigger_responding_cops(:on_#{node_type}, node)
+            #{trigger_restricted}
+            #{'super(node)' unless NO_CHILD_NODES.include?(node_type)}
+          end
+        RUBY
       end
 
       # @return [InvestigationReport]
@@ -83,9 +94,6 @@ module RuboCop
       private
 
       def trigger_responding_cops(callback, node)
-        @callbacks[callback] ||= @cops.select do |cop|
-          cop.respond_to?(callback)
-        end
         @callbacks[callback].each do |cop|
           with_cop_error_handling(cop, node) do
             cop.send(callback, node)
@@ -95,6 +103,38 @@ module RuboCop
 
       def reset
         @errors = []
+      end
+
+      def cops_callbacks_for(callback)
+        callbacks = @cops.select do |cop|
+          cop.respond_to?(callback)
+        end
+        if RESTRICTED_CALLBACKS.include?(callback)
+          @restricted_map[callback] = restricted_map(callbacks)
+        end
+        callbacks
+      end
+
+      def trigger_restricted_cops(event, node)
+        name = node.method_name
+        @restricted_map.fetch(event)[name]&.each do |cop|
+          with_cop_error_handling(cop, node) do
+            cop.send(event, node)
+          end
+        end
+      end
+
+      # Note: mutates `callbacks` in place
+      def restricted_map(callbacks)
+        map = {}
+        callbacks.select! do |cop|
+          restrictions = cop.class.send :restrict_on_send
+          restrictions.each do |name|
+            (map[name] ||= []) << cop
+          end
+          restrictions.empty?
+        end
+        map
       end
 
       def invoke(callback, cops, *args)

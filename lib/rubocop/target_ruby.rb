@@ -2,6 +2,7 @@
 
 module RuboCop
   # The kind of Ruby that code inspected by RuboCop is written in.
+  # @api private
   class TargetRuby
     KNOWN_RUBIES = [2.4, 2.5, 2.6, 2.7, 2.8].freeze
     DEFAULT_VERSION = KNOWN_RUBIES.first
@@ -12,6 +13,7 @@ module RuboCop
     private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES
 
     # A place where information about a target ruby version is found.
+    # @api private
     class Source
       attr_reader :version, :name
 
@@ -26,6 +28,7 @@ module RuboCop
     end
 
     # The target ruby version may be configured in RuboCop's config.
+    # @api private
     class RuboCopConfig < Source
       def name
         "`TargetRubyVersion` parameter (in #{@config.smart_loaded_path})"
@@ -39,6 +42,7 @@ module RuboCop
     end
 
     # The target ruby version may be found in a .ruby-version file.
+    # @api private
     class RubyVersionFile < Source
       FILENAME = '.ruby-version'
 
@@ -68,6 +72,7 @@ module RuboCop
     end
 
     # The lock file of Bundler may identify the target ruby version.
+    # @api private
     class BundlerLockFile < Source
       def name
         "`#{bundler_lock_file_path}`"
@@ -108,6 +113,7 @@ module RuboCop
     end
 
     # If all else fails, a default version will be picked.
+    # @api private
     class Default < Source
       def name
         'default'

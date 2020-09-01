@@ -21,9 +21,10 @@ module RuboCop
       #   something y, z
       #   something 'hello'
       #
-      class SpaceBeforeFirstArg < Cop
+      class SpaceBeforeFirstArg < Base
         include PrecedingFollowingAlignment
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Put one space between the method name and ' \
               'the first argument.'
@@ -39,13 +40,11 @@ module RuboCop
           return if space.length == 1
           return unless expect_params_after_method_name?(node)
 
-          add_offense(space, location: space)
+          add_offense(space) do |corrector|
+            corrector.replace(space, ' ')
+          end
         end
         alias on_csend on_send
-
-        def autocorrect(range)
-          ->(corrector) { corrector.replace(range, ' ') }
-        end
 
         private
 

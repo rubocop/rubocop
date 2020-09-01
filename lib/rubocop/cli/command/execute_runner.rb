@@ -4,6 +4,7 @@ module RuboCop
   class CLI
     module Command
       # Run all the selected cops and report the result.
+      # @api private
       class ExecuteRunner < Base
         include Formatter::TextUtil
 

@@ -6,6 +6,7 @@ module RuboCop
     #
     # This generator will take a cop name and generate a source file
     # and spec file when given a valid qualified cop name.
+    # @api private
     class Generator
       # Note: RDoc 5.1.0 or lower has the following issue.
       # https://github.com/rubocop-hq/rubocop/issues/7043

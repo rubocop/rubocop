@@ -53,9 +53,10 @@ module RuboCop
       #   # good
       #   foo[ ]
       #
-      class SpaceInsideReferenceBrackets < Cop
+      class SpaceInsideReferenceBrackets < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = '%<command>s space inside reference brackets.'
         EMPTY_MSG = '%<command>s space inside empty reference brackets.'
@@ -83,23 +84,19 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            left, right = reference_brackets(node)
+        private
 
-            if empty_brackets?(left, right)
-              SpaceCorrector.empty_corrections(processed_source, corrector,
-                                               empty_config, left, right)
-            elsif style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector,
-                                          left, right)
-            else
-              SpaceCorrector.add_space(processed_source, corrector, left, right)
-            end
+        def autocorrect(corrector, node)
+          left, right = reference_brackets(node)
+
+          if empty_brackets?(left, right)
+            SpaceCorrector.empty_corrections(processed_source, corrector, empty_config, left, right)
+          elsif style == :no_space
+            SpaceCorrector.remove_space(processed_source, corrector, left, right)
+          else
+            SpaceCorrector.add_space(processed_source, corrector, left, right)
           end
         end
-
-        private
 
         def reference_brackets(node)
           tokens = tokens(node)

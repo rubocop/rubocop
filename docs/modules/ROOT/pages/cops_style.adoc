@@ -3630,6 +3630,7 @@ end
 # good
 def test
   return unless something
+
   work
 end
 
@@ -4971,9 +4972,19 @@ when reading code.
 
 [source,ruby]
 ----
+# bad
 a do
   b
 end.c
+
+# good
+a { b }.c
+
+# good
+foo = a do
+  b
+end
+foo.c
 ----
 
 === References
