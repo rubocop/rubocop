@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.90.0 (2020-09-01)
+
 ### New features
 
 * [#8451](https://github.com/rubocop-hq/rubocop/issues/8451): Add new `Style/RedundantSelfAssignment` cop. ([@fatkodima][])
