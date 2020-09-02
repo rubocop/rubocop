@@ -73,6 +73,13 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateRequire do
     RUBY
   end
 
+  it 'does not register an offense when same feature argument but different require method' do
+    expect_no_offenses(<<~RUBY)
+      require 'feature'
+      require_relative 'feature'
+    RUBY
+  end
+
   it 'does not register an offense when calling user-defined `require` method' do
     expect_no_offenses(<<~RUBY)
       params.require(:user)
