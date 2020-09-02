@@ -9414,6 +9414,11 @@ warn('hello')
 This cop checks for places where string concatenation
 can be replaced with string interpolation.
 
+The cop can autocorrect simple cases but will skip autocorrecting
+more complex cases where the resulting code would be harder to read.
+In those cases, it might be useful to extract statements to local
+variables or methods which you can then interpolate in a string.
+
 === Examples
 
 [source,ruby]
