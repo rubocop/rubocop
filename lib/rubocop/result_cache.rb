@@ -3,6 +3,7 @@
 require 'digest/sha1'
 require 'find'
 require 'etc'
+require 'zlib'
 
 module RuboCop
   # Provides functionality for caching rubocop runs.
@@ -171,7 +172,7 @@ module RuboCop
           rubocop_extra_features
             .select { |path| File.file?(path) }
             .sort!
-            .each { |path| digest << File.mtime(path).to_s }
+            .each { |path| digest << Zlib.crc32(IO.read(path)).to_s }
           digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
           digest.hexdigest
         end
