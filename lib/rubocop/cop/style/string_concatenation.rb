@@ -6,6 +6,11 @@ module RuboCop
       # This cop checks for places where string concatenation
       # can be replaced with string interpolation.
       #
+      # The cop can autocorrect simple cases but will skip autocorrecting
+      # more complex cases where the resulting code would be harder to read.
+      # In those cases, it might be useful to extract statements to local
+      # variables or methods which you can then interpolate in a string.
+      #
       # @example
       #   # bad
       #   email_with_name = user.name + ' <' + user.email + '>'
@@ -37,7 +42,9 @@ module RuboCop
           collect_parts(topmost_plus_node, parts)
 
           add_offense(topmost_plus_node) do |corrector|
-            corrector.replace(topmost_plus_node, replacement(parts))
+            if parts.none? { |part| uncorrectable?(part) }
+              corrector.replace(topmost_plus_node, replacement(parts))
+            end
           end
         end
 
@@ -64,6 +71,13 @@ module RuboCop
 
         def plus_node?(node)
           node.send_type? && node.method?(:+)
+        end
+
+        def uncorrectable?(part)
+          part.multiline? ||
+            part.dstr_type? ||
+            (part.str_type? && part.heredoc?) ||
+            part.each_descendant(:block).any?
         end
 
         def replacement(parts)

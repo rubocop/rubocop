@@ -6,6 +6,10 @@
 
 * [#8627](https://github.com/rubocop-hq/rubocop/issues/8627): Fix a false positive for `Lint/DuplicateRequire` when same feature argument but different require method. ([@koic][])
 
+### Changes
+
+* [#8470](https://github.com/rubocop-hq/rubocop/issues/8470): Do not autocorrect `Style/StringConcatenation` when parts of the expression are too complex. ([@dvandersluis][])
+
 ## 0.90.0 (2020-09-01)
 
 ### New features
