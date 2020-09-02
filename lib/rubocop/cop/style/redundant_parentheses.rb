@@ -26,9 +26,7 @@ module RuboCop
                          '^^(block (send _ _ equal?(%0) ...) ...)'
 
         def on_begin(node)
-          return if !parentheses?(node) || parens_allowed?(node)
-          return if node.parent && (node.parent.while_post_type? ||
-                                    node.parent.until_post_type?)
+          return if !parentheses?(node) || parens_allowed?(node) || ignore_syntax?(node)
 
           check(node)
         end
@@ -40,6 +38,13 @@ module RuboCop
             first_arg_begins_with_hash_literal?(node) ||
             rescue?(node) ||
             allowed_expression?(node)
+        end
+
+        def ignore_syntax?(node)
+          return false unless (parent = node.parent)
+
+          parent.while_post_type? || parent.until_post_type? ||
+            like_method_argument_parentheses?(parent)
         end
 
         def allowed_expression?(node)
@@ -66,6 +71,10 @@ module RuboCop
           return false unless ancestor
 
           !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
+        end
+
+        def like_method_argument_parentheses?(node)
+          node.send_type? && node.arguments.size == 1 && !node.arithmetic_operation?
         end
 
         def empty_parentheses?(node)
