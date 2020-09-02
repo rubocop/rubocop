@@ -805,6 +805,10 @@ require 'foo'
 # good
 require 'foo'
 require 'bar'
+
+# good
+require 'foo'
+require_relative 'foo'
 ----
 
 == Lint/DuplicateRescueException
