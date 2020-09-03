@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+require 'English'
+before_us = $LOADED_FEATURES.dup
 require 'rainbow'
 
-require 'English'
 require 'set'
 require 'forwardable'
 require 'regexp_parser'
@@ -627,3 +628,7 @@ require_relative 'rubocop/options'
 require_relative 'rubocop/remote_config'
 require_relative 'rubocop/target_ruby'
 require_relative 'rubocop/yaml_duplication_checker'
+
+unless File.exist?("#{__dir__}/../Gemfile") # Check if we are a gem
+  RuboCop::ResultCache.rubocop_required_features = $LOADED_FEATURES - before_us
+end
