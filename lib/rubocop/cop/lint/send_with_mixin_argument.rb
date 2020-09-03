@@ -40,10 +40,12 @@ module RuboCop
 
         MSG = 'Use `%<method>s %<module_name>s` instead of `%<bad_method>s`.'
         MIXIN_METHODS = %i[include prepend extend].freeze
+        SEND_METHODS = %i[send public_send __send__].freeze
+        RESTRICT_ON_SEND = SEND_METHODS
 
         def_node_matcher :send_with_mixin_argument?, <<~PATTERN
           (send
-            (const _ _) {:send :public_send :__send__}
+            (const _ _) {:#{SEND_METHODS.join(' :')}}
             ({sym str} $#mixin_method?)
               $(const _ _))
         PATTERN

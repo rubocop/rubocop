@@ -19,6 +19,7 @@ module RuboCop
 
         MSG = '`%<double_colon>sBigDecimal.new()` is deprecated. ' \
               'Use `%<double_colon>sBigDecimal()` instead.'
+        RESTRICT_ON_SEND = %i[new].freeze
 
         def_node_matcher :big_decimal_new, <<~PATTERN
           (send
@@ -26,8 +27,6 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.method?(:new)
-
           big_decimal_new(node) do |captured_value|
             double_colon = captured_value ? '::' : ''
             message = format(MSG, double_colon: double_colon)

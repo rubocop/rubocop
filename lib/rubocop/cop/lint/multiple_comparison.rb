@@ -25,9 +25,11 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use the `&&` operator to compare multiple values.'
+        COMPARISON_METHODS = %i[< > <= >=].freeze
+        RESTRICT_ON_SEND = COMPARISON_METHODS
 
         def_node_matcher :multiple_compare?, <<~PATTERN
-          (send (send _ {:< :> :<= :>=} $_) {:< :> :<= :>=} _)
+          (send (send _ {:< :> :<= :>=} $_) {:#{COMPARISON_METHODS.join(' :')}} _)
         PATTERN
 
         def on_send(node)

@@ -18,6 +18,7 @@ module RuboCop
 
         MSG = 'Use `:%<keyword>s` as the location argument to ' \
               '`#add_offense`.'
+        RESTRICT_ON_SEND = %i[add_offense].freeze
 
         def on_send(node)
           node_type_check(node) do |node_arg, kwargs|
