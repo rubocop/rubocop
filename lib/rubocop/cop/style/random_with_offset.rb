@@ -28,6 +28,7 @@ module RuboCop
 
         MSG = 'Prefer ranges when generating random numbers instead of ' \
           'integers with offsets.'
+        RESTRICT_ON_SEND = %i[+ - succ pred next].freeze
 
         def_node_matcher :integer_op_rand?, <<~PATTERN
           (send

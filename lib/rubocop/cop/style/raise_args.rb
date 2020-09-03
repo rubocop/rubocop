@@ -41,6 +41,8 @@ module RuboCop
         COMPACT_MSG = 'Provide an exception object ' \
           'as an argument to `%<method>s`.'
 
+        RESTRICT_ON_SEND = %i[raise fail].freeze
+
         def on_send(node)
           return unless node.command?(:raise) || node.command?(:fail)
 

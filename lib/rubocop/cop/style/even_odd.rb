@@ -19,6 +19,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Replace with `Integer#%<method>s?`.'
+        RESTRICT_ON_SEND = %i[== !=].freeze
 
         def_node_matcher :even_odd_candidate?, <<~PATTERN
           (send

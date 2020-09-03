@@ -19,6 +19,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'
+        RESTRICT_ON_SEND = %i[attr].freeze
 
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?

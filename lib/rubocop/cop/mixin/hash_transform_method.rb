@@ -5,6 +5,8 @@ module RuboCop
     # Common functionality for Style/HashTransformKeys and
     # Style/HashTransformValues
     module HashTransformMethod
+      RESTRICT_ON_SEND = %i[[] to_h].freeze
+
       def on_block(node)
         on_bad_each_with_object(node) do |*match|
           handle_possible_offense(node, match, 'each_with_object')

@@ -48,6 +48,8 @@ module RuboCop
           fdiv: 'Prefer using `fdiv` for float divisions.'
         }.freeze
 
+        RESTRICT_ON_SEND = %i[/].freeze
+
         def_node_matcher :right_coerce?, <<~PATTERN
           (send _ :/ (send _ :to_f))
         PATTERN

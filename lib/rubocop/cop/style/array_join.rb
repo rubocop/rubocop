@@ -21,6 +21,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Favor `Array#join` over `Array#*`.'
+        RESTRICT_ON_SEND = %i[*].freeze
 
         def_node_matcher :join_candidate?, '(send $array :* $str)'
 

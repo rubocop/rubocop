@@ -31,9 +31,10 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'
+        RESTRICT_ON_SEND = %i[first last [] at slice].freeze
 
         def_node_matcher :sample_candidate?, <<~PATTERN
-          (send $(send _ :shuffle $...) ${:first :last :[] :at :slice} $...)
+          (send $(send _ :shuffle $...) ${:#{RESTRICT_ON_SEND.join(' :')}} $...)
         PATTERN
 
         def on_send(node)

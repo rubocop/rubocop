@@ -18,6 +18,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `!` instead of `not`.'
+        RESTRICT_ON_SEND = %i[!].freeze
 
         OPPOSITE_METHODS = {
           :== => :!=,
