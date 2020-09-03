@@ -41,6 +41,9 @@ RuboCop cache. Another could be that a Continuous Integration system
 allows directories, but not a temporary directory, to be saved between
 runs.
 
+The cache root path can be overwritten by setting `$RUBOCOP_CACHE_ROOT`
+which always takes precendence (even over `AllCops: CacheRootDirectory`).
+
 == Cache Pruning
 
 Each time a file has changed, its offenses will be stored under a new
