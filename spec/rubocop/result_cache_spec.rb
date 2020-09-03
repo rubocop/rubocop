@@ -382,6 +382,22 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         cacheroot = described_class.cache_root(config_store)
         expect(cacheroot).to eq(File.join('/opt', 'rubocop_cache'))
       end
+
+      context 'and RUBOCOP_CACHE_ROOT is set' do
+        around do |example|
+          ENV['RUBOCOP_CACHE_ROOT'] = '/tmp/cache-from-env'
+          begin
+            example.run
+          ensure
+            ENV.delete('RUBOCOP_CACHE_ROOT')
+          end
+        end
+
+        it 'contains the root from RUBOCOP_CACHE_ROOT' do
+          cacheroot = described_class.cache_root(config_store)
+          expect(cacheroot).to eq(File.join('/tmp/cache-from-env', 'rubocop_cache'))
+        end
+      end
     end
   end
 end
