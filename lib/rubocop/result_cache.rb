@@ -61,7 +61,8 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = config_store.for_pwd.for_all_cops['CacheRootDirectory']
+      root = ENV['RUBOCOP_CACHE_ROOT']
+      root ||= config_store.for_pwd.for_all_cops['CacheRootDirectory']
       root ||= if ENV.key?('XDG_CACHE_HOME')
                  # Include user ID in the path to make sure the user has write
                  # access.
