@@ -24,6 +24,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant message argument to `#add_offense`.'
+        RESTRICT_ON_SEND = %i[add_offense].freeze
 
         def_node_matcher :node_type_check, <<~PATTERN
           (send nil? :add_offense $_node $hash)

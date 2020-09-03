@@ -26,6 +26,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Remove unnecessary `require` statement.'
+        RESTRICT_ON_SEND = %i[require].freeze
 
         def_node_matcher :unnecessary_require_statement?, <<~PATTERN
           (send nil? :require

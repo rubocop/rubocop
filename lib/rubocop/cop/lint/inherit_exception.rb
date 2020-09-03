@@ -56,6 +56,8 @@ module RuboCop
           SystemExit
         ].freeze
 
+        RESTRICT_ON_SEND = %i[new].freeze
+
         def_node_matcher :class_new_call?, <<~PATTERN
           (send
             (const {cbase nil?} :Class) :new
@@ -74,8 +76,6 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless node.method?(:new)
-
           constant = class_new_call?(node)
           return unless constant && illegal_class_name?(constant)
 

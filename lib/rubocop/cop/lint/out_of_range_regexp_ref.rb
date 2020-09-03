@@ -25,6 +25,7 @@ module RuboCop
         REGEXP_ARGUMENT_METHODS = %i[=~ match grep gsub gsub! sub sub! [] slice slice! index rindex
                                      scan partition rpartition start_with? end_with?].to_set.freeze
         REGEXP_CAPTURE_METHODS = (REGEXP_RECEIVER_METHODS + REGEXP_ARGUMENT_METHODS).freeze
+        RESTRICT_ON_SEND = REGEXP_CAPTURE_METHODS
 
         def on_new_investigation
           @valid_ref = 0
@@ -35,8 +36,6 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless REGEXP_CAPTURE_METHODS.include?(node.method_name)
-
           @valid_ref = nil
 
           if node.receiver&.regexp_type?

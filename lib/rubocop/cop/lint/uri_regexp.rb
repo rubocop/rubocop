@@ -18,9 +18,10 @@ module RuboCop
 
         MSG = '`%<current>s` is obsolete and should not be used. Instead, use `%<preferred>s`.'
         URI_CONSTANTS = ['URI', '::URI'].freeze
+        RESTRICT_ON_SEND = %i[regexp].freeze
 
         def on_send(node)
-          return unless node.method?(:regexp) && node.receiver
+          return unless node.receiver
           return unless URI_CONSTANTS.include?(node.receiver.source)
 
           argument = node.first_argument ? "(#{node.first_argument.source})" : ''

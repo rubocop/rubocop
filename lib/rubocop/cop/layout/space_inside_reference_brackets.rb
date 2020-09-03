@@ -61,11 +61,10 @@ module RuboCop
         MSG = '%<command>s space inside reference brackets.'
         EMPTY_MSG = '%<command>s space inside empty reference brackets.'
 
-        BRACKET_METHODS = %i[[] []=].freeze
+        RESTRICT_ON_SEND = %i[[] []=].freeze
 
         def on_send(node)
           return if node.multiline?
-          return unless bracket_method?(node)
 
           tokens = tokens(node)
           left_token = left_ref_bracket(node, tokens)
@@ -102,10 +101,6 @@ module RuboCop
           tokens = tokens(node)
           left = left_ref_bracket(node, tokens)
           [left, closing_bracket(tokens, left)]
-        end
-
-        def bracket_method?(node)
-          BRACKET_METHODS.include?(node.method_name)
         end
 
         def left_ref_bracket(node, tokens)
