@@ -20,6 +20,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = "Use `__dir__` to get an absolute path to the current file's directory."
+        RESTRICT_ON_SEND = %i[expand_path dirname].freeze
 
         def_node_matcher :dir_replacement?, <<~PATTERN
           {(send (const {nil? cbase} :File) :expand_path (send (const {nil? cbase} :File) :dirname  #file_keyword?))

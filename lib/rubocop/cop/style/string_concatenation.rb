@@ -19,6 +19,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Prefer string interpolation to string concatenation.'
+        RESTRICT_ON_SEND = %i[+].freeze
 
         def_node_matcher :string_concatenation?, <<~PATTERN
           {
@@ -28,7 +29,6 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.method?(:+)
           return unless string_concatenation?(node)
 
           topmost_plus_node = find_topmost_plus_node(node)

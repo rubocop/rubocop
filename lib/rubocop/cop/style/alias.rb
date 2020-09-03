@@ -32,6 +32,8 @@ module RuboCop
         MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of ' \
                            '`alias %<current>s`.'
 
+        RESTRICT_ON_SEND = %i[alias_method].freeze
+
         def on_send(node)
           return unless node.command?(:alias_method)
           return unless style == :prefer_alias && alias_keyword_possible?(node)

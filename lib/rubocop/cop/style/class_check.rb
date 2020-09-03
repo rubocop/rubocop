@@ -28,19 +28,16 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Prefer `Object#%<prefer>s` over `Object#%<current>s`.'
-
-        def_node_matcher :class_check?, '(send _ ${:is_a? :kind_of?} _)'
+        RESTRICT_ON_SEND = %i[is_a? kind_of?].freeze
 
         def on_send(node)
-          class_check?(node) do |method_name|
-            return if style == method_name
+          return if style == node.method_name
 
-            message = message(node)
-            add_offense(node.loc.selector, message: message) do |corrector|
-              replacement = node.method?(:is_a?) ? 'kind_of?' : 'is_a?'
+          message = message(node)
+          add_offense(node.loc.selector, message: message) do |corrector|
+            replacement = node.method?(:is_a?) ? 'kind_of?' : 'is_a?'
 
-              corrector.replace(node.loc.selector, replacement)
-            end
+            corrector.replace(node.loc.selector, replacement)
           end
         end
 

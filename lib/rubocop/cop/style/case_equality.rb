@@ -33,6 +33,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Avoid the use of the case equality operator `===`.'
+        RESTRICT_ON_SEND = %i[===].freeze
 
         def_node_matcher :case_equality?, '(send $#const? :=== $_)'
 

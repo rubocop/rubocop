@@ -19,11 +19,12 @@ module RuboCop
         minimum_target_ruby_version 2.6
 
         MSG = 'Prefer ary[n..] over ary[n..-1].'
+        RESTRICT_ON_SEND = %i[[]].freeze
 
         def_node_matcher :range_till_minus_one?, '(irange !nil? (int -1))'
 
         def on_send(node)
-          return unless node.method?(:[]) && node.arguments.count == 1
+          return unless node.arguments.count == 1
           return unless range_till_minus_one?(node.arguments.first)
 
           add_offense(node.first_argument) do |corrector|

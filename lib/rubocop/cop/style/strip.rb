@@ -18,6 +18,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `strip` instead of `%<methods>s`.'
+        RESTRICT_ON_SEND = %i[lstrip rstrip].freeze
 
         def_node_matcher :lstrip_rstrip, <<~PATTERN
           {(send $(send _ $:rstrip) $:lstrip)

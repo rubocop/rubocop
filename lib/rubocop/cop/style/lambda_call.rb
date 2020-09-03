@@ -22,8 +22,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
+        RESTRICT_ON_SEND = %i[call].freeze
+
         def on_send(node)
-          return unless node.receiver && node.method?(:call)
+          return unless node.receiver
 
           if offense?(node) && opposite_style_detected
             add_offense(node) do |corrector|

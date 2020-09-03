@@ -52,6 +52,8 @@ module RuboCop
                            'instead of ' \
                            '`Pathname.new(__FILE__).parent.expand_path`.'
 
+        RESTRICT_ON_SEND = %i[expand_path].freeze
+
         def_node_matcher :file_expand_path, <<~PATTERN
           (send
             (const {nil? cbase} :File) :expand_path
@@ -75,8 +77,6 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.method?(:expand_path)
-
           if (current_path, default_dir = file_expand_path(node))
             inspect_offense_for_expand_path(node, current_path, default_dir)
           elsif (default_dir = pathname_parent_expand_path(node))

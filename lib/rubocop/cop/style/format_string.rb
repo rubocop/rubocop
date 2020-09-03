@@ -40,8 +40,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Favor `%<prefer>s` over `%<current>s`.'
-
-        FORMAT_METHODS = %i[format sprintf %].freeze
+        RESTRICT_ON_SEND = %i[format sprintf %].freeze
 
         def_node_matcher :formatter, <<~PATTERN
           {
@@ -56,8 +55,6 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless FORMAT_METHODS.include?(node.method_name)
-
           formatter(node) do |selector|
             detected_style = selector == :% ? :percent : selector
 
