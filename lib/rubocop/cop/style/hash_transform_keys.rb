@@ -34,9 +34,7 @@ module RuboCop
 
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block
-            ({send csend}
-              !{(send _ :each_with_index) (array ...)}
-              :each_with_object (hash))
+            ({send csend} !#array_receiver? :each_with_object (hash))
             (args
               (mlhs
                 (arg $_)
@@ -50,7 +48,7 @@ module RuboCop
             (const _ :Hash)
             :[]
             (block
-              ({send csend} !(send _ :each_with_index) {:map :collect})
+              ({send csend} !#array_receiver? {:map :collect})
               (args
                 (arg $_)
                 (arg _val))
@@ -60,9 +58,7 @@ module RuboCop
         def_node_matcher :on_bad_map_to_h, <<~PATTERN
           ({send csend}
             (block
-              ({send csend}
-                !{(send _ :each_with_index) (array ...)}
-                {:map :collect})
+              ({send csend} !#array_receiver? {:map :collect})
               (args
                 (arg $_)
                 (arg _val))
@@ -72,9 +68,7 @@ module RuboCop
 
         def_node_matcher :on_bad_to_h, <<~PATTERN
           (block
-            ({send csend}
-              !{(send _ :each_with_index) (array ...)}
-              :to_h)
+            ({send csend} !#array_receiver? :to_h)
             (args
               (arg $_)
               (arg _val))

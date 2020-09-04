@@ -70,6 +70,24 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
     RUBY
   end
 
+  it 'does not flag `each_with_object` when its receiver is `each_with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each_with_index.each_with_object({}) { |(k, v), h| h[k] = foo(v) }
+    RUBY
+  end
+
+  it 'does not flag `each_with_object` when its receiver is `with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each.with_index.each_with_object({}) { |(k, v), h| h[k] = foo(v) }
+    RUBY
+  end
+
+  it 'does not flag `each_with_object` when its receiver is `zip`' do
+    expect_no_offenses(<<~RUBY)
+      %i[a b c].zip([1, 2, 3]).each_with_object({}) { |(k, v), h| h[k] = foo(v) }
+    RUBY
+  end
+
   it 'flags _.map {...}.to_h when transform_values could be used' do
     expect_offense(<<~RUBY)
       x.map {|k, v| [k, foo(v)]}.to_h
@@ -123,6 +141,24 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
     RUBY
   end
 
+  it 'does not flag `_.map{...}.to_h` when its receiver is `each_with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each_with_index.map { |k, v| [k, foo(v)] }.to_h
+    RUBY
+  end
+
+  it 'does not flag `_.map{...}.to_h` when its receiver is `with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each.with_index.map { |k, v| [k, foo(v)] }.to_h
+    RUBY
+  end
+
+  it 'does not flag `_.map{...}.to_h` when its receiver is `zip`' do
+    expect_no_offenses(<<~RUBY)
+      %i[a b c].zip([1, 2, 3]).map { |k, v| [k, foo(v)] }.to_h
+    RUBY
+  end
+
   it 'correctly autocorrects _.map{...}.to_h with block' do
     expect_offense(<<~RUBY)
       {a: 1, b: 2}.map {|k, v| [k, foo(v)]}.to_h {|k, v| [v, k]}
@@ -131,6 +167,30 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
 
     expect_correction(<<~RUBY)
       {a: 1, b: 2}.transform_values {|v| foo(v)}.to_h {|k, v| [v, k]}
+    RUBY
+  end
+
+  it 'does not flag `Hash[_.map{...}]` when its receiver is an array literal' do
+    expect_no_offenses(<<~RUBY)
+      Hash[[1, 2, 3].map { |k, v| [k, foo(v)] }]
+    RUBY
+  end
+
+  it 'does not flag `Hash[_.map{...}]` when its receiver is `each_with_index`' do
+    expect_no_offenses(<<~RUBY)
+      Hash[[1, 2, 3].each_with_index.map { |k, v| [k, foo(v)] }]
+    RUBY
+  end
+
+  it 'does not flag `Hash[_.map{...}]` when its receiver is `with_index`' do
+    expect_no_offenses(<<~RUBY)
+      Hash[[1, 2, 3].each.with_index.map { |k, v| [k, foo(v)] }]
+    RUBY
+  end
+
+  it 'does not flag `Hash[_.map{...}]` when its receiver is `zip`' do
+    expect_no_offenses(<<~RUBY)
+      Hash[%i[a b c].zip([1, 2, 3]).map { |k, v| [k, foo(v)] }]
     RUBY
   end
 
@@ -143,6 +203,36 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
 
       expect_correction(<<~RUBY)
         x.transform_values {|v| foo(v)}
+      RUBY
+    end
+
+    it 'does not flag `_.to_h{...}` when both key & value are transformed' do
+      expect_no_offenses(<<~RUBY)
+        x.to_h { |k, v| [k.to_sym, foo(v)] }
+      RUBY
+    end
+
+    it 'does not flag `_.to_h{...}` when its receiver is an array literal' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].to_h { |k, v| [k, foo(v)] }
+      RUBY
+    end
+
+    it 'does not flag `_.to_h{...}` when its receiver is `each_with_index`' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].each_with_index.to_h { |k, v| [k, foo(v)] }
+      RUBY
+    end
+
+    it 'does not flag `_.to_h{...}` when its receiver is `with_index`' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].each.with_index.to_h { |k, v| [k, foo(v)] }
+      RUBY
+    end
+
+    it 'does not flag `_.to_h{...}` when its receiver is `zip`' do
+      expect_no_offenses(<<~RUBY)
+        %i[a b c].zip([1, 2, 3]).to_h { |k, v| [k, foo(v)] }
       RUBY
     end
   end
