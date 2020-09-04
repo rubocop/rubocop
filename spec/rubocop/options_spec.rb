@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --cache-root DIR             Set the cache root directory.
                                                Takes precedence over the configuration
                                                parameter AllCops: CacheRootDirectory and
-                                               the RUBOCOP_CACHE_ROOT environment variable.
+                                               the $RUBOCOP_CACHE_ROOT environment variable.
               -F, --fail-fast                  Inspect files in order of modification
                                                time and stop after the first file
                                                containing offenses.

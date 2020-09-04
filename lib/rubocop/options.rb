@@ -481,7 +481,7 @@ module RuboCop
       cache_root:                       ['Set the cache root directory.',
                                          'Takes precedence over the configuration',
                                          'parameter AllCops: CacheRootDirectory and',
-                                         'the RUBOCOP_CACHE_ROOT environment variable.'],
+                                         'the $RUBOCOP_CACHE_ROOT environment variable.'],
       debug:                            'Display debug info.',
       display_cop_names:                ['Display cop names in offense messages.',
                                          'Default is true.'],
