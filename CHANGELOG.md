@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* New option `--cache-root` and support for the `RUBOCOP_CACHE_ROOT` environment variable. Both can be used to override the `AllCops: CacheRootDirectory` config, especially in a CI setting. ([@sascha-wolf][]) 
+
 ### Bug fixes
 
 * [#8627](https://github.com/rubocop-hq/rubocop/issues/8627): Fix a false positive for `Lint/DuplicateRequire` when same feature argument but different require method. ([@koic][])
@@ -4829,3 +4833,4 @@
 [@Lykos]: https://github.com/Lykos
 [@jaimerave]: https://github.com/jaimerave
 [@Skipants]: https://github.com/Skipants
+[@sascha-wolf]: https://github.com/sascha-wolf
