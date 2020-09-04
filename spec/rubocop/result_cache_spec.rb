@@ -213,7 +213,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     end
 
     context 'when --cache-root is given' do
-      it 'has takes the cache_root from the options' do
+      it 'takes the cache_root from the options' do
         cache2 = described_class.new(file, team,
                                      { cache_root: 'some/path' },
                                      config_store)
