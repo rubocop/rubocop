@@ -39,7 +39,7 @@ The root can be set to a different path in a number of ways (from
 **highest** precedence to **lowest**):
 
 * the `--cache-root` command line option
-* the `RUBOCOP_CACHE_ROOT` environment variable
+* the `$RUBOCOP_CACHE_ROOT` environment variable
 * the `AllCops: CacheRootDirectory` configuration parameter
 
 One reason to set the cache root could be that there's a network disk
