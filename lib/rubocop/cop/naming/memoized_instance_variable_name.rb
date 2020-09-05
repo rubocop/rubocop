@@ -84,8 +84,6 @@ module RuboCop
       #   def _foo
       #     @_foo ||= calculate_expensive_thing
       #   end
-      #
-      # @api private
       class MemoizedInstanceVariableName < Base
         include ConfigurableEnforcedStyle
 

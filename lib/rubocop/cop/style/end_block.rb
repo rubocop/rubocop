@@ -12,7 +12,6 @@ module RuboCop
       #   # good
       #   at_exit { puts 'Goodbye!' }
       #
-      # @api private
       class EndBlock < Base
         extend AutoCorrector
 

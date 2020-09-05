@@ -59,7 +59,6 @@ module RuboCop
       #     ERB.new(str, nil, '-', '@output_buffer')
       #   end
       #
-      # @api private
       class ErbNewArguments < Base
         include RangeHelp
         extend TargetRubyVersion
@@ -78,6 +77,8 @@ module RuboCop
           'deprecated. Use keyword argument like ' \
           '`ERB.new(str, eoutvar: %<arg_value>s)` instead.'
         ].freeze
+
+        RESTRICT_ON_SEND = %i[new].freeze
 
         def_node_matcher :erb_new_with_non_keyword_arguments, <<~PATTERN
           (send

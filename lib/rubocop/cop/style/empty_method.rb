@@ -40,8 +40,6 @@ module RuboCop
       #
       #   def self.foo(bar)
       #   end
-      #
-      # @api private
       class EmptyMethod < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

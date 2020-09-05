@@ -19,10 +19,9 @@ module RuboCop
       #   File.open(something)
       #   IO.popen(something)
       #   URI.parse(something).open
-      #
-      # @api private
       class Open < Base
         MSG = 'The use of `Kernel#open` is a serious security risk.'
+        RESTRICT_ON_SEND = %i[open].freeze
 
         def_node_matcher :open?, <<~PATTERN
           (send nil? :open $!str ...)

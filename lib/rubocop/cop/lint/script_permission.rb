@@ -30,7 +30,6 @@ module RuboCop
       #
       #   puts 'hello, world'
       #
-      # @api private
       class ScriptPermission < Base
         extend AutoCorrector
 

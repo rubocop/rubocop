@@ -70,8 +70,6 @@ module RuboCop
       #   rescue StandardError, SecurityError
       #     bar
       #   end
-      #
-      # @api private
       class RescueStandardError < Cop
         include RescueNode
         include ConfigurableEnforcedStyle

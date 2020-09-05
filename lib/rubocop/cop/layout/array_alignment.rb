@@ -33,8 +33,6 @@ module RuboCop
       #
       #   array = [1, 2, 3,
       #            4, 5, 6]
-      #
-      # @api private
       class ArrayAlignment < Cop
         include Alignment
 

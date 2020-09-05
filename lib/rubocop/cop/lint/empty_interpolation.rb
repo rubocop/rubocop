@@ -16,8 +16,6 @@ module RuboCop
       #   # good
       #
       #   "result is #{some_result}"
-      #
-      # @api private
       class EmptyInterpolation < Base
         include Interpolation
         extend AutoCorrector

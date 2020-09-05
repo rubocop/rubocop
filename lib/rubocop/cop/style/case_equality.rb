@@ -29,11 +29,11 @@ module RuboCop
       #   (1..100).include?(7)
       #   /something/.match?(some_string)
       #
-      # @api private
       class CaseEquality < Base
         extend AutoCorrector
 
         MSG = 'Avoid the use of the case equality operator `===`.'
+        RESTRICT_ON_SEND = %i[===].freeze
 
         def_node_matcher :case_equality?, '(send $#const? :=== $_)'
 

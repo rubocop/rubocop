@@ -22,11 +22,11 @@ module RuboCop
       #   # good
       #   JSON.parse("{}")
       #
-      # @api private
       class JSONLoad < Base
         extend AutoCorrector
 
         MSG = 'Prefer `JSON.parse` over `JSON.%<method>s`.'
+        RESTRICT_ON_SEND = %i[load restore].freeze
 
         def_node_matcher :json_load, <<~PATTERN
           (send (const {nil? cbase} :JSON) ${:load :restore} ...)

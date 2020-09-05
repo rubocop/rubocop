@@ -40,7 +40,6 @@ module RuboCop
       #     {_id: _id, profit: revenue - cost}
       #   end
       #
-      # @api private
       class UnderscorePrefixedVariableName < Base
         MSG = 'Do not use prefix `_` for a variable that is used.'
 

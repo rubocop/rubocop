@@ -17,7 +17,6 @@ module RuboCop
       #   FileUtils.rmdir(dir)
       #   Marshal.dump(obj)
       #
-      # @api private
       class ColonMethodCall < Base
         extend AutoCorrector
 

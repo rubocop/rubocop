@@ -49,14 +49,13 @@ module RuboCop
       #   # good
       #   arr.max_by(&:foo)
       #
-      # @api private
       class RedundantSort < Cop
         include RangeHelp
 
         MSG = 'Use `%<suggestion>s` instead of '\
               '`%<sorter>s...%<accessor_source>s`.'
 
-        SORT_METHODS = %i[sort sort_by].freeze
+        RESTRICT_ON_SEND = %i[sort sort_by].freeze
 
         def_node_matcher :redundant_sort?, <<~MATCHER
           {
@@ -75,8 +74,6 @@ module RuboCop
         MATCHER
 
         def on_send(node)
-          return unless sort_method?(node)
-
           if (sort_node, sorter, accessor = redundant_sort?(node.parent))
             ancestor = node.parent
           elsif (sort_node, sorter, accessor = redundant_sort?(node.parent&.parent))
@@ -113,10 +110,6 @@ module RuboCop
         end
 
         private
-
-        def sort_method?(node)
-          SORT_METHODS.include?(node.method_name)
-        end
 
         def offense_range(sort_node, ancestor)
           range_between(sort_node.loc.selector.begin_pos, ancestor.loc.expression.end_pos)

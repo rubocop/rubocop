@@ -39,8 +39,6 @@ module RuboCop
       #
       #   # good
       #   a.fdiv(b)
-      #
-      # @api private
       class FloatDivision < Base
         include ConfigurableEnforcedStyle
         MESSAGES = {
@@ -49,6 +47,8 @@ module RuboCop
           single_coerce: 'Prefer using `.to_f` on one side only.',
           fdiv: 'Prefer using `fdiv` for float divisions.'
         }.freeze
+
+        RESTRICT_ON_SEND = %i[/].freeze
 
         def_node_matcher :right_coerce?, <<~PATTERN
           (send _ :/ (send _ :to_f))

@@ -40,7 +40,6 @@ module RuboCop
       #     # Comment.
       #   end
       #
-      # @api private
       class UselessMethodDefinition < Base
         extend AutoCorrector
 

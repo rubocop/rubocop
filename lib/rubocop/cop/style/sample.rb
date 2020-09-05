@@ -27,15 +27,14 @@ module RuboCop
       #   [1, 2, 3].shuffle[1..3]    # sample(3) might return a longer Array
       #   [1, 2, 3].shuffle[foo, bar]
       #   [1, 2, 3].shuffle(random: Random.new)
-      #
-      # @api private
       class Sample < Base
         extend AutoCorrector
 
         MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'
+        RESTRICT_ON_SEND = %i[first last [] at slice].freeze
 
         def_node_matcher :sample_candidate?, <<~PATTERN
-          (send $(send _ :shuffle $...) ${:first :last :[] :at :slice} $...)
+          (send $(send _ :shuffle $...) ${:#{RESTRICT_ON_SEND.join(' :')}} $...)
         PATTERN
 
         def on_send(node)

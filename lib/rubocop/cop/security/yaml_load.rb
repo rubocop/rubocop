@@ -15,11 +15,11 @@ module RuboCop
       #   YAML.safe_load("--- foo")
       #   YAML.dump("foo")
       #
-      # @api private
       class YAMLLoad < Base
         extend AutoCorrector
 
         MSG = 'Prefer using `YAML.safe_load` over `YAML.load`.'
+        RESTRICT_ON_SEND = %i[load].freeze
 
         def_node_matcher :yaml_load, <<~PATTERN
           (send (const {nil? cbase} :YAML) :load ...)

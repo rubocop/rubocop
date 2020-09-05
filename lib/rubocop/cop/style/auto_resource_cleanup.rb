@@ -16,14 +16,14 @@ module RuboCop
       #   File.open('file') do |f|
       #     # ...
       #   end
-      #
-      # @api private
       class AutoResourceCleanup < Base
         MSG = 'Use the block version of `%<class>s.%<method>s`.'
 
         TARGET_METHODS = {
           File: :open
         }.freeze
+
+        RESTRICT_ON_SEND = TARGET_METHODS.values.freeze
 
         def on_send(node)
           TARGET_METHODS.each do |target_class, target_method|

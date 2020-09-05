@@ -33,8 +33,6 @@ module RuboCop
       #
       #   # good
       #   num = 01234
-      #
-      # @api private
       class NumericLiteralPrefix < Base
         include IntegerNode
         extend AutoCorrector

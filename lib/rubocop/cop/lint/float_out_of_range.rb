@@ -18,8 +18,6 @@ module RuboCop
       #   # good
       #
       #   float = 42.9
-      #
-      # @api private
       class FloatOutOfRange < Base
         MSG = 'Float out of range.'
 

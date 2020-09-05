@@ -34,7 +34,6 @@ module RuboCop
       #     do_something
       #   end
       #
-      # @api private
       class AssignmentInCondition < Base
         include SafeAssignment
 

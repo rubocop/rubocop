@@ -32,8 +32,6 @@ module RuboCop
       #
       #   # good
       #   /[+\-]\d/
-      #
-      # @api private
       class RedundantRegexpEscape < Base
         include RangeHelp
         include RegexpLiteralHelp

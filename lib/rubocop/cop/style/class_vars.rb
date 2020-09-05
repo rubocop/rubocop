@@ -45,17 +45,15 @@ module RuboCop
       #     end
       #   end
       #
-      # @api private
       class ClassVars < Base
         MSG = 'Replace class var %<class_var>s with a class instance var.'
+        RESTRICT_ON_SEND = %i[class_variable_set].freeze
 
         def on_cvasgn(node)
           add_offense(node.loc.name, message: format(MSG, class_var: node.children.first))
         end
 
         def on_send(node)
-          return unless node.method?(:class_variable_set)
-
           add_offense(
             node.first_argument, message: format(MSG, class_var: node.first_argument.source)
           )

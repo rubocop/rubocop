@@ -27,12 +27,11 @@ module RuboCop
       #       raise Exception # This exception means `Gem::Exception`.
       #     end
       #   end
-      #
-      # @api private
       class RaiseException < Base
         extend AutoCorrector
 
         MSG = 'Use `StandardError` over `Exception`.'
+        RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def_node_matcher :exception?, <<~PATTERN
           (send nil? {:raise :fail} $(const ${cbase nil?} :Exception) ... )

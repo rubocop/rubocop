@@ -19,12 +19,12 @@ module RuboCop
       #   add_offense(node, message: CUSTOM_MSG)
       #   add_offense(node, message: message(other_node))
       #
-      # @api private
       class RedundantMessageArgument < Base
         include RangeHelp
         extend AutoCorrector
 
         MSG = 'Redundant message argument to `#add_offense`.'
+        RESTRICT_ON_SEND = %i[add_offense].freeze
 
         def_node_matcher :node_type_check, <<~PATTERN
           (send nil? :add_offense $_node $hash)

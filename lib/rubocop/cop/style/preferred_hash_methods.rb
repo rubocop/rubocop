@@ -25,8 +25,6 @@ module RuboCop
       #  # good
       #  Hash#has_key?
       #  Hash#has_value?
-      #
-      # @api private
       class PreferredHashMethods < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -37,6 +35,8 @@ module RuboCop
           short: %i[has_key? has_value?],
           verbose: %i[key? value?]
         }.freeze
+
+        RESTRICT_ON_SEND = OFFENDING_SELECTORS.values.flatten.freeze
 
         def on_send(node)
           return unless node.arguments.one? && offending_selector?(node.method_name)

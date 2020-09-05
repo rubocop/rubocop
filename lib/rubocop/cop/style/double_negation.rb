@@ -32,12 +32,11 @@ module RuboCop
       # !!something and !something.nil? are not the same thing.
       # As you're unlikely to write code that can accept values of any type
       # this is rarely a problem in practice.
-      #
-      # @api private
       class DoubleNegation < Base
         include ConfigurableEnforcedStyle
 
         MSG = 'Avoid the use of double negation (`!!`).'
+        RESTRICT_ON_SEND = %i[!].freeze
 
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 

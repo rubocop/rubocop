@@ -26,7 +26,6 @@ module RuboCop
       #     final_action
       #   end
       #
-      # @api private
       class CaseLikeIf < Base
         include RangeHelp
         extend AutoCorrector
@@ -116,7 +115,7 @@ module RuboCop
         def find_target_in_equality_node(node)
           argument = node.arguments.first
           receiver = node.receiver
-          return unless receiver
+          return unless argument && receiver
 
           if argument.literal? || const_reference?(argument)
             receiver

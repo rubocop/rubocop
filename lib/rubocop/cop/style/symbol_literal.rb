@@ -12,8 +12,6 @@ module RuboCop
       #
       #   # good
       #   :symbol
-      #
-      # @api private
       class SymbolLiteral < Base
         extend AutoCorrector
 

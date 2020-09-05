@@ -58,7 +58,6 @@ module RuboCop
       #   1e4
       #   12e5
       #
-      # @api private
       class ExponentialNotation < Base
         include ConfigurableEnforcedStyle
         MESSAGES = {

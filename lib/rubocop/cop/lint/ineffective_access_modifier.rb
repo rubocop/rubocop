@@ -45,8 +45,6 @@ module RuboCop
       #       end
       #     end
       #   end
-      #
-      # @api private
       class IneffectiveAccessModifier < Base
         MSG = '`%<modifier>s` (on line %<line>d) does not make singleton ' \
               'methods %<modifier>s. Use %<alternative>s instead.'

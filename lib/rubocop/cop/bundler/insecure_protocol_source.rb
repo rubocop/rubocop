@@ -25,8 +25,6 @@ module RuboCop
       #   # good
       #   source 'https://rubygems.org' # strongly recommended
       #   source 'http://rubygems.org'
-      #
-      # @api private
       class InsecureProtocolSource < Base
         include RangeHelp
         extend AutoCorrector
@@ -35,6 +33,8 @@ module RuboCop
               'are insecure. ' \
               "Please change your source to 'https://rubygems.org' " \
               "if possible, or 'http://rubygems.org' if not."
+
+        RESTRICT_ON_SEND = %i[source].freeze
 
         def_node_matcher :insecure_protocol_source?, <<~PATTERN
           (send nil? :source

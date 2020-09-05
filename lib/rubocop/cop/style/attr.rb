@@ -14,12 +14,12 @@ module RuboCop
       #   attr_accessor :something
       #   attr_reader :one, :two, :three
       #
-      # @api private
       class Attr < Base
         include RangeHelp
         extend AutoCorrector
 
         MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'
+        RESTRICT_ON_SEND = %i[attr].freeze
 
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?

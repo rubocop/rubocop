@@ -8,8 +8,6 @@ module RuboCop
     # soon as they are detected.
     # This is inspired by the Fuubar formatter for RSpec by Jeff Kreeftmeijer.
     # https://github.com/jeffkreeftmeijer/fuubar
-    #
-    # @api private
     class FuubarStyleFormatter < ClangStyleFormatter
       RESET_SEQUENCE = "\e[0m"
 

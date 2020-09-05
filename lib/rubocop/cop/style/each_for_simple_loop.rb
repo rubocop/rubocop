@@ -22,8 +22,6 @@ module RuboCop
       #
       #   # good
       #   10.times {}
-      #
-      # @api private
       class EachForSimpleLoop < Base
         extend AutoCorrector
 

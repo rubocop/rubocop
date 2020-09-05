@@ -27,8 +27,6 @@ module RuboCop
       #   when 'second'
       #     do_something_else
       #   end
-      #
-      # @api private
       class DuplicateCaseCondition < Base
         MSG = 'Duplicate `when` condition detected.'
 

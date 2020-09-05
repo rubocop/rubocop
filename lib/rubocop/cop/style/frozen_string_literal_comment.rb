@@ -73,8 +73,6 @@ module RuboCop
       #   module Bar
       #     # ...
       #   end
-      #
-      # @api private
       class FrozenStringLiteralComment < Base
         include ConfigurableEnforcedStyle
         include FrozenStringLiteral

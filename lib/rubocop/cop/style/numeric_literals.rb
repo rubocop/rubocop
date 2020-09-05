@@ -27,7 +27,6 @@ module RuboCop
       #   # bad
       #   10_000_00 # typical representation of $10,000 in cents
       #
-      # @api private
       class NumericLiterals < Cop
         # The parameter is called MinDigits (meaning the minimum number of
         # digits for which an offense can be registered), but essentially it's

@@ -15,8 +15,6 @@ module RuboCop
       #
       #   # good
       #   method_name = send_node.method_name
-      #
-      # @api private
       class NodeDestructuring < Base
         MSG = 'Use the methods provided with the node extensions instead ' \
               'of manually destructuring nodes.'

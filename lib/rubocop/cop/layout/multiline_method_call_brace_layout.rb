@@ -88,8 +88,6 @@ module RuboCop
       #   # good
       #   foo(a,
       #     b)
-      #
-      # @api private
       class MultilineMethodCallBraceLayout < Base
         include MultilineLiteralBraceLayout
         extend AutoCorrector

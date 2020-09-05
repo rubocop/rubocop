@@ -28,13 +28,14 @@ module RuboCop
       #   if x == nil
       #   end
       #
-      # @api private
       class NilComparison < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
         PREDICATE_MSG = 'Prefer the use of the `nil?` predicate.'
         EXPLICIT_MSG = 'Prefer the use of the `==` comparison.'
+
+        RESTRICT_ON_SEND = %i[== === nil?].freeze
 
         def_node_matcher :nil_comparison?, '(send _ {:== :===} nil)'
         def_node_matcher :nil_check?, '(send _ :nil?)'

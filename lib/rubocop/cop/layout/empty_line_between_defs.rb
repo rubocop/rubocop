@@ -29,8 +29,6 @@ module RuboCop
       #
       #   def b
       #   end
-      #
-      # @api private
       class EmptyLineBetweenDefs < Base
         include RangeHelp
         extend AutoCorrector

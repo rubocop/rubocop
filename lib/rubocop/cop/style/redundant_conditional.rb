@@ -24,8 +24,6 @@ module RuboCop
       #
       #   # good
       #   x != y
-      #
-      # @api private
       class RedundantConditional < Cop
         include Alignment
 

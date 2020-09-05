@@ -26,8 +26,6 @@ module RuboCop
       #   "Just some text"
       #   "No special chars or interpolation"
       #   "Every string in #{project} uses double_quotes"
-      #
-      # @api private
       class StringLiterals < Cop
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp

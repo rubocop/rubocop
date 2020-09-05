@@ -30,8 +30,6 @@ module RuboCop
       #     bar
       #     baz
       #   )
-      #
-      # @api private
       class MultilineMemoization < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

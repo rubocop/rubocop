@@ -5,8 +5,6 @@ module RuboCop
     # This formatter formats report data in clang style.
     # The precise location of the problem is shown together with the
     # relevant source code.
-    #
-    # @api private
     class ClangStyleFormatter < SimpleTextFormatter
       ELLIPSES = '...'
 

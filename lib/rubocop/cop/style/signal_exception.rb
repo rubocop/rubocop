@@ -104,8 +104,6 @@ module RuboCop
       #
       #   explicit_receiver.fail
       #   explicit_receiver.raise
-      #
-      # @api private
       class SignalException < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -113,6 +111,8 @@ module RuboCop
         FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'
         RAISE_MSG = 'Use `raise` instead of `fail` to ' \
                     'rethrow exceptions.'
+
+        RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def_node_matcher :kernel_call?, '(send (const {nil? cbase} :Kernel) %1 ...)'
         def_node_search :custom_fail_methods,

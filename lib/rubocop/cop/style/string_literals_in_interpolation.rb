@@ -19,8 +19,6 @@ module RuboCop
       #
       #   # good
       #   result = "Tests #{success ? "PASS" : "FAIL"}"
-      #
-      # @api private
       class StringLiteralsInInterpolation < Cop
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp

@@ -3,6 +3,7 @@
 require 'digest/sha1'
 require 'find'
 require 'etc'
+require 'zlib'
 
 module RuboCop
   # Provides functionality for caching rubocop runs.
@@ -30,6 +31,11 @@ module RuboCop
     end
 
     class << self
+      # @api private
+      attr_accessor :rubocop_required_features
+
+      ResultCache.rubocop_required_features = []
+
       private
 
       def requires_file_removal?(file_count, config_store)
@@ -159,27 +165,31 @@ module RuboCop
     end
 
     # The checksum of the rubocop program running the inspection.
-    # rubocop:disable Metrics/AbcSize
     def rubocop_checksum
       ResultCache.source_checksum ||=
         begin
-          lib_root = File.join(File.dirname(__FILE__), '..')
-          exe_root = File.join(lib_root, '..', 'exe')
-
-          # These are all the files we have `require`d plus everything in the
-          # exe directory. A change to any of them could affect the cop output
-          # so we include them in the cache hash.
-          source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
-
           digest = Digest::SHA1.new
-          source_files
+          rubocop_extra_features
             .select { |path| File.file?(path) }
             .sort!
-            .each { |path| digest << File.mtime(path).to_s }
+            .each { |path| digest << Zlib.crc32(IO.read(path)).to_s } # mtime not reliable
+          digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
           digest.hexdigest
         end
     end
-    # rubocop:enable Metrics/AbcSize
+
+    def rubocop_extra_features
+      lib_root = File.join(File.dirname(__FILE__), '..')
+      exe_root = File.join(lib_root, '..', 'exe')
+
+      # These are all the files we have `require`d plus everything in the
+      # exe directory. A change to any of them could affect the cop output
+      # so we include them in the cache hash.
+      source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
+      source_files -= ResultCache.rubocop_required_features # Rely on gem versions
+
+      source_files
+    end
 
     # Return a hash of the options given at invocation, minus the ones that have
     # no effect on which offenses and disabled line ranges are found, and thus

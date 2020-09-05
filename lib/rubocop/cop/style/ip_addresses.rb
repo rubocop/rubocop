@@ -18,8 +18,6 @@ module RuboCop
       #
       #   # good
       #   ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
-      #
-      # @api private
       class IpAddresses < Cop
         include StringHelp
 

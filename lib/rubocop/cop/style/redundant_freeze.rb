@@ -11,17 +11,16 @@ module RuboCop
       #
       #   # good
       #   CONST = 1
-      #
-      # @api private
       class RedundantFreeze < Base
         extend AutoCorrector
         include FrozenStringLiteral
 
         MSG = 'Do not freeze immutable objects, as freezing them has no ' \
               'effect.'
+        RESTRICT_ON_SEND = %i[freeze].freeze
 
         def on_send(node)
-          return unless node.receiver && node.method?(:freeze) &&
+          return unless node.receiver &&
                         (immutable_literal?(node.receiver) ||
                          operation_produces_immutable_object?(node.receiver))
 

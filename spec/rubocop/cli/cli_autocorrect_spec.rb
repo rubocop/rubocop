@@ -1563,6 +1563,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects Lint/ParenthesesAsGroupedExpression and offenses and ' \
+     'accepts Style/RedundantParentheses' do
+    create_file('example.rb', <<~RUBY)
+      do_something (argument)
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--auto-correct',
+          '--only', 'Lint/ParenthesesAsGroupedExpression,Style/RedundantParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      do_something(argument)
+    RUBY
+  end
+
   it 'corrects TrailingCommaIn(Array|Hash)Literal and ' \
      'Multiline(Array|Hash)BraceLayout offenses' do
     create_file('.rubocop.yml', <<~YAML)

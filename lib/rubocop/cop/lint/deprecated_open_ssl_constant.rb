@@ -37,7 +37,6 @@ module RuboCop
       #   # good
       #   OpenSSL::Digest.digest('SHA256', 'foo')
       #
-      # @api private
       class DeprecatedOpenSSLConstant < Base
         include RangeHelp
         extend AutoCorrector

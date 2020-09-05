@@ -2,12 +2,24 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#8627](https://github.com/rubocop-hq/rubocop/issues/8627): Fix a false positive for `Lint/DuplicateRequire` when same feature argument but different require method. ([@koic][])
+* [#8572](https://github.com/rubocop-hq/rubocop/issues/8572): Fix a false positive for `Style/RedundantParentheses` when parentheses are used like method argument parentheses. ([@koic][])
+* [#8653](https://github.com/rubocop-hq/rubocop/pull/8653): Fix a false positive for `Layout/DefEndAlignment` when using refinements and `private def`. ([@koic][])
+
+### Changes
+
+* [#8470](https://github.com/rubocop-hq/rubocop/issues/8470): Do not autocorrect `Style/StringConcatenation` when parts of the expression are too complex. ([@dvandersluis][])
+
+## 0.90.0 (2020-09-01)
+
 ### New features
 
 * [#8451](https://github.com/rubocop-hq/rubocop/issues/8451): Add new `Style/RedundantSelfAssignment` cop. ([@fatkodima][])
 * [#8384](https://github.com/rubocop-hq/rubocop/issues/8384): Add new `Layout/EmptyLineAfterMultilineCondition` cop. ([@fatkodima][])
 * [#8390](https://github.com/rubocop-hq/rubocop/pull/8390): Add new `Style/SoleNestedConditional` cop. ([@fatkodima][])
-* [#8562](https://github.com/rubocop-hq/rubocop/pull/8562): Add new `Style/KeywordParametersOrder` cop. ([@fatkodima][])
+* [#8563](https://github.com/rubocop-hq/rubocop/pull/8563): Add new `Style/KeywordParametersOrder` cop. ([@fatkodima][])
 * [#8486](https://github.com/rubocop-hq/rubocop/pull/8486): Add new `Style/CombinableLoops` cop. ([@fatkodima][])
 * [#8381](https://github.com/rubocop-hq/rubocop/pull/8381): Add new `Style/ClassMethodsDefinitions` cop. ([@fatkodima][])
 * [#8474](https://github.com/rubocop-hq/rubocop/pull/8474): Add new `Lint/DuplicateRequire` cop. ([@fatkodima][])
@@ -32,9 +44,10 @@
 * [#8158](https://github.com/rubocop-hq/rubocop/issues/8158): Fix `Style/MultilineWhenThen` cop to correctly handle cases with multiline body. ([@dsavochkin][])
 * [#7705](https://github.com/rubocop-hq/rubocop/issues/7705): Fix `Style/OneLineConditional` cop to handle if/then/elsif/then/else/end cases. Add `AlwaysCorrectToMultiline` config option to this cop to always convert offenses to the multi-line form (false by default). ([@Lykos][], [@dsavochkin][])
 * [#8590](https://github.com/rubocop-hq/rubocop/issues/8590): Fix an error when auto-correcting encoding mismatch file. ([@koic][])
-* [#8321](https://github.com/rubocop-hq/rubocop/issues/8321): Enable auto-correction for `Layout/{Def}EndAlignment`, `Lint/EmptyEnsure`. ([@marcandre][])
+* [#8321](https://github.com/rubocop-hq/rubocop/issues/8321): Enable auto-correction for `Layout/{Def}EndAlignment`, `Lint/EmptyEnsure`, `Style/ClassAndModuleChildren`. ([@marcandre][])
 * [#8583](https://github.com/rubocop-hq/rubocop/issues/8583): Fix `Style/RedundantRegexpEscape` false positive for line continuations. ([@owst][])
 * [#8593](https://github.com/rubocop-hq/rubocop/issues/8593): Fix `Style/RedundantRegexpCharacterClass` false positive for interpolated multi-line expressions. ([@owst][])
+* [#8624](https://github.com/rubocop-hq/rubocop/pull/8624): Fix an error with the `Style/CaseLikeIf` cop where it does not properly handle overridden equality methods with no arguments. ([@Skipants][])
 
 ### Changes
 
@@ -45,6 +58,7 @@
 * [#8529](https://github.com/rubocop-hq/rubocop/pull/8529): Mark `Lint/FrozenStringLiteralComment` as `Safe`, but with unsafe auto-correction. ([@marcandre][])
 * [#8602](https://github.com/rubocop-hq/rubocop/pull/8602): Fix usage of `to_enum(:scan, regexp)` to work on TruffleRuby. ([@jaimerave][])
 * [#8625](https://github.com/rubocop-hq/rubocop/pull/8625): Improve `Style/RedundantRegexpCharacterClass` and `Style/RedundantRegexpEscape` by using `regexp_parser` gem. ([@owst][])
+* [#8629](https://github.com/rubocop-hq/rubocop/pull/8629): Fix the cache being reusable in CI by using crc32 to calculate file hashes rather than `mtime`, which changes each CI build. ([@dvandersluis][])
 
 ## 0.89.1 (2020-08-10)
 
@@ -4822,3 +4836,4 @@
 [@chocolateboy]: https://github.com/chocolateboy
 [@Lykos]: https://github.com/Lykos
 [@jaimerave]: https://github.com/jaimerave
+[@Skipants]: https://github.com/Skipants

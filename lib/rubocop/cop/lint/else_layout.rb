@@ -27,8 +27,6 @@ module RuboCop
       #     do_this
       #     do_that
       #   end
-      #
-      # @api private
       class ElseLayout < Base
         MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'
 

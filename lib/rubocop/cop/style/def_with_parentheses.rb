@@ -33,8 +33,6 @@ module RuboCop
       #   def Baz.foo
       #     # does a thing
       #   end
-      #
-      # @api private
       class DefWithParentheses < Base
         extend AutoCorrector
 

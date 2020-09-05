@@ -25,8 +25,6 @@ module RuboCop
       #   # good
       #   %Q/Mix the foo into the baz./
       #   %Q{They all said: 'Hooray!'}
-      #
-      # @api private
       class PercentQLiterals < Base
         include PercentLiteral
         include ConfigurableEnforcedStyle

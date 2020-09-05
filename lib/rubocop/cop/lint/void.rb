@@ -40,8 +40,6 @@ module RuboCop
       #     some_array.sort!
       #     do_something(some_array)
       #   end
-      #
-      # @api private
       class Void < Base
         OP_MSG = 'Operator `%<op>s` used in void context.'
         VAR_MSG = 'Variable `%<var>s` used in void context.'

@@ -13,12 +13,12 @@ module RuboCop
       #   # good
       #   x = !something
       #
-      # @api private
       class Not < Base
         include RangeHelp
         extend AutoCorrector
 
         MSG = 'Use `!` instead of `not`.'
+        RESTRICT_ON_SEND = %i[!].freeze
 
         OPPOSITE_METHODS = {
           :== => :!=,

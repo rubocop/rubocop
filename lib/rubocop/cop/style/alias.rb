@@ -22,8 +22,6 @@ module RuboCop
       #
       #   # good
       #   alias_method :bar, :foo
-      #
-      # @api private
       class Alias < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -33,6 +31,8 @@ module RuboCop
                            '%<current>s.'
         MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of ' \
                            '`alias %<current>s`.'
+
+        RESTRICT_ON_SEND = %i[alias_method].freeze
 
         def on_send(node)
           return unless node.command?(:alias_method)

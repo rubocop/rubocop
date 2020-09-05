@@ -23,13 +23,12 @@ module RuboCop
       #   # good
       #   rand(1..6)
       #   rand(1...7)
-      #
-      # @api private
       class RandomWithOffset < Base
         extend AutoCorrector
 
         MSG = 'Prefer ranges when generating random numbers instead of ' \
           'integers with offsets.'
+        RESTRICT_ON_SEND = %i[+ - succ pred next].freeze
 
         def_node_matcher :integer_op_rand?, <<~PATTERN
           (send

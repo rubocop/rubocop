@@ -32,8 +32,6 @@ module RuboCop
       #   raise StandardError.new("message")
       #   raise MyCustomError.new(arg1, arg2, arg3)
       #   fail "message"
-      #
-      # @api private
       class RaiseArgs < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -42,6 +40,8 @@ module RuboCop
           'as arguments to `%<method>s`.'
         COMPACT_MSG = 'Provide an exception object ' \
           'as an argument to `%<method>s`.'
+
+        RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def on_send(node)
           return unless node.command?(:raise) || node.command?(:fail)

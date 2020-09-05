@@ -23,11 +23,11 @@ module RuboCop
       #   keys = %i[key1 key2]
       #   { key1: { key2: 'value' } }.dig(*keys)
       #
-      # @api private
       class SingleArgumentDig < Base
         extend AutoCorrector
 
         MSG = 'Use `%<receiver>s[%<argument>s]` instead of `%<original>s`.'
+        RESTRICT_ON_SEND = %i[dig].freeze
 
         def_node_matcher :single_argument_dig?, <<~PATTERN
           (send _ :dig $!splat)

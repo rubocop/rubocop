@@ -31,15 +31,13 @@ module RuboCop
       #     def do_something
       #     end
       #   RUBY
-      #
-      # @api private
       class EvalWithLocation < Base
         MSG = 'Pass `__FILE__` and `__LINE__` to `eval` method, ' \
               'as they are used by backtraces.'
         MSG_INCORRECT_LINE = 'Use `%<expected>s` instead of `%<actual>s`, ' \
                              'as they are used by backtraces.'
 
-        EVAL_METHODS = %i[eval class_eval module_eval instance_eval].to_set.freeze
+        RESTRICT_ON_SEND = %i[eval class_eval module_eval instance_eval].freeze
 
         def_node_matcher :eval_without_location?, <<~PATTERN
           {
@@ -65,8 +63,6 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless EVAL_METHODS.include?(node.method_name)
-
           eval_without_location?(node) do |code|
             if with_lineno?(node)
               on_with_lineno(node, code)

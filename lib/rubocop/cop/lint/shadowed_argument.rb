@@ -63,7 +63,6 @@ module RuboCop
       #     bar
       #   end
       #
-      # @api private
       class ShadowedArgument < Base
         MSG = 'Argument `%<argument>s` was shadowed by a local variable ' \
               'before it was used.'

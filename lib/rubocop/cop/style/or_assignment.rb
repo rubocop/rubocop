@@ -26,8 +26,6 @@ module RuboCop
       #
       #   # good - set name to 'Bozhidar', only if it's nil or false
       #   name ||= 'Bozhidar'
-      #
-      # @api private
       class OrAssignment < Base
         extend AutoCorrector
 

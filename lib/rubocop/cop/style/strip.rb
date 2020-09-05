@@ -13,13 +13,12 @@ module RuboCop
       #
       #   # good
       #   'abc'.strip
-      #
-      # @api private
       class Strip < Base
         include RangeHelp
         extend AutoCorrector
 
         MSG = 'Use `strip` instead of `%<methods>s`.'
+        RESTRICT_ON_SEND = %i[lstrip rstrip].freeze
 
         def_node_matcher :lstrip_rstrip, <<~PATTERN
           {(send $(send _ $:rstrip) $:lstrip)

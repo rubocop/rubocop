@@ -14,13 +14,13 @@ module RuboCop
       #   # good
       #   warn('hello')
       #
-      # @api private
       class StderrPuts < Base
         include RangeHelp
         extend AutoCorrector
 
         MSG =
           'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
+        RESTRICT_ON_SEND = %i[puts].freeze
 
         def_node_matcher :stderr_puts?, <<~PATTERN
           (send

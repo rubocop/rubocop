@@ -2,7 +2,7 @@
 
 # Extensions to the core String class
 class String
-  unless method_defined? :blank?
+  unless method_defined?(:blank?) && ' '.blank?
     # Checks whether a string is blank. A string is considered blank if it
     # is either empty or contains only whitespace characters.
     #

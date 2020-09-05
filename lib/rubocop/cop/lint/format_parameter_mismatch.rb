@@ -34,8 +34,6 @@ module RuboCop
       #   # good
       #
       #   format('Numbered format: %1$s and numbered %2$s', a_value, another)
-      #
-      # @api private
       class FormatParameterMismatch < Base
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
@@ -46,10 +44,10 @@ module RuboCop
         KERNEL = 'Kernel'
         SHOVEL = '<<'
         STRING_TYPES = %i[str dstr].freeze
-        FORMAT_METHODS = %i[format sprintf %].freeze
+        RESTRICT_ON_SEND = %i[format sprintf %].freeze
 
         def on_send(node)
-          return unless FORMAT_METHODS.include?(node.method_name) && format_string?(node)
+          return unless format_string?(node)
 
           if invalid_format_string?(node)
             add_offense(node.loc.selector, message: MSG_INVALID)

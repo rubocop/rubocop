@@ -14,8 +14,6 @@ module RuboCop
       #   # good
       #   def func(x) end
       #   def method=(y) end
-      #
-      # @api private
       class SpaceAfterMethodName < Base
         include RangeHelp
         extend AutoCorrector

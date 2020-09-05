@@ -27,8 +27,6 @@ module RuboCop
       #   class << self
       #     attr_reader :baz
       #   end
-      #
-      # @api private
       class TrivialAccessors < Base
         include AllowedMethods
         extend AutoCorrector

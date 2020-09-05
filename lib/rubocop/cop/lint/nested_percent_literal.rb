@@ -15,8 +15,6 @@ module RuboCop
       #     valid_attributes: %i[name content],
       #     nested_attributes: %i[name content %i[incorrectly nested]]
       #   }
-      #
-      # @api private
       class NestedPercentLiteral < Base
         include PercentLiteral
 

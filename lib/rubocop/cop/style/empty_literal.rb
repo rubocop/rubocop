@@ -16,8 +16,6 @@ module RuboCop
       #   a = []
       #   h = {}
       #   s = ''
-      #
-      # @api private
       class EmptyLiteral < Base
         include FrozenStringLiteral
         include RangeHelp
@@ -26,6 +24,8 @@ module RuboCop
         ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'
         STR_MSG = 'Use string literal `%<prefer>s` instead of `String.new`.'
+
+        RESTRICT_ON_SEND = %i[new].freeze
 
         def_node_matcher :array_node, '(send (const {nil? cbase} :Array) :new)'
         def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new)'

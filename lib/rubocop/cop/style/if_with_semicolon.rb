@@ -13,7 +13,6 @@ module RuboCop
       #   # good
       #   result = some_condition ? something : another_thing
       #
-      # @api private
       class IfWithSemicolon < Base
         include OnNormalIfUnless
         extend AutoCorrector

@@ -41,8 +41,6 @@ module RuboCop
       #   foo == 0
       #   0 > foo
       #   bar.baz > 0
-      #
-      # @api private
       class NumericPredicate < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods
@@ -56,11 +54,9 @@ module RuboCop
           'negative?' => '<'
         }.freeze
 
-        COMPARISON_METHODS = %i[== > < positive? negative? zero?].to_set.freeze
+        RESTRICT_ON_SEND = %i[== > < positive? negative? zero?].freeze
 
         def on_send(node)
-          return unless COMPARISON_METHODS.include?(node.method_name)
-
           numeric, replacement = check(node)
           return unless numeric
 

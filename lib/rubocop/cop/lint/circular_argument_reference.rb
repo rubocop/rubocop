@@ -47,8 +47,6 @@ module RuboCop
       #   def cook(dry_ingredients = self.dry_ingredients)
       #     dry_ingredients.combine
       #   end
-      #
-      # @api private
       class CircularArgumentReference < Base
         MSG = 'Circular argument reference - `%<arg_name>s`.'
 

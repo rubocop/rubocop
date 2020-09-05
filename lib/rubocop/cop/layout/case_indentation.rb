@@ -67,8 +67,6 @@ module RuboCop
       #   else
       #     y / 3
       #   end
-      #
-      # @api private
       class CaseIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle

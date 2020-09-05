@@ -13,11 +13,11 @@ module RuboCop
       #   # good
       #   node.send_type?
       #
-      # @api private
       class NodeTypePredicate < Base
         extend AutoCorrector
 
         MSG = 'Use `#%<type>s_type?` to check node type.'
+        RESTRICT_ON_SEND = %i[==].freeze
 
         def_node_matcher :node_type_check, <<~PATTERN
           (send (send $_ :type) :== (sym $_))

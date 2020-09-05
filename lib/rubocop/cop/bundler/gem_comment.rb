@@ -58,13 +58,13 @@ module RuboCop
       #   # Version 2.1 introduces breaking change baz
       #   gem 'bar', '< 2.1'
       #
-      # @api private
       class GemComment < Cop
         include DefNode
 
         MSG = 'Missing gem description comment.'
         CHECKED_OPTIONS_CONFIG = 'OnlyFor'
         VERSION_SPECIFIERS_OPTION = 'version_specifiers'
+        RESTRICT_ON_SEND = %i[gem].freeze
 
         def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 

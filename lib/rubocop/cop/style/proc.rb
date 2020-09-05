@@ -13,7 +13,6 @@ module RuboCop
       #   # good
       #   p = proc { |n| puts n }
       #
-      # @api private
       class Proc < Base
         extend AutoCorrector
 

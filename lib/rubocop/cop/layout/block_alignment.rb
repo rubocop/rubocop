@@ -61,8 +61,6 @@ module RuboCop
       #     .each do
       #        baz
       #   end
-      #
-      # @api private
       class BlockAlignment < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

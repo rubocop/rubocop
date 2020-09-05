@@ -24,11 +24,11 @@ module RuboCop
       #   require_relative '../foo'
       #   require_relative '../foo.so'
       #
-      # @api private
       class RedundantFileExtensionInRequire < Base
         extend AutoCorrector
 
         MSG = 'Redundant `.rb` file extension detected.'
+        RESTRICT_ON_SEND = %i[require require_relative].freeze
 
         def_node_matcher :require_call?, <<~PATTERN
           (send nil? {:require :require_relative} $str_type?)

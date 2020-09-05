@@ -33,7 +33,6 @@ module RuboCop
       #     end
       #   end
       #
-      # @api private
       class TrailingMethodEndStatement < Base
         extend AutoCorrector
 

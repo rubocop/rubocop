@@ -20,8 +20,6 @@ module RuboCop
       #   Integer('10', 10)
       #   Float('10.2')
       #   Complex('10')
-      #
-      # @api private
       class NumberConversion < Base
         extend AutoCorrector
 
@@ -34,6 +32,7 @@ module RuboCop
               'class parsing, instead of using '\
               '%<number_object>s.%<to_method>s, use stricter '\
               '%<corrected_method>s.'
+        RESTRICT_ON_SEND = CONVERSION_METHOD_CLASS_MAPPING.keys.freeze
 
         def_node_matcher :to_method, <<~PATTERN
           (send $_ ${:to_i :to_f :to_c})

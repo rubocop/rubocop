@@ -38,9 +38,10 @@ module RuboCop
       #   if !x.nil?
       #   end
       #
-      # @api private
       class NonNilCheck < Base
         extend AutoCorrector
+
+        RESTRICT_ON_SEND = %i[!= nil? !].freeze
 
         def_node_matcher :not_equal_to_nil?, '(send _ :!= nil)'
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
