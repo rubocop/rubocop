@@ -66,6 +66,21 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
         RUBY
       end
     end
+
+    context 'when using refinements and `private def`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          using Module.new {
+            refine Hash do
+              class << Hash
+                private def _ruby2_keywords_hash(*args)
+                end
+              end
+            end
+          }
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyleAlignWith is def' do
