@@ -212,6 +212,16 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
     end
 
+    context 'when --cache-root is given' do
+      it 'takes the cache_root from the options' do
+        cache2 = described_class.new(file, team,
+                                     { cache_root: 'some/path' },
+                                     config_store)
+
+        expect(cache2.path).to start_with('some/path')
+      end
+    end
+
     context 'when --format is given' do
       let(:options2) { { format: 'simple' } }
 
@@ -381,6 +391,22 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it 'contains the given root' do
         cacheroot = described_class.cache_root(config_store)
         expect(cacheroot).to eq(File.join('/opt', 'rubocop_cache'))
+      end
+
+      context 'and RUBOCOP_CACHE_ROOT is set' do
+        around do |example|
+          ENV['RUBOCOP_CACHE_ROOT'] = '/tmp/cache-from-env'
+          begin
+            example.run
+          ensure
+            ENV.delete('RUBOCOP_CACHE_ROOT')
+          end
+        end
+
+        it 'contains the root from RUBOCOP_CACHE_ROOT' do
+          cacheroot = described_class.cache_root(config_store)
+          expect(cacheroot).to eq(File.join('/tmp/cache-from-env', 'rubocop_cache'))
+        end
       end
     end
   end

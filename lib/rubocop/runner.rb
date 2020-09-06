@@ -81,7 +81,10 @@ module RuboCop
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
       # by an editor, it should be inspecting only one file.
-      ResultCache.cleanup(@config_store, @options[:debug]) if files.size > 1 && cached_run?
+      if files.size > 1 && cached_run?
+        ResultCache.cleanup(@config_store, @options[:debug], @options[:cache_root])
+      end
+
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end

@@ -103,12 +103,16 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                                default, and their configurations for the
                                                current directory.
-              -F, --fail-fast                  Inspect files in order of modification
-                                               time and stop after the first file
-                                               containing offenses.
               -C, --cache FLAG                 Use result caching (FLAG=true) or don't
                                                (FLAG=false), default determined by
                                                configuration parameter AllCops: UseCache.
+                  --cache-root DIR             Set the cache root directory.
+                                               Takes precedence over the configuration
+                                               parameter AllCops: CacheRootDirectory and
+                                               the $RUBOCOP_CACHE_ROOT environment variable.
+              -F, --fail-fast                  Inspect files in order of modification
+                                               time and stop after the first file
+                                               containing offenses.
               -d, --debug                      Display debug info.
               -D, --[no-]display-cop-names     Display cop names in offense messages.
                                                Default is true.
@@ -294,6 +298,22 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       it 'accepts false as argument' do
         expect { options.parse %w[--cache false] }.not_to raise_error
+      end
+    end
+
+    describe '--cache-root' do
+      it 'fails if no argument is given' do
+        expect { options.parse %w[--cache-root] }
+          .to raise_error(OptionParser::MissingArgument)
+      end
+
+      it 'fails if also `--cache false` is given' do
+        expect { options.parse %w[--cache false --cache-root /some/dir] }
+          .to raise_error(RuboCop::OptionArgumentError)
+      end
+
+      it 'accepts a path as argument' do
+        expect { options.parse %w[--cache-root /some/dir] }.not_to raise_error
       end
     end
 
