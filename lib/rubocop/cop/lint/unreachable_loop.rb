@@ -130,7 +130,8 @@ module RuboCop
           case node.type
           when :begin, :kwbegin
             statements = *node
-            statements.any? { |statement| break_statement?(statement) }
+            break_statement = statements.find { |statement| break_statement?(statement) }
+            break_statement && !preceded_by_continue_statement?(break_statement)
           when :if
             check_if(node)
           when :case
