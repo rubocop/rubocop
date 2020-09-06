@@ -1581,6 +1581,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'does not crash Lint/SafeNavigationWithEmpty and offenses and accepts Style/SafeNavigation ' \
+     'when checking `foo&.empty?` in a conditional' do
+    create_file('example.rb', <<~RUBY)
+      do_something if ENV['VERSION'] && ENV['VERSION'].empty?
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--auto-correct',
+          '--only', 'Lint/SafeNavigationWithEmpty,Style/SafeNavigation'
+        ]
+      )
+    ).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      do_something if ENV['VERSION'] && ENV['VERSION'].empty?
+    RUBY
+  end
+
   it 'corrects TrailingCommaIn(Array|Hash)Literal and ' \
      'Multiline(Array|Hash)BraceLayout offenses' do
     create_file('.rubocop.yml', <<~YAML)

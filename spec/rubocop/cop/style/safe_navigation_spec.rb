@@ -90,6 +90,10 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     expect_no_offenses('foo && foo.bar !~ /baz/')
   end
 
+  it 'allows an object check before a method call that is used with `empty?`' do
+    expect_no_offenses('foo && foo.empty?')
+  end
+
   it 'allows an object check before a method call that is used in ' \
      'a spaceship comparison' do
     expect_no_offenses('foo && foo.bar <=> baz')
