@@ -91,6 +91,7 @@ In the following section you find all available cops:
 * xref:cops_layout.adoc#layoutargumentalignment[Layout/ArgumentAlignment]
 * xref:cops_layout.adoc#layoutarrayalignment[Layout/ArrayAlignment]
 * xref:cops_layout.adoc#layoutassignmentindentation[Layout/AssignmentIndentation]
+* xref:cops_layout.adoc#layoutbeginendalignment[Layout/BeginEndAlignment]
 * xref:cops_layout.adoc#layoutblockalignment[Layout/BlockAlignment]
 * xref:cops_layout.adoc#layoutblockendnewline[Layout/BlockEndNewline]
 * xref:cops_layout.adoc#layoutcaseindentation[Layout/CaseIndentation]
