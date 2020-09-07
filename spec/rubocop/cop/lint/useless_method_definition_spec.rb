@@ -148,6 +148,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
     RUBY
   end
 
+  it 'does not register an offense when method definition contains optional argument' do
+    expect_no_offenses(<<~RUBY)
+      def method(x = 1)
+        super
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when method definition contains optional keyword argument' do
+    expect_no_offenses(<<~RUBY)
+      def method(x: 1)
+        super
+      end
+    RUBY
+  end
+
   it 'does not register an offense when non-constructor contains only comments' do
     expect_no_offenses(<<~RUBY)
       def non_constructor

@@ -4621,6 +4621,11 @@ def method
   super
 end
 
+# good - with default arguments
+def initialize(x = Object.new)
+  super
+end
+
 # good
 def initialize
   initialize_internals
