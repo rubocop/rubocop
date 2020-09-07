@@ -3193,7 +3193,7 @@ x&.foo || bar
 | Name | Default value | Configurable values
 
 | AllowedMethods
-| `present?`, `blank?`, `presence`, `try`, `try!`
+| `present?`, `blank?`, `presence`, `try`, `try!`, `in?`
 | Array
 |===
 
