@@ -32,7 +32,6 @@ module RuboCop
                       'nested style.'
 
         def on_class(node)
-          return if node.identifier.children[0]&.cbase_type?
           return if node.parent_class && style != :nested
 
           check_style(node, node.body)
@@ -113,6 +112,8 @@ module RuboCop
         end
 
         def check_style(node, body)
+          return if node.identifier.children[0]&.cbase_type?
+
           if style == :nested
             check_nested_style(node)
           else
