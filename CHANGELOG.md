@@ -10,6 +10,7 @@
 ### Bug fixes
 
 * [#8627](https://github.com/rubocop-hq/rubocop/issues/8627): Fix a false positive for `Lint/DuplicateRequire` when same feature argument but different require method. ([@koic][])
+* [#8658](https://github.com/rubocop-hq/rubocop/pull/8658): Fix a false positive for `Style/RedundantSelfAssignment` when calling coercion methods. ([@fatkodima][])
 * [#8607](https://github.com/rubocop-hq/rubocop/issues/8607): Fix a false positive for `Lint/UnreachableLoop` when conditional branch includes continue statement preceding break statement. ([@fatkodima][])
 * [#8572](https://github.com/rubocop-hq/rubocop/issues/8572): Fix a false positive for `Style/RedundantParentheses` when parentheses are used like method argument parentheses. ([@koic][])
 * [#8653](https://github.com/rubocop-hq/rubocop/pull/8653): Fix a false positive for `Layout/DefEndAlignment` when using refinements and `private def`. ([@koic][])

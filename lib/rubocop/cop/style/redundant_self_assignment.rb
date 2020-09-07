@@ -37,8 +37,8 @@ module RuboCop
         METHODS_RETURNING_SELF = %i[
           append clear collect! compare_by_identity concat delete_if
           fill initialize_copy insert keep_if map! merge! prepend push
-          rehash replace reverse! rotate! shuffle! sort! sort_by! to_ary
-          to_hash transform_keys! transform_values! unshift update
+          rehash replace reverse! rotate! shuffle! sort! sort_by!
+          transform_keys! transform_values! unshift update
         ].to_set.freeze
 
         ASSIGNMENT_TYPE_TO_RECEIVER_TYPE = {
