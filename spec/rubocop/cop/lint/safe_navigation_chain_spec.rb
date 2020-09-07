@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
-  let(:cop_config) do
-    { 'AcceptedMethods' => %w[present? blank? try presence] }
-  end
-
   shared_examples 'accepts' do |name, code|
     it "accepts usages of #{name}" do
       expect_no_offenses(code)
@@ -31,7 +27,8 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     ['safe navigation with `try` method', 'a&.b.try(:c)'],
     ['safe navigation with assignment method', 'x&.foo = bar'],
     ['safe navigation with self assignment method', 'x&.foo += bar'],
-    ['safe navigation with `to_d` method', 'x&.foo.to_d']
+    ['safe navigation with `to_d` method', 'x&.foo.to_d'],
+    ['safe navigation with `in?` method', 'x&.foo.in?([:baz, :qux])']
   ].each do |name, code|
     include_examples 'accepts', name, code
   end
