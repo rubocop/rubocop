@@ -67,6 +67,13 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'accepts cbase module name' do
+      expect_no_offenses(<<~RUBY)
+        module ::Foo
+        end
+      RUBY
+    end
+
     it 'accepts :: in parent class on inheritance' do
       expect_no_offenses(<<~RUBY)
         class FooClass
