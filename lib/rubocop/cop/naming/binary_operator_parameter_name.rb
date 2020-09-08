@@ -35,7 +35,7 @@ module RuboCop
         def op_method?(name)
           return false if EXCLUDED.include?(name)
 
-          !/\A\w/.match?(name) || OP_LIKE_METHODS.include?(name)
+          !/\A[[:word:]]/.match?(name) || OP_LIKE_METHODS.include?(name)
         end
       end
     end
