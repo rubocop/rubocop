@@ -17,6 +17,7 @@
 * [#8655](https://github.com/rubocop-hq/rubocop/pull/8655): Fix a false positive for `Style/ClassAndModuleChildren` when using cbase class name. ([@koic][])
 * [#8654](https://github.com/rubocop-hq/rubocop/pull/8654): Fix a false positive for `Style/SafeNavigation` when checking `foo&.empty?` in a conditional. ([@koic][])
 * [#8660](https://github.com/rubocop-hq/rubocop/pull/8660): Fix a false positive for `Style/ClassAndModuleChildren` when using cbase module name. ([@koic][])
+* [#8664](https://github.com/rubocop-hq/rubocop/issues/8664): Fix a false positive for `Naming/BinaryOperatorParameterName` when naming multibyte character method name. ([@koic][])
 
 ### Changes
 
