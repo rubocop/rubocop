@@ -53,7 +53,11 @@ module RuboCop
           gem_declarations(processed_source.ast)
             .group_by(&:first_argument)
             .values
-            .select { |nodes| nodes.size > 1 }
+            .select { |nodes| nodes.size > 1 && !condition?(nodes) }
+        end
+
+        def condition?(nodes)
+          nodes[0].parent&.if_type? && nodes[0].parent == nodes[1].parent
         end
 
         def register_offense(node, gem_name, line_of_first_occurrence)
