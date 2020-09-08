@@ -1,18 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
-  let(:source) do
-    <<~RUBY
-      foo def a
-        a1
-      end
-
-      foo def b
-            b1
-          end
-    RUBY
-  end
-
   context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) do
       { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
-  let(:message) { 'Wrap multiline memoization blocks in `begin` and `end`.' }
-
   shared_examples 'with all enforced styles' do
     context 'with a single line memoization' do
       it 'allows expression on first line' do

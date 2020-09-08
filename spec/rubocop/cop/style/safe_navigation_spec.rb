@@ -3,11 +3,6 @@
 RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
 
-  let(:message) do
-    'Use safe navigation (`&.`) instead of checking if an object ' \
-    'exists before calling the method.'
-  end
-
   it 'allows calls to methods not safeguarded by respond_to' do
     expect_no_offenses('foo.bar')
   end
