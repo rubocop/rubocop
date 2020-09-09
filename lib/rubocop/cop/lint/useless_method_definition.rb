@@ -18,6 +18,11 @@ module RuboCop
       #     super
       #   end
       #
+      #   # good - with default arguments
+      #   def initialize(x = Object.new)
+      #     super
+      #   end
+      #
       #   # good
       #   def initialize
       #     initialize_internals
@@ -46,6 +51,7 @@ module RuboCop
         MSG = 'Useless method definition detected.'
 
         def on_def(node)
+          return if optional_args?(node)
           return unless (constructor?(node) && empty_constructor?(node)) ||
                         delegating?(node.body, node)
 
@@ -54,6 +60,10 @@ module RuboCop
         alias on_defs on_def
 
         private
+
+        def optional_args?(node)
+          node.arguments.any? { |arg| arg.optarg_type? || arg.kwoptarg_type? }
+        end
 
         def empty_constructor?(node)
           return false if node.body

@@ -49,6 +49,10 @@ module RuboCop
       #   foo && foo < bar
       #   foo < bar if foo
       #
+      #   # When checking `foo&.empty?` in a conditional, `foo` being `nil` will actually
+      #   # do the opposite of what the author intends.
+      #   foo && foo.empty?
+      #
       #   # This could start returning `nil` as well as the return of the method
       #   foo.nil? || foo.bar
       #   !foo || foo.bar
@@ -104,6 +108,7 @@ module RuboCop
           # chain greater than 2
           return if chain_size(method_chain, method) > 1
           return if unsafe_method_used?(method_chain, method)
+          return if method_chain.method?(:empty?)
 
           add_offense(node) do |corrector|
             autocorrect(corrector, node)

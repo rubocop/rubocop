@@ -261,6 +261,77 @@ value =
 | Integer
 |===
 
+== Layout/BeginEndAlignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.91
+| -
+|===
+
+This cop checks whether the end keyword of `begin` is aligned properly.
+
+Two modes are supported through the `EnforcedStyleAlignWith` configuration
+parameter. If it's set to `start_of_line` (which is the default), the
+`end` shall be aligned with the start of the line where the `begin`
+keyword is. If it's set to `begin`, the `end` shall be aligned with the
+`begin` keyword.
+
+`Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
+by default. On the other hand, `||= begin` that this cop targets tends to
+align with the start of the line, it defaults to `EnforcedStyleAlignWith: start_of_line`.
+These style can be configured by each cop.
+
+=== Examples
+
+==== EnforcedStyleAlignWith: start_of_line (default)
+
+[source,ruby]
+----
+# bad
+foo ||= begin
+          do_something
+        end
+
+# good
+foo ||= begin
+  do_something
+end
+----
+
+==== EnforcedStyleAlignWith: begin
+
+[source,ruby]
+----
+# bad
+foo ||= begin
+  do_something
+end
+
+# good
+foo ||= begin
+          do_something
+        end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyleAlignWith
+| `start_of_line`
+| `start_of_line`, `begin`
+
+| Severity
+| `warning`
+| String
+|===
+
 == Layout/BlockAlignment
 
 |===
@@ -2063,6 +2134,11 @@ left-hand-side of the variable assignment, if there is one.
 
 If it's set to `start_of_line`, the `end` shall be aligned with the
 start of the line where the matching keyword appears.
+
+This `Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
+by default. On the other hand, `Layout/BeginEndAlignment` cop aligns with
+`EnforcedStyleAlignWith: start_of_line` by default due to `||= begin` tends
+to align with the start of the line. These style can be configured by each cop.
 
 === Examples
 

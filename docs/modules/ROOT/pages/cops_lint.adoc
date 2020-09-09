@@ -3193,7 +3193,7 @@ x&.foo || bar
 | Name | Default value | Configurable values
 
 | AllowedMethods
-| `present?`, `blank?`, `presence`, `try`, `try!`
+| `present?`, `blank?`, `presence`, `try`, `try!`, `in?`
 | Array
 |===
 
@@ -4618,6 +4618,11 @@ def initialize
 end
 
 def method
+  super
+end
+
+# good - with default arguments
+def initialize(x = Object.new)
   super
 end
 

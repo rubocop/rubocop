@@ -21,10 +21,10 @@ module RuboCop
 
         str = content
         Ext::RegexpNode.parsed_cache[str] ||= begin
-                                                Regexp::Parser.parse(str)
-                                              rescue StandardError
-                                                nil
-                                              end
+          Regexp::Parser.parse(str)
+        rescue StandardError
+          nil
+        end
       end
 
       def each_capture(named: ANY)

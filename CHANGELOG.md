@@ -2,16 +2,34 @@
 
 ## master (unreleased)
 
+### New features
+
+* New option `--cache-root` and support for the `RUBOCOP_CACHE_ROOT` environment variable. Both can be used to override the `AllCops: CacheRootDirectory` config, especially in a CI setting. ([@sascha-wolf][])
+* [#8582](https://github.com/rubocop-hq/rubocop/issues/8582): Add new `Layout/BeginEndAlignment` cop. ([@koic][])
+
 ### Bug fixes
 
 * [#8627](https://github.com/rubocop-hq/rubocop/issues/8627): Fix a false positive for `Lint/DuplicateRequire` when same feature argument but different require method. ([@koic][])
+* [#8674](https://github.com/rubocop-hq/rubocop/issues/8674): Fix an error for `Layout/EmptyLineAfterMultilineCondition` when conditional is at the top level. ([@fatkodima][])
+* [#8658](https://github.com/rubocop-hq/rubocop/pull/8658): Fix a false positive for `Style/RedundantSelfAssignment` when calling coercion methods. ([@fatkodima][])
+* [#8607](https://github.com/rubocop-hq/rubocop/issues/8607): Fix a false positive for `Lint/UnreachableLoop` when conditional branch includes continue statement preceding break statement. ([@fatkodima][])
 * [#8572](https://github.com/rubocop-hq/rubocop/issues/8572): Fix a false positive for `Style/RedundantParentheses` when parentheses are used like method argument parentheses. ([@koic][])
+* [#8630](https://github.com/rubocop-hq/rubocop/issues/8630): Fix some false positives for `Style/HashTransformKeys` and `Style/HashTransformValues` when the receiver is an array. ([@eugeneius][])
 * [#8653](https://github.com/rubocop-hq/rubocop/pull/8653): Fix a false positive for `Layout/DefEndAlignment` when using refinements and `private def`. ([@koic][])
+* [#8655](https://github.com/rubocop-hq/rubocop/pull/8655): Fix a false positive for `Style/ClassAndModuleChildren` when using cbase class name. ([@koic][])
+* [#8654](https://github.com/rubocop-hq/rubocop/pull/8654): Fix a false positive for `Style/SafeNavigation` when checking `foo&.empty?` in a conditional. ([@koic][])
+* [#8660](https://github.com/rubocop-hq/rubocop/pull/8660): Fix a false positive for `Style/ClassAndModuleChildren` when using cbase module name. ([@koic][])
+* [#8664](https://github.com/rubocop-hq/rubocop/issues/8664): Fix a false positive for `Naming/BinaryOperatorParameterName` when naming multibyte character method name. ([@koic][])
+* [#8604](https://github.com/rubocop-hq/rubocop/issues/8604): Fix a false positive for `Bundler/DuplicatedGem` when gem is duplciated in condition. ([@tejasbubane][])
+* [#8671](https://github.com/rubocop-hq/rubocop/issues/8671): Fix an error for `Style/ExplicitBlockArgument` when using safe navigation method call. ([@koic][])
 
 ### Changes
 
 * [#8470](https://github.com/rubocop-hq/rubocop/issues/8470): Do not autocorrect `Style/StringConcatenation` when parts of the expression are too complex. ([@dvandersluis][])
 * [#8625](https://github.com/rubocop-hq/rubocop/pull/8625): Improve `Style/RedundantRegexpCharacterClass` and `Style/RedundantRegexpEscape` by using `regexp_parser` gem. ([@owst][])
+* [#8561](https://github.com/rubocop-hq/rubocop/issues/8561): Fix `Lint/UselessMethodDefinition` to not register an offense when method definition includes optional arguments. ([@fatkodima][])
+* [#8617](https://github.com/rubocop-hq/rubocop/issues/8617): Fix `Style/HashAsLastArrayItem` to not register an offense when all items in an array are hashes. ([@dvandersluis][])
+* [#8500](https://github.com/rubocop-hq/rubocop/issues/8500): Add `in?` to AllowedMethods for `Lint/SafeNavigationChain` cop. ([@tejasbubane][])
 
 ## 0.90.0 (2020-09-01)
 
@@ -4837,3 +4855,4 @@
 [@Lykos]: https://github.com/Lykos
 [@jaimerave]: https://github.com/jaimerave
 [@Skipants]: https://github.com/Skipants
+[@sascha-wolf]: https://github.com/sascha-wolf

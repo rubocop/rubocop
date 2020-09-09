@@ -67,7 +67,8 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = config_store.for_pwd.for_all_cops['CacheRootDirectory']
+      root = ENV['RUBOCOP_CACHE_ROOT']
+      root ||= config_store.for_pwd.for_all_cops['CacheRootDirectory']
       root ||= if ENV.key?('XDG_CACHE_HOME')
                  # Include user ID in the path to make sure the user has write
                  # access.
@@ -82,7 +83,10 @@ module RuboCop
       config_store.for_pwd.for_all_cops['AllowSymlinksInCacheRootDirectory']
     end
 
+    attr :path
+
     def initialize(file, team, options, config_store, cache_root = nil)
+      cache_root ||= options[:cache_root]
       cache_root ||= ResultCache.cache_root(config_store)
       @allow_symlinks_in_cache_location =
         ResultCache.allow_symlinks_in_cache_location?(config_store)

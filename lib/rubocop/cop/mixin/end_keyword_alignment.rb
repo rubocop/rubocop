@@ -39,6 +39,15 @@ module RuboCop
         end
       end
 
+      def start_line_range(node)
+        expr   = node.source_range
+        buffer = expr.source_buffer
+        source = buffer.source_line(expr.line)
+        range  = buffer.line_range(expr.line)
+
+        range_between(range.begin_pos + (source =~ /\S/), range.begin_pos + (source =~ /\s*\z/))
+      end
+
       def add_offense_for_misalignment(node, align_with)
         end_loc = node.loc.end
         msg = format(MSG, end_line: end_loc.line,

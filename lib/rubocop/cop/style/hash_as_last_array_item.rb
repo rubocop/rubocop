@@ -6,12 +6,18 @@ module RuboCop
       # Checks for presence or absence of braces around hash literal as a last
       # array item depending on configuration.
       #
+      # NOTE: This cop will ignore arrays where all items are hashes, regardless of
+      # EnforcedStyle.
+      #
       # @example EnforcedStyle: braces (default)
       #   # bad
       #   [1, 2, one: 1, two: 2]
       #
       #   # good
       #   [1, 2, { one: 1, two: 2 }]
+      #
+      #   # good
+      #   [{ one: 1 }, { two: 2 }]
       #
       # @example EnforcedStyle: no_braces
       #   # bad
@@ -20,6 +26,8 @@ module RuboCop
       #   # good
       #   [1, 2, one: 1, two: 2]
       #
+      #   # good
+      #   [{ one: 1 }, { two: 2 }]
       class HashAsLastArrayItem < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -38,9 +46,10 @@ module RuboCop
 
         def last_array_item?(node)
           parent = node.parent
-          return false unless parent
+          return false unless parent&.array_type?
+          return false if parent.child_nodes.all?(&:hash_type?)
 
-          parent.array_type? && parent.children.last.equal?(node)
+          parent.children.last.equal?(node)
         end
 
         def check_braces(node)

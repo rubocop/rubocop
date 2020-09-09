@@ -69,6 +69,7 @@ module RuboCop
 
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
+        add_cache_options(opts)
         add_boolean_flags(opts)
         add_aliases(opts)
 
@@ -164,10 +165,16 @@ module RuboCop
       end
     end
 
+    def add_cache_options(opts)
+      option(opts, '-C', '--cache FLAG')
+      option(opts, '--cache-root DIR') do
+        @validator.validate_cache_enabled_for_cache_root
+      end
+    end
+
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
-      option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
       option(opts, '-D', '--[no-]display-cop-names')
       option(opts, '-E', '--extra-details')
@@ -392,6 +399,13 @@ module RuboCop
       # of option order.
       raise OptionParser::MissingArgument
     end
+
+    def validate_cache_enabled_for_cache_root
+      return unless @options[:cache] == 'false'
+
+      raise OptionArgumentError, '--cache-root can not be used with ' \
+                                  '--cache false'
+    end
   end
 
   # This module contains help texts for command line options.
@@ -464,6 +478,10 @@ module RuboCop
       cache:                            ["Use result caching (FLAG=true) or don't",
                                          '(FLAG=false), default determined by',
                                          'configuration parameter AllCops: UseCache.'],
+      cache_root:                       ['Set the cache root directory.',
+                                         'Takes precedence over the configuration',
+                                         'parameter AllCops: CacheRootDirectory and',
+                                         'the $RUBOCOP_CACHE_ROOT environment variable.'],
       debug:                            'Display debug info.',
       display_cop_names:                ['Display cop names in offense messages.',
                                          'Default is true.'],

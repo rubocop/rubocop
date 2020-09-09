@@ -4,8 +4,6 @@ require 'rubocop/cop/legacy/corrector'
 
 RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
   describe '.check' do
-    subject(:resulting_offenses) { cop.send(:complete_investigation).offenses }
-
     let(:offenses) { [] }
     let(:cop) { cop_class.new(config, cop_options, offenses) }
 

@@ -3691,6 +3691,9 @@ ok
 Checks for presence or absence of braces around hash literal as a last
 array item depending on configuration.
 
+NOTE: This cop will ignore arrays where all items are hashes, regardless of
+EnforcedStyle.
+
 === Examples
 
 ==== EnforcedStyle: braces (default)
@@ -3702,6 +3705,9 @@ array item depending on configuration.
 
 # good
 [1, 2, { one: 1, two: 2 }]
+
+# good
+[{ one: 1 }, { two: 2 }]
 ----
 
 ==== EnforcedStyle: no_braces
@@ -3713,6 +3719,9 @@ array item depending on configuration.
 
 # good
 [1, 2, one: 1, two: 2]
+
+# good
+[{ one: 1 }, { two: 2 }]
 ----
 
 === Configurable attributes
@@ -8652,6 +8661,10 @@ foo && foo.nil? # method that `nil` responds to
 # Method calls that do not use `.`
 foo && foo < bar
 foo < bar if foo
+
+# When checking `foo&.empty?` in a conditional, `foo` being `nil` will actually
+# do the opposite of what the author intends.
+foo && foo.empty?
 
 # This could start returning `nil` as well as the return of the method
 foo.nil? || foo.bar

@@ -30,6 +30,12 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
         foo(one: 1, two: 2)
       RUBY
     end
+
+    it 'does not register an offense when the array is all hashes' do
+      expect_no_offenses(<<~RUBY)
+        [{ one: 1 }, { two: 2 }]
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is no_braces' do
@@ -57,6 +63,12 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
     it 'does not register an offense when hash is not inside array' do
       expect_no_offenses(<<~RUBY)
         foo({ one: 1, two: 2 })
+      RUBY
+    end
+
+    it 'does not register an offense when the array is all hashes' do
+      expect_no_offenses(<<~RUBY)
+        [{ one: 1 }, { two: 2 }]
       RUBY
     end
   end
