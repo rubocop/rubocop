@@ -22,7 +22,7 @@
 **RuboCop** is a Ruby static code analyzer (a.k.a. `linter`) and code formatter. Out of the box it
 will enforce many of the guidelines outlined in the community [Ruby Style
 Guide](https://rubystyle.guide). Apart from reporting the problems discovered in your code,
-RuboCop can also automatically fix many of them you.
+RuboCop can also automatically fix many of them for you.
 
 RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various
 [configuration options](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml).

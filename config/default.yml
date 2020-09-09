@@ -1699,6 +1699,11 @@ Lint/PercentSymbolArray:
   Enabled: true
   VersionAdded: '0.41'
 
+Lint/PreferAllowlistDenylist:
+  Description: Checks for instances of harmful language and suggests a replacement.
+  Enabled: pending
+  VersionAdded: '0.91'
+
 Lint/RaiseException:
   Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
   StyleGuide: '#raise-exception'

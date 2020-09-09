@@ -2559,6 +2559,60 @@ rather than meant to be part of the resulting symbols.
 %i(foo bar)
 ----
 
+== Lint/PreferAllowlistDenylist
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.91
+| -
+|===
+
+
+
+=== Examples
+
+==== PreferAllowlistDenylist: blacklist
+
+[source,ruby]
+----
+# Use `allowlist` instead of `whitelist`.
+
+# bad
+bad_whitelist_method
+
+# bad
+BAD_BLACKLIST_CONST
+
+# good
+good_allowlist_method
+
+# good
+GOOD_ALLOWLIST_CONST
+----
+
+==== EnforcedStyle: foo
+
+[source,ruby]
+----
+# Use `denylist` instead of `blacklist`.
+
+# bad
+bad_blacklist_method
+
+# bad
+BAD_BLACKLIST_CONST
+
+# good
+good_denylist_method
+
+# good
+GOOD_DENYLIST_CONST
+----
+
 == Lint/RaiseException
 
 |===

@@ -238,6 +238,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintparenthesesasgroupedexpression[Lint/ParenthesesAsGroupedExpression]
 * xref:cops_lint.adoc#lintpercentstringarray[Lint/PercentStringArray]
 * xref:cops_lint.adoc#lintpercentsymbolarray[Lint/PercentSymbolArray]
+* xref:cops_lint.adoc#lintpreferallowlistdenylist[Lint/PreferAllowlistDenylist]
 * xref:cops_lint.adoc#lintraiseexception[Lint/RaiseException]
 * xref:cops_lint.adoc#lintrandone[Lint/RandOne]
 * xref:cops_lint.adoc#lintredundantcopdisabledirective[Lint/RedundantCopDisableDirective]
