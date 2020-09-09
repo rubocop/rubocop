@@ -59,6 +59,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition do
     RUBY
   end
 
+  it 'does not register an offense when `if` at the top level' do
+    expect_no_offenses(<<~RUBY)
+      do_something if condition
+    RUBY
+  end
+
   it 'registers an offense when no new line after `elsif` with multiline condition' do
     expect_offense(<<~RUBY)
       if condition
