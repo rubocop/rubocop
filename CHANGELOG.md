@@ -22,6 +22,7 @@
 * [#8664](https://github.com/rubocop-hq/rubocop/issues/8664): Fix a false positive for `Naming/BinaryOperatorParameterName` when naming multibyte character method name. ([@koic][])
 * [#8604](https://github.com/rubocop-hq/rubocop/issues/8604): Fix a false positive for `Bundler/DuplicatedGem` when gem is duplciated in condition. ([@tejasbubane][])
 * [#8671](https://github.com/rubocop-hq/rubocop/issues/8671): Fix an error for `Style/ExplicitBlockArgument` when using safe navigation method call. ([@koic][])
+* [#8681](https://github.com/rubocop-hq/rubocop/pull/8681): Fix an error for `Style/HashAsLastArrayItem` with `no_braces` for empty hash. ([@fsateler][])
 
 ### Changes
 
@@ -4855,3 +4856,4 @@
 [@jaimerave]: https://github.com/jaimerave
 [@Skipants]: https://github.com/Skipants
 [@sascha-wolf]: https://github.com/sascha-wolf
+[@fsateler]: https://github.com/fsateler
