@@ -34,7 +34,6 @@ module RuboCop
       #   /[+\-]\d/
       class RedundantRegexpEscape < Base
         include RangeHelp
-        include RegexpLiteralHelp
         extend AutoCorrector
 
         MSG_REDUNDANT_ESCAPE = 'Redundant escape inside regexp literal'
@@ -82,9 +81,11 @@ module RuboCop
         end
 
         def each_escape(node)
-          Regexp::Parser.parse(
-            pattern_source(node)
-          ).traverse.reduce(0) do |char_class_depth, (event, expr)|
+          parsed_tree = node.parsed_tree(interpolation: :blank)
+
+          return unless parsed_tree
+
+          parsed_tree.traverse.reduce(0) do |char_class_depth, (event, expr)|
             yield(expr.text[1], expr.ts, !char_class_depth.zero?) if expr.type == :escape
 
             if expr.type == :set
@@ -93,9 +94,6 @@ module RuboCop
               char_class_depth
             end
           end
-        rescue Regexp::Scanner::ScannerError
-          # Handle malformed patterns that are accepted by Ruby but cause the regexp_parser gem to
-          # error, see https://github.com/rubocop-hq/rubocop/issues/8083 for details
         end
 
         def escape_range_at_index(node, index)

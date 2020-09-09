@@ -22,7 +22,6 @@ module RuboCop
       #   # good
       #   r = /[ab]/
       class RedundantRegexpCharacterClass < Base
-        include RegexpLiteralHelp
         extend AutoCorrector
 
         REQUIRES_ESCAPE_OUTSIDE_CHAR_CLASS_CHARS = '.*+?{}()|$'.chars.freeze
@@ -54,16 +53,13 @@ module RuboCop
         end
 
         def each_single_element_character_class(node)
-          Regexp::Parser.parse(pattern_source(node)).each_expression do |expr|
+          node.parsed_tree(interpolation: :blank)&.each_expression do |expr|
             next if expr.type != :set || expr.expressions.size != 1
             next if expr.negative?
             next if %i[set posixclass nonposixclass].include?(expr.expressions.first.type)
 
             yield expr
           end
-        rescue Regexp::Scanner::ScannerError
-          # Handle malformed patterns that are accepted by Ruby but cause the regexp_parser gem to
-          # error, see https://github.com/rubocop-hq/rubocop/issues/8083 for details
         end
 
         def redundant_single_element_character_class?(node, char_class)
@@ -82,7 +78,7 @@ module RuboCop
         end
 
         def whitespace_in_free_space_mode?(node, elem)
-          return false unless freespace_mode_regexp?(node)
+          return false unless node.extended?
 
           /\s/.match?(elem)
         end
