@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
-  context 'with a character class containing a single character inside a gruop' do
+  context 'with a character class containing a single character inside a group' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         foo = /([a])/
@@ -52,6 +52,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
   context 'with a character class containing a posix bracket expression' do
     it 'does not register an offense' do
       expect_no_offenses('foo = /[[:alnum:]]/')
+    end
+  end
+
+  context 'with a character class containing a negated posix bracket expression' do
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /[[:^alnum:]]/')
     end
   end
 

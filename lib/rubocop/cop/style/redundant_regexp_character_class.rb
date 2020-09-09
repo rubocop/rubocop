@@ -56,7 +56,8 @@ module RuboCop
         def each_single_element_character_class(node)
           Regexp::Parser.parse(pattern_source(node)).each_expression do |expr|
             next if expr.type != :set || expr.expressions.size != 1
-            next if expr.negative? || %i[posixclass set].include?(expr.expressions.first.type)
+            next if expr.negative?
+            next if %i[set posixclass nonposixclass].include?(expr.expressions.first.type)
 
             yield expr
           end
