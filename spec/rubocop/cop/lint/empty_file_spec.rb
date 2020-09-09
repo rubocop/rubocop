@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::EmptyFile, :config do
-  subject(:cop) { described_class.new(config) }
-
+  let(:commissioner) { RuboCop::Cop::Commissioner.new([cop]) }
+  let(:offenses) { commissioner.investigate(processed_source).offenses }
   let(:cop_config) do
     { 'AllowComments' => true }
   end
+  let(:source) { '' }
 
   it 'registers an offense when the file is empty' do
-    expect_offense(<<~RUBY)
-      ^ Empty file detected.
-    RUBY
+    expect(offenses.size).to eq(1)
+    offense = offenses.first
+    expect(offense.message).to eq('Empty file detected.')
+    expect(offense.severity).to eq(:warning)
   end
 
   it 'does not register an offense when the file contains code' do
@@ -29,12 +31,10 @@ RSpec.describe RuboCop::Cop::Lint::EmptyFile, :config do
     let(:cop_config) do
       { 'AllowComments' => false }
     end
+    let(:source) { '# comment' }
 
     it 'registers an offense when the file contains comments' do
-      expect_offense(<<~RUBY)
-        # comment
-        ^ Empty file detected.
-      RUBY
+      expect(offenses.size).to eq(1)
     end
   end
 end

@@ -26,10 +26,7 @@ module RuboCop
         MSG = 'Empty file detected.'
 
         def on_new_investigation
-          return unless offending?
-
-          range = source_range(processed_source.buffer, 1, 0)
-          add_offense(range)
+          add_global_offense(MSG) if offending?
         end
 
         private
