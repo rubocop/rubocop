@@ -44,7 +44,9 @@ module RuboCop
         self
       end
 
-      private def with_comments_and_interpolations_blanked
+      private
+
+      def with_comments_and_interpolations_blanked
         freespace_mode = extended?
 
         children.reject(&:regopt_type?).map do |child|
@@ -63,7 +65,7 @@ module RuboCop
         end.join
       end
 
-      private def replace_match_with_spaces(source, pattern)
+      def replace_match_with_spaces(source, pattern)
         source.sub(pattern) { ' ' * Regexp.last_match[0].length }
       end
 
