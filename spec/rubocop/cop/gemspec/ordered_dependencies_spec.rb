@@ -55,16 +55,6 @@ RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
       end
 
       context 'when dependency is separated by multiline comment' do
-        let(:source) { <<~RUBY }
-          Gem::Specification.new do |spec|
-            # For code quality
-            spec.#{add_dependency} 'rubocop'
-            # For
-            # test
-            spec.#{add_dependency} 'rspec'
-          end
-        RUBY
-
         context 'with TreatCommentsAsGroupSeparators: true' do
           let(:treat_comments_as_group_separators) { true }
 

@@ -295,7 +295,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
 
     context 'when the option is not given' do
-      let(:options) { {} }
+      let(:cop_options) { {} }
 
       it { is_expected.to be(false) }
     end

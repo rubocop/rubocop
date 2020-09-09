@@ -9,8 +9,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
   let(:loaded_path) { 'example/.rubocop.yml' }
 
   describe '#validate', :isolated_environment do
-    let(:configuration_path) { '.rubocop.yml' }
-
     context 'when the configuration includes any obsolete cop name' do
       let(:hash) do
         {
