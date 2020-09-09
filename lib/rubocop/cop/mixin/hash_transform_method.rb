@@ -4,8 +4,14 @@ module RuboCop
   module Cop
     # Common functionality for Style/HashTransformKeys and
     # Style/HashTransformValues
-    module HashTransformMethod
+    module HashTransformMethod # rubocop:disable Metrics/ModuleLength
+      extend NodePattern::Macros
+
       RESTRICT_ON_SEND = %i[[] to_h].freeze
+
+      def_node_matcher :array_receiver?, <<~PATTERN
+        {(array ...) (send _ :each_with_index) (send _ :with_index _ ?) (send _ :zip ...)}
+      PATTERN
 
       def on_block(node)
         on_bad_each_with_object(node) do |*match|
