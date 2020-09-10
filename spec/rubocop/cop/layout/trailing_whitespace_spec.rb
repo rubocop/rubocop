@@ -109,5 +109,17 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
         EXAMPLE
       RUBY
     end
+
+    it 'does not correct trailing whitespace in a static heredoc string' do
+      expect_offense(<<~RUBY)
+        x = <<~'EXAMPLE'
+          has trailing#{trailing_whitespace}
+                      ^ Trailing whitespace detected.
+          no trailing
+        EXAMPLE
+      RUBY
+
+      expect_no_corrections
+    end
   end
 end

@@ -46,7 +46,7 @@ module RuboCop
         MSG = 'Trailing whitespace detected.'
 
         def on_new_investigation
-          @heredoc_ranges = extract_heredoc_ranges(processed_source.ast)
+          @heredocs = extract_heredocs(processed_source.ast)
           processed_source.lines.each_with_index do |line, index|
             next unless line.end_with?(' ', "\t")
 
@@ -57,33 +57,38 @@ module RuboCop
         private
 
         def process_line(line, lineno)
-          in_heredoc = inside_heredoc?(lineno)
-          return if skip_heredoc? && in_heredoc
+          heredoc = find_heredoc(lineno)
+          return if skip_heredoc? && heredoc
 
           range = offense_range(lineno, line)
           add_offense(range) do |corrector|
-            if in_heredoc
-              corrector.insert_after(range, '#{}') # rubocop:disable Lint/InterpolationCheck
+            if heredoc
+              corrector.insert_after(range, '#{}') unless static?(heredoc) # rubocop:disable Lint/InterpolationCheck
             else
               corrector.remove(range)
             end
           end
         end
 
+        def static?(heredoc)
+          heredoc.loc.expression.source.end_with? "'"
+        end
+
         def skip_heredoc?
           cop_config.fetch('AllowInHeredoc', false)
         end
 
-        def inside_heredoc?(line_number)
-          @heredoc_ranges.any? { |r| r.include?(line_number) }
+        def find_heredoc(line_number)
+          @heredocs.each { |node, r| return node if r.include?(line_number) }
+          nil
         end
 
-        def extract_heredoc_ranges(ast)
+        def extract_heredocs(ast)
           return [] unless ast
 
           ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
             body = node.location.heredoc_body
-            (body.first_line...body.last_line)
+            [node, body.first_line...body.last_line]
           end
         end
 
