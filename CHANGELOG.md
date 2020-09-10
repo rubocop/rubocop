@@ -26,6 +26,7 @@
 * [#8688](https://github.com/rubocop-hq/rubocop/issues/8688): Mark `Style/GlobalStdStream` as unsafe autocorrection. ([@marcandre][])
 * [#8642](https://github.com/rubocop-hq/rubocop/issues/8642): Fix a false negative for `Style/SpaceInsideHashLiteralBraces` when a correct empty hash precedes the incorrect hash. ([@dvandersluis][])
 * [#8683](https://github.com/rubocop-hq/rubocop/issues/8683): Make naming cops work with non-ascii characters. ([@tejasbubane][])
+* [#8626](https://github.com/rubocop-hq/rubocop/issues/8626): Fix false negatives for `Lint/UselessMethodDefinition`. ([@marcandre][])
 
 ### Changes
 

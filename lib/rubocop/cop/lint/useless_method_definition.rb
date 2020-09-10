@@ -12,6 +12,7 @@ module RuboCop
       # @example
       #   # bad
       #   def initialize
+      #     super
       #   end
       #
       #   def method
@@ -25,24 +26,12 @@ module RuboCop
       #
       #   # good
       #   def initialize
+      #     super
       #     initialize_internals
       #   end
       #
-      #   def method
-      #     super
-      #     do_something_else
-      #   end
-      #
-      # @example AllowComments: true (default)
-      #   # good
-      #   def initialize
-      #     # Comment.
-      #   end
-      #
-      # @example AllowComments: false
-      #   # bad
-      #   def initialize
-      #     # Comment.
+      #   def method(*args)
+      #     super(:extra_arg, *args)
       #   end
       #
       class UselessMethodDefinition < Base
@@ -52,8 +41,7 @@ module RuboCop
 
         def on_def(node)
           return if optional_args?(node)
-          return unless (constructor?(node) && empty_constructor?(node)) ||
-                        delegating?(node.body, node)
+          return unless delegating?(node.body, node)
 
           add_offense(node) { |corrector| corrector.remove(node) }
         end
@@ -65,21 +53,16 @@ module RuboCop
           node.arguments.any? { |arg| arg.optarg_type? || arg.kwoptarg_type? }
         end
 
-        def empty_constructor?(node)
-          return false if node.body
-          return false if cop_config['AllowComments'] && comment_lines?(node)
-
-          true
-        end
-
-        def constructor?(node)
-          node.def_type? && node.method?(:initialize)
-        end
-
         def delegating?(node, def_node)
-          return false unless node&.super_type? || node&.zsuper_type?
-
-          !node.arguments? || node.arguments.map(&:source) == def_node.arguments.map(&:source)
+          if node.nil?
+            false
+          elsif node.zsuper_type?
+            true
+          elsif node.super_type?
+            node.arguments.map(&:source) == def_node.arguments.map(&:source)
+          else
+            false
+          end
         end
       end
     end
