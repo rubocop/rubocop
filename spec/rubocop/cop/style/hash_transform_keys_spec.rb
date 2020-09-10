@@ -65,6 +65,12 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       RUBY
     end
 
+    it 'does not flag `each_with_object` when its argument is used in the key' do
+      expect_no_offenses(<<~RUBY)
+        x.each_with_object({}) { |(k, v), h| h[h[k.to_sym]] = v }
+      RUBY
+    end
+
     it 'does not flag each_with_object when its receiver is array literal' do
       expect_no_offenses(<<~RUBY)
         [1, 2, 3].each_with_object({}) {|(k, v), h| h[foo(k)] = v}
