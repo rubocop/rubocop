@@ -89,4 +89,25 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       expect(offenses.size).to eq(1)
     end
   end
+
+  context 'when `AllowInHeredoc` is set to false' do
+    let(:cop_config) { { 'AllowInHeredoc' => false } }
+
+    it 'corrects safely trailing whitespace in a heredoc string' do
+      expect_offense(<<~RUBY)
+        x = <<~EXAMPLE
+          has trailing#{trailing_whitespace}
+                      ^ Trailing whitespace detected.
+          no trailing
+        EXAMPLE
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<~EXAMPLE
+          has trailing \#{}
+          no trailing
+        EXAMPLE
+      RUBY
+    end
+  end
 end

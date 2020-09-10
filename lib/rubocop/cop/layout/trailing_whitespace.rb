@@ -21,6 +21,17 @@ module RuboCop
       #     x = 0
       #   RUBY
       #
+      #   # ok
+      #   code = <<~RUBY
+      #     x = 0 #{}
+      #   RUBY
+      #
+      #   # good
+      #   trailing_whitespace = ' '
+      #   code = <<~RUBY
+      #     x = 0#{trailing_whitespace}
+      #   RUBY
+      #
       # @example AllowInHeredoc: true (default)
       #   # The line in this example contains spaces after the 0.
       #   # good
@@ -35,28 +46,36 @@ module RuboCop
         MSG = 'Trailing whitespace detected.'
 
         def on_new_investigation
-          heredoc_ranges = extract_heredoc_ranges(processed_source.ast)
+          @heredoc_ranges = extract_heredoc_ranges(processed_source.ast)
           processed_source.lines.each_with_index do |line, index|
-            lineno = index + 1
-
             next unless line.end_with?(' ', "\t")
-            next if skip_heredoc? && inside_heredoc?(heredoc_ranges, lineno)
 
-            range = offense_range(lineno, line)
-            add_offense(range) do |corrector|
-              corrector.remove(range)
-            end
+            process_line(line, index + 1)
           end
         end
 
         private
 
+        def process_line(line, lineno)
+          in_heredoc = inside_heredoc?(lineno)
+          return if skip_heredoc? && in_heredoc
+
+          range = offense_range(lineno, line)
+          add_offense(range) do |corrector|
+            if in_heredoc
+              corrector.insert_after(range, '#{}') # rubocop:disable Lint/InterpolationCheck
+            else
+              corrector.remove(range)
+            end
+          end
+        end
+
         def skip_heredoc?
           cop_config.fetch('AllowInHeredoc', false)
         end
 
-        def inside_heredoc?(heredoc_ranges, line_number)
-          heredoc_ranges.any? { |r| r.include?(line_number) }
+        def inside_heredoc?(line_number)
+          @heredoc_ranges.any? { |r| r.include?(line_number) }
         end
 
         def extract_heredoc_ranges(ast)

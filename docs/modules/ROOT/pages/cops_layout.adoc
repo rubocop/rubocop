@@ -6369,6 +6369,17 @@ x = 0
 code = <<~RUBY
   x = 0
 RUBY
+
+# ok
+code = <<~RUBY
+  x = 0 #{}
+RUBY
+
+# good
+trailing_whitespace = ' '
+code = <<~RUBY
+  x = 0#{trailing_whitespace}
+RUBY
 ----
 
 ==== AllowInHeredoc: true (default)
