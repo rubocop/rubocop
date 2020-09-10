@@ -344,4 +344,10 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'never accepted',  'camelCase'
     include_examples 'multiple attr methods', 'camelCase'
   end
+
+  it 'works for non-ascii characters' do
+    expect_no_offenses(<<~RUBY)
+      def última_vista; end
+    RUBY
+  end
 end

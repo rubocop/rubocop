@@ -25,6 +25,7 @@
 * [#8682](https://github.com/rubocop-hq/rubocop/pull/8682): Fix a positive for `Style/HashTransformKeys` and `Style/HashTransformValues` when the `each_with_object` hash is used in the transformed key or value. ([@eugeneius][])
 * [#8688](https://github.com/rubocop-hq/rubocop/issues/8688): Mark `Style/GlobalStdStream` as unsafe autocorrection. ([@marcandre][])
 * [#8642](https://github.com/rubocop-hq/rubocop/issues/8642): Fix a false negative for `Style/SpaceInsideHashLiteralBraces` when a correct empty hash precedes the incorrect hash. ([@dvandersluis][])
+* [#8683](https://github.com/rubocop-hq/rubocop/issues/8683): Make naming cops work with non-ascii characters. ([@tejasbubane][])
 
 ### Changes
 
