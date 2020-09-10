@@ -59,9 +59,8 @@ Layout/ClassStructure:
       - protected_methods
       - private_methods
 
-# Trailing white space is meaningful in code examples
 Layout/TrailingWhitespace:
-  AllowInHeredoc: true
+  AllowInHeredoc: false
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
