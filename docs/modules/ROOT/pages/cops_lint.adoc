@@ -4615,6 +4615,7 @@ an empty constructor just overrides the parent constructor, which is bad anyway.
 ----
 # bad
 def initialize
+  super
 end
 
 def method
@@ -4628,32 +4629,12 @@ end
 
 # good
 def initialize
+  super
   initialize_internals
 end
 
-def method
-  super
-  do_something_else
-end
-----
-
-==== AllowComments: true (default)
-
-[source,ruby]
-----
-# good
-def initialize
-  # Comment.
-end
-----
-
-==== AllowComments: false
-
-[source,ruby]
-----
-# bad
-def initialize
-  # Comment.
+def method(*args)
+  super(:extra_arg, *args)
 end
 ----
 
