@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   x = 0
       #
-      # @example AllowInHeredoc: false
+      # @example AllowInHeredoc: false (default)
       #   # The line in this example contains spaces after the 0.
       #   # bad
       #   code = <<~RUBY
@@ -32,7 +32,7 @@ module RuboCop
       #     x = 0#{trailing_whitespace}
       #   RUBY
       #
-      # @example AllowInHeredoc: true (default)
+      # @example AllowInHeredoc: true
       #   # The line in this example contains spaces after the 0.
       #   # good
       #   code = <<~RUBY
