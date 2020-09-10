@@ -6360,7 +6360,7 @@ x = 0
 x = 0
 ----
 
-==== AllowInHeredoc: false
+==== AllowInHeredoc: false (default)
 
 [source,ruby]
 ----
@@ -6382,7 +6382,7 @@ code = <<~RUBY
 RUBY
 ----
 
-==== AllowInHeredoc: true (default)
+==== AllowInHeredoc: true
 
 [source,ruby]
 ----
@@ -6399,7 +6399,7 @@ RUBY
 | Name | Default value | Configurable values
 
 | AllowInHeredoc
-| `true`
+| `false`
 | Boolean
 |===
 
