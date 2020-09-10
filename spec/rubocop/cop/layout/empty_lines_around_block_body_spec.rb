@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
         expect_offense(<<~RUBY)
           some_method #{open}
             do_something
-  
+
           ^{} Extra empty line detected at block body end.
             #{close}
         RUBY
