@@ -202,12 +202,12 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
                  ^^^^^^ Literal interpolation detected.
     RUBY
 
-    expect_correction(<<~'RUBY')
-      "this is 
+    expect_correction(<<~RUBY)
+      "this is#{trailing_whitespace}
        silly"
-      "this is 
+      "this is#{trailing_whitespace}
        silly"
-      "this is 
+      "this is#{trailing_whitespace}
        silly"
     RUBY
   end

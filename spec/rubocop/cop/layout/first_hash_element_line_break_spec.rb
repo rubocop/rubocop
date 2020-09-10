@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     RUBY
 
     expect_correction(<<~RUBY)
-      a = { 
+      a = {#{trailing_whitespace}
       a: 1,
             b: 2 }
     RUBY
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     RUBY
 
     expect_correction(<<~RUBY)
-      method({ 
+      method({#{trailing_whitespace}
       foo: 1,
                bar: 2 })
     RUBY

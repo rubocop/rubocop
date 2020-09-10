@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test do 
+      test do#{trailing_whitespace}
         foo
       end
     RUBY
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test { 
+      test {#{trailing_whitespace}
         foo
       }
     RUBY
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test do |x| 
+      test do |x|#{trailing_whitespace}
         foo
       end
     RUBY
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test { |x| 
+      test { |x|#{trailing_whitespace}
         foo
       }
     RUBY
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      -> (x) do 
+      -> (x) do#{trailing_whitespace}
         foo
         bar
       end
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      -> x do 
+      -> x do#{trailing_whitespace}
         foo
         bar
       end
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test do |foo| 
+      test do |foo|#{trailing_whitespace}
         bar
         test
       end
@@ -243,7 +243,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      x = -> (y) { 
+      x = -> (y) {#{trailing_whitespace}
             foo
         bar
       }
@@ -260,7 +260,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      foo do |o| 
+      foo do |o|#{trailing_whitespace}
         (
           bar
         )

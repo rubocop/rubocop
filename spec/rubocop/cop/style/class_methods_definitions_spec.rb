@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
 
       expect_correction(<<~RUBY)
         class A
-          
+         #{trailing_whitespace}
             def self.three
             end
 
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
 
       expect_correction(<<~RUBY)
         class A
-          
+         #{trailing_whitespace}
             # Multiline
             # comment.
             def self.two

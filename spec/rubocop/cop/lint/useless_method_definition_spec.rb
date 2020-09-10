@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
 
     expect_correction(<<~RUBY)
       class Foo
-        
+       #{trailing_whitespace}
       end
     RUBY
   end
@@ -102,26 +102,26 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
           do_something
         end
 
-        
+       #{trailing_whitespace}
 
-        
+       #{trailing_whitespace}
 
         def self.useful_class_method
           do_something
         end
 
-        
+       #{trailing_whitespace}
 
-        
+       #{trailing_whitespace}
 
         class << self
           def self.other_useful_class_method
             do_something
           end
 
-          
+         #{trailing_whitespace}
 
-          
+         #{trailing_whitespace}
         end
       end
     RUBY
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
 
       expect_correction(<<~RUBY)
         class Foo
-          
+         #{trailing_whitespace}
         end
       RUBY
     end
