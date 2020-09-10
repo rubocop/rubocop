@@ -237,7 +237,7 @@ module RuboCop
         message = Rainbow("#{error.message} (from file: #{location})").yellow
 
         @warnings << message
-        warn message
+        warn message.to_s
         puts error.backtrace if debug?
       end
 
@@ -245,7 +245,7 @@ module RuboCop
         message = Rainbow("An error occurred while #{cop.name}" \
                            " cop was inspecting #{location}.").red
         @errors << message
-        warn message
+        warn message.to_s
         if debug?
           puts error.message, error.backtrace
         else

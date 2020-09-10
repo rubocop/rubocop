@@ -128,7 +128,7 @@ module RuboCop
       valid_cop_names.each do |name|
         validate_section_presence(name)
         each_invalid_parameter(name) do |param, supported_params|
-          warn Rainbow(<<~MESSAGE).yellow
+          warn Rainbow(<<~MESSAGE).yellow.to_s
             Warning: #{name} does not support #{param} parameter.
 
             Supported parameters are:

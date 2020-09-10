@@ -14,7 +14,7 @@ module RuboCop
           path = File.expand_path(DOTFILE)
 
           if File.exist?(DOTFILE)
-            warn Rainbow("#{DOTFILE} already exists at #{path}").red
+            warn Rainbow("#{DOTFILE} already exists at #{path}").red.to_s
 
             STATUS_ERROR
           else

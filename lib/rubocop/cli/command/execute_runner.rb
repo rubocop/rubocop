@@ -38,7 +38,7 @@ module RuboCop
         def display_warning_summary(warnings)
           return if warnings.empty?
 
-          warn Rainbow("\n#{pluralize(warnings.size, 'warning')}:").yellow
+          warn Rainbow("\n#{pluralize(warnings.size, 'warning')}:").yellow.to_s
 
           warnings.each { |warning| warn warning }
         end
@@ -46,7 +46,7 @@ module RuboCop
         def display_error_summary(errors)
           return if errors.empty?
 
-          warn Rainbow("\n#{pluralize(errors.size, 'error')} occurred:").red
+          warn Rainbow("\n#{pluralize(errors.size, 'error')} occurred:").red.to_s
 
           errors.each { |error| warn error }
 

@@ -44,7 +44,7 @@ module RuboCop
       warn e.message
       STATUS_ERROR
     rescue RuboCop::Error => e
-      warn Rainbow("Error: #{e.message}").red
+      warn Rainbow("Error: #{e.message}").red.to_s
       STATUS_ERROR
     rescue Finished
       STATUS_SUCCESS

@@ -23,6 +23,7 @@
 * [#8604](https://github.com/rubocop-hq/rubocop/issues/8604): Fix a false positive for `Bundler/DuplicatedGem` when gem is duplciated in condition. ([@tejasbubane][])
 * [#8671](https://github.com/rubocop-hq/rubocop/issues/8671): Fix an error for `Style/ExplicitBlockArgument` when using safe navigation method call. ([@koic][])
 * [#8682](https://github.com/rubocop-hq/rubocop/pull/8682): Fix a positive for `Style/HashTransformKeys` and `Style/HashTransformValues` when the `each_with_object` hash is used in the transformed key or value. ([@eugeneius][])
+* [#8689](https://github.com/rubocop-hq/rubocop/issues/8689): Fix exception when Rainbow output is passed to warn. ([@aquistech][])
 
 ### Changes
 
@@ -4856,3 +4857,4 @@
 [@jaimerave]: https://github.com/jaimerave
 [@Skipants]: https://github.com/Skipants
 [@sascha-wolf]: https://github.com/sascha-wolf
+[@aquistech]: https://github.com/AquisTech

@@ -151,20 +151,20 @@ module RuboCop
       def warn_on_pending_cops(pending_cops)
         return if pending_cops.empty?
 
-        warn Rainbow(PENDING_BANNER).yellow
+        warn Rainbow(PENDING_BANNER).yellow.to_s
 
         pending_cops.each do |cop|
           warn_pending_cop cop
         end
 
-        warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow
+        warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow.to_s
       end
 
       def warn_pending_cop(cop)
         version = cop.metadata['VersionAdded'] || 'N/A'
 
-        warn Rainbow("#{cop.name}: # (new in #{version})").yellow
-        warn Rainbow('  Enabled: true').yellow
+        warn Rainbow("#{cop.name}: # (new in #{version})").yellow.to_s
+        warn Rainbow('  Enabled: true').yellow.to_s
       end
 
       # Merges the given configuration with the default one.
@@ -224,7 +224,7 @@ module RuboCop
                     else
                       "#{smart_path}: `#{value}` is concealed by duplicate"
                     end
-          warn Rainbow(message).yellow
+          warn Rainbow(message).yellow.to_s
         end
       end
 
