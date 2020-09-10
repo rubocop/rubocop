@@ -60,4 +60,10 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck do
       foo = "alpha #{variable} beta \#{gamma}\" delta"
     RUBY
   end
+
+  it 'does not register offense for strings in %w()' do
+    expect_no_offenses(<<~'RUBY')
+      %w("#{a}-foo")
+    RUBY
+  end
 end
