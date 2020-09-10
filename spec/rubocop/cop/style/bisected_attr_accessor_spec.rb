@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor do
     expect_correction(<<~RUBY)
       class Foo
         attr_accessor :bar
-        
+       #{trailing_whitespace}
         other_macro :something
       end
     RUBY
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor do
     expect_correction(<<~RUBY)
       class Foo
         attr_accessor :bar
-        
+       #{trailing_whitespace}
         other_macro :something
       end
     RUBY
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor do
       class Foo
         ATTRIBUTES = %i[foo bar]
         attr_accessor *ATTRIBUTES
-        
+       #{trailing_whitespace}
         other_macro :something
       end
     RUBY
@@ -106,11 +106,11 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor do
     expect_correction(<<~RUBY)
       class Foo
         attr_accessor :bar
-        
+       #{trailing_whitespace}
 
         private
 
-        
+       #{trailing_whitespace}
         attr_accessor :baz
       end
     RUBY
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor do
 
         class << self
           attr_accessor :baz
-          
+         #{trailing_whitespace}
 
           private
 
