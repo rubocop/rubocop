@@ -35,6 +35,7 @@
 * [#8704](https://github.com/rubocop-hq/rubocop/issues/8704): Fix an error for `Lint/AmbiguousOperator` when using safe navigation operator with a unary operator. ([@koic][])
 * [#8661](https://github.com/rubocop-hq/rubocop/pull/8661): Fix an incorrect auto-correct for `Style/MultilineTernaryOperator` when returning a multiline ternary operator expression. ([@koic][])
 * [#8526](https://github.com/rubocop-hq/rubocop/pull/8526): Fix a false positive for `Style/CaseEquality` cop when the receiver is not a camel cased constant. ([@koic][])
+* [#8673](https://github.com/rubocop-hq/rubocop/issues/8673): Fix the JSON parse error when specifying `--format=json` and `--stdin` options. ([@koic][])
 
 ### Changes
 
