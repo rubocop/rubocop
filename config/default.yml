@@ -1988,6 +1988,12 @@ Lint/UselessSetterCall:
   VersionChanged: '0.80'
   Safe: false
 
+Lint/UselessTimes:
+  Description: 'Checks for useless `Integer#times` calls.'
+  Enabled: pending
+  VersionAdded: '0.91'
+  Safe: false
+
 Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true

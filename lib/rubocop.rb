@@ -343,6 +343,7 @@ require_relative 'rubocop/cop/lint/useless_assignment'
 require_relative 'rubocop/cop/lint/useless_else_without_rescue'
 require_relative 'rubocop/cop/lint/useless_method_definition'
 require_relative 'rubocop/cop/lint/useless_setter_call'
+require_relative 'rubocop/cop/lint/useless_times'
 require_relative 'rubocop/cop/lint/void'
 
 require_relative 'rubocop/cop/metrics/utils/iterating_block'
