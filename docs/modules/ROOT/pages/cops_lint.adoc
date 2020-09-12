@@ -350,6 +350,49 @@ def cook(dry_ingredients = self.dry_ingredients)
 end
 ----
 
+== Lint/ConstantDefinitionInBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.91
+| -
+|===
+
+Do not define constants within a block, since the block's scope does not
+isolate or namespace the constant in any way.
+
+Define the constant outside of the block instead, or use a variable or
+method if defining the constant in the outer scope would be problematic.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+task :lint do
+  FILES_TO_LINT = Dir['lib/*.rb']
+end
+
+# bad
+describe 'making a request' do
+  class TestRequest; end
+end
+
+# good
+task :lint do
+  files_to_lint = Dir['lib/*.rb']
+end
+
+# good
+describe 'making a request' do
+  let(:test_request) { Class.new }
+end
+----
+
 == Lint/ConstantResolution
 
 |===

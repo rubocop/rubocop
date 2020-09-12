@@ -8,6 +8,7 @@
 * [#8582](https://github.com/rubocop-hq/rubocop/issues/8582): Add new `Layout/BeginEndAlignment` cop. ([@koic][])
 * [#8699](https://github.com/rubocop-hq/rubocop/pull/8699): Add new `Lint/IdentityComparison` cop. ([@koic][])
 * Add new `Lint/UselessTimes` cop. ([@dvandersluis][])
+* [#8707](https://github.com/rubocop-hq/rubocop/pull/8707): Add new `Lint/ConstantDefinitionInBlock` cop. ([@eugeneius][])
 
 ### Bug fixes
 
