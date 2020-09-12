@@ -190,6 +190,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintbinaryoperatorwithidenticaloperands[Lint/BinaryOperatorWithIdenticalOperands]
 * xref:cops_lint.adoc#lintbooleansymbol[Lint/BooleanSymbol]
 * xref:cops_lint.adoc#lintcircularargumentreference[Lint/CircularArgumentReference]
+* xref:cops_lint.adoc#lintconstantdefinitioninblock[Lint/ConstantDefinitionInBlock]
 * xref:cops_lint.adoc#lintconstantresolution[Lint/ConstantResolution]
 * xref:cops_lint.adoc#lintdebugger[Lint/Debugger]
 * xref:cops_lint.adoc#lintdeprecatedclassmethods[Lint/DeprecatedClassMethods]
