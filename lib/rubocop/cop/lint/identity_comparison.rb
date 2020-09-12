@@ -20,6 +20,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `equal?` instead `==` when comparing `object_id`.'
+        RESTRICT_ON_SEND = %i[==].freeze
 
         def on_send(node)
           return unless compare_between_object_id_by_double_equal?(node)
@@ -36,8 +37,6 @@ module RuboCop
         private
 
         def compare_between_object_id_by_double_equal?(node)
-          return false unless node.method?(:==)
-
           object_id_method?(node.receiver) && object_id_method?(node.first_argument)
         end
 
