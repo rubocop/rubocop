@@ -1397,6 +1397,7 @@ Lint/CircularArgumentReference:
 
 Lint/ConstantDefinitionInBlock:
   Description: 'Do not define constants within a block.'
+  StyleGuide: '#no-constant-definition-in-block'
   Enabled: pending
   VersionAdded: '0.91'
 

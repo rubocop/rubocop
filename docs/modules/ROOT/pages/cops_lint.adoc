@@ -393,6 +393,10 @@ describe 'making a request' do
 end
 ----
 
+=== References
+
+* https://rubystyle.guide#no-constant-definition-in-block
+
 == Lint/ConstantResolution
 
 |===
