@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks do
 
   shared_examples 'accepts return inside a block' do |name, code|
     it "accepts a return statement inside a block when using #{name}" do
-      expect_no_offenses(code)
+      expect_no_offenses(send(code))
     end
   end
 
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks do
 
   shared_examples 'rejects return inside a block' do |name, code|
     it "rejects a return statement inside a block when using #{name}" do
-      expect_offense(code)
+      expect_offense(send(code))
     end
   end
 
