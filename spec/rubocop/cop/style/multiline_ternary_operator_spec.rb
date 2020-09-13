@@ -53,6 +53,17 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator do
     RUBY
   end
 
+  it 'register an offense and does not auto-correct when returning a multiline ternary operator expression' do
+    expect_offense(<<~RUBY)
+      return cond ?
+             ^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+             foo :
+             bar
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'accepts a single line ternary operator expression' do
     expect_no_offenses('a = cond ? b : c')
   end

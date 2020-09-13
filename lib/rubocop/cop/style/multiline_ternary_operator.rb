@@ -5,6 +5,9 @@ module RuboCop
     module Style
       # This cop checks for multi-line ternary op expressions.
       #
+      # NOTE: `return if ... else ... end` is syntax error. If `return` is used before
+      # multiline ternary operator expression, it cannot be auto-corrected.
+      #
       # @example
       #   # bad
       #   a = cond ?
@@ -29,9 +32,13 @@ module RuboCop
               'use `if` or `unless` instead.'
 
         def on_if(node)
-          return unless node.ternary? && node.multiline?
+          return unless offense?(node)
 
           add_offense(node) do |corrector|
+            # `return if ... else ... end` is syntax error. If `return` is used before
+            # multiline ternary operator expression, it cannot be auto-corrected.
+            next unless offense?(node) && !node.parent.return_type?
+
             corrector.replace(node, <<~RUBY.chop)
               if #{node.condition.source}
                 #{node.if_branch.source}
@@ -40,6 +47,12 @@ module RuboCop
               end
             RUBY
           end
+        end
+
+        private
+
+        def offense?(node)
+          node.ternary? && node.multiline?
         end
       end
     end
