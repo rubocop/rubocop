@@ -17,6 +17,7 @@ module RuboCop
       #   # good
       #   def test
       #     return unless something
+      #
       #     work
       #   end
       #
@@ -35,7 +36,18 @@ module RuboCop
       #   # good
       #   raise 'exception' if something
       #   ok
-      class GuardClause < Cop
+      #
+      #   # bad
+      #   if something
+      #     foo || raise('exception')
+      #   else
+      #     ok
+      #   end
+      #
+      #   # good
+      #   foo || raise('exception') if something
+      #   ok
+      class GuardClause < Base
         include MinBodyLength
         include StatementModifier
 
@@ -69,13 +81,14 @@ module RuboCop
                else
                  opposite_keyword(node)
                end
-          register_offense(node, guard_clause.source, kw)
+
+          register_offense(node, guard_clause_source(guard_clause), kw)
         end
 
         private
 
         def check_ending_if(node)
-          return if accepted_form?(node, true) || !min_body_length?(node)
+          return if accepted_form?(node, ending: true) || !min_body_length?(node)
 
           register_offense(node, 'return', opposite_keyword(node))
         end
@@ -93,9 +106,18 @@ module RuboCop
             example = "#{conditional_keyword} #{condition.source}; " \
                       "#{scope_exiting_keyword}; end"
           end
-          add_offense(node,
-                      location: :keyword,
-                      message: format(MSG, example: example))
+
+          add_offense(node.loc.keyword, message: format(MSG, example: example))
+        end
+
+        def guard_clause_source(guard_clause)
+          parent = guard_clause.parent
+
+          if parent.and_type? || parent.or_type?
+            guard_clause.parent.source
+          else
+            guard_clause.source
+          end
         end
 
         def too_long_for_single_line?(node, example)
@@ -103,8 +125,9 @@ module RuboCop
           max && node.source_range.column + example.length > max
         end
 
-        def accepted_form?(node, ending = false)
-          accepted_if?(node, ending) || node.condition.multiline?
+        def accepted_form?(node, ending: false)
+          accepted_if?(node, ending) || node.condition.multiline? ||
+            node.parent&.assignment?
         end
 
         def accepted_if?(node, ending)

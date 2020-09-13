@@ -11,19 +11,22 @@ module RuboCop
   # The specs will be run in parallel if the system implements `fork`.
   # If ENV['COVERAGE'] is truthy, code coverage will be measured.
   class SpecRunner
-    def initialize(external_encoding: 'UTF-8', internal_encoding: nil)
+    attr_reader :rspec_args
+
+    def initialize(rspec_args = %w[spec], parallel: true,
+                   external_encoding: 'UTF-8', internal_encoding: nil)
+      @rspec_args = rspec_args
       @previous_external_encoding = Encoding.default_external
       @previous_internal_encoding = Encoding.default_internal
 
       @temporary_external_encoding = external_encoding
       @temporary_internal_encoding = internal_encoding
+      @parallel = parallel
     end
 
     def run_specs
-      rspec_args = %w[spec]
-
       n_failures = with_encoding do
-        if Process.respond_to?(:fork)
+        if @parallel && Process.respond_to?(:fork)
           parallel_runner_klass.new(rspec_args).execute
         else
           ::RSpec::Core::Runner.run(rspec_args)
@@ -93,6 +96,7 @@ module RuboCop
     # implicitly reading ARGV.
     class Framework < ::TestQueue::TestFramework::RSpec
       def initialize(rspec_args)
+        super()
         @rspec_args = rspec_args
       end
 

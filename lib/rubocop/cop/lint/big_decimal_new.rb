@@ -14,9 +14,12 @@ module RuboCop
       #   # good
       #   BigDecimal(123.456, 3)
       #
-      class BigDecimalNew < Cop
+      class BigDecimalNew < Base
+        extend AutoCorrector
+
         MSG = '`%<double_colon>sBigDecimal.new()` is deprecated. ' \
               'Use `%<double_colon>sBigDecimal()` instead.'
+        RESTRICT_ON_SEND = %i[new].freeze
 
         def_node_matcher :big_decimal_new, <<~PATTERN
           (send
@@ -24,18 +27,14 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless big_decimal_new(node) do |captured_value|
+          big_decimal_new(node) do |captured_value|
             double_colon = captured_value ? '::' : ''
             message = format(MSG, double_colon: double_colon)
 
-            add_offense(node, location: :selector, message: message)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.selector)
-            corrector.remove(node.loc.dot)
+            add_offense(node.loc.selector, message: message) do |corrector|
+              corrector.remove(node.loc.selector)
+              corrector.remove(node.loc.dot)
+            end
           end
         end
       end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Max' => 2 } }
 
   it 'accepts `Max` levels of nesting' do
@@ -20,8 +18,8 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
       expect_offense(<<~RUBY)
         if a
           if b
-            if cinspect_source
-            ^^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+            if c
+            ^^^^ Avoid more than 2 levels of block nesting.
               puts c
             end
           end

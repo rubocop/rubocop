@@ -104,18 +104,21 @@ module RuboCop
       #
       #   explicit_receiver.fail
       #   explicit_receiver.raise
-      class SignalException < Cop
+      class SignalException < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'
         RAISE_MSG = 'Use `raise` instead of `fail` to ' \
                     'rethrow exceptions.'
 
-        def_node_matcher :kernel_call?, '(send (const nil? :Kernel) %1 ...)'
+        RESTRICT_ON_SEND = %i[raise fail].freeze
+
+        def_node_matcher :kernel_call?, '(send (const {nil? cbase} :Kernel) %1 ...)'
         def_node_search :custom_fail_methods,
                         '{(def :fail ...) (defs _ :fail ...)}'
 
-        def investigate(processed_source)
+        def on_new_investigation
           ast = processed_source.ast
           @custom_fail_defined = ast && custom_fail_methods(ast).any?
         end
@@ -145,20 +148,6 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            name =
-              case style
-              when :semantic
-                command_or_kernel_call?(:raise, node) ? 'fail' : 'raise'
-              when :only_raise then 'raise'
-              when :only_fail then 'fail'
-              end
-
-            corrector.replace(node.loc.selector, name)
-          end
-        end
-
         private
 
         def message(method_name)
@@ -178,8 +167,9 @@ module RuboCop
           each_command_or_kernel_call(method_name, node) do |send_node|
             next if ignored_node?(send_node)
 
-            add_offense(send_node,
-                        location: :selector, message: message(method_name))
+            add_offense(send_node.loc.selector, message: message(method_name)) do |corrector|
+              autocorrect(corrector, send_node)
+            end
             ignore_node(send_node)
           end
         end
@@ -187,10 +177,26 @@ module RuboCop
         def check_send(method_name, node)
           return unless node && command_or_kernel_call?(method_name, node)
 
-          add_offense(node, location: :selector, message: message(method_name))
+          add_offense(node.loc.selector, message: message(method_name)) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          name =
+            case style
+            when :semantic
+              command_or_kernel_call?(:raise, node) ? 'fail' : 'raise'
+            when :only_raise then 'raise'
+            when :only_fail then 'fail'
+            end
+
+          corrector.replace(node.loc.selector, name)
         end
 
         def command_or_kernel_call?(name, node)
+          return unless node.method?(name)
+
           node.command?(name) || kernel_call?(node, name)
         end
 

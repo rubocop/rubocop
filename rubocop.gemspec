@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.4.0'
   s.authors = ['Bozhidar Batsov', 'Jonas Arvidsson', 'Yuji Nakayama']
   s.description = <<-DESCRIPTION
-    Automatic Ruby code style checking tool.
-    Aims to enforce the community-driven Ruby Style Guide.
+    RuboCop is a Ruby code style checking and code formatting tool.
+    It aims to enforce the community-driven Ruby Style Guide.
   DESCRIPTION
 
   s.email = 'rubocop@googlegroups.com'
@@ -26,18 +26,19 @@ Gem::Specification.new do |s|
   s.summary = 'Automatic Ruby code style checking tool.'
 
   s.metadata = {
-    'homepage_uri' => 'https://www.rubocop.org/',
+    'homepage_uri' => 'https://rubocop.org/',
     'changelog_uri' => 'https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/rubocop-hq/rubocop/',
     'documentation_uri' => 'https://docs.rubocop.org/',
     'bug_tracker_uri' => 'https://github.com/rubocop-hq/rubocop/issues'
   }
 
-  s.add_runtime_dependency('jaro_winkler', '~> 1.5.1')
   s.add_runtime_dependency('parallel', '~> 1.10')
-  s.add_runtime_dependency('parser', '>= 2.7.0.1')
+  s.add_runtime_dependency('parser', '>= 2.7.1.1')
   s.add_runtime_dependency('rainbow', '>= 2.2.2', '< 4.0')
+  s.add_runtime_dependency('regexp_parser', '>= 1.7')
   s.add_runtime_dependency('rexml')
+  s.add_runtime_dependency('rubocop-ast', '>= 0.3.0', '< 1.0')
   s.add_runtime_dependency('ruby-progressbar', '~> 1.7')
   s.add_runtime_dependency('unicode-display_width', '>= 1.4.0', '< 2.0')
 

@@ -3,9 +3,11 @@
 require 'digest/sha1'
 require 'find'
 require 'etc'
+require 'zlib'
 
 module RuboCop
   # Provides functionality for caching rubocop runs.
+  # @api private
   class ResultCache
     NON_CHANGING = %i[color format formatters out debug fail_level auto_correct
                       cache fail_fast stdin parallel].freeze
@@ -29,20 +31,23 @@ module RuboCop
     end
 
     class << self
+      # @api private
+      attr_accessor :rubocop_required_features
+
+      ResultCache.rubocop_required_features = []
+
       private
 
       def requires_file_removal?(file_count, config_store)
         file_count > 1 &&
-          file_count > config_store.for('.').for_all_cops['MaxFilesInCache']
+          file_count > config_store.for_pwd.for_all_cops['MaxFilesInCache']
       end
 
       def remove_oldest_files(files, dirs, cache_root, verbose)
         # Add 1 to half the number of files, so that we remove the file if
         # there's only 1 left.
         remove_count = 1 + files.length / 2
-        if verbose
-          puts "Removing the #{remove_count} oldest files from #{cache_root}"
-        end
+        puts "Removing the #{remove_count} oldest files from #{cache_root}" if verbose
         sorted = files.sort_by { |path| File.mtime(path) }
         remove_files(sorted, dirs, remove_count)
       rescue Errno::ENOENT
@@ -62,7 +67,8 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = config_store.for('.').for_all_cops['CacheRootDirectory']
+      root = ENV['RUBOCOP_CACHE_ROOT']
+      root ||= config_store.for_pwd.for_all_cops['CacheRootDirectory']
       root ||= if ENV.key?('XDG_CACHE_HOME')
                  # Include user ID in the path to make sure the user has write
                  # access.
@@ -74,10 +80,13 @@ module RuboCop
     end
 
     def self.allow_symlinks_in_cache_location?(config_store)
-      config_store.for('.').for_all_cops['AllowSymlinksInCacheRootDirectory']
+      config_store.for_pwd.for_all_cops['AllowSymlinksInCacheRootDirectory']
     end
 
+    attr :path
+
     def initialize(file, team, options, config_store, cache_root = nil)
+      cache_root ||= options[:cache_root]
       cache_root ||= ResultCache.cache_root(config_store)
       @allow_symlinks_in_cache_location =
         ResultCache.allow_symlinks_in_cache_location?(config_store)
@@ -145,7 +154,7 @@ module RuboCop
       digester = Digest::SHA1.new
       mode = File.stat(file).mode
       digester.update(
-        "#{file}#{mode}#{config_store.for(file).signature}"
+        "#{file}#{mode}#{config_store.for_file(file).signature}"
       )
       digester.file(file)
       digester.hexdigest
@@ -163,19 +172,30 @@ module RuboCop
     def rubocop_checksum
       ResultCache.source_checksum ||=
         begin
-          lib_root = File.join(File.dirname(__FILE__), '..')
-          exe_root = File.join(lib_root, '..', 'exe')
-
-          # These are all the files we have `require`d plus everything in the
-          # exe directory. A change to any of them could affect the cop output
-          # so we include them in the cache hash.
-          source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
-          sources = source_files
-                    .select { |path| File.file?(path) }
-                    .sort
-                    .map { |path| IO.read(path, encoding: Encoding::UTF_8) }
-          Digest::SHA1.hexdigest(sources.join)
+          digest = Digest::SHA1.new
+          rubocop_extra_features
+            .select { |path| File.file?(path) }
+            .sort!
+            .each do |path|
+              content = File.open(path, 'rb', &:read)
+              digest << Zlib.crc32(content).to_s # mtime not reliable
+            end
+          digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
+          digest.hexdigest
         end
+    end
+
+    def rubocop_extra_features
+      lib_root = File.join(File.dirname(__FILE__), '..')
+      exe_root = File.join(lib_root, '..', 'exe')
+
+      # These are all the files we have `require`d plus everything in the
+      # exe directory. A change to any of them could affect the cop output
+      # so we include them in the cache hash.
+      source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
+      source_files -= ResultCache.rubocop_required_features # Rely on gem versions
+
+      source_files
     end
 
     # Return a hash of the options given at invocation, minus the ones that have

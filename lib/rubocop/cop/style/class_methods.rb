@@ -20,7 +20,9 @@ module RuboCop
       #       # ...
       #     end
       #   end
-      class ClassMethods < Cop
+      class ClassMethods < Base
+        extend AutoCorrector
+
         MSG = 'Use `self.%<method>s` instead of `%<class>s.%<method>s`.'
 
         def on_class(node)
@@ -36,23 +38,17 @@ module RuboCop
         end
         alias on_module on_class
 
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.name, 'self') }
-        end
-
         private
 
         def check_defs(name, node)
           # check if the class/module name matches the definee for the defs node
           return unless name == node.receiver
 
-          add_offense(node.receiver, location: :name)
-        end
+          message = format(MSG, method: node.method_name, class: name.source)
 
-        def message(node)
-          _, class_name = *node
-
-          format(MSG, method: node.parent.method_name, class: class_name)
+          add_offense(node.receiver.loc.name, message: message) do |corrector|
+            corrector.replace(node.receiver, 'self')
+          end
         end
       end
     end

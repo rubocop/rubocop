@@ -7,6 +7,10 @@ module RuboCop
       # expected fields for format/sprintf/#% and what is actually
       # passed as arguments.
       #
+      # In addition it checks whether different formats are used in the same
+      # format string. Do not mix numbered, unnumbered, and named formats in
+      # the same format string.
+      #
       # @example
       #
       #   # bad
@@ -18,26 +22,59 @@ module RuboCop
       #   # good
       #
       #   format('A value: %s and another: %i', a_value, another)
-      class FormatParameterMismatch < Cop
+      #
+      # @example
+      #
+      #   # bad
+      #
+      #   format('Unnumbered format: %s and numbered: %2$s', a_value, another)
+      #
+      # @example
+      #
+      #   # good
+      #
+      #   format('Numbered format: %1$s and numbered %2$s', a_value, another)
+      class FormatParameterMismatch < Base
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
               'match the number of fields (%<field_num>i).'
+        MSG_INVALID = 'Format string is invalid because formatting sequence types ' \
+                      '(numbered, named or unnumbered) are mixed.'
 
         KERNEL = 'Kernel'
         SHOVEL = '<<'
         STRING_TYPES = %i[str dstr].freeze
+        RESTRICT_ON_SEND = %i[format sprintf %].freeze
 
         def on_send(node)
+          return unless format_string?(node)
+
+          if invalid_format_string?(node)
+            add_offense(node.loc.selector, message: MSG_INVALID)
+            return
+          end
+
           return unless offending_node?(node)
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector, message: message(node))
         end
 
         private
 
+        def format_string?(node)
+          called_on_string?(node) && method_with_format_args?(node)
+        end
+
+        def invalid_format_string?(node)
+          string = if sprintf?(node) || format?(node)
+                     node.first_argument.source
+                   else
+                     node.receiver.source
+                   end
+          !RuboCop::Cop::Utils::FormatString.new(string).valid?
+        end
+
         def offending_node?(node)
-          return false unless called_on_string?(node)
-          return false unless method_with_format_args?(node)
           return false if splat_args?(node)
 
           num_of_format_args, num_of_expected_fields = count_matches(node)

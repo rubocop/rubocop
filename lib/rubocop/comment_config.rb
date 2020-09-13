@@ -4,14 +4,19 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
+    # @api private
     REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
 
+    # @api private
     COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
+    # @api private
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
+    # @api private
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
+    # @api private
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
+      "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
         .gsub(' ', '\s*')
     )
 
@@ -55,7 +60,7 @@ module RuboCop
       extras
     end
 
-    def analyze
+    def analyze # rubocop:todo Metrics/AbcSize
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
 
       each_mentioned_cop do |cop_name, disabled, line, single_line|
@@ -124,13 +129,11 @@ module RuboCop
     end
 
     def directive_on_comment_line?(comment)
-      comment.text[1..-1].match(COMMENT_DIRECTIVE_REGEXP)
+      comment.text[1..-1].match?(COMMENT_DIRECTIVE_REGEXP)
     end
 
     def each_directive
-      return if processed_source.comments.nil?
-
-      processed_source.each_comment do |comment|
+      processed_source.comments.each do |comment|
         directive = directive_parts(comment)
         next unless directive
 
@@ -153,11 +156,11 @@ module RuboCop
     end
 
     def qualified_cop_name(cop_name)
-      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.file_path)
+      Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path)
     end
 
     def all_cop_names
-      @all_cop_names ||= Cop::Cop.registry.names - [REDUNDANT_DISABLE]
+      @all_cop_names ||= Cop::Registry.global.names - [REDUNDANT_DISABLE]
     end
 
     def comment_only_line?(line_number)

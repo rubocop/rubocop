@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'AllowAsExpressionSeparator' => false } }
 
   it 'registers an offense for a single expression' do
     expect_offense(<<~RUBY)
       puts "this is a test";
                            ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      puts "this is a test"
     RUBY
   end
 
@@ -17,6 +19,8 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
       puts "this is a test"; puts "So is this"
                            ^ Do not use semicolons to terminate expressions.
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense for one line method with two statements' do
@@ -24,6 +28,8 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
       def foo(a) x(1); y(2); z(3); end
                      ^ Do not use semicolons to terminate expressions.
     RUBY
+
+    expect_no_corrections
   end
 
   it 'accepts semicolon before end if so configured' do
@@ -70,6 +76,10 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
       module Foo; end;
                      ^ Do not use semicolons to terminate expressions.
     RUBY
+
+    expect_correction(<<~RUBY)
+      module Foo; end
+    RUBY
   end
 
   it 'accept semicolons inside strings' do
@@ -84,25 +94,8 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
       ; puts 1
       ^ Do not use semicolons to terminate expressions.
     RUBY
-  end
 
-  it 'auto-corrects semicolons when syntactically possible' do
-    corrected =
-      autocorrect_source(<<~RUBY)
-        module Foo; end;
-        puts "this is a test";
-        puts "this is a test"; puts "So is this"
-        def foo(a) x(1); y(2); z(3); end
-        ;puts 1
-      RUBY
-    expect(corrected)
-      .to eq(<<~RUBY)
-        module Foo; end
-        puts "this is a test"
-        puts "this is a test"; puts "So is this"
-        def foo(a) x(1); y(2); z(3); end
-        puts 1
-      RUBY
+    expect_correction(" puts 1\n")
   end
 
   context 'with a multi-expression line without a semicolon' do

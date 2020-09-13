@@ -56,8 +56,9 @@ module RuboCop
       #   puts $'
       #   puts $+
       #
-      class SpecialGlobalVars < Cop
+      class SpecialGlobalVars < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_BOTH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
         'module (don\'t forget to require it) or `%<regular>s` over ' \
@@ -120,13 +121,14 @@ module RuboCop
             correct_style_detected
           else
             opposite_style_detected
-            add_offense(node)
+
+            add_offense(node, message: message(global_var)) do |corrector|
+              autocorrect(corrector, node, global_var)
+            end
           end
         end
 
-        def message(node)
-          global_var, = *node
-
+        def message(global_var)
           if style == :use_english_names
             format_english_message(global_var)
           else
@@ -136,17 +138,10 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            global_var, = *node
+        def autocorrect(corrector, node, global_var)
+          node = node.parent while node.parent&.begin_type? && node.parent.children.one?
 
-            while node.parent&.begin_type? &&
-                  node.parent.children.one?
-              node = node.parent
-            end
-
-            corrector.replace(node, replacement(node, global_var))
-          end
+          corrector.replace(node, replacement(node, global_var))
         end
 
         private
@@ -181,13 +176,9 @@ module RuboCop
           parent_type = node.parent&.type
           preferred_name = preferred_names(global_var).first
 
-          unless %i[dstr xstr regexp].include?(parent_type)
-            return preferred_name.to_s
-          end
+          return preferred_name.to_s unless %i[dstr xstr regexp].include?(parent_type)
 
-          if style == :use_english_names
-            return english_name_replacement(preferred_name, node)
-          end
+          return english_name_replacement(preferred_name, node) if style == :use_english_names
 
           "##{preferred_name}"
         end

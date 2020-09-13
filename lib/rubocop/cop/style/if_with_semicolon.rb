@@ -13,16 +13,29 @@ module RuboCop
       #   # good
       #   result = some_condition ? something : another_thing
       #
-      class IfWithSemicolon < Cop
+      class IfWithSemicolon < Base
         include OnNormalIfUnless
+        extend AutoCorrector
 
         MSG = 'Do not use if x; Use the ternary operator instead.'
 
         def on_normal_if_unless(node)
+          return unless node.else_branch
+
           beginning = node.loc.begin
           return unless beginning&.is?(';')
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            corrector.replace(node, correct_to_ternary(node))
+          end
+        end
+
+        private
+
+        def correct_to_ternary(node)
+          else_code = node.else_branch ? node.else_branch.source : 'nil'
+
+          "#{node.condition.source} ? #{node.if_branch.source} : #{else_code}"
         end
       end
     end

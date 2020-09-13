@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'never accepted' do |enforced_style|
     it 'registers an offense for mixed snake case and camel case in attr.' do
       expect_offense(<<~RUBY)
@@ -345,5 +343,11 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'always accepted', 'camelCase'
     include_examples 'never accepted',  'camelCase'
     include_examples 'multiple attr methods', 'camelCase'
+  end
+
+  it 'works for non-ascii characters' do
+    expect_no_offenses(<<~RUBY)
+      def última_vista; end
+    RUBY
   end
 end

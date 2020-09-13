@@ -48,7 +48,11 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.after do
-    RuboCop::PathUtil.reset_pwd
+  if %w[ruby-head-ascii_spec ruby-head-spec].include? ENV['CIRCLE_STAGE']
+    config.filter_run_excluding broken_on: :ruby_head
+  end
+
+  if %w[jruby-9.2-ascii_spec jruby-9.2-spec].include? ENV['CIRCLE_STAGE']
+    config.filter_run_excluding broken_on: :jruby
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) do
     { 'EnforcedStyle' => style }
   end
@@ -66,7 +64,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
 
         # The first `)` Will be corrected by IndentationConsistency.
-        expect_correction(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           foo(
             bar(
              7
@@ -483,7 +481,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
 
         # The first `)` Will be corrected by IndentationConsistency.
-        expect_correction(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           foo(
             bar(
              7

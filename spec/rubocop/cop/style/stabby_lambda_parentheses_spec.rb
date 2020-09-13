@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'common' do
     it 'does not check the old lambda syntax' do
       expect_no_offenses('lambda(&:nil?)')
@@ -27,15 +25,14 @@ RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
         ->a,b,c { a + b + c }
           ^^^^^ Wrap stabby lambda arguments with parentheses.
       RUBY
+
+      expect_correction(<<~RUBY)
+        ->(a,b,c) { a + b + c }
+      RUBY
     end
 
     it 'does not register an offense for a stabby lambda with parentheses' do
       expect_no_offenses('->(a,b,c) { a + b + c }')
-    end
-
-    it 'autocorrects when a stabby lambda has no parentheses' do
-      corrected = autocorrect_source('->a,b,c { a + b + c }')
-      expect(corrected).to eq '->(a,b,c) { a + b + c }'
     end
   end
 
@@ -49,11 +46,10 @@ RSpec.describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
         ->(a,b,c) { a + b + c }
           ^^^^^^^ Do not wrap stabby lambda arguments with parentheses.
       RUBY
-    end
 
-    it 'autocorrects when a stabby lambda does not parentheses' do
-      corrected = autocorrect_source('->(a,b,c) { a + b + c }')
-      expect(corrected).to eq '->a,b,c { a + b + c }'
+      expect_correction(<<~RUBY)
+        ->a,b,c { a + b + c }
+      RUBY
     end
   end
 end

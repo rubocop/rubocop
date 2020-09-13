@@ -3,16 +3,16 @@
 RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   subject(:cop) { described_class.new }
 
-  shared_examples 'redundant' do |expr, correct, type, highlight = nil|
+  shared_examples 'redundant' do |expr, correct, type|
     it "registers an offense for parentheses around #{type}" do
-      inspect_source(expr)
-      expect(cop.messages)
-        .to eq(["Don't use parentheses around #{type}."])
-      expect(cop.highlights).to eq([highlight || expr])
-    end
+      expect_offense(<<~RUBY, expr: expr)
+        %{expr}
+        ^{expr} Don't use parentheses around #{type}.
+      RUBY
 
-    it 'auto-corrects' do
-      expect(autocorrect_source(expr)).to eq correct
+      expect_correction(<<~RUBY)
+        #{correct}
+      RUBY
     end
   end
 
@@ -60,8 +60,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(retry)', 'retry', 'a keyword'
   it_behaves_like 'redundant', '(self)', 'self', 'a keyword'
 
-  it_behaves_like 'redundant', '(X) ? Y : N', 'X ? Y : N', 'a constant', '(X)'
-  it_behaves_like 'redundant', '(X)? Y : N', 'X ? Y : N', 'a constant', '(X)'
+  it 'registers an offense for parens around constant ternary condition' do
+    expect_offense(<<~RUBY)
+      (X) ? Y : N
+      ^^^ Don't use parentheses around a constant.
+      (X)? Y : N
+      ^^^ Don't use parentheses around a constant.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      X ? Y : N
+      X ? Y : N
+    RUBY
+  end
 
   it_behaves_like 'keyword with return value', 'break'
   it_behaves_like 'keyword with return value', 'next'
@@ -78,7 +89,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'plausible', '(a until b)'
   it_behaves_like 'plausible', '(a while b)'
 
-  it_behaves_like 'redundant', 'x = 1; (x)', 'x = 1; x', 'a variable', '(x)'
+  it 'registers an offense for parens around a variable after semicolon' do
+    expect_offense(<<~RUBY)
+      x = 1; (x)
+             ^^^ Don't use parentheses around a variable.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 1; x
+    RUBY
+  end
+
   it_behaves_like 'redundant', '(@x)', '@x', 'a variable'
   it_behaves_like 'redundant', '(@@x)', '@@x', 'a variable'
   it_behaves_like 'redundant', '($x)', '$x', 'a variable'
@@ -107,17 +128,107 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'plausible', '+(1.foo.bar)'
   it_behaves_like 'plausible', '()'
 
-  it_behaves_like 'redundant', '[(1)]', '[1]', 'a literal', '(1)'
-  it_behaves_like 'redundant', "[(1\n)]", "[1\n]", 'a literal', "(1\n)"
+  it 'registers an offense for parens around a literal in array' do
+    expect_offense(<<~RUBY)
+      [(1)]
+       ^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1]
+    RUBY
+  end
+
+  it 'registers an offense for parens around a literal in array ' \
+     'and following newline' do
+    expect_offense(<<~RUBY)
+      [(1
+       ^^ Don't use parentheses around a literal.
+      )]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1
+      ]
+    RUBY
+  end
+
   it_behaves_like 'plausible', "[(1\n),]"
-  it_behaves_like 'redundant', '{a: (1)}', '{a: 1}', 'a literal', '(1)'
-  it_behaves_like 'redundant', "{a: (1\n)}", "{a: 1\n}", 'a literal', "(1\n)"
+
+  it 'registers an offense for parens around a literal hash value' do
+    expect_offense(<<~RUBY)
+      {a: (1)}
+          ^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {a: 1}
+    RUBY
+  end
+
+  it 'registers an offense for parens around a literal hash value ' \
+     'and following newline' do
+    expect_offense(<<~RUBY)
+      {a: (1
+          ^^ Don't use parentheses around a literal.
+      )}
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {a: 1
+      }
+    RUBY
+  end
+
   it_behaves_like 'plausible', "{a: (1\n),}"
-  it_behaves_like 'redundant', '(0)**2', '0**2', 'a literal', '(0)'
-  it_behaves_like 'redundant', '(2)**2', '2**2', 'a literal', '(2)'
-  it_behaves_like 'redundant', '(2.1)**2', '2.1**2', 'a literal', '(2.1)'
-  it_behaves_like 'redundant', '2**(-2)', '2**-2', 'a literal', '(-2)'
-  it_behaves_like 'redundant', '2**(2)', '2**2', 'a literal', '(2)'
+
+  it 'registers an offense for parens around an integer exponentiation base' do
+    expect_offense(<<~RUBY)
+      (0)**2
+      ^^^ Don't use parentheses around a literal.
+      (2)**2
+      ^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      0**2
+      2**2
+    RUBY
+  end
+
+  it 'registers an offense for parens around a float exponentiation base' do
+    expect_offense(<<~RUBY)
+      (2.1)**2
+      ^^^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      2.1**2
+    RUBY
+  end
+
+  it 'registers an offense for parens around a negative exponent' do
+    expect_offense(<<~RUBY)
+      2**(-2)
+         ^^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      2**-2
+    RUBY
+  end
+
+  it 'registers an offense for parens around a positive exponent' do
+    expect_offense(<<~RUBY)
+      2**(2)
+         ^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      2**2
+    RUBY
+  end
+
   it_behaves_like 'plausible', '(-2)**2'
   it_behaves_like 'plausible', '(-2.1)**2'
 
@@ -125,46 +236,70 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'plausible', 'x += (foo; bar)'
   it_behaves_like 'plausible', 'x + (foo; bar)'
   it_behaves_like 'plausible', 'x((foo; bar))'
-  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
-    def x
-      (foo; bar)
-    end
-  RUBY
-    def x
-      foo; bar
-    end
-  RUBY2
-  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
-    def x
-      baz
-      (foo; bar)
-    end
-  RUBY
-    def x
-      baz
-      foo; bar
-    end
-  RUBY2
-  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
-    x do
-      (foo; bar)
-    end
-  RUBY
-    x do
-      foo; bar
-    end
-  RUBY2
-  it_behaves_like 'redundant', <<-RUBY, <<-RUBY2, 'a method call', '(foo; bar)'
-    x do
-      baz
-      (foo; bar)
-    end
-  RUBY
-    x do
-      baz
-      foo; bar
-    end
-  RUBY2
+
+  it 'registers an offense for parens around method body' do
+    expect_offense(<<~RUBY)
+      def x
+        (foo; bar)
+        ^^^^^^^^^^ Don't use parentheses around a method call.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def x
+        foo; bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for parens around last expressions in method body' do
+    expect_offense(<<~RUBY)
+      def x
+        baz
+        (foo; bar)
+        ^^^^^^^^^^ Don't use parentheses around a method call.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def x
+        baz
+        foo; bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for parens around a block body' do
+    expect_offense(<<~RUBY)
+      x do
+        (foo; bar)
+        ^^^^^^^^^^ Don't use parentheses around a method call.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x do
+        foo; bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for parens around last expressions in block body' do
+    expect_offense(<<~RUBY)
+      x do
+        baz
+        (foo; bar)
+        ^^^^^^^^^^ Don't use parentheses around a method call.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x do
+        baz
+        foo; bar
+      end
+    RUBY
+  end
 
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do
@@ -253,6 +388,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
     end
   end
 
+  context 'when parentheses are used like method argument parentheses' do
+    it 'accepts parens around the arg' do
+      expect_no_offenses('method (arg)')
+    end
+  end
+
   it 'accepts parentheses around the error passed to rescue' do
     expect_no_offenses(<<~RUBY)
       begin
@@ -274,6 +415,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   it 'accepts parentheses in super call with hash' do
     expect_no_offenses(<<~RUBY)
       super ({
+        foo: bar,
+      })
+    RUBY
+  end
+
+  it 'accepts parentheses in yield call with hash' do
+    expect_no_offenses(<<~RUBY)
+      yield ({
         foo: bar,
       })
     RUBY

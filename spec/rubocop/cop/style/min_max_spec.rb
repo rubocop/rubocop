@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MinMax, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'with an array literal containing calls to `#min` and `#max`' do
     context 'when the expression stands alone' do
       it 'registers an offense if the receivers match' do
         expect_offense(<<~RUBY)
           [foo.min, foo.max]
           ^^^^^^^^^^^^^^^^^^ Use `foo.minmax` instead of `[foo.min, foo.max]`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.minmax
         RUBY
       end
 
@@ -29,16 +31,6 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
           [min, max]
         RUBY
       end
-
-      it 'auto-corrects an offense to use `#minmax`' do
-        corrected = autocorrect_source(<<~RUBY)
-          [foo.bar.min, foo.bar.max]
-        RUBY
-
-        expect(corrected).to eq(<<~RUBY)
-          foo.bar.minmax
-        RUBY
-      end
     end
 
     context 'when the expression is used in a parallel assignment' do
@@ -46,6 +38,10 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
         expect_offense(<<~RUBY)
           bar = foo.min, foo.max
                 ^^^^^^^^^^^^^^^^ Use `foo.minmax` instead of `foo.min, foo.max`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = foo.minmax
         RUBY
       end
 
@@ -66,16 +62,6 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
           bar = min, max
         RUBY
       end
-
-      it 'auto-corrects an offense to use `#minmax`' do
-        corrected = autocorrect_source(<<~RUBY)
-          baz = foo.bar.min, foo.bar.max
-        RUBY
-
-        expect(corrected).to eq(<<~RUBY)
-          baz = foo.bar.minmax
-        RUBY
-      end
     end
 
     context 'when the expression is used as a return value' do
@@ -83,6 +69,10 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
         expect_offense(<<~RUBY)
           return foo.min, foo.max
                  ^^^^^^^^^^^^^^^^ Use `foo.minmax` instead of `foo.min, foo.max`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          return foo.minmax
         RUBY
       end
 
@@ -101,16 +91,6 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
       it 'does not register an offense if the receiver is implicit' do
         expect_no_offenses(<<~RUBY)
           return min, max
-        RUBY
-      end
-
-      it 'auto-corrects an offense to use `#minmax`' do
-        corrected = autocorrect_source(<<~RUBY)
-          return foo.bar.min, foo.bar.max
-        RUBY
-
-        expect(corrected).to eq(<<~RUBY)
-          return foo.bar.minmax
         RUBY
       end
     end

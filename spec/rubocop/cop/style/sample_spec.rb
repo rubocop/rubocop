@@ -4,21 +4,20 @@ RSpec.describe RuboCop::Cop::Style::Sample do
   subject(:cop) { described_class.new }
 
   shared_examples 'offense' do |wrong, right|
-    it "when using #{wrong}" do
-      inspect_source("[1, 2, 3].#{wrong}")
-      expect(cop.messages).to eq(["Use `#{right}` instead of `#{wrong}`."])
-    end
+    it "registers an offense for #{wrong}" do
+      expect_offense(<<~RUBY, wrong: wrong)
+        [1, 2, 3].%{wrong}
+                  ^{wrong} Use `#{right}` instead of `#{wrong}`.
+      RUBY
 
-    context 'corrects' do
-      it "#{wrong} to #{right}" do
-        new_source = autocorrect_source("[1, 2, 3].#{wrong}")
-        expect(new_source).to eq("[1, 2, 3].#{right}")
-      end
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{right}
+      RUBY
     end
   end
 
   shared_examples 'accepts' do |acceptable|
-    it acceptable do
+    it "accepts #{acceptable}" do
       expect_no_offenses("[1, 2, 3].#{acceptable}")
     end
   end

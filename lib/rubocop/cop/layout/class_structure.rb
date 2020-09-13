@@ -8,22 +8,24 @@ module RuboCop
       # `Categories` allows us to map macro names into a category.
       #
       # Consider an example of code style that covers the following order:
-      # - Module inclusion (include, prepend, extend)
-      # - Constants
-      # - Associations (has_one, has_many)
-      # - Public attribute macros (attr_accessor, attr_writer, attr_reader)
-      # - Other macros (validates, validate)
-      # - Public class methods
-      # - Initializer
-      # - Public instance methods
-      # - Protected attribute macros (attr_accessor, attr_writer, attr_reader)
-      # - Protected instance methods
-      # - Private attribute macros (attr_accessor, attr_writer, attr_reader)
-      # - Private instance methods
+      #
+      # * Module inclusion (include, prepend, extend)
+      # * Constants
+      # * Associations (has_one, has_many)
+      # * Public attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Other macros (validates, validate)
+      # * Public class methods
+      # * Initializer
+      # * Public instance methods
+      # * Protected attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Protected instance methods
+      # * Private attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Private instance methods
       #
       # You can configure the following order:
       #
-      # ```yaml
+      # [source,yaml]
+      # ----
       #  Layout/ClassStructure:
       #    ExpectedOrder:
       #      - module_inclusion
@@ -40,13 +42,14 @@ module RuboCop
       #      - private_attribute_macros
       #      - private_delegate
       #      - private_methods
-      # ```
+      # ----
       #
       # Instead of putting all literals in the expected order, is also
       # possible to group categories of macros. Visibility levels are handled
       # automatically.
       #
-      # ```yaml
+      # [source,yaml]
+      # ----
       #  Layout/ClassStructure:
       #    Categories:
       #      association:
@@ -63,7 +66,7 @@ module RuboCop
       #        - include
       #        - prepend
       #        - extend
-      # ```
+      # ----
       #
       # @example
       #   # bad
@@ -130,7 +133,10 @@ module RuboCop
       #   end
       #
       # @see https://rubystyle.guide#consistent-classes
-      class ClassStructure < Cop
+      class ClassStructure < Base
+        include VisibilityHelp
+        extend AutoCorrector
+
         HUMANIZED_NODE_TYPE = {
           casgn: :constants,
           defs: :class_methods,
@@ -138,13 +144,8 @@ module RuboCop
           sclass: :class_singleton
         }.freeze
 
-        VISIBILITY_SCOPES = %i[private protected public].freeze
         MSG = '`%<category>s` is supposed to appear before ' \
               '`%<previous>s`.'
-
-        def_node_matcher :visibility_block?, <<~PATTERN
-          (send nil? { :private :protected :public })
-        PATTERN
 
         # Validates code style on class declaration.
         # Add offense when find a node out of expected order.
@@ -155,14 +156,18 @@ module RuboCop
             if index < previous
               message = format(MSG, category: category,
                                     previous: expected_order[previous])
-              add_offense(node, message: message)
+              add_offense(node, message: message) do |corrector|
+                autocorrect(corrector, node)
+              end
             end
             previous = index
           end
         end
 
+        private
+
         # Autocorrect by swapping between two nodes autocorrecting them
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           node_classification = classify(node)
           previous = left_siblings_of(node).find do |sibling|
             classification = classify(sibling)
@@ -172,13 +177,9 @@ module RuboCop
           current_range = source_range_with_comment(node)
           previous_range = source_range_with_comment(previous)
 
-          lambda do |corrector|
-            corrector.insert_before(previous_range, current_range.source)
-            corrector.remove(current_range)
-          end
+          corrector.insert_before(previous_range, current_range.source)
+          corrector.remove(current_range)
         end
-
-        private
 
         # Classifies a node to match with something in the {expected_order}
         # @param node to be analysed
@@ -240,38 +241,6 @@ module RuboCop
             expected_order.index(classification).nil?
         end
 
-        def node_visibility(node)
-          scope = find_visibility_start(node)
-          scope&.method_name || :public
-        end
-
-        def find_visibility_start(node)
-          left_siblings_of(node)
-            .reverse
-            .find(&method(:visibility_block?))
-        end
-
-        # Navigate to find the last protected method
-        def find_visibility_end(node)
-          possible_visibilities = VISIBILITY_SCOPES - [node_visibility(node)]
-          right = right_siblings_of(node)
-          right.find do |child_node|
-            possible_visibilities.include?(node_visibility(child_node))
-          end || right.last
-        end
-
-        def siblings_of(node)
-          node.parent.children
-        end
-
-        def right_siblings_of(node)
-          siblings_of(node)[node.sibling_index..-1]
-        end
-
-        def left_siblings_of(node)
-          siblings_of(node)[0, node.sibling_index]
-        end
-
         def humanize_node(node)
           if node.def_type?
             return :initializer if node.method?(:initialize)
@@ -301,15 +270,11 @@ module RuboCop
         end
 
         def begin_pos_with_comment(node)
-          annotation_line = node.first_line - 1
           first_comment = nil
+          (node.first_line - 1).downto(1) do |annotation_line|
+            break unless (comment = processed_source.comment_at_line(annotation_line))
 
-          processed_source.comments_before_line(annotation_line)
-                          .reverse_each do |comment|
-            if comment.location.line == annotation_line
-              first_comment = comment
-              annotation_line -= 1
-            end
+            first_comment = comment
           end
 
           start_line_position(first_comment || node)

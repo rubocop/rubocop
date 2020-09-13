@@ -22,8 +22,9 @@ module RuboCop
       #
       #   # good
       #   alias_method :bar, :foo
-      class Alias < Cop
+      class Alias < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_ALIAS = 'Use `alias_method` instead of `alias`.'
         MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` ' \
@@ -31,35 +32,43 @@ module RuboCop
         MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of ' \
                            '`alias %<current>s`.'
 
+        RESTRICT_ON_SEND = %i[alias_method].freeze
+
         def on_send(node)
           return unless node.command?(:alias_method)
           return unless style == :prefer_alias && alias_keyword_possible?(node)
 
           msg = format(MSG_ALIAS_METHOD, current: lexical_scope_type(node))
-          add_offense(node, location: :selector, message: msg)
+          add_offense(node.loc.selector, message: msg) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def on_alias(node)
           return unless alias_method_possible?(node)
 
           if scope_type(node) == :dynamic || style == :prefer_alias_method
-            add_offense(node, location: :keyword, message: MSG_ALIAS)
+            add_offense(node.loc.keyword, message: MSG_ALIAS) do |corrector|
+              autocorrect(corrector, node)
+            end
           elsif node.children.none? { |arg| bareword?(arg) }
-            add_offense_for_args(node)
-          end
-        end
-
-        def autocorrect(node)
-          if node.send_type?
-            correct_alias_method_to_alias(node)
-          elsif scope_type(node) == :dynamic || style == :prefer_alias_method
-            correct_alias_to_alias_method(node)
-          else
-            correct_alias_with_symbol_args(node)
+            add_offense_for_args(node) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          if node.send_type?
+            correct_alias_method_to_alias(corrector, node)
+          elsif scope_type(node) == :dynamic || style == :prefer_alias_method
+            correct_alias_to_alias_method(corrector, node)
+          else
+            correct_alias_with_symbol_args(corrector, node)
+          end
+        end
 
         def alias_keyword_possible?(node)
           scope_type(node) != :dynamic && node.arguments.all?(&:sym_type?)
@@ -70,14 +79,14 @@ module RuboCop
             node.children.none?(&:gvar_type?)
         end
 
-        def add_offense_for_args(node)
+        def add_offense_for_args(node, &block)
           existing_args  = node.children.map(&:source).join(' ')
           preferred_args = node.children.map { |a| a.source[1..-1] }.join(' ')
           arg_ranges     = node.children.map(&:source_range)
           msg            = format(MSG_SYMBOL_ARGS,
                                   prefer: preferred_args,
                                   current: existing_args)
-          add_offense(node, location: arg_ranges.reduce(&:join), message: msg)
+          add_offense(arg_ranges.reduce(&:join), message: msg, &block)
         end
 
         # In this expression, will `self` be the same as the innermost enclosing
@@ -101,41 +110,39 @@ module RuboCop
         end
 
         def lexical_scope_type(node)
-          node.each_ancestor(:class, :module) do |ancestor|
-            return ancestor.class_type? ? 'in a class body' : 'in a module body'
+          ancestor = node.each_ancestor(:class, :module).first
+          if ancestor.nil?
+            'at the top level'
+          elsif ancestor.class_type?
+            'in a class body'
+          else
+            'in a module body'
           end
-          'at the top level'
         end
 
         def bareword?(sym_node)
           !sym_node.source.start_with?(':')
         end
 
-        def correct_alias_method_to_alias(send_node)
-          lambda do |corrector|
-            new, old = *send_node.arguments
-            replacement = "alias #{identifier(new)} #{identifier(old)}"
-            corrector.replace(send_node, replacement)
-          end
+        def correct_alias_method_to_alias(corrector, send_node)
+          new, old = *send_node.arguments
+          replacement = "alias #{identifier(new)} #{identifier(old)}"
+
+          corrector.replace(send_node, replacement)
         end
 
-        def correct_alias_to_alias_method(node)
-          lambda do |corrector|
-            replacement =
-              'alias_method ' \
-              ":#{identifier(node.new_identifier)}, " \
-              ":#{identifier(node.old_identifier)}"
-            corrector.replace(node, replacement)
-          end
+        def correct_alias_to_alias_method(corrector, node)
+          replacement =
+            'alias_method ' \
+            ":#{identifier(node.new_identifier)}, " \
+            ":#{identifier(node.old_identifier)}"
+
+          corrector.replace(node, replacement)
         end
 
-        def correct_alias_with_symbol_args(node)
-          lambda do |corrector|
-            corrector.replace(node.new_identifier,
-                              node.new_identifier.source[1..-1])
-            corrector.replace(node.old_identifier,
-                              node.old_identifier.source[1..-1])
-          end
+        def correct_alias_with_symbol_args(corrector, node)
+          corrector.replace(node.new_identifier, node.new_identifier.source[1..-1])
+          corrector.replace(node.old_identifier, node.old_identifier.source[1..-1])
         end
 
         def_node_matcher :identifier, <<~PATTERN

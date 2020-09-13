@@ -15,13 +15,15 @@ module RuboCop
       #   loop do
       #     work
       #   end
-      class InfiniteLoop < Cop
+      class InfiniteLoop < Base
+        extend AutoCorrector
+
         LEADING_SPACE = /\A(\s*)/.freeze
 
         MSG = 'Use `Kernel#loop` for infinite loops.'
 
-        def join_force?(force_class)
-          force_class == VariableForce
+        def self.joining_forces
+          VariableForce
         end
 
         def after_leaving_scope(scope, _variable_table)
@@ -40,16 +42,6 @@ module RuboCop
         alias on_while_post on_while
         alias on_until_post on_until
 
-        def autocorrect(node)
-          if node.while_post_type? || node.until_post_type?
-            replace_begin_end_with_modifier(node)
-          elsif node.modifier_form?
-            replace_source(node.source_range, modifier_replacement(node))
-          else
-            replace_source(non_modifier_range(node), 'loop do')
-          end
-        end
-
         private
 
         def while_or_until(node)
@@ -66,7 +58,19 @@ module RuboCop
             referenced_after_loop?(var, range)
           end
 
-          add_offense(node, location: :keyword)
+          add_offense(node.loc.keyword) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          if node.while_post_type? || node.until_post_type?
+            replace_begin_end_with_modifier(corrector, node)
+          elsif node.modifier_form?
+            replace_source(corrector, node.source_range, modifier_replacement(node))
+          else
+            replace_source(corrector, non_modifier_range(node), 'loop do')
+          end
         end
 
         def assigned_inside_loop?(var, range)
@@ -83,23 +87,19 @@ module RuboCop
           var.references.any? { |r| r.node.source_range.begin_pos > e }
         end
 
-        def replace_begin_end_with_modifier(node)
-          lambda do |corrector|
-            corrector.replace(node.body.loc.begin, 'loop do')
-            corrector.remove(node.body.loc.end.end.join(node.source_range.end))
-          end
+        def replace_begin_end_with_modifier(corrector, node)
+          corrector.replace(node.body.loc.begin, 'loop do')
+          corrector.remove(node.body.loc.end.end.join(node.source_range.end))
         end
 
-        def replace_source(range, replacement)
-          lambda do |corrector|
-            corrector.replace(range, replacement)
-          end
+        def replace_source(corrector, range, replacement)
+          corrector.replace(range, replacement)
         end
 
         def modifier_replacement(node)
           body = node.body
           if node.single_line?
-            'loop { ' + body.source + ' }'
+            "loop { #{body.source} }"
           else
             indentation = body.source_range.source_line[LEADING_SPACE]
 

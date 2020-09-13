@@ -16,7 +16,8 @@ module RuboCop
       #
       #   # good
       #   [1, 2].each_with_object({}) { |e, a| a[e] = e }
-      class EachWithObject < Cop
+      class EachWithObject < Base
+        extend AutoCorrector
         include RangeHelp
 
         MSG = 'Use `each_with_object` instead of `%<method>s`.'
@@ -36,33 +37,29 @@ module RuboCop
             return unless first_argument_returned?(args, return_value)
             return if accumulator_param_assigned_to?(body, args)
 
-            add_offense(node, location: method.loc.selector,
-                              message: format(MSG, method: method_name))
-          end
-        end
-
-        # rubocop:disable Metrics/AbcSize
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.send_node.loc.selector, 'each_with_object')
-
-            first_arg, second_arg = *node.arguments
-
-            corrector.replace(first_arg, second_arg.source)
-            corrector.replace(second_arg, first_arg.source)
-
-            return_value = return_value(node.body)
-
-            if return_value_occupies_whole_line?(return_value)
-              corrector.remove(whole_line_expression(return_value))
-            else
-              corrector.remove(return_value)
+            message = format(MSG, method: method_name)
+            add_offense(method.loc.selector, message: message) do |corrector|
+              autocorrect(corrector, node, return_value)
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
+
+        def autocorrect(corrector, node, return_value)
+          corrector.replace(node.send_node.loc.selector, 'each_with_object')
+
+          first_arg, second_arg = *node.arguments
+
+          corrector.replace(first_arg, second_arg.source)
+          corrector.replace(second_arg, first_arg.source)
+
+          if return_value_occupies_whole_line?(return_value)
+            corrector.remove(whole_line_expression(return_value))
+          else
+            corrector.remove(return_value)
+          end
+        end
 
         def simple_method_arg?(method_arg)
           method_arg&.basic_literal?

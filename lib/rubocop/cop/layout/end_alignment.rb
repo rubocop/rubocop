@@ -17,6 +17,11 @@ module RuboCop
       # If it's set to `start_of_line`, the `end` shall be aligned with the
       # start of the line where the matching keyword appears.
       #
+      # This `Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
+      # by default. On the other hand, `Layout/BeginEndAlignment` cop aligns with
+      # `EnforcedStyleAlignWith: start_of_line` by default due to `||= begin` tends
+      # to align with the start of the line. These style can be configured by each cop.
+      #
       # @example EnforcedStyleAlignWith: keyword (default)
       #   # bad
       #
@@ -67,10 +72,11 @@ module RuboCop
       #   variable =
       #     if true
       #     end
-      class EndAlignment < Cop
+      class EndAlignment < Base
         include CheckAssignment
         include EndKeywordAlignment
         include RangeHelp
+        extend AutoCorrector
 
         def on_class(node)
           check_other_alignment(node)
@@ -100,13 +106,11 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.align_end(processed_source,
-                                       node,
-                                       alignment_node(node))
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.align_end(corrector, processed_source, node, alignment_node(node))
+        end
 
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
@@ -150,9 +154,10 @@ module RuboCop
         end
 
         def alignment_node(node)
-          if style == :keyword
+          case style
+          when :keyword
             node
-          elsif style == :variable
+          when :variable
             alignment_node_for_variable_style(node)
           else
             start_line_range(node)
@@ -172,16 +177,6 @@ module RuboCop
             # RHS.
             node
           end
-        end
-
-        def start_line_range(node)
-          expr   = node.source_range
-          buffer = expr.source_buffer
-          source = buffer.source_line(expr.line)
-          range  = buffer.line_range(expr.line)
-
-          range_between(range.begin_pos + (source =~ /\S/),
-                        range.begin_pos + (source =~ /\s*\z/))
         end
       end
     end

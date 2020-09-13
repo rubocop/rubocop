@@ -13,59 +13,24 @@ module RuboCop
       #   # good
       #   URI::DEFAULT_PARSER.make_regexp('http://example.com')
       #
-      class UriRegexp < Cop
-        MSG = '`%<top_level>sURI.regexp%<arg>s` is obsolete and should not ' \
-              'be used. Instead, use `%<top_level>sURI::DEFAULT_PARSER.' \
-              'make_regexp%<arg>s`.'
+      class UriRegexp < Base
+        extend AutoCorrector
 
-        def_node_matcher :uri_regexp_with_argument?, <<~PATTERN
-          (send
-            (const ${nil? cbase} :URI) :regexp
-            ${(str _) (array ...)})
-        PATTERN
-
-        def_node_matcher :uri_regexp_without_argument?, <<~PATTERN
-          (send
-            (const ${nil? cbase} :URI) :regexp)
-        PATTERN
+        MSG = '`%<current>s` is obsolete and should not be used. Instead, use `%<preferred>s`.'
+        URI_CONSTANTS = ['URI', '::URI'].freeze
+        RESTRICT_ON_SEND = %i[regexp].freeze
 
         def on_send(node)
-          uri_regexp_with_argument?(node) do |double_colon, arg|
-            register_offense(
-              node, top_level: double_colon ? '::' : '', arg: "(#{arg.source})"
-            )
+          return unless node.receiver
+          return unless URI_CONSTANTS.include?(node.receiver.source)
+
+          argument = node.first_argument ? "(#{node.first_argument.source})" : ''
+          preferred_method = "#{node.receiver.source}::DEFAULT_PARSER.make_regexp#{argument}"
+          message = format(MSG, current: node.source, preferred: preferred_method)
+
+          add_offense(node.loc.selector, message: message) do |corrector|
+            corrector.replace(node, preferred_method)
           end
-
-          uri_regexp_without_argument?(node) do |double_colon|
-            register_offense(node, top_level: double_colon ? '::' : '')
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if (captured_values = uri_regexp_with_argument?(node))
-            else
-              captured_values = uri_regexp_without_argument?(node)
-            end
-
-            double_colon, arg = captured_values
-
-            top_level = double_colon ? '::' : ''
-            argument = arg ? "(#{arg.source})" : ''
-
-            corrector.replace(
-              node,
-              "#{top_level}URI::DEFAULT_PARSER.make_regexp#{argument}"
-            )
-          end
-        end
-
-        private
-
-        def register_offense(node, top_level: '', arg: '')
-          format = format(MSG, top_level: top_level, arg: arg)
-
-          add_offense(node, location: :selector, message: format)
         end
       end
     end

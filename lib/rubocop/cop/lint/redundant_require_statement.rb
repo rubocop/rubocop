@@ -8,9 +8,9 @@ module RuboCop
       # The following features are unnecessary `require` statement because
       # they are already loaded.
       #
-      # ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
-      # ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
-      # ["enumerator.so", "rational.so", "complex.so", "thread.rb"]
+      #   ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
+      #   ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
+      #   ["enumerator.so", "rational.so", "complex.so", "thread.rb"]
       #
       # This cop targets Ruby 2.2 or higher containing these 4 features.
       #
@@ -21,10 +21,12 @@ module RuboCop
       #
       #   # good
       #   require 'unloaded_feature'
-      class RedundantRequireStatement < Cop
+      class RedundantRequireStatement < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Remove unnecessary `require` statement.'
+        RESTRICT_ON_SEND = %i[require].freeze
 
         def_node_matcher :unnecessary_require_statement?, <<~PATTERN
           (send nil? :require
@@ -34,13 +36,9 @@ module RuboCop
         def on_send(node)
           return unless unnecessary_require_statement?(node)
 
-          add_offense(node)
-        end
+          add_offense(node) do |corrector|
+            range = range_with_surrounding_space(range: node.loc.expression, side: :right)
 
-        def autocorrect(node)
-          lambda do |corrector|
-            range = range_with_surrounding_space(range: node.loc.expression,
-                                                 side: :right)
             corrector.remove(range)
           end
         end

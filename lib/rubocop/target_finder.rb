@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module RuboCop
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
+  # @api private
   class TargetFinder
     def initialize(config_store, options = {})
       @config_store = config_store
@@ -27,7 +26,7 @@ module RuboCop
     # (if any). If args is empty, recursively find all Ruby source
     # files under the current directory
     # @return [Array] array of file paths
-    def find(args)
+    def find(args, mode)
       return target_files_in_dir if args.empty?
 
       files = []
@@ -36,7 +35,7 @@ module RuboCop
         files += if File.directory?(arg)
                    target_files_in_dir(arg.chomp(File::SEPARATOR))
                  else
-                   process_explicit_path(arg)
+                   process_explicit_path(arg, mode)
                  end
       end
 
@@ -54,9 +53,7 @@ module RuboCop
     # @return [Array] Array of filenames
     def target_files_in_dir(base_dir = Dir.pwd)
       # Support Windows: Backslashes from command-line -> forward slashes
-      if File::ALT_SEPARATOR
-        base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR)
-      end
+      base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
       hidden_files = Set.new(all_files - find_files(base_dir, 0))
       base_dir_config = @config_store.for(base_dir)
@@ -116,10 +113,12 @@ module RuboCop
     end
 
     def ruby_extensions
-      ext_patterns = all_cops_include.select do |pattern|
-        pattern.start_with?('**/*.')
+      @ruby_extensions ||= begin
+        ext_patterns = all_cops_include.select do |pattern|
+          pattern.start_with?('**/*.')
+        end
+        ext_patterns.map { |pattern| pattern.sub('**/*', '') }
       end
-      ext_patterns.map { |pattern| pattern.sub('**/*', '') }
     end
 
     def ruby_filename?(file)
@@ -127,21 +126,24 @@ module RuboCop
     end
 
     def ruby_filenames
-      file_patterns = all_cops_include.reject do |pattern|
-        pattern.start_with?('**/*.')
+      @ruby_filenames ||= begin
+        file_patterns = all_cops_include.reject do |pattern|
+          pattern.start_with?('**/*.')
+        end
+        file_patterns.map { |pattern| pattern.sub('**/', '') }
       end
-      file_patterns.map { |pattern| pattern.sub('**/', '') }
     end
 
     def all_cops_include
-      @config_store.for('.').for_all_cops['Include'].map(&:to_s)
+      @all_cops_include ||=
+        @config_store.for_pwd.for_all_cops['Include'].map(&:to_s)
     end
 
     def ruby_executable?(file)
       return false unless File.extname(file).empty? && File.exist?(file)
 
       first_line = File.open(file, &:readline)
-      !(first_line =~ /#!.*(#{ruby_interpreters(file).join('|')})/).nil?
+      /#!.*(#{ruby_interpreters(file).join('|')})/.match?(first_line)
     rescue EOFError, ArgumentError => e
       warn("Unprocessable file #{file}: #{e.class}, #{e.message}") if debug?
 
@@ -162,17 +164,19 @@ module RuboCop
     end
 
     def configured_include?(file)
-      @config_store.for('.').file_to_include?(file)
+      @config_store.for_pwd.file_to_include?(file)
     end
 
     def included_file?(file)
       ruby_file?(file) || configured_include?(file)
     end
 
-    def process_explicit_path(path)
+    def process_explicit_path(path, mode)
       files = path.include?('*') ? Dir[path] : [path]
 
-      files.select! { |file| included_file?(file) }
+      if mode == :only_recognized_file_types || force_exclusion?
+        files.select! { |file| included_file?(file) }
+      end
 
       return files unless force_exclusion?
 

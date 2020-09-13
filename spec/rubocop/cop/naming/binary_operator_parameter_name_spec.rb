@@ -81,6 +81,14 @@ RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
     RUBY
   end
 
+  it 'does not register an offense for multibyte character method name' do
+    expect_no_offenses(<<~RUBY)
+      def ｄｏ＿ｓｏｍｅｔｈｉｎｇ(string)
+        string
+      end
+    RUBY
+  end
+
   it 'does not register an offense for non binary operators' do
     expect_no_offenses(<<~RUBY)
       def -@; end

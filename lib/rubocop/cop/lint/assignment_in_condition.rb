@@ -34,7 +34,7 @@ module RuboCop
       #     do_something
       #   end
       #
-      class AssignmentInCondition < Cop
+      class AssignmentInCondition < Base
         include SafeAssignment
 
         MSG_WITH_SAFE_ASSIGNMENT_ALLOWED =
@@ -53,7 +53,7 @@ module RuboCop
             next :skip_children if skip_children?(asgn_node)
             next if allowed_construct?(asgn_node)
 
-            add_offense(asgn_node, location: :operator)
+            add_offense(asgn_node.loc.operator)
           end
         end
         alias on_while on_if

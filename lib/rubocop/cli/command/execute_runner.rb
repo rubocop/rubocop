@@ -4,6 +4,7 @@ module RuboCop
   class CLI
     module Command
       # Run all the selected cops and report the result.
+      # @api private
       class ExecuteRunner < Base
         include Formatter::TextUtil
 
@@ -55,7 +56,7 @@ module RuboCop
             #{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}
 
             Mention the following information in the issue report:
-            #{RuboCop::Version.version(true)}
+            #{RuboCop::Version.version(debug: true)}
           WARNING
         end
 

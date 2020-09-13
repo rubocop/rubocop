@@ -1,9 +1,14 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
+</p>
+
+----------
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
 [![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
 [![Actions Status](https://github.com/rubocop-hq/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop-hq/rubocop/actions?query=workflow%3ACI)
-[![Coverage Status](https://api.codeclimate.com/v1/badges/ad6e76460499c8c99697/test_coverage)](https://codeclimate.com/github/bbatsov/rubocop)
-[![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
-[![Inline docs](https://inch-ci.org/github/bbatsov/rubocop.svg)](https://inch-ci.org/github/bbatsov/rubocop)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop-hq/rubocop/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop-hq/rubocop/maintainability)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
 
 [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
@@ -11,25 +16,16 @@
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
 [![Tidelift](https://tidelift.com/badges/package/rubygems/rubocop)](https://tidelift.com/subscription/pkg/rubygems-rubocop?utm_source=rubygems-rubocop&utm_medium=referral&utm_campaign=readme)
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
-</p>
-
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
 
-**RuboCop** is a Ruby static code analyzer and code formatter. Out of
-the box it will enforce many of the guidelines outlined in the
-community [Ruby Style
-Guide](https://rubystyle.guide).
+**RuboCop** is a Ruby static code analyzer (a.k.a. `linter`) and code formatter. Out of the box it
+will enforce many of the guidelines outlined in the community [Ruby Style
+Guide](https://rubystyle.guide). Apart from reporting the problems discovered in your code,
+RuboCop can also automatically fix many of them for you.
 
 RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various
 [configuration options](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml).
-
-Apart from reporting problems in your code, RuboCop can also
-automatically fix some of the problems for you.
-
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bbatsov/rubocop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 **Please consider [financially supporting its ongoing development](#funding).**
 
@@ -53,7 +49,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version lock in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.82.0', require: false
+gem 'rubocop', '~> 0.90.0', require: false
 ```
 
 ## Quickstart
@@ -76,6 +72,16 @@ RuboCop supports the following Ruby implementations:
 * MRI 2.4+
 * JRuby 9.2+
 
+See [compatibility](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
+
+## Readme Badge
+
+If you use RuboCop in your project, you can include one of these badges in your readme to let people know that your code is written following the community Ruby Style Guide.
+
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
+
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-community-brightgreen.svg)](https://rubystyle.guide)
+
 ## Team
 
 Here's a list of RuboCop's core developers:
@@ -88,6 +94,8 @@ Here's a list of RuboCop's core developers:
 * [Masataka Kuwabara](https://github.com/pocke)
 * [Koichi Ito](https://github.com/koic)
 * [Maxim Krizhanovski](https://github.com/darhazer)
+* [Benjamin Quorning](https://github.com/bquorning)
+* [Marc-André Lafortune](https://github.com/marcandre)
 
 ## Logo
 
@@ -132,7 +140,7 @@ If you're working in a company that's making significant use of RuboCop we'd app
 to become a RuboCop sponsor.
 
 You can support the development of RuboCop via
-[Salt](https://salt.bountysource.com/teams/rubocop),
+[GitHub Sponsors](https://github.com/sponsors/bbatsov),
 [Patreon](https://www.patreon.com/bbatsov),
 [PayPal](https://paypal.me/bbatsov)
 and [Open Collective](https://opencollective.com/rubocop).

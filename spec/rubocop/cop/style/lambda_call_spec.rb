@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when style is set to call' do
     let(:cop_config) { { 'EnforcedStyle' => 'call' } }
 
@@ -10,6 +8,10 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       expect_offense(<<~RUBY)
         x.(a, b)
         ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.call(a, b)
       RUBY
     end
 
@@ -19,15 +21,11 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
         x.(a, b)
         ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
       RUBY
-    end
 
-    it 'accepts x.call()' do
-      expect_no_offenses('x.call(a, b)')
-    end
-
-    it 'auto-corrects x.() to x.call()' do
-      new_source = autocorrect_source('a.(x)')
-      expect(new_source).to eq('a.call(x)')
+      expect_correction(<<~RUBY)
+        x.call(a, b)
+        x.call(a, b)
+      RUBY
     end
   end
 
@@ -39,6 +37,10 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
         x.call(a, b)
         ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.(a, b)
+      RUBY
     end
 
     it 'registers an offense for opposite + correct' do
@@ -47,29 +49,35 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
         ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
         x.(a, b)
       RUBY
-    end
 
-    it 'accepts x.()' do
-      expect_no_offenses('x.(a, b)')
+      expect_correction(<<~RUBY)
+        x.(a, b)
+        x.(a, b)
+      RUBY
     end
 
     it 'accepts a call without receiver' do
       expect_no_offenses('call(a, b)')
     end
 
-    it 'auto-corrects x.call() to x.()' do
-      new_source = autocorrect_source('a.call(x)')
-      expect(new_source).to eq('a.(x)')
-    end
-
     it 'auto-corrects x.call to x.()' do
-      new_source = autocorrect_source('a.call')
-      expect(new_source).to eq('a.()')
+      expect_offense(<<~RUBY)
+        a.call
+        ^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+      RUBY
+      expect_correction(<<~RUBY)
+        a.()
+      RUBY
     end
 
     it 'auto-corrects x.call asdf, x123 to x.(asdf, x123)' do
-      new_source = autocorrect_source('a.call asdf, x123')
-      expect(new_source).to eq('a.(asdf, x123)')
+      expect_offense(<<~RUBY)
+        a.call asdf, x123
+        ^^^^^^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+      RUBY
+      expect_correction(<<~RUBY)
+        a.(asdf, x123)
+      RUBY
     end
   end
 end

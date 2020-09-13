@@ -43,6 +43,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --force-exclusion            Force excluding files specified in the
                                                configuration `Exclude` even if they are
                                                explicitly passed as arguments.
+                  --only-recognized-file-types Inspect files given on the command line only if
+                                               they are listed in AllCops/Include parameters
+                                               of user configuration or default configuration.
                   --ignore-parent-exclusion    Prevent from inheriting AllCops/Exclude from
                                                parent folders.
                   --force-default-config       Use default configuration even if configuration
@@ -89,6 +92,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                This option applies to the previously
                                                specified --format, or the default format
                                                if no format is specified.
+                  --display-only-failed        Only output offense messages. Omit passing
+                                               cops. Only valid for --format junit.
               -r, --require FILE               Require Ruby file.
                   --fail-level SEVERITY        Minimum severity (A/R/C/W/E/F) for exit
                                                with error code.
@@ -98,18 +103,24 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                                default, and their configurations for the
                                                current directory.
-              -F, --fail-fast                  Inspect files in order of modification
-                                               time and stop after the first file
-                                               containing offenses.
               -C, --cache FLAG                 Use result caching (FLAG=true) or don't
                                                (FLAG=false), default determined by
                                                configuration parameter AllCops: UseCache.
+                  --cache-root DIR             Set the cache root directory.
+                                               Takes precedence over the configuration
+                                               parameter AllCops: CacheRootDirectory and
+                                               the $RUBOCOP_CACHE_ROOT environment variable.
+              -F, --fail-fast                  Inspect files in order of modification
+                                               time and stop after the first file
+                                               containing offenses.
               -d, --debug                      Display debug info.
               -D, --[no-]display-cop-names     Display cop names in offense messages.
                                                Default is true.
               -E, --extra-details              Display extra details in offense messages.
               -S, --display-style-guide        Display style guide URLs in offense messages.
-              -a, --auto-correct               Auto-correct offenses.
+              -a, --auto-correct               Auto-correct offenses (only when it's safe).
+                  --safe-auto-correct          (same, deprecated)
+              -A, --auto-correct-all           Auto-correct offenses (safe and unsafe)
                   --disable-pending-cops       Run without pending cops.
                   --enable-pending-cops        Run with pending cops.
                   --ignore-disable-comments    Run cops even when they are disabled locally
@@ -122,7 +133,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                parallel.
               -l, --lint                       Run only lint cops.
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
-                  --safe-auto-correct          Run auto-correct only when it's safe.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
         OUTPUT
@@ -139,11 +149,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         option_sections = $stdout.string.lines.slice_before(/^\s*-/)
 
         format_section = option_sections.find do |lines|
-          lines.first =~ /^\s*-f/
+          /^\s*-f/.match?(lines.first)
         end
 
         formatter_keys = format_section.reduce([]) do |keys, line|
-          match = line.match(/^[ ]{39}(\[[a-z\]]+)/)
+          match = line.match(/^ {39}(\[[a-z\]]+)/)
           next keys unless match
 
           keys << match.captures.first
@@ -221,6 +231,18 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
+    describe '--display-only-failed' do
+      it 'fails if given without --format junit' do
+        expect { options.parse %w[--display-only-failed] }
+          .to raise_error(RuboCop::OptionArgumentError)
+      end
+
+      it 'works if given with --format junit' do
+        expect { options.parse %w[--format junit --display-only-failed] }
+          .not_to raise_error(RuboCop::OptionArgumentError)
+      end
+    end
+
     describe '--fail-level' do
       it 'accepts full severity names' do
         %w[refactor convention warning error fatal].each do |severity|
@@ -279,14 +301,30 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
+    describe '--cache-root' do
+      it 'fails if no argument is given' do
+        expect { options.parse %w[--cache-root] }
+          .to raise_error(OptionParser::MissingArgument)
+      end
+
+      it 'fails if also `--cache false` is given' do
+        expect { options.parse %w[--cache false --cache-root /some/dir] }
+          .to raise_error(RuboCop::OptionArgumentError)
+      end
+
+      it 'accepts a path as argument' do
+        expect { options.parse %w[--cache-root /some/dir] }.not_to raise_error
+      end
+    end
+
     describe '--disable-uncorrectable' do
       it 'accepts together with --auto-correct' do
         expect { options.parse %w[--auto-correct --disable-uncorrectable] }
           .not_to raise_error
       end
 
-      it 'accepts together with --safe-auto-correct' do
-        expect { options.parse %w[--safe-auto-correct --disable-uncorrectable] }
+      it 'accepts together with --auto-correct-all' do
+        expect { options.parse %w[--auto-correct-all --disable-uncorrectable] }
           .not_to raise_error
       end
 
@@ -353,6 +391,13 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           .to raise_error(RuboCop::OptionArgumentError)
       end
     end
+
+    describe '--safe-auto-correct' do
+      it 'is a deprecated alias' do
+        expect { options.parse %w[--safe-auto-correct] }
+          .to output(/deprecated/).to_stderr
+      end
+    end
   end
 
   describe 'options precedence' do
@@ -367,7 +412,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     let(:command_line_options) { %w[--no-color] }
 
-    context '.rubocop file' do
+    describe '.rubocop file' do
       before do
         create_file('.rubocop', '--color --fail-level C')
       end
@@ -383,7 +428,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
-    context '.rubocop directory' do
+    describe '.rubocop directory' do
       before do
         FileUtils.mkdir '.rubocop'
       end

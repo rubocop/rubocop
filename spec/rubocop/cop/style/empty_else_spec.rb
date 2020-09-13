@@ -8,7 +8,8 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
   shared_examples 'auto-correct' do |keyword|
     context 'MissingElse is disabled' do
       it 'does auto-correction' do
-        expect(autocorrect_source(source)).to eq(corrected_source)
+        expect_offense(source)
+        expect_correction(corrected_source)
       end
     end
 
@@ -21,27 +22,16 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
         if ['both', keyword].include? missing_else_style
           it 'does not auto-correct' do
-            expect(autocorrect_source(source)).to eq(source)
-            expect(cop.offenses.map(&:corrected?)).to eq [false]
+            expect_offense(source)
+            expect_no_corrections
           end
         else
           it 'does auto-correction' do
-            expect(autocorrect_source(source)).to eq(corrected_source)
+            expect_offense(source)
+            expect_correction(corrected_source)
           end
         end
       end
-    end
-  end
-
-  shared_examples_for 'offense registration' do
-    it 'registers an offense with correct message' do
-      inspect_source(source)
-      expect(cop.messages).to eq(['Redundant `else`-clause.'])
-    end
-
-    it 'registers an offense with correct location' do
-      inspect_source(source)
-      expect(cop.highlights).to eq(['else'])
     end
   end
 
@@ -57,31 +47,31 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
     context 'given an if-statement' do
       context 'with a completely empty else-clause' do
         context 'using semicolons' do
-          let(:source) { 'if a; foo else end' }
-          let(:corrected_source) { 'if a; foo end' }
+          let(:source) { <<~RUBY }
+            if a; foo else end
+                      ^^^^ Redundant `else`-clause.
+          RUBY
+          let(:corrected_source) { <<~RUBY }
+            if a; foo end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
 
         context 'not using semicolons' do
-          let(:source) do
-            <<~RUBY
-              if a
-                foo
-              else
-              end
-            RUBY
-          end
-          let(:corrected_source) do
-            <<~RUBY
-              if a
-                foo
-              end
-            RUBY
-          end
+          let(:source) { <<~RUBY }
+            if a
+              foo
+            else
+            ^^^^ Redundant `else`-clause.
+            end
+          RUBY
+          let(:corrected_source) { <<~RUBY }
+            if a
+              foo
+            end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
       end
@@ -110,6 +100,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
             if cond2
               something
             else
+            ^^^^ Redundant `else`-clause.
             end
           end
         RUBY
@@ -122,7 +113,6 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
         RUBY
 
         it_behaves_like 'auto-correct', 'if'
-        it_behaves_like 'offense registration'
       end
 
       context 'with an empty comment' do
@@ -130,6 +120,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
           if cond
             something
           else
+          ^^^^ Redundant `else`-clause.
             # TODO
           end
         RUBY
@@ -142,16 +133,19 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
         RUBY
 
         it_behaves_like 'auto-correct', 'if'
-        it_behaves_like 'offense registration'
       end
     end
 
     context 'given an unless-statement' do
       context 'with a completely empty else-clause' do
-        let(:source) { 'unless cond; foo else end' }
-        let(:corrected_source) { 'unless cond; foo end' }
+        let(:source) { <<~RUBY }
+          unless cond; foo else end
+                           ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          unless cond; foo end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -176,10 +170,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        let(:source) { 'case v; when a; foo else end' }
-        let(:corrected_source) { 'case v; when a; foo end' }
+        let(:source) { <<~RUBY }
+          case v; when a; foo else end
+                              ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          case v; when a; foo end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'case'
       end
 
@@ -221,52 +219,48 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
       context 'with an else-clause containing only the literal nil' do
         context 'when standalone' do
-          let(:source) do
-            <<~RUBY
-              if a
-                foo
-              elsif b
-                bar
-              else
-                nil
-              end
-            RUBY
-          end
+          let(:source) { <<~RUBY }
+            if a
+              foo
+            elsif b
+              bar
+            else
+            ^^^^ Redundant `else`-clause.
+              nil
+            end
+          RUBY
 
-          let(:corrected_source) do
-            <<~RUBY
-              if a
-                foo
-              elsif b
-                bar
-              end
-            RUBY
-          end
+          let(:corrected_source) { <<~RUBY }
+            if a
+              foo
+            elsif b
+              bar
+            end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
 
         context 'when the result is assigned to a variable' do
-          let(:source) do
-            ['foobar = if a',
-             '           foo',
-             '         elsif b',
-             '           bar',
-             '         else',
-             '           nil',
-             '         end'].join("\n")
-          end
+          let(:source) { <<~RUBY }
+            foobar = if a
+                       foo
+                     elsif b
+                       bar
+                     else
+                     ^^^^ Redundant `else`-clause.
+                       nil
+                     end
+          RUBY
 
-          let(:corrected_source) do
-            ['foobar = if a',
-             '           foo',
-             '         elsif b',
-             '           bar',
-             '         end'].join("\n")
-          end
+          let(:corrected_source) { <<~RUBY }
+            foobar = if a
+                       foo
+                     elsif b
+                       bar
+                     end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
       end
@@ -274,18 +268,26 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
       context 'with an else-clause containing only the literal nil ' \
               'using semicolons' do
         context 'with one elsif' do
-          let(:source) { 'if a; foo elsif b; bar else nil end' }
-          let(:corrected_source) { 'if a; foo elsif b; bar end' }
+          let(:source) { <<~RUBY }
+            if a; foo elsif b; bar else nil end
+                                   ^^^^ Redundant `else`-clause.
+          RUBY
+          let(:corrected_source) { <<~RUBY }
+            if a; foo elsif b; bar end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
 
         context 'with multiple elsifs' do
-          let(:source) { 'if a; foo elsif b; bar; elsif c; bar else nil end' }
-          let(:corrected_source) { 'if a; foo elsif b; bar; elsif c; bar end' }
+          let(:source) { <<~RUBY }
+            if a; foo elsif b; bar; elsif c; bar else nil end
+                                                 ^^^^ Redundant `else`-clause.
+          RUBY
+          let(:corrected_source) { <<~RUBY }
+            if a; foo elsif b; bar; elsif c; bar end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
       end
@@ -311,10 +313,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
-        let(:source) { 'unless cond; foo else nil end' }
-        let(:corrected_source) { 'unless cond; foo end' }
+        let(:source) { <<~RUBY }
+          unless cond; foo else nil end
+                           ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          unless cond; foo end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -340,35 +346,39 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
       context 'with an else-clause containing only the literal nil' do
         context 'using semicolons' do
-          let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
-          let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
+          let(:source) { <<~RUBY }
+            case v; when a; foo; when b; bar; else nil end
+                                              ^^^^ Redundant `else`-clause.
+          RUBY
+          let(:corrected_source) { <<~RUBY }
+            case v; when a; foo; when b; bar; end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'case'
         end
 
         context 'when the result is assigned to a variable' do
-          let(:source) do
-            ['foobar = case v',
-             '         when a',
-             '           foo',
-             '         when b',
-             '           bar',
-             '         else',
-             '           nil',
-             '         end'].join("\n")
-          end
+          let(:source) { <<~RUBY }
+            foobar = case v
+                     when a
+                       foo
+                     when b
+                       bar
+                     else
+                     ^^^^ Redundant `else`-clause.
+                       nil
+                     end
+          RUBY
 
-          let(:corrected_source) do
-            ['foobar = case v',
-             '         when a',
-             '           foo',
-             '         when b',
-             '           bar',
-             '         end'].join("\n")
-          end
+          let(:corrected_source) { <<~RUBY }
+            foobar = case v
+                     when a
+                       foo
+                     when b
+                       bar
+                     end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'case'
         end
       end
@@ -398,27 +408,39 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given an if-statement' do
       context 'with a completely empty else-clause' do
-        let(:source) { 'if a; foo else end' }
-        let(:corrected_source) { 'if a; foo end' }
+        let(:source) { <<~RUBY }
+          if a; foo else end
+                    ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          if a; foo end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
         context 'with one elsif' do
-          let(:source) { 'if a; foo elsif b; bar else nil end' }
-          let(:corrected_source) { 'if a; foo elsif b; bar end' }
+          let(:source) { <<~RUBY }
+            if a; foo elsif b; bar else nil end
+                                   ^^^^ Redundant `else`-clause.
+          RUBY
+          let(:corrected_source) { <<~RUBY }
+            if a; foo elsif b; bar end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
 
         context 'with multiple elsifs' do
-          let(:source) { 'if a; foo elsif b; bar; elsif c; bar else nil end' }
-          let(:corrected_source) { 'if a; foo elsif b; bar; elsif c; bar end' }
+          let(:source) { <<~RUBY }
+            if a; foo elsif b; bar; elsif c; bar else nil end
+                                                 ^^^^ Redundant `else`-clause.
+          RUBY
+          let(:corrected_source) { <<~RUBY }
+            if a; foo elsif b; bar; elsif c; bar end
+          RUBY
 
-          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
       end
@@ -438,18 +460,26 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given an unless-statement' do
       context 'with a completely empty else-clause' do
-        let(:source) { 'unless cond; foo else end' }
-        let(:corrected_source) { 'unless cond; foo end' }
+        let(:source) { <<~RUBY }
+          unless cond; foo else end
+                           ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          unless cond; foo end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
-        let(:source) { 'unless cond; foo else nil end' }
-        let(:corrected_source) { 'unless cond; foo end' }
+        let(:source) { <<~RUBY }
+          unless cond; foo else nil end
+                           ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          unless cond; foo end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -468,18 +498,26 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        let(:source) { 'case v; when a; foo else end' }
-        let(:corrected_source) { 'case v; when a; foo end' }
+        let(:source) { <<~RUBY }
+          case v; when a; foo else end
+                              ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          case v; when a; foo end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'case'
       end
 
       context 'with an else-clause containing only the literal nil' do
-        let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
-        let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
+        let(:source) { <<~RUBY }
+          case v; when a; foo; when b; bar; else nil end
+                                            ^^^^ Redundant `else`-clause.
+        RUBY
+        let(:corrected_source) { <<~RUBY }
+          case v; when a; foo; when b; bar; end
+        RUBY
 
-        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'case'
       end
 
@@ -506,39 +544,35 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
                           'Style/MissingElse' => missing_else_config)
     end
 
-    let(:source) do
-      <<~RUBY
-        def foo
-          if @params
-            case @params[:x]
-            when :a
-              :b
-            else
-              nil
-            end
+    let(:source) { <<~RUBY }
+      def foo
+        if @params
+          case @params[:x]
+          when :a
+            :b
           else
-            :c
+          ^^^^ Redundant `else`-clause.
+            nil
           end
+        else
+          :c
         end
-      RUBY
-    end
+      end
+    RUBY
 
-    let(:corrected_source) do
-      <<~RUBY
-        def foo
-          if @params
-            case @params[:x]
-            when :a
-              :b
-            end
-          else
-            :c
+    let(:corrected_source) { <<~RUBY }
+      def foo
+        if @params
+          case @params[:x]
+          when :a
+            :b
           end
+        else
+          :c
         end
-      RUBY
-    end
+      end
+    RUBY
 
-    it_behaves_like 'offense registration'
     it_behaves_like 'auto-correct', 'case'
   end
 end

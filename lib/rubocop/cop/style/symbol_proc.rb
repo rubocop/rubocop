@@ -11,15 +11,16 @@ module RuboCop
       #
       #   # good
       #   something.map(&:upcase)
-      class SymbolProc < Cop
+      class SymbolProc < Base
         include RangeHelp
         include IgnoredMethods
+        extend AutoCorrector
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` ' \
               'instead of a block.'
         SUPER_TYPES = %i[super zsuper].freeze
 
-        def_node_matcher :proc_node?, '(send (const nil? :Proc) :new)'
+        def_node_matcher :proc_node?, '(send (const {nil? cbase} :Proc) :new)'
         def_node_matcher :symbol_proc?, <<~PATTERN
           (block
             ${(send ...) (super ...) zsuper}
@@ -49,30 +50,25 @@ module RuboCop
           argument_node.one? && argument_node.source.include?(',')
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.send_node.arguments?
-              autocorrect_with_args(corrector, node,
-                                    node.send_node.arguments,
-                                    node.body.method_name)
-            else
-              autocorrect_without_args(corrector, node)
-            end
-          end
-        end
-
         private
 
         def register_offense(node, method_name, block_method_name)
           block_start = node.loc.begin.begin_pos
           block_end = node.loc.end.end_pos
           range = range_between(block_start, block_end)
+          message = format(MSG, method: method_name, block_method: block_method_name)
 
-          add_offense(node,
-                      location: range,
-                      message: format(MSG,
-                                      method: method_name,
-                                      block_method: block_method_name))
+          add_offense(range, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          if node.send_node.arguments?
+            autocorrect_with_args(corrector, node, node.send_node.arguments, node.body.method_name)
+          else
+            autocorrect_without_args(corrector, node)
+          end
         end
 
         def autocorrect_without_args(corrector, node)
@@ -84,7 +80,7 @@ module RuboCop
           arg_range = args.last.source_range
           arg_range = range_with_surrounding_comma(arg_range, :right)
           replacement = " &:#{method_name}"
-          replacement = ',' + replacement unless arg_range.source.end_with?(',')
+          replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
           corrector.insert_after(arg_range, replacement)
           corrector.remove(block_range_with_space(node))
         end

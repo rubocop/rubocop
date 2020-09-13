@@ -10,6 +10,7 @@ module RuboCop
         MULTIPLE_LEFT_HAND_SIDE_TYPE = :mlhs
 
         attr_reader :node, :variable, :referenced, :references
+
         alias referenced? referenced
 
         def initialize(node, variable)

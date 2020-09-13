@@ -54,36 +54,30 @@ module RuboCop
       #       end
       #     end
       #   end
-      class NestedMethodDefinition < Cop
+      class NestedMethodDefinition < Base
         MSG = 'Method definitions must not be nested. ' \
               'Use `lambda` instead.'
 
         def on_def(node)
-          find_nested_defs(node) do |nested_def_node|
-            add_offense(nested_def_node)
-          end
+          subject, = *node
+          return if node.defs_type? && subject.lvar_type?
+
+          def_ancestor = node.each_ancestor(:def, :defs).first
+          return unless def_ancestor
+
+          within_scoping_def =
+            node.each_ancestor(:block, :sclass).any? do |ancestor|
+              scoping_method_call?(ancestor)
+            end
+
+          add_offense(node) if def_ancestor && !within_scoping_def
         end
         alias on_defs on_def
 
         private
 
-        def find_nested_defs(node, &block)
-          node.each_child_node do |child|
-            if child.def_type?
-              yield child
-            elsif child.defs_type?
-              subject, = *child
-              next if subject.lvar_type?
-
-              yield child
-            elsif !scoping_method_call?(child)
-              find_nested_defs(child, &block)
-            end
-          end
-        end
-
         def scoping_method_call?(child)
-          eval_call?(child) || exec_call?(child) || child.sclass_type? ||
+          child.sclass_type? || eval_call?(child) || exec_call?(child) ||
             class_or_module_or_struct_new_call?(child)
         end
 
@@ -96,7 +90,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
-          (block (send (const nil? {:Class :Module :Struct}) :new ...) ...)
+          (block (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
         PATTERN
       end
     end

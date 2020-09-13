@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit calls' do
@@ -60,6 +58,22 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
         [
         ]
         .join(" ")
+      RUBY
+    end
+  end
+
+  context 'when comment present before closing brace' do
+    it 'corrects closing brace without crashing' do
+      expect_offense(<<~RUBY)
+        super(bar(baz,
+          ham # comment
+        ))
+        ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        super(bar(baz,
+          ham)) # comment
       RUBY
     end
   end

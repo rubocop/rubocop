@@ -21,8 +21,9 @@ module RuboCop
       #
       #   num = 0
       #   sum = numbers.each_with_object(num) { |e, a| a += e }
-      class EachWithObjectArgument < Cop
+      class EachWithObjectArgument < Base
         MSG = 'The argument to each_with_object cannot be immutable.'
+        RESTRICT_ON_SEND = %i[each_with_object].freeze
 
         def_node_matcher :each_with_object?, <<~PATTERN
           ({send csend} _ :each_with_object $_)

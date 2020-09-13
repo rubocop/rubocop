@@ -29,20 +29,34 @@ module RuboCop
       @options_config = ConfigLoader.default_configuration
     end
 
-    def for(file_or_dir)
-      return @options_config if @options_config
+    def for_file(file)
+      for_dir(File.dirname(file))
+    end
 
+    def for_pwd
+      for_dir(Dir.pwd)
+    end
+
+    # If type (file/dir) is known beforehand,
+    # prefer using #for_file or #for_dir for improved performance
+    def for(file_or_dir)
       dir = if File.directory?(file_or_dir)
               file_or_dir
             else
               File.dirname(file_or_dir)
             end
+      for_dir(dir)
+    end
+
+    def for_dir(dir)
+      return @options_config if @options_config
+
       @path_cache[dir] ||= ConfigLoader.configuration_file_for(dir)
       path = @path_cache[dir]
       @object_cache[path] ||= begin
-                                print "For #{dir}: " if ConfigLoader.debug?
-                                ConfigLoader.configuration_from_file(path)
-                              end
+        print "For #{dir}: " if ConfigLoader.debug?
+        ConfigLoader.configuration_from_file(path)
+      end
     end
   end
 end

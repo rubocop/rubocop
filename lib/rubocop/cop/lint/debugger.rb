@@ -32,8 +32,13 @@ module RuboCop
       #   def some_method
       #     do_something
       #   end
-      class Debugger < Cop
+      class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
+
+        RESTRICT_ON_SEND = %i[
+          debugger byebug remote_byebug pry remote_pry pry_remote console rescue
+          save_and_open_page save_and_open_screenshot save_screenshot irb
+        ].freeze
 
         def_node_matcher :kernel?, <<~PATTERN
           {

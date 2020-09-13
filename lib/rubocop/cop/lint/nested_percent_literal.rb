@@ -15,7 +15,7 @@ module RuboCop
       #     valid_attributes: %i[name content],
       #     nested_attributes: %i[name content %i[incorrectly nested]]
       #   }
-      class NestedPercentLiteral < Cop
+      class NestedPercentLiteral < Base
         include PercentLiteral
 
         MSG = 'Within percent literals, nested percent literals do not ' \
@@ -42,7 +42,7 @@ module RuboCop
         def contains_percent_literals?(node)
           node.each_child_node.any? do |child|
             literal = child.children.first.to_s.scrub
-            REGEXES.any? { |regex| literal.match(regex) }
+            REGEXES.any? { |regex| literal.match?(regex) }
           end
         end
       end

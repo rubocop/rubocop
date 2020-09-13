@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   context 'when method is an instance method' do
@@ -195,8 +193,8 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
 
     it 'still rejects other methods with more than 5 lines' do
       expect_offense(<<~RUBY)
-        def m 
-        ^^^^^^ Method has too many lines. [6/5]
+        def m
+        ^^^^^ Method has too many lines. [6/5]
           a = 1
           a = 2
           a = 3
@@ -216,6 +214,24 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
           a = 4
           a = 5
           a = 6
+        end
+      RUBY
+    end
+  end
+
+  context 'when `CountAsOne` is not empty' do
+    before { cop_config['CountAsOne'] = ['array'] }
+
+    it 'folds array into one line' do
+      expect_no_offenses(<<~RUBY)
+        def m
+          a = 1
+          a = [
+            2,
+            3,
+            4,
+            5
+          ]
         end
       RUBY
     end

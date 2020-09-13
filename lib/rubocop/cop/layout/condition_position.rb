@@ -22,7 +22,10 @@ module RuboCop
       #   if some_condition
       #     do_something
       #   end
-      class ConditionPosition < Cop
+      class ConditionPosition < Base
+        include RangeHelp
+        extend AutoCorrector
+
         MSG = 'Place the condition on the same line as `%<keyword>s`.'
 
         def on_if(node)
@@ -34,21 +37,26 @@ module RuboCop
         def on_while(node)
           check(node)
         end
-
-        def on_until(node)
-          check(node)
-        end
+        alias on_until on_while
 
         private
 
         def check(node)
           return if node.modifier_form? || node.single_line_condition?
 
-          add_offense(node.condition)
+          condition = node.condition
+          message = message(condition)
+
+          add_offense(condition, message: message) do |corrector|
+            range = range_by_whole_lines(condition.source_range, include_final_newline: true)
+
+            corrector.insert_after(condition.parent.loc.keyword, " #{condition.source}")
+            corrector.remove(range)
+          end
         end
 
-        def message(node)
-          format(MSG, keyword: node.parent.keyword)
+        def message(condition)
+          format(MSG, keyword: condition.parent.keyword)
         end
       end
     end

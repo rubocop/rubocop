@@ -35,6 +35,7 @@ module RuboCop
       end
 
       def initialize(options = {})
+        super()
         @options = options # CLI options
       end
 
@@ -82,14 +83,12 @@ module RuboCop
 
       def builtin_formatter_class(specified_key)
         matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
-          key =~ /^\[#{specified_key}\]/ || specified_key == key.delete('[]')
+          /^\[#{specified_key}\]/.match?(key) || specified_key == key.delete('[]')
         end
 
         raise %(No formatter for "#{specified_key}") if matching_keys.empty?
 
-        if matching_keys.size > 1
-          raise %(Cannot determine formatter for "#{specified_key}")
-        end
+        raise %(Cannot determine formatter for "#{specified_key}") if matching_keys.size > 1
 
         BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
       end

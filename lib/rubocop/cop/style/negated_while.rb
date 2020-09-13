@@ -22,26 +22,18 @@ module RuboCop
       #   # good
       #   bar while foo
       #   bar while !foo && baz
-      class NegatedWhile < Cop
+      class NegatedWhile < Base
         include NegativeConditional
+        extend AutoCorrector
 
         def on_while(node)
-          check_negative_conditional(node)
-        end
+          message = format(MSG, inverse: node.inverse_keyword, current: node.keyword)
 
-        def on_until(node)
-          check_negative_conditional(node)
+          check_negative_conditional(node, message: message) do |corrector|
+            ConditionCorrector.correct_negative_condition(corrector, node)
+          end
         end
-
-        def autocorrect(node)
-          ConditionCorrector.correct_negative_condition(node)
-        end
-
-        private
-
-        def message(node)
-          format(MSG, inverse: node.inverse_keyword, current: node.keyword)
-        end
+        alias on_until on_while
       end
     end
   end

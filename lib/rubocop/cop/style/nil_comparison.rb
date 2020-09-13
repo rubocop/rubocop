@@ -28,28 +28,30 @@ module RuboCop
       #   if x == nil
       #   end
       #
-      class NilComparison < Cop
+      class NilComparison < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         PREDICATE_MSG = 'Prefer the use of the `nil?` predicate.'
         EXPLICIT_MSG = 'Prefer the use of the `==` comparison.'
+
+        RESTRICT_ON_SEND = %i[== === nil?].freeze
 
         def_node_matcher :nil_comparison?, '(send _ {:== :===} nil)'
         def_node_matcher :nil_check?, '(send _ :nil?)'
 
         def on_send(node)
           style_check?(node) do
-            add_offense(node, location: :selector)
-          end
-        end
+            add_offense(node.loc.selector) do |corrector|
+              new_code = if prefer_comparison?
+                           node.source.sub('.nil?', ' == nil')
+                         else
+                           node.source.sub(/\s*={2,3}\s*nil/, '.nil?')
+                         end
 
-        def autocorrect(node)
-          new_code = if prefer_comparison?
-                       node.source.sub('.nil?', ' == nil')
-                     else
-                       node.source.sub(/\s*={2,3}\s*nil/, '.nil?')
-                     end
-          ->(corrector) { corrector.replace(node, new_code) }
+              corrector.replace(node, new_code)
+            end
+          end
         end
 
         private

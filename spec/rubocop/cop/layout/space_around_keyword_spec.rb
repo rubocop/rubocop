@@ -6,28 +6,26 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   shared_examples 'missing before' do |highlight, expr, correct|
     it 'registers an offense for missing space before keyword in ' \
        "`#{expr}`" do
-      inspect_source(expr)
-      expect(cop.messages)
-        .to eq(["Space before keyword `#{highlight}` is missing."])
-      expect(cop.highlights).to eq([highlight])
-    end
+      h_index = expr.index(highlight)
+      expect_offense(<<~RUBY)
+        #{expr}
+        #{' ' * h_index}#{'^' * highlight.size} Space before keyword `#{highlight}` is missing.
+      RUBY
 
-    it 'auto-corrects' do
-      expect(autocorrect_source(expr)).to eq correct
+      expect_correction("#{correct}\n")
     end
   end
 
   shared_examples 'missing after' do |highlight, expr, correct|
     it 'registers an offense for missing space after keyword in ' \
-       "`#{expr}`" do
-      inspect_source(expr)
-      expect(cop.messages)
-        .to eq(["Space after keyword `#{highlight}` is missing."])
-      expect(cop.highlights).to eq([highlight])
-    end
+       "`#{expr}` and autocorrects" do
+      h_index = expr.index(highlight)
+      expect_offense(<<~RUBY)
+        #{expr}
+        #{' ' * h_index}#{'^' * highlight.size} Space after keyword `#{highlight}` is missing.
+      RUBY
 
-    it 'auto-corrects' do
-      expect(autocorrect_source(expr)).to eq correct
+      expect_correction("#{correct}\n")
     end
   end
 

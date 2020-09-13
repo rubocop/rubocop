@@ -16,12 +16,30 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
                  ^^^^^^^^^^^^ Place the first line of class body on its own line.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo#{trailing_whitespace}
+        body
+      end
+      class Bar#{trailing_whitespace}
+        def bar; end
+      end
+    RUBY
   end
 
   it 'registers offense with multi-line class' do
     expect_offense(<<~RUBY)
       class Foo; body
                  ^^^^ Place the first line of class body on its own line.
+        def bar
+          qux
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo#{trailing_whitespace}
+        body
         def bar
           qux
         end
@@ -44,52 +62,36 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass do
     RUBY
   end
 
-  it 'auto-corrects body after class definition' do
-    corrected = autocorrect_source(<<~RUBY)
-      class Foo; body 
-      end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      class Foo 
-        body 
-      end
-    RUBY
-  end
-
   it 'auto-corrects with comment after body' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       class BarQux; foo # comment
+                    ^^^ Place the first line of class body on its own line.
       end
     RUBY
-    expect(corrected).to eq(<<~RUBY)
-      # comment
-      class BarQux 
-        foo 
-      end
-    RUBY
-  end
 
-  it 'auto-corrects when there are multiple semicolons' do
-    corrected = autocorrect_source(<<~RUBY)
-      class Bar; def bar; end
-      end
-    RUBY
-    expect(corrected).to eq(<<~RUBY)
-      class Bar 
-        def bar; end
+    expect_correction(<<~RUBY)
+      # comment
+      class BarQux#{trailing_whitespace}
+        foo#{trailing_whitespace}
       end
     RUBY
   end
 
   context 'when class is not on first line of processed_source' do
     it 'auto-correct offense' do
-      corrected = autocorrect_source(['',
-                                      '  class Foo; body ',
-                                      '  end'].join("\n"))
-      expect(corrected).to eq ['',
-                               '  class Foo ',
-                               '    body ',
-                               '  end'].join("\n")
+      expect_offense(<<-RUBY.strip_margin('|'))
+        |
+        |  class Foo; body#{trailing_whitespace}
+        |             ^^^^ Place the first line of class body on its own line.
+        |  end
+      RUBY
+
+      expect_correction(<<-RUBY.strip_margin('|'))
+        |
+        |  class Foo#{trailing_whitespace}
+        |    body#{trailing_whitespace}
+        |  end
+      RUBY
     end
   end
 end

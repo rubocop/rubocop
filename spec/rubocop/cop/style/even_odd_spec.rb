@@ -3,73 +3,103 @@
 RSpec.describe RuboCop::Cop::Style::EvenOdd do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for x % 2 == 0' do
+  it 'converts x % 2 == 0 to #even?' do
     expect_offense(<<~RUBY)
       x % 2 == 0
       ^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+    expect_correction(<<~RUBY)
+      x.even?
+    RUBY
   end
 
-  it 'registers an offense for x % 2 != 0' do
+  it 'converts x % 2 != 0 to #odd?' do
     expect_offense(<<~RUBY)
       x % 2 != 0
       ^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
+    expect_correction(<<~RUBY)
+      x.odd?
+    RUBY
   end
 
-  it 'registers an offense for (x % 2) == 0' do
+  it 'converts (x % 2) == 0 to #even?' do
     expect_offense(<<~RUBY)
       (x % 2) == 0
       ^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+    expect_correction(<<~RUBY)
+      x.even?
+    RUBY
   end
 
-  it 'registers an offense for (x % 2) != 0' do
+  it 'converts (x % 2) != 0 to #odd?' do
     expect_offense(<<~RUBY)
       (x % 2) != 0
       ^^^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
+    expect_correction(<<~RUBY)
+      x.odd?
+    RUBY
   end
 
-  it 'registers an offense for x % 2 == 1' do
+  it 'converts x % 2 == 1 to #odd?' do
     expect_offense(<<~RUBY)
       x % 2 == 1
       ^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
+    expect_correction(<<~RUBY)
+      x.odd?
+    RUBY
   end
 
-  it 'registers an offense for x % 2 != 1' do
+  it 'converts x % 2 != 1 to #even?' do
     expect_offense(<<~RUBY)
       x % 2 != 1
       ^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+    expect_correction(<<~RUBY)
+      x.even?
+    RUBY
   end
 
-  it 'registers an offense for (x % 2) == 1' do
+  it 'converts (x % 2) == 1 to #odd?' do
     expect_offense(<<~RUBY)
       (x % 2) == 1
       ^^^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
-  end
-
-  it 'registers an offense for (x % 2) != 1' do
-    expect_offense(<<~RUBY)
-      (x % 2) != 1
-      ^^^^^^^^^^^^ Replace with `Integer#even?`.
+    expect_correction(<<~RUBY)
+      x.odd?
     RUBY
   end
 
-  it 'registers an offense for (x.y % 2) != 1' do
+  it 'converts (y % 2) != 1 to #even?' do
+    expect_offense(<<~RUBY)
+      (y % 2) != 1
+      ^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+    expect_correction(<<~RUBY)
+      y.even?
+    RUBY
+  end
+
+  it 'converts (x.y % 2) != 1 to #even?' do
     expect_offense(<<~RUBY)
       (x.y % 2) != 1
       ^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+    expect_correction(<<~RUBY)
+      x.y.even?
+    RUBY
   end
 
-  it 'registers an offense for (x(y) % 2) != 1' do
+  it 'converts (x(y) % 2) != 1 to #even?' do
     expect_offense(<<~RUBY)
       (x(y) % 2) != 1
       ^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+    expect_correction(<<~RUBY)
+      x(y).even?
     RUBY
   end
 
@@ -85,85 +115,57 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
     expect_no_offenses('x % 3 != 0')
   end
 
-  it 'converts x % 2 == 0 to #even?' do
-    corrected = autocorrect_source('x % 2 == 0')
-    expect(corrected).to eq('x.even?')
-  end
-
-  it 'converts x % 2 != 0 to #odd?' do
-    corrected = autocorrect_source('x % 2 != 0')
-    expect(corrected).to eq('x.odd?')
-  end
-
-  it 'converts (x % 2) == 0 to #even?' do
-    corrected = autocorrect_source('(x % 2) == 0')
-    expect(corrected).to eq('x.even?')
-  end
-
-  it 'converts (x % 2) != 0 to #odd?' do
-    corrected = autocorrect_source('(x % 2) != 0')
-    expect(corrected).to eq('x.odd?')
-  end
-
-  it 'converts x % 2 == 1 to odd?' do
-    corrected = autocorrect_source('x % 2 == 1')
-    expect(corrected).to eq('x.odd?')
-  end
-
-  it 'converts x % 2 != 1 to even?' do
-    corrected = autocorrect_source('x % 2 != 1')
-    expect(corrected).to eq('x.even?')
-  end
-
-  it 'converts (x % 2) == 1 to odd?' do
-    corrected = autocorrect_source('(x % 2) == 1')
-    expect(corrected).to eq('x.odd?')
-  end
-
-  it 'converts (y % 2) != 1 to even?' do
-    corrected = autocorrect_source('(y % 2) != 1')
-    expect(corrected).to eq('y.even?')
-  end
-
-  it 'converts (x.y % 2) != 1 to even?' do
-    corrected = autocorrect_source('(x.y % 2) != 1')
-    expect(corrected).to eq('x.y.even?')
-  end
-
-  it 'converts (x(y) % 2) != 1 to even?' do
-    corrected = autocorrect_source('(x(y) % 2) != 1')
-    expect(corrected).to eq('x(y).even?')
-  end
-
   it 'converts (x._(y) % 2) != 1 to even?' do
-    corrected = autocorrect_source('(x._(y) % 2) != 1')
-    expect(corrected).to eq('x._(y).even?')
+    expect_offense(<<~RUBY)
+      (x._(y) % 2) != 1
+      ^^^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+    expect_correction(<<~RUBY)
+      x._(y).even?
+    RUBY
   end
 
   it 'converts (x._(y)) % 2 != 1 to even?' do
-    corrected = autocorrect_source('(x._(y)) % 2 != 1')
-    expect(corrected).to eq('(x._(y)).even?')
+    expect_offense(<<~RUBY)
+      (x._(y)) % 2 != 1
+      ^^^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+    expect_correction(<<~RUBY)
+      (x._(y)).even?
+    RUBY
   end
 
   it 'converts x._(y) % 2 != 1 to even?' do
-    corrected = autocorrect_source('x._(y) % 2 != 1')
-    expect(corrected).to eq('x._(y).even?')
+    expect_offense(<<~RUBY)
+      x._(y) % 2 != 1
+      ^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+    expect_correction(<<~RUBY)
+      x._(y).even?
+    RUBY
   end
 
   it 'converts 1 % 2 != 1 to even?' do
-    corrected = autocorrect_source('1 % 2 != 1')
-    expect(corrected).to eq('1.even?')
+    expect_offense(<<~RUBY)
+      1 % 2 != 1
+      ^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+    expect_correction(<<~RUBY)
+      1.even?
+    RUBY
   end
 
   it 'converts complex examples' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       if (y % 2) != 1
+         ^^^^^^^^^^^^ Replace with `Integer#even?`.
         method == :== ? :even : :odd
       elsif x % 2 == 1
+            ^^^^^^^^^^ Replace with `Integer#odd?`.
         method == :== ? :odd : :even
       end
     RUBY
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       if y.even?
         method == :== ? :even : :odd
       elsif x.odd?

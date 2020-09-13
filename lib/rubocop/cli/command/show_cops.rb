@@ -5,6 +5,7 @@ module RuboCop
     module Command
       # Shows the given cops, or all cops by default, and their configurations
       # for the current directory.
+      # @api private
       class ShowCops < Base
         self.command_name = :show_cops
 
@@ -22,7 +23,7 @@ module RuboCop
         private
 
         def print_available_cops
-          registry = Cop::Cop.registry
+          registry = Cop::Registry.global
           show_all = @options[:show_cops].empty?
 
           if show_all
@@ -42,18 +43,14 @@ module RuboCop
                             selected_cops_of_department(registry, department)
                           end
 
-          if show_all
-            puts "# Department '#{department}' (#{selected_cops.length}):"
-          end
+          puts "# Department '#{department}' (#{selected_cops.length}):" if show_all
 
           print_cop_details(selected_cops)
         end
 
         def print_cop_details(cops)
           cops.each do |cop|
-            if cop.new(@config).support_autocorrect?
-              puts '# Supports --auto-correct'
-            end
+            puts '# Supports --auto-correct' if cop.support_autocorrect?
             puts "#{cop.cop_name}:"
             puts config_lines(cop)
             puts
@@ -72,7 +69,7 @@ module RuboCop
 
         def config_lines(cop)
           cnf = @config.for_cop(cop)
-          cnf.to_yaml.lines.to_a.drop(1).map { |line| '  ' + line }
+          cnf.to_yaml.lines.to_a.drop(1).map { |line| "  #{line}" }
         end
       end
     end

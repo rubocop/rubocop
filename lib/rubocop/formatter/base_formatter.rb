@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
-
 module RuboCop
   module Formatter
     # Abstract base class for formatter, implements all public API methods.
@@ -41,8 +39,6 @@ module RuboCop
     # * `#finished`
     #
     class BaseFormatter
-      # rubocop:enable Layout/LineLength
-
       # @api public
       #
       # @!attribute [r] output

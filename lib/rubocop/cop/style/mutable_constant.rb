@@ -50,9 +50,10 @@ module RuboCop
       #       puts 1
       #     end
       #   end.freeze
-      class MutableConstant < Cop
+      class MutableConstant < Base
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Freeze mutable objects assigned to constants.'
 
@@ -67,23 +68,6 @@ module RuboCop
           return unless lhs&.casgn_type?
 
           on_assignment(value)
-        end
-
-        def autocorrect(node)
-          expr = node.source_range
-
-          lambda do |corrector|
-            splat_value = splat_value(node)
-            if splat_value
-              correct_splat_expansion(corrector, expr, splat_value)
-            elsif node.array_type? && !node.bracketed?
-              corrector.wrap(expr, '[', ']')
-            elsif requires_parentheses?(node)
-              corrector.wrap(expr, '(', ')')
-            end
-
-            corrector.insert_after(expr, '.freeze')
-          end
         end
 
         private
@@ -101,7 +85,9 @@ module RuboCop
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
         end
 
         def check(value)
@@ -112,7 +98,24 @@ module RuboCop
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          expr = node.source_range
+
+          splat_value = splat_value(node)
+          if splat_value
+            correct_splat_expansion(corrector, expr, splat_value)
+          elsif node.array_type? && !node.bracketed?
+            corrector.wrap(expr, '[', ']')
+          elsif requires_parentheses?(node)
+            corrector.wrap(expr, '(', ')')
+          end
+
+          corrector.insert_after(expr, '.freeze')
         end
 
         def mutable_literal?(value)
@@ -150,14 +153,14 @@ module RuboCop
         def_node_matcher :operation_produces_immutable_object?, <<~PATTERN
           {
             (const _ _)
-            (send (const nil? :Struct) :new ...)
-            (block (send (const nil? :Struct) :new ...) ...)
+            (send (const {nil? cbase} :Struct) :new ...)
+            (block (send (const {nil? cbase} :Struct) :new ...) ...)
             (send _ :freeze)
             (send {float int} {:+ :- :* :** :/ :% :<<} _)
             (send _ {:+ :- :* :** :/ :%} {float int})
             (send _ {:== :=== :!= :<= :>= :< :>} _)
-            (send (const nil? :ENV) :[] _)
-            (or (send (const nil? :ENV) :[] _) _)
+            (send (const {nil? cbase} :ENV) :[] _)
+            (or (send (const {nil? cbase} :ENV) :[] _) _)
             (send _ {:count :length :size} ...)
             (block (send _ {:count :length :size} ...) ...)
           }

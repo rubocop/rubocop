@@ -1,37 +1,31 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UnifiedInteger, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'registers an offense' do |klass|
     context "when #{klass}" do
       context 'without any decorations' do
-        let(:source) { "1.is_a?(#{klass})" }
+        it 'registers an offense and autocorrects' do
+          expect_offense(<<~RUBY, klass: klass)
+            1.is_a?(%{klass})
+                    ^{klass} Use `Integer` instead of `#{klass}`.
+          RUBY
 
-        it 'registers an offense' do
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages).to eq(["Use `Integer` instead of `#{klass}`."])
-        end
-
-        it 'autocorrects' do
-          new_source = autocorrect_source(source)
-          expect(new_source).to eq('1.is_a?(Integer)')
+          expect_correction(<<~RUBY)
+            1.is_a?(Integer)
+          RUBY
         end
       end
 
       context 'when explicitly specified as toplevel constant' do
-        let(:source) { "1.is_a?(::#{klass})" }
-
         it 'registers an offense' do
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.messages).to eq(["Use `Integer` instead of `#{klass}`."])
-        end
+          expect_offense(<<~RUBY, klass: klass)
+            1.is_a?(::%{klass})
+                    ^^^{klass} Use `Integer` instead of `#{klass}`.
+          RUBY
 
-        it 'autocorrects' do
-          new_source = autocorrect_source(source)
-          expect(new_source).to eq('1.is_a?(::Integer)')
+          expect_correction(<<~RUBY)
+            1.is_a?(::Integer)
+          RUBY
         end
       end
 

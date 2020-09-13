@@ -20,12 +20,13 @@ module RuboCop
       #   # good
       #
       #   0 # just use 0 instead
-      class RandOne < Cop
+      class RandOne < Base
         MSG = '`%<method>s` always returns `0`. ' \
               'Perhaps you meant `rand(2)` or `rand`?'
+        RESTRICT_ON_SEND = %i[rand].freeze
 
         def_node_matcher :rand_one?, <<~PATTERN
-          (send {(const nil? :Kernel) nil?} :rand {(int {-1 1}) (float {-1.0 1.0})})
+          (send {(const {nil? cbase} :Kernel) nil?} :rand {(int {-1 1}) (float {-1.0 1.0})})
         PATTERN
 
         def on_send(node)

@@ -14,12 +14,9 @@ module RuboCop
       #   # good
       #   [1, 2]
       #   { foo:bar, }
-      class SpaceAfterComma < Cop
+      class SpaceAfterComma < Base
         include SpaceAfterPunctuation
-
-        def autocorrect(comma)
-          PunctuationCorrector.add_space(comma)
-        end
+        extend AutoCorrector
 
         def space_style_before_rcurly
           cfg = config.for_cop('Layout/SpaceInsideHashLiteralBraces')

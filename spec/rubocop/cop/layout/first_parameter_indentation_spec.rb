@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[consistent align_parentheses]

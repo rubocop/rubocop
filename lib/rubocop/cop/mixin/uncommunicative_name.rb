@@ -15,11 +15,13 @@ module RuboCop
         args.each do |arg|
           # Argument names might be "_" or prefixed with "_" to indicate they
           # are unused. Trim away this prefix and only analyse the basename.
-          full_name = arg.children.first.to_s
+          name_child = arg.children.first
+          next if name_child.nil?
+
+          full_name = name_child.to_s
           next if full_name == '_'
 
-          name = full_name.gsub(/\A([_]+)/, '')
-          next if (arg.restarg_type? || arg.kwrestarg_type?) && name.empty?
+          name = full_name.gsub(/\A(_+)/, '')
           next if allowed_names.include?(name)
 
           range = arg_range(arg, name.size)
@@ -39,12 +41,11 @@ module RuboCop
       end
 
       def case_offense(node, range)
-        add_offense(node, location: range,
-                          message: format(CASE_MSG, name_type: name_type(node)))
+        add_offense(range, message: format(CASE_MSG, name_type: name_type(node)))
       end
 
       def uppercase?(name)
-        name =~ /[[:upper:]]/
+        /[[:upper:]]/.match?(name)
       end
 
       def name_type(node)
@@ -57,19 +58,17 @@ module RuboCop
       end
 
       def num_offense(node, range)
-        add_offense(node, location: range,
-                          message: format(NUM_MSG, name_type: name_type(node)))
+        add_offense(range, message: format(NUM_MSG, name_type: name_type(node)))
       end
 
       def ends_with_num?(name)
-        name[-1] =~ /\d/
+        /\d/.match?(name[-1])
       end
 
       def length_offense(node, range)
-        add_offense(node, location: range,
-                          message: format(LENGTH_MSG,
-                                          name_type: name_type(node).capitalize,
-                                          min: min_length))
+        message = format(LENGTH_MSG, name_type: name_type(node).capitalize, min: min_length)
+
+        add_offense(range, message: message)
       end
 
       def long_enough?(name)
@@ -84,11 +83,7 @@ module RuboCop
       end
 
       def forbidden_offense(node, range, name)
-        add_offense(
-          node,
-          location: range,
-          message: format(FORBIDDEN_MSG, name: name, name_type: name_type(node))
-        )
+        add_offense(range, message: format(FORBIDDEN_MSG, name: name, name_type: name_type(node)))
       end
 
       def allowed_names

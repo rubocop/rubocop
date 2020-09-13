@@ -17,6 +17,7 @@ module RuboCop
       end
     end
 
+    # @api private
     MAX_ITERATIONS = 200
 
     attr_reader :errors, :warnings
@@ -61,7 +62,12 @@ module RuboCop
 
     def find_target_files(paths)
       target_finder = TargetFinder.new(@config_store, @options)
-      target_files = target_finder.find(paths)
+      mode = if @options[:only_recognized_file_types]
+               :only_recognized_file_types
+             else
+               :all_file_types
+             end
+      target_files = target_finder.find(paths, mode)
       target_files.each(&:freeze).freeze
     end
 
@@ -76,8 +82,9 @@ module RuboCop
       # mainly targets editors that integrates RuboCop. When RuboCop is run
       # by an editor, it should be inspecting only one file.
       if files.size > 1 && cached_run?
-        ResultCache.cleanup(@config_store, @options[:debug])
+        ResultCache.cleanup(@config_store, @options[:debug], @options[:cache_root])
       end
+
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end
@@ -115,9 +122,9 @@ module RuboCop
 
     def file_offenses(file)
       file_offense_cache(file) do
-        source = get_processed_source(file)
-        source, offenses = do_inspection_loop(file, source)
-        add_redundant_disables(file, offenses.compact.sort, source)
+        source, offenses = do_inspection_loop(file)
+        offenses = add_redundant_disables(file, offenses.compact.sort, source)
+        offenses.sort.reject(&:disabled?).freeze
       end
     end
 
@@ -126,7 +133,7 @@ module RuboCop
     end
 
     def file_offense_cache(file)
-      config = @config_store.for(file)
+      config = @config_store.for_file(file)
       cache = cached_result(file, standby_team(config)) if cached_run?
 
       if cache&.valid?
@@ -148,16 +155,29 @@ module RuboCop
     end
 
     def add_redundant_disables(file, offenses, source)
-      if check_for_redundant_disables?(source)
-        redundant_cop_disable_directive(file) do |cop|
-          cop.check(offenses, source.disabled_line_ranges, source.comments)
-          offenses += cop.offenses
-          offenses += autocorrect_redundant_disables(file, source, cop,
-                                                     offenses)
+      team_for_redundant_disables(file, offenses, source) do |team|
+        new_offenses, redundant_updated = inspect_file(source, team)
+        offenses += new_offenses
+        if redundant_updated
+          # Do one extra inspection loop if any redundant disables were
+          # removed. This is done in order to find rubocop:enable directives that
+          # have now become useless.
+          _source, new_offenses = do_inspection_loop(file)
+          offenses |= new_offenses
         end
       end
+      offenses
+    end
 
-      offenses.sort.reject(&:disabled?).freeze
+    def team_for_redundant_disables(file, offenses, source)
+      return unless check_for_redundant_disables?(source)
+
+      config = @config_store.for_file(file)
+      team = Cop::Team.mobilize([Cop::Lint::RedundantCopDisableDirective], config, @options)
+      return if team.cops.empty?
+
+      team.cops.first.offenses_to_check = offenses
+      yield team
     end
 
     def check_for_redundant_disables?(source)
@@ -165,7 +185,7 @@ module RuboCop
     end
 
     def redundant_cop_disable_directive(file)
-      config = @config_store.for(file)
+      config = @config_store.for_file(file)
       if config.for_cop(Cop::Lint::RedundantCopDisableDirective)
                .fetch('Enabled')
         cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
@@ -175,22 +195,6 @@ module RuboCop
 
     def filtered_run?
       @options[:except] || @options[:only]
-    end
-
-    def autocorrect_redundant_disables(file, source, cop, offenses)
-      cop.processed_source = source
-
-      team = Cop::Team.new(RuboCop::Cop::Registry.new, nil, @options)
-      team.autocorrect(source.buffer, [cop])
-
-      return [] unless team.updated_source_file?
-
-      # Do one extra inspection loop if any redundant disables were
-      # removed. This is done in order to find rubocop:enable directives that
-      # have now become useless.
-      _source, new_offenses = do_inspection_loop(file,
-                                                 get_processed_source(file))
-      new_offenses - offenses
     end
 
     def file_started(file)
@@ -211,7 +215,7 @@ module RuboCop
       @cached_run ||=
         (@options[:cache] == 'true' ||
          @options[:cache] != 'false' &&
-         @config_store.for(Dir.pwd).for_all_cops['UseCache']) &&
+         @config_store.for_pwd.for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
         # need to do that processing and cannot use caching.
@@ -230,7 +234,8 @@ module RuboCop
       cache.save(offenses)
     end
 
-    def do_inspection_loop(file, processed_source)
+    def do_inspection_loop(file)
+      processed_source = get_processed_source(file)
       offenses = []
 
       # When running with --auto-correct, we need to inspect the file (which
@@ -290,19 +295,22 @@ module RuboCop
       @processed_sources << checksum
     end
 
-    def inspect_file(processed_source)
-      config = @config_store.for(processed_source.path)
-      team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
-      offenses = team.inspect_file(processed_source)
+    def inspect_file(processed_source, team = mobilize_team(processed_source))
+      report = team.investigate(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
-      [offenses, team.updated_source_file?]
+      [report.offenses, team.updated_source_file?]
+    end
+
+    def mobilize_team(processed_source)
+      config = @config_store.for_file(processed_source.path)
+      Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
 
     def mobilized_cop_classes(config)
       @mobilized_cop_classes ||= {}
       @mobilized_cop_classes[config.object_id] ||= begin
-        cop_classes = Cop::Cop.all
+        cop_classes = Cop::Registry.all
 
         OptionsValidator.new(@options).validate_cop_options
 
@@ -357,12 +365,16 @@ module RuboCop
     end
 
     def get_processed_source(file)
-      ruby_version = @config_store.for(file).target_ruby_version
+      ruby_version = @config_store.for_file(file).target_ruby_version
 
       if @options[:stdin]
         ProcessedSource.new(@options[:stdin], ruby_version, file)
       else
-        ProcessedSource.from_file(file, ruby_version)
+        begin
+          ProcessedSource.from_file(file, ruby_version)
+        rescue Errno::ENOENT
+          raise RuboCop::Error, "No such file or directory: #{file}"
+        end
       end
     end
 
@@ -373,7 +385,7 @@ module RuboCop
     def standby_team(config)
       @team_by_config ||= {}
       @team_by_config[config.object_id] ||=
-        Cop::Team.new(mobilized_cop_classes(config), config, @options)
+        Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
   end
 end

@@ -28,8 +28,9 @@ module RuboCop
       #   def foo(arg)
       #     return nil if arg
       #   end
-      class ReturnNil < Cop
+      class ReturnNil < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         RETURN_MSG = 'Use `return` instead of `return nil`.'
         RETURN_NIL_MSG = 'Use `return nil` instead of `return`.'
@@ -54,12 +55,11 @@ module RuboCop
             return nil if chained_send?(send_node)
           end
 
-          add_offense(node) unless correct_style?(node)
-        end
+          return if correct_style?(node)
 
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             corrected = style == :return ? 'return' : 'return nil'
+
             corrector.replace(node, corrected)
           end
         end

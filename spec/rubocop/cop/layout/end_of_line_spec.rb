@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'all configurations' do
     it 'accepts an empty file' do
       inspect_source_file('')

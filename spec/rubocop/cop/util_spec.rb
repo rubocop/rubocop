@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Util do
-  class TestUtil
-    include RuboCop::Cop::Util
+  before do
+    stub_const('TestUtil', Class.new { include RuboCop::Cop::Util })
   end
 
   describe '#line_range' do

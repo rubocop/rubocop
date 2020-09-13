@@ -18,7 +18,7 @@ module RuboCop
       #   # good
       #
       #   hash = { food: 'apple', other_food: 'orange' }
-      class DuplicateHashKey < Cop
+      class DuplicateHashKey < Base
         include Duplication
 
         MSG = 'Duplicated key in hash literal.'

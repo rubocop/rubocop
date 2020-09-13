@@ -68,9 +68,7 @@ module RuboCop
               gem_name(current),
               gem_name(previous)
             )
-            unless get_dependency_name(previous) == get_dependency_name(current)
-              next
-            end
+            next unless get_dependency_name(previous) == get_dependency_name(current)
 
             register_offense(previous, current)
           end

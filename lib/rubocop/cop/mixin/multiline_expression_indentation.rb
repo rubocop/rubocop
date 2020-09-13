@@ -152,7 +152,7 @@ module RuboCop
         expression
       end
 
-      def argument_in_method_call(node, kind)
+      def argument_in_method_call(node, kind) # rubocop:todo Metrics/CyclomaticComplexity
         node.each_ancestor(:send, :block).find do |a|
           # If the node is inside a block, it makes no difference if that block
           # is an argument in a method call. It doesn't count.

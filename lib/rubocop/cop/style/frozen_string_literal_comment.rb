@@ -8,8 +8,7 @@ module RuboCop
       # It will add the comment `# frozen_string_literal: true` to the top of
       # files to enable frozen string literals. Frozen string literals may be
       # default in future Ruby. The comment will be added below a shebang and
-      # encoding comment. The frozen string literal comment is only valid in
-      # Ruby 2.3+.
+      # encoding comment.
       #
       # Note that the cop will ignore files where the comment exists but is set
       # to `false` instead of `true`.
@@ -74,10 +73,11 @@ module RuboCop
       #   module Bar
       #     # ...
       #   end
-      class FrozenStringLiteralComment < Cop
+      class FrozenStringLiteralComment < Base
         include ConfigurableEnforcedStyle
         include FrozenStringLiteral
         include RangeHelp
+        extend AutoCorrector
 
         MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: '\
                            'true`.'
@@ -86,7 +86,7 @@ module RuboCop
         MSG_DISABLED = 'Frozen string literal comment must be set to `true`.'
         SHEBANG = '#!'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.tokens.empty?
 
           case style
@@ -96,23 +96,6 @@ module RuboCop
             ensure_enabled_comment(processed_source)
           else
             ensure_comment(processed_source)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            case style
-            when :never
-              remove_comment(corrector, node)
-            when :always_true
-              if frozen_string_literal_specified?
-                enable_comment(corrector)
-              else
-                insert_comment(corrector)
-              end
-            else
-              insert_comment(corrector)
-            end
           end
         end
 
@@ -149,9 +132,7 @@ module RuboCop
           end
 
           next_token = processed_source.tokens[token_number]
-          if next_token && next_token.text =~ Encoding::ENCODING_PATTERN
-            token = next_token
-          end
+          token = next_token if Encoding::ENCODING_PATTERN.match?(next_token&.text)
 
           token
         end
@@ -163,51 +144,45 @@ module RuboCop
         end
 
         def missing_offense(processed_source)
-          last_special_comment = last_special_comment(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
-          add_offense(last_special_comment,
-                      location: range,
-                      message: MSG_MISSING)
+          add_offense(range, message: MSG_MISSING) do |corrector|
+            insert_comment(corrector)
+          end
         end
 
         def missing_true_offense(processed_source)
-          last_special_comment = last_special_comment(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
-          add_offense(last_special_comment,
-                      location: range,
-                      message: MSG_MISSING_TRUE)
+          add_offense(range, message: MSG_MISSING_TRUE) do |corrector|
+            insert_comment(corrector)
+          end
         end
 
         def unnecessary_comment_offense(processed_source)
-          frozen_string_literal_comment =
-            frozen_string_literal_comment(processed_source)
+          frozen_string_literal_comment = frozen_string_literal_comment(processed_source)
 
-          add_offense(frozen_string_literal_comment,
-                      location: frozen_string_literal_comment.pos,
-                      message: MSG_UNNECESSARY)
+          add_offense(frozen_string_literal_comment.pos, message: MSG_UNNECESSARY) do |corrector|
+            remove_comment(corrector, frozen_string_literal_comment)
+          end
         end
 
         def disabled_offense(processed_source)
-          frozen_string_literal_comment =
-            frozen_string_literal_comment(processed_source)
+          frozen_string_literal_comment = frozen_string_literal_comment(processed_source)
 
-          add_offense(frozen_string_literal_comment,
-                      location: frozen_string_literal_comment.pos,
-                      message: MSG_DISABLED)
+          add_offense(frozen_string_literal_comment.pos, message: MSG_DISABLED) do |corrector|
+            enable_comment(corrector)
+          end
         end
 
         def remove_comment(corrector, node)
-          corrector.remove(range_with_surrounding_space(range: node.pos,
-                                                        side: :right))
+          corrector.remove(range_with_surrounding_space(range: node.pos, side: :right))
         end
 
         def enable_comment(corrector)
           comment = frozen_string_literal_comment(processed_source)
 
-          corrector.replace(line_range(comment.line),
-                            FROZEN_STRING_LITERAL_ENABLED)
+          corrector.replace(line_range(comment.line), FROZEN_STRING_LITERAL_ENABLED)
         end
 
         def insert_comment(corrector)
@@ -216,7 +191,7 @@ module RuboCop
           if comment
             corrector.insert_after(line_range(comment.line), following_comment)
           else
-            corrector.insert_before(line_range(1), preceding_comment)
+            corrector.insert_before(processed_source.buffer.source_range, preceding_comment)
           end
         end
 

@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Include' => ['**/Gemfile'] } }
 
   context 'when investigating Ruby files' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~RUBY, 'foo.rb')
         # cop will not read these contents
         gem('rubocop')
         gem('rubocop')
@@ -49,6 +47,18 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
           group :development do
             gem 'rubocop', path: '/path/to/gem'
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem `rubocop` requirements already given on line 1 of the Gemfile.
+          end
+        GEM
+      end
+    end
+
+    context 'and the gem is conditionally duplicated' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-GEM, 'Gemfile')
+          if Dir.exist? local
+            gem 'rubocop', path: local
+          else
+            gem 'rubocop', '~> 0.90.0'
           end
         GEM
       end

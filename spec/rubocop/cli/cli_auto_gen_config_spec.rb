@@ -35,8 +35,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # frozen_string_literal: true
 
             def f
-            #{'  #' * 33}
-              if #{'a' * 80}
+            #{'  #' * 46}
+              if #{'a' * 120}
                 return y
               end
 
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
               # URISchemes: http, https
               Layout/LineLength:
-                Max: 99
+                Max: 138
           YAML
           expect(IO.read('.rubocop.yml').strip).to eq(exp_dotfile.join($RS))
           $stdout = StringIO.new
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             == example.rb ==
             C:  2: 91: Layout/LineLength: Line is too long. [99/90]
 
-            1 file inspected, 1 offense detected
+            1 file inspected, 1 offense detected, 1 offense auto-correctable
           OUTPUT
         end
       end
@@ -309,7 +309,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   'x= 0 ',
-                                  '#' * 85,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('.rubocop_todo.yml', <<~YAML)
@@ -342,7 +342,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 'IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
-                '  Max: 85'])
+                '  Max: 125'])
 
       # Create new CLI instance to avoid using cached configuration.
       new_cli = described_class.new
@@ -351,9 +351,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'honors rubocop:disable comments' do
-      create_file('example1.rb', ['#' * 81,
+      create_file('example1.rb', ['#' * 121,
                                   '# rubocop:disable LineLength',
-                                  '#' * 85,
+                                  '#' * 125,
                                   'y ',
                                   'puts 123456',
                                   '# rubocop:enable LineLength'])
@@ -395,7 +395,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 'IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
-                '  Max: 81',
+                '  Max: 121',
                 ''].join("\n"))
     end
 
@@ -441,6 +441,47 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when working with a cop who do not support auto-correction' do
+      it 'can generate a todo list' do
+        create_file('example1.rb', <<~RUBY)
+          def fooBar; end
+        RUBY
+        create_file('.rubocop.yml', <<~YAML)
+          # The following cop does not support auto-correction.
+          Naming/MethodName:
+            Enabled: true
+        YAML
+        expect(cli.run(%w[--auto-gen-config])).to eq(0)
+        expect($stderr.string).to eq('')
+        # expect($stdout.string).to include('Created .rubocop_todo.yml.')
+        expect(Dir['.*']).to include('.rubocop_todo.yml')
+        todo_contents = IO.read('.rubocop_todo.yml').lines[8..-1].join
+        expect(todo_contents).to eq(<<~YAML)
+          # Offense count: 1
+          # Configuration parameters: EnforcedStyle, IgnoredPatterns.
+          # SupportedStyles: snake_case, camelCase
+          Naming/MethodName:
+            Exclude:
+              - 'example1.rb'
+
+          # Offense count: 1
+          # Cop supports --auto-correct.
+          # Configuration parameters: EnforcedStyle.
+          # SupportedStyles: always, always_true, never
+          Style/FrozenStringLiteralComment:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
+          inherit_from: .rubocop_todo.yml
+
+          # The following cop does not support auto-correction.
+          Naming/MethodName:
+            Enabled: true
+        YAML
+      end
+    end
+
     context 'when working in a subdirectory' do
       it 'can generate a todo list' do
         create_file('dir/example1.rb', ['$x = 0 ',
@@ -456,7 +497,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Layout/LineLength:
             Max: 95
         YAML
-        RuboCop::PathUtil.chdir('dir') do
+        Dir.chdir('dir') do
           expect(cli.run(%w[--auto-gen-config])).to eq(0)
         end
         expect($stderr.string).to eq('')
@@ -544,8 +585,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   '$x= 0 ',
-                                  '#' * 90,
-                                  '#' * 85,
+                                  '#' * 130,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', <<~RUBY)
@@ -639,7 +680,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
-         '  Max: 90']
+         '  Max: 130']
       actual = IO.read('.rubocop_todo.yml').split($RS)
       expected.each_with_index do |line, ix|
         if line.is_a?(String)
@@ -655,13 +696,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   '$x= 0 ',
-                                  '#' * 90,
-                                  '#' * 85,
+                                  '#' * 130,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', ['# frozen_string_literal: true',
                                   '',
-                                  '#' * 85,
+                                  '#' * 125,
                                   "\tx = 0",
                                   'puts x '])
       expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(0)
@@ -731,7 +772,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
-         '  Max: 90']
+         '  Max: 130']
       actual = IO.read('.rubocop_todo.yml').split($RS)
       expected.each_with_index do |line, ix|
         if line.is_a?(String)
@@ -758,53 +799,45 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
       expect(cli.run(['--auto-gen-config'])).to eq(0)
       expect($stderr.string).to eq('')
-      expected =
-        ['# This configuration was generated by',
-         '# `rubocop --auto-gen-config`',
-         /# on .* using RuboCop version .*/,
-         '# The point is for the user to remove these configuration records',
-         '# one by one as the offenses are removed from the code base.',
-         '# Note that changes in the inspected code, or installation of new',
-         '# versions of RuboCop, may require this file to be generated ' \
-         'again.',
-         '',
-         '# Offense count: 1',
-         '# Cop supports --auto-correct.',
-         'Layout/CommentIndentation:',
-         '  Exclude:',
-         "    - 'example2.rb'",
-         '',
-         '# Offense count: 1',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: EnforcedStyle.',
-         '# SupportedStyles: normal, indented_internal_methods',
-         'Layout/IndentationConsistency:',
-         '  Exclude:',
-         "    - 'example2.rb'",
-         '',
-         '# Offense count: 1',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
-         '# SupportedStyles: spaces, tabs',
-         'Layout/IndentationStyle:',
-         '  Exclude:',
-         "    - 'example2.rb'",
-         '',
-         '# Offense count: 1',
-         '# Cop supports --auto-correct.',
-         'Layout/InitialIndentation:',
-         '  Exclude:',
-         "    - 'example2.rb'"]
       actual = IO.read('.rubocop_todo.yml').split($RS)
-      expect(actual.length).to eq(expected.length)
-      expected.each_with_index do |line, ix|
-        if line.is_a?(String)
-          expect(actual[ix]).to eq(line)
-        else
-          expect(actual[ix]).to match(line)
-        end
-      end
-      expect(actual.size).to eq(expected.size)
+      date_stamp = actual.slice!(2)
+      expect(date_stamp).to match(/# on .* using RuboCop version .*/)
+      expect(actual.join("\n")).to eq(<<~TEXT.chomp)
+        # This configuration was generated by
+        # `rubocop --auto-gen-config`
+        # The point is for the user to remove these configuration records
+        # one by one as the offenses are removed from the code base.
+        # Note that changes in the inspected code, or installation of new
+        # versions of RuboCop, may require this file to be generated again.
+
+        # Offense count: 1
+        # Cop supports --auto-correct.
+        Layout/CommentIndentation:
+          Exclude:
+            - 'example2.rb'
+
+        # Offense count: 1
+        # Cop supports --auto-correct.
+        # Configuration parameters: EnforcedStyle.
+        # SupportedStyles: normal, indented_internal_methods
+        Layout/IndentationConsistency:
+          Exclude:
+            - 'example2.rb'
+
+        # Offense count: 1
+        # Cop supports --auto-correct.
+        # Configuration parameters: IndentationWidth, EnforcedStyle.
+        # SupportedStyles: spaces, tabs
+        Layout/IndentationStyle:
+          Exclude:
+            - 'example2.rb'
+
+        # Offense count: 1
+        # Cop supports --auto-correct.
+        Layout/InitialIndentation:
+          Exclude:
+            - 'example2.rb'
+      TEXT
     end
 
     it 'generates a todo list that removes the reports' do
@@ -855,8 +888,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example1.rb', ['# frozen_string_literal: true',
                                   '',
                                   '$x= 0 ',
-                                  '#' * 90,
-                                  '#' * 85,
+                                  '#' * 130,
+                                  '#' * 125,
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', <<~RUBY)
@@ -941,7 +974,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
          'IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
-         '  Max: 90']
+         '  Max: 130']
       actual = IO.read('.rubocop_todo.yml').split($RS)
       expected.each_with_index do |line, ix|
         if line.is_a?(String)
@@ -955,8 +988,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     it 'generates Exclude instead of Max when --auto-gen-only-exclude is' \
        ' used' do
-      create_file('example1.rb', ['#' * 90,
-                                  '#' * 90,
+      create_file('example1.rb', ['#' * 130,
+                                  '#' * 130,
                                   'puts 123456'])
       create_file('example2.rb', <<~RUBY)
         def function(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
@@ -1078,7 +1111,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Inspecting 1 file
           C
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense auto-correctable
           Created .rubocop_todo.yml.
         OUTPUT
       end

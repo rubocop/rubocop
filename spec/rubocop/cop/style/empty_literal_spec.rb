@@ -9,6 +9,9 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Array.new()
                ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
+      expect_correction(<<~RUBY)
+        test = []
+      RUBY
     end
 
     it 'registers an offense for Array.new' do
@@ -16,25 +19,41 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Array.new
                ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
+      expect_correction(<<~RUBY)
+        test = []
+      RUBY
+    end
+
+    it 'registers an offense for ::Array.new' do
+      expect_offense(<<~RUBY)
+        test = ::Array.new
+               ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        test = []
+      RUBY
     end
 
     it 'does not register an offense for Array.new(3)' do
       expect_no_offenses('test = Array.new(3)')
     end
 
-    it 'auto-corrects Array.new to []' do
-      new_source = autocorrect_source('test = Array.new')
-      expect(new_source).to eq('test = []')
-    end
-
     it 'auto-corrects Array.new in block in block' do
-      source = 'puts { Array.new }'
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq 'puts { [] }'
+      expect_offense(<<~RUBY)
+        puts { Array.new }
+               ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        puts { [] }
+      RUBY
     end
 
     it 'does not registers an offense Array.new with block' do
       expect_no_offenses('test = Array.new { 1 }')
+    end
+
+    it 'does not register an offense for ::Array.new with block' do
+      expect_no_offenses('test = ::Array.new { 1 }')
     end
 
     it 'does not register Array.new with block in other block' do
@@ -48,6 +67,9 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Hash.new()
                ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+      expect_correction(<<~RUBY)
+        test = {}
+      RUBY
     end
 
     it 'registers an offense for Hash.new' do
@@ -55,63 +77,92 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Hash.new
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+      expect_correction(<<~RUBY)
+        test = {}
+      RUBY
+    end
+
+    it 'registers an offense for ::Hash.new' do
+      expect_offense(<<~RUBY)
+        test = ::Hash.new
+               ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        test = {}
+      RUBY
     end
 
     it 'does not register an offense for Hash.new(3)' do
       expect_no_offenses('test = Hash.new(3)')
     end
 
+    it 'does not register an offense for ::Hash.new(3)' do
+      expect_no_offenses('test = ::Hash.new(3)')
+    end
+
     it 'does not register an offense for Hash.new { block }' do
       expect_no_offenses('test = Hash.new { block }')
     end
 
-    it 'auto-corrects Hash.new to {}' do
-      new_source = autocorrect_source('Hash.new')
-      expect(new_source).to eq('{}')
+    it 'does not register an offense for ::Hash.new { block }' do
+      expect_no_offenses('test = ::Hash.new { block }')
     end
 
     it 'auto-corrects Hash.new in block ' do
-      source = 'puts { Hash.new }'
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq 'puts { {} }'
+      expect_offense(<<~RUBY)
+        puts { Hash.new }
+               ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        puts { {} }
+      RUBY
     end
 
     it 'auto-corrects Hash.new to {} in various contexts' do
-      new_source =
-        autocorrect_source(<<~RUBY)
-          test = Hash.new
-          Hash.new.merge("a" => 3)
-          yadayada.map { a }.reduce(Hash.new, :merge)
-        RUBY
-      expect(new_source)
-        .to eq(<<~RUBY)
-          test = {}
-          {}.merge("a" => 3)
-          yadayada.map { a }.reduce({}, :merge)
-        RUBY
+      expect_offense(<<~RUBY)
+        test = Hash.new
+               ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+        Hash.new.merge("a" => 3)
+        ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+        yadayada.map { a }.reduce(Hash.new, :merge)
+                                  ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        test = {}
+        {}.merge("a" => 3)
+        yadayada.map { a }.reduce({}, :merge)
+      RUBY
     end
 
     it 'auto-correct Hash.new to {} as the only parameter to a method' do
-      source = 'yadayada.map { a }.reduce Hash.new'
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq('yadayada.map { a }.reduce({})')
+      expect_offense(<<~RUBY)
+        yadayada.map { a }.reduce Hash.new
+                                  ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        yadayada.map { a }.reduce({})
+      RUBY
     end
 
     it 'auto-correct Hash.new to {} as the first parameter to a method' do
-      source = 'yadayada.map { a }.reduce Hash.new, :merge'
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq('yadayada.map { a }.reduce({}, :merge)')
+      expect_offense(<<~RUBY)
+        yadayada.map { a }.reduce Hash.new, :merge
+                                  ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        yadayada.map { a }.reduce({}, :merge)
+      RUBY
     end
 
     it 'auto-correct changes Hash.new to {} and wraps it in parentheses ' \
       'when it is the only argument to super' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         def foo
           super Hash.new
+                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
         end
       RUBY
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         def foo
           super({})
         end
@@ -120,13 +171,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
 
     it 'auto-correct changes Hash.new to {} and wraps all arguments in ' \
       'parentheses when it is the first argument to super' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         def foo
           super Hash.new, something
+                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
         end
       RUBY
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         def foo
           super({}, something)
         end
@@ -140,6 +191,9 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = String.new()
                ^^^^^^^^^^^^ Use string literal `''` instead of `String.new`.
       RUBY
+      expect_correction(<<~RUBY)
+        test = ''
+      RUBY
     end
 
     it 'registers an offense for String.new' do
@@ -147,15 +201,27 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = String.new
                ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
       RUBY
+      expect_correction(<<~RUBY)
+        test = ''
+      RUBY
+    end
+
+    it 'registers an offense for ::String.new' do
+      expect_offense(<<~RUBY)
+        test = ::String.new
+               ^^^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+      RUBY
+      expect_correction(<<~RUBY)
+        test = ''
+      RUBY
     end
 
     it 'does not register an offense for String.new("top")' do
       expect_no_offenses('test = String.new("top")')
     end
 
-    it 'auto-corrects String.new to empty string literal' do
-      new_source = autocorrect_source('test = String.new')
-      expect(new_source).to eq("test = ''")
+    it 'does not register an offense for ::String.new("top")' do
+      expect_no_offenses('test = ::String.new("top")')
     end
 
     context 'when double-quoted string literals are preferred' do
@@ -175,11 +241,19 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
           test = String.new
                  ^^^^^^^^^^ Use string literal `""` instead of `String.new`.
         RUBY
+        expect_correction(<<~RUBY)
+          test = ""
+        RUBY
       end
 
-      it 'auto-corrects String.new to a double-quoted empty string literal' do
-        new_source = autocorrect_source('test = String.new')
-        expect(new_source).to eq('test = ""')
+      it 'registers an offense for ::String.new' do
+        expect_offense(<<~RUBY)
+          test = ::String.new
+                 ^^^^^^^^^^^^ Use string literal `""` instead of `String.new`.
+        RUBY
+        expect_correction(<<~RUBY)
+          test = ""
+        RUBY
       end
     end
 

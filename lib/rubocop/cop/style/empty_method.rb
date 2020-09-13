@@ -8,7 +8,7 @@ module RuboCop
       # line (compact style), but it can be configured to enforce the `end`
       # to go on its own line (expanded style).
       #
-      # Note: A method definition is not considered empty if it contains
+      # NOTE: A method definition is not considered empty if it contains
       #       comments.
       #
       # @example EnforcedStyle: compact (default)
@@ -40,8 +40,9 @@ module RuboCop
       #
       #   def self.foo(bar)
       #   end
-      class EmptyMethod < Cop
+      class EmptyMethod < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_COMPACT = 'Put empty method definitions on a single line.'
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the ' \
@@ -51,19 +52,15 @@ module RuboCop
           return if node.body || comment_lines?(node)
           return if correct_style?(node)
 
-          add_offense(node)
-        end
-        alias on_defs on_def
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             corrector.replace(node, corrected(node))
           end
         end
+        alias on_defs on_def
 
         private
 
-        def message(_node)
+        def message(_range)
           compact_style? ? MSG_COMPACT : MSG_EXPANDED
         end
 
@@ -73,13 +70,13 @@ module RuboCop
         end
 
         def corrected(node)
-          if node.arguments?
-            arguments   = node.arguments.source
-            extra_space = ' ' unless parentheses?(node.arguments)
-          end
           scope = node.receiver ? "#{node.receiver.source}." : ''
+          arguments = if node.arguments?
+                        args = node.arguments.map(&:source).join(', ')
 
-          signature = [scope, node.method_name, extra_space, arguments].join
+                        parentheses?(node.arguments) ? "(#{args})" : " #{args}"
+                      end
+          signature = [scope, node.method_name, arguments].join
 
           ["def #{signature}", 'end'].join(joint(node))
         end
@@ -88,10 +85,6 @@ module RuboCop
           indent = ' ' * node.loc.column
 
           compact_style? ? '; ' : "\n#{indent}"
-        end
-
-        def comment_lines?(node)
-          processed_source[line_range(node)].any? { |line| comment_line?(line) }
         end
 
         def compact?(node)

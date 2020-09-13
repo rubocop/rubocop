@@ -35,9 +35,7 @@ module RuboCop
 
         def add_space(processed_source, corrector, left_token, right_token)
           @processed_source = processed_source
-          unless left_token.space_after?
-            corrector.insert_after(left_token.pos, ' ')
-          end
+          corrector.insert_after(left_token.pos, ' ') unless left_token.space_after?
           return if right_token.space_before?
 
           corrector.insert_before(right_token.pos, ' ')

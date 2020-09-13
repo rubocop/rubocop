@@ -17,9 +17,12 @@ module RuboCop
       #   # good
       #   'foo'.unpack1('h*')
       #
-      class UnpackFirst < Cop
+      class UnpackFirst < Base
+        extend AutoCorrector
+
         MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of '\
           '`%<receiver>s.unpack(%<format>s)%<method>s`.'
+        RESTRICT_ON_SEND = %i[first [] slice at].freeze
 
         def_node_matcher :unpack_and_first_element?, <<~PATTERN
           {
@@ -35,13 +38,7 @@ module RuboCop
                              receiver: unpack_call.receiver.source,
                              format: unpack_arg.source,
                              method: range.source)
-            add_offense(node, message: message)
-          end
-        end
-
-        def autocorrect(node)
-          unpack_and_first_element?(node) do |unpack_call, _unpack_arg|
-            lambda do |corrector|
+            add_offense(node, message: message) do |corrector|
               corrector.remove(first_element_range(node, unpack_call))
               corrector.replace(unpack_call.loc.selector, 'unpack1')
             end

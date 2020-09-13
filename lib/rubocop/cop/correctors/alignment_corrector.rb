@@ -29,13 +29,13 @@ module RuboCop
           end
         end
 
-        def align_end(processed_source, node, align_to)
+        def align_end(corrector, processed_source, node, align_to)
           @processed_source = processed_source
           whitespace = whitespace_range(node)
           return false unless whitespace.source.strip.empty?
 
           column = alignment_column(align_to)
-          ->(corrector) { corrector.replace(whitespace, ' ' * column) }
+          corrector.replace(whitespace, ' ' * column)
         end
 
         private
@@ -47,10 +47,8 @@ module RuboCop
           # string literals
           return if taboo_ranges.any? { |t| within?(range, t) }
 
-          if column_delta.positive?
-            unless range.resize(1).source == "\n"
-              corrector.insert_before(range, ' ' * column_delta)
-            end
+          if column_delta.positive? && range.resize(1).source != "\n"
+            corrector.insert_before(range, ' ' * column_delta)
           elsif /\A[ \t]+\z/.match?(range.source)
             remove(range, corrector)
           end
@@ -92,9 +90,7 @@ module RuboCop
         end
 
         def calculate_range(expr, line_begin_pos, column_delta)
-          if column_delta.positive?
-            return range_between(line_begin_pos, line_begin_pos)
-          end
+          return range_between(line_begin_pos, line_begin_pos) if column_delta.positive?
 
           starts_with_space =
             expr.source_buffer.source[line_begin_pos].start_with?(' ')

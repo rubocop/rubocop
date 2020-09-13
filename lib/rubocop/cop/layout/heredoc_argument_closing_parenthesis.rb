@@ -50,11 +50,16 @@ module RuboCop
       #        123,
       #      )
       #
-      class HeredocArgumentClosingParenthesis < Cop
+      class HeredocArgumentClosingParenthesis < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Put the closing parenthesis for a method call with a ' \
         'HEREDOC parameter on the same line as the HEREDOC opening.'
+
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
 
         def on_send(node)
           heredoc_arg = extract_heredoc_argument(node)
@@ -65,8 +70,12 @@ module RuboCop
           return unless outermost_send.loc.end
           return unless heredoc_arg.first_line != outermost_send.loc.end.line
 
-          add_offense(outermost_send, location: :end)
+          add_offense(outermost_send.loc.end) do |corrector|
+            autocorrect(corrector, outermost_send)
+          end
         end
+
+        private
 
         # Autocorrection note:
         #
@@ -94,25 +103,13 @@ module RuboCop
         #   SQL
         #   third_array_value,
         # ]
-        def autocorrect(node)
-          lambda do |corrector|
-            fix_closing_parenthesis(node, corrector)
+        def autocorrect(corrector, node)
+          fix_closing_parenthesis(node, corrector)
 
-            if internal_trailing_comma?(node)
-              remove_internal_trailing_comma(node, corrector)
-            end
+          remove_internal_trailing_comma(node, corrector) if internal_trailing_comma?(node)
 
-            if external_trailing_comma?(node)
-              fix_external_trailing_comma(node, corrector)
-            end
-          end
+          fix_external_trailing_comma(node, corrector) if external_trailing_comma?(node)
         end
-
-        def self.autocorrect_incompatible_with
-          [Style::TrailingCommaInArguments]
-        end
-
-        private
 
         def outermost_send_on_same_line(heredoc)
           previous = heredoc
@@ -194,7 +191,7 @@ module RuboCop
         def safe_to_remove_line_containing_closing_paren?(node)
           last_line = processed_source[node.loc.end.line - 1]
           # Safe to remove if last line only contains `)`, `,`, and whitespace.
-          last_line.match(/^[ ]*\)[ ]{0,20},{0,1}[ ]*$/)
+          last_line.match?(/^ *\) {0,20},{0,1} *$/)
         end
 
         def incorrect_parenthesis_removal_end(node)

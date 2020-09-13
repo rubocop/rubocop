@@ -58,7 +58,7 @@ module RuboCop
       end
 
       def to_s
-        qualified? ? "#{department}/#{cop_name}" : cop_name
+        @to_s ||= qualified? ? "#{department}/#{cop_name}" : cop_name
       end
 
       def qualified?

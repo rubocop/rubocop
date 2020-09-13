@@ -3,20 +3,25 @@
 RSpec.describe RuboCop::Cop::Style::Strip do
   subject(:cop) { described_class.new }
 
-  it 'autocorrects str.lstrip.rstrip' do
-    new_source = autocorrect_source('str.lstrip.rstrip')
-    expect(new_source).to eq 'str.strip'
-  end
-
-  it 'autocorrects str.rstrip.lstrip' do
-    new_source = autocorrect_source('str.rstrip.lstrip')
-    expect(new_source).to eq 'str.strip'
-  end
-
-  it 'formats the error message correctly for str.lstrip.rstrip' do
+  it 'registers an offense for str.lstrip.rstrip' do
     expect_offense(<<~RUBY)
       str.lstrip.rstrip
           ^^^^^^^^^^^^^ Use `strip` instead of `lstrip.rstrip`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      str.strip
+    RUBY
+  end
+
+  it 'registers an offense for str.rstrip.lstrip' do
+    expect_offense(<<~RUBY)
+      str.rstrip.lstrip
+          ^^^^^^^^^^^^^ Use `strip` instead of `rstrip.lstrip`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      str.strip
     RUBY
   end
 end

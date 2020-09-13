@@ -22,8 +22,6 @@ RSpec.describe RuboCop::Cop::Style::AsciiComments do
   end
 
   context 'when certain non-ascii chars are allowed', :config do
-    subject(:cop) { described_class.new(config) }
-
     let(:cop_config) { { 'AllowedChars' => ['∂'] } }
 
     it 'accepts comment with allowed non-ascii chars' do

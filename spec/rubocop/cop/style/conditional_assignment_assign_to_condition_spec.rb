@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'autocorrects the inner offense first' do
       expect_offense(annotated_source)
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         if var.any?(:prob_a_check)
           @errors << 'Problem A'
         elsif var.any?(:prob_a_check)
@@ -80,11 +80,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'autocorrects the outer offense later' do
-      source =
-        annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
-      corrected = autocorrect_source_with_loop(source)
+      expect_offense(annotated_source)
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, loop: true)
         @errors << if var.any?(:prob_a_check)
           'Problem A'
         elsif var.any?(:prob_a_check)
@@ -136,10 +134,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     expect_no_offenses('bar = foo? ? "a" : "b"')
   end
 
-  it 'registers an offense for assignment in ternary operation' do
+  it 'registers an offense for assignment in ternary operation using strings' do
     expect_offense(<<~RUBY)
       foo? ? bar = "a" : bar = "b"
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+    RUBY
+    expect_correction(<<~RUBY)
+      bar = foo? ? "a" : "b"
     RUBY
   end
 
@@ -168,6 +169,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         default['key-with-dash'] << b
       end
     RUBY
+    expect_correction(<<~RUBY)
+      default['key-with-dash'] << if condition
+        a
+      else
+        b
+      end
+    RUBY
   end
 
   it "doesn't crash with empty braces" do
@@ -181,38 +189,88 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   shared_examples 'comparison methods' do |method|
-    it 'registers an offense for comparison methods in if else' do
-      expect_offense(<<~RUBY)
-        if foo
-        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          a #{method} b
-        else
-          a #{method} d
-        end
+    it 'registers an offense for comparison methods in ternary operations' do
+      source = "foo? ? bar #{method} 1 : bar #{method} 2"
+      expect_offense(<<~RUBY, source: source)
+        %{source}
+        ^{source} Use the return of the conditional for variable assignment and comparison.
+      RUBY
+      expect_correction(<<~RUBY)
+        bar #{method} (foo? ? 1 : 2)
       RUBY
     end
 
-    it 'registers an offense for comparison methods in unless else' do
-      expect_offense(<<~RUBY)
-        unless foo
-        ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          a #{method} b
-        else
-          a #{method} d
-        end
-      RUBY
-    end
+    %w[start_of_line keyword].each do |align_with|
+      context "with end alignment to #{align_with}" do
+        let(:end_alignment_align_with) { align_with }
+        let(:indent_end) { align_with == 'keyword' }
 
-    it 'registers an offense for comparison methods in case when' do
-      expect_offense(<<~RUBY)
-        case foo
-        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-        when bar
-          a #{method} b
-        else
-          a #{method} d
+        it 'corrects comparison methods in if elsif else' do
+          expect_offense(<<~RUBY)
+            if foo
+            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
+              a #{method} b
+            elsif bar
+              a #{method} c
+            else
+              a #{method} d
+            end
+          RUBY
+
+          indent = ' ' * "a #{method} ".length if indent_end
+          expect_correction(<<~RUBY)
+            a #{method} if foo
+              b
+            elsif bar
+              c
+            else
+              d
+            #{indent}end
+          RUBY
         end
-      RUBY
+
+        it 'corrects comparison methods in unless else' do
+          expect_offense(<<~RUBY)
+            unless foo
+            ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+              a #{method} b
+            else
+              a #{method} d
+            end
+          RUBY
+
+          indent = ' ' * "a #{method} ".length if indent_end
+          expect_correction(<<~RUBY)
+            a #{method} unless foo
+              b
+            else
+              d
+            #{indent}end
+          RUBY
+        end
+
+        it 'corrects comparison methods in case when' do
+          expect_offense(<<~RUBY)
+            case foo
+            ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+            when bar
+              a #{method} b
+            else
+              a #{method} d
+            end
+          RUBY
+
+          indent = ' ' * "a #{method} ".length if indent_end
+          expect_correction(<<~RUBY)
+            a #{method} case foo
+            when bar
+              b
+            else
+              d
+            #{indent}end
+          RUBY
+        end
+      end
     end
   end
 
@@ -221,6 +279,11 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('comparison methods', '=~')
   it_behaves_like('comparison methods', '!~')
   it_behaves_like('comparison methods', '<=>')
+  it_behaves_like('comparison methods', '===')
+  it_behaves_like('comparison methods', '<=')
+  it_behaves_like('comparison methods', '>=')
+  it_behaves_like('comparison methods', '<')
+  it_behaves_like('comparison methods', '>')
 
   context 'empty branch' do
     it 'allows an empty if statement' do
@@ -426,6 +489,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = #{'b' * 72}
       end
     RUBY
+    expect_correction(<<~RUBY)
+      bar = if foo
+        #{'a' * 72}
+      else
+        #{'b' * 72}
+      end
+    RUBY
   end
 
   context 'correction would exceed max line length' do
@@ -466,13 +536,18 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
   end
 
-  shared_examples 'all variable types' do |variable|
+  shared_examples 'all variable types' do |variable, add_parens: false|
     it 'registers an offense assigning any variable type in ternary' do
       source = "foo? ? #{variable} = 1 : #{variable} = 2"
-      highlight = '^' * source.length
-      expect_offense(<<~RUBY)
-        #{source}
-        #{highlight} Use the return of the conditional for variable assignment and comparison.
+      expect_offense(<<~RUBY, source: source)
+        %{source}
+        ^{source} Use the return of the conditional for variable assignment and comparison.
+      RUBY
+
+      rhs = 'foo? ? 1 : 2'
+      rhs = "(#{rhs})" if add_parens
+      expect_correction(<<~RUBY)
+        #{variable} = #{rhs}
       RUBY
     end
 
@@ -485,6 +560,14 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           #{variable} = 2
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{variable} = if foo
+          1
+        else
+          2
+        end
+      RUBY
     end
 
     it 'registers an offense assigning any variable type in case when' do
@@ -495,6 +578,15 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           #{variable} = 1
         else
           #{variable} = 2
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{variable} = case foo
+        when "a"
+          1
+        else
+          2
         end
       RUBY
     end
@@ -529,87 +621,95 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
 
   it_behaves_like('all variable types', 'bar')
   it_behaves_like('all variable types', 'BAR')
-  it_behaves_like('all variable types', 'FOO::BAR')
   it_behaves_like('all variable types', '@bar')
   it_behaves_like('all variable types', '@@bar')
   it_behaves_like('all variable types', '$BAR')
-  it_behaves_like('all variable types', 'foo.bar')
+  it_behaves_like('all variable types', 'foo.bar', add_parens: true)
+  it_behaves_like('all variable types', 'foo[1]')
 
-  shared_examples 'all assignment types' do |assignment|
-    let(:end_alignment_align_with) { 'keyword' }
+  shared_examples 'all assignment types' do |assignment, add_parens: false|
+    variable_types = { 'local variable' => 'bar',
+                       'constant' => 'CONST',
+                       'class variable' => '@@cvar',
+                       'instance variable' => '@ivar',
+                       'global variable' => '$gvar' }
 
-    { 'local variable' => 'bar',
-      'constant' => 'CONST',
-      'class variable' => '@@cvar',
-      'instance variable' => '@ivar',
-      'global variable' => '$gvar' }.each do |type, name|
+    variable_types.each do |type, name|
       context "for a #{type} lval" do
         it "registers an offense for assignment using #{assignment} " \
-           'in ternary' do
+          'in ternary' do
           source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
-          highlight = '^' * source.length
-          expect_offense(<<~RUBY)
-            #{source}
-            #{highlight} Use the return of the conditional for variable assignment and comparison.
+          expect_offense(<<~RUBY, source: source)
+            %{source}
+            ^{source} Use the return of the conditional for variable assignment and comparison.
           RUBY
-        end
 
-        it "allows assignment using #{assignment} to ternary" do
-          expect_no_offenses(<<~RUBY)
-            #{name} #{assignment} foo? ? 1 : 2
-          RUBY
-        end
-
-        it "registers an offense for assignment using #{assignment} in " \
-           'if else' do
-          expect_offense(<<~RUBY)
-            if foo
-            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-              #{name} #{assignment} 1
-            else
-              #{name} #{assignment} 2
-            end
-          RUBY
-        end
-
-        it "registers an offense for assignment using #{assignment} in "\
-        ' case when' do
-          expect_offense(<<~RUBY)
-            case foo
-            ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-            when "a"
-              #{name} #{assignment} 1
-            else
-              #{name} #{assignment} 2
-            end
-          RUBY
-        end
-
-        it "autocorrects for assignment using #{assignment} in if else" do
-          expect_offense(<<~RUBY)
-            if foo
-            ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-              #{name} #{assignment} 1
-            else
-              #{name} #{assignment} 2
-            end
-          RUBY
-          indent = ' ' * "#{name} #{assignment} ".length
+          rhs = 'foo? ? 1 : 2'
+          rhs = "(#{rhs})" if add_parens
           expect_correction(<<~RUBY)
-            #{name} #{assignment} if foo
-              1
-            else
-              2
-            #{indent}end
+            #{name} #{assignment} #{rhs}
           RUBY
+        end
+      end
+    end
+
+    %w[start_of_line keyword].each do |align_with|
+      context "with end alignment to #{align_with}" do
+        let(:end_alignment_align_with) { align_with }
+        let(:indent_end) { align_with == 'keyword' }
+
+        variable_types.each do |type, name|
+          context "for a #{type} lval" do
+            it "registers an offense for assignment using #{assignment} in " \
+              'if else' do
+              expect_offense(<<~RUBY)
+                if foo
+                ^^^^^^ Use the return of the conditional for variable assignment and comparison.
+                  #{name} #{assignment} 1
+                else
+                  #{name} #{assignment} 2
+                end
+              RUBY
+
+              indent = ' ' * "#{name} #{assignment} ".length if indent_end
+              expect_correction(<<~RUBY)
+                #{name} #{assignment} if foo
+                  1
+                else
+                  2
+                #{indent}end
+              RUBY
+            end
+
+            it "registers an offense for assignment using #{assignment} in "\
+            ' case when' do
+              expect_offense(<<~RUBY)
+                case foo
+                ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+                when "a"
+                  #{name} #{assignment} 1
+                else
+                  #{name} #{assignment} 2
+                end
+              RUBY
+
+              indent = ' ' * "#{name} #{assignment} ".length if indent_end
+              expect_correction(<<~RUBY)
+                #{name} #{assignment} case foo
+                when "a"
+                  1
+                else
+                  2
+                #{indent}end
+              RUBY
+            end
+          end
         end
       end
     end
   end
 
   it_behaves_like('all assignment types', '=')
-  it_behaves_like('all assignment types', '==')
-  it_behaves_like('all assignment types', '===')
   it_behaves_like('all assignment types', '+=')
   it_behaves_like('all assignment types', '-=')
   it_behaves_like('all assignment types', '*=')
@@ -619,15 +719,11 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('all assignment types', '^=')
   it_behaves_like('all assignment types', '&=')
   it_behaves_like('all assignment types', '|=')
-  it_behaves_like('all assignment types', '<=')
-  it_behaves_like('all assignment types', '>=')
   it_behaves_like('all assignment types', '<<=')
   it_behaves_like('all assignment types', '>>=')
   it_behaves_like('all assignment types', '||=')
   it_behaves_like('all assignment types', '&&=')
-  it_behaves_like('all assignment types', '+=')
-  it_behaves_like('all assignment types', '<<')
-  it_behaves_like('all assignment types', '-=')
+  it_behaves_like('all assignment types', '<<', add_parens: true)
 
   it 'registers an offense for assignment in if elsif else' do
     expect_offense(<<~RUBY)
@@ -638,6 +734,15 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 2
       else
         bar = 3
+      end
+    RUBY
+    expect_correction(<<~RUBY)
+      bar = if foo
+        1
+      elsif baz
+        2
+      else
+        3
       end
     RUBY
   end
@@ -653,6 +758,17 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 3
       else
         bar = 4
+      end
+    RUBY
+    expect_correction(<<~RUBY)
+      bar = if foo
+        1
+      elsif baz
+        2
+      elsif foobar
+        3
+      else
+        4
       end
     RUBY
   end
@@ -993,11 +1109,18 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
   end
 
-  it 'registers an offense for assignment in if then else' do
+  it 'registers an offense for assignment in if then elsif then else' do
     expect_offense(<<~RUBY)
       if foo then bar = 1
       ^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+      elsif cond then bar = 2
       else bar = 2
+      end
+    RUBY
+    expect_correction(<<~RUBY)
+      bar = if foo then 1
+      elsif cond then 2
+      else 2
       end
     RUBY
   end
@@ -1011,6 +1134,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 2
       end
     RUBY
+    expect_correction(<<~RUBY)
+      bar = unless foo
+        1
+      else
+        2
+      end
+    RUBY
   end
 
   it 'registers an offense for assignment in case when then else' do
@@ -1019,6 +1149,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
       when bar then baz = 1
       else baz = 2
+      end
+    RUBY
+    expect_correction(<<~RUBY)
+      baz = case foo
+      when bar then 1
+      else 2
       end
     RUBY
   end
@@ -1033,6 +1169,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 2
       else
         bar = 3
+      end
+    RUBY
+    expect_correction(<<~RUBY)
+      bar = case foo
+      when foobar
+        1
+      when baz
+        2
+      else
+        3
       end
     RUBY
   end
@@ -1059,126 +1205,14 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
   end
 
-  context 'auto-correct' do
-    shared_examples 'comparison correction' do |method|
-      let(:end_alignment_align_with) { 'keyword' }
-
-      it 'corrects comparison methods in if elsif else' do
-        expect_offense(<<~RUBY)
-          if foo
-          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-            a #{method} b
-          elsif bar
-            a #{method} c
-          else
-            a #{method} d
-          end
-        RUBY
-
-        indent = ' ' * "a #{method} ".length
-        expect_correction(<<~RUBY)
-          a #{method} if foo
-            b
-          elsif bar
-            c
-          else
-            d
-          #{indent}end
-        RUBY
-      end
-
-      it 'corrects comparison methods in unless else' do
-        expect_offense(<<~RUBY)
-          unless foo
-          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-            a #{method} b
-          else
-            a #{method} d
-          end
-        RUBY
-
-        indent = ' ' * "a #{method} ".length
-        expect_correction(<<~RUBY)
-          a #{method} unless foo
-            b
-          else
-            d
-          #{indent}end
-        RUBY
-      end
-
-      it 'corrects comparison methods in case when' do
-        expect_offense(<<~RUBY)
-          case foo
-          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          when bar
-            a #{method} b
-          else
-            a #{method} d
-          end
-        RUBY
-
-        indent = ' ' * "a #{method} ".length
-        expect_correction(<<~RUBY)
-          a #{method} case foo
-          when bar
-            b
-          else
-            d
-          #{indent}end
-        RUBY
-      end
-    end
-
-    it_behaves_like('comparison correction', '==')
-    it_behaves_like('comparison correction', '!=')
-    it_behaves_like('comparison correction', '=~')
-    it_behaves_like('comparison correction', '!~')
-    it_behaves_like('comparison correction', '<=>')
-
-    it 'corrects assignment in ternary operations' do
-      new_source = autocorrect_source('foo? ? bar = 1 : bar = 2')
-
-      expect(new_source).to eq('bar = foo? ? 1 : 2')
-    end
-
-    it 'corrects assignment in ternary operations using strings' do
-      new_source = autocorrect_source('foo? ? bar = "1" : bar = "2"')
-
-      expect(new_source).to eq('bar = foo? ? "1" : "2"')
-    end
-
+  describe 'auto-correct' do
     it 'corrects =~ in ternary operations' do
-      new_source = autocorrect_source('foo? ? bar =~ /a/ : bar =~ /b/')
-      expect(new_source).to eq('bar =~ (foo? ? /a/ : /b/)')
-    end
-
-    it 'corrects aref assignment in ternary operations' do
-      new_source = autocorrect_source('foo? ? bar[1] = 1 : bar[1] = 2')
-      expect(new_source).to eq('bar[1] = foo? ? 1 : 2')
-    end
-
-    it 'corrects << in ternary operations' do
-      new_source = autocorrect_source('foo? ? bar << 1 : bar << 2')
-      expect(new_source).to eq('bar << (foo? ? 1 : 2)')
-    end
-
-    it 'corrects assignment in if else' do
-      expect_offense(<<~RUBY)
-        if foo
-        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          bar = 1
-        else
-          bar = 2
-        end
+      expect_offense(<<~'RUBY')
+        foo? ? bar =~ /a/ : bar =~ /b/
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
       RUBY
-
-      expect_correction(<<~RUBY)
-        bar = if foo
-          1
-        else
-          2
-        end
+      expect_correction(<<~'RUBY')
+        bar =~ (foo? ? /a/ : /b/)
       RUBY
     end
 
@@ -1197,193 +1231,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           1
         else
           [2, 5, 6]
-        end
-      RUBY
-    end
-
-    it 'corrects assignment in if elsif else' do
-      expect_offense(<<~RUBY)
-        if foo
-        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          bar = 1
-        elsif baz
-          bar = 2
-        else
-          bar = 3
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        bar = if foo
-          1
-        elsif baz
-          2
-        else
-          3
-        end
-      RUBY
-    end
-
-    shared_examples '2 or 3 character assignment types' do |asgn|
-      it "corrects assignment using #{asgn} in if elsif else" do
-        expect_offense(<<~RUBY)
-          if foo
-          ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-            bar #{asgn} 1
-          elsif baz
-            bar #{asgn} 2
-          else
-            bar #{asgn} 3
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          bar #{asgn} if foo
-            1
-          elsif baz
-            2
-          else
-            3
-          end
-        RUBY
-      end
-
-      it "corrects assignment using #{asgn} in case when else" do
-        expect_offense(<<~RUBY)
-          case foo
-          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          when bar
-            baz #{asgn} 1
-          else
-            baz #{asgn} 2
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          baz #{asgn} case foo
-          when bar
-            1
-          else
-            2
-          end
-        RUBY
-      end
-
-      it "corrects assignment using #{asgn} in unless else" do
-        expect_offense(<<~RUBY)
-          unless foo
-          ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-            bar #{asgn} 1
-          else
-            bar #{asgn} 2
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          bar #{asgn} unless foo
-            1
-          else
-            2
-          end
-        RUBY
-      end
-    end
-
-    it_behaves_like('2 or 3 character assignment types', '+=')
-    it_behaves_like('2 or 3 character assignment types', '-=')
-    it_behaves_like('2 or 3 character assignment types', '<<')
-
-    it_behaves_like('2 or 3 character assignment types', '&&=')
-    it_behaves_like('2 or 3 character assignment types', '||=')
-
-    it 'corrects assignment in if elsif else with multiple elsifs' do
-      expect_offense(<<~RUBY)
-        if foo
-        ^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          bar = 1
-        elsif baz
-          bar = 2
-        elsif foobar
-          bar = 3
-        else
-          bar = 4
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        bar = if foo
-          1
-        elsif baz
-          2
-        elsif foobar
-          3
-        else
-          4
-        end
-      RUBY
-    end
-
-    it 'corrects assignment in unless else' do
-      expect_offense(<<~RUBY)
-        unless foo
-        ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          bar = 1
-        else
-          bar = 2
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        bar = unless foo
-          1
-        else
-          2
-        end
-      RUBY
-    end
-
-    it 'corrects assignment in case when else' do
-      expect_offense(<<~RUBY)
-        case foo
-        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-        when bar
-          baz = 1
-        else
-          baz = 2
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        baz = case foo
-        when bar
-          1
-        else
-          2
-        end
-      RUBY
-    end
-
-    it 'corrects assignment in case when else with multiple whens' do
-      expect_offense(<<~RUBY)
-        case foo
-        ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-        when bar
-          baz = 1
-        when foobar
-          baz = 2
-        else
-          baz = 3
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        baz = case foo
-        when bar
-          1
-        when foobar
-          2
-        else
-          3
         end
       RUBY
     end
@@ -1444,42 +1291,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             foobar(var, all)
           else
             baz(var, all)
-          end
-        RUBY
-      end
-    end
-
-    context 'then' do
-      it 'corrects if then elsif then else' do
-        expect_offense(<<~RUBY)
-          if cond then bar = 1
-          ^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          elsif cond then bar = 2
-          else bar = 3
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          bar = if cond then 1
-          elsif cond then 2
-          else 3
-          end
-        RUBY
-      end
-
-      it 'corrects case when then else' do
-        expect_offense(<<~RUBY)
-          case foo
-          ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
-          when baz then bar = 1
-          else bar = 2
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          bar = case foo
-          when baz then 1
-          else 2
           end
         RUBY
       end
@@ -1562,6 +1373,44 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             end
           RUBY
         end
+      end
+    end
+
+    context 'constant assignment' do
+      it 'corrects if..else with namespaced constant' do
+        expect_offense(<<~RUBY)
+          if something
+          ^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+            FOO::BAR = 1
+          else
+            FOO::BAR = 2
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          FOO::BAR = if something
+            1
+          else
+            2
+          end
+        RUBY
+      end
+
+      it 'corrects if..else with top-level constant' do
+        expect_offense(<<~RUBY)
+          if something
+          ^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+            ::BAR = 1
+          else
+            ::BAR = 2
+          end
+        RUBY
+        expect_correction(<<~RUBY)
+          ::BAR = if something
+            1
+          else
+            2
+          end
+        RUBY
       end
     end
 
@@ -1656,6 +1505,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          bar = if foo
+            method_call
+            1
+          else
+            method_call
+            2
+                end
+        RUBY
       end
 
       it 'registers an offense in if elsif else with more than ' \
@@ -1673,6 +1532,19 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 3
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          bar = if foo
+            method_call
+            1
+          elsif foobar
+            method_call
+            2
+          else
+            method_call
+            3
+                end
+        RUBY
       end
 
       it 'register an offense for multiple assignment in if else' do
@@ -1685,6 +1557,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             foo = 2
             bar = 2
           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = if baz
+            foo = 1
+            1
+          else
+            foo = 2
+            2
+                end
         RUBY
       end
 
@@ -1701,6 +1583,19 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             foo = 3
             bar = 3
           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = if baz
+            foo = 1
+            1
+          elsif foobar
+            foo = 2
+            2
+          else
+            foo = 3
+            3
+                end
         RUBY
       end
 
@@ -1721,6 +1616,22 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 4
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          bar = if baz
+            foo = 1
+            1
+          elsif foobar
+            foo = 2
+            2
+          elsif barfoo
+            foo = 3
+            3
+          else
+            foo = 4
+            4
+                end
+        RUBY
       end
 
       it_behaves_like 'allows out of order multiple assignment in if elsif else'
@@ -1736,6 +1647,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 2
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          bar = unless baz
+            foo = 1
+            1
+          else
+            foo = 2
+            2
+                end
+        RUBY
       end
 
       it 'registers offense for multiple assignments in case when with only ' \
@@ -1750,6 +1671,17 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             foo = 3
             bar = 3
           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = case foo
+          when foobar
+            foo = 1
+            1
+          else
+            foo = 3
+            3
+                end
         RUBY
       end
 
@@ -1768,6 +1700,20 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             foo = 3
             bar = 3
           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = case foo
+          when foobar
+            foo = 1
+            1
+          when foobaz
+            foo = 2
+            2
+          else
+            foo = 3
+            3
+                end
         RUBY
       end
 
@@ -1788,6 +1734,20 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             bar = 4
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          bar = if foo
+            1
+          elsif foobar
+            method_call
+            2
+          elsif baz
+            3
+          else
+            method_call
+            4
+                end
+        RUBY
       end
 
       it 'registers an offense in unless else with more than ' \
@@ -1801,6 +1761,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             method_call
             bar = 2
           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = unless foo
+            method_call
+            1
+          else
+            method_call
+            2
+                end
         RUBY
       end
 
@@ -1816,6 +1786,17 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             method_call
             bar = 2
           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = case foo
+          when foobar
+            method_call
+            1
+          else
+            method_call
+            2
+                end
         RUBY
       end
 
@@ -1834,6 +1815,19 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
               bar = 3
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            bar = if foo
+              baz = 1
+              1
+            elsif foobar
+              method_call
+              2
+            else
+              other_method
+              3
+                  end
+          RUBY
         end
 
         it 'registers an offense when multiple assignment is in elsif' do
@@ -1850,6 +1844,19 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
               bar = 3
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            bar = if foo
+              method_call
+              1
+            elsif foobar
+              baz = 2
+              2
+            else
+              other_method
+              3
+                  end
+          RUBY
         end
 
         it 'registers an offense when multiple assignment is in else' do
@@ -1865,6 +1872,19 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
               baz = 3
               bar = 3
             end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            bar = if foo
+              method_call
+              1
+            elsif foobar
+              other_method
+              2
+            else
+              baz = 3
+              3
+                  end
           RUBY
         end
       end
@@ -1894,6 +1914,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           bar << 3 if foobar
           bar << 4
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar << if foo
+          bar << 1
+          2
+        else
+          bar << 3 if foobar
+          4
+               end
       RUBY
     end
 
@@ -2081,7 +2111,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
           end
         RUBY
 
-        expect_correction(<<~RUBY)
+        expect_correction(<<~RUBY, loop: false)
           unless foo
             baz = if foobar
               1
@@ -2214,7 +2244,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'does not consider branches of nested ifs' do
       expect_offense(annotated_source)
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         if outer
           bar = 1
         else
@@ -2228,11 +2258,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     end
 
     it 'eventually autocorrects all branches' do
-      source =
-        annotated_source.lines.reject { |line| line =~ /^ *\^/ }.join
-      corrected = autocorrect_source_with_loop(source)
+      expect_offense(annotated_source)
 
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, loop: true)
         bar = if outer
           1
         else

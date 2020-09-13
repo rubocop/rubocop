@@ -168,27 +168,47 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
     describe 'autocorrect' do
       context 'with parentheses' do
         it 'leaves parentheses but removes trailing underscores' do
-          new_source = autocorrect_source('(a, b, _) = foo()')
+          expect_offense(<<~RUBY)
+            (a, b, _) = foo()
+                  ^^ Do not use trailing `_`s in parallel assignment. [...]
+          RUBY
 
-          expect(new_source).to eq('(a, b,) = foo()')
+          expect_correction(<<~RUBY)
+            (a, b,) = foo()
+          RUBY
         end
 
         it 'removes assignment part when every assignment is to `_`' do
-          new_source = autocorrect_source('(_, _, _,) = foo()')
+          expect_offense(<<~RUBY)
+            (_, _, _,) = foo()
+            ^^^^^^^^^^^^^ Do not use trailing `_`s in parallel assignment. [...]
+          RUBY
 
-          expect(new_source).to eq('foo()')
+          expect_correction(<<~RUBY)
+            foo()
+          RUBY
         end
 
         it 'removes assignment part when it is the only variable' do
-          new_source = autocorrect_source('(_,) = foo()')
+          expect_offense(<<~RUBY)
+            (_,) = foo()
+            ^^^^^^^ Do not use trailing `_`s in parallel assignment. [...]
+          RUBY
 
-          expect(new_source).to eq('foo()')
+          expect_correction(<<~RUBY)
+            foo()
+          RUBY
         end
 
         it 'leaves parentheses but removes trailing underscores and commas' do
-          new_source = autocorrect_source('(a, _, _,) = foo()')
+          expect_offense(<<~RUBY)
+            (a, _, _,) = foo()
+               ^^^^^^ Do not use trailing `_`s in parallel assignment. [...]
+          RUBY
 
-          expect(new_source).to eq('(a,) = foo()')
+          expect_correction(<<~RUBY)
+            (a,) = foo()
+          RUBY
         end
       end
     end

@@ -48,8 +48,9 @@ module RuboCop
       #     foo(i)
       #     bar(i)
       #   }
-      class MultilineBlockLayout < Cop
+      class MultilineBlockLayout < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Block body expression is on the same line as ' \
               'the block start.'
@@ -70,23 +71,6 @@ module RuboCop
           add_offense_for_expression(node, node.body, MSG)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            unless args_on_beginning_line?(node)
-              autocorrect_arguments(corrector, node)
-              expr_before_body = node.arguments.source_range.end
-            end
-
-            return unless node.body
-
-            expr_before_body ||= node.loc.begin
-
-            if expr_before_body.line == node.body.first_line
-              autocorrect_body(corrector, node, node.body)
-            end
-          end
-        end
-
         private
 
         def args_on_beginning_line?(node)
@@ -95,18 +79,46 @@ module RuboCop
         end
 
         def line_break_necessary_in_args?(node)
-          needed_length = node.source_range.column +
-                          node.source.lines.first.length +
-                          block_arg_string(node, node.arguments).length +
-                          PIPE_SIZE
-          needed_length > max_line_length
+          needed_length_for_args(node) > max_line_length
+        end
+
+        def needed_length_for_args(node)
+          node.source_range.column +
+            characters_needed_for_space_and_pipes(node) +
+            node.source.lines.first.chomp.length +
+            block_arg_string(node, node.arguments).length
+        end
+
+        def characters_needed_for_space_and_pipes(node)
+          if node.source.lines.first.end_with?("|\n")
+            PIPE_SIZE
+          else
+            1 + PIPE_SIZE * 2
+          end
         end
 
         def add_offense_for_expression(node, expr, msg)
           expression = expr.source_range
           range = range_between(expression.begin_pos, expression.end_pos)
 
-          add_offense(node, location: range, message: msg)
+          add_offense(range, message: msg) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          unless args_on_beginning_line?(node)
+            autocorrect_arguments(corrector, node)
+            expr_before_body = node.arguments.source_range.end
+          end
+
+          return unless node.body
+
+          expr_before_body ||= node.loc.begin
+
+          return unless expr_before_body.line == node.body.first_line
+
+          autocorrect_body(corrector, node, node.body)
         end
 
         def autocorrect_arguments(corrector, node)
@@ -121,7 +133,7 @@ module RuboCop
         end
 
         def autocorrect_body(corrector, node, block_body)
-          first_node = if block_body.begin_type?
+          first_node = if block_body.begin_type? && !block_body.source.start_with?('(')
                          block_body.children.first
                        else
                          block_body

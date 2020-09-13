@@ -13,6 +13,7 @@ AllCops:
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
     - '.git/**/*'
+    - 'bin/*'
   TargetRubyVersion: 2.4
 
 Naming/PredicateName:
@@ -22,6 +23,11 @@ Naming/PredicateName:
     - define_singleton_method
     - def_node_matcher
     - def_node_search
+
+Style/AccessorGrouping:
+  Exclude:
+    - lib/rubocop/formatter/base_formatter.rb
+    - lib/rubocop/cop/offense.rb
 
 Style/FormatStringToken:
   # Because we parse a lot of source codes from strings. Percent arrays
@@ -53,9 +59,8 @@ Layout/ClassStructure:
       - protected_methods
       - private_methods
 
-# Trailing white space is meaningful in code examples
 Layout/TrailingWhitespace:
-  AllowInHeredoc: true
+  AllowInHeredoc: false
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -68,6 +73,11 @@ Layout/HashAlignment:
   EnforcedColonStyle:
     - key
     - table
+
+Layout/LineLength:
+  Max: 100
+  IgnoredPatterns:
+    - !ruby/regexp /\A +(it|describe|context|shared_examples|include_examples|it_behaves_like) ["']/
 
 Lint/InterpolationCheck:
   Exclude:

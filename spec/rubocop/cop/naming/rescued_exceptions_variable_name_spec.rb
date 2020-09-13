@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'with default config' do
     context 'with explicit rescue' do
       context 'with `Exception` variable' do

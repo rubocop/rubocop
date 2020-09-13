@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'registers an offense and corrects JSON.load' do
     expect_offense(<<~RUBY)
       JSON.load(arg)

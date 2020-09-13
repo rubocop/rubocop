@@ -133,7 +133,7 @@ module RuboCop
     # @see https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html
     # @see https://git.io/vMCXh Emacs handling in Ruby's parse.y
     class EmacsComment < EditorComment
-      FORMAT    = /\-\*\-(.+)\-\*\-/.freeze
+      FORMAT    = /-\*-(.+)-\*-/.freeze
       SEPARATOR = ';'
       OPERATOR  = ':'
 

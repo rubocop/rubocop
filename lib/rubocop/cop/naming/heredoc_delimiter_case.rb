@@ -27,7 +27,7 @@ module RuboCop
       #   <<-sql
       #     SELECT * FROM foo
       #   sql
-      class HeredocDelimiterCase < Cop
+      class HeredocDelimiterCase < Base
         include Heredoc
         include ConfigurableEnforcedStyle
 
@@ -36,7 +36,7 @@ module RuboCop
         def on_heredoc(node)
           return if correct_case_delimiters?(node)
 
-          add_offense(node, location: :heredoc_end)
+          add_offense(node.loc.heredoc_end)
         end
 
         private

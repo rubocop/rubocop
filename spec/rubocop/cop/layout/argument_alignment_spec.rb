@@ -359,15 +359,6 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
       }
     end
 
-    let(:correct_source) do
-      <<~RUBY
-        create :transaction, :closed,
-          account:     account,
-          open_price:  1.29,
-          close_price: 1.30
-      RUBY
-    end
-
     it 'autocorrects by outdenting when indented too far' do
       expect_offense(<<~RUBY)
         create :transaction, :closed,

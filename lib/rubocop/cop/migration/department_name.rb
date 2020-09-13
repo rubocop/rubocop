@@ -5,8 +5,9 @@ module RuboCop
     module Migration
       # Check that cop names in rubocop:disable comments are given with
       # department name.
-      class DepartmentName < Cop
+      class DepartmentName < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Department name is missing.'
 
@@ -18,36 +19,24 @@ module RuboCop
         # `DepartmentName/CopName` or` all`.
         DISABLING_COPS_CONTENT_TOKEN = %r{[A-z]+/[A-z]+|all}.freeze
 
-        def investigate(processed_source)
-          processed_source.each_comment do |comment|
+        def on_new_investigation
+          processed_source.comments.each do |comment|
             next if comment.text !~ DISABLE_COMMENT_FORMAT
 
             offset = Regexp.last_match(1).length
 
-            Regexp.last_match(4).scan(/[^,]+|[\W]+/) do |name|
+            Regexp.last_match(4).scan(/[^,]+|\W+/) do |name|
               trimmed_name = name.strip
-
-              break if contain_plain_comment?(trimmed_name)
 
               unless valid_content_token?(trimmed_name)
                 check_cop_name(trimmed_name, comment, offset)
               end
 
+              break if contain_unexpected_character_for_department_name?(name)
+
               offset += name.length
             end
           end
-        end
-
-        def autocorrect(range)
-          shall_warn = false
-          cop_name = range.source
-          qualified_cop_name = Cop.registry.qualified_cop_name(cop_name,
-                                                               nil, shall_warn)
-          unless qualified_cop_name.include?('/')
-            qualified_cop_name = qualified_legacy_cop_name(cop_name)
-          end
-
-          ->(corrector) { corrector.replace(range, qualified_cop_name) }
         end
 
         private
@@ -60,16 +49,25 @@ module RuboCop
           start = comment.location.expression.begin_pos + offset
           range = range_between(start, start + name.length)
 
-          add_offense(range, location: range)
+          add_offense(range) do |corrector|
+            cop_name = range.source
+            qualified_cop_name = Registry.global.qualified_cop_name(cop_name, nil, warn: false)
+
+            unless qualified_cop_name.include?('/')
+              qualified_cop_name = qualified_legacy_cop_name(cop_name)
+            end
+
+            corrector.replace(range, qualified_cop_name)
+          end
         end
 
         def valid_content_token?(content_token)
-          !/\W+/.match(content_token).nil? ||
-            !DISABLING_COPS_CONTENT_TOKEN.match(content_token).nil?
+          /\W+/.match?(content_token) ||
+            DISABLING_COPS_CONTENT_TOKEN.match?(content_token)
         end
 
-        def contain_plain_comment?(name)
-          name == '#'
+        def contain_unexpected_character_for_department_name?(name)
+          name.match?(%r{[^A-z/, ]})
         end
 
         def qualified_legacy_cop_name(cop_name)

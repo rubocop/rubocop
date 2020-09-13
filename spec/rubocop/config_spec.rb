@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes a valid EnforcedStyle' do
+    context 'when the configuration includes a valid enforced style' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes an invalid EnforcedStyle' do
+    context 'when the configuration includes an invalid enforced style' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple valid EnforcedStyle' do
+    context 'when the configuration includes multiple valid enforced styles' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/HashAlignment:
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple valid EnforcedStyle '\
+    context 'when the configuration includes multiple valid enforced styles '\
             'and one invalid style' do
       before do
         create_file(configuration_path, <<~YAML)
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple invalid EnforcedStyle' do
+    context 'when the configuration includes multiple invalid enforced styles' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/HashAlignment:
@@ -735,6 +735,31 @@ RSpec.describe RuboCop::Config do
     end
   end
 
+  describe '#for_badge' do
+    let(:hash) do
+      {
+        'Style' => { 'Foo' => 42, 'Bar' => 666 },
+        'Layout/TrailingWhitespace' => { 'Bar' => 43 },
+        'Style/Alias' => { 'Bar' => 44 }
+      }
+    end
+
+    it 'takes into account the department' do
+      expect(configuration.for_badge(RuboCop::Cop::Style::Alias.badge)).to eq(
+        { 'Enabled' => true,
+          'Foo' => 42,
+          'Bar' => 44 }
+      )
+    end
+
+    it 'works if department has no config' do
+      expect(configuration.for_badge(RuboCop::Cop::Layout::TrailingWhitespace.badge)).to eq(
+        { 'Enabled' => true,
+          'Bar' => 43 }
+      )
+    end
+  end
+
   context 'whether the cop is enabled' do
     def cop_enabled(cop_class)
       configuration.for_cop(cop_class).fetch('Enabled')
@@ -817,6 +842,27 @@ RSpec.describe RuboCop::Config do
           expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
         end
       end
+    end
+  end
+
+  describe '#for_department', :restore_registry do
+    let(:hash) do
+      {
+        'Foo' => { 'Bar' => 42, 'Baz' => true },
+        'Foo/Foo' => { 'Bar' => 42, 'Qux' => true }
+      }
+    end
+
+    before do
+      stub_cop_class('RuboCop::Foo::Foo')
+    end
+
+    it "always returns the department's config" do
+      expect(configuration.for_department('Foo')).to eq hash['Foo']
+    end
+
+    it 'accepts a Symbol' do
+      expect(configuration.for_department(:Foo)).to eq hash['Foo']
     end
   end
 end

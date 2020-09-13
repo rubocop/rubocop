@@ -33,9 +33,10 @@ module RuboCop
       #
       #   private def foo
       #           end
-      class DefEndAlignment < Cop
+      class DefEndAlignment < Base
         include EndKeywordAlignment
         include RangeHelp
+        extend AutoCorrector
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'
 
@@ -45,7 +46,7 @@ module RuboCop
         alias on_defs on_def
 
         def on_send(node)
-          return unless node.def_modifier?
+          return if !node.def_modifier? || node.method?(:using)
 
           method_def = node.each_descendant(:def, :defs).first
           expr = node.source_range
@@ -61,11 +62,13 @@ module RuboCop
           ignore_node(method_def) # Don't check the same `end` again.
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           if style == :start_of_line && node.parent && node.parent.send_type?
-            AlignmentCorrector.align_end(processed_source, node, node.parent)
+            AlignmentCorrector.align_end(corrector, processed_source, node, node.parent)
           else
-            AlignmentCorrector.align_end(processed_source, node, node)
+            AlignmentCorrector.align_end(corrector, processed_source, node, node)
           end
         end
       end

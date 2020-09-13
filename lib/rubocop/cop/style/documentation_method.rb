@@ -91,7 +91,7 @@ module RuboCop
       #     end
       #   end
       #
-      class DocumentationMethod < Cop
+      class DocumentationMethod < Base
         include DocumentationComment
         include DefNode
 

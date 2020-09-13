@@ -20,8 +20,9 @@ module RuboCop
       #   # good
       #
       #   %i(foo bar)
-      class PercentSymbolArray < Cop
+      class PercentSymbolArray < Base
         include PercentLiteral
+        extend AutoCorrector
 
         MSG = "Within `%i`/`%I`, ':' and ',' are unnecessary and may be " \
           'unwanted in the resulting symbols.'
@@ -33,22 +34,22 @@ module RuboCop
         def on_percent_literal(node)
           return unless contains_colons_or_commas?(node)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            node.children.each do |child|
-              range = child.loc.expression
-
-              corrector.remove_trailing(range, 1) if range.source.end_with?(',')
-              corrector.remove_leading(range, 1) if
-                range.source.start_with?(':')
-            end
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          node.children.each do |child|
+            range = child.loc.expression
+
+            corrector.remove_trailing(range, 1) if range.source.end_with?(',')
+            corrector.remove_leading(range, 1) if
+              range.source.start_with?(':')
+          end
+        end
 
         def contains_colons_or_commas?(node)
           node.children.any? do |child|
@@ -61,7 +62,7 @@ module RuboCop
         end
 
         def non_alphanumeric_literal?(literal)
-          literal !~ /[[:alnum:]]/
+          !/[[:alnum:]]/.match?(literal)
         end
       end
     end

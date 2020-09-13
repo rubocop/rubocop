@@ -24,7 +24,7 @@ module RuboCop
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
-        qualified_cop_name = Cop::Cop.qualified_cop_name(cop, loaded_path)
+        qualified_cop_name = Cop::Registry.qualified_cop_name(cop, loaded_path)
         cop_options = self[qualified_cop_name] || {}
         cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
         h[cop] = cop_options
@@ -47,7 +47,7 @@ module RuboCop
     end
 
     def_delegators :@hash, :[], :[]=, :delete, :each, :key?, :keys, :each_key,
-                   :map, :merge, :to_h, :to_hash, :transform_values
+                   :fetch, :map, :merge, :to_h, :to_hash, :transform_values
     def_delegators :@validator, :validate, :target_ruby_version
 
     def to_s
@@ -104,12 +104,29 @@ module RuboCop
       end
     end
 
+    # @return [Config] for the given cop / cop name.
+    # Note: the 'Enabled' attribute is calculated according to the department's
+    # and 'AllCops' configuration; other attributes are not inherited.
     def for_cop(cop)
       @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
     end
 
+    # @return [Config] for the given cop merged with that of its department (if any)
+    # Note: the 'Enabled' attribute is same as that returned by `for_cop`
+    def for_badge(badge)
+      cop_config = for_cop(badge.to_s)
+      fetch(badge.department.to_s) { return cop_config }
+        .merge(cop_config)
+    end
+
+    # @return [Config] for the given department name.
+    # Note: the 'Enabled' attribute will be present only if specified
+    # at the department's level
     def for_department(department_name)
-      @for_cop[department_name]
+      @for_department ||= Hash.new do |h, dept|
+        h[dept] = self[dept] || {}
+      end
+      @for_department[department_name.to_s]
     end
 
     def for_all_cops
@@ -152,7 +169,7 @@ module RuboCop
       return true if File.extname(file) == '.gemspec'
 
       file_to_include?(file) do |pattern, relative_path, absolute_path|
-        pattern.to_s =~ /[A-Z]/ &&
+        /[A-Z]/.match?(pattern.to_s) &&
           (match_path?(pattern, relative_path) ||
            match_path?(pattern, absolute_path))
       end

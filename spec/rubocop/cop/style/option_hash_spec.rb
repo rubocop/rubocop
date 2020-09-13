@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'SuspiciousParamNames' => suspicious_names } }
   let(:suspicious_names) { ['options'] }
 

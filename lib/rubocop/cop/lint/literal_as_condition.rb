@@ -10,27 +10,28 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   if 20
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # bad
-      #
       #   if some_var && true
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   if some_var && some_condition
       #     do_something
       #   end
-      class LiteralAsCondition < Cop
+      #
+      #   # good
+      #   # When using a boolean value for an infinite loop.
+      #   while true
+      #     break if condition
+      #   end
+      class LiteralAsCondition < Base
+        include RangeHelp
+
         MSG = 'Literal `%<literal>s` appeared as a condition.'
 
         def on_if(node)
@@ -38,20 +39,18 @@ module RuboCop
         end
 
         def on_while(node)
-          check_for_literal(node)
-        end
+          return if condition(node).true_type?
 
-        def on_while_post(node)
           check_for_literal(node)
         end
+        alias on_while_post on_while
 
         def on_until(node)
-          check_for_literal(node)
-        end
+          return if condition(node).false_type?
 
-        def on_until_post(node)
           check_for_literal(node)
         end
+        alias on_until_post on_until
 
         def on_case(case_node)
           if case_node.condition
@@ -60,7 +59,10 @@ module RuboCop
             case_node.each_when do |when_node|
               next unless when_node.conditions.all?(&:literal?)
 
-              add_offense(when_node)
+              range = when_conditions_range(when_node)
+              message = message(range)
+
+              add_offense(range, message: message)
             end
           end
         end
@@ -131,6 +133,13 @@ module RuboCop
           else
             node.condition
           end
+        end
+
+        def when_conditions_range(when_node)
+          range_between(
+            when_node.conditions.first.source_range.begin_pos,
+            when_node.conditions.last.source_range.end_pos
+          )
         end
       end
     end

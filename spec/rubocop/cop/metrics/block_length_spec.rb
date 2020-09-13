@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Max' => 2, 'CountComments' => false } }
 
   shared_examples 'ignoring an offense on an excluded method' do |excluded|
@@ -42,15 +40,15 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(<<~RUBY)
+    offenses = expect_offense(<<~RUBY)
       something do
+      ^^^^^^^^^^^^ Block has too many lines. [3/2]
         a = 1
         a = 2
         a = 3
       end
     RUBY
-    offense = cop.offenses.first
-    expect(offense.location.first_line).to eq(1)
+    offense = offenses.first
     expect(offense.location.last_line).to eq(5)
   end
 
@@ -171,6 +169,22 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
           a = 1
           #a = 2
           a = 3
+        end
+      RUBY
+    end
+  end
+
+  context 'when `CountAsOne` is not empty' do
+    before { cop_config['CountAsOne'] = ['array'] }
+
+    it 'folds array into one line' do
+      expect_no_offenses(<<~RUBY)
+        something do
+          a = 1
+          a = [
+            2,
+            3
+          ]
         end
       RUBY
     end

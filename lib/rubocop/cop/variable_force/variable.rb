@@ -11,6 +11,7 @@ module RuboCop
 
         attr_reader :name, :declaration_node, :scope,
                     :assignments, :references, :captured_by_block
+
         alias captured_by_block? captured_by_block
 
         def initialize(name, declaration_node, scope)
@@ -37,18 +38,16 @@ module RuboCop
           !@references.empty?
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def reference!(node)
           reference = Reference.new(node, @scope)
           @references << reference
-          consumed_branches = Set.new
+          consumed_branches = nil
 
           @assignments.reverse_each do |assignment|
-            next if consumed_branches.include?(assignment.branch)
+            next if consumed_branches&.include?(assignment.branch)
 
-            unless assignment.run_exclusively_with?(reference)
-              assignment.reference!(node)
-            end
+            assignment.reference!(node) unless assignment.run_exclusively_with?(reference)
 
             # Modifier if/unless conditions are special. Assignments made in
             # them do not put the assigned variable in scope to the left of the
@@ -60,11 +59,11 @@ module RuboCop
             break if !assignment.branch || assignment.branch == reference.branch
 
             unless assignment.branch.may_run_incompletely?
-              consumed_branches << assignment.branch
+              (consumed_branches ||= Set.new) << assignment.branch
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def in_modifier_if?(assignment)
           parent = assignment.node.parent

@@ -24,8 +24,9 @@ module RuboCop
       #   # bad
       #   def no_op; end
       #
-      class SingleLineMethods < Cop
+      class SingleLineMethods < Base
         include Alignment
+        extend AutoCorrector
 
         MSG = 'Avoid single-line method definitions.'
 
@@ -33,29 +34,29 @@ module RuboCop
           return unless node.single_line?
           return if allow_empty? && !node.body
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          lambda do |corrector|
-            each_part(node.body) do |part|
-              LineBreakCorrector.break_line_before(
-                range: part, node: node, corrector: corrector,
-                configured_width: configured_indentation_width
-              )
-            end
-
-            LineBreakCorrector.break_line_before(
-              range: node.loc.end, node: node, corrector: corrector,
-              indent_steps: 0, configured_width: configured_indentation_width
-            )
-
-            move_comment(node, corrector)
-          end
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          each_part(node.body) do |part|
+            LineBreakCorrector.break_line_before(
+              range: part, node: node, corrector: corrector,
+              configured_width: configured_indentation_width
+            )
+          end
+
+          LineBreakCorrector.break_line_before(
+            range: node.loc.end, node: node, corrector: corrector,
+            indent_steps: 0, configured_width: configured_indentation_width
+          )
+
+          move_comment(node, corrector)
+        end
 
         def allow_empty?
           cop_config['AllowIfMethodIsEmpty']
@@ -73,7 +74,7 @@ module RuboCop
 
         def move_comment(node, corrector)
           LineBreakCorrector.move_comment(
-            eol_comment: end_of_line_comment(node.source_range.line),
+            eol_comment: processed_source.comment_at_line(node.source_range.line),
             node: node, corrector: corrector
           )
         end

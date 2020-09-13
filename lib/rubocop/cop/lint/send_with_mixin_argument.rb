@@ -34,15 +34,18 @@ module RuboCop
       #   Foo.prepend Bar
       #   Foo.extend Bar
       #
-      class SendWithMixinArgument < Cop
+      class SendWithMixinArgument < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<method>s %<module_name>s` instead of `%<bad_method>s`.'
         MIXIN_METHODS = %i[include prepend extend].freeze
+        SEND_METHODS = %i[send public_send __send__].freeze
+        RESTRICT_ON_SEND = SEND_METHODS
 
         def_node_matcher :send_with_mixin_argument?, <<~PATTERN
           (send
-            (const _ _) {:send :public_send :__send__}
+            (const _ _) {:#{SEND_METHODS.join(' :')}}
             ({sym str} $#mixin_method?)
               $(const _ _))
         PATTERN
@@ -53,16 +56,9 @@ module RuboCop
               method, module_name.source, bad_location(node).source
             )
 
-            add_offense(node, location: bad_location(node), message: message)
-          end
-        end
-
-        def autocorrect(node)
-          send_with_mixin_argument?(node) do |method, module_name|
-            lambda do |corrector|
-              corrector.replace(
-                bad_location(node), "#{method} #{module_name.source}"
-              )
+            bad_location = bad_location(node)
+            add_offense(bad_location, message: message) do |corrector|
+              corrector.replace(bad_location, "#{method} #{module_name.source}")
             end
           end
         end

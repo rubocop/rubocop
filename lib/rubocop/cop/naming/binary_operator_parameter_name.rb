@@ -13,12 +13,12 @@ module RuboCop
       #
       #   # good
       #   def +(other); end
-      class BinaryOperatorParameterName < Cop
+      class BinaryOperatorParameterName < Base
         MSG = 'When defining the `%<opr>s` operator, ' \
               'name its argument `other`.'
 
         OP_LIKE_METHODS = %i[eql? equal?].freeze
-        BLACKLISTED = %i[+@ -@ [] []= << === `].freeze
+        EXCLUDED = %i[+@ -@ [] []= << === `].freeze
 
         def_node_matcher :op_method_candidate?, <<~PATTERN
           (def [#op_method? $_] (args $(arg [!:other !:_other])) _)
@@ -33,9 +33,9 @@ module RuboCop
         private
 
         def op_method?(name)
-          return false if BLACKLISTED.include?(name)
+          return false if EXCLUDED.include?(name)
 
-          name !~ /\A\w/ || OP_LIKE_METHODS.include?(name)
+          !/\A[[:word:]]/.match?(name) || OP_LIKE_METHODS.include?(name)
         end
       end
     end

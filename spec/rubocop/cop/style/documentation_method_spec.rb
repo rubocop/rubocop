@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:require_for_non_public_methods) { false }
 
   let(:config) do

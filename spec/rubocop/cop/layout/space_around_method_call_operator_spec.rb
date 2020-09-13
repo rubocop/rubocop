@@ -69,6 +69,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
       foo.bar
     CORRECTION
 
+    include_examples 'offense', 'spaces after `Proc#call` shorthand call',
+                     <<-CODE, <<-OFFENSE, <<-CORRECTION
+      foo. ()
+    CODE
+      foo. ()
+          ^ Avoid using spaces around a method call operator.
+    OFFENSE
+      foo.()
+    CORRECTION
+
     context 'when multi line method call' do
       include_examples 'offense', 'space before method call',
                        <<-CODE, <<-OFFENSE, <<-CORRECTION

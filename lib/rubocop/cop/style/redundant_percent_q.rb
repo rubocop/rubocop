@@ -27,7 +27,7 @@ module RuboCop
         EMPTY = ''
         PERCENT_Q = '%q'
         PERCENT_CAPITAL_Q = '%Q'
-        STRING_INTERPOLATION_REGEXP = /#\{.+}/.freeze
+        STRING_INTERPOLATION_REGEXP = /#\{.+\}/.freeze
         ESCAPED_NON_BACKSLASH = /\\[^\\]/.freeze
 
         def on_dstr(node)
@@ -97,13 +97,13 @@ module RuboCop
 
           return true if STRING_INTERPOLATION_REGEXP.match?(src)
 
-          src.scan(/\\./).any? { |s| s =~ ESCAPED_NON_BACKSLASH }
+          src.scan(/\\./).any? { |s| ESCAPED_NON_BACKSLASH.match?(s) }
         end
 
         def acceptable_capital_q?(node)
           src = node.source
           src.include?(QUOTE) &&
-            (src =~ STRING_INTERPOLATION_REGEXP ||
+            (STRING_INTERPOLATION_REGEXP.match?(src) ||
             (node.str_type? && double_quotes_required?(src)))
         end
       end

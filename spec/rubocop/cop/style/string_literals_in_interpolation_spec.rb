@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'configured with single quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
@@ -10,6 +8,10 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
       expect_offense(<<~'RUBY')
         "#{"A"}"
            ^^^ Prefer single-quoted strings inside interpolations.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{'A'}"
       RUBY
     end
 
@@ -21,6 +23,12 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
           ^^^ Prefer single-quoted strings inside interpolations.
         RUBY
       SOURCE
+
+      expect_correction(<<~'SOURCE')
+        <<RUBY
+        #{'A'}
+        RUBY
+      SOURCE
     end
 
     it 'accepts double quotes on a static string' do
@@ -28,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     end
 
     it 'accepts double quotes on a broken static string' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~'RUBY')
         "A" \
           "B"
       RUBY
@@ -54,11 +62,6 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     it 'can handle character literals' do
       expect_no_offenses('a = ?/')
     end
-
-    it 'auto-corrects " with \'' do
-      new_source = autocorrect_source('s = "#{"abc"}"')
-      expect(new_source).to eq(%q(s = "#{'abc'}"))
-    end
   end
 
   context 'configured with double quotes preferred' do
@@ -68,6 +71,10 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
       expect_offense(<<~'RUBY')
         "#{'A'}"
            ^^^ Prefer double-quoted strings inside interpolations.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{"A"}"
       RUBY
     end
 
@@ -79,6 +86,12 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
           ^^^ Prefer double-quoted strings inside interpolations.
         RUBY
       SOURCE
+
+      expect_correction(<<~'SOURCE')
+        <<RUBY
+        #{"A"}
+        RUBY
+      SOURCE
     end
   end
 
@@ -86,7 +99,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source('a = "#{"b"}"') }
+      expect { expect_no_offenses('a = "#{"b"}"') }
         .to raise_error(RuntimeError)
     end
   end

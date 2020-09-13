@@ -1,0 +1,40 @@
+= Compatibility
+
+RuboCop targets Ruby 2.4+.footnote:[As defined by its reference implementation MRI.]
+
+RuboCop officially supports MRI (a.k.a. CRuby) and JRuby.
+
+- MRI 2.4+
+- JRuby 9.2+
+
+The oldest supported JRuby version is derived from the oldest compatible MRI version.
+
+NOTE: RuboCop might be working with other Ruby implementations as well, but it's tested only on MRI and JRuby.
+
+== Support Matrix
+
+RuboCop generally aims to follow MRI's own support policy - meaning RuboCop would support all officially supported MRI releases.footnote:[Typically the last 3 releases.] To give people extra time for a smooth transition, we've customarily provided support for about one year after EOL of MRI version.
+This means that if Ruby 2.4 reaches its EOL in Spring 2020, it would be supported by RuboCop (at least) until Spring 2021.footnote:[At the core team's discretion this policy might be waived aside for MRI releases causing significant maintenance overhead.]
+
+The following table is the support matrix.
+
+|===
+| Supported target Ruby version | Last supported RuboCop version
+
+| 1.9 | 0.41
+| 2.0 | 0.50
+| 2.1 | 0.57
+| 2.2 | 0.68
+| 2.3 | 0.81
+| 2.4 | -
+| 2.5 | -
+| 2.6 | -
+| 2.7 | -
+| 2.8 (experimental) | -
+|===
+
+NOTE: The compatibility xref:configuration.adoc#setting-the-target-ruby-version[target Ruby version mentioned here] is about code analysis (what RuboCop can analyze), not runtime (is RuboCop capable of running on some Ruby or not).
+
+== Forward Compatibility
+
+Features may be provided for development version of Ruby. These are all considered experimental, and may change before the stable version of Ruby will be released.

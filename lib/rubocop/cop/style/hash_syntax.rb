@@ -13,11 +13,11 @@ module RuboCop
       # The supported styles are:
       #
       # * ruby19 - forces use of the 1.9 syntax (e.g. `{a: 1}`) when hashes have
-      #   all symbols for keys
+      # all symbols for keys
       # * hash_rockets - forces use of hash rockets for all hashes
       # * no_mixed_keys - simply checks for hashes with mixed syntaxes
       # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
-      #   syntax hashes
+      # syntax hashes
       #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
@@ -73,7 +73,7 @@ module RuboCop
             ruby19_no_mixed_keys_check(pairs)
           elsif style == :no_mixed_keys
             no_mixed_keys_check(pairs)
-          else
+          elsif node.source.include?('=>')
             ruby19_check(pairs)
           end
         end
@@ -140,11 +140,12 @@ module RuboCop
         def acceptable_19_syntax_symbol?(sym_name)
           sym_name.sub!(/\A:/, '')
 
-          if cop_config['PreferHashRocketsForNonAlnumEndingSymbols']
-            # Prefer { :production? => false } over { production?: false } and
-            # similarly for other non-alnum final characters (except quotes,
-            # to prefer { "x y": 1 } over { :"x y" => 1 }).
-            return false unless /[\p{Alnum}"']\z/.match?(sym_name)
+          if cop_config['PreferHashRocketsForNonAlnumEndingSymbols'] &&
+             # Prefer { :production? => false } over { production?: false } and
+             # similarly for other non-alnum final characters (except quotes,
+             # to prefer { "x y": 1 } over { :"x y" => 1 }).
+             !/[\p{Alnum}"']\z/.match?(sym_name)
+            return false
           end
 
           # Most hash keys can be matched against a simple regex.
@@ -168,18 +169,27 @@ module RuboCop
         end
 
         def autocorrect_ruby19(corrector, pair_node)
-          key = pair_node.key.source_range
-          op = pair_node.loc.operator
-
-          range = key.join(op)
-          range = range_with_surrounding_space(range: range, side: :right)
+          range = range_for_autocorrect_ruby19(pair_node)
 
           space = argument_without_space?(pair_node.parent) ? ' ' : ''
 
           corrector.replace(
             range,
-            range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
+            range.source.sub(/^:(.*\S)\s*=>\s*$/, "#{space}\\1: ")
           )
+
+          hash_node = pair_node.parent
+          return unless hash_node.parent&.return_type? && !hash_node.braces?
+
+          corrector.wrap(hash_node, '{', '}')
+        end
+
+        def range_for_autocorrect_ruby19(pair_node)
+          key = pair_node.key.source_range
+          operator = pair_node.loc.operator
+
+          range = key.join(operator)
+          range_with_surrounding_space(range: range, side: :right)
         end
 
         def argument_without_space?(node)
@@ -190,7 +200,8 @@ module RuboCop
         def autocorrect_hash_rockets(corrector, pair_node)
           op = pair_node.loc.operator
 
-          corrector.wrap(pair_node.key, ':', pair_node.inverse_delimiter(true))
+          key_with_hash_rocket = ":#{pair_node.key.source}#{pair_node.inverse_delimiter(true)}"
+          corrector.replace(pair_node.key, key_with_hash_rocket)
           corrector.remove(range_with_surrounding_space(range: op))
         end
 

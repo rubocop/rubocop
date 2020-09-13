@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module RuboCop
   module Cop
     module Layout
@@ -30,7 +28,8 @@ module RuboCop
       #   object.method(arg)         # this is a comment
       #   another_object.method(arg) # this is another comment
       #   some_object.method(arg)    # this is some comment
-      class ExtraSpacing < Cop
+      class ExtraSpacing < Base
+        extend AutoCorrector
         include PrecedingFollowingAlignment
         include RangeHelp
 
@@ -38,9 +37,10 @@ module RuboCop
         MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s ' \
                              'assignment.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
+          @aligned_comments = aligned_locations(processed_source.comments.map(&:loc))
           @corrected = Set.new if force_equal_sign_alignment?
 
           processed_source.tokens.each_cons(2) do |token1, token2|
@@ -48,17 +48,19 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          lambda do |corrector|
-            if range.source.end_with?('=')
-              align_equal_signs(range, corrector)
-            else
-              corrector.remove(range)
-            end
-          end
-        end
-
         private
+
+        def aligned_locations(locs)
+          return [] if locs.empty?
+
+          aligned = Set[locs.first.line, locs.last.line]
+          locs.each_cons(3) do |before, loc, after|
+            col = loc.column
+            aligned << loc.line if col == before.column || # rubocop:disable Style/MultipleComparison
+                                   col == after.column
+          end
+          aligned
+        end
 
         def check_tokens(ast, token1, token2)
           return if token2.type == :tNL
@@ -74,7 +76,9 @@ module RuboCop
           return unless aligned_with_preceding_assignment(token) == :no
 
           message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
-          add_offense(token.pos, location: token.pos, message: message)
+          add_offense(token.pos, message: message) do |corrector|
+            align_equal_signs(token.pos, corrector)
+          end
         end
 
         def check_other(token1, token2, ast)
@@ -84,7 +88,9 @@ module RuboCop
           extra_space_range(token1, token2) do |range|
             next if ignored_range?(ast, range.begin_pos)
 
-            add_offense(range, location: range, message: MSG_UNNECESSARY)
+            add_offense(range, message: MSG_UNNECESSARY) do |corrector|
+              corrector.remove(range)
+            end
           end
         end
 
@@ -102,7 +108,7 @@ module RuboCop
 
         def aligned_tok?(token)
           if token.comment?
-            aligned_comments?(token)
+            @aligned_comments.include?(token.line)
           else
             aligned_with_something?(token.pos)
           end
@@ -124,26 +130,6 @@ module RuboCop
             key, value = *pair
             key.source_range.end_pos...value.source_range.begin_pos
           end.compact
-        end
-
-        def aligned_comments?(comment_token)
-          ix = processed_source.comments.index do |comment|
-            comment.loc.expression.begin_pos == comment_token.begin_pos
-          end
-          aligned_with_previous_comment?(ix) || aligned_with_next_comment?(ix)
-        end
-
-        def aligned_with_previous_comment?(index)
-          index.positive? && comment_column(index - 1) == comment_column(index)
-        end
-
-        def aligned_with_next_comment?(index)
-          index < processed_source.comments.length - 1 &&
-            comment_column(index + 1) == comment_column(index)
-        end
-
-        def comment_column(index)
-          processed_source.comments[index].loc.column
         end
 
         def force_equal_sign_alignment?

@@ -17,7 +17,7 @@ module RuboCop
       #
       #   # good
       #   INCH_IN_CM = 2.54
-      class ConstantName < Cop
+      class ConstantName < Base
         MSG = 'Use SCREAMING_SNAKE_CASE for constants.'
         # Use POSIX character classes, so we allow accented characters rather
         # than just standard ASCII characters
@@ -47,7 +47,7 @@ module RuboCop
           return if allowed_assignment?(value)
           return if SNAKE_CASE.match?(const_name)
 
-          add_offense(node, location: :name)
+          add_offense(node.loc.name)
         end
 
         private

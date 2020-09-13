@@ -21,8 +21,9 @@ module RuboCop
       #   foo do |bar|
       #     # ...
       #   end
-      class EmptyLinesAroundBlockBody < Cop
+      class EmptyLinesAroundBlockBody < Base
         include EmptyLinesAroundBody
+        extend AutoCorrector
 
         KIND = 'block'
 
@@ -30,10 +31,6 @@ module RuboCop
           first_line = node.send_node.last_line
 
           check(node, node.body, adjusted_first_line: first_line)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
       end
     end

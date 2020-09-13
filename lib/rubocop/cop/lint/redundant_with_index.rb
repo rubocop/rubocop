@@ -26,8 +26,9 @@ module RuboCop
       #     v
       #   end
       #
-      class RedundantWithIndex < Cop
+      class RedundantWithIndex < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'
         MSG_WITH_INDEX = 'Remove redundant `with_index`.'
@@ -42,20 +43,16 @@ module RuboCop
         PATTERN
 
         def on_block(node)
-          redundant_with_index?(node) do |send|
-            add_offense(node, location: with_index_range(send))
-          end
-        end
+          return unless (send = redundant_with_index?(node))
 
-        def autocorrect(node)
-          lambda do |corrector|
-            redundant_with_index?(node) do |send|
-              if send.method?(:each_with_index)
-                corrector.replace(send.loc.selector, 'each')
-              else
-                corrector.remove(with_index_range(send))
-                corrector.remove(send.loc.dot)
-              end
+          range = with_index_range(send)
+
+          add_offense(range, message: message(send)) do |corrector|
+            if send.method?(:each_with_index)
+              corrector.replace(send.loc.selector, 'each')
+            else
+              corrector.remove(range)
+              corrector.remove(send.loc.dot)
             end
           end
         end

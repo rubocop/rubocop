@@ -21,7 +21,7 @@ Dir['tasks/**/*.rake'].each { |t| load t }
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation).tap do |task|
   if RUBY_ENGINE == 'ruby' &&
-     RbConfig::CONFIG['host_os'] !~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+     !/mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os'])
     task.options = %w[--parallel]
   end
 end
@@ -47,9 +47,9 @@ task :bench_cop, %i[cop srcpath times] do |_task, args|
   iterations = args[:times] ? Integer(args[:times]) : 1
 
   cop_class = if cop_name.include?('/')
-                Cop::Cop.all.find { |klass| klass.cop_name == cop_name }
+                Cop::Registry.all.find { |klass| klass.cop_name == cop_name }
               else
-                Cop::Cop.all.find do |klass|
+                Cop::Registry.all.find do |klass|
                   klass.cop_name[/[a-zA-Z]+$/] == cop_name
                 end
               end
@@ -89,7 +89,7 @@ task documentation_syntax_check: :yard_for_generate_documentation do
 
   ok = true
   YARD::Registry.load!
-  cops = RuboCop::Cop::Cop.registry
+  cops = RuboCop::Cop::Registry.global
   cops.each do |cop|
     next if %i[RSpec Capybara FactoryBot].include?(cop.department)
 

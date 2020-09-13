@@ -13,8 +13,9 @@ module RuboCop
       #   # good
       #   x if y.z.nil?
       #
-      class RedundantParentheses < Cop
+      class RedundantParentheses < Base
         include Parentheses
+        extend AutoCorrector
 
         def_node_matcher :square_brackets?,
                          '(send {(send _recv _msg) str array hash} :[] ...)'
@@ -25,15 +26,9 @@ module RuboCop
                          '^^(block (send _ _ equal?(%0) ...) ...)'
 
         def on_begin(node)
-          return if !parentheses?(node) || parens_allowed?(node)
-          return if node.parent && (node.parent.while_post_type? ||
-                                    node.parent.until_post_type?)
+          return if !parentheses?(node) || parens_allowed?(node) || ignore_syntax?(node)
 
           check(node)
-        end
-
-        def autocorrect(node)
-          ParenthesesCorrector.correct(node)
         end
 
         private
@@ -43,6 +38,13 @@ module RuboCop
             first_arg_begins_with_hash_literal?(node) ||
             rescue?(node) ||
             allowed_expression?(node)
+        end
+
+        def ignore_syntax?(node)
+          return false unless (parent = node.parent)
+
+          parent.while_post_type? || parent.until_post_type? ||
+            like_method_argument_parentheses?(parent)
         end
 
         def allowed_expression?(node)
@@ -71,6 +73,10 @@ module RuboCop
           !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
         end
 
+        def like_method_argument_parentheses?(node)
+          node.send_type? && node.arguments.size == 1 && !node.arithmetic_operation?
+        end
+
         def empty_parentheses?(node)
           # Don't flag `()`
           node.children.empty?
@@ -93,12 +99,8 @@ module RuboCop
 
         def check(begin_node)
           node = begin_node.children.first
-          if keyword_with_redundant_parentheses?(node)
-            return offense(begin_node, 'a keyword')
-          end
-          if disallowed_literal?(begin_node, node)
-            return offense(begin_node, 'a literal')
-          end
+          return offense(begin_node, 'a keyword') if keyword_with_redundant_parentheses?(node)
+          return offense(begin_node, 'a literal') if disallowed_literal?(begin_node, node)
           return offense(begin_node, 'a variable') if node.variable?
           return offense(begin_node, 'a constant') if node.const_type?
 
@@ -119,15 +121,16 @@ module RuboCop
 
           node = node.children.first while suspect_unary?(node)
 
-          if node.send_type?
-            return unless method_call_with_redundant_parentheses?(node)
-          end
+          return if node.send_type? &&
+                    !method_call_with_redundant_parentheses?(node)
 
           offense(begin_node, 'an unary operation')
         end
 
         def offense(node, msg)
-          add_offense(node, message: "Don't use parentheses around #{msg}.")
+          add_offense(node, message: "Don't use parentheses around #{msg}.") do |corrector|
+            ParenthesesCorrector.correct(corrector, node)
+          end
         end
 
         def suspect_unary?(node)
@@ -160,7 +163,7 @@ module RuboCop
           source_buffer = node.source_range.source_buffer
           line_range = source_buffer.line_range(node.loc.end.line)
 
-          line_range.source =~ /^\s*\)\s*,/
+          /^\s*\)\s*,/.match?(line_range.source)
         end
 
         def disallowed_literal?(begin_node, node)
@@ -209,7 +212,9 @@ module RuboCop
         end
 
         def first_argument?(node)
-          first_send_argument?(node) || first_super_argument?(node)
+          first_send_argument?(node) ||
+            first_super_argument?(node) ||
+            first_yield_argument?(node)
         end
 
         def_node_matcher :first_send_argument?, <<~PATTERN
@@ -218,6 +223,10 @@ module RuboCop
 
         def_node_matcher :first_super_argument?, <<~PATTERN
           ^(super equal?(%0) ...)
+        PATTERN
+
+        def_node_matcher :first_yield_argument?, <<~PATTERN
+          ^(yield equal?(%0) ...)
         PATTERN
 
         def call_chain_starts_with_int?(begin_node, send_node)

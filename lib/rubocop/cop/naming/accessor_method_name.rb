@@ -21,14 +21,16 @@ module RuboCop
       #   # good
       #   def attribute
       #   end
-      class AccessorMethodName < Cop
+      class AccessorMethodName < Base
         MSG_READER = 'Do not prefix reader method names with `get_`.'
         MSG_WRITER = 'Do not prefix writer method names with `set_`.'
 
         def on_def(node)
           return unless bad_reader_name?(node) || bad_writer_name?(node)
 
-          add_offense(node, location: :name)
+          message = message(node)
+
+          add_offense(node.loc.name, message: message)
         end
         alias on_defs on_def
 

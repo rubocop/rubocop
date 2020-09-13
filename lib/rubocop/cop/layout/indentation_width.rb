@@ -263,9 +263,7 @@ module RuboCop
         def offense(body_node, indentation, style)
           # This cop only auto-corrects the first statement in a def body, for
           # example.
-          if body_node.begin_type? && !parentheses?(body_node)
-            body_node = body_node.children.first
-          end
+          body_node = body_node.children.first if body_node.begin_type? && !parentheses?(body_node)
 
           # Since autocorrect changes a number of lines, and not only the line
           # where the reported offending range is, we avoid auto-correction if

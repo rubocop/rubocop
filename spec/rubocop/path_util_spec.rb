@@ -16,6 +16,7 @@ RSpec.describe RuboCop::PathUtil do
         expect(described_class.relative_path('D:/foo/bar', 'C:/foo'))
           .to eq('D:/foo/bar')
       end
+
       it 'works for the same drive' do
         expect(described_class.relative_path('D:/foo/bar', 'D:/foo'))
           .to eq('bar')
@@ -109,8 +110,8 @@ RSpec.describe RuboCop::PathUtil do
     end
 
     it 'matches regexps' do
-      expect(described_class.match_path?(/^d.*e$/, 'dir/file')).to be(0)
-      expect(described_class.match_path?(/^d.*e$/, 'dir/filez')).to be(nil)
+      expect(described_class.match_path?(/^d.*e$/, 'dir/file')).to be(true)
+      expect(described_class.match_path?(/^d.*e$/, 'dir/filez')).to be(false)
     end
 
     it 'does not match invalid UTF-8 paths' do

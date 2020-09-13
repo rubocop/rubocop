@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'EnforcedStyle' => 'normal' } }
 
   context 'with top-level code' do
@@ -770,7 +768,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
 
       # The offense on line 4 is corrected, affecting lines 4 to 11.
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         require 'spec_helper'
         describe ArticlesController do
           render_views

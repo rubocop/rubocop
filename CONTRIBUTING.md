@@ -26,7 +26,7 @@ $ rubocop -V
 
 * Read [how to properly contribute to open source projects on GitHub][2].
 * Fork the project.
-* If you're adding or making changes to cops, read the [Development docs](https://docs.rubocop.org/en/latest/development/)
+* If you're adding or making changes to cops, read the [Development docs](https://docs.rubocop.org/rubocop/development.html)
 * Use a topic/feature branch to easily amend a pull request later, if necessary.
 * Write [good commit messages][3].
 * Use the same coding conventions as the rest of the project.

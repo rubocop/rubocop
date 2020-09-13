@@ -13,7 +13,7 @@ module RuboCop
       #     # good
       #     expect(cop.messages).to eq(['Do not write bad code like that.'])
       #
-      class UselessMessageAssertion < Cop
+      class UselessMessageAssertion < Base
         MSG = 'Do not specify cop behavior using `described_class::MSG`.'
 
         def_node_search :described_class_msg, <<~PATTERN
@@ -24,7 +24,7 @@ module RuboCop
           (send (send nil? :expect #contains_described_class_msg?) :to ...)
         PATTERN
 
-        def investigate(_processed_source)
+        def on_new_investigation
           assertions_using_described_class_msg.each do |node|
             add_offense(node)
           end

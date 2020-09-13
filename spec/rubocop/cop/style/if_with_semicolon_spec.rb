@@ -3,15 +3,23 @@
 RSpec.describe RuboCop::Cop::Style::IfWithSemicolon do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for one line if/;/end' do
+  it 'registers an offense and corrects for one line if/;/end' do
     expect_offense(<<~RUBY)
       if cond; run else dont end
       ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use if x; Use the ternary operator instead.
     RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? run : dont
+    RUBY
   end
 
-  it 'accepts one line if/then/end' do
-    expect_no_offenses('if cond then run else dont end')
+  it 'accepts without `else` branch' do
+    # This case is corrected to a modifier form by `Style/IfUnlessModifier` cop.
+    # Therefore, this cop does not handle it.
+    expect_no_offenses(<<~RUBY)
+      if cond; run end
+    RUBY
   end
 
   it 'can handle modifier conditionals' do

@@ -38,7 +38,7 @@ module RuboCop
               '`%<keyword>s` keyword.'
 
         def investigate(processed_source)
-          processed_source.each_comment do |comment|
+          processed_source.comments.each do |comment|
             add_offense(comment) if offensive?(comment)
           end
         end
@@ -46,17 +46,20 @@ module RuboCop
         private
 
         KEYWORDS = %w[begin class def end module].freeze
+        KEYWORD_REGEXES = KEYWORDS.map { |w| /^\s*#{w}\s/ }.freeze
+
         ALLOWED_COMMENTS = %w[
           :nodoc:
           :yields:
           rubocop:disable
           rubocop:todo
         ].freeze
+        ALLOWED_COMMENT_REGEXES = ALLOWED_COMMENTS.map { |c| /#\s*#{c}/ }.freeze
 
         def offensive?(comment)
           line = line(comment)
-          KEYWORDS.any? { |word| line =~ /^\s*#{word}\s/ } &&
-            ALLOWED_COMMENTS.none? { |c| line =~ /#\s*#{c}/ }
+          KEYWORD_REGEXES.any? { |r| r.match?(line) } &&
+            ALLOWED_COMMENT_REGEXES.none? { |r| r.match?(line) }
         end
 
         def message(comment)

@@ -48,10 +48,11 @@ module RuboCop
       #
       #   # good
       #   a ** b
-      class SpaceAroundOperators < Cop
+      class SpaceAroundOperators < Base
         include PrecedingFollowingAlignment
         include RangeHelp
         include RationalLiteral
+        extend AutoCorrector
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
         EXCESSIVE_SPACE = '  '
@@ -132,18 +133,6 @@ module RuboCop
         alias on_and_asgn on_assignment
         alias on_op_asgn  on_special_asgn
 
-        def autocorrect(range)
-          lambda do |corrector|
-            if range.source =~ /\*\*/ && !space_around_exponent_operator?
-              corrector.replace(range, '**')
-            elsif range.source.end_with?("\n")
-              corrector.replace(range, " #{range.source.strip}\n")
-            else
-              enclose_operator_with_space(corrector, range)
-            end
-          end
-        end
-
         private
 
         def regular_operator?(send_node)
@@ -161,7 +150,9 @@ module RuboCop
           return if with_space.source.start_with?("\n")
 
           offense(type, operator, with_space, right_operand) do |msg|
-            add_offense(with_space, location: operator, message: msg)
+            add_offense(operator, message: msg) do |corrector|
+              autocorrect(corrector, with_space)
+            end
           end
         end
 
@@ -170,14 +161,24 @@ module RuboCop
           yield msg if msg
         end
 
+        def autocorrect(corrector, range)
+          if /\*\*/.match?(range.source) && !space_around_exponent_operator?
+            corrector.replace(range, '**')
+          elsif range.source.end_with?("\n")
+            corrector.replace(range, " #{range.source.strip}\n")
+          else
+            enclose_operator_with_space(corrector, range)
+          end
+        end
+
         def enclose_operator_with_space(corrector, range)
           operator = range.source
 
           # If `ForceEqualSignAlignment` is true, `Layout/ExtraSpacing` cop
           # inserts spaces before operator. If `Layout/SpaceAroundOperators` cop
           # inserts a space, it collides and raises the infinite loop error.
-          if force_equal_sign_alignment?
-            corrector.insert_after(range, ' ') unless operator.end_with?(' ')
+          if force_equal_sign_alignment? && !operator.end_with?(' ')
+            corrector.insert_after(range, ' ')
           else
             corrector.replace(range, " #{operator.strip} ")
           end

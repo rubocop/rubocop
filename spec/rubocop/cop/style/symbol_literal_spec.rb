@@ -5,8 +5,13 @@ RSpec.describe RuboCop::Cop::Style::SymbolLiteral do
 
   it 'registers an offense for word-line symbols using string syntax' do
     expect_offense(<<~RUBY)
-      x = { :"test" => 0 }
+      x = { :"test" => 0, :"other" => 1 }
+                          ^^^^^^^^ Do not use strings for word-like symbol literals.
             ^^^^^^^ Do not use strings for word-like symbol literals.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = { :test => 0, :other => 1 }
     RUBY
   end
 
@@ -20,10 +25,5 @@ RSpec.describe RuboCop::Cop::Style::SymbolLiteral do
 
   it 'accepts string syntax when symbol start with a digit' do
     expect_no_offenses('x = { :"1" => 1 }')
-  end
-
-  it 'auto-corrects by removing quotes' do
-    new_source = autocorrect_source('{ :"ala" => 1, :"bala" => 2 }')
-    expect(new_source).to eq('{ :ala => 1, :bala => 2 }')
   end
 end

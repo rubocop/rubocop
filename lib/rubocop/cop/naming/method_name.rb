@@ -28,22 +28,18 @@ module RuboCop
       #
       #   # good
       #   def fooBar; end
-      class MethodName < Cop
+      class MethodName < Base
         include ConfigurableNaming
         include IgnoredPattern
         include RangeHelp
 
         MSG = 'Use %<style>s for method names.'
 
-        def_node_matcher :attr?, <<~PATTERN
-          (send nil? ${:attr_reader :attr_writer :attr_accessor :attr} $...)
-        PATTERN
-
         def_node_matcher :sym_name, '(sym $_name)'
         def_node_matcher :str_name, '(str $_name)'
 
         def on_send(node)
-          return unless (attrs = attr?(node))
+          return unless (attrs = node.attribute_accessor?)
 
           attrs.last.each do |name_item|
             name = attr_name(name_item)

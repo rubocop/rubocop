@@ -30,8 +30,9 @@ module RuboCop
       #     c
       #   end
       #
-      class RedundantCondition < Cop
+      class RedundantCondition < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use double pipes `||` instead.'
         REDUNDANT_CONDITION = 'This condition is not needed.'
@@ -40,11 +41,9 @@ module RuboCop
           return if node.elsif_conditional?
           return unless offense?(node)
 
-          add_offense(node, location: range_of_offense(node))
-        end
+          message = message(node)
 
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(range_of_offense(node), message: message) do |corrector|
             if node.ternary?
               correct_ternary(corrector, node)
             elsif node.modifier_form? || !node.else_branch
@@ -68,7 +67,7 @@ module RuboCop
         end
 
         def range_of_offense(node)
-          return :expression unless node.ternary?
+          return node.loc.expression unless node.ternary?
 
           range_between(node.loc.question.begin_pos, node.loc.colon.end_pos)
         end
@@ -90,10 +89,10 @@ module RuboCop
         end
 
         def else_source(else_branch)
-          if else_branch.basic_conditional? &&
-             else_branch.modifier_form? ||
-             else_branch.range_type?
+          if require_parentheses?(else_branch)
             "(#{else_branch.source})"
+          elsif without_argument_parentheses_method?(else_branch)
+            "#{else_branch.method_name}(#{else_branch.arguments.map(&:source).join(', ')})"
           else
             else_branch.source
           end
@@ -117,6 +116,18 @@ module RuboCop
           return unless node.else_branch.range_type?
 
           corrector.wrap(node.else_branch, '(', ')')
+        end
+
+        def require_parentheses?(node)
+          node.basic_conditional? &&
+            node.modifier_form? ||
+            node.range_type? ||
+            node.rescue_type? ||
+            node.respond_to?(:semantic_operator?) && node.semantic_operator?
+        end
+
+        def without_argument_parentheses_method?(node)
+          node.send_type? && !node.arguments.empty? && !node.parenthesized?
         end
       end
     end

@@ -40,9 +40,10 @@ module RuboCop
       #     def baz; end
       #   end
       #
-      class EmptyLinesAroundAccessModifier < Cop
+      class EmptyLinesAroundAccessModifier < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_AFTER = 'Keep a blank line after `%<modifier>s`.'
         MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after ' \
@@ -92,16 +93,11 @@ module RuboCop
             return if allowed_only_before_style?(node)
           end
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          message = message(node)
+          add_offense(node, message: message) do |corrector|
             line = range_by_whole_lines(node.source_range)
 
-            unless previous_line_empty?(node.first_line)
-              corrector.insert_before(line, "\n")
-            end
+            corrector.insert_before(line, "\n") unless previous_line_empty?(node.first_line)
 
             correct_next_line_if_denied_style(corrector, node, line)
           end
@@ -111,6 +107,7 @@ module RuboCop
 
         def allowed_only_before_style?(node)
           if node.special_modifier?
+            return true if processed_source[node.last_line] == 'end'
             return false if next_line_empty?(node.last_line)
           end
 
@@ -120,9 +117,7 @@ module RuboCop
         def correct_next_line_if_denied_style(corrector, node, line)
           case style
           when :around
-            unless next_line_empty?(node.last_line)
-              corrector.insert_after(line, "\n")
-            end
+            corrector.insert_after(line, "\n") unless next_line_empty?(node.last_line)
           when :only_before
             if next_line_empty?(node.last_line)
               range = next_empty_line_range(node)

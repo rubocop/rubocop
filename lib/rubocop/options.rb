@@ -8,6 +8,7 @@ module RuboCop
   class OptionArgumentError < StandardError; end
 
   # This class handles command line options.
+  # @api private
   class Options
     E_STDIN_NO_PATH = '-s/--stdin requires exactly one path, relative to the ' \
       'root of the project. RuboCop will use this path to determine which ' \
@@ -68,6 +69,7 @@ module RuboCop
 
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
+        add_cache_options(opts)
         add_boolean_flags(opts)
         add_aliases(opts)
 
@@ -94,7 +96,7 @@ module RuboCop
             ['']
           else
             list.split(',').map do |c|
-              Cop::Cop.qualified_cop_name(c, "--#{option} option")
+              Cop::Registry.qualified_cop_name(c, "--#{option} option")
             end
           end
       end
@@ -103,6 +105,7 @@ module RuboCop
     def add_configuration_options(opts)
       option(opts, '-c', '--config FILE')
       option(opts, '--force-exclusion')
+      option(opts, '--only-recognized-file-types')
       option(opts, '--ignore-parent-exclusion')
       option(opts, '--force-default-config')
       add_auto_gen_options(opts)
@@ -142,6 +145,8 @@ module RuboCop
           @options[:output_path] = path
         end
       end
+
+      option(opts, '--display-only-failed')
     end
 
     def add_severity_option(opts)
@@ -160,15 +165,30 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
+    def add_cache_options(opts)
+      option(opts, '-C', '--cache FLAG')
+      option(opts, '--cache-root DIR') do
+        @validator.validate_cache_enabled_for_cache_root
+      end
+    end
+
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
-      option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
       option(opts, '-D', '--[no-]display-cop-names')
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
-      option(opts, '-a', '--auto-correct')
+      option(opts, '-a', '--auto-correct') do
+        @options[:safe_auto_correct] = true
+      end
+      option(opts, '--safe-auto-correct') do
+        warn '--safe-auto-correct is deprecated; use --auto-correct'
+        @options[:safe_auto_correct] = @options[:auto_correct] = true
+      end
+      option(opts, '-A', '--auto-correct-all') do
+        @options[:auto_correct] = true
+      end
       option(opts, '--disable-pending-cops')
       option(opts, '--enable-pending-cops')
       option(opts, '--ignore-disable-comments')
@@ -181,7 +201,7 @@ module RuboCop
       option(opts, '-V', '--verbose-version')
       option(opts, '-P', '--parallel')
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def add_aliases(opts)
       option(opts, '-l', '--lint') do
@@ -191,9 +211,6 @@ module RuboCop
       option(opts, '-x', '--fix-layout') do
         @options[:only] ||= []
         @options[:only] << 'Layout'
-        @options[:auto_correct] = true
-      end
-      option(opts, '--safe-auto-correct') do
         @options[:auto_correct] = true
       end
     end
@@ -223,6 +240,7 @@ module RuboCop
   end
 
   # Validates option arguments and the options' compatibility with each other.
+  # @api private
   class OptionsValidator
     class << self
       # Cop name validation must be done later than option parsing, so it's not
@@ -230,8 +248,8 @@ module RuboCop
       def validate_cop_list(names)
         return unless names
 
-        cop_names = Cop::Cop.registry.names
-        departments = Cop::Cop.registry.departments.map(&:to_s)
+        cop_names = Cop::Registry.global.names
+        departments = Cop::Registry.global.departments.map(&:to_s)
 
         names.each do |name|
           next if cop_names.include?(name)
@@ -247,10 +265,7 @@ module RuboCop
       def format_message_from(name, cop_names)
         message = 'Unrecognized cop or department: %<name>s.'
         message_with_candidate = "%<message>s\nDid you mean? %<candidate>s"
-        corrections = cop_names.select do |cn|
-          score = StringUtil.similarity(cn, name)
-          score >= NameSimilarity::MINIMUM_SIMILARITY_TO_SUGGEST
-        end.sort
+        corrections = NameSimilarity.find_similar_names(name, cop_names)
 
         if corrections.empty?
           format(message, name: name)
@@ -277,9 +292,7 @@ module RuboCop
         raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot ' \
                                    'be used with --only.'
       end
-      if except_syntax?
-        raise OptionArgumentError, 'Syntax checking cannot be turned off.'
-      end
+      raise OptionArgumentError, 'Syntax checking cannot be turned off.' if except_syntax?
       unless boolean_or_empty_cache?
         raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
@@ -290,6 +303,7 @@ module RuboCop
       end
       validate_auto_gen_config
       validate_auto_correct
+      validate_display_only_failed
       validate_parallel
 
       return if incompatible_options.size <= 1
@@ -313,13 +327,20 @@ module RuboCop
       end
     end
 
+    def validate_display_only_failed
+      return unless @options.key?(:display_only_failed)
+      return if @options[:format] == 'junit'
+
+      raise OptionArgumentError,
+            format('--display-only-failed can only be used together with --format junit.')
+    end
+
     def validate_auto_correct
       return if @options.key?(:auto_correct)
       return unless @options.key?(:disable_uncorrectable)
 
       raise OptionArgumentError,
-            format('--%<flag>s can only be used together with --auto-correct.',
-                   flag: '--disable-uncorrectable')
+            format('--disable-uncorrectable can only be used together with --auto-correct.')
     end
 
     def validate_parallel
@@ -378,12 +399,19 @@ module RuboCop
       # of option order.
       raise OptionParser::MissingArgument
     end
+
+    def validate_cache_enabled_for_cache_root
+      return unless @options[:cache] == 'false'
+
+      raise OptionArgumentError, '--cache-root can not be used with ' \
+                                  '--cache false'
+    end
   end
 
   # This module contains help texts for command line options.
+  # @api private
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
-    # rubocop:disable Layout/LineLength
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
     TEXT = {
@@ -415,6 +443,9 @@ module RuboCop
       force_exclusion:                  ['Force excluding files specified in the',
                                          'configuration `Exclude` even if they are',
                                          'explicitly passed as arguments.'],
+      only_recognized_file_types:       ['Inspect files given on the command line only if',
+                                         'they are listed in AllCops/Include parameters',
+                                         'of user configuration or default configuration.'],
       ignore_disable_comments:          ['Run cops even when they are disabled locally',
                                          'with a comment.'],
       ignore_parent_exclusion:          ['Prevent from inheriting AllCops/Exclude from',
@@ -433,6 +464,8 @@ module RuboCop
                                          'if no format is specified.'],
       fail_level:                       ['Minimum severity (A/R/C/W/E/F) for exit',
                                          'with error code.'],
+      display_only_failed:              ['Only output offense messages. Omit passing',
+                                         'cops. Only valid for --format junit.'],
       display_only_fail_level_offenses:
                                         ['Only output offense messages at',
                                          'the specified --fail-level or above'],
@@ -445,6 +478,10 @@ module RuboCop
       cache:                            ["Use result caching (FLAG=true) or don't",
                                          '(FLAG=false), default determined by',
                                          'configuration parameter AllCops: UseCache.'],
+      cache_root:                       ['Set the cache root directory.',
+                                         'Takes precedence over the configuration',
+                                         'parameter AllCops: CacheRootDirectory and',
+                                         'the $RUBOCOP_CACHE_ROOT environment variable.'],
       debug:                            'Display debug info.',
       display_cop_names:                ['Display cop names in offense messages.',
                                          'Default is true.'],
@@ -455,8 +492,9 @@ module RuboCop
       lint:                             'Run only lint cops.',
       safe:                             'Run only safe cops.',
       list_target_files:                'List all files RuboCop will inspect.',
-      auto_correct:                     'Auto-correct offenses.',
-      safe_auto_correct:                'Run auto-correct only when it\'s safe.',
+      auto_correct:                     'Auto-correct offenses (only when it\'s safe).',
+      safe_auto_correct:                '(same, deprecated)',
+      auto_correct_all:                 'Auto-correct offenses (safe and unsafe)',
       fix_layout:                       'Run only layout cops, with auto-correct on.',
       color:                            'Force color output on or off.',
       version:                          'Display version.',
@@ -467,6 +505,5 @@ module RuboCop
                                          'reports. This is useful for editor integration.'],
       init:                             'Generate a .rubocop.yml file in the current directory.'
     }.freeze
-    # rubocop:enable Layout/LineLength
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'AllowAdjacentOneLineDefs' => false } }
 
   it 'finds offenses in inner classes' do
@@ -275,6 +273,19 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         def o
         end
       end
+    RUBY
+  end
+
+  it 'registers an offense for multiple one-liners on the same line' do
+    expect_offense(<<~RUBY)
+      def a; end; def b; end
+                  ^^^^^ Use empty lines between method definitions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def a; end;#{trailing_whitespace}
+
+      def b; end
     RUBY
   end
 

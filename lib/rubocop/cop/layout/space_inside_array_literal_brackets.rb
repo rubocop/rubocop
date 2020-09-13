@@ -67,9 +67,10 @@ module RuboCop
       #   foo = [ ]
       #   bar = [ ]
       #
-      class SpaceInsideArrayLiteralBrackets < Cop
+      class SpaceInsideArrayLiteralBrackets < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = '%<command>s space inside array brackets.'
         EMPTY_MSG = '%<command>s space inside empty array brackets.'
@@ -78,9 +79,7 @@ module RuboCop
           return unless node.square_brackets?
 
           left, right = array_brackets(node)
-          if empty_brackets?(left, right)
-            return empty_offenses(node, left, right, EMPTY_MSG)
-          end
+          return empty_offenses(node, left, right, EMPTY_MSG) if empty_brackets?(left, right)
 
           start_ok = next_to_newline?(node, left)
           end_ok = node.single_line? ? false : end_has_own_line?(right)
@@ -88,25 +87,21 @@ module RuboCop
           issue_offenses(node, left, right, start_ok, end_ok)
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           left, right = array_brackets(node)
 
-          lambda do |corrector|
-            if empty_brackets?(left, right)
-              SpaceCorrector.empty_corrections(processed_source, corrector,
-                                               empty_config, left, right)
-            elsif style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector,
-                                          left, right)
-            elsif style == :space
-              SpaceCorrector.add_space(processed_source, corrector, left, right)
-            else
-              compact_corrections(corrector, node, left, right)
-            end
+          if empty_brackets?(left, right)
+            SpaceCorrector.empty_corrections(processed_source, corrector, empty_config, left, right)
+          elsif style == :no_space
+            SpaceCorrector.remove_space(processed_source, corrector, left, right)
+          elsif style == :space
+            SpaceCorrector.add_space(processed_source, corrector, left, right)
+          else
+            compact_corrections(corrector, node, left, right)
           end
         end
-
-        private
 
         def array_brackets(node)
           [left_array_bracket(node), right_array_bracket(node)]
@@ -132,7 +127,7 @@ module RuboCop
           line, col = line_and_column_for(token)
           return true if col == -1
 
-          processed_source.lines[line][0..col] !~ /\S/
+          !/\S/.match?(processed_source.lines[line][0..col])
         end
 
         def index_for(node, token)
@@ -144,11 +139,12 @@ module RuboCop
         end
 
         def issue_offenses(node, left, right, start_ok, end_ok)
-          if style == :no_space
+          case style
+          when :no_space
             start_ok = next_to_comment?(node, left)
             no_space_offenses(node, left, right, MSG, start_ok: start_ok,
                                                       end_ok: end_ok)
-          elsif style == :space
+          when :space
             space_offenses(node, left, right, MSG, start_ok: start_ok,
                                                    end_ok: end_ok)
           else

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'with default EnforcedStyleForLeadingUnderscores => disallowed' do
     let(:cop_config) do
       { 'EnforcedStyleForLeadingUnderscores' => 'disallowed' }

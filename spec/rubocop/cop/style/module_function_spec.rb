@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when enforced style is `module_function`' do
     let(:cop_config) { { 'EnforcedStyle' => 'module_function' } }
 

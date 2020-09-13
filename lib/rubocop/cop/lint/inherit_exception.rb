@@ -33,8 +33,9 @@ module RuboCop
       #   class C < StandardError; end
       #
       #   C = Class.new(StandardError)
-      class InheritException < Cop
+      class InheritException < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Inherit from `%<prefer>s` instead of `%<current>s`.'
         PREFERRED_BASE_CLASS = {
@@ -55,6 +56,8 @@ module RuboCop
           SystemExit
         ].freeze
 
+        RESTRICT_ON_SEND = %i[new].freeze
+
         def_node_matcher :class_new_call?, <<~PATTERN
           (send
             (const {cbase nil?} :Class) :new
@@ -65,19 +68,21 @@ module RuboCop
           return unless node.parent_class &&
                         illegal_class_name?(node.parent_class)
 
-          add_offense(node.parent_class)
+          message = message(node.parent_class)
+
+          add_offense(node.parent_class, message: message) do |corrector|
+            corrector.replace(node.parent_class, preferred_base_class)
+          end
         end
 
         def on_send(node)
           constant = class_new_call?(node)
           return unless constant && illegal_class_name?(constant)
 
-          add_offense(constant)
-        end
+          message = message(constant)
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, preferred_base_class)
+          add_offense(constant, message: message) do |corrector|
+            corrector.replace(constant, preferred_base_class)
           end
         end
 

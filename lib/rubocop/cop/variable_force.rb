@@ -22,6 +22,8 @@ module RuboCop
     #
     #     def after_declaring_variable(variable, variable_table)
     #     end
+    #
+    # @api private
     class VariableForce < Force # rubocop:disable Metrics/ClassLength
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
@@ -152,9 +154,7 @@ module RuboCop
       def process_variable_assignment(node)
         name = node.children.first
 
-        unless variable_table.variable_exist?(name)
-          variable_table.declare_variable(name, node)
-        end
+        variable_table.declare_variable(name, node) unless variable_table.variable_exist?(name)
 
         # Need to scan rhs before assignment so that we can mark previous
         # assignments as referenced if rhs has referencing to the variable
@@ -199,7 +199,6 @@ module RuboCop
         regexp.named_captures.keys
       end
 
-      # rubocop:disable Metrics/AbcSize
       def process_variable_operator_assignment(node)
         if LOGICAL_OPERATOR_ASSIGNMENT_TYPES.include?(node.type)
           asgn_node, rhs_node = *node
@@ -211,9 +210,7 @@ module RuboCop
 
         name = asgn_node.children.first
 
-        unless variable_table.variable_exist?(name)
-          variable_table.declare_variable(name, asgn_node)
-        end
+        variable_table.declare_variable(name, asgn_node) unless variable_table.variable_exist?(name)
 
         # The following statements:
         #
@@ -236,7 +233,6 @@ module RuboCop
 
         skip_children!
       end
-      # rubocop:enable Metrics/AbcSize
 
       def process_variable_multiple_assignment(node)
         lhs_node, rhs_node = *node
@@ -369,9 +365,7 @@ module RuboCop
           AssignmentReference.new(node)
         when *OPERATOR_ASSIGNMENT_TYPES
           asgn_node = node.children.first
-          if asgn_node.lvasgn_type?
-            VariableReference.new(asgn_node.children.first)
-          end
+          VariableReference.new(asgn_node.children.first) if asgn_node.lvasgn_type?
         end
       end
 

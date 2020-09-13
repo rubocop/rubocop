@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
   context 'with space inside empty braces not allowed' do
@@ -216,6 +214,23 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     # regression test; see GH issue 3958
     it 'does not register an offense' do
       expect_no_offenses('{ key: "{" }')
+    end
+  end
+
+  context 'offending hash following empty hash' do
+    # regression test; see GH issue 8642
+    it 'registers an offense on both sides' do
+      expect_offense(<<~RUBY)
+        {}
+        {key: 1}
+        ^ Space inside { missing.
+               ^ Space inside } missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {}
+        { key: 1 }
+      RUBY
     end
   end
 end

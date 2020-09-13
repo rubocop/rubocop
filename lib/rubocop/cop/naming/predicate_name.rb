@@ -27,7 +27,9 @@ module RuboCop
       #   # good
       #   def value?
       #   end
-      class PredicateName < Cop
+      class PredicateName < Base
+        include AllowedMethods
+
         def_node_matcher :dynamic_method_define, <<~PATTERN
           (send nil? #method_definition_macros
             (sym $_)
@@ -40,8 +42,7 @@ module RuboCop
               next if allowed_method_name?(method_name.to_s, prefix)
 
               add_offense(
-                node,
-                location: node.first_argument.loc.expression,
+                node.first_argument.loc.expression,
                 message: message(method_name,
                                  expected_name(method_name.to_s, prefix))
               )
@@ -56,8 +57,7 @@ module RuboCop
             next if allowed_method_name?(method_name, prefix)
 
             add_offense(
-              node,
-              location: :name,
+              node.loc.name,
               message: message(method_name, expected_name(method_name, prefix))
             )
           end
@@ -67,10 +67,10 @@ module RuboCop
         private
 
         def allowed_method_name?(method_name, prefix)
-          !method_name.match(/^#{prefix}[^0-9]/) ||
+          !method_name.match?(/^#{prefix}[^0-9]/) ||
             method_name == expected_name(method_name, prefix) ||
             method_name.end_with?('=') ||
-            allowed_methods.include?(method_name)
+            allowed_method?(method_name)
         end
 
         def expected_name(method_name, prefix)
@@ -93,10 +93,6 @@ module RuboCop
 
         def predicate_prefixes
           cop_config['NamePrefix']
-        end
-
-        def allowed_methods
-          cop_config['AllowedMethods']
         end
 
         def method_definition_macros(macro_name)

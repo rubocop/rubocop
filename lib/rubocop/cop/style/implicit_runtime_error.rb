@@ -14,9 +14,10 @@ module RuboCop
       #
       #   # good
       #   raise ArgumentError, 'Error message here'
-      class ImplicitRuntimeError < Cop
+      class ImplicitRuntimeError < Base
         MSG = 'Use `%<method>s` with an explicit exception class and message,' \
               ' rather than just a message.'
+        RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def_node_matcher :implicit_runtime_error_raise_or_fail,
                          '(send nil? ${:raise :fail} {str dstr})'

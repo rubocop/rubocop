@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
-  subject(:cop) { described_class.new(config) }
-
   shared_examples 'common behavior' do
     it 'registers an offense and corrects alignment with token ' \
       'not preceded by space' do
@@ -256,8 +254,8 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       sources.each do |reason, src|
         context "such as #{reason}" do
           it 'registers offense(s)' do
-            inspect_source(src)
-            expect(cop.offenses.empty?).to be(false)
+            offenses = inspect_source(src)
+            expect(offenses.empty?).to be(false)
           end
         end
       end
@@ -296,15 +294,15 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           sources.each do |reason, src|
             context "such as #{reason}" do
               it 'registers offense(s)' do
-                inspect_source(src)
+                offenses = inspect_source(src)
                 # In this one specific test case, the extra space in question
                 # is to align comments, so it would be allowed by EITHER ONE
                 # being true.  Yes, that means technically it interferes a bit,
                 # but specifically in the way it was intended to.
                 if reason == 'aligning tokens with empty line between'
-                  expect(cop.offenses.empty?).to be(true)
+                  expect(offenses.empty?).to be(true)
                 else
-                  expect(cop.offenses.empty?).to be(false)
+                  expect(offenses.empty?).to be(false)
                 end
               end
             end
@@ -317,8 +315,8 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       let(:allow_comments) { false }
 
       it 'regsiters offense' do
-        inspect_source(src_with_extra)
-        expect(cop.offenses.empty?).to be(false)
+        offenses = inspect_source(src_with_extra)
+        expect(offenses.empty?).to be(false)
       end
 
       it 'does not trigger on only one space before comment' do
@@ -331,23 +329,6 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   context 'when ForceEqualSignAlignment is true' do
     let(:cop_config) do
       { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true }
-    end
-
-    it 'registers an offense and corrects consecutive assignments ' \
-      'that are not aligned' do
-      expect_offense(<<~RUBY)
-        a = 1
-        bb = 2
-           ^ `=` is not aligned with the preceding assignment.
-        ccc = 3
-            ^ `=` is not aligned with the preceding assignment.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        a   = 1
-        bb  = 2
-        ccc = 3
-      RUBY
     end
 
     it 'does not register offenses for multiple complex nested assignments' do
@@ -548,7 +529,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         def batch
           @areas   = params[:param].map {
                        var_1      = 123_456

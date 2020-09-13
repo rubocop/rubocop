@@ -34,8 +34,9 @@ module RuboCop
       #   rescue NameError
       #     baz
       #   end
-      class RescueType < Cop
+      class RescueType < Base
         include RescueNode
+        extend AutoCorrector
 
         MSG = 'Rescuing from `%<invalid_exceptions>s` will raise a ' \
               '`TypeError` instead of catching the actual exception.'
@@ -50,24 +51,23 @@ module RuboCop
           return if invalid_exceptions.empty?
 
           add_offense(
-            node,
-            location: node.loc.keyword.join(rescued.loc.expression),
+            node.loc.keyword.join(rescued.loc.expression),
             message: format(
               MSG, invalid_exceptions: invalid_exceptions.map(&:source)
                                                          .join(', ')
             )
-          )
+          ) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           rescued, _, _body = *node
           range = Parser::Source::Range.new(node.loc.expression.source_buffer,
                                             node.loc.keyword.end_pos,
                                             rescued.loc.expression.end_pos)
 
-          lambda do |corrector|
-            corrector.replace(range, correction(*rescued))
-          end
+          corrector.replace(range, correction(*rescued))
         end
 
         private

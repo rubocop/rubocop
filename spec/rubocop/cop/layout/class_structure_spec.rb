@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:config) do
     RuboCop::Config.new(
       'Layout/ClassStructure' => {
@@ -108,22 +106,13 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           extend SomeModule
         end
       RUBY
-    end
 
-    specify do
-      expect(autocorrect_source_with_loop(<<~RUBY))
-        class Example
-          CONST = 1
+      expect_correction(<<~RUBY)
+        class Person
           include AnotherModule
           extend SomeModule
+          CONST = 'wrong place'
         end
-      RUBY
-        .to eq(<<~RUBY)
-          class Example
-            include AnotherModule
-            extend SomeModule
-            CONST = 1
-          end
       RUBY
     end
   end

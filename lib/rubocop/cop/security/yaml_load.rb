@@ -15,8 +15,11 @@ module RuboCop
       #   YAML.safe_load("--- foo")
       #   YAML.dump("foo")
       #
-      class YAMLLoad < Cop
+      class YAMLLoad < Base
+        extend AutoCorrector
+
         MSG = 'Prefer using `YAML.safe_load` over `YAML.load`.'
+        RESTRICT_ON_SEND = %i[load].freeze
 
         def_node_matcher :yaml_load, <<~PATTERN
           (send (const {nil? cbase} :YAML) :load ...)
@@ -24,12 +27,10 @@ module RuboCop
 
         def on_send(node)
           yaml_load(node) do
-            add_offense(node, location: :selector)
+            add_offense(node.loc.selector) do |corrector|
+              corrector.replace(node.loc.selector, 'safe_load')
+            end
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.selector, 'safe_load') }
         end
       end
     end

@@ -31,10 +31,11 @@ module RuboCop
       #   foo = if expression
       #     'bar'
       #   end
-      class MultilineAssignmentLayout < Cop
+      class MultilineAssignmentLayout < Base
         include CheckAssignment
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         NEW_LINE_OFFENSE = 'Right hand side of multi-line assignment is on ' \
           'the same line as the assignment operator `=`.'
@@ -63,24 +64,19 @@ module RuboCop
         def check_new_line_offense(node, rhs)
           return unless node.loc.operator.line == rhs.first_line
 
-          add_offense(node, message: NEW_LINE_OFFENSE)
+          add_offense(node, message: NEW_LINE_OFFENSE) do |corrector|
+            corrector.insert_after(node.loc.operator, "\n")
+          end
         end
 
         def check_same_line_offense(node, rhs)
           return unless node.loc.operator.line != rhs.first_line
 
-          add_offense(node, message: SAME_LINE_OFFENSE)
-        end
-
-        def autocorrect(node)
-          case style
-          when :new_line
-            ->(corrector) { corrector.insert_after(node.loc.operator, "\n") }
-          when :same_line
-            range = range_between(node.loc.operator.end_pos,
-                                  extract_rhs(node).source_range.begin_pos)
-
-            ->(corrector) { corrector.replace(range, ' ') }
+          add_offense(node, message: SAME_LINE_OFFENSE) do |corrector|
+            range = range_between(
+              node.loc.operator.end_pos, extract_rhs(node).source_range.begin_pos
+            )
+            corrector.replace(range, ' ')
           end
         end
 

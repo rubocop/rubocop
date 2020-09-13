@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'reports an offense for single line def with redundant begin block' do
     expect_offense(<<~RUBY)
       def func; begin; x; y; rescue; z end; end
                 ^^^^^ Redundant `begin` block detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func; ; x; y; rescue; z ; end
     RUBY
   end
 
@@ -21,6 +23,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+       #{trailing_whitespace}
+          ala
+        rescue => e
+          bala
+       #{trailing_whitespace}
+      end
+    RUBY
   end
 
   it 'reports an offense for defs with redundant begin block' do
@@ -32,6 +44,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         rescue => e
           bala
         end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def Test.func
+       #{trailing_whitespace}
+          ala
+        rescue => e
+          bala
+       #{trailing_whitespace}
       end
     RUBY
   end
@@ -75,46 +97,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'auto-corrects source separated by newlines ' \
-     'by removing redundant begin blocks' do
-    src = <<~RUBY
-      def func
-        begin
-          foo
-          bar
-        rescue
-          baz
-        end
-      end
-    RUBY
-
-    result_src = <<~RUBY
-      def func
-        
-          foo
-          bar
-        rescue
-          baz
-        
-      end
-    RUBY
-
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
-  end
-
-  it 'auto-corrects source separated by semicolons ' \
-     'by removing redundant begin blocks' do
-    src = '  def func; begin; x; y; rescue; z end end'
-    result_src = '  def func; ; x; y; rescue; z  end'
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
-  end
-
   it "doesn't modify spacing when auto-correcting" do
-    src = <<~RUBY
+    expect_offense(<<~RUBY)
       def method
         begin
+        ^^^^^ Redundant `begin` block detected.
           BlockA do |strategy|
             foo
           end
@@ -129,9 +116,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       end
     RUBY
 
-    result_src = <<~RUBY
+    expect_correction(<<~RUBY)
       def method
-        
+       #{trailing_whitespace}
           BlockA do |strategy|
             foo
           end
@@ -142,24 +129,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
         rescue => e # some problem
           bar
-        
+       #{trailing_whitespace}
       end
     RUBY
-
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
   end
 
   it 'auto-corrects when there are trailing comments' do
-    src = <<~RUBY
+    expect_offense(<<~RUBY)
       def method
         begin # comment 1
+        ^^^^^ Redundant `begin` block detected.
           do_some_stuff
         rescue # comment 2
         end # comment 3
       end
     RUBY
-    result_src = <<~RUBY
+
+    expect_correction(<<~RUBY)
       def method
          # comment 1
           do_some_stuff
@@ -167,8 +153,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
          # comment 3
       end
     RUBY
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
   end
 
   context '< Ruby 2.5', :ruby24 do
@@ -195,6 +179,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
           rescue => e
             bar
           end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something do
+         #{trailing_whitespace}
+            foo
+          rescue => e
+            bar
+         #{trailing_whitespace}
         end
       RUBY
     end

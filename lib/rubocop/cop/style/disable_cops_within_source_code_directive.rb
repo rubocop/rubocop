@@ -20,28 +20,26 @@ module RuboCop
       #   def fixed_method_name_and_no_rubocop_comments
       #   end
       #
-      class DisableCopsWithinSourceCodeDirective < Cop
+      class DisableCopsWithinSourceCodeDirective < Base
+        extend AutoCorrector
+
         # rubocop:enable Lint/RedundantCopDisableDirective
         MSG = 'Comment to disable/enable RuboCop.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.comments.each do |comment|
             next unless rubocop_directive_comment?(comment)
 
-            add_offense(comment)
-          end
-        end
-
-        def autocorrect(comment)
-          lambda do |corrector|
-            corrector.replace(comment, '')
+            add_offense(comment) do |corrector|
+              corrector.replace(comment, '')
+            end
           end
         end
 
         private
 
         def rubocop_directive_comment?(comment)
-          comment.text =~ CommentConfig::COMMENT_DIRECTIVE_REGEXP
+          CommentConfig::COMMENT_DIRECTIVE_REGEXP.match?(comment.text)
         end
       end
     end

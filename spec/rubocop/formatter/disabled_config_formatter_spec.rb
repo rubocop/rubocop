@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment do # rubocop:disable Layout/LineLength
+RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment do
   include FileHelper
 
   subject(:formatter) { described_class.new(output) }
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       formatter.file_finished('test_b.rb', [offenses.first])
 
       # Cop1 and Cop2 are unknown cops and would raise an validation error
-      allow(RuboCop::Cop::Cop.registry).to receive(:contains_cop_matching?)
+      allow(RuboCop::Cop::Registry.global).to receive(:contains_cop_matching?)
         .and_return(true)
       formatter.finished(['test_a.rb', 'test_b.rb'])
     end
@@ -249,14 +249,10 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
-  context 'with auto-correct supported cop' do
+  context 'with auto-correct supported cop', :restore_registry do
     before do
-      module Test
-        class Cop3 < ::RuboCop::Cop::Cop
-          def autocorrect
-            # Dummy method to respond to #support_autocorrect?
-          end
-        end
+      stub_cop_class('Test::Cop3') do
+        extend RuboCop::Cop::AutoCorrector
       end
 
       formatter.started(['test_auto_correct.rb'])

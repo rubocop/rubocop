@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   it 'rejects a module with more than 5 lines' do
@@ -20,8 +18,9 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(<<~RUBY)
+    offenses = expect_offense(<<~RUBY)
       module Test
+      ^^^^^^^^^^^ Module has too many lines. [6/5]
         a = 1
         a = 2
         a = 3
@@ -30,8 +29,7 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
         a = 6
       end
     RUBY
-    offense = cop.offenses.first
-    expect(offense.location.first_line).to eq(1)
+    offense = offenses.first
     expect(offense.location.last_line).to eq(8)
   end
 
@@ -209,10 +207,44 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
     end
   end
 
+  context 'when `CountAsOne` is not empty' do
+    before { cop_config['CountAsOne'] = ['array'] }
+
+    it 'folds array into one line' do
+      expect_no_offenses(<<~RUBY)
+        module Test
+          a = 1
+          a = [
+            2,
+            3,
+            4,
+            5
+          ]
+        end
+      RUBY
+    end
+  end
+
   context 'when inspecting a class defined with Module.new' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         Foo = Module.new do
+        ^^^ Module has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
+
+  context 'when inspecting a class defined with ::Module.new' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        Foo = ::Module.new do
         ^^^ Module has too many lines. [6/5]
           a = 1
           a = 2

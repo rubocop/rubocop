@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'EnforcedStyle is left_coerce' do
     let(:cop_config) { { 'EnforcedStyle' => 'left_coerce' } }
 

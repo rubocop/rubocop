@@ -8,11 +8,14 @@ module RuboCop
   class ConfigValidator
     extend Forwardable
 
+    # @api private
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
+    # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
                          Reference Safe SafeAutoCorrect].freeze
+    # @api private
     NEW_COPS_VALUES = %w[pending disable enable].freeze
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops
@@ -23,7 +26,6 @@ module RuboCop
       @target_ruby = TargetRuby.new(config)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def validate
       check_cop_config_value(@config)
       reject_conflicting_safe_settings
@@ -45,7 +47,6 @@ module RuboCop
       validate_syntax_cop
       reject_mutually_exclusive_defaults
     end
-    # rubocop:enable Metrics/AbcSize
 
     def target_ruby_version
       target_ruby.version
@@ -86,7 +87,7 @@ module RuboCop
       unknown_cops = []
       invalid_cop_names.each do |name|
         # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Cop.registry.contains_cop_matching?([name])
+        next if Cop::Registry.global.contains_cop_matching?([name])
 
         # Special case for inherit_mode, which is a directive that we keep in
         # the configuration (even though it's not a cop), because it's easier
@@ -150,7 +151,7 @@ module RuboCop
       end
     end
 
-    def validate_enforced_styles(valid_cop_names)
+    def validate_enforced_styles(valid_cop_names) # rubocop:todo Metrics/AbcSize
       valid_cop_names.each do |name|
         styles = @config[name].select { |key, _| key.start_with?('Enforced') }
 

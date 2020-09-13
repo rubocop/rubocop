@@ -3,10 +3,10 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop looks for use of the same name as outer local variables
-      # for block arguments or block local variables.
-      # This is a mimic of the warning
-      # "shadowing outer local variable - foo" from `ruby -cw`.
+      # This cop checks for the use of local variable names from an outer scope
+      # in block arguments or block-local variables. This mirrors the warning
+      # given by `ruby -cw` prior to Ruby 2.6:
+      # "shadowing outer local variable - foo".
       #
       # @example
       #
@@ -31,11 +31,11 @@ module RuboCop
       #       do_something(bar)
       #     end
       #   end
-      class ShadowingOuterLocalVariable < Cop
+      class ShadowingOuterLocalVariable < Base
         MSG = 'Shadowing outer local variable - `%<variable>s`.'
 
-        def join_force?(force_class)
-          force_class == VariableForce
+        def self.joining_forces
+          VariableForce
         end
 
         def before_declaring_variable(variable, variable_table)

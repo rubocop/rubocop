@@ -27,7 +27,7 @@ module RuboCop
       #   when 'second'
       #     do_something_else
       #   end
-      class DuplicateCaseCondition < Cop
+      class DuplicateCaseCondition < Base
         MSG = 'Duplicate `when` condition detected.'
 
         def on_case(case_node)
