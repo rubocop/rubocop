@@ -11,12 +11,16 @@ module RuboCop
     class InfiniteCorrectionLoop < RuntimeError
       attr_reader :offenses
 
-      def initialize(path, offenses)
-        super "Infinite loop detected in #{path}."
-        @offenses = offenses
+      def initialize(path, offenses_by_iteration, loop_start: -1)
+        @offenses = offenses_by_iteration.flatten.uniq
+        root_cause = offenses_by_iteration[loop_start..-1]
+                     .map { |x| x.map(&:cop_name).uniq.join(', ') }
+                     .join(' -> ')
+        super "Infinite loop detected in #{path} and caused by #{root_cause}"
       end
     end
 
+    # @api private
     MAX_ITERATIONS = 200
 
     attr_reader :errors, :warnings
@@ -80,7 +84,10 @@ module RuboCop
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
       # by an editor, it should be inspecting only one file.
-      ResultCache.cleanup(@config_store, @options[:debug]) if files.size > 1 && cached_run?
+      if files.size > 1 && cached_run?
+        ResultCache.cleanup(@config_store, @options[:debug], @options[:cache_root])
+      end
+
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end
@@ -232,18 +239,21 @@ module RuboCop
 
     def do_inspection_loop(file)
       processed_source = get_processed_source(file)
-      offenses = []
+      # This variable is 2d array used to track corrected offenses after each
+      # inspection iteration. This is used to output meaningful infinite loop
+      # error message.
+      offenses_by_iteration = []
 
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
-      iterate_until_no_changes(processed_source, offenses) do
+      iterate_until_no_changes(processed_source, offenses_by_iteration) do
         # The offenses that couldn't be corrected will be found again so we
         # only keep the corrected ones in order to avoid duplicate reporting.
-        offenses.select!(&:corrected?)
+        !offenses_by_iteration.empty? && offenses_by_iteration.last.select!(&:corrected?)
         new_offenses, updated_source_file = inspect_file(processed_source)
-        offenses.concat(new_offenses).uniq!
+        offenses_by_iteration.push(new_offenses)
 
         # We have to reprocess the source to pickup the changes. Since the
         # change could (theoretically) introduce parsing errors, we break the
@@ -253,10 +263,12 @@ module RuboCop
         processed_source = get_processed_source(file)
       end
 
+      # Return summary of corrected offenses after all iterations
+      offenses = offenses_by_iteration.flatten.uniq
       [processed_source, offenses]
     end
 
-    def iterate_until_no_changes(source, offenses)
+    def iterate_until_no_changes(source, offenses_by_iteration)
       # Keep track of the state of the source. If a cop modifies the source
       # and another cop undoes it producing identical source we have an
       # infinite loop.
@@ -268,10 +280,10 @@ module RuboCop
       iterations = 0
 
       loop do
-        check_for_infinite_loop(source, offenses)
+        check_for_infinite_loop(source, offenses_by_iteration)
 
         if (iterations += 1) > MAX_ITERATIONS
-          raise InfiniteCorrectionLoop.new(source.path, offenses)
+          raise InfiniteCorrectionLoop.new(source.path, offenses_by_iteration)
         end
 
         source = yield
@@ -281,11 +293,15 @@ module RuboCop
 
     # Check whether a run created source identical to a previous run, which
     # means that we definitely have an infinite loop.
-    def check_for_infinite_loop(processed_source, offenses)
+    def check_for_infinite_loop(processed_source, offenses_by_iteration)
       checksum = processed_source.checksum
 
-      if @processed_sources.include?(checksum)
-        raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
+      if (loop_start_index = @processed_sources.index(checksum))
+        raise InfiniteCorrectionLoop.new(
+          processed_source.path,
+          offenses_by_iteration,
+          loop_start: loop_start_index
+        )
       end
 
       @processed_sources << checksum

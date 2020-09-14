@@ -64,6 +64,7 @@ module RuboCop
         MSG = 'Missing gem description comment.'
         CHECKED_OPTIONS_CONFIG = 'OnlyFor'
         VERSION_SPECIFIERS_OPTION = 'version_specifiers'
+        RESTRICT_ON_SEND = %i[gem].freeze
 
         def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 

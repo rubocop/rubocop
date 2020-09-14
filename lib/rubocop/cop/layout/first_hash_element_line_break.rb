@@ -16,8 +16,9 @@ module RuboCop
       #     {
       #       a: 1,
       #       b: 2 }
-      class FirstHashElementLineBreak < Cop
+      class FirstHashElementLineBreak < Base
         include FirstElementLineBreak
+        extend AutoCorrector
 
         MSG = 'Add a line break before the first element of a ' \
               'multi-line hash.'
@@ -26,10 +27,6 @@ module RuboCop
           # node.loc.begin tells us whether the hash opens with a {
           # If it doesn't, Style/FirstMethodArgumentLineBreak will handle it
           check_children_line_break(node, node.children) if node.loc.begin
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
         end
       end
     end

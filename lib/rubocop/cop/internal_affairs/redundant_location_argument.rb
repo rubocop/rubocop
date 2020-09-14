@@ -21,6 +21,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant location argument to `#add_offense`.'
+        RESTRICT_ON_SEND = %i[add_offense].freeze
 
         def_node_matcher :redundant_location_argument, <<~PATTERN
           (send nil? :add_offense _

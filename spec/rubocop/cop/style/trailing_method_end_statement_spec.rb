@@ -6,7 +6,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
   end
-  let(:trailing_whitespace) { ' ' }
 
   it 'register offense with trailing end on 2 line method' do
     expect_offense(<<~RUBY)

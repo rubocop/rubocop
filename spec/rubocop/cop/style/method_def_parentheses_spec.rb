@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        def func 
+        def func#{trailing_whitespace}
         end
       RUBY
     end

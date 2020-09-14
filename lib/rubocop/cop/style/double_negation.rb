@@ -36,6 +36,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Avoid the use of double negation (`!!`).'
+        RESTRICT_ON_SEND = %i[!].freeze
 
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 

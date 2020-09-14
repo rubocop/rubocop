@@ -31,6 +31,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `StandardError` over `Exception`.'
+        RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def_node_matcher :exception?, <<~PATTERN
           (send nil? {:raise :fail} $(const ${cbase nil?} :Exception) ... )

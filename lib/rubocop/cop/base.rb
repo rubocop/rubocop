@@ -46,6 +46,9 @@ module RuboCop
       # Consider creation API private
       InvestigationReport = Struct.new(:cop, :processed_source, :offenses, :corrector)
 
+      # List of methods names to restrict calls for `on_send` / `on_csend`
+      RESTRICT_ON_SEND = Set[].freeze
+
       # List of cops that should not try to autocorrect at the same
       # time as this cop
       #
@@ -285,6 +288,10 @@ module RuboCop
 
       def currently_disabled_lines
         @currently_disabled_lines ||= Set.new
+      end
+
+      private_class_method def self.restrict_on_send
+        @restrict_on_send ||= self::RESTRICT_ON_SEND.to_set.freeze
       end
 
       # Called before any investigation

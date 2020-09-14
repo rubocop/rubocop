@@ -36,6 +36,8 @@ module RuboCop
           verbose: %i[key? value?]
         }.freeze
 
+        RESTRICT_ON_SEND = OFFENDING_SELECTORS.values.flatten.freeze
+
         def on_send(node)
           return unless node.arguments.one? && offending_selector?(node.method_name)
 

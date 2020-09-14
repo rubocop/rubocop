@@ -117,6 +117,8 @@ AllCops:
   # CacheRootDirectory is ~ (nil), which it is by default, the root will be
   # taken from the environment variable `$XDG_CACHE_HOME` if it is set, or if
   # `$XDG_CACHE_HOME` is not set, it will be `$HOME/.cache/`.
+  # The CacheRootDirectory can be overwritten by passing the `--cache-root` command
+  # line option or by setting `$RUBOCOP_CACHE_ROOT` environment variable.
   CacheRootDirectory: ~
   # It is possible for a malicious user to know the location of RuboCop's cache
   # directory by looking at CacheRootDirectory, and create a symlink in its
@@ -309,6 +311,19 @@ Layout/AssignmentIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Layout/BeginEndAlignment:
+  Description: 'Align ends corresponding to begins correctly.'
+  Enabled: pending
+  VersionAdded: '0.91'
+  # The value `start_of_line` means that `end` should be aligned the start of the line
+  # where the `begin` keyword is.
+  # The value `begin` means that `end` should be aligned with the `begin` keyword.
+  EnforcedStyleAlignWith: start_of_line
+  SupportedStylesAlignWith:
+    - start_of_line
+    - begin
+  Severity: warning
+
 Layout/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
@@ -399,7 +414,6 @@ Layout/DefEndAlignment:
   SupportedStylesAlignWith:
     - start_of_line
     - def
-  AutoCorrect: false
   Severity: warning
 
 Layout/DotPosition:
@@ -435,6 +449,14 @@ Layout/EmptyLineAfterMagicComment:
   StyleGuide: '#separate-magic-comments-from-code'
   Enabled: true
   VersionAdded: '0.49'
+
+Layout/EmptyLineAfterMultilineCondition:
+  Description: 'Enforces empty line after multiline condition.'
+  # This is disabled, because this style is not very common in practice.
+  Enabled: false
+  VersionAdded: '0.90'
+  Reference:
+    - https://github.com/airbnb/ruby#multiline-if-newline
 
 Layout/EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
@@ -555,7 +577,6 @@ Layout/EndAlignment:
     - keyword
     - variable
     - start_of_line
-  AutoCorrect: false
   Severity: warning
 
 Layout/EndOfLine:
@@ -1374,6 +1395,12 @@ Lint/CircularArgumentReference:
   Enabled: true
   VersionAdded: '0.33'
 
+Lint/ConstantDefinitionInBlock:
+  Description: 'Do not define constants within a block.'
+  StyleGuide: '#no-constant-definition-in-block'
+  Enabled: pending
+  VersionAdded: '0.91'
+
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
@@ -1458,7 +1485,6 @@ Lint/EmptyEnsure:
   Enabled: true
   VersionAdded: '0.10'
   VersionChanged: '0.48'
-  AutoCorrect: false
 
 Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'
@@ -1527,6 +1553,12 @@ Lint/HeredocMethodCallPosition:
   Enabled: false
   StyleGuide: '#heredoc-method-calls'
   VersionAdded: '0.68'
+
+Lint/IdentityComparison:
+  Description: 'Prefer `equal?` over `==` when comparing `object_id`.'
+  Enabled: pending
+  StyleGuide: '#identity-comparison'
+  VersionAdded: '0.91'
 
 Lint/ImplicitStringConcatenation:
   Description: >-
@@ -1779,6 +1811,7 @@ Lint/SafeNavigationChain:
     - presence
     - try
     - try!
+    - in?
 
 Lint/SafeNavigationConsistency:
   Description: >-
@@ -1959,6 +1992,12 @@ Lint/UselessSetterCall:
   Enabled: true
   VersionAdded: '0.13'
   VersionChanged: '0.80'
+  Safe: false
+
+Lint/UselessTimes:
+  Description: 'Checks for useless `Integer#times` calls.'
+  Enabled: pending
+  VersionAdded: '0.91'
   Safe: false
 
 Lint/Void:
@@ -2632,7 +2671,6 @@ Style/ClassAndModuleChildren:
   # have the knowledge to perform either operation safely and thus requires
   # manual oversight.
   SafeAutoCorrect: false
-  AutoCorrect: false
   Enabled: true
   VersionAdded: '0.19'
   #
@@ -3070,6 +3108,7 @@ Style/GlobalStdStream:
   StyleGuide: '#global-stdout'
   Enabled: pending
   VersionAdded: '0.89'
+  SafeAutoCorrect: false
 
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'

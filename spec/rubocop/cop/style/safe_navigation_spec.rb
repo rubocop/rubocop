@@ -3,11 +3,6 @@
 RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
 
-  let(:message) do
-    'Use safe navigation (`&.`) instead of checking if an object ' \
-    'exists before calling the method.'
-  end
-
   it 'allows calls to methods not safeguarded by respond_to' do
     expect_no_offenses('foo.bar')
   end
@@ -88,6 +83,10 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   it 'allows an object check before a method call that is used in ' \
      'a negated regex comparison' do
     expect_no_offenses('foo && foo.bar !~ /baz/')
+  end
+
+  it 'allows an object check before a method call that is used with `empty?`' do
+    expect_no_offenses('foo && foo.empty?')
   end
 
   it 'allows an object check before a method call that is used in ' \

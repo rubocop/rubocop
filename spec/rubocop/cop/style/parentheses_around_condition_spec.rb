@@ -189,7 +189,6 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
 
   context 'parentheses in multiline conditions are not allowed' do
     let(:cop_config) { { 'AllowInMultilineConditions' => false } }
-    let(:trailing_whitespace) { ' ' }
 
     it 'registers an offense for parentheses around multiline condition' do
       expect_offense(<<~RUBY)

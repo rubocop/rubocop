@@ -41,9 +41,10 @@ module RuboCop
       #
       #   # good
       #   7.times{}
-      class SpaceBeforeBlockBraces < Cop
+      class SpaceBeforeBlockBraces < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MISSING_MSG = 'Space missing to the left of {.'
         DETECTED_MSG = 'Space detected to the left of {.'
@@ -75,29 +76,22 @@ module RuboCop
           end
         end
 
-        def autocorrect(range)
-          lambda do |corrector|
-            case range.source
-            when /\s/ then corrector.remove(range)
-            else           corrector.insert_before(range, ' ')
-            end
-          end
-        end
-
         private
 
         def check_empty(left_brace, space_plus_brace, used_style)
           return if style_for_empty_braces == used_style
 
-          config_to_allow_offenses['EnforcedStyleForEmptyBraces'] =
-            used_style.to_s
+          config_to_allow_offenses['EnforcedStyleForEmptyBraces'] = used_style.to_s
 
           if style_for_empty_braces == :space
-            add_offense(left_brace, location: left_brace, message: MISSING_MSG)
+            add_offense(left_brace, message: MISSING_MSG) do |corrector|
+              autocorrect(corrector, left_brace)
+            end
           else
-            space = range_between(space_plus_brace.begin_pos,
-                                  left_brace.begin_pos)
-            add_offense(space, location: space, message: DETECTED_MSG)
+            space = range_between(space_plus_brace.begin_pos, left_brace.begin_pos)
+            add_offense(space, message: DETECTED_MSG) do |corrector|
+              autocorrect(corrector, space)
+            end
           end
         end
 
@@ -110,16 +104,23 @@ module RuboCop
         end
 
         def space_missing(left_brace)
-          add_offense(left_brace, location: left_brace, message: MISSING_MSG) do
-            opposite_style_detected
+          add_offense(left_brace, message: MISSING_MSG) do |corrector|
+            autocorrect(corrector, left_brace)
           end
         end
 
         def space_detected(left_brace, space_plus_brace)
-          space = range_between(space_plus_brace.begin_pos,
-                                left_brace.begin_pos)
-          add_offense(space, location: space, message: DETECTED_MSG) do
-            opposite_style_detected
+          space = range_between(space_plus_brace.begin_pos, left_brace.begin_pos)
+
+          add_offense(space, message: DETECTED_MSG) do |corrector|
+            autocorrect(corrector, space)
+          end
+        end
+
+        def autocorrect(corrector, range)
+          case range.source
+          when /\s/ then corrector.remove(range)
+          else           corrector.insert_before(range, ' ')
           end
         end
 

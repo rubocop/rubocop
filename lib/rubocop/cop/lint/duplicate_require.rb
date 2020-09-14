@@ -15,9 +15,14 @@ module RuboCop
       #   require 'foo'
       #   require 'bar'
       #
+      #   # good
+      #   require 'foo'
+      #   require_relative 'foo'
+      #
       class DuplicateRequire < Base
         MSG = 'Duplicate `%<method>s` detected.'
         REQUIRE_METHODS = %i[require require_relative].freeze
+        RESTRICT_ON_SEND = REQUIRE_METHODS
 
         def_node_matcher :require_call?, <<~PATTERN
           (send {nil? (const _ :Kernel)} {:#{REQUIRE_METHODS.join(' :')}} _)
@@ -30,8 +35,8 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless REQUIRE_METHODS.include?(node.method_name) && require_call?(node)
-          return if @required[node.parent].add?(node.first_argument)
+          return unless require_call?(node)
+          return if @required[node.parent].add?("#{node.method_name}#{node.first_argument}")
 
           add_offense(node, message: format(MSG, method: node.method_name))
         end

@@ -4,6 +4,7 @@ module RuboCop
   class CLI
     module Command
       # Generate a configuration file acting as a TODO list.
+      # @api private
       class AutoGenerateConfig < Base
         self.command_name = :auto_gen_config
 

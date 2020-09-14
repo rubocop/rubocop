@@ -51,5 +51,17 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
         GEM
       end
     end
+
+    context 'and the gem is conditionally duplicated' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-GEM, 'Gemfile')
+          if Dir.exist? local
+            gem 'rubocop', path: local
+          else
+            gem 'rubocop', '~> 0.90.0'
+          end
+        GEM
+      end
+    end
   end
 end

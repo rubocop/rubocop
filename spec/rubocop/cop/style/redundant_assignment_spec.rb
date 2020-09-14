@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment do
       def func
         some_preceding_statements
         something
-        
+       #{trailing_whitespace}
       end
     RUBY
   end
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment do
           some_preceding_statements
           begin
             something
-            
+           #{trailing_whitespace}
           end
         end
       RUBY
@@ -69,11 +69,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment do
         def func
           1
           2
-          
+         #{trailing_whitespace}
         rescue SomeException
           3
           4
-          
+         #{trailing_whitespace}
         rescue AnotherException
           5
         end
@@ -117,12 +117,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment do
           some_preceding_statements
           if x
             1
-            
+           #{trailing_whitespace}
           elsif y
             2
           else
             3
-            
+           #{trailing_whitespace}
           end
         end
       RUBY
@@ -156,13 +156,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment do
           case x
           when y
             1
-            
+           #{trailing_whitespace}
           when z
             2
           when q
           else
             3
-            
+           #{trailing_whitespace}
           end
         end
       RUBY

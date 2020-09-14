@@ -43,6 +43,7 @@ module RuboCop
       class MixinUsage < Base
         MSG = '`%<statement>s` is used at the top level. Use inside `class` ' \
               'or `module`.'
+        RESTRICT_ON_SEND = %i[include extend prepend].freeze
 
         def_node_matcher :include_statement, <<~PATTERN
           (send nil? ${:include :extend :prepend}

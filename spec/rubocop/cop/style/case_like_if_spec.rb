@@ -336,4 +336,12 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
       foo if x == 1
     RUBY
   end
+
+  it 'does not register an offense when an object overrides `equal?` with no arity' do
+    expect_no_offenses(<<~RUBY)
+      if x.equal?
+      elsif y
+      end
+    RUBY
+  end
 end

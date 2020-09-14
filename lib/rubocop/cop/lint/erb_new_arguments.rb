@@ -78,6 +78,8 @@ module RuboCop
           '`ERB.new(str, eoutvar: %<arg_value>s)` instead.'
         ].freeze
 
+        RESTRICT_ON_SEND = %i[new].freeze
+
         def_node_matcher :erb_new_with_non_keyword_arguments, <<~PATTERN
           (send
             (const {nil? cbase} :ERB) :new $...)

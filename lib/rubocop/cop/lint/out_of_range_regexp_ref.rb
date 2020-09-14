@@ -25,6 +25,7 @@ module RuboCop
         REGEXP_ARGUMENT_METHODS = %i[=~ match grep gsub gsub! sub sub! [] slice slice! index rindex
                                      scan partition rpartition start_with? end_with?].to_set.freeze
         REGEXP_CAPTURE_METHODS = (REGEXP_RECEIVER_METHODS + REGEXP_ARGUMENT_METHODS).freeze
+        RESTRICT_ON_SEND = REGEXP_CAPTURE_METHODS
 
         def on_new_investigation
           @valid_ref = 0
@@ -35,8 +36,6 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless REGEXP_CAPTURE_METHODS.include?(node.method_name)
-
           @valid_ref = nil
 
           if node.receiver&.regexp_type?
@@ -64,25 +63,15 @@ module RuboCop
 
         private
 
-        def check_regexp(regexp)
-          return if contain_non_literal?(regexp)
+        def check_regexp(node)
+          return if node.interpolation?
 
-          tree = Regexp::Parser.parse(regexp.content)
-          @valid_ref = regexp_captures(tree)
-        end
-
-        def contain_non_literal?(node)
-          node.children.size != 2 || !node.children.first.str_type?
-        end
-
-        def regexp_captures(tree)
-          named_capture = numbered_capture = 0
-          tree.each_expression do |e|
-            if e.type?(:group)
-              e.respond_to?(:name) ? named_capture += 1 : numbered_capture += 1
-            end
-          end
-          named_capture.positive? ? named_capture : numbered_capture
+          named_capture = node.each_capture(named: true).count
+          @valid_ref = if named_capture.positive?
+                         named_capture
+                       else
+                         node.each_capture(named: false).count
+                       end
         end
       end
     end

@@ -63,6 +63,23 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
     RUBY
   end
 
+  it 'correctly corrects when using safe navigation method call' do
+    expect_offense(<<~RUBY)
+      def do_something
+        array&.each do |row|
+        ^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+          yield row
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_something(&block)
+        array&.each(&block)
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when method contains multiple `yield`s' do
     expect_offense(<<~RUBY)
       def m

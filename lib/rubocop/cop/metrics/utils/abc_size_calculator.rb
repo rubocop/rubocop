@@ -31,6 +31,8 @@ module RuboCop
           # TODO: move to rubocop-ast
           ARGUMENT_TYPES = %i[arg optarg restarg kwarg kwoptarg kwrestarg blockarg].freeze
 
+          private_constant :BRANCH_NODES, :CONDITION_NODES, :ARGUMENT_TYPES
+
           def initialize(node)
             @assignment = 0
             @branch = 0

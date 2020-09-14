@@ -2,6 +2,7 @@
 
 module RuboCop
   # This class handles obsolete configuration.
+  # @api private
   class ConfigObsoletion
     RENAMED_COPS = {
       'Layout/AlignArguments' => 'Layout/ArgumentAlignment',

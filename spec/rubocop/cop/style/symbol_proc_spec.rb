@@ -79,8 +79,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   context 'when the method has arguments' do
-    let(:source) { 'method(one, 2) { |x| x.test }' }
-
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         method(one, 2) { |x| x.test }
@@ -122,8 +120,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   context 'when `super` has arguments' do
-    let(:source) { 'super(one, two) { |x| x.test }' }
-
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         super(one, two) { |x| x.test }
@@ -137,8 +133,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   context 'when `super` has no arguments' do
-    let(:source) { 'super { |x| x.test }' }
-
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         super { |x| x.test }

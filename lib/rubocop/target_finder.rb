@@ -3,6 +3,7 @@
 module RuboCop
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
+  # @api private
   class TargetFinder
     def initialize(config_store, options = {})
       @config_store = config_store

@@ -1563,7 +1563,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'fails when a configuration file has invalid YAML syntax' do
+    # FIXME: Remove `broken_on: jruby`, which works around a JRuby 9.2.13.0 regression:
+    # https://github.com/jruby/jruby/issues/6365
+    it 'fails when a configuration file has invalid YAML syntax', broken_on: :jruby do
       create_file('example/.rubocop.yml', <<~YAML)
         AllCops:
           Exclude:

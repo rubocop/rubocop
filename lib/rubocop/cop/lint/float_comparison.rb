@@ -35,9 +35,9 @@ module RuboCop
         FLOAT_RETURNING_METHODS = %i[to_f Float fdiv].freeze
         FLOAT_INSTANCE_METHODS = %i[@- abs magnitude modulo next_float prev_float quo].to_set.freeze
 
-        def on_send(node)
-          return unless EQUALITY_METHODS.include?(node.method_name)
+        RESTRICT_ON_SEND = EQUALITY_METHODS
 
+        def on_send(node)
           lhs, _method, rhs = *node
           add_offense(node) if float?(lhs) || float?(rhs)
         end

@@ -980,10 +980,6 @@ end
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `false`
-| Boolean
-
 | EnforcedStyle
 | `nested`
 | `nested`, `compact`
@@ -3520,7 +3516,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.89
 | -
 |===
@@ -3634,6 +3630,7 @@ end
 # good
 def test
   return unless something
+
   work
 end
 
@@ -3694,6 +3691,9 @@ ok
 Checks for presence or absence of braces around hash literal as a last
 array item depending on configuration.
 
+NOTE: This cop will ignore arrays where all items are hashes, regardless of
+EnforcedStyle.
+
 === Examples
 
 ==== EnforcedStyle: braces (default)
@@ -3705,6 +3705,9 @@ array item depending on configuration.
 
 # good
 [1, 2, { one: 1, two: 2 }]
+
+# good
+[{ one: 1 }, { two: 2 }]
 ----
 
 ==== EnforcedStyle: no_braces
@@ -3716,6 +3719,9 @@ array item depending on configuration.
 
 # good
 [1, 2, one: 1, two: 2]
+
+# good
+[{ one: 1 }, { two: 2 }]
 ----
 
 === Configurable attributes
@@ -4975,9 +4981,19 @@ when reading code.
 
 [source,ruby]
 ----
+# bad
 a do
   b
 end.c
+
+# good
+a { b }.c
+
+# good
+foo = a do
+  b
+end
+foo.c
 ----
 
 === References
@@ -5740,6 +5756,9 @@ end
 |===
 
 This cop checks for multi-line ternary op expressions.
+
+NOTE: `return if ... else ... end` is syntax error. If `return` is used before
+multiline ternary operator expression, it cannot be auto-corrected.
 
 === Examples
 
@@ -8646,6 +8665,10 @@ foo && foo.nil? # method that `nil` responds to
 foo && foo < bar
 foo < bar if foo
 
+# When checking `foo&.empty?` in a conditional, `foo` being `nil` will actually
+# do the opposite of what the author intends.
+foo && foo.empty?
+
 # This could start returning `nil` as well as the return of the method
 foo.nil? || foo.bar
 !foo || foo.bar
@@ -9406,6 +9429,11 @@ warn('hello')
 
 This cop checks for places where string concatenation
 can be replaced with string interpolation.
+
+The cop can autocorrect simple cases but will skip autocorrecting
+more complex cases where the resulting code would be harder to read.
+In those cases, it might be useful to extract statements to local
+variables or methods which you can then interpolate in a string.
 
 === Examples
 

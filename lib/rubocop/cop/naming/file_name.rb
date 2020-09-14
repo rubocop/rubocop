@@ -33,7 +33,7 @@ module RuboCop
                             'called `%<namespace>s`.'
         MSG_REGEX = '`%<basename>s` should match `%<regex>s`.'
 
-        SNAKE_CASE = /^[\da-z_.?!]+$/.freeze
+        SNAKE_CASE = /^[\d[[:lower:]]_.?!]+$/.freeze
 
         def on_new_investigation
           file_path = processed_source.file_path

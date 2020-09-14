@@ -129,9 +129,9 @@ module RuboCop
 
       def default_configuration
         @default_configuration ||= begin
-                                     print 'Default ' if debug?
-                                     load_file(DEFAULT_FILE)
-                                   end
+          print 'Default ' if debug?
+          load_file(DEFAULT_FILE)
+        end
       end
 
       # Returns the path rubocop inferred as the root of the project. No file
@@ -140,20 +140,31 @@ module RuboCop
         @project_root ||= find_project_root
       end
 
+      PENDING_BANNER = <<~BANNER
+        The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
+
+        Please also note that can also opt-in to new cops by default by adding this to your config:
+          AllCops:
+            NewCops: enable
+      BANNER
+
       def warn_on_pending_cops(pending_cops)
         return if pending_cops.empty?
 
-        warn Rainbow('The following cops were added to RuboCop, but are not ' \
-                     'configured. Please set Enabled to either `true` or ' \
-                     '`false` in your `.rubocop.yml` file:').yellow
+        warn Rainbow(PENDING_BANNER).yellow
 
         pending_cops.each do |cop|
-          version = cop.metadata['VersionAdded'] || 'N/A'
-
-          warn Rainbow(" - #{cop.name} (#{version})").yellow
+          warn_pending_cop cop
         end
 
         warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow
+      end
+
+      def warn_pending_cop(cop)
+        version = cop.metadata['VersionAdded'] || 'N/A'
+
+        warn Rainbow("#{cop.name}: # (new in #{version})").yellow
+        warn Rainbow('  Enabled: true').yellow
       end
 
       # Merges the given configuration with the default one.

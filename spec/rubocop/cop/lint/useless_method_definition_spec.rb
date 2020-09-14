@@ -7,18 +7,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
     { 'AllowComments' => true }
   end
 
-  it 'registers an offense and corrects for empty constructor' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for empty constructor' do
+    expect_no_offenses(<<~RUBY)
       class Foo
         def initialize(arg1, arg2)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless method definition detected.
         end
-      end
-    RUBY
-
-    expect_correction(<<~RUBY)
-      class Foo
-        
       end
     RUBY
   end
@@ -88,6 +81,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
             super
           end
 
+          def other_class_method_with_parens
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless method definition detected.
+            super()
+          end
+
           def other_class_method_with_args(arg)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless method definition detected.
             super(arg)
@@ -102,26 +100,28 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
           do_something
         end
 
-        
+       #{trailing_whitespace}
 
-        
+       #{trailing_whitespace}
 
         def self.useful_class_method
           do_something
         end
 
-        
+       #{trailing_whitespace}
 
-        
+       #{trailing_whitespace}
 
         class << self
           def self.other_useful_class_method
             do_something
           end
 
-          
+         #{trailing_whitespace}
 
-          
+         #{trailing_whitespace}
+
+         #{trailing_whitespace}
         end
       end
     RUBY
@@ -145,6 +145,26 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
       def method2(foo, bar)
         super(bar, foo)
       end
+
+      def method3(foo, bar)
+        super()
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when method definition contains optional argument' do
+    expect_no_offenses(<<~RUBY)
+      def method(x = 1)
+        super
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when method definition contains optional keyword argument' do
+    expect_no_offenses(<<~RUBY)
+      def method(x: 1)
+        super
+      end
     RUBY
   end
 
@@ -154,28 +174,5 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
         # Comment.
       end
     RUBY
-  end
-
-  context 'when AllowComments is false' do
-    let(:cop_config) do
-      { 'AllowComments' => false }
-    end
-
-    it 'registers an offense when constructor contains only comments' do
-      expect_offense(<<~RUBY)
-        class Foo
-          def initialize
-          ^^^^^^^^^^^^^^ Useless method definition detected.
-            # Comment.
-          end
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        class Foo
-          
-        end
-      RUBY
-    end
   end
 end

@@ -165,4 +165,17 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop do
       end
     RUBY
   end
+
+  it 'does not register an offense when branch includes continue statement preceding break statement' do
+    expect_no_offenses(<<~RUBY)
+      while x > 0
+        if y
+          next if something
+          break
+        else
+          break
+        end
+      end
+    RUBY
+  end
 end

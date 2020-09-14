@@ -23,13 +23,14 @@ module RuboCop
       class RandOne < Base
         MSG = '`%<method>s` always returns `0`. ' \
               'Perhaps you meant `rand(2)` or `rand`?'
+        RESTRICT_ON_SEND = %i[rand].freeze
 
         def_node_matcher :rand_one?, <<~PATTERN
           (send {(const {nil? cbase} :Kernel) nil?} :rand {(int {-1 1}) (float {-1.0 1.0})})
         PATTERN
 
         def on_send(node)
-          return unless node.method?(:rand) && rand_one?(node)
+          return unless rand_one?(node)
 
           add_offense(node)
         end

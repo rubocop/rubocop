@@ -1,18 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
-  let(:source) do
-    <<~RUBY
-      foo def a
-        a1
-      end
-
-      foo def b
-            b1
-          end
-    RUBY
-  end
-
   context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) do
       { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }
@@ -63,6 +51,21 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
           foo def b
                 b1
           end
+        RUBY
+      end
+    end
+
+    context 'when using refinements and `private def`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          using Module.new {
+            refine Hash do
+              class << Hash
+                private def _ruby2_keywords_hash(*args)
+                end
+              end
+            end
+          }
         RUBY
       end
     end

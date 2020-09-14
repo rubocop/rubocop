@@ -18,6 +18,7 @@ module RuboCop
 
         MSG = 'Use `method?(%<method_name>s)` instead of ' \
               '`method_name == %<method_name>s`.'
+        RESTRICT_ON_SEND = %i[==].freeze
 
         def_node_matcher :method_name?, <<~PATTERN
           (send

@@ -20,18 +20,15 @@ module RuboCop
       #     b,
       #     c
       #   ]
-      class MultilineArrayLineBreaks < Cop
+      class MultilineArrayLineBreaks < Base
         include MultilineElementLineBreaks
+        extend AutoCorrector
 
         MSG = 'Each item in a multi-line array must start ' \
           'on a separate line.'
 
         def on_array(node)
           check_line_breaks(node, node.children)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
         end
       end
     end

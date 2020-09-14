@@ -745,7 +745,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         bar
       rescue StandardError
         baz
-        end
+      end
 
       def func
         x; y; rescue StandardError; z
@@ -1111,7 +1111,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       module A
         module B
-      end end
+        end end
     RUBY
     uncorrected = $stdout.string.split($RS).select do |line|
       line.include?('example.rb:') && !line.include?('[Corrected]')
@@ -1560,6 +1560,42 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         <<~SQL.squish)
           SELECT * FROM bar
         SQL
+    RUBY
+  end
+
+  it 'corrects Lint/ParenthesesAsGroupedExpression and offenses and ' \
+     'accepts Style/RedundantParentheses' do
+    create_file('example.rb', <<~RUBY)
+      do_something (argument)
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--auto-correct',
+          '--only', 'Lint/ParenthesesAsGroupedExpression,Style/RedundantParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      do_something(argument)
+    RUBY
+  end
+
+  it 'does not crash Lint/SafeNavigationWithEmpty and offenses and accepts Style/SafeNavigation ' \
+     'when checking `foo&.empty?` in a conditional' do
+    create_file('example.rb', <<~RUBY)
+      do_something if ENV['VERSION'] && ENV['VERSION'].empty?
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--auto-correct',
+          '--only', 'Lint/SafeNavigationWithEmpty,Style/SafeNavigation'
+        ]
+      )
+    ).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      do_something if ENV['VERSION'] && ENV['VERSION'].empty?
     RUBY
   end
 

@@ -210,6 +210,9 @@ def on_send(node)
 end
 ----
 
+The `on_send` callback is the most used and can be optimized by restricting the acceptable
+method names with a constant `RESTRICT_ON_SEND`.
+
 And the final cop code will look like something like this:
 
 [source,ruby]
@@ -232,6 +235,8 @@ module RuboCop
           (send (send $(...) :empty?) :!)
         PATTERN
 
+        RESTRICT_ON_SEND = [:!].freeze # optimization: don't call `on_send` unless
+                                       # the method name is in this list
         def on_send(node)
           return unless not_empty_call?(node)
 

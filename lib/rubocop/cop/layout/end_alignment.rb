@@ -17,6 +17,11 @@ module RuboCop
       # If it's set to `start_of_line`, the `end` shall be aligned with the
       # start of the line where the matching keyword appears.
       #
+      # This `Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
+      # by default. On the other hand, `Layout/BeginEndAlignment` cop aligns with
+      # `EnforcedStyleAlignWith: start_of_line` by default due to `||= begin` tends
+      # to align with the start of the line. These style can be configured by each cop.
+      #
       # @example EnforcedStyleAlignWith: keyword (default)
       #   # bad
       #
@@ -172,16 +177,6 @@ module RuboCop
             # RHS.
             node
           end
-        end
-
-        def start_line_range(node)
-          expr   = node.source_range
-          buffer = expr.source_buffer
-          source = buffer.source_line(expr.line)
-          range  = buffer.line_range(expr.line)
-
-          range_between(range.begin_pos + (source =~ /\S/),
-                        range.begin_pos + (source =~ /\s*\z/))
         end
       end
     end

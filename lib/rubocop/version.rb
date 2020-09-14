@@ -3,12 +3,13 @@
 module RuboCop
   # This module holds the RuboCop version information.
   module Version
-    STRING = '0.89.1'
+    STRING = '0.90.0'
 
     MSG = '%<version>s (using Parser %<parser_version>s, '\
           'rubocop-ast %<rubocop_ast_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s %<ruby_platform>s)'
 
+    # @api private
     def self.version(debug: false)
       if debug
         format(MSG, version: STRING, parser_version: Parser::VERSION,

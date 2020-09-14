@@ -3,10 +3,6 @@
 RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
   subject(:cop) { described_class.new }
 
-  let(:message) do
-    'Use only a single space inside array percent literal.'
-  end
-
   %w[i I w W].each do |type|
     [%w[{ }], %w[( )], %w([ ]), %w[! !]].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do

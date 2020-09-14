@@ -194,4 +194,12 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
       end
     end
   end
+
+  context 'when using safe navigation operator with a unary operator' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        do_something&.* -1
+      RUBY
+    end
+  end
 end

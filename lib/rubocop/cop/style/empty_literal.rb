@@ -25,6 +25,8 @@ module RuboCop
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'
         STR_MSG = 'Use string literal `%<prefer>s` instead of `String.new`.'
 
+        RESTRICT_ON_SEND = %i[new].freeze
+
         def_node_matcher :array_node, '(send (const {nil? cbase} :Array) :new)'
         def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new)'
         def_node_matcher :str_node, '(send (const {nil? cbase} :String) :new)'
@@ -69,7 +71,7 @@ module RuboCop
           parent = node.parent
           return false unless parent && %i[send super zsuper].include?(parent.type)
 
-          node.object_id == parent.arguments.first.object_id &&
+          node.equal?(parent.arguments.first) &&
             !parentheses?(node.parent)
         end
 

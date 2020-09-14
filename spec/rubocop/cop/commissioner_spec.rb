@@ -7,15 +7,18 @@ RSpec.describe RuboCop::Cop::Commissioner do
     end
 
     let(:report) { commissioner.investigate(processed_source) }
-    let(:cop_offenses) { [] }
-    let(:cop_report) do
-      RuboCop::Cop::Base::InvestigationReport
-        .new(nil, processed_source, cop_offenses, nil)
+    let(:cop_class) do
+      stub_const('Fake::FakeCop', Class.new(RuboCop::Cop::Base) do
+                                    def on_int(node); end
+                                    alias_method :on_def, :on_int
+                                    alias_method :on_send, :on_int
+                                    alias_method :on_csend, :on_int
+                                  end)
     end
     let(:cop) do
-      # rubocop:disable RSpec/VerifiedDoubles
-      double(RuboCop::Cop::Base, complete_investigation: cop_report).as_null_object
-      # rubocop:enable RSpec/VerifiedDoubles
+      cop_class.new.tap do |c|
+        allow(c).to receive(:complete_investigation).and_return(cop_report)
+      end
     end
     let(:cops) { [cop] }
     let(:options) { {} }
@@ -28,6 +31,15 @@ RSpec.describe RuboCop::Cop::Commissioner do
       end
     RUBY
     let(:processed_source) { parse_source(source, 'file.rb') }
+    let(:cop_offenses) { [] }
+    let(:cop_report) do
+      RuboCop::Cop::Base::InvestigationReport
+        .new(nil, processed_source, cop_offenses, nil)
+    end
+
+    around do |example|
+      RuboCop::Cop::Registry.with_temporary_global { example.run }
+    end
 
     context 'when a cop reports offenses' do
       let(:cop_offenses) { [Object.new] }
@@ -40,6 +52,40 @@ RSpec.describe RuboCop::Cop::Commissioner do
     it 'traverses the AST and invoke cops specific callbacks' do
       expect(cop).to receive(:on_def).once
       offenses
+    end
+
+    context 'traverses the AST with on_send / on_csend' do
+      let(:source) { 'foo; var = bar; var&.baz' }
+
+      context 'for unrestricted cops' do
+        it 'calls on_send all method calls' do
+          expect(cop).to receive(:on_send).twice
+          expect(cop).to receive(:on_csend).once
+          offenses
+        end
+      end
+
+      context 'for a restricted cop' do
+        before { stub_const("#{cop_class}::RESTRICT_ON_SEND", restrictions) }
+
+        let(:restrictions) { [:bar] }
+
+        it 'calls on_send for the right method calls' do
+          expect(cop).to receive(:on_send).once
+          expect(cop).not_to receive(:on_csend)
+          offenses
+        end
+
+        context 'on both csend and send' do
+          let(:restrictions) { %i[bar baz] }
+
+          it 'calls on_send for the right method calls' do
+            expect(cop).to receive(:on_send).once
+            expect(cop).to receive(:on_csend).once
+            offenses
+          end
+        end
+      end
     end
 
     it 'stores all errors raised by the cops' do

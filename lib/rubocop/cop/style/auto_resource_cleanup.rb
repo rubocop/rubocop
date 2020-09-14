@@ -23,6 +23,8 @@ module RuboCop
           File: :open
         }.freeze
 
+        RESTRICT_ON_SEND = TARGET_METHODS.values.freeze
+
         def on_send(node)
           TARGET_METHODS.each do |target_class, target_method|
             next if node.method_name != target_method

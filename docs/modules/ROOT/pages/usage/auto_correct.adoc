@@ -80,7 +80,7 @@ str << 'world' # => now fails because `str` is frozen
 
 str = +'hello' # => We want an unfrozen string literal here...
 str << 'world' # => ok
----
+----
 
 This diagnostic is valid since the magic comment is indeed missing (thus `Safe: true`),
 but the auto-correction is not; some string literals need to be prefixed with `+` to avoid

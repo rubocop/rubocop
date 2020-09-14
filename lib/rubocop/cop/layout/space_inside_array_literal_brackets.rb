@@ -67,9 +67,10 @@ module RuboCop
       #   foo = [ ]
       #   bar = [ ]
       #
-      class SpaceInsideArrayLiteralBrackets < Cop
+      class SpaceInsideArrayLiteralBrackets < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = '%<command>s space inside array brackets.'
         EMPTY_MSG = '%<command>s space inside empty array brackets.'
@@ -86,25 +87,21 @@ module RuboCop
           issue_offenses(node, left, right, start_ok, end_ok)
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           left, right = array_brackets(node)
 
-          lambda do |corrector|
-            if empty_brackets?(left, right)
-              SpaceCorrector.empty_corrections(processed_source, corrector,
-                                               empty_config, left, right)
-            elsif style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector,
-                                          left, right)
-            elsif style == :space
-              SpaceCorrector.add_space(processed_source, corrector, left, right)
-            else
-              compact_corrections(corrector, node, left, right)
-            end
+          if empty_brackets?(left, right)
+            SpaceCorrector.empty_corrections(processed_source, corrector, empty_config, left, right)
+          elsif style == :no_space
+            SpaceCorrector.remove_space(processed_source, corrector, left, right)
+          elsif style == :space
+            SpaceCorrector.add_space(processed_source, corrector, left, right)
+          else
+            compact_corrections(corrector, node, left, right)
           end
         end
-
-        private
 
         def array_brackets(node)
           [left_array_bracket(node), right_array_bracket(node)]

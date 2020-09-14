@@ -5,6 +5,7 @@ module RuboCop
     module Command
       # Shows the given cops, or all cops by default, and their configurations
       # for the current directory.
+      # @api private
       class ShowCops < Base
         self.command_name = :show_cops
 

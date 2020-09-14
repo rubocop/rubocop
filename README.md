@@ -22,7 +22,7 @@
 **RuboCop** is a Ruby static code analyzer (a.k.a. `linter`) and code formatter. Out of the box it
 will enforce many of the guidelines outlined in the community [Ruby Style
 Guide](https://rubystyle.guide). Apart from reporting the problems discovered in your code,
-RuboCop can also automatically fix many of them you.
+RuboCop can also automatically fix many of them for you.
 
 RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various
 [configuration options](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml).
@@ -49,7 +49,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version lock in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.89.1', require: false
+gem 'rubocop', '~> 0.90.0', require: false
 ```
 
 ## Quickstart

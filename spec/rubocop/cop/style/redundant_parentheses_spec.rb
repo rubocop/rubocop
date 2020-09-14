@@ -388,6 +388,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
     end
   end
 
+  context 'when parentheses are used like method argument parentheses' do
+    it 'accepts parens around the arg' do
+      expect_no_offenses('method (arg)')
+    end
+  end
+
   it 'accepts parentheses around the error passed to rescue' do
     expect_no_offenses(<<~RUBY)
       begin
