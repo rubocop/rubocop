@@ -283,7 +283,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      def a; end; 
+      def a; end;#{trailing_whitespace}
 
       def b; end
     RUBY

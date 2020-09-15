@@ -176,7 +176,10 @@ module RuboCop
           rubocop_extra_features
             .select { |path| File.file?(path) }
             .sort!
-            .each { |path| digest << Zlib.crc32(IO.read(path)).to_s } # mtime not reliable
+            .each do |path|
+              content = File.open(path, 'rb', &:read)
+              digest << Zlib.crc32(content).to_s # mtime not reliable
+            end
           digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
           digest.hexdigest
         end

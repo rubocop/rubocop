@@ -37,7 +37,7 @@ module RuboCop
                 (arg _key)
                 (arg $_))
               (arg _memo))
-            ({send csend} (lvar _memo) :[]= $(lvar _key) $_))
+            ({send csend} (lvar _memo) :[]= $(lvar _key) $!`_memo))
         PATTERN
 
         def_node_matcher :on_bad_hash_brackets_map, <<~PATTERN

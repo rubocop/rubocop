@@ -3516,7 +3516,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.89
 | -
 |===
@@ -5756,6 +5756,9 @@ end
 |===
 
 This cop checks for multi-line ternary op expressions.
+
+NOTE: `return if ... else ... end` is syntax error. If `return` is used before
+multiline ternary operator expression, it cannot be auto-corrected.
 
 === Examples
 

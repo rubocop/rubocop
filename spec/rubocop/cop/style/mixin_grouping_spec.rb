@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
           class Foo
             prepend Qux, Baz, Bar
             do_something_else
-            
+           #{trailing_whitespace}
           end
         RUBY
       end
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
             prepend Qux, Bar
             Other.prepend Baz
             do_something_else
-            
+           #{trailing_whitespace}
           end
         RUBY
       end

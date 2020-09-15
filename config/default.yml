@@ -117,7 +117,7 @@ AllCops:
   # CacheRootDirectory is ~ (nil), which it is by default, the root will be
   # taken from the environment variable `$XDG_CACHE_HOME` if it is set, or if
   # `$XDG_CACHE_HOME` is not set, it will be `$HOME/.cache/`.
-  # The CacheRootDirectory can be overwritten by passing the `--cache-root` command 
+  # The CacheRootDirectory can be overwritten by passing the `--cache-root` command
   # line option or by setting `$RUBOCOP_CACHE_ROOT` environment variable.
   CacheRootDirectory: ~
   # It is possible for a malicious user to know the location of RuboCop's cache
@@ -1395,6 +1395,12 @@ Lint/CircularArgumentReference:
   Enabled: true
   VersionAdded: '0.33'
 
+Lint/ConstantDefinitionInBlock:
+  Description: 'Do not define constants within a block.'
+  StyleGuide: '#no-constant-definition-in-block'
+  Enabled: pending
+  VersionAdded: '0.91'
+
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
@@ -1547,6 +1553,12 @@ Lint/HeredocMethodCallPosition:
   Enabled: false
   StyleGuide: '#heredoc-method-calls'
   VersionAdded: '0.68'
+
+Lint/IdentityComparison:
+  Description: 'Prefer `equal?` over `==` when comparing `object_id`.'
+  Enabled: pending
+  StyleGuide: '#identity-comparison'
+  VersionAdded: '0.91'
 
 Lint/ImplicitStringConcatenation:
   Description: >-
@@ -1980,6 +1992,12 @@ Lint/UselessSetterCall:
   Enabled: true
   VersionAdded: '0.13'
   VersionChanged: '0.80'
+  Safe: false
+
+Lint/UselessTimes:
+  Description: 'Checks for useless `Integer#times` calls.'
+  Enabled: pending
+  VersionAdded: '0.91'
   Safe: false
 
 Lint/Void:
@@ -3090,6 +3108,7 @@ Style/GlobalStdStream:
   StyleGuide: '#global-stdout'
   Enabled: pending
   VersionAdded: '0.89'
+  SafeAutoCorrect: false
 
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'

@@ -468,4 +468,12 @@ RSpec.describe RuboCop::Cop::Naming::FileName do
       expect(offenses.empty?).to be(true)
     end
   end
+
+  context 'with non-ascii characters in filename' do
+    let(:filename) { '/some/dir/ünbound_sérvér.rb' }
+
+    it 'reports an offense' do
+      expect(offenses.empty?).to be(true)
+    end
+  end
 end

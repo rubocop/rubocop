@@ -6,7 +6,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
   end
-  let(:trailing_whitespace) { ' ' }
 
   it 'registers an offense when body trails after module definition' do
     expect_offense(<<~RUBY)
