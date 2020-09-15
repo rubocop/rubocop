@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.91.0 (2020-09-15)
+
 ### New features
 
 * New option `--cache-root` and support for the `RUBOCOP_CACHE_ROOT` environment variable. Both can be used to override the `AllCops: CacheRootDirectory` config, especially in a CI setting. ([@sascha-wolf][])
