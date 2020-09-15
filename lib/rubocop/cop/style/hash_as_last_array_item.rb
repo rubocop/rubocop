@@ -62,6 +62,7 @@ module RuboCop
 
         def check_no_braces(node)
           return unless node.braces?
+          return if node.children.empty? # Empty hash cannot be "unbraced"
 
           add_offense(node, message: 'Omit the braces around the hash.') do |corrector|
             corrector.remove(node.loc.begin)
