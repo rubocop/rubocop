@@ -26,9 +26,11 @@ module RuboCop
           return unless compare_between_object_id_by_double_equal?(node)
 
           add_offense(node) do |corrector|
-            receiver = node.receiver.receiver.source
-            argument = node.first_argument.receiver.source
-            replacement = "#{receiver}.equal?(#{argument})"
+            receiver = node.receiver.receiver
+            argument = node.first_argument.receiver
+            return unless receiver && argument
+
+            replacement = "#{receiver.source}.equal?(#{argument.source})"
 
             corrector.replace(node, replacement)
           end
