@@ -1719,6 +1719,36 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    it 'can parse JSON result when specifying `--format=json` and `--stdin` options' do
+      begin
+        $stdin = StringIO.new('p $/')
+        argv   = ['--auto-correct-all',
+                  '--only=Style/SpecialGlobalVars',
+                  '--format=json',
+                  '--stdin',
+                  'fake.rb']
+        expect(cli.run(argv)).to eq(0)
+        expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
+      ensure
+        $stdin = STDIN
+      end
+    end
+
+    it 'can parse JSON result when specifying `--format=j` and `--stdin` options' do
+      begin
+        $stdin = StringIO.new('p $/')
+        argv   = ['--auto-correct-all',
+                  '--only=Style/SpecialGlobalVars',
+                  '--format=j',
+                  '--stdin',
+                  'fake.rb']
+        expect(cli.run(argv)).to eq(0)
+        expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
+      ensure
+        $stdin = STDIN
+      end
+    end
+
     it 'detects CR at end of line' do
       begin
         create_file('example.rb', "puts 'hello world'\r")

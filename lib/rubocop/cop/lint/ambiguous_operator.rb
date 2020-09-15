@@ -43,6 +43,8 @@ module RuboCop
             next unless diagnostic.reason == :ambiguous_prefix
 
             offense_node = find_offense_node_by(diagnostic)
+            next unless offense_node
+
             message = message(diagnostic)
 
             add_offense(

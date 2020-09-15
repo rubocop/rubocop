@@ -39,6 +39,8 @@ module RuboCop
 
         def on_send(node)
           case_equality?(node) do |lhs, rhs|
+            return if lhs.const_type? && !lhs.module_name?
+
             add_offense(node.loc.selector) do |corrector|
               replacement = replacement(lhs, rhs)
               corrector.replace(node, replacement) if replacement

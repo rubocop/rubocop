@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :prof do
-  DUMP_PATH = 'tmp/stackprof.dump'
+  dump_path = 'tmp/stackprof.dump'
 
   desc 'Run RuboCop on itself with profiling on'
   task :run, [:path] do |_task, args|
@@ -11,13 +11,13 @@ namespace :prof do
   end
 
   task :run_if_needed, [:path] do
-    Rake::Task[:run].run unless File.exist?(DUMP_PATH)
+    Rake::Task[:run].run unless File.exist?(dump_path)
   end
 
   desc 'List the slowest cops'
   task slow_cops: :run_if_needed do
     method = 'RuboCop::Cop::Commissioner#trigger_responding_cops'
-    cmd = "stackprof #{DUMP_PATH} --text --method '#{method}'"
+    cmd = "stackprof #{dump_path} --text --method '#{method}'"
     puts cmd
     output = `#{cmd}`
     _header, list, _code = *output
@@ -33,7 +33,7 @@ namespace :prof do
       warn 'usage: bundle exec rake walk[Class#method]'
       exit!
     end
-    cmd = "stackprof #{DUMP_PATH} --walk --method '#{method}'"
+    cmd = "stackprof #{dump_path} --walk --method '#{method}'"
     puts cmd
     system cmd
   end

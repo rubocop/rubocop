@@ -350,6 +350,53 @@ def cook(dry_ingredients = self.dry_ingredients)
 end
 ----
 
+== Lint/ConstantDefinitionInBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 0.91
+| -
+|===
+
+Do not define constants within a block, since the block's scope does not
+isolate or namespace the constant in any way.
+
+Define the constant outside of the block instead, or use a variable or
+method if defining the constant in the outer scope would be problematic.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+task :lint do
+  FILES_TO_LINT = Dir['lib/*.rb']
+end
+
+# bad
+describe 'making a request' do
+  class TestRequest; end
+end
+
+# good
+task :lint do
+  files_to_lint = Dir['lib/*.rb']
+end
+
+# good
+describe 'making a request' do
+  let(:test_request) { Class.new }
+end
+----
+
+=== References
+
+* https://rubystyle.guide#no-constant-definition-in-block
+
 == Lint/ConstantResolution
 
 |===
@@ -3786,12 +3833,23 @@ for an optional argument, your method should too.
 
 [source,ruby]
 ----
-# bad
-def to_json
-end
+class Point
+  attr_reader :x, :y
 
-# good
-def to_json(*_args)
+  # bad, incorrect arity
+  def to_json
+    JSON.generate([x, y])
+  end
+
+  # good, preserving args
+  def to_json(*args)
+    JSON.generate([x, y], *args)
+  end
+
+  # good, discarding args
+  def to_json(*_args)
+    JSON.generate([x, y])
+  end
 end
 ----
 
@@ -4720,6 +4778,40 @@ def something
   x.attr = 5
   x
 end
+----
+
+== Lint/UselessTimes
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.91
+| -
+|===
+
+This cop checks for uses of `Integer#times` that will never yield
+(when the integer <= 0) or that will only ever yield once
+(`1.times`).
+
+This cop is marked as unsafe as `times` returns its receiver, which
+is *usually* OK, but might change behavior.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+-5.times { do_something }
+0.times { do_something }
+1.times { do_something  }
+1.times { |i| do_something(i) }
+
+# good
+do_something
+do_something(1)
 ----
 
 == Lint/Void

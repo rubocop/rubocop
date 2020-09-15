@@ -1395,6 +1395,12 @@ Lint/CircularArgumentReference:
   Enabled: true
   VersionAdded: '0.33'
 
+Lint/ConstantDefinitionInBlock:
+  Description: 'Do not define constants within a block.'
+  StyleGuide: '#no-constant-definition-in-block'
+  Enabled: pending
+  VersionAdded: '0.91'
+
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
@@ -1986,6 +1992,12 @@ Lint/UselessSetterCall:
   Enabled: true
   VersionAdded: '0.13'
   VersionChanged: '0.80'
+  Safe: false
+
+Lint/UselessTimes:
+  Description: 'Checks for useless `Integer#times` calls.'
+  Enabled: pending
+  VersionAdded: '0.91'
   Safe: false
 
 Lint/Void:
