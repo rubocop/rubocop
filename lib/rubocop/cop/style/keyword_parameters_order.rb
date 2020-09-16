@@ -28,7 +28,7 @@ module RuboCop
         MSG = 'Place optional keyword parameters at the end of the parameters list.'
 
         def on_kwoptarg(node)
-          kwarg_nodes = right_siblings_of(node).select(&:kwarg_type?)
+          kwarg_nodes = node.right_siblings.select(&:kwarg_type?)
           return if kwarg_nodes.empty?
 
           add_offense(node) do |corrector|
@@ -40,11 +40,6 @@ module RuboCop
         end
 
         private
-
-        # TODO: Use API from `rubocop-ast` when released.
-        def right_siblings_of(node)
-          node.parent.children[node.sibling_index + 1..-1]
-        end
 
         def remove_kwargs(kwarg_nodes, corrector)
           kwarg_nodes.each do |kwarg|
