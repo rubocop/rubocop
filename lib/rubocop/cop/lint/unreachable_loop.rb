@@ -159,15 +159,11 @@ module RuboCop
         end
 
         def preceded_by_continue_statement?(break_statement)
-          left_siblings_of(break_statement).any? do |sibling|
+          break_statement.left_siblings.any? do |sibling|
             next if sibling.loop_keyword? || loop_method?(sibling)
 
             sibling.each_descendant(:next, :redo).any?
           end
-        end
-
-        def left_siblings_of(node)
-          node.parent.children[0, node.sibling_index]
         end
       end
     end
