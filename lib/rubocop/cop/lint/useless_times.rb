@@ -49,7 +49,7 @@ module RuboCop
           add_offense(node, message: format(MSG, count: count)) do |corrector|
             next unless own_line?(node)
 
-            if count < 1
+            if never_process?(count, node)
               remove_node(corrector, node)
             elsif !proc_name.empty?
               autocorrect_block_pass(corrector, node, proc_name)
@@ -60,6 +60,10 @@ module RuboCop
         end
 
         private
+
+        def never_process?(count, node)
+          count < 1 || node.block_type? && node.body.nil?
+        end
 
         def remove_node(corrector, node)
           corrector.remove(range_by_whole_lines(node.loc.expression, include_final_newline: true))

@@ -61,6 +61,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes do
     RUBY
   end
 
+  it 'registers an offense and corrects when 1.times with empty block argument' do
+    expect_offense(<<~RUBY)
+      def foo
+        1.times do
+        ^^^^^^^^^^ Useless call to `1.times` detected.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when there is a blank line in the method definition' do
     expect_offense(<<~RUBY)
       def foo
