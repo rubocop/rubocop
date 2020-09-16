@@ -45,6 +45,7 @@
 * [#8500](https://github.com/rubocop-hq/rubocop/issues/8500): Add `in?` to AllowedMethods for `Lint/SafeNavigationChain` cop. ([@tejasbubane][])
 * [#8629](https://github.com/rubocop-hq/rubocop/pull/8629): Fix the cache being reusable in CI by using crc32 to calculate file hashes rather than `mtime`, which changes each CI build. ([@dvandersluis][])
 * [#8621](https://github.com/rubocop-hq/rubocop/issues/8621): Add helpful Infinite Loop error message. ([@iSarCasm][])
+* [#8489](https://github.com/rubocop-hq/rubocop/issues/8489):  Exclude method `respond_to_missing?` from `OptionalBooleanParameter` cop. ([@em-gazelle][])
 
 ## 0.90.0 (2020-09-01)
 
@@ -4871,3 +4872,4 @@
 [@Skipants]: https://github.com/Skipants
 [@sascha-wolf]: https://github.com/sascha-wolf
 [@iSarCasm]: https://github.com/iSarCasm
+[@em-gazelle]: https://github.com/em-gazelle
