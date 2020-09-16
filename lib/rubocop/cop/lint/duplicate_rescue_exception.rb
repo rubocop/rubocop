@@ -33,9 +33,7 @@ module RuboCop
         def on_rescue(node)
           return if rescue_modifier?(node)
 
-          _body, *resbodies, _else = *node
-
-          resbodies.each_with_object(Set.new) do |resbody, previous|
+          node.resbody_branches.each_with_object(Set.new) do |resbody, previous|
             rescued_exceptions = resbody.exceptions
 
             rescued_exceptions.each do |exception|

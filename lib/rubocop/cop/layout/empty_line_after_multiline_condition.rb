@@ -91,9 +91,7 @@ module RuboCop
         end
 
         def on_rescue(node)
-          _body, *resbodies, _else = *node
-
-          resbodies.each do |resbody|
+          node.resbody_branches.each do |resbody|
             rescued_exceptions = resbody.exceptions
             next if !multiline_rescue_exceptions?(rescued_exceptions) ||
                     next_line_empty?(rescued_exceptions.last.last_line)
