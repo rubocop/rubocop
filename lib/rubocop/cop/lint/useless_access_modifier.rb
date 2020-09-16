@@ -131,21 +131,15 @@ module RuboCop
         MSG = 'Useless `%<current>s` access modifier.'
 
         def on_class(node)
-          check_node(node.children[2]) # class body
+          check_node(node.body)
         end
-
-        def on_module(node)
-          check_node(node.children[1]) # module body
-        end
+        alias on_module on_class
+        alias on_sclass on_class
 
         def on_block(node)
           return unless eval_call?(node)
 
           check_node(node.body)
-        end
-
-        def on_sclass(node)
-          check_node(node.children[1]) # singleton class body
         end
 
         private
