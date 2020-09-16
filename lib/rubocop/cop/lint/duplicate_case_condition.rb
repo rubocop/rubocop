@@ -31,21 +31,11 @@ module RuboCop
         MSG = 'Duplicate `when` condition detected.'
 
         def on_case(case_node)
-          case_node.when_branches.each_with_object([]) do |when_node, previous|
+          case_node.when_branches.each_with_object(Set.new) do |when_node, previous|
             when_node.each_condition do |condition|
-              next unless repeated_condition?(previous, condition)
-
-              add_offense(condition)
+              add_offense(condition) unless previous.add?(condition)
             end
-
-            previous.push(when_node.conditions)
           end
-        end
-
-        private
-
-        def repeated_condition?(previous, condition)
-          previous.any? { |c| c.include?(condition) }
         end
       end
     end
