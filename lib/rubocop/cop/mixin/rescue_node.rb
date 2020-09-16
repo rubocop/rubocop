@@ -18,6 +18,7 @@ module RuboCop
           @modifier_locations.include?(node.loc.keyword)
       end
 
+      # @deprecated Use ResbodyNode#exceptions instead
       def rescued_exceptions(resbody)
         rescue_group, = *resbody
         if rescue_group

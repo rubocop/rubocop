@@ -75,8 +75,7 @@ module RuboCop
 
         def rescued_groups_for(rescues)
           rescues.map do |group|
-            rescue_group, = *group
-            evaluate_exceptions(rescue_group)
+            evaluate_exceptions(group)
           end
         end
 
@@ -117,14 +116,15 @@ module RuboCop
           $VERBOSE = old_verbose
         end
 
-        def evaluate_exceptions(rescue_group)
-          if rescue_group
-            rescued_exceptions = rescued_exceptions(rescue_group)
+        def evaluate_exceptions(group)
+          rescued_exceptions = group.exceptions
+
+          if rescued_exceptions.any?
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
                 silence_warnings do
                   # Avoid printing deprecation warnings about constants
-                  converted << Kernel.const_get(exception)
+                  converted << Kernel.const_get(exception.source)
                 end
               rescue NameError
                 converted << nil
