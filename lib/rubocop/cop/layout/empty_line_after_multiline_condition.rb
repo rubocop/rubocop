@@ -53,7 +53,6 @@ module RuboCop
       #
       class EmptyLineAfterMultilineCondition < Base
         include RangeHelp
-        include RescueNode
         extend AutoCorrector
 
         MSG = 'Use empty line after multiline condition.'
@@ -95,7 +94,7 @@ module RuboCop
           _body, *resbodies, _else = *node
 
           resbodies.each do |resbody|
-            rescued_exceptions = rescued_exceptions(resbody)
+            rescued_exceptions = resbody.exceptions
             next if !multiline_rescue_exceptions?(rescued_exceptions) ||
                     next_line_empty?(rescued_exceptions.last.last_line)
 

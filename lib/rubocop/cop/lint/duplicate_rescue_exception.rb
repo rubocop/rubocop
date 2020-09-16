@@ -36,7 +36,7 @@ module RuboCop
           _body, *resbodies, _else = *node
 
           resbodies.each_with_object(Set.new) do |resbody, previous|
-            rescued_exceptions = rescued_exceptions(resbody)
+            rescued_exceptions = resbody.exceptions
 
             rescued_exceptions.each do |exception|
               add_offense(exception) unless previous.add?(exception)
