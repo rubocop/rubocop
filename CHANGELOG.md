@@ -7,6 +7,10 @@
 * [#8720](https://github.com/rubocop-hq/rubocop/issues/8720): Fix an error for `Lint/IdentityComparison` when calling `object_id` method without receiver in LHS or RHS. ([@koic][])
 * [#8710](https://github.com/rubocop-hq/rubocop/issues/8710): Fix a false positive for `Layout/RescueEnsureAlignment` when `Layout/BeginEndAlignment` cop is not enabled status. ([@koic][])
 
+### Changes
+
+* [#8489](https://github.com/rubocop-hq/rubocop/issues/8489): Exclude method `respond_to_missing?` from `OptionalBooleanParameter` cop. ([@em-gazelle][])
+
 ## 0.91.0 (2020-09-15)
 
 ### New features
@@ -54,7 +58,6 @@
 * [#8629](https://github.com/rubocop-hq/rubocop/pull/8629): Fix the cache being reusable in CI by using crc32 to calculate file hashes rather than `mtime`, which changes each CI build. ([@dvandersluis][])
 * [#8663](https://github.com/rubocop-hq/rubocop/issues/8663): Fix multiple autocorrection bugs with `Style/ClassMethodsDefinitions`. ([@dvandersluis][])
 * [#8621](https://github.com/rubocop-hq/rubocop/issues/8621): Add helpful Infinite Loop error message. ([@iSarCasm][])
-* [#8489](https://github.com/rubocop-hq/rubocop/issues/8489):  Exclude method `respond_to_missing?` from `OptionalBooleanParameter` cop. ([@em-gazelle][])
 
 ## 0.90.0 (2020-09-01)
 
