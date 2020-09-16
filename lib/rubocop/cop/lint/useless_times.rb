@@ -82,7 +82,12 @@ module RuboCop
         def fix_indentation(source, range)
           # Cleanup indentation in a multiline block
           source_lines = source.split("\n")
-          source_lines[1..-1].each { |line| line[range] = '' }
+
+          source_lines[1..-1].each do |line|
+            next if line.empty?
+
+            line[range] = ''
+          end
           source_lines.join("\n")
         end
 

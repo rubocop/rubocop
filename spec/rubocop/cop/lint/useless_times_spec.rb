@@ -61,6 +61,27 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes do
     RUBY
   end
 
+  it 'registers an offense and corrects when there is a blank line in the method definition' do
+    expect_offense(<<~RUBY)
+      def foo
+        1.times do
+        ^^^^^^^^^^ Useless call to `1.times` detected.
+          bar
+
+          baz
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        bar
+
+        baz
+      end
+    RUBY
+  end
+
   it 'does not register an offense for an integer > 1' do
     expect_no_offenses(<<~RUBY)
       2.times { |i| puts i }
