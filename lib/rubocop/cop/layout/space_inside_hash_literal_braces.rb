@@ -72,28 +72,14 @@ module RuboCop
         MSG = 'Space inside %<problem>s.'
 
         def on_hash(node)
-          tokens = processed_source.tokens
+          tokens = processed_source.tokens_within(node)
+          return unless tokens.first.left_brace? && tokens.last.right_curly_brace?
 
-          hash_literal_with_braces(node) do |begin_index, end_index|
-            check(tokens[begin_index], tokens[begin_index + 1])
-            return if begin_index == end_index - 1
-
-            check(tokens[end_index - 1], tokens[end_index])
-          end
+          check(tokens[0], tokens[1])
+          check(tokens[-2], tokens[-1]) if tokens.size > 2
         end
 
         private
-
-        def hash_literal_with_braces(node)
-          tokens = processed_source.tokens
-          begin_index = index_of_first_token(node)
-          return unless tokens[begin_index].left_brace?
-
-          end_index = index_of_last_token(node)
-          return unless tokens[end_index].right_curly_brace?
-
-          yield begin_index, end_index
-        end
 
         def check(token1, token2)
           # No offense if line break inside.
