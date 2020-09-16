@@ -36,8 +36,8 @@ module RuboCop
         MSG = 'Surrounding space %<type>s in default value assignment.'
 
         def on_optarg(node)
-          index = index_of_first_token(node)
-          arg, equals, value = processed_source.tokens[index, 3]
+          tokens = processed_source.tokens_within(node)
+          arg, equals, value = tokens.take(3)
           check_optarg(arg, equals, value)
         end
 

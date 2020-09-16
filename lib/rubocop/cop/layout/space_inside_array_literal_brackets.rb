@@ -108,11 +108,11 @@ module RuboCop
         end
 
         def left_array_bracket(node)
-          tokens(node).find(&:left_array_bracket?)
+          processed_source.tokens_within(node).find(&:left_array_bracket?)
         end
 
         def right_array_bracket(node)
-          tokens(node).reverse.find(&:right_bracket?)
+          processed_source.tokens_within(node).reverse.find(&:right_bracket?)
         end
 
         def empty_config
@@ -120,7 +120,7 @@ module RuboCop
         end
 
         def next_to_newline?(node, token)
-          tokens(node)[index_for(node, token) + 1].line != token.line
+          processed_source.tokens_within(node)[index_for(node, token) + 1].line != token.line
         end
 
         def end_has_own_line?(token)
@@ -131,7 +131,7 @@ module RuboCop
         end
 
         def index_for(node, token)
-          tokens(node).index(token)
+          processed_source.tokens_within(node).index(token)
         end
 
         def line_and_column_for(token)
@@ -153,7 +153,7 @@ module RuboCop
         end
 
         def next_to_comment?(node, token)
-          tokens(node)[index_for(node, token) + 1].comment?
+          processed_source.tokens_within(node)[index_for(node, token) + 1].comment?
         end
 
         def compact_offenses(node, left, right, start_ok, end_ok)
@@ -184,9 +184,9 @@ module RuboCop
         def multi_dimensional_array?(node, token, side: :right)
           i = index_for(node, token)
           if side == :right
-            tokens(node)[i - 1].right_bracket?
+            processed_source.tokens_within(node)[i - 1].right_bracket?
           else
-            tokens(node)[i + 1].left_array_bracket?
+            processed_source.tokens_within(node)[i + 1].left_array_bracket?
           end
         end
 

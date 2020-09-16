@@ -76,12 +76,13 @@ module RuboCop
         end
 
         def argument_tokens(node)
-          pipes = tokens(node).select { |token| token.type == :tPIPE }
+          tokens = processed_source.tokens_within(node)
+          pipes = tokens.select { |token| token.type == :tPIPE }
           begin_pos, end_pos = pipes.map do |pipe|
-            tokens(node).index(pipe)
+            tokens.index(pipe)
           end
 
-          tokens(node)[begin_pos + 1..end_pos - 1]
+          tokens[begin_pos + 1..end_pos - 1]
         end
       end
     end
