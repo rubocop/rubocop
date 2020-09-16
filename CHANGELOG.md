@@ -9,6 +9,7 @@
 * [#8726](https://github.com/rubocop-hq/rubocop/issues/8726): Fix a false positive for `Naming/VariableNumber` when naming multibyte character variable name. ([@koic][])
 * [#8730](https://github.com/rubocop-hq/rubocop/issues/8730): Fix an error for `Lint/UselessTimes` when there is a blank line in the method definition. ([@koic][])
 * [#8740](https://github.com/rubocop-hq/rubocop/issues/8740): Fix a false positive for `Style/HashAsLastArrayItem` when the hash is in an implicit array. ([@dvandersluis][])
+* [#8739](https://github.com/rubocop-hq/rubocop/issues/8739): Fix an error for `Lint/UselessTimes` when using empty block argument. ([@koic][])
 
 ### Changes
 
