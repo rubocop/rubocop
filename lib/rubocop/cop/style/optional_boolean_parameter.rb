@@ -26,8 +26,11 @@ module RuboCop
       class OptionalBooleanParameter < Base
         MSG = 'Use keyword arguments when defining method with boolean argument.'
         BOOLEAN_TYPES = %i[true false].freeze
+        METHODS_EXCLUDED = %i[respond_to_missing?].freeze
 
         def on_def(node)
+          return if METHODS_EXCLUDED.include?(node.method_name)
+
           node.arguments.each do |arg|
             next unless arg.optarg_type?
 

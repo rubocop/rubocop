@@ -54,6 +54,7 @@
 * [#8629](https://github.com/rubocop-hq/rubocop/pull/8629): Fix the cache being reusable in CI by using crc32 to calculate file hashes rather than `mtime`, which changes each CI build. ([@dvandersluis][])
 * [#8663](https://github.com/rubocop-hq/rubocop/issues/8663): Fix multiple autocorrection bugs with `Style/ClassMethodsDefinitions`. ([@dvandersluis][])
 * [#8621](https://github.com/rubocop-hq/rubocop/issues/8621): Add helpful Infinite Loop error message. ([@iSarCasm][])
+* [#8489](https://github.com/rubocop-hq/rubocop/issues/8489):  Exclude method `respond_to_missing?` from `OptionalBooleanParameter` cop. ([@em-gazelle][])
 
 ## 0.90.0 (2020-09-01)
 
@@ -4881,3 +4882,4 @@
 [@sascha-wolf]: https://github.com/sascha-wolf
 [@fsateler]: https://github.com/fsateler
 [@iSarCasm]: https://github.com/iSarCasm
+[@em-gazelle]: https://github.com/em-gazelle
