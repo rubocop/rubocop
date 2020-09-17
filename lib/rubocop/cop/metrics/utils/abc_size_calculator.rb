@@ -102,12 +102,6 @@ module RuboCop
             name && !/^_/.match?(name)
           end
 
-          # Returns true for nodes which otherwise would be counted
-          # as one too many assignment
-          def assignment_doubled_in_ast?(node)
-            node.masgn_type? || node.or_asgn_type? || node.and_asgn_type?
-          end
-
           def branch?(node)
             BRANCH_NODES.include?(node.type)
           end
