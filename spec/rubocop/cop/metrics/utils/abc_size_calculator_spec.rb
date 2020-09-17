@@ -16,6 +16,27 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
       it { is_expected.to eq '<0, 3, 0>' }
     end
 
+    context 'with +=' do
+      let(:source) { <<~RUBY }
+        def method_name
+          x = nil
+          x += 1
+        end
+      RUBY
+
+      it { is_expected.to eq '<2, 0, 0>' }
+    end
+
+    context 'with += for setters' do
+      let(:source) { <<~RUBY }
+        def method_name
+          foo.bar += 1
+        end
+      RUBY
+
+      it { is_expected.to eq '<1, 2, 0>' }
+    end
+
     context 'with ||=' do
       let(:source) { <<~RUBY }
         def method_name
@@ -25,6 +46,16 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
       RUBY
 
       it { is_expected.to eq '<2, 0, 1>' }
+    end
+
+    context 'with ||= on a constant' do
+      let(:source) { <<~RUBY }
+        def method_name
+          self::FooModule ||= Mod
+        end
+      RUBY
+
+      it { is_expected.to eq '<1, 0, 1>' }
     end
 
     context 'with &&=' do
@@ -140,6 +171,28 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
       RUBY
 
       it { is_expected.to eq '<3, 1, 0>' }
+    end
+
+    context 'multiple assignment with method setters' do
+      let(:source) { <<~RUBY }
+        def method_name
+          self.a, foo.b, bar[42] = nil
+        end
+      RUBY
+
+      it { is_expected.to eq '<3, 5, 0>' }
+    end
+
+    context 'equivalent to multiple assignment with method setters' do
+      let(:source) { <<~RUBY }
+        def method_name
+          self.a = nil    # 1,  1, 0
+          foo.b = nil     # 1, +2, 0
+          bar[42] = nil   # 1, +2, 0
+        end
+      RUBY
+
+      it { is_expected.to eq '<3, 5, 0>' }
     end
 
     context 'if and arithmetic operations' do
