@@ -314,5 +314,157 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
         end
       end
     end
+
+    context 'autocorrecting whitespace' do
+      context 'when the comment is the first line of the file' do
+        context 'followed by code' do
+          it 'removes the comment' do
+            expect_offense(<<~RUBY)
+              # rubocop:disable Metrics/MethodLength
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              def my_method
+              end
+              # rubocop:enable Metrics/MethodLength
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def my_method
+              end
+              # rubocop:enable Metrics/MethodLength
+            RUBY
+          end
+        end
+
+        context 'followed by a newline' do
+          it 'removes the comment and newline' do
+            expect_offense(<<~RUBY)
+              # rubocop:disable Metrics/MethodLength
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+
+              def my_method
+              end
+              # rubocop:enable Metrics/MethodLength
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def my_method
+              end
+              # rubocop:enable Metrics/MethodLength
+            RUBY
+          end
+        end
+
+        context 'followed by another comment' do
+          it 'removes the comment and newline' do
+            expect_offense(<<~RUBY)
+              # rubocop:disable Metrics/MethodLength
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              # @api private
+              def my_method
+              end
+              # rubocop:enable Metrics/MethodLength
+            RUBY
+
+            expect_correction(<<~RUBY)
+              # @api private
+              def my_method
+              end
+              # rubocop:enable Metrics/MethodLength
+            RUBY
+          end
+        end
+      end
+
+      context 'when there is only whitespace before the comment' do
+        it 'leaves the whitespace' do
+          expect_offense(<<~RUBY)
+
+            # rubocop:disable Metrics/MethodLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+            def my_method
+            end
+            # rubocop:enable Metrics/MethodLength
+          RUBY
+
+          expect_correction(<<~RUBY)
+
+            def my_method
+            end
+            # rubocop:enable Metrics/MethodLength
+          RUBY
+        end
+      end
+
+      context 'when the comment is not the first line of the file' do
+        it 'preserves whitespace before the comment' do
+          expect_offense(<<~RUBY)
+            attr_reader :foo
+
+            # rubocop:disable Metrics/MethodLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+            def my_method
+            end
+            # rubocop:enable Metrics/MethodLength
+          RUBY
+
+          expect_correction(<<~RUBY)
+            attr_reader :foo
+
+            def my_method
+            end
+            # rubocop:enable Metrics/MethodLength
+          RUBY
+        end
+      end
+
+      context 'nested inside a namespace' do
+        it 'preserves indentation' do
+          expect_offense(<<~RUBY)
+            module Foo
+              module Bar
+                # rubocop:disable Metrics/ClassLength
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+                class Baz
+                end
+                # rubocop:enable Metrics/ClassLength
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module Foo
+              module Bar
+                class Baz
+                end
+                # rubocop:enable Metrics/ClassLength
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'inline comment' do
+        it 'removes the comment and preceding whitespace' do
+          expect_offense(<<~RUBY)
+            module Foo
+              module Bar
+                class Baz         # rubocop:disable Metrics/ClassLength
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+                end
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module Foo
+              module Bar
+                class Baz
+                end
+              end
+            end
+          RUBY
+        end
+      end
+    end
   end
 end
