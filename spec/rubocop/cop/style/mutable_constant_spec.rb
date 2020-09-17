@@ -166,21 +166,21 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           let(:ruby_version) { 4.0 }
 
           context 'when the frozen string literal comment is missing' do
-            it_behaves_like 'immutable objects', '"#{interpolated}"'
+            it_behaves_like 'mutable objects', '"#{interpolated}"'
             it_behaves_like 'immutable objects', '"static"'
           end
 
           context 'when the frozen string literal comment is true' do
             let(:prefix) { '# frozen_string_literal: true' }
 
-            it_behaves_like 'immutable objects', '"#{interpolated}"'
+            it_behaves_like 'mutable objects', '"#{interpolated}"'
             it_behaves_like 'immutable objects', '"static"'
           end
 
           context 'when the frozen string literal comment is false' do
             let(:prefix) { '# frozen_string_literal: false' }
 
-            it_behaves_like 'immutable objects', '"#{interpolated}"'
+            it_behaves_like 'mutable objects', '"#{interpolated}"'
             it_behaves_like 'immutable objects', '"static"'
           end
         end
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       context 'when the frozen string literal comment is true' do
         let(:prefix) { '# frozen_string_literal: true' }
 
-        it_behaves_like 'immutable objects', '"#{interpolated}"'
+        it_behaves_like 'mutable objects', '"#{interpolated}"'
         it_behaves_like 'immutable objects', '"static"'
       end
 
@@ -426,7 +426,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     context 'when the frozen string literal comment is true' do
       let(:prefix) { '# frozen_string_literal: true' }
 
-      it_behaves_like 'immutable objects', '"#{interpolated}"'
+      it_behaves_like 'mutable objects', '"#{interpolated}"'
       it_behaves_like 'immutable objects', '"static"'
     end
 
