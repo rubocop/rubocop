@@ -81,21 +81,37 @@ module RuboCop
           private
 
           def assignment?(node)
+            return compound_assignment(node) if node.masgn_type? || node.shorthand_asgn?
+
             node.for_type? ||
-              node.op_asgn_type? ||
               (node.respond_to?(:setter_method?) && node.setter_method?) ||
-              (simple_assignment?(node) && capturing_variable?(node.children.first))
+              simple_assignment?(node) ||
+              argument?(node)
+          end
+
+          def compound_assignment(node)
+            # Methods setter can not be detected for multiple assignments
+            # and shorthand assigns, so we'll count them here instead
+            children = node.masgn_type? ? node.children[0].children : node.children
+
+            will_be_miscounted = children.count do |child|
+              child.respond_to?(:setter_method?) &&
+                !child.setter_method?
+            end
+            @assignment += will_be_miscounted
+
+            false
           end
 
           def simple_assignment?(node)
-            return false if node.masgn_type?
-
-            if node.equals_asgn?
-              reset_on_lvasgn(node) if node.lvasgn_type?
-              return true
+            if !node.equals_asgn?
+              false
+            elsif node.lvasgn_type?
+              reset_on_lvasgn(node)
+              capturing_variable?(node.children.first)
+            else
+              true
             end
-
-            argument?(node)
           end
 
           def capturing_variable?(name)
@@ -106,9 +122,8 @@ module RuboCop
             BRANCH_NODES.include?(node.type)
           end
 
-          # TODO: move to rubocop-ast
           def argument?(node)
-            ARGUMENT_TYPES.include?(node.type)
+            ARGUMENT_TYPES.include?(node.type) && capturing_variable?(node.children.first)
           end
 
           def condition?(node)
