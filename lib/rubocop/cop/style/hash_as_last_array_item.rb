@@ -33,7 +33,8 @@ module RuboCop
         extend AutoCorrector
 
         def on_hash(node)
-          return unless last_array_item?(node)
+          return unless (array = containing_array(node))
+          return unless last_array_item?(array, node) && explicit_array?(array)
 
           if braces_style?
             check_braces(node)
@@ -44,12 +45,20 @@ module RuboCop
 
         private
 
-        def last_array_item?(node)
-          parent = node.parent
-          return false unless parent&.array_type?
-          return false if parent.child_nodes.all?(&:hash_type?)
+        def containing_array(hash_node)
+          parent = hash_node.parent
+          parent if parent&.array_type?
+        end
 
-          parent.children.last.equal?(node)
+        def last_array_item?(array, node)
+          return false if array.child_nodes.all?(&:hash_type?)
+
+          array.children.last.equal?(node)
+        end
+
+        def explicit_array?(array)
+          # an implicit array cannot have an "unbraced" hash
+          array.square_brackets?
         end
 
         def check_braces(node)

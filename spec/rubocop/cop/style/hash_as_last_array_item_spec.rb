@@ -83,5 +83,11 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
         [1, {}]
       RUBY
     end
+
+    it 'does not register an offense when passing an implicit array to a setter' do
+      expect_no_offenses(<<~RUBY)
+        cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }
+      RUBY
+    end
   end
 end
