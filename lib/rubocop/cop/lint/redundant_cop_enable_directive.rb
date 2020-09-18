@@ -45,17 +45,27 @@ module RuboCop
           return if processed_source.blank?
 
           offenses = processed_source.comment_config.extra_enabled_comments
-          offenses.each do |comment, name|
+          offenses.each { |comment, cop_names| register_offense(comment, cop_names) }
+        end
+
+        private
+
+        def register_offense(comment, cop_names)
+          directive = DirectiveComment.new(comment)
+
+          cop_names.each do |name|
             add_offense(
               range_of_offense(comment, name),
               message: format(MSG, cop: all_or_name(name))
             ) do |corrector|
-              corrector.remove(range_with_comma(comment, name))
+              if directive.match?(cop_names)
+                corrector.remove(range_with_surrounding_space(range: directive.range, side: :right))
+              else
+                corrector.remove(range_with_comma(comment, name))
+              end
             end
           end
         end
-
-        private
 
         def range_of_offense(comment, name)
           start_pos = comment_start(comment) + cop_name_indention(comment, name)

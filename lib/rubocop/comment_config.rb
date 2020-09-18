@@ -41,12 +41,15 @@ module RuboCop
     end
 
     def extra_enabled_comments
-      extra_enabled_comments_with_names([], {})
+      extra_enabled_comments_with_names(
+        extras: Hash.new { |h, k| h[k] = [] },
+        names: Hash.new(0)
+      )
     end
 
     private
 
-    def extra_enabled_comments_with_names(extras, names)
+    def extra_enabled_comments_with_names(extras:, names:)
       each_directive do |comment, cop_names, disabled|
         next unless comment_only_line?(comment.loc.expression.line)
 
@@ -190,18 +193,19 @@ module RuboCop
         enabled_cops += 1
       end
 
-      extras << [comment, 'all'] if enabled_cops.zero?
+      extras[comment] << 'all' if enabled_cops.zero?
     end
 
+    # Collect cops that have been disabled or enabled by name in a directive comment
+    # so that `Lint/RedundantCopEnableDirective` can register offenses correctly.
     def handle_switch(cop_names, names, disabled, extras, comment)
       cop_names.each do |name|
-        names[name] ||= 0
         if disabled
           names[name] += 1
         elsif (names[name]).positive?
           names[name] -= 1
         else
-          extras << [comment, name]
+          extras[comment] << name
         end
       end
     end
