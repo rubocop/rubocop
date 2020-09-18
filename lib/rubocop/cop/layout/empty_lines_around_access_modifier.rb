@@ -84,14 +84,7 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless node.bare_access_modifier?
-
-          case style
-          when :around
-            return if empty_lines_around?(node)
-          when :only_before
-            return if allowed_only_before_style?(node)
-          end
+          return unless register_offense?(node)
 
           message = message(node)
           add_offense(node, message: message) do |corrector|
@@ -104,6 +97,19 @@ module RuboCop
         end
 
         private
+
+        def register_offense?(node)
+          return false unless node.bare_access_modifier? && !node.parent.block_type?
+
+          case style
+          when :around
+            return false if empty_lines_around?(node)
+          when :only_before
+            return false if allowed_only_before_style?(node)
+          end
+
+          true
+        end
 
         def allowed_only_before_style?(node)
           if node.special_modifier?

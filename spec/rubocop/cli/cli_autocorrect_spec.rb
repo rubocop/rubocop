@@ -1599,6 +1599,36 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'does not crash when using Lint/SafeNavigationWithEmpty and Layout/EmptyLinesAroundBlockBody' do
+    create_file('example.rb', <<~RUBY)
+      FactoryBot.define do
+        factory :model do
+          name { 'value' }
+
+          private { value }
+        end
+      end
+    RUBY
+
+    expect(
+      cli.run(
+        [
+          '--auto-correct',
+          '--only', 'Layout/EmptyLinesAroundAccessModifier,Layout/EmptyLinesAroundBlockBody'
+        ]
+      )
+    ).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      FactoryBot.define do
+        factory :model do
+          name { 'value' }
+
+          private { value }
+        end
+      end
+    RUBY
+  end
+
   it 'corrects TrailingCommaIn(Array|Hash)Literal and ' \
      'Multiline(Array|Hash)BraceLayout offenses' do
     create_file('.rubocop.yml', <<~YAML)
