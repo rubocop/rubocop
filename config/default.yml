@@ -3988,6 +3988,8 @@ Style/SafeNavigation:
                   This cop transforms usages of a method call safeguarded by
                   a check for the existence of the object to
                   safe navigation (`&.`).
+                  Auto-correction is unsafe as it assumes the object will
+                  be `nil` or truthy, but never `false`.
   Enabled: true
   VersionAdded: '0.43'
   VersionChanged: '0.77'
@@ -4000,6 +4002,7 @@ Style/SafeNavigation:
     - presence
     - try
     - try!
+  SafeAutoCorrect: false
 
 Style/Sample:
   Description: >-
