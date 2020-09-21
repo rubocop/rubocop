@@ -3283,11 +3283,16 @@ Style/IpAddresses:
   Description: "Don't include literal IP addresses in code."
   Enabled: false
   VersionAdded: '0.58'
-  VersionChanged: '0.77'
+  VersionChanged: '0.91'
   # Allow addresses to be permitted
   AllowedAddresses:
     - "::"
     # :: is a valid IPv6 address, but could potentially be legitimately in code
+  Exclude:
+    - '**/*.gemfile'
+    - '**/Gemfile'
+    - '**/gems.rb'
+    - '**/*.gemspec'
 
 Style/KeywordParametersOrder:
   Description: 'Enforces that optional keyword parameters are placed at the end of the parameters list.'
