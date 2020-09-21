@@ -136,4 +136,13 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
       end
     RUBY
   end
+
+  it 'does not register an offense when line break for multiple condidate values of `when`' do
+    expect_no_offenses(<<~RUBY)
+      case foo
+      when bar,
+           baz then do_something
+      end
+    RUBY
+  end
 end
