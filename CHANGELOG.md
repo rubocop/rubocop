@@ -19,6 +19,7 @@
 
 * [#8489](https://github.com/rubocop-hq/rubocop/issues/8489): Exclude method `respond_to_missing?` from `OptionalBooleanParameter` cop. ([@em-gazelle][])
 * [#7914](https://github.com/rubocop-hq/rubocop/issues/7914): Style/SafeNavigation marked as having unsafe auto-correction. ([@marcandre][])
+* [#8749](https://github.com/rubocop-hq/rubocop/issues/8749): Disable `Style/IpAddresses` by default in Gemfile and gemspec files. ([@dvandersluis][])
 
 ## 0.91.0 (2020-09-15)
 

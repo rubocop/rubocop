@@ -4460,7 +4460,7 @@ end
 | Yes
 | No
 | 0.58
-| 0.77
+| 0.91
 |===
 
 This cop checks for hardcoded IP addresses, which can make code
@@ -4487,6 +4487,10 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 
 | AllowedAddresses
 | `::`
+| Array
+
+| Exclude
+| `**/*.gemfile`, `**/Gemfile`, `**/gems.rb`, `**/*.gemspec`
 | Array
 |===
 
