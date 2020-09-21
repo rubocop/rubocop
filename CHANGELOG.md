@@ -13,6 +13,7 @@
 * [#8742](https://github.com/rubocop-hq/rubocop/issues/8742): Fix some assignment counts for `Metrics/AbcSize`. ([@marcandre][])
 * [#8750](https://github.com/rubocop-hq/rubocop/pull/8750): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when line break for multiple condidate values of `when` statement. ([@koic][])
 * [#8754](https://github.com/rubocop-hq/rubocop/pull/8754): Fix an error for `Style/RandomWithOffset` when using a range with non-integer bounds. ([@eugeneius][])
+* [#8756](https://github.com/rubocop-hq/rubocop/issues/8756): Fix an infinite loop error for `Layout/EmptyLinesAroundAccessModifier` with `Layout/EmptyLinesAroundBlockBody` when using access modifier with block argument. ([@koic][])
 
 ### Changes
 
