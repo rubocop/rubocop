@@ -344,6 +344,27 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
         end
       RUBY
     end
+
+    it 'registers an offense and corrects when rescue has else clause' do
+      expect_offense(<<~RUBY)
+        def func
+          return 3
+        rescue SomeException
+        else
+          return 4
+          ^^^^^^ Redundant `return` detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          return 3
+        rescue SomeException
+        else
+          4
+        end
+      RUBY
+    end
   end
 
   context 'when return is inside an if-branch' do
