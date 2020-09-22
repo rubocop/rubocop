@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock do
     expect_offense(<<~RUBY)
       describe do
         FOO = 1
-        ^^^^^^^ Do not define constants within a block.
+        ^^^^^^^ Do not define constants this way within a block.
       end
     RUBY
   end
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock do
     expect_offense(<<~RUBY)
       describe do
         FOO = 1
-        ^^^^^^^ Do not define constants within a block.
+        ^^^^^^^ Do not define constants this way within a block.
         bar
       end
     RUBY
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock do
     expect_offense(<<~RUBY)
       describe do
         class Foo; end
-        ^^^^^^^^^^^^^^ Do not define constants within a block.
+        ^^^^^^^^^^^^^^ Do not define constants this way within a block.
       end
     RUBY
   end
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock do
     expect_offense(<<~RUBY)
       describe do
         class Foo; end
-        ^^^^^^^^^^^^^^ Do not define constants within a block.
+        ^^^^^^^^^^^^^^ Do not define constants this way within a block.
         bar
       end
     RUBY
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock do
     expect_offense(<<~RUBY)
       describe do
         module Foo; end
-        ^^^^^^^^^^^^^^^ Do not define constants within a block.
+        ^^^^^^^^^^^^^^^ Do not define constants this way within a block.
       end
     RUBY
   end
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock do
     expect_offense(<<~RUBY)
       describe do
         module Foo; end
-        ^^^^^^^^^^^^^^^ Do not define constants within a block.
+        ^^^^^^^^^^^^^^^ Do not define constants this way within a block.
         bar
       end
     RUBY
