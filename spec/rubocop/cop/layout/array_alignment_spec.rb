@@ -169,6 +169,13 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
         ]
       RUBY
     end
+
+    it 'does not register an offense or try to correct parallel assignment' do
+      expect_no_offenses(<<~RUBY)
+        thing, foo =
+          1, 2
+      RUBY
+    end
   end
 
   context 'when aligned with fixed indentation' do
@@ -326,6 +333,13 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
           c,
           d
         ]
+      RUBY
+    end
+
+    it 'does not register an offense or try to correct parallel assignment' do
+      expect_no_offenses(<<~RUBY)
+        thing, foo =
+          1, 2
       RUBY
     end
   end
