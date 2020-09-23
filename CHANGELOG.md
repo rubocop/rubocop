@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#8720](https://github.com/rubocop-hq/rubocop/issues/8720): Fix an error for `Lint/IdentityComparison` when calling `object_id` method without receiver in LHS or RHS. ([@koic][])
+* [#8767](https://github.com/rubocop-hq/rubocop/issues/8767): Fix a false positive for `Style/RedundantReturn` when a rescue has an else clause. ([@fatkodima][])
 * [#8710](https://github.com/rubocop-hq/rubocop/issues/8710): Fix a false positive for `Layout/RescueEnsureAlignment` when `Layout/BeginEndAlignment` cop is not enabled status. ([@koic][])
 * [#8726](https://github.com/rubocop-hq/rubocop/issues/8726): Fix a false positive for `Naming/VariableNumber` when naming multibyte character variable name. ([@koic][])
 * [#8730](https://github.com/rubocop-hq/rubocop/issues/8730): Fix an error for `Lint/UselessTimes` when there is a blank line in the method definition. ([@koic][])
@@ -15,12 +16,16 @@
 * [#8754](https://github.com/rubocop-hq/rubocop/pull/8754): Fix an error for `Style/RandomWithOffset` when using a range with non-integer bounds. ([@eugeneius][])
 * [#8756](https://github.com/rubocop-hq/rubocop/issues/8756): Fix an infinite loop error for `Layout/EmptyLinesAroundAccessModifier` with `Layout/EmptyLinesAroundBlockBody` when using access modifier with block argument. ([@koic][])
 * [#8372](https://github.com/rubocop-hq/rubocop/issues/8372): Fix `Lint/RedundantCopEnableDirective` autocorrection to not leave orphaned empty `# rubocop:enable` comments. ([@dvandersluis][])
+* [#8372](https://github.com/rubocop-hq/rubocop/issues/8372): Fix `Lint/RedundantCopDisableDirective` autocorrection. ([@dvandersluis][])
+* [#8764](https://github.com/rubocop-hq/rubocop/issues/8764): Fix `Layout/CaseIndentation` not showing the cop name in output messages. ([@dvandersluis][])
+* [#8771](https://github.com/rubocop-hq/rubocop/issues/8771): Fix an error for `Style/OneLineConditional` when using `if-then-elsif-then-end`. ([@koic][])
+* [#8576](https://github.com/rubocop-hq/rubocop/issues/8576): Fix `Style/IfUnlessModifier` to ignore cop disable comment directives when considering conversion to the modifier form. ([@dsavochkin][])
 
 ### Changes
 
 * [#8489](https://github.com/rubocop-hq/rubocop/issues/8489): Exclude method `respond_to_missing?` from `OptionalBooleanParameter` cop. ([@em-gazelle][])
-* [#7914](https://github.com/rubocop-hq/rubocop/issues/7914): Style/SafeNavigation marked as having unsafe auto-correction. ([@marcandre][])
-* [#8749](https://github.com/rubocop-hq/rubocop/issues/8749): Disable `Style/IpAddresses` by default in Gemfile and gemspec files. ([@dvandersluis][])
+* [#7914](https://github.com/rubocop-hq/rubocop/issues/7914): `Style/SafeNavigation` marked as having unsafe auto-correction. ([@marcandre][])
+* [#8749](https://github.com/rubocop-hq/rubocop/issues/8749): Disable `Style/IpAddresses` by default in `Gemfile` and gemspec files. ([@dvandersluis][])
 
 ## 0.91.0 (2020-09-15)
 
