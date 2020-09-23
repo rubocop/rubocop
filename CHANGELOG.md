@@ -6,6 +6,10 @@
 
 * [#8774](https://github.com/rubocop-hq/rubocop/issues/8774): Fix a false positive for `Layout/ArrayAlignment` with parallel assignment. ([@dvandersluis][])
 
+### Changes
+
+* [#8738](https://github.com/rubocop-hq/rubocop/issues/8738): Add autocorrection to `Style/DateTime`. ([@dvandersluis][])
+
 ## 0.91.1 (2020-09-23)
 
 ### Bug fixes

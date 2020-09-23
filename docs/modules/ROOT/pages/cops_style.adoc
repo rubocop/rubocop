@@ -1879,9 +1879,9 @@ an offense is reported.
 
 | Disabled
 | Yes
-| No
+| Yes (Unsafe)
 | 0.51
-| 0.59
+| 0.92
 |===
 
 This cop checks for consistent usage of the `DateTime` class over the
