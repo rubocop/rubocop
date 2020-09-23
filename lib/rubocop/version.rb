@@ -20,5 +20,10 @@ module RuboCop
         STRING
       end
     end
+
+    # @api private
+    def self.document_version
+      STRING.match('\d+\.\d+').to_s
+    end
   end
 end
