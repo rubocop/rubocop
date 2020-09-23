@@ -180,6 +180,22 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional do
     end
 
     it 'registers and corrects an offense with multi-line construct for ' \
+       'if-then-elsif-then-end' do
+      expect_offense(<<~RUBY)
+        if cond1 then run elsif cond2 then maybe end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond1
+          run
+        elsif cond2
+          maybe
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense with multi-line construct for ' \
        'if-then-elsif-then-else-end' do
       expect_offense(<<~RUBY)
         if cond1 then run elsif cond2 then maybe else dont end

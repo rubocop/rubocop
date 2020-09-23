@@ -89,7 +89,9 @@ module RuboCop
         end
 
         def else_branch_to_multiline(else_branch, indentation)
-          if else_branch.if_type? && else_branch.elsif?
+          if else_branch.nil?
+            'end'
+          elsif else_branch.if_type? && else_branch.elsif?
             multiline_replacement(else_branch, indentation)
           else
             <<~RUBY.chomp
