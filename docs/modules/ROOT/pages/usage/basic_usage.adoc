@@ -220,6 +220,9 @@ $ rubocop -h
 | `-r/--require`
 | Require Ruby file (see xref:extensions.adoc#loading-extensions[Loading Extensions]).
 
+| `--regenerate-todo`
+| Regenerate the TODO list using the same options as the last time it was generated with `--auto-gen-config` (generation options can be overridden).
+
 | `--safe`
 | Run only safe cops.
 
