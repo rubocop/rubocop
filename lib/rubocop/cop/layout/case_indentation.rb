@@ -105,7 +105,10 @@ module RuboCop
         end
 
         def incorrect_style(when_node)
-          add_offense(when_node.loc.keyword) do |corrector|
+          depth = indent_one_step? ? 'one step more than' : 'as deep as'
+          message = format(MSG, depth: depth, base: style)
+
+          add_offense(when_node.loc.keyword, message: message) do |corrector|
             detect_incorrect_style(when_node)
 
             whitespace = whitespace_range(when_node)
@@ -123,12 +126,6 @@ module RuboCop
           else
             unrecognized_style_detected
           end
-        end
-
-        def find_message(*)
-          depth = indent_one_step? ? 'one step more than' : 'as deep as'
-
-          format(MSG, depth: depth, base: style)
         end
 
         def base_column(case_node, base)

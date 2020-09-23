@@ -33,13 +33,17 @@ module RuboCop
       #   class X # :nodoc:
       #     y
       #   end
-      class CommentedKeyword < Cop
+      class CommentedKeyword < Base
         MSG = 'Do not place comments on the same line as the ' \
               '`%<keyword>s` keyword.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.comments.each do |comment|
-            add_offense(comment) if offensive?(comment)
+            next unless (match = line(comment).match(/(?<keyword>\S+).*#/))
+
+            if offensive?(comment)
+              add_offense(comment, message: format(MSG, keyword: match[:keyword]))
+            end
           end
         end
 
@@ -60,11 +64,6 @@ module RuboCop
           line = line(comment)
           KEYWORD_REGEXES.any? { |r| r.match?(line) } &&
             ALLOWED_COMMENT_REGEXES.none? { |r| r.match?(line) }
-        end
-
-        def message(comment)
-          keyword = line(comment).match(/(\S+).*#/)[1]
-          format(MSG, keyword: keyword)
         end
 
         def line(comment)

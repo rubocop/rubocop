@@ -15,8 +15,9 @@ module RuboCop
       #
       #   # good
       #   array.sort
-      class RedundantSortBy < Cop
+      class RedundantSortBy < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `sort` instead of `sort_by { |%<var>s| %<var>s }`.'
 
@@ -28,15 +29,10 @@ module RuboCop
           redundant_sort_by(node) do |send, var_name|
             range = sort_by_range(send, node)
 
-            add_offense(node,
-                        location: range,
-                        message: format(MSG, var: var_name))
+            add_offense(range, message: format(MSG, var: var_name)) do |corrector|
+              corrector.replace(range, 'sort')
+            end
           end
-        end
-
-        def autocorrect(node)
-          send = node.send_node
-          ->(corrector) { corrector.replace(sort_by_range(send, node), 'sort') }
         end
 
         private
