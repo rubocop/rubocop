@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.91.1 (2020-09-23)
+
 ### Bug fixes
 
 * [#8720](https://github.com/rubocop-hq/rubocop/issues/8720): Fix an error for `Lint/IdentityComparison` when calling `object_id` method without receiver in LHS or RHS. ([@koic][])
