@@ -8,11 +8,12 @@ require 'set'
 require 'forwardable'
 require 'regexp_parser'
 require 'unicode/display_width/no_string_ext'
-require 'rubocop-ast'
-require_relative 'rubocop/ast_aliases'
-require_relative 'rubocop/ext/regexp_node'
 
 require_relative 'rubocop/version'
+require 'rubocop-ast'
+
+require_relative 'rubocop/ast_aliases'
+require_relative 'rubocop/ext/regexp_node'
 
 require_relative 'rubocop/core_ext/string'
 require_relative 'rubocop/ext/processed_source'
@@ -636,3 +637,4 @@ require_relative 'rubocop/yaml_duplication_checker'
 unless File.exist?("#{__dir__}/../rubocop.gemspec") # Check if we are a gem
   RuboCop::ResultCache.rubocop_required_features = $LOADED_FEATURES - before_us
 end
+RuboCop::AST.rubocop_loaded if RuboCop::AST.respond_to?(:rubocop_loaded)
