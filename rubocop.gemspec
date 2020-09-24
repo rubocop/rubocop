@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
     'homepage_uri' => 'https://rubocop.org/',
     'changelog_uri' => 'https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/rubocop-hq/rubocop/',
-    'documentation_uri' => 'https://docs.rubocop.org/',
+    'documentation_uri' => "https://docs.rubocop.org/rubocop/#{RuboCop::Version.document_version}/",
     'bug_tracker_uri' => 'https://github.com/rubocop-hq/rubocop/issues'
   }
 
