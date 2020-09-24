@@ -3725,6 +3725,8 @@ Style/OptionalBooleanParameter:
   Enabled: pending
   Safe: false
   VersionAdded: '0.89'
+  AllowedMethods:
+    - respond_to_missing?
 
 Style/OrAssignment:
   Description: 'Recommend usage of double pipe equals (||=) where applicable.'
