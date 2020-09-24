@@ -6,6 +6,10 @@
 
 * [#8774](https://github.com/rubocop-hq/rubocop/issues/8774): Fix a false positive for `Layout/ArrayAlignment` with parallel assignment. ([@dvandersluis][])
 
+### Changes
+
+* [#8785](https://github.com/rubocop-hq/rubocop/pull/8785): Update TargetRubyVersion 2.8 to 3.0 (experimental). ([@em-gazelle][])
+
 ## 0.91.1 (2020-09-23)
 
 ### Bug fixes
