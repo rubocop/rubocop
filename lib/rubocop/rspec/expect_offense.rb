@@ -133,14 +133,14 @@ module RuboCop
             "#{@processed_source.diagnostics.map(&:render).join("\n")}"
         end
 
-        offenses = _investigate(cop, @processed_source)
+        @offenses = _investigate(cop, @processed_source)
         actual_annotations =
-          expected_annotations.with_offense_annotations(offenses)
+          expected_annotations.with_offense_annotations(@offenses)
 
         expect(actual_annotations).to eq(expected_annotations), ''
-        expect(offenses.map(&:severity).uniq).to eq([severity]) if severity
+        expect(@offenses.map(&:severity).uniq).to eq([severity]) if severity
 
-        offenses
+        @offenses
       end
 
       def expect_correction(correction, loop: true)
@@ -157,7 +157,7 @@ module RuboCop
           break corrected_source if corrected_source == @processed_source.buffer.source
 
           if iteration > RuboCop::Runner::MAX_ITERATIONS
-            raise RuboCop::Runner::InfiniteCorrectionLoop.new(@processed_source.path, [])
+            raise RuboCop::Runner::InfiniteCorrectionLoop.new(@processed_source.path, [@offenses])
           end
 
           # Prepare for next loop

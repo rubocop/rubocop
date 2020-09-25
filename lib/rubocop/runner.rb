@@ -16,7 +16,11 @@ module RuboCop
         root_cause = offenses_by_iteration[loop_start..-1]
                      .map { |x| x.map(&:cop_name).uniq.join(', ') }
                      .join(' -> ')
-        super "Infinite loop detected in #{path} and caused by #{root_cause}"
+
+        message = 'Infinite loop detected'
+        message += " in #{path}" if path
+        message += " and caused by #{root_cause}" if root_cause
+        super message
       end
     end
 
