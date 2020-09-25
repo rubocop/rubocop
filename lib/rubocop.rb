@@ -9,6 +9,7 @@ require 'forwardable'
 require 'regexp_parser'
 require 'unicode/display_width/no_string_ext'
 
+# we have to require RuboCop's version, before rubocop-ast's
 require_relative 'rubocop/version'
 require 'rubocop-ast'
 
