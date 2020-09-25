@@ -8,6 +8,10 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
       DateTime.now
       ^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
+
+    expect_correction(<<~RUBY)
+      Time.now
+    RUBY
   end
 
   it 'registers an offense when using ::DateTime for current time' do
@@ -15,12 +19,20 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
       ::DateTime.now
       ^^^^^^^^^^^^^^ Prefer Time over DateTime.
     RUBY
+
+    expect_correction(<<~RUBY)
+      ::Time.now
+    RUBY
   end
 
   it 'registers an offense when using DateTime for modern date' do
     expect_offense(<<~RUBY)
       DateTime.iso8601('2016-06-29')
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer Time over DateTime.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Time.iso8601('2016-06-29')
     RUBY
   end
 

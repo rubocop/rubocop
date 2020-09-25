@@ -2863,7 +2863,8 @@ Style/DateTime:
   StyleGuide: '#date--time'
   Enabled: false
   VersionAdded: '0.51'
-  VersionChanged: '0.59'
+  VersionChanged: '0.92'
+  SafeAutoCorrect: false
   AllowCoercion: false
 
 Style/DefWithParentheses:

@@ -5,6 +5,7 @@
 ### New features
 
 * [#8790](https://github.com/rubocop-hq/rubocop/pull/8790): Add `AllowedMethods` option to `Style/OptionalBooleanParameter` cop. ([@fatkodima][])
+* [#8738](https://github.com/rubocop-hq/rubocop/issues/8738): Add autocorrection to `Style/DateTime`. ([@dvandersluis][])
 
 ### Bug fixes
 
