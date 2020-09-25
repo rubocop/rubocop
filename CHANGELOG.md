@@ -8,7 +8,7 @@
 
 ### Changes
 
-* [#8785](https://github.com/rubocop-hq/rubocop/pull/8785): Update TargetRubyVersion 2.8 to 3.0 (experimental). ([@em-gazelle][])
+* [#8785](https://github.com/rubocop-hq/rubocop/pull/8785): Update TargetRubyVersion 2.8 to 3.0 (experimental). ([@koic][])
 
 ## 0.91.1 (2020-09-23)
 
