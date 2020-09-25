@@ -5,6 +5,8 @@ module RuboCop
   # and picking ruby files.
   # @api private
   class TargetFinder
+    HIDDEN_PATH_SUBSTRING = "#{File::SEPARATOR}."
+
     def initialize(config_store, options = {})
       @config_store = config_store
       @options = options
@@ -55,7 +57,8 @@ module RuboCop
       # Support Windows: Backslashes from command-line -> forward slashes
       base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
-      hidden_files = Set.new(all_files - find_files(base_dir, 0))
+      # use file.include? for performance optimization
+      hidden_files = all_files.select { |file| file.include?(HIDDEN_PATH_SUBSTRING) }
       base_dir_config = @config_store.for(base_dir)
 
       target_files = all_files.select do |file|
