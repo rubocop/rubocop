@@ -192,7 +192,7 @@ module RuboCop
         end
 
         def_node_matcher :method_name, <<~PATTERN
-          {($:defined? (send nil? _) ...)
+          {($:defined? _ ...)
            (send {_ nil?} $_ _ ...)}
         PATTERN
 
