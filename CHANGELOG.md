@@ -5,11 +5,18 @@
 ### New features
 
 * [#8778](https://github.com/rubocop-hq/rubocop/pull/8778): Add command line option `--regenerate-todo`. ([@dvandersluis][])
+* [#8790](https://github.com/rubocop-hq/rubocop/pull/8790): Add `AllowedMethods` option to `Style/OptionalBooleanParameter` cop. ([@fatkodima][])
+* [#8738](https://github.com/rubocop-hq/rubocop/issues/8738): Add autocorrection to `Style/DateTime`. ([@dvandersluis][])
 
 ### Bug fixes
 
 * [#8774](https://github.com/rubocop-hq/rubocop/issues/8774): Fix a false positive for `Layout/ArrayAlignment` with parallel assignment. ([@dvandersluis][])
 
+### Changes
+
+* [#8785](https://github.com/rubocop-hq/rubocop/pull/8785): Update TargetRubyVersion 2.8 to 3.0 (experimental). ([@em-gazelle][])
+* [#8785](https://github.com/rubocop-hq/rubocop/pull/8785): Update TargetRubyVersion 2.8 to 3.0 (experimental). ([@koic][])
+* [#8650](https://github.com/rubocop-hq/rubocop/issues/8650): Faster find of hidden files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
 
 ## 0.91.1 (2020-09-23)
 
@@ -4913,3 +4920,4 @@
 [@fsateler]: https://github.com/fsateler
 [@iSarCasm]: https://github.com/iSarCasm
 [@em-gazelle]: https://github.com/em-gazelle
+[@tleish]: https://github.com/tleish

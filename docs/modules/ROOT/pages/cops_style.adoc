@@ -1879,9 +1879,9 @@ an offense is reported.
 
 | Disabled
 | Yes
-| No
+| Yes (Unsafe)
 | 0.51
-| 0.59
+| 0.92
 |===
 
 This cop checks for consistent usage of the `DateTime` class over the
@@ -6888,7 +6888,8 @@ end
 |===
 
 This cop checks for places where keyword arguments can be used instead of
-boolean arguments when defining methods.
+boolean arguments when defining methods. `respond_to_missing?` method is allowed by default.
+These are customizable with `AllowedMethods` option.
 
 === Examples
 
@@ -6910,6 +6911,26 @@ def some_method(bar: false)
   puts bar
 end
 ----
+
+==== AllowedMethods: ['some_method']
+
+[source,ruby]
+----
+# good
+def some_method(bar = false)
+  puts bar
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedMethods
+| `respond_to_missing?`
+| Array
+|===
 
 === References
 
