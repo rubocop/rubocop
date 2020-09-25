@@ -16,6 +16,7 @@
 
 * [#8785](https://github.com/rubocop-hq/rubocop/pull/8785): Update TargetRubyVersion 2.8 to 3.0 (experimental). ([@koic][])
 * [#8650](https://github.com/rubocop-hq/rubocop/issues/8650): Faster find of hidden files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
+* [#8783](https://github.com/rubocop-hq/rubocop/pull/8783): Disable `Style/ArrayCoercion` cop by default. ([@koic][])
 
 ## 0.91.1 (2020-09-23)
 
