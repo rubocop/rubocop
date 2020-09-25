@@ -2463,7 +2463,7 @@ Style/ArrayCoercion:
                   with a variable you want to treat as an Array, but you're not certain it's an array.
   StyleGuide: '#array-coercion'
   Safe: false
-  Enabled: 'pending'
+  Enabled: false
   VersionAdded: '0.88'
 
 Style/ArrayJoin:
