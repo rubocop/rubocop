@@ -121,6 +121,14 @@ For more details check the available command-line options:
 $ rubocop -h
 ----
 
+To specify multiple cops for one flag, separate cops with commas and no spaces:
+
+[source,sh]
+----
+$ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName 
+----
+
+
 |===
 | Command flag | Description
 
