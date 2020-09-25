@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.92.0 (2020-09-25)
+
 ### New features
 
 * [#8778](https://github.com/rubocop-hq/rubocop/pull/8778): Add command line option `--regenerate-todo`. ([@dvandersluis][])
