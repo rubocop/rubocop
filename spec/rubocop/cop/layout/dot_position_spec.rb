@@ -107,6 +107,20 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
         RUBY
       end
     end
+
+    context 'with multiple offenses' do
+      it 'registers all of them' do
+        expect_offense(<<~RUBY)
+          @objects = @objects.where(type: :a)
+
+          @objects = @objects.
+                             ^ Place the . on the next line, together with the method name.
+            with_relation.
+                         ^ Place the . on the next line, together with the method name.
+            paginate
+        RUBY
+      end
+    end
   end
 
   context 'Trailing dots style' do
