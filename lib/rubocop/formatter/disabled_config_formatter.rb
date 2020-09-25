@@ -32,7 +32,6 @@ module RuboCop
         @exclude_limit_option = @options[:exclude_limit]
         @exclude_limit = Integer(@exclude_limit_option ||
           RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS)
-        @show_offense_counts = !@options[:no_offense_counts]
       end
 
       def file_finished(file, offenses)
@@ -56,6 +55,14 @@ module RuboCop
 
       private
 
+      def show_timestamp?
+        @options.fetch(:auto_gen_timestamp, true)
+      end
+
+      def show_offense_counts?
+        @options.fetch(:offense_counts, true)
+      end
+
       def command
         command = 'rubocop --auto-gen-config'
 
@@ -66,15 +73,15 @@ module RuboCop
             format(' --exclude-limit %<limit>d',
                    limit: Integer(@exclude_limit_option))
         end
-        command += ' --no-offense-counts' if @options[:no_offense_counts]
+        command += ' --no-offense-counts' unless show_offense_counts?
 
-        command += ' --no-auto-gen-timestamp' if @options[:no_auto_gen_timestamp]
+        command += ' --no-auto-gen-timestamp' unless show_timestamp?
 
         command
       end
 
       def timestamp
-        @options[:no_auto_gen_timestamp] ? '' : "on #{Time.now.utc} "
+        show_timestamp? ? "on #{Time.now.utc} " : ''
       end
 
       def output_offenses
@@ -112,7 +119,7 @@ module RuboCop
       end
 
       def output_cop_comments(output_buffer, cfg, cop_name, offense_count)
-        output_buffer.puts "# Offense count: #{offense_count}" if @show_offense_counts
+        output_buffer.puts "# Offense count: #{offense_count}" if show_offense_counts?
 
         cop_class = Cop::Registry.global.find_by_cop_name(cop_name)
         output_buffer.puts '# Cop supports --auto-correct.' if cop_class&.support_autocorrect?
