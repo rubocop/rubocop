@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
   # whitespace in this cop.
   it 'autocorrects a + with trailing whitespace to \\' do
     expect_offense(<<~RUBY)
-      top = "test" + 
+      top = "test" +#{trailing_whitespace}
                    ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY

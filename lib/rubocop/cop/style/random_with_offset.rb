@@ -36,7 +36,7 @@ module RuboCop
             (send
               {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int irange erange}))
+              {int (irange int int) (erange int int)}))
         PATTERN
 
         def_node_matcher :rand_op_integer?, <<~PATTERN
@@ -44,7 +44,7 @@ module RuboCop
             (send
               {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int irange erange})
+              {int (irange int int) (erange int int)})
             {:+ :-}
             int)
         PATTERN
@@ -54,7 +54,7 @@ module RuboCop
             (send
               {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int irange erange})
+              {int (irange int int) (erange int int)})
             {:succ :pred :next})
         PATTERN
 

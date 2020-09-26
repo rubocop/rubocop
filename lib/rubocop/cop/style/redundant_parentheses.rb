@@ -175,10 +175,9 @@ module RuboCop
         def raised_to_power_negative_numeric?(begin_node, node)
           return false unless node.numeric_type?
 
-          siblings = begin_node.parent&.children
-          return false if siblings.nil?
+          next_sibling = begin_node.right_sibling
+          return false unless next_sibling
 
-          next_sibling = siblings[begin_node.sibling_index + 1]
           base_value = node.children.first
 
           base_value.negative? && next_sibling == :**

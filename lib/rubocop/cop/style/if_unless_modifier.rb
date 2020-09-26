@@ -157,10 +157,6 @@ module RuboCop
             #{indentation}end
           RUBY
         end
-
-        def first_line_comment(node)
-          processed_source.comment_at_line(node.loc.line)&.text
-        end
       end
     end
   end

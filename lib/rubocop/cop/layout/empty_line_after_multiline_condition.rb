@@ -53,7 +53,6 @@ module RuboCop
       #
       class EmptyLineAfterMultilineCondition < Base
         include RangeHelp
-        include RescueNode
         extend AutoCorrector
 
         MSG = 'Use empty line after multiline condition.'
@@ -62,7 +61,7 @@ module RuboCop
           return if node.ternary?
 
           if node.modifier_form?
-            check_condition(node.condition) if right_sibling(node)
+            check_condition(node.condition) if node.right_sibling
           else
             check_condition(node.condition)
           end
@@ -74,7 +73,7 @@ module RuboCop
         alias on_until on_while
 
         def on_while_post(node)
-          return unless right_sibling(node)
+          return unless node.right_sibling
 
           check_condition(node.condition)
         end
@@ -92,10 +91,8 @@ module RuboCop
         end
 
         def on_rescue(node)
-          _body, *resbodies, _else = *node
-
-          resbodies.each do |resbody|
-            rescued_exceptions = rescued_exceptions(resbody)
+          node.resbody_branches.each do |resbody|
+            rescued_exceptions = resbody.exceptions
             next if !multiline_rescue_exceptions?(rescued_exceptions) ||
                     next_line_empty?(rescued_exceptions.last.last_line)
 
@@ -114,12 +111,6 @@ module RuboCop
 
         def next_line_empty?(line)
           processed_source[line].blank?
-        end
-
-        def right_sibling(node)
-          return unless node.parent
-
-          node.parent.children[node.sibling_index + 1]
         end
 
         def multiline_when_condition?(when_node)

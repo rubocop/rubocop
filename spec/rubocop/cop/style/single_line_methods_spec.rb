@@ -8,7 +8,6 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
                         'Layout/IndentationWidth' => { 'Width' => 2 })
   end
   let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
-  let(:trailing_whitespace) { ' ' }
 
   it 'registers an offense for a single-line method' do
     expect_offense(<<~RUBY)

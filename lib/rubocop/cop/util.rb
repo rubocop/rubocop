@@ -5,7 +5,6 @@ module RuboCop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
-      include TokensUtil
 
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc

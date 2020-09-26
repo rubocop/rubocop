@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
 
       expect(corrected).to eq(<<~RUBY)
         a, b,
-        c = 
+        c =#{trailing_whitespace}
         1,
         2, 3
       RUBY
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
 
       expect(new_source).to eq(<<~RUBY)
         a
-        .c = 
+        .c =#{trailing_whitespace}
         1,
         2, 3
       RUBY

@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
     expect_offense(<<~RUBY)
       def Test.some_method
         do_something
-      
+
       #{end_offense_annotation}
       end
     RUBY

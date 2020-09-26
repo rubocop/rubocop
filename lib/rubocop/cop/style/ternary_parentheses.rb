@@ -211,8 +211,7 @@ module RuboCop
         end
 
         def whitespace_after?(node)
-          index = index_of_last_token(node)
-          last_token = processed_source.tokens[index]
+          last_token = processed_source.last_token_of(node)
           last_token.space_after?
         end
       end

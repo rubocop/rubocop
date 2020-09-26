@@ -66,7 +66,7 @@ module RuboCop
         def on_send(node)
           return if node.multiline?
 
-          tokens = tokens(node)
+          tokens = processed_source.tokens_within(node)
           left_token = left_ref_bracket(node, tokens)
           return unless left_token
 
@@ -98,7 +98,7 @@ module RuboCop
         end
 
         def reference_brackets(node)
-          tokens = tokens(node)
+          tokens = processed_source.tokens_within(node)
           left = left_ref_bracket(node, tokens)
           [left, closing_bracket(tokens, left)]
         end

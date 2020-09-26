@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
             something
 
             #{access_modifier}
- 
+
             def test; end
           end
         RUBY
@@ -101,6 +101,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
             def #{access_modifier}?
               #{access_modifier} if true
             end
+          end
+        RUBY
+      end
+
+      it "ignores #{access_modifier} with block argument" do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            #{access_modifier} { do_something }
           end
         RUBY
       end
@@ -339,7 +347,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
             #{access_modifier}
             #{'^' * access_modifier.size} Remove a blank line after `#{access_modifier}`.
-            
+
             def test; end
           end
         RUBY

@@ -17,7 +17,9 @@ module RuboCop
       #   time = "8 o'clock"
       #   question = '"What did you say?"'
       #
-      class RedundantPercentQ < Cop
+      class RedundantPercentQ < Base
+        extend AutoCorrector
+
         MSG = 'Use `%<q_type>s` only for strings that contain both ' \
               'single quotes and double quotes%<extra>s.'
         DYNAMIC_MSG = ', or for dynamic strings that contain ' \
@@ -45,22 +47,18 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          delimiter =
-            /^%Q[^"]+$|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, delimiter)
-            corrector.replace(node.loc.end, delimiter)
-          end
-        end
-
         private
 
         def check(node)
           return unless start_with_percent_q_variant?(node)
           return if interpolated_quotes?(node) || allowed_percent_q?(node)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            delimiter = /^%Q[^"]+$|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
+
+            corrector.replace(node.loc.begin, delimiter)
+            corrector.replace(node.loc.end, delimiter)
+          end
         end
 
         def interpolated_quotes?(node)

@@ -94,20 +94,12 @@ module RuboCop
             add_offense(assignment) do |corrector|
               expression = assignment.children[1]
               corrector.replace(assignment, expression.source)
-              corrector.remove(right_sibling_of(assignment))
+              corrector.remove(assignment.right_sibling)
             end
           else
             last_expr = node.children.last
             check_branch(last_expr)
           end
-        end
-
-        def right_sibling_of(node)
-          siblings_of(node)[node.sibling_index + 1]
-        end
-
-        def siblings_of(node)
-          node.parent.children
         end
       end
     end

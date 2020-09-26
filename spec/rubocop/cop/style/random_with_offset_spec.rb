@@ -258,6 +258,30 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
     RUBY
   end
 
+  it 'does not register an offense when using rand(irange) + offset with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      rand(0..limit) + 1
+    RUBY
+  end
+
+  it 'does not register an offense when using offset - rand(erange) with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      1 - rand(0...limit)
+    RUBY
+  end
+
+  it 'does not register an offense when using rand(irange).succ with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      rand(0..limit).succ
+    RUBY
+  end
+
+  it 'does not register an offense when using rand(erange).pred with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      rand(0...limit).pred
+    RUBY
+  end
+
   it 'does not register an offense when using range with double dots' do
     expect_no_offenses('rand(1..6)')
   end

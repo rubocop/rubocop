@@ -95,7 +95,7 @@ module RuboCop
         end
 
         def next_sibling_parent_empty_or_else?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
+          next_sibling = node.right_sibling
           return true if next_sibling.nil?
 
           parent = next_sibling.parent
@@ -104,7 +104,7 @@ module RuboCop
         end
 
         def next_sibling_empty_or_guard_clause?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
+          next_sibling = node.right_sibling
           return true if next_sibling.nil?
 
           next_sibling.if_type? && contains_guard_clause?(next_sibling)

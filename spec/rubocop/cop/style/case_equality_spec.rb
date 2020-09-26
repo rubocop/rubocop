@@ -8,6 +8,12 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
+    it 'does not register an offense for === when the receiver is not a camel cased constant' do
+      expect_no_offenses(<<~RUBY)
+        REGEXP_CONSTANT === var
+      RUBY
+    end
+
     it 'registers an offense and corrects for === when the receiver is a regexp' do
       expect_offense(<<~RUBY)
         /OMG/ === var
