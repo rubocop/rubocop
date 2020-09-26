@@ -1693,41 +1693,4 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(status).to eq(0)
     expect(source_file.read).to eq(source)
   end
-
-  it 'corrects multiple Layout/DotPosition offenses' do
-    create_file('.rubocop.yml', <<~YAML)
-      Layout/DotPosition:
-        EnforcedStyle: leading
-    YAML
-
-    source_file = Pathname('example.rb')
-    source = <<~RUBY
-      @objects = @objects.where(type: :a)
-
-      @objects = @objects.
-        with_relation.
-        paginate
-    RUBY
-    create_file(source_file, source)
-
-    status = cli.run(
-      [
-        '--auto-correct',
-        '--only',
-        [
-          'Layout/DotPosition',
-        ].join(',')
-      ]
-    )
-    expect(status).to eq(0)
-
-    corrected = <<~RUBY
-      @objects = @objects.where(type: :a)
-
-      @objects = @objects
-        .with_relation
-        .paginate
-    RUBY
-    expect(source_file.read).to eq(corrected)
-  end
 end

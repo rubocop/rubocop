@@ -119,6 +119,14 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
                          ^ Place the . on the next line, together with the method name.
             paginate
         RUBY
+
+        expect_correction(<<~RUBY)
+          @objects = @objects.where(type: :a)
+
+          @objects = @objects
+            .with_relation
+            .paginate
+        RUBY
       end
     end
   end
