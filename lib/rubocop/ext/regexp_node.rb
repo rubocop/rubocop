@@ -25,7 +25,7 @@ module RuboCop
 
         str = with_interpolations_blanked
         Ext::RegexpNode.parsed_cache[str] ||= begin
-          Regexp::Parser.parse(str)
+          Regexp::Parser.parse(str, options: options)
         rescue StandardError
           nil
         end
