@@ -68,10 +68,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
   end
 
   context "with a regexp containing invalid \g escape" do
-    it 'does not register an offense' do
+    it 'registers an offense and corrects' do
       # See https://ruby-doc.org/core-2.7.1/Regexp.html#class-Regexp-label-Subexpression+Calls
       # \g should be \g<name>
-      expect_no_offenses('foo = /[a]\g/')
+      expect_offense(<<~'RUBY')
+        foo = /[a]\g/
+               ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /a\g/
+      RUBY
     end
   end
 
