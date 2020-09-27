@@ -54,15 +54,11 @@ module RuboCop
           # but need to preserve their width, to allow offsets to correctly line up with the
           # original source: spaces have no effect, and preserve width.
           if child.begin_type?
-            replace_match_with_spaces(source, /.*/m) # replace all content
+            ' ' * source.length
           else
             source
           end
         end.join
-      end
-
-      def replace_match_with_spaces(source, pattern)
-        source.sub(pattern) { ' ' * Regexp.last_match[0].length }
       end
 
       AST::RegexpNode.include self

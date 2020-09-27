@@ -5,6 +5,7 @@
 ### Changes
 
 * [#8625](https://github.com/rubocop-hq/rubocop/pull/8625): Improve `Style/RedundantRegexpCharacterClass` and `Style/RedundantRegexpEscape` by using `regexp_parser` gem. ([@owst][])
+* [#XXXX](https://github.com/rubocop-hq/rubocop/pull/XXXX): Extend RegexpNode#parsed_tree to handle regexps including interpolaton and comments. ([@owst][])
 
 ## 0.92.0 (2020-09-25)
 
