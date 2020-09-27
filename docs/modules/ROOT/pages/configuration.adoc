@@ -586,7 +586,8 @@ behavior of a cop instead of disabling it completely.
 
 Then you can start removing the entries in the generated
 `.rubocop_todo.yml` file one by one as you work through all the offenses
-in the code.
+in the code. You can also regenerate your `.rubocop_todo.yml` using
+the same options by running `rubocop --regenerate-todo`.
 
 Another way of silencing offense reports, aside from configuration, is
 through source code comments. These can be added manually or

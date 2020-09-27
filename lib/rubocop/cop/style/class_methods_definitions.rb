@@ -62,22 +62,19 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include CommentsHelp
         include VisibilityHelp
+        include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<preferred>s` to define class method.'
+        MSG = 'Use `%<preferred>s` to define a class method.'
+        MSG_SCLASS = 'Do not define public methods within class << self.'
 
         def on_sclass(node)
           return unless def_self_style?
           return unless node.identifier.source == 'self'
-          return if contains_non_public_methods?(node)
+          return unless all_methods_public?(node)
 
-          def_nodes(node).each do |def_node|
-            next unless node_visibility(def_node) == :public
-
-            message = format(MSG, preferred: "def self.#{def_node.method_name}")
-            add_offense(def_node, message: message) do |corrector|
-              extract_def_from_sclass(def_node, node, corrector)
-            end
+          add_offense(node, message: MSG_SCLASS) do |corrector|
+            autocorrect_sclass(node, corrector)
           end
         end
 
@@ -94,8 +91,11 @@ module RuboCop
           style == :def_self
         end
 
-        def contains_non_public_methods?(sclass_node)
-          def_nodes(sclass_node).any? { |def_node| node_visibility(def_node) != :public }
+        def all_methods_public?(sclass_node)
+          def_nodes = def_nodes(sclass_node)
+          return false if def_nodes.empty?
+
+          def_nodes.all? { |def_node| node_visibility(def_node) == :public }
         end
 
         def def_nodes(sclass_node)
@@ -111,19 +111,45 @@ module RuboCop
           end
         end
 
-        def extract_def_from_sclass(def_node, sclass_node, corrector)
+        def autocorrect_sclass(node, corrector)
+          rewritten_defs = []
+
+          def_nodes(node).each do |def_node|
+            next unless node_visibility(def_node) == :public
+
+            range, source = extract_def_from_sclass(def_node, node)
+
+            corrector.remove(range)
+            rewritten_defs << source
+          end
+
+          if sclass_only_has_methods?(node)
+            corrector.remove(node)
+            rewritten_defs.first&.strip!
+          else
+            corrector.insert_after(node, "\n")
+          end
+
+          corrector.insert_after(node, rewritten_defs.join("\n"))
+        end
+
+        def sclass_only_has_methods?(node)
+          node.body.def_type? || node.body.each_child_node.all?(&:def_type?)
+        end
+
+        def extract_def_from_sclass(def_node, sclass_node)
           range = source_range_with_comment(def_node)
           source = range.source.sub!(
             "def #{def_node.method_name}",
             "def self.#{def_node.method_name}"
           )
 
-          corrector.insert_before(sclass_node, "#{source}\n#{indent(sclass_node)}")
-          corrector.remove(range)
+          source = source.gsub(/^ {#{indentation_diff(def_node, sclass_node)}}/, '')
+          [range, source.chomp]
         end
 
-        def indent(node)
-          ' ' * node.loc.column
+        def indentation_diff(node1, node2)
+          node1.loc.column - node2.loc.column
         end
       end
     end

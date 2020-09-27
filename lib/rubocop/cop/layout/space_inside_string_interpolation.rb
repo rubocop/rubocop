@@ -54,8 +54,8 @@ module RuboCop
         end
 
         def delimiters(begin_node)
-          left = processed_source.tokens[index_of_first_token(begin_node)]
-          right = processed_source.tokens[index_of_last_token(begin_node)]
+          left = processed_source.first_token_of(begin_node)
+          right = processed_source.last_token_of(begin_node)
           [left, right]
         end
       end

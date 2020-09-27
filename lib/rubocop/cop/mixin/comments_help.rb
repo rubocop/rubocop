@@ -7,15 +7,9 @@ module RuboCop
       include VisibilityHelp
 
       def source_range_with_comment(node)
-        begin_pos, end_pos =
-          if node.def_type?
-            start_node = find_visibility_start(node) || node
-            end_node = find_visibility_end(node) || node
-            [begin_pos_with_comment(start_node),
-             end_position_for(end_node) + 1]
-          else
-            [begin_pos_with_comment(node), end_position_for(node)]
-          end
+        begin_pos = begin_pos_with_comment(node)
+        end_pos = end_position_for(node)
+        end_pos += 1 if node.def_type?
 
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end

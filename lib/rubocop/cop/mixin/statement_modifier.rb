@@ -57,10 +57,11 @@ module RuboCop
       end
 
       def first_line_comment(node)
-        comment =
-          processed_source.find_comment { |c| c.loc.line == node.loc.line }
+        comment = processed_source.find_comment { |c| c.loc.line == node.loc.line }
+        return unless comment
 
-        comment ? comment.loc.expression.source : nil
+        comment_source = comment.loc.expression.source
+        comment_source unless comment_disables_cop?(comment_source)
       end
 
       def parenthesize?(node)
@@ -79,6 +80,11 @@ module RuboCop
         return unless config.for_cop('Layout/LineLength')['Enabled']
 
         config.for_cop('Layout/LineLength')['Max']
+      end
+
+      def comment_disables_cop?(comment)
+        regexp_pattern = "# rubocop : (disable|todo) ([^,],)* (all|#{cop_name})"
+        Regexp.new(regexp_pattern.gsub(' ', '\s*')).match?(comment)
       end
     end
   end

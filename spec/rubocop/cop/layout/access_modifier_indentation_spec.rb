@@ -175,7 +175,7 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
     it 'registers an offense and corrects access modifiers ' \
       'in arbitrary blocks' do
       expect_offense(<<~RUBY)
-        Test = func do
+        func do
 
         private
         ^^^^^^^ Indent access modifiers like `private`.
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
       RUBY
 
       expect_correction(<<~RUBY)
-        Test = func do
+        func do
 
           private
 

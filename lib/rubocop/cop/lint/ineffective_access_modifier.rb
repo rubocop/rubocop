@@ -58,12 +58,9 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          check_node(node.children[2]) # class body
+          check_node(node.body)
         end
-
-        def on_module(node)
-          check_node(node.children[1]) # module body
-        end
+        alias on_module on_class
 
         private
 

@@ -113,10 +113,9 @@ module RuboCop
         end
 
         def keyword_locations_in_rescue(node)
-          _begin_body, *resbodies, _else_body = *node
           [
             node.loc.else,
-            *resbodies.map { |body| body.loc.keyword }
+            *node.resbody_branches.map { |body| body.loc.keyword }
           ].compact
         end
 

@@ -56,19 +56,29 @@ module RuboCop
 
         private
 
+        def previous_line_blank?(range)
+          processed_source.buffer.source_line(range.line - 1).blank?
+        end
+
         def comment_range_with_surrounding_space(range)
-          # Eat the entire comment, the preceding space, and the preceding
-          # newline if there is one.
-          original_begin = range.begin_pos
-          range = range_with_surrounding_space(range: range,
-                                               side: :left,
-                                               newlines: true)
-          range_with_surrounding_space(range: range,
-                                       side: :right,
-                                       # Special for a comment that
-                                       # begins the file: remove
-                                       # the newline at the end.
-                                       newlines: original_begin.zero?)
+          if previous_line_blank?(range)
+            # When the previous line is blank, it should be retained
+            range_with_surrounding_space(range: range, side: :right)
+          else
+            # Eat the entire comment, the preceding space, and the preceding
+            # newline if there is one.
+            original_begin = range.begin_pos
+            range = range_with_surrounding_space(range: range,
+                                                 side: :left,
+                                                 newlines: true)
+
+            range_with_surrounding_space(range: range,
+                                         side: :right,
+                                         # Special for a comment that
+                                         # begins the file: remove
+                                         # the newline at the end.
+                                         newlines: original_begin.zero?)
+          end
         end
 
         def directive_range_in_list(range, ranges)

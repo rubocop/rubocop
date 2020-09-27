@@ -53,14 +53,16 @@ module RuboCop
         MSG = 'Combine this loop with the previous loop.'
 
         def on_block(node)
+          return unless node.parent&.begin_type?
           return unless collection_looping_method?(node)
 
-          sibling = left_sibling_of(node)
-          add_offense(node) if same_collection_looping?(node, sibling)
+          add_offense(node) if same_collection_looping?(node, node.left_sibling)
         end
 
         def on_for(node)
-          sibling = left_sibling_of(node)
+          return unless node.parent&.begin_type?
+
+          sibling = node.left_sibling
           add_offense(node) if sibling&.for_type? && node.collection == sibling.collection
         end
 
@@ -69,13 +71,6 @@ module RuboCop
         def collection_looping_method?(node)
           method_name = node.send_node.method_name
           method_name.match?(/^each/) || method_name.match?(/_each$/)
-        end
-
-        def left_sibling_of(node)
-          return unless node.parent&.begin_type?
-
-          index = node.sibling_index - 1
-          node.parent.children[index] if index >= 0
         end
 
         def same_collection_looping?(node, sibling)

@@ -169,7 +169,7 @@ module RuboCop
         # Autocorrect by swapping between two nodes autocorrecting them
         def autocorrect(corrector, node)
           node_classification = classify(node)
-          previous = left_siblings_of(node).find do |sibling|
+          previous = node.left_siblings.find do |sibling|
             classification = classify(sibling)
             !ignore?(classification) && node_classification != classification
           end

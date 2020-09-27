@@ -35,7 +35,6 @@ module RuboCop
       #     baz
       #   end
       class RescueType < Base
-        include RescueNode
         extend AutoCorrector
 
         MSG = 'Rescuing from `%<invalid_exceptions>s` will raise a ' \

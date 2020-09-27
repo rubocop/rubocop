@@ -2,6 +2,53 @@
 
 ## master (unreleased)
 
+## 0.92.0 (2020-09-25)
+
+### New features
+
+* [#8778](https://github.com/rubocop-hq/rubocop/pull/8778): Add command line option `--regenerate-todo`. ([@dvandersluis][])
+* [#8790](https://github.com/rubocop-hq/rubocop/pull/8790): Add `AllowedMethods` option to `Style/OptionalBooleanParameter` cop. ([@fatkodima][])
+* [#8738](https://github.com/rubocop-hq/rubocop/issues/8738): Add autocorrection to `Style/DateTime`. ([@dvandersluis][])
+
+### Bug fixes
+
+* [#8774](https://github.com/rubocop-hq/rubocop/issues/8774): Fix a false positive for `Layout/ArrayAlignment` with parallel assignment. ([@dvandersluis][])
+
+### Changes
+
+* [#8785](https://github.com/rubocop-hq/rubocop/pull/8785): Update TargetRubyVersion 2.8 to 3.0 (experimental). ([@koic][])
+* [#8650](https://github.com/rubocop-hq/rubocop/issues/8650): Faster find of hidden files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
+* [#8783](https://github.com/rubocop-hq/rubocop/pull/8783): Disable `Style/ArrayCoercion` cop by default. ([@koic][])
+
+## 0.91.1 (2020-09-23)
+
+### Bug fixes
+
+* [#8720](https://github.com/rubocop-hq/rubocop/issues/8720): Fix an error for `Lint/IdentityComparison` when calling `object_id` method without receiver in LHS or RHS. ([@koic][])
+* [#8767](https://github.com/rubocop-hq/rubocop/issues/8767): Fix a false positive for `Style/RedundantReturn` when a rescue has an else clause. ([@fatkodima][])
+* [#8710](https://github.com/rubocop-hq/rubocop/issues/8710): Fix a false positive for `Layout/RescueEnsureAlignment` when `Layout/BeginEndAlignment` cop is not enabled status. ([@koic][])
+* [#8726](https://github.com/rubocop-hq/rubocop/issues/8726): Fix a false positive for `Naming/VariableNumber` when naming multibyte character variable name. ([@koic][])
+* [#8730](https://github.com/rubocop-hq/rubocop/issues/8730): Fix an error for `Lint/UselessTimes` when there is a blank line in the method definition. ([@koic][])
+* [#8740](https://github.com/rubocop-hq/rubocop/issues/8740): Fix a false positive for `Style/HashAsLastArrayItem` when the hash is in an implicit array. ([@dvandersluis][])
+* [#8739](https://github.com/rubocop-hq/rubocop/issues/8739): Fix an error for `Lint/UselessTimes` when using empty block argument. ([@koic][])
+* [#8742](https://github.com/rubocop-hq/rubocop/issues/8742): Fix some assignment counts for `Metrics/AbcSize`. ([@marcandre][])
+* [#8750](https://github.com/rubocop-hq/rubocop/pull/8750): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when line break for multiple condidate values of `when` statement. ([@koic][])
+* [#8754](https://github.com/rubocop-hq/rubocop/pull/8754): Fix an error for `Style/RandomWithOffset` when using a range with non-integer bounds. ([@eugeneius][])
+* [#8756](https://github.com/rubocop-hq/rubocop/issues/8756): Fix an infinite loop error for `Layout/EmptyLinesAroundAccessModifier` with `Layout/EmptyLinesAroundBlockBody` when using access modifier with block argument. ([@koic][])
+* [#8372](https://github.com/rubocop-hq/rubocop/issues/8372): Fix `Lint/RedundantCopEnableDirective` autocorrection to not leave orphaned empty `# rubocop:enable` comments. ([@dvandersluis][])
+* [#8372](https://github.com/rubocop-hq/rubocop/issues/8372): Fix `Lint/RedundantCopDisableDirective` autocorrection. ([@dvandersluis][])
+* [#8764](https://github.com/rubocop-hq/rubocop/issues/8764): Fix `Layout/CaseIndentation` not showing the cop name in output messages. ([@dvandersluis][])
+* [#8771](https://github.com/rubocop-hq/rubocop/issues/8771): Fix an error for `Style/OneLineConditional` when using `if-then-elsif-then-end`. ([@koic][])
+* [#8576](https://github.com/rubocop-hq/rubocop/issues/8576): Fix `Style/IfUnlessModifier` to ignore cop disable comment directives when considering conversion to the modifier form. ([@dsavochkin][])
+
+### Changes
+
+* [#8489](https://github.com/rubocop-hq/rubocop/issues/8489): Exclude method `respond_to_missing?` from `OptionalBooleanParameter` cop. ([@em-gazelle][])
+* [#7914](https://github.com/rubocop-hq/rubocop/issues/7914): `Style/SafeNavigation` marked as having unsafe auto-correction. ([@marcandre][])
+* [#8749](https://github.com/rubocop-hq/rubocop/issues/8749): Disable `Style/IpAddresses` by default in `Gemfile` and gemspec files. ([@dvandersluis][])
+
+## 0.91.0 (2020-09-15)
+
 ### New features
 
 * Add new `Lint/NoReturnInBeginEndBlocks` cop. ([@jcfausto][])
@@ -16,6 +63,7 @@
 * [#8627](https://github.com/rubocop-hq/rubocop/issues/8627): Fix a false positive for `Lint/DuplicateRequire` when same feature argument but different require method. ([@koic][])
 * [#8674](https://github.com/rubocop-hq/rubocop/issues/8674): Fix an error for `Layout/EmptyLineAfterMultilineCondition` when conditional is at the top level. ([@fatkodima][])
 * [#8658](https://github.com/rubocop-hq/rubocop/pull/8658): Fix a false positive for `Style/RedundantSelfAssignment` when calling coercion methods. ([@fatkodima][])
+* [#8669](https://github.com/rubocop-hq/rubocop/issues/8669): Fix an offense creation for `Lint/EmptyFile`. ([@fatkodima][])
 * [#8607](https://github.com/rubocop-hq/rubocop/issues/8607): Fix a false positive for `Lint/UnreachableLoop` when conditional branch includes continue statement preceding break statement. ([@fatkodima][])
 * [#8572](https://github.com/rubocop-hq/rubocop/issues/8572): Fix a false positive for `Style/RedundantParentheses` when parentheses are used like method argument parentheses. ([@koic][])
 * [#8630](https://github.com/rubocop-hq/rubocop/issues/8630): Fix some false positives for `Style/HashTransformKeys` and `Style/HashTransformValues` when the receiver is an array. ([@eugeneius][])
@@ -26,6 +74,7 @@
 * [#8664](https://github.com/rubocop-hq/rubocop/issues/8664): Fix a false positive for `Naming/BinaryOperatorParameterName` when naming multibyte character method name. ([@koic][])
 * [#8604](https://github.com/rubocop-hq/rubocop/issues/8604): Fix a false positive for `Bundler/DuplicatedGem` when gem is duplciated in condition. ([@tejasbubane][])
 * [#8671](https://github.com/rubocop-hq/rubocop/issues/8671): Fix an error for `Style/ExplicitBlockArgument` when using safe navigation method call. ([@koic][])
+* [#8681](https://github.com/rubocop-hq/rubocop/pull/8681): Fix an error for `Style/HashAsLastArrayItem` with `no_braces` for empty hash. ([@fsateler][])
 * [#8682](https://github.com/rubocop-hq/rubocop/pull/8682): Fix a positive for `Style/HashTransformKeys` and `Style/HashTransformValues` when the `each_with_object` hash is used in the transformed key or value. ([@eugeneius][])
 * [#8688](https://github.com/rubocop-hq/rubocop/issues/8688): Mark `Style/GlobalStdStream` as unsafe autocorrection. ([@marcandre][])
 * [#8642](https://github.com/rubocop-hq/rubocop/issues/8642): Fix a false negative for `Style/SpaceInsideHashLiteralBraces` when a correct empty hash precedes the incorrect hash. ([@dvandersluis][])
@@ -34,6 +83,8 @@
 * [#8698](https://github.com/rubocop-hq/rubocop/pull/8698): Fix cache to avoid encoding exception. ([@marcandre][])
 * [#8704](https://github.com/rubocop-hq/rubocop/issues/8704): Fix an error for `Lint/AmbiguousOperator` when using safe navigation operator with a unary operator. ([@koic][])
 * [#8661](https://github.com/rubocop-hq/rubocop/pull/8661): Fix an incorrect auto-correct for `Style/MultilineTernaryOperator` when returning a multiline ternary operator expression. ([@koic][])
+* [#8526](https://github.com/rubocop-hq/rubocop/pull/8526): Fix a false positive for `Style/CaseEquality` cop when the receiver is not a camel cased constant. ([@koic][])
+* [#8673](https://github.com/rubocop-hq/rubocop/issues/8673): Fix the JSON parse error when specifying `--format=json` and `--stdin` options. ([@koic][])
 
 ### Changes
 
@@ -42,6 +93,8 @@
 * [#8617](https://github.com/rubocop-hq/rubocop/issues/8617): Fix `Style/HashAsLastArrayItem` to not register an offense when all items in an array are hashes. ([@dvandersluis][])
 * [#8500](https://github.com/rubocop-hq/rubocop/issues/8500): Add `in?` to AllowedMethods for `Lint/SafeNavigationChain` cop. ([@tejasbubane][])
 * [#8629](https://github.com/rubocop-hq/rubocop/pull/8629): Fix the cache being reusable in CI by using crc32 to calculate file hashes rather than `mtime`, which changes each CI build. ([@dvandersluis][])
+* [#8663](https://github.com/rubocop-hq/rubocop/issues/8663): Fix multiple autocorrection bugs with `Style/ClassMethodsDefinitions`. ([@dvandersluis][])
+* [#8621](https://github.com/rubocop-hq/rubocop/issues/8621): Add helpful Infinite Loop error message. ([@iSarCasm][])
 
 ## 0.90.0 (2020-09-01)
 
@@ -4868,3 +4921,7 @@
 [@jaimerave]: https://github.com/jaimerave
 [@Skipants]: https://github.com/Skipants
 [@sascha-wolf]: https://github.com/sascha-wolf
+[@fsateler]: https://github.com/fsateler
+[@iSarCasm]: https://github.com/iSarCasm
+[@em-gazelle]: https://github.com/em-gazelle
+[@tleish]: https://github.com/tleish

@@ -105,6 +105,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
+      it "ignores #{access_modifier} with block argument" do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            #{access_modifier} { do_something }
+          end
+        RUBY
+      end
+
       it 'autocorrects blank line after #{access_modifier} with comment' do
         expect_offense(<<~RUBY)
           class Test

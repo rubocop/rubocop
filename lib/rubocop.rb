@@ -8,11 +8,13 @@ require 'set'
 require 'forwardable'
 require 'regexp_parser'
 require 'unicode/display_width/no_string_ext'
+
+# we have to require RuboCop's version, before rubocop-ast's
+require_relative 'rubocop/version'
 require 'rubocop-ast'
+
 require_relative 'rubocop/ast_aliases'
 require_relative 'rubocop/ext/regexp_node'
-
-require_relative 'rubocop/version'
 
 require_relative 'rubocop/core_ext/string'
 require_relative 'rubocop/ext/processed_source'
@@ -25,7 +27,6 @@ require_relative 'rubocop/string_interpreter'
 require_relative 'rubocop/error'
 require_relative 'rubocop/warning'
 
-require_relative 'rubocop/cop/tokens_util'
 require_relative 'rubocop/cop/util'
 require_relative 'rubocop/cop/offense'
 require_relative 'rubocop/cop/message_annotator'
@@ -616,6 +617,7 @@ require_relative 'rubocop/config_obsoletion'
 require_relative 'rubocop/config_store'
 require_relative 'rubocop/config_validator'
 require_relative 'rubocop/target_finder'
+require_relative 'rubocop/directive_comment'
 require_relative 'rubocop/comment_config'
 require_relative 'rubocop/magic_comment'
 require_relative 'rubocop/result_cache'
@@ -629,6 +631,7 @@ require_relative 'rubocop/cli/command/execute_runner'
 require_relative 'rubocop/cli/command/init_dotfile'
 require_relative 'rubocop/cli/command/show_cops'
 require_relative 'rubocop/cli/command/version'
+require_relative 'rubocop/config_regeneration'
 require_relative 'rubocop/options'
 require_relative 'rubocop/remote_config'
 require_relative 'rubocop/target_ruby'
@@ -637,3 +640,4 @@ require_relative 'rubocop/yaml_duplication_checker'
 unless File.exist?("#{__dir__}/../rubocop.gemspec") # Check if we are a gem
   RuboCop::ResultCache.rubocop_required_features = $LOADED_FEATURES - before_us
 end
+RuboCop::AST.rubocop_loaded if RuboCop::AST.respond_to?(:rubocop_loaded)

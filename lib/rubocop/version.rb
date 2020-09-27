@@ -3,7 +3,7 @@
 module RuboCop
   # This module holds the RuboCop version information.
   module Version
-    STRING = '0.90.0'
+    STRING = '0.92.0'
 
     MSG = '%<version>s (using Parser %<parser_version>s, '\
           'rubocop-ast %<rubocop_ast_version>s, ' \
@@ -19,6 +19,11 @@ module RuboCop
       else
         STRING
       end
+    end
+
+    # @api private
+    def self.document_version
+      STRING.match('\d+\.\d+').to_s
     end
   end
 end

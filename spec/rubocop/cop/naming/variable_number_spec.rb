@@ -54,6 +54,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'snake_case', '_foo'
     it_behaves_like 'accepts', 'snake_case', '@foo'
     it_behaves_like 'accepts', 'snake_case', '@__foo__'
+    it_behaves_like 'accepts', 'snake_case', 'emparejó'
 
     it 'registers an offense for normal case numbering in method parameter' do
       expect_offense(<<~RUBY)
@@ -98,6 +99,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'normalcase', '_foo'
     it_behaves_like 'accepts', 'normalcase', '@foo'
     it_behaves_like 'accepts', 'normalcase', '@__foo__'
+    it_behaves_like 'accepts', 'snake_case', 'emparejó'
 
     it 'registers an offense for snake case numbering in method parameter' do
       expect_offense(<<~RUBY)
@@ -139,6 +141,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'non_integer', '_'
     it_behaves_like 'accepts', 'non_integer', '_foo'
     it_behaves_like 'accepts', 'non_integer', '@__foo__'
+    it_behaves_like 'accepts', 'snake_case', 'emparejó'
 
     it 'registers an offense for snake case numbering in method parameter' do
       expect_offense(<<~RUBY)

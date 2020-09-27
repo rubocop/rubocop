@@ -31,4 +31,16 @@ RSpec.describe RuboCop::Cop::Lint::IdentityComparison, :config do
       foo.equal(bar)
     RUBY
   end
+
+  it 'does not register an offense when lhs is `object_id` without receiver' do
+    expect_no_offenses(<<~RUBY)
+      object_id == bar.object_id
+    RUBY
+  end
+
+  it 'does not register an offense when rhs is `object_id` without receiver' do
+    expect_no_offenses(<<~RUBY)
+      foo.object_id == object_id
+    RUBY
+  end
 end

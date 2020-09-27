@@ -9,12 +9,23 @@ module RuboCop
       # for an optional argument, your method should too.
       #
       # @example
-      #   # bad
-      #   def to_json
-      #   end
+      #   class Point
+      #     attr_reader :x, :y
       #
-      #   # good
-      #   def to_json(*_args)
+      #     # bad, incorrect arity
+      #     def to_json
+      #       JSON.generate([x, y])
+      #     end
+      #
+      #     # good, preserving args
+      #     def to_json(*args)
+      #       JSON.generate([x, y], *args)
+      #     end
+      #
+      #     # good, discarding args
+      #     def to_json(*_args)
+      #       JSON.generate([x, y])
+      #     end
       #   end
       #
       class ToJSON < Base
