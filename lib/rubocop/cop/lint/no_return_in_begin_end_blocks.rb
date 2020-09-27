@@ -5,9 +5,8 @@ module RuboCop
     module Lint
       # Checks for the presence of a `return` inside a `begin..end` block
       # in assignment contexts.
-      # In this situation the, `return` will take precedence over any
-      # assignment intended by the result of the begin..end block, leading
-      # to unexpected code behaviors.
+      # In this situation, the `return` will result in an exit from the current
+      # method, possibly leading to unexpected behavior.
       #
       # @example
       #
