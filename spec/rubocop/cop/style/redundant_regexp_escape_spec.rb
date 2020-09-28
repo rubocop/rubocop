@@ -442,6 +442,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
 
+    context 'with a # inside a character class' do
+      it 'does not register an offense' do
+        # See https://github.com/rubocop-hq/rubocop/issues/8805 - the # inside the character class
+        # must not be treated as starting a comment (which makes the following \. redundant)
+        expect_no_offenses(<<~'RUBY')
+          regexp = %r{
+            \A[a-z#]            # letters or #
+            \.[a-z]\z           # dot + letters
+          }x
+        RUBY
+      end
+    end
+
     context 'with redundantly-escaped slashes' do
       it 'registers an offense and corrects' do
         expect_offense(<<~'RUBY')
