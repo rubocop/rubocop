@@ -58,6 +58,14 @@ module RuboCop
             end
           end
         end
+
+        def on_op_asgn(node)
+          node.each_node(:kwbegin) do |kwbegin_node|
+            kwbegin_node.each_node(:return) do |return_node|
+              add_offense(return_node)
+            end
+          end
+        end
       end
     end
   end
