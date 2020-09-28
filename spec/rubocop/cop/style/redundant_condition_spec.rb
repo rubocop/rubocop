@@ -42,6 +42,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
         RUBY
       end
 
+      it 'registers an offense and corrects when using assignment by hash key access' do
+        expect_no_offenses(<<~RUBY)
+          if @cache[key]
+            @cache[key]
+          else
+            @cache[key] = heavy_load[key]
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects when `raise` without argument parentheses in `else`' do
         expect_offense(<<~RUBY)
           if b
