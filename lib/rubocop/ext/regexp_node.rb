@@ -47,7 +47,8 @@ module RuboCop
       private
 
       def with_interpolations_blanked
-        children.reject(&:regopt_type?).map do |child|
+        # Ignore the trailing regopt node
+        children[0...-1].map do |child|
           source = child.source
 
           # We don't want to consider the contents of interpolations as part of the pattern source,
