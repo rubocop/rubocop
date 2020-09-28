@@ -16,13 +16,7 @@ module RuboCop
       @parsed_cache = {}
 
       # @return [Regexp::Expression::Root, nil]
-      def parsed_tree(interpolation: :ignore)
-        unless %i[ignore blank].include?(interpolation)
-          raise ArgumentError, 'interpolation must be one of :ignore or :blank'
-        end
-
-        return if interpolation? && interpolation == :ignore
-
+      def parsed_tree
         str = with_interpolations_blanked
         Ext::RegexpNode.parsed_cache[str] ||= begin
           Regexp::Parser.parse(str, options: options)

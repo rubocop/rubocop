@@ -4,7 +4,7 @@
 
 ### Changes
 
-* [#8803](https://github.com/rubocop-hq/rubocop/pull/8803): Extend RegexpNode#parsed_tree to handle regexps including interpolaton and comments. ([@owst][])
+* [#8803](https://github.com/rubocop-hq/rubocop/pull/8803): **(Breaking)** `RegexpNode#parsed_tree` now processes regexps including interpolation (by blanking the interpolation before parsing, rather than skipping). ([@owst][])
 
 ## 0.92.0 (2020-09-25)
 
