@@ -6,6 +6,10 @@
 
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
 
+### Changes
+
+* [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
+
 ## 0.92.0 (2020-09-25)
 
 ### New features
