@@ -5,6 +5,9 @@
 ### Changes
 
 * [#8803](https://github.com/rubocop-hq/rubocop/pull/8803): **(Breaking)** `RegexpNode#parsed_tree` now processes regexps including interpolation (by blanking the interpolation before parsing, rather than skipping). ([@owst][])
+### New features
+
+* [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
 
 ## 0.92.0 (2020-09-25)
 

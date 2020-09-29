@@ -1546,6 +1546,13 @@ Lint/FormatParameterMismatch:
   Enabled: true
   VersionAdded: '0.33'
 
+Lint/HashCompareByIdentity:
+  Description: 'Prefer using `Hash#compare_by_identity` than using `object_id` for keys.'
+  StyleGuide: '#identity-comparison'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.93'
+
 Lint/HeredocMethodCallPosition:
   Description: >-
                  Checks for the ordering of a method call where
