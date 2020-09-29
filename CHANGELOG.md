@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#8788](https://github.com/rubocop-hq/rubocop/issues/8788): Change `Style/Documentation` to not trigger offense with only macros. ([@tejasbubane][])
+
 ## 1.3.1 (2020-11-16)
 
 ### Bug fixes
