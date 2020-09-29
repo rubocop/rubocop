@@ -57,6 +57,8 @@ You can set literals you want to fold with `CountAsOne`.
 Available are: 'array', 'hash', and 'heredoc'. Each literal
 will be counted as one line regardless of its actual size.
 
+NOTE: This cop does not apply for `Struct` definitions.
+
 === Examples
 
 ==== CountAsOne: ['array', 'heredoc']
@@ -164,6 +166,8 @@ The maximum allowed length is configurable.
 You can set literals you want to fold with `CountAsOne`.
 Available are: 'array', 'hash', and 'heredoc'. Each literal
 will be counted as one line regardless of its actual size.
+
+NOTE: This cop also applies for `Struct` definitions.
 
 === Examples
 
