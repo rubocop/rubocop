@@ -29,6 +29,8 @@ module RuboCop
       #       content.
       #     HEREDOC
       #   end                 # 5 points
+      #
+      # NOTE: This cop does not apply for `Struct` definitions.
       class BlockLength < Base
         include CodeLength
 
@@ -36,7 +38,7 @@ module RuboCop
 
         def on_block(node)
           return if excluded_method?(node)
-          return if node.class_constructor?
+          return if node.class_constructor? || node.struct_constructor?
 
           check_code_length(node)
         end

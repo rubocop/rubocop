@@ -81,20 +81,33 @@ module RuboCop
     # the top level directories that are excluded in configuration in the
     # normal way (dir/**/*).
     def find_files(base_dir, flags)
+      # get all wanted directories first to improve speed of finding all files
+      patterns = wanted_dir_patterns(base_dir, flags)
+      # We need this special case to avoid creating the pattern
+      # /**/* which searches the entire file system.
+      patterns = ["#{base_dir}/**/*"] if patterns.empty?
+
+      Dir.glob(patterns, flags).select { |path| FileTest.file?(path) }
+    end
+
+    def wanted_dir_patterns(base_dir, flags)
+      exclude_pattern = combined_exclude_glob_patterns(base_dir)
+      flags = flags | File::FNM_PATHNAME | File::FNM_EXTGLOB | File::FNM_DOTMATCH
       wanted_toplevel_dirs = toplevel_dirs(base_dir, flags) -
                              excluded_dirs(base_dir)
-      wanted_toplevel_dirs.map! { |dir| dir << '/**/*' }
+      wanted_toplevel_dirs.map! { |dir| dir << '/**/' }
 
-      pattern = if wanted_toplevel_dirs.empty?
-                  # We need this special case to avoid creating the pattern
-                  # /**/* which searches the entire file system.
-                  ["#{base_dir}/**/*"]
-                else
-                  # Search the non-excluded top directories, but also add files
-                  # on the top level, which would otherwise not be found.
-                  wanted_toplevel_dirs.unshift("#{base_dir}/*")
-                end
-      Dir.glob(pattern, flags).select { |path| FileTest.file?(path) }
+      Dir.glob(wanted_toplevel_dirs, flags)
+         .map { |dir| dir << '*' } # add file glob pattern to end of each dir
+         .reject { |dir| File.fnmatch?(exclude_pattern, dir, flags) }
+         .unshift("#{base_dir}/*")
+    end
+
+    def combined_exclude_glob_patterns(base_dir)
+      all_cops_config = @config_store.for(base_dir).for_all_cops
+      patterns = all_cops_config['Exclude'].select { |pattern| pattern.is_a? String }
+                                           .map { |pattern| pattern.sub("#{base_dir}/", '') }
+      "#{base_dir}/{#{patterns.join(',')}}"
     end
 
     def toplevel_dirs(base_dir, flags)
