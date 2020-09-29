@@ -159,6 +159,27 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
+  context 'when defining a Struct' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~'RUBY')
+        Person = Struct.new(:first_name, :last_name) do
+          def full_name
+            "#{first_name} #{last_name}"
+          end
+
+          def foo
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 

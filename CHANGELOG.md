@@ -10,6 +10,8 @@
 
 * [#8803](https://github.com/rubocop-hq/rubocop/pull/8803): **(Breaking)** `RegexpNode#parsed_tree` now processes regexps including interpolation (by blanking the interpolation before parsing, rather than skipping). ([@owst][])
 * [#8625](https://github.com/rubocop-hq/rubocop/pull/8625): Improve `Style/RedundantRegexpCharacterClass` and `Style/RedundantRegexpEscape` by using `regexp_parser` gem. ([@owst][])
+* [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
+* [#8102](https://github.com/rubocop-hq/rubocop/issues/8102): Consider class-length instead of block-length for `Struct.new`. ([@tejasbubane][])
 
 ## 0.92.0 (2020-09-25)
 
