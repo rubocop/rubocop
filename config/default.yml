@@ -2801,6 +2801,11 @@ Style/ClassVars:
   Enabled: true
   VersionAdded: '0.13'
 
+Style/CollectionCompact:
+  Description: 'Use `{Array,Hash}#{compact,compact!}` instead of custom logic to reject nils.'
+  Enabled: pending
+  VersionAdded: '1.2'
+
 # Align with the style guide.
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'

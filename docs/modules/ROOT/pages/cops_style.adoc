@@ -1361,6 +1361,40 @@ end
 
 * https://rubystyle.guide#no-class-vars
 
+== Style/CollectionCompact
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.2
+| -
+|===
+
+This cop checks for places where custom logic on rejection nils from arrays
+and hashes can be replaced with `{Array,Hash}#{compact,compact!}`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+array.reject { |e| e.nil? }
+array.select { |e| !e.nil? }
+
+# good
+array.compact
+
+# bad
+hash.reject! { |k, v| v.nil? }
+hash.select! { |k, v| !v.nil? }
+
+# good
+hash.compact!
+----
+
 == Style/CollectionMethods
 
 |===

@@ -361,6 +361,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleclassmethods[Style/ClassMethods]
 * xref:cops_style.adoc#styleclassmethodsdefinitions[Style/ClassMethodsDefinitions]
 * xref:cops_style.adoc#styleclassvars[Style/ClassVars]
+* xref:cops_style.adoc#stylecollectioncompact[Style/CollectionCompact]
 * xref:cops_style.adoc#stylecollectionmethods[Style/CollectionMethods]
 * xref:cops_style.adoc#stylecolonmethodcall[Style/ColonMethodCall]
 * xref:cops_style.adoc#stylecolonmethoddefinition[Style/ColonMethodDefinition]
