@@ -40,84 +40,61 @@ RSpec.describe RuboCop::Ext::RegexpNode do
       let(:source) { '/42 # the answer/x' }
 
       it 'returns the expected tree' do
-        tree = node.parsed_tree(interpolation: :ignore)
+        tree = node.parsed_tree
 
         expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
         expect(tree.map(&:token)).to eq(%i[literal whitespace comment])
       end
     end
 
-    context 'with interpolation: :ignore' do
-      context 'with a regexp containing interpolation' do
-        it { expect(node.parsed_tree(interpolation: :ignore)).to eq(nil) }
-      end
+    context 'with a regexp containing interpolation' do
+      it 'returns the expected blanked tree' do
+        tree = node.parsed_tree
 
-      context 'with a regexp not containing interpolation' do
-        let(:source) { '/foobaz/' }
-
-        it 'returns the expected tree' do
-          tree = node.parsed_tree(interpolation: :ignore)
-
-          expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
-          expect(tree.to_s).to eq('foobaz')
-        end
+        expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
+        expect(tree.to_s).to eq('foo      baz')
       end
     end
 
-    context 'with interpolation: :blank' do
-      context 'with a regexp containing interpolation' do
-        it 'returns the expected blanked tree' do
-          tree = node.parsed_tree(interpolation: :blank)
-
-          expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
-          expect(tree.to_s).to eq('foo      baz')
-        end
+    context 'with a regexp containing a multi-line interpolation' do
+      let(:source) do
+        <<~'REGEXP'
+          /
+            foo
+            #{
+              bar(
+                42
+              )
+            }
+            baz
+          /
+        REGEXP
       end
 
-      context 'with a regexp containing a multi-line interpolation' do
-        let(:source) do
-          <<~'REGEXP'
-            /
-              foo
-              #{
-                bar(
-                  42
-                )
-              }
-              baz
-            /
-          REGEXP
-        end
+      it 'returns the expected blanked tree' do
+        tree = node.parsed_tree
 
-        it 'returns the expected blanked tree' do
-          tree = node.parsed_tree(interpolation: :blank)
-
-          expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
-          expect(tree.to_s.split("\n")).to eq(
-            [
-              '',
-              '  foo',
-              ' ' * 32,
-              '  baz'
-            ]
-          )
-        end
-      end
-
-      context 'with a regexp not containing interpolation' do
-        let(:source) { '/foobaz/' }
-
-        it 'returns the expected tree' do
-          tree = node.parsed_tree(interpolation: :blank)
-
-          expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
-          expect(tree.to_s).to eq('foobaz')
-        end
+        expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
+        expect(tree.to_s.split("\n")).to eq(
+          [
+            '',
+            '  foo',
+            ' ' * 32,
+            '  baz'
+          ]
+        )
       end
     end
 
-    context 'with interpolation: :other' do
-      it { expect { node.parsed_tree(interpolation: :other) }.to raise_error(ArgumentError) }
+    context 'with a regexp not containing interpolation' do
+      let(:source) { '/foobaz/' }
+
+      it 'returns the expected tree' do
+        tree = node.parsed_tree
+
+        expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
+        expect(tree.to_s).to eq('foobaz')
+      end
     end
   end
 end

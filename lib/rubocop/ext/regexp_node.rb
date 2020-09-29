@@ -16,13 +16,7 @@ module RuboCop
       @parsed_cache = {}
 
       # @return [Regexp::Expression::Root, nil]
-      def parsed_tree(interpolation: :ignore)
-        unless %i[ignore blank].include?(interpolation)
-          raise ArgumentError, 'interpolation must be one of :ignore or :blank'
-        end
-
-        return if interpolation? && interpolation == :ignore
-
+      def parsed_tree
         str = with_interpolations_blanked
         Ext::RegexpNode.parsed_cache[str] ||= begin
           Regexp::Parser.parse(str, options: options)
@@ -47,7 +41,8 @@ module RuboCop
       private
 
       def with_interpolations_blanked
-        children.reject(&:regopt_type?).map do |child|
+        # Ignore the trailing regopt node
+        children[0...-1].map do |child|
           source = child.source
 
           # We don't want to consider the contents of interpolations as part of the pattern source,
