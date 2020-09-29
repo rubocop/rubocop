@@ -52,8 +52,8 @@ module RuboCop
         end
 
         def semicolon(node)
-          @semicolon ||= {}
-          @semicolon[node.object_id] ||= processed_source.tokens_within(node).find(&:semicolon?)
+          @semicolon ||= {}.compare_by_identity
+          @semicolon[node] ||= processed_source.tokens_within(node).find(&:semicolon?)
         end
       end
     end

@@ -1620,6 +1620,42 @@ format('Unnumbered format: %s and numbered: %2$s', a_value, another)
 format('Numbered format: %1$s and numbered %2$s', a_value, another)
 ----
 
+== Lint/HashCompareByIdentity
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.93
+| -
+|===
+
+Prefer using `Hash#compare_by_identity` than using `object_id` for hash keys.
+
+This cop is marked as unsafe as a hash possibly can contain other keys
+besides `object_id`s.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+hash = {}
+hash[foo.object_id] = :bar
+hash.key?(baz.object_id)
+
+# good
+hash = {}.compare_by_identity
+hash[foo] = :bar
+hash.key?(baz)
+----
+
+=== References
+
+* https://rubystyle.guide#identity-comparison
+
 == Lint/HeredocMethodCallPosition
 
 |===
