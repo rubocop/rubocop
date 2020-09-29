@@ -48,6 +48,34 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'registers multiple offenses' do
+      expect_offense(<<~RUBY)
+        for n in [1, 2, 3] do
+        ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+          puts n
+        end
+        [1, 2, 3].each do |n|
+          puts n
+        end
+        for n in [1, 2, 3] do
+        ^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+          puts n
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].each do |n|
+          puts n
+        end
+        [1, 2, 3].each do |n|
+          puts n
+        end
+        [1, 2, 3].each do |n|
+          puts n
+        end
+      RUBY
+    end
+
     context 'auto-correct' do
       context 'with range' do
         let(:expected_each_with_range) do
@@ -245,6 +273,34 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           for n in [1, 2, 3] do
             puts n
           end
+        end
+      RUBY
+    end
+
+    it 'registers multiple offenses' do
+      expect_offense(<<~RUBY)
+        for n in [1, 2, 3] do
+          puts n
+        end
+        [1, 2, 3].each do |n|
+        ^^^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          puts n
+        end
+        [1, 2, 3].each do |n|
+        ^^^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+          puts n
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for n in [1, 2, 3] do
+          puts n
+        end
+        for n in [1, 2, 3] do
+          puts n
+        end
+        for n in [1, 2, 3] do
+          puts n
         end
       RUBY
     end
