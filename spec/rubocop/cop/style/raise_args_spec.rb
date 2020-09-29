@@ -75,6 +75,30 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
           end
         RUBY
       end
+
+      it 'reports multiple offenses' do
+        expect_offense(<<~RUBY)
+          if a
+            raise RuntimeError, msg
+            ^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+          elsif b
+            raise Ex.new(msg)
+          else
+            raise ArgumentError, msg
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if a
+            raise RuntimeError.new(msg)
+          elsif b
+            raise Ex.new(msg)
+          else
+            raise ArgumentError.new(msg)
+          end
+        RUBY
+      end
     end
 
     context 'with a raise with 3 args' do
@@ -107,8 +131,6 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
             raise Ex.new(msg)
             ^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           RUBY
-          expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => 'compact')
 
           expect_correction(<<~RUBY)
             raise Ex, msg
@@ -122,8 +144,6 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
             raise Ex.new
             ^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           RUBY
-          expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => 'compact')
 
           expect_correction(<<~RUBY)
             raise Ex
@@ -181,13 +201,36 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
             ^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
           end
         RUBY
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
 
         expect_correction(<<~RUBY)
           if a
             raise RuntimeError, msg
           else
             raise Ex, msg
+          end
+        RUBY
+      end
+
+      it 'reports multiple offenses' do
+        expect_offense(<<~RUBY)
+          if a
+            raise RuntimeError, msg
+          elsif b
+            raise Ex.new(msg)
+            ^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          else
+            raise ArgumentError.new(msg)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if a
+            raise RuntimeError, msg
+          elsif b
+            raise Ex, msg
+          else
+            raise ArgumentError, msg
           end
         RUBY
       end
