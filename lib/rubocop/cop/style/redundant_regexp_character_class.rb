@@ -53,7 +53,7 @@ module RuboCop
         end
 
         def each_single_element_character_class(node)
-          node.parsed_tree(interpolation: :blank)&.each_expression do |expr|
+          node.parsed_tree&.each_expression do |expr|
             next if expr.type != :set || expr.expressions.size != 1
             next if expr.negative?
             next if %i[set posixclass nonposixclass].include?(expr.expressions.first.type)

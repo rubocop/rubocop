@@ -81,11 +81,7 @@ module RuboCop
         end
 
         def each_escape(node)
-          parsed_tree = node.parsed_tree(interpolation: :blank)
-
-          return unless parsed_tree
-
-          parsed_tree.traverse.reduce(0) do |char_class_depth, (event, expr)|
+          node.parsed_tree&.traverse.reduce(0) do |char_class_depth, (event, expr)|
             yield(expr.text[1], expr.ts, !char_class_depth.zero?) if expr.type == :escape
 
             if expr.type == :set
