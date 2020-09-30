@@ -106,7 +106,7 @@ module RuboCop
         def autocorrect_method_to_literal(corrector, node)
           corrector.replace(node.send_node, '->')
 
-          return unless node.arguments?
+          return unless node.block_type? && node.arguments?
 
           arg_str = "(#{lambda_arg_string(node.arguments)})"
 
