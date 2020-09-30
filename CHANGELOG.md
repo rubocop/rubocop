@@ -8,14 +8,14 @@
 
 ### Bug fixes
 
-* [#8810](https://github.com/rubocop-hq/rubocop/pull/8810): Fix multiple offense detection for Style/RaiseArgs. ([@pbernays][])
-* [#8809](https://github.com/rubocop-hq/rubocop/pull/8809): Fix multiple offense detection for Style/For. ([@pbernays][])
+* [#8810](https://github.com/rubocop-hq/rubocop/pull/8810): Fix multiple offense detection for `Style/RaiseArgs`. ([@pbernays][])
+* [#8809](https://github.com/rubocop-hq/rubocop/pull/8809): Fix multiple offense detection for `Style/For`. ([@pbernays][])
 * [#8801](https://github.com/rubocop-hq/rubocop/pull/8801): Fix `Layout/SpaceAroundEqualsInParameterDefault` only registered once in a line. ([@rdunlop][])
 
 ### Changes
 
-* [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
-* [#8102](https://github.com/rubocop-hq/rubocop/issues/8102): Consider class-length instead of block-length for `Struct.new`. ([@tejasbubane][])
+* [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves initial startup speed. ([@tleish][])
+* [#8102](https://github.com/rubocop-hq/rubocop/issues/8102): Consider class length instead of block length for `Struct.new`. ([@tejasbubane][])
 
 ## 0.92.0 (2020-09-25)
 
