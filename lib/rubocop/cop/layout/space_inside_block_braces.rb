@@ -206,8 +206,6 @@ module RuboCop
 
         def no_space(begin_pos, end_pos, msg)
           if style == :space
-            return unless opposite_style_detected
-
             offense(begin_pos, end_pos, msg)
           else
             correct_style_detected
@@ -216,8 +214,6 @@ module RuboCop
 
         def space(begin_pos, end_pos, msg)
           if style == :no_space
-            return unless opposite_style_detected
-
             offense(begin_pos, end_pos, msg)
           else
             correct_style_detected
