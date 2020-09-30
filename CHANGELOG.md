@@ -6,12 +6,20 @@
 
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
 
+### Bug fixes
+
+* [#8810](https://github.com/rubocop-hq/rubocop/pull/8810): Fix multiple offense detection for `Style/RaiseArgs`. ([@pbernays][])
+* [#8809](https://github.com/rubocop-hq/rubocop/pull/8809): Fix multiple offense detection for `Style/For`. ([@pbernays][])
+* [#8801](https://github.com/rubocop-hq/rubocop/issues/8801): Fix `Layout/SpaceAroundEqualsInParameterDefault` only registered once in a line. ([@rdunlop][])
+
 ### Changes
 
 * [#8803](https://github.com/rubocop-hq/rubocop/pull/8803): **(Breaking)** `RegexpNode#parsed_tree` now processes regexps including interpolation (by blanking the interpolation before parsing, rather than skipping). ([@owst][])
 * [#8625](https://github.com/rubocop-hq/rubocop/pull/8625): Improve `Style/RedundantRegexpCharacterClass` and `Style/RedundantRegexpEscape` by using `regexp_parser` gem. ([@owst][])
 * [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
 * [#8102](https://github.com/rubocop-hq/rubocop/issues/8102): Consider class-length instead of block-length for `Struct.new`. ([@tejasbubane][])
+* [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves initial startup speed. ([@tleish][])
+* [#8102](https://github.com/rubocop-hq/rubocop/issues/8102): Consider class length instead of block length for `Struct.new`. ([@tejasbubane][])
 
 ## 0.92.0 (2020-09-25)
 
@@ -4934,3 +4942,5 @@
 [@iSarCasm]: https://github.com/iSarCasm
 [@em-gazelle]: https://github.com/em-gazelle
 [@tleish]: https://github.com/tleish
+[@pbernays]: https://github.com/pbernays
+[@rdunlop]: https://github.com/rdunlop
