@@ -31,6 +31,7 @@
 * [#8625](https://github.com/rubocop-hq/rubocop/pull/8625): Improve `Style/RedundantRegexpCharacterClass` and `Style/RedundantRegexpEscape` by using `regexp_parser` gem. ([@owst][])
 * [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves initial startup speed. ([@tleish][])
 * [#8102](https://github.com/rubocop-hq/rubocop/issues/8102): Consider class length instead of block length for `Struct.new`. ([@tejasbubane][])
+* [#7408](https://github.com/rubocop-hq/rubocop/issues/7408): Make `Gemspec/RequiredRubyVersion` cop aware of `Gem::Requirement`. ([@tejasbubane][])
 
 ## 0.92.0 (2020-09-25)
 
