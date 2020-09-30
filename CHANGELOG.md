@@ -9,6 +9,7 @@
 ### Bug fixes
 
 * [#8810](https://github.com/rubocop-hq/rubocop/pull/8810): Fix multiple offense detection for Style/RaiseArgs. ([@pbernays][])
+* [#8809](https://github.com/rubocop-hq/rubocop/pull/8809): Fix multiple offense detection for Style/For. ([@pbernays][])
 
 ### Changes
 

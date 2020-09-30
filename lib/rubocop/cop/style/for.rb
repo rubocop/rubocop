@@ -49,8 +49,6 @@ module RuboCop
 
         def on_for(node)
           if style == :each
-            return unless opposite_style_detected
-
             add_offense(node, message: PREFER_EACH) do |corrector|
               ForToEachCorrector.new(node).call(corrector)
             end
@@ -63,8 +61,6 @@ module RuboCop
           return unless suspect_enumerable?(node)
 
           if style == :for
-            return unless opposite_style_detected
-
             add_offense(node, message: PREFER_FOR) do |corrector|
               EachToForCorrector.new(node).call(corrector)
             end
