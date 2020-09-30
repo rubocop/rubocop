@@ -6,6 +6,10 @@
 
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
 
+### Bug fixes
+
+* [#8810](https://github.com/rubocop-hq/rubocop/pull/8810): Fix multiple offense detection for Style/RaiseArgs. ([@pbernays][])
+
 ### Changes
 
 * [#8646](https://github.com/rubocop-hq/rubocop/issues/8646): Faster find of all files in `TargetFinder` class which improves rubocop initial startup speed. ([@tleish][])
@@ -4932,3 +4936,4 @@
 [@iSarCasm]: https://github.com/iSarCasm
 [@em-gazelle]: https://github.com/em-gazelle
 [@tleish]: https://github.com/tleish
+[@pbernays]: https://github.com/pbernays

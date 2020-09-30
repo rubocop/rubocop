@@ -84,8 +84,6 @@ module RuboCop
 
         def check_compact(node)
           if node.arguments.size > 1
-            return unless opposite_style_detected
-
             add_offense(node, message: format(COMPACT_MSG, method: node.method_name)) do |corrector|
               replacement = correction_exploded_to_compact(node)
 
@@ -103,7 +101,6 @@ module RuboCop
 
           return unless first_arg.send_type? && first_arg.method?(:new)
           return if acceptable_exploded_args?(first_arg.arguments)
-          return unless opposite_style_detected
 
           add_offense(node, message: format(EXPLODED_MSG, method: node.method_name)) do |corrector|
             replacement = correction_compact_to_exploded(node)
