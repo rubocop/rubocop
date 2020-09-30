@@ -20,6 +20,24 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       RUBY
     end
 
+    it 'registers an offense when `required_ruby_version` is specified in array and is lower than `TargetRubyVersion`' do
+      expect_offense(<<~RUBY, '/path/to/foo.gemspec')
+        Gem::Specification.new do |spec|
+          spec.required_ruby_version = ['>= 2.6.0', '< 3.0.0']
+                                       ^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version` (2.6, declared in foo.gemspec) and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
+        end
+      RUBY
+    end
+
+    it 'recognizes Gem::Requirement and registers offense' do
+      expect_offense(<<~RUBY, '/path/to/foo.gemspec')
+        Gem::Specification.new do |spec|
+          spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version` (2.6, declared in foo.gemspec) and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
+        end
+      RUBY
+    end
+
     describe 'false negatives' do
       it 'does not register an offense when `required_ruby_version` ' \
          'is assigned as a variable (string literal)' do
