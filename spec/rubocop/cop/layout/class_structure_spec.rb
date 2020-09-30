@@ -214,4 +214,79 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       end
     end
   end
+
+  it 'registers an offense and corrects when str heredoc constant is defined after public method' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def do_something
+        end
+
+        CONSTANT = <<~EOS
+        ^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          str
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        CONSTANT = <<~EOS
+          str
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when dstr heredoc constant is defined after public method' do
+    expect_offense(<<~'RUBY')
+      class Foo
+        def do_something
+        end
+
+        CONSTANT = <<~EOS
+        ^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          #{str}
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      class Foo
+        CONSTANT = <<~EOS
+          #{str}
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when xstr heredoc constant is defined after public method' do
+    expect_offense(<<~'RUBY')
+      class Foo
+        def do_something
+        end
+
+        CONSTANT = <<~`EOS`
+        ^^^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          str
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      class Foo
+        CONSTANT = <<~`EOS`
+          str
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
 end

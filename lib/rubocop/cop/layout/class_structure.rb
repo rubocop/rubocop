@@ -265,6 +265,9 @@ module RuboCop
         end
 
         def end_position_for(node)
+          heredoc = find_heredoc(node)
+          return heredoc.location.heredoc_end.end_pos + 1 if heredoc
+
           end_line = buffer.line_for_position(node.loc.expression.end_pos)
           buffer.line_range(end_line).end_pos
         end
@@ -282,6 +285,10 @@ module RuboCop
 
         def start_line_position(node)
           buffer.line_range(node.loc.line).begin_pos - 1
+        end
+
+        def find_heredoc(node)
+          node.each_node(:str, :dstr, :xstr).find(&:heredoc?)
         end
 
         def buffer
