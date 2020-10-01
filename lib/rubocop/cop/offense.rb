@@ -63,7 +63,20 @@ module RuboCop
       attr_reader :corrector
 
       PseudoSourceRange = Struct.new(:line, :column, :source_line, :begin_pos,
-                                     :end_pos)
+                                     :end_pos) do
+        alias_method :first_line, :line
+        alias_method :last_line, :line
+        alias_method :last_column, :column
+
+        def column_range
+          column...last_column
+        end
+
+        def size
+          end_pos - begin_pos
+        end
+        alias_method :length, :size
+      end
       private_constant :PseudoSourceRange
 
       NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 1).freeze

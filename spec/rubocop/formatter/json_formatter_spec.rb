@@ -157,5 +157,21 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     it 'sets length value for :length key' do
       expect(hash[:length]).to eq(8)
     end
+
+    context 'when the location is pseudo' do
+      let(:location) { RuboCop::Cop::Offense::NO_LOCATION }
+
+      it 'returns a valid hash' do
+        expect(hash).to eq({
+                             start_line: 1,
+                             start_column: 1,
+                             last_line: 1,
+                             last_column: 0,
+                             length: 1,
+                             line: 1,
+                             column: 1
+                           })
+      end
+    end
   end
 end
