@@ -65,6 +65,26 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       RUBY
     end
 
+    it 'auto-adds required parens for a defs after a passing method' do
+      expect_offense(<<~RUBY)
+        def self.fine; end
+
+        def self.test param; end
+                      ^^^^^ Use def with parentheses when there are parameters.
+
+        def self.test2 param; end
+                       ^^^^^ Use def with parentheses when there are parameters.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.fine; end
+
+        def self.test(param); end
+
+        def self.test2(param); end
+      RUBY
+    end
+
     it 'auto-adds required parens to argument lists on multiple lines' do
       expect_offense(<<~RUBY)
         def test one,
