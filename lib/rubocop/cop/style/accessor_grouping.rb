@@ -7,6 +7,9 @@ module RuboCop
       # By default it enforces accessors to be placed in grouped declarations,
       # but it can be configured to enforce separating them in multiple declarations.
       #
+      # Note: `Sorbet` is not compatible with "grouped" style. Consider "separated" style
+      # or disabling this cop.
+      #
       # @example EnforcedStyle: grouped (default)
       #   # bad
       #   class Foo
