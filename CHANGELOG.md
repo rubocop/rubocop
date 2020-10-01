@@ -14,6 +14,7 @@
 * [#8514](https://github.com/rubocop-hq/rubocop/issues/8514): Correct multiple `Style/MethodDefParentheses` per file. ([@rdunlop][])
 * [#8825](https://github.com/rubocop-hq/rubocop/issues/8825): Fix crash in `Style/ExplicitBlockArgument` when code is called outside of a method. ([@ghiculescu][])
 * [#8354](https://github.com/rubocop-hq/rubocop/issues/8354): Detect regexp named captures in `Style/CaseLikeIf` cop. ([@dsavochkin][])
+* [#8821](https://github.com/rubocop-hq/rubocop/issues/8821): Fix an incorrect autocorrect for `Style/NestedTernaryOperator` when using a nested ternary operator expression with no parentheses on the outside. ([@koic][])
 
 ### Changes
 
