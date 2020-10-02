@@ -39,8 +39,13 @@ module RuboCop
         end
 
         def on_casgn(node)
-          _scope, _name, block_node = *node
-          check_code_length(node) if block_node.class_definition?
+          if node.parent&.assignment?
+            block_node = node.parent.children[1]
+          else
+            _scope, _name, block_node = *node
+          end
+
+          check_code_length(block_node) if block_node.class_definition?
         end
 
         private
