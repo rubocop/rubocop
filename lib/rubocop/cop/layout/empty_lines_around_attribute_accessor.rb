@@ -88,7 +88,7 @@ module RuboCop
         end
 
         def require_empty_line?(node)
-          return false unless node&.respond_to?(:type)
+          return false unless node.respond_to?(:type)
 
           !allow_alias?(node) && !attribute_or_allowed_method?(node)
         end
