@@ -5,6 +5,7 @@
 ### New features
 
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
+* [#8833](https://github.com/rubocop-hq/rubocop/pull/8833): Add new `Style/ClassEqualityComparison` cop. ([@fatkodima][])
 * [#8668](https://github.com/rubocop-hq/rubocop/pull/8668): Add new `Lint/RedundantSafeNavigation` cop. ([@fatkodima][])
 
 ### Bug fixes
