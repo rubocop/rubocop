@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#7944](https://github.com/rubocop-hq/rubocop/issues/7944): Add `MaxUnannotatedPlaceholdersAllowed` option to `Style/FormatStringToken` cop. ([@Tietew][])
+
 ### Bug fixes
 
 * [#8892](https://github.com/rubocop-hq/rubocop/issues/8892): Fix an error for `Style/StringConcatenation` when correcting nested concatenable parts. ([@fatkodima][])

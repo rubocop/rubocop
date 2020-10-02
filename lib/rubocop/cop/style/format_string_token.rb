@@ -37,6 +37,27 @@ module RuboCop
       #
       #   # good
       #   format('%s', 'Hello')
+      #
+      # It is allowed to contain unannotated token
+      # if the number of them is less than or equals to
+      # `MaxUnannotatedPlaceholdersAllowed`.
+      #
+      # @example MaxUnannotatedPlaceholdersAllowed: 0
+      #
+      #   # bad
+      #   format('%06d', 10)
+      #   format('%s %s.', 'Hello', 'world')
+      #
+      #   # good
+      #   format('%<number>06d', number: 10)
+      #
+      # @example MaxUnannotatedPlaceholdersAllowed: 1 (default)
+      #
+      #   # bad
+      #   format('%s %s.', 'Hello', 'world')
+      #
+      #   # good
+      #   format('%06d', 10)
       class FormatStringToken < Base
         include ConfigurableEnforcedStyle
 
@@ -44,8 +65,12 @@ module RuboCop
           return unless node.value.include?('%')
           return if node.each_ancestor(:xstr, :regexp).any?
 
-          tokens(node) do |detected_style, token_range|
-            if detected_style == style || unannotated_format?(node, detected_style)
+          detections = collect_detections(node)
+          return if detections.empty?
+          return if allowed_unannotated?(detections)
+
+          detections.each do |detected_style, token_range|
+            if detected_style == style
               correct_style_detected
             else
               style_detected(detected_style)
@@ -111,6 +136,26 @@ module RuboCop
 
             yield(detected_style, token)
           end
+        end
+
+        def collect_detections(node)
+          detections = []
+          tokens(node) do |detected_style, token_range|
+            unless unannotated_format?(node, detected_style)
+              detections << [detected_style, token_range]
+            end
+          end
+          detections
+        end
+
+        def allowed_unannotated?(detections)
+          return false if detections.size > max_unannotated_placeholders_allowed
+
+          detections.all? { |detected_style,| detected_style == :unannotated }
+        end
+
+        def max_unannotated_placeholders_allowed
+          cop_config['MaxUnannotatedPlaceholdersAllowed']
         end
       end
     end

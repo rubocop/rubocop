@@ -3405,7 +3405,7 @@ puts '%10s' % 'hoge'
 | Yes
 | No
 | 0.49
-| 0.75
+| 1.0
 |===
 
 Use a consistent style for named format string tokens.
@@ -3415,6 +3415,10 @@ which are passed as arguments to those methods:
 `printf`, `sprintf`, `format`, `%`.
 The reason is that _unannotated_ format is very similar
 to encoded URLs or Date/Time formatting strings.
+
+It is allowed to contain unannotated token
+if the number of them is less than or equals to
+`MaxUnannotatedPlaceholdersAllowed`.
 
 === Examples
 
@@ -3454,6 +3458,29 @@ format('%{greeting}', greeting: 'Hello')
 format('%s', 'Hello')
 ----
 
+==== MaxUnannotatedPlaceholdersAllowed: 0
+
+[source,ruby]
+----
+# bad
+format('%06d', 10)
+format('%s %s.', 'Hello', 'world')
+
+# good
+format('%<number>06d', number: 10)
+----
+
+==== MaxUnannotatedPlaceholdersAllowed: 1 (default)
+
+[source,ruby]
+----
+# bad
+format('%s %s.', 'Hello', 'world')
+
+# good
+format('%06d', 10)
+----
+
 === Configurable attributes
 
 |===
@@ -3462,6 +3489,10 @@ format('%s', 'Hello')
 | EnforcedStyle
 | `annotated`
 | `annotated`, `template`, `unannotated`
+
+| MaxUnannotatedPlaceholdersAllowed
+| `1`
+| Integer
 |===
 
 == Style/FrozenStringLiteralComment

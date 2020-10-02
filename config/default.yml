@@ -3109,8 +3109,12 @@ Style/FormatStringToken:
     # Prefer simple looking "template" style tokens like `%{name}`, `%{age}`
     - template
     - unannotated
+  # `MaxUnannotatedPlaceholdersAllowed` defines the number of `unannotated`
+  # style token in a format string to be allowed when enforced style is not
+  # `unannotated`.
+  MaxUnannotatedPlaceholdersAllowed: 1
   VersionAdded: '0.49'
-  VersionChanged: '0.75'
+  VersionChanged: '1.0'
 
 Style/FrozenStringLiteralComment:
   Description: >-
