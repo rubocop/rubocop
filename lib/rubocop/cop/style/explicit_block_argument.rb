@@ -57,12 +57,16 @@ module RuboCop
           yielding_block?(block_node) do |send_node, block_args, yield_args|
             return unless yielding_arguments?(block_args, yield_args)
 
+            def_node = block_node.each_ancestor(:def, :defs).first
+            # if `yield` is being called outside of a method context, ignore
+            # this is not a valid ruby pattern, but can happen in haml or erb,
+            # so this can cause crashes in haml_lint
+            return unless def_node
+
             add_offense(block_node) do |corrector|
               corrector.remove(block_body_range(block_node, send_node))
 
               add_block_argument(send_node, corrector)
-
-              def_node = block_node.each_ancestor(:def, :defs).first
               add_block_argument(def_node, corrector) if @def_nodes.add?(def_node)
             end
           end

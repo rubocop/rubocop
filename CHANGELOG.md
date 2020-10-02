@@ -12,6 +12,8 @@
 * [#8809](https://github.com/rubocop-hq/rubocop/pull/8809): Fix multiple offense detection for `Style/For`. ([@pbernays][])
 * [#8801](https://github.com/rubocop-hq/rubocop/issues/8801): Fix `Layout/SpaceAroundEqualsInParameterDefault` only registered once in a line. ([@rdunlop][])
 * [#8718](https://github.com/rubocop-hq/rubocop/issues/8718): Fix undefined methods of pseudo location. ([@ybiquitous][])
+* [#8514](https://github.com/rubocop-hq/rubocop/issues/8514): Correct multiple `Style/MethodDefParentheses` per file. ([@rdunlop][])
+* [#8825](https://github.com/rubocop-hq/rubocop/issues/8825): Fix crash in `Style/ExplicitBlockArgument` when code is called outside of a method. ([@ghiculescu][])
 
 ### Changes
 
@@ -155,7 +157,7 @@
 * [#8362](https://github.com/rubocop-hq/rubocop/issues/8362): Add numbers of correctable offenses to summary. ([@nguyenquangminh0711][])
 * [#8513](https://github.com/rubocop-hq/rubocop/pull/8513): Clarify the ruby warning mentioned in the `Lint/ShadowingOuterLocalVariable` documentation. ([@chocolateboy][])
 * [#8517](https://github.com/rubocop-hq/rubocop/pull/8517): Make `Style/HashTransformKeys` and `Style/HashTransformValues` aware of `to_h` with block. ([@eugeneius][])
-* [#8529](https://github.com/rubocop-hq/rubocop/pull/8529): Mark `Lint/FrozenStringLiteralComment` as `Safe`, but with unsafe auto-correction. ([@marcandre][])
+* [#8529](https://github.com/rubocop-hq/rubocop/pull/8529): Mark `Style/FrozenStringLiteralComment` as `Safe`, but with unsafe auto-correction. ([@marcandre][])
 * [#8602](https://github.com/rubocop-hq/rubocop/pull/8602): Fix usage of `to_enum(:scan, regexp)` to work on TruffleRuby. ([@jaimerave][])
 
 ## 0.89.1 (2020-08-10)
@@ -4942,3 +4944,4 @@
 [@tleish]: https://github.com/tleish
 [@pbernays]: https://github.com/pbernays
 [@rdunlop]: https://github.com/rdunlop
+[@ghiculescu]: https://github.com/ghiculescu
