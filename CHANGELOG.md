@@ -5178,3 +5178,4 @@
 [@HeroProtagonist]: https://github.com/HeroProtagonist
 [@piotrmurach]: https://github.com/piotrmurach
 [@javierav]: https://github.com/javierav
+[@adrian-rivera]: https://github.com/adrian-rivera
