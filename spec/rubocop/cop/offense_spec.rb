@@ -185,8 +185,8 @@ RSpec.describe RuboCop::Cop::Offense do
     let(:location) { described_class::NO_LOCATION }
 
     it 'returns a location with valid size and length' do
-      expect(offense.location.size).to eq 1
-      expect(offense.location.length).to eq 1
+      expect(offense.location.size).to eq 0
+      expect(offense.location.length).to eq 0
     end
 
     it 'returns a line' do

@@ -79,7 +79,7 @@ module RuboCop
       end
       private_constant :PseudoSourceRange
 
-      NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 1).freeze
+      NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 0).freeze
 
       # @api private
       def initialize(severity, location, message, cop_name, # rubocop:disable Metrics/ParameterLists

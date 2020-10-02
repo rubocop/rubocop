@@ -167,7 +167,7 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
                              start_column: 1,
                              last_line: 1,
                              last_column: 0,
-                             length: 1,
+                             length: 0,
                              line: 1,
                              column: 1
                            })
