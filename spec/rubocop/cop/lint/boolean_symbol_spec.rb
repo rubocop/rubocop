@@ -76,4 +76,10 @@ RSpec.describe RuboCop::Cop::Lint::BooleanSymbol, :config do
       false
     RUBY
   end
+
+  it 'does not register an offense when used inside percent-literal symbol array' do
+    expect_no_offenses(<<~RUBY)
+      %i[foo false]
+    RUBY
+  end
 end

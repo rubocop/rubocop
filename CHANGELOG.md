@@ -10,6 +10,7 @@
 ### Bug fixes
 
 * [#8810](https://github.com/rubocop-hq/rubocop/pull/8810): Fix multiple offense detection for `Style/RaiseArgs`. ([@pbernays][])
+* [#8151](https://github.com/rubocop-hq/rubocop/issues/8151): Fix a false positive for `Lint/BooleanSymbol` when used within `%i[...]`. ([@fatkodima][])
 * [#8809](https://github.com/rubocop-hq/rubocop/pull/8809): Fix multiple offense detection for `Style/For`. ([@pbernays][])
 * [#8801](https://github.com/rubocop-hq/rubocop/issues/8801): Fix `Layout/SpaceAroundEqualsInParameterDefault` only registered once in a line. ([@rdunlop][])
 * [#8514](https://github.com/rubocop-hq/rubocop/issues/8514): Correct multiple `Style/MethodDefParentheses` per file. ([@rdunlop][])
