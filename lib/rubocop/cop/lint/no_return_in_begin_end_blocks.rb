@@ -44,28 +44,14 @@ module RuboCop
         MSG = 'Do not `return` in `begin..end` blocks in assignment contexts.'
 
         def on_lvasgn(node)
-          return unless node.begin_type?
-
-          node.each_node(:return) do |return_node|
-            add_offense(return_node)
-          end
-        end
-
-        def on_or_asgn(node)
           node.each_node(:kwbegin) do |kwbegin_node|
             kwbegin_node.each_node(:return) do |return_node|
               add_offense(return_node)
             end
           end
         end
-
-        def on_op_asgn(node)
-          node.each_node(:kwbegin) do |kwbegin_node|
-            kwbegin_node.each_node(:return) do |return_node|
-              add_offense(return_node)
-            end
-          end
-        end
+        alias on_or_asgn    on_lvasgn
+        alias on_op_asgn    on_lvasgn
       end
     end
   end

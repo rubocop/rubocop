@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks do
     end
   end
 
-  %w[+= -= *= /= **= ||=].each do |operator|
+  %w[= += -= *= /= **= ||=].each do |operator|
     include_examples 'rejects return inside a block', operator
     include_examples 'accetps a block with no return', operator
   end
