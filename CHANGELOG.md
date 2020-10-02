@@ -11,9 +11,9 @@
 * [#8810](https://github.com/rubocop-hq/rubocop/pull/8810): Fix multiple offense detection for `Style/RaiseArgs`. ([@pbernays][])
 * [#8809](https://github.com/rubocop-hq/rubocop/pull/8809): Fix multiple offense detection for `Style/For`. ([@pbernays][])
 * [#8801](https://github.com/rubocop-hq/rubocop/issues/8801): Fix `Layout/SpaceAroundEqualsInParameterDefault` only registered once in a line. ([@rdunlop][])
-* [#8718](https://github.com/rubocop-hq/rubocop/issues/8718): Fix undefined methods of pseudo location. ([@ybiquitous][])
 * [#8514](https://github.com/rubocop-hq/rubocop/issues/8514): Correct multiple `Style/MethodDefParentheses` per file. ([@rdunlop][])
 * [#8825](https://github.com/rubocop-hq/rubocop/issues/8825): Fix crash in `Style/ExplicitBlockArgument` when code is called outside of a method. ([@ghiculescu][])
+* [#8718](https://github.com/rubocop-hq/rubocop/issues/8718): Fix undefined methods of pseudo location. ([@ybiquitous][])
 
 ### Changes
 
