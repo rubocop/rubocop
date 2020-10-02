@@ -1052,6 +1052,49 @@ var.kind_of?(String)
 
 * https://rubystyle.guide#is-a-vs-kind-of
 
+== Style/ClassEqualityComparison
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.93
+| -
+|===
+
+This cop enforces the use of `Object#instance_of?` instead of class comparison
+for equality.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+var.class == Date
+var.class.equal?(Date)
+var.class.eql?(Date)
+var.class.name == 'Date'
+
+# good
+var.instance_of?(Date)
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoredMethods
+| `==`, `equal?`, `eql?`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#instance-of-vs-class-comparison
+
 == Style/ClassMethods
 
 |===

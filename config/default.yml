@@ -2724,6 +2724,16 @@ Style/ClassCheck:
     - is_a?
     - kind_of?
 
+Style/ClassEqualityComparison:
+  Description: 'Enforces the use of `Object#instance_of?` instead of class comparison for equality.'
+  StyleGuide: '#instance-of-vs-class-comparison'
+  Enabled: pending
+  VersionAdded: '0.93'
+  IgnoredMethods:
+    - ==
+    - equal?
+    - eql?
+
 Style/ClassMethods:
   Description: 'Use self when defining module/class methods.'
   StyleGuide: '#def-self-class-methods'
