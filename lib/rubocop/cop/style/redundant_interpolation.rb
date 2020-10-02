@@ -51,7 +51,12 @@ module RuboCop
         end
 
         def single_variable_interpolation?(node)
-          node.children.one? && variable_interpolation?(node.children.first)
+          return false unless node.children.one?
+
+          first_child = node.children.first
+
+          variable_interpolation?(first_child) ||
+            first_child.send_type? && !first_child.operator_method?
         end
 
         def interpolation?(node)
