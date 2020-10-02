@@ -14,6 +14,7 @@
 * [#8514](https://github.com/rubocop-hq/rubocop/issues/8514): Correct multiple `Style/MethodDefParentheses` per file. ([@rdunlop][])
 * [#8825](https://github.com/rubocop-hq/rubocop/issues/8825): Fix crash in `Style/ExplicitBlockArgument` when code is called outside of a method. ([@ghiculescu][])
 * [#8354](https://github.com/rubocop-hq/rubocop/issues/8354): Detect regexp named captures in `Style/CaseLikeIf` cop. ([@dsavochkin][])
+* [#8830](https://github.com/rubocop-hq/rubocop/issues/8830): Fix bad autocorrect of `Style/StringConcatenation` when string includes double quotes. ([@tleish][])
 
 ### Changes
 
