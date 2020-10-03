@@ -55,6 +55,17 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
           end
         RUBY
       end
+
+      it 'correctly handles inner parentheses' do
+        expect_offense(<<~RUBY)
+          assert /foobar/.match('foo')
+                 ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          assert(/foobar/.match('foo'))
+        RUBY
+      end
     end
 
     context 'with parentheses' do

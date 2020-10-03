@@ -35,7 +35,8 @@ module RuboCop
             offense_node = find_offense_node_by(diagnostic)
 
             add_offense(diagnostic.location, severity: diagnostic.level) do |corrector|
-              add_parentheses(offense_node, corrector)
+              corrector.replace(diagnostic.location.begin.adjust(begin_pos: -1), '(')
+              corrector.insert_after(offense_node, ')')
             end
           end
         end
