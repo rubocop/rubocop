@@ -5,10 +5,10 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
 
   let(:config) { RuboCop::Config.new }
 
-  it 'registers an offense when references are used before any Regexp' do
+  it 'registers an offense when references are used before any regexp' do
     expect_offense(<<~RUBY)
       puts $3
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $3 is out of range (no regexp capture groups detected).
     RUBY
   end
 
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     expect_offense(<<~RUBY)
       /(?<foo>FOO)(?<bar>BAR)/ =~ "FOOBAR"
       puts $3
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $3 is out of range (2 regexp capture groups detected).
     RUBY
   end
 
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     expect_offense(<<~RUBY)
       /(foo)(bar)/ =~ "foobar"
       puts $3
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $3 is out of range (2 regexp capture groups detected).
     RUBY
   end
 
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     expect_offense(<<~RUBY)
       /(?<foo>FOO)(BAR)/ =~ "FOOBAR"
       puts $2
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $2 is out of range (1 regexp capture group detected).
     RUBY
   end
 
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     expect_offense(<<~RUBY)
       /bar/ =~ 'foo'
       puts $1
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $1 is out of range (no regexp capture groups detected).
     RUBY
   end
 
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
   # RuboCop does not know a value of variables that it will contain in the regexp literal.
   # For example, `/(?<foo>#{var}*)` is interpreted as `/(?<foo>*)`.
   # So it does not offense when variables are used in regexp literals.
-  it 'does not register an offence Regexp containing non literal' do
+  it 'does not register an offence regexp containing non literal' do
     expect_no_offenses(<<~'RUBY')
       var = '(\d+)'
       /(?<foo>#{var}*)/ =~ "12"
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     expect_offense(<<~RUBY)
       "foobar" =~ /(foo)(bar)/
       puts $3
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $3 is out of range (2 regexp capture groups detected).
     RUBY
   end
 
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     expect_offense(<<~RUBY)
       /(foo)(bar)/ === "foobar"
       puts $3
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $3 is out of range (2 regexp capture groups detected).
     RUBY
   end
 
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     expect_offense(<<~RUBY)
       /(foo)(bar)/.match("foobar")
       puts $3
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $3 is out of range (2 regexp capture groups detected).
     RUBY
   end
 
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
       /(foo)(bar)/.match("foobar")
       /(foo)(bar)(baz)/.match?("foobarbaz")
       puts $3
-           ^^ Do not use out of range reference for the Regexp.
+           ^^ $3 is out of range (2 regexp capture groups detected).
     RUBY
   end
 
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
       case "foobar"
       when /(foo)(bar)/
         $3
-        ^^ Do not use out of range reference for the Regexp.
+        ^^ $3 is out of range (2 regexp capture groups detected).
       end
     RUBY
   end
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
       case "foobarbaz"
       when /(foo)(bar)/, /(bar)baz/
         $3
-        ^^ Do not use out of range reference for the Regexp.
+        ^^ $3 is out of range (2 regexp capture groups detected).
       end
     RUBY
   end
@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
       case "foobarbaz"
       when /(foo)(bar)/, /#{var}/
         $3
-        ^^ Do not use out of range reference for the Regexp.
+        ^^ $3 is out of range (2 regexp capture groups detected).
       end
     RUBY
   end
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     it 'registers an offense when out of range references are used' do
       expect_offense(<<~RUBY)
         %w[foo foobar].grep(/(foo)/) { $2 }
-                                       ^^ Do not use out of range reference for the Regexp.
+                                       ^^ $2 is out of range (1 regexp capture group detected).
       RUBY
     end
 
@@ -222,7 +222,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
       expect_offense(<<~RUBY)
         "foobar"[/(foo)(bar)/]
         puts $3
-             ^^ Do not use out of range reference for the Regexp.
+             ^^ $3 is out of range (2 regexp capture groups detected).
       RUBY
     end
 
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
       it 'registers an offense when out of range references are used' do
         expect_offense(<<~RUBY, method: method)
           "foobar".%{method}(/(foo)(bar)/) { $3 }
-                   _{method}                 ^^ Do not use out of range reference for the Regexp.
+                   _{method}                 ^^ $3 is out of range (2 regexp capture groups detected).
         RUBY
       end
 
@@ -270,7 +270,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
         expect_offense(<<~RUBY)
           "foobar".#{method}(/(foo)(bar)/)
           puts $3
-               ^^ Do not use out of range reference for the Regexp.
+               ^^ $3 is out of range (2 regexp capture groups detected).
         RUBY
       end
 

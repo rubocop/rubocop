@@ -19,7 +19,7 @@ module RuboCop
       #   puts $1 # => foo
       #
       class OutOfRangeRegexpRef < Base
-        MSG = 'Do not use out of range reference for the Regexp.'
+        MSG = '$%<backref>s is out of range (%<count>s regexp capture %<group>s detected).'
 
         REGEXP_RECEIVER_METHODS = %i[=~ === match].to_set.freeze
         REGEXP_ARGUMENT_METHODS = %i[=~ match grep gsub gsub! sub sub! [] slice slice! index rindex
@@ -56,9 +56,16 @@ module RuboCop
 
         def on_nth_ref(node)
           backref, = *node
-          return if @valid_ref.nil?
+          return if @valid_ref.nil? || backref <= @valid_ref
 
-          add_offense(node) if backref > @valid_ref
+          message = format(
+            MSG,
+            backref: backref,
+            count: @valid_ref.zero? ? 'no' : @valid_ref,
+            group: @valid_ref == 1 ? 'group' : 'groups'
+          )
+
+          add_offense(node, message: message)
         end
 
         private
