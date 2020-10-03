@@ -20,6 +20,7 @@
 * [#8807](https://github.com/rubocop-hq/rubocop/pull/8807): Fix a false positive for `Style/RedundantCondition` when using assignment by hash key access. ([@koic][])
 * [#8848](https://github.com/rubocop-hq/rubocop/issues/8848): Fix a false positive for `Style/CombinableLoops` when using the same method with different arguments. ([@dvandersluis][])
 * [#8843](https://github.com/rubocop-hq/rubocop/issues/8843): Fix an incorrect autocorrect for `Lint/AmbiguousRegexpLiteral` when sending method to regexp literal receiver. ([@koic][])
+* [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Save actual status to cache, except corrected. ([@hatkyinc2][])
 
 ### Changes
 
@@ -4952,3 +4953,4 @@
 [@pbernays]: https://github.com/pbernays
 [@rdunlop]: https://github.com/rdunlop
 [@ghiculescu]: https://github.com/ghiculescu
+[@hatkyinc2]: https://github.com/hatkyinc2
