@@ -1429,7 +1429,7 @@ end
 | No
 | No
 | 0.90
-| -
+| 0.94
 |===
 
 This cop checks for places where multiple consecutive loops over the same data
@@ -1487,6 +1487,32 @@ def method
   each_slice(3) { |slice| do_something(slice) }
 end
 ----
+
+==== IgnoredMethods: [validates_each]
+
+[source,ruby]
+----
+# good
+class Foo
+  validates_each :attr1, :attr2 do |record, attribute, value|
+    record.errors.add(attribute, :invalid) if invalid?(value)
+  end
+
+  validates_each :attr1, :attr2 do |record, attribute, value|
+    record.errors.add(attribute, :empty) if empty?(value)
+  end
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoredMethods
+| `[]`
+| Array
+|===
 
 == Style/CommandLiteral
 

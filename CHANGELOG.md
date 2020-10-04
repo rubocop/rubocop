@@ -7,6 +7,9 @@
 * [#8782](https://github.com/rubocop-hq/rubocop/issues/8782): Fix incorrect autocorrection for `Style/TernaryParentheses` with `defined?`. ([@dvandersluis][])
 * [#8864](https://github.com/rubocop-hq/rubocop/issues/8864): Fix false positive for `Style/RedundantBegin` with a postfix `while` or `until`. ([@dvandersluis][])
 
+### Changes
+* [#8852](https://github.com/rubocop-hq/rubocop/pull/8852): Add `IgnoredMethods` configuration to `Style/CombinableLoops`. ([@dvandersluis][])
+
 ## 0.93.0 (2020-10-08)
 
 ### New features

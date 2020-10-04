@@ -2797,7 +2797,9 @@ Style/CombinableLoops:
                   can be combined into a single loop.
   Enabled: pending
   Safe: false
+  IgnoredMethods: []
   VersionAdded: '0.90'
+  VersionChanged: '0.94'
 
 Style/CommandLiteral:
   Description: 'Use `` or %x around command literals.'

@@ -55,7 +55,21 @@ module RuboCop
       #     each_slice(3) { |slice| do_something(slice) }
       #   end
       #
+      # @example IgnoredMethods: [validates_each]
+      #
+      #   # good
+      #   class Foo
+      #     validates_each :attr1, :attr2 do |record, attribute, value|
+      #       record.errors.add(attribute, :invalid) if invalid?(value)
+      #     end
+      #
+      #     validates_each :attr1, :attr2 do |record, attribute, value|
+      #       record.errors.add(attribute, :empty) if empty?(value)
+      #     end
+      #   end
       class CombinableLoops < Base
+        include IgnoredMethods
+
         MSG = 'Combine this loop with the previous loop.'
 
         def on_block(node)
@@ -76,6 +90,8 @@ module RuboCop
 
         def collection_looping_method?(node)
           method_name = node.send_node.method_name
+          return false if ignored_method?(method_name)
+
           method_name.match?(/^each/) || method_name.match?(/_each$/)
         end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CombinableLoops do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
   context 'when looping method' do
     it 'registers an offense when looping over the same data as previous loop' do
       expect_offense(<<~RUBY)
@@ -94,6 +92,22 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops do
           for item in items do do_something(item) end
         else
           for item in items do do_something_else(item, arg) end
+        end
+      RUBY
+    end
+  end
+
+  context 'when IgnoredMethods is set' do
+    let(:cop_config) { { 'IgnoredMethods' => %w[validates_each] } }
+
+    it 'does not register an offense for ignored methods' do
+      expect_no_offenses(<<~RUBY)
+        validates_each :foo, :bar do |record, attribute, value|
+          record.errors.add(attribute, :invalid) if invalid?(value)
+        end
+
+        validates_each :foo, :bar do |record, attribute, value|
+          record.errors.add(attribute, :empty) if empty?(value)
         end
       RUBY
     end
