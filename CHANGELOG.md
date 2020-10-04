@@ -23,6 +23,7 @@
 * [#8843](https://github.com/rubocop-hq/rubocop/issues/8843): Fix an incorrect autocorrect for `Lint/AmbiguousRegexpLiteral` when sending method to regexp literal receiver. ([@koic][])
 * [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Save actual status to cache, except corrected. ([@hatkyinc2][])
 * [#8835](https://github.com/rubocop-hq/rubocop/issues/8835): Fix an incorrect autocorrect for `Style/RedundantInterpolation` when using string interpolation for non-operator methods. ([@koic][])
+* [#7495](https://github.com/rubocop-hq/rubocop/issues/7495): Example for `Lint/AmbiguousBlockAssociation` cop. ([@AllanSiqueira][])
 
 ### Changes
 
@@ -4956,3 +4957,4 @@
 [@rdunlop]: https://github.com/rdunlop
 [@ghiculescu]: https://github.com/ghiculescu
 [@hatkyinc2]: https://github.com/hatkyinc2
+[@AllanSiqueira]: https://github.com/allansiqueira
