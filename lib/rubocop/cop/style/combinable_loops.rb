@@ -49,6 +49,12 @@ module RuboCop
       #     end
       #   end
       #
+      #   # good
+      #   def method
+      #     each_slice(2) { |slice| do_something(slice) }
+      #     each_slice(3) { |slice| do_something(slice) }
+      #   end
+      #
       class CombinableLoops < Base
         MSG = 'Combine this loop with the previous loop.'
 
@@ -76,7 +82,8 @@ module RuboCop
         def same_collection_looping?(node, sibling)
           sibling&.block_type? &&
             sibling.send_node.method?(node.method_name) &&
-            sibling.send_node.receiver == node.send_node.receiver
+            sibling.send_node.receiver == node.send_node.receiver &&
+            sibling.send_node.arguments == node.send_node.arguments
         end
       end
     end
