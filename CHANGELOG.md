@@ -6,6 +6,7 @@
 
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
 * [#8668](https://github.com/rubocop-hq/rubocop/pull/8668): Add new `Lint/RedundantSafeNavigation` cop. ([@fatkodima][])
+* [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Add notification about cache being used to debug mode. ([@hatkyinc2][])
 
 ### Bug fixes
 
@@ -4952,3 +4953,4 @@
 [@pbernays]: https://github.com/pbernays
 [@rdunlop]: https://github.com/rdunlop
 [@ghiculescu]: https://github.com/ghiculescu
+[@hatkyinc2]: https://github.com/hatkyinc2
