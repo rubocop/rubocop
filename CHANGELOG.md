@@ -17,6 +17,7 @@
 * [#8354](https://github.com/rubocop-hq/rubocop/issues/8354): Detect regexp named captures in `Style/CaseLikeIf` cop. ([@dsavochkin][])
 * [#8830](https://github.com/rubocop-hq/rubocop/issues/8830): Fix bad autocorrect of `Style/StringConcatenation` when string includes double quotes. ([@tleish][])
 * [#8807](https://github.com/rubocop-hq/rubocop/pull/8807): Fix a false positive for `Style/RedundantCondition` when using assignment by hash key access. ([@koic][])
+* [#8848](https://github.com/rubocop-hq/rubocop/issues/8848): Fix a false positive for `Style/CombinableLoops` when using the same method with different arguments. ([@dvandersluis][])
 
 ### Changes
 
