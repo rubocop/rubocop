@@ -6,6 +6,7 @@
 
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
 * [#8668](https://github.com/rubocop-hq/rubocop/pull/8668): Add new `Lint/RedundantSafeNavigation` cop. ([@fatkodima][])
+* [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Add notification about cache being used to debug mode. ([@hatkyinc2][])
 
 ### Bug fixes
 
@@ -21,6 +22,7 @@
 * [#8848](https://github.com/rubocop-hq/rubocop/issues/8848): Fix a false positive for `Style/CombinableLoops` when using the same method with different arguments. ([@dvandersluis][])
 * [#8843](https://github.com/rubocop-hq/rubocop/issues/8843): Fix an incorrect autocorrect for `Lint/AmbiguousRegexpLiteral` when sending method to regexp literal receiver. ([@koic][])
 * [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Save actual status to cache, except corrected. ([@hatkyinc2][])
+* [#8835](https://github.com/rubocop-hq/rubocop/issues/8835): Fix an incorrect autocorrect for `Style/RedundantInterpolation` when using string interpolation for non-operator methods. ([@koic][])
 
 ### Changes
 
