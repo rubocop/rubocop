@@ -7,6 +7,7 @@
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
 * [#8668](https://github.com/rubocop-hq/rubocop/pull/8668): Add new `Lint/RedundantSafeNavigation` cop. ([@fatkodima][])
 * [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Add notification about cache being used to debug mode. ([@hatkyinc2][])
+* [#8822](https://github.com/rubocop-hq/rubocop/pull/8822): Make `Style/RedundantBegin` aware of `begin` without `rescue` or `ensure`. ([@koic][])
 
 ### Bug fixes
 

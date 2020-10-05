@@ -28,6 +28,14 @@ module RuboCop
       #   end
       #
       #   # bad
+      #   begin
+      #     do_something
+      #   end
+      #
+      #   # good
+      #   do_something
+      #
+      #   # bad
       #   # When using Ruby 2.5 or later.
       #   do_something do
       #     begin
@@ -60,7 +68,9 @@ module RuboCop
         MSG = 'Redundant `begin` block detected.'
 
         def on_def(node)
-          check(node)
+          return unless node.body&.kwbegin_type?
+
+          register_offense(node.body)
         end
         alias on_defs on_def
 
@@ -69,18 +79,26 @@ module RuboCop
 
           return if node.send_node.lambda_literal?
           return if node.braces?
+          return unless node.body&.kwbegin_type?
 
-          check(node)
+          register_offense(node.body)
+        end
+
+        def on_kwbegin(node)
+          return if node.parent&.assignment?
+
+          first_child = node.children.first
+          return if first_child.rescue_type? || first_child.ensure_type?
+
+          register_offense(node)
         end
 
         private
 
-        def check(node)
-          return unless node.body&.kwbegin_type?
-
-          add_offense(node.body.loc.begin) do |corrector|
-            corrector.remove(node.body.loc.begin)
-            corrector.remove(node.body.loc.end)
+        def register_offense(node)
+          add_offense(node.loc.begin) do |corrector|
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
           end
         end
       end
