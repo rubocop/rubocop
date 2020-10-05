@@ -95,6 +95,11 @@ module RuboCop
                         context_checksum(team, options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)
+      @debug = options[:debug]
+    end
+
+    def debug?
+      @debug
     end
 
     def valid?
@@ -102,6 +107,7 @@ module RuboCop
     end
 
     def load
+      puts "Loading cache from #{@path}" if debug?
       @cached_data.from_json(IO.read(@path, encoding: Encoding::UTF_8))
     end
 
