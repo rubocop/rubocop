@@ -25,6 +25,7 @@
 * [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Save actual status to cache, except corrected. ([@hatkyinc2][])
 * [#8835](https://github.com/rubocop-hq/rubocop/issues/8835): Fix an incorrect autocorrect for `Style/RedundantInterpolation` when using string interpolation for non-operator methods. ([@koic][])
 * [#7495](https://github.com/rubocop-hq/rubocop/issues/7495): Example for `Lint/AmbiguousBlockAssociation` cop. ([@AllanSiqueira][])
+* [#8855](https://github.com/rubocop-hq/rubocop/issues/8855): Fix an error for `Layout/EmptyLinesAroundAccessModifier` and `Style/AccessModifierDeclarations` when using only access modifier. ([@koic][])
 
 ### Changes
 
