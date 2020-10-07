@@ -154,4 +154,12 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
       end
     RUBY
   end
+
+  it 'does not register an offense when code is called outside of a method' do
+    expect_no_offenses(<<~RUBY)
+      render("partial") do
+        yield
+      end
+    RUBY
+  end
 end

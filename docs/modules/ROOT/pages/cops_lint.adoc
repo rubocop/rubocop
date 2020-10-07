@@ -27,6 +27,8 @@ some_method a { |val| puts val }
 ----
 # good
 # With parentheses, there's no ambiguity.
+some_method(a { |val| puts val })
+# or (different meaning)
 some_method(a) { |val| puts val }
 
 # good
@@ -1620,6 +1622,42 @@ format('Unnumbered format: %s and numbered: %2$s', a_value, another)
 format('Numbered format: %1$s and numbered %2$s', a_value, another)
 ----
 
+== Lint/HashCompareByIdentity
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 0.93
+| -
+|===
+
+Prefer using `Hash#compare_by_identity` than using `object_id` for hash keys.
+
+This cop is marked as unsafe as a hash possibly can contain other keys
+besides `object_id`s.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+hash = {}
+hash[foo.object_id] = :bar
+hash.key?(baz.object_id)
+
+# good
+hash = {}.compare_by_identity
+hash[foo] = :bar
+hash.key?(baz)
+----
+
+=== References
+
+* https://rubystyle.guide#identity-comparison
+
 == Lint/HeredocMethodCallPosition
 
 |===
@@ -2919,6 +2957,45 @@ require 'thread'
 # good
 require 'unloaded_feature'
 ----
+
+== Lint/RedundantSafeNavigation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 0.93
+| -
+|===
+
+This cop checks for redundant safe navigation calls.
+It is marked as unsafe, because it can produce code that returns
+non `nil` while `nil` result is expected on `nil` receiver.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+attrs&.respond_to?(:[])
+foo&.dup&.inspect
+
+# good
+attrs.respond_to?(:[])
+foo.dup.inspect
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoredMethods
+| `to_c`, `to_f`, `to_i`, `to_r`, `rationalize`, `public_send`, `send`, `__send__`
+| Array
+|===
 
 == Lint/RedundantSplatExpansion
 

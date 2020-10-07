@@ -157,6 +157,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation do
     RUBY
   end
 
+  it 'registers an offense for "#{number}"' do
+    expect_offense(<<~'RUBY')
+      "#{number}"
+      ^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      number.to_s
+    RUBY
+  end
+
+  it 'registers an offense for "#{do_something(42)}"' do
+    expect_offense(<<~'RUBY')
+      "#{do_something(42)}"
+      ^^^^^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      do_something(42).to_s
+    RUBY
+  end
+
   it 'registers an offense for "#{var}"' do
     expect_offense(<<~'RUBY')
       var = 1; "#{var}"

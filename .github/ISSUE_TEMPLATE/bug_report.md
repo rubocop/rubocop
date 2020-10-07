@@ -23,6 +23,7 @@ Describe here how you expected RuboCop to behave in this particular situation.
 ## Actual behavior
 
 Describe here what actually happened.
+Please use `rubocop --debug` when pasting rubocop output as it contains additional information.
 
 ## Steps to reproduce the problem
 

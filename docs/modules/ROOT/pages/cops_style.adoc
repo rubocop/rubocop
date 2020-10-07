@@ -120,6 +120,9 @@ This cop checks for grouping of accessors in `class` and `module` bodies.
 By default it enforces accessors to be placed in grouped declarations,
 but it can be configured to enforce separating them in multiple declarations.
 
+Note: `Sorbet` is not compatible with "grouped" style. Consider "separated" style
+or disabling this cop.
+
 === Examples
 
 ==== EnforcedStyle: grouped (default)
@@ -1433,6 +1436,12 @@ def method
     do_something(item)
     do_something_else(item)
   end
+end
+
+# good
+def method
+  each_slice(2) { |slice| do_something(slice) }
+  each_slice(3) { |slice| do_something(slice) }
 end
 ----
 
@@ -7547,6 +7556,14 @@ def preferred
 rescue StandardError => e
   something
 end
+
+# bad
+begin
+  do_something
+end
+
+# good
+do_something
 
 # bad
 # When using Ruby 2.5 or later.

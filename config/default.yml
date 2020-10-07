@@ -1546,6 +1546,13 @@ Lint/FormatParameterMismatch:
   Enabled: true
   VersionAdded: '0.33'
 
+Lint/HashCompareByIdentity:
+  Description: 'Prefer using `Hash#compare_by_identity` than using `object_id` for keys.'
+  StyleGuide: '#identity-comparison'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '0.93'
+
 Lint/HeredocMethodCallPosition:
   Description: >-
                  Checks for the ordering of a method call where
@@ -1750,6 +1757,21 @@ Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
   Enabled: true
   VersionAdded: '0.76'
+
+Lint/RedundantSafeNavigation:
+  Description: 'Checks for redundant safe navigation calls.'
+  Enabled: pending
+  VersionAdded: '0.93'
+  Safe: false
+  IgnoredMethods:
+    - to_c
+    - to_f
+    - to_i
+    - to_r
+    - rationalize
+    - public_send
+    - send
+    - __send__
 
 Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'

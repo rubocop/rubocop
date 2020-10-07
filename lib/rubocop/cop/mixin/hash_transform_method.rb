@@ -137,7 +137,7 @@ module RuboCop
       end
 
       # Internal helper class to hold autocorrect data
-      Autocorrection = Struct.new(:match, :block_node, :leading, :trailing) do # rubocop:disable Metrics/BlockLength
+      Autocorrection = Struct.new(:match, :block_node, :leading, :trailing) do
         def self.from_each_with_object(node, match)
           new(match, node, 0, 0)
         end

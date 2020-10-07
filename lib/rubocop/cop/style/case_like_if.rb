@@ -42,6 +42,8 @@ module RuboCop
           convertible = true
 
           branch_conditions(node).each do |branch_condition|
+            return false if regexp_with_working_captures?(branch_condition)
+
             conditions << []
             convertible = collect_conditions(branch_condition, target, conditions.last)
             break unless convertible
@@ -49,9 +51,7 @@ module RuboCop
 
           return unless convertible
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         private
@@ -107,7 +107,7 @@ module RuboCop
           when :include?, :cover?
             receiver = deparenthesize(node.receiver)
             node.arguments.first if receiver.range_type?
-          when :match, :match?
+          when :match, :match?, :=~
             find_target_in_match_node(node)
           end
         end
@@ -229,6 +229,22 @@ module RuboCop
 
         def indent(node)
           ' ' * node.loc.column
+        end
+
+        # Named captures work with `=~` (if regexp is on lhs) and with `match` (both sides)
+        def regexp_with_working_captures?(node)
+          case node.type
+          when :match_with_lvasgn
+            lhs, _rhs = *node
+            node.loc.selector.source == '=~' && regexp_with_named_captures?(lhs)
+          when :send
+            lhs, method, rhs = *node
+            method == :match && [lhs, rhs].any? { |n| regexp_with_named_captures?(n) }
+          end
+        end
+
+        def regexp_with_named_captures?(node)
+          node.regexp_type? && node.each_capture(named: true).count.positive?
         end
       end
     end

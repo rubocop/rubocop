@@ -34,7 +34,6 @@ module RuboCop
       #   /[+\-]\d/
       class RedundantRegexpEscape < Base
         include RangeHelp
-        include RegexpLiteralHelp
         extend AutoCorrector
 
         MSG_REDUNDANT_ESCAPE = 'Redundant escape inside regexp literal'
@@ -59,9 +58,9 @@ module RuboCop
 
         def allowed_escape?(node, char, within_character_class)
           # Strictly speaking a few single-letter metachars are currently
-          # unnecessary to "escape", e.g. g, i, E, F, but enumerating them is
+          # unnecessary to "escape", e.g. i, E, F, but enumerating them is
           # rather difficult, and their behaviour could change over time with
-          # different versions of Ruby so that e.g. /\g/ != /g/
+          # different versions of Ruby so that e.g. /\i/ != /i/
           return true if /[[:alnum:]]/.match?(char)
           return true if ALLOWED_ALWAYS_ESCAPES.include?(char) || delimiter?(node, char)
 
@@ -82,19 +81,13 @@ module RuboCop
         end
 
         def each_escape(node)
-          pattern_source(node).each_char.with_index.reduce(
-            [nil, 0]
-          ) do |(previous, char_class_depth), (current, index)|
-            if previous == '\\'
-              yield [current, index - 1, !char_class_depth.zero?]
+          node.parsed_tree&.traverse&.reduce(0) do |char_class_depth, (event, expr)|
+            yield(expr.text[1], expr.ts, !char_class_depth.zero?) if expr.type == :escape
 
-              [nil, char_class_depth]
-            elsif previous == '['
-              [current, char_class_depth + 1]
-            elsif current == ']'
-              [current, char_class_depth - 1]
+            if expr.type == :set
+              char_class_depth + (event == :enter ? 1 : -1)
             else
-              [current, char_class_depth]
+              char_class_depth
             end
           end
         end

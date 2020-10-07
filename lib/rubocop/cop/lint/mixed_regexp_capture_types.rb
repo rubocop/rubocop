@@ -25,6 +25,7 @@ module RuboCop
               'in a Regexp literal.'
 
         def on_regexp(node)
+          return if node.interpolation?
           return if node.each_capture(named: false).none?
           return if node.each_capture(named: true).none?
 

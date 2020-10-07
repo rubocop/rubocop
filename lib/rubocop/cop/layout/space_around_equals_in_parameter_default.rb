@@ -51,21 +51,12 @@ module RuboCop
              style == :no_space && no_surrounding_space
             correct_style_detected
           else
-            incorrect_style_detected(arg, value, space_on_both_sides,
-                                     no_surrounding_space)
+            incorrect_style_detected(arg, value)
           end
         end
 
-        def incorrect_style_detected(arg, value, space_on_both_sides,
-                                     no_surrounding_space)
+        def incorrect_style_detected(arg, value)
           range = range_between(arg.end_pos, value.begin_pos)
-
-          if style == :space && no_surrounding_space ||
-             style == :no_space && space_on_both_sides
-            return unless opposite_style_detected
-          else
-            return unless unrecognized_style_detected
-          end
 
           add_offense(range) do |corrector|
             autocorrect(corrector, range)

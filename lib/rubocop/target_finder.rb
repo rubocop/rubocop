@@ -81,34 +81,32 @@ module RuboCop
     # the top level directories that are excluded in configuration in the
     # normal way (dir/**/*).
     def find_files(base_dir, flags)
-      wanted_toplevel_dirs = toplevel_dirs(base_dir, flags) -
-                             excluded_dirs(base_dir)
-      wanted_toplevel_dirs.map! { |dir| dir << '/**/*' }
+      # get all wanted directories first to improve speed of finding all files
+      exclude_pattern = combined_exclude_glob_patterns(base_dir)
+      dir_flags = flags | File::FNM_PATHNAME | File::FNM_EXTGLOB
+      patterns = wanted_dir_patterns(base_dir, exclude_pattern, dir_flags)
+      patterns.map! { |dir| File.join(dir, '*') }
+      # We need this special case to avoid creating the pattern
+      # /**/* which searches the entire file system.
+      patterns = [File.join(dir, '**/*')] if patterns.empty?
 
-      pattern = if wanted_toplevel_dirs.empty?
-                  # We need this special case to avoid creating the pattern
-                  # /**/* which searches the entire file system.
-                  ["#{base_dir}/**/*"]
-                else
-                  # Search the non-excluded top directories, but also add files
-                  # on the top level, which would otherwise not be found.
-                  wanted_toplevel_dirs.unshift("#{base_dir}/*")
+      Dir.glob(patterns, flags).select { |path| FileTest.file?(path) }
+    end
+
+    def wanted_dir_patterns(base_dir, exclude_pattern, flags)
+      dirs = Dir.glob(File.join(base_dir, '*/'), flags)
+                .reject do |dir|
+                  dir.end_with?('/./', '/../') || File.fnmatch?(exclude_pattern, dir, flags)
                 end
-      Dir.glob(pattern, flags).select { |path| FileTest.file?(path) }
+      dirs.flat_map { |dir| wanted_dir_patterns(dir, exclude_pattern, flags) }
+          .unshift(base_dir)
     end
 
-    def toplevel_dirs(base_dir, flags)
-      Dir.glob(File.join(base_dir, '*'), flags).select do |dir|
-        File.directory?(dir) && !dir.end_with?('/.', '/..')
-      end
-    end
-
-    def excluded_dirs(base_dir)
-      all_cops_config = @config_store.for(base_dir).for_all_cops
-      dir_tree_excludes = all_cops_config['Exclude'].select do |pattern|
-        pattern.is_a?(String) && pattern.end_with?('/**/*')
-      end
-      dir_tree_excludes.map { |pattern| pattern.sub(%r{/\*\*/\*$}, '') }
+    def combined_exclude_glob_patterns(base_dir)
+      exclude = @config_store.for(base_dir).for_all_cops['Exclude']
+      patterns = exclude.select { |pattern| pattern.is_a?(String) && pattern.end_with?('/**/*') }
+                        .map { |pattern| pattern.sub("#{base_dir}/", '') }
+      "#{base_dir}/{#{patterns.join(',')}}"
     end
 
     def ruby_extension?(file)

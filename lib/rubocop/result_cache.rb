@@ -95,6 +95,11 @@ module RuboCop
                         context_checksum(team, options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)
+      @debug = options[:debug]
+    end
+
+    def debug?
+      @debug
     end
 
     def valid?
@@ -102,6 +107,7 @@ module RuboCop
     end
 
     def load
+      puts "Loading cache from #{@path}" if debug?
       @cached_data.from_json(IO.read(@path, encoding: Encoding::UTF_8))
     end
 
@@ -209,8 +215,8 @@ module RuboCop
     # The external dependency checksums are cached per RuboCop team so that
     # the checksums don't need to be recomputed for each file.
     def team_checksum(team)
-      @checksum_by_team ||= {}
-      @checksum_by_team[team.object_id] ||= team.external_dependency_checksum
+      @checksum_by_team ||= {}.compare_by_identity
+      @checksum_by_team[team] ||= team.external_dependency_checksum
     end
 
     # We combine team and options into a single "context" checksum to avoid

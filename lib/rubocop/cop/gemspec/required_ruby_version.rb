@@ -58,24 +58,22 @@ module RuboCop
           (send _ :required_ruby_version= $_)
         PATTERN
 
-        def_node_matcher :string_version?, <<~PATTERN
-          {(str _) (array (str _))}
+        def_node_matcher :defined_ruby_version, <<~PATTERN
+          {$(str _) $(array (str _) (str _))
+            (send (const (const nil? :Gem) :Requirement) :new $(str _))}
         PATTERN
 
         # rubocop:disable Metrics/AbcSize
         def investigate(processed_source)
-          version = required_ruby_version(processed_source.ast).first
+          version_def = required_ruby_version(processed_source.ast).first
 
-          if version
-            return unless string_version?(version)
-
-            ruby_version = extract_ruby_version(version)
-
-            return if ruby_version == target_ruby_version.to_s
+          if version_def
+            ruby_version = extract_ruby_version(defined_ruby_version(version_def))
+            return if !ruby_version || ruby_version == target_ruby_version.to_s
 
             add_offense(
               processed_source.ast,
-              location: version.loc.expression,
+              location: version_def.loc.expression,
               message: not_equal_message(ruby_version, target_ruby_version)
             )
           else
@@ -88,6 +86,8 @@ module RuboCop
         private
 
         def extract_ruby_version(required_ruby_version)
+          return unless required_ruby_version
+
           if required_ruby_version.array_type?
             required_ruby_version = required_ruby_version.children.detect do |v|
               /[>=]/.match?(v.str_content)

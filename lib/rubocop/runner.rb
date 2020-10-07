@@ -324,8 +324,8 @@ module RuboCop
     end
 
     def mobilized_cop_classes(config)
-      @mobilized_cop_classes ||= {}
-      @mobilized_cop_classes[config.object_id] ||= begin
+      @mobilized_cop_classes ||= {}.compare_by_identity
+      @mobilized_cop_classes[config] ||= begin
         cop_classes = Cop::Registry.all
 
         OptionsValidator.new(@options).validate_cop_options
@@ -399,8 +399,8 @@ module RuboCop
     # otherwise dormant team that can be used for config- and option-
     # level caching in ResultCache.
     def standby_team(config)
-      @team_by_config ||= {}
-      @team_by_config[config.object_id] ||=
+      @team_by_config ||= {}.compare_by_identity
+      @team_by_config[config] ||=
         Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
   end
