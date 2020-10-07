@@ -8,6 +8,7 @@
 * [#8668](https://github.com/rubocop-hq/rubocop/pull/8668): Add new `Lint/RedundantSafeNavigation` cop. ([@fatkodima][])
 * [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Add notification about cache being used to debug mode. ([@hatkyinc2][])
 * [#8822](https://github.com/rubocop-hq/rubocop/pull/8822): Make `Style/RedundantBegin` aware of `begin` without `rescue` or `ensure`. ([@koic][])
+* [#7940](https://github.com/rubocop-hq/rubocop/pull/7940) Add new `Lint/NoReturnInBeginEndBlocks` cop. ([@jcfausto][])
 
 ### Bug fixes
 
@@ -83,7 +84,6 @@
 
 ### New features
 
-* Add new `Lint/NoReturnInBeginEndBlocks` cop. ([@jcfausto][])
 * New option `--cache-root` and support for the `RUBOCOP_CACHE_ROOT` environment variable. Both can be used to override the `AllCops: CacheRootDirectory` config, especially in a CI setting. ([@sascha-wolf][])
 * [#8582](https://github.com/rubocop-hq/rubocop/issues/8582): Add new `Layout/BeginEndAlignment` cop. ([@koic][])
 * [#8699](https://github.com/rubocop-hq/rubocop/pull/8699): Add new `Lint/IdentityComparison` cop. ([@koic][])

@@ -1670,7 +1670,7 @@ Lint/NextWithoutAccumulator:
 Lint/NoReturnInBeginEndBlocks:
   Description: 'Do not `return` inside `begin..end` blocks in assignment contexts.'
   Enabled: pending
-  VersionAdded: '0.92'
+  VersionAdded: '0.93'
 
 Lint/NonDeterministicRequireOrder:
   Description: 'Always sort arrays returned by Dir.glob when requiring files.'
