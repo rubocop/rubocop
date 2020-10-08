@@ -87,7 +87,7 @@ module RuboCop
                 if single_quoted?(part)
                   part.value.gsub('\\') { '\\\\' }
                 else
-                  escape_string(part.value)
+                  part.value.inspect[1..-2]
                 end
               else
                 "\#{#{part.source}}"

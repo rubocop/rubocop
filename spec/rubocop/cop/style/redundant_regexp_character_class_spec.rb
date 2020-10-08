@@ -30,6 +30,58 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
+  context 'with a character class containing a single character inside a group' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        foo = /([a])/
+                ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = /(a)/
+      RUBY
+    end
+  end
+
+  context 'with a character class containing a single range' do
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /[a-z]/')
+    end
+  end
+
+  context 'with a character class containing a posix bracket expression' do
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /[[:alnum:]]/')
+    end
+  end
+
+  context 'with a character class containing a negated posix bracket expression' do
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /[[:^alnum:]]/')
+    end
+  end
+
+  context 'with a character class containing set intersection' do
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /[[:alnum:]&&a-d]/')
+    end
+  end
+
+  context "with a regexp containing invalid \g escape" do
+    it 'registers an offense and corrects' do
+      # See https://ruby-doc.org/core-2.7.1/Regexp.html#class-Regexp-label-Subexpression+Calls
+      # \g should be \g<name>
+      expect_offense(<<~'RUBY')
+        foo = /[a]\g/
+               ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /a\g/
+      RUBY
+    end
+  end
+
   context 'with a character class containing an escaped ]' do
     it 'registers an offense and corrects' do
       expect_offense(<<~'RUBY')
@@ -221,6 +273,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
   context 'with an array index inside an interpolation' do
     it 'does not register an offense' do
       expect_no_offenses('foo = /a#{b[0]}c/')
+    end
+  end
+
+  context 'with a redundant character class after an interpolation' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~'RUBY')
+        foo = /#{x}[a]/
+                   ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /#{x}a/
+      RUBY
     end
   end
 

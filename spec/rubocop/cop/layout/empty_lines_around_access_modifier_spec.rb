@@ -322,6 +322,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           end\r
         RUBY
       end
+
+      it 'accepts only using access modifier' do
+        expect_no_offenses(<<~RUBY)
+          #{access_modifier}
+        RUBY
+      end
     end
   end
 

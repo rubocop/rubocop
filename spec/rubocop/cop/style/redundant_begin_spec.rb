@@ -155,6 +155,55 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `begin` without `rescue` or `ensure`' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        do_something
+      end
+    RUBY
+
+    expect_correction("\n  do_something\n\n")
+  end
+
+  it 'does not register an offense when using `begin` with `rescue`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      rescue
+        handle_exception
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with `ensure`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      ensure
+        finalize
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for assignment' do
+    expect_no_offenses(<<~RUBY)
+      var = begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for or assignment' do
+    expect_no_offenses(<<~RUBY)
+      var ||= begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
   context '< Ruby 2.5', :ruby24 do
     it 'accepts a do-end block with a begin-end' do
       expect_no_offenses(<<~RUBY)

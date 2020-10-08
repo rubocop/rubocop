@@ -75,7 +75,7 @@ module RuboCop
         def offense?(node)
           condition, if_branch, else_branch = *node
 
-          return false if use_if_branch?(else_branch)
+          return false if use_if_branch?(else_branch) || use_hash_key_assignment?(else_branch)
 
           condition == if_branch && !node.elsif? && (
             node.ternary? ||
@@ -86,6 +86,10 @@ module RuboCop
 
         def use_if_branch?(else_branch)
           else_branch&.if_type?
+        end
+
+        def use_hash_key_assignment?(else_branch)
+          else_branch&.send_type? && else_branch&.method?(:[]=)
         end
 
         def else_source(else_branch)

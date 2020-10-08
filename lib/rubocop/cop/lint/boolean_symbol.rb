@@ -32,6 +32,9 @@ module RuboCop
         def on_sym(node)
           return unless boolean_symbol?(node)
 
+          parent = node.parent
+          return if parent&.array_type? && parent&.percent_literal?(:symbol)
+
           add_offense(node, message: format(MSG, boolean: node.value)) do |corrector|
             autocorrect(corrector, node)
           end

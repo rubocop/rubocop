@@ -33,7 +33,7 @@ module RuboCop
       #
       #   # bad
       #   format('%<greeting>s', greeting: 'Hello')
-      #   format('%{greeting}', 'Hello')
+      #   format('%{greeting}', greeting: 'Hello')
       #
       #   # good
       #   format('%s', 'Hello')
