@@ -30,67 +30,60 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      offenses = inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         x = 0
 
+        ^{} 3 trailing blank lines detected.
 
 
       RUBY
-      expect(offenses.size).to eq(1)
-      expect(offenses.first.message).to eq('3 trailing blank lines detected.')
+
+      expect_correction("x = 0\n")
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      offenses = inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
 
 
+        ^{} 3 trailing blank lines detected.
 
 
       RUBY
-      expect(offenses.size).to eq(1)
-      expect(offenses.first.message).to eq('3 trailing blank lines detected.')
+
+      expect_correction("\n")
     end
 
     it 'registers an offense for no final newline after assignment' do
       offenses = inspect_source('x = 0')
+
       expect(offenses.first.message).to eq('Final newline missing.')
     end
 
     it 'registers an offense for no final newline after block comment' do
-      offenses = inspect_source("puts 'testing rubocop when final new line is missing " \
-                                "after block comments'\n\n=begin\nfirst line\nsecond " \
-                                "line\nthird line\n=end")
+      offenses = inspect_source("#{<<~RUBY}=end")
+        puts 'testing rubocop when final new line is missing
+                                  after block comments'
+
+        =begin
+        first line
+        second line
+        third line
+
+      RUBY
 
       expect(offenses.first.message).to eq('Final newline missing.')
     end
 
-    it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(<<~RUBY)
-        x = 0
-
-
-
-
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        x = 0
-      RUBY
-    end
-
-    it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(<<~RUBY)
-
-
-
-
-
-      RUBY
-      expect(new_source).to eq("\n")
-    end
-
     it 'auto-corrects even if some lines have space' do
-      new_source = autocorrect_source(['x = 0', '', '  ', '', ''].join("\n"))
-      expect(new_source).to eq(['x = 0', ''].join("\n"))
+      expect_offense(
+        ['x = 0',
+         '',
+         '^{} 4 trailing blank lines detected.',
+         '  ',
+         '',
+         '']
+      )
+      expect_correction("x = 0\n")
     end
   end
 
@@ -106,25 +99,33 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      offenses = inspect_source(<<~RUBY)
+      expect_offense(
+        ['x = 0',
+         '',
+         '^{} 3 trailing blank lines instead of 1 detected.',
+         '',
+         '']
+      )
+
+      expect_correction(<<~RUBY)
         x = 0
 
-
-
       RUBY
-      expect(offenses.size).to eq(1)
-      expect(offenses.first.message).to eq('3 trailing blank lines instead of 1 detected.')
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      offenses = inspect_source(<<~RUBY)
+      expect_offense(
+        ['',
+         '',
+         '^{} 3 trailing blank lines instead of 1 detected.',
+         '',
+         '']
+      )
 
-
+      expect_correction(<<~RUBY)
 
 
       RUBY
-      expect(offenses.size).to eq(1)
-      expect(offenses.first.message).to eq('3 trailing blank lines instead of 1 detected.')
     end
 
     it 'registers an offense for no final newline' do
@@ -134,34 +135,6 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
 
     it 'accepts final blank line' do
       expect_no_offenses("x = 0\n\n")
-    end
-
-    it 'auto-corrects unwanted blank lines' do
-      new_source = autocorrect_source(<<~RUBY)
-        x = 0
-
-
-
-
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        x = 0
-
-      RUBY
-    end
-
-    it 'auto-corrects unwanted blank lines in an empty file' do
-      new_source = autocorrect_source(<<~RUBY)
-
-
-
-
-      RUBY
-      expect(new_source).to eq(<<-RUBY)
-
-
-      RUBY
     end
 
     it 'auto-corrects missing blank line' do
