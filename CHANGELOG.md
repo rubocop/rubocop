@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.93.0 (2020-10-08)
+
 ### New features
 
 * [#8796](https://github.com/rubocop-hq/rubocop/pull/8796): Add new `Lint/HashCompareByIdentity` cop. ([@fatkodima][])
