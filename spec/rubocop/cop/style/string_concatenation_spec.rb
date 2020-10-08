@@ -122,4 +122,28 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
       expect_no_corrections
     end
   end
+
+  context 'double quotes inside string' do
+    it 'registers an offense and corrects with double quotes' do
+      expect_offense(<<-RUBY)
+        email_with_name = "He said " + "\\\"Arrest that man!\\\"."
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<-RUBY)
+        email_with_name = "He said \\\"Arrest that man!\\\"."
+      RUBY
+    end
+
+    it 'registers an offense and corrects with percentage quotes' do
+      expect_offense(<<-RUBY)
+        email_with_name = %(He said ) + %("Arrest that man!".)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<-RUBY)
+        email_with_name = "He said \\\"Arrest that man!\\\"."
+      RUBY
+    end
+  end
 end

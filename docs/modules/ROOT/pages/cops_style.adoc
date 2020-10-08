@@ -1052,6 +1052,49 @@ var.kind_of?(String)
 
 * https://rubystyle.guide#is-a-vs-kind-of
 
+== Style/ClassEqualityComparison
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 0.93
+| -
+|===
+
+This cop enforces the use of `Object#instance_of?` instead of class comparison
+for equality.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+var.class == Date
+var.class.equal?(Date)
+var.class.eql?(Date)
+var.class.name == 'Date'
+
+# good
+var.instance_of?(Date)
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoredMethods
+| `==`, `equal?`, `eql?`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#instance-of-vs-class-comparison
+
 == Style/ClassMethods
 
 |===
@@ -1436,6 +1479,12 @@ def method
     do_something(item)
     do_something_else(item)
   end
+end
+
+# good
+def method
+  each_slice(2) { |slice| do_something(slice) }
+  each_slice(3) { |slice| do_something(slice) }
 end
 ----
 
@@ -3399,7 +3448,7 @@ format('%{greeting}', greeting: 'Hello')
 ----
 # bad
 format('%<greeting>s', greeting: 'Hello')
-format('%{greeting}', 'Hello')
+format('%{greeting}', greeting: 'Hello')
 
 # good
 format('%s', 'Hello')
@@ -7550,6 +7599,14 @@ def preferred
 rescue StandardError => e
   something
 end
+
+# bad
+begin
+  do_something
+end
+
+# good
+do_something
 
 # bad
 # When using Ruby 2.5 or later.

@@ -29,17 +29,14 @@ module RuboCop
         def on_send(node)
           return unless node.dot? || ampersand_dot?(node)
 
-          if proper_dot_position?(node)
-            correct_style_detected
-          else
-            return unless opposite_style_detected
+          return correct_style_detected if proper_dot_position?(node)
 
-            dot = node.loc.dot
-            message = message(dot)
+          opposite_style_detected
+          dot = node.loc.dot
+          message = message(dot)
 
-            add_offense(dot, message: message) do |corrector|
-              autocorrect(corrector, dot, node)
-            end
+          add_offense(dot, message: message) do |corrector|
+            autocorrect(corrector, dot, node)
           end
         end
         alias on_csend on_send

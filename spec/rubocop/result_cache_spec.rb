@@ -60,25 +60,70 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     end
 
     # Fixes https://github.com/rubocop-hq/rubocop/issues/6274
-    context 'when offenses are saved by autocorrect run' do
-      let(:corrected_offense) do
-        RuboCop::Cop::Offense.new(
-          :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected
-        )
-      end
-      let(:uncorrected_offense) do
-        RuboCop::Cop::Offense.new(
-          corrected_offense.severity.name,
-          corrected_offense.location,
-          corrected_offense.message,
-          corrected_offense.cop_name,
-          :uncorrected
-        )
+    context 'when offenses are saved' do
+      context 'an offence with status corrected' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected
+          )
+        end
+
+        it 'serializes them with uncorrected status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:uncorrected)
+        end
       end
 
-      it 'serializes them with :uncorrected status' do
-        cache.save([corrected_offense])
-        expect(cache.load).to match_array([uncorrected_offense])
+      context 'an offence with status corrected_with_todo' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected_with_todo
+          )
+        end
+
+        it 'serializes them with uncorrected status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:uncorrected)
+        end
+      end
+
+      context 'an offence with status uncorrected' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :uncorrected
+          )
+        end
+
+        it 'serializes them with uncorrected status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:uncorrected)
+        end
+      end
+
+      context 'an offence with status unsupported' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :unsupported
+          )
+        end
+
+        it 'serializes them with unsupported status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:unsupported)
+        end
+      end
+
+      context 'an offence with status new_status' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :new_status
+          )
+        end
+
+        it 'serializes them with new_status status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:new_status)
+        end
       end
     end
 
