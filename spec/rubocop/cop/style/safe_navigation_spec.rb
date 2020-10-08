@@ -160,6 +160,32 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     RUBY
   end
 
+  # See https://github.com/rubocop-hq/rubocop/issues/8781
+  it 'does not move comments that are inside an inner block' do
+    expect_offense(<<~RUBY)
+      # Comment 1
+      if x
+      ^^^^ Use safe navigation (`&.`) instead of checking if an object exists before calling the method.
+        # Comment 2
+        x.each do
+          # Comment 3
+          # Comment 4
+        end
+        # Comment 5
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # Comment 1
+      # Comment 2
+      # Comment 5
+      x&.each do
+          # Comment 3
+          # Comment 4
+        end
+    RUBY
+  end
+
   shared_examples 'all variable types' do |variable|
     context 'modifier if' do
       shared_examples 'safe guarding logical break keywords' do |keyword|

@@ -142,10 +142,22 @@ module RuboCop
         end
 
         def comments(node)
-          processed_source.each_comment_in_lines(
-            node.loc.first_line...
-            node.loc.last_line
-          ).to_a
+          relevant_comment_ranges(node).each.with_object([]) do |range, comments|
+            comments.concat(processed_source.each_comment_in_lines(range).to_a)
+          end
+        end
+
+        def relevant_comment_ranges(node)
+          # Get source lines ranges inside the if node that aren't inside an inner node
+          # Comments inside an inner node should remain attached to that node, and not
+          # moved.
+          begin_pos = node.loc.first_line
+          end_pos = node.loc.last_line
+
+          node.child_nodes.each.with_object([]) do |child, ranges|
+            ranges << (begin_pos...child.loc.first_line)
+            begin_pos = child.loc.last_line
+          end << (begin_pos...end_pos)
         end
 
         def allowed_if_condition?(node)
