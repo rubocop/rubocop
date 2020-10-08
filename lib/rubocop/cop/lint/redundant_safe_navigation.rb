@@ -4,11 +4,16 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for redundant safe navigation calls.
-      # It is marked as unsafe, because it can produce code that returns
-      # non `nil` while `nil` result is expected on `nil` receiver.
+      #
+      # In the example below, the safe navigation operator (`&.`) is unnecessary
+      # because `NilClass` has methods like `respond_to?` and `dup`.
+      #
+      # This cop is marked as unsafe, because auto-correction can change the
+      # return type of the expression. An offending expression that previously
+      # could return `nil` will be auto-corrected to never return `nil`.
       #
       # @example
-      #   # bad
+      #   # bad, because nil has these methods
       #   attrs&.respond_to?(:[])
       #   foo&.dup&.inspect
       #
