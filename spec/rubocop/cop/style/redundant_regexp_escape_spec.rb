@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
     end
 
     [
-      ('a'..'z').to_a - %w[c n p u x],
+      ('a'..'z').to_a - %w[c g k n p u x],
       ('A'..'Z').to_a - %w[C M P],
       %w[n101 x41 u0041 u{0041} cc C-c p{alpha} P{alpha}]
     ].flatten.each do |escape|
@@ -43,6 +43,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
         it 'does not register an offense' do
           expect_no_offenses("foo = /[\\#{escape}]/")
         end
+      end
+    end
+
+    context "with an invalid \g escape" do
+      it 'does not register an offense' do
+        # See https://ruby-doc.org/core-2.7.1/Regexp.html#class-Regexp-label-Subexpression+Calls
+        # \g should be \g<name>
+        expect_no_offenses('foo = /\g/')
       end
     end
 
@@ -76,6 +84,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
             foo = /[#{char}]/
           RUBY
         end
+      end
+    end
+
+    context "with an escaped '+' inside a character class inside a group" do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          foo = /([\+])/
+                   ^^ Redundant escape inside regexp literal
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = /([+])/
+        RUBY
       end
     end
 
@@ -416,6 +437,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
           foo = %r{
             a
             b
+          }x
+        RUBY
+      end
+    end
+
+    context 'with a # inside a character class' do
+      it 'does not register an offense' do
+        # See https://github.com/rubocop-hq/rubocop/issues/8805 - the # inside the character class
+        # must not be treated as starting a comment (which makes the following \. redundant)
+        expect_no_offenses(<<~'RUBY')
+          regexp = %r{
+            \A[a-z#]            # letters or #
+            \.[a-z]\z           # dot + letters
           }x
         RUBY
       end

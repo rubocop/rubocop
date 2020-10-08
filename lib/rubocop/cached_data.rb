@@ -21,6 +21,7 @@ module RuboCop
     private
 
     def serialize_offense(offense)
+      status = :uncorrected if %i[corrected corrected_with_todo].include?(offense.status)
       {
         # Calling #to_s here ensures that the serialization works when using
         # other json serializers such as Oj. Some of these gems do not call
@@ -32,7 +33,7 @@ module RuboCop
         },
         message:  message(offense),
         cop_name: offense.cop_name,
-        status:   :uncorrected
+        status:   status || offense.status
       }
     end
 

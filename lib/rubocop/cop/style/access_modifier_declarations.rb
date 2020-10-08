@@ -83,8 +83,8 @@ module RuboCop
 
         def on_send(node)
           return unless node.access_modifier?
-          return if node.parent.pair_type?
-          return if cop_config['AllowModifiersOnSymbols'] && access_modifier_with_symbol?(node)
+          return if node.parent&.pair_type?
+          return if allow_modifiers_on_symbols?(node)
 
           if offense?(node)
             add_offense(node.loc.selector) if opposite_style_detected
@@ -94,6 +94,10 @@ module RuboCop
         end
 
         private
+
+        def allow_modifiers_on_symbols?(node)
+          cop_config['AllowModifiersOnSymbols'] && access_modifier_with_symbol?(node)
+        end
 
         def offense?(node)
           (group_style? && access_modifier_is_inlined?(node)) ||

@@ -51,6 +51,13 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     RUBY
   end
 
+  it 'does not register an offense when when method argument parentheses are omitted and ' \
+    'hash argument key is enclosed in parentheses' do
+    expect_no_offenses(<<~RUBY)
+      transition (foo - bar) => value
+    RUBY
+  end
+
   it 'accepts a method call without arguments' do
     expect_no_offenses('func')
   end

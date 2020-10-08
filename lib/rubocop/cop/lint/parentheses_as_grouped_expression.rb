@@ -43,7 +43,7 @@ module RuboCop
           end
 
           node.operator_method? || node.setter_method? || chained_calls?(node) ||
-            operator_keyword?(node)
+            operator_keyword?(node) || node.first_argument.hash_type?
         end
 
         def first_argument_starts_with_left_parenthesis?(node)

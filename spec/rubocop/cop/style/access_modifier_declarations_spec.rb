@@ -64,6 +64,12 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
+      it 'accepts when using only #{access_modifier}' do
+        expect_no_offenses(<<~RUBY)
+          #{access_modifier}
+        RUBY
+      end
+
       it "does not offend when #{access_modifier} is not inlined and " \
          'has a comment' do
         expect_no_offenses(<<~RUBY)

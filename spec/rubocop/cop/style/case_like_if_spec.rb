@@ -344,4 +344,78 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
       end
     RUBY
   end
+
+  context 'when using regexp with named captures' do
+    it 'does not register an offense with =~ and regexp on lhs' do
+      expect_no_offenses(<<~RUBY)
+        if /(?<name>.*)/ =~ foo
+        elsif foo == 123
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense with =~ and regexp on rhs' do
+      expect_offense(<<~RUBY)
+        if foo =~ /(?<name>.*)/
+        ^^^^^^^^^^^^^^^^^^^^^^^ Convert `if-elsif` to `case-when`.
+        elsif foo == 123
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        when /(?<name>.*)/
+        when 123
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with match and regexp on lhs' do
+      expect_no_offenses(<<~RUBY)
+        if /(?<name>.*)/.match(foo)
+        elsif foo == 123
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with match and regexp on rhs' do
+      expect_no_offenses(<<~RUBY)
+        if foo.match(/(?<name>.*)/)
+        elsif foo == 123
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense with match? and regexp on lhs' do
+      expect_offense(<<~RUBY)
+        if /(?<name>.*)/.match?(foo)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Convert `if-elsif` to `case-when`.
+        elsif foo == 123
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        when /(?<name>.*)/
+        when 123
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense with match? and regexp on rhs' do
+      expect_offense(<<~RUBY)
+        if foo.match?(/(?<name>.*)/)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Convert `if-elsif` to `case-when`.
+        elsif foo == 123
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        when /(?<name>.*)/
+        when 123
+        end
+      RUBY
+    end
+  end
 end
