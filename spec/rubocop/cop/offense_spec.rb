@@ -180,4 +180,49 @@ RSpec.describe RuboCop::Cop::Offense do
       expect(offense.highlighted_area.source).to eq('Foo')
     end
   end
+
+  context 'when the location is pseudo' do
+    let(:location) { described_class::NO_LOCATION }
+
+    it 'returns a location with valid size and length' do
+      expect(offense.location.size).to eq 0
+      expect(offense.location.length).to eq 0
+    end
+
+    it 'returns a line' do
+      expect(offense.line).to eq 1
+    end
+
+    it 'returns a column' do
+      expect(offense.column).to eq 0
+    end
+
+    it 'returns a source line' do
+      expect(offense.source_line).to eq ''
+    end
+
+    it 'returns a column length' do
+      expect(offense.column_length).to eq 0
+    end
+
+    it 'returns the first line' do
+      expect(offense.first_line).to eq 1
+    end
+
+    it 'returns the last line' do
+      expect(offense.last_line).to eq 1
+    end
+
+    it 'returns the last column' do
+      expect(offense.last_column).to eq 0
+    end
+
+    it 'returns a column range' do
+      expect(offense.column_range).to eq 0...0
+    end
+
+    it 'returns a real column' do
+      expect(offense.real_column).to eq 1
+    end
+  end
 end
