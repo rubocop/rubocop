@@ -34,6 +34,21 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator do
     RUBY
   end
 
+  it 'registers an offense and corrects for a nested ternary operator expression with no parentheses on the outside' do
+    expect_offense(<<~RUBY)
+      x ? y + (z ? 1 : 0) : nil
+               ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if x
+        y + (z ? 1 : 0)
+      else
+        nil
+      end
+    RUBY
+  end
+
   it 'accepts a non-nested ternary operator within an if' do
     expect_no_offenses(<<~RUBY)
       a = if x
