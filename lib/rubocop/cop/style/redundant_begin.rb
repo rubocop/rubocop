@@ -85,10 +85,7 @@ module RuboCop
         end
 
         def on_kwbegin(node)
-          return if node.each_ancestor.any?(&:assignment?) || node.parent&.post_condition_loop?
-
-          first_child = node.children.first
-          return if first_child.rescue_type? || first_child.ensure_type?
+          return if contain_rescue_or_ensure?(node) || valid_context_using_only_begin?(node)
 
           register_offense(node)
         end
@@ -100,6 +97,19 @@ module RuboCop
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end
+        end
+
+        def contain_rescue_or_ensure?(node)
+          first_child = node.children.first
+
+          first_child.rescue_type? || first_child.ensure_type?
+        end
+
+        def valid_context_using_only_begin?(node)
+          parent = node.parent
+
+          node.each_ancestor.any?(&:assignment?) || parent&.post_condition_loop? ||
+            parent&.send_type? || parent&.operator_keyword?
         end
       end
     end
