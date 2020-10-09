@@ -85,8 +85,7 @@ module RuboCop
         end
 
         def on_kwbegin(node)
-          return if node.parent&.assignment?
-          return if node.parent&.post_condition_loop?
+          return if node.each_ancestor.any?(&:assignment?) || node.parent&.post_condition_loop?
 
           first_child = node.children.first
           return if first_child.rescue_type? || first_child.ensure_type?
