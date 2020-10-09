@@ -230,5 +230,20 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when multiple assignments to constants' do
+      # `Bar` is always nil, but syntax is valid.
+      expect_offense(<<~RUBY)
+        Foo, Bar = Struct.new(:foo, :bar) do
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^ Class has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
   end
 end

@@ -8,6 +8,7 @@
 * [#8864](https://github.com/rubocop-hq/rubocop/issues/8864): Fix false positive for `Style/RedundantBegin` with a postfix `while` or `until`. ([@dvandersluis][])
 * [#8869](https://github.com/rubocop-hq/rubocop/issues/8869): Fix a false positive for `Style/RedundantBegin` when using `begin` for or assignment and method call. ([@koic][])
 * [#8862](https://github.com/rubocop-hq/rubocop/issues/8862): Fix an error for `Lint/AmbiguousRegexpLiteral` when using regexp without method calls in nested structure. ([@koic][])
+* [#8872](https://github.com/rubocop-hq/rubocop/issues/8872): Fix an error for `Metrics/ClassLength` when multiple assignments to constants. ([@koic][])
 
 ## 0.93.0 (2020-10-08)
 
