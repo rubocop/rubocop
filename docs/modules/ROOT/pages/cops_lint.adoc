@@ -2945,7 +2945,7 @@ foo.dup.inspect
 | Name | Default value | Configurable values
 
 | IgnoredMethods
-| `to_c`, `to_f`, `to_i`, `to_r`, `rationalize`, `public_send`, `send`, `__send__`
+| `to_c`, `to_f`, `to_i`, `to_r`, `rationalize`, `public_send`, `send`, `__send__`, `tap`, `yield_self`, `then`
 | Array
 |===
 

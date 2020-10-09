@@ -40,14 +40,15 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
-  context 'when AllowedMethods is set' do
+  context 'when IgnoredMethods is set' do
     let(:cop_config) do
-      { 'IgnoredMethods' => ['to_f'] }
+      { 'IgnoredMethods' => %w[to_f tap] }
     end
 
     it 'does not register an offense when using ignored `nil` method with `.&`' do
       expect_no_offenses(<<~RUBY)
         foo&.to_f
+        foo&.tap { |i| i * 2 }
       RUBY
     end
   end

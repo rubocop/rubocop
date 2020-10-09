@@ -1767,6 +1767,9 @@ Lint/RedundantSafeNavigation:
     - public_send
     - send
     - __send__
+    - tap
+    - yield_self
+    - then
 
 Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
