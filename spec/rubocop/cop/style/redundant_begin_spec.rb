@@ -204,6 +204,24 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `begin` with `while`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_first_thing
+        some_value = do_second_thing
+      end while some_value
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with `until`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_first_thing
+        some_value = do_second_thing
+      end until some_value
+    RUBY
+  end
+
   context '< Ruby 2.5', :ruby24 do
     it 'accepts a do-end block with a begin-end' do
       expect_no_offenses(<<~RUBY)
