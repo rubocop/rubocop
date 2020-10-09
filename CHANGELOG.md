@@ -9,6 +9,7 @@
 * [#8869](https://github.com/rubocop-hq/rubocop/issues/8869): Fix a false positive for `Style/RedundantBegin` when using `begin` for or assignment and method call. ([@koic][])
 * [#8862](https://github.com/rubocop-hq/rubocop/issues/8862): Fix an error for `Lint/AmbiguousRegexpLiteral` when using regexp without method calls in nested structure. ([@koic][])
 * [#8872](https://github.com/rubocop-hq/rubocop/issues/8872): Fix an error for `Metrics/ClassLength` when multiple assignments to constants. ([@koic][])
+* [#8871](https://github.com/rubocop-hq/rubocop/issues/8871): Fix a false positive for `Style/RedundantBegin` when using `begin` for method argument or part of conditions. ([@koic][])
 
 ## 0.93.0 (2020-10-08)
 

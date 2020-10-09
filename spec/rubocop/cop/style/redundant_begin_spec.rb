@@ -233,6 +233,33 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `begin` for method argument' do
+    expect_no_offenses(<<~RUBY)
+      do_something begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for logical operator conditions' do
+    expect_no_offenses(<<~RUBY)
+      condition && begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for semantic operator conditions' do
+    expect_no_offenses(<<~RUBY)
+      condition and begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
   context '< Ruby 2.5', :ruby24 do
     it 'accepts a do-end block with a begin-end' do
       expect_no_offenses(<<~RUBY)
