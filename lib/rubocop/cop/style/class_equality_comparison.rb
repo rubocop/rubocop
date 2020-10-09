@@ -36,12 +36,21 @@ module RuboCop
           return if def_node && ignored_method?(def_node.method_name)
 
           class_comparison_candidate?(node) do |receiver_node, class_node|
-            range = range_between(receiver_node.loc.selector.begin_pos, node.source_range.end_pos)
+            range = offense_range(receiver_node, node)
 
             add_offense(range) do |corrector|
-              corrector.replace(range, "instance_of?(#{class_node.source})")
+              class_name = class_node.source
+              class_name = class_name.delete('"').delete("'") if node.children.first.method?(:name)
+
+              corrector.replace(range, "instance_of?(#{class_name})")
             end
           end
+        end
+
+        private
+
+        def offense_range(receiver_node, node)
+          range_between(receiver_node.loc.selector.begin_pos, node.source_range.end_pos)
         end
       end
     end
