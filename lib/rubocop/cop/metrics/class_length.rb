@@ -39,8 +39,12 @@ module RuboCop
         end
 
         def on_casgn(node)
-          if node.parent&.assignment?
-            block_node = node.parent.children[1]
+          parent = node.parent
+
+          if parent&.assignment?
+            block_node = parent.children[1]
+          elsif parent&.parent&.masgn_type?
+            block_node = parent.parent.children[1]
           else
             _scope, _name, block_node = *node
           end
