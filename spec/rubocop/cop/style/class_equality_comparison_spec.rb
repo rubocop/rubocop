@@ -5,21 +5,58 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
     { 'IgnoredMethods' => [] }
   end
 
-  it 'registers an offense and corrects when comparing class for equality' do
+  it 'registers an offense and corrects when comparing class using `==` for equality' do
     expect_offense(<<~RUBY)
       var.class == Date
-          ^^^^^^^^^^^^^ Use `Object.instance_of?` instead of comparing classes.
-      var.class.equal?(Date)
-          ^^^^^^^^^^^^^^^^^^ Use `Object.instance_of?` instead of comparing classes.
-      var.class.eql?(Date)
-          ^^^^^^^^^^^^^^^^ Use `Object.instance_of?` instead of comparing classes.
+          ^^^^^^^^^^^^^ Use `instance_of?(Date)` instead of comparing classes.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var.instance_of?(Date)
     RUBY
   end
 
-  it 'registers an offense and corrects when comparing class name for equality' do
+  it 'registers an offense and corrects when comparing class using `equal?` for equality' do
+    expect_offense(<<~RUBY)
+      var.class.equal?(Date)
+          ^^^^^^^^^^^^^^^^^^ Use `instance_of?(Date)` instead of comparing classes.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var.instance_of?(Date)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when comparing class using `eql?` for equality' do
+    expect_offense(<<~RUBY)
+      var.class.eql?(Date)
+          ^^^^^^^^^^^^^^^^ Use `instance_of?(Date)` instead of comparing classes.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var.instance_of?(Date)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when comparing single quoted class name for equality' do
+    expect_offense(<<~RUBY)
+      var.class.name == 'Date'
+          ^^^^^^^^^^^^^^^^^^^^ Use `instance_of?(Date)` instead of comparing classes.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var.instance_of?(Date)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when comparing double quoted class name for equality' do
     expect_offense(<<~RUBY)
       var.class.name == "Date"
-          ^^^^^^^^^^^^^^^^^^^^ Use `Object.instance_of?` instead of comparing classes.
+          ^^^^^^^^^^^^^^^^^^^^ Use `instance_of?(Date)` instead of comparing classes.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var.instance_of?(Date)
     RUBY
   end
 
