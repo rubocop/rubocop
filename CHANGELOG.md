@@ -6,6 +6,7 @@
 
 * [#8782](https://github.com/rubocop-hq/rubocop/issues/8782): Fix incorrect autocorrection for `Style/TernaryParentheses` with `defined?`. ([@dvandersluis][])
 * [#8864](https://github.com/rubocop-hq/rubocop/issues/8864): Fix false positive for `Style/RedundantBegin` with a postfix `while` or `until`. ([@dvandersluis][])
+* [#8869](https://github.com/rubocop-hq/rubocop/issues/8869): Fix a false positive for `Style/RedundantBegin` when using `begin` for or assignment and method call. ([@koic][])
 
 ## 0.93.0 (2020-10-08)
 

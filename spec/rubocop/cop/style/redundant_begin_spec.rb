@@ -222,6 +222,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `begin` for or assignment and method call' do
+    expect_no_offenses(<<~RUBY)
+      var ||= begin
+        foo
+        bar
+      end.baz do
+        qux
+      end
+    RUBY
+  end
+
   context '< Ruby 2.5', :ruby24 do
     it 'accepts a do-end block with a begin-end' do
       expect_no_offenses(<<~RUBY)
