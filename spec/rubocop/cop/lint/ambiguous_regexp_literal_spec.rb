@@ -60,6 +60,25 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
         RUBY
       end
 
+      it 'registers an offense and corrects when using regexp without method call in a nested structure' do
+        expect_offense(<<~RUBY)
+          class MyTest
+            test '#foo' do
+              assert_match /expected/, actual
+                           ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class MyTest
+            test '#foo' do
+              assert_match(/expected/, actual)
+            end
+          end
+        RUBY
+      end
+
       it 'registers an offense and corrects when using block argument' do
         expect_offense(<<~RUBY)
           p /pattern/, foo do |arg|

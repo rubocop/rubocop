@@ -53,15 +53,18 @@ module RuboCop
         def find_offense_node(node, regexp_receiver)
           return node unless node.parent
 
-          if node.parent.send_type? || method_chain_to_regexp_receiver?(node)
+          if node.parent.send_type? || method_chain_to_regexp_receiver?(node, regexp_receiver)
             node = find_offense_node(node.parent, regexp_receiver)
           end
 
           node
         end
 
-        def method_chain_to_regexp_receiver?(node)
-          node.parent.parent && node.parent.receiver.receiver == regexp_receiver
+        def method_chain_to_regexp_receiver?(node, regexp_receiver)
+          return false unless (parent = node.parent)
+          return false unless (parent_receiver = parent.receiver)
+
+          parent.parent && parent_receiver.receiver == regexp_receiver
         end
       end
     end
