@@ -21,7 +21,7 @@ module RuboCop
         include IgnoredMethods
         extend AutoCorrector
 
-        MSG = 'Use `Object.instance_of?` instead of comparing classes.'
+        MSG = 'Use `instance_of?(%<class_name>s)` instead of comparing classes.'
 
         RESTRICT_ON_SEND = %i[== equal? eql?].freeze
 
@@ -37,17 +37,23 @@ module RuboCop
 
           class_comparison_candidate?(node) do |receiver_node, class_node|
             range = offense_range(receiver_node, node)
+            class_name = class_name(class_node, node)
 
-            add_offense(range) do |corrector|
-              class_name = class_node.source
-              class_name = class_name.delete('"').delete("'") if node.children.first.method?(:name)
-
+            add_offense(range, message: format(MSG, class_name: class_name)) do |corrector|
               corrector.replace(range, "instance_of?(#{class_name})")
             end
           end
         end
 
         private
+
+        def class_name(class_node, node)
+          if node.children.first.method?(:name)
+            class_node.source.delete('"').delete("'")
+          else
+            class_node.source
+          end
+        end
 
         def offense_range(receiver_node, node)
           range_between(receiver_node.loc.selector.begin_pos, node.source_range.end_pos)
