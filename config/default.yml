@@ -1757,16 +1757,14 @@ Lint/RedundantSafeNavigation:
   Description: 'Checks for redundant safe navigation calls.'
   Enabled: pending
   VersionAdded: '0.93'
+  AllowedMethods:
+    - instance_of?
+    - kind_of?
+    - is_a?
+    - eql?
+    - respond_to?
+    - equal?
   Safe: false
-  IgnoredMethods:
-    - to_c
-    - to_f
-    - to_i
-    - to_r
-    - rationalize
-    - public_send
-    - send
-    - __send__
 
 Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
