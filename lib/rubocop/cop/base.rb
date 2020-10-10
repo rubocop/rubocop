@@ -291,7 +291,7 @@ module RuboCop
       end
 
       private_class_method def self.restrict_on_send
-        @restrict_on_send ||= self::RESTRICT_ON_SEND.to_set.freeze
+        @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
       end
 
       # Called before any investigation
