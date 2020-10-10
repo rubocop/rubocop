@@ -202,6 +202,14 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
     end
   end
 
+  context 'when overlapping constant assignments' do
+    it 'registers an offense' do
+      expect_no_offenses(<<~RUBY)
+        X = Y = Z = do_something
+      RUBY
+    end
+  end
+
   context 'when inspecting a class defined with Struct.new' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

@@ -49,7 +49,9 @@ module RuboCop
             _scope, _name, block_node = *node
           end
 
-          check_code_length(block_node) if block_node.class_definition?
+          return unless block_node.respond_to?(:class_definition?) && block_node.class_definition?
+
+          check_code_length(block_node)
         end
 
         private
