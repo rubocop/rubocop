@@ -161,9 +161,6 @@ module RuboCop
           end
         end
 
-        # @abstract Overridden in style modules
-        def autocorrect(_node); end
-
         private
 
         def args_begin(node)
