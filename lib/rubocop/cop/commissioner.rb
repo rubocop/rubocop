@@ -45,8 +45,7 @@ module RuboCop
         @cops = cops
         @forces = forces
         @options = options
-        @callbacks = Hash.new { |h, k| h[k] = cops_callbacks_for(k) }
-        @restricted_map = {}
+        initialize_callbacks
 
         reset
       end
@@ -94,7 +93,7 @@ module RuboCop
       private
 
       def trigger_responding_cops(callback, node)
-        @callbacks[callback].each do |cop|
+        @callbacks[callback]&.each do |cop|
           with_cop_error_handling(cop, node) do
             cop.send(callback, node)
           end
@@ -105,19 +104,32 @@ module RuboCop
         @errors = []
       end
 
-      def cops_callbacks_for(callback)
-        callbacks = @cops.select do |cop|
-          cop.respond_to?(callback)
-        end
-        if RESTRICTED_CALLBACKS.include?(callback)
-          @restricted_map[callback] = restricted_map(callbacks)
+      def initialize_callbacks
+        @callbacks = build_callbacks(@cops)
+        @restricted_map = restrict_callbacks(@callbacks)
+      end
+
+      def build_callbacks(cops)
+        callbacks = {}
+        cops.each do |cop|
+          cop.callbacks_needed.each do |callback|
+            (callbacks[callback] ||= []) << cop
+          end
         end
         callbacks
       end
 
+      def restrict_callbacks(callbacks)
+        restricted = {}
+        RESTRICTED_CALLBACKS.each do |callback|
+          restricted[callback] = restricted_map(callbacks[callback])
+        end
+        restricted
+      end
+
       def trigger_restricted_cops(event, node)
         name = node.method_name
-        @restricted_map.fetch(event)[name]&.each do |cop|
+        @restricted_map[event][name]&.each do |cop|
           with_cop_error_handling(cop, node) do
             cop.send(event, node)
           end
@@ -127,7 +139,7 @@ module RuboCop
       # Note: mutates `callbacks` in place
       def restricted_map(callbacks)
         map = {}
-        callbacks.select! do |cop|
+        callbacks&.select! do |cop|
           restrictions = cop.class.send :restrict_on_send
           restrictions.each do |name|
             (map[name] ||= []) << cop

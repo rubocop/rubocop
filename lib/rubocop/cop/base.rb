@@ -261,6 +261,21 @@ module RuboCop
           'they are returned as the result of the investigation'
       end
 
+      ### Reserved for Commissioner
+
+      # @api private
+      def callbacks_needed
+        self.class.callbacks_needed
+      end
+
+      # @api private
+      def self.callbacks_needed
+        @callbacks_needed ||= public_instance_methods.select do |m|
+          m.match?(/^on_/) &&
+            !Base.method_defined?(m) # exclude standard "callbacks" like 'on_begin_investigation'
+        end
+      end
+
       private
 
       ### Reserved for Cop::Cop

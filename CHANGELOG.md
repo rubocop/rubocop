@@ -6,6 +6,10 @@
 
 * [#8892](https://github.com/rubocop-hq/rubocop/issues/8892): Fix an error for `Style/StringConcatenation` when correcting nested concatenable parts. ([@fatkodima][])
 
+### Changes
+
+* [#8882](https://github.com/rubocop-hq/rubocop/pull/8882): **(Potentially breaking)** RuboCop assumes that Cop classes do not define new `on_<type>` methods at runtime (e.g. via `extend` in `initialize`). ([@marcandre][])
+
 ## 0.93.1 (2020-10-12)
 
 ### Bug fixes
