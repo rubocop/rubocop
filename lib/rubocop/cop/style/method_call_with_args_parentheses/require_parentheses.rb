@@ -6,27 +6,23 @@ module RuboCop
       class MethodCallWithArgsParentheses
         # Style require_parentheses
         module RequireParentheses
-          def on_send(node)
+          REQUIRE_MSG = 'Use parentheses for method calls with arguments.'
+          private_constant :REQUIRE_MSG
+
+          private
+
+          def require_parentheses(node)
             return if ignored_method?(node.method_name)
             return if matches_ignored_pattern?(node.method_name)
             return if eligible_for_parentheses_omission?(node)
             return unless node.arguments? && !node.parenthesized?
 
-            add_offense(node) do |corrector|
+            add_offense(node, message: REQUIRE_MSG) do |corrector|
               corrector.replace(args_begin(node), '(')
 
               corrector.insert_after(args_end(node), ')') unless args_parenthesized?(node)
             end
           end
-          alias on_csend on_send
-          alias on_super on_send
-          alias on_yield on_send
-
-          def message(_node = nil)
-            'Use parentheses for method calls with arguments.'
-          end
-
-          private
 
           def eligible_for_parentheses_omission?(node)
             node.operator_method? || node.setter_method? || ignored_macro?(node)

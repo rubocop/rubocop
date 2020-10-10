@@ -7,15 +7,19 @@ module RuboCop
         # Style omit_parentheses
         module OmitParentheses
           TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
+          OMIT_MSG = 'Omit parentheses for method calls with arguments.'
+          private_constant :OMIT_MSG
 
-          def on_send(node)
+          private
+
+          def omit_parentheses(node)
             return unless node.parenthesized?
             return if node.implicit_call?
             return if super_call_without_arguments?(node)
             return if allowed_camel_case_method_call?(node)
             return if legitimate_call_with_parentheses?(node)
 
-            add_offense(offense_range(node)) do |corrector|
+            add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
               if parentheses_at_the_end_of_multiline_call?(node)
                 corrector.replace(args_begin(node), ' \\')
               else
@@ -24,18 +28,9 @@ module RuboCop
               corrector.remove(node.loc.end)
             end
           end
-          alias on_csend on_send
-          alias on_super on_send
-          alias on_yield on_send
-
-          private
 
           def offense_range(node)
             node.loc.begin.join(node.loc.end)
-          end
-
-          def message(_range = nil)
-            'Omit parentheses for method calls with arguments.'
           end
 
           def super_call_without_arguments?(node)
