@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.93.1 (2020-10-12)
+
 ### Bug fixes
 
 * [#8782](https://github.com/rubocop-hq/rubocop/issues/8782): Fix incorrect autocorrection for `Style/TernaryParentheses` with `defined?`. ([@dvandersluis][])
