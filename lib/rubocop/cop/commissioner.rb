@@ -7,7 +7,7 @@ module RuboCop
     class Commissioner
       include RuboCop::AST::Traversal
 
-      RESTRICTED_CALLBACKS = %i[on_send on_csend].freeze
+      RESTRICTED_CALLBACKS = %i[on_send on_csend after_send after_csend].freeze
       private_constant :RESTRICTED_CALLBACKS
 
       # How a Commissioner returns the results of the investigation
@@ -60,16 +60,18 @@ module RuboCop
         method_name = :"on_#{node_type}"
         next unless method_defined?(method_name)
 
-        if RESTRICTED_CALLBACKS.include?(method_name)
-          trigger_restricted = "trigger_restricted_cops(:on_#{node_type}, node)"
-        end
+        # Hacky: Comment-out code as needed
+        r = '#' unless RESTRICTED_CALLBACKS.include?(method_name) # has Restricted?
+        c = '#' if NO_CHILD_NODES.include?(node_type) # has Children?
 
         class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
-          def on_#{node_type}(node)
-            trigger_responding_cops(:on_#{node_type}, node)
-            #{trigger_restricted}
-            #{'super(node)' unless NO_CHILD_NODES.include?(node_type)}
-          end
+                  def on_#{node_type}(node)
+                    trigger_responding_cops(:on_#{node_type}, node)
+              #{r}  trigger_restricted_cops(:on_#{node_type}, node)
+          #{c}      super(node)
+          #{c}      trigger_responding_cops(:after_#{node_type}, node)
+          #{c}#{r}  trigger_restricted_cops(:after_#{node_type}, node)
+                  end
         RUBY
       end
 
