@@ -9255,9 +9255,9 @@ NOTE: Required Ruby version: 2.6
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Pending
-| No
-| Yes (Unsafe)
-| 0.83
+| Yes
+| Yes
+| 0.94
 | -
 |===
 

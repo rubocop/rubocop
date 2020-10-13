@@ -6,6 +6,10 @@
 
 * [#8892](https://github.com/rubocop-hq/rubocop/issues/8892): Fix an error for `Style/StringConcatenation` when correcting nested concatenable parts. ([@fatkodima][])
 
+### Changes
+
+* [#8890](https://github.com/rubocop-hq/rubocop/pull/8890): Mark `Style/SlicingWithRange` as safe. ([@koic][])
+
 ## 0.93.1 (2020-10-12)
 
 ### Bug fixes

@@ -4116,8 +4116,7 @@ Style/SingleLineMethods:
 Style/SlicingWithRange:
   Description: 'Checks array slicing is done with endless ranges when suitable.'
   Enabled: pending
-  VersionAdded: '0.83'
-  Safe: false
+  VersionAdded: '0.94'
 
 Style/SoleNestedConditional:
   Description: >-
