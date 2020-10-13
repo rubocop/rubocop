@@ -13,6 +13,10 @@ RSpec.describe RuboCop::Cop::Commissioner do
                                     alias_method :on_def, :on_int
                                     alias_method :on_send, :on_int
                                     alias_method :on_csend, :on_int
+                                    alias_method :after_int, :on_int
+                                    alias_method :after_def, :on_int
+                                    alias_method :after_send, :on_int
+                                    alias_method :after_csend, :on_int
                                   end)
     end
     let(:cop) do
@@ -51,6 +55,9 @@ RSpec.describe RuboCop::Cop::Commissioner do
 
     it 'traverses the AST and invoke cops specific callbacks' do
       expect(cop).to receive(:on_def).once
+      expect(cop).to receive(:on_int).once
+      expect(cop).not_to receive(:after_int)
+      expect(cop).to receive(:after_def).once
       offenses
     end
 
@@ -72,7 +79,9 @@ RSpec.describe RuboCop::Cop::Commissioner do
 
         it 'calls on_send for the right method calls' do
           expect(cop).to receive(:on_send).once
+          expect(cop).to receive(:after_send).once
           expect(cop).not_to receive(:on_csend)
+          expect(cop).not_to receive(:after_csend)
           offenses
         end
 
@@ -82,6 +91,8 @@ RSpec.describe RuboCop::Cop::Commissioner do
           it 'calls on_send for the right method calls' do
             expect(cop).to receive(:on_send).once
             expect(cop).to receive(:on_csend).once
+            expect(cop).to receive(:after_send).once
+            expect(cop).to receive(:after_csend).once
             offenses
           end
         end
