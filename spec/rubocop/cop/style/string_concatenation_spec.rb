@@ -36,6 +36,18 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
     RUBY
   end
 
+  it 'correctly handles nested concatenable parts' do
+    expect_offense(<<~RUBY)
+      (user.vip? ? greeting + ', ' : '') + user.name + ' <' + user.email + '>'
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+                   ^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      "\#{(user.vip? ? "\#{greeting}, " : '')}\#{user.name} <\#{user.email}>"
+    RUBY
+  end
+
   it 'does not register an offense when using `+` with all non string arguments' do
     expect_no_offenses(<<~RUBY)
       user.name + user.email

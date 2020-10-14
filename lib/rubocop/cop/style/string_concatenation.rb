@@ -33,6 +33,10 @@ module RuboCop
           }
         PATTERN
 
+        def on_new_investigation
+          @corrected_nodes = nil
+        end
+
         def on_send(node)
           return unless string_concatenation?(node)
 
@@ -42,8 +46,12 @@ module RuboCop
           collect_parts(topmost_plus_node, parts)
 
           add_offense(topmost_plus_node) do |corrector|
-            if parts.none? { |part| uncorrectable?(part) }
+            correctable_parts = parts.none? { |part| uncorrectable?(part) }
+            if correctable_parts && !corrected_ancestor?(topmost_plus_node)
               corrector.replace(topmost_plus_node, replacement(parts))
+
+              @corrected_nodes ||= Set.new.compare_by_identity
+              @corrected_nodes.add(topmost_plus_node)
             end
           end
         end
@@ -78,6 +86,10 @@ module RuboCop
             part.dstr_type? ||
             (part.str_type? && part.heredoc?) ||
             part.each_descendant(:block).any?
+        end
+
+        def corrected_ancestor?(node)
+          node.each_ancestor(:send).any? { |ancestor| @corrected_nodes&.include?(ancestor) }
         end
 
         def replacement(parts)
