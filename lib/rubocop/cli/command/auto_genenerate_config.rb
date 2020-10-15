@@ -90,7 +90,7 @@ module RuboCop
         def reset_config_and_auto_gen_file
           @config_store = ConfigStore.new
           @config_store.options_config = @options[:config] if @options[:config]
-          File.open(AUTO_GENERATED_FILE, 'w') {}
+          File.open(AUTO_GENERATED_FILE, 'w') {} # create or truncate if exists
           add_inheritance_from_auto_generated_file(@options[:config])
         end
 

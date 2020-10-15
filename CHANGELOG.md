@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8895](https://github.com/rubocop-hq/rubocop/pull/8895): Add new `Lint/EmptyBlock` cop. ([@fatkodima][])
+
 ## 1.0.0 (2020-10-21)
 
 ### New features
