@@ -23,7 +23,7 @@ module RuboCop
         )
 
         # Don't print warnings to stderr if corrections conflict with each other
-        diagnostics.consumer = ->(diagnostic) {}
+        diagnostics.consumer = ->(diagnostic) {} # noop
       end
 
       alias rewrite process # Legacy
