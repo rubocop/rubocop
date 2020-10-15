@@ -16,6 +16,7 @@
 * [#7966](https://github.com/rubocop-hq/rubocop/issues/7966): **(Breaking)** Enable all pending cops for RuboCop 1.0. ([@koic][])
 * [#8490](https://github.com/rubocop-hq/rubocop/pull/8490): **(Breaking)** Change logic for cop department name computation. Cops inside deep namespaces (5 or more levels deep) now belong to departments with names that are calculated by joining module names starting from the third one with slashes as separators. For example, cop `Rubocop::Cop::Foo::Bar::Baz` now belongs to `Foo/Bar` department (previously it was `Bar`). ([@dsavochkin][])
 * [#8692](https://github.com/rubocop-hq/rubocop/pull/8692): Default changed to disallow `Layout/TrailingWhitespace` in heredoc. ([@marcandre][])
+* [#8894](https://github.com/rubocop-hq/rubocop/issues/8894): Make `Security/Open` aware of `URI.open`. ([@koic][])
 
 ## 0.93.1 (2020-10-12)
 

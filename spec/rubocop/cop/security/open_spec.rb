@@ -31,6 +31,20 @@ RSpec.describe RuboCop::Cop::Security::Open do
     RUBY
   end
 
+  it 'registers an offense for `URI.open` with string that starts with a pipe' do
+    expect_offense(<<~'RUBY')
+      URI.open("| #{foo}")
+          ^^^^ The use of `URI.open` is a serious security risk.
+    RUBY
+  end
+
+  it 'registers an offense for `::URI.open` with string that starts with a pipe' do
+    expect_offense(<<~'RUBY')
+      ::URI.open("| #{foo}")
+            ^^^^ The use of `::URI.open` is a serious security risk.
+    RUBY
+  end
+
   it 'accepts open as variable' do
     expect_no_offenses('open = something')
   end
