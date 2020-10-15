@@ -373,6 +373,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styledocumentationmethod[Style/DocumentationMethod]
 * xref:cops_style.adoc#styledoublecopdisabledirective[Style/DoubleCopDisableDirective]
 * xref:cops_style.adoc#styledoublenegation[Style/DoubleNegation]
+* xref:cops_style.adoc#styleduplicateregexpcharacterclasselement[Style/DuplicateRegexpCharacterClassElement]
 * xref:cops_style.adoc#styleeachforsimpleloop[Style/EachForSimpleLoop]
 * xref:cops_style.adoc#styleeachwithobject[Style/EachWithObject]
 * xref:cops_style.adoc#styleemptyblockparameter[Style/EmptyBlockParameter]

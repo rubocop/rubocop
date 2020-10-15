@@ -2951,6 +2951,11 @@ Style/DoubleNegation:
     - allowed_in_returns
     - forbidden
 
+Style/DuplicateRegexpCharacterClassElement:
+  Description: 'Checks for duplicate elements in Regexp character classes.'
+  Enabled: pending
+  VersionAdded: '0.94'
+
 Style/EachForSimpleLoop:
   Description: >-
                  Use `Integer#times` for a simple loop which iterates a fixed

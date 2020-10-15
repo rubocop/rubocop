@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8896](https://github.com/rubocop-hq/rubocop/pull/8896): Add new `Style/DuplicateRegexpCharacterClassElement` cop. ([@owst][])
+
 ### Bug fixes
 
 * [#8892](https://github.com/rubocop-hq/rubocop/issues/8892): Fix an error for `Style/StringConcatenation` when correcting nested concatenable parts. ([@fatkodima][])
