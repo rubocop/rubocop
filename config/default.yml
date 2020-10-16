@@ -2415,9 +2415,10 @@ Security/MarshalLoad:
   VersionAdded: '0.47'
 
 Security/Open:
-  Description: 'The use of Kernel#open represents a serious security risk.'
+  Description: 'The use of `Kernel#open` and `URI.open` represent a serious security risk.'
   Enabled: true
   VersionAdded: '0.53'
+  VersionChanged: '0.94'
   Safe: false
 
 Security/YAMLLoad:
