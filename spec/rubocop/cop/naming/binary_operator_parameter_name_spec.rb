@@ -99,4 +99,10 @@ RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
       def `(cmd); end
     RUBY
   end
+
+  it 'does not register an offense for the match operator' do
+    expect_no_offenses(<<~RUBY)
+      def =~(regexp); end
+    RUBY
+  end
 end

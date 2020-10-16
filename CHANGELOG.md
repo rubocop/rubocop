@@ -17,6 +17,7 @@
 * [#8490](https://github.com/rubocop-hq/rubocop/pull/8490): **(Breaking)** Change logic for cop department name computation. Cops inside deep namespaces (5 or more levels deep) now belong to departments with names that are calculated by joining module names starting from the third one with slashes as separators. For example, cop `Rubocop::Cop::Foo::Bar::Baz` now belongs to `Foo/Bar` department (previously it was `Bar`). ([@dsavochkin][])
 * [#8692](https://github.com/rubocop-hq/rubocop/pull/8692): Default changed to disallow `Layout/TrailingWhitespace` in heredoc. ([@marcandre][])
 * [#8894](https://github.com/rubocop-hq/rubocop/issues/8894): Make `Security/Open` aware of `URI.open`. ([@koic][])
+* [#8901](https://github.com/rubocop-hq/rubocop/issues/8901): Fix false positive for `Naming/BinaryOperatorParameterName` when defining `=~`. ([@zajn][])
 
 ## 0.93.1 (2020-10-12)
 
@@ -4998,3 +4999,4 @@
 [@ghiculescu]: https://github.com/ghiculescu
 [@hatkyinc2]: https://github.com/hatkyinc2
 [@AllanSiqueira]: https://github.com/allansiqueira
+[@zajn]: https://github.com/zajn
