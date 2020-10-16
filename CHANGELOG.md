@@ -9,6 +9,7 @@
 ### Changes
 
 * [#8882](https://github.com/rubocop-hq/rubocop/pull/8882): **(Potentially breaking)** RuboCop assumes that Cop classes do not define new `on_<type>` methods at runtime (e.g. via `extend` in `initialize`). ([@marcandre][])
+* [#7966](https://github.com/rubocop-hq/rubocop/issues/7966): **(Breaking)** Enable all pending cops for RuboCop 1.0. ([@koic][])
 
 ## 0.93.1 (2020-10-12)
 

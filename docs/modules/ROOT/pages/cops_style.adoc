@@ -109,7 +109,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.87
@@ -551,7 +551,7 @@ BEGIN { test }
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.87
@@ -871,7 +871,7 @@ Array === something
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.88
@@ -1057,7 +1057,7 @@ var.kind_of?(String)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.93
@@ -1425,7 +1425,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | No
 | 0.90
@@ -3029,7 +3029,7 @@ Pathname.new(__dir__).expand_path
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.89
@@ -3081,7 +3081,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.82
@@ -3576,7 +3576,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes (Unsafe)
 | 0.89
@@ -3743,7 +3743,7 @@ ok
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.88
@@ -3805,7 +3805,7 @@ EnforcedStyle.
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.80
@@ -3840,7 +3840,7 @@ hash.each_value { |v| p v }
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.88
@@ -4011,7 +4011,7 @@ NOTE: Required Ruby version: 2.5
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.80
@@ -4050,7 +4050,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.80
@@ -4561,7 +4561,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.90
@@ -6942,7 +6942,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | No
 | 0.89
@@ -7517,7 +7517,7 @@ rand(1...7)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.87
@@ -7791,7 +7791,7 @@ raise 'message'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.86
@@ -7855,7 +7855,7 @@ ENV.fetch(:key, VALUE)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.88
@@ -8007,7 +8007,7 @@ question = '"What did you say?"'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.85
@@ -8041,7 +8041,7 @@ r = /[ab]/
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.85
@@ -8227,7 +8227,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.90
@@ -9103,7 +9103,7 @@ explicit_receiver.raise
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.89
@@ -9254,7 +9254,7 @@ NOTE: Required Ruby version: 2.6
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.83
@@ -9280,7 +9280,7 @@ items[1..]
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -9515,7 +9515,7 @@ warn('hello')
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.89
