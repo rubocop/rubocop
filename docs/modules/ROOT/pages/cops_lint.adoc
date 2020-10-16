@@ -218,7 +218,7 @@ BigDecimal(123.456, 3)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | No
 | 0.89
@@ -357,7 +357,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.91
@@ -595,7 +595,7 @@ block_given?
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.84
@@ -723,7 +723,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.88
@@ -853,7 +853,7 @@ alias bar foo
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.90
@@ -885,7 +885,7 @@ require_relative 'foo'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -999,7 +999,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -1177,7 +1177,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.90
@@ -1500,7 +1500,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -1627,7 +1627,7 @@ format('Numbered format: %1$s and numbered %2$s', a_value, another)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | No
 | 0.93
@@ -1710,7 +1710,7 @@ the receiver of the call is a HEREDOC.
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.91
@@ -2131,7 +2131,7 @@ x += 1
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -2181,7 +2181,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.85
@@ -2571,7 +2571,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | No
 | 0.89
@@ -2701,7 +2701,7 @@ rather than meant to be part of the resulting symbols.
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.81
@@ -2910,7 +2910,7 @@ require 'unloaded_feature'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.93
@@ -3520,7 +3520,7 @@ puts 'hello, world'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -3786,7 +3786,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.81
@@ -3973,7 +3973,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -3997,7 +3997,7 @@ return 1 # 1 is always ignored.
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.90
@@ -4182,7 +4182,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -4801,7 +4801,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.90
@@ -4900,7 +4900,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.91

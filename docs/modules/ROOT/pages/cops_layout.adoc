@@ -266,7 +266,7 @@ value =
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.91
@@ -1606,7 +1606,7 @@ some_method(
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.83
@@ -5220,7 +5220,7 @@ something = 123 if test
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.82
