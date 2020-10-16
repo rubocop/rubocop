@@ -118,3 +118,15 @@ RSpec/MessageSpies:
 
 RSpec/NestedGroups:
   Max: 7
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+# Buggy cop
+# See https://github.com/rubocop-hq/rubocop-rspec/pull/1018
+RSpec/EmptyExampleGroup:
+  Exclude:
+    - 'spec/rubocop/cli/cli_options_spec.rb'
+    - 'spec/rubocop/cop/lint/script_permission_spec.rb'
+    - 'spec/rubocop/cop/style/empty_else_spec.rb'
+    - 'spec/rubocop/result_cache_spec.rb'

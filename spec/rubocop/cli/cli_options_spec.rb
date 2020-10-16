@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::CLI, :isolated_environment do
-  include_context 'cli spec behavior'
-
   subject(:cli) { described_class.new }
+
+  include_context 'cli spec behavior'
 
   let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
 

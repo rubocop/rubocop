@@ -3,9 +3,9 @@
 require 'timeout'
 
 RSpec.describe RuboCop::CLI, :isolated_environment do
-  include_context 'cli spec behavior'
-
   subject(:cli) { described_class.new }
+
+  include_context 'cli spec behavior'
 
   context 'when interrupted' do
     it 'returns 130' do
