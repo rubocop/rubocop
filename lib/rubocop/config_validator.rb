@@ -18,6 +18,11 @@ module RuboCop
     # @api private
     NEW_COPS_VALUES = %w[pending disable enable].freeze
 
+    # @api private
+    CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect].to_set.freeze
+    CONFIG_CHECK_DEPARTMENTS = %w[pending override_department].freeze
+    private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
+
     def_delegators :@config, :smart_loaded_path, :for_all_cops
 
     def initialize(config)
@@ -202,13 +207,9 @@ module RuboCop
       hash.each do |key, value|
         check_cop_config_value(value, key) if value.is_a?(Hash)
 
-        next unless %w[Enabled
-                       Safe
-                       SafeAutoCorrect
-                       AutoCorrect].include?(key) && value.is_a?(String)
+        next unless CONFIG_CHECK_KEYS.include?(key) && value.is_a?(String)
 
-        next if key == 'Enabled' &&
-                %w[pending override_department].include?(value)
+        next if key == 'Enabled' && CONFIG_CHECK_DEPARTMENTS.include?(value)
 
         raise ValidationError, msg_not_boolean(parent, key, value)
       end

@@ -9,7 +9,7 @@ gem 'memory_profiler', platform: :mri
 gem 'pry'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
-gem 'rubocop-performance', '~> 1.7.0'
+gem 'rubocop-performance', '~> 1.8.1'
 gem 'rubocop-rspec', '~> 1.43.2'
 # Workaround for cc-test-reporter with SimpleCov 0.18.
 # Stop upgrading SimpleCov until the following issue will be resolved.

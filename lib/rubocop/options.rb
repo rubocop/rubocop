@@ -242,6 +242,9 @@ module RuboCop
   # @api private
   class OptionsValidator
     class << self
+      SYNTAX_DEPARTMENTS = %w[Syntax Lint/Syntax].freeze
+      private_constant :SYNTAX_DEPARTMENTS
+
       # Cop name validation must be done later than option parsing, so it's not
       # called from within Options.
       def validate_cop_list(names)
@@ -253,7 +256,7 @@ module RuboCop
         names.each do |name|
           next if cop_names.include?(name)
           next if departments.include?(name)
-          next if %w[Syntax Lint/Syntax].include?(name)
+          next if SYNTAX_DEPARTMENTS.include?(name)
 
           raise IncorrectCopNameError, format_message_from(name, cop_names)
         end

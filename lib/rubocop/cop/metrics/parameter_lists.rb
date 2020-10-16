@@ -12,6 +12,9 @@ module RuboCop
         MSG = 'Avoid parameter lists longer than %<max>d parameters. ' \
               '[%<count>d/%<max>d]'
 
+        NAMED_KEYWORD_TYPES = %i[kwoptarg kwarg].freeze
+        private_constant :NAMED_KEYWORD_TYPES
+
         def on_args(node)
           count = args_count(node)
           return unless count > max_params
@@ -33,7 +36,7 @@ module RuboCop
           if count_keyword_args?
             node.children.size
           else
-            node.children.count { |a| !%i[kwoptarg kwarg].include?(a.type) }
+            node.children.count { |a| !NAMED_KEYWORD_TYPES.include?(a.type) }
           end
         end
 
