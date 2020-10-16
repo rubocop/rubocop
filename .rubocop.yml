@@ -130,3 +130,8 @@ RSpec/EmptyExampleGroup:
     - 'spec/rubocop/cop/lint/script_permission_spec.rb'
     - 'spec/rubocop/cop/style/empty_else_spec.rb'
     - 'spec/rubocop/result_cache_spec.rb'
+
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'Rakefile'
+    - 'spec/**/*.rb'
