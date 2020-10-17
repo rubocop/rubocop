@@ -128,6 +128,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'plausible', '+(1.foo.bar)'
   it_behaves_like 'plausible', '()'
 
+  it 'registers an offense for parens around an interpolated expression' do
+    expect_offense(<<~RUBY)
+      "\#{(foo)}"
+         ^^^^^ Don't use parentheses around an interpolated expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      "\#{foo}"
+    RUBY
+  end
+
   it 'registers an offense for parens around a literal in array' do
     expect_offense(<<~RUBY)
       [(1)]

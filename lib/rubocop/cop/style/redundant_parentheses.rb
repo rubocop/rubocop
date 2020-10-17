@@ -104,8 +104,12 @@ module RuboCop
           return offense(begin_node, 'a variable') if node.variable?
           return offense(begin_node, 'a constant') if node.const_type?
 
+          return offense(begin_node, 'an interpolated expression') if interpolation?(begin_node)
+
           check_send(begin_node, node) if node.call_type?
         end
+
+        def_node_matcher :interpolation?, '[^begin ^^dstr]'
 
         def check_send(begin_node, node)
           return check_unary(begin_node, node) if node.unary_operation?
