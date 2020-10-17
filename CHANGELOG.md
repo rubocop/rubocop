@@ -5,6 +5,7 @@
 ### New features
 
 * [#7944](https://github.com/rubocop-hq/rubocop/issues/7944): Add `MaxUnannotatedPlaceholdersAllowed` option to `Style/FormatStringToken` cop. ([@Tietew][])
+* [#8379](https://github.com/rubocop-hq/rubocop/issues/8379): Handle redundant parentheses around an interpolated expression for `Style/RedundantParentheses` cop. ([@fatkodima][])
 
 ### Bug fixes
 
