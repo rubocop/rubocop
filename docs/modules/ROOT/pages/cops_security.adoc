@@ -117,7 +117,7 @@ Marshal.load(Marshal.dump({}))
 | No
 | No
 | 0.53
-| 0.94
+| 1.0
 |===
 
 This cop checks for the use of `Kernel#open` and `URI.open`.
