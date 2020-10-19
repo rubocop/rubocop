@@ -20,6 +20,7 @@
 * [#8692](https://github.com/rubocop-hq/rubocop/pull/8692): Default changed to disallow `Layout/TrailingWhitespace` in heredoc. ([@marcandre][])
 * [#8894](https://github.com/rubocop-hq/rubocop/issues/8894): Make `Security/Open` aware of `URI.open`. ([@koic][])
 * [#8901](https://github.com/rubocop-hq/rubocop/issues/8901): Fix false positive for `Naming/BinaryOperatorParameterName` when defining `=~`. ([@zajn][])
+* [#8908](https://github.com/rubocop-hq/rubocop/pull/8908): Show extension cop versions when using `--verbose-version` option. ([@koic][])
 
 ## 0.93.1 (2020-10-12)
 

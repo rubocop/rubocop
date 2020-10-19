@@ -10,7 +10,7 @@ module RuboCop
 
         def run
           puts RuboCop::Version.version(debug: false) if @options[:version]
-          puts RuboCop::Version.version(debug: true) if @options[:verbose_version]
+          puts RuboCop::Version.version(debug: true, env: env) if @options[:verbose_version]
         end
       end
     end
