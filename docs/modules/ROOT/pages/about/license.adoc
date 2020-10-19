@@ -1,0 +1,10 @@
+= License & Copyright
+
+== License
+
+Use of RuboCop is granted under the terms of the MIT license. Check
+out the `LICENSE.txt` file in RuboCop's code repository for more details.
+
+== Copyright
+
+Copyright (c) 2012-2020 Bozhidar Batsov and RuboCop contributors.

@@ -26,3 +26,9 @@
 * xref:contributing.adoc[Contributing]
 * xref:support.adoc[Support]
 * xref:versioning.adoc[Versioning]
+* About
+** xref:about/history.adoc[History]
+** xref:about/team.adoc[Team]
+** xref:about/changelog.adoc[Changelog]
+** xref:about/logo.adoc[Logo]
+** xref:about/license.adoc[License]

@@ -1,0 +1,7 @@
+= Changelog
+
+An extensive changelog is available https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md[here].
+
+NOTE: Only user-visible changes are documented there.
+
+You can also peruse the release notes for individual release over at https://github.com/rubocop-hq/rubocop/releases[GitHub].
