@@ -37,6 +37,10 @@ module RuboCop
       new(hash, path).check
     end
 
+    def loaded_features
+      @loaded_features ||= ConfigLoader.loaded_features
+    end
+
     def check
       deprecation_check do |deprecation_message|
         warn("#{loaded_path} - #{deprecation_message}")

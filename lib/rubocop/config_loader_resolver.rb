@@ -9,11 +9,13 @@ module RuboCop
   class ConfigLoaderResolver
     def resolve_requires(path, hash)
       config_dir = File.dirname(path)
-      Array(hash.delete('require')).each do |r|
-        if r.start_with?('.')
-          require(File.join(config_dir, r))
-        else
-          require(r)
+      hash.delete('require').tap do |loaded_features|
+        Array(loaded_features).each do |feature|
+          if feature.start_with?('.')
+            require(File.join(config_dir, feature))
+          else
+            require(feature)
+          end
         end
       end
     end
