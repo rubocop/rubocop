@@ -14,6 +14,7 @@
 * [#8907](https://github.com/rubocop-hq/rubocop/pull/8907): Fix an incorrect auto-correct for `Layout/ClassStructure` when heredoc constant is defined after public method. ([@koic][])
 * [#8889](https://github.com/rubocop-hq/rubocop/pull/8889): Cops can use new `after_<type>` callbacks (only for nodes that may have children nodes, like `:send` and unlike `:sym`). ([@marcandre][])
 * [#8906](https://github.com/rubocop-hq/rubocop/pull/8906): Fix a false positive for `Layout/SpaceAroundOperators` when upward alignment. ([@koic][])
+* [#8585](https://github.com/rubocop-hq/rubocop/pull/8585): Fix false positive in `Style/RedundantSelf` cop with nested `self` access. ([@marcotc][])
 
 ### Changes
 
@@ -203,7 +204,6 @@
 * [#8518](https://github.com/rubocop-hq/rubocop/issues/8518): Fix `Lint/ConstantResolution` cop reporting offense for `module` and `class` definitions. ([@tejasbubane][])
 * [#8158](https://github.com/rubocop-hq/rubocop/issues/8158): Fix `Style/MultilineWhenThen` cop to correctly handle cases with multiline body. ([@dsavochkin][])
 * [#7705](https://github.com/rubocop-hq/rubocop/issues/7705): Fix `Style/OneLineConditional` cop to handle if/then/elsif/then/else/end cases. Add `AlwaysCorrectToMultiline` config option to this cop to always convert offenses to the multi-line form (false by default). ([@Lykos][], [@dsavochkin][])
-* [#8585](https://github.com/rubocop-hq/rubocop/pull/8585): Fix false positive in `Style/RedundantSelf` cop with nested `self` access. ([@marcotc][])
 * [#8590](https://github.com/rubocop-hq/rubocop/issues/8590): Fix an error when auto-correcting encoding mismatch file. ([@koic][])
 * [#8321](https://github.com/rubocop-hq/rubocop/issues/8321): Enable auto-correction for `Layout/{Def}EndAlignment`, `Lint/EmptyEnsure`, `Style/ClassAndModuleChildren`. ([@marcandre][])
 * [#8583](https://github.com/rubocop-hq/rubocop/issues/8583): Fix `Style/RedundantRegexpEscape` false positive for line continuations. ([@owst][])
