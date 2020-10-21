@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks the alignment of else keywords. Normally they should
-      # be aligned with an if/unless/while/until/begin/def keyword, but there
+      # be aligned with an if/unless/while/until/begin/def/rescue keyword, but there
       # are special cases when they should follow the same rules as the
       # alignment of end.
       #
@@ -93,7 +93,13 @@ module RuboCop
           case parent.type
           when :def, :defs then base_for_method_definition(parent)
           when :kwbegin then parent.loc.begin
-          when :block then parent.send_node.source_range
+          when :block
+            assignment_node = assignment_node(parent)
+            if same_line?(parent, assignment_node)
+              assignment_node.source_range
+            else
+              parent.send_node.source_range
+            end
           else node.loc.keyword
           end
         end
@@ -135,6 +141,13 @@ module RuboCop
             base_range: base_range.source[/^\S*/]
           )
           add_offense(else_range, location: else_range, message: message)
+        end
+
+        def assignment_node(node)
+          assignment_node = node.ancestors.first
+          return unless assignment_node&.assignment?
+
+          assignment_node
         end
       end
     end

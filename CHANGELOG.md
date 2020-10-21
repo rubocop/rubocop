@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#8912](https://github.com/rubocop-hq/rubocop/pull/8912): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks with assignment. ([@miry][])
+
 ## 1.1.0 (2020-10-29)
 
 ### New features
@@ -5041,3 +5045,4 @@
 [@zajn]: https://github.com/zajn
 [@ysakasin]: https://github.com/ysakasin
 [@matthieugendreau]: https://github.com/matthieugendreau
+[@miry]: https://github.com/miry
