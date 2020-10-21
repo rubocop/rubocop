@@ -63,7 +63,7 @@ module RuboCop
           range = offense_range(lineno, line)
           add_offense(range) do |corrector|
             if heredoc
-              corrector.insert_after(range, '#{}') unless static?(heredoc) # rubocop:disable Lint/InterpolationCheck
+              corrector.wrap(range, "\#{'", "'}") unless static?(heredoc)
             else
               corrector.remove(range)
             end

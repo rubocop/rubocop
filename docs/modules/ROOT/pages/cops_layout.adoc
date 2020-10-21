@@ -6344,7 +6344,7 @@ class Foo; end
 | Yes
 | Yes
 | 0.49
-| 0.83
+| 1.0
 |===
 
 This cop looks for trailing whitespace in the source code.
