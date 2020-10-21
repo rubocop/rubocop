@@ -589,6 +589,20 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
       RUBY
     end
 
+    it 'accepts a correctly aligned else with assignment' do
+      expect_no_offenses(<<~RUBY)
+        result = array_like.each do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        rescue
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
     it 'registers an offense for misaligned else' do
       expect_offense(<<~RUBY)
         array_like.each do |n|
