@@ -109,7 +109,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.87
@@ -120,7 +120,7 @@ This cop checks for grouping of accessors in `class` and `module` bodies.
 By default it enforces accessors to be placed in grouped declarations,
 but it can be configured to enforce separating them in multiple declarations.
 
-Note: `Sorbet` is not compatible with "grouped" style. Consider "separated" style
+NOTE: `Sorbet` is not compatible with "grouped" style. Consider "separated" style
 or disabling this cop.
 
 === Examples
@@ -551,7 +551,7 @@ BEGIN { test }
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.87
@@ -871,7 +871,7 @@ Array === something
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.88
@@ -1057,7 +1057,7 @@ var.kind_of?(String)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.93
@@ -1425,7 +1425,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | No
 | 0.90
@@ -3060,7 +3060,7 @@ Pathname.new(__dir__).expand_path
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.89
@@ -3112,7 +3112,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.82
@@ -3436,7 +3436,7 @@ puts '%10s' % 'hoge'
 | Yes
 | No
 | 0.49
-| 0.75
+| 1.0
 |===
 
 Use a consistent style for named format string tokens.
@@ -3446,6 +3446,10 @@ which are passed as arguments to those methods:
 `printf`, `sprintf`, `format`, `%`.
 The reason is that _unannotated_ format is very similar
 to encoded URLs or Date/Time formatting strings.
+
+It is allowed to contain unannotated token
+if the number of them is less than or equals to
+`MaxUnannotatedPlaceholdersAllowed`.
 
 === Examples
 
@@ -3485,6 +3489,29 @@ format('%{greeting}', greeting: 'Hello')
 format('%s', 'Hello')
 ----
 
+==== MaxUnannotatedPlaceholdersAllowed: 0
+
+[source,ruby]
+----
+# bad
+format('%06d', 10)
+format('%s %s.', 'Hello', 'world')
+
+# good
+format('%<number>06d', number: 10)
+----
+
+==== MaxUnannotatedPlaceholdersAllowed: 1 (default)
+
+[source,ruby]
+----
+# bad
+format('%s %s.', 'Hello', 'world')
+
+# good
+format('%06d', 10)
+----
+
 === Configurable attributes
 
 |===
@@ -3493,6 +3520,10 @@ format('%s', 'Hello')
 | EnforcedStyle
 | `annotated`
 | `annotated`, `template`, `unannotated`
+
+| MaxUnannotatedPlaceholdersAllowed
+| `1`
+| Integer
 |===
 
 == Style/FrozenStringLiteralComment
@@ -3607,7 +3638,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes (Unsafe)
 | 0.89
@@ -3774,7 +3805,7 @@ ok
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.88
@@ -3836,7 +3867,7 @@ EnforcedStyle.
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.80
@@ -3871,7 +3902,7 @@ hash.each_value { |v| p v }
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.88
@@ -4042,7 +4073,7 @@ NOTE: Required Ruby version: 2.5
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.80
@@ -4081,7 +4112,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.80
@@ -4592,7 +4623,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.90
@@ -6973,7 +7004,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | No
 | 0.89
@@ -7548,7 +7579,7 @@ rand(1...7)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.87
@@ -7822,7 +7853,7 @@ raise 'message'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.86
@@ -7886,7 +7917,7 @@ ENV.fetch(:key, VALUE)
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.88
@@ -8038,7 +8069,7 @@ question = '"What did you say?"'
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.85
@@ -8072,7 +8103,7 @@ r = /[ab]/
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.85
@@ -8258,7 +8289,7 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.90
@@ -9134,7 +9165,7 @@ explicit_receiver.raise
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.89
@@ -9285,7 +9316,7 @@ NOTE: Required Ruby version: 2.6
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.83
@@ -9311,7 +9342,7 @@ items[1..]
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | No
 | 0.89
@@ -9546,7 +9577,7 @@ warn('hello')
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | No
 | Yes (Unsafe)
 | 0.89

@@ -6,8 +6,39 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   let(:cop_config) do
     {
       'EnforcedStyle' => enforced_style,
-      'SupportedStyles' => %i[annotated template unannotated]
+      'SupportedStyles' => %i[annotated template unannotated],
+      'MaxUnannotatedPlaceholdersAllowed' => 0
     }
+  end
+
+  shared_examples 'maximum allowed unannotated' do |token|
+    context 'when MaxUnannotatedPlaceholdersAllowed is 1' do
+      before { cop_config['MaxUnannotatedPlaceholdersAllowed'] = 1 }
+
+      it 'does not register offenses for single unannotated' do
+        expect_no_offenses("format('%#{token}', foo)")
+      end
+
+      it 'registers offence for dual unannotated' do
+        expect_offense(<<~RUBY)
+          format('%#{token} %s', foo, bar)
+                  ^^ Prefer [...]
+                     ^^ Prefer [...]
+        RUBY
+      end
+    end
+
+    context 'when MaxUnannotatedPlaceholdersAllowed is 2' do
+      before { cop_config['MaxUnannotatedPlaceholdersAllowed'] = 2 }
+
+      it 'does not register offenses for single unannotated' do
+        expect_no_offenses("format('%#{token}', foo)")
+      end
+
+      it 'does not register offenses for dual unannotated' do
+        expect_no_offenses("format('%#{token} %s', foo, bar)")
+      end
+    end
   end
 
   shared_examples 'enforced styles for format string tokens' do |token|
@@ -54,6 +85,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           'EnforcedStyle' => 'template'
         )
       end
+
+      it_behaves_like 'maximum allowed unannotated', token
     end
 
     context 'when enforced style is template' do
@@ -96,6 +129,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           'EnforcedStyle' => 'template'
         )
       end
+
+      it_behaves_like 'maximum allowed unannotated', token
     end
   end
 

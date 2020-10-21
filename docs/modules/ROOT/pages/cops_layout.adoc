@@ -266,7 +266,7 @@ value =
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.91
@@ -1606,7 +1606,7 @@ some_method(
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.83
@@ -5220,7 +5220,7 @@ something = 123 if test
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Enabled
 | Yes
 | Yes
 | 0.82
@@ -5276,6 +5276,8 @@ RuboCop::Cop::Cop
 
 Checks that operators have space around them, except for ** which
 should or shouldn't have surrounding space depending on configuration.
+It allows vertical alignment consisting of one or more whitespace
+around operators.
 
 This cop has `AllowForAlignment` option. When `true`, allows most
 uses of extra spacing if the intent is to align with an operator on
@@ -6360,7 +6362,7 @@ x = 0
 x = 0
 ----
 
-==== AllowInHeredoc: false
+==== AllowInHeredoc: false (default)
 
 [source,ruby]
 ----
@@ -6369,9 +6371,20 @@ x = 0
 code = <<~RUBY
   x = 0
 RUBY
+
+# ok
+code = <<~RUBY
+  x = 0 #{}
+RUBY
+
+# good
+trailing_whitespace = ' '
+code = <<~RUBY
+  x = 0#{trailing_whitespace}
+RUBY
 ----
 
-==== AllowInHeredoc: true (default)
+==== AllowInHeredoc: true
 
 [source,ruby]
 ----
@@ -6388,7 +6401,7 @@ RUBY
 | Name | Default value | Configurable values
 
 | AllowInHeredoc
-| `true`
+| `false`
 | Boolean
 |===
 

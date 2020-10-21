@@ -55,7 +55,7 @@ module RuboCop
       end
 
       def total_offense_count(offense_counts)
-        offense_counts.values.inject(0, :+)
+        offense_counts.values.sum
       end
     end
   end

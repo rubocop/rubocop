@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::CLI, :isolated_environment do
-  include_context 'cli spec behavior'
-
   subject(:cli) { described_class.new }
+
+  include_context 'cli spec behavior'
 
   let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
 
@@ -152,8 +152,29 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'exits cleanly' do
       expect(cli.run(['-V'])).to eq(0)
       expect($stdout.string).to include(RuboCop::Version::STRING)
-      expect($stdout.string).to match(/Parser \d\.\d\.\d/)
-      expect($stdout.string).to match(/rubocop-ast \d\.\d\.\d/)
+      expect($stdout.string).to match(/Parser \d+\.\d+\.\d+/)
+      expect($stdout.string).to match(/rubocop-ast \d+\.\d+\.\d+/)
+    end
+
+    context 'when requiring extension cops' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          require:
+            - rubocop-performance
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'shows with version of extension cops' do
+        # Run in different process that requiring rubocop-perfmance and rubocop-rspec
+        # does not affect other testing processes.
+        output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-performance \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-rspec \d+\.\d+\.\d+/)
+      end
     end
   end
 

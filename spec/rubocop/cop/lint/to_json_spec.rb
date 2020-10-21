@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Lint::ToJSON do
   it 'registers an offense and corrects using `#to_json` without arguments' do
     expect_offense(<<~RUBY)
       def to_json
-      ^^^^^^^^^^^  `#to_json` requires an optional argument to be parsable via JSON.generate(obj).
+      ^^^^^^^^^^^ `#to_json` requires an optional argument to be parsable via JSON.generate(obj).
       end
     RUBY
 

@@ -5,10 +5,31 @@
 ### New features
 
 * [#8896](https://github.com/rubocop-hq/rubocop/pull/8896): Add new `Style/DuplicateRegexpCharacterClassElement` cop. ([@owst][])
+## 1.0.0 (2020-10-21)
+
+### New features
+
+* [#7944](https://github.com/rubocop-hq/rubocop/issues/7944): Add `MaxUnannotatedPlaceholdersAllowed` option to `Style/FormatStringToken` cop. ([@Tietew][])
+* [#8379](https://github.com/rubocop-hq/rubocop/issues/8379): Handle redundant parentheses around an interpolated expression for `Style/RedundantParentheses` cop. ([@fatkodima][])
 
 ### Bug fixes
 
 * [#8892](https://github.com/rubocop-hq/rubocop/issues/8892): Fix an error for `Style/StringConcatenation` when correcting nested concatenable parts. ([@fatkodima][])
+* [#8781](https://github.com/rubocop-hq/rubocop/issues/8781): Fix handling of comments in `Style/SafeNavigation` autocorrection. ([@dvandersluis][])
+* [#8907](https://github.com/rubocop-hq/rubocop/pull/8907): Fix an incorrect auto-correct for `Layout/ClassStructure` when heredoc constant is defined after public method. ([@koic][])
+* [#8889](https://github.com/rubocop-hq/rubocop/pull/8889): Cops can use new `after_<type>` callbacks (only for nodes that may have children nodes, like `:send` and unlike `:sym`). ([@marcandre][])
+* [#8906](https://github.com/rubocop-hq/rubocop/pull/8906): Fix a false positive for `Layout/SpaceAroundOperators` when upward alignment. ([@koic][])
+* [#8585](https://github.com/rubocop-hq/rubocop/pull/8585): Fix false positive in `Style/RedundantSelf` cop with nested `self` access. ([@marcotc][])
+
+### Changes
+
+* [#8882](https://github.com/rubocop-hq/rubocop/pull/8882): **(Potentially breaking)** RuboCop assumes that Cop classes do not define new `on_<type>` methods at runtime (e.g. via `extend` in `initialize`). ([@marcandre][])
+* [#7966](https://github.com/rubocop-hq/rubocop/issues/7966): **(Breaking)** Enable all pending cops for RuboCop 1.0. ([@koic][])
+* [#8490](https://github.com/rubocop-hq/rubocop/pull/8490): **(Breaking)** Change logic for cop department name computation. Cops inside deep namespaces (5 or more levels deep) now belong to departments with names that are calculated by joining module names starting from the third one with slashes as separators. For example, cop `Rubocop::Cop::Foo::Bar::Baz` now belongs to `Foo/Bar` department (previously it was `Bar`). ([@dsavochkin][])
+* [#8692](https://github.com/rubocop-hq/rubocop/pull/8692): Default changed to disallow `Layout/TrailingWhitespace` in heredoc. ([@marcandre][])
+* [#8894](https://github.com/rubocop-hq/rubocop/issues/8894): Make `Security/Open` aware of `URI.open`. ([@koic][])
+* [#8901](https://github.com/rubocop-hq/rubocop/issues/8901): Fix false positive for `Naming/BinaryOperatorParameterName` when defining `=~`. ([@zajn][])
+* [#8908](https://github.com/rubocop-hq/rubocop/pull/8908): Show extension cop versions when using `--verbose-version` option. ([@koic][])
 
 ## 0.93.1 (2020-10-12)
 
@@ -145,6 +166,7 @@
 * [#8661](https://github.com/rubocop-hq/rubocop/pull/8661): Fix an incorrect auto-correct for `Style/MultilineTernaryOperator` when returning a multiline ternary operator expression. ([@koic][])
 * [#8526](https://github.com/rubocop-hq/rubocop/pull/8526): Fix a false positive for `Style/CaseEquality` cop when the receiver is not a camel cased constant. ([@koic][])
 * [#8673](https://github.com/rubocop-hq/rubocop/issues/8673): Fix the JSON parse error when specifying `--format=json` and `--stdin` options. ([@koic][])
+* [#8692](https://github.com/rubocop-hq/rubocop/pull/8692): Fix `Layout/TrailingWhitespace` auto-correction in heredoc. ([@marcandre][])
 
 ### Changes
 
@@ -4989,3 +5011,4 @@
 [@ghiculescu]: https://github.com/ghiculescu
 [@hatkyinc2]: https://github.com/hatkyinc2
 [@AllanSiqueira]: https://github.com/allansiqueira
+[@zajn]: https://github.com/zajn

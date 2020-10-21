@@ -118,3 +118,55 @@ RSpec/MessageSpies:
 
 RSpec/NestedGroups:
   Max: 7
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+# Buggy cop
+# See https://github.com/rubocop-hq/rubocop-rspec/pull/1018
+RSpec/EmptyExampleGroup:
+  Exclude:
+    - 'spec/rubocop/cli/cli_options_spec.rb'
+    - 'spec/rubocop/cop/lint/script_permission_spec.rb'
+    - 'spec/rubocop/cop/style/empty_else_spec.rb'
+    - 'spec/rubocop/result_cache_spec.rb'
+
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'Rakefile'
+    - 'spec/**/*.rb'
+
+# TODO: remove this after rubocop-rspec updated to support deep departments names
+RSpec/Capybara/CurrentPathExpectation:
+  Description: Checks that no expectations are set on Capybara's `current_path`.
+  Enabled: true
+
+# TODO: remove this after rubocop-rspec updated to support deep departments names
+RSpec/Capybara/FeatureMethods:
+  Description: Checks for consistent method usage in feature specs.
+  Enabled: true
+  EnabledMethods: []
+
+# TODO: remove this after rubocop-rspec updated to support deep departments names
+RSpec/Capybara/VisibilityMatcher:
+  Description: Checks for boolean visibility in capybara finders.
+  Enabled: true
+
+# TODO: remove this after rubocop-rspec updated to support deep departments names
+RSpec/FactoryBot/AttributeDefinedStatically:
+  Description: Always declare attribute values as blocks.
+  Enabled: true
+
+# TODO: remove this after rubocop-rspec updated to support deep departments names
+RSpec/FactoryBot/CreateList:
+  Description: Checks for create_list usage.
+  Enabled: true
+  EnforcedStyle: create_list
+  SupportedStyles:
+    - create_list
+    - n_times
+
+# TODO: remove this after rubocop-rspec updated to support deep departments names
+RSpec/FactoryBot/FactoryClassName:
+  Description: Use string value when setting the class attribute explicitly.
+  Enabled: true

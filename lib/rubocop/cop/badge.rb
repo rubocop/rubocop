@@ -10,37 +10,22 @@ module RuboCop
     # allow for badge references in source files that omit the department for
     # RuboCop to infer.
     class Badge
-      # Error raised when a badge parse fails.
-      class InvalidBadge < Error
-        MSG = 'Invalid badge %<badge>p. ' \
-              'Expected `Department/CopName` or `CopName`.'
-
-        def initialize(token)
-          super(format(MSG, badge: token))
-        end
-      end
-
       attr_reader :department, :cop_name
 
       def self.for(class_name)
-        new(*class_name.split('::').last(2))
+        parts = class_name.split('::')
+        name_deep_enough = parts.length >= 4
+        new(name_deep_enough ? parts[2..-1] : parts.last(2))
       end
 
       def self.parse(identifier)
-        parts = identifier.split('/', 2)
-
-        raise InvalidBadge, identifier if parts.size > 2
-
-        if parts.one?
-          new(nil, *parts)
-        else
-          new(*parts)
-        end
+        new(identifier.split('/'))
       end
 
-      def initialize(department, cop_name)
-        @department = department.to_sym if department
-        @cop_name   = cop_name
+      def initialize(class_name_parts)
+        department_parts = class_name_parts[0...-1]
+        @department = (department_parts.join('/').to_sym unless department_parts.empty?)
+        @cop_name = class_name_parts.last
       end
 
       def ==(other)
@@ -66,7 +51,7 @@ module RuboCop
       end
 
       def with_department(department)
-        self.class.new(department, cop_name)
+        self.class.new([department.to_s.split('/'), cop_name].flatten)
       end
     end
   end

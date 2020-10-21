@@ -35,12 +35,13 @@ module RuboCop
       end
 
       def load_file(file)
-        path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
+        path = file_path(file)
 
         hash = load_yaml_configuration(path)
 
         # Resolve requires first in case they define additional cops
-        resolver.resolve_requires(path, hash)
+        loaded_features = resolver.resolve_requires(path, hash)
+        add_loaded_features(loaded_features)
 
         add_missing_namespaces(path, hash)
 
@@ -172,7 +173,23 @@ module RuboCop
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
 
+      def loaded_features
+        @loaded_features.flatten.compact
+      end
+
       private
+
+      def file_path(file)
+        File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
+      end
+
+      def add_loaded_features(loaded_features)
+        if instance_variable_defined?(:@loaded_features)
+          instance_variable_get(:@loaded_features) << loaded_features
+        else
+          instance_variable_set(:@loaded_features, [loaded_features])
+        end
+      end
 
       def find_project_dotfile(target_dir)
         find_file_upwards(DOTFILE, target_dir, project_root)

@@ -36,6 +36,8 @@ module RuboCop
         MSG = 'Do not use trailing `_`s in parallel assignment. ' \
               'Prefer `%<code>s`.'
         UNDERSCORE = '_'
+        DISALLOW = %i[lvasgn splat].freeze
+        private_constant :DISALLOW
 
         def on_masgn(node)
           ranges = unneeded_ranges(node)
@@ -64,7 +66,7 @@ module RuboCop
 
         def find_first_possible_offense(variables)
           variables.reduce(nil) do |offense, variable|
-            break offense unless %i[lvasgn splat].include?(variable.type)
+            break offense unless DISALLOW.include?(variable.type)
 
             var, = *variable
             var, = *var

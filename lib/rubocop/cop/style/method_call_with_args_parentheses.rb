@@ -144,25 +144,22 @@ module RuboCop
       #   # good
       #   Array 1
       class MethodCallWithArgsParentheses < Base
+        require_relative 'method_call_with_args_parentheses/omit_parentheses'
+        require_relative 'method_call_with_args_parentheses/require_parentheses'
+
         include ConfigurableEnforcedStyle
         include IgnoredMethods
         include IgnoredPattern
+        include RequireParentheses
+        include OmitParentheses
         extend AutoCorrector
 
-        def initialize(*)
-          super
-          return unless style_configured?
-
-          case style
-          when :require_parentheses
-            extend RequireParentheses
-          when :omit_parentheses
-            extend OmitParentheses
-          end
+        def on_send(node)
+          send(style, node) # call require_parentheses or omit_parentheses
         end
-
-        # @abstract Overridden in style modules
-        def autocorrect(_node); end
+        alias on_csend on_send
+        alias on_super on_send
+        alias on_yield on_send
 
         private
 

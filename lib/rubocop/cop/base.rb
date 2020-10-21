@@ -261,6 +261,21 @@ module RuboCop
           'they are returned as the result of the investigation'
       end
 
+      ### Reserved for Commissioner
+
+      # @api private
+      def callbacks_needed
+        self.class.callbacks_needed
+      end
+
+      # @api private
+      def self.callbacks_needed
+        @callbacks_needed ||= public_instance_methods.select do |m|
+          m.match?(/^on_|^after_/) &&
+            !Base.method_defined?(m) # exclude standard "callbacks" like 'on_begin_investigation'
+        end
+      end
+
       private
 
       ### Reserved for Cop::Cop
@@ -291,7 +306,7 @@ module RuboCop
       end
 
       private_class_method def self.restrict_on_send
-        @restrict_on_send ||= self::RESTRICT_ON_SEND.to_set.freeze
+        @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
       end
 
       # Called before any investigation

@@ -248,6 +248,8 @@ module RuboCop
 end
 ----
 
+Note that `on_send` will be called on a given `node` before the callbacks `on_<some type>` for its children are called. There's also a callback `after_send` that is called after the children are processed. There's a similar `after_<some type>` callback for all types, except those that never have children.
+
 Update the spec to cover the expected syntax:
 
 [source,ruby]
