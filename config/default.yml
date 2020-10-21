@@ -1942,6 +1942,11 @@ Lint/UnifiedInteger:
   Enabled: true
   VersionAdded: '0.43'
 
+Lint/UnmodifiedReduceAccumulator:
+  Description: Checks for `reduce` or `inject` blocks that do not update the accumulator each iteration.
+  Enabled: pending
+  VersionAdded: '1.1'
+
 Lint/UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
