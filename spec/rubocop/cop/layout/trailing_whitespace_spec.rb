@@ -96,15 +96,15 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
     it 'corrects safely trailing whitespace in a heredoc string' do
       expect_offense(<<~RUBY)
         x = <<~EXAMPLE
-          has trailing#{trailing_whitespace}
-                      ^ Trailing whitespace detected.
+          has trailing   #{trailing_whitespace}
+                      ^^^^ Trailing whitespace detected.
           no trailing
         EXAMPLE
       RUBY
 
       expect_correction(<<~RUBY)
         x = <<~EXAMPLE
-          has trailing \#{}
+          has trailing\#{'    '}
           no trailing
         EXAMPLE
       RUBY
