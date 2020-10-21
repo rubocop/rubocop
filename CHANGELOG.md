@@ -11,6 +11,10 @@
 
 * [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
 
+### Bug fixes
+
+* [#8913](https://github.com/rubocop-hq/rubocop/pull/8913): Fix an incorrect auto-correct for `Style/RedundantRegexpCharacterClass` due to quantifier. ([@ysakasin][])
+
 ## 1.0.0 (2020-10-21)
 
 ### New features
@@ -5018,3 +5022,4 @@
 [@hatkyinc2]: https://github.com/hatkyinc2
 [@AllanSiqueira]: https://github.com/allansiqueira
 [@zajn]: https://github.com/zajn
+[@ysakasin]: https://github.com/ysakasin
