@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.0.0 (2020-10-21)
+
 ### New features
 
 * [#7944](https://github.com/rubocop-hq/rubocop/issues/7944): Add `MaxUnannotatedPlaceholdersAllowed` option to `Style/FormatStringToken` cop. ([@Tietew][])
