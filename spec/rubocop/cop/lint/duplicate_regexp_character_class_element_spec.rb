@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::DuplicateRegexpCharacterClassElement do
+RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement do
   subject(:cop) { described_class.new }
 
   context 'with a repeated character class element' do
@@ -12,6 +12,19 @@ RSpec.describe RuboCop::Cop::Style::DuplicateRegexpCharacterClassElement do
 
       expect_correction(<<~RUBY)
         foo = /[xy]/
+      RUBY
+    end
+  end
+
+  context 'with a repeated character class element with quantifier' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        foo = /[xyx]+/
+                  ^ Duplicate element inside regexp character class
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = /[xy]+/
       RUBY
     end
   end

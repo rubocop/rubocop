@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Lint
       # This cop checks for duplicate elements in Regexp character classes.
       #
       # @example
@@ -56,6 +56,13 @@ module RuboCop
         # mark every space (except the first) as duplicate if we do not skip regexp_parser nodes
         # that are within an interpolation.
         def within_interpolation?(node, child)
+          parse_tree_child_loc = node.parsed_tree_expr_loc(child)
+
+          interpolation_locs(node).any? { |il| il.overlaps?(parse_tree_child_loc) }
+        end
+
+
+        def interpolation_locs(node)
           @interpolation_locs ||= {}
 
           # Cache by loc, not by regexp content, as content can be repeated in multiple patterns
@@ -64,8 +71,6 @@ module RuboCop
           @interpolation_locs[key] ||= node.children.select(&:begin_type?).map do |interpolation|
             interpolation.loc.expression
           end
-
-          @interpolation_locs[key].any? { |il| il.overlaps?(node.parsed_tree_expr_loc(child)) }
         end
       end
     end

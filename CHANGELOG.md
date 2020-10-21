@@ -4,7 +4,8 @@
 
 ### New features
 
-* [#8896](https://github.com/rubocop-hq/rubocop/pull/8896): Add new `Style/DuplicateRegexpCharacterClassElement` cop. ([@owst][])
+* [#8896](https://github.com/rubocop-hq/rubocop/pull/8896): Add new `Lint/DuplicateRegexpCharacterClassElement` cop. ([@owst][])
+
 ## 1.0.0 (2020-10-21)
 
 ### New features
