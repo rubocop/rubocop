@@ -234,6 +234,51 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
     end
   end
 
+  context 'when both the LHS and RHS use regexp' do
+    it 'only considers the RHS regexp' do
+      expect_no_offenses(<<~RUBY)
+        if "foo bar".gsub(/\s+/, "") =~ /foo(bar)/
+          p $1
+        end
+      RUBY
+
+      expect_offense(<<~RUBY)
+        if "foo bar".gsub(/(\s+)/, "") =~ /foobar/
+          p $1
+            ^^ $1 is out of range (no regexp capture groups detected).
+        end
+      RUBY
+    end
+  end
+
+  context 'when calling a regexp method on a nth-ref node' do
+    it 'does not register an offense when calling gsub on a valid nth-ref' do
+      expect_no_offenses(<<~RUBY)
+        if "some : line " =~ / : (.+)/
+          $1.gsub(/\s{2}/, " ")
+        end
+      RUBY
+    end
+
+    it 'registers an offense when calling gsub on an invalid nth-ref' do
+      expect_offense(<<~RUBY)
+        if "some : line " =~ / : (.+)/
+          $2.gsub(/\s{2}/, " ")
+          ^^ $2 is out of range (1 regexp capture group detected).
+        end
+      RUBY
+    end
+
+    it 'registers an offense if the capturing groups have changed' do
+      expect_offense(<<~RUBY)
+        "some : line " =~ / : (.+)/
+        $1.gsub(/\s{2}/, " ")
+        puts $1
+             ^^ $1 is out of range (no regexp capture groups detected).
+      RUBY
+    end
+  end
+
   %i[gsub gsub! sub sub! scan].each do |method|
     context "matching with #{method}" do
       it 'does not register an offense when in range references are used' do

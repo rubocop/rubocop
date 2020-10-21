@@ -35,14 +35,13 @@ module RuboCop
           check_regexp(node.children.first)
         end
 
-        def on_send(node)
+        def after_send(node)
           @valid_ref = nil
 
-          if node.receiver&.regexp_type?
-            check_regexp(node.receiver)
-          elsif node.first_argument&.regexp_type? \
-            && REGEXP_ARGUMENT_METHODS.include?(node.method_name)
+          if regexp_first_argument?(node)
             check_regexp(node.first_argument)
+          elsif regexp_receiver?(node)
+            check_regexp(node.receiver)
           end
         end
 
@@ -79,6 +78,19 @@ module RuboCop
                        else
                          node.each_capture(named: false).count
                        end
+        end
+
+        def regexp_first_argument?(send_node)
+          send_node.first_argument&.regexp_type? \
+            && REGEXP_ARGUMENT_METHODS.include?(send_node.method_name)
+        end
+
+        def regexp_receiver?(send_node)
+          send_node.receiver&.regexp_type?
+        end
+
+        def nth_ref_receiver?(send_node)
+          send_node.receiver&.nth_ref_type?
         end
       end
     end
