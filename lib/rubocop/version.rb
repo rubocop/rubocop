@@ -18,6 +18,8 @@ module RuboCop
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
                                       ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
                                       ruby_platform: RUBY_PLATFORM)
+        return verbose_version unless env
+
         extension_versions = extension_versions(env)
         return verbose_version if extension_versions.empty?
 
