@@ -61,7 +61,6 @@ module RuboCop
           interpolation_locs(node).any? { |il| il.overlaps?(parse_tree_child_loc) }
         end
 
-
         def interpolation_locs(node)
           @interpolation_locs ||= {}
 
