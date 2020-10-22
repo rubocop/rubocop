@@ -52,16 +52,54 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
       end
     end
 
-    context 'and the gem is conditionally duplicated' do
-      it 'does not register an offense' do
-        expect_no_offenses(<<-GEM, 'Gemfile')
-          if Dir.exist? local
-            gem 'rubocop', path: local
-          else
-            gem 'rubocop', '~> 0.90.0'
-          end
-        GEM
-      end
+    it 'registers an offense when gem from default group is conditionally duplicated' do
+      expect_offense(<<-GEM, 'Gemfile')
+        gem 'rubocop'
+        if Dir.exist? local
+          gem 'rubocop', path: local
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem `rubocop` requirements already given on line 1 of the Gemfile.
+        else
+          gem 'rubocop', '~> 0.90.0'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem `rubocop` requirements already given on line 1 of the Gemfile.
+        end
+      GEM
+    end
+
+    it 'does not register an offense when gem is duplicated within `if-else` statement' do
+      expect_no_offenses(<<-GEM, 'Gemfile')
+        if Dir.exist?(local)
+          gem 'rubocop', path: local
+        else
+          gem 'rubocop', '~> 0.90.0'
+        end
+      GEM
+    end
+
+    it 'does not register an offense when gem is duplicated within `if-elsif` statement' do
+      expect_no_offenses(<<-GEM, 'Gemfile')
+        if Dir.exist?(local)
+          gem 'rubocop', path: local
+        elsif ENV['RUBOCOP_VERSION'] == 'master'
+          gem 'rubocop', git: 'https://github.com/rubocop-hq/rubocop.git'
+        elsif (version = ENV['RUBOCOP_VERSION'])
+          gem 'rubocop', version
+        else
+          gem 'rubocop', '~> 0.90.0'
+        end
+      GEM
+    end
+
+    it 'does not register an offense when gem is duplicated within `case` statement' do
+      expect_no_offenses(<<-GEM, 'Gemfile')
+        case
+        when Dir.exist?(local)
+          gem 'rubocop', path: local
+        when ENV['RUBOCOP_VERSION'] == 'master'
+          gem 'rubocop', git: 'https://github.com/rubocop-hq/rubocop.git'
+        else
+          gem 'rubocop', '~> 0.90.0'
+        end
+      GEM
     end
   end
 end

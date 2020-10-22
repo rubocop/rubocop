@@ -25,6 +25,16 @@ module RuboCop
       #
       #   # good
       #   gem 'rubocop', groups: [:development, :test]
+      #
+      #   # good - conditional declaration
+      #   if Dir.exist?(local)
+      #     gem 'rubocop', path: local
+      #   elsif ENV['RUBOCOP_VERSION'] == 'master'
+      #     gem 'rubocop', git: 'https://github.com/rubocop-hq/rubocop.git'
+      #   else
+      #     gem 'rubocop', '~> 0.90.0'
+      #   end
+      #
       class DuplicatedGem < Cop
         include RangeHelp
 
@@ -53,11 +63,21 @@ module RuboCop
           gem_declarations(processed_source.ast)
             .group_by(&:first_argument)
             .values
-            .select { |nodes| nodes.size > 1 && !condition?(nodes) }
+            .select { |nodes| nodes.size > 1 && !conditional_declaration?(nodes) }
         end
 
-        def condition?(nodes)
-          nodes[0].parent&.if_type? && nodes[0].parent == nodes[1].parent
+        def conditional_declaration?(nodes)
+          parent = nodes[0].parent
+          return false unless parent&.if_type? || parent&.when_type?
+
+          root_conditional_node = parent.if_type? ? parent : parent.parent
+          nodes.all? { |node| within_conditional?(node, root_conditional_node) }
+        end
+
+        def within_conditional?(node, conditional_node)
+          conditional_node.branches.any? do |branch|
+            branch == node || branch.child_nodes.include?(node)
+          end
         end
 
         def register_offense(node, gem_name, line_of_first_occurrence)

@@ -15,6 +15,7 @@
 
 * [#8913](https://github.com/rubocop-hq/rubocop/pull/8913): Fix an incorrect auto-correct for `Style/RedundantRegexpCharacterClass` due to quantifier. ([@ysakasin][])
 * [#8917](https://github.com/rubocop-hq/rubocop/issues/8917): Fix rubocop comment directives handling of cops with multiple levels in department name. ([@fatkodima][])
+* [#8918](https://github.com/rubocop-hq/rubocop/issues/8918): Fix a false positives for `Bundler/DuplicatedGem` when a gem conditionally duplicated within `if-elsif` or `case-when` statements. ([@fatkodima][])
 
 ## 1.0.0 (2020-10-21)
 
