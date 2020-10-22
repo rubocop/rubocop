@@ -8,7 +8,7 @@ module RuboCop
     REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
 
     # @api private
-    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
+    COP_NAME_PATTERN = '([A-Z]\w+/)*(?:[A-Z]\w+)'
     # @api private
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
     # @api private
