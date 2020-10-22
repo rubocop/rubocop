@@ -5,6 +5,7 @@
 ### New features
 
 * [#8895](https://github.com/rubocop-hq/rubocop/pull/8895): Add new `Lint/EmptyBlock` cop. ([@fatkodima][])
+* [#7549](https://github.com/rubocop-hq/rubocop/issues/7549): Add new `Style/ArgumentsForwarding` cop. ([@koic][])
 
 ## 1.0.0 (2020-10-21)
 

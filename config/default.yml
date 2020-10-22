@@ -2484,6 +2484,13 @@ Style/AndOr:
     - always
     - conditionals
 
+Style/ArgumentsForwarding:
+  Description: 'Use arguments forwarding.'
+  StyleGuide: '#arguments-forwarding'
+  Enabled: pending
+  AllowOnlyRestArgument: true
+  VersionAdded: '1.1'
+
 Style/ArrayCoercion:
   Description: >-
                   Use Array() instead of explicit Array check or [*var], when dealing
