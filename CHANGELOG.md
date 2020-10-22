@@ -20,6 +20,10 @@
 * [#8933](https://github.com/rubocop-hq/rubocop/pull/8933): Fix an error for `Layout/EmptyLinesAroundAccessModifier` when the first line is a comment. ([@matthieugendreau][])
 * [#8954](https://github.com/rubocop-hq/rubocop/pull/8954): Fix autocorrection for Style/RedundantRegexpCharacterClass with %r. ([@ysakasin][])
 
+### Bug fixes
+
+* [#8921](https://github.com/rubocop-hq/rubocop/pull/8921): Prevent `Lint/LiteralInInterpolation` from removing necessary interpolation in `%W[]` and `%I[]` literals. ([@knu][])
+
 ### Changes
 
 * [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
