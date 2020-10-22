@@ -31,12 +31,18 @@ module RuboCop
           return if special_keyword?(final_node)
           return unless prints_as_self?(final_node)
 
+          # %W and %I split the content into words before expansion
+          # treating each interpolation as a word component, so
+          # interpolation should not be removed if the expanded value
+          # contains a space character.
+          expanded_value = autocorrected_value(final_node)
+          return if in_array_percent_literal?(begin_node) &&
+                    /\s/.match?(expanded_value)
+
           add_offense(final_node) do |corrector|
             return if final_node.dstr_type? # nested, fixed in next iteration
 
-            value = autocorrected_value(final_node)
-
-            corrector.replace(final_node.parent, value)
+            corrector.replace(final_node.parent, expanded_value)
           end
         end
 
@@ -91,6 +97,14 @@ module RuboCop
           node.basic_literal? ||
             (COMPOSITE.include?(node.type) &&
               node.children.all? { |child| prints_as_self?(child) })
+        end
+
+        def in_array_percent_literal?(node)
+          parent = node.parent
+          return false unless parent.dstr_type? || parent.dsym_type?
+
+          grandparent = parent.parent
+          grandparent&.array_type? && grandparent&.percent_literal?
         end
       end
     end

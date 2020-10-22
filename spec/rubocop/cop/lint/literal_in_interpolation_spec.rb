@@ -113,6 +113,77 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', '%i[s1     s2]', '[\"s1\", \"s2\"]')
   it_behaves_like('literal interpolation', '%i[ s1   s2 ]', '[\"s1\", \"s2\"]')
 
+  shared_examples 'literal interpolation in words literal' do |prefix|
+    let(:word) { 'interpolation' }
+
+    it "accepts interpolation of a string literal with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{\"this interpolation\"} is significant]
+      RUBY
+    end
+
+    it "accepts interpolation of a symbol literal with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{:\"this interpolation\"} is significant]
+      RUBY
+    end
+
+    it "accepts interpolation of an array literal containing a string with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{[\"this interpolation\"]} is significant]
+      RUBY
+    end
+
+    it "accepts interpolation of an array literal containing a symbol with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{[:\"this interpolation\"]} is significant]
+      RUBY
+    end
+
+    it "removes interpolation of a string literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: word.inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{word} is not significant]
+      RUBY
+    end
+
+    it "removes interpolation of a symbol literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: word.to_sym.inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{word} is not significant]
+      RUBY
+    end
+
+    it "removes interpolation of an array containing a string literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: [word].inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{[word].inspect.gsub(/"/, '\"')} is not significant]
+      RUBY
+    end
+
+    it "removes interpolation of an array containing a symbol literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: [word.to_sym].inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{[word.to_sym].inspect} is not significant]
+      RUBY
+    end
+  end
+
+  it_behaves_like('literal interpolation in words literal', '%W')
+  it_behaves_like('literal interpolation in words literal', '%I')
+
   it 'handles nested interpolations when auto-correction' do
     expect_offense(<<~'RUBY')
       "this is #{"#{1}"} silly"
