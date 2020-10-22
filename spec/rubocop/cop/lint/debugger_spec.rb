@@ -51,13 +51,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
       RUBY
     end
 
-    it 'reports an offense for save_screenshot' do
-      expect_offense(<<~RUBY)
-        save_screenshot
-        ^^^^^^^^^^^^^^^ Remove debugger entry point `save_screenshot`.
-      RUBY
-    end
-
     context 'with an argument' do
       it 'reports an offense for save_and_open_page' do
         expect_offense(<<~RUBY)
@@ -70,13 +63,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
         expect_offense(<<~RUBY)
           save_and_open_screenshot foo
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_and_open_screenshot foo`.
-        RUBY
-      end
-
-      it 'reports an offense for save_screenshot' do
-        expect_offense(<<~RUBY)
-          save_screenshot foo
-          ^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_screenshot foo`.
         RUBY
       end
     end
@@ -161,7 +147,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   end
 
   %w[debugger byebug console pry remote_pry pry_remote irb save_and_open_page
-     save_and_open_screenshot save_screenshot remote_byebug].each do |src|
+     save_and_open_screenshot remote_byebug].each do |src|
     it "does not report an offense for a #{src} in comments" do
       expect_no_offenses("# #{src}")
     end

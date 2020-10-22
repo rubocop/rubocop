@@ -6,6 +6,10 @@
 
 * [#8895](https://github.com/rubocop-hq/rubocop/pull/8895): Add new `Lint/EmptyBlock` cop. ([@fatkodima][])
 
+### Changes
+
+* [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
+
 ## 1.0.0 (2020-10-21)
 
 ### New features
