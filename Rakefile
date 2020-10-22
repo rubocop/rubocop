@@ -4,6 +4,8 @@
 # and started before any application code is loaded.
 require 'simplecov' if ENV['COVERAGE']
 
+task release: 'changelog:check_clean' # Before task is required
+
 require 'bundler'
 require 'bundler/gem_tasks'
 begin
