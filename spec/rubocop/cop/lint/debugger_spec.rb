@@ -1,6 +1,25 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
+  context 'with allowed methods' do
+    let(:cop_config) do
+      { 'AllowedMethods' => %w[debugger] }
+    end
+
+    it 'does not reports an offense for a byebug call' do
+      expect_no_offenses(<<~RUBY)
+        byebug
+      RUBY
+    end
+
+    it 'reports an offense for a debugger call' do
+      expect_offense(<<~RUBY)
+        debugger
+        ^^^^^^^^ Remove debugger entry point `debugger`.
+      RUBY
+    end
+  end
+
   it 'reports an offense for a debugger call' do
     expect_offense(<<~RUBY)
       debugger

@@ -33,12 +33,9 @@ module RuboCop
       #     do_something
       #   end
       class Debugger < Base
-        MSG = 'Remove debugger entry point `%<source>s`.'
+        include AllowedMethods
 
-        RESTRICT_ON_SEND = %i[
-          debugger byebug remote_byebug pry remote_pry pry_remote console rescue
-          save_and_open_page save_and_open_screenshot irb
-        ].freeze
+        MSG = 'Remove debugger entry point `%<source>s`.'
 
         def_node_matcher :kernel?, <<~PATTERN
           {
@@ -61,6 +58,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless allowed_method?(node.method_name)
           return unless debugger_call?(node) || binding_irb?(node)
 
           add_offense(node)
