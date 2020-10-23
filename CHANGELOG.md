@@ -14,6 +14,7 @@
 ### Bug fixes
 
 * [#8913](https://github.com/rubocop-hq/rubocop/pull/8913): Fix an incorrect auto-correct for `Style/RedundantRegexpCharacterClass` due to quantifier. ([@ysakasin][])
+* [#8917](https://github.com/rubocop-hq/rubocop/issues/8917): Fix rubocop comment directives handling of cops with multiple levels in department name. ([@fatkodima][])
 
 ## 1.0.0 (2020-10-21)
 
