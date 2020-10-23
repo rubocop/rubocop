@@ -1025,6 +1025,67 @@ else
 end
 ----
 
+== Lint/EmptyBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 1.1
+| -
+|===
+
+This cop checks for blocks without a body.
+Such empty blocks are typically an oversight or we should provide a comment
+be clearer what we're aiming for.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+items.each { |item| }
+
+# good
+items.each { |item| puts item }
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+items.each do |item|
+  # TODO: implement later (inner comment)
+end
+
+items.each { |item| } # TODO: implement later (inline comment)
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+items.each do |item|
+  # TODO: implement later (inner comment)
+end
+
+items.each { |item| } # TODO: implement later (inline comment)
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
+
 == Lint/EmptyConditionalBody
 
 |===

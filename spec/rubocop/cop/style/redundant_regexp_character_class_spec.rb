@@ -43,6 +43,32 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
+  context 'with a character class containing a single character before `+` quantifier' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        foo = /[a]+/
+               ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = /a+/
+      RUBY
+    end
+  end
+
+  context 'with a character class containing a single character before `{n,m}` quantifier' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        foo = /[a]{2,10}/
+               ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = /a{2,10}/
+      RUBY
+    end
+  end
+
   context 'with a character class containing a single range' do
     it 'does not register an offense' do
       expect_no_offenses('foo = /[a-z]/')

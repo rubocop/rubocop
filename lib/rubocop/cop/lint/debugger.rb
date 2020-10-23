@@ -37,7 +37,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[
           debugger byebug remote_byebug pry remote_pry pry_remote console rescue
-          save_and_open_page save_and_open_screenshot save_screenshot irb
+          save_and_open_page save_and_open_screenshot irb
         ].freeze
 
         def_node_matcher :kernel?, <<~PATTERN
@@ -53,8 +53,7 @@ module RuboCop
              {:pry :remote_pry :pry_remote :console} ...)
            (send (const {nil? (cbase)} :Pry) :rescue ...)
            (send nil? {:save_and_open_page
-                      :save_and_open_screenshot
-                      :save_screenshot} ...)}
+                      :save_and_open_screenshot} ...)}
         PATTERN
 
         def_node_matcher :binding_irb_call?, <<~PATTERN
