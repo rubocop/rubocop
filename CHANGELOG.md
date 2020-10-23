@@ -10,6 +10,7 @@
 ### Changes
 
 * [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
+* [#8919](https://github.com/rubocop-hq/rubocop/issues/8919): Require RuboCop AST to 1.0.1 or higher. ([@koic][])
 
 ### Bug fixes
 
