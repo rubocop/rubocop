@@ -7,16 +7,16 @@
 * [#8895](https://github.com/rubocop-hq/rubocop/pull/8895): Add new `Lint/EmptyBlock` cop. ([@fatkodima][])
 * [#7549](https://github.com/rubocop-hq/rubocop/issues/7549): Add new `Style/ArgumentsForwarding` cop. ([@koic][])
 
-### Changes
-
-* [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
-* [#8919](https://github.com/rubocop-hq/rubocop/issues/8919): Require RuboCop AST to 1.0.1 or higher. ([@koic][])
-
 ### Bug fixes
 
 * [#8913](https://github.com/rubocop-hq/rubocop/pull/8913): Fix an incorrect auto-correct for `Style/RedundantRegexpCharacterClass` due to quantifier. ([@ysakasin][])
 * [#8917](https://github.com/rubocop-hq/rubocop/issues/8917): Fix rubocop comment directives handling of cops with multiple levels in department name. ([@fatkodima][])
 * [#8918](https://github.com/rubocop-hq/rubocop/issues/8918): Fix a false positives for `Bundler/DuplicatedGem` when a gem conditionally duplicated within `if-elsif` or `case-when` statements. ([@fatkodima][])
+
+### Changes
+
+* [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
+* [#8919](https://github.com/rubocop-hq/rubocop/issues/8919): Require RuboCop AST to 1.0.1 or higher. ([@koic][])
 
 ## 1.0.0 (2020-10-21)
 
