@@ -141,6 +141,7 @@ module RuboCop
         def previous_line_empty?(send_line)
           previous_line = previous_line_ignoring_comments(processed_source,
                                                           send_line)
+          return true unless previous_line
 
           block_start?(send_line) ||
             class_def?(send_line) ||
