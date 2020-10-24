@@ -20,8 +20,8 @@ namespace :cut_release do
 
     File.open('README.md', 'w') do |f|
       f << readme.sub(
-        "gem 'rubocop', '~> #{old_version}', require: false",
-        "gem 'rubocop', '~> #{new_version}', require: false"
+        "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
+        "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
     end
   end
@@ -40,8 +40,8 @@ namespace :cut_release do
 
     File.open('docs/modules/ROOT/pages/installation.adoc', 'w') do |f|
       f << installation.sub(
-        "gem 'rubocop', '~> #{old_version}', require: false",
-        "gem 'rubocop', '~> #{new_version}', require: false"
+        "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
+        "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
     end
   end
