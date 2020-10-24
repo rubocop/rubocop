@@ -17,8 +17,14 @@ module RuboCop
       #   foo if ['a', 'b', 'c'].include?(a)
       #   foo if a == b.lightweight || a == b.heavyweight
       class MultipleComparison < Base
+        extend AutoCorrector
+
         MSG = 'Avoid comparing a variable with multiple items ' \
           'in a conditional, use `Array#include?` instead.'
+
+        def on_new_investigation
+          @compared_elements = []
+        end
 
         def on_or(node)
           root_of_or_node = root_of_or_node(node)
@@ -26,15 +32,22 @@ module RuboCop
           return unless node == root_of_or_node
           return unless nested_variable_comparison?(root_of_or_node)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            elements = @compared_elements.join(', ')
+            prefer_method = "[#{elements}].include?(#{variables_in_node(node).first})"
+
+            corrector.replace(node, prefer_method)
+          end
         end
 
         private
 
         def_node_matcher :simple_double_comparison?, '(send $lvar :== $lvar)'
-        def_node_matcher :simple_comparison?, <<~PATTERN
-          {(send $lvar :== !send)
-           (send !send :== $lvar)}
+        def_node_matcher :simple_comparison_lhs?, <<~PATTERN
+          (send $lvar :== $!send)
+        PATTERN
+        def_node_matcher :simple_comparison_rhs?, <<~PATTERN
+          (send $!send :== $lvar)
         PATTERN
 
         def nested_variable_comparison?(node)
@@ -57,9 +70,11 @@ module RuboCop
           simple_double_comparison?(node) do |var1, var2|
             return [variable_name(var1), variable_name(var2)]
           end
-          simple_comparison?(node) do |var|
+          if (var, obj = simple_comparison_lhs?(node)) || (obj, var = simple_comparison_rhs?(node))
+            @compared_elements << obj.source
             return [variable_name(var)]
           end
+
           []
         end
 
@@ -76,7 +91,7 @@ module RuboCop
         end
 
         def comparison?(node)
-          simple_comparison?(node) || nested_comparison?(node)
+          simple_comparison_lhs?(node) || simple_comparison_rhs?(node) || nested_comparison?(node)
         end
 
         def root_of_or_node(or_node)

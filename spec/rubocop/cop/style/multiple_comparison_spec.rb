@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
     RUBY
   end
 
-  it 'registers an offense when `a` is compared twice' do
+  it 'registers an offense and corrects when `a` is compared twice' do
     expect_offense(<<~RUBY)
       a = "a"
       if a == "a" || a == "b"
@@ -22,9 +22,16 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
         print a
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = "a"
+      if ["a", "b"].include?(a)
+        print a
+      end
+    RUBY
   end
 
-  it 'registers an offense when `a` is compared three times' do
+  it 'registers an offense and corrects when `a` is compared three times' do
     expect_offense(<<~RUBY)
       a = "a"
       if a == "a" || a == "b" || a == "c"
@@ -32,9 +39,16 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
         print a
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = "a"
+      if ["a", "b", "c"].include?(a)
+        print a
+      end
+    RUBY
   end
 
-  it 'registers an offense when `a` is compared three times on the right ' \
+  it 'registers an offense and corrects when `a` is compared three times on the right ' \
     'hand side' do
     expect_offense(<<~RUBY)
       a = "a"
@@ -43,9 +57,16 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
         print a
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = "a"
+      if ["a", "b", "c"].include?(a)
+        print a
+      end
+    RUBY
   end
 
-  it 'registers an offense when `a` is compared three times, once on the ' \
+  it 'registers an offense and corrects when `a` is compared three times, once on the ' \
     'righthand side' do
     expect_offense(<<~RUBY)
       a = "a"
@@ -54,14 +75,27 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
         print a
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = "a"
+      if ["a", "b", "c"].include?(a)
+        print a
+      end
+    RUBY
   end
 
-  it 'registers an offense when multiple comparison is not ' \
+  it 'registers an offense and corrects when multiple comparison is not ' \
      'part of a conditional' do
     expect_offense(<<~RUBY)
       def foo(x)
         x == 1 || x == 2 || x == 3
         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo(x)
+        [1, 2, 3].include?(x)
       end
     RUBY
   end

@@ -6010,9 +6010,9 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.49
-| -
+| 1.1
 |===
 
 This cop checks against comparing a variable with multiple items, where
