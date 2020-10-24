@@ -3,8 +3,14 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop looks for uses of flip-flop operator.
-      # flip-flop operator is deprecated since Ruby 2.6.0.
+      # This cop looks for uses of flip-flop operator
+      # based on the Ruby Style Guide.
+      #
+      # Here is the history of flip-flops in Ruby.
+      # flip-flop operator is deprecated in Ruby 2.6.0 and
+      # the deprecation has been reverted by Ruby 2.7.0 and
+      # backported to Ruby 2.6.
+      # See: https://bugs.ruby-lang.org/issues/5400
       #
       # @example
       #   # bad
