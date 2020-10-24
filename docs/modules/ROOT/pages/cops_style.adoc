@@ -9897,6 +9897,39 @@ end
 
 * https://rubystyle.guide#no-extend-struct-new
 
+== Style/SwapValues
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.1
+| -
+|===
+
+This cop enforces the use of shorthand-style swapping of 2 variables.
+Its autocorrection is marked as unsafe, because it can erroneously remove
+the temporary variable which is used later.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+tmp = x
+x = y
+y = tmp
+
+# good
+x, y = y, x
+----
+
+=== References
+
+* https://rubystyle.guide#values-swapping
+
 == Style/SymbolArray
 
 |===

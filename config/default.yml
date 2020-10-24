@@ -4244,6 +4244,13 @@ Style/StructInheritance:
   VersionAdded: '0.29'
   VersionChanged: '0.86'
 
+Style/SwapValues:
+  Description: 'This cop enforces the use of shorthand-style swapping of 2 variables.'
+  StyleGuide: '#values-swapping'
+  Enabled: pending
+  VersionAdded: '1.1'
+  SafeAutoCorrect: false
+
 Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   StyleGuide: '#percent-i'
