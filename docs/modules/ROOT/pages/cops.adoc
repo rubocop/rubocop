@@ -374,6 +374,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styledefwithparentheses[Style/DefWithParentheses]
 * xref:cops_style.adoc#styledir[Style/Dir]
 * xref:cops_style.adoc#styledisablecopswithinsourcecodedirective[Style/DisableCopsWithinSourceCodeDirective]
+* xref:cops_style.adoc#styledocumentdynamicevaldefinition[Style/DocumentDynamicEvalDefinition]
 * xref:cops_style.adoc#styledocumentation[Style/Documentation]
 * xref:cops_style.adoc#styledocumentationmethod[Style/DocumentationMethod]
 * xref:cops_style.adoc#styledoublecopdisabledirective[Style/DoubleCopDisableDirective]
