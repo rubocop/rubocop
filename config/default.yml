@@ -2946,6 +2946,14 @@ Style/DisableCopsWithinSourceCodeDirective:
   Enabled: false
   VersionAdded: '0.82'
 
+Style/DocumentDynamicEvalDefinition:
+  Description: >-
+                When using `class_eval` (or other `eval`) with string interpolation,
+                add a comment block showing its appearance if interpolated.
+  StyleGuide: '#eval-comment-docs'
+  Enabled: pending
+  VersionAdded: '1.1'
+
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true

@@ -65,13 +65,13 @@ module RuboCop
         c = '#' if NO_CHILD_NODES.include?(node_type) # has Children?
 
         class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
-                  def on_#{node_type}(node)
-                    trigger_responding_cops(:on_#{node_type}, node)
-              #{r}  trigger_restricted_cops(:on_#{node_type}, node)
-          #{c}      super(node)
-          #{c}      trigger_responding_cops(:after_#{node_type}, node)
-          #{c}#{r}  trigger_restricted_cops(:after_#{node_type}, node)
-                  end
+                  def on_#{node_type}(node)                               # def on_send(node)
+                    trigger_responding_cops(:on_#{node_type}, node)       #   trigger_responding_cops(:on_send, node)
+              #{r}  trigger_restricted_cops(:on_#{node_type}, node)       #   trigger_restricted_cops(:on_send, node)
+          #{c}      super(node)                                           #   super(node)
+          #{c}      trigger_responding_cops(:after_#{node_type}, node)    #   trigger_responding_cops(:after_send, node)
+          #{c}#{r}  trigger_restricted_cops(:after_#{node_type}, node)    #   trigger_restricted_cops(:after_send, node)
+                  end                                                     # end
         RUBY
       end
 
