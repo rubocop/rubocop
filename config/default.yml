@@ -1921,6 +1921,11 @@ Lint/Syntax:
   VersionAdded: '0.9'
 
 
+Lint/ToEnumArguments:
+  Description: 'This cop ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
+  Enabled: pending
+  VersionAdded: '1.1'
+
 Lint/ToJSON:
   Description: 'Ensure #to_json includes an optional argument.'
   Enabled: true
