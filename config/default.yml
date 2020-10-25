@@ -1653,7 +1653,7 @@ Lint/MultipleComparison:
   Description: "Use `&&` operator to compare multiple values."
   Enabled: true
   VersionAdded: '0.47'
-  VersionChanged: '0.77'
+  VersionChanged: '1.1'
 
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'

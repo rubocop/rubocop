@@ -6017,6 +6017,7 @@ end
 
 This cop checks against comparing a variable with multiple items, where
 `Array#include?` could be used instead to avoid code repetition.
+It accepts comparisons of multiple method calls to avoid unnecessary method calls.
 
 === Examples
 
@@ -6029,6 +6030,7 @@ foo if a == 'a' || a == 'b' || a == 'c'
 # good
 a = 'a'
 foo if ['a', 'b', 'c'].include?(a)
+foo if a == b.lightweight || a == b.heavyweight
 ----
 
 == Style/MutableConstant
