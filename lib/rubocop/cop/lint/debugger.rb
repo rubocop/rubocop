@@ -33,33 +33,15 @@ module RuboCop
       #     do_something
       #   end
       class Debugger < Base
-        include AllowedMethods
+        include DebuggerMethods
+        include ForbiddenReceivers
 
         MSG = 'Remove debugger entry point `%<source>s`.'
 
-        def_node_matcher :kernel?, <<~PATTERN
-          {
-            (const nil? :Kernel)
-            (const (cbase) :Kernel)
-          }
-        PATTERN
-
-        def_node_matcher :debugger_call?, <<~PATTERN
-          {(send {nil? #kernel?} {:debugger :byebug :remote_byebug} ...)
-           (send (send {#kernel? nil?} :binding)
-             {:pry :remote_pry :pry_remote :console} ...)
-           (send (const {nil? (cbase)} :Pry) :rescue ...)
-           (send nil? {:save_and_open_page
-                      :save_and_open_screenshot} ...)}
-        PATTERN
-
-        def_node_matcher :binding_irb_call?, <<~PATTERN
-          (send (send {#kernel? nil?} :binding) :irb ...)
-        PATTERN
-
         def on_send(node)
-          return unless allowed_method?(node.method_name)
-          return unless debugger_call?(node) || binding_irb?(node)
+          return unless debugger_method?(node.method_name)
+          return if special_rule?(node)
+          return if with_receiver?(node) && !forbidden_receiver?(node)
 
           add_offense(node)
         end
@@ -70,8 +52,26 @@ module RuboCop
           format(MSG, source: node.source)
         end
 
-        def binding_irb?(node)
-          binding_irb_call?(node)
+        def with_receiver?(node)
+          !!node.receiver
+        end
+
+        def special_rule?(node)
+          return false unless node.receiver.is_a?(RuboCop::AST::ConstNode)
+          return true if node.receiver.const_name == 'Kernel' && node.method?(:save_and_open_page)
+
+          false
+        end
+
+        def forbidden_receiver?(node)
+          receiver = case node.receiver
+                     when RuboCop::AST::SendNode
+                       node.receiver.method_name
+                     when RuboCop::AST::ConstNode
+                       node.receiver.const_name
+                     end
+
+          forbidden?(receiver)
         end
       end
     end

@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   context 'with allowed methods' do
     let(:cop_config) do
-      { 'AllowedMethods' => %w[debugger] }
+      { 'DebuggerMethods' => %w[custom_debugger] }
     end
 
     it 'does not reports an offense for a byebug call' do
@@ -14,8 +14,8 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
 
     it 'reports an offense for a debugger call' do
       expect_offense(<<~RUBY)
-        debugger
-        ^^^^^^^^ Remove debugger entry point `debugger`.
+        custom_debugger
+        ^^^^^^^^^^^^^^^ Remove debugger entry point `custom_debugger`.
       RUBY
     end
   end

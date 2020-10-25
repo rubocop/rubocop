@@ -1415,7 +1415,11 @@ Lint/Debugger:
   Enabled: true
   VersionAdded: '0.14'
   VersionChanged: '0.49'
-  AllowedMethods:
+  ForbiddenReceivers:
+    - binding
+    - Kernel
+    - Pry
+  DebuggerMethods:
     - debugger
     - byebug
     - remote_byebug
