@@ -69,6 +69,17 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
         RUBY
       end
     end
+
+    context 'when including an anonymous module containing `private def`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          include Module.new {
+            private def foo
+            end
+          }
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyleAlignWith is def' do
