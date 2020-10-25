@@ -269,6 +269,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintstructnewoverride[Lint/StructNewOverride]
 * xref:cops_lint.adoc#lintsuppressedexception[Lint/SuppressedException]
 * xref:cops_lint.adoc#lintsyntax[Lint/Syntax]
+* xref:cops_lint.adoc#linttoenumarguments[Lint/ToEnumArguments]
 * xref:cops_lint.adoc#linttojson[Lint/ToJSON]
 * xref:cops_lint.adoc#linttoplevelreturnwithargument[Lint/TopLevelReturnWithArgument]
 * xref:cops_lint.adoc#linttrailingcommainattributedeclaration[Lint/TrailingCommaInAttributeDeclaration]
