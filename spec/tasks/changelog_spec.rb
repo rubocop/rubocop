@@ -46,13 +46,95 @@ RSpec.describe Changelog do
                            body: "Do something cool#{'x' * i}", user: "johndoe#{'x' * i}")
     end
   end
-  let(:entry) { entries.first }
 
   describe Changelog::Entry do
-    it 'generates correct content' do
-      expect(entry.content).to eq <<~MD
-        * [#x](https://github.com/rubocop-hq/rubocop/pull/x): Do something cool. ([@johndoe][])
-      MD
+    subject(:entry) do
+      described_class.new(
+        type: type,
+        body: body,
+        user: github_user
+      )
+    end
+
+    let(:type) { :fix }
+    let(:github_user) { 'johndoe' }
+
+    describe '#content' do
+      context 'when there is an issue referenced' do
+        let(:body) { '[Fix #567] Do something cool.' }
+
+        it 'generates correct content' do
+          expect(entry.content).to eq <<~MD
+            * [#567](https://github.com/rubocop-hq/rubocop/pull/567): Do something cool. ([@johndoe][])
+          MD
+        end
+      end
+
+      context 'when there is no issue referenced' do
+        let(:body) { 'Do something cool.' }
+
+        it 'generates correct content' do
+          expect(entry.content).to eq <<~MD
+            * [#x](https://github.com/rubocop-hq/rubocop/pull/x): Do something cool. ([@johndoe][])
+          MD
+        end
+      end
+    end
+
+    describe '#ref_id' do
+      subject { entry.ref_id }
+
+      context 'when there is no body' do
+        let(:body) { '' }
+
+        it { is_expected.to eq('x') }
+      end
+
+      context 'when there is no issue referenced in the body' do
+        let(:body) { 'Fix something' }
+
+        it { is_expected.to eq('x') }
+      end
+
+      context 'when there is an issue referenced with [Fix #x] the body' do
+        let(:body) { '[Fix #123] Fix something' }
+
+        it { is_expected.to eq('123') }
+      end
+
+      context 'when there is an issue referenced with [Fixes #x] the body' do
+        let(:body) { '[Fixes #123] Fix something' }
+
+        it { is_expected.to eq('123') }
+      end
+    end
+
+    describe '#body' do
+      subject { entry.body }
+
+      context 'when there is no body' do
+        let(:body) { '' }
+
+        it { is_expected.to eq('') }
+      end
+
+      context 'when there is no issue referenced in the body' do
+        let(:body) { 'Fix something' }
+
+        it { is_expected.to eq('Fix something') }
+      end
+
+      context 'when there is an issue referenced with [Fix #x] the body' do
+        let(:body) { '[Fix #123] Fix something' }
+
+        it { is_expected.to eq('Fix something') }
+      end
+
+      context 'when there is an issue referenced with [Fixes #x] the body' do
+        let(:body) { '[Fixes #123] Fix something' }
+
+        it { is_expected.to eq('Fix something') }
+      end
     end
   end
 

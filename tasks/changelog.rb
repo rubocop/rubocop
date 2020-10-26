@@ -51,7 +51,7 @@ class Changelog
     end
 
     def extract_id(body)
-      /^\[Fixes #(\d+)\] (.*)/.match(body)&.captures || [nil, body]
+      /^\[Fix(?:es)? #(\d+)\] (.*)/.match(body)&.captures || [nil, body]
     end
 
     def str_to_filename(str)
