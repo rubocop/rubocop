@@ -36,6 +36,12 @@ module RuboCop
       #     acc + el * 2
       #   end
       #
+      #   # good, element is returned but modified using the accumulator
+      #   values.reduce do |acc, el|
+      #     el << acc
+      #     el
+      #   end
+      #
       #   # good, returns the accumulator instead of the index
       #   %w(a b c).reduce({}) do |acc, letter|
       #     acc[letter] = true
@@ -50,18 +56,28 @@ module RuboCop
       #
       #   # ignored as the return value cannot be determined
       #   enum.reduce do |acc, el|
-      #     x + y
+      #     x = foo(acc, el)
+      #     bar(x)
       #   end
       class UnmodifiedReduceAccumulator < Base
         MSG = 'Ensure the accumulator `%<accum>s` will be modified by `%<method>s`.'
         MSG_INDEX = 'Do not return an element of the accumulator in `%<method>s`.'
 
         def_node_matcher :reduce_with_block?, <<~PATTERN
-          (block (send _recv {:reduce :inject} !sym) ...)
+          (block (send _recv {:reduce :inject} ...) (args arg+) ...)
         PATTERN
 
         def_node_matcher :accumulator_index?, <<~PATTERN
           (send (lvar %1) {:[] :[]=} ...)
+        PATTERN
+
+        def_node_search :element_modified?, <<~PATTERN
+          {
+            (send _receiver !{:[] :[]=} <`(lvar %1) `_ ...>)               # method(el, ...)
+            (send (lvar %1) _message <{ivar gvar cvar lvar send} ...>)     # el.method(...)
+            (lvasgn %1 _)                                                  # el = ...
+            (%RuboCop::AST::Node::SHORTHAND_ASSIGNMENTS (lvasgn %1) ... _) # el += ...
+          }
         PATTERN
 
         def_node_matcher :lvar_used?, <<~PATTERN
@@ -75,12 +91,12 @@ module RuboCop
         PATTERN
 
         def_node_search :expression_values, <<~PATTERN
-          `{
+          {
             (%RuboCop::AST::Node::VARIABLES $_)
             (%RuboCop::AST::Node::EQUALS_ASSIGNMENTS $_ ...)
             (send (%RuboCop::AST::Node::VARIABLES $_) :<< ...)
-            (send nil? $_)
-            (dstr (begin {(send nil? $_) (%RuboCop::AST::Node::VARIABLES $_)}))
+            $(send _ _)
+            (dstr (begin {(%RuboCop::AST::Node::VARIABLES $_)}))
             (%RuboCop::AST::Node::SHORTHAND_ASSIGNMENTS (%RuboCop::AST::Node::EQUALS_ASSIGNMENTS $_) ...)
           }
         PATTERN
@@ -117,7 +133,7 @@ module RuboCop
 
           if (node = returned_accumulator_index(return_values, accumulator_name))
             add_offense(node, message: format(MSG_INDEX, message_opts))
-          elsif !returns_accumulator_anywhere?(return_values, accumulator_name)
+          elsif potential_offense?(return_values, block_node.body, element_name, accumulator_name)
             return_values.each do |return_val|
               unless acceptable_return?(return_val, element_name)
                 add_offense(return_val, message: format(MSG, message_opts))
@@ -135,6 +151,11 @@ module RuboCop
         # due to type mismatches
         def returned_accumulator_index(return_values, accumulator_name)
           return_values.detect { |val| accumulator_index?(val, accumulator_name) }
+        end
+
+        def potential_offense?(return_values, block_body, element_name, accumulator_name)
+          !(element_modified?(block_body, element_name) ||
+            returns_accumulator_anywhere?(return_values, accumulator_name))
         end
 
         # If the accumulator is used in any return value, the node is acceptable since
