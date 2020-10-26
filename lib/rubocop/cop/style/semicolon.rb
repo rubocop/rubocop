@@ -70,6 +70,9 @@ module RuboCop
         private
 
         def check_for_line_terminator_or_opener
+          # Make the obvious check first
+          return unless @processed_source.raw_source.include?(';')
+
           each_semicolon { |line, column| convention_on(line, column, true) }
         end
 

@@ -57,7 +57,7 @@ module RuboCop
       def indentation_difference(line)
         return 0 unless tab_indentation_width
 
-        line.match(/^\t*/)[0].size * (tab_indentation_width - 1)
+        (line.index(/[^\t]/) || 0) * (tab_indentation_width - 1)
       end
 
       def tab_indentation_width

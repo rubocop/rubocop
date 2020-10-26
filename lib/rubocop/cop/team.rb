@@ -99,7 +99,12 @@ module RuboCop
       def self.forces_for(cops)
         needed = Hash.new { |h, k| h[k] = [] }
         cops.each do |cop|
-          Array(cop.class.joining_forces).each { |force| needed[force] << cop }
+          forces = cop.class.joining_forces
+          if forces.is_a?(Array)
+            forces.each { |force| needed[force] << cop }
+          elsif forces
+            needed[forces] << cop
+          end
         end
 
         needed.map do |force_class, joining_cops|
