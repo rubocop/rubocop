@@ -194,7 +194,7 @@ module RuboCop
     class SimpleComment < MagicComment
       # Match `encoding` or `coding`
       def encoding
-        extract(/\A\s*\#.*\b(?:en)?coding: (#{TOKEN})/i)
+        extract(/\A\s*\#.*\b(?:en)?coding: (#{TOKEN})/io)
       end
 
       private
@@ -207,7 +207,7 @@ module RuboCop
       # Case-insensitive and dashes/underscores are acceptable.
       # @see https://git.io/vM7Mg
       def extract_frozen_string_literal
-        extract(/\A\s*#\s*frozen[_-]string[_-]literal:\s*(#{TOKEN})\s*\z/i)
+        extract(/\A\s*#\s*frozen[_-]string[_-]literal:\s*(#{TOKEN})\s*\z/io)
       end
     end
   end

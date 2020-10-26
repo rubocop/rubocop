@@ -9,6 +9,8 @@ module RuboCop
     # The nodes modified by the corrections should be part of the
     # AST of the source_buffer.
     class Corrector < ::Parser::Source::TreeRewriter
+      NOOP_CONSUMER = ->(diagnostic) {} # noop
+
       # @param source [Parser::Source::Buffer, or anything
       #                leading to one via `(processed_source.)buffer`]
       #
@@ -23,7 +25,7 @@ module RuboCop
         )
 
         # Don't print warnings to stderr if corrections conflict with each other
-        diagnostics.consumer = ->(diagnostic) {} # noop
+        diagnostics.consumer = NOOP_CONSUMER
       end
 
       alias rewrite process # Legacy
