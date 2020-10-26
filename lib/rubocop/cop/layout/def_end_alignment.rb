@@ -46,7 +46,7 @@ module RuboCop
         alias on_defs on_def
 
         def on_send(node)
-          return if !node.def_modifier? || node.method?(:using)
+          return unless node.def_modifier?
 
           method_def = node.each_descendant(:def, :defs).first
           expr = node.source_range
