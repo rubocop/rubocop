@@ -3079,7 +3079,7 @@
 * [#2146](https://github.com/rubocop-hq/rubocop/pull/2146): Add STDIN support. ([@caseywebdev][])
 * [#2175](https://github.com/rubocop-hq/rubocop/pull/2175): Files that are excluded from a cop (e.g. using the `Exclude:` config option) are no longer being processed by that cop. ([@bquorning][])
 * `Rails/ActionFilter` now handles complete list of methods found in the Rails 4.2 [release notes](https://github.com/rails/rails/blob/4115a12da1409c753c747fd4bab6e612c0c6e51a/guides/source/4_2_release_notes.md#notable-changes-1). ([@MGerrior][])
-* [*2138](https://github.com/rubocop-hq/rubocop/issues/2138): Change the offense in `Style/Next` to highlight the condition instead of the iteration. ([@rrosenblum][])
+* [#2138](https://github.com/rubocop-hq/rubocop/issues/2138): Change the offense in `Style/Next` to highlight the condition instead of the iteration. ([@rrosenblum][])
 * `Style/EmptyLineBetweenDefs` now handles class methods as well. ([@unmanbearpig][])
 * Improve handling of `super` in `Style/SymbolProc`. ([@lumeet][])
 * `Style/SymbolProc` is applied to methods receiving arguments. ([@lumeet][])
