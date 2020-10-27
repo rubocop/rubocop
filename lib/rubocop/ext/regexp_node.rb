@@ -11,6 +11,8 @@ module RuboCop
       private_constant :ANY
 
       # @return [Regexp::Expression::Root, nil]
+      # Note: we extend Regexp nodes to provide `loc` and `expression`
+      # see `ext/regexp_parser`.
       attr_reader :parsed_tree
 
       def assign_properties(*)
@@ -22,6 +24,8 @@ module RuboCop
         rescue StandardError
           nil
         end
+        origin = loc.begin.end
+        @parsed_tree&.each_expression(true) { |e| e.origin = origin }
       end
 
       def each_capture(named: ANY)
@@ -35,11 +39,6 @@ module RuboCop
         end
 
         self
-      end
-
-      # @return [Parser::Source::Range] the range of the parse-tree expression
-      def parsed_tree_expr_loc(expr)
-        loc.begin.end.adjust(begin_pos: expr.ts, end_pos: expr.ts).resize(expr.full_length)
       end
 
       private

@@ -43,7 +43,7 @@ module RuboCop
 
               child_source = child.to_s
 
-              yield node.parsed_tree_expr_loc(child) if seen.include?(child_source)
+              yield child.expression if seen.include?(child_source)
 
               seen << child_source
             end
@@ -56,7 +56,7 @@ module RuboCop
         # mark every space (except the first) as duplicate if we do not skip regexp_parser nodes
         # that are within an interpolation.
         def within_interpolation?(node, child)
-          parse_tree_child_loc = node.parsed_tree_expr_loc(child)
+          parse_tree_child_loc = child.expression
 
           interpolation_locs(node).any? { |il| il.overlaps?(parse_tree_child_loc) }
         end
