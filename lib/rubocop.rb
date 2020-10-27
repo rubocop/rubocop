@@ -15,6 +15,7 @@ require 'rubocop-ast'
 
 require_relative 'rubocop/ast_aliases'
 require_relative 'rubocop/ext/regexp_node'
+require_relative 'rubocop/ext/regexp_parser'
 
 require_relative 'rubocop/core_ext/string'
 require_relative 'rubocop/ext/processed_source'

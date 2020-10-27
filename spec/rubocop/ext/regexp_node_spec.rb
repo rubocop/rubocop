@@ -96,29 +96,23 @@ RSpec.describe RuboCop::Ext::RegexpNode do
         expect(tree.to_s).to eq('foobaz')
       end
     end
-  end
 
-  describe '#parsed_node_loc' do
-    let(:source) { '/([a-z]+)\d*\s?(?:foo)/' }
+    context 'with a regexp with subexpressions' do
+      let(:source) { '/([a-z]+)\d*\s?(?:foo)/' }
 
-    it 'returns the correct loc for each node in the parsed_tree' do
-      loc_sources = node.parsed_tree.each_expression.map do |regexp_node|
-        node.parsed_tree_expr_loc(regexp_node).source
+      it 'has location information' do
+        nodes = node.parsed_tree.each_expression.map { |exp, _index| exp }
+
+        sources = nodes.map { |n| n.loc.expression.source }
+
+        expect(sources).to eq %w{
+          ([a-z]+) [a-z]+ a-z a z \d* \s? (?:foo) foo
+        }
+
+        loc = nodes[1].loc
+        delim = loc.begin, loc.body, loc.end, loc.quantifier
+        expect(delim.map(&:source)).to eq %w{[ [a-z] ] +}
       end
-
-      expect(loc_sources).to eq(
-        [
-          '([a-z]+)',
-          '[a-z]+',
-          'a-z',
-          'a',
-          'z',
-          '\d*',
-          '\s?',
-          '(?:foo)',
-          'foo'
-        ]
-      )
     end
   end
 end
