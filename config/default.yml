@@ -1659,6 +1659,7 @@ Lint/MultipleComparison:
   Enabled: true
   VersionAdded: '0.47'
   VersionChanged: '1.1'
+  AllowMethodComparison: true
 
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'

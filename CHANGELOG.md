@@ -10,6 +10,7 @@
 * [#7549](https://github.com/rubocop-hq/rubocop/issues/7549): Add new `Style/ArgumentsForwarding` cop. ([@koic][])
 * [#8859](https://github.com/rubocop-hq/rubocop/issues/8859): Add new `Lint/UnmodifiedReduceAccumulator` cop. ([@dvandersluis][])
 * [#8951](https://github.com/rubocop-hq/rubocop/pull/8951): Support auto-correction for `Style/MultipleComparison`. ([@koic][])
+* [#8953](https://github.com/rubocop-hq/rubocop/pull/8953): Add `AllowMethodComparison` option for `Lint/MultipleComparison`. ([@koic][])
 
 ### Bug fixes
 

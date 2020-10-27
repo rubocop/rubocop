@@ -2338,6 +2338,16 @@ x < y && y < z
 10 <= x && x <= 20
 ----
 
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowMethodComparison
+| `true`
+| Boolean
+|===
+
 == Lint/NestedMethodDefinition
 
 |===
