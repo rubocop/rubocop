@@ -75,14 +75,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'auto-corrects even if some lines have space' do
-      expect_offense(
-        ['x = 0',
-         '',
-         '^{} 4 trailing blank lines detected.',
-         '  ',
-         '',
-         '']
-      )
+      expect_offense(<<~RUBY)
+        x = 0
+
+        ^{} 4 trailing blank lines detected.
+        #{trailing_whitespace}
+
+
+      RUBY
       expect_correction("x = 0\n")
     end
   end
@@ -99,13 +99,13 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'registers an offense for multiple trailing blank lines' do
-      expect_offense(
-        ['x = 0',
-         '',
-         '^{} 3 trailing blank lines instead of 1 detected.',
-         '',
-         '']
-      )
+      expect_offense(<<~RUBY)
+        x = 0
+
+        ^{} 3 trailing blank lines instead of 1 detected.
+
+
+      RUBY
 
       expect_correction(<<~RUBY)
         x = 0
@@ -114,13 +114,13 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'registers an offense for multiple blank lines in an empty file' do
-      expect_offense(
-        ['',
-         '',
-         '^{} 3 trailing blank lines instead of 1 detected.',
-         '',
-         '']
-      )
+      expect_offense(<<~RUBY)
+
+
+        ^{} 3 trailing blank lines instead of 1 detected.
+
+
+      RUBY
 
       expect_correction(<<~RUBY)
 

@@ -113,8 +113,6 @@ module RuboCop
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def expect_offense(source, file = nil, severity: nil, **replacements)
-        source = "#{source.join("\n")}\n" if source.is_a?(Array)
-
         source = format_offense(source, **replacements)
         RuboCop::Formatter::DisabledConfigFormatter
           .config_to_allow_offenses = {}
@@ -146,8 +144,6 @@ module RuboCop
       end
 
       def expect_correction(correction, loop: true)
-        correction = "#{correction.join("\n")}\n" if correction.is_a?(Array)
-
         raise '`expect_correction` must follow `expect_offense`' unless @processed_source
 
         iteration = 0
@@ -188,8 +184,6 @@ module RuboCop
       end
 
       def expect_no_offenses(source, file = nil)
-        source = "#{source.join("\n")}\n" if source.is_a?(Array)
-
         offenses = inspect_source(source, file)
 
         expected_annotations = AnnotatedSource.parse(source)

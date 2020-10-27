@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
-  let(:message)          { 'Carriage return character missing.' }
-  let(:detected_message) { 'Carriage return character detected.' }
-
   shared_examples 'all configurations' do
     it 'accepts an empty file' do
       expect_no_offenses('')
@@ -12,6 +9,11 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
 
   shared_examples 'iso-8859-15' do |eol|
     it 'can inspect non-UTF-8 encoded source with proper encoding comment' do
+      # Weird place to have a test on working with non-utf-8 encodings.
+      # Encodings are not specific to the EndOfLine cop, so the test is better
+      # be moved somewhere more general ?
+      # Also working with encodings is actually the responsibility of
+      # 'whitequark/parser' gem, not Rubocop itself so these test really belongs there(?)
       inspect_source_file(<<~RUBY)
         # coding: ISO-8859-15#{eol}
         # Euro symbol: \xa4#{eol}
@@ -27,7 +29,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       if RuboCop::Platform.windows?
         expect_offense(<<~RUBY)
           x=0
-          ^^^ #{message}
+          ^^^ Carriage return character missing.
 
           y=1\r
         RUBY
@@ -36,7 +38,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
           x=0
 
           y=1\r
-          ^^^ #{detected_message}
+          ^^^ Carriage return character detected.
         RUBY
       end
     end
@@ -50,7 +52,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     it 'registers an offense for CR+LF' do
       expect_offense(<<~RUBY)
         x=0
-        ^^^ #{message}
+        ^^^ Carriage return character missing.
 
         y=1\r
       RUBY
@@ -72,7 +74,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       it 'registers only one offense' do
         expect_offense(<<~RUBY)
           x=0
-          ^^^ #{message}
+          ^^^ Carriage return character missing.
 
           y=1
         RUBY
@@ -113,14 +115,14 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
         x=0
 
         y=1\r
-        ^^^ #{detected_message}
+        ^^^ Carriage return character detected.
       RUBY
     end
 
     it 'registers an offense for CR at end of file' do
       expect_offense(<<~RUBY)
         x=0\r
-        ^^^ #{detected_message}
+        ^^^ Carriage return character detected.
       RUBY
     end
 
@@ -136,7 +138,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       it 'registers only one offense' do
         expect_offense(<<~RUBY)
           x=0\r
-          ^^^ #{detected_message}
+          ^^^ Carriage return character detected.
           \r
           y=1
         RUBY

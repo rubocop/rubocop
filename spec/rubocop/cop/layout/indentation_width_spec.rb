@@ -20,9 +20,6 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
   let(:def_end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
   end
-  let(:indented_internal_methods_offense_message) do
-    'Use 2 (not 0) spaces for indented_internal_methods indentation.'
-  end
 
   context 'with Width set to 4' do
     let(:cop_config) { { 'Width' => 4 } }
@@ -1189,13 +1186,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               protected
 
               def f
-              ^{} #{indented_internal_methods_offense_message}
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
 
               private
 
               def g
-              ^{} #{indented_internal_methods_offense_message}
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
             end
           RUBY
@@ -1213,13 +1210,13 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               protected
 
               def f
-              ^{} #{indented_internal_methods_offense_message}
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
 
               private
 
               def g
-              ^{} #{indented_internal_methods_offense_message}
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
             end
           RUBY
@@ -1351,7 +1348,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               private
 
               def bar
-              ^{} #{indented_internal_methods_offense_message}
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
                 puts "bar"
               end
             end

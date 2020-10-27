@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
-  message = 'Unnecessary spacing detected.'
-
   shared_examples 'common behavior' do
     it 'registers an offense and corrects alignment with token ' \
       'not preceded by space' do
@@ -156,74 +154,74 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       <<~RUBY,
         website = "example.org"
         name    = "Jill"
-            ^^^ #{message}
+            ^^^ Unnecessary spacing detected.
       RUBY
 
     'lining up assignments with empty lines and comments in between' =>
       <<~RUBY,
         a   += 1
-         ^^ #{message}
+         ^^ Unnecessary spacing detected.
 
         # Comment
         aa   = 2
-          ^^ #{message}
+          ^^ Unnecessary spacing detected.
         bb   = 3
-          ^^ #{message}
+          ^^ Unnecessary spacing detected.
 
         a  ||= 1
-         ^ #{message}
+         ^ Unnecessary spacing detected.
       RUBY
 
     'aligning with the same character' =>
       <<~RUBY,
         y, m = (year * 12 + (mon - 1) + n).divmod(12)
         m,   = (m + 1)                    .divmod(1)
-                      ^^^^^^^^^^^^^^^^^^^ #{message}
-          ^^ #{message}
+                      ^^^^^^^^^^^^^^^^^^^ Unnecessary spacing detected.
+          ^^ Unnecessary spacing detected.
       RUBY
 
     'lining up different kinds of assignments' =>
       <<~RUBY,
         type_name ||= value.class.name if value
         type_name   = type_name.to_s   if type_name
-                                    ^^ #{message}
-                 ^^ #{message}
+                                    ^^ Unnecessary spacing detected.
+                 ^^ Unnecessary spacing detected.
 
         type_name  = value.class.name if     value
-                                        ^^^^ #{message}
-                 ^ #{message}
+                                        ^^^^ Unnecessary spacing detected.
+                 ^ Unnecessary spacing detected.
         type_name += type_name.to_s   unless type_name
-                                   ^^ #{message}
+                                   ^^ Unnecessary spacing detected.
         a  += 1
-         ^ #{message}
+         ^ Unnecessary spacing detected.
         aa -= 2
       RUBY
 
     'aligning comments on non-adjacent lines' =>
       <<~RUBY,
         include_examples 'aligned',   'var = until',  'test'
-                                                    ^ #{message}
-                                   ^^ #{message}
+                                                    ^ Unnecessary spacing detected.
+                                   ^^ Unnecessary spacing detected.
 
         include_examples 'unaligned', "var = if",     'test'
-                                                 ^^^^ #{message}
+                                                 ^^^^ Unnecessary spacing detected.
       RUBY
 
     'aligning tokens with empty line between' =>
       <<~RUBY,
         unless nochdir
           Dir.chdir "/"    # Release old working directory.
-                       ^^^ #{message}
+                       ^^^ Unnecessary spacing detected.
         end
 
         File.umask 0000    # Ensure sensible umask.
-                       ^^^ #{message}
+                       ^^^ Unnecessary spacing detected.
       RUBY
 
     'aligning long assignment expressions that include line breaks' =>
       <<~RUBY,
         size_attribute_name    = FactoryGirl.create(:attribute,
-                           ^^^ #{message}
+                           ^^^ Unnecessary spacing detected.
                                                     name:   'Size',
                                                     values: %w{small large})
         carrier_attribute_name = FactoryGirl.create(:attribute,
@@ -235,25 +233,25 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       <<~RUBY,
         a_long_var_name = 100 # this is 100
         short_name1     = 2
-                   ^^^^ #{message}
+                   ^^^^ Unnecessary spacing detected.
 
         clear
 
         short_name2     = 2
-                   ^^^^ #{message}
+                   ^^^^ Unnecessary spacing detected.
         a_long_var_name = 100 # this is 100
 
         clear
 
         short_name3     = 2 # this is 2
-                   ^^^^ #{message}
+                   ^^^^ Unnecessary spacing detected.
         a_long_var_name = 100 # this is 100
       RUBY
 
     'aligning trailing comments' =>
       <<~RUBY
         a_long_var_name = 2   # this is 2
-                           ^^ #{message}
+                           ^^ Unnecessary spacing detected.
         a_long_var_name = 100 # this is 100
       RUBY
   }.freeze
@@ -310,7 +308,9 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       let(:allow_comments) { true }
 
       it 'allows it' do
-        expect_no_offenses(src_with_extra[0])
+        expect_no_offenses(<<~RUBY)
+          object.method(argument)  # this is a comment
+        RUBY
       end
 
       context "doesn't interfere with AllowForAlignment" do
@@ -353,12 +353,16 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       let(:allow_comments) { false }
 
       it 'regsiters offense' do
-        expect_offense(src_with_extra)
+        expect_offense(<<~RUBY)
+          object.method(argument)  # this is a comment
+                                 ^ Unnecessary spacing detected.
+        RUBY
       end
 
       it 'does not trigger on only one space before comment' do
-        line = src_with_extra[0].gsub(/\s*#/, ' #')
-        expect_no_offenses(line)
+        expect_no_offenses(<<~RUBY)
+          object.method(argument) # this is a comment
+        RUBY
       end
     end
   end
