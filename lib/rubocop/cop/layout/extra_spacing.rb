@@ -56,8 +56,7 @@ module RuboCop
           aligned = Set[locs.first.line, locs.last.line]
           locs.each_cons(3) do |before, loc, after|
             col = loc.column
-            aligned << loc.line if col == before.column || # rubocop:disable Style/MultipleComparison
-                                   col == after.column
+            aligned << loc.line if col == before.column || col == after.column
           end
           aligned
         end

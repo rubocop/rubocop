@@ -66,6 +66,15 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
     RUBY
   end
 
+  it 'does not register an offense and corrects when using multiple method calls' do
+    expect_no_offenses(<<~RUBY)
+      col = loc.column
+      if col == before.column || col == after.column
+        do_something
+      end
+    RUBY
+  end
+
   it 'does not register an offense for comparing multiple literal strings' do
     expect_no_offenses(<<~RUBY)
       if "a" == "a" || "a" == "c"

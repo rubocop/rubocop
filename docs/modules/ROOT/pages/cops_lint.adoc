@@ -2312,7 +2312,7 @@ named captures.
 | Yes
 | Yes
 | 0.47
-| 0.77
+| 1.1
 |===
 
 In math and Python, we can use `x < y < z` style comparison to compare

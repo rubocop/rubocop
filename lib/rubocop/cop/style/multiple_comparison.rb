@@ -5,6 +5,7 @@ module RuboCop
     module Style
       # This cop checks against comparing a variable with multiple items, where
       # `Array#include?` could be used instead to avoid code repetition.
+      # It accepts comparisons of multiple method calls to avoid unnecessary method calls.
       #
       # @example
       #   # bad
@@ -14,6 +15,7 @@ module RuboCop
       #   # good
       #   a = 'a'
       #   foo if ['a', 'b', 'c'].include?(a)
+      #   foo if a == b.lightweight || a == b.heavyweight
       class MultipleComparison < Base
         MSG = 'Avoid comparing a variable with multiple items ' \
           'in a conditional, use `Array#include?` instead.'
@@ -31,8 +33,8 @@ module RuboCop
 
         def_node_matcher :simple_double_comparison?, '(send $lvar :== $lvar)'
         def_node_matcher :simple_comparison?, <<~PATTERN
-          {(send $lvar :== _)
-           (send _ :== $lvar)}
+          {(send $lvar :== !send)
+           (send !send :== $lvar)}
         PATTERN
 
         def nested_variable_comparison?(node)
