@@ -18,6 +18,7 @@
 * [#8917](https://github.com/rubocop-hq/rubocop/issues/8917): Fix rubocop comment directives handling of cops with multiple levels in department name. ([@fatkodima][])
 * [#8918](https://github.com/rubocop-hq/rubocop/issues/8918): Fix a false positives for `Bundler/DuplicatedGem` when a gem conditionally duplicated within `if-elsif` or `case-when` statements. ([@fatkodima][])
 * [#8933](https://github.com/rubocop-hq/rubocop/pull/8933): Fix an error for `Layout/EmptyLinesAroundAccessModifier` when the first line is a comment. ([@matthieugendreau][])
+* [#8954](https://github.com/rubocop-hq/rubocop/pull/8954): Fix autocorrection for Style/RedundantRegexpCharacterClass with %r. ([@ysakasin][])
 
 ### Changes
 
