@@ -7,6 +7,17 @@ module RuboCop
       # number conversion can cause unexpected error if auto type conversion
       # fails. Cop prefer parsing with number class instead.
       #
+      # Conversion with `Integer`, `Float`, etc. will raise an `ArgumentError`
+      # if given input that is not numeric (eg. an empty string), whereas
+      # `to_i`, etc. will try to convert regardless of input (`''.to_i => 0`).
+      # As such, this cop is disabled by default because it's not necessarily
+      # always correct to raise if a value is not numeric.
+      #
+      # NOTE: Some values cannot be converted properly using one of the `Kernel`
+      # method (for instance, `Time` and `DateTime` values are allowed by this
+      # cop by default). Similarly, Rails' duration methods do not work well
+      # with `Integer()` and can be ignored with `IgnoredMethods`.
+      #
       # @example
       #
       #   # bad
@@ -20,8 +31,19 @@ module RuboCop
       #   Integer('10', 10)
       #   Float('10.2')
       #   Complex('10')
+      #
+      # @example IgnoredMethods: [minutes]
+      #
+      #   # good
+      #   10.minutes.to_i
+      #
+      # @example IgnoredClasses: [Time, DateTime] (default)
+      #
+      #   # good
+      #   Time.now.to_datetime.to_i
       class NumberConversion < Base
         extend AutoCorrector
+        include IgnoredMethods
 
         CONVERSION_METHOD_CLASS_MAPPING = {
           to_i: "#{Integer.name}(%<number_object>s, 10)",
@@ -38,13 +60,9 @@ module RuboCop
           (send $_ ${:to_i :to_f :to_c})
         PATTERN
 
-        def_node_matcher :datetime?, <<~PATTERN
-          (send (const {nil? (cbase)} {:Time :DateTime}) ...)
-        PATTERN
-
         def on_send(node)
           to_method(node) do |receiver, to_method|
-            next if receiver.nil? || date_time_object?(receiver)
+            next if receiver.nil? || ignore_receiver?(receiver)
 
             message = format(
               MSG,
@@ -60,18 +78,33 @@ module RuboCop
 
         private
 
-        def date_time_object?(node)
-          child = node
-          while child&.send_type?
-            return true if datetime? child
-
-            child = child.children[0]
-          end
-        end
-
         def correct_method(node, receiver)
           format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name],
                  number_object: receiver.source)
+        end
+
+        def ignore_receiver?(receiver)
+          if receiver.send_type? && ignored_method?(receiver.method_name)
+            true
+          elsif (receiver = top_receiver(receiver))
+            receiver.const_type? && ignored_class?(receiver.const_name)
+          else
+            false
+          end
+        end
+
+        def top_receiver(node)
+          receiver = node
+          receiver = receiver.receiver until receiver.receiver.nil?
+          receiver
+        end
+
+        def ignored_classes
+          cop_config.fetch('IgnoredClasses', [])
+        end
+
+        def ignored_class?(name)
+          ignored_classes.include?(name.to_s)
         end
       end
     end
