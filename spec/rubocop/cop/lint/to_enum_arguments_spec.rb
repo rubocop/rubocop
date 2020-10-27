@@ -106,11 +106,10 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments do
     RUBY
   end
 
-  it 'registers an offense when enumerator is created for another method' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when enumerator is created for another method' do
+    expect_no_offenses(<<~RUBY)
       def m(x)
-        return to_enum(:not_m) unless block_given?
-               ^^^^^^^^^^^^^^^ Ensure you correctly provided all the arguments.
+        return to_enum(:not_m, x)
       end
     RUBY
   end

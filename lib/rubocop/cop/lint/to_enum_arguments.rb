@@ -33,11 +33,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[to_enum enum_for].freeze
 
         def_node_matcher :enum_conversion_call?, <<~PATTERN
-          (send {nil? self} {:to_enum :enum_for} $_ $...)
-        PATTERN
-
-        def_node_matcher :method_name?, <<~PATTERN
-          {(send nil? :__method__) (sym %1)}
+          (send {nil? self} {:to_enum :enum_for} _ $...)
         PATTERN
 
         def_node_matcher :passing_keyword_arg?, <<~PATTERN
@@ -49,9 +45,8 @@ module RuboCop
           def_node = node.each_ancestor(:def, :defs).first
           return unless def_node
 
-          enum_conversion_call?(node) do |method_node, arguments|
-            add_offense(node) unless method_name?(method_node, def_node.method_name) &&
-                                     arguments_match?(arguments, def_node)
+          enum_conversion_call?(node) do |arguments|
+            add_offense(node) unless arguments_match?(arguments, def_node)
           end
         end
 
