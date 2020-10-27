@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MultipleComparison do
+RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
   subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
 
   it 'does not register an offense for comparing an lvar' do
     expect_no_offenses(<<~RUBY)
@@ -100,15 +98,6 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
     RUBY
   end
 
-  it 'does not register an offense and corrects when using multiple method calls' do
-    expect_no_offenses(<<~RUBY)
-      col = loc.column
-      if col == before.column || col == after.column
-        do_something
-      end
-    RUBY
-  end
-
   it 'does not register an offense for comparing multiple literal strings' do
     expect_no_offenses(<<~RUBY)
       if "a" == "a" || "a" == "c"
@@ -173,5 +162,39 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison do
         print a
       end
     RUBY
+  end
+
+  context 'when `AllowMethodComparison: true`' do
+    let(:cop_config) { { 'AllowMethodComparison' => true } }
+
+    it 'does not register an offense when using multiple method calls' do
+      expect_no_offenses(<<~RUBY)
+        col = loc.column
+        if col == before.column || col == after.column
+          do_something
+        end
+      RUBY
+    end
+  end
+
+  context 'when `AllowMethodComparison: false`' do
+    let(:cop_config) { { 'AllowMethodComparison' => false } }
+
+    it 'registers an offense and corrects when using multiple method calls' do
+      expect_offense(<<~RUBY)
+        col = loc.column
+        if col == before.column || col == after.column
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+          do_something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        col = loc.column
+        if [before.column, after.column].include?(col)
+          do_something
+        end
+      RUBY
+    end
   end
 end

@@ -6075,7 +6075,8 @@ end
 
 This cop checks against comparing a variable with multiple items, where
 `Array#include?` could be used instead to avoid code repetition.
-It accepts comparisons of multiple method calls to avoid unnecessary method calls.
+It accepts comparisons of multiple method calls to avoid unnecessary method calls
+by default. It can be configured by `AllowMethodComparison` option.
 
 === Examples
 
@@ -6089,6 +6090,25 @@ foo if a == 'a' || a == 'b' || a == 'c'
 a = 'a'
 foo if ['a', 'b', 'c'].include?(a)
 foo if a == b.lightweight || a == b.heavyweight
+----
+
+==== AllowMethodComparison: true (default)
+
+[source,ruby]
+----
+# good
+foo if a == b.lightweight || a == b.heavyweight
+----
+
+==== AllowMethodComparison: false
+
+[source,ruby]
+----
+# bad
+foo if a == b.lightweight || a == b.heavyweight
+
+# good
+foo if [b.lightweight, b.heavyweight].include?(a)
 ----
 
 == Style/MutableConstant

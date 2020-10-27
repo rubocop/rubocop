@@ -5,7 +5,8 @@ module RuboCop
     module Style
       # This cop checks against comparing a variable with multiple items, where
       # `Array#include?` could be used instead to avoid code repetition.
-      # It accepts comparisons of multiple method calls to avoid unnecessary method calls.
+      # It accepts comparisons of multiple method calls to avoid unnecessary method calls
+      # by default. It can be configured by `AllowMethodComparison` option.
       #
       # @example
       #   # bad
@@ -16,6 +17,17 @@ module RuboCop
       #   a = 'a'
       #   foo if ['a', 'b', 'c'].include?(a)
       #   foo if a == b.lightweight || a == b.heavyweight
+      #
+      # @example AllowMethodComparison: true (default)
+      #   # good
+      #   foo if a == b.lightweight || a == b.heavyweight
+      #
+      # @example AllowMethodComparison: false
+      #   # bad
+      #   foo if a == b.lightweight || a == b.heavyweight
+      #
+      #   # good
+      #   foo if [b.lightweight, b.heavyweight].include?(a)
       class MultipleComparison < Base
         extend AutoCorrector
 
@@ -44,10 +56,10 @@ module RuboCop
 
         def_node_matcher :simple_double_comparison?, '(send $lvar :== $lvar)'
         def_node_matcher :simple_comparison_lhs?, <<~PATTERN
-          (send $lvar :== $!send)
+          (send $lvar :== $_)
         PATTERN
         def_node_matcher :simple_comparison_rhs?, <<~PATTERN
-          (send $!send :== $lvar)
+          (send $_ :== $lvar)
         PATTERN
 
         def nested_variable_comparison?(node)
@@ -71,6 +83,8 @@ module RuboCop
             return [variable_name(var1), variable_name(var2)]
           end
           if (var, obj = simple_comparison_lhs?(node)) || (obj, var = simple_comparison_rhs?(node))
+            return [] if allow_method_comparison? && obj.send_type?
+
             @compared_elements << obj.source
             return [variable_name(var)]
           end
@@ -102,6 +116,10 @@ module RuboCop
           else
             or_node
           end
+        end
+
+        def allow_method_comparison?
+          cop_config.fetch('AllowMethodComparison', true)
         end
       end
     end
