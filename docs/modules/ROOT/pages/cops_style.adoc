@@ -8230,6 +8230,12 @@ r = /[\s]/
 # good
 r = /\s/
 
+# bad
+r = %r{/[b]}
+
+# good
+r = %r{/b}
+
 # good
 r = /[ab]/
 ----

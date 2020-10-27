@@ -19,6 +19,12 @@ module RuboCop
       #   # good
       #   r = /\s/
       #
+      #   # bad
+      #   r = %r{/[b]}
+      #
+      #   # good
+      #   r = %r{/b}
+      #
       #   # good
       #   r = /[ab]/
       class RedundantRegexpCharacterClass < Base
@@ -48,9 +54,7 @@ module RuboCop
           each_single_element_character_class(node) do |char_class|
             next unless redundant_single_element_character_class?(node, char_class)
 
-            begin_pos = 1 + char_class.ts
-            end_pos = begin_pos + char_class.expressions.first.text.length + 1
-            yield node.loc.begin.adjust(begin_pos: begin_pos, end_pos: end_pos)
+            yield char_class.loc.body
           end
         end
 

@@ -69,6 +69,74 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass do
     end
   end
 
+  context 'with %r{} regexp' do
+    context 'with a character class containing a single character' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo = %r{[a]}
+                   ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = %r{a}
+        RUBY
+      end
+    end
+
+    context 'with multiple character classes containing single characters' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo = %r{[a]b[c]d}
+                   ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+                       ^^^ Redundant single-element character class, `[c]` can be replaced with `c`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = %r{abcd}
+        RUBY
+      end
+    end
+
+    context 'with a character class containing a single character inside a group' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo = %r{([a])}
+                    ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = %r{(a)}
+        RUBY
+      end
+    end
+
+    context 'with a character class containing a single character before `+` quantifier' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo = %r{[a]+}
+                   ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = %r{a+}
+        RUBY
+      end
+    end
+
+    context 'with a character class containing a single character before `{n,m}` quantifier' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo = %r{[a]{2,10}}
+                   ^^^ Redundant single-element character class, `[a]` can be replaced with `a`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = %r{a{2,10}}
+        RUBY
+      end
+    end
+  end
+
   context 'with a character class containing a single range' do
     it 'does not register an offense' do
       expect_no_offenses('foo = /[a-z]/')
