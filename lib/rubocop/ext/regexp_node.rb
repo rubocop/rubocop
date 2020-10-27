@@ -10,15 +10,14 @@ module RuboCop
       end
       private_constant :ANY
 
-      class << self
-        attr_reader :parsed_cache
-      end
-      @parsed_cache = {}
-
       # @return [Regexp::Expression::Root, nil]
-      def parsed_tree
+      attr_reader :parsed_tree
+
+      def assign_properties(*)
+        super
+
         str = with_interpolations_blanked
-        Ext::RegexpNode.parsed_cache[str] ||= begin
+        @parsed_tree = begin
           Regexp::Parser.parse(str, options: options)
         rescue StandardError
           nil
