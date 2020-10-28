@@ -150,79 +150,110 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   end
 
   sources = {
-    'lining up assignments' => <<~RUBY,
-      website = "example.org"
-      name    = "Jill"
-    RUBY
+    'lining up assignments' =>
+      <<~RUBY,
+        website = "example.org"
+        name    = "Jill"
+            ^^^ Unnecessary spacing detected.
+      RUBY
 
     'lining up assignments with empty lines and comments in between' =>
-    <<~RUBY,
-      a   += 1
+      <<~RUBY,
+        a   += 1
+         ^^ Unnecessary spacing detected.
 
-      # Comment
-      aa   = 2
-      bb   = 3
+        # Comment
+        aa   = 2
+          ^^ Unnecessary spacing detected.
+        bb   = 3
+          ^^ Unnecessary spacing detected.
 
-      a  ||= 1
-    RUBY
+        a  ||= 1
+         ^ Unnecessary spacing detected.
+      RUBY
 
-    'aligning with the same character' => <<-RUBY.strip_margin('|'),
-      |      y, m = (year * 12 + (mon - 1) + n).divmod(12)
-      |      m,   = (m + 1)                    .divmod(1)
-    RUBY
+    'aligning with the same character' =>
+      <<~RUBY,
+        y, m = (year * 12 + (mon - 1) + n).divmod(12)
+        m,   = (m + 1)                    .divmod(1)
+                      ^^^^^^^^^^^^^^^^^^^ Unnecessary spacing detected.
+          ^^ Unnecessary spacing detected.
+      RUBY
 
-    'lining up different kinds of assignments' => <<~RUBY,
-      type_name ||= value.class.name if value
-      type_name   = type_name.to_s   if type_name
+    'lining up different kinds of assignments' =>
+      <<~RUBY,
+        type_name ||= value.class.name if value
+        type_name   = type_name.to_s   if type_name
+                                    ^^ Unnecessary spacing detected.
+                 ^^ Unnecessary spacing detected.
 
-      type_name  = value.class.name if     value
-      type_name += type_name.to_s   unless type_name
+        type_name  = value.class.name if     value
+                                        ^^^^ Unnecessary spacing detected.
+                 ^ Unnecessary spacing detected.
+        type_name += type_name.to_s   unless type_name
+                                   ^^ Unnecessary spacing detected.
+        a  += 1
+         ^ Unnecessary spacing detected.
+        aa -= 2
+      RUBY
 
-      a  += 1
-      aa -= 2
-    RUBY
+    'aligning comments on non-adjacent lines' =>
+      <<~RUBY,
+        include_examples 'aligned',   'var = until',  'test'
+                                                    ^ Unnecessary spacing detected.
+                                   ^^ Unnecessary spacing detected.
 
-    'aligning comments on non-adjacent lines' => <<~RUBY,
-      include_examples 'aligned',   'var = until',  'test'
+        include_examples 'unaligned', "var = if",     'test'
+                                                 ^^^^ Unnecessary spacing detected.
+      RUBY
 
-      include_examples 'unaligned', "var = if",     'test'
-    RUBY
+    'aligning tokens with empty line between' =>
+      <<~RUBY,
+        unless nochdir
+          Dir.chdir "/"    # Release old working directory.
+                       ^^^ Unnecessary spacing detected.
+        end
 
-    'aligning = on lines where there are trailing comments' =>
-    <<~RUBY,
-      a_long_var_name = 100 # this is 100
-      short_name1     = 2
-
-      clear
-
-      short_name2     = 2
-      a_long_var_name = 100 # this is 100
-
-      clear
-
-      short_name3     = 2   # this is 2
-      a_long_var_name = 100 # this is 100
-    RUBY
-
-    # WARNING: see mention in tests for AllowBeforeTrailingComments
-    # before modifying this test case, or its name
-    'aligning tokens with empty line between' => <<~RUBY,
-      unless nochdir
-        Dir.chdir "/"    # Release old working directory.
-      end
-
-      File.umask 0000    # Ensure sensible umask.
-    RUBY
+        File.umask 0000    # Ensure sensible umask.
+                       ^^^ Unnecessary spacing detected.
+      RUBY
 
     'aligning long assignment expressions that include line breaks' =>
-    <<~RUBY
-      size_attribute_name    = FactoryGirl.create(:attribute,
-                                                  name:   'Size',
-                                                  values: %w{small large})
-      carrier_attribute_name = FactoryGirl.create(:attribute,
-                                                  name:   'Carrier',
-                                                  values: %w{verizon})
-    RUBY
+      <<~RUBY,
+        size_attribute_name    = FactoryGirl.create(:attribute,
+                           ^^^ Unnecessary spacing detected.
+                                                    name:   'Size',
+                                                    values: %w{small large})
+        carrier_attribute_name = FactoryGirl.create(:attribute,
+                                                    name:   'Carrier',
+                                                    values: %w{verizon})
+      RUBY
+
+    'aligning = on lines where there are trailing comments' =>
+      <<~RUBY,
+        a_long_var_name = 100 # this is 100
+        short_name1     = 2
+                   ^^^^ Unnecessary spacing detected.
+
+        clear
+
+        short_name2     = 2
+                   ^^^^ Unnecessary spacing detected.
+        a_long_var_name = 100 # this is 100
+
+        clear
+
+        short_name3     = 2 # this is 2
+                   ^^^^ Unnecessary spacing detected.
+        a_long_var_name = 100 # this is 100
+      RUBY
+
+    'aligning trailing comments' =>
+      <<~RUBY
+        a_long_var_name = 2   # this is 2
+                           ^^ Unnecessary spacing detected.
+        a_long_var_name = 100 # this is 100
+      RUBY
   }.freeze
 
   context 'when AllowForAlignment is true' do
@@ -236,7 +267,8 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       sources.each do |reason, src|
         context "such as #{reason}" do
           it 'allows it' do
-            expect_no_offenses(src)
+            src_without_annotations = src.gsub(/^ +\^.+\n/, '')
+            expect_no_offenses(src_without_annotations)
           end
         end
       end
@@ -254,8 +286,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       sources.each do |reason, src|
         context "such as #{reason}" do
           it 'registers offense(s)' do
-            offenses = inspect_source(src)
-            expect(offenses.empty?).to be(false)
+            expect_offense(src)
           end
         end
       end
@@ -268,13 +299,18 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       { 'AllowForAlignment' => allow_alignment,
         'AllowBeforeTrailingComments' => allow_comments }
     end
-    let(:src_with_extra) { '  object.method(argument)  # this is a comment' }
+    let(:src_with_extra) do
+      ['  object.method(argument)  # this is a comment',
+       '                         ^ Unnecessary spacing detected.']
+    end
 
     context 'true' do
       let(:allow_comments) { true }
 
       it 'allows it' do
-        expect_no_offenses(src_with_extra)
+        expect_no_offenses(<<~RUBY)
+          object.method(argument)  # this is a comment
+        RUBY
       end
 
       context "doesn't interfere with AllowForAlignment" do
@@ -284,7 +320,8 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           sources.each do |reason, src|
             context "such as #{reason}" do
               it 'allows it' do
-                expect_no_offenses(src)
+                src_without_annotations = src.gsub(/^ +\^.+\n/, '')
+                expect_no_offenses(src_without_annotations)
               end
             end
           end
@@ -294,15 +331,16 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           sources.each do |reason, src|
             context "such as #{reason}" do
               it 'registers offense(s)' do
-                offenses = inspect_source(src)
-                # In this one specific test case, the extra space in question
+                # In these specific test cases, the extra space in question
                 # is to align comments, so it would be allowed by EITHER ONE
                 # being true.  Yes, that means technically it interferes a bit,
                 # but specifically in the way it was intended to.
-                if reason == 'aligning tokens with empty line between'
-                  expect(offenses.empty?).to be(true)
+                if ['aligning tokens with empty line between',
+                    'aligning trailing comments'].include?(reason)
+                  src_without_annotations = src.gsub(/^ +\^.+\n/, '')
+                  expect_no_offenses(src_without_annotations)
                 else
-                  expect(offenses.empty?).to be(false)
+                  expect_offense(src)
                 end
               end
             end
@@ -315,13 +353,16 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       let(:allow_comments) { false }
 
       it 'regsiters offense' do
-        offenses = inspect_source(src_with_extra)
-        expect(offenses.empty?).to be(false)
+        expect_offense(<<~RUBY)
+          object.method(argument)  # this is a comment
+                                 ^ Unnecessary spacing detected.
+        RUBY
       end
 
       it 'does not trigger on only one space before comment' do
-        src_without_extra = src_with_extra.gsub(/\s*#/, ' #')
-        expect_no_offenses(src_without_extra)
+        expect_no_offenses(<<~RUBY)
+          object.method(argument) # this is a comment
+        RUBY
       end
     end
   end

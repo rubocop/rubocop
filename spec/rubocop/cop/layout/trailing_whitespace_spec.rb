@@ -4,62 +4,85 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
   let(:cop_config) { { 'AllowInHeredoc' => false } }
 
   it 'registers an offense for a line ending with space' do
-    offenses = inspect_source('x = 0 ')
-    expect(offenses.size).to eq(1)
+    expect_offense(<<~RUBY)
+      x = 0#{trailing_whitespace}
+           ^ Trailing whitespace detected.
+    RUBY
   end
 
   it 'registers an offense for a blank line with space' do
-    offenses = inspect_source('  ')
-    expect(offenses.size).to eq(1)
+    expect_offense(<<~RUBY)
+      #{trailing_whitespace * 2}
+      ^^ Trailing whitespace detected.
+    RUBY
   end
 
   it 'registers an offense for a line ending with tab' do
-    offenses = inspect_source("x = 0\t")
-    expect(offenses.size).to eq(1)
+    expect_offense(<<~RUBY)
+      x = 0\t
+           ^ Trailing whitespace detected.
+    RUBY
   end
 
   it 'registers an offense for trailing whitespace in a heredoc string' do
-    offenses = inspect_source(['x = <<RUBY',
-                               '  Hi   ',
-                               'RUBY'].join("\n"))
-    expect(offenses.size).to eq(1)
+    expect_offense(<<~RUBY)
+      x = <<HEREDOC
+        Hi#{trailing_whitespace * 3}
+          ^^^ Trailing whitespace detected.
+      HEREDOC
+    RUBY
   end
 
   it 'registers offenses before __END__ but not after' do
-    offenses = inspect_source(["x = 0\t",
-                               ' ',
-                               '__END__',
-                               "x = 0\t"].join("\n"))
-    expect(offenses.map(&:line)).to eq([1, 2])
+    expect_offense(<<~RUBY)
+      x = 0\t
+           ^ Trailing whitespace detected.
+      #{trailing_whitespace}
+      ^ Trailing whitespace detected.
+      __END__
+      x = 0\t
+    RUBY
   end
 
   it 'is not fooled by __END__ within a documentation comment' do
-    offenses = inspect_source(["x = 0\t",
-                               '=begin',
-                               '__END__',
-                               '=end',
-                               "x = 0\t"].join("\n"))
-    expect(offenses.map(&:line)).to eq([1, 5])
+    expect_offense(<<~RUBY)
+      x = 0\t
+           ^ Trailing whitespace detected.
+      =begin
+      __END__
+      =end
+      x = 0\t
+           ^ Trailing whitespace detected.
+    RUBY
   end
 
   it 'is not fooled by heredoc containing __END__' do
-    offenses = inspect_source(['x1 = <<RUBY ',
-                               '__END__',
-                               "x2 = 0\t",
-                               'RUBY',
-                               "x3 = 0\t"].join("\n"))
-    expect(offenses.map(&:line)).to eq([1, 3, 5])
+    expect_offense(<<~RUBY)
+      x1 = <<HEREDOC#{trailing_whitespace}
+                    ^ Trailing whitespace detected.
+      __END__
+      x2 = 0\t
+            ^ Trailing whitespace detected.
+      HEREDOC
+      x3 = 0\t
+            ^ Trailing whitespace detected.
+    RUBY
   end
 
   it 'is not fooled by heredoc containing __END__ within a doc comment' do
-    offenses = inspect_source(['x1 = <<RUBY ',
-                               '=begin  ',
-                               '__END__',
-                               '=end',
-                               "x2 = 0\t",
-                               'RUBY',
-                               "x3 = 0\t"].join("\n"))
-    expect(offenses.map(&:line)).to eq([1, 2, 5, 7])
+    expect_offense(<<~RUBY)
+      x1 = <<HEREDOC#{trailing_whitespace}
+                    ^ Trailing whitespace detected.
+      =begin#{trailing_whitespace * 2}
+            ^^ Trailing whitespace detected.
+      __END__
+      =end
+      x2 = 0\t
+            ^ Trailing whitespace detected.
+      HEREDOC
+      x3 = 0\t
+            ^ Trailing whitespace detected.
+    RUBY
   end
 
   it 'accepts a line without trailing whitespace' do
@@ -67,26 +90,37 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
   end
 
   it 'auto-corrects unwanted space' do
-    new_source = autocorrect_source(['x = 0 ',
-                                     "x = 0\t"].join("\n"))
-    expect(new_source).to eq(['x = 0',
-                              'x = 0'].join("\n"))
+    expect_offense(<<~RUBY)
+      x = 0#{trailing_whitespace}
+           ^ Trailing whitespace detected.
+      x = 0\t
+           ^ Trailing whitespace detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 0
+      x = 0
+    RUBY
   end
 
   context 'when `AllowInHeredoc` is set to true' do
     let(:cop_config) { { 'AllowInHeredoc' => true } }
 
     it 'accepts trailing whitespace in a heredoc string' do
-      expect_no_offenses(['x = <<RUBY',
-                          '  Hi   ',
-                          'RUBY'].join("\n"))
+      expect_no_offenses(<<~RUBY)
+        x = <<HEREDOC
+          Hi#{trailing_whitespace * 3}
+        HEREDOC
+      RUBY
     end
 
     it 'registers an offense for trailing whitespace at the heredoc begin' do
-      offenses = inspect_source(['x = <<RUBY ',
-                                 '  Hi   ',
-                                 'RUBY'].join("\n"))
-      expect(offenses.size).to eq(1)
+      expect_offense(<<~RUBY)
+        x = <<HEREDOC#{trailing_whitespace}
+                     ^ Trailing whitespace detected.
+          Hi#{trailing_whitespace * 3}
+        HEREDOC
+      RUBY
     end
   end
 
