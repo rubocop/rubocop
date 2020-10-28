@@ -44,7 +44,6 @@ module RuboCop
           (pair (sym %1) (lvar %1))
         PATTERN
 
-        # TODO: add support for argument forwarding (`...`) when ruby 3.0 is released
         def on_send(node)
           def_node = node.each_ancestor(:def, :defs).first
           return unless def_node
@@ -85,6 +84,8 @@ module RuboCop
               send_arg.pairs.any? { |pair| passing_keyword_arg?(pair, def_arg_name) }
           when :kwrestarg
             send_arg.each_child_node(:kwsplat).any? { |child| child.source == def_arg.source }
+          when :forward_arg
+            send_arg.forwarded_args_type?
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity

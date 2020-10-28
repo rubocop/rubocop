@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ToEnumArguments do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
   it 'registers an offense when required arg is missing' do
     expect_offense(<<~RUBY)
       def m(x)
@@ -130,5 +128,24 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments do
         return to_enum(:m, x, y, *args, required: required, optional: optional, **kwargs) unless block_given?
       end
     RUBY
+  end
+
+  context 'arguments forwarding', :ruby30 do
+    it 'registers an offense when enumerator is created with non matching arguments' do
+      expect_offense(<<~RUBY)
+        def m(...)
+          return to_enum(:m, x, ...) unless block_given?
+                 ^^^^^^^^^^^^^^^^^^^ Ensure you correctly provided all the arguments.
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when enumerator is created with the correct arguments' do
+      expect_no_offenses(<<~RUBY)
+        def m(...)
+          return to_enum(:m, ...) unless block_given?
+        end
+      RUBY
+    end
   end
 end
