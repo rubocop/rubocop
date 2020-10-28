@@ -4324,6 +4324,12 @@ end
   acc + el * 2
 end
 
+# good, element is returned but modified using the accumulator
+values.reduce do |acc, el|
+  el << acc
+  el
+end
+
 # good, returns the accumulator instead of the index
 %w(a b c).reduce({}) do |acc, letter|
   acc[letter] = true
@@ -4338,7 +4344,8 @@ end
 
 # ignored as the return value cannot be determined
 enum.reduce do |acc, el|
-  x + y
+  x = foo(acc, el)
+  bar(x)
 end
 ----
 

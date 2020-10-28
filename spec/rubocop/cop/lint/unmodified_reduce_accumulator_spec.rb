@@ -4,6 +4,14 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
   subject(:cop) { described_class.new }
 
   shared_examples 'reduce/inject' do |method|
+    it "does not affect #{method} called with no block args" do
+      expect_no_offenses(<<~RUBY)
+        values.#{method} do
+          do_something
+        end
+      RUBY
+    end
+
     it "does not affect #{method} called without a block" do
       expect_no_offenses(<<~RUBY)
         values.#{method}(:+)
@@ -21,8 +29,27 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
       end
 
       it 'registers an offense when returning the element' do
+        aggregate_failures do
+          expect_offense(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              el
+              ^^ Ensure the accumulator `acc` will be modified by `#{method}`.
+            end
+          RUBY
+
+          expect_offense(<<~RUBY)
+            values.#{method}({}) do |acc, el|
+              acc[el] = true
+              el
+              ^^ Ensure the accumulator `acc` will be modified by `#{method}`.
+            end
+          RUBY
+        end
+      end
+
+      it 'registers an offense when called with no argument' do
         expect_offense(<<~RUBY)
-          (1..4).#{method}(0) do |acc, el|
+          (1..4).#{method} do |acc, el|
             el
             ^^ Ensure the accumulator `acc` will be modified by `#{method}`.
           end
@@ -62,19 +89,41 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
       end
 
       it 'does not register an offense when op-assigning the accumulator' do
-        expect_no_offenses(<<~RUBY)
-          (1..4).#{method}(0) do |acc, el|
-            acc += el
-          end
-        RUBY
+        aggregate_failures do
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              acc += 5
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              acc += el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              el += acc
+            end
+          RUBY
+        end
       end
 
       it 'does not register an offense when or-assigning the accumulator' do
-        expect_no_offenses(<<~RUBY)
-          (1..4).#{method}(0) do |acc, el|
-            acc ||= el
-          end
-        RUBY
+        aggregate_failures do
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              acc ||= el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              el ||= acc
+            end
+          RUBY
+        end
       end
 
       it 'does not register an offense when returning the accumulator in a boolean statement' do
@@ -94,17 +143,162 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
       end
 
       it 'does not register an offense when and-assigning the accumulator' do
-        expect_no_offenses(<<~RUBY)
-          (1..4).#{method}(0) do |acc, el|
-            acc &&= el
-          end
-        RUBY
+        aggregate_failures do
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              acc &&= el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              el &&= acc
+            end
+          RUBY
+        end
       end
 
       it 'does not register an offense when shovelling the accumulator' do
-        expect_no_offenses(<<~RUBY)
-          (1..4).#{method}(0) do |acc, el|
+        aggregate_failures do
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              acc << el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              el << acc
+            end
+          RUBY
+        end
+      end
+
+      it 'does not register an offense when mutating the element with the accumulator' do
+        aggregate_failures do
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el.method!(acc, foo)
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              method!(acc, foo, el)
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el << acc
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el << acc.foo
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el += acc
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el += acc.foo
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el &&= acc
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el &&= acc.foo
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el = acc
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el = acc.foo
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              x = acc
+              el << x
+              el
+            end
+          RUBY
+        end
+      end
+
+      it 'does not register an offense when mutating the element with the another value' do
+        aggregate_failures do
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el.method!(foo)
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              method!(foo, el)
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              x = acc
+              el << x
+              el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            values.#{method} do |acc, el|
+              el = x = acc
+              el
+            end
+          RUBY
+        end
+      end
+
+      it 'registers an offense when mutating the accumulator with the element but not returning it' do
+        expect_offense(<<~RUBY)
+          values.#{method} do |acc, el|
+            acc = el
+            acc += el
             acc << el
+            acc &&= el
+            acc.method!(el)
+            el
+            ^^ Ensure the accumulator `acc` will be modified by `#{method}`.
           end
         RUBY
       end
@@ -238,6 +432,12 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
 
           expect_no_offenses(<<~RUBY)
             (1..4).#{method}(0) do |acc, el|
+              self.x + el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
               x + y
             end
           RUBY
@@ -282,10 +482,34 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
           RUBY
 
           expect_no_offenses(<<~RUBY)
-            enum.inject do |acc, elem|
-              x = [*acc, elem]
+            enum.#{method} do |acc, el|
+              x = [*acc, el]
               x << 42 if foo
               x
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              Foo.el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              foo.bar.baz.el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              self.el
+            end
+          RUBY
+
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do |acc, el|
+              "\#{self.el}\#{el}"
             end
           RUBY
         end
