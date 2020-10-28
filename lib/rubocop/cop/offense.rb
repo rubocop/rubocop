@@ -213,7 +213,7 @@ module RuboCop
       #   returns `true` if two offenses contain same attributes
       def ==(other)
         COMPARISON_ATTRIBUTES.all? do |attribute|
-          send(attribute) == other.send(attribute)
+          public_send(attribute) == other.public_send(attribute)
         end
       end
 
@@ -221,7 +221,7 @@ module RuboCop
 
       def hash
         COMPARISON_ATTRIBUTES.reduce(0) do |hash, attribute|
-          hash ^ send(attribute).hash
+          hash ^ public_send(attribute).hash
         end
       end
 
@@ -234,7 +234,7 @@ module RuboCop
       #   comparison result
       def <=>(other)
         COMPARISON_ATTRIBUTES.each do |attribute|
-          result = send(attribute) <=> other.send(attribute)
+          result = public_send(attribute) <=> other.public_send(attribute)
           return result unless result.zero?
         end
         0

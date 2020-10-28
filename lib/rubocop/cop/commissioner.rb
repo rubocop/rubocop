@@ -97,7 +97,7 @@ module RuboCop
       def trigger_responding_cops(callback, node)
         @callbacks[callback]&.each do |cop|
           with_cop_error_handling(cop, node) do
-            cop.send(callback, node)
+            cop.public_send(callback, node)
           end
         end
       end
@@ -133,7 +133,7 @@ module RuboCop
         name = node.method_name
         @restricted_map[event][name]&.each do |cop|
           with_cop_error_handling(cop, node) do
-            cop.send(event, node)
+            cop.public_send(event, node)
           end
         end
       end

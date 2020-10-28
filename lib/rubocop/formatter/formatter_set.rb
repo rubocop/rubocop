@@ -30,7 +30,7 @@ module RuboCop
 
       FORMATTER_APIS.each do |method_name|
         define_method(method_name) do |*args|
-          each { |f| f.send(method_name, *args) }
+          each { |f| f.public_send(method_name, *args) }
         end
       end
 

@@ -1341,7 +1341,7 @@ RSpec.describe RuboCop::ConfigLoader do
           # circumstances.
           it 'does not raise private method load called for SafeYAML:Module' do
             in_its_own_process_with('safe_yaml/load') do
-              SafeYAML.send :private_class_method, :load
+              SafeYAML.public_send :private_class_method, :load
               configuration = described_class.load_file('.rubocop.yml')
 
               word_regexp = configuration['Style/WordArray']['WordRegex']

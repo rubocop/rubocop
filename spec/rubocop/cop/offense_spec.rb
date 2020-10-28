@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Offense do
   %i[severity location message cop_name].each do |a|
     describe "##{a}" do
       it 'is frozen' do
-        expect(offense.send(a).frozen?).to be(true)
+        expect(offense.public_send(a).frozen?).to be(true)
       end
     end
   end
