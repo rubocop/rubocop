@@ -65,7 +65,7 @@ RSpec.describe Changelog do
 
         it 'generates correct content' do
           expect(entry.content).to eq <<~MD
-            * [#567](https://github.com/rubocop-hq/rubocop/pull/567): Do something cool. ([@johndoe][])
+            * [#567](https://github.com/rubocop-hq/rubocop/issues/567): Do something cool. ([@johndoe][])
           MD
         end
       end
