@@ -31,7 +31,7 @@ module RuboCop
         cops.each do |cop|
           next unless cop.respond_to?(method_name)
 
-          cop.send(method_name, *args)
+          cop.public_send(method_name, *args)
         end
       end
 

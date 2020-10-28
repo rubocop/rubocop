@@ -255,7 +255,7 @@ module RuboCop
               PATTERN
             end
 
-            send(matcher_name, child)
+            public_send(matcher_name, child)
           end
         end
 
@@ -279,7 +279,7 @@ module RuboCop
               PATTERN
             end
 
-            send(matcher_name, child)
+            public_send(matcher_name, child)
           end
         end
       end
