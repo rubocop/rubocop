@@ -21,9 +21,10 @@ class Changelog
 
   # New entry
   Entry = Struct.new(:type, :body, :ref_type, :ref_id, :user, keyword_init: true) do
-    def initialize(type:, body: last_commit_title, ref_type: :pull, ref_id: nil, user: github_user)
+    def initialize(type:, body: last_commit_title, ref_type: nil, ref_id: nil, user: github_user)
       id, body = extract_id(body)
       ref_id ||= id || 'x'
+      ref_type ||= id ? :issues : :pull
       super
     end
 
