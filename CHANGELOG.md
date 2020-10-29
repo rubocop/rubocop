@@ -11,24 +11,24 @@
 * [#8859](https://github.com/rubocop-hq/rubocop/issues/8859): Add new `Lint/UnmodifiedReduceAccumulator` cop. ([@dvandersluis][])
 * [#8951](https://github.com/rubocop-hq/rubocop/pull/8951): Support auto-correction for `Style/MultipleComparison`. ([@koic][])
 * [#8953](https://github.com/rubocop-hq/rubocop/pull/8953): Add `AllowMethodComparison` option for `Lint/MultipleComparison`. ([@koic][])
-
-### Bug fixes
-
-* [#8913](https://github.com/rubocop-hq/rubocop/pull/8913): Fix an incorrect auto-correct for `Style/RedundantRegexpCharacterClass` due to quantifier. ([@ysakasin][])
-* [#8917](https://github.com/rubocop-hq/rubocop/issues/8917): Fix rubocop comment directives handling of cops with multiple levels in department name. ([@fatkodima][])
-* [#8918](https://github.com/rubocop-hq/rubocop/issues/8918): Fix a false positives for `Bundler/DuplicatedGem` when a gem conditionally duplicated within `if-elsif` or `case-when` statements. ([@fatkodima][])
-* [#8933](https://github.com/rubocop-hq/rubocop/pull/8933): Fix an error for `Layout/EmptyLinesAroundAccessModifier` when the first line is a comment. ([@matthieugendreau][])
-* [#8954](https://github.com/rubocop-hq/rubocop/pull/8954): Fix autocorrection for Style/RedundantRegexpCharacterClass with %r. ([@ysakasin][])
+* [#8960](https://github.com/rubocop-hq/rubocop/pull/8960): Add `Regexp::Expression#loc` and `#expression` to replace `parsed_tree_expr_loc`. ([@marcandre][])
+* [#8930](https://github.com/rubocop-hq/rubocop/pull/8930): Add rake tasks for alternative way to specify Changelog entries. ([@marcandre][])
+* [#8940](https://github.com/rubocop-hq/rubocop/pull/8940): Add new `Style/DocumentDynamicEvalDefinition` cop. ([@fatkodima][])
+* [#7753](https://github.com/rubocop-hq/rubocop/issues/7753): Add new `Lint/ToEnumArguments` cop. ([@fatkodima][])
 
 ### Bug fixes
 
 * [#8921](https://github.com/rubocop-hq/rubocop/pull/8921): Prevent `Lint/LiteralInInterpolation` from removing necessary interpolation in `%W[]` and `%I[]` literals. ([@knu][])
+* [#8708](https://github.com/rubocop-hq/rubocop/pull/8708): Fix bad regexp recognition in `Lint/OutOfRangeRegexpRef` when there are multiple regexps. ([@dvandersluis][])
+* [#8945](https://github.com/rubocop-hq/rubocop/pull/8945): Fix changelog task to build a correct changelog item when `Fix #123` is encountered. ([@dvandersluis][])
+* [#8914](https://github.com/rubocop-hq/rubocop/pull/8914): Fix autocorrection for `Layout/TrailingWhitespace` in heredocs. ([@marcandre][])
 
 ### Changes
 
 * [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
 * [#8919](https://github.com/rubocop-hq/rubocop/issues/8919): Require RuboCop AST to 1.0.1 or higher. ([@koic][])
 * [#8939](https://github.com/rubocop-hq/rubocop/pull/8939): Accept comparisons of multiple method calls for `Style/MultipleComparison`. ([@koic][])
+* [#8950](https://github.com/rubocop-hq/rubocop/issues/8950): Add `IgnoredMethods` and `IgnoredClasses` to `Lint/NumberConversion`. ([@dvandersluis][])
 
 ## 1.0.0 (2020-10-21)
 
