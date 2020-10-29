@@ -97,10 +97,10 @@ module RuboCop
         end
 
         def no_mixed_keys_check(pairs)
-          if !sym_indices?(pairs)
-            check(pairs, ':', MSG_NO_MIXED_KEYS)
-          else
+          if sym_indices?(pairs)
             check(pairs, pairs.first.inverse_delimiter, MSG_NO_MIXED_KEYS)
+          else
+            check(pairs, ':', MSG_NO_MIXED_KEYS)
           end
         end
 

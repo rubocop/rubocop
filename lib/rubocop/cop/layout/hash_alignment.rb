@@ -296,13 +296,13 @@ module RuboCop
           # just give each lambda the same reference and they would all get the
           # last value of each. A local variable fixes the problem.
 
-          if !node.value
-            delta_value = delta[:key] || 0
-            correct_no_value(corrector, delta_value, node.source_range)
-          else
+          if node.value
             correct_key_value(corrector, delta, node.key.source_range,
                               node.value.source_range,
                               node.loc.operator)
+          else
+            delta_value = delta[:key] || 0
+            correct_no_value(corrector, delta_value, node.source_range)
           end
         end
 

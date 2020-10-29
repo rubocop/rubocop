@@ -442,6 +442,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylemultiplecomparison[Style/MultipleComparison]
 * xref:cops_style.adoc#stylemutableconstant[Style/MutableConstant]
 * xref:cops_style.adoc#stylenegatedif[Style/NegatedIf]
+* xref:cops_style.adoc#stylenegatedifelsecondition[Style/NegatedIfElseCondition]
 * xref:cops_style.adoc#stylenegatedunless[Style/NegatedUnless]
 * xref:cops_style.adoc#stylenegatedwhile[Style/NegatedWhile]
 * xref:cops_style.adoc#stylenestedmodifier[Style/NestedModifier]

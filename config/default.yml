@@ -3611,6 +3611,13 @@ Style/NegatedIf:
     - prefix
     - postfix
 
+Style/NegatedIfElseCondition:
+  Description: >-
+                This cop checks for uses of `if-else` and ternary operators with a negated condition
+                which can be simplified by inverting condition and swapping branches.
+  Enabled: pending
+  VersionAdded: '1.2'
+
 Style/NegatedUnless:
   Description: 'Favor if over unless for negative conditions.'
   StyleGuide: '#if-for-negatives'
