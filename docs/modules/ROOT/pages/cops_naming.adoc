@@ -391,9 +391,9 @@ anything/using_snake_case.rake
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.50
-| -
+| 1.2
 |===
 
 This cop checks that your heredocs are using the configured case.

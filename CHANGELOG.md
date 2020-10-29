@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8983](https://github.com/rubocop-hq/rubocop/pull/8983): Support auto-correction for `Naming/HeredocDelimiterCase`. ([@koic][])
+
 ### Bug fixes
 
 * [#8912](https://github.com/rubocop-hq/rubocop/pull/8912): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks with assignment. ([@miry][])

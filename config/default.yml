@@ -2287,6 +2287,7 @@ Naming/HeredocDelimiterCase:
   StyleGuide: '#heredoc-delimiters'
   Enabled: true
   VersionAdded: '0.50'
+  VersionChanged: '1.2'
   EnforcedStyle: uppercase
   SupportedStyles:
     - lowercase
