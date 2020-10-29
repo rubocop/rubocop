@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.1.0 (2020-10-29)
+
 ### New features
 
 * [#8896](https://github.com/rubocop-hq/rubocop/pull/8896): Add new `Lint/DuplicateRegexpCharacterClassElement` cop. ([@owst][])
@@ -26,7 +28,7 @@
 ### Changes
 
 * [#8920](https://github.com/rubocop-hq/rubocop/pull/8920): Remove Capybara's `save_screenshot` from `Lint/Debugger`. ([@ybiquitous][])
-* [#8919](https://github.com/rubocop-hq/rubocop/issues/8919): Require RuboCop AST to 1.0.1 or higher. ([@koic][])
+* [#8919](https://github.com/rubocop-hq/rubocop/issues/8919): Require RuboCop AST 1.0.1 or higher. ([@koic][])
 * [#8939](https://github.com/rubocop-hq/rubocop/pull/8939): Accept comparisons of multiple method calls for `Style/MultipleComparison`. ([@koic][])
 * [#8950](https://github.com/rubocop-hq/rubocop/issues/8950): Add `IgnoredMethods` and `IgnoredClasses` to `Lint/NumberConversion`. ([@dvandersluis][])
 

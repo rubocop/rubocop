@@ -50,7 +50,7 @@ To prevent an unwanted RuboCop update you might want to use a conservative versi
 in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 1.0', require: false
+gem 'rubocop', '~> 1.1', require: false
 ```
 
 See [versioning](https://docs.rubocop.org/rubocop/1.0/versioning.html) for further details.
