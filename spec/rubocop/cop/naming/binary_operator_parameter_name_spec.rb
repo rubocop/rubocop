@@ -3,24 +3,36 @@
 RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for `#+` when argument is not named other' do
+  it 'registers an offense and corrects for `#+` when argument is not named other' do
     expect_offense(<<~RUBY)
       def +(foo); end
             ^^^ When defining the `+` operator, name its argument `other`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      def +(other); end
+    RUBY
   end
 
-  it 'registers an offense for `#eql?` when argument is not named other' do
+  it 'registers an offense and corrects for `#eql?` when argument is not named other' do
     expect_offense(<<~RUBY)
       def eql?(foo); end
                ^^^ When defining the `eql?` operator, name its argument `other`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      def eql?(other); end
+    RUBY
   end
 
-  it 'registers an offense for `#equal?` when argument is not named other' do
+  it 'registers an offense and corrects for `#equal?` when argument is not named other' do
     expect_offense(<<~RUBY)
       def equal?(foo); end
                  ^^^ When defining the `equal?` operator, name its argument `other`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def equal?(other); end
     RUBY
   end
 
@@ -29,6 +41,44 @@ RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName do
       def + another
             ^^^^^^^ When defining the `+` operator, name its argument `other`.
         another
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def + other
+        other
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when argument is referenced in method body' do
+    expect_offense(<<~RUBY)
+      def +(arg)
+            ^^^ When defining the `+` operator, name its argument `other`.
+        lvar = 'lvar'
+        do_something(arg, lvar)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def +(other)
+        lvar = 'lvar'
+        do_something(other, lvar)
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when assigned to argument in method body' do
+    expect_offense(<<~RUBY)
+      def +(arg)
+            ^^^ When defining the `+` operator, name its argument `other`.
+        arg = do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def +(other)
+        other = do_something
       end
     RUBY
   end

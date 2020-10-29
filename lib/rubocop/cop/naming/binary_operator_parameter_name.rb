@@ -14,6 +14,8 @@ module RuboCop
       #   # good
       #   def +(other); end
       class BinaryOperatorParameterName < Base
+        extend AutoCorrector
+
         MSG = 'When defining the `%<opr>s` operator, ' \
               'name its argument `other`.'
 
@@ -26,7 +28,15 @@ module RuboCop
 
         def on_def(node)
           op_method_candidate?(node) do |name, arg|
-            add_offense(arg, message: format(MSG, opr: name))
+            add_offense(arg, message: format(MSG, opr: name)) do |corrector|
+              corrector.replace(arg, 'other')
+              node.each_descendant(:lvar, :lvasgn) do |lvar|
+                lvar_location = lvar.loc.name
+                next unless lvar_location.source == arg.source
+
+                corrector.replace(lvar_location, 'other')
+              end
+            end
           end
         end
 
