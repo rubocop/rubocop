@@ -137,10 +137,10 @@ module RuboCop
         def asgn_variable_align_with(outer_node, inner_node)
           expr = outer_node.source_range
 
-          if !line_break_before_keyword?(expr, inner_node)
-            range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
-          else
+          if line_break_before_keyword?(expr, inner_node)
             inner_node.loc.keyword
+          else
+            range_between(expr.begin_pos, inner_node.loc.keyword.end_pos)
           end
         end
 
