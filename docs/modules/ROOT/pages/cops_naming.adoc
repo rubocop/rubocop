@@ -131,9 +131,9 @@ FOÖ = "foo"
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.50
-| -
+| 1.2
 |===
 
 This cop makes sure that certain binary operator methods have their

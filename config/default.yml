@@ -2181,6 +2181,7 @@ Naming/BinaryOperatorParameterName:
   StyleGuide: '#other-arg'
   Enabled: true
   VersionAdded: '0.50'
+  VersionChanged: '1.2'
 
 Naming/BlockParameterName:
   Description: >-
