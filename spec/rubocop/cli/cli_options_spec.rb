@@ -789,6 +789,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe '--display-time' do
+    before do
+      create_file('example1.rb', '')
+    end
+
+    regex = /Finished in [0-9]*\.[0-9]* seconds/
+
+    context 'without --display-time' do
+      it 'does not display elapsed time in seconds' do
+        expect(`rubocop example1.rb`).not_to match(regex)
+      end
+    end
+
+    context 'with --display-time' do
+      it 'displays elapsed time in seconds' do
+        expect(`rubocop --display-time example1.rb`).to match(regex)
+      end
+    end
+  end
+
   describe '-D/--display-cop-names' do
     before do
       create_file('example1.rb', 'puts 0 # rubocop:disable NumericLiterals ')
