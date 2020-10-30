@@ -34,12 +34,24 @@ module RuboCop
           add_offense(node) do |corrector|
             if node.parent.find(&:kwoptarg_type?) == node
               corrector.insert_before(node, "#{kwarg_nodes.map(&:source).join(', ')}, ")
+
+              arguments = node.each_ancestor(:def, :defs).first.arguments
+              append_newline_to_last_kwoptarg(arguments, corrector) unless parentheses?(arguments)
+
               remove_kwargs(kwarg_nodes, corrector)
             end
           end
         end
 
         private
+
+        def append_newline_to_last_kwoptarg(arguments, corrector)
+          last_argument = arguments.last
+          return if last_argument.kwrestarg_type? || last_argument.blockarg_type?
+
+          last_kwoptarg = arguments.reverse.find(&:kwoptarg_type?)
+          corrector.insert_after(last_kwoptarg, "\n")
+        end
 
         def remove_kwargs(kwarg_nodes, corrector)
           kwarg_nodes.each do |kwarg|
