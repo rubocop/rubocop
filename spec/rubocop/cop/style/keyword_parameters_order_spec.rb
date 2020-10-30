@@ -16,6 +16,37 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder do
     RUBY
   end
 
+  it 'registers an offense and corrects when `kwoptarg` is before `kwarg` and argument parentheses omitted' do
+    expect_offense(<<~RUBY)
+      def m arg, optional: 1, required:
+                 ^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m arg, required:, optional: 1
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when multiple `kwoptarg` are before `kwarg` and argument parentheses omitted' do
+    expect_offense(<<~RUBY)
+      def m arg, optional1: 1, optional2: 2, required:
+                               ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+                 ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m arg, required:, optional1: 1, optional2: 2
+        do_something
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when multiple `kwoptarg`s are interleaved with `kwarg`s' do
     expect_offense(<<~RUBY)
       def m(arg, optional1: 1, required1:, optional2: 2, required2:, **rest, &block)
@@ -26,6 +57,40 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder do
 
     expect_correction(<<~RUBY)
       def m(arg, required1:, required2:, optional1: 1, optional2: 2, **rest, &block)
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when multiple `kwoptarg`s are interleaved with `kwarg`s' \
+    'and last argument is `kwrestarg` and argument parentheses omitted' do
+    expect_offense(<<~RUBY)
+      def m arg, optional1: 1, required1:, optional2: 2, required2:, **rest
+                 ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+                                           ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m arg, required1:, required2:, optional1: 1, optional2: 2, **rest
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when multiple `kwoptarg`s are interleaved with `kwarg`s' \
+    'and last argument is `blockarg` and argument parentheses omitted' do
+    expect_offense(<<~RUBY)
+      def m arg, optional1: 1, required1:, optional2: 2, required2:, **rest, &block
+                 ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+                                           ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m arg, required1:, required2:, optional1: 1, optional2: 2, **rest, &block
+        do_something
       end
     RUBY
   end

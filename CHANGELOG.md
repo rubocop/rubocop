@@ -6,6 +6,7 @@
 
 * [#8912](https://github.com/rubocop-hq/rubocop/pull/8912): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks with assignment. ([@miry][])
 * [#8971](https://github.com/rubocop-hq/rubocop/issues/8971): Fix a false alarm for `# rubocop:disable Lint/EmptyBlock` inline comment with `Lint/RedundantCopDisableDirective`. ([@koic][])
+* [#8976](https://github.com/rubocop-hq/rubocop/issues/8976): Fix an incorrect auto-correct for `Style/KeywordParametersOrder` when when `kwoptarg` is before `kwarg` and argument parentheses omitted. ([@koic][])
 
 ## 1.1.0 (2020-10-29)
 
