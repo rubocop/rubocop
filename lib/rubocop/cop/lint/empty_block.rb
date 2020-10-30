@@ -35,10 +35,23 @@ module RuboCop
 
         def on_block(node)
           return if node.body
-          return if cop_config['AllowComments'] &&
-                    processed_source.contains_comment?(node.source_range)
+          return if cop_config['AllowComments'] && allow_comment?(node)
 
           add_offense(node)
+        end
+
+        private
+
+        def allow_comment?(node)
+          return false unless processed_source.contains_comment?(node.source_range)
+
+          line_comment = processed_source.comment_at_line(node.source_range.line)
+          !line_comment || !comment_disables_cop?(line_comment.loc.expression.source)
+        end
+
+        def comment_disables_cop?(comment)
+          regexp_pattern = "# rubocop : (disable|todo) ([^,],)* (all|#{cop_name})"
+          Regexp.new(regexp_pattern.gsub(' ', '\s*')).match?(comment)
         end
       end
     end
