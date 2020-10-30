@@ -2993,7 +2993,7 @@ Style/DoubleNegation:
   StyleGuide: '#no-bang-bang'
   Enabled: true
   VersionAdded: '0.19'
-  VersionChanged: '0.84'
+  VersionChanged: '1.2'
   EnforcedStyle: allowed_in_returns
   SafeAutoCorrect: false
   SupportedStyles:

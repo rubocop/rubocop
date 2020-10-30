@@ -2497,9 +2497,9 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes (Unsafe)
 | 0.19
-| 0.84
+| 1.2
 |===
 
 This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
