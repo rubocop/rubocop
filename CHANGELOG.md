@@ -92,6 +92,7 @@
 * [#8668](https://github.com/rubocop-hq/rubocop/pull/8668): Add new `Lint/RedundantSafeNavigation` cop. ([@fatkodima][])
 * [#8842](https://github.com/rubocop-hq/rubocop/issues/8842): Add notification about cache being used to debug mode. ([@hatkyinc2][])
 * [#8822](https://github.com/rubocop-hq/rubocop/pull/8822): Make `Style/RedundantBegin` aware of `begin` without `rescue` or `ensure`. ([@koic][])
+* [#7940](https://github.com/rubocop-hq/rubocop/pull/7940): Add new `Lint/NoReturnInBeginEndBlocks` cop. ([@jcfausto][])
 
 ### Bug fixes
 
@@ -5013,6 +5014,7 @@
 [@DracoAter]: https://github.com/DracoAter
 [@diogoosorio]: https://github.com/diogoosorio
 [@jeffcarbs]: https://github.com/jeffcarbs
+[@jcfausto]: https://github.com/jcfausto
 [@laurmurclar]: https://github.com/laurmurclar
 [@jethrodaniel]: https://github.com/jethrodaniel
 [@CvX]: https://github.com/CvX
