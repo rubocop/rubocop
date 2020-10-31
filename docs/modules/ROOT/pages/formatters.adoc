@@ -368,3 +368,20 @@ not ok 3 - exe/rubocop
 
 3 files inspected, 3 offenses detected
 ----
+
+== GitHub Actions Formatter
+
+Useful for https://docs.github.com/en/free-pro-team@latest/actions[GitHub Actions].
+Formats offenses as https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message[workflow commands]
+to create annotations in GitHub UI.
+
+The formatter uses fail_level to determine which GitHub level to use for each
+annotation. By default, all RuboCop severities are errors. If fail level is
+set and severity is below fail level, a warning will be created instead.
+
+[source,sh]
+----
+$ rubocop --format github
+
+::error file=lib/foo.rb,line=6,col=5::Style/Documentation: Missing top-level class documentation comment.
+----

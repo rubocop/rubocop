@@ -80,6 +80,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                  [e]macs
                                                  [fi]les
                                                  [fu]ubar
+                                                 [g]ithub
                                                  [h]tml
                                                  [j]son
                                                  [ju]nit

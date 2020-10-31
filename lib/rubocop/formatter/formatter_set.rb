@@ -14,6 +14,7 @@ module RuboCop
         '[e]macs'       => EmacsStyleFormatter,
         '[fi]les'       => FileListFormatter,
         '[fu]ubar'      => FuubarStyleFormatter,
+        '[g]ithub'      => GitHubActionsFormatter,
         '[h]tml'        => HTMLFormatter,
         '[j]son'        => JSONFormatter,
         '[ju]nit'       => JUnitFormatter,
