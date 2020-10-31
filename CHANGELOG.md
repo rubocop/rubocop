@@ -8,6 +8,10 @@
 * [#8971](https://github.com/rubocop-hq/rubocop/issues/8971): Fix a false alarm for `# rubocop:disable Lint/EmptyBlock` inline comment with `Lint/RedundantCopDisableDirective`. ([@koic][])
 * [#8976](https://github.com/rubocop-hq/rubocop/issues/8976): Fix an incorrect auto-correct for `Style/KeywordParametersOrder` when when `kwoptarg` is before `kwarg` and argument parentheses omitted. ([@koic][])
 
+### New features
+
+* [#8004](https://github.com/rubocop-hq/rubocop/issues/8004): Add new `GitHubActionsFormatter` formatter. ([@lautis][])
+
 ## 1.1.0 (2020-10-29)
 
 ### New features
@@ -5048,3 +5052,4 @@
 [@ysakasin]: https://github.com/ysakasin
 [@matthieugendreau]: https://github.com/matthieugendreau
 [@miry]: https://github.com/miry
+[@lautis]: https://github.com/lautis
