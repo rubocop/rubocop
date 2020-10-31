@@ -5,6 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for setter call to local variable as the final
       # expression of a function definition.
+      # Its auto-correction is marked as unsafe because return value will be changed.
       #
       # NOTE: There are edge cases in which the local variable references a
       # value that is also accessible outside the local scope. This is not
@@ -29,6 +30,8 @@ module RuboCop
       #     x
       #   end
       class UselessSetterCall < Base
+        extend AutoCorrector
+
         MSG = 'Useless setter call to local variable `%<variable>s`.'
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
@@ -45,7 +48,9 @@ module RuboCop
 
           loc_name = receiver.loc.name
 
-          add_offense(loc_name, message: format(MSG, variable: loc_name.source))
+          add_offense(loc_name, message: format(MSG, variable: loc_name.source)) do |corrector|
+            corrector.insert_after(last_expr, "\n#{indent(last_expr)}#{loc_name.source}")
+          end
         end
         alias on_defs on_def
 
