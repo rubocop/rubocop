@@ -135,10 +135,6 @@ module RuboCop
 
           "#{node.method_name} #{mixin_names.join(', ')}"
         end
-
-        def indent(node)
-          ' ' * node.loc.column
-        end
       end
     end
   end

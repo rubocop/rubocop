@@ -123,6 +123,10 @@ module RuboCop
           node1.loc.line == node2.loc.line
       end
 
+      def indent(node)
+        ' ' * node.loc.column
+      end
+
       def to_supported_styles(enforced_style)
         enforced_style
           .sub(/^Enforced/, 'Supported')

@@ -227,10 +227,6 @@ module RuboCop
           range_between(node.parent.loc.keyword.begin_pos, node.loc.expression.end_pos)
         end
 
-        def indent(node)
-          ' ' * node.loc.column
-        end
-
         # Named captures work with `=~` (if regexp is on lhs) and with `match` (both sides)
         def regexp_with_working_captures?(node)
           case node.type

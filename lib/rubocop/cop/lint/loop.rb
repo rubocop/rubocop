@@ -76,10 +76,6 @@ module RuboCop
           conditional_keyword = node.while_post_type? ? 'unless' : 'if'
           "break #{conditional_keyword} #{node.condition.source}\n#{indent(node)}"
         end
-
-        def indent(node)
-          ' ' * node.loc.column
-        end
       end
     end
   end
