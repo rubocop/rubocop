@@ -131,10 +131,6 @@ module RuboCop
             "#{indent(macro)}#{macro.method_name} #{rest_args.map(&:source).join(', ')}"
           end
         end
-
-        def indent(node)
-          ' ' * node.loc.column
-        end
       end
     end
   end
