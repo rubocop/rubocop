@@ -5,16 +5,13 @@
 ### New features
 
 * [#8983](https://github.com/rubocop-hq/rubocop/pull/8983): Support auto-correction for `Naming/HeredocDelimiterCase`. ([@koic][])
+* [#8004](https://github.com/rubocop-hq/rubocop/issues/8004): Add new `GitHubActionsFormatter` formatter. ([@lautis][])
 
 ### Bug fixes
 
 * [#8912](https://github.com/rubocop-hq/rubocop/pull/8912): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks with assignment. ([@miry][])
 * [#8971](https://github.com/rubocop-hq/rubocop/issues/8971): Fix a false alarm for `# rubocop:disable Lint/EmptyBlock` inline comment with `Lint/RedundantCopDisableDirective`. ([@koic][])
 * [#8976](https://github.com/rubocop-hq/rubocop/issues/8976): Fix an incorrect auto-correct for `Style/KeywordParametersOrder` when when `kwoptarg` is before `kwarg` and argument parentheses omitted. ([@koic][])
-
-### New features
-
-* [#8004](https://github.com/rubocop-hq/rubocop/issues/8004): Add new `GitHubActionsFormatter` formatter. ([@lautis][])
 
 ## 1.1.0 (2020-10-29)
 
