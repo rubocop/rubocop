@@ -45,6 +45,20 @@ $ rubocop -V
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
 
+### Creating changelog entries
+
+Changelog entries are just files under the `changelog/` folder that will be merged
+into `CHANGELOG.md` at release time. You can create new changelog entries like this:
+
+  $ bundle exec rake changelog:new
+  $ bundle exec rake changelog:fix
+  $ bundle exec rake changelog:change
+
+Those commands correspond to "new feature", "bug-fix" and "changed" entries in the changelog.
+
+Of course, you can also create the changelog entries files manually as well.
+Just make sure they are properly named.
+
 ### Changelog entry format
 
 Here are a few examples:
