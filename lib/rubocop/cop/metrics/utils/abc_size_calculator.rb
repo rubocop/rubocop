@@ -24,8 +24,8 @@ module RuboCop
           # > http://c2.com/cgi/wiki?AbcMetric
           CONDITION_NODES = CyclomaticComplexity::COUNTED_NODES.freeze
 
-          def self.calculate(node)
-            new(node).calculate
+          def self.calculate(node, foldable_types: [], &block)
+            new(node, foldable_types: foldable_types, &block).calculate
           end
 
           # TODO: move to rubocop-ast
@@ -33,16 +33,20 @@ module RuboCop
 
           private_constant :BRANCH_NODES, :CONDITION_NODES, :ARGUMENT_TYPES
 
-          def initialize(node)
+          def initialize(node, foldable_types: [], &block)
             @assignment = 0
             @branch = 0
             @condition = 0
             @node = node
+            @foldable_types = foldable_types
+            @block = block
             reset_repeated_csend
           end
 
           def calculate
             @node.each_node do |child|
+              evaluate_foldable_node(child) if @foldable_types.include?(child.type)
+
               @assignment += 1 if assignment?(child)
 
               if branch?(child)
@@ -52,10 +56,9 @@ module RuboCop
               end
             end
 
-            [
-              Math.sqrt(@assignment**2 + @branch**2 + @condition**2).round(2),
-              "<#{@assignment}, #{@branch}, #{@condition}>"
-            ]
+            result = AbcSizeResult.new(@assignment, @branch, @condition)
+            @block&.call(result)
+            [result.quadratic, result]
           end
 
           def evaluate_branch_nodes(node)
@@ -79,6 +82,19 @@ module RuboCop
           end
 
           private
+
+          def evaluate_foldable_node(node)
+            has_branches = false
+            node.each_child_node do |child|
+              self.class.calculate(child, foldable_types: @foldable_types) do |result|
+                @assignment -= result.assignment
+                @branch -= result.branch
+                @condition -= result.condition
+                has_branches ||= result.branch.positive?
+              end
+            end
+            @branch += 1 if has_branches
+          end
 
           def assignment?(node)
             return compound_assignment(node) if node.masgn_type? || node.shorthand_asgn?

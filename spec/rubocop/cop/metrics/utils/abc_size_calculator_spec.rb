@@ -319,5 +319,89 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
 
       it { is_expected.to eq '<0, 1, 0>' }
     end
+
+    shared_examples 'ignores empty literals' do
+      context 'empty hash' do
+        let(:source) { <<~RUBY }
+          def method_name
+            Klass.new({})
+          end
+        RUBY
+
+        it { is_expected.to eq '<0, 1, 0>' } # 1 constructor
+      end
+
+      context 'empty array' do
+        let(:source) { <<~RUBY }
+          def method_name
+            Klass.new([])
+          end
+        RUBY
+
+        it { is_expected.to eq '<0, 1, 0>' } # 1 constructor
+      end
+    end
+
+    context 'with foldable' do
+      subject(:vector) { described_class.calculate(node, foldable_types: %i[hash array]).last }
+
+      include_examples 'ignores empty literals'
+
+      context 'hash' do
+        let(:source) { <<~RUBY }
+          def method_name
+            Klass.new(
+              a: a.a, b: b.b, c: c.c, d: d.d,
+              e: e.e, f: f.f, g: g.g, h: h.h
+            )
+          end
+        RUBY
+
+        it { is_expected.to eq '<0, 2, 0>' } # 1 hash with branches + 1 constuctor
+      end
+
+      context 'array' do
+        let(:source) { <<~RUBY }
+          def method_name
+            Klass.new([
+              a.a, b.b, c.c, d.d,
+              e.e, f.f, g.g, h.h
+          ])
+          end
+        RUBY
+
+        it { is_expected.to eq '<0, 2, 0>' } # 1 array with branches + 1 constuctor
+      end
+    end
+
+    context 'without foldable' do
+      include_examples 'ignores empty literals'
+
+      context 'hash' do
+        let(:source) { <<~RUBY }
+          def method_name
+            Klass.new(
+              a: a.a, b: b.b, c: c.c, d: d.d,
+              e: e.e, f: f.f, g: g.g, h: h.h
+            )
+          end
+        RUBY
+
+        it { is_expected.to eq '<0, 17, 0>' } # 2 * args.size + 1 constructor
+      end
+
+      context 'array' do
+        let(:source) { <<~RUBY }
+          def method_name
+            Klass.new([
+              a.a, b.b, c.c, d.d,
+              e.e, f.f, g.g, h.h
+            ])
+          end
+        RUBY
+
+        it { is_expected.to eq '<0, 17, 0>' } # 2 * args.size + 1 constructor
+      end
+    end
   end
 end
