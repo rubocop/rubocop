@@ -518,4 +518,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
       end
     end
   end
+
+  context 'with multibyte characters' do
+    it 'removes the escape character at the right position' do
+      # The indicator should take character widths into account in the
+      # future.
+      expect_offense(<<~'RUBY')
+        x = s[/[一二三四\.]+/]
+                    ^^ Redundant escape inside regexp literal
+        p x
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x = s[/[一二三四.]+/]
+        p x
+      RUBY
+    end
+  end
 end
