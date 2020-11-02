@@ -19,13 +19,18 @@ module RuboCop
         super
 
         str = with_interpolations_blanked
-        @parsed_tree = begin
-          Regexp::Parser.parse(str, options: options)
+        begin
+          @parsed_tree = Regexp::Parser.parse(str, options: options)
         rescue StandardError
-          nil
+          @parsed_tree = nil
+        else
+          origin = loc.begin.end
+          source = @parsed_tree.to_s
+          @parsed_tree.each_expression(true) do |e|
+            e.origin = origin
+            e.source = source
+          end
         end
-        origin = loc.begin.end
-        @parsed_tree&.each_expression(true) { |e| e.origin = origin }
       end
 
       def each_capture(named: ANY)
