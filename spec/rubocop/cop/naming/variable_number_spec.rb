@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
+  let(:cop_config) do
+    { 'CheckMethodNames' => true, 'CheckSymbols' => true }
+  end
+
   shared_examples 'offense' do |style, variable, style_to_allow_offenses|
     it "registers an offense for #{variable} in #{style}" do
       expect_offense(<<~RUBY, variable: variable)
@@ -56,6 +60,19 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'snake_case', '@__foo__'
     it_behaves_like 'accepts', 'snake_case', 'emparejó'
 
+    it 'registers an offense for normal case numbering in symbol' do
+      expect_offense(<<~RUBY)
+        :sym1
+        ^^^^^ Use snake_case for symbol numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for snake case numbering in symbol' do
+      expect_no_offenses(<<~RUBY)
+        :sym_1
+      RUBY
+    end
+
     it 'registers an offense for normal case numbering in method parameter' do
       expect_offense(<<~RUBY)
         def method(arg1); end
@@ -68,6 +85,13 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       expect_offense(<<~RUBY)
         def method(funnyArg1); end
                    ^^^^^^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
+
+    it 'registers an offense for normal case numbering in method name' do
+      expect_offense(<<~RUBY)
+        def method1; end
+            ^^^^^^^ Use snake_case for method name numbers.
       RUBY
     end
   end
@@ -101,6 +125,17 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'normalcase', '@__foo__'
     it_behaves_like 'accepts', 'snake_case', 'emparejó'
 
+    it 'registers an offense for snake case numbering in symbol' do
+      expect_offense(<<~RUBY)
+        :sym_1
+        ^^^^^^ Use normalcase for symbol numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for normal case numbering in symbol' do
+      expect_no_offenses(':sym1')
+    end
+
     it 'registers an offense for snake case numbering in method parameter' do
       expect_offense(<<~RUBY)
         def method(arg_1); end
@@ -113,6 +148,13 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       expect_offense(<<~RUBY)
         def method(funnyArg_1); end
                    ^^^^^^^^^^ Use normalcase for variable numbers.
+      RUBY
+    end
+
+    it 'registers an offense for snake case numbering in method name' do
+      expect_offense(<<~RUBY)
+        def method_1; end
+            ^^^^^^^^ Use normalcase for method name numbers.
       RUBY
     end
   end
@@ -143,6 +185,20 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'non_integer', '@__foo__'
     it_behaves_like 'accepts', 'snake_case', 'emparejó'
 
+    it 'registers an offense for snake case numbering in symbol' do
+      expect_offense(<<~RUBY)
+        :sym_1
+        ^^^^^^ Use non_integer for symbol numbers.
+      RUBY
+    end
+
+    it 'registers an offense for normal case numbering in symbol' do
+      expect_offense(<<~RUBY)
+        :sym1
+        ^^^^^ Use non_integer for symbol numbers.
+      RUBY
+    end
+
     it 'registers an offense for snake case numbering in method parameter' do
       expect_offense(<<~RUBY)
         def method(arg_1); end
@@ -171,6 +227,40 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
         def method(myArg1); end
                    ^^^^^^ Use non_integer for variable numbers.
       RUBY
+    end
+
+    it 'registers an offense for snake case numbering in method name' do
+      expect_offense(<<~RUBY)
+        def method_1; end
+            ^^^^^^^^ Use non_integer for method name numbers.
+      RUBY
+    end
+
+    it 'registers an offense for normal case numbering in method name' do
+      expect_offense(<<~RUBY)
+        def method1; end
+            ^^^^^^^ Use non_integer for method name numbers.
+      RUBY
+    end
+  end
+
+  context 'when CheckMethodNames is false' do
+    let(:cop_config) do
+      { 'CheckMethodNames' => false, 'EnforcedStyle' => 'normalcase' }
+    end
+
+    it 'does not register an offense for snake case numbering in method name' do
+      expect_no_offenses('def method_1; end')
+    end
+  end
+
+  context 'when CheckSymbols is false' do
+    let(:cop_config) do
+      { 'CheckSymbols' => false, 'EnforcedStyle' => 'normalcase' }
+    end
+
+    it 'does not register an offense for snake case numbering in symbol' do
+      expect_no_offenses(':sym_1')
     end
   end
 end

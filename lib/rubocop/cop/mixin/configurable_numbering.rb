@@ -8,9 +8,9 @@ module RuboCop
       include ConfigurableFormatting
 
       FORMATS = {
-        snake_case:  /(?:[[[:lower:]]_]|_\d+)$/,
-        normalcase:  /(?:_\D*|[[[:upper:]][[:lower:]]]\d*)$/,
-        non_integer: /[[[:upper:]][[:lower:]]_]$/
+        snake_case:  /(?:\D|_\d+)$/,
+        normalcase:  /(?:\D|[^_\d]\d+)$/,
+        non_integer: /\D$/
       }.freeze
     end
   end

@@ -2411,14 +2411,18 @@ Naming/VariableName:
     - camelCase
 
 Naming/VariableNumber:
-  Description: 'Use the configured style when numbering variables.'
+  Description: 'Use the configured style when numbering symbols, methods and variables.'
+  StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
   Enabled: true
   VersionAdded: '0.50'
+  VersionChanged: '1.2'
   EnforcedStyle: normalcase
   SupportedStyles:
     - snake_case
     - normalcase
     - non_integer
+  CheckMethodNames: true
+  CheckSymbols: true
 
 #################### Security ##############################
 
