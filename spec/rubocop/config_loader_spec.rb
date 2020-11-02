@@ -1045,7 +1045,7 @@ RSpec.describe RuboCop::ConfigLoader do
     context 'when a file inherits from a url inheriting from another file' do
       let(:file_path) { '.rubocop.yml' }
       let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
-      let(:cache_file_2) { '.rubocop-http---example-com-inherit-yml' }
+      let(:cache_file2) { '.rubocop-http---example-com-inherit-yml' }
 
       before do
         stub_request(:get, %r{example.com/rubocop})
@@ -1058,7 +1058,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       after do
-        [cache_file, cache_file_2].each do |f|
+        [cache_file, cache_file2].each do |f|
           File.unlink f if File.exist? f
         end
       end
@@ -1066,7 +1066,7 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'downloads the inherited file from the same url and caches it' do
         configuration_from_file
         expect(File.exist?(cache_file)).to be true
-        expect(File.exist?(cache_file_2)).to be true
+        expect(File.exist?(cache_file2)).to be true
       end
     end
 
