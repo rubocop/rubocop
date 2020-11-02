@@ -145,6 +145,7 @@ module RuboCop
         end
       end
 
+      option(opts, '--display-time')
       option(opts, '--display-only-failed')
     end
 
@@ -469,6 +470,7 @@ module RuboCop
                                          'if no format is specified.'],
       fail_level:                       ['Minimum severity (A/R/C/W/E/F) for exit',
                                          'with error code.'],
+      display_time:                     'Display elapsed time in seconds.',
       display_only_failed:              ['Only output offense messages. Omit passing',
                                          'cops. Only valid for --format junit.'],
       display_only_fail_level_offenses:
