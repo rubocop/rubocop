@@ -85,6 +85,15 @@ If you use RuboCop in your project, you can include one of these badges in your 
 
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-community-brightgreen.svg)](https://rubystyle.guide)
 
+
+Here are the Markdown snippets for the two badges:
+
+``` markdown
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
+
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-community-brightgreen.svg)](https://rubystyle.guide)
+```
+
 ## Team
 
 Here's a list of RuboCop's core developers:
