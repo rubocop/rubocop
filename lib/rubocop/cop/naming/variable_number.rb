@@ -98,6 +98,7 @@ module RuboCop
         MSG = 'Use %<style>s for %<identifier_type>s numbers.'
 
         def on_arg(node)
+          @node = node
           name, = *node
           check_name(node, name, node.loc.name)
         end
@@ -106,19 +107,21 @@ module RuboCop
         alias on_cvasgn on_arg
 
         def on_def(node)
+          @node = node
           check_name(node, node.method_name, node.loc.name) if cop_config['CheckMethodNames']
         end
         alias on_defs on_def
 
         def on_sym(node)
+          @node = node
           check_name(node, node.value, node) if cop_config['CheckSymbols']
         end
 
         private
 
-        def message(node, style)
+        def message(style)
           identifier_type =
-            case node.type
+            case @node.type
             when :def, :defs then 'method name'
             when :sym        then 'symbol'
             else                  'variable'
