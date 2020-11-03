@@ -70,12 +70,12 @@ You can read a lot more about RuboCop in its [official docs](https://docs.ruboco
 
 ## Compatibility
 
-RuboCop supports the following Ruby implementations:
+RuboCop officially supports the following Ruby implementations:
 
 * MRI 2.4+
 * JRuby 9.2+
 
-See [compatibility](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
+See the [compatibility documentation](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
 
 ## Readme Badge
 
@@ -108,6 +108,8 @@ Here's a list of RuboCop's core developers:
 * [Maxim Krizhanovski](https://github.com/darhazer)
 * [Benjamin Quorning](https://github.com/bquorning)
 * [Marc-André Lafortune](https://github.com/marcandre)
+
+See the [team page](https://docs.rubocop.org/rubocop/about/team.html) for more details.
 
 ## Logo
 
