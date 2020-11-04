@@ -54,11 +54,9 @@ module RuboCop
         end
 
         def delegating?(node, def_node)
-          if node.nil?
-            false
-          elsif node.zsuper_type?
+          if node&.zsuper_type?
             true
-          elsif node.super_type?
+          elsif node&.super_type?
             node.arguments.map(&:source) == def_node.arguments.map(&:source)
           else
             false

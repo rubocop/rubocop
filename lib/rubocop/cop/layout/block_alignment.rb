@@ -210,10 +210,9 @@ module RuboCop
         end
 
         def alt_start_msg(start_loc, source_line_column)
-          if style != :either
-            ''
-          elsif start_loc.line == source_line_column[:line] &&
-                start_loc.column == source_line_column[:column]
+          if style != :either ||
+             (start_loc.line == source_line_column[:line] &&
+                 start_loc.column == source_line_column[:column])
             ''
           else
             " or #{format_source_line_column(source_line_column)}"
