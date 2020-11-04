@@ -140,11 +140,10 @@ module RuboCop
           rescued_groups.each_cons(2).all? do |x, y|
             if x.include?(Exception)
               false
-            elsif y.include?(Exception)
-              true
-            elsif x.none? || y.none?
-              # consider sorted if a group is empty or only contains
-              # `nil`s
+            elsif y.include?(Exception) ||
+                  # consider sorted if a group is empty or only contains
+                  # `nil`s
+                  x.none? || y.none?
               true
             else
               (x <=> y || 0) <= 0

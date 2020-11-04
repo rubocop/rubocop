@@ -66,9 +66,7 @@ module RuboCop
             node.each_child_node do |expr|
               if expr.send_type?
                 correct_send(expr, corrector)
-              elsif expr.return_type?
-                correct_other(expr, corrector)
-              elsif expr.assignment?
+              elsif expr.return_type? || expr.assignment?
                 correct_other(expr, corrector)
               end
             end
