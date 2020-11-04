@@ -43,7 +43,7 @@ module RuboCop
 
         private
 
-        def message(_node, style)
+        def message(style)
           format(MSG, style: style)
         end
       end

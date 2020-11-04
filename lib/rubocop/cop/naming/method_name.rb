@@ -70,7 +70,7 @@ module RuboCop
           range_between(selector_end_pos, expr_end_pos)
         end
 
-        def message(_node, style)
+        def message(style)
           format(MSG, style: style)
         end
       end
