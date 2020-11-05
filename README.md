@@ -11,11 +11,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop-hq/rubocop/maintainability)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
 
-[![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
-[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
-[![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
-[![Tidelift](https://tidelift.com/badges/package/rubygems/rubocop)](https://tidelift.com/subscription/pkg/rubygems-rubocop?utm_source=rubygems-rubocop&utm_medium=referral&utm_campaign=readme)
-
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
 
@@ -26,6 +21,12 @@ RuboCop can also automatically fix many of them for you.
 
 RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various
 [configuration options](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml).
+
+----------
+[![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
+[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
+[![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
+[![Tidelift](https://tidelift.com/badges/package/rubygems/rubocop)](https://tidelift.com/subscription/pkg/rubygems-rubocop?utm_source=rubygems-rubocop&utm_medium=referral&utm_campaign=readme)
 
 **Please consider [financially supporting its ongoing development](#funding).**
 
@@ -150,14 +151,19 @@ wide array of funding channels to account for your preferences
 currently [Open Collective](https://opencollective.com/rubocop) is our
 preferred funding platform).
 
-If you're working in a company that's making significant use of RuboCop we'd appreciate it if you suggest to your company
-to become a RuboCop sponsor.
+**If you're working in a company that's making significant use of RuboCop we'd appreciate it if you suggest to your company
+to become a RuboCop sponsor.**
 
 You can support the development of RuboCop via
 [GitHub Sponsors](https://github.com/sponsors/bbatsov),
 [Patreon](https://www.patreon.com/bbatsov),
-[PayPal](https://paypal.me/bbatsov)
-and [Open Collective](https://opencollective.com/rubocop).
+[PayPal](https://paypal.me/bbatsov),
+[Open Collective](https://opencollective.com/rubocop)
+and [Tidelift](https://tidelift.com/subscription/pkg/rubygems-rubocop?utm_source=rubygems-rubocop&utm_medium=referral&utm_campaign=readme)
+.
+
+**Note:** If doing a sponsorship in the form of donation is problematic for your company from an accounting standpoint, we'd recommend
+the use of Tidelift, where you can get a support-like subscription instead.
 
 ### Open Collective Backers
 
