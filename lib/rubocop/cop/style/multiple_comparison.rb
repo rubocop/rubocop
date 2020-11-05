@@ -48,6 +48,7 @@ module RuboCop
 
         def on_new_investigation
           @compared_elements = []
+          @allowed_method_comparison = false
         end
 
         def on_or(node)
@@ -55,6 +56,7 @@ module RuboCop
 
           return unless node == root_of_or_node
           return unless nested_variable_comparison?(root_of_or_node)
+          return if @allowed_method_comparison
 
           add_offense(node) do |corrector|
             elements = @compared_elements.join(', ')
@@ -95,8 +97,7 @@ module RuboCop
             return [variable_name(var1), variable_name(var2)]
           end
           if (var, obj = simple_comparison_lhs?(node)) || (obj, var = simple_comparison_rhs?(node))
-            return [] if allow_method_comparison? && obj.send_type?
-
+            @allowed_method_comparison = true if allow_method_comparison? && obj.send_type?
             @compared_elements << obj.source
             return [variable_name(var)]
           end

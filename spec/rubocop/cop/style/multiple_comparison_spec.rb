@@ -177,6 +177,14 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
     end
   end
 
+  it 'does not register an offense when comparing two sides of the disjunction is unrelated' do
+    expect_no_offenses(<<~RUBY)
+      def do_something(foo, bar)
+        bar.do_something == bar || foo == :sym
+      end
+    RUBY
+  end
+
   context 'when `AllowMethodComparison: false`' do
     let(:cop_config) { { 'AllowMethodComparison' => false } }
 
