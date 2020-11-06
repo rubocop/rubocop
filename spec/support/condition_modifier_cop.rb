@@ -89,5 +89,17 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
         RUBY
       end
     end
+
+    context 'when there is a comment on the first line and some code after the end keyword' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          [
+            1, #{keyword} foo # bar
+                 baz
+               end, 3
+          ]
+        RUBY
+      end
+    end
   end
 end

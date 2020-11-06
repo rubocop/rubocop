@@ -4485,14 +4485,18 @@ unless qux.empty?
   Foo.do_something
 end
 
-do_something_in_a_method_with_a_long_name(arg) if long_condition
+do_something_with_a_long_name(arg) if long_condition_that_prevents_code_fit_on_single_line
 
 # good
 do_stuff(bar) if condition
 Foo.do_something unless qux.empty?
 
-if long_condition
-  do_something_in_a_method_with_a_long_name(arg)
+if long_condition_that_prevents_code_fit_on_single_line
+  do_something_with_a_long_name(arg)
+end
+
+if short_condition # a long comment that makes it too long if it were just a single line
+  do_something
 end
 ----
 
@@ -11239,6 +11243,17 @@ end
 
 # good
 x += 1 until x > 10
+----
+
+[source,ruby]
+----
+# bad
+x += 100 while x < 500 # a long comment that makes code too long if it were a single line
+
+# good
+while x < 500 # a long comment that makes code too long if it were a single line
+  x += 100
+end
 ----
 
 === References
