@@ -135,3 +135,6 @@ Performance/CollectionLiteralInLoop:
   Exclude:
     - 'Rakefile'
     - 'spec/**/*.rb'
+
+RSpec/StubbedMock:
+  Enabled: false
