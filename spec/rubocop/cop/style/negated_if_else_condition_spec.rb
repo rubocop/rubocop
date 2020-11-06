@@ -115,6 +115,22 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition do
     RUBY
   end
 
+  it 'registers an offense when using negated condition and `if` branch body is empty' do
+    expect_offense(<<~RUBY)
+      if !condition.nil?
+      ^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+      else
+        foo = 42
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition.nil?
+        foo = 42
+      end
+    RUBY
+  end
+
   it 'does not register an offense when negating condition for `if-elsif`' do
     expect_no_offenses(<<~RUBY)
       if !x
