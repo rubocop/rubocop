@@ -35,13 +35,13 @@ module RuboCop
       #     gem 'rubocop', '~> 0.90.0'
       #   end
       #
-      class DuplicatedGem < Cop
+      class DuplicatedGem < Base
         include RangeHelp
 
         MSG = 'Gem `%<gem_name>s` requirements already given on line '\
           '%<line_of_first_occurrence>d of the Gemfile.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
           duplicated_gem_nodes.each do |nodes|
@@ -89,7 +89,7 @@ module RuboCop
             gem_name: gem_name,
             line_of_first_occurrence: line_of_first_occurrence
           )
-          add_offense(node, location: offense_location, message: message)
+          add_offense(offense_location, message: message)
         end
       end
     end
