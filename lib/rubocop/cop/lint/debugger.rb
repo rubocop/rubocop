@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for calls to debugger or pry.
+      # The cop can be configured to define which methods and receivers must be fixed.
       #
       # @example
       #
@@ -33,15 +34,13 @@ module RuboCop
       #     do_something
       #   end
       class Debugger < Base
-        include DebuggerMethods
-        include ForbiddenReceivers
-
         MSG = 'Remove debugger entry point `%<source>s`.'
+
+        RESTRICT_ON_SEND = [].freeze
 
         def on_send(node)
           return unless debugger_method?(node.method_name)
-          return if special_rule?(node)
-          return if with_receiver?(node) && !forbidden_receiver?(node)
+          return if !node.receiver.nil? && !debugger_receiver?(node)
 
           add_offense(node)
         end
@@ -52,18 +51,11 @@ module RuboCop
           format(MSG, source: node.source)
         end
 
-        def with_receiver?(node)
-          !!node.receiver
+        def debugger_method?(name)
+          cop_config.fetch('DebuggerMethods', []).include?(name.to_s)
         end
 
-        def special_rule?(node)
-          return false unless node.receiver.is_a?(RuboCop::AST::ConstNode)
-          return true if node.receiver.const_name == 'Kernel' && node.method?(:save_and_open_page)
-
-          false
-        end
-
-        def forbidden_receiver?(node)
+        def debugger_receiver?(node)
           receiver = case node.receiver
                      when RuboCop::AST::SendNode
                        node.receiver.method_name
@@ -71,7 +63,7 @@ module RuboCop
                        node.receiver.const_name
                      end
 
-          forbidden?(receiver)
+          cop_config.fetch('DebuggerReceivers', []).include?(receiver.to_s)
         end
       end
     end
