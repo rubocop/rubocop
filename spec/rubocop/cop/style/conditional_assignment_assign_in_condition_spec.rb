@@ -732,8 +732,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all assignment types', '>>=')
     it_behaves_like('all assignment types', '||=')
     it_behaves_like('all assignment types', '&&=')
-    it_behaves_like('all assignment types', '+=')
-    it_behaves_like('all assignment types', '-=')
     it_behaves_like('all assignment types', '<<')
 
     it_behaves_like('multiline all assignment types allow', '=')
@@ -754,8 +752,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('multiline all assignment types allow', '>>=')
     it_behaves_like('multiline all assignment types allow', '||=')
     it_behaves_like('multiline all assignment types allow', '&&=')
-    it_behaves_like('multiline all assignment types allow', '+=')
-    it_behaves_like('multiline all assignment types allow', '-=')
     it_behaves_like('multiline all assignment types allow', '<<')
 
     it 'allows a method call in the subject of a ternary operator' do
@@ -926,8 +922,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all assignment types', '>>=')
     it_behaves_like('all assignment types', '||=')
     it_behaves_like('all assignment types', '&&=')
-    it_behaves_like('all assignment types', '+=')
-    it_behaves_like('all assignment types', '-=')
     it_behaves_like('all assignment types', '<<')
 
     it_behaves_like('multiline all assignment types offense', '=')
@@ -948,8 +942,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('multiline all assignment types offense', '>>=')
     it_behaves_like('multiline all assignment types offense', '||=')
     it_behaves_like('multiline all assignment types offense', '&&=')
-    it_behaves_like('multiline all assignment types offense', '+=')
-    it_behaves_like('multiline all assignment types offense', '-=')
     it_behaves_like('multiline all assignment types offense', '<<')
 
     it_behaves_like('single line condition auto-correct')
