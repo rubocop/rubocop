@@ -1507,6 +1507,12 @@ Lint/EmptyBlock:
   VersionAdded: '1.1'
   AllowComments: true
 
+Lint/EmptyClass:
+  Description: 'Checks for classes and metaclasses without a body.'
+  Enabled: pending
+  VersionAdded: '1.3'
+  AllowComments: false
+
 Lint/EmptyConditionalBody:
   Description: 'This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.'
   Enabled: true

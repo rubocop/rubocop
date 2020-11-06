@@ -207,6 +207,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#linteachwithobjectargument[Lint/EachWithObjectArgument]
 * xref:cops_lint.adoc#lintelselayout[Lint/ElseLayout]
 * xref:cops_lint.adoc#lintemptyblock[Lint/EmptyBlock]
+* xref:cops_lint.adoc#lintemptyclass[Lint/EmptyClass]
 * xref:cops_lint.adoc#lintemptyconditionalbody[Lint/EmptyConditionalBody]
 * xref:cops_lint.adoc#lintemptyensure[Lint/EmptyEnsure]
 * xref:cops_lint.adoc#lintemptyexpression[Lint/EmptyExpression]
