@@ -19,7 +19,8 @@ module RuboCop
       def non_eligible_node?(node)
         node.modifier_form? ||
           node.nonempty_line_count > 3 ||
-          processed_source.line_with_comment?(node.loc.last_line)
+          processed_source.line_with_comment?(node.loc.last_line) ||
+          (first_line_comment(node) && code_after(node))
       end
 
       def non_eligible_body?(body)
@@ -41,11 +42,9 @@ module RuboCop
 
       def length_in_modifier_form(node)
         keyword_element = node.loc.keyword
-        end_element = node.loc.end
         code_before = keyword_element.source_line[0...keyword_element.column]
-        code_after = end_element.source_line[end_element.last_column..-1]
         expression = to_modifier_form(node)
-        line_length("#{code_before}#{expression}#{code_after}")
+        line_length("#{code_before}#{expression}#{code_after(node)}")
       end
 
       def to_modifier_form(node)
@@ -62,6 +61,12 @@ module RuboCop
 
         comment_source = comment.loc.expression.source
         comment_source unless comment_disables_cop?(comment_source)
+      end
+
+      def code_after(node)
+        end_element = node.loc.end
+        code = end_element.source_line[end_element.last_column..-1]
+        code unless code.empty?
       end
 
       def parenthesize?(node)

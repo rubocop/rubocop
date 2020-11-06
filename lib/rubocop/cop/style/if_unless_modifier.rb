@@ -21,14 +21,18 @@ module RuboCop
       #     Foo.do_something
       #   end
       #
-      #   do_something_in_a_method_with_a_long_name(arg) if long_condition
+      #   do_something_with_a_long_name(arg) if long_condition_that_prevents_code_fit_on_single_line
       #
       #   # good
       #   do_stuff(bar) if condition
       #   Foo.do_something unless qux.empty?
       #
-      #   if long_condition
-      #     do_something_in_a_method_with_a_long_name(arg)
+      #   if long_condition_that_prevents_code_fit_on_single_line
+      #     do_something_with_a_long_name(arg)
+      #   end
+      #
+      #   if short_condition # a long comment that makes it too long if it were just a single line
+      #     do_something
       #   end
       class IfUnlessModifier < Base
         include StatementModifier
