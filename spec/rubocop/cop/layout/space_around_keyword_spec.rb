@@ -99,11 +99,6 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword do
   it_behaves_like 'missing after', 'elsif', 'if a; elsif""; end',
                   'if a; elsif ""; end'
 
-  it_behaves_like 'missing before', 'elsif', 'if a; ""elsif b; end',
-                  'if a; "" elsif b; end'
-  it_behaves_like 'missing after', 'elsif', 'if a; elsif""; end',
-                  'if a; elsif ""; end'
-
   it_behaves_like 'missing before', 'ensure', 'begin ""ensure end',
                   'begin "" ensure end'
   it_behaves_like 'missing after', 'ensure', 'begin ensure"" end',
