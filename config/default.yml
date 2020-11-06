@@ -1415,6 +1415,22 @@ Lint/Debugger:
   Enabled: true
   VersionAdded: '0.14'
   VersionChanged: '0.49'
+  DebuggerReceivers:
+    - binding
+    - Kernel
+    - Pry
+  DebuggerMethods:
+    - debugger
+    - byebug
+    - remote_byebug
+    - pry
+    - remote_pry
+    - pry_remote
+    - console
+    - rescue
+    - save_and_open_page
+    - save_and_open_screenshot
+    - irb
 
 Lint/DeprecatedClassMethods:
   Description: 'Check for deprecated class method calls.'

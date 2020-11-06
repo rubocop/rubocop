@@ -1,6 +1,25 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
+  context 'with allowed methods' do
+    let(:cop_config) do
+      { 'DebuggerMethods' => %w[custom_debugger] }
+    end
+
+    it 'does not reports an offense for a byebug call' do
+      expect_no_offenses(<<~RUBY)
+        byebug
+      RUBY
+    end
+
+    it 'reports an offense for a debugger call' do
+      expect_offense(<<~RUBY)
+        custom_debugger
+        ^^^^^^^^^^^^^^^ Remove debugger entry point `custom_debugger`.
+      RUBY
+    end
+  end
+
   it 'reports an offense for a debugger call' do
     expect_offense(<<~RUBY)
       debugger
@@ -143,7 +162,10 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   end
 
   it 'does not report an offense for save_and_open_page with Kernel' do
-    expect_no_offenses('Kernel.save_and_open_page')
+    expect_offense(<<~RUBY)
+      Kernel.save_and_open_page
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.save_and_open_page`.
+    RUBY
   end
 
   %w[debugger byebug console pry remote_pry pry_remote irb save_and_open_page

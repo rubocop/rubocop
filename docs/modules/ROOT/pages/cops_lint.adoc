@@ -522,6 +522,7 @@ Login
 |===
 
 This cop checks for calls to debugger or pry.
+The cop can be configured to define which methods and receivers must be fixed.
 
 === Examples
 
@@ -555,6 +556,20 @@ def some_method
   do_something
 end
 ----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| DebuggerReceivers
+| `binding`, `Kernel`, `Pry`
+| Array
+
+| DebuggerMethods
+| `debugger`, `byebug`, `remote_byebug`, `pry`, `remote_pry`, `pry_remote`, `console`, `rescue`, `save_and_open_page`, `save_and_open_screenshot`, `irb`
+| Array
+|===
 
 == Lint/DeprecatedClassMethods
 
