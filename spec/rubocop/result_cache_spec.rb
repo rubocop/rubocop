@@ -175,7 +175,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       context 'when team external_dependency_checksum changes' do
         it 'is invalid' do
           cache.save(offenses)
-          expect(team).to(
+          allow(team).to(
             receive(:external_dependency_checksum).and_return('bar')
           )
           cache2 = described_class.new(
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       context 'when team external_dependency_checksum is the same' do
         it 'is valid' do
           cache.save(offenses)
-          expect(team).to(
+          allow(team).to(
             receive(:external_dependency_checksum).and_return('foo')
           )
           cache2 = described_class.new(
@@ -329,8 +329,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
 
       it 'doesn\'t raise an exception' do
-        expect(FileUtils).to receive(:mkdir_p).with(start_with(cache_root))
-                                              .and_raise(error)
+        allow(FileUtils).to receive(:mkdir_p).with(start_with(cache_root))
+                                             .and_raise(error)
         expect { cache.save([]) }.not_to raise_error
         expect($stderr.string).to eq(<<~WARN)
           Couldn't create cache directory. Continuing without cache.
