@@ -255,17 +255,18 @@ module RuboCop
               "Configuration file not found: #{absolute_path}"
       end
 
-      def yaml_safe_load(yaml_code, filename)
-        if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
-          SafeYAML.load(yaml_code, filename, whitelisted_tags: %w[!ruby/regexp])
-        # Ruby 2.6+
-        elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
+      raise 'SafeYAML is unmaintained, no longer needed and should be removed' if defined?(SafeYAML)
+
+      if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
+        def yaml_safe_load(yaml_code, filename)
           YAML.safe_load(yaml_code,
                          permitted_classes: [Regexp, Symbol],
                          permitted_symbols: [],
                          aliases: true,
                          filename: filename)
-        else
+        end
+      else # Ruby < 2.6
+        def yaml_safe_load(yaml_code, filename)
           YAML.safe_load(yaml_code, [Regexp, Symbol], [], true, filename)
         end
       end

@@ -20,7 +20,6 @@ gem 'test-queue'
 gem 'yard', '~> 0.9'
 
 group :test do
-  gem 'safe_yaml', require: false
   gem 'webmock', require: false
 end
 
