@@ -1307,51 +1307,6 @@ RSpec.describe RuboCop::ConfigLoader do
       expect(configuration.to_h).to eq({})
     end
 
-    context 'when SafeYAML is required' do
-      before do
-        create_file(configuration_path, <<~YAML)
-          Style/WordArray:
-            WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'
-        YAML
-      end
-
-      context 'when it is fully required', broken_on: :ruby_head do
-        it 'de-serializes Regexp class' do
-          in_its_own_process_with('safe_yaml') do
-            configuration = described_class.load_file('.rubocop.yml')
-
-            word_regexp = configuration['Style/WordArray']['WordRegex']
-            expect(word_regexp.is_a?(::Regexp)).to be(true)
-          end
-        end
-      end
-
-      context 'when safe_yaml is required without monkey patching', broken_on: :ruby_head do
-        it 'de-serializes Regexp class' do
-          in_its_own_process_with('safe_yaml/load') do
-            configuration = described_class.load_file('.rubocop.yml')
-
-            word_regexp = configuration['Style/WordArray']['WordRegex']
-            expect(word_regexp.is_a?(::Regexp)).to be(true)
-          end
-        end
-
-        context 'and SafeYAML.load is private' do
-          # According to issue #2935, SafeYAML.load can be private in some
-          # circumstances.
-          it 'does not raise private method load called for SafeYAML:Module' do
-            in_its_own_process_with('safe_yaml/load') do
-              SafeYAML.public_send :private_class_method, :load
-              configuration = described_class.load_file('.rubocop.yml')
-
-              word_regexp = configuration['Style/WordArray']['WordRegex']
-              expect(word_regexp.is_a?(::Regexp)).to be(true)
-            end
-          end
-        end
-      end
-    end
-
     context 'set neither true nor false to value to Enabled' do
       before do
         create_file(configuration_path, <<~YAML)
