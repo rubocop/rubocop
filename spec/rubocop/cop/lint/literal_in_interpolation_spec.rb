@@ -283,6 +283,14 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
     RUBY
   end
 
+  it 'does not register an offense when space literal at the end of heredoc line' do
+    expect_no_offenses(<<~RUBY)
+      <<~HERE
+        Line with explicit space literal at the end. \#{'  '}
+      HERE
+    RUBY
+  end
+
   context 'in string-like contexts' do
     let(:literal) { '42' }
     let(:expected) { '42' }
