@@ -27,9 +27,7 @@ module RuboCop
 
         def on_interpolation(begin_node)
           final_node = begin_node.children.last
-          return unless final_node
-          return if special_keyword?(final_node)
-          return unless prints_as_self?(final_node)
+          return unless offending?(final_node)
 
           # %W and %I split the content into words before expansion
           # treating each interpolation as a word component, so
@@ -47,6 +45,14 @@ module RuboCop
         end
 
         private
+
+        def offending?(node)
+          node &&
+            !special_keyword?(node) &&
+            prints_as_self?(node) &&
+            # Special case for Layout/TrailingWhitespace
+            !(space_literal?(node) && ends_heredoc_line?(node))
+        end
 
         def special_keyword?(node)
           # handle strings like __FILE__
@@ -97,6 +103,18 @@ module RuboCop
           node.basic_literal? ||
             (COMPOSITE.include?(node.type) &&
               node.children.all? { |child| prints_as_self?(child) })
+        end
+
+        def space_literal?(node)
+          node.str_type? && node.value.blank?
+        end
+
+        def ends_heredoc_line?(node)
+          grandparent = node.parent.parent
+          return false unless grandparent&.dstr_type? && grandparent&.heredoc?
+
+          line = processed_source.lines[node.last_line - 1]
+          line.size == node.loc.last_column + 1
         end
 
         def in_array_percent_literal?(node)
