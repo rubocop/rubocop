@@ -342,8 +342,7 @@ RSpec.describe RuboCop::Cop::Generator do
       expect(runner.run([])).to be true
     end
 
-    # TODO: include it back after rubocop-rspec updated to support deep departments names
-    xit 'generates a spec file that has no offense' do
+    it 'generates a spec file that has no offense' do
       generator.write_spec
       expect(runner.run([])).to be true
     end
