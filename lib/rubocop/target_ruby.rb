@@ -112,6 +112,62 @@ module RuboCop
       end
     end
 
+    # The target ruby version may be found in a .gemspec file.
+    # @api private
+    class GemspecFile < Source
+      extend NodePattern::Macros
+
+      GEMSPEC_EXTENSION = '.gemspec'
+
+      def_node_search :required_ruby_version, <<~PATTERN
+        (send _ :required_ruby_version= $_)
+      PATTERN
+
+      def name
+        "`required_ruby_version` parameter (in #{gemspec_filename})"
+      end
+
+      private
+
+      def find_version
+        file = gemspec_filepath
+        return unless file && File.file?(file)
+
+        version = version_from_gemspec_file(file)
+        return if version.nil?
+
+        if version.array_type?
+          versions = version.children.map { |v| version_from_str(v.str_content) }
+          return versions.compact.min
+        end
+
+        version_from_str(version.str_content)
+      end
+
+      def gemspec_filename
+        @gemspec_filename ||= begin
+          basename = Pathname.new(@config.base_dir_for_path_parameters).basename.to_s
+          "#{basename}#{GEMSPEC_EXTENSION}"
+        end
+      end
+
+      def gemspec_filepath
+        @gemspec_filepath ||=
+          @config.find_file_upwards(gemspec_filename, @config.base_dir_for_path_parameters)
+      end
+
+      def version_from_gemspec_file(file)
+        processed_source = ProcessedSource.from_file(file, DEFAULT_VERSION)
+        required_ruby_version(processed_source.ast).first
+      end
+
+      def version_from_str(str)
+        str.match(/^(?:>=|<=)?\s*(?<version>\d+(?:\.\d+)*)/) do |md|
+          md[:version].to_f
+        end
+      end
+    end
+
     # If all else fails, a default version will be picked.
     # @api private
     class Default < Source
@@ -130,7 +186,7 @@ module RuboCop
       KNOWN_RUBIES
     end
 
-    SOURCES = [RuboCopConfig, RubyVersionFile, BundlerLockFile, Default].freeze
+    SOURCES = [RuboCopConfig, RubyVersionFile, BundlerLockFile, GemspecFile, Default].freeze
     private_constant :SOURCES
 
     def initialize(config)
