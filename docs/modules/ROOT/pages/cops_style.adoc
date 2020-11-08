@@ -4602,13 +4602,17 @@ raise ArgumentError, 'Error message here'
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| Yes
-| Yes
+| No
+| Yes (Unsafe)
 | 0.26
 | 0.61
 |===
 
 Use `Kernel#loop` for infinite loops.
+
+This cop is marked as unsafe as the rule does not necessarily
+apply if the body might raise a `StopIteration` exception; contrary to
+other infinite loops, `Kernel#loop` silently rescues that and returns `nil`.
 
 === Examples
 
