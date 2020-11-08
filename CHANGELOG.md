@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#8761](https://github.com/rubocop-hq/rubocop/issues/8761): Read `required_ruby_version` from gemspec file if it exists #8761. ([@HeroProtagonist][])
+
 ### Bug fixes
 
 * [#8499](https://github.com/rubocop-hq/rubocop/issues/8499): Fix `Style/IfUnlessModifier` and `Style/WhileUntilModifier` to prevent an offense if there are both first-line comment and code after `end` block. ([@dsavochkin][])
@@ -5084,3 +5088,4 @@
 [@miry]: https://github.com/miry
 [@lautis]: https://github.com/lautis
 [@pdobb]: https://github.com/pdobb
+[@HeroProtagonist]: https://github.com/HeroProtagonist
