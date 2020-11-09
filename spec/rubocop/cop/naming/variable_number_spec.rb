@@ -263,4 +263,26 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       expect_no_offenses(':sym_1')
     end
   end
+
+  context 'when AllowedIdentifiers is set' do
+    let(:cop_config) do
+      {
+        'AllowedIdentifiers' => %w[capture3],
+        'CheckSymbols' => true,
+        'CheckMethodNames' => true,
+        'EnforcedStyle' => 'snake_case'
+      }
+    end
+
+    it 'does not register an offense for a method name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        def capture3
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a symbol that is allowed' do
+      expect_no_offenses(':capture3')
+    end
+  end
 end

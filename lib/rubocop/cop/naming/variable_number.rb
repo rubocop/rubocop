@@ -92,6 +92,10 @@ module RuboCop
       #   # good
       #   :some_sym_1
       #
+      # @example AllowedIdentifier: [capture3]
+      #   # good
+      #   expect(Open3).to receive(:capture3)
+      #
       class VariableNumber < Base
         include ConfigurableNumbering
 
@@ -108,12 +112,16 @@ module RuboCop
 
         def on_def(node)
           @node = node
+          return if allowed_identifier?(node.method_name)
+
           check_name(node, node.method_name, node.loc.name) if cop_config['CheckMethodNames']
         end
         alias on_defs on_def
 
         def on_sym(node)
           @node = node
+          return if allowed_identifier?(node.value)
+
           check_name(node, node.value, node) if cop_config['CheckSymbols']
         end
 
@@ -128,6 +136,14 @@ module RuboCop
             end
 
           format(MSG, style: style, identifier_type: identifier_type)
+        end
+
+        def allowed_identifier?(name)
+          allowed_identifiers.include?(name.to_s)
+        end
+
+        def allowed_identifiers
+          cop_config.fetch('AllowedIdentifiers', [])
         end
       end
     end

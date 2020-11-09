@@ -994,7 +994,7 @@ fooBar = 1
 | Yes
 | No
 | 0.50
-| 1.2
+| 1.3
 |===
 
 This cop makes sure that all numbered variables use the
@@ -1116,6 +1116,14 @@ def some_method_1; end
 :some_sym_1
 ----
 
+==== AllowedIdentifier: [capture3]
+
+[source,ruby]
+----
+# good
+expect(Open3).to receive(:capture3)
+----
+
 === Configurable attributes
 
 |===
@@ -1132,6 +1140,10 @@ def some_method_1; end
 | CheckSymbols
 | `true`
 | Boolean
+
+| AllowedIdentifiers
+| `[]`
+| Array
 |===
 
 === References

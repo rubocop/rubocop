@@ -2443,7 +2443,7 @@ Naming/VariableNumber:
   StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: '1.2'
+  VersionChanged: '1.3'
   EnforcedStyle: normalcase
   SupportedStyles:
     - snake_case
@@ -2451,6 +2451,7 @@ Naming/VariableNumber:
     - non_integer
   CheckMethodNames: true
   CheckSymbols: true
+  AllowedIdentifiers: []
 
 #################### Security ##############################
 
