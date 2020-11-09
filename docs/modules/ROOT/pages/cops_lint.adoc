@@ -1131,12 +1131,14 @@ end
 | Yes
 | No
 | 1.1
-| -
+| 1.3
 |===
 
 This cop checks for blocks without a body.
 Such empty blocks are typically an oversight or we should provide a comment
 be clearer what we're aiming for.
+
+Empty lambdas are ignored by default.
 
 === Examples
 
@@ -1173,12 +1175,40 @@ end
 items.each { |item| } # TODO: implement later (inline comment)
 ----
 
+==== AllowEmptyLambdas: true (default)
+
+[source,ruby]
+----
+# good
+allow(subject).to receive(:callable).and_return(-> {})
+
+placeholder = lambda do
+end
+(callable || placeholder).call
+----
+
+==== AllowEmptyLambdas: false
+
+[source,ruby]
+----
+# bad
+allow(subject).to receive(:callable).and_return(-> {})
+
+placeholder = lambda do
+end
+(callable || placeholder).call
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
 
 | AllowComments
+| `true`
+| Boolean
+
+| AllowEmptyLambdas
 | `true`
 | Boolean
 |===

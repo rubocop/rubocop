@@ -2,20 +2,13 @@
 
 RSpec.describe RuboCop::Cop::Lint::EmptyBlock, :config do
   let(:cop_config) do
-    { 'AllowComments' => true }
+    { 'AllowComments' => true, 'AllowEmptyLambdas' => true }
   end
 
   it 'registers an offense for empty block within method call' do
     expect_offense(<<~RUBY)
       items.each { |item| }
       ^^^^^^^^^^^^^^^^^^^^^ Empty block detected.
-    RUBY
-  end
-
-  it 'registers an offense for empty block within lambda' do
-    expect_offense(<<~RUBY)
-      lambda { |item| }
-      ^^^^^^^^^^^^^^^^^ Empty block detected.
     RUBY
   end
 
@@ -39,6 +32,19 @@ RSpec.describe RuboCop::Cop::Lint::EmptyBlock, :config do
     RUBY
   end
 
+  it 'does not register an offense on an empty lambda' do
+    expect_no_offenses(<<~RUBY)
+      lambda do
+      end
+    RUBY
+  end
+
+  it 'does not register an offense on an empty stabby lambda' do
+    expect_no_offenses(<<~RUBY)
+      -> {}
+    RUBY
+  end
+
   context 'when AllowComments is false' do
     let(:cop_config) do
       { 'AllowComments' => false }
@@ -57,6 +63,27 @@ RSpec.describe RuboCop::Cop::Lint::EmptyBlock, :config do
       expect_offense(<<~RUBY)
         items.each { |item| } # TODO: implement later
         ^^^^^^^^^^^^^^^^^^^^^ Empty block detected.
+      RUBY
+    end
+  end
+
+  context 'when AllowEmptyLambdas is false' do
+    let(:cop_config) do
+      { 'AllowEmptyLambdas' => false }
+    end
+
+    it 'registers an offense for an empty lambda' do
+      expect_offense(<<~RUBY)
+        lambda do
+        ^^^^^^^^^ Empty block detected.
+        end
+      RUBY
+    end
+
+    it 'registers an offense for an empty stabby lambda' do
+      expect_offense(<<~RUBY)
+        -> {}
+        ^^^^^ Empty block detected.
       RUBY
     end
   end
