@@ -1505,7 +1505,9 @@ Lint/EmptyBlock:
   Description: 'This cop checks for blocks without a body.'
   Enabled: pending
   VersionAdded: '1.1'
+  VersionChanged: '1.3'
   AllowComments: true
+  AllowEmptyLambdas: true
 
 Lint/EmptyClass:
   Description: 'Checks for classes and metaclasses without a body.'
