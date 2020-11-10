@@ -663,7 +663,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'offenses',
                         '--except', 'Style/IfUnlessModifier,Lint',
                         'example.rb'])).to eq(1)
-        # Note: No Lint/UselessAssignment offense.
+        # NOTE: No Lint/UselessAssignment offense.
         expect($stdout.string)
           .to eq(<<~RESULT)
 

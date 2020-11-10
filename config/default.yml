@@ -2898,17 +2898,18 @@ Style/CommandLiteral:
 Style/CommentAnnotation:
   Description: >-
                  Checks formatting of special comments
-                 (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
+                 (TODO, FIXME, OPTIMIZE, HACK, REVIEW, NOTE).
   StyleGuide: '#annotate-keywords'
   Enabled: true
   VersionAdded: '0.10'
-  VersionChanged: '0.31'
+  VersionChanged: '1.3'
   Keywords:
     - TODO
     - FIXME
     - OPTIMIZE
     - HACK
     - REVIEW
+    - NOTE
 
 Style/CommentedKeyword:
   Description: 'Do not place comments on the same line as certain keywords.'

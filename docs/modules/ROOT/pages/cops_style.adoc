@@ -1731,7 +1731,7 @@ folders = %x(find . -type d).split
 | Yes
 | Yes
 | 0.10
-| 0.31
+| 1.3
 |===
 
 This cop checks that comment annotation keywords are written according
@@ -1778,7 +1778,7 @@ annotation.
 | Name | Default value | Configurable values
 
 | Keywords
-| `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW`
+| `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW`, `NOTE`
 | Array
 |===
 
