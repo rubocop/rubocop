@@ -454,6 +454,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylenestedternaryoperator[Style/NestedTernaryOperator]
 * xref:cops_style.adoc#stylenext[Style/Next]
 * xref:cops_style.adoc#stylenilcomparison[Style/NilComparison]
+* xref:cops_style.adoc#stylenillambda[Style/NilLambda]
 * xref:cops_style.adoc#stylenonnilcheck[Style/NonNilCheck]
 * xref:cops_style.adoc#stylenot[Style/Not]
 * xref:cops_style.adoc#stylenumericliteralprefix[Style/NumericLiteralPrefix]

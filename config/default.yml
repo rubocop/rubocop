@@ -3754,6 +3754,11 @@ Style/NilComparison:
     - predicate
     - comparison
 
+Style/NilLambda:
+  Description: 'Prefer `-> {}` to `-> { nil }`.'
+  Enabled: pending
+  VersionAdded: '1.3'
+
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
   StyleGuide: '#no-non-nil-checks'
