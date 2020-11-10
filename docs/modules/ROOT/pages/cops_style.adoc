@@ -6779,6 +6779,41 @@ end
 
 * https://rubystyle.guide#predicate-methods
 
+== Style/NilLambda
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.3
+| -
+|===
+
+This cop checks for lambdas that always return nil, which can be replaced
+with an empty lambda instead.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+-> { nil }
+
+lambda do
+  next nil
+end
+
+# good
+-> {}
+
+lambda do
+end
+
+-> (x) { nil if x }
+----
+
 == Style/NonNilCheck
 
 |===
