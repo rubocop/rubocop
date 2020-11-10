@@ -138,7 +138,7 @@ module RuboCop
         end
       end
 
-      # Note: mutates `callbacks` in place
+      # NOTE: mutates `callbacks` in place
       def restricted_map(callbacks)
         map = {}
         callbacks&.select! do |cop|
