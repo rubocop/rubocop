@@ -13,6 +13,7 @@ module RuboCop
         class AbcSizeCalculator
           include IteratingBlock
           include RepeatedCsendDiscount
+          prepend RepeatedAttributeDiscount
 
           # > Branch -- an explicit forward program branch out of scope -- a
           # > function call, class method call ..
@@ -24,8 +25,8 @@ module RuboCop
           # > http://c2.com/cgi/wiki?AbcMetric
           CONDITION_NODES = CyclomaticComplexity::COUNTED_NODES.freeze
 
-          def self.calculate(node)
-            new(node).calculate
+          def self.calculate(node, discount_repeated_attributes: false)
+            new(node, discount_repeated_attributes: discount_repeated_attributes).calculate
           end
 
           # TODO: move to rubocop-ast

@@ -134,6 +134,36 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
         end
       end
     end
+
+    context 'when CountRepeatedAttributes is `false`' do
+      let(:cop_config) { { 'Max' => 0, 'CountRepeatedAttributes' => false } }
+
+      it 'does not count repeated attributes' do
+        expect_offense(<<~RUBY)
+          def foo
+          ^^^^^^^ Assignment Branch Condition size for foo is too high. [<0, 1, 0> 1/0]
+            bar
+            self.bar
+            bar
+          end
+        RUBY
+      end
+    end
+
+    context 'when CountRepeatedAttributes is `true`' do
+      let(:cop_config) { { 'Max' => 0, 'CountRepeatedAttributes' => true } }
+
+      it 'counts repeated attributes' do
+        expect_offense(<<~RUBY)
+          def foo
+          ^^^^^^^ Assignment Branch Condition size for foo is too high. [<0, 3, 0> 3/0]
+            bar
+            self.bar
+            bar
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when Max is 2' do
