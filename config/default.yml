@@ -1400,6 +1400,8 @@ Lint/ConstantDefinitionInBlock:
   StyleGuide: '#no-constant-definition-in-block'
   Enabled: true
   VersionAdded: '0.91'
+  VersionChanged: '1.3'
+  AllowedMethods: []
 
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
