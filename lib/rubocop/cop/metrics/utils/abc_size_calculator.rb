@@ -42,8 +42,7 @@ module RuboCop
           end
 
           def calculate
-
-            @node.each_node do |child|
+            visit_depth_last(@node) do |child|
               calculate_node(child)
             end
 
@@ -74,6 +73,11 @@ module RuboCop
           end
 
           private
+
+          def visit_depth_last(node, &block)
+            node.each_child_node { |child| visit_depth_last(child, &block) }
+            yield node
+          end
 
           def calculate_node(node)
             @assignment += 1 if assignment?(node)
