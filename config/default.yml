@@ -2833,7 +2833,9 @@ Style/ClassVars:
 Style/CollectionCompact:
   Description: 'Use `{Array,Hash}#{compact,compact!}` instead of custom logic to reject nils.'
   Enabled: pending
+  Safe: false
   VersionAdded: '1.2'
+  VersionChanged: '1.3'
 
 # Align with the style guide.
 Style/CollectionMethods:
