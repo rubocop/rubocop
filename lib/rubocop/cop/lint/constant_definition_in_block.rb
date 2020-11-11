@@ -49,7 +49,18 @@ module RuboCop
       #       const_set(:LIST, [])
       #     end
       #   end
+      #
+      # @example AllowedMethods: ['enums']
+      #   # good
+      #   class TestEnum < T::Enum
+      #     enums do
+      #       Foo = new("foo")
+      #     end
+      #   end
+      #
       class ConstantDefinitionInBlock < Base
+        include AllowedMethods
+
         MSG = 'Do not define constants this way within a block.'
 
         def_node_matcher :constant_assigned_in_block?, <<~PATTERN
@@ -61,13 +72,23 @@ module RuboCop
         PATTERN
 
         def on_casgn(node)
-          add_offense(node) if constant_assigned_in_block?(node)
+          return if !constant_assigned_in_block?(node) || allowed_method?(method_name(node))
+
+          add_offense(node)
         end
 
         def on_class(node)
-          add_offense(node) if module_defined_in_block?(node)
+          return if !module_defined_in_block?(node) || allowed_method?(method_name(node))
+
+          add_offense(node)
         end
         alias on_module on_class
+
+        private
+
+        def method_name(node)
+          node.ancestors.find(&:block_type?).send_node.method_name
+        end
       end
     end
   end
