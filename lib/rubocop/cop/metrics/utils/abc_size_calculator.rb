@@ -42,14 +42,9 @@ module RuboCop
           end
 
           def calculate
-            @node.each_node do |child|
-              @assignment += 1 if assignment?(child)
 
-              if branch?(child)
-                evaluate_branch_nodes(child)
-              elsif condition?(child)
-                evaluate_condition_node(child)
-              end
+            @node.each_node do |child|
+              calculate_node(child)
             end
 
             [
@@ -79,6 +74,16 @@ module RuboCop
           end
 
           private
+
+          def calculate_node(node)
+            @assignment += 1 if assignment?(node)
+
+            if branch?(node)
+              evaluate_branch_nodes(node)
+            elsif condition?(node)
+              evaluate_condition_node(node)
+            end
+          end
 
           def assignment?(node)
             return compound_assignment(node) if node.masgn_type? || node.shorthand_asgn?
