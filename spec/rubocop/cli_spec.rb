@@ -504,7 +504,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               == example.rb ==
               C:  1:  3: Layout/LineLength: Line is too long. [5/2]
 
-              1 file inspected, 1 offense detected, 1 offense auto-correctable
+              1 file inspected, 1 offense detected
             RESULT
         end
 
@@ -1291,7 +1291,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example/lib/example1.rb ==
         C:  3:121: Layout/LineLength: Line is too long. [130/120]
 
-        2 files inspected, 1 offense detected, 1 offense auto-correctable
+        2 files inspected, 1 offense detected
       RESULT
     end
 
@@ -1347,7 +1347,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example/tmp/test/example1.rb ==
         C:  3:121: Layout/LineLength: Line is too long. [130/120]
 
-        1 file inspected, 1 offense detected, 1 offense auto-correctable
+        1 file inspected, 1 offense detected
       RESULT
     end
 
@@ -1556,7 +1556,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  3: 46: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
           E:  3:121: Layout/LineLength: Line is too long. [130/120]
 
-          1 file inspected, 4 offenses detected, 1 offense auto-correctable
+          1 file inspected, 4 offenses detected
         RESULT
         expect($stderr.string).to eq('')
       end
