@@ -50,9 +50,9 @@ $ rubocop -V
 Changelog entries are just files under the `changelog/` folder that will be merged
 into `CHANGELOG.md` at release time. You can create new changelog entries like this:
 
-  $ bundle exec rake changelog:new
-  $ bundle exec rake changelog:fix
-  $ bundle exec rake changelog:change
+    $ bundle exec rake changelog:new
+    $ bundle exec rake changelog:fix
+    $ bundle exec rake changelog:change
 
 Those commands correspond to "new feature", "bug-fix" and "changed" entries in the changelog.
 
