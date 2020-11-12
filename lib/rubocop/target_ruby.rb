@@ -141,7 +141,15 @@ module RuboCop
           return versions.compact.min
         end
 
+        return gem_requirement_version(version) if version.send_type?
+
         version_from_str(version.str_content)
+      end
+
+      def gem_requirement_version(version)
+        gem_requirement = version.children.last
+        versions = gem_requirement.children.map { |v| version_from_str(v) }
+        versions.compact.min
       end
 
       def gemspec_filename

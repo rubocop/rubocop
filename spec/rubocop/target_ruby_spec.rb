@@ -305,6 +305,53 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           end
         end
 
+        context 'when file contains `required_ruby_version` as a requirement' do
+          let(:base_path) { configuration.base_dir_for_path_parameters }
+          let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
+
+          it 'sets target_ruby from required_ruby_version from exact requirement version' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new('2.7.4')
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq 2.7
+          end
+
+          it 'sets target_ruby from required_ruby_version from inclusive requirement range' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new('>= 3.0.0')
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq 3.0
+          end
+
+          it 'sets default target_ruby from exclusive requirement range' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new('< 3.0.0')
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
+        end
+
         context 'when file contains `required_ruby_version` as an array' do
           let(:base_path) { configuration.base_dir_for_path_parameters }
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
