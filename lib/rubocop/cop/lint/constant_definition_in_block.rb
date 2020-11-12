@@ -50,8 +50,11 @@ module RuboCop
       #     end
       #   end
       #
-      # @example AllowedMethods: ['enums']
+      # @example AllowedMethods: ['enums'] (default)
       #   # good
+      #
+      #   # `enums` for Typed Enums via `T::Enum` in Sorbet.
+      #   # https://sorbet.org/docs/tenum
       #   class TestEnum < T::Enum
       #     enums do
       #       Foo = new("foo")

@@ -361,7 +361,7 @@ end
 | Yes
 | No
 | 0.91
-| 1.3
+| 1.4
 |===
 
 Do not define constants within a block, since the block's scope does not
@@ -415,11 +415,14 @@ module M
 end
 ----
 
-==== AllowedMethods: ['enums']
+==== AllowedMethods: ['enums'] (default)
 
 [source,ruby]
 ----
 # good
+
+# `enums` for Typed Enums via `T::Enum` in Sorbet.
+# https://sorbet.org/docs/tenum
 class TestEnum < T::Enum
   enums do
     Foo = new("foo")
@@ -433,7 +436,7 @@ end
 | Name | Default value | Configurable values
 
 | AllowedMethods
-| `[]`
+| `enums`
 | Array
 |===
 
