@@ -1101,7 +1101,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
               C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
-              1 file inspected, 2 offenses detected, 2 offenses auto-correctable
+              1 file inspected, 2 offenses detected, 1 offense auto-correctable
             RESULT
         end
       end
@@ -1249,7 +1249,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             '    end',
             '    ^^^',
             '',
-            '3 files inspected, 15 offenses detected, 13 offenses auto-correctable',
+            '3 files inspected, 15 offenses detected, 12 offenses auto-correctable',
             ''
           ].join("\n"))
         end
@@ -1369,7 +1369,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
-        1 file inspected, 2 offenses detected, 2 offenses auto-correctable
+        1 file inspected, 2 offenses detected, 1 offense auto-correctable
       RESULT
 
       expect(File.read('emacs_output.txt'))

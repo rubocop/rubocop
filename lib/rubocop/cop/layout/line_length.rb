@@ -88,6 +88,10 @@ module RuboCop
           end
         end
 
+        def correctable?
+          super && !breakable_range.nil?
+        end
+
         def autocorrect(range)
           return if range.nil?
 
@@ -97,6 +101,8 @@ module RuboCop
         end
 
         private
+
+        attr_accessor :breakable_range
 
         def check_for_breakable_node(node)
           breakable_node = extract_breakable_node(node, max)
@@ -195,7 +201,8 @@ module RuboCop
         def register_offense(loc, line, line_index)
           message = format(MSG, length: line_length(line), max: max)
 
-          breakable_range = breakable_range_by_line_index[line_index]
+          self.breakable_range = breakable_range_by_line_index[line_index]
+
           add_offense(breakable_range, location: loc, message: message) do
             self.max = line_length(line)
           end
