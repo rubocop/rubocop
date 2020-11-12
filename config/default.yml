@@ -3012,6 +3012,7 @@ Style/DocumentDynamicEvalDefinition:
   StyleGuide: '#eval-comment-docs'
   Enabled: pending
   VersionAdded: '1.1'
+  VersionChanged: '1.3'
 
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
