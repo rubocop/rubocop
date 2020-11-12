@@ -103,7 +103,7 @@ module RuboCop
         # hashes wrapped in a set of curly braces like {foo: 1}.
         # That is, not a kwargs hash. For method calls, this ensures
         # the method call is made with parens.
-        starts_with_bracket = node.loc.begin
+        starts_with_bracket = !node.hash_type? || node.loc.begin
 
         # If the call has a second argument, we can insert a line
         # break before the second argument and the rest of the

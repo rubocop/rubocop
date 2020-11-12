@@ -438,11 +438,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               bar: "10000"}
           RUBY
 
-          expect_correction(<<~RUBY)
-            { # supersupersupersupersupersupersupersupersupersupersupersuperlongcomment
-              baz: "10000",
-              bar: "10000"}
-          RUBY
+          expect_no_corrections
         end
       end
 
@@ -455,11 +451,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               bar: "10000"}
           RUBY
 
-          expect_correction(<<~RUBY)
-            {supersupersupersupersupersupersupersupersupersupersupersuperfirstarg: 10,
-              baz: "10000",
-              bar: "10000"}
-          RUBY
+          expect_no_corrections
         end
       end
 
@@ -474,13 +466,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               bar: "10000"}
           RUBY
 
-          expect_correction(<<~RUBY)
-            {
-              baz0: "10000",
-              baz1: "10000",
-              baz2: "10000", baz2: "10000", baz3: "10000", baz4: "10000",
-              bar: "10000"}
-          RUBY
+          expect_no_corrections
         end
       end
 
@@ -492,7 +478,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
 
           expect_correction(<<~RUBY)
-            {abc: "100000", def: "100000",\s
+            {abc: "100000", def: "100000",#{trailing_whitespace}
             ghi: "100000", jkl: "100000", mno: "100000"}
           RUBY
         end
@@ -506,7 +492,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
 
           expect_correction(<<~RUBY)
-            {"abc" => "100000", "def" => "100000",\s
+            {"abc" => "100000", "def" => "100000",#{trailing_whitespace}
             "casd" => "100000", "asdf" => "100000"}
           RUBY
         end
@@ -520,7 +506,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
 
           expect_correction(<<~RUBY)
-            {:abc => "100000", :asd => "100000",\s
+            {:abc => "100000", :asd => "100000",#{trailing_whitespace}
             :asd => "100000", :fds => "100000"}
           RUBY
         end
@@ -534,7 +520,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
 
           expect_correction(<<~RUBY)
-            {abc: "100000", def: "100000",\s
+            {abc: "100000", def: "100000",#{trailing_whitespace}
             ghi: {abc: "100000"}, jkl: "100000", mno: "100000"}
           RUBY
         end
@@ -553,7 +539,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_correction(<<~RUBY)
             get(
               :index,
-              params: {driver_id: driver.id,\s
+              params: {driver_id: driver.id,#{trailing_whitespace}
             from_date: "2017-08-18T15:09:04.000Z", to_date: "2017-09-19T15:09:04.000Z"},
               xhr: true)
           RUBY
@@ -631,9 +617,20 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
           RUBY
 
+          expect_no_corrections
+        end
+      end
+
+      context 'with long argument list' do
+        it 'registers an offense and autocorrects it' do
+          expect_offense(<<~RUBY)
+            attr_reader :first_name, :last_name, :email, :username, :country, :state, :city, :postal_code
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [93/40]
+          RUBY
+
           expect_correction(<<~RUBY)
-            get(1000000,
-            foo(44440000, 30000, 39999, 1992), foo(44440000, 30000, 39999, 12093))
+            attr_reader :first_name, :last_name,#{trailing_whitespace}
+            :email, :username, :country, :state, :city, :postal_code
           RUBY
         end
       end
@@ -694,11 +691,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             100, 100]
           RUBY
 
-          expect_correction(<<~RUBY)
-            [1000000, 3912312312999,
-              [44440000, 3912312312999, 3912312312999, 1992912031231232131312093],
-            100, 100]
-          RUBY
+          expect_no_corrections
         end
       end
     end
@@ -712,11 +705,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           456
         RUBY
 
-        expect_correction(<<~RUBY)
-          10000003912312312999
-            # 444400003912312312999391231231299919929120312312321313120933333333
-          456
-        RUBY
+        expect_no_corrections
       end
     end
 
@@ -885,9 +874,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                     ^ Line is too long. [41/40]
           RUBY
 
-          expect_correction(<<~RUBY)
-            a = 400000000000 + 500000000000000000000;
-          RUBY
+          expect_no_corrections
         end
       end
 
@@ -899,9 +886,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                     ^^^^^^^ Line is too long. [47/40]
           RUBY
 
-          expect_correction(<<~RUBY)
-            a = 400000000000 + 500000000000000000000;;;;;;;
-          RUBY
+          expect_no_corrections
         end
       end
 
@@ -947,11 +932,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             SQL
           RUBY
 
-          expect_correction(<<~RUBY)
-            foo = <<-SQL
-              SELECT a b c d a b FROM c d a b c d ; COUNT(*) a b
-            SQL
-          RUBY
+          expect_no_corrections
         end
       end
     end
@@ -964,9 +945,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                     ^^^^^^^^^^^^^ Line is too long. [53/40]
           RUBY
 
-          expect_correction(<<~RUBY)
-            # a b c d a b c d a b c d ; a b c d a b c d a b c d a
-          RUBY
+          expect_no_corrections
         end
       end
     end
