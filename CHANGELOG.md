@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.3.0 (2020-11-12)
+
 ### New features
 
 * [#8761](https://github.com/rubocop-hq/rubocop/issues/8761): Read `required_ruby_version` from gemspec file if it exists #8761. ([@HeroProtagonist][])
