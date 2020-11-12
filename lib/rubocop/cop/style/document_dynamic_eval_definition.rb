@@ -68,6 +68,12 @@ module RuboCop
       #       end
       #     EOT
       #   )
+      #
+      #   # bad - interpolated string without comment
+      #   class_eval("def #{unsafe_method}!(*params); end")
+      #
+      #   # good - with inline comment or replace it with block comment using heredoc
+      #   class_eval("def #{unsafe_method}!(*params); end # def capitalize!(*params); end")
       class DocumentDynamicEvalDefinition < Base
         BLOCK_COMMENT_REGEXP = /^\s*#(?!{)/.freeze
         COMMENT_REGEXP = /\s*#(?!{).*/.freeze
@@ -79,7 +85,8 @@ module RuboCop
           arg_node = node.first_argument
 
           return unless arg_node&.dstr_type? && interpolated?(arg_node)
-          return if inline_comment_docs?(arg_node) || comment_block_docs?(arg_node)
+          return if inline_comment_docs?(arg_node) ||
+                    arg_node.heredoc? && comment_block_docs?(arg_node)
 
           add_offense(node.loc.selector)
         end
