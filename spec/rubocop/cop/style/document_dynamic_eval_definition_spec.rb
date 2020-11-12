@@ -34,6 +34,21 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition do
     RUBY
   end
 
+  it 'registers an offense when using eval-type method with interpolated string ' \
+     'that is not heredoc without comment doc' do
+    expect_offense(<<~'RUBY')
+      stringio.instance_eval("def original_filename; 'stringio#{n}.txt'; end")
+               ^^^^^^^^^^^^^ Add a comment block showing its appearance if interpolated.
+    RUBY
+  end
+
+  it 'does not register an offense when using eval-type method with interpolated string ' \
+     'that is not heredoc with comment doc' do
+    expect_no_offenses(<<~'RUBY')
+      stringio.instance_eval("def original_filename; 'stringio#{n}.txt'; end # def original_filename; 'stringiofoo.txt'; end")
+    RUBY
+  end
+
   context 'block comment in heredoc' do
     it 'does not register an offense for a matching block comment' do
       expect_no_offenses(<<~RUBY)
