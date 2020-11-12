@@ -2244,7 +2244,7 @@ end
 | Yes
 | No
 | 1.1
-| -
+| 1.3
 |===
 
 When using `class_eval` (or other `eval`) with string interpolation,
@@ -2272,7 +2272,7 @@ UNSAFE_STRING_METHODS.each do |unsafe_method|
   end
 end
 
-# good
+# good, inline comments in heredoc
 UNSAFE_STRING_METHODS.each do |unsafe_method|
   if 'String'.respond_to?(unsafe_method)
     class_eval <<-EOT, __FILE__, __LINE__ + 1
@@ -2287,6 +2287,34 @@ UNSAFE_STRING_METHODS.each do |unsafe_method|
     EOT
   end
 end
+
+# good, block comments in heredoc
+class_eval <<-EOT, __FILE__, __LINE__ + 1
+  # def capitalize!(*params)
+  #   @dirty = true
+  #   super
+  # end
+
+  def #{unsafe_method}!(*params)
+    @dirty = true
+    super
+  end
+EOT
+
+# good, block comments before heredoc
+class_eval(
+  # def capitalize!(*params)
+  #   @dirty = true
+  #   super
+  # end
+
+  <<-EOT, __FILE__, __LINE__ + 1
+    def #{unsafe_method}!(*params)
+      @dirty = true
+      super
+    end
+  EOT
+)
 ----
 
 === References
