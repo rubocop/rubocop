@@ -1400,7 +1400,7 @@ Lint/ConstantDefinitionInBlock:
   StyleGuide: '#no-constant-definition-in-block'
   Enabled: true
   VersionAdded: '0.91'
-  VersionChanged: '1.4'
+  VersionChanged: '1.3'
   # `enums` for Typed Enums via T::Enum in Sorbet.
   # https://sorbet.org/docs/tenum
   AllowedMethods:
