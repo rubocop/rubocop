@@ -1760,6 +1760,31 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    it 'prints offence reports to stderr and corrected code to stdout if --auto-correct-all and --stderr are used' do
+      begin
+        $stdin = StringIO.new('p $/')
+        argv   = ['--auto-correct-all',
+                  '--only=Style/SpecialGlobalVars',
+                  '--format=simple',
+                  '--stderr',
+                  '--stdin',
+                  'fake.rb']
+        expect(cli.run(argv)).to eq(0)
+        expect($stderr.string).to eq(<<~RESULT)
+          == fake.rb ==
+          C:  1:  3: [Corrected] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
+
+          1 file inspected, 1 offense detected, 1 offense corrected
+          ====================
+        RESULT
+        expect($stdout.string).to eq(<<~RESULT.chomp)
+          p $INPUT_RECORD_SEPARATOR
+        RESULT
+      ensure
+        $stdin = STDIN
+      end
+    end
+
     it 'can parse JSON result when specifying `--format=json` and `--stdin` options' do
       begin
         $stdin = StringIO.new('p $/')

@@ -22,12 +22,13 @@ module RuboCop
         def execute_runner(paths)
           runner = Runner.new(@options, @config_store)
 
-          all_passed = runner.run(paths)
-          display_warning_summary(runner.warnings)
-          display_error_summary(runner.errors)
-          maybe_print_corrected_source
+          all_pass_or_excluded = with_redirect do
+            all_passed = runner.run(paths)
+            display_summary(runner)
+            all_passed || @options[:auto_gen_config]
+          end
 
-          all_pass_or_excluded = all_passed || @options[:auto_gen_config]
+          maybe_print_corrected_source
 
           if runner.aborting?
             STATUS_INTERRUPTED
@@ -36,6 +37,25 @@ module RuboCop
           else
             STATUS_OFFENSES
           end
+        end
+
+        def with_redirect
+          if @options[:stderr]
+            orig_stdout = $stdout.dup
+            $stdout.reopen($stderr)
+
+            result = yield
+
+            $stdout.reopen(orig_stdout)
+            result
+          else
+            yield
+          end
+        end
+
+        def display_summary(runner)
+          display_warning_summary(runner.warnings)
+          display_error_summary(runner.errors)
         end
 
         def display_warning_summary(warnings)
@@ -69,14 +89,9 @@ module RuboCop
           # See: https://github.com/rubocop-hq/rubocop/issues/8673
           return if INTEGRATION_FORMATTERS.include?(@options[:format])
 
-          # If we are asked to autocorrect source code read from stdin, the only
-          # reasonable place to write it is to stdout
-          # Unfortunately, we also write other information to stdout
-          # So a delimiter is needed for tools to easily identify where the
-          # autocorrected source begins
           return unless @options[:stdin] && @options[:auto_correct]
 
-          puts '=' * 20
+          (@options[:stderr] ? $stderr : $stdout).puts '=' * 20
           print @options[:stdin]
         end
       end

@@ -195,6 +195,7 @@ module RuboCop
 
       option(opts, '--safe')
 
+      option(opts, '--stderr')
       option(opts, '--[no-]color')
 
       option(opts, '-v', '--version')
@@ -498,6 +499,9 @@ module RuboCop
       extra_details:                    'Display extra details in offense messages.',
       lint:                             'Run only lint cops.',
       safe:                             'Run only safe cops.',
+      stderr:                           ['Write all output to stderr except for the',
+                                         'autocorrected source. This is especially useful',
+                                         'when combined with --auto-correct and --stdin.'],
       list_target_files:                'List all files RuboCop will inspect.',
       auto_correct:                     'Auto-correct offenses (only when it\'s safe).',
       safe_auto_correct:                '(same, deprecated)',
