@@ -140,20 +140,11 @@ module RuboCop
         version = version_from_gemspec_file(file)
         return if version.nil?
 
-        if version.array_type?
-          versions = version.children.map { |v| version_from_str(v.str_content) }
-          return versions.compact.min
-        end
-
-        return gem_requirement_version(version) if gem_requirement? version
+        requirement = version.children.last
+        return version_from_array(version) if version.array_type?
+        return version_from_array(requirement) if gem_requirement? version
 
         version_from_str(version.str_content)
-      end
-
-      def gem_requirement_version(version)
-        gem_requirement = version.children.last
-        versions = gem_requirement.children.map { |v| version_from_str(v) }
-        versions.compact.min
       end
 
       def gemspec_filename
@@ -171,6 +162,11 @@ module RuboCop
       def version_from_gemspec_file(file)
         processed_source = ProcessedSource.from_file(file, DEFAULT_VERSION)
         required_ruby_version(processed_source.ast).first
+      end
+
+      def version_from_array(array)
+        versions = array.children.map { |v| version_from_str(v.is_a?(String) ? v : v.str_content) }
+        versions.compact.min
       end
 
       def version_from_str(str)
