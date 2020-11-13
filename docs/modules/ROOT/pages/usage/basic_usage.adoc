@@ -240,6 +240,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--show-cops`
 | Shows available cops and their configuration.
 
+| `--stderr`
+| Write all output to stderr except for the autocorrected source. This is especially useful when combined with `--auto-correct` and `--stdin`.
+
 | `-s/--stdin`
 | Pipe source from STDIN. This is useful for editor integration. Takes one argument, a path, relative to the root of the project. RuboCop will use this path to determine which cops are enabled (via eg. Include/Exclude), and so that certain cops like Naming/FileName can be checked.
 

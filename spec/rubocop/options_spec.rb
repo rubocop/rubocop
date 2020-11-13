@@ -131,6 +131,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --ignore-disable-comments    Run cops even when they are disabled locally
                                                with a comment.
                   --safe                       Run only safe cops.
+                  --stderr                     Write all output to stderr except for the
+                                               autocorrected source. This is especially useful
+                                               when combined with --auto-correct and --stdin.
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
