@@ -35,6 +35,16 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     end
   end
 
+  shared_examples 'accepts integer symbols' do
+    it 'accepts integer symbol' do
+      expect_no_offenses(':"42"')
+    end
+
+    it 'accepts integer symbol array literal' do
+      expect_no_offenses('%i[1 2 3]')
+    end
+  end
+
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
@@ -59,6 +69,8 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'snake_case', '@foo'
     it_behaves_like 'accepts', 'snake_case', '@__foo__'
     it_behaves_like 'accepts', 'snake_case', 'emparejó'
+
+    it_behaves_like 'accepts integer symbols'
 
     it 'registers an offense for normal case numbering in symbol' do
       expect_offense(<<~RUBY)
@@ -125,6 +137,8 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'normalcase', '@__foo__'
     it_behaves_like 'accepts', 'normalcase', 'emparejó'
 
+    it_behaves_like 'accepts integer symbols'
+
     it 'registers an offense for snake case numbering in symbol' do
       expect_offense(<<~RUBY)
         :sym_1
@@ -184,6 +198,8 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'non_integer', '_foo'
     it_behaves_like 'accepts', 'non_integer', '@__foo__'
     it_behaves_like 'accepts', 'non_integer', 'emparejó'
+
+    it_behaves_like 'accepts integer symbols'
 
     it 'registers an offense for snake case numbering in symbol' do
       expect_offense(<<~RUBY)
