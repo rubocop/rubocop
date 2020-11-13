@@ -123,6 +123,10 @@ module RuboCop
         (send _ :required_ruby_version= $_)
       PATTERN
 
+      def_node_matcher :gem_requirement?, <<~PATTERN
+        (send (const(const _ :Gem):Requirement) :new $str)
+      PATTERN
+
       def name
         "`required_ruby_version` parameter (in #{gemspec_filename})"
       end
@@ -141,7 +145,7 @@ module RuboCop
           return versions.compact.min
         end
 
-        return gem_requirement_version(version) if version.send_type?
+        return gem_requirement_version(version) if gem_requirement? version
 
         version_from_str(version.str_content)
       end
