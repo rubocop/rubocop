@@ -123,6 +123,10 @@ module RuboCop
         (send _ :required_ruby_version= $_)
       PATTERN
 
+      def_node_matcher :gem_requirement?, <<~PATTERN
+        (send (const(const _ :Gem):Requirement) :new $str)
+      PATTERN
+
       def name
         "`required_ruby_version` parameter (in #{gemspec_filename})"
       end
@@ -136,10 +140,9 @@ module RuboCop
         version = version_from_gemspec_file(file)
         return if version.nil?
 
-        if version.array_type?
-          versions = version.children.map { |v| version_from_str(v.str_content) }
-          return versions.compact.min
-        end
+        requirement = version.children.last
+        return version_from_array(version) if version.array_type?
+        return version_from_array(requirement) if gem_requirement? version
 
         version_from_str(version.str_content)
       end
@@ -159,6 +162,11 @@ module RuboCop
       def version_from_gemspec_file(file)
         processed_source = ProcessedSource.from_file(file, DEFAULT_VERSION)
         required_ruby_version(processed_source.ast).first
+      end
+
+      def version_from_array(array)
+        versions = array.children.map { |v| version_from_str(v.is_a?(String) ? v : v.str_content) }
+        versions.compact.min
       end
 
       def version_from_str(str)
