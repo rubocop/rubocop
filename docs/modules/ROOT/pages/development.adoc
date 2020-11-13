@@ -439,9 +439,6 @@ keys being in alphabetical order, the `(default)` being specified, and one empty
 before `class YourCop`. While not all examples in the codebase follow this exact format,
 we strive to make this consistent. PRs improving RuboCop documentation are very welcome.
 
-Run `rake generate_cops_documentation` to apply your `yard` documentation into the manual.
-CI will fail if the manual and `yard` comments do not match exactly. `rake default` will also generate the new documentation.
-
 == Testing your cop in a real codebase
 
 Generally, is a good practice to check if your cop is working properly over a
@@ -462,6 +459,3 @@ To make it fast and do not get confused with other cops in action,  you can use
 ----
 $ rubocop --only Style/SimplifyNotEmptyWithAny
 ----
-
-In the end, do not forget to run `rake generate_cops_documentation` to update
-the docs.

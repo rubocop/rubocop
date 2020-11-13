@@ -29,6 +29,15 @@ namespace :cut_release do
     end
   end
 
+  # Replace `<<next>>` (and variations) with version being cut.
+  def update_cop_versions(_old_version, new_version)
+    update_file('config/default.yml') do |default|
+      default.gsub(/['"]?<<\s*next\s*>>['"]?/i,
+                   "'#{version_sans_patch(new_version)}'")
+    end
+    RuboCop::ConfigLoader.default_configuration = nil # invalidate loaded conf
+  end
+
   def update_docs(old_version, new_version)
     update_file('docs/antora.yml') do |antora_metadata|
       antora_metadata.sub(
@@ -99,6 +108,8 @@ namespace :cut_release do
     Bump::Bump.run(release_type, commit: false, bundle: false, tag: false)
     new_version = Bump::Bump.current
 
+    update_cop_versions(old_version, new_version)
+    Rake::Task['update_cops_documentation'].invoke
     update_readme(old_version, new_version)
     update_docs(old_version, new_version)
     update_issue_template(old_version, new_version)

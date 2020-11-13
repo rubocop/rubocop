@@ -14,7 +14,7 @@ module RuboCop
             VersionAdded: '%<version_added>s'
         YAML
 
-        def initialize(configuration_file_path:, badge:, version_added:)
+        def initialize(configuration_file_path:, badge:, version_added: '<<next>>')
           @configuration_file_path = configuration_file_path
           @badge = badge
           @version_added = version_added

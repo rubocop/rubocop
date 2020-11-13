@@ -234,9 +234,6 @@ jobs:
       - run:
           name: Check documentation syntax
           command: bundle exec rake documentation_syntax_check
-      - run:
-          name: Build documentation and verify that doc files are in sync
-          command: bundle exec rake verify_cops_documentation
 
 workflows:
   version: 2
