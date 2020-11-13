@@ -17,7 +17,6 @@ module RuboCop
       SOURCE_TEMPLATE = <<-RUBY.gsub(/^ {8}/, '')
         # frozen_string_literal: true
 
-        # TODO: when finished, run `rake generate_cops_documentation` to update the docs
         module RuboCop
           module Cop
             module %<department>s
@@ -134,7 +133,7 @@ module RuboCop
       end
 
       def inject_config(config_file_path: 'config/default.yml',
-                        version_added: bump_minor_version)
+                        version_added: '<<next>>')
         injector =
           ConfigurationInjector.new(configuration_file_path: config_file_path,
                                     badge: badge,
@@ -212,12 +211,6 @@ module RuboCop
           .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
           .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
           .downcase
-      end
-
-      def bump_minor_version
-        versions = RuboCop::Version::STRING.split('.')
-
-        "#{versions[0]}.#{versions[1].succ}"
       end
     end
   end

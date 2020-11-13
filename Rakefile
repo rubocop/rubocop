@@ -29,7 +29,7 @@ RuboCop::RakeTask.new(:internal_investigation).tap do |task|
 end
 
 task default: %i[
-  documentation_syntax_check generate_cops_documentation
+  documentation_syntax_check
   spec ascii_spec
   internal_investigation
 ]

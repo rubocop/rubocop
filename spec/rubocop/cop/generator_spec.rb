@@ -20,7 +20,6 @@ RSpec.describe RuboCop::Cop::Generator do
       generated_source = <<~RUBY
         # frozen_string_literal: true
 
-        # TODO: when finished, run `rake generate_cops_documentation` to update the docs
         module RuboCop
           module Cop
             module Style
@@ -194,8 +193,6 @@ RSpec.describe RuboCop::Cop::Generator do
         Style/SpecialGlobalVars:
           Enabled: true
       YAML
-
-      stub_const('RuboCop::Version::STRING', '0.58.2')
     end
 
     context 'when it is the middle in alphabetical order' do
@@ -207,7 +204,7 @@ RSpec.describe RuboCop::Cop::Generator do
           Style/FakeCop:
             Description: 'TODO: Write a description of the cop.'
             Enabled: pending
-            VersionAdded: '0.59'
+            VersionAdded: '<<next>>'
 
           Style/Lambda:
             Enabled: true
@@ -232,7 +229,7 @@ RSpec.describe RuboCop::Cop::Generator do
           Style/Aaa:
             Description: 'TODO: Write a description of the cop.'
             Enabled: pending
-            VersionAdded: '0.59'
+            VersionAdded: '<<next>>'
 
           Style/Alias:
             Enabled: true
@@ -269,7 +266,7 @@ RSpec.describe RuboCop::Cop::Generator do
           Style/Zzz:
             Description: 'TODO: Write a description of the cop.'
             Enabled: pending
-            VersionAdded: '0.59'
+            VersionAdded: '<<next>>'
         YAML
 
         generator.inject_config(config_file_path: path)
@@ -289,7 +286,7 @@ RSpec.describe RuboCop::Cop::Generator do
           Style/FakeCop:
             Description: 'TODO: Write a description of the cop.'
             Enabled: pending
-            VersionAdded: '1.52'
+            VersionAdded: '<<next>>'
 
           Style/Lambda:
             Enabled: true
@@ -298,7 +295,7 @@ RSpec.describe RuboCop::Cop::Generator do
             Enabled: true
         YAML
 
-        generator.inject_config(config_file_path: path, version_added: '1.52')
+        generator.inject_config(config_file_path: path)
       end
     end
   end
