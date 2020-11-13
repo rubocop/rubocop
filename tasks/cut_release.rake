@@ -3,6 +3,11 @@
 require 'bump'
 
 namespace :cut_release do
+  def update_file(path)
+    content = File.read(path)
+    File.write(path, yield(content))
+  end
+
   %w[major minor patch pre].each do |release_type|
     desc "Cut a new #{release_type} release, create release notes " \
          'and update documents.'
@@ -16,10 +21,8 @@ namespace :cut_release do
   end
 
   def update_readme(old_version, new_version)
-    readme = File.read('README.md')
-
-    File.open('README.md', 'w') do |f|
-      f << readme.sub(
+    update_file('README.md') do |readme|
+      readme.sub(
         "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
         "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
@@ -27,19 +30,15 @@ namespace :cut_release do
   end
 
   def update_docs(old_version, new_version)
-    antora_metadata = File.read('docs/antora.yml')
-
-    File.open('docs/antora.yml', 'w') do |f|
-      f << antora_metadata.sub(
+    update_file('docs/antora.yml') do |antora_metadata|
+      antora_metadata.sub(
         "version: 'master'",
         "version: '#{version_sans_patch(new_version)}'"
       )
     end
 
-    installation = File.read('docs/modules/ROOT/pages/installation.adoc')
-
-    File.open('docs/modules/ROOT/pages/installation.adoc', 'w') do |f|
-      f << installation.sub(
+    update_file('docs/modules/ROOT/pages/installation.adoc') do |installation|
+      installation.sub(
         "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
         "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
@@ -47,10 +46,8 @@ namespace :cut_release do
   end
 
   def update_issue_template(old_version, new_version)
-    issue_template = File.read('.github/ISSUE_TEMPLATE/bug_report.md')
-
-    File.open('.github/ISSUE_TEMPLATE/bug_report.md', 'w') do |f|
-      f << issue_template.sub(
+    update_file('.github/ISSUE_TEMPLATE/bug_report.md') do |issue_template|
+      issue_template.sub(
         "#{old_version} (using Parser ",
         "#{new_version} (using Parser "
       )
@@ -58,10 +55,8 @@ namespace :cut_release do
   end
 
   def update_contributing_doc(old_version, new_version)
-    contributing_doc = File.read('CONTRIBUTING.md')
-
-    File.open('CONTRIBUTING.md', 'w') do |f|
-      f << contributing_doc.sub(
+    update_file('CONTRIBUTING.md') do |contributing_doc|
+      contributing_doc.sub(
         "#{old_version} (using Parser ",
         "#{new_version} (using Parser "
       )
@@ -69,14 +64,9 @@ namespace :cut_release do
   end
 
   def add_header_to_changelog(version)
-    changelog = File.read('CHANGELOG.md')
-    head, tail = changelog.split("## master (unreleased)\n\n", 2)
-
-    File.open('CHANGELOG.md', 'w') do |f|
-      f << head
-      f << "## master (unreleased)\n\n"
-      f << "## #{version} (#{Time.now.strftime('%F')})\n\n"
-      f << tail
+    update_file('CHANGELOG.md') do |changelog|
+      changelog.sub("## master (unreleased)\n\n", '\0' \
+        "## #{version} (#{Time.now.strftime('%F')})\n\n")
     end
   end
 
