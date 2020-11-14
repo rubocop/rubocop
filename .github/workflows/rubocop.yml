@@ -2,7 +2,11 @@
 # Please keep /.mergify.yml synced!
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   main:
