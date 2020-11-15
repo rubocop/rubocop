@@ -35,6 +35,8 @@ module RuboCop
 
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
 
+        def_node_matcher :double_negation?, '(send (send _ :!) :!)'
+
         def self.autocorrect_incompatible_with
           [Style::InverseMethods, Style::Not]
         end
@@ -47,7 +49,7 @@ module RuboCop
           return unless if_else?(node)
 
           condition = node.condition
-          return unless negated_condition?(condition)
+          return if double_negation?(condition) || !negated_condition?(condition)
 
           type = node.ternary? ? 'ternary' : 'if-else'
           add_offense(node, message: format(MSG, type: type)) do |corrector|
