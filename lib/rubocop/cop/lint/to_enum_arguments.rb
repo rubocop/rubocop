@@ -8,23 +8,14 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   def method(x, y = 1)
-      #     return to_enum(__method__, x) # `y` is missing
+      #   def foo(x, y = 1)
+      #     return to_enum(__callee__, x) # `y` is missing
       #   end
       #
       #   # good
-      #   def method(x, y = 1)
-      #     return to_enum(__method__, x, y)
-      #   end
-      #
-      #   # bad
-      #   def method(required:)
-      #     return to_enum(:method, required: something) # `required` has incorrect value
-      #   end
-      #
-      #   # good
-      #   def method(required:)
-      #     return to_enum(:method, required: required)
+      #   def foo(x, y = 1)
+      #     return to_enum(__callee__, x, y)
+      #     # alternatives to `__callee__` are `__method__` and `:foo`
       #   end
       #
       class ToEnumArguments < Base
@@ -37,7 +28,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :method_name?, <<~PATTERN
-          {(send nil? :__method__) (sym %1)}
+          {(send nil? {:__method__ :__callee__}) (sym %1)}
         PATTERN
 
         def_node_matcher :passing_keyword_arg?, <<~PATTERN
