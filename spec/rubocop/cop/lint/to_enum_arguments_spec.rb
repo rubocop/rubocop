@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
     RUBY
   end
 
-  it 'registers an offense when enumerator is created for `__method__`' do
+  it 'registers an offense when enumerator is created for `__method__` with missing arguments' do
     expect_offense(<<~RUBY)
       def m(x)
         return to_enum(__method__) unless block_given?
@@ -122,12 +122,14 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
     RUBY
   end
 
-  it 'does not register an offense when enumerator is created with the correct arguments' do
-    expect_no_offenses(<<~RUBY)
-      def m(x, y = 1, *args, required:, optional: true, **kwargs, &block)
-        return to_enum(:m, x, y, *args, required: required, optional: optional, **kwargs) unless block_given?
-      end
-    RUBY
+  %w[:m __callee__ __method__].each do |code|
+    it "does not register an offense when enumerator is created with `#{code}` and the correct arguments" do
+      expect_no_offenses(<<~RUBY)
+        def m(x, y = 1, *args, required:, optional: true, **kwargs, &block)
+          return to_enum(#{code}, x, y, *args, required: required, optional: optional, **kwargs) unless block_given?
+        end
+      RUBY
+    end
   end
 
   context 'arguments forwarding', :ruby30 do
