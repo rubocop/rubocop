@@ -37,6 +37,18 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
     end
 
+    %w[VersionChanged VersionRemoved].each do |version_type|
+      it "requires a nicely formatted `#{version_type}` metadata for all cops" do
+        cop_names.each do |name|
+          version = config[name][version_type]
+          next unless version
+
+          expect(version).to(match(/\A\d+\.\d+\z/),
+                             "#{version} should be format ('X.Y') for #{name}.")
+        end
+      end
+    end
+
     it 'has a period at EOL of description' do
       cop_names.each do |name|
         description = config[name]['Description']

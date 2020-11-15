@@ -1176,7 +1176,7 @@ Layout/SpaceBeforeBlockBraces:
   SupportedStylesForEmptyBraces:
     - space
     - no_space
-  VersionChanged: '0.52.1'
+  VersionChanged: '0.52'
 
 Layout/SpaceBeforeComma:
   Description: 'No spaces before commas.'
@@ -1865,7 +1865,7 @@ Lint/RescueException:
   StyleGuide: '#no-blind-rescues'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '0.27.1'
+  VersionChanged: '0.27'
 
 Lint/RescueType:
   Description: 'Avoid rescuing from non constants that could result in a `TypeError`.'
@@ -3920,7 +3920,7 @@ Style/PercentLiteralDelimiters:
     '%r': '{}'
     '%w': '[]'
     '%W': '[]'
-  VersionChanged: '0.48.1'
+  VersionChanged: '0.48'
 
 Style/PercentQLiterals:
   Description: 'Checks if uses of %Q/%q match the configured preference.'
@@ -4327,7 +4327,7 @@ Style/StringMethods:
   Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: false
   VersionAdded: '0.34'
-  VersionChanged: '0.34.2'
+  VersionChanged: '0.34'
   # Mapping from undesired method to desired_method
   # e.g. to use `to_sym` over `intern`:
   #

@@ -7549,7 +7549,7 @@ end
 | Yes
 | Yes
 | 0.19
-| 0.48.1
+| 0.48
 |===
 
 This cop enforces the consistent usage of `%`-literal delimiters.
@@ -10134,7 +10134,7 @@ result = "Tests #{success ? "PASS" : "FAIL"}"
 | Yes
 | Yes
 | 0.34
-| 0.34.2
+| 0.34
 |===
 
 This cop enforces the use of consistent method names

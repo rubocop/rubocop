@@ -5369,7 +5369,7 @@ a ** b
 | Yes
 | Yes
 | 0.49
-| 0.52.1
+| 0.52
 |===
 
 Checks that block braces have or don't have a space before the opening

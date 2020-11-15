@@ -3689,7 +3689,7 @@ end
 | Yes
 | No
 | 0.9
-| 0.27.1
+| 0.27
 |===
 
 This cop checks for `rescue` blocks targeting the Exception class.
