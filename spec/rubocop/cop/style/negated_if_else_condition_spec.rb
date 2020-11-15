@@ -153,6 +153,16 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition do
     RUBY
   end
 
+  it 'does not register an offense when `if` with `!!` condition' do
+    expect_no_offenses(<<~RUBY)
+      if !!x
+        do_something
+      else
+        do_another_thing
+      end
+    RUBY
+  end
+
   it 'does not register an offense when `if` with negated condition has no `else` branch' do
     expect_no_offenses(<<~RUBY)
       if !x
