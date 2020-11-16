@@ -1,1 +1,0 @@
-* [#9032](https://github.com/rubocop-hq/rubocop/issues/9032): Fix an error for `Style/DocumentDynamicEvalDefinition` when using eval-type method with interpolated string that is not heredoc without comment doc. ([@koic][])
