@@ -36,7 +36,7 @@ module RuboCop
 
         def on_def(node)
           excluded_methods = cop_config['ExcludedMethods']
-          return if excluded_methods.include?(String(node.method_name))
+          return if excluded_methods.any? { |m| m.match? String(node.method_name) }
 
           check_code_length(node)
         end

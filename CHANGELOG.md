@@ -5,6 +5,7 @@
 ### Changes
 
 * [#8788](https://github.com/rubocop-hq/rubocop/issues/8788): Change `Style/Documentation` to not trigger offense with only macros. ([@tejasbubane][])
+* [#8993](https://github.com/rubocop-hq/rubocop/issues/8993): Allow `ExcludedMethods` config of `Metrics/MethodLength` cop to contain regex. ([@tejasbubane][])
 
 ## 1.3.1 (2020-11-16)
 
