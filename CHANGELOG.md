@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.3.1 (2020-11-16)
+
 ### Bug fixes
 
 * [#9037](https://github.com/rubocop-hq/rubocop/pull/9037): Fix `required_ruby_version` issue when using `Gem::Requirement`. ([@cetinajero][])
