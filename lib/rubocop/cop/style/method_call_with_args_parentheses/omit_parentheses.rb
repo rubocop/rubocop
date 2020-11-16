@@ -74,7 +74,7 @@ module RuboCop
             parent &&
               (logical_operator?(parent) ||
               parent.send_type? &&
-              parent.arguments.any?(&method(:logical_operator?)))
+              parent.arguments.any? { |argument| logical_operator?(argument) })
           end
 
           def call_in_optional_arguments?(node)
@@ -110,7 +110,7 @@ module RuboCop
           def hash_literal_in_arguments?(node)
             node.arguments.any? do |n|
               hash_literal?(n) ||
-                n.send_type? && node.descendants.any?(&method(:hash_literal?))
+                n.send_type? && node.descendants.any? { |descendant| hash_literal?(descendant) }
             end
           end
 

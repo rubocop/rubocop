@@ -38,7 +38,7 @@ module RuboCop
 
         def assertions_using_described_class_msg
           described_class_msg(processed_source.ast).reject do |node|
-            node.ancestors.any?(&method(:rspec_expectation_on_msg?))
+            node.ancestors.any? { |ancestor| rspec_expectation_on_msg?(ancestor) }
           end
         end
 

@@ -102,7 +102,7 @@ module RuboCop
           return false unless node
 
           if node.begin_type?
-            node.children.all?(&method(:constant_declaration?))
+            node.children.all? { |child| constant_declaration?(child) }
           else
             constant_definition?(node)
           end
