@@ -64,7 +64,7 @@ module RuboCop
     # instances that each inspects its allotted group of files.
     def warm_cache(target_files)
       puts 'Running parallel inspection' if @options[:debug]
-      Parallel.each(target_files, &method(:file_offenses))
+      Parallel.each(target_files) { |target_file| file_offenses(target_file) }
     end
 
     def find_target_files(paths)

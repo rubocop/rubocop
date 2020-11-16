@@ -47,7 +47,7 @@ module RuboCop
         def on_begin(node)
           node.children.each_cons(2) do |prev, n|
             nodes = [prev, n]
-            check_defs(nodes) if nodes.all?(&method(:def_node?))
+            check_defs(nodes) if nodes.all? { |def_candidate| def_node?(def_candidate) }
           end
         end
 

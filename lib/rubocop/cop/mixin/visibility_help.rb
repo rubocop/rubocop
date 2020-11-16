@@ -16,9 +16,7 @@ module RuboCop
       end
 
       def find_visibility_start(node)
-        node.left_siblings
-            .reverse
-            .find(&method(:visibility_block?))
+        node.left_siblings.reverse.find { |sibling| visibility_block?(sibling) }
       end
 
       # Navigate to find the last protected method

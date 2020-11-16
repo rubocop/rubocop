@@ -53,7 +53,7 @@ module RuboCop
       end
 
       def on_node(syms, sexp, excludes = [], &block)
-        return to_enum(:on_node, syms, sexp, excludes) unless block_given?
+        return to_enum(:on_node, syms, sexp, excludes) unless block
 
         yield sexp if Array(syms).include?(sexp.type)
         return if Array(excludes).include?(sexp.type)
