@@ -6,6 +6,7 @@
 
 * [#9037](https://github.com/rubocop-hq/rubocop/pull/9037): Fix `required_ruby_version` issue when using `Gem::Requirement`. ([@cetinajero][])
 * [#9039](https://github.com/rubocop-hq/rubocop/pull/9039): Fix stack level too deep error if target directory contains `**`. ([@unasuke][])
+* [#6962](https://github.com/rubocop-hq/rubocop/issues/6962): Limit `Layout/ClassStructure` constant order autocorrect to literal constants. ([@tejasbubane][])
 
 ## 1.3.0 (2020-11-12)
 
@@ -564,7 +565,6 @@
 * [#7991](https://github.com/rubocop-hq/rubocop/issues/7991): Fix an error for `Layout/EmptyLinesAroundAttributeAccessor` when attribute method is method chained. ([@koic][])
 * [#7993](https://github.com/rubocop-hq/rubocop/issues/7993): Fix a false positive for `Migration/DepartmentName` when a disable comment contains an unexpected character for department name. ([@koic][])
 * [#7983](https://github.com/rubocop-hq/rubocop/pull/7983): Make the config loader Bundler-aware. ([@CvX][])
-* [#6962](https://github.com/rubocop-hq/rubocop/issues/6962): Limit `Layout/ClassStructure` constant order autocorrect to literal constants. ([@tejasbubane][])
 
 ### Changes
 
