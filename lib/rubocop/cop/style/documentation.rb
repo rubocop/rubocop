@@ -55,6 +55,11 @@ module RuboCop
       #       Public = Class.new
       #     end
       #
+      #     # Macro calls
+      #     module Namespace
+      #       extend Foo
+      #     end
+      #
       class Documentation < Base
         include DocumentationComment
 
@@ -83,8 +88,14 @@ module RuboCop
           return if documentation_comment?(node) || nodoc_comment?(node)
           return if compact_namespace?(node) &&
                     nodoc_comment?(outer_module(node).first)
+          return if macro_only?(body)
 
           add_offense(node.loc.keyword, message: format(MSG, type: type))
+        end
+
+        def macro_only?(body)
+          body.respond_to?(:macro?) && body.macro? ||
+            body.respond_to?(:children) && body.children&.all? { |child| macro_only?(child) }
         end
 
         def namespace?(node)

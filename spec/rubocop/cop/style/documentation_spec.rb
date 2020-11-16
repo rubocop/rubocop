@@ -217,6 +217,38 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
         end
       end
     end
+
+    context 'macro-only class' do
+      it 'does not register offense with single macro' do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            extend Bar
+          end
+        RUBY
+      end
+
+      it 'does not register offense with multiple macros' do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            extend A
+            extend B
+            include C
+          end
+        RUBY
+      end
+
+      it 'registers offense for macro with other methods' do
+        expect_offense(<<~RUBY)
+          module Foo
+          ^^^^^^ Missing top-level module documentation comment.
+            extend B
+            include C
+
+            def foo; end
+          end
+        RUBY
+      end
+    end
   end
 
   it 'does not raise an error for an implicit match conditional' do
