@@ -219,6 +219,37 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     end
   end
 
+  context 'when regex is defined in `ExcludedMethods`' do
+    before { cop_config['ExcludedMethods'] = [/_name$/] }
+
+    it 'accepts the user_name method' do
+      expect_no_offenses(<<~RUBY)
+        def user_name
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+
+    it 'raises offense for firstname' do
+      expect_offense(<<~RUBY)
+        def firstname
+        ^^^^^^^^^^^^^ Method has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
+
   context 'when `CountAsOne` is not empty' do
     before { cop_config['CountAsOne'] = ['array'] }
 
