@@ -32,7 +32,7 @@ jobs:
         if: matrix.os == 'windows'
         run: |
           # set TMPDIR, git core.autocrlf
-          echo "::set-env name=TMPDIR::$env:RUNNER_TEMP"
+          echo "TMPDIR=$env:RUNNER_TEMP" >> $GITHUB_ENV
           git config --system core.autocrlf false
       - name: checkout
         uses: actions/checkout@v2
