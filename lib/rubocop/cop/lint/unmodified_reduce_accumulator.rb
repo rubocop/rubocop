@@ -54,6 +54,9 @@ module RuboCop
       #     value
       #   end
       #
+      #   # good, recursive
+      #   keys.reduce(self) { |result, key| result[key] }
+      #
       #   # ignored as the return value cannot be determined
       #   enum.reduce do |acc, el|
       #     x = foo(acc, el)
@@ -131,7 +134,7 @@ module RuboCop
           element_name = block_arg_name(block_node, 1)
           message_opts = { method: block_node.method_name, accum: accumulator_name }
 
-          if (node = returned_accumulator_index(return_values, accumulator_name))
+          if (node = returned_accumulator_index(return_values, accumulator_name, element_name))
             add_offense(node, message: format(MSG_INDEX, message_opts))
           elsif potential_offense?(return_values, block_node.body, element_name, accumulator_name)
             return_values.each do |return_val|
@@ -146,11 +149,17 @@ module RuboCop
           node.arguments[index].node_parts[0]
         end
 
-        # Look for an index of the accumulator being returned
+        # Look for an index of the accumulator being returned, except where the index
+        # is the element.
         # This is always an offense, in order to try to catch potential exceptions
         # due to type mismatches
-        def returned_accumulator_index(return_values, accumulator_name)
-          return_values.detect { |val| accumulator_index?(val, accumulator_name) }
+        def returned_accumulator_index(return_values, accumulator_name, element_name)
+          return_values.detect do |val|
+            next unless accumulator_index?(val, accumulator_name)
+            next true if val.method?(:[]=)
+
+            val.arguments.none? { |arg| lvar_used?(arg, element_name) }
+          end
         end
 
         def potential_offense?(return_values, block_body, element_name, accumulator_name)
