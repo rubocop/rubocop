@@ -373,12 +373,40 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
         RUBY
       end
 
+      it 'does not register an offense when calling a method on the accumulator with the element' do
+        expect_no_offenses(<<~RUBY)
+          foo.#{method} { |result, key| result.method(key) }
+        RUBY
+      end
+
+      it 'registers an offense when returning an index of the accumulator' do
+        expect_offense(<<~RUBY)
+          %w(a b c).#{method}({}) do |acc, letter|
+            acc[foo]
+            ^^^^^^^^ Do not return an element of the accumulator in `#{method}`.
+          end
+        RUBY
+      end
+
       it 'registers an offense when returning an index setter on the accumulator' do
         expect_offense(<<~RUBY)
           %w(a b c).#{method}({}) do |acc, letter|
-            acc[letter] = true
-            ^^^^^^^^^^^^^^^^^^ Do not return an element of the accumulator in `#{method}`.
+            acc[foo] = bar
+            ^^^^^^^^^^^^^^ Do not return an element of the accumulator in `#{method}`.
           end
+        RUBY
+      end
+
+      it 'does not register an offense when returning accumulator[element]' do
+        expect_no_offenses(<<~RUBY)
+          foo.#{method} { |result, key| result[key] }
+        RUBY
+      end
+
+      it 'registers an offense when returning accumulator[element]=' do
+        expect_offense(<<~RUBY, method: method)
+          foo.#{method} { |result, key| result[key] = foo }
+              _{method}                 ^^^^^^^^^^^^^^^^^ Do not return an element of the accumulator in `#{method}`.
         RUBY
       end
 
