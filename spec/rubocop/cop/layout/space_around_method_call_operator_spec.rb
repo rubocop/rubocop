@@ -511,4 +511,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
       'foo' + 'bar'
     RUBY
   end
+
+  it 'does not register an offense when using `__ENCODING__`' do
+    expect_no_offenses(<<~RUBY)
+      __ENCODING__
+    RUBY
+  end
 end
