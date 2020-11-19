@@ -1159,7 +1159,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
   end
 
-  it 'registers an offense for assignment in case with when when else' do
+  it 'registers an offense for assignment in case with when else' do
     expect_offense(<<~RUBY)
       case foo
       ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1183,7 +1183,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
     RUBY
   end
 
-  it 'allows different assignment types in case with when when else' do
+  it 'allows different assignment types in case with when else' do
     expect_no_offenses(<<~RUBY)
       case foo
       when foobar

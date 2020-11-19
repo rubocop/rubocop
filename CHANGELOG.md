@@ -75,7 +75,7 @@
 * [#8989](https://github.com/rubocop-hq/rubocop/pull/8989): Fix multibyte support in the regexp node handler that led `Style/RedundantRegexpEscape` to malfunction and corrupt a program in auto-correction. ([@knu][])
 * [#8912](https://github.com/rubocop-hq/rubocop/pull/8912): Fix `Layout/ElseAlignment` for `rescue/else/ensure` inside `do/end` blocks with assignment. ([@miry][])
 * [#8971](https://github.com/rubocop-hq/rubocop/issues/8971): Fix a false alarm for `# rubocop:disable Lint/EmptyBlock` inline comment with `Lint/RedundantCopDisableDirective`. ([@koic][])
-* [#8976](https://github.com/rubocop-hq/rubocop/issues/8976): Fix an incorrect auto-correct for `Style/KeywordParametersOrder` when when `kwoptarg` is before `kwarg` and argument parentheses omitted. ([@koic][])
+* [#8976](https://github.com/rubocop-hq/rubocop/issues/8976): Fix an incorrect auto-correct for `Style/KeywordParametersOrder` when `kwoptarg` is before `kwarg` and argument parentheses omitted. ([@koic][])
 * [#8084](https://github.com/rubocop-hq/rubocop/pull/8084): Fix a bug in how `Layout/SpaceAroundBlockParameters` handles block parameters with a trailing comma. ([@bquorning][])
 * [#8966](https://github.com/rubocop-hq/rubocop/issues/8966): Fix `Layout/SpaceInsideParens` to enforce no spaces in empty parens for all styles. ([@joshuapinter][])
 
