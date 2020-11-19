@@ -578,6 +578,14 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
           end
         RUBY
       end
+
+      context 'argument count' do
+        it 'ignores when there are not enough block arguments' do
+          expect_no_offenses(<<~RUBY, method: method)
+            (1..4).#{method}(0) { |acc| acc.foo }
+          RUBY
+        end
+      end
     end
   end
 
