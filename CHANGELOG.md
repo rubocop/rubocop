@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#9067](https://github.com/rubocop-hq/rubocop/pull/9067): Fix an incorrect auto-correct for `Lint::AmbiguousRegexpLiteral` when passing in a regexp to a method with no receiver. ([@amatsuda][])
+
 ### Changes
 
 * [#8788](https://github.com/rubocop-hq/rubocop/issues/8788): Change `Style/Documentation` to not trigger offense with only macros. ([@tejasbubane][])

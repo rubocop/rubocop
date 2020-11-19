@@ -79,6 +79,28 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
         RUBY
       end
 
+      it 'registers an offense and corrects when sending method inside parens without receiver takes a regexp argument' do
+        expect_offense(<<~RUBY)
+          expect('RuboCop').to(match /Cop/)
+                                     ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          expect('RuboCop').to(match(/Cop/))
+        RUBY
+      end
+
+      it 'registers an offense and corrects when sending method without receiver takes a regexp argument' do
+        expect_offense(<<~RUBY)
+          expect('Rubocop').to match /Robo/
+                                     ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          expect('Rubocop').to match(/Robo/)
+        RUBY
+      end
+
       it 'registers an offense and corrects when using block argument' do
         expect_offense(<<~RUBY)
           p /pattern/, foo do |arg|
