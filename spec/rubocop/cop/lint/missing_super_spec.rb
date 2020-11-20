@@ -94,41 +94,11 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper do
       RUBY
     end
 
-    it 'registers an offense for instance level `method_missing?` with no `super` call' do
-      expect_offense(<<~RUBY)
-        class Foo
-          def method_missing(*args)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^ Call `super` to invoke callback defined in the parent class.
-          end
-        end
-      RUBY
-    end
-
-    it 'registers an offense for class level `method_missing?` with no `super` call' do
-      expect_offense(<<~RUBY)
-        class Foo
-          def self.method_missing(*args)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Call `super` to invoke callback defined in the parent class.
-          end
-        end
-      RUBY
-    end
-
-    it 'does not register an offense when `method_missing?` contains `super` call' do
-      expect_no_offenses(<<~RUBY)
-        class Foo
-          def method_missing(*args)
-            super
-            do_something
-          end
-        end
-      RUBY
-    end
-
     it 'does not register an offense when callback has a `super` call' do
       expect_no_offenses(<<~RUBY)
         class Foo
           def self.inherited(base)
+            do_something
             super
           end
         end

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-version_regexp = /\A\d+\.\d+\z|\A<<next>>\z/
 
 RSpec.describe 'RuboCop Project', type: :feature do
   let(:cop_names) do
@@ -10,6 +9,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
       .cops
       .map(&:cop_name)
   end
+
+  version_regexp = /\A\d+\.\d+\z|\A<<next>>\z/
 
   describe 'default configuration file' do
     subject(:config) { RuboCop::ConfigLoader.load_file('config/default.yml') }

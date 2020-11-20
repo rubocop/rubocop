@@ -1684,6 +1684,7 @@ Lint/MissingSuper:
                   without calls to `super`'.
   Enabled: true
   VersionAdded: '0.89'
+  VersionChanged: '<<next>>'
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
