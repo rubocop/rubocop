@@ -15,6 +15,7 @@
 ### New features
 
 * [#7737](https://github.com/rubocop-hq/rubocop/issues/7737): Add new `Style/RedundantArgument` cop. ([@tejasbubane][])
+* [#9064](https://github.com/rubocop-hq/rubocop/issues/9064): Add `EmptyLineBetweenMethodDefs`, `EmptyLineBetweenClassDefs` and `EmptyLineBetweenModuleDefs` config options for `Layout/EmptyLineBetweenDefs` cop. ([@tejasbubane][])
 
 ## 1.3.1 (2020-11-16)
 
