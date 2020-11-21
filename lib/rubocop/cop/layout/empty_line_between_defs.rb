@@ -13,7 +13,8 @@ module RuboCop
       # `AllowAdjacentOneLineDefs` configures whether adjacent
       # one-line method definitions are considered an offense.
       #
-      # @example
+      # @example EmptyLineBetweenMethodDefs: true (default)
+      #   # checks for empty lines between method definitions.
       #
       #   # bad
       #   def a
@@ -29,11 +30,57 @@ module RuboCop
       #
       #   def b
       #   end
+      #
+      # @example EmptyLineBetweenClassDefs: true (default)
+      #   # checks for empty lines between class definitions.
+      #
+      #   # bad
+      #   class A
+      #   end
+      #   class B
+      #   end
+      #   def b
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #   class A
+      #   end
+      #
+      #   class B
+      #   end
+      #
+      #   def b
+      #   end
+      #
+      # @example EmptyLineBetweenModuleDefs: true (default)
+      #   # checks for empty lines between module definitions.
+      #
+      #   # bad
+      #   module A
+      #   end
+      #   module B
+      #   end
+      #   def b
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #   module A
+      #   end
+      #
+      #   module B
+      #   end
+      #
+      #   def b
+      #   end
       class EmptyLineBetweenDefs < Base
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use empty lines between method definitions.'
+        MSG = 'Use empty lines between %<type>s definitions.'
 
         def self.autocorrect_incompatible_with
           [Layout::EmptyLines]
@@ -47,7 +94,7 @@ module RuboCop
         def on_begin(node)
           node.children.each_cons(2) do |prev, n|
             nodes = [prev, n]
-            check_defs(nodes) if nodes.all? { |def_candidate| def_node?(def_candidate) }
+            check_defs(nodes) if nodes.all? { |def_candidate| candidate?(def_candidate) }
           end
         end
 
@@ -57,8 +104,9 @@ module RuboCop
           return if nodes.all?(&:single_line?) &&
                     cop_config['AllowAdjacentOneLineDefs']
 
-          location = nodes.last.loc.keyword.join(nodes.last.loc.name)
-          add_offense(location) do |corrector|
+          correction_node = nodes.last
+          location = correction_node.loc.keyword.join(correction_node.loc.name)
+          add_offense(location, message: message(correction_node)) do |corrector|
             autocorrect(corrector, *nodes)
           end
         end
@@ -83,10 +131,32 @@ module RuboCop
 
         private
 
-        def def_node?(node)
+        def candidate?(node)
           return unless node
 
-          node.def_type? || node.defs_type?
+          method_candidate?(node) || class_candidate?(node) || module_candidate?(node)
+        end
+
+        def method_candidate?(node)
+          cop_config['EmptyLineBetweenMethodDefs'] && (node.def_type? || node.defs_type?)
+        end
+
+        def class_candidate?(node)
+          cop_config['EmptyLineBetweenClassDefs'] && node.class_type?
+        end
+
+        def module_candidate?(node)
+          cop_config['EmptyLineBetweenModuleDefs'] && node.module_type?
+        end
+
+        def message(node)
+          type = case node.type
+                 when :def, :defs
+                   :method
+                 else
+                   node.type
+                 end
+          format(MSG, type: type)
         end
 
         def multiple_blank_lines_groups?(first_def_node, second_def_node)

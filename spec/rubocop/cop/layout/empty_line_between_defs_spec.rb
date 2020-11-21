@@ -8,6 +8,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       class K
         def m
         end
+
         class J
           def n
           end
@@ -15,6 +16,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           ^^^^^ Use empty lines between method definitions.
           end
         end
+
         # checks something
         def p
         end
@@ -407,6 +409,125 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
 
 
         def o
+        end
+      RUBY
+    end
+  end
+
+  context 'EmptyLineBetweenClassDefs' do
+    it 'registers offense when no empty lines between class and method definitions' do
+      expect_offense(<<~RUBY)
+        class Foo
+        end
+        class Baz
+        ^^^^^^^^^ Use empty lines between class definitions.
+        end
+        def example
+        ^^^^^^^^^^^ Use empty lines between method definitions.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+        end
+
+        class Baz
+        end
+
+        def example
+        end
+      RUBY
+    end
+
+    context 'when disabled' do
+      let(:cop_config) { { 'EmptyLineBetweenClassDefs' => false } }
+
+      it 'does not register offense' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+          end
+          class Baz
+          end
+          def example
+          end
+        RUBY
+      end
+    end
+
+    context 'with AllowAdjacentOneLineDefs enabled' do
+      let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
+
+      it 'does not register offense' do
+        expect_no_offenses(<<~RUBY)
+          class Foo; end
+          class Baz; end
+        RUBY
+      end
+    end
+  end
+
+  context 'EmptyLineBetweenModuleDefs' do
+    it 'registers offense when no empty lines between module and method definitions' do
+      expect_offense(<<~RUBY)
+        module Foo
+        end
+        module Baz
+        ^^^^^^^^^^ Use empty lines between module definitions.
+        end
+        def example
+        ^^^^^^^^^^^ Use empty lines between method definitions.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+        end
+
+        module Baz
+        end
+
+        def example
+        end
+      RUBY
+    end
+
+    context 'when disabled' do
+      let(:cop_config) { { 'EmptyLineBetweenModuleDefs' => false } }
+
+      it 'does not register offense' do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+          end
+          module Baz
+          end
+          def example
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when empty lines between classes and modules together' do
+    it 'registers offense when no empty lines between module and method definitions' do
+      expect_offense(<<~RUBY)
+        class Foo
+        end
+        module Baz
+        ^^^^^^^^^^ Use empty lines between module definitions.
+        end
+        def example
+        ^^^^^^^^^^^ Use empty lines between method definitions.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+        end
+
+        module Baz
+        end
+
+        def example
         end
       RUBY
     end

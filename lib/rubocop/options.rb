@@ -5,6 +5,7 @@ require 'shellwords'
 
 module RuboCop
   class IncorrectCopNameError < StandardError; end
+
   class OptionArgumentError < StandardError; end
 
   # This class handles command line options.
