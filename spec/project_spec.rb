@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+version_regexp = /\A\d+\.\d+\z|\A<<next>>\z/
 
 RSpec.describe 'RuboCop Project', type: :feature do
   let(:cop_names) do
@@ -32,8 +33,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
         version = config[name]['VersionAdded']
         expect(version.nil?).to(be(false),
                                 "VersionAdded is required for #{name}.")
-        expect(version).to(match(/\A\d+\.\d+\z/),
-                           "#{version} should be format ('X.Y') for #{name}.")
+        expect(version).to(match(version_regexp),
+                           "#{version} should be format ('X.Y' or '<<next>>') for #{name}.")
       end
     end
 
@@ -43,8 +44,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
           version = config[name][version_type]
           next unless version
 
-          expect(version).to(match(/\A\d+\.\d+\z/),
-                             "#{version} should be format ('X.Y') for #{name}.")
+          expect(version).to(match(version_regexp),
+                             "#{version} should be format ('X.Y' or '<<next>>') for #{name}.")
         end
       end
     end
