@@ -784,6 +784,79 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(actual.size).to eq(expected.size)
     end
 
+    context 'for existing configuration with Exclude' do
+      before do
+        create_file('example1.rb', ['# frozen_string_literal: true',
+                                    '',
+                                    'y '])
+        create_file('example2.rb', ['# frozen_string_literal: true',
+                                    '',
+                                    'x = 0 ',
+                                    'puts x'])
+      end
+
+      it 'generates Excludes that appear in .rubocop.yml' do
+        create_file('.rubocop.yml', <<~YAML)
+          Layout/TrailingWhitespace:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(cli.run(['--auto-gen-config'])).to eq(0)
+        expect($stderr.string.chomp)
+          .to eq('`Layout/TrailingWhitespace: Exclude` in `.rubocop.yml` overrides a generated ' \
+                 '`Exclude` in `.rubocop_todo.yml`. Either remove ' \
+                 '`Layout/TrailingWhitespace: Exclude` or add `inherit_mode: merge: - Exclude`.')
+        expected = <<~YAML
+          Layout/TrailingWhitespace:
+            Exclude:
+              - 'example1.rb'
+              - 'example2.rb'
+        YAML
+        actual = IO.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+        expect(actual.join).to eq(expected)
+
+        $stdout = StringIO.new
+        expect(cli.run(['--format', 'offenses'])).to eq(1)
+        expect($stdout.string.lines.grep(%r{/})).to eq(["1  Layout/TrailingWhitespace\n"])
+      end
+
+      shared_examples 'leaves out Excludes' do |merge_style, config|
+        it "leaves out Excludes that appear in .rubocop.yml but are merged #{merge_style}" do
+          create_file('.rubocop.yml', config)
+          expect(cli.run(['--auto-gen-config'])).to eq(0)
+          expect($stderr.string).to eq('')
+          expected = <<~YAML
+            Layout/TrailingWhitespace:
+              Exclude:
+                - 'example2.rb'
+          YAML
+          actual = IO.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+          expect(actual.join).to eq(expected)
+
+          expect(cli.run([])).to eq(0)
+        end
+      end
+
+      include_examples 'leaves out Excludes', 'globally', <<~YAML
+        inherit_mode:
+          merge:
+            - Exclude
+
+        Layout/TrailingWhitespace:
+          Exclude:
+            - 'example1.rb'
+      YAML
+      include_examples 'leaves out Excludes', 'for the cop', <<~YAML
+        Layout/TrailingWhitespace:
+          inherit_mode:
+            merge:
+              - Exclude
+
+          Exclude:
+            - 'example1.rb'
+      YAML
+    end
+
     it 'does not generate configuration for the Syntax cop' do
       create_file('example1.rb', <<~RUBY)
         # frozen_string_literal: true
