@@ -910,16 +910,30 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'accepts indentation of assignment' do
-      expect_no_offenses(<<~RUBY)
-        formatted_int = int_part
-          .abs
-          .to_s
-          .reverse
-          .gsub(/...(?=.)/, '&_')
-          .reverse
-      RUBY
+    shared_examples 'assignment' do |lhs|
+      it "accepts indentation of assignment to #{lhs} with rhs on same line" do
+        expect_no_offenses(<<~RUBY)
+          #{lhs} = int_part
+            .abs
+            .to_s
+            .reverse
+            .gsub(/...(?=.)/, '&_')
+            .reverse
+        RUBY
+      end
+
+      it "accepts indentation of assignment to #{lhs} with newline after =" do
+        expect_no_offenses(<<~RUBY)
+          #{lhs} =
+            int_part
+              .abs
+              .to_s
+        RUBY
+      end
     end
+
+    include_examples 'assignment', 'a'
+    include_examples 'assignment', 'a[:key]'
 
     it 'registers an offense and corrects correct + unrecognized style' do
       expect_offense(<<~RUBY)
