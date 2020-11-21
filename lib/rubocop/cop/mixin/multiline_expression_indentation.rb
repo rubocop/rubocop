@@ -31,7 +31,7 @@ module RuboCop
       #   b c { block }.            <-- b is indented relative to a
       #   d                         <-- d is indented relative to a
       def left_hand_side(lhs)
-        lhs = lhs.parent while lhs.parent&.send_type?
+        lhs = lhs.parent while lhs.parent&.send_type? && !lhs.parent.method?(:[]=)
         lhs
       end
 
