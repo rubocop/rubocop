@@ -798,6 +798,23 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
+    it 'registers an offense and corrects 0 space indentation inside square brackets' do
+      expect_offense(<<~RUBY)
+        foo[
+          bar
+          .baz
+          ^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        ]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo[
+          bar
+            .baz
+        ]
+      RUBY
+    end
+
     it 'registers an offense and corrects aligned methods in if condition' do
       expect_offense(<<~RUBY)
         if a.
