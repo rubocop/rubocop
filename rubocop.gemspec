@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path('lib', __dir__)
-require 'rubocop/version'
-require 'English'
+require_relative 'lib/rubocop/version'
 
 Gem::Specification.new do |s|
   s.name = 'rubocop'
@@ -16,8 +14,7 @@ Gem::Specification.new do |s|
   DESCRIPTION
 
   s.email = 'rubocop@googlegroups.com'
-  s.files = `git ls-files assets bin config lib LICENSE.txt README.md`
-            .split($RS)
+  s.files = Dir.glob('{config,lib}/**/*', File::FNM_DOTMATCH)
   s.bindir = 'exe'
   s.executables = ['rubocop']
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
