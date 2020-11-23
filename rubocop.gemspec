@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   DESCRIPTION
 
   s.email = 'rubocop@googlegroups.com'
-  s.files = Dir.glob('{config,lib}/**/*', File::FNM_DOTMATCH)
+  s.files = Dir.glob('{assets,config,lib}/**/*', File::FNM_DOTMATCH)
   s.bindir = 'exe'
   s.executables = ['rubocop']
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
