@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#9082](https://github.com/rubocop-hq/rubocop/pull/9082): Fix gemspec to include assets directory. ([@javierav][])
+
 ## 1.4.0 (2020-11-23)
 
 ### New features
@@ -5157,3 +5161,5 @@
 [@pdobb]: https://github.com/pdobb
 [@HeroProtagonist]: https://github.com/HeroProtagonist
 [@piotrmurach]: https://github.com/piotrmurach
+
+[@javierav]: https://github.com/javierav
