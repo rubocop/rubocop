@@ -14,7 +14,7 @@
 
 ### New features
 
-* [#7737](https://github.com/rubocop-hq/rubocop/issues/7737): Add new `Style/RedundantArguments` cop. ([@tejasbubane][])
+* [#7737](https://github.com/rubocop-hq/rubocop/issues/7737): Add new `Style/RedundantArgument` cop. ([@tejasbubane][])
 
 ## 1.3.1 (2020-11-16)
 

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantArguments, :config do
+RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'join' do
     let(:cop_config) do
-      { 'RedundantArguments' => { 'join' => '' } }
+      { 'Methods' => { 'join' => '' } }
     end
 
     it 'registers an offense when using `#join` with empty string argument' do
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArguments, :config do
 
   context 'split' do
     let(:cop_config) do
-      { 'RedundantArguments' => { 'split' => ' ' } }
+      { 'Methods' => { 'split' => ' ' } }
     end
 
     it 'registers an offense when using `#split` with space' do
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArguments, :config do
 
   context 'non-builtin method' do
     let(:cop_config) do
-      { 'RedundantArguments' => { 'foo' => 2 } }
+      { 'Methods' => { 'foo' => 2 } }
     end
 
     it 'registers an offense with configured argument' do

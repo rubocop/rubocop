@@ -3977,13 +3977,15 @@ Style/RandomWithOffset:
   Enabled: true
   VersionAdded: '0.52'
 
-Style/RedundantArguments:
-  Description: 'Check for redundant arguments to methods.'
+Style/RedundantArgument:
+  Description: 'Check for a redundant argument passed to certain methods.'
   Enabled: pending
   Safe: false
   VersionAdded: <<next>>
-  RedundantArguments:
+  Methods:
+    # Array#join
     join: ''
+    # String#split
     split: ' '
 
 Style/RedundantAssignment:

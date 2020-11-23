@@ -5,17 +5,19 @@ require 'parser/current'
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant arguments to methods.
+      # This cop checks for a redundant argument passed to certain methods.
       #
       # Limitations:
+      #
       # 1. This cop matches for method names only and hence cannot tell apart
       #    methods with same name in different classes.
       # 2. This cop is limited to methods with single parameter.
-      # 3. This cop is unsafe if certain kernel global variables are set.
+      # 3. This cop is unsafe if certain special global variables (e.g. `$;`) are set.
+      #    That depends on the nature of the target methods, of course.
       #
-      # Method names & arguments can be configured like:
+      # Method names and their redundant arguments can be configured like this:
       #
-      # RedundantArguments:
+      # Methods:
       #   join: ''
       #   split: ' '
       #   foo: 2
@@ -34,7 +36,7 @@ module RuboCop
       #   string.split
       #   "first second".split
       #   A.foo
-      class RedundantArguments < Cop
+      class RedundantArgument < Cop
         MSG = 'Argument %<arg>s is redundant because it is implied by default.'
 
         def on_send(node)
@@ -53,12 +55,12 @@ module RuboCop
         end
 
         def redundant_arg_for_method(method_name)
-          return nil unless cop_config['RedundantArguments'].key?(method_name)
+          return nil unless cop_config['Methods'].key?(method_name)
 
           @mem ||= {}
           @mem[method_name] ||=
             begin
-              arg = cop_config['RedundantArguments'].fetch(method_name)
+              arg = cop_config['Methods'].fetch(method_name)
               buffer = Parser::Source::Buffer.new('(string)', 1)
               buffer.source = arg.inspect
               builder = RuboCop::AST::Builder.new
