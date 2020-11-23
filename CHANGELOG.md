@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.4.0 (2020-11-23)
+
 ### New features
 
 * [#7737](https://github.com/rubocop-hq/rubocop/issues/7737): Add new `Style/RedundantArgument` cop. ([@tejasbubane][])

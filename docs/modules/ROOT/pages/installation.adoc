@@ -22,7 +22,7 @@ in your `Gemfile`:
 
 [source,rb]
 ----
-gem 'rubocop', '~> 1.3', require: false
+gem 'rubocop', '~> 1.4', require: false
 ----
 
 NOTE: You can check out our progress on the road to version 1.0 https://github.com/rubocop-hq/rubocop/milestone/4[here].

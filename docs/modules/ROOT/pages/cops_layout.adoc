@@ -1392,7 +1392,7 @@ end
 | Yes
 | Yes
 | 0.49
-| -
+| 1.4
 |===
 
 This cop checks whether method definitions are
@@ -1407,8 +1407,12 @@ one-line method definitions are considered an offense.
 
 === Examples
 
+==== EmptyLineBetweenMethodDefs: true (default)
+
 [source,ruby]
 ----
+# checks for empty lines between method definitions.
+
 # bad
 def a
 end
@@ -1426,10 +1430,78 @@ def b
 end
 ----
 
+==== EmptyLineBetweenClassDefs: true (default)
+
+[source,ruby]
+----
+# checks for empty lines between class definitions.
+
+# bad
+class A
+end
+class B
+end
+def b
+end
+----
+
+[source,ruby]
+----
+# good
+class A
+end
+
+class B
+end
+
+def b
+end
+----
+
+==== EmptyLineBetweenModuleDefs: true (default)
+
+[source,ruby]
+----
+# checks for empty lines between module definitions.
+
+# bad
+module A
+end
+module B
+end
+def b
+end
+----
+
+[source,ruby]
+----
+# good
+module A
+end
+
+module B
+end
+
+def b
+end
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
+
+| EmptyLineBetweenMethodDefs
+| `true`
+| Boolean
+
+| EmptyLineBetweenClassDefs
+| `true`
+| Boolean
+
+| EmptyLineBetweenModuleDefs
+| `true`
+| Boolean
 
 | AllowAdjacentOneLineDefs
 | `false`
@@ -3792,7 +3864,7 @@ end
 | Yes
 | Yes
 | 0.25
-| 1.3
+| 1.4
 |===
 
 This cop checks the length of lines in the source code.
@@ -3858,7 +3930,7 @@ bar: "0000000000", baz: "0000000000"}
 | Name | Default value | Configurable values
 
 | AutoCorrect
-| `false`
+| `true`
 | Boolean
 
 | Max

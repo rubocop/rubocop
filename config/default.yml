@@ -463,7 +463,7 @@ Layout/EmptyLineBetweenDefs:
   StyleGuide: '#empty-lines-between-methods'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: <<next>>
+  VersionChanged: '1.4'
   EmptyLineBetweenMethodDefs: true
   EmptyLineBetweenClassDefs: true
   EmptyLineBetweenModuleDefs: true
@@ -895,7 +895,7 @@ Layout/LineLength:
   StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.4'
   AutoCorrect: true
   Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
@@ -1688,7 +1688,7 @@ Lint/MissingSuper:
                   without calls to `super`'.
   Enabled: true
   VersionAdded: '0.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.4'
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
@@ -3985,7 +3985,7 @@ Style/RedundantArgument:
   Description: 'Check for a redundant argument passed to certain methods.'
   Enabled: pending
   Safe: false
-  VersionAdded: <<next>>
+  VersionAdded: '1.4'
   Methods:
     # Array#join
     join: ''
