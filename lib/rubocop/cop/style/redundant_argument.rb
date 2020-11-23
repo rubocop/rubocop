@@ -40,6 +40,8 @@ module RuboCop
         MSG = 'Argument %<arg>s is redundant because it is implied by default.'
 
         def on_send(node)
+          return if node.receiver.nil?
+          return if node.arguments.count != 1
           return unless redundant_argument?(node)
 
           add_offense(node, message: format(MSG, arg: node.arguments.first.source))

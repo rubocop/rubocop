@@ -7,6 +7,7 @@
 ### Bug fixes
 
 * [#9082](https://github.com/rubocop-hq/rubocop/pull/9082): Fix gemspec to include assets directory. ([@javierav][])
+* [#9083](https://github.com/rubocop-hq/rubocop/pull/9083): Fix `Style/RedundantArgument` cop raising offense for more than one argument. ([@tejasbubane][])
 
 ## 1.4.0 (2020-11-23)
 
