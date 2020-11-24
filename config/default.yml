@@ -459,7 +459,7 @@ Layout/EmptyLineAfterMultilineCondition:
     - https://github.com/airbnb/ruby#multiline-if-newline
 
 Layout/EmptyLineBetweenDefs:
-  Description: 'Use empty lines between defs.'
+  Description: 'Use empty lines between class/module/method defs.'
   StyleGuide: '#empty-lines-between-methods'
   Enabled: true
   VersionAdded: '0.49'
