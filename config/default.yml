@@ -4554,6 +4554,11 @@ Style/UnpackFirst:
   Enabled: true
   VersionAdded: '0.54'
 
+Style/UseNamedBlockArgumentForSimpleMethodCalls:
+  Description: "{ _1.method } should not be used because it won't be picked up by SymbolProc cop."
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/VariableInterpolation:
   Description: >-
                  Don't interpolate global, instance and class variables

@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#9101](https://github.com/rubocop-hq/rubocop/issues/9101): "Add new `Style/UseNamedBlockArgumentForSimpleMethodCalls` cop. ([@dabroz][])
+
 ## 1.4.2 (2020-11-25)
 
 ### Bug fixes
