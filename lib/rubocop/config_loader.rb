@@ -109,7 +109,7 @@ module RuboCop
         end
 
         merge_with_default(config, config_file).tap do |merged_config|
-          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(config)
+          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(merged_config)
         end
       end
 
