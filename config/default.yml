@@ -2185,8 +2185,10 @@ Metrics/ParameterLists:
   StyleGuide: '#too-many-params'
   Enabled: true
   VersionAdded: '0.25'
+  VersionChanged: '<<next>>'
   Max: 5
   CountKeywordArgs: true
+  MaxOptionalParameters: 3
 
 Metrics/PerceivedComplexity:
   Description: >-
