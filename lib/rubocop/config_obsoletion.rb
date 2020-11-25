@@ -104,6 +104,7 @@ module RuboCop
     OBSOLETE_COPS = Hash[*(RENAMED_COPS + MOVED_COPS + REMOVED_COPS +
                            REMOVED_COPS_WITH_REASON + SPLIT_COPS).flatten]
 
+    # Parameters can be deprecated but not disabled by setting `severity: :warning`
     OBSOLETE_PARAMETERS = [
       {
         cops: %w[Layout/SpaceAroundOperators Style/SpaceAroundOperators],
@@ -214,8 +215,11 @@ module RuboCop
       }
     ].freeze
 
+    attr_reader :warnings
+
     def initialize(config)
       @config = config
+      @warnings = []
     end
 
     def reject_obsolete_cops_and_parameters
@@ -256,9 +260,17 @@ module RuboCop
     end
 
     def obsolete_parameters
-      OBSOLETE_PARAMETERS.map do |params|
-        obsolete_parameter_message(params[:cops], params[:parameters],
-                                   params[:alternative])
+      OBSOLETE_PARAMETERS.collect do |params|
+        messages = obsolete_parameter_message(params[:cops], params[:parameters],
+                                              params[:alternative])
+
+        # Warnings are collected separately and not added to the error message
+        if messages && params.fetch(:severity, :error) == :warning
+          @warnings.concat(messages)
+          next
+        end
+
+        messages
       end
     end
 
