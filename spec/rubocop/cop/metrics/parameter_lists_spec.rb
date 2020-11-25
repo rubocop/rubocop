@@ -4,7 +4,8 @@ RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
   let(:cop_config) do
     {
       'Max' => 4,
-      'CountKeywordArgs' => true
+      'CountKeywordArgs' => true,
+      'MaxOptionalParameters' => 3
     }
   end
 
@@ -61,5 +62,20 @@ RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
         end
       RUBY
     end
+  end
+
+  it 'registers an offense when optargs count exceeds the maximum' do
+    expect_offense(<<~RUBY)
+      def foo(a = 1, b = 2, c = 3, d = 4)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method has too many optional parameters. [4/3]
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when method has allowed amount of optargs' do
+    expect_no_offenses(<<~RUBY)
+      def foo(a, b = 2, c = 3, d = 4)
+      end
+    RUBY
   end
 end
