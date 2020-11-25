@@ -57,16 +57,11 @@ module RuboCop
         # The empty offense range is an edge case that can be reached from the Lint/Syntax cop.
         return nil if offense_range.empty?
 
-        @heredoc_ranges ||= begin
-          ranges = []
-          processed_source.ast.each_descendant do |node|
-            if node.respond_to?(:heredoc?) && node.heredoc?
-              ranges << node.loc.expression.join(node.loc.heredoc_end)
-            end
-          end
-          ranges
+        heredoc_nodes = processed_source.ast.each_descendant.select do |node|
+          node.respond_to?(:heredoc?) && node.heredoc?
         end
-        @heredoc_ranges.find { |range| range.contains?(offense_range) }
+        heredoc_nodes.map { |node| node.loc.expression.join(node.loc.heredoc_end) }
+                     .find { |range| range.contains?(offense_range) }
       end
 
       def range_of_first_line(range)
