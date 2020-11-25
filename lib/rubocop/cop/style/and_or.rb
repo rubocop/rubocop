@@ -72,6 +72,8 @@ module RuboCop
             end
 
             corrector.replace(node.loc.operator, node.alternate_operator)
+
+            keep_operator_precedence(corrector, node)
           end
         end
 
@@ -121,6 +123,14 @@ module RuboCop
           return if node.source_range.begin.is?('(')
 
           corrector.wrap(node, '(', ')')
+        end
+
+        def keep_operator_precedence(corrector, node)
+          if node.or_type? && node.parent&.and_type?
+            corrector.wrap(node, '(', ')')
+          elsif node.and_type? && node.rhs.or_type?
+            corrector.wrap(node.rhs, '(', ')')
+          end
         end
 
         def correctable_send?(node)

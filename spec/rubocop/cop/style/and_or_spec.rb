@@ -508,6 +508,60 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'when `or` precedes `and`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo or bar and baz
+              ^^ Use `||` instead of `or`.
+                     ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (foo || bar) && baz
+        RUBY
+      end
+    end
+
+    context 'when `or` precedes `&&`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo or bar && baz
+              ^^ Use `||` instead of `or`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo || bar && baz
+        RUBY
+      end
+    end
+
+    context 'when `and` precedes `or`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo and bar or baz
+              ^^^ Use `&&` instead of `and`.
+                      ^^ Use `||` instead of `or`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar || baz
+        RUBY
+      end
+    end
+
+    context 'when `and` precedes `||`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo and bar || baz
+              ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && (bar || baz)
+        RUBY
+      end
+    end
+
     context 'within a nested begin node with one child only' do
       # regression test; see GH issue 2531
       it 'autocorrects "and" with && and adds parens' do
