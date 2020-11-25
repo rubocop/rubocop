@@ -35,6 +35,8 @@
           <h4><i class="icon-download-alt"></i> Installation</h4>
           <p>RuboCop's installation is pretty standard:</p>
           <pre><span style="color:#008080;">$</span> gem install rubocop</pre>
+          <p>If you'd rather install RuboCop using <code>bundler</code>, add a line for it in your <code>Gemfile</code> (but set the <code>require</code> option to <code>false</code>, as it is a standalone tool):</p>
+          <pre>gem 'rubocop', require: false</pre>
 
           <h4><i class="icon-cog"></i> Usage</h4>
           <p>Running <code>rubocop</code> with no arguments will check all Ruby source files in the current directory:</p>
