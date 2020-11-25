@@ -44,7 +44,8 @@ module RuboCop
         LABEL = 'Block'
 
         def on_block(node)
-          return if excluded_method?(node)
+          return if ignored_method?(node.method_name)
+          return if method_receiver_excluded?(node)
           return if node.class_constructor? || node.struct_constructor?
 
           check_code_length(node)
@@ -52,11 +53,13 @@ module RuboCop
 
         private
 
-        def excluded_method?(node)
+        def method_receiver_excluded?(node)
           node_receiver = node.receiver&.source&.gsub(/\s+/, '')
           node_method = String(node.method_name)
 
           ignored_methods.any? do |config|
+            next unless config.is_a?(String)
+
             receiver, method = config.split('.')
 
             unless method

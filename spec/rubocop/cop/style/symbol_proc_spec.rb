@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
-  let(:cop_config) { { 'IgnoredMethods' => %w[respond_to] } }
-
   it 'registers an offense for a block with parameterless method call on ' \
      'param' do
     expect_offense(<<~RUBY)
@@ -46,8 +44,22 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('::Proc.new { |x| x.method }')
   end
 
-  it 'accepts ignored method' do
-    expect_no_offenses('respond_to { |format| format.xml }')
+  context 'with IgnoredMethods' do
+    context 'when given a string' do
+      let(:cop_config) { { 'IgnoredMethods' => %w[respond_to] } }
+
+      it 'accepts ignored method' do
+        expect_no_offenses('respond_to { |format| format.xml }')
+      end
+    end
+
+    context 'when given a regex' do
+      let(:cop_config) { { 'IgnoredMethods' => [/respond_/] } }
+
+      it 'accepts ignored method' do
+        expect_no_offenses('respond_to { |format| format.xml }')
+      end
+    end
   end
 
   it 'accepts block with no arguments' do

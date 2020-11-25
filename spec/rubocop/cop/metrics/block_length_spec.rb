@@ -249,5 +249,32 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
         end
       end
     end
+
+    context 'when given a regex' do
+      before { cop_config['IgnoredMethods'] = [/baz/] }
+
+      it 'does not report an offense' do
+        expect_no_offenses(<<~RUBY)
+          Foo::Bar.baz do
+            a = 1
+            a = 2
+            a = 3
+          end
+        RUBY
+      end
+
+      context 'that does not match' do
+        it 'reports an offense' do
+          expect_offense(<<~RUBY)
+            Foo::Bar.bar do
+            ^^^^^^^^^^^^^^^ Block has too many lines. [3/2]
+              a = 1
+              a = 2
+              a = 3
+            end
+          RUBY
+        end
+      end
+    end
   end
 end

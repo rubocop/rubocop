@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
-  let(:cop_config) do
-    { 'IgnoredMethods' => %w[s] }
-  end
-
   it 'registers an offense for parens in method call without args' do
     expect_offense(<<~RUBY)
       top.test()
@@ -33,8 +29,26 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     expect_no_offenses('not(something)')
   end
 
-  it 'ignores method listed in IgnoredMethods' do
-    expect_no_offenses('s()')
+  context 'with IgnoredMethods' do
+    context 'with a string' do
+      let(:cop_config) do
+        { 'IgnoredMethods' => %w[s] }
+      end
+
+      it 'ignores method listed in IgnoredMethods' do
+        expect_no_offenses('s()')
+      end
+    end
+
+    context 'with a regex' do
+      let(:cop_config) do
+        { 'IgnoredMethods' => [/test/] }
+      end
+
+      it 'ignores method listed in IgnoredMethods' do
+        expect_no_offenses('my_test()')
+      end
+    end
   end
 
   context 'assignment to a variable with the same name' do

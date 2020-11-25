@@ -11,6 +11,12 @@ module RuboCop
       include Metrics::Utils::RepeatedCsendDiscount
       extend NodePattern::Macros
 
+      # Ensure cops that include `MethodComplexity` have the config
+      # `attr_accessor`s that `ignored_method?` needs.
+      def self.included(base)
+        base.extend(IgnoredMethods::Config)
+      end
+
       def on_def(node)
         return if ignored_method?(node.method_name)
 

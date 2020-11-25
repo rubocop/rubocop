@@ -158,19 +158,38 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
   end
 
   context 'IgnoredMethods' do
-    let(:cop_config) { { 'IgnoredMethods' => %w[minutes] } }
+    context 'with a string' do
+      let(:cop_config) { { 'IgnoredMethods' => %w[minutes] } }
 
-    it 'does not register an offense for an ignored method' do
-      expect_no_offenses(<<~RUBY)
-        10.minutes.to_i
-      RUBY
+      it 'does not register an offense for an ignored method' do
+        expect_no_offenses(<<~RUBY)
+          10.minutes.to_i
+        RUBY
+      end
+
+      it 'registers an offense for other methods' do
+        expect_offense(<<~RUBY)
+          10.hours.to_i
+          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.hours.to_i, use stricter Integer(10.hours, 10).
+        RUBY
+      end
     end
 
-    it 'registers an offense for other methods' do
-      expect_offense(<<~RUBY)
-        10.hours.to_i
-        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.hours.to_i, use stricter Integer(10.hours, 10).
-      RUBY
+    context 'with a regex' do
+      let(:cop_config) { { 'IgnoredMethods' => [/minutes/] } }
+
+      it 'does not register an offense for an ignored method' do
+        expect_no_offenses(<<~RUBY)
+          10.minutes.to_i
+        RUBY
+      end
+
+      it 'registers an offense for other methods' do
+        expect_offense(<<~RUBY)
+          10.hours.to_i
+          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.hours.to_i, use stricter Integer(10.hours, 10).
+        RUBY
+      end
     end
   end
 end
