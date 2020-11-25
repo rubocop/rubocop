@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.4.2 (2020-11-25)
+
 ### Bug fixes
 
 * [#9083](https://github.com/rubocop-hq/rubocop/pull/9083): Fix `Style/RedundantArgument` cop raising offense for more than one argument. ([@tejasbubane][])

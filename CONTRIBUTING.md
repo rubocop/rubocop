@@ -17,7 +17,7 @@ do so.
 
 ```
 $ rubocop -V
-1.4.1 (using Parser 2.7.2.0, rubocop-ast 1.1.1, running on ruby 2.7.2 x86_64-linux)
+1.4.2 (using Parser 2.7.2.0, rubocop-ast 1.1.1, running on ruby 2.7.2 x86_64-linux)
 ```
 
 * Include any relevant code to the issue summary.

@@ -4657,7 +4657,8 @@ block will just return a transformation of the last element value, and
 could be rewritten as such without a loop.
 
 Also catches instances where an index of the accumulator is returned, as
-this may change the type of object being retained.
+this may change the type of object being retained. As well, detects when
+fewer than 2 block arguments are specified.
 
 NOTE: For the purpose of reducing false positives, this cop only flags
 returns in `reduce` blocks where the element is the only variable in
