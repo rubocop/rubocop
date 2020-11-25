@@ -42,7 +42,7 @@ module RuboCop
         ConfigLoader.default_configuration.key?(key)
       end
 
-      @config_obsoletion.reject_obsolete_cops_and_parameters
+      check_obsoletions
 
       alert_about_unrecognized_cops(invalid_cop_names)
       check_target_ruby
@@ -67,6 +67,13 @@ module RuboCop
     private
 
     attr_reader :target_ruby
+
+    def check_obsoletions
+      @config_obsoletion.reject_obsolete_cops_and_parameters
+      return unless @config_obsoletion.warnings.any?
+
+      warn Rainbow("Warning: #{@config_obsoletion.warnings.join("\n")}").yellow
+    end
 
     def check_target_ruby
       return if target_ruby.supported?
