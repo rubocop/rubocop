@@ -523,9 +523,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
     it 'removes the escape character at the right position' do
       # The indicator should take character widths into account in the
       # future.
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~'RUBY', prefix: '一二三四')
         x = s[/[一二三四\.]+/]
-                    ^^ Redundant escape inside regexp literal
+                _{prefix}^^ Redundant escape inside regexp literal
         p x
       RUBY
 
