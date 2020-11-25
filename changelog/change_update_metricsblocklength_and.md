@@ -1,0 +1,1 @@
+* [#9098](https://github.com/rubocop-hq/rubocop/pull/9098): Update `Metrics/BlockLength` and `Metrics/MethodLength` to use `IgnoredMethods` instead of `ExcludedMethods` in configuration. The previous key is retained for backwards compatibility. ([@dvandersluis][])

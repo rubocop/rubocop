@@ -2120,11 +2120,12 @@ Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   VersionAdded: '0.44'
-  VersionChanged: '0.87'
+  VersionChanged: <<next>>
   CountComments: false  # count full line comments?
   Max: 25
   CountAsOne: []
-  ExcludedMethods:
+  ExcludedMethods: [] # deprecated, retained for backwards compatibility
+  IgnoredMethods:
     # By default, exclude the `#refine` method, as it tends to have larger
     # associated blocks.
     - refine
@@ -2165,11 +2166,12 @@ Metrics/MethodLength:
   StyleGuide: '#short-methods'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '0.87'
+  VersionChanged: <<next>>
   CountComments: false  # count full line comments?
   Max: 10
   CountAsOne: []
-  ExcludedMethods: []
+  ExcludedMethods: [] # deprecated, retained for backwards compatibility
+  IgnoredMethods: []
 
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'

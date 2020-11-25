@@ -12,6 +12,10 @@ module RuboCop
       # Available are: 'array', 'hash', and 'heredoc'. Each literal
       # will be counted as one line regardless of its actual size.
       #
+      #
+      # NOTE: The `ExcludedMethods` configuration is deprecated and only kept
+      # for backwards compatibility. Please use `IgnoredMethods` instead.
+      #
       # @example CountAsOne: ['array', 'heredoc']
       #
       #   something do
@@ -33,6 +37,9 @@ module RuboCop
       # NOTE: This cop does not apply for `Struct` definitions.
       class BlockLength < Base
         include CodeLength
+        include IgnoredMethods
+
+        ignored_methods deprecated_key: 'ExcludedMethods'
 
         LABEL = 'Block'
 
@@ -49,7 +56,7 @@ module RuboCop
           node_receiver = node.receiver&.source&.gsub(/\s+/, '')
           node_method = String(node.method_name)
 
-          excluded_methods.any? do |config|
+          ignored_methods.any? do |config|
             receiver, method = config.split('.')
 
             unless method
@@ -59,10 +66,6 @@ module RuboCop
 
             method == node_method && receiver == node_receiver
           end
-        end
-
-        def excluded_methods
-          cop_config['ExcludedMethods'] || []
         end
 
         def cop_label

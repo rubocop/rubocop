@@ -733,6 +733,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'CountComments' => false,
               'Max' => 5,
               'CountAsOne' => [],
+              'IgnoredMethods' => [],
               'ExcludedMethods' => []
             }
           )

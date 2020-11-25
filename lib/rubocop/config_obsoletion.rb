@@ -202,6 +202,12 @@ module RuboCop
         parameters: 'NameWhitelist',
         alternative: '`NameWhitelist` has been renamed to ' \
                      '`AllowedMethods`.'
+      },
+      {
+        cops: %w[Metrics/BlockLength Metrics/MethodLength],
+        parameters: 'ExcludedMethods',
+        alternative: '`ExcludedMethods` has been renamed to `IgnoredMethods`.',
+        severity: :warning
       }
     ].freeze
 
