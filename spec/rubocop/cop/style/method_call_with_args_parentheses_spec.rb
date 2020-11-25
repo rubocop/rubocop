@@ -2,10 +2,6 @@
 
 RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   context 'when EnforcedStyle is require_parentheses (default)' do
-    let(:cop_config) do
-      { 'IgnoredMethods' => %w[puts] }
-    end
-
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
@@ -256,8 +252,22 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'ignores method listed in IgnoredMethods' do
-      expect_no_offenses('puts :test')
+    context 'with IgnoredMethods' do
+      context 'with a string' do
+        let(:cop_config) { { 'IgnoredMethods' => %w[puts] } }
+
+        it 'ignores method listed in IgnoredMethods' do
+          expect_no_offenses('puts :test')
+        end
+      end
+
+      context 'with a regex' do
+        let(:cop_config) { { 'IgnoredMethods' => [/puts/] } }
+
+        it 'ignores method listed in IgnoredMethods' do
+          expect_no_offenses('puts :test')
+        end
+      end
     end
 
     context 'when inspecting macro methods' do

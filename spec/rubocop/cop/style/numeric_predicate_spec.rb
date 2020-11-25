@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
       {
         'EnforcedStyle' => 'predicate',
         'AutoCorrect' => true,
-        'IgnoredMethods' => %w[where]
+        'IgnoredMethods' => ['where', /order/]
       }
     end
 
@@ -262,12 +262,24 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
 
     context 'in argument' do
       context 'ignored method' do
-        it 'allows checking if a number is positive' do
-          expect_no_offenses('where(Sequel[:number] > 0)')
+        context 'with a string' do
+          it 'allows checking if a number is positive' do
+            expect_no_offenses('where(Sequel[:number] > 0)')
+          end
+
+          it 'allows checking if a number is negative' do
+            expect_no_offenses('where(Sequel[:number] < 0)')
+          end
         end
 
-        it 'allows checking if a number is negative' do
-          expect_no_offenses('where(Sequel[:number] < 0)')
+        context 'with a regex' do
+          it 'allows checking if a number is positive' do
+            expect_no_offenses('order(Sequel[:number] > 0)')
+          end
+
+          it 'allows checking if a number is negative' do
+            expect_no_offenses('order(Sequel[:number] < 0)')
+          end
         end
       end
 
@@ -296,12 +308,24 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
 
     context 'in block' do
       context 'ignored method' do
-        it 'allows checking if a number is positive' do
-          expect_no_offenses('where { table[number] > 0 }')
+        context 'with a string' do
+          it 'allows checking if a number is positive' do
+            expect_no_offenses('where { table[number] > 0 }')
+          end
+
+          it 'allows checking if a number is negative' do
+            expect_no_offenses('where { table[number] < 0 }')
+          end
         end
 
-        it 'allows checking if a number is negative' do
-          expect_no_offenses('where { table[number] < 0 }')
+        context 'with a regex' do
+          it 'allows checking if a number is positive' do
+            expect_no_offenses('order { table[number] > 0 }')
+          end
+
+          it 'allows checking if a number is negative' do
+            expect_no_offenses('order { table[number] < 0 }')
+          end
         end
       end
 

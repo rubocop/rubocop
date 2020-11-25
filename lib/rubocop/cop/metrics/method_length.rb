@@ -41,7 +41,7 @@ module RuboCop
         LABEL = 'Method'
 
         def on_def(node)
-          return if ignored_methods.any? { |m| m.match? String(node.method_name) }
+          return if ignored_method?(node.method_name)
 
           check_code_length(node)
         end

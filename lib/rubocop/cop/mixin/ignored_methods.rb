@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # This module encapsulates the ability to ignore certain methods when
     # parsing.
+    # Cops that use `IgnoredMethods` can accept either strings or regexes to match
+    # against.
     module IgnoredMethods
       # Configuration for IgnoredMethods. It is added to classes that include
       # the module so that configuration can be set using the `ignored_methods`
@@ -21,7 +23,14 @@ module RuboCop
       end
 
       def ignored_method?(name)
-        ignored_methods.include?(name.to_s)
+        ignored_methods.any? do |value|
+          case value
+          when Regexp
+            value.match? String(name)
+          else
+            value == String(name)
+          end
+        end
       end
 
       def ignored_methods
