@@ -18,6 +18,7 @@ require_relative 'rubocop/ext/regexp_node'
 require_relative 'rubocop/ext/regexp_parser'
 
 require_relative 'rubocop/core_ext/string'
+require_relative 'rubocop/core_ext/hash'
 require_relative 'rubocop/ext/processed_source'
 
 require_relative 'rubocop/path_util'

@@ -289,13 +289,44 @@ RSpec.describe RuboCop::ConfigObsoletion do
         OUTPUT
       end
 
-      it 'prints a warning message' do
+      it 'prints a error message' do
         begin
           config_obsoletion.reject_obsolete_cops_and_parameters
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
           expect(expected_message).to eq(e.message)
         end
+      end
+    end
+
+    context 'when the configuration includes any deprecated parameters' do
+      let(:hash) do
+        {
+          'Metrics/BlockLength' => {
+            'ExcludedMethods' => %w[foo bar]
+          },
+          'Metrics/MethodLength' => {
+            'ExcludedMethods' => %w[foo bar]
+          }
+        }
+      end
+
+      let(:warning_message)  { config_obsoletion.warnings.join("\n") }
+
+      let(:expected_message) do
+        <<~OUTPUT.chomp
+          obsolete parameter ExcludedMethods (for Metrics/BlockLength) found in example/.rubocop.yml
+          `ExcludedMethods` has been renamed to `IgnoredMethods`.
+          obsolete parameter ExcludedMethods (for Metrics/MethodLength) found in example/.rubocop.yml
+          `ExcludedMethods` has been renamed to `IgnoredMethods`.
+        OUTPUT
+      end
+
+      it 'prints a warning message' do
+        expect { config_obsoletion.reject_obsolete_cops_and_parameters }
+          .not_to raise_error(RuboCop::ValidationError)
+
+        expect(warning_message).to eq(expected_message)
       end
     end
   end

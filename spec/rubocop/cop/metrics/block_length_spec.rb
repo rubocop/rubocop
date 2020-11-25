@@ -3,8 +3,8 @@
 RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
   let(:cop_config) { { 'Max' => 2, 'CountComments' => false } }
 
-  shared_examples 'ignoring an offense on an excluded method' do |excluded|
-    before { cop_config['ExcludedMethods'] = [excluded] }
+  shared_examples 'ignoring an offense on an ignored method' do |ignored, config_key|
+    before { cop_config[config_key] = [ignored] }
 
     it 'still rejects other methods with long blocks' do
       expect_offense(<<~RUBY)
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
 
     it 'accepts the foo method with a long block' do
       expect_no_offenses(<<~RUBY)
-        #{excluded} do
+        #{ignored} do
           a = 1
           a = 2
           a = 3
@@ -211,38 +211,42 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
-  context 'when ExcludedMethods is enabled' do
-    it_behaves_like('ignoring an offense on an excluded method', 'foo')
+  context 'when methods to ignore are defined' do
+    %w[IgnoredMethods ExcludedMethods].each do |key|
+      context 'when IgnoredMethods is enabled' do
+        it_behaves_like('ignoring an offense on an ignored method', 'foo', key)
 
-    it_behaves_like('ignoring an offense on an excluded method',
-                    'Gem::Specification.new')
+        it_behaves_like('ignoring an offense on an ignored method',
+                        'Gem::Specification.new', key)
 
-    context 'when receiver contains whitespaces' do
-      before { cop_config['ExcludedMethods'] = ['Foo::Bar.baz'] }
+        context 'when receiver contains whitespaces' do
+          before { cop_config[key] = ['Foo::Bar.baz'] }
 
-      it 'ignores whitespaces' do
-        expect_no_offenses(<<~RUBY)
-          Foo::
-            Bar.baz do
-            a = 1
-            a = 2
-            a = 3
+          it 'ignores whitespaces' do
+            expect_no_offenses(<<~RUBY)
+              Foo::
+                Bar.baz do
+                a = 1
+                a = 2
+                a = 3
+              end
+            RUBY
           end
-        RUBY
-      end
-    end
+        end
 
-    context 'when a method is ignored, but receiver is a module' do
-      before { cop_config['ExcludedMethods'] = ['baz'] }
+        context 'when a method is ignored, but receiver is a module' do
+          before { cop_config[key] = ['baz'] }
 
-      it 'does not report an offense' do
-        expect_no_offenses(<<~RUBY)
-          Foo::Bar.baz do
-            a = 1
-            a = 2
-            a = 3
+          it 'does not report an offense' do
+            expect_no_offenses(<<~RUBY)
+              Foo::Bar.baz do
+                a = 1
+                a = 2
+                a = 3
+              end
+            RUBY
           end
-        RUBY
+        end
       end
     end
   end

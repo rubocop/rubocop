@@ -543,6 +543,22 @@ Style/PerlBackrefs:
   AutoCorrect: false
 ----
 
+== Common configuration parameters
+There are some configuration parameters that are shared by many cops, with the same behavior.
+
+=== IgnoredMethods
+
+Cops that evaluate methods can often be configured to ignore certain methods. Both strings and
+regular expressions can be used. For example:
+
+[source,yaml]
+----
+Metrics/BlockLength:
+  IgnoredMethods:
+    - refine
+    - !ruby/regexp /\b(class|instance)_methods\b/
+----
+
 == Setting the target Ruby version
 
 Some checks are dependent on the version of the Ruby interpreter which the
