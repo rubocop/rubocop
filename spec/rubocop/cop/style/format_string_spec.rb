@@ -223,6 +223,16 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when using springf with second argument that uses an operator' do
+      expect_offense(<<~RUBY)
+        format(something, a + 42)
+        ^^^^^^ Favor `String#%` over `format`.
+      RUBY
+      expect_correction(<<~RUBY)
+        something % (a + 42)
+      RUBY
+    end
+
     it 'registers an offense for sprintf with 3 arguments' do
       expect_offense(<<~RUBY)
         format("%d %04x", 123, 123)
