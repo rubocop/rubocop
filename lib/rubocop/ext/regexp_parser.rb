@@ -20,18 +20,11 @@ module RuboCop
       module Expression
         # Add `expression` and `loc` to all `regexp_parser` nodes
         module Base
-          attr_accessor :origin, :source
-
-          def start_index
-            # ts is a byte index; convert it to a character index
-            @start_index ||= source.byteslice(0, ts).length
-          end
+          attr_accessor :origin
 
           # Shortcut to `loc.expression`
           def expression
-            @expression ||= begin
-              origin.adjust(begin_pos: start_index, end_pos: start_index + full_length)
-            end
+            @expression ||= origin.adjust(begin_pos: ts, end_pos: ts + full_length)
           end
 
           # @returns a location map like `parser` does, with:
