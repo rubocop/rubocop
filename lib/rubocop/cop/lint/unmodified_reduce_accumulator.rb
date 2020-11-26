@@ -12,8 +12,7 @@ module RuboCop
       # could be rewritten as such without a loop.
       #
       # Also catches instances where an index of the accumulator is returned, as
-      # this may change the type of object being retained. As well, detects when
-      # fewer than 2 block arguments are specified.
+      # this may change the type of object being retained.
       #
       # NOTE: For the purpose of reducing false positives, this cop only flags
       # returns in `reduce` blocks where the element is the only variable in
@@ -68,7 +67,10 @@ module RuboCop
         MSG_INDEX = 'Do not return an element of the accumulator in `%<method>s`.'
 
         def_node_matcher :reduce_with_block?, <<~PATTERN
-          (block (send _recv {:reduce :inject} ...) args ...)
+          {
+            (block (send _recv {:reduce :inject} ...) args ...)
+            (numblock (send _recv {:reduce :inject} ...) ...)
+          }
         PATTERN
 
         def_node_matcher :accumulator_index?, <<~PATTERN
@@ -107,10 +109,11 @@ module RuboCop
 
         def on_block(node)
           return unless reduce_with_block?(node)
-          return unless node.arguments.length >= 2
+          return unless node.argument_list.length >= 2
 
           check_return_values(node)
         end
+        alias on_numblock on_block
 
         private
 
@@ -148,7 +151,7 @@ module RuboCop
         end
 
         def block_arg_name(node, index)
-          node.arguments[index].node_parts[0]
+          node.argument_list[index].name
         end
 
         # Look for an index of the accumulator being returned, except where the index

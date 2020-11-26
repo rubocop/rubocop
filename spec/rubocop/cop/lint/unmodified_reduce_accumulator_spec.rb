@@ -585,6 +585,37 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
             (1..4).#{method}(0) { |acc| acc.foo }
           RUBY
         end
+
+        it 'ignores when there is a splat argument' do
+          expect_no_offenses(<<~RUBY, method: method)
+            values.#{method}(0) { |*x| x[0] + x[1] }
+          RUBY
+        end
+
+        it 'registers an offense when there are more than two arguments but the element is returned' do
+          expect_offense(<<~RUBY)
+            (1..4).each_with_index.#{method}([]) do |acc, (el, index)|
+              acc[el] = method(index)
+              el
+              ^^ Ensure the accumulator `acc` will be modified by `#{method}`.
+            end
+          RUBY
+        end
+      end
+
+      context 'numblocks', :ruby27 do
+        it 'registers an offense when returning the element' do
+          expect_offense(<<~RUBY, method: method)
+            (1..4).#{method}(0) { _2 }
+                   _{method}      ^^ Ensure the accumulator `_1` will be modified by `#{method}`.
+          RUBY
+        end
+
+        it 'does not register an offense when when returning the accumulator' do
+          expect_no_offenses(<<~RUBY)
+            values.#{method}(0) { _1 + _2 }
+          RUBY
+        end
       end
     end
   end
