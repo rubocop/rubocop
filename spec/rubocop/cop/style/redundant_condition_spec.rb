@@ -82,6 +82,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
         RUBY
       end
 
+      it 'registers an offense and corrects when using operator method in `else`' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            c + d
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b || c + d
+        RUBY
+      end
+
       it 'registers an offense and corrects complex one liners' do
         expect_offense(<<~RUBY)
           if b
