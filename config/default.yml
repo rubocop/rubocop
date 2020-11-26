@@ -2007,6 +2007,7 @@ Lint/UnmodifiedReduceAccumulator:
   Description: Checks for `reduce` or `inject` blocks that do not update the accumulator each iteration.
   Enabled: pending
   VersionAdded: '1.1'
+  VersionChanged: <<next>>
 
 Lint/UnreachableCode:
   Description: 'Unreachable code.'
