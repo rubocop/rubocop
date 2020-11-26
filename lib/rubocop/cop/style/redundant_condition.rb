@@ -131,7 +131,8 @@ module RuboCop
         end
 
         def without_argument_parentheses_method?(node)
-          node.send_type? && !node.arguments.empty? && !node.parenthesized?
+          node.send_type? &&
+            !node.arguments.empty? && !node.parenthesized? && !node.operator_method?
         end
       end
     end
