@@ -2466,7 +2466,13 @@ Naming/VariableNumber:
     - non_integer
   CheckMethodNames: true
   CheckSymbols: true
-  AllowedIdentifiers: []
+  AllowedIdentifiers:
+    - capture3     # Open3.capture3
+    - iso8601      # Time#iso8601
+    - rfc1123_date # CGI.rfc1123_date
+    - rfc822       # Time#rfc822
+    - rfc2822      # Time#rfc2822
+    - rfc3339      # DateTime.rfc3339
 
 #################### Security ##############################
 
