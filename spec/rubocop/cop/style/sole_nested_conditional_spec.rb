@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     { 'AllowModifier' => false }
   end
 
-  it 'registers an offense when using nested `if` within `if`' do
+  it 'registers an offense and corrects when using nested `if` within `if`' do
     expect_offense(<<~RUBY)
       if foo
         if bar
@@ -14,9 +14,15 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && bar
+          do_something
+        end
+    RUBY
   end
 
-  it 'registers an offense when using nested `unless` within `if`' do
+  it 'registers an offense and corrects when using nested `unless` within `if`' do
     expect_offense(<<~RUBY)
       if foo
         unless bar
@@ -25,9 +31,15 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && !bar
+          do_something
+        end
+    RUBY
   end
 
-  it 'registers an offense when using nested `if` within `unless`' do
+  it 'registers an offense and corrects when using nested `if` within `unless`' do
     expect_offense(<<~RUBY)
       unless foo
         if bar
@@ -36,9 +48,15 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if !foo && bar
+          do_something
+        end
+    RUBY
   end
 
-  it 'registers an offense when using nested `unless` within `unless`' do
+  it 'registers an offense and corrects when using nested `unless` within `unless`' do
     expect_offense(<<~RUBY)
       unless foo
         unless bar
@@ -46,6 +64,12 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
           do_something
         end
       end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if !foo && !bar
+          do_something
+        end
     RUBY
   end
 
@@ -59,16 +83,37 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
-  it 'registers an offense when using nested modifier conditional' do
+  it 'registers an offense and corrects when using nested `if` modifier conditional' do
     expect_offense(<<~RUBY)
       if foo
         do_something if bar
                      ^^ Consider merging nested conditions into outer `if` conditions.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && bar
+        do_something
+      end
+    RUBY
   end
 
-  it 'registers an offense for multiple nested conditionals' do
+  it 'registers an offense and corrects when using nested `unless` modifier conditional' do
+    expect_offense(<<~RUBY)
+      if foo
+        do_something unless bar
+                     ^^^^^^ Consider merging nested conditions into outer `if` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && !bar
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for multiple nested conditionals' do
     expect_offense(<<~RUBY)
       if foo
         if bar
@@ -80,9 +125,15 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && bar && baz
+            do_something
+          end
+    RUBY
   end
 
-  it 'registers an offense when using nested conditional and branch contains a comment' do
+  it 'registers an offense and corrects when using nested conditional and branch contains a comment' do
     expect_offense(<<~RUBY)
       if foo
         # Comment.
@@ -91,6 +142,13 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
           do_something
         end
       end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # Comment.
+      if foo && bar
+          do_something
+        end
     RUBY
   end
 
