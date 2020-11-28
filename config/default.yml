@@ -4273,6 +4273,7 @@ Style/SoleNestedConditional:
                   which can be merged into outer conditional node.
   Enabled: true
   VersionAdded: '0.89'
+  VersionChanged: '<<next>>'
   AllowModifier: false
 
 Style/SpecialGlobalVars:
