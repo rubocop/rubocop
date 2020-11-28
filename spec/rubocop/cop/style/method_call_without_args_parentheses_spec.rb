@@ -56,6 +56,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
       expect_no_offenses('test = test()')
     end
 
+    it 'accepts parens in default argument assignment' do
+      expect_no_offenses(<<~RUBY)
+        def foo(test = test())
+        end
+      RUBY
+    end
+
     it 'accepts parens in shorthand assignment' do
       expect_no_offenses('test ||= test()')
     end
