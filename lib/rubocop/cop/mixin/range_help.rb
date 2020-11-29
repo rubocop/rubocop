@@ -27,6 +27,12 @@ module RuboCop
         Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
       end
 
+      # A range containing only the contents of a literal with delimiters (e.g. in
+      # `%i{1 2 3}` this will be the range covering `1 2 3` only).
+      def contents_range(node)
+        range_between(node.loc.begin.end_pos, node.loc.end.begin_pos)
+      end
+
       def range_between(start_pos, end_pos)
         Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
       end
