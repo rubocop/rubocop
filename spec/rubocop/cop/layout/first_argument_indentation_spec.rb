@@ -543,6 +543,28 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
       end
 
+      it 'does not register an offense when argument has expected indent width and ' \
+         'the method is preceded by splat' do
+        expect_no_offenses(<<~RUBY)
+          [
+            item,
+            *do_something(
+              arg)
+          ]
+        RUBY
+      end
+
+      it 'does not register an offense when argument has expected indent width and ' \
+         'the method is preceded by double splat' do
+        expect_no_offenses(<<~RUBY)
+          [
+            item,
+            **do_something(
+              arg)
+          ]
+        RUBY
+      end
+
       context 'when the receiver contains a line break' do
         it 'accepts a correctly indented first argument' do
           expect_no_offenses(<<~RUBY)
