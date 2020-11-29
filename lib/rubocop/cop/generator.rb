@@ -139,7 +139,7 @@ module RuboCop
                                     badge: badge,
                                     version_added: version_added)
 
-        injector.inject do
+        injector.inject do # rubocop:disable Lint/UnexpectedBlockArity
           output.puts(format(CONFIGURATION_ADDED_MESSAGE,
                              configuration_file_path: config_file_path))
         end

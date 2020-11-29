@@ -1998,6 +1998,23 @@ Lint/UnderscorePrefixedVariableName:
   VersionAdded: '0.21'
   AllowKeywordBlockArguments: false
 
+Lint/UnexpectedBlockArity:
+  Description: 'Looks for blocks that have fewer arguments that the calling method expects.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: <<next>>
+  Methods:
+    chunk_while: 2
+    each_with_index: 2
+    each_with_object: 2
+    inject: 2
+    max: 2
+    min: 2
+    minmax: 2
+    reduce: 2
+    slice_when: 2
+    sort: 2
+
 Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum.'
   Enabled: true
