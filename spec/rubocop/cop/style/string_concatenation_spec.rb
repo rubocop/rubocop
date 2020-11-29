@@ -109,13 +109,15 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
   end
 
   context 'nested interpolation' do
-    it 'registers an offense but does not correct' do
-      expect_offense(<<~RUBY)
-        "foo" + "bar: \#{baz}"
+    it 'registers an offense and corrects' do
+      expect_offense(<<~'RUBY')
+        "foo" + "bar: #{baz}"
         ^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
       RUBY
 
-      expect_no_corrections
+      expect_correction(<<~'RUBY')
+        "foobar: #{baz}"
+      RUBY
     end
   end
 
