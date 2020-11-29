@@ -207,8 +207,13 @@ module RuboCop
         PATTERN
 
         def base_range(send_node, arg_node)
-          range_between(send_node.source_range.begin_pos,
-                        arg_node.source_range.begin_pos)
+          parent = send_node.parent
+          start_node = if parent && (parent.splat_type? || parent.kwsplat_type?)
+                         send_node.parent
+                       else
+                         send_node
+                       end
+          range_between(start_node.source_range.begin_pos, arg_node.source_range.begin_pos)
         end
 
         # Returns the column of the given range. For single line ranges, this
