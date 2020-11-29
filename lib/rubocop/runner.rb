@@ -191,10 +191,10 @@ module RuboCop
 
     def redundant_cop_disable_directive(file)
       config = @config_store.for_file(file)
-      if config.for_cop(Cop::Lint::RedundantCopDisableDirective).fetch('Enabled')
-        cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
-        yield cop if cop.relevant_file?(file)
-      end
+      return unless config.for_cop(Cop::Lint::RedundantCopDisableDirective).fetch('Enabled')
+
+      cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
+      yield cop if cop.relevant_file?(file)
     end
 
     def filtered_run?
