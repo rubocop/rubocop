@@ -39,9 +39,6 @@ module RuboCop
         def on_block(node)
           return if acceptable?(node)
 
-          # If there is a splat argument, then the arity is fine
-          return true if node.arguments.any?(&:restarg_type?)
-
           expected = expected_arity(node.method_name)
           actual = arg_count(node)
           return if actual >= expected
@@ -50,17 +47,7 @@ module RuboCop
           add_offense(node, message: message)
         end
 
-        def on_numblock(node)
-          return if acceptable?(node)
-
-          expected = expected_arity(node.method_name)
-          actual = node.children[1] # the maximum numbered param for the block
-
-          return if actual >= expected
-
-          message = format(MSG, method: node.method_name, expected: expected, actual: actual)
-          add_offense(node, message: message)
-        end
+        alias on_numblock on_block
 
         private
 
@@ -81,10 +68,16 @@ module RuboCop
         end
 
         def arg_count(node)
+          return node.children[1] if node.numblock_type? # the maximum numbered param for the block
+
           # Only `arg`, `optarg` and `mlhs` (destructuring) count as arguments that
           # can be used. Keyword arguments are not used for these methods so are
           # ignored.
-          node.arguments.count { |arg| arg.arg_type? || arg.optarg_type? || arg.mlhs_type? }
+          node.arguments.count do |arg|
+            return Float::INFINITY if arg.restarg_type?
+
+            arg.arg_type? || arg.optarg_type? || arg.mlhs_type?
+          end
         end
       end
     end
