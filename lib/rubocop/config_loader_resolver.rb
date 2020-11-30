@@ -92,7 +92,7 @@ module RuboCop
       keys_appearing_in_both.each do |key|
         if opts[:unset_nil] && derived_hash[key].nil?
           result.delete(key)
-        elsif base_hash[key].is_a?(Hash)
+        elsif merge_hashes?(base_hash, derived_hash, key)
           result[key] = merge(base_hash[key], derived_hash[key], **opts)
         elsif should_union?(base_hash, key, opts[:inherit_mode])
           result[key] = base_hash[key] | derived_hash[key]
@@ -162,6 +162,10 @@ module RuboCop
         inherit_mode &&
         inherit_mode['merge'] &&
         inherit_mode['merge'].include?(key)
+    end
+
+    def merge_hashes?(base_hash, derived_hash, key)
+      base_hash[key].is_a?(Hash) && derived_hash[key].is_a?(Hash)
     end
 
     def base_configs(path, inherit_from, file)

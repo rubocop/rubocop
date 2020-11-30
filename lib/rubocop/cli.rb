@@ -69,8 +69,12 @@ module RuboCop
       if @options[:auto_gen_config]
         run_command(:auto_gen_config)
       else
-        run_command(:execute_runner)
+        run_command(:execute_runner).tap { suggest_extensions }
       end
+    end
+
+    def suggest_extensions
+      run_command(:suggest_extensions)
     end
 
     def validate_options_vs_config
