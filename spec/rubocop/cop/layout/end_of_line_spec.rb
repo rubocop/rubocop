@@ -14,11 +14,11 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       # be moved somewhere more general ?
       # Also working with encodings is actually the responsibility of
       # 'whitequark/parser' gem, not Rubocop itself so these test really belongs there(?)
-      inspect_source_file(<<~RUBY)
+      offenses = inspect_source_file(<<~RUBY)
         # coding: ISO-8859-15#{eol}
         # Euro symbol: \xa4#{eol}
       RUBY
-      expect(cop.offenses.size).to eq(1)
+      expect(offenses.size).to eq(1)
     end
   end
 
@@ -78,8 +78,6 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
 
           y=1
         RUBY
-
-        expect(cop.messages.size).to eq(1)
       end
 
       include_examples 'iso-8859-15', ''

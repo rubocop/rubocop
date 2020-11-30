@@ -40,7 +40,7 @@ module RuboCop
       #                     do_something
       #                   end
       #
-      class NoReturnInBeginEndBlocks < Cop
+      class NoReturnInBeginEndBlocks < Base
         MSG = 'Do not `return` in `begin..end` blocks in assignment contexts.'
 
         def on_lvasgn(node)
