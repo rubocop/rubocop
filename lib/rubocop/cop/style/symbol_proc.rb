@@ -8,6 +8,7 @@ module RuboCop
       # @example
       #   # bad
       #   something.map { |s| s.upcase }
+      #   something.map { _1.upcase }
       #
       #   # good
       #   something.map(&:upcase)
@@ -22,9 +23,9 @@ module RuboCop
 
         def_node_matcher :proc_node?, '(send (const {nil? cbase} :Proc) :new)'
         def_node_matcher :symbol_proc?, <<~PATTERN
-          (block
+          ({block numblock}
             ${(send ...) (super ...) zsuper}
-            $(args (arg _var))
+            ${(args (arg _)) %Integer}
             (send (lvar _var) $_))
         PATTERN
 
@@ -40,11 +41,12 @@ module RuboCop
             return if proc_node?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)
             return if ignored_method?(dispatch_node.method_name)
-            return if destructuring_block_argument?(arguments_node)
+            return if node.block_type? && destructuring_block_argument?(arguments_node)
 
             register_offense(node, method_name, dispatch_node.method_name)
           end
         end
+        alias on_numblock on_block
 
         def destructuring_block_argument?(argument_node)
           argument_node.one? && argument_node.source.include?(',')

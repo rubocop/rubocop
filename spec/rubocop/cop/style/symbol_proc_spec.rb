@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('something { |x| y.method }')
   end
 
-  it 'accepts block with a block argument ' do
+  it 'accepts block with a block argument' do
     expect_no_offenses('something { |&x| x.call }')
   end
 
@@ -172,5 +172,38 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
         subject: 'bar', &:text
       )
     RUBY
+  end
+
+  context 'numblocks', :ruby27 do
+    it 'registers an offense for a block with a single numeric argument' do
+      expect_offense(<<~RUBY)
+        something { _1.foo }
+                  ^^^^^^^^^^ Pass `&:foo` as an argument to `something` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        something(&:foo)
+      RUBY
+    end
+
+    it 'accepts block with multiple numeric argumnets' do
+      expect_no_offenses('something { _1 + _2 }')
+    end
+
+    it 'accepts lambda with 1 argument' do
+      expect_no_offenses('-> { _1.method }')
+    end
+
+    it 'accepts proc with 1 argument' do
+      expect_no_offenses('proc { _1.method }')
+    end
+
+    it 'accepts Proc.new with 1 argument' do
+      expect_no_offenses('Proc.new { _1.method }')
+    end
+
+    it 'accepts ::Proc.new with 1 argument' do
+      expect_no_offenses('::Proc.new { _1.method }')
+    end
   end
 end
