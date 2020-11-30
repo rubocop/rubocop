@@ -36,7 +36,7 @@ module RuboCop
       #   string.split
       #   "first second".split
       #   A.foo
-      class RedundantArgument < Cop
+      class RedundantArgument < Base
         MSG = 'Argument %<arg>s is redundant because it is implied by default.'
 
         def on_send(node)
