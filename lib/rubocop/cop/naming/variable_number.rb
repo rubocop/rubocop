@@ -141,7 +141,7 @@ module RuboCop
         end
 
         def allowed_identifier?(name)
-          allowed_identifiers.include?(name.to_s.gsub('@', ''))
+          allowed_identifiers.include?(name.to_s.delete('@'))
         end
 
         def allowed_identifiers
