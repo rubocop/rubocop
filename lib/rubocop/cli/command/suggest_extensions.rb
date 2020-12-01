@@ -11,6 +11,11 @@ module RuboCop
 
         self.command_name = :suggest_extensions
 
+        def self.dependent_gems
+          # This only includes gems in Gemfile, not in lockfile
+          Bundler.load.dependencies.map(&:name)
+        end
+
         def run
           return if skip? || extensions.none?
 
@@ -18,14 +23,17 @@ module RuboCop
           puts 'Tip: Based on detected gems, the following '\
             'RuboCop extension libraries might be helpful:'
 
-          extensions.each do |extension|
+          extensions.sort.each do |extension|
             puts "  * #{extension} (http://github.com/rubocop-hq/#{extension})"
           end
 
           puts
-          puts 'You can opt out of this message by adding the following to your config:'
+          puts 'You can opt out of this message by adding the following to your config '\
+            '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions '\
+            'for more options):'
           puts '  AllCops:'
           puts '    SuggestExtensions: false'
+
           puts if @options[:display_time]
         end
 
@@ -46,20 +54,19 @@ module RuboCop
         end
 
         def extensions
-          extensions = @config_store.for_pwd.for_all_cops['SuggestExtensions']
-          return [] unless extensions
-
-          extensions.select { |_, v| (v & dependent_gems).any? }.keys - dependent_gems
-        end
-
-        def dependent_gems
-          # This only includes gems in Gemfile, not in lockfile
-          Bundler.load.dependencies.map(&:name)
+          @extensions ||= begin
+            extensions = @config_store.for_pwd.for_all_cops['SuggestExtensions'] || {}
+            extensions.select { |_, v| (Array(v) & dependent_gems).any? }.keys - dependent_gems
+          end
         end
 
         def puts(*args)
           output = (@options[:stderr] ? $stderr : $stdout)
           output.puts(*args)
+        end
+
+        def dependent_gems
+          self.class.dependent_gems
         end
       end
     end
