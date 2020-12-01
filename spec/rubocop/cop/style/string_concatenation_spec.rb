@@ -158,4 +158,26 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
       RUBY
     end
   end
+
+  context 'empty quotes' do
+    it 'registers offense and corrects' do
+      expect_offense(<<-RUBY)
+        '"' + "foo" + '"'
+        ^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+        '"' + "foo" + "'"
+        ^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+        "'" + "foo" + '"'
+        ^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+        "'" + "foo" + '"' + "bar"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<-RUBY)
+        "\\\"foo\\\""
+        "\\\"foo'"
+        "'foo\\\""
+        "'foo\\\"bar"
+      RUBY
+    end
+  end
 end

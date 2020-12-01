@@ -106,7 +106,13 @@ module RuboCop
               end
             end
 
-          "\"#{interpolated_parts.join}\""
+          "\"#{handle_quotes(interpolated_parts).join}\""
+        end
+
+        def handle_quotes(parts)
+          parts.map do |part|
+            part == '"' ? '\"' : part
+          end
         end
 
         def single_quoted?(str_node)
