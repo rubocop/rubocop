@@ -293,6 +293,24 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       }
     end
 
+    it 'does not register an offense for a local variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        capture3 = :foo
+      RUBY
+    end
+
+    it 'does not register an offense for a instance variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        @capture3 = :foo
+      RUBY
+    end
+
+    it 'does not register an offense for a class variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        @@capture3 = :foo
+      RUBY
+    end
+
     it 'does not register an offense for a method name that is allowed' do
       expect_no_offenses(<<~RUBY)
         def capture3
