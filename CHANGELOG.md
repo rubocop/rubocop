@@ -18,7 +18,7 @@
 * [#9115](https://github.com/rubocop-hq/rubocop/issues/9115): Fix a false positive for `Style/FirstArgumentIndentation` when argument has expected indent width and the method is preceded by splat for `EnforcedStyle: consistent_relative_to_receiver`. ([@koic][])
 * [#9128](https://github.com/rubocop-hq/rubocop/issues/9128): Fix an incorrect auto-correct for `Style/ClassAndModuleChildren` when namespace is defined as a class in the same file. ([@koic][])
 * [#9105](https://github.com/rubocop-hq/rubocop/issues/9105): Fix an incorrect auto-correct for `Style/RedundantCondition` when using operator method in `else`. ([@koic][])
-* [#9096](https://github.com/rubocop-hq/rubocop/pull/9096): Fix #9095 use merged_config instead of config for pending new cop check. ([@ThomasKoppensteiner][https://github.com/ThomasKoppensteiner])
+* [#9096](https://github.com/rubocop-hq/rubocop/pull/9096): Fix #9095 use merged_config instead of config for pending new cop check. ([@ThomasKoppensteiner][])
 * [#8053](https://github.com/rubocop-hq/rubocop/issues/8053): Fix an incorrect auto-correct for `Style/AndOr` when `or` precedes `and`. ([@koic][])
 * [#9097](https://github.com/rubocop-hq/rubocop/issues/9097): Fix a false positive for `Layout/EmptyLinesAroundArguments` when blank line is inserted between method with arguments and receiver. ([@koic][])
 
@@ -5210,3 +5210,4 @@
 [@piotrmurach]: https://github.com/piotrmurach
 [@javierav]: https://github.com/javierav
 [@adrian-rivera]: https://github.com/adrian-rivera
+[@ThomasKoppensteiner]: https://github.com/ThomasKoppensteiner
