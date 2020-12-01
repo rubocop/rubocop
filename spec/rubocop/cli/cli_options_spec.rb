@@ -766,6 +766,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   describe '-d/--debug' do
+    before do
+      RuboCop::ConfigLoader.default_configuration = nil
+    end
+
     it 'shows config files' do
       create_file('example1.rb', "\tputs 0")
       expect(cli.run(['--debug', 'example1.rb'])).to eq(1)

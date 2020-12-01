@@ -7,6 +7,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
   before do
     RuboCop::ConfigLoader.default_configuration = nil
+    RuboCop::ConfigLoader.default_configuration.for_all_cops['SuggestExtensions'] = false
   end
 
   it 'does not correct ExtraSpacing in a hash that would be changed back' do

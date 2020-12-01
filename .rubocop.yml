@@ -15,6 +15,7 @@ AllCops:
     - '.git/**/*'
     - 'bin/*'
   TargetRubyVersion: 2.4
+  SuggestExtensions: false
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
