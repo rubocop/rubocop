@@ -172,4 +172,15 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
       RUBY
     end
   end
+
+  context 'with Ractor.new' do
+    it 'does not regiser an offense' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args)
+          Ractor.new(*args) do |*args|
+          end
+        end
+      RUBY
+    end
+  end
 end
