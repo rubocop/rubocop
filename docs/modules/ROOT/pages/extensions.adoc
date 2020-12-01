@@ -20,6 +20,31 @@ extension file is not in `$LOAD_PATH`, you need to specify the path as
 relative path prefixed with `./` explicitly or absolute path. Paths
 starting with a `.` are resolved relative to `.rubocop.yml`.
 
+== Extension Suggestions
+
+Depending on what gems you have in your bundle, RuboCop might suggest extensions
+that can be added to provide further functionality. For instance, if you are using
+`rspec` without the corresponding `rubocop-rspec` extension, RuboCop will suggest
+enabling it.
+
+This message can be disabled by adding the following to your configuration:
+
+[source,yaml]
+----
+AllCops:
+  SuggestExtensions: false
+----
+
+You can also opt-out of suggestions for a particular extension library as so (unspecified
+extensions will continue to be notified, as appropriate):
+
+[source,yaml]
+----
+AllCops:
+  SuggestExtensions:
+    rubocop-rake: false
+----
+
 == Custom Cops
 
 You can configure the custom cops in your `.rubocop.yml` just like any

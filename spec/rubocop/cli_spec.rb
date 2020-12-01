@@ -1743,4 +1743,165 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
   end
+
+  describe 'extension suggestions' do
+    matcher :suggest_extensions do |*extensions|
+      supports_block_expectations
+      attr_accessor :suggested
+
+      def suggestion_regex
+        Regexp.new(<<~REGEXP, Regexp::MULTILINE).freeze
+          Tip: Based on detected gems, the following RuboCop extension libraries might be helpful:
+          (?<suggestions>.*)
+        REGEXP
+      end
+
+      def find_suggestions
+        actual.call
+        suggestions = (suggestion_regex.match($stdout.string) || {})[:suggestions]
+        self.suggested = suggestions ? suggestions.scan(/(?<=\* )[a-z0-9_-]+\b/.freeze) : []
+      end
+
+      match do
+        find_suggestions
+        suggested == extensions
+      end
+
+      match_when_negated do
+        find_suggestions
+        suggested.none?
+      end
+
+      failure_message do
+        "expected to suggest extensions [#{extensions.join(', ')}], "\
+          "but got [#{suggested.join(', ')}]"
+      end
+
+      failure_message_when_negated do
+        "expected to not suggest extensions, but got [#{suggested.join(', ')}]"
+      end
+    end
+
+    let(:gems) { [] }
+    let(:extensions) { [] }
+
+    before do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        puts 'ok'
+      RUBY
+
+      allow(RuboCop::CLI::Command::SuggestExtensions)
+        .to receive(:dependent_gems).and_return(gems.concat(extensions))
+
+      # Ensure that these specs works in CI, since the feature is generally
+      # disabled in when ENV['CI'] is set.
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with('CI').and_return(false)
+    end
+
+    context 'when there are no gems loaded to suggest' do
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when there are gems loaded to give a suggestion for' do
+      let(:gems) { %w[rspec rake] }
+
+      context 'without the extension library in the Gemfile' do
+        it 'shows the suggestion' do
+          expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rake', 'rubocop-rspec')
+        end
+      end
+
+      context 'with the extension library in the Gemfile' do
+        let(:extensions) { %w[rubocop-rake rubocop-rspec] }
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'with AllCops/SuggestExtensions: false' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              SuggestExtensions: false
+          YAML
+        end
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when an extension is disabled in AllCops/SuggestExtensions' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              SuggestExtensions:
+                rubocop-rake: false
+          YAML
+        end
+
+        it 'show the suggestion for non-disabled extensions' do
+          expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
+        end
+      end
+
+      context 'when in CI mode' do
+        before { allow(ENV).to receive(:[]).with('CI').and_return(true) }
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when given --only' do
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb', '--only', 'Style/Alias']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when given --debug' do
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb', '--debug']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when given --list-target-files' do
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb', '--list-target-files']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when given --out' do
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb', '--out', 'output.txt']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when given a non-supported formatter' do
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb', '--format', 'simple']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when given an invalid path' do
+        it 'does not show the suggestion' do
+          expect { cli.run(['example1.rb']) }.not_to suggest_extensions
+        end
+      end
+    end
+
+    context 'when there are multiple gems loaded that have the same suggestion' do
+      let(:gems) { %w[rspec rspec-rails] }
+
+      it 'shows the suggestion' do
+        expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
+      end
+    end
+  end
 end
