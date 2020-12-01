@@ -18,6 +18,48 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'registers an offense for not nested classes when namespace is defined as a class' do
+      expect_offense(<<~RUBY)
+        class FooClass
+        end
+
+        class FooClass::BarClass
+              ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class FooClass
+        end
+
+        class FooClass
+          class BarClass
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for not nested classes when namespace is defined as a module' do
+      expect_offense(<<~RUBY)
+        module FooClass
+        end
+
+        class FooClass::BarClass
+              ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module FooClass
+        end
+
+        module FooClass
+          class BarClass
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense for not nested classes with explicit superclass' do
       expect_offense(<<~RUBY)
         class FooClass::BarClass < Super
