@@ -231,6 +231,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
           let(:path) { path }
 
           include_examples 'has Changelog format'
+
+          it 'has a link to the contributors at the end' do
+            expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
+          end
         end
       end
     end
