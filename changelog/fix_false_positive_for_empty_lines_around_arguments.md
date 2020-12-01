@@ -1,1 +1,0 @@
-* [#9097](https://github.com/rubocop-hq/rubocop/issues/9097): Fix a false positive for `Layout/EmptyLinesAroundArguments` when blank line is inserted between method with arguments and receiver. ([@koic][])

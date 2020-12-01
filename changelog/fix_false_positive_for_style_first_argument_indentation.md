@@ -1,1 +1,0 @@
-* [#9115](https://github.com/rubocop-hq/rubocop/issues/9115): Fix a false positive for `Style/FirstArgumentIndentation` when argument has expected indent width and the method is preceded by splat for `EnforcedStyle: consistent_relative_to_receiver`. ([@koic][])
