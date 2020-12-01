@@ -104,6 +104,8 @@ module RuboCop
         def on_arg(node)
           @node = node
           name, = *node
+          return if allowed_identifier?(name)
+
           check_name(node, name, node.loc.name)
         end
         alias on_lvasgn on_arg
@@ -139,7 +141,7 @@ module RuboCop
         end
 
         def allowed_identifier?(name)
-          allowed_identifiers.include?(name.to_s)
+          allowed_identifiers.include?(name.to_s.gsub('@', ''))
         end
 
         def allowed_identifiers
