@@ -9722,9 +9722,9 @@ items[1..]
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.89
-| -
+| 1.5
 |===
 
 If the branch of a conditional consists solely of a conditional node,
@@ -10422,7 +10422,7 @@ This cop checks symbol literal syntax.
 | No
 | Yes (Unsafe)
 | 0.26
-| 0.64
+| 1.5
 |===
 
 Use symbols as procs when possible.
@@ -10433,6 +10433,7 @@ Use symbols as procs when possible.
 ----
 # bad
 something.map { |s| s.upcase }
+something.map { _1.upcase }
 
 # good
 something.map(&:upcase)

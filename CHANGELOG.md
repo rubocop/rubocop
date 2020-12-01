@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.5.0 (2020-12-01)
+
 ### New features
 
 * [#9112](https://github.com/rubocop-hq/rubocop/pull/9112): Add new cop `Lint/UnexpectedBlockArity`. ([@dvandersluis][])

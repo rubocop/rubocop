@@ -2012,7 +2012,7 @@ Lint/UnexpectedBlockArity:
   Description: 'Looks for blocks that have fewer arguments that the calling method expects.'
   Enabled: pending
   Safe: false
-  VersionAdded: <<next>>
+  VersionAdded: '1.5'
   Methods:
     chunk_while: 2
     each_with_index: 2
@@ -2034,7 +2034,7 @@ Lint/UnmodifiedReduceAccumulator:
   Description: Checks for `reduce` or `inject` blocks that do not update the accumulator each iteration.
   Enabled: pending
   VersionAdded: '1.1'
-  VersionChanged: <<next>>
+  VersionChanged: '1.5'
 
 Lint/UnreachableCode:
   Description: 'Unreachable code.'
@@ -2138,7 +2138,7 @@ Metrics/AbcSize:
     - https://en.wikipedia.org/wiki/ABC_Software_Metric
   Enabled: true
   VersionAdded: '0.27'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.5'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
   IgnoredMethods: []
@@ -2149,7 +2149,7 @@ Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   VersionAdded: '0.44'
-  VersionChanged: <<next>>
+  VersionChanged: '1.5'
   CountComments: false  # count full line comments?
   Max: 25
   CountAsOne: []
@@ -2195,7 +2195,7 @@ Metrics/MethodLength:
   StyleGuide: '#short-methods'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: <<next>>
+  VersionChanged: '1.5'
   CountComments: false  # count full line comments?
   Max: 10
   CountAsOne: []
@@ -2216,7 +2216,7 @@ Metrics/ParameterLists:
   StyleGuide: '#too-many-params'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.5'
   Max: 5
   CountKeywordArgs: true
   MaxOptionalParameters: 3
@@ -4301,7 +4301,7 @@ Style/SoleNestedConditional:
                   which can be merged into outer conditional node.
   Enabled: true
   VersionAdded: '0.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.5'
   AllowModifier: false
 
 Style/SpecialGlobalVars:
@@ -4434,7 +4434,7 @@ Style/SymbolProc:
   Enabled: true
   Safe: false
   VersionAdded: '0.26'
-  VersionChanged: <<next>>
+  VersionChanged: '1.5'
   # A list of method names to be ignored by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
   IgnoredMethods:

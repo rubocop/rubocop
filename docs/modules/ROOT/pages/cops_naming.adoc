@@ -1142,7 +1142,7 @@ expect(Open3).to receive(:capture3)
 | Boolean
 
 | AllowedIdentifiers
-| `[]`
+| `capture3`, `iso8601`, `rfc1123_date`, `rfc822`, `rfc2822`, `rfc3339`
 | Array
 |===
 
