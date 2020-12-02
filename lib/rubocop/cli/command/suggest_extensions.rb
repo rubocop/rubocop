@@ -12,8 +12,12 @@ module RuboCop
         self.command_name = :suggest_extensions
 
         def self.dependent_gems
+          return [] unless defined?(Bundler)
+
           # This only includes gems in Gemfile, not in lockfile
           Bundler.load.dependencies.map(&:name)
+        rescue Bundler::GemfileNotFound
+          []
         end
 
         def run
@@ -54,6 +58,8 @@ module RuboCop
         end
 
         def extensions
+          return [] unless dependent_gems.any?
+
           @extensions ||= begin
             extensions = @config_store.for_pwd.for_all_cops['SuggestExtensions'] || {}
             extensions.select { |_, v| (Array(v) & dependent_gems).any? }.keys - dependent_gems
@@ -66,7 +72,7 @@ module RuboCop
         end
 
         def dependent_gems
-          self.class.dependent_gems
+          @dependent_gems ||= self.class.dependent_gems
         end
       end
     end
