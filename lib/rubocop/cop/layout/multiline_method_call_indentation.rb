@@ -77,7 +77,7 @@ module RuboCop
 
           @base = alignment_base(node, rhs, given_style)
           correct_column = if @base
-                             @base.column + extra_indentation(given_style)
+                             @base.column + extra_indentation(given_style, node.parent)
                            else
                              indentation(lhs) + correct_indentation(node)
                            end
@@ -85,9 +85,13 @@ module RuboCop
           rhs if @column_delta.nonzero?
         end
 
-        def extra_indentation(given_style)
+        def extra_indentation(given_style, parent)
           if given_style == :indented_relative_to_receiver
-            configured_indentation_width
+            if parent && (parent.splat_type? || parent.kwsplat_type?)
+              configured_indentation_width - parent.loc.operator.length
+            else
+              configured_indentation_width
+            end
           else
             0
           end

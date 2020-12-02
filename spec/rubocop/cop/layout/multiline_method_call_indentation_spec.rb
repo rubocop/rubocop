@@ -693,6 +693,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
+    it 'does not register an offense when multiline method chain has expected indent width and ' \
+       'the method is preceded by splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          *foo
+            .bar(
+              arg)
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain has expected indent width and ' \
+       'the method is preceded by double splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          **foo
+            .bar(
+              arg)
+        ]
+      RUBY
+    end
+
     it 'registers an offense and corrects one space indentation of 2nd line' do
       expect_offense(<<~RUBY)
         a
