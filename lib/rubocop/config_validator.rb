@@ -69,7 +69,7 @@ module RuboCop
     attr_reader :target_ruby
 
     def check_obsoletions
-      @config_obsoletion.reject_obsolete_cops_and_parameters
+      @config_obsoletion.reject_obsolete!
       return unless @config_obsoletion.warnings.any?
 
       warn Rainbow("Warning: #{@config_obsoletion.warnings.join("\n")}").yellow
