@@ -113,6 +113,71 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when nested `||` operator condition' do
+    expect_offense(<<~RUBY)
+      if foo
+        if bar || baz
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && (bar || baz)
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when nested `||` operator modifier condition' do
+    expect_offense(<<~RUBY)
+      if foo
+        do_something if bar || baz
+                     ^^ Consider merging nested conditions into outer `if` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && (bar || baz)
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `||` in the outer condition' do
+    expect_offense(<<~RUBY)
+      if foo || bar
+        if baz || qux
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (foo || bar) && (baz || qux)
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `||` in the outer condition' \
+     'and nested modifier condition ' do
+    expect_offense(<<~RUBY)
+      if foo || bar
+        do_something if baz || qux
+                     ^^ Consider merging nested conditions into outer `if` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (foo || bar) && (baz || qux)
+        do_something
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects for multiple nested conditionals' do
     expect_offense(<<~RUBY)
       if foo
