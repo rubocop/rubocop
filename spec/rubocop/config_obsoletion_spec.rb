@@ -331,5 +331,71 @@ RSpec.describe RuboCop::ConfigObsoletion do
         expect(warning_message).to eq(expected_message)
       end
     end
+
+    context 'when additional obsoletions are defined externally' do
+      after do
+        described_class.files = [described_class::DEFAULT_RULES_FILE]
+      end
+
+      let(:hash) do
+        {
+          'Foo/Bar' => { 'Enabled': true },
+          'Vegetable/Tomato' => { 'Enabled': true },
+          'Legacy/Test' => { 'Enabled': true },
+          'Other/Cop' => { 'Enabled': true },
+          'Style/FlipFlop' => { 'Enabled': true }
+        }
+      end
+
+      let(:file1) do
+        create_file('obsoletions1.yml', <<~YAML)
+          renamed:
+            Foo/Bar: Foo/Baz
+            Vegetable/Tomato: Fruit/Tomato
+        YAML
+      end
+
+      let(:file2) do
+        create_file('obsoletions2.yml', <<~YAML)
+          removed:
+            Legacy/Test:
+              alternatives:
+                - Style/Something
+
+          split:
+            Other/Cop:
+              alternatives:
+                - Style/One
+                - Style/Two
+        YAML
+      end
+
+      let(:expected_message) do
+        <<~OUTPUT.chomp
+          The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Foo/Bar` cop has been renamed to `Foo/Baz`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Vegetable/Tomato` cop has been moved to `Fruit/Tomato`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Legacy/Test` cop has been removed. Please use `Style/Something` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Other/Cop` cop has been split into `Style/One` and `Style/Two`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+        OUTPUT
+      end
+
+      it 'includes obsoletions from all sources' do
+        described_class.files << file1
+        described_class.files << file2
+
+        begin
+          config_obsoletion.reject_obsolete!
+          raise 'Expected a RuboCop::ValidationError'
+        rescue RuboCop::ValidationError => e
+          expect(expected_message).to eq(e.message)
+        end
+      end
+    end
   end
 end

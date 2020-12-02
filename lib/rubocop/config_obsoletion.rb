@@ -4,7 +4,7 @@ module RuboCop
   # This class handles obsolete configuration.
   # @api private
   class ConfigObsoletion
-    RULES_FILE = File.join(ConfigLoader::RUBOCOP_HOME, 'config', 'obsoletion.yml')
+    DEFAULT_RULES_FILE = File.join(ConfigLoader::RUBOCOP_HOME, 'config', 'obsoletion.yml')
     COP_RULE_CLASSES = {
       'renamed' => RenamedCop,
       'removed' => RemovedCop,
@@ -17,10 +17,17 @@ module RuboCop
 
     attr_reader :rules, :warnings
 
-    def self.legacy_cop_names
-      # Used by DepartmentName#qualified_legacy_cop_name
-      new(Config.new).rules.select(&:cop_rule?).map(&:old_name)
+    class << self
+      attr_accessor :files
+
+      def legacy_cop_names
+        # Used by DepartmentName#qualified_legacy_cop_name
+        new(Config.new).rules.select(&:cop_rule?).map(&:old_name)
+      end
     end
+
+    # Can be extended by extension libraries to add their own obsoletions
+    self.files = [DEFAULT_RULES_FILE]
 
     def initialize(config)
       @config = config
@@ -37,9 +44,15 @@ module RuboCop
 
     private
 
-    # Rules for obsoletions are in config/obsoletion.yml
+    # Default rules for obsoletions are in config/obsoletion.yml
+    # Additional rules files can be added with `RuboCop::ConfigObsoletion.files << filename`
     def load_rules
-      rules = YAML.safe_load(File.read(RULES_FILE))
+      rules = self.class.files.each_with_object({}) do |filename, hash|
+        hash.merge!(YAML.safe_load(File.read(filename))) do |_key, first, second|
+          first.merge(second)
+        end
+      end
+
       cop_rules = rules.slice(*COP_RULE_CLASSES.keys)
       parameter_rules = rules.slice(*PARAMETER_RULE_CLASSES.keys)
 
