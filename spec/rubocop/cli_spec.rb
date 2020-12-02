@@ -762,8 +762,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string).to include('obsolete parameter ' \
-                                          'MultiSpaceAllowedForOperators ' \
-                                          '(for Layout/SpaceAroundOperators)' \
+                                          '`MultiSpaceAllowedForOperators` ' \
+                                          '(for `Layout/SpaceAroundOperators`)' \
                                           ' found')
       end
     end
@@ -1719,7 +1719,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string.strip).to eq(
           ['Error: The `Style/TrailingComma` cop has been removed. Please ' \
            'use `Style/TrailingCommaInArguments`, ' \
-           '`Style/TrailingCommaInArrayLiteral`, and/or ' \
+           '`Style/TrailingCommaInArrayLiteral` and/or ' \
            '`Style/TrailingCommaInHashLiteral` instead.',
            '(obsolete configuration found in .rubocop.yml, ' \
            'please update it)'].join("\n")

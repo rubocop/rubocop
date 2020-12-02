@@ -112,7 +112,15 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/TrailingBlankLines` cop has been renamed to `Layout/TrailingEmptyLines`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/BlockAlignment` cop has been moved to `Layout/BlockAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/DefEndAlignment` cop has been moved to `Layout/DefEndAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/DuplicatedKey` cop has been renamed to `Lint/DuplicateHashKey`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/EndAlignment` cop has been moved to `Layout/EndAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/Eval` cop has been moved to `Security/Eval`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/HandleExceptions` cop has been renamed to `Lint/SuppressedException`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -132,11 +140,27 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Naming/UncommunicativeMethodParamName` cop has been renamed to `Naming/MethodParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/AccessorMethodName` cop has been moved to `Naming/AccessorMethodName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/AsciiIdentifiers` cop has been moved to `Naming/AsciiIdentifiers`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/ClassAndModuleCamelCase` cop has been moved to `Naming/ClassAndModuleCamelCase`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/ConstantName` cop has been moved to `Naming/ConstantName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/DeprecatedHashMethods` cop has been renamed to `Style/PreferredHashMethods`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/FileName` cop has been moved to `Naming/FileName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodCallParentheses` cop has been renamed to `Style/MethodCallWithoutArgsParentheses`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/MethodName` cop has been moved to `Naming/MethodName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/OpMethod` cop has been renamed to `Naming/BinaryOperatorParameterName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/PredicateName` cop has been moved to `Naming/PredicateName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Layout/SpaceBeforeFirstArg`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -150,55 +174,31 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/UnneededSort` cop has been renamed to `Style/RedundantSort`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/Eval` cop has been moved to `Security/Eval`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/ClassAndModuleCamelCase` cop has been moved to `Naming/ClassAndModuleCamelCase`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/ConstantName` cop has been moved to `Naming/ConstantName`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/FileName` cop has been moved to `Naming/FileName`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/MethodName` cop has been moved to `Naming/MethodName`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/PredicateName` cop has been moved to `Naming/PredicateName`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/VariableName` cop has been moved to `Naming/VariableName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/VariableNumber` cop has been moved to `Naming/VariableNumber`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/AccessorMethodName` cop has been moved to `Naming/AccessorMethodName`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/AsciiIdentifiers` cop has been moved to `Naming/AsciiIdentifiers`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/BlockAlignment` cop has been moved to `Layout/BlockAlignment`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/EndAlignment` cop has been moved to `Layout/EndAlignment`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/DefEndAlignment` cop has been moved to `Layout/DefEndAlignment`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/SpaceBeforeModifierKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/RescueWithoutErrorClass` cop has been removed. Please use `Style/RescueStandardError` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/SpaceBeforeFirstArg` cop has been removed since it was a duplicate of `Layout/SpaceBeforeFirstArg`. Please use `Layout/SpaceBeforeFirstArg` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/UselessComparison` cop has been removed since it has been superseded by `Lint/BinaryOperatorWithIdenticalOperands`. Please use `Lint/BinaryOperatorWithIdenticalOperands` instead.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/MethodMissingSuper` cop has been removed since it has been superseded by `Lint/MissingSuper`. Please use `Lint/MissingSuper` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SpaceBeforeModifierKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/TrailingComma` cop has been removed. Please use `Style/TrailingCommaInArguments`, `Style/TrailingCommaInArrayLiteral`, and/or `Style/TrailingCommaInHashLiteral` instead.
+          The `Style/TrailingComma` cop has been removed. Please use `Style/TrailingCommaInArguments`, `Style/TrailingCommaInArrayLiteral` and/or `Style/TrailingCommaInHashLiteral` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/TrailingCommaInLiteral` cop has been removed. Please use `Style/TrailingCommaInArrayLiteral` and/or `Style/TrailingCommaInHashLiteral` instead.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/InvalidCharacterLiteral` cop has been removed since it was never being actually triggered.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/SpaceBeforeFirstArg` cop has been removed since it was a duplicate of `Layout/SpaceBeforeFirstArg`. Please use `Layout/SpaceBeforeFirstArg` instead.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/MethodMissingSuper` cop has been removed since it has been superseded by `Lint/MissingSuper`. Please use `Lint/MissingSuper` instead.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/UselessComparison` cop has been removed since it has been superseded by `Lint/BinaryOperatorWithIdenticalOperands`. Please use `Lint/BinaryOperatorWithIdenticalOperands` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/MethodMissing` cop has been split into `Style/MethodMissingSuper` and `Style/MissingRespondToMissing`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
       it 'prints a warning message' do
         begin
-          config_obsoletion.reject_obsolete_cops_and_parameters
+          config_obsoletion.reject_obsolete!
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
           expect(expected_message).to eq(e.message)
@@ -240,7 +240,9 @@ RSpec.describe RuboCop::ConfigObsoletion do
           # Moved cops with obsolete parameters
           'Lint/BlockAlignment' => { 'AlignWith' => 'end' },
           'Lint/EndAlignment' => { 'AlignWith' => 'end' },
-          'Lint/DefEndAlignment' => { 'AlignWith' => 'end' }
+          'Lint/DefEndAlignment' => { 'AlignWith' => 'end' },
+          # Obsolete EnforcedStyles
+          'Layout/IndentationConsistency' => { 'EnforcedStyle' => 'rails' }
         }
       end
 
@@ -248,50 +250,52 @@ RSpec.describe RuboCop::ConfigObsoletion do
         <<~OUTPUT.chomp
           The `Lint/BlockAlignment` cop has been moved to `Layout/BlockAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Lint/EndAlignment` cop has been moved to `Layout/EndAlignment`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/DefEndAlignment` cop has been moved to `Layout/DefEndAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          obsolete parameter MultiSpaceAllowedForOperators (for Layout/SpaceAroundOperators) found in example/.rubocop.yml
-          If your intention was to allow extra spaces for alignment, please use AllowForAlignment: true instead.
-          obsolete parameter MultiSpaceAllowedForOperators (for Style/SpaceAroundOperators) found in example/.rubocop.yml
-          If your intention was to allow extra spaces for alignment, please use AllowForAlignment: true instead.
-          obsolete parameter EnforcedStyle (for Style/Encoding) found in example/.rubocop.yml
-          Style/Encoding no longer supports styles. The "never" behavior is always assumed.
-          obsolete parameter SupportedStyles (for Style/Encoding) found in example/.rubocop.yml
-          Style/Encoding no longer supports styles. The "never" behavior is always assumed.
-          obsolete parameter AutoCorrectEncodingComment (for Style/Encoding) found in example/.rubocop.yml
-          Style/Encoding no longer supports styles. The "never" behavior is always assumed.
-          obsolete parameter MaxLineLength (for Style/IfUnlessModifier) found in example/.rubocop.yml
+          The `Lint/EndAlignment` cop has been moved to `Layout/EndAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          obsolete parameter `MultiSpaceAllowedForOperators` (for `Layout/SpaceAroundOperators`) found in example/.rubocop.yml
+          If your intention was to allow extra spaces for alignment, please use `AllowForAlignment: true` instead.
+          obsolete parameter `MultiSpaceAllowedForOperators` (for `Style/SpaceAroundOperators`) found in example/.rubocop.yml
+          If your intention was to allow extra spaces for alignment, please use `AllowForAlignment: true` instead.
+          obsolete parameter `EnforcedStyle` (for `Style/Encoding`) found in example/.rubocop.yml
+          `Style/Encoding` no longer supports styles. The "never" behavior is always assumed.
+          obsolete parameter `SupportedStyles` (for `Style/Encoding`) found in example/.rubocop.yml
+          `Style/Encoding` no longer supports styles. The "never" behavior is always assumed.
+          obsolete parameter `AutoCorrectEncodingComment` (for `Style/Encoding`) found in example/.rubocop.yml
+          `Style/Encoding` no longer supports styles. The "never" behavior is always assumed.
+          obsolete parameter `MaxLineLength` (for `Style/IfUnlessModifier`) found in example/.rubocop.yml
           `Style/IfUnlessModifier: MaxLineLength` has been removed. Use `Layout/LineLength: Max` instead
-          obsolete parameter MaxLineLength (for Style/WhileUntilModifier) found in example/.rubocop.yml
+          obsolete parameter `MaxLineLength` (for `Style/WhileUntilModifier`) found in example/.rubocop.yml
           `Style/WhileUntilModifier: MaxLineLength` has been removed. Use `Layout/LineLength: Max` instead
-          obsolete parameter RunRailsCops (for AllCops) found in example/.rubocop.yml
+          obsolete parameter `RunRailsCops` (for `AllCops`) found in example/.rubocop.yml
           Use the following configuration instead:
           Rails:
             Enabled: true
-          obsolete parameter IndentWhenRelativeTo (for Layout/CaseIndentation) found in example/.rubocop.yml
-          `IndentWhenRelativeTo` has been renamed to `EnforcedStyle`
-          obsolete parameter AlignWith (for Lint/BlockAlignment) found in example/.rubocop.yml
-          `AlignWith` has been renamed to `EnforcedStyleAlignWith`
-          obsolete parameter AlignWith (for Layout/BlockAlignment) found in example/.rubocop.yml
-          `AlignWith` has been renamed to `EnforcedStyleAlignWith`
-          obsolete parameter AlignWith (for Lint/EndAlignment) found in example/.rubocop.yml
-          `AlignWith` has been renamed to `EnforcedStyleAlignWith`
-          obsolete parameter AlignWith (for Layout/EndAlignment) found in example/.rubocop.yml
-          `AlignWith` has been renamed to `EnforcedStyleAlignWith`
-          obsolete parameter AlignWith (for Lint/DefEndAlignment) found in example/.rubocop.yml
-          `AlignWith` has been renamed to `EnforcedStyleAlignWith`
-          obsolete parameter AlignWith (for Layout/DefEndAlignment) found in example/.rubocop.yml
-          `AlignWith` has been renamed to `EnforcedStyleAlignWith`
-          obsolete parameter EnforcedMode (for Rails/UniqBeforePluck) found in example/.rubocop.yml
-          `EnforcedMode` has been renamed to `EnforcedStyle`
+          obsolete parameter `IndentWhenRelativeTo` (for `Layout/CaseIndentation`) found in example/.rubocop.yml
+          `IndentWhenRelativeTo` has been renamed to `EnforcedStyle`.
+          obsolete parameter `AlignWith` (for `Lint/BlockAlignment`) found in example/.rubocop.yml
+          `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
+          obsolete parameter `AlignWith` (for `Layout/BlockAlignment`) found in example/.rubocop.yml
+          `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
+          obsolete parameter `AlignWith` (for `Lint/EndAlignment`) found in example/.rubocop.yml
+          `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
+          obsolete parameter `AlignWith` (for `Layout/EndAlignment`) found in example/.rubocop.yml
+          `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
+          obsolete parameter `AlignWith` (for `Lint/DefEndAlignment`) found in example/.rubocop.yml
+          `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
+          obsolete parameter `AlignWith` (for `Layout/DefEndAlignment`) found in example/.rubocop.yml
+          `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
+          obsolete parameter `EnforcedMode` (for `Rails/UniqBeforePluck`) found in example/.rubocop.yml
+          `EnforcedMode` has been renamed to `EnforcedStyle`.
+          obsolete `EnforcedStyle: rails` (for `Layout/IndentationConsistency`) found in example/.rubocop.yml
+          `EnforcedStyle: rails` has been renamed to `EnforcedStyle: indented_internal_methods`.
         OUTPUT
       end
 
       it 'prints a error message' do
         begin
-          config_obsoletion.reject_obsolete_cops_and_parameters
+          config_obsoletion.reject_obsolete!
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
           expect(expected_message).to eq(e.message)
@@ -315,17 +319,15 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
       let(:expected_message) do
         <<~OUTPUT.chomp
-          obsolete parameter ExcludedMethods (for Metrics/BlockLength) found in example/.rubocop.yml
+          obsolete parameter `ExcludedMethods` (for `Metrics/BlockLength`) found in example/.rubocop.yml
           `ExcludedMethods` has been renamed to `IgnoredMethods`.
-          obsolete parameter ExcludedMethods (for Metrics/MethodLength) found in example/.rubocop.yml
+          obsolete parameter `ExcludedMethods` (for `Metrics/MethodLength`) found in example/.rubocop.yml
           `ExcludedMethods` has been renamed to `IgnoredMethods`.
         OUTPUT
       end
 
       it 'prints a warning message' do
-        expect { config_obsoletion.reject_obsolete_cops_and_parameters }
-          .not_to raise_error(RuboCop::ValidationError)
-
+        expect { config_obsoletion.reject_obsolete! }.not_to raise_error
         expect(warning_message).to eq(expected_message)
       end
     end
