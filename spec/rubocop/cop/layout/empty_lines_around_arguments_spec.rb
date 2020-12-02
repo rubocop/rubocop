@@ -292,6 +292,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
       RUBY
     end
 
+    it 'accepts multiline style argument for method call without selector' do
+      expect_no_offenses(<<~RUBY)
+        foo.(
+          arg
+        )
+      RUBY
+    end
+
     context 'with one argument' do
       it 'ignores empty lines inside of method arguments' do
         expect_no_offenses(<<~RUBY)

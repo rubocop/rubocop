@@ -59,7 +59,7 @@ module RuboCop
         private
 
         def receiver_and_method_call_on_different_lines?(node)
-          node.receiver && node.receiver.loc.last_line != node.loc.selector.line
+          node.receiver && node.receiver.loc.last_line != node.loc.selector&.line
         end
 
         def empty_lines(node)
