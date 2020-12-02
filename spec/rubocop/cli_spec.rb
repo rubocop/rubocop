@@ -1783,7 +1783,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     let(:gems) { [] }
-    let(:extensions) { [] }
 
     before do
       create_file('example.rb', <<~RUBY)
@@ -1792,35 +1791,237 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         puts 'ok'
       RUBY
 
-      allow(RuboCop::CLI::Command::SuggestExtensions)
-        .to receive(:dependent_gems).and_return(gems.concat(extensions))
-
       # Ensure that these specs works in CI, since the feature is generally
       # disabled in when ENV['CI'] is set.
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with('CI').and_return(false)
     end
 
-    context 'when there are no gems loaded to suggest' do
+    context 'when bundler is not loaded' do
+      before { hide_const('Bundler') }
+
       it 'does not show the suggestion' do
         expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        expect($stderr.string.blank?).to eq(true)
+      end
+    end
+
+    context 'bundler integration' do
+      before do
+        # The tests actually use bundler, so set up some environment so that we can
+        # control it.
+        allow(ENV).to receive(:[]).with('BUNDLE_GEMFILE').and_return(gemfile)
+        allow(Bundler).to receive(:user_home).and_return(Dir.pwd)
+        Bundler.reset!
+      end
+
+      after(:all) do # rubocop:disable RSpec/BeforeAfterAll (only want to reload Bundler once)
+        # Suppress any warnings when resetting bundler from test output
+        $stderr = StringIO.new
+        Bundler.reset!
+        $stderr = STDERR
+      end
+
+      context 'when there is an empty Gemfile' do
+        let(:gemfile) { create_empty_file('Gemfile') }
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'when there is no Gemfile' do
+        let(:gemfile) { nil }
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+          expect($stderr.string.blank?).to eq(true)
+        end
+      end
+
+      context 'when there is no lockfile' do
+        let(:gemfile) do
+          create_file('Gemfile', <<~RUBY)
+            gem 'rspec'
+            gem 'rake'
+          RUBY
+        end
+
+        before { allow(Bundler).to receive(:default_lockfile).and_return(nil) }
+
+        it 'shows the suggestion' do
+          expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rake', 'rubocop-rspec')
+          expect($stderr.string.blank?).to eq(true)
+        end
+      end
+
+      context 'when there is an empty lockfile' do
+        let(:gemfile) do
+          create_file('Gemfile', <<~RUBY)
+            gem 'rspec'
+            gem 'rake'
+          RUBY
+        end
+
+        let(:lockfile) { create_empty_file('Gemfile.lock') }
+
+        before { allow(Bundler).to receive(:default_lockfile).and_return(lockfile) }
+
+        it 'shows the suggestion' do
+          expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rake', 'rubocop-rspec')
+          expect($stderr.string.blank?).to eq(true)
+        end
+      end
+
+      context 'when there are gems to suggest' do
+        context 'that are not loaded' do
+          let(:gemfile) do
+            create_file('Gemfile', <<~RUBY)
+              gem 'rspec'
+              gem 'rake'
+            RUBY
+          end
+
+          before do
+            create_file('Gemfile.lock', <<~TEXT)
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  rake (13.0.1)
+                  rspec (3.9.0)
+                    rspec-core (~> 3.9.0)
+                  rspec-core (3.9.3)
+
+              DEPENDENCIES
+                rake (~> 13.0)
+                rspec (~> 3.7)
+            TEXT
+          end
+
+          it 'shows the suggestion' do
+            expect { cli.run(['example.rb']) }
+              .to suggest_extensions('rubocop-rake', 'rubocop-rspec')
+          end
+        end
+
+        context 'that are dependencies' do
+          let(:gemfile) do
+            create_file('Gemfile', <<~RUBY)
+              gem 'rspec'
+              gem 'rake'
+              gem 'rubocop-rspec'
+              gem 'rubocop-rake'
+            RUBY
+          end
+
+          before do
+            create_file('Gemfile.lock', <<~TEXT)
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  rake (13.0.1)
+                  rspec (3.9.0)
+                    rspec-core (~> 3.9.0)
+                  rspec-core (3.9.3)
+                  rubocop-rake (0.5.1)
+                  rubocop-rspec (2.0.1)
+
+              DEPENDENCIES
+                rake (~> 13.0)
+                rspec (~> 3.7)
+                rubocop-rake (~> 0.5)
+                rubocop-rspec (~> 2.0.0)
+            TEXT
+          end
+
+          it 'does not show the suggestion' do
+            expect { cli.run(['example.rb']) }.not_to suggest_extensions
+          end
+        end
+
+        context 'that some are dependencies' do
+          let(:gemfile) do
+            create_file('Gemfile', <<~RUBY)
+              gem 'rspec'
+              gem 'rake'
+              gem 'rubocop-rake'
+            RUBY
+          end
+
+          before do
+            create_file('Gemfile.lock', <<~TEXT)
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  rake (13.0.1)
+                  rspec (3.9.0)
+                    rspec-core (~> 3.9.0)
+                  rspec-core (3.9.3)
+                  rubocop-rake (0.5.1)
+
+              DEPENDENCIES
+                rake (~> 13.0)
+                rspec (~> 3.7)
+                rubocop-rake (~> 0.5)
+            TEXT
+          end
+
+          it 'only suggests unused gems' do
+            expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
+          end
+        end
+
+        context 'that are added by dependencies' do
+          let(:gemfile) do
+            create_file('Gemfile', <<~RUBY)
+              gem 'rspec'
+              gem 'rake'
+              gem 'shared-gem'
+            RUBY
+          end
+
+          before do
+            create_file('Gemfile.lock', <<~TEXT)
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  rake (13.0.1)
+                  rspec (3.9.0)
+                    rspec-core (~> 3.9.0)
+                  rspec-core (3.9.3)
+                  rubocop-rake (0.5.1)
+                  rubocop-rspec (2.0.1)
+                  shared-gem (1.0.0)
+                    rubocop-rake (0.5.1)
+                    rubocop-rspec (2.0.1)
+
+              DEPENDENCIES
+                rake (~> 13.0)
+                rspec (~> 3.7)
+                shared-gem (~> 1.0.0)
+            TEXT
+          end
+
+          it 'does not show the suggestion' do
+            expect { cli.run(['example.rb']) }.not_to suggest_extensions
+          end
+        end
       end
     end
 
     context 'when there are gems loaded to give a suggestion for' do
       let(:gems) { %w[rspec rake] }
 
-      context 'without the extension library in the Gemfile' do
-        it 'shows the suggestion' do
-          expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rake', 'rubocop-rspec')
-        end
+      before do
+        allow(RuboCop::CLI::Command::SuggestExtensions).to receive(:dependent_gems).and_return(gems)
+        allow(RuboCop::CLI::Command::SuggestExtensions).to receive(:installed_gems).and_return(gems)
       end
 
-      context 'with the extension library in the Gemfile' do
-        let(:extensions) { %w[rubocop-rake rubocop-rspec] }
+      context 'when there are multiple gems loaded that have the same suggestion' do
+        let(:gems) { %w[rspec rspec-rails] }
 
-        it 'does not show the suggestion' do
-          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        it 'shows the suggestion' do
+          expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
         end
       end
 
@@ -1893,14 +2094,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         it 'does not show the suggestion' do
           expect { cli.run(['example1.rb']) }.not_to suggest_extensions
         end
-      end
-    end
-
-    context 'when there are multiple gems loaded that have the same suggestion' do
-      let(:gems) { %w[rspec rspec-rails] }
-
-      it 'shows the suggestion' do
-        expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
       end
     end
   end

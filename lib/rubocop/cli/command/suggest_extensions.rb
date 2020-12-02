@@ -11,13 +11,37 @@ module RuboCop
 
         self.command_name = :suggest_extensions
 
-        def self.dependent_gems
-          return [] unless defined?(Bundler)
+        class << self
+          # Gems that the current bundle depends on
+          # Suggestions are only made for gems that are 1st party dependencies
+          def dependent_gems
+            bundler do |gems|
+              gems.dependencies.map(&:name)
+            end
+          end
 
-          # This only includes gems in Gemfile, not in lockfile
-          Bundler.load.dependencies.map(&:name)
-        rescue Bundler::GemfileNotFound
-          []
+          # All installed gems in the current bundle
+          # If a suggestion is installed but not depended on, it still should not
+          # be suggested.
+          def installed_gems
+            bundler do
+              # Load specs from the lockfile without trying to resolve them
+              return [] unless Bundler.default_lockfile
+
+              lockfile = Bundler.read_file(Bundler.default_lockfile)
+              Bundler::LockfileParser.new(lockfile).specs.map(&:name)
+            end
+          end
+
+          private
+
+          def bundler
+            return [] unless defined?(Bundler)
+
+            yield Bundler.load
+          rescue Bundler::BundlerError
+            []
+          end
         end
 
         def run
@@ -62,7 +86,7 @@ module RuboCop
 
           @extensions ||= begin
             extensions = @config_store.for_pwd.for_all_cops['SuggestExtensions'] || {}
-            extensions.select { |_, v| (Array(v) & dependent_gems).any? }.keys - dependent_gems
+            extensions.select { |_, v| (Array(v) & dependent_gems).any? }.keys - installed_gems
           end
         end
 
@@ -73,6 +97,10 @@ module RuboCop
 
         def dependent_gems
           @dependent_gems ||= self.class.dependent_gems
+        end
+
+        def installed_gems
+          @installed_gems ||= self.class.installed_gems
         end
       end
     end
