@@ -1,0 +1,1 @@
+* [#9155](https://github.com/rubocop-hq/rubocop/issues/9155): Fix a false positive for `Layout/MultilineMethodCallIndentation` when multiline method chain has expected indent width and the method is preceded by splat for `EnforcedStyle: indented_relative_to_receiver`. ([@koic][])
