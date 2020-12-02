@@ -2,16 +2,14 @@
 
 ## master (unreleased)
 
+## 1.5.1 (2020-12-02)
+
 ### Bug fixes
 
 * [#8684](https://github.com/rubocop-hq/rubocop/issues/8684): Fix an error for `Lint/InterpolationCheck` cop. ([@tejasbubane][])
 * [#9145](https://github.com/rubocop-hq/rubocop/issues/9145): Fix issues with SuggestExtensions when bundler is not available, or when there is no gemfile. ([@dvandersluis][])
 * [#9140](https://github.com/rubocop-hq/rubocop/issues/9140): Fix an error for `Layout/EmptyLinesAroundArguments` when multiline style argument for method call without selector. ([@koic][])
 * [#9136](https://github.com/rubocop-hq/rubocop/pull/9136): Fix `AllowedIdentifiers` in `Naming/VariableNumber` to include variable assignments. ([@PhilCoggins][])
-
-### Changes
-
-* [#9122](https://github.com/rubocop-hq/rubocop/issues/9122): Added tip message if any gems are loaded that have RuboCop extensions. ([@dvandersluis][])
 
 ## 1.5.0 (2020-12-01)
 
