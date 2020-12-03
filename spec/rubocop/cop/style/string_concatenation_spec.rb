@@ -203,4 +203,36 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
       RUBY
     end
   end
+
+  context 'Mode = conservative' do
+    let(:cop_config) { { 'Mode' => 'conservative' } }
+
+    context 'when first operand is not string literal' do
+      it 'does not register offense' do
+        expect_no_offenses(<<~RUBY)
+          user.name + "!!"
+          user.name + "<"
+        RUBY
+      end
+    end
+
+    context 'when first operand is string literal' do
+      it 'registers offense' do
+        expect_offense(<<~RUBY)
+          "Hello " + user.name
+          ^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+          "Hello " + user.name + "!!"
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+          user.name + "<" + "user.email" + ">"
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          "Hello \#{user.name}"
+          "Hello \#{user.name}!!"
+          "\#{user.name}<user.email>"
+        RUBY
+      end
+    end
+  end
 end

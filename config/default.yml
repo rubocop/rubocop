@@ -4620,7 +4620,8 @@ Style/StringConcatenation:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
-  VersionChanged: '1.6'
+  VersionChanged: <<next>>
+  Mode: aggressive
 
 Style/StringHashKeys:
   Description: 'Prefer symbols instead of strings as hash keys.'
