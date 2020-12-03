@@ -15,17 +15,39 @@ module RuboCop
       # see `ext/regexp_parser`.
       attr_reader :parsed_tree
 
-      def assign_properties(*)
-        super
+      if Gem::Version.new(Regexp::Parser::VERSION) >= Gem::Version.new('2.0')
+        def assign_properties(*)
+          super
 
-        str = with_interpolations_blanked
-        @parsed_tree = begin
-          Regexp::Parser.parse(str, options: options)
-        rescue StandardError
-          nil
+          str = with_interpolations_blanked
+          @parsed_tree = begin
+            Regexp::Parser.parse(str, options: options)
+          rescue StandardError
+            nil
+          end
+          origin = loc.begin.end
+          @parsed_tree&.each_expression(true) { |e| e.origin = origin }
         end
-        origin = loc.begin.end
-        @parsed_tree&.each_expression(true) { |e| e.origin = origin }
+      # Please remove this `else` branch when support for regexp_parser 1.8 will be dropped.
+      # It's for compatibility with regexp_arser 1.8 and will never be maintained.
+      else
+        def assign_properties(*)
+          super
+
+          str = with_interpolations_blanked
+          begin
+            @parsed_tree = Regexp::Parser.parse(str, options: options)
+          rescue StandardError
+            @parsed_tree = nil
+          else
+            origin = loc.begin.end
+            source = @parsed_tree.to_s
+            @parsed_tree.each_expression(true) do |e|
+              e.origin = origin
+              e.source = source
+            end
+          end
+        end
       end
 
       def each_capture(named: ANY)
