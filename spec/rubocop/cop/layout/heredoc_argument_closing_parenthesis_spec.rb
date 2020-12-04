@@ -22,6 +22,29 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       RUBY
     end
 
+    it 'accepts method chain with heredoc argument correct case' do
+      expect_no_offenses(<<~RUBY)
+        do_something(
+          Model
+            .foo(<<~CODE)
+              code
+            CODE
+            .bar(<<~CODE))
+              code
+            CODE
+      RUBY
+    end
+
+    it 'accepts method with heredoc argument of proc correct case' do
+      expect_no_offenses(<<~RUBY)
+        outer_method(-> {
+          inner_method(<<~CODE)
+            code
+          CODE
+        })
+      RUBY
+    end
+
     it 'accepts double correct case nested' do
       expect_no_offenses(<<~RUBY)
         baz(bar(foo(<<-SQL, <<-NOSQL)))
