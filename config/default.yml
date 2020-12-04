@@ -4272,7 +4272,7 @@ Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
   Enabled: false
   VersionAdded: '0.16'
-  VersionChanged: '0.47'
+  VersionChanged: <<next>>
   Methods:
     - reduce:
         - acc
