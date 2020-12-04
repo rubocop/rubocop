@@ -69,6 +69,7 @@ module RuboCop
           return unless outermost_send
           return unless outermost_send.loc.end
           return unless heredoc_arg.first_line != outermost_send.loc.end.line
+          return if subsequent_closing_parentheses_in_same_line?(outermost_send)
 
           add_offense(outermost_send.loc.end) do |corrector|
             autocorrect(corrector, outermost_send)
@@ -159,6 +160,17 @@ module RuboCop
         end
 
         # Closing parenthesis helpers.
+
+        def subsequent_closing_parentheses_in_same_line?(outermost_send)
+          last_arg_of_outer_send = outermost_send.last_argument
+          return false unless last_arg_of_outer_send&.loc.respond_to?(:end) &&
+                              (end_of_last_arg_of_outer_send = last_arg_of_outer_send.loc.end)
+
+          end_of_outer_send = outermost_send.loc.end
+
+          end_of_outer_send.line == end_of_last_arg_of_outer_send.line &&
+            end_of_outer_send.column == end_of_last_arg_of_outer_send.column + 1
+        end
 
         def fix_closing_parenthesis(node, corrector)
           remove_incorrect_closing_paren(node, corrector)
