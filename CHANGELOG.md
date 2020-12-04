@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.5.2 (2020-12-04)
+
 ### Bug fixes
 
 * [#9152](https://github.com/rubocop-hq/rubocop/issues/9152): Fix an incorrect auto-correct for `Style/SoleNestedConditional` when nested `||` operator modifier condition. ([@koic][])
