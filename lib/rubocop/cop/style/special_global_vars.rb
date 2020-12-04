@@ -112,6 +112,10 @@ module RuboCop
                                      ARGV
                                    ]).freeze
 
+        def on_back_ref(node)
+          on_gvar(node)
+        end
+
         def on_gvar(node)
           global_var, = *node
 

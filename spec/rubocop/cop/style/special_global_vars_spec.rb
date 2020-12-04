@@ -4,6 +4,171 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
   context 'when style is use_english_names' do
     let(:cop_config) { { 'EnforcedStyle' => 'use_english_names' } }
 
+    it 'registers an offense for $@' do
+      expect_offense(<<~RUBY)
+        puts $@
+             ^^ Prefer `$ERROR_POSITION` from the stdlib 'English' module (don't forget to require it) over `$@`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $ERROR_POSITION
+      RUBY
+    end
+
+    it 'registers an offense for $;' do
+      expect_offense(<<~RUBY)
+        puts $;
+             ^^ Prefer `$FIELD_SEPARATOR` or `$FS` from the stdlib 'English' module (don't forget to require it) over `$;`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $FIELD_SEPARATOR
+      RUBY
+    end
+
+    it 'registers an offense for $,' do
+      expect_offense(<<~RUBY)
+        puts $,
+             ^^ Prefer `$OUTPUT_FIELD_SEPARATOR` or `$OFS` from the stdlib 'English' module (don't forget to require it) over `$,`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $OUTPUT_FIELD_SEPARATOR
+      RUBY
+    end
+
+    it 'registers an offense for $\\' do
+      expect_offense(<<~RUBY)
+        puts $\\
+             ^^ Prefer `$OUTPUT_RECORD_SEPARATOR` or `$ORS` from the stdlib 'English' module (don't forget to require it) over `$\\`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $OUTPUT_RECORD_SEPARATOR
+      RUBY
+    end
+
+    it 'registers an offense for $.' do
+      expect_offense(<<~RUBY)
+        puts $.
+             ^^ Prefer `$INPUT_LINE_NUMBER` or `$NR` from the stdlib 'English' module (don't forget to require it) over `$.`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $INPUT_LINE_NUMBER
+      RUBY
+    end
+
+    it 'registers an offense for $_' do
+      expect_offense(<<~RUBY)
+        puts $_
+             ^^ Prefer `$LAST_READ_LINE` from the stdlib 'English' module (don't forget to require it) over `$_`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $LAST_READ_LINE
+      RUBY
+    end
+
+    it 'registers an offense for $>' do
+      expect_offense(<<~RUBY)
+        puts $>
+             ^^ Prefer `$DEFAULT_OUTPUT` from the stdlib 'English' module (don't forget to require it) over `$>`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $DEFAULT_OUTPUT
+      RUBY
+    end
+
+    it 'registers an offense for $<' do
+      expect_offense(<<~RUBY)
+        puts $<
+             ^^ Prefer `$DEFAULT_INPUT` from the stdlib 'English' module (don't forget to require it) over `$<`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $DEFAULT_INPUT
+      RUBY
+    end
+
+    it 'registers an offense for $?' do
+      expect_offense(<<~RUBY)
+        puts $?
+             ^^ Prefer `$CHILD_STATUS` from the stdlib 'English' module (don't forget to require it) over `$?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $CHILD_STATUS
+      RUBY
+    end
+
+    it 'registers an offense for $~' do
+      expect_offense(<<~RUBY)
+        puts $~
+             ^^ Prefer `$LAST_MATCH_INFO` from the stdlib 'English' module (don't forget to require it) over `$~`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $LAST_MATCH_INFO
+      RUBY
+    end
+
+    it 'registers an offense for $=' do
+      expect_offense(<<~RUBY)
+        puts $=
+             ^^ Prefer `$IGNORECASE` from the stdlib 'English' module (don't forget to require it) over `$=`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $IGNORECASE
+      RUBY
+    end
+
+    it 'registers an offense for $&' do
+      expect_offense(<<~RUBY)
+        puts $&
+             ^^ Prefer `$MATCH` from the stdlib 'English' module (don't forget to require it) over `$&`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $MATCH
+      RUBY
+    end
+
+    it 'registers an offense for $`' do
+      expect_offense(<<~RUBY)
+        puts $`
+             ^^ Prefer `$PREMATCH` from the stdlib 'English' module (don't forget to require it) over `$``.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $PREMATCH
+      RUBY
+    end
+
+    it 'registers an offense for $\'' do
+      expect_offense(<<~RUBY)
+        puts $'
+             ^^ Prefer `$POSTMATCH` from the stdlib 'English' module (don't forget to require it) over `$'`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $POSTMATCH
+      RUBY
+    end
+
+    it 'registers an offense for $+' do
+      expect_offense(<<~RUBY)
+        puts $+
+             ^^ Prefer `$LAST_PAREN_MATCH` from the stdlib 'English' module (don't forget to require it) over `$+`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $LAST_PAREN_MATCH
+      RUBY
+    end
+
     it 'registers an offense for $:' do
       expect_offense(<<~RUBY)
         puts $:
