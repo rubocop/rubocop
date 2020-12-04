@@ -1,1 +1,0 @@
-* [#9161](https://github.com/rubocop-hq/rubocop/issues/9161): Fix a false positive for `Layout/HeredocArgumentClosingParenthesis` when using subsequence closing parentheses in the same line. ([@koic][])
