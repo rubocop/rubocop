@@ -235,6 +235,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
           it 'has a link to the contributors at the end' do
             expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
           end
+
+          it 'starts with `new_`, `fix_`, or `change_`' do
+            expect(File.basename(path)).to(match(/\A(new|fix|change)_.+/))
+          end
         end
       end
     end
