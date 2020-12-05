@@ -1445,16 +1445,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', <<~YAML)
-        Style/LyneLenth:
+        Layout/LyneLenth:
           Enabled: true
           Max: 100
+        Lint/LiteralInCondition:
+          Enabled: true
+        Style/AlignHash:
+          Enabled: true
       YAML
 
       expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
-        .to eq(['Error: unrecognized cop Style/LyneLenth found in ' \
-                'example/.rubocop.yml',
-                ''].join("\n"))
+        .to eq(<<~OUTPUT)
+          Error: unrecognized cop Layout/LyneLenth found in example/.rubocop.yml
+          Did you mean `Layout/LineLength`?
+          unrecognized cop Lint/LiteralInCondition found in example/.rubocop.yml
+          Did you mean `Lint/LiteralAsCondition`?
+          unrecognized cop Style/AlignHash found in example/.rubocop.yml
+          Did you mean `Style/Alias`, `Style/OptionHash`?
+        OUTPUT
     end
 
     it 'prints a warning for an unrecognized configuration parameter' do
