@@ -215,7 +215,83 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
     end
 
+    context 'when the configuration includes any extracted cops' do
+      let(:hash) do
+        {
+          'Performance/Casecmp' => { 'Enabled': true },
+          'Performance/RedundantSortBlock' => { 'Enabled': true },
+          'Rails/Date' => { 'Enabled': true },
+          'Rails/DynamicFindBy' => { 'Enabled': true }
+        }
+      end
+
+      let(:expected_message) do
+        <<~OUTPUT.chomp
+          `Performance` cops have been extracted to the `rubocop-performance` gem.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          `Rails` cops have been extracted to the `rubocop-rails` gem.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+        OUTPUT
+      end
+
+      context 'when the gems are installed' do
+        before do
+          allow_any_instance_of(RuboCop::ConfigObsoletion::ExtractedCop)
+            .to receive(:gem_installed?).and_return(true)
+        end
+
+        it 'does not print a warning message' do
+          expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+        end
+      end
+
+      context 'when only one gem is installed' do
+        before do
+          allow_any_instance_of(RuboCop::Lockfile)
+            .to receive(:includes_gem?).and_return(false)
+          allow_any_instance_of(RuboCop::Lockfile)
+            .to receive(:includes_gem?).with('rubocop-performance').and_return(true)
+        end
+
+        let(:expected_message) do
+          <<~OUTPUT.chomp
+            `Rails` cops have been extracted to the `rubocop-rails` gem.
+            (obsolete configuration found in example/.rubocop.yml, please update it)
+          OUTPUT
+        end
+
+        it 'prints a warning message' do
+          begin
+            config_obsoletion.reject_obsolete!
+            raise 'Expected a RuboCop::ValidationError'
+          rescue RuboCop::ValidationError => e
+            expect(expected_message).to eq(e.message)
+          end
+        end
+      end
+
+      context 'when the gems are not installed' do
+        before do
+          allow_any_instance_of(RuboCop::ConfigObsoletion::ExtractedCop)
+            .to receive(:gem_installed?).and_return(false)
+        end
+
+        it 'prints a warning message' do
+          begin
+            config_obsoletion.reject_obsolete!
+            raise 'Expected a RuboCop::ValidationError'
+          rescue RuboCop::ValidationError => e
+            expect(expected_message).to eq(e.message)
+          end
+        end
+      end
+    end
+
     context 'when the configuration includes any obsolete parameters' do
+      before do
+        allow_any_instance_of(RuboCop::Lockfile).to receive(:includes_gem?).and_return(true)
+      end
+
       let(:hash) do
         {
           'Layout/SpaceAroundOperators' => {
