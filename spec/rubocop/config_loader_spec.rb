@@ -779,7 +779,7 @@ RSpec.describe RuboCop::ConfigLoader do
         expect do
           expect(configuration_from_file['Metrics/MethodLength']
                    .to_set.superset?(expected.to_set)).to be(true)
-        end.to output(/#{<<~OUTPUT}/).to_stdout
+        end.to output(Regexp.new(<<~OUTPUT)).to_stdout
           .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in normal.yml
           .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in special.yml
           .rubocop.yml: Metrics/MethodLength:Max overrides the same parameter in special.yml
