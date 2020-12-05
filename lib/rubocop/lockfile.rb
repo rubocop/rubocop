@@ -32,7 +32,7 @@ module RuboCop
       return @parser if defined?(@parser)
 
       lockfile = Bundler.read_file(Bundler.default_lockfile)
-      @parser = Bundler::LockfileParser.new(lockfile)
+      @parser = lockfile ? Bundler::LockfileParser.new(lockfile) : nil
     rescue Bundler::BundlerError
       nil
     end

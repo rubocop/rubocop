@@ -8,7 +8,8 @@ module RuboCop
     COP_RULE_CLASSES = {
       'renamed' => RenamedCop,
       'removed' => RemovedCop,
-      'split' => SplitCop
+      'split' => SplitCop,
+      'extracted' => ExtractedCop
     }.freeze
     PARAMETER_RULE_CLASSES = {
       'changed_parameters' => ChangedParameter,
