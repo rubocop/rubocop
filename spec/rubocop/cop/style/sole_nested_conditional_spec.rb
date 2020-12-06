@@ -266,6 +266,82 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  context 'when the inner condition has a send node without parens' do
+    context 'in guard style' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          if foo
+            do_something if ok? bar
+                         ^^ Consider merging nested conditions into outer `if` conditions.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if foo && (ok? bar)
+            do_something
+          end
+        RUBY
+      end
+    end
+
+    context 'in modifier style' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          if foo
+            if ok? bar
+            ^^ Consider merging nested conditions into outer `if` conditions.
+              do_something
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if foo && (ok? bar)
+              do_something
+            end
+        RUBY
+      end
+    end
+  end
+
+  context 'when the inner condition has a send node with parens' do
+    context 'in guard style' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          if foo
+            do_something if ok?(bar)
+                         ^^ Consider merging nested conditions into outer `if` conditions.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if foo && ok?(bar)
+            do_something
+          end
+        RUBY
+      end
+    end
+
+    context 'in modifier style' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          if foo
+            if ok?(bar)
+            ^^ Consider merging nested conditions into outer `if` conditions.
+              do_something
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if foo && ok?(bar)
+              do_something
+            end
+        RUBY
+      end
+    end
+  end
+
   context 'when AllowModifier is true' do
     let(:cop_config) do
       { 'AllowModifier' => true }
