@@ -340,20 +340,28 @@ module RuboCop
       end
 
       # @return [Symbol, Corrector] offense status
-      def correct(range)
+      def correct(range, &block)
         status = correction_strategy
 
-        if block_given?
-          corrector = Corrector.new(self)
+        corrector = init_corrector(&block)
+
+        status = attempt_correction(range, corrector) if status == :attempt_correction
+        status = :unsupported if status == :uncorrected && corrector&.empty?
+
+        [status, corrector]
+      end
+
+      # @return Corrector
+      def init_corrector
+        return unless block_given?
+
+        Corrector.new(self).tap do |corrector|
           yield corrector
+
           if !corrector.empty? && !self.class.support_autocorrect?
             raise "The Cop #{name} must `extend AutoCorrector` to be able to autocorrect"
           end
         end
-
-        status = attempt_correction(range, corrector) if status == :attempt_correction
-
-        [status, corrector]
       end
 
       # @return [Symbol] offense status
