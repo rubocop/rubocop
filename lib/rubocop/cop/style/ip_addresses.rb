@@ -18,7 +18,7 @@ module RuboCop
       #
       #   # good
       #   ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
-      class IpAddresses < Cop
+      class IpAddresses < Base
         include StringHelp
 
         IPV6_MAX_SIZE = 45 # IPv4-mapped IPv6 is the longest
