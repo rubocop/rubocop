@@ -3212,6 +3212,7 @@ Style/FloatDivision:
   Reference: 'https://github.com/rubocop-hq/ruby-style-guide/issues/628'
   Enabled: true
   VersionAdded: '0.72'
+  VersionChanged: <<next>>
   EnforcedStyle: single_coerce
   SupportedStyles:
     - left_coerce
