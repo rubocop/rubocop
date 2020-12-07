@@ -7,21 +7,56 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
     { 'Methods' => { 'join' => '', 'split' => ' ' } }
   end
 
-  it 'registers an offense when method called on variable' do
+  it 'registers an offense and corrects when method called on variable' do
     expect_offense(<<~RUBY)
       foo.join('')
       ^^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
       foo.split(' ')
       ^^^^^^^^^^^^^^ Argument ' ' is redundant because it is implied by default.
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo.join
+      foo.split
+    RUBY
   end
 
-  it 'registers an offense when method called on literals' do
+  it 'registers an offense and corrects when method called without parenthesis on variable' do
+    expect_offense(<<~RUBY)
+      foo.join ''
+      ^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
+      foo.split ' '
+      ^^^^^^^^^^^^^ Argument ' ' is redundant because it is implied by default.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.join
+      foo.split
+    RUBY
+  end
+
+  it 'registers an offense and corrects when method called on literals' do
     expect_offense(<<~RUBY)
       [1, 2, 3].join('')
       ^^^^^^^^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
       "first second".split(' ')
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Argument ' ' is redundant because it is implied by default.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3].join
+      "first second".split
+    RUBY
+  end
+
+  it 'registers an offense and corrects when method called without parenthesis on literals' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3].join ''
+      ^^^^^^^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3].join
     RUBY
   end
 
@@ -31,6 +66,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
       ^^^^^^^^^^^^ Argument "" is redundant because it is implied by default.
       "first second".split(" ")
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Argument " " is redundant because it is implied by default.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.join
+      "first second".split
     RUBY
   end
 
@@ -67,10 +107,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
       { 'Methods' => { 'foo' => 2 } }
     end
 
-    it 'registers an offense with configured argument' do
+    it 'registers an offense and corrects with configured argument' do
       expect_offense(<<~RUBY)
         A.foo(2)
         ^^^^^^^^ Argument 2 is redundant because it is implied by default.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        A.foo
       RUBY
     end
 

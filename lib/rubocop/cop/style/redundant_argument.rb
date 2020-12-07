@@ -37,6 +37,9 @@ module RuboCop
       #   "first second".split
       #   A.foo
       class RedundantArgument < Base
+        include RangeHelp
+        extend AutoCorrector
+
         MSG = 'Argument %<arg>s is redundant because it is implied by default.'
 
         def on_send(node)
@@ -44,7 +47,9 @@ module RuboCop
           return if node.arguments.count != 1
           return unless redundant_argument?(node)
 
-          add_offense(node, message: format(MSG, arg: node.arguments.first.source))
+          add_offense(node, message: format(MSG, arg: node.arguments.first.source)) do |corrector|
+            corrector.remove(argument_range(node))
+          end
         end
 
         private
@@ -68,6 +73,14 @@ module RuboCop
               builder = RuboCop::AST::Builder.new
               Parser::CurrentRuby.new(builder).parse(buffer)
             end
+        end
+
+        def argument_range(node)
+          if node.parenthesized?
+            range_between(node.loc.begin.begin_pos, node.loc.end.end_pos)
+          else
+            range_with_surrounding_space(range: node.first_argument.source_range, newlines: false)
+          end
         end
       end
     end
