@@ -58,12 +58,13 @@ module RuboCop
       #     bar: "0000000000",
       #     baz: "0000000000",
       #   }
-      class LineLength < Cop
+      class LineLength < Base
         include CheckLineBreakable
         include ConfigurableMax
         include IgnoredPattern
         include RangeHelp
         include LineLengthHelp
+        extend AutoCorrector
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'
 
@@ -78,25 +79,13 @@ module RuboCop
         alias on_hash on_potential_breakable_node
         alias on_send on_potential_breakable_node
 
-        def investigate(processed_source)
+        def on_new_investigation
           check_for_breakable_semicolons(processed_source)
         end
 
-        def investigate_post_walk(processed_source)
+        def on_investigation_end
           processed_source.lines.each_with_index do |line, line_index|
             check_line(line, line_index)
-          end
-        end
-
-        def correctable?
-          super && !breakable_range.nil?
-        end
-
-        def autocorrect(range)
-          return if range.nil?
-
-          lambda do |corrector|
-            corrector.insert_before(range, "\n")
           end
         end
 
@@ -203,8 +192,9 @@ module RuboCop
 
           self.breakable_range = breakable_range_by_line_index[line_index]
 
-          add_offense(breakable_range, location: loc, message: message) do
+          add_offense(loc, message: message) do |corrector|
             self.max = line_length(line)
+            corrector.insert_before(breakable_range, "\n") unless breakable_range.nil?
           end
         end
 
