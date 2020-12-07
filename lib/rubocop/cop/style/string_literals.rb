@@ -26,9 +26,10 @@ module RuboCop
       #   "Just some text"
       #   "No special chars or interpolation"
       #   "Every string in #{project} uses double_quotes"
-      class StringLiterals < Cop
+      class StringLiterals < Base
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
+        extend AutoCorrector
 
         MSG_INCONSISTENT = 'Inconsistent quote style.'
 
@@ -46,7 +47,7 @@ module RuboCop
           quote_styles = detect_quote_styles(node)
 
           if quote_styles.size > 1
-            add_offense(node, message: MSG_INCONSISTENT)
+            register_offense(node, message: MSG_INCONSISTENT)
           else
             check_multiline_quote_style(node, quote_styles[0])
           end
@@ -54,11 +55,17 @@ module RuboCop
           ignore_node(node)
         end
 
-        def autocorrect(node)
-          StringLiteralCorrector.correct(node, style)
+        private
+
+        def autocorrect(corrector, node)
+          StringLiteralCorrector.correct(corrector, node, style)
         end
 
-        private
+        def register_offense(node, message: nil)
+          add_offense(node, message: message || message(node)) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
 
         def all_string_literals?(nodes)
           nodes.all? { |n| n.str_type? || n.dstr_type? }
@@ -99,14 +106,13 @@ module RuboCop
         end
 
         def check_multiline_quote_style(node, quote)
-          range = node.source_range
           children = node.children
           if unexpected_single_quotes?(quote)
             all_children_with_quotes = children.all? { |c| wrong_quotes?(c) }
-            add_offense(node, location: range) if all_children_with_quotes
+            register_offense(node) if all_children_with_quotes
           elsif unexpected_double_quotes?(quote) &&
                 !accept_child_double_quotes?(children)
-            add_offense(node, location: range)
+            register_offense(node)
           end
         end
 
