@@ -84,7 +84,7 @@ module RuboCop
         private
 
         def next_line_empty?(line)
-          processed_source[line].blank?
+          processed_source[line].nil? || processed_source[line].blank?
         end
 
         def require_empty_line?(node)
