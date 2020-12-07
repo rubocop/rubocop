@@ -4025,6 +4025,7 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
+  VersionChanged: <<next>>
   Methods:
     # Array#join
     join: ''
