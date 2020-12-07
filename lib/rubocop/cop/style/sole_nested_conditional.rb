@@ -72,7 +72,7 @@ module RuboCop
 
           and_operator = if_branch.unless? ? ' && !' : ' && '
           if if_branch.modifier_form?
-            correct_for_gurad_condition_style(corrector, node, if_branch, and_operator)
+            correct_for_guard_condition_style(corrector, node, if_branch, and_operator)
           else
             correct_for_basic_condition_style(corrector, node, if_branch, and_operator)
           end
@@ -80,7 +80,7 @@ module RuboCop
           correct_for_comment(corrector, node, if_branch)
         end
 
-        def correct_for_gurad_condition_style(corrector, node, if_branch, and_operator)
+        def correct_for_guard_condition_style(corrector, node, if_branch, and_operator)
           condition = if_branch.condition
           corrector.insert_after(node.condition, replacement_condition(and_operator, condition))
 
@@ -95,7 +95,7 @@ module RuboCop
           )
           corrector.replace(range, and_operator)
           corrector.remove(range_by_whole_lines(node.loc.end, include_final_newline: true))
-          corrector.wrap(if_branch.condition, '(', ')') if if_branch.condition.or_type?
+          corrector.wrap(if_branch.condition, '(', ')') if wrap_condition?(if_branch.condition)
         end
 
         def correct_for_comment(corrector, node, if_branch)
@@ -105,8 +105,13 @@ module RuboCop
           corrector.insert_before(node.loc.keyword, comment_text) unless comments.empty?
         end
 
+        def wrap_condition?(node)
+          node.or_type? ||
+            (node.send_type? && node.arguments.any? && !node.parenthesized?)
+        end
+
         def replacement_condition(and_operator, condition)
-          if condition.or_type?
+          if wrap_condition?(condition)
             "#{and_operator}(#{condition.source})"
           else
             "#{and_operator}#{condition.source}"
