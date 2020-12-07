@@ -41,6 +41,8 @@ module RuboCop
       #   a.fdiv(b)
       class FloatDivision < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
+
         MESSAGES = {
           left_coerce: 'Prefer using `.to_f` on the left side.',
           right_coerce: 'Prefer using `.to_f` on the right side.',
@@ -64,7 +66,20 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node) if offense_condition?(node)
+          return unless offense_condition?(node)
+
+          add_offense(node) do |corrector|
+            case style
+            when :left_coerce, :single_coerce
+              add_to_f_method(corrector, node.receiver)
+              remove_to_f_method(corrector, node.first_argument)
+            when :right_coerce
+              remove_to_f_method(corrector, node.receiver)
+              add_to_f_method(corrector, node.first_argument)
+            when :fdiv
+              correct_from_slash_to_fdiv(corrector, node, node.receiver, node.first_argument)
+            end
+          end
         end
 
         private
@@ -86,6 +101,34 @@ module RuboCop
 
         def message(_node)
           MESSAGES[style]
+        end
+
+        def add_to_f_method(corrector, node)
+          corrector.insert_after(node, '.to_f') unless node.send_type? && node.method?(:to_f)
+        end
+
+        def remove_to_f_method(corrector, send_node)
+          corrector.remove(send_node.loc.dot)
+          corrector.remove(send_node.loc.selector)
+        end
+
+        def correct_from_slash_to_fdiv(corrector, node, receiver, argument)
+          receiver_source = extract_receiver_source(receiver)
+          argument_source = extract_receiver_source(argument)
+
+          if argument.respond_to?(:parenthesized?) && !argument.parenthesized?
+            argument_source = "(#{argument_source})"
+          end
+
+          corrector.replace(node, "#{receiver_source}.fdiv#{argument_source}")
+        end
+
+        def extract_receiver_source(node)
+          if node.send_type? && node.method?(:to_f)
+            node.receiver.source
+          else
+            node.source
+          end
         end
       end
     end
