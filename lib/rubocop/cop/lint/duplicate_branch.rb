@@ -6,6 +6,12 @@ module RuboCop
       # This cop checks that there are no repeated bodies
       # within `if/unless`, `case-when` and `rescue` constructs.
       #
+      # With `IgnoreLiteralBranches: true`, branches are not registered
+      # as offenses if they return a basic literal value (string, symbol,
+      # integer, float, rational, complex, `true`, `false`, or `nil`), or
+      # return an array, hash, regexp or range that only contains one of
+      # the above basic literal values.
+      #
       # @example
       #   # bad
       #   if foo
@@ -56,14 +62,24 @@ module RuboCop
       #     handle_error
       #   end
       #
+      # @example IgnoreLiteralBranches: true
+      #   # good
+      #   case size
+      #   when "small" then 100
+      #   when "medium" then 250
+      #   when "large" then 1000
+      #   else 250
+      #   end
+      #
       class DuplicateBranch < Base
         include RescueNode
 
         MSG = 'Duplicate branch body detected.'
 
         def on_branching_statement(node)
-          branches = node.branches.compact
-          branches.each_with_object(Set.new) do |branch, previous|
+          branches(node).each_with_object(Set.new) do |branch, previous|
+            next unless consider_branch?(branch)
+
             add_offense(offense_range(branch)) unless previous.add?(branch)
           end
         end
@@ -86,6 +102,27 @@ module RuboCop
           else
             parent.source_range
           end
+        end
+
+        def branches(node)
+          node.branches.compact
+        end
+
+        def consider_branch?(branch)
+          return true unless ignore_literal_branches?
+          return true unless branch.literal?
+          return false if branch.basic_literal?
+          return true if branch.xstr_type?
+
+          branch.each_descendant.any? do |node|
+            next if node.pair_type? # hash keys and values are contained within a `pair` node
+
+            !node.basic_literal?
+          end
+        end
+
+        def ignore_literal_branches?
+          cop_config.fetch('IgnoreLiteralBranches', false)
         end
       end
     end
