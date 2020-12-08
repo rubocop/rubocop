@@ -90,6 +90,8 @@ module RuboCop
             green('[Todo] ')
           elsif offense.corrected?
             green('[Corrected] ')
+          elsif offense.correctable?
+            yellow('[Correctable] ')
           else
             ''
           end

@@ -921,7 +921,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                   ])
       expect(cli.run(%w[--format emacs])).to eq(1)
       expect($stdout.string).to eq(
-        "#{abs('example.rb')}:3:9: C: Style/RegexpLiteral: Use `%r` " \
+        "#{abs('example.rb')}:3:9: C: [Correctable] Style/RegexpLiteral: Use `%r` " \
         "around regular expression.\n"
       )
       expect(cli.run(['--auto-gen-config'])).to eq(0)
