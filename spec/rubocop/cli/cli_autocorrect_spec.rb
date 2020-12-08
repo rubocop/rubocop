@@ -197,6 +197,30 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects `Style/IfUnlessModifier` with `Style/SoleNestedConditional`' do
+    source = <<~RUBY
+      def foo
+        # NOTE: comment
+        if a? && b?
+          puts "looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message" unless c?
+        end
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only', 'Style/IfUnlessModifier,Style/SoleNestedConditional'
+                   ])).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      def foo
+        # NOTE: comment
+        if a? && b? && !c?
+            puts "looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message"
+          end
+      end
+    RUBY
+  end
+
   describe 'trailing comma cops' do
     let(:source) do
       <<~RUBY
