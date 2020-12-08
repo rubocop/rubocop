@@ -11,6 +11,10 @@ module RuboCop
       # In those cases, it might be useful to extract statements to local
       # variables or methods which you can then interpolate in a string.
       #
+      # NOTE: When concatenation between two strings is broken over multiple
+      # lines, this cop does not register an offense; instead,
+      # `Style/LineEndConcatenation` will pick up the offense if enabled.
+      #
       # @example
       #   # bad
       #   email_with_name = user.name + ' <' + user.email + '>'
@@ -18,6 +22,10 @@ module RuboCop
       #   # good
       #   email_with_name = "#{user.name} <#{user.email}>"
       #   email_with_name = format('%s <%s>', user.name, user.email)
+      #
+      #   # accepted, line-end concatenation
+      #   name = 'First' +
+      #     'Last'
       #
       class StringConcatenation < Base
         include Util
@@ -39,6 +47,7 @@ module RuboCop
 
         def on_send(node)
           return unless string_concatenation?(node)
+          return if line_end_concatenation?(node)
 
           topmost_plus_node = find_topmost_plus_node(node)
 
@@ -57,6 +66,16 @@ module RuboCop
         end
 
         private
+
+        def line_end_concatenation?(node)
+          # If the concatenation happens at the end of the line,
+          # and both the receiver and argument are strings, allow
+          # `Style/LineEndConcatenation` to handle it instead.
+          node.receiver.str_type? &&
+            node.first_argument.str_type? &&
+            node.multiline? &&
+            node.source =~ /\+\s*\n/
+        end
 
         def find_topmost_plus_node(node)
           current = node
