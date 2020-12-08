@@ -1472,6 +1472,8 @@ Lint/DuplicateBranch:
   Description: Checks that there are no repeated bodies within `if/unless`, `case-when` and `rescue` constructs.
   Enabled: pending
   VersionAdded: '1.3'
+  VersionChanged: <<next>>
+  IgnoreLiteralBranches: false
 
 Lint/DuplicateCaseCondition:
   Description: 'Do not repeat values in case conditionals.'
