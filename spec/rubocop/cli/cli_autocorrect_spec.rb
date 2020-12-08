@@ -1406,9 +1406,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
-      C:  1:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
-      C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
-      W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
+      C:  1:  8: [Correctable] Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
+      C:  2: 34: [Correctable] Style/Semicolon: Do not use semicolons to terminate expressions.
+      W:  3: 27: [Correctable] Lint/UnusedMethodArgument: Unused method argument - bar.
 
       1 file inspected, 3 offenses detected, 3 more offenses can be corrected with `rubocop -A`
     RESULT

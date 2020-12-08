@@ -71,6 +71,8 @@ module RuboCop
             '[Todo] '
           elsif offense.corrected?
             '[Corrected] '
+          elsif offense.correctable?
+            '[Correctable] '
           else
             ''
           end
