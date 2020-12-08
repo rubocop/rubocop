@@ -1377,7 +1377,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
   end
 
-  it 'does not say [Corrected] if correction was avoided' do
+  it 'does not say [Corrected] if correction is not possible' do
     src = <<~RUBY
       func a do b end
       Signal.trap('TERM') { system(cmd); exit }
@@ -1406,11 +1406,41 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
-      C:  1:  8: [Correctable] Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
-      C:  2: 34: [Correctable] Style/Semicolon: Do not use semicolons to terminate expressions.
-      W:  3: 27: [Correctable] Lint/UnusedMethodArgument: Unused method argument - bar.
+      C:  1:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
+      C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
+      W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
 
       1 file inspected, 3 offenses detected
+    RESULT
+  end
+
+  it 'says [Correctable] if correction is unsafe' do
+    src = <<~RUBY
+      var = :false
+      %w('foo', "bar")
+    RUBY
+    corrected = <<~RUBY
+      var = :false
+      %w('foo', "bar")
+    RUBY
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 2.4
+    YAML
+    create_file('example.rb', src)
+    exit_status = cli.run(
+      %w[-a -f simple
+         --only Lint/BooleanSymbol,Lint/PercentStringArray]
+    )
+    expect(exit_status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(corrected)
+    expect($stdout.string).to eq(<<~RESULT)
+      == example.rb ==
+      W:  1:  7: [Correctable] Lint/BooleanSymbol: Symbol with a boolean name - you probably meant to use false.
+      W:  2:  1: [Correctable] Lint/PercentStringArray: Within %w/%W, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
+
+      1 file inspected, 2 offenses detected, 2 more offenses can be corrected with `rubocop -A`
     RESULT
   end
 
