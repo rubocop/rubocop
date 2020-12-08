@@ -75,9 +75,8 @@ module RuboCop
             correct_for_guard_condition_style(corrector, node, if_branch, and_operator)
           else
             correct_for_basic_condition_style(corrector, node, if_branch, and_operator)
+            correct_for_comment(corrector, node, if_branch)
           end
-
-          correct_for_comment(corrector, node, if_branch)
         end
 
         def correct_for_guard_condition_style(corrector, node, if_branch, and_operator)
@@ -99,6 +98,8 @@ module RuboCop
         end
 
         def correct_for_comment(corrector, node, if_branch)
+          return if config.for_cop('Style/IfUnlessModifier')['Enabled']
+
           comments = processed_source.comments_before_line(if_branch.source_range.line)
           comment_text = comments.map(&:text).join("\n") << "\n"
 

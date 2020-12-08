@@ -198,22 +198,45 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using nested conditional and branch contains a comment' do
-    expect_offense(<<~RUBY)
-      if foo
-        # Comment.
-        if bar
-        ^^ Consider merging nested conditions into outer `if` conditions.
-          do_something
+  context 'when disabling `Style/IfUnlessModifier`' do
+    let(:config) do
+      RuboCop::Config.new('Style/IfUnlessModifier' => { 'Enabled' => false })
+    end
+
+    it 'registers an offense and corrects when using nested conditional and branch contains a comment' do
+      expect_offense(<<~RUBY)
+        if foo
+          # Comment.
+          if bar
+          ^^ Consider merging nested conditions into outer `if` conditions.
+            do_something
+          end
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Comment.
+        if foo && bar
+            do_something
+          end
+      RUBY
+    end
+  end
+
+  it 'registers an offense and corrects when using guard conditional with outer comment' do
+    expect_offense(<<~RUBY)
+      # Comment.
+      if foo
+        do_something if bar
+                     ^^ Consider merging nested conditions into outer `if` conditions.
       end
     RUBY
 
     expect_correction(<<~RUBY)
       # Comment.
       if foo && bar
-          do_something
-        end
+        do_something
+      end
     RUBY
   end
 
