@@ -4347,6 +4347,7 @@ Style/StringConcatenation:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
+  VersionChanged: <<next>>
 
 Style/StringHashKeys:
   Description: 'Prefer symbols instead of strings as hash keys.'

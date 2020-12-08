@@ -55,6 +55,16 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
   end
 
   context 'multiline' do
+    context 'string continuation' do
+      it 'does not register an offense' do
+        # handled by `Style/LineEndConcatenation` instead.
+        expect_no_offenses(<<~RUBY)
+          "this is a long string " +
+            "this is a continuation"
+        RUBY
+      end
+    end
+
     context 'simple expressions' do
       it 'registers an offense and corrects' do
         expect_offense(<<-RUBY)
