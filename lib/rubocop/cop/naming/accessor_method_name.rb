@@ -3,7 +3,13 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sure that accessor methods are named properly.
+      # This cop makes sure that accessor methods are named properly. Applies
+      # to both instance and class methods.
+      #
+      # NOTE: Offenses are only registered for methods with the expected
+      # arity. Getters (`get_attribute`) must have no arguments to be
+      # registered, and setters (`set_attribute(value)`) must have exactly
+      # one.
       #
       # @example
       #   # bad
@@ -20,6 +26,14 @@ module RuboCop
       #
       #   # good
       #   def attribute
+      #   end
+      #
+      #   # accepted, incorrect arity for getter
+      #   def get_value(attr)
+      #   end
+      #
+      #   # accepted, incorrect arity for setter
+      #   def set_value
       #   end
       class AccessorMethodName < Base
         MSG_READER = 'Do not prefix reader method names with `get_`.'
