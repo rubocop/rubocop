@@ -47,6 +47,10 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
+  it 'accepts code that where the attr_accessor is the last line' do
+    expect_no_offenses('attr_accessor :foo')
+  end
+
   it 'accepts code that separates attribute accessors from the code ' \
      'with a newline' do
     expect_no_offenses(<<~RUBY)
