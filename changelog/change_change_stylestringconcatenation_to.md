@@ -1,1 +1,0 @@
-* [#8897](https://github.com/rubocop-hq/rubocop/issues/8897): Change `Style/StringConcatenation` to accept line-end concatenation between two strings so that `Style/LineEndConcatenation` can handle it instead. ([@dvandersluis][])

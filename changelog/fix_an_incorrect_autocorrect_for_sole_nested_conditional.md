@@ -1,1 +1,0 @@
-* [#9160](https://github.com/rubocop-hq/rubocop/issues/9160): Fix an incorrect auto-correct for `Style/IfUnlessModifier` and `Style/SoleNestedConditional` when auto-correction conflicts for guard condition. ([@koic][])
