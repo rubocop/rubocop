@@ -15,29 +15,29 @@ module RuboCop
       end
 
       def violated?
-        return false if gem_installed?
+        return false if feature_loaded?
 
-        affected_gems.any?
+        affected_cops.any?
       end
 
       def rule_message
         msg = '%<name>s been extracted to the `%<gem>s` gem.'
         format(msg,
-               name: affected_gems.size > 1 ? "`#{department}` cops have" : "`#{old_name}` has",
+               name: affected_cops.size > 1 ? "`#{department}` cops have" : "`#{old_name}` has",
                gem: gem)
       end
 
       private
 
-      def affected_gems
+      def affected_cops
         return old_name unless old_name.end_with?('*')
 
         # Handle whole departments (expressed as `Department/*`)
         config.keys.grep(Regexp.new("^#{department}"))
       end
 
-      def gem_installed?
-        Lockfile.new.includes_gem?(gem)
+      def feature_loaded?
+        config.loaded_features.include?(gem)
       end
     end
   end
