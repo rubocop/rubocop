@@ -5259,7 +5259,5 @@
 [@javierav]: https://github.com/javierav
 [@adrian-rivera]: https://github.com/adrian-rivera
 [@ThomasKoppensteiner]: https://github.com/ThomasKoppensteiner
-
 [@PhilCoggins]: https://github.com/PhilCoggins
-
 [@tas50]: https://github.com/tas50
