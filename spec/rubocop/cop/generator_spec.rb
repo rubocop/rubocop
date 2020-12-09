@@ -334,6 +334,11 @@ RSpec.describe RuboCop::Cop::Generator do
     let(:options) { { formatters: [] } }
     let(:runner) { RuboCop::Runner.new(options, config) }
 
+    before do
+      # Ignore any config validation errors
+      allow_any_instance_of(RuboCop::ConfigValidator).to receive(:validate) # rubocop:disable RSpec/AnyInstance
+    end
+
     it 'generates a cop file that has no offense' do
       generator.write_source
       expect(runner.run([])).to be true

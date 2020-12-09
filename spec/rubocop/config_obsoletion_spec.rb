@@ -7,6 +7,9 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
   let(:configuration) { RuboCop::Config.new(hash, loaded_path) }
   let(:loaded_path) { 'example/.rubocop.yml' }
+  let(:requires) { [] }
+
+  before { allow(configuration).to receive(:loaded_features).and_return(requires) }
 
   describe '#validate', :isolated_environment do
     context 'when the configuration includes any obsolete cop name' do
@@ -225,33 +228,16 @@ RSpec.describe RuboCop::ConfigObsoletion do
         }
       end
 
-      let(:expected_message) do
-        <<~OUTPUT.chomp
-          `Performance` cops have been extracted to the `rubocop-performance` gem.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-          `Rails` cops have been extracted to the `rubocop-rails` gem.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
-        OUTPUT
-      end
-
-      context 'when the gems are installed' do
-        before do
-          allow_any_instance_of(RuboCop::ConfigObsoletion::ExtractedCop)
-            .to receive(:gem_installed?).and_return(true)
-        end
+      context 'when the extensions are loaded' do
+        let(:requires) { %w[rubocop-rails rubocop-performance] }
 
         it 'does not print a warning message' do
           expect { config_obsoletion.reject_obsolete! }.not_to raise_error
         end
       end
 
-      context 'when only one gem is installed' do
-        before do
-          allow_any_instance_of(RuboCop::Lockfile)
-            .to receive(:includes_gem?).and_return(false)
-          allow_any_instance_of(RuboCop::Lockfile)
-            .to receive(:includes_gem?).with('rubocop-performance').and_return(true)
-        end
+      context 'when only one extension is loaded' do
+        let(:requires) { %w[rubocop-performance] }
 
         let(:expected_message) do
           <<~OUTPUT.chomp
@@ -270,10 +256,14 @@ RSpec.describe RuboCop::ConfigObsoletion do
         end
       end
 
-      context 'when the gems are not installed' do
-        before do
-          allow_any_instance_of(RuboCop::ConfigObsoletion::ExtractedCop)
-            .to receive(:gem_installed?).and_return(false)
+      context 'when the extensions are not loaded' do
+        let(:expected_message) do
+          <<~OUTPUT.chomp
+            `Performance` cops have been extracted to the `rubocop-performance` gem.
+            (obsolete configuration found in example/.rubocop.yml, please update it)
+            `Rails` cops have been extracted to the `rubocop-rails` gem.
+            (obsolete configuration found in example/.rubocop.yml, please update it)
+          OUTPUT
         end
 
         it 'prints a warning message' do
@@ -285,11 +275,50 @@ RSpec.describe RuboCop::ConfigObsoletion do
           end
         end
       end
+
+      context 'when the extensions are loaded via inherit_gem' do
+        let(:resolver) { RuboCop::ConfigLoaderResolver.new }
+        let(:gem_root) { File.expand_path('gems') }
+
+        let(:hash) do
+          {
+            'inherit_gem' => { 'rubocop-includes' => '.rubocop.yml' },
+            'Performance/Casecmp' => { 'Enabled': true }
+          }
+        end
+
+        around do |example|
+          RuboCop::Cop::Registry.with_temporary_global(RuboCop::Cop::Registry.new) { example.run }
+        end
+
+        before do
+          create_file("#{gem_root}/rubocop-includes/.rubocop.yml", <<~YAML)
+            require:
+              - rubocop-performance
+          YAML
+
+          # Mock out a gem in order to test `inherit_gem`.
+          gem_class = Struct.new(:gem_dir)
+          mock_spec = gem_class.new(File.join(gem_root, 'rubocop-includes'))
+          allow(Gem::Specification).to receive(:find_by_name)
+            .with('rubocop-includes').and_return(mock_spec)
+
+          # Resolve `inherit_gem`
+          resolver.resolve_inheritance_from_gems(hash)
+          resolver.resolve_inheritance(loaded_path, hash, loaded_path, false)
+
+          allow(configuration).to receive(:loaded_features).and_call_original
+        end
+
+        it 'does not raise a ValidationError' do
+          expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+        end
+      end
     end
 
     context 'when the configuration includes any obsolete parameters' do
       before do
-        allow_any_instance_of(RuboCop::Lockfile).to receive(:includes_gem?).and_return(true)
+        allow(configuration).to receive(:loaded_features).and_return(%w[rubocop-rails])
       end
 
       let(:hash) do
