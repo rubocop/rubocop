@@ -3212,7 +3212,7 @@ Style/FloatDivision:
   Reference: 'https://blog.rubystyle.guide/ruby/2019/06/21/float-division.html'
   Enabled: true
   VersionAdded: '0.72'
-  VersionChanged: <<next>>
+  VersionChanged: '1.6'
   EnforcedStyle: single_coerce
   SupportedStyles:
     - left_coerce
@@ -4026,7 +4026,7 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
-  VersionChanged: <<next>>
+  VersionChanged: '1.6'
   Methods:
     # Array#join
     join: ''
@@ -4274,7 +4274,7 @@ Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
   Enabled: false
   VersionAdded: '0.16'
-  VersionChanged: <<next>>
+  VersionChanged: '1.6'
   Methods:
     - reduce:
         - acc
@@ -4347,7 +4347,7 @@ Style/StringConcatenation:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
-  VersionChanged: <<next>>
+  VersionChanged: '1.6'
 
 Style/StringHashKeys:
   Description: 'Prefer symbols instead of strings as hash keys.'

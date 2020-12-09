@@ -3390,9 +3390,9 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.72
-| -
+| 1.6
 |===
 
 This cop checks for division with integers coerced to floats.
@@ -3463,7 +3463,7 @@ a.fdiv(b)
 === References
 
 * https://rubystyle.guide#float-division
-* https://github.com/rubocop-hq/ruby-style-guide/issues/628
+* https://blog.rubystyle.guide/ruby/2019/06/21/float-division.html
 
 == Style/For
 
@@ -7664,7 +7664,8 @@ This cop checks for usage of the %Q() syntax when %q() would do.
 |===
 
 This cop looks for uses of Perl-style regexp match
-backreferences like $1, $2, etc.
+backreferences and their English versions like
+$1, $2, $&, &+, $MATCH, $PREMATCH, etc.
 
 === Examples
 
@@ -7895,9 +7896,9 @@ rand(1...7)
 
 | Pending
 | No
-| No
+| Yes (Unsafe)
 | 1.4
-| -
+| 1.6
 |===
 
 This cop checks for a redundant argument passed to certain methods.
@@ -9581,9 +9582,9 @@ keys = %i[key1 key2]
 
 | Disabled
 | Yes
-| No
+| Yes
 | 0.16
-| 0.47
+| 1.6
 |===
 
 This cop checks whether the block parameters of a single-line
@@ -9817,10 +9818,6 @@ puts $CHILD_STATUS
 puts $LAST_MATCH_INFO
 puts $IGNORECASE
 puts $ARGV # or ARGV
-puts $MATCH
-puts $PREMATCH
-puts $POSTMATCH
-puts $LAST_PAREN_MATCH
 ----
 
 ==== EnforcedStyle: use_perl_names
@@ -9846,10 +9843,6 @@ puts $?
 puts $~
 puts $=
 puts $*
-puts $&
-puts $`
-puts $'
-puts $+
 ----
 
 === Configurable attributes
@@ -10018,7 +10011,7 @@ warn('hello')
 | No
 | Yes (Unsafe)
 | 0.89
-| -
+| 1.6
 |===
 
 This cop checks for places where string concatenation
@@ -10028,6 +10021,10 @@ The cop can autocorrect simple cases but will skip autocorrecting
 more complex cases where the resulting code would be harder to read.
 In those cases, it might be useful to extract statements to local
 variables or methods which you can then interpolate in a string.
+
+NOTE: When concatenation between two strings is broken over multiple
+lines, this cop does not register an offense; instead,
+`Style/LineEndConcatenation` will pick up the offense if enabled.
 
 === Examples
 
@@ -10039,6 +10036,10 @@ email_with_name = user.name + ' <' + user.email + '>'
 # good
 email_with_name = "#{user.name} <#{user.email}>"
 email_with_name = format('%s <%s>', user.name, user.email)
+
+# accepted, line-end concatenation
+name = 'First' +
+  'Last'
 ----
 
 === References

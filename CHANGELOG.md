@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.6.0 (2020-12-09)
+
 ### New features
 
 * [#9125](https://github.com/rubocop-hq/rubocop/issues/9125): Allow ConfigObsoletion to be extended by other RuboCop libraries. ([@dvandersluis][])
