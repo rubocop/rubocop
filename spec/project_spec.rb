@@ -13,12 +13,29 @@ RSpec.describe 'RuboCop Project', type: :feature do
   version_regexp = /\A\d+\.\d+\z|\A<<next>>\z/
 
   describe 'default configuration file' do
+    matcher :match_all_cops do
+      def expected
+        %w[AllCops] + cop_names
+      end
+
+      match do |actual|
+        (expected.to_set ^ actual.to_set).none?
+      end
+
+      failure_message do
+        diff = RSpec::Support::Differ.new.diff_as_object(expected.sort, actual.sort)
+        "Cop registry does not match configuration keys.\n" \
+          'Check if a new cop is missing configuration, or if cops were accidentally ' \
+          "added to the registry in another test.\n\nDiff:\n#{diff}"
+      end
+    end
+
     subject(:config) { RuboCop::ConfigLoader.load_file('config/default.yml') }
 
     let(:configuration_keys) { config.keys }
 
     it 'has configuration for all cops' do
-      expect(configuration_keys).to match_array(%w[AllCops] + cop_names)
+      expect(configuration_keys).to match_all_cops
     end
 
     it 'has a nicely formatted description for all cops' do
