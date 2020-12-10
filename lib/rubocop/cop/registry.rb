@@ -204,6 +204,12 @@ module RuboCop
         to_h[cop_name].first
       end
 
+      def freeze
+        clear_enrollment_queue
+        unqualified_cop_names # build cache
+        super
+      end
+
       @global = new
 
       class << self
