@@ -18,6 +18,7 @@ class Changelog
   MAX_LENGTH = 40
   CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
   SIGNATURE = Regexp.new(format(Regexp.escape("([@%<user>s][])\n"), user: '(\w+)'))
+  EOF = "\n"
 
   # New entry
   Entry = Struct.new(:type, :body, :ref_type, :ref_id, :user, keyword_init: true) do
@@ -111,12 +112,14 @@ class Changelog
   end
 
   def merge_content
-    [
+    merged_content = [
       @header,
       unreleased_content,
-      @rest,
+      @rest.chomp,
       *new_contributor_lines
     ].join("\n")
+
+    merged_content << EOF
   end
 
   def self.pending?
