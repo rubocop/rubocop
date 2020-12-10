@@ -63,9 +63,11 @@ module RuboCop
     # Cop rules are keyed by the name of the original cop
     def load_cop_rules(rules)
       rules.flat_map do |rule_type, data|
-        data.map do |configuration|
-          COP_RULE_CLASSES[rule_type].new(@config, *configuration)
-        end
+        data.map do |cop_name, configuration|
+          next unless configuration # allow configurations to be disabled with `CopName: ~`
+
+          COP_RULE_CLASSES[rule_type].new(@config, cop_name, configuration)
+        end.compact
       end
     end
 
