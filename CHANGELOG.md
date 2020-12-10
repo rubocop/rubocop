@@ -5267,3 +5267,4 @@
 [@ThomasKoppensteiner]: https://github.com/ThomasKoppensteiner
 [@PhilCoggins]: https://github.com/PhilCoggins
 [@tas50]: https://github.com/tas50
+[@dark-panda]: https://github.com/dark-panda
