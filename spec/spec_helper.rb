@@ -19,6 +19,11 @@ require 'rubocop/rspec/support'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
+RuboCop::Cop::Registry.global.freeze
+# This insures that there are no side effects from running a particular spec.
+# Use `:restore_registry` / `RuboCop::Cop::Registry.with_temporary_global` if
+# need to modify registry (e.g. with `stub_cop_class`).
+
 RSpec.configure do |config|
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
