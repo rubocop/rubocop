@@ -4026,12 +4026,16 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
-  VersionChanged: '1.6'
+  VersionChanged: <<next>>
   Methods:
     # Array#join
     join: ''
     # String#split
     split: ' '
+    # String#chomp
+    chomp: "\n"
+    # String#chomp!
+    chomp!: "\n"
 
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
