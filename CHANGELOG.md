@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.6.1 (2020-12-10)
+
 ### Bug fixes
 
 * [#9196](https://github.com/rubocop-hq/rubocop/issues/9196): Fix `ConfigObsoletion::ExtractedCop` raising errors for loaded features when bundler is not activated. ([@dvandersluis][])
