@@ -4,20 +4,26 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do
-    { 'Methods' => { 'join' => '', 'split' => ' ' } }
+    { 'Methods' => { 'join' => '', 'split' => ' ', 'chomp' => "\n", 'chomp!' => "\n" } }
   end
 
   it 'registers an offense and corrects when method called on variable' do
-    expect_offense(<<~RUBY)
+    expect_offense(<<~'RUBY')
       foo.join('')
       ^^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
       foo.split(' ')
       ^^^^^^^^^^^^^^ Argument ' ' is redundant because it is implied by default.
+      foo.chomp("\n")
+      ^^^^^^^^^^^^^^^ Argument "\n" is redundant because it is implied by default.
+      foo.chomp!("\n")
+      ^^^^^^^^^^^^^^^^ Argument "\n" is redundant because it is implied by default.
     RUBY
 
     expect_correction(<<~RUBY)
       foo.join
       foo.split
+      foo.chomp
+      foo.chomp!
     RUBY
   end
 

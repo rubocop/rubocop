@@ -12,7 +12,7 @@ module RuboCop
       # 1. This cop matches for method names only and hence cannot tell apart
       #    methods with same name in different classes.
       # 2. This cop is limited to methods with single parameter.
-      # 3. This cop is unsafe if certain special global variables (e.g. `$;`) are set.
+      # 3. This cop is unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
       #    That depends on the nature of the target methods, of course.
       #
       # Method names and their redundant arguments can be configured like this:
@@ -20,6 +20,8 @@ module RuboCop
       # Methods:
       #   join: ''
       #   split: ' '
+      #   chomp: "\n"
+      #   chomp!: "\n"
       #   foo: 2
       #
       # @example
@@ -28,6 +30,8 @@ module RuboCop
       #   [1, 2, 3].join("")
       #   string.split(" ")
       #   "first\nsecond".split(" ")
+      #   string.chomp("\n")
+      #   string.chomp!("\n")
       #   A.foo(2)
       #
       #   # good
@@ -35,6 +39,8 @@ module RuboCop
       #   [1, 2, 3].join
       #   string.split
       #   "first second".split
+      #   string.chomp
+      #   string.chomp!
       #   A.foo
       class RedundantArgument < Base
         include RangeHelp
