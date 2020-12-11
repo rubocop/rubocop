@@ -19,11 +19,6 @@ require 'rubocop/rspec/support'
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
-RuboCop::Cop::Registry.global.freeze
-# This insures that there are no side effects from running a particular spec.
-# Use `:restore_registry` / `RuboCop::Cop::Registry.with_temporary_global` if
-# need to modify registry (e.g. with `stub_cop_class`).
-
 RSpec.configure do |config|
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
@@ -51,6 +46,17 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.syntax = :expect # Disable `should_receive` and `stub`
     mocks.verify_partial_doubles = true
+  end
+
+  config.before(:suite) do
+    RuboCop::Cop::Registry.global.freeze
+    # This ensures that there are no side effects from running a particular spec.
+    # Use `:restore_registry` / `RuboCop::Cop::Registry.with_temporary_global` if
+    # need to modify registry (e.g. with `stub_cop_class`).
+  end
+
+  config.after(:suite) do
+    RuboCop::Cop::Registry.reset!
   end
 
   if %w[ruby-head-ascii_spec ruby-head-spec].include? ENV['CIRCLE_STAGE']
