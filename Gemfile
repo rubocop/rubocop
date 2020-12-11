@@ -5,7 +5,13 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'bump', require: false
-gem 'memory_profiler', platform: :mri
+# memory_profiler 1.0.0 requires Ruby 2.5.0 or higher.
+# Please remove this branch when dropping support for Ruby 2.4.
+if RUBY_VERSION >= '2.5.0'
+  gem 'memory_profiler', platform: :mri
+else
+  gem 'memory_profiler', '<= 1.0.0', platform: :mri
+end
 gem 'pry'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
