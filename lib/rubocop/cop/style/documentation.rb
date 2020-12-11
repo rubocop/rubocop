@@ -60,6 +60,15 @@ module RuboCop
       #       extend Foo
       #     end
       #
+      # @example AllowedConstants: ['ClassMethods']
+      #
+      #    # good
+      #    module A
+      #      module ClassMethods
+      #        # ...
+      #      end
+      #     end
+      #
       class Documentation < Base
         include DocumentationComment
 
@@ -90,12 +99,17 @@ module RuboCop
 
         def check(node, body, type)
           return if namespace?(body)
-          return if documentation_comment?(node) || nodoc_comment?(node)
-          return if compact_namespace?(node) &&
-                    nodoc_comment?(outer_module(node).first)
+          return if documentation_comment?(node)
+          return if constant_allowed?(node)
+          return if nodoc_self_or_outer_module?(node)
           return if macro_only?(body)
 
           add_offense(node.loc.keyword, message: format(MSG, type: type))
+        end
+
+        def nodoc_self_or_outer_module?(node)
+          nodoc_comment?(node) ||
+            compact_namespace?(node) && nodoc_comment?(outer_module(node).first)
         end
 
         def macro_only?(body)
@@ -115,6 +129,10 @@ module RuboCop
 
         def constant_declaration?(node)
           constant_definition?(node) || constant_visibility_declaration?(node)
+        end
+
+        def constant_allowed?(node)
+          allowed_constants.include?(node.identifier.short_name)
         end
 
         def compact_namespace?(node)
@@ -142,6 +160,10 @@ module RuboCop
 
         def nodoc(node)
           processed_source.ast_with_comments[node.children.first].first
+        end
+
+        def allowed_constants
+          @allowed_constants ||= cop_config.fetch('AllowedConstants', []).map(&:intern)
         end
       end
     end

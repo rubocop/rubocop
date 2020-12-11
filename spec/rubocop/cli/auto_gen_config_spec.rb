@@ -698,6 +698,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Offense count: 1',
+         '# Configuration parameters: AllowedConstants.',
          'Style/Documentation:',
          '  Exclude:',
          "    - 'spec/**/*'", # Copied from default configuration
@@ -1067,6 +1068,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '  Exclude:',
          "    - 'example1.rb'",
          '',
+         '# Configuration parameters: AllowedConstants.',
          'Style/Documentation:',
          '  Exclude:',
          "    - 'spec/**/*'", # Copied from default configuration

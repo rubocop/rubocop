@@ -411,6 +411,21 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
           RUBY
         end
       end
+
+      describe 'when AllowedConstants is configured' do
+        before { config['Style/Documentation'] = { 'AllowedConstants' => ['ClassMethods'] } }
+
+        it 'ignores the constants in the config' do
+          expect_no_offenses(<<~RUBY)
+            module A
+              module ClassMethods
+                def do_something
+                end
+              end
+            end
+          RUBY
+        end
+      end
     end
   end
 end
