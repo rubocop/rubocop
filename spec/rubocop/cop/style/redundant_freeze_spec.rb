@@ -48,6 +48,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'mutable objects', "('a' + 'b')"
   it_behaves_like 'mutable objects', "('a' * 20)"
   it_behaves_like 'mutable objects', '(a + b)'
+  it_behaves_like 'mutable objects', '([42] * 42)'
 
   it 'allows .freeze on  method call' do
     expect_no_offenses('TOP_TEST = Something.new.freeze')
