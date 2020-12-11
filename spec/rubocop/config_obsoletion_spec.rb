@@ -502,5 +502,30 @@ RSpec.describe RuboCop::ConfigObsoletion do
         end
       end
     end
+
+    context 'when extractions are disabled by an external library' do
+      after do
+        described_class.files = [described_class::DEFAULT_RULES_FILE]
+      end
+
+      let(:hash) do
+        {
+          'Performance/CollectionLiteralInLoop' => { 'Enabled': true }
+        }
+      end
+
+      let(:external_obsoletions) do
+        create_file('external/obsoletions.yml', <<~YAML)
+          extracted:
+            Performance/*: ~
+        YAML
+      end
+
+      it 'allows the extracted cops' do
+        described_class.files << external_obsoletions
+
+        expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+      end
+    end
   end
 end
