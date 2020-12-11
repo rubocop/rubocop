@@ -234,6 +234,10 @@ module RuboCop
         @global = previous
       end
 
+      def self.reset!
+        @global = new
+      end
+
       private
 
       def initialize_copy(reg)
