@@ -32,6 +32,7 @@ module RuboCop
       #
       class OptionalBooleanParameter < Base
         include AllowedMethods
+        extend AutoCorrector
 
         MSG = 'Use keyword arguments when defining method with boolean argument.'
         BOOLEAN_TYPES = %i[true false].freeze
@@ -43,7 +44,13 @@ module RuboCop
             next unless arg.optarg_type?
 
             _name, value = *arg
-            add_offense(arg) if BOOLEAN_TYPES.include?(value.type)
+            next unless BOOLEAN_TYPES.include?(value.type)
+
+            add_offense(arg) do |corrector|
+              keyword_argument = "#{arg.name}: #{arg.default_value.source}"
+
+              corrector.replace(arg, keyword_argument)
+            end
           end
         end
         alias on_defs on_def

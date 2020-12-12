@@ -5,27 +5,42 @@ RSpec.describe RuboCop::Cop::Style::OptionalBooleanParameter, :config do
     { 'AllowedMethods' => [] }
   end
 
-  it 'registers an offense when defining method with optional boolean arg' do
+  it 'registers an offense and corrects when defining method with optional boolean arg' do
     expect_offense(<<~RUBY)
       def some_method(bar = false)
                       ^^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def some_method(bar: false)
+      end
+    RUBY
   end
 
-  it 'registers an offense when defining class method with optional boolean arg' do
+  it 'registers an offense and corrects when defining class method with optional boolean arg' do
     expect_offense(<<~RUBY)
       def self.some_method(bar = false)
                            ^^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def self.some_method(bar: false)
+      end
+    RUBY
   end
 
-  it 'registers an offense when defining method with multiple optional boolean args' do
+  it 'registers an offense and corrects when defining method with multiple optional boolean args' do
     expect_offense(<<~RUBY)
       def some_method(foo = true, bar = 1, baz = false, quux: true)
                       ^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
                                            ^^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def some_method(foo: true, bar = 1, baz: false, quux: true)
       end
     RUBY
   end

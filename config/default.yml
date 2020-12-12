@@ -3921,6 +3921,7 @@ Style/OptionalBooleanParameter:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
+  VersionChanged: <<next>>
   AllowedMethods:
     - respond_to_missing?
 
