@@ -1396,6 +1396,7 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
+  VersionChanged: <<next>>
 
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'

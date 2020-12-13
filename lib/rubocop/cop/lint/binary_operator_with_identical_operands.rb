@@ -17,6 +17,7 @@ module RuboCop
       #
       # @example
       #   # bad
+      #   x / x
       #   x.top >= x.top
       #
       #   if a.x != 0 && a.x != 0
@@ -27,15 +28,19 @@ module RuboCop
       #     left_child || left_child
       #   end
       #
+      #   # good
+      #   x + x
+      #   1 << 1
+      #
       class BinaryOperatorWithIdenticalOperands < Base
         MSG = 'Binary operator `%<op>s` has identical operands.'
-        MATH_OPERATORS = %i[+ - * / % ** << >> | ^].to_set.freeze
+        ALLOWED_MATH_OPERATORS = %i[+ * ** << >>].to_set.freeze
 
         def on_send(node)
           return unless node.binary_operation?
 
           lhs, operation, rhs = *node
-          return if MATH_OPERATORS.include?(node.method_name) && lhs.basic_literal?
+          return if ALLOWED_MATH_OPERATORS.include?(node.method_name)
 
           add_offense(node, message: format(MSG, op: operation)) if lhs == rhs
         end
