@@ -1354,10 +1354,11 @@ RSpec.describe RuboCop::ConfigLoader do
 
   describe '.load_file', :isolated_environment do
     subject(:load_file) do
-      described_class.load_file(configuration_path)
+      described_class.load_file(configuration_path, check: check)
     end
 
     let(:configuration_path) { '.rubocop.yml' }
+    let(:check) { true }
 
     it 'returns a configuration loaded from the passed path' do
       create_file(configuration_path, <<~YAML)
@@ -1503,6 +1504,32 @@ RSpec.describe RuboCop::ConfigLoader do
           expect do
             load_file
           end.to output(%r{`Style/Encoding` is concealed by line 4}).to_stderr
+        end
+      end
+    end
+
+    context 'when the config file contains an obsolete config' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          Style/MethodMissing:
+            Enabled: true
+        YAML
+      end
+
+      context 'and check is true' do
+        it 'raises an error' do
+          expect { load_file }.to raise_error(
+            RuboCop::ValidationError,
+            %r{`Style/MethodMissing` cop has been split}
+          )
+        end
+      end
+
+      context 'and check is false' do
+        let(:check) { false }
+
+        it 'does not raise an error' do
+          expect { load_file }.not_to raise_error
         end
       end
     end

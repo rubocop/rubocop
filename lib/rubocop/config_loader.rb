@@ -35,7 +35,7 @@ module RuboCop
         FileFinder.root_level = nil
       end
 
-      def load_file(file)
+      def load_file(file, check: true)
         path = file_path(file)
 
         hash = load_yaml_configuration(path)
@@ -52,7 +52,7 @@ module RuboCop
 
         hash.delete('inherit_from')
 
-        Config.create(hash, path)
+        Config.create(hash, path, check: check)
       end
 
       def load_yaml_configuration(absolute_path)
@@ -99,10 +99,10 @@ module RuboCop
           find_user_xdg_config || DEFAULT_FILE
       end
 
-      def configuration_from_file(config_file)
+      def configuration_from_file(config_file, check: true)
         return default_configuration if config_file == DEFAULT_FILE
 
-        config = load_file(config_file)
+        config = load_file(config_file, check: check)
         if ignore_parent_exclusion?
           print 'Ignoring AllCops/Exclude from parent folders' if debug?
         else
