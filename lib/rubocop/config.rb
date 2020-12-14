@@ -33,8 +33,8 @@ module RuboCop
       @validator = ConfigValidator.new(self)
     end
 
-    def self.create(hash, path)
-      new(hash, path).check
+    def self.create(hash, path, check: true)
+      new(hash, path).tap { |config| config.check if check }
     end
 
     def loaded_features
