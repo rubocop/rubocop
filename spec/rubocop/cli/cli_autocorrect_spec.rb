@@ -789,9 +789,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       def method
         # comment 1
+
         do_some_stuff
       rescue StandardError # comment 2
-        # comment 3
       end
     RUBY
     expect(IO.read('example.rb')).to eq(corrected)

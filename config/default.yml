@@ -2985,6 +2985,7 @@ Style/CommentedKeyword:
   Description: 'Do not place comments on the same line as certain keywords.'
   Enabled: true
   VersionAdded: '0.51'
+  VersionChanged: <<next>>
 
 Style/ConditionalAssignment:
   Description: >-
