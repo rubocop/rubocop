@@ -1361,6 +1361,11 @@ Layout/TrailingWhitespace:
 #################### Lint ##################################
 ### Warnings
 
+Lint/AmbiguousAssignment:
+  Description: 'Checks for mistyped shorthand assignments.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/AmbiguousBlockAssociation:
   Description: >-
                  Checks for ambiguous block association with method when param passed without

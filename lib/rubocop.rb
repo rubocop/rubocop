@@ -249,6 +249,7 @@ require_relative 'rubocop/cop/layout/space_inside_string_interpolation'
 require_relative 'rubocop/cop/layout/trailing_empty_lines'
 require_relative 'rubocop/cop/layout/trailing_whitespace'
 
+require_relative 'rubocop/cop/lint/ambiguous_assignment'
 require_relative 'rubocop/cop/lint/ambiguous_block_association'
 require_relative 'rubocop/cop/lint/ambiguous_operator'
 require_relative 'rubocop/cop/lint/ambiguous_regexp_literal'
