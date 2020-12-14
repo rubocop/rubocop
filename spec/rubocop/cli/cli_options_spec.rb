@@ -176,6 +176,47 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(output).to match(/rubocop-rspec \d+\.\d+\.\d+/)
       end
     end
+
+    context 'when there are pending cops' do
+      let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
+        The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
+      PENDING_COP_WARNING
+
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          require: rubocop_ext
+
+          AllCops:
+            NewCops: pending
+
+          Style/SomeCop:
+            Description: Something
+            Enabled: pending
+            VersionAdded: '1.6'
+        YAML
+
+        create_file('rubocop_ext.rb', <<~RUBY)
+          module RuboCop
+            module Cop
+              module Style
+                class SomeCop < Cop
+                end
+              end
+            end
+          end
+        RUBY
+
+        create_file('redirect.rb', '$stderr = STDOUT')
+      end
+
+      it 'does not show warnings for pending cops' do
+        output = `ruby -I . "#{rubocop}" --require redirect.rb -V`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).not_to include(pending_cop_warning)
+      end
+    end
   end
 
   describe '--only' do

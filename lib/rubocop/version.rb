@@ -34,7 +34,13 @@ module RuboCop
 
     # @api private
     def self.extension_versions(env)
-      env.config_store.for_pwd.loaded_features.sort.map do |loaded_feature|
+      features = Util.silence_warnings do
+        # Suppress any config issues when loading the config (ie. deprecations,
+        # pending cops, etc.).
+        env.config_store.for_pwd.loaded_features.sort
+      end
+
+      features.map do |loaded_feature|
         next unless (match = loaded_feature.match(/rubocop-(?<feature>.*)/))
 
         feature = match[:feature]

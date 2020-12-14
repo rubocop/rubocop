@@ -28,6 +28,7 @@ require_relative 'rubocop/name_similarity'
 require_relative 'rubocop/string_interpreter'
 require_relative 'rubocop/error'
 require_relative 'rubocop/warning'
+require_relative 'rubocop/util'
 
 require_relative 'rubocop/cop/util'
 require_relative 'rubocop/cop/offense'
