@@ -4,11 +4,14 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for comments put on the same line as some keywords.
-      # These keywords are: `begin`, `class`, `def`, `end`, `module`.
+      # These keywords are: `class`, `module`, `def`, `begin`, `end`.
       #
       # Note that some comments
       # (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
       # are allowed.
+      #
+      # Auto-correction removes comments from `end` keyword and keeps comments
+      # for `class`, `module`, `def` and `begin` above the keyword.
       #
       # @example
       #   # bad
@@ -34,16 +37,17 @@ module RuboCop
       #     y
       #   end
       class CommentedKeyword < Base
+        include RangeHelp
+        extend AutoCorrector
+
         MSG = 'Do not place comments on the same line as the ' \
               '`%<keyword>s` keyword.'
 
         def on_new_investigation
           processed_source.comments.each do |comment|
-            next unless (match = line(comment).match(/(?<keyword>\S+).*#/))
+            next unless (match = line(comment).match(/(?<keyword>\S+).*#/)) && offensive?(comment)
 
-            if offensive?(comment)
-              add_offense(comment, message: format(MSG, keyword: match[:keyword]))
-            end
+            register_offense(comment, match[:keyword])
           end
         end
 
@@ -59,6 +63,19 @@ module RuboCop
           rubocop:todo
         ].freeze
         ALLOWED_COMMENT_REGEXES = ALLOWED_COMMENTS.map { |c| /#\s*#{c}/ }.freeze
+
+        def register_offense(comment, matched_keyword)
+          add_offense(comment, message: format(MSG, keyword: matched_keyword)) do |corrector|
+            range = range_with_surrounding_space(range: comment.loc.expression, newlines: false)
+            corrector.remove(range)
+
+            unless matched_keyword == 'end'
+              corrector.insert_before(
+                range.source_buffer.line_range(comment.loc.line), "#{comment.text}\n"
+              )
+            end
+          end
+        end
 
         def offensive?(comment)
           line = line(comment)

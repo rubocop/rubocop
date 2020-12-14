@@ -1562,10 +1562,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example/example1.rb ==
           C:  3: 11: Metrics/ParameterLists: Avoid parameter lists longer than 5 parameters. [6/5]
           C:  3: 39: Naming/MethodParameterName: Method parameter must be at least 3 characters long.
-          C:  3: 46: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
+          C:  3: 46: [Correctable] Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
           E:  3:121: Layout/LineLength: Line is too long. [130/120]
 
-          1 file inspected, 4 offenses detected
+          1 file inspected, 4 offenses detected, 1 offense auto-correctable
         RESULT
         expect($stderr.string).to eq('')
       end
