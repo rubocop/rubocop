@@ -1,0 +1,1 @@
+* [#9232](https://github.com/rubocop-hq/rubocop/pull/9232): Fix `Style/SymbolProc` registering wrong offense when using a symbol numbered block argument greater than 1, i.e. `[[1, 2]].map { _2.succ }`. ([@tdeo][])

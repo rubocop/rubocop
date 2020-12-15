@@ -25,7 +25,7 @@ module RuboCop
         def_node_matcher :symbol_proc?, <<~PATTERN
           ({block numblock}
             ${(send ...) (super ...) zsuper}
-            ${(args (arg _)) %Integer}
+            ${(args (arg _)) 1}
             (send (lvar _var) $_))
         PATTERN
 
