@@ -198,6 +198,10 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       expect_no_offenses('proc { _1.method }')
     end
 
+    it 'accepts block with only second numeric argument' do
+      expect_no_offenses('something { _2.first }')
+    end
+
     it 'accepts Proc.new with 1 argument' do
       expect_no_offenses('Proc.new { _1.method }')
     end
