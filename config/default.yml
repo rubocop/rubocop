@@ -3495,6 +3495,7 @@ Style/KeywordParametersOrder:
   StyleGuide: '#keyword-parameters-order'
   Enabled: true
   VersionAdded: '0.90'
+  VersionChanged: <<next>>
 
 Style/Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
