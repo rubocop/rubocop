@@ -75,30 +75,31 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
       end
     end
 
-    describe '#autocorrect' do
-      it 'corrects bad indentation' do
-        corrected = autocorrect_source(<<~RUBY)
-          if a1
-             b1
-             b1
-          elsif a2
-           b2
-          else
-              c
-          end
-        RUBY
-        # The second `b1` will be corrected by IndentationConsistency.
-        expect(corrected).to eq <<~RUBY
-          if a1
-              b1
-             b1
-          elsif a2
-              b2
-          else
-              c
-          end
-        RUBY
-      end
+    it 'registers and corrects offense for bad indentation' do
+      expect_offense(<<~RUBY)
+        if a1
+           b1
+        ^^^ Use 4 (not 3) spaces for indentation.
+           b1
+        elsif a2
+         b2
+        ^ Use 4 (not 1) spaces for indentation.
+        else
+            c
+        end
+      RUBY
+
+      # The second `b1` will be corrected by IndentationConsistency.
+      expect_correction(<<~RUBY)
+        if a1
+            b1
+           b1
+        elsif a2
+            b2
+        else
+            c
+        end
+      RUBY
     end
   end
 
@@ -224,147 +225,155 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         RUBY
       end
 
-      describe '#autocorrect' do
-        it 'corrects bad indentation' do
-          corrected = autocorrect_source(<<~RUBY)
-            if a1
-               b1
-               b1
-            elsif a2
-             b2
-            else
-                c
-            end
-          RUBY
-          # The second `b1` will be corrected by IndentationConsistency.
-          expect(corrected).to eq <<~RUBY
-            if a1
-              b1
-               b1
-            elsif a2
-              b2
-            else
+      it 'registers and corrects on offense for bad indentation' do
+        expect_offense(<<~RUBY)
+          if a1
+             b1
+          ^^^ Use 2 (not 3) spaces for indentation.
+             b1
+          elsif a2
+           b2
+          ^ Use 2 (not 1) spaces for indentation.
+          else
               c
-            end
-          RUBY
-        end
+          ^^^^ Use 2 (not 4) spaces for indentation.
+          end
+        RUBY
 
-        it 'does not correct in scopes that contain block comments' do
-          source = <<~RUBY
-            module Foo
-            # The class has a block comment within, so it's not corrected.
-            class Bar
-            =begin
-            This is a nice long
-            comment
-            which spans a few lines
-            =end
-            # The method has no block comment inside,
-            # but it's within a class that has a block
-            # comment, so it's not corrected either.
+        # The second `b1` will be corrected by IndentationConsistency.
+        expect_correction(<<~RUBY)
+          if a1
+            b1
+             b1
+          elsif a2
+            b2
+          else
+            c
+          end
+        RUBY
+      end
+
+      it 'does not correct in scopes that contain block comments' do
+        expect_offense(<<~RUBY)
+          module Foo
+          # The class has a block comment within, so it's not corrected.
+          class Bar
+          ^{} Use 2 (not 0) spaces for indentation.
+          =begin
+          This is a nice long
+          comment
+          which spans a few lines
+          =end
+          # The method has no block comment inside,
+          # but it's within a class that has a block
+          # comment, so it's not corrected either.
+          def baz
+          ^{} Use 2 (not 0) spaces for indentation.
+          do_something
+          ^{} Use 2 (not 0) spaces for indentation.
+          end
+          end
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not indent heredoc strings' do
+        expect_offense(<<~'RUBY')
+          module Foo
+          module Bar
+          ^{} Use 2 (not 0) spaces for indentation.
+            SOMETHING = <<GOO
+          text
+          more text
+          foo
+          GOO
             def baz
-            do_something
+              do_something("#{x}")
             end
-            end
-            end
-          RUBY
+          end
+          end
+        RUBY
 
-          expect(autocorrect_source(source)).to eq source
-        end
-
-        it 'does not indent heredoc strings' do
-          corrected = autocorrect_source(<<~'RUBY')
-            module Foo
+        expect_correction(<<~'RUBY')
+          module Foo
             module Bar
               SOMETHING = <<GOO
-            text
-            more text
-            foo
-            GOO
+          text
+          more text
+          foo
+          GOO
               def baz
                 do_something("#{x}")
               end
             end
-            end
-          RUBY
-          expect(corrected).to eq <<~'RUBY'
-            module Foo
-              module Bar
-                SOMETHING = <<GOO
-            text
-            more text
-            foo
-            GOO
-                def baz
-                  do_something("#{x}")
-                end
-              end
-            end
-          RUBY
-        end
+          end
+        RUBY
+      end
 
-        it 'indents parenthesized expressions' do
-          src = <<~RUBY
-            var1 = nil
-            array_list = []
-            if var1.attr1 != 0 || array_list.select{ |w|
-                                    (w.attr2 == var1.attr2)
-                             }.blank?
-              array_list << var1
-            end
-          RUBY
-          corrected = autocorrect_source(src)
-          expect(corrected)
-            .to eq <<~RUBY
-              var1 = nil
-              array_list = []
-              if var1.attr1 != 0 || array_list.select{ |w|
-                                 (w.attr2 == var1.attr2)
-                               }.blank?
-                array_list << var1
-              end
-            RUBY
-        end
+      it 'indents parenthesized expressions' do
+        expect_offense(<<~RUBY)
+          var1 = nil
+          array_list = []
+          if var1.attr1 != 0 || array_list.select{ |w|
+                                  (w.attr2 == var1.attr2)
+                           ^^^^^^^ Use 2 (not 7) spaces for indentation.
+                           }.blank?
+            array_list << var1
+          end
+        RUBY
 
-        it 'leaves rescue ; end unchanged' do
-          src = <<~RUBY
-            if variable
-              begin
-                do_something
-              rescue ; end # consume any exception
-            end
-          RUBY
-          corrected = autocorrect_source(src)
-          expect(corrected).to eq src
-        end
+        expect_correction(<<~RUBY)
+          var1 = nil
+          array_list = []
+          if var1.attr1 != 0 || array_list.select{ |w|
+                             (w.attr2 == var1.attr2)
+                           }.blank?
+            array_list << var1
+          end
+        RUBY
+      end
 
-        it 'leaves block unchanged if block end is not on its own line' do
-          src = <<~RUBY
-            a_function {
-              # a comment
-              result = AObject.find_by_attr(attr) if attr
-              result || AObject.make(
-                  :attr => attr,
-                  :attr2 => Other.get_value(),
-                  :attr3 => Another.get_value()) }
-          RUBY
-          corrected = autocorrect_source(src)
-          expect(corrected).to eq src
-        end
+      it 'leaves rescue ; end unchanged' do
+        expect_no_offenses(<<~RUBY)
+          if variable
+            begin
+              do_something
+            rescue ; end # consume any exception
+          end
+        RUBY
+      end
 
-        it 'handles lines with only whitespace' do
-          corrected = autocorrect_source(['def x',
-                                          '    y',
-                                          ' ',
-                                          'rescue',
-                                          'end'].join("\n"))
+      it 'leaves block unchanged if block end is not on its own line' do
+        expect_no_offenses(<<~RUBY)
+          a_function {
+            # a comment
+            result = AObject.find_by_attr(attr) if attr
+            result || AObject.make(
+                :attr => attr,
+                :attr2 => Other.get_value(),
+                :attr3 => Another.get_value()) }
+        RUBY
+      end
 
-          expect(corrected).to eq ['def x',
-                                   '  y',
-                                   ' ',
-                                   'rescue',
-                                   'end'].join("\n")
-        end
+      it 'handles lines with only whitespace' do
+        expect_offense(<<~RUBY)
+          def x
+              y
+          ^^^^ Use 2 (not 4) spaces for indentation.
+
+          rescue
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def x
+            y
+
+          rescue
+          end
+        RUBY
       end
 
       it 'accepts a one line if statement' do
@@ -628,18 +637,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               RUBY
             end
 
-            it 'autocorrects bad indentation' do
-              corrected = autocorrect_source(<<~RUBY)
+            it 'registers and corrects bad indentation' do
+              expect_offense(<<~RUBY)
                 var = if a
                   b
+                  ^ Use 2 (not -4) spaces for indentation.
                 end
 
                 var = while a
                   b
+                  ^ Use 2 (not -4) spaces for indentation.
                 end
               RUBY
               # Not this cop's job to fix the `end`.
-              expect(corrected).to eq <<~RUBY
+              expect_correction(<<~RUBY)
                 var = if a
                         b
                 end

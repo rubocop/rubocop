@@ -5,15 +5,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
 
   let(:config) { RuboCop::Config.new }
 
-  shared_examples 'offense' do |name, code, offense, correction|
-    it "registers an offense when #{name}" do
+  # FIXME: Remove unused vars
+  shared_examples 'offense' do |name, _code, offense, correction|
+    it "registers an offense and corrects when #{name}" do
       expect_offense(offense)
-    end
-
-    it "autocorrects offense when #{name}" do
-      corrected = autocorrect_source(code)
-
-      expect(corrected).to eq(correction)
+      expect_correction(correction)
     end
   end
 
@@ -100,7 +96,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
       CODE
         foo .
            ^ Avoid using spaces around a method call operator.
-            bar
+          bar
       OFFENSE
         foo.
           bar
@@ -284,7 +280,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
       CODE
         foo &.
            ^ Avoid using spaces around a method call operator.
-            bar
+          bar
       OFFENSE
         foo&.
           bar

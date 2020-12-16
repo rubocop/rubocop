@@ -132,8 +132,9 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
 
       it 'does not crash' do
         expect do
-          inspect_source(<<~RUBY)
+          expect_offense(<<~RUBY)
             xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = LDAP::DEFAULT_GROUP_UNIQUE_MEMBER_LIST_KEY
+                                                                                            ^^^^^ Line is too long. [85/80]
           RUBY
         end.not_to raise_error
       end
@@ -196,7 +197,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     context 'when the source has no AST' do
       it 'does not crash' do
         expect do
-          inspect_source('# this results in AST being nil')
+          expect_no_offenses('# this results in AST being nil')
         end.not_to raise_error
       end
     end
