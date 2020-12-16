@@ -9,6 +9,12 @@ module RuboCop
       # In rare cases where only one iteration (or at most one iteration) is intended behavior,
       # the code should be refactored to use `if` conditionals.
       #
+      # NOTE: Block methods that are used with `Enumerable`s are considered to be loops.
+      #
+      # `IgnoredPatterns` can be used to match against the block receiver in order to allow
+      # code that would otherwise be registered as an offense (eg. `times` used not in an
+      # `Enumerable` context).
+      #
       # @example
       #   # bad
       #   while node
@@ -70,7 +76,16 @@ module RuboCop
       #     raise NotFoundError
       #   end
       #
+      #   # bad
+      #   2.times { raise ArgumentError }
+      #
+      # @example IgnoredPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
+      #
+      #   # good
+      #   exactly(2).times { raise StandardError }
       class UnreachableLoop < Base
+        include IgnoredPattern
+
         MSG = 'This loop will have at most one iteration.'
 
         def on_while(node)
@@ -91,6 +106,8 @@ module RuboCop
           return false unless node.block_type?
 
           send_node = node.send_node
+          return false if matches_ignored_pattern?(send_node.source)
+
           send_node.enumerable_method? || send_node.enumerator_method? || send_node.method?(:loop)
         end
 
