@@ -166,7 +166,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'shows with version of extension cops' do
-        # Run in different process that requiring rubocop-perfmance and rubocop-rspec
+        # Run in different process that requiring rubocop-performance and rubocop-rspec
         # does not affect other testing processes.
         output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
         expect(output).to include(RuboCop::Version::STRING)
@@ -653,6 +653,77 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq(<<~MESSAGE)
           --except argument should be [COP1,COP2,...].
         MESSAGE
+      end
+    end
+
+    context 'when the cop is defined in a require', :restore_registry do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          require:
+            - './custom_cops.rb'
+        YAML
+
+        create_file('example.rb', 'foo(:bar)')
+      end
+
+      context 'when the cop name is not duplicated' do
+        before do
+          create_file('custom_cops.rb', <<~RUBY)
+            module CustomCops
+              class NoMethods < RuboCop::Cop::Base
+                MSG = 'Methods are not allowed.'
+
+                def on_send(node)
+                  add_offense(node)
+                end
+              end
+            end
+          RUBY
+        end
+
+        it 'runs the cop without warnings' do
+          expect(cli.run(['--format', 'simple',
+                          '--only', 'CustomCops/NoMethods',
+                          'example.rb'])).to eq(1)
+
+          expect($stdout.string).to eq(<<~RESULT)
+            == example.rb ==
+            C:  1:  1: CustomCops/NoMethods: Methods are not allowed.
+
+            1 file inspected, 1 offense detected
+          RESULT
+          expect($stderr.string).not_to match(%r{CustomCops/NoMethods has the wrong namespace})
+        end
+      end
+
+      context 'when the cop name duplicates a built-in cop' do
+        before do
+          create_file('custom_cops.rb', <<~RUBY)
+            module CustomCops
+              class MethodLength < RuboCop::Cop::Base
+                MSG = 'Method is too long.'
+
+                def on_send(node)
+                  add_offense(node)
+                end
+              end
+            end
+          RUBY
+        end
+
+        it 'runs the correct cop without warnings' do
+          expect(cli.run(['--format', 'simple',
+                          '--only', 'CustomCops/MethodLength',
+                          'example.rb'])).to eq(1)
+
+          expect($stdout.string).to eq(<<~RESULT)
+            == example.rb ==
+            C:  1:  1: CustomCops/MethodLength: Method is too long.
+
+            1 file inspected, 1 offense detected
+          RESULT
+          expect($stderr.string).not_to match(%r{CustomCops/MethodLength has the wrong namespace})
+        end
       end
     end
   end
