@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'unknown' } }
 
     it 'fails with an error' do
-      expect { inspect_source('each { }') }
+      expect { expect_no_offenses('each { }') }
         .to raise_error('Unknown EnforcedStyleForEmptyBraces selected!')
     end
   end
