@@ -1487,6 +1487,7 @@ Lint/DuplicateBranch:
   VersionAdded: '1.3'
   VersionChanged: <<next>>
   IgnoreLiteralBranches: false
+  IgnoreConstantBranches: false
 
 Lint/DuplicateCaseCondition:
   Description: 'Do not repeat values in case conditionals.'
