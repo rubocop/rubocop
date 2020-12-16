@@ -76,6 +76,14 @@ module RuboCop
       #
       #   def b
       #   end
+      #
+      # @example AllowAdjacentOneLineDefs: true
+      #
+      #   # good
+      #   class ErrorA < BaseError; end
+      #   class ErrorB < BaseError; end
+      #   class ErrorC < BaseError; end
+      #
       class EmptyLineBetweenDefs < Base
         include RangeHelp
         extend AutoCorrector
