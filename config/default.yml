@@ -2061,6 +2061,11 @@ Lint/UnreachableLoop:
   Description: 'This cop checks for loops that will have at most one iteration.'
   Enabled: true
   VersionAdded: '0.89'
+  VersionChanged: <<next>>
+  IgnoredPatterns:
+    # RSpec uses `times` in its message expectations
+    # eg. `exactly(2).times`
+    - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
