@@ -27,6 +27,22 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
         x.call(a, b)
       RUBY
     end
+
+    it 'registers an offense for correct + multiple opposite styles' do
+      expect_offense(<<~RUBY)
+        x.call(a, b)
+        x.(a, b)
+        ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
+        x.(a, b)
+        ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.call(a, b)
+        x.call(a, b)
+        x.call(a, b)
+      RUBY
+    end
   end
 
   context 'when style is set to braces' do
@@ -51,6 +67,22 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       RUBY
 
       expect_correction(<<~RUBY)
+        x.(a, b)
+        x.(a, b)
+      RUBY
+    end
+
+    it 'registers an offense for correct + multiple opposite styles' do
+      expect_offense(<<~RUBY)
+        x.call(a, b)
+        ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+        x.(a, b)
+        x.call(a, b)
+        ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.(a, b)
         x.(a, b)
         x.(a, b)
       RUBY
