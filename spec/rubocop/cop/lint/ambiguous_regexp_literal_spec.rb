@@ -129,6 +129,28 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
           end
         RUBY
       end
+
+      it 'registers an offense when regexp is in an expression using the match operator' do
+        expect_offense(<<~RUBY)
+          p /pattern/ =~ some_string
+            ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          p(/pattern/ =~ some_string)
+        RUBY
+      end
+
+      it 'registers an offense when regexp is in an expression using the match operator and there are more arguments' do
+        expect_offense(<<~RUBY)
+          p /pattern/ =~ some_string, some_arg
+            ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          p(/pattern/ =~ some_string, some_arg)
+        RUBY
+      end
     end
 
     context 'with parentheses' do
