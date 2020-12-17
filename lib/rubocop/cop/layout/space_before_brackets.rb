@@ -24,10 +24,6 @@ module RuboCop
 
         MSG = 'Remove the space before the opening brackets.'
 
-        def_node_matcher :bad_method?, <<~PATTERN
-          (send nil? :bad_method ...)
-        PATTERN
-
         def on_send(node)
           return if node.parenthesized? || node.parent&.send_type?
           return unless (first_argument = node.first_argument)
