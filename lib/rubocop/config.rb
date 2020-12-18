@@ -50,8 +50,8 @@ module RuboCop
       self
     end
 
-    def_delegators :@hash, :[], :[]=, :delete, :each, :key?, :keys, :each_key,
-                   :fetch, :map, :merge, :to_h, :to_hash, :transform_values
+    def_delegators :@hash, :[], :[]=, :delete, :dig, :each, :key?, :keys, :each_key,
+                   :fetch, :map, :merge, :replace, :to_h, :to_hash, :transform_values
     def_delegators :@validator, :validate, :target_ruby_version
 
     def to_s
@@ -281,6 +281,9 @@ module RuboCop
     end
 
     def enable_cop?(qualified_cop_name, cop_options)
+      # If the cop is explicitly enabled, the other checks can be skipped.
+      return true if cop_options['Enabled'] == true
+
       department = department_of(qualified_cop_name)
       cop_enabled = cop_options.fetch('Enabled') do
         !for_all_cops['DisabledByDefault']

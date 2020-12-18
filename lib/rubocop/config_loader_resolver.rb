@@ -20,12 +20,13 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
-    def resolve_inheritance(path, hash, file, debug)
+    def resolve_inheritance(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       inherited_files = Array(hash['inherit_from'])
       base_configs(path, inherited_files, file)
         .reverse.each_with_index do |base_config, index|
         override_department_setting_for_cops(base_config, hash)
+        override_enabled_for_disabled_departments(base_config, hash)
+
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
 
@@ -39,7 +40,6 @@ module RuboCop
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def resolve_inheritance_from_gems(hash)
       gems = hash.delete('inherit_gem')
@@ -75,6 +75,7 @@ module RuboCop
       end
 
       config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
+      override_enabled_for_disabled_departments(default_configuration, config)
 
       opts = { inherit_mode: config['inherit_mode'] || {},
                unset_nil: unset_nil }
@@ -122,10 +123,26 @@ module RuboCop
       end
     end
 
+    # If a cop was previously explicitly enabled, but then superseded by the
+    # department being disabled, disable it.
+    def override_enabled_for_disabled_departments(base_hash, derived_hash)
+      cops_to_disable = derived_hash.each_key.with_object([]) do |key, cops|
+        next unless disabled?(derived_hash, key)
+
+        cops.concat(base_hash.keys.grep(Regexp.new("^#{key}/")))
+      end
+
+      cops_to_disable.each do |cop_name|
+        next unless base_hash.dig(cop_name, 'Enabled') == true
+
+        derived_hash.replace(merge({ cop_name => { 'Enabled' => false } }, derived_hash))
+      end
+    end
+
     private
 
     def disabled?(hash, department)
-      hash[department] && hash[department]['Enabled'] == false
+      hash[department].is_a?(Hash) && hash[department]['Enabled'] == false
     end
 
     def duplicate_setting?(base_hash, derived_hash, key, inherited_file)
