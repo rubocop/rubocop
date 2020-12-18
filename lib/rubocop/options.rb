@@ -66,7 +66,7 @@ module RuboCop
         add_configuration_options(opts)
         add_formatting_options(opts)
 
-        option(opts, '-r', '--require FILE') { |f| require f }
+        option(opts, '-r', '--require FILE') { |f| require_feature(f) }
 
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
@@ -231,6 +231,13 @@ module RuboCop
       long_opt = args.find { |arg| arg.start_with?('--') }
       long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '')
                      .tr('-', '_').gsub(/[\[\]]/, '').to_sym
+    end
+
+    def require_feature(file)
+      # If any features were added on the CLI from `--require`,
+      # add them to the config.
+      ConfigLoader.add_loaded_features(file)
+      require file
     end
   end
 

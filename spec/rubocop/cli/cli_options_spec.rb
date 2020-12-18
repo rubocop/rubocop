@@ -1964,6 +1964,45 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe '--require', :restore_registry do
+    context 'when adding an extension' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Rails/NotNullColumn:
+            Enabled: false
+        YAML
+
+        create_file('rubocop-rails.rb', <<~RUBY)
+          module RuboCop
+            module Cop
+              module Rails
+                class NotNullColumn < Base
+                end
+              end
+            end
+          end
+        RUBY
+
+        # Add the temporary dir to the load path so that the fake extension
+        # can be found.
+        $LOAD_PATH.unshift(File.dirname('rubocop-rails.rb'))
+
+        RuboCop::ConfigLoader.clear_options
+      end
+
+      it 'does not show an obsoletion error' do
+        opts = ['--format', 'simple',
+                '--require', 'rubocop-rails',
+                '--only', 'Rails']
+
+        expect(cli.run(opts)).to eq(0)
+        expect(RuboCop::ConfigLoader.loaded_features).to contain_exactly('rubocop-rails')
+        expect($stdout.string.strip).to eq('1 file inspected, no offenses detected')
+        expect($stderr.string).to eq('')
+      end
+    end
+  end
+
   describe 'option is invalid' do
     it 'suggests to use the --help flag' do
       invalid_option = '--invalid-option'
