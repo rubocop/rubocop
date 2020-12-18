@@ -276,7 +276,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
         end
       end
 
-      context 'when the extensions are loaded via inherit_gem' do
+      context 'when the extensions are loaded via inherit_gem', :restore_registry do
         let(:resolver) { RuboCop::ConfigLoaderResolver.new }
         let(:gem_root) { File.expand_path('gems') }
 
@@ -285,10 +285,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
             'inherit_gem' => { 'rubocop-includes' => '.rubocop.yml' },
             'Performance/Casecmp' => { 'Enabled': true }
           }
-        end
-
-        around do |example|
-          RuboCop::Cop::Registry.with_temporary_global(RuboCop::Cop::Registry.new) { example.run }
         end
 
         before do

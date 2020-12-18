@@ -31,6 +31,7 @@ module RuboCop
 
       def clear_options
         @debug = nil
+        @loaded_features = []
         FileFinder.root_level = nil
       end
 
@@ -177,18 +178,21 @@ module RuboCop
         @loaded_features.flatten.compact
       end
 
-      private
-
-      def file_path(file)
-        File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
-      end
-
+      # @api private
+      # Used to add features that were required inside a config or from
+      # the CLI using `--require`.
       def add_loaded_features(loaded_features)
         if instance_variable_defined?(:@loaded_features)
           instance_variable_get(:@loaded_features) << loaded_features
         else
           instance_variable_set(:@loaded_features, [loaded_features])
         end
+      end
+
+      private
+
+      def file_path(file)
+        File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
       end
 
       def find_project_dotfile(target_dir)
