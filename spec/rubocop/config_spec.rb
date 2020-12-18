@@ -774,9 +774,9 @@ RSpec.describe RuboCop::Config do
           }
         end
 
-        it 'still disables the cop' do
+        it 'the cop setting overrides the department' do
           cop_class = RuboCop::Cop::Layout::TrailingWhitespace
-          expect(cop_enabled(cop_class)).to be false
+          expect(cop_enabled(cop_class)).to be true
         end
       end
     end
@@ -790,7 +790,20 @@ RSpec.describe RuboCop::Config do
           }
         end
 
-        it 'still disables the cop' do
+        it 'the cop setting overrides the department' do
+          cop_class = 'Foo/Bar/BazCop'
+          expect(cop_enabled(cop_class)).to be true
+        end
+      end
+
+      context 'and an individual cop is not specified' do
+        let(:hash) do
+          {
+            'Foo/Bar' => { 'Enabled' => false }
+          }
+        end
+
+        it 'the cop setting overrides the department' do
           cop_class = 'Foo/Bar/BazCop'
           expect(cop_enabled(cop_class)).to be false
         end
