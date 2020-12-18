@@ -70,6 +70,7 @@ module RuboCop
           return unless outermost_send.loc.end
           return unless heredoc_arg.first_line != outermost_send.loc.end.line
           return if subsequent_closing_parentheses_in_same_line?(outermost_send)
+          return if exist_argument_between_heredoc_end_and_closing_parentheses?(node)
 
           add_offense(outermost_send.loc.end) do |corrector|
             autocorrect(corrector, outermost_send)
@@ -213,6 +214,19 @@ module RuboCop
           else
             end_pos
           end
+        end
+
+        def exist_argument_between_heredoc_end_and_closing_parentheses?(node)
+          return false unless (heredoc_end = find_most_bottom_of_heredoc_end(node.arguments))
+
+          heredoc_end < node.loc.end.begin_pos &&
+            range_between(heredoc_end, node.loc.end.begin_pos).source.strip != ''
+        end
+
+        def find_most_bottom_of_heredoc_end(arguments)
+          arguments.map do |argument|
+            argument.loc.heredoc_end.end_pos if argument.loc.respond_to?(:heredoc_end)
+          end.compact.max
         end
 
         # Internal trailing comma helpers.

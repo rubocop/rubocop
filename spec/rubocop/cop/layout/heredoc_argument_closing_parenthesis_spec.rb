@@ -66,6 +66,18 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
       RUBY
     end
 
+    it 'accepts when there is an argument between a heredoc argument and the closing paretheses' do
+      expect_no_offenses(<<~RUBY)
+        foo(<<~TEXT,
+            Lots of
+            Lovely
+            Text
+          TEXT
+          some_arg: { foo: "bar" }
+        )
+      RUBY
+    end
+
     it 'accepts correct case with other param after' do
       expect_no_offenses(<<~RUBY)
         foo(<<-SQL, 123)
