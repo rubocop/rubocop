@@ -90,6 +90,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('something { |x,| x.first }')
   end
 
+  it 'accepts a block with an unused argument with an method call' do
+    expect_no_offenses('something { |_x| y.call }')
+  end
+
+  it 'accepts a block with an unused argument with an lvar' do
+    expect_no_offenses(<<~RUBY)
+      y = Y.new
+      something { |_x| y.call }
+    RUBY
+  end
+
   context 'when the method has arguments' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

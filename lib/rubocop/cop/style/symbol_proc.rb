@@ -22,11 +22,12 @@ module RuboCop
         SUPER_TYPES = %i[super zsuper].freeze
 
         def_node_matcher :proc_node?, '(send (const {nil? cbase} :Proc) :new)'
+        def_node_matcher :symbol_proc_receiver?, '{(send ...) (super ...) zsuper}'
         def_node_matcher :symbol_proc?, <<~PATTERN
-          ({block numblock}
-            ${(send ...) (super ...) zsuper}
-            ${(args (arg _)) 1}
-            (send (lvar _var) $_))
+          {
+            (block $#symbol_proc_receiver? $(args (arg _var)) (send (lvar _var) $_))
+            (numblock $#symbol_proc_receiver? $1 (send (lvar :_1) $_))
+          }
         PATTERN
 
         def self.autocorrect_incompatible_with
