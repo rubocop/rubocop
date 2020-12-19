@@ -1,0 +1,1 @@
+* [#9261](https://github.com/rubocop-hq/rubocop/pull/9261): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when one line for multiple condidate values of `when` statement. ([@makicamel][])
