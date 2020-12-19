@@ -84,6 +84,19 @@ https://github.com/yujinakayama/guard-rubocop[guard-rubocop]. It
 allows you to automatically check Ruby code style with RuboCop when
 files are modified.
 
+== Mega-Linter integration
+
+You can use https://nvuillam.github.io/mega-linter/[Mega-Linter]
+to run rubocop automatically on every PR, and also lint all file
+types detected in your repository.
+
+Please follow
+https://nvuillam.github.io/mega-linter/installation[installation instructions]
+to have rubocop activated without additional configuration
+
+https://nvuillam.github.io/mega-linter/flavors/ruby/[Mega-Linter ruby flavor]
+is optimized for ruby linting
+
 == Rake integration
 
 To use RuboCop in your `Rakefile` add the following:
