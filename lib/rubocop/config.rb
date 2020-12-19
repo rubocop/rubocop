@@ -292,10 +292,10 @@ module RuboCop
     end
 
     def department_of(qualified_cop_name)
-      cop_department, cop_name = qualified_cop_name.split('/')
-      return nil if cop_name.nil?
+      *cop_department, _ = qualified_cop_name.split('/')
+      return nil if cop_department.empty?
 
-      self[cop_department]
+      self[cop_department.join('/')]
     end
   end
 end
