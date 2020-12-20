@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
   it 'allows assigning to a splat' do
     expect_no_offenses('*, rhs = *node')
   end
@@ -77,10 +75,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
   end
 
   it_behaves_like 'array splat expansion', '[1, 2, 3]', as_args: '1, 2, 3'
-  it_behaves_like 'array splat expansion', '%w(one two three)',
-                  as_args: "'one', 'two', 'three'"
-  it_behaves_like 'array splat expansion', '%W(one #{two} three)',
-                  as_args: '"one", "#{two}", "three"'
   it_behaves_like 'splat expansion', "'a'", as_array: "['a']"
   it_behaves_like 'splat expansion', '"#{a}"', as_array: '["#{a}"]'
   it_behaves_like 'splat expansion', '1', as_array: '[1]'
@@ -333,36 +327,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
     end
   end
 
-  it_behaves_like 'array splat expansion', '%i(first second)',
-                  as_args: ':first, :second'
-  it_behaves_like 'array splat expansion', '%I(first second #{third})',
-                  as_args: ':"first", :"second", :"#{third}"'
-
   context 'arrays being expanded with %i variants using splat expansion' do
-    context 'splat expansion of method parameters' do
-      it 'registers an offense and corrects an array literal %i' do
-        expect_offense(<<~RUBY)
-          array.push(*%i(first second))
-                     ^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array.push(:first, :second)
-        RUBY
-      end
-
-      it 'registers an offense and corrects an array literal %I' do
-        expect_offense(<<~RUBY)
-          array.push(*%I(\#{first} second))
-                     ^^^^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array.push(:"\#{first}", :"second")
-        RUBY
-      end
-    end
-
     context 'splat expansion inside of an array' do
       it 'registers an offense and corrects %i to a list of symbols' do
         expect_offense(<<~RUBY)
@@ -383,6 +348,74 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion do
 
         expect_correction(<<~'RUBY')
           [:a, :b, :"#{one}", :"two", :e]
+        RUBY
+      end
+    end
+  end
+
+  context 'when `AllowPercentLiteralArrayArgument: true`' do
+    let(:cop_config) do
+      { 'AllowPercentLiteralArrayArgument' => true }
+    end
+
+    it 'does not register an offense when using percent string literal array' do
+      expect_no_offenses(<<~'RUBY')
+        do_something(*%w[foo bar baz])
+      RUBY
+    end
+
+    it 'does not register an offense when using percent symbol literal array' do
+      expect_no_offenses(<<~'RUBY')
+        do_something(*%i[foo bar baz])
+      RUBY
+    end
+  end
+
+  context 'when `AllowPercentLiteralArrayArgument: false`' do
+    let(:cop_config) do
+      { 'AllowPercentLiteralArrayArgument' => false }
+    end
+
+    it_behaves_like 'array splat expansion', '%w(one two three)', as_args: "'one', 'two', 'three'"
+    it_behaves_like 'array splat expansion', '%W(one #{two} three)', as_args: '"one", "#{two}", "three"'
+
+    it 'registers an offense when using percent literal array' do
+      expect_offense(<<~'RUBY')
+        do_something(*%w[foo bar baz])
+                     ^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+      RUBY
+    end
+
+    it_behaves_like 'array splat expansion', '%i(first second)', as_args: ':first, :second'
+    it_behaves_like 'array splat expansion', '%I(first second #{third})', as_args: ':"first", :"second", :"#{third}"'
+
+    it 'registers an offense when using percent symbol literal array' do
+      expect_offense(<<~'RUBY')
+        do_something(*%i[foo bar baz])
+                     ^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+      RUBY
+    end
+
+    context 'splat expansion of method parameters' do
+      it 'registers an offense and corrects an array literal %i' do
+        expect_offense(<<~RUBY)
+          array.push(*%i(first second))
+                     ^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.push(:first, :second)
+        RUBY
+      end
+
+      it 'registers an offense and corrects an array literal %I' do
+        expect_offense(<<~RUBY)
+          array.push(*%I(\#{first} second))
+                     ^^^^^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.push(:"\#{first}", :"second")
         RUBY
       end
     end

@@ -1858,6 +1858,8 @@ Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
   Enabled: true
   VersionAdded: '0.76'
+  VersionChanged: <<next>>
+  AllowPercentLiteralArrayArgument: true
 
 Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
