@@ -87,15 +87,15 @@ files are modified.
 == Mega-Linter integration
 
 You can use https://nvuillam.github.io/mega-linter/[Mega-Linter]
-to run rubocop automatically on every PR, and also lint all file
+to run RuboCop automatically on every PR, and also lint all file
 types detected in your repository.
 
-Please follow
+Please follow the
 https://nvuillam.github.io/mega-linter/installation[installation instructions]
-to have rubocop activated without additional configuration
+to activate RuboCop without any additional configuration.
 
-https://nvuillam.github.io/mega-linter/flavors/ruby/[Mega-Linter ruby flavor]
-is optimized for ruby linting
+https://nvuillam.github.io/mega-linter/flavors/ruby/[Mega-Linter's Ruby flavor]
+is optimized for Ruby linting.
 
 == Rake integration
 
