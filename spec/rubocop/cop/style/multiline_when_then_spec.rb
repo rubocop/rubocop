@@ -137,6 +137,21 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
     RUBY
   end
 
+  it 'registers an offense when one line for multiple condidate values of `when`' do
+    expect_offense(<<~RUBY)
+      case foo
+      when bar, baz then
+                    ^^^^ Do not use `then` for multiline `when` statement.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case foo
+      when bar, baz
+      end
+    RUBY
+  end
+
   it 'does not register an offense when line break for multiple condidate values of `when`' do
     expect_no_offenses(<<~RUBY)
       case foo
