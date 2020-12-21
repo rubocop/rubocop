@@ -2916,7 +2916,7 @@ Style/CollectionMethods:
   StyleGuide: '#map-find-select-reduce-include-size'
   Enabled: false
   VersionAdded: '0.9'
-  VersionChanged: '0.27'
+  VersionChanged: <<next>>
   Safe: false
   # Mapping from undesired method to desired method
   # e.g. to use `detect` over `find`:
@@ -2931,6 +2931,11 @@ Style/CollectionMethods:
     detect: 'find'
     find_all: 'select'
     member?: 'include?'
+  # Methods in this array accept a final symbol as an implicit block
+  # eg. `inject(:+)`
+  MethodsAcceptingSymbol:
+    - inject
+    - reduce
 
 Style/ColonMethodCall:
   Description: 'Do not use :: for method call.'

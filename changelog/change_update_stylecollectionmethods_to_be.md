@@ -1,0 +1,1 @@
+* [#9262](https://github.com/rubocop-hq/rubocop/issues/9262): Update `Style/CollectionMethods` to be handle additional arguments and methods that accept a symbol instead of a block. ([@dvandersluis][])
