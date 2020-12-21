@@ -3683,6 +3683,7 @@ Style/MultilineMethodSignature:
   Description: 'Avoid multi-line method signatures.'
   Enabled: false
   VersionAdded: '0.59'
+  VersionChanged: <<next>>
 
 Style/MultilineTernaryOperator:
   Description: >-
