@@ -143,18 +143,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'auto-corrects missing blank line' do
-      new_source = autocorrect_source(<<~RUBY)
-        x = 0
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, source: "x = 0\n")
         x = 0
 
       RUBY
     end
 
     it 'auto-corrects missing newline' do
-      new_source = autocorrect_source('x = 0')
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY, source: 'x = 0')
         x = 0
 
       RUBY

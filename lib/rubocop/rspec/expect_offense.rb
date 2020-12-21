@@ -111,28 +111,9 @@ module RuboCop
         source
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def expect_offense(source, file = nil, severity: nil, **replacements)
-        source = format_offense(source, **replacements)
-        RuboCop::Formatter::DisabledConfigFormatter
-          .config_to_allow_offenses = {}
-        RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-        cop.instance_variable_get(:@options)[:auto_correct] = true
-
-        expected_annotations = AnnotatedSource.parse(source)
-
-        if expected_annotations.plain_source == source
-          raise 'Use `expect_no_offenses` to assert that no offenses are found'
-        end
-
-        @processed_source = parse_source(expected_annotations.plain_source,
-                                         file)
-
-        unless @processed_source.valid_syntax?
-          raise 'Error parsing example code: ' \
-            "#{@processed_source.diagnostics.map(&:render).join("\n")}"
-        end
-
+        expected_annotations = parse_annotations(source, **replacements)
+        @processed_source = parse_processed_source(expected_annotations.plain_source, file)
         @offenses = _investigate(cop, @processed_source)
         actual_annotations =
           expected_annotations.with_offense_annotations(@offenses)
@@ -143,7 +124,14 @@ module RuboCop
         @offenses
       end
 
-      def expect_correction(correction, loop: true)
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def expect_correction(correction, loop: true, source: nil)
+        if source
+          expected_annotations = parse_annotations(source, raise_error: false)
+          @processed_source = parse_processed_source(expected_annotations.plain_source)
+          _investigate(cop, @processed_source)
+        end
+
         raise '`expect_correction` must follow `expect_offense`' unless @processed_source
 
         iteration = 0
@@ -190,6 +178,30 @@ module RuboCop
         actual_annotations =
           expected_annotations.with_offense_annotations(offenses)
         expect(actual_annotations.to_s).to eq(source)
+      end
+
+      def parse_annotations(source, raise_error: true, **replacements)
+        set_formatter_options
+
+        source = format_offense(source, **replacements)
+        annotations = AnnotatedSource.parse(source)
+        return annotations unless raise_error && annotations.plain_source == source
+
+        raise 'Use `expect_no_offenses` to assert that no offenses are found'
+      end
+
+      def parse_processed_source(source, file = nil)
+        processed_source = parse_source(source, file)
+        return processed_source if processed_source.valid_syntax?
+
+        raise 'Error parsing example code: ' \
+          "#{processed_source.diagnostics.map(&:render).join("\n")}"
+      end
+
+      def set_formatter_options
+        RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+        RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
+        cop.instance_variable_get(:@options)[:auto_correct] = true
       end
 
       # Parsed representation of code annotated with the `^^^ Message` style
