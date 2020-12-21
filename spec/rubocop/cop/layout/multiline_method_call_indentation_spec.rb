@@ -91,15 +91,6 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it "doesn't fail on unary operators" do
-      expect { inspect_source(<<~RUBY) }.not_to raise_error
-        def foo
-          !0
-          .nil?
-        end
-      RUBY
-    end
-
     it "doesn't crash on unaligned multiline lambdas" do
       expect_no_offenses(<<~RUBY)
         MyClass.(my_args)
@@ -229,6 +220,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
 
     include_examples 'common'
     include_examples 'common for aligned and indented'
+
+    it "doesn't fail on unary operators" do
+      expect_offense(<<~RUBY)
+        def foo
+          !0
+          .nil?
+          ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+    end
 
     # We call it semantic alignment when a dot is aligned with the first dot in
     # a chain of calls, and that first dot does not begin its line.
@@ -636,6 +637,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     include_examples 'common'
     include_examples 'both indented* styles'
 
+    it "doesn't fail on unary operators" do
+      expect_offense(<<~RUBY)
+        def foo
+          !0
+          .nil?
+          ^^^^^ Indent `.nil?` 2 spaces more than `0` on line 2.
+        end
+      RUBY
+    end
+
     it 'accepts correctly indented methods in operation' do
       expect_no_offenses(<<~RUBY)
         1 + a
@@ -787,6 +798,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     include_examples 'common'
     include_examples 'common for aligned and indented'
     include_examples 'both indented* styles'
+
+    it "doesn't fail on unary operators" do
+      expect_offense(<<~RUBY)
+        def foo
+          !0
+          .nil?
+          ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+    end
 
     it 'accepts correctly indented methods in operation' do
       expect_no_offenses(<<~RUBY)
