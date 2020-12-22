@@ -6,6 +6,8 @@ module RuboCop
       # This cop checks for single-line method definitions that contain a body.
       # It will accept single-line methods with no body.
       #
+      # Endless methods added in Ruby 3.0 are also accepted by this cop.
+      #
       # @example
       #   # bad
       #   def some_method; body end
@@ -15,6 +17,7 @@ module RuboCop
       #   # good
       #   def self.resource_class=(klass); end
       #   def @table.columns; end
+      #   def some_method() = body
       #
       # @example AllowIfMethodIsEmpty: true (default)
       #   # good
@@ -32,6 +35,7 @@ module RuboCop
 
         def on_def(node)
           return unless node.single_line?
+          return if node.endless?
           return if allow_empty? && !node.body
 
           add_offense(node) do |corrector|

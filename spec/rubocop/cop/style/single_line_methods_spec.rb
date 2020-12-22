@@ -149,4 +149,12 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
       |  end
     RUBY
   end
+
+  context 'endless methods', :ruby30 do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method() = x
+      RUBY
+    end
+  end
 end

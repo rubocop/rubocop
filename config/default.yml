@@ -4316,7 +4316,7 @@ Style/SingleLineMethods:
   StyleGuide: '#no-single-line-methods'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '0.19'
+  VersionChanged: <<next>>
   AllowIfMethodIsEmpty: true
 
 Style/SlicingWithRange:
