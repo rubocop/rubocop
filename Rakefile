@@ -87,7 +87,7 @@ desc 'Syntax check for the documentation comments'
 task documentation_syntax_check: :yard_for_generate_documentation do
   require 'parser/ruby25'
   require 'parser/ruby26'
-  require 'parser/ruby27'
+  require 'parser/ruby30'
 
   ok = true
   YARD::Registry.load!
@@ -115,7 +115,7 @@ task documentation_syntax_check: :yard_for_generate_documentation do
                  elsif cop == RuboCop::Cop::Lint::CircularArgumentReference
                    Parser::Ruby26.new(RuboCop::AST::Builder.new)
                  else
-                   Parser::Ruby27.new(RuboCop::AST::Builder.new)
+                   Parser::Ruby30.new(RuboCop::AST::Builder.new)
                  end
         parser.diagnostics.all_errors_are_fatal = true
         parser.parse(buffer)
