@@ -532,4 +532,73 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       RUBY
     end
   end
+
+  context 'endless methods', :ruby30 do
+    context 'between endless and regular methods' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def foo() = x
+          def bar
+          ^^^^^^^ Use empty lines between method definitions.
+            y
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo() = x
+
+          def bar
+            y
+          end
+        RUBY
+      end
+    end
+
+    context 'between regular and endless  methods' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def foo
+            x
+          end
+          def bar() = y
+          ^^^^^^^ Use empty lines between method definitions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            x
+          end
+
+          def bar() = y
+        RUBY
+      end
+    end
+
+    context 'with AllowAdjacentOneLineDefs: false' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def foo() = x
+          def bar() = y
+          ^^^^^^^ Use empty lines between method definitions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo() = x
+
+          def bar() = y
+        RUBY
+      end
+    end
+
+    context 'with AllowAdjacentOneLineDefs: true' do
+      let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
+
+      it ' does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo() = x
+          def bar() = y
+        RUBY
+      end
+    end
+  end
 end

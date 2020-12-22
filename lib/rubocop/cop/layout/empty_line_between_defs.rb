@@ -121,8 +121,8 @@ module RuboCop
 
         def autocorrect(corrector, prev_def, node)
           # finds position of first newline
-          end_pos = prev_def.loc.end.end_pos
-          source_buffer = prev_def.loc.end.source_buffer
+          end_pos = end_loc(prev_def).end_pos
+          source_buffer = end_loc(prev_def).source_buffer
           newline_pos = source_buffer.source.index("\n", end_pos)
 
           # Handle the case when multiple one-liners are on the same line.
@@ -206,7 +206,15 @@ module RuboCop
         end
 
         def def_end(node)
-          node.loc.end.line
+          end_loc(node).line
+        end
+
+        def end_loc(node)
+          if node.def_type? && node.endless?
+            node.loc.expression.end
+          else
+            node.loc.end
+          end
         end
 
         def autocorrect_remove_lines(corrector, newline_pos, count)
