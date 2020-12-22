@@ -106,6 +106,7 @@ module RuboCop
         def space_missing(left_brace)
           add_offense(left_brace, message: MISSING_MSG) do |corrector|
             autocorrect(corrector, left_brace)
+            opposite_style_detected
           end
         end
 
@@ -114,6 +115,7 @@ module RuboCop
 
           add_offense(space, message: DETECTED_MSG) do |corrector|
             autocorrect(corrector, space)
+            opposite_style_detected
           end
         end
 
