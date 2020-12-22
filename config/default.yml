@@ -3582,7 +3582,7 @@ Style/MethodDefParentheses:
   StyleGuide: '#method-parens'
   Enabled: true
   VersionAdded: '0.16'
-  VersionChanged: '0.35'
+  VersionChanged: <<next>>
   EnforcedStyle: require_parentheses
   SupportedStyles:
     - require_parentheses
