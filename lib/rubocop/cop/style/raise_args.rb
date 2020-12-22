@@ -95,6 +95,7 @@ module RuboCop
               replacement = correction_exploded_to_compact(node)
 
               corrector.replace(node, replacement)
+              opposite_style_detected
             end
           else
             correct_style_detected
@@ -115,6 +116,7 @@ module RuboCop
             replacement = correction_compact_to_exploded(node)
 
             corrector.replace(node, replacement)
+            opposite_style_detected
           end
         end
 
