@@ -3548,7 +3548,7 @@ Style/MethodCallWithArgsParentheses:
   StyleGuide: '#method-invocation-parens'
   Enabled: false
   VersionAdded: '0.47'
-  VersionChanged: '0.61'
+  VersionChanged: <<next>>
   IgnoreMacros: true
   IgnoredMethods: []
   IgnoredPatterns: []

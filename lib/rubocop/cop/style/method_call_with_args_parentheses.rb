@@ -40,6 +40,9 @@ module RuboCop
       #     to `true` allows the presence of parentheses in such a method call
       #     even with arguments.
       #
+      # NOTE: Parens are required around a method with arguments when inside an
+      # endless method definition (>= Ruby 3.0).
+      #
       # @example EnforcedStyle: require_parentheses (default)
       #
       #   # bad

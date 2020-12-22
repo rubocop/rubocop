@@ -1,7 +1,48 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
+  shared_examples 'endless methods' do |omit: false|
+    context 'endless methods', :ruby30 do
+      context 'with arguments' do
+        it 'requires method calls to have parens' do
+          expect_no_offenses(<<~RUBY)
+            def x() = foo("bar")
+          RUBY
+        end
+      end
+
+      context 'without arguments' do
+        if omit
+          it 'registers an offense when there are parens' do
+            expect_offense(<<~RUBY)
+              def x() = foo()
+                           ^^ Omit parentheses for method calls with arguments.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def x() = foo#{trailing_whitespace}
+            RUBY
+          end
+        else
+          it 'does not register an offense when there are parens' do
+            expect_no_offenses(<<~RUBY)
+              def x() = foo()
+            RUBY
+          end
+        end
+
+        it 'does not register an offense when there are no parens' do
+          expect_no_offenses(<<~RUBY)
+            def x() = foo
+          RUBY
+        end
+      end
+    end
+  end
+
   context 'when EnforcedStyle is require_parentheses (default)' do
+    it_behaves_like 'endless methods'
+
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
     end
@@ -317,6 +358,8 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     let(:cop_config) do
       { 'EnforcedStyle' => 'omit_parentheses' }
     end
+
+    it_behaves_like 'endless methods', omit: true
 
     it 'register an offense for parens in method call without args' do
       trailing_whitespace = ' '
@@ -795,6 +838,8 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         'IncludedMacros' => ['bar']
       }
     end
+
+    it_behaves_like 'endless methods'
 
     context 'in a class body' do
       it 'finds offense' do
