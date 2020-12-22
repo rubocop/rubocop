@@ -7,25 +7,31 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
     context 'simple indentation' do
       context 'with a positive column delta' do
         it 'indents' do
-          expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+          expect_offense(<<~RUBY)
             # >> 2
               42
-          INPUT
+              ^^ Indent this node
+          RUBY
+
+          expect_correction(<<~RUBY, loop: false)
             # >> 2
                 42
-          OUTPUT
+          RUBY
         end
       end
 
       context 'with a negative column delta' do
         it 'outdents' do
-          expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+          expect_offense(<<~RUBY)
             # << 3
                 42
-          INPUT
+                ^^ Indent this node
+          RUBY
+
+          expect_correction(<<~RUBY, loop: false)
             # << 3
              42
-          OUTPUT
+          RUBY
         end
       end
     end
@@ -35,15 +41,18 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
       let(:end_heredoc) { /\w+/.match(start_heredoc)[0] }
 
       it 'does not change indentation of here doc bodies and end markers' do
-        expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+        expect_offense(<<~RUBY)
           # >> #{column_delta}
           begin
+          ^^^^^ Indent this node
             #{start_heredoc}
           a
           b
           #{end_heredoc}
           end
-        INPUT
+        RUBY
+
+        expect_correction(<<~RUBY, loop: false)
           # >> #{column_delta}
           #{indentation}begin
           #{indentation}  #{start_heredoc}
@@ -51,7 +60,7 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
           b
           #{end_heredoc}
           #{indentation}end
-        OUTPUT
+        RUBY
       end
     end
 
@@ -68,29 +77,33 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
     context 'with single-line here docs' do
       it 'does not indent body and end marker' do
         indentation = '  '
-        expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+        expect_offense(<<~RUBY)
           # >> 2
           begin
+          ^^^^^ Indent this node
             <<DOC
           single line
           DOC
           end
-        INPUT
+        RUBY
+
+        expect_correction(<<~RUBY, loop: false)
           # >> 2
           #{indentation}begin
           #{indentation}  <<DOC
           single line
           DOC
           #{indentation}end
-        OUTPUT
+        RUBY
       end
     end
 
     context 'within string literals' do
       it 'does not insert whitespace' do
-        expect(autocorrect_source(<<~INPUT)).to eq(<<~OUTPUT)
+        expect_offense(<<~RUBY)
           # >> 2
           begin
+          ^^^^^ Indent this node
             dstr =
           'a
           b
@@ -100,7 +113,9 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
           b
           c`
           end
-        INPUT
+        RUBY
+
+        expect_correction(<<~RUBY, loop: false)
           # >> 2
             begin
               dstr =
@@ -112,7 +127,7 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
           b
           c`
             end
-        OUTPUT
+        RUBY
       end
     end
   end
