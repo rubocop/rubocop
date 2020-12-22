@@ -6,6 +6,9 @@ module RuboCop
       # This cop checks for parentheses around the arguments in method
       # definitions. Both instance and class/singleton methods are checked.
       #
+      # This cop does not consider endless methods, since parentheses are
+      # always required for them.
+      #
       # @example EnforcedStyle: require_parentheses (default)
       #   # The `require_parentheses` style requires method definitions
       #   # to always use parentheses
@@ -94,6 +97,8 @@ module RuboCop
                       'parameters.'
 
         def on_def(node)
+          return if node.endless?
+
           args = node.arguments
 
           if require_parentheses?(args)
