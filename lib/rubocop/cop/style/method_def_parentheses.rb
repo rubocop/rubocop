@@ -147,6 +147,7 @@ module RuboCop
 
           add_offense(location, message: MSG_MISSING) do |corrector|
             correct_definition(node, corrector)
+            unexpected_style_detected 'require_no_parentheses'
           end
         end
 
@@ -154,6 +155,7 @@ module RuboCop
           add_offense(args, message: MSG_PRESENT) do |corrector|
             # offense is registered on args node when parentheses are unwanted
             correct_arguments(args, corrector)
+            unexpected_style_detected 'require_parentheses'
           end
         end
       end
