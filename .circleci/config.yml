@@ -196,12 +196,9 @@ jobs:
     steps:
       - run:
           name: Download Code Climate test-reporter
-          # Specify Code Climate Test Reporter 0.7.0 as a workaround to prevent
-          # `cannot execute binary file: Exec format error`.
-          # See: https://github.com/codeclimate/test-reporter/issues/449
           command: |
             mkdir -p tmp/
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-0.7.0-linux-amd64 > ./tmp/cc-test-reporter
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
             chmod +x ./tmp/cc-test-reporter
       - persist_to_workspace:
           root: tmp
