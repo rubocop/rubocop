@@ -79,6 +79,24 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
+      it 'registers an offense for correct + multiple opposite styles of #{access_modifier} usage' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class TestOne
+            #{access_modifier}
+          end
+
+          class TestTwo
+            #{access_modifier} def foo; end
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+          end
+
+          class TestThree
+            #{access_modifier} def foo; end
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+          end
+        RUBY
+      end
+
       include_examples 'always accepted', access_modifier
     end
   end
@@ -123,6 +141,24 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
             #{access_modifier} :foo
 
             def foo; end
+          end
+        RUBY
+      end
+
+      it 'registers an offense for correct + multiple opposite styles of #{access_modifier} usage' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class TestOne
+            #{access_modifier} def foo; end
+          end
+
+          class TestTwo
+            #{access_modifier}
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+          end
+
+          class TestThree
+            #{access_modifier}
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
           end
         RUBY
       end
