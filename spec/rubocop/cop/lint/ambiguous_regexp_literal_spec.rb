@@ -136,5 +136,37 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
         expect_no_offenses('p(/pattern/)')
       end
     end
+
+    context 'with `match_with_lvasgn` node' do
+      context 'with parentheses' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            assert(/some pattern/ =~ some_string)
+          RUBY
+        end
+      end
+
+      context 'with different parentheses' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            assert(/some pattern/) =~ some_string
+          RUBY
+        end
+      end
+
+      context 'without parentheses' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            assert /some pattern/ =~ some_string
+                   ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+          RUBY
+
+          # Spacing will be fixed by `Lint/ParenthesesAsGroupedExpression`.
+          expect_correction(<<~RUBY)
+            assert (/some pattern/ =~ some_string)
+          RUBY
+        end
+      end
+    end
   end
 end
