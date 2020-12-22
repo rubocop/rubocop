@@ -14,23 +14,33 @@ module RuboCop
 
           def omit_parentheses(node)
             return unless node.parenthesized?
+            return if inside_endless_method_def?(node)
             return if node.implicit_call?
             return if super_call_without_arguments?(node)
             return if allowed_camel_case_method_call?(node)
             return if legitimate_call_with_parentheses?(node)
 
             add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
-              if parentheses_at_the_end_of_multiline_call?(node)
-                corrector.replace(args_begin(node), ' \\')
-              else
-                corrector.replace(args_begin(node), ' ')
-              end
-              corrector.remove(node.loc.end)
+              auto_correct(corrector, node)
             end
+          end
+
+          def auto_correct(corrector, node)
+            if parentheses_at_the_end_of_multiline_call?(node)
+              corrector.replace(args_begin(node), ' \\')
+            else
+              corrector.replace(args_begin(node), ' ')
+            end
+            corrector.remove(node.loc.end)
           end
 
           def offense_range(node)
             node.loc.begin.join(node.loc.end)
+          end
+
+          def inside_endless_method_def?(node)
+            # parens are required around arguments inside an endless method
+            node.each_ancestor(:def).any?(&:endless?) && node.arguments.any?
           end
 
           def super_call_without_arguments?(node)
