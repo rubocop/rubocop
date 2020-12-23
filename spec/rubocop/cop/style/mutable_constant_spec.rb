@@ -113,47 +113,103 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
     end
 
-    context 'when assigning a range (irange) without parenthesis' do
-      it 'adds parenthesis when auto-correcting' do
-        expect_offense(<<~RUBY)
-          XXX = 1..99
-                ^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1..99).freeze
-        RUBY
+    # Ruby 3.0's Regexp and Range literals are frozen.
+    #
+    # https://bugs.ruby-lang.org/issues/15504
+    # https://bugs.ruby-lang.org/issues/16377
+    context 'Ruby 3.0 or higher', :ruby30 do
+      context 'when assigning a regexp' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            XXX = /regexp/
+          RUBY
+        end
       end
 
-      it 'does not add parenthesis to range enclosed in parentheses' do
-        expect_offense(<<~RUBY)
-          XXX = (1..99)
-                ^^^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1..99).freeze
-        RUBY
+      context 'when assigning a range (irange)' do
+        it 'does not register an offense when without parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = 1..99
+          RUBY
+        end
+
+        it 'does not register an offense when with parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = (1..99)
+          RUBY
+        end
+      end
+
+      context 'when assigning a range (erange)' do
+        it 'does not register an offense when without parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = 1...99
+          RUBY
+        end
+
+        it 'does not register an offense when with parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = (1...99)
+          RUBY
+        end
       end
     end
 
-    context 'when assigning a range (erange) without parenthesis' do
-      it 'adds parenthesis when auto-correcting' do
-        expect_offense(<<~RUBY)
-          XXX = 1...99
-                ^^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1...99).freeze
-        RUBY
+    context 'Ruby 2.7 or lower', :ruby27 do
+      context 'when assigning a regexp' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            XXX = /regexp/
+                  ^^^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+          expect_correction(<<~RUBY)
+            XXX = /regexp/.freeze
+          RUBY
+        end
       end
 
-      it 'does not add parenthesis to range enclosed in parentheses' do
-        expect_offense(<<~RUBY)
-          XXX = (1...99)
-                ^^^^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1...99).freeze
-        RUBY
+      context 'when assigning a range (irange) without parenthesis' do
+        it 'adds parenthesis when auto-correcting' do
+          expect_offense(<<~RUBY)
+            XXX = 1..99
+                  ^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+          expect_correction(<<~RUBY)
+            XXX = (1..99).freeze
+          RUBY
+        end
+
+        it 'does not add parenthesis to range enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            XXX = (1..99)
+                  ^^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+          expect_correction(<<~RUBY)
+            XXX = (1..99).freeze
+          RUBY
+        end
+      end
+
+      context 'when assigning a range (erange) without parenthesis' do
+        it 'adds parenthesis when auto-correcting' do
+          expect_offense(<<~RUBY)
+            XXX = 1...99
+                  ^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+          expect_correction(<<~RUBY)
+            XXX = (1...99).freeze
+          RUBY
+        end
+
+        it 'does not add parenthesis to range enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            XXX = (1...99)
+                  ^^^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+          expect_correction(<<~RUBY)
+            XXX = (1...99).freeze
+          RUBY
+        end
       end
     end
 

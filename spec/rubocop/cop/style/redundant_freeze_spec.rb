@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   let(:prefix) { nil }
 
   shared_examples 'immutable objects' do |o|
@@ -42,9 +40,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'mutable objects', '{ a: 1, b: 2 }'
   it_behaves_like 'mutable objects', "'str'"
   it_behaves_like 'mutable objects', '"top#{1 + 2}"'
-  it_behaves_like 'mutable objects', '/./'
-  it_behaves_like 'mutable objects', '(1..5)'
-  it_behaves_like 'mutable objects', '(1...5)'
   it_behaves_like 'mutable objects', "('a' + 'b')"
   it_behaves_like 'mutable objects', "('a' * 20)"
   it_behaves_like 'mutable objects', '(a + b)'
@@ -94,6 +89,24 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
       let(:prefix) { '# frozen_string_literal: false' }
 
       it_behaves_like 'mutable objects', '"#{a}"'
+    end
+
+    describe 'Regexp and Range literals' do
+      # Ruby 3.0's Regexp and Range literals are frozen.
+      #
+      # https://bugs.ruby-lang.org/issues/15504
+      # https://bugs.ruby-lang.org/issues/16377
+      context 'Ruby 3.0 or higher', :ruby30 do
+        it_behaves_like 'immutable objects', '/./'
+        it_behaves_like 'immutable objects', '(1..5)'
+        it_behaves_like 'immutable objects', '(1...5)'
+      end
+
+      context 'Ruby 2.7 or lower', :ruby27 do
+        it_behaves_like 'mutable objects', '/./'
+        it_behaves_like 'mutable objects', '(1..5)'
+        it_behaves_like 'mutable objects', '(1...5)'
+      end
     end
   end
 end
