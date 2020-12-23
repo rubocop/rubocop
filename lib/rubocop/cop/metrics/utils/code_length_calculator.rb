@@ -124,7 +124,7 @@ module RuboCop
           end
 
           def classlike_node?(node)
-            CLASSLIKE_TYPES.include?(node.type)
+            CLASSLIKE_TYPES.include?(node&.type)
           end
 
           def foldable_node?(node)
