@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # This cop check for uses of Object#freeze on immutable objects.
+      # This cop check for uses of `Object#freeze` on immutable objects.
+      #
+      # NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
       #
       # @example
       #   # bad
@@ -37,8 +39,10 @@ module RuboCop
 
           return true if node.immutable_literal?
 
-          FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
-            frozen_string_literals_enabled?
+          return true if FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
+                         frozen_string_literals_enabled?
+
+          target_ruby_version >= 3.0 && (node.regexp_type? || node.range_type?)
         end
 
         def strip_parenthesis(node)

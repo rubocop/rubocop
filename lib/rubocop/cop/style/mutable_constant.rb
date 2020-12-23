@@ -14,6 +14,8 @@ module RuboCop
       # positives. Luckily, there is no harm in freezing an already
       # frozen object.
       #
+      # NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
+      #
       # @example EnforcedStyle: literals (default)
       #   # bad
       #   CONST = [1, 2, 3]
@@ -94,7 +96,8 @@ module RuboCop
           range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
 
           return unless mutable_literal?(value) ||
-                        range_enclosed_in_parentheses
+                        target_ruby_version <= 2.7 && range_enclosed_in_parentheses
+
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
 
@@ -119,16 +122,23 @@ module RuboCop
         end
 
         def mutable_literal?(value)
-          value&.mutable_literal?
+          return false if value.nil?
+          return false if frozen_regexp_or_range_literals?(value)
+
+          value.mutable_literal?
         end
 
         def immutable_literal?(node)
-          node.nil? || node.immutable_literal?
+          node.nil? || frozen_regexp_or_range_literals?(node) || node.immutable_literal?
         end
 
         def frozen_string_literal?(node)
           FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
             frozen_string_literals_enabled?
+        end
+
+        def frozen_regexp_or_range_literals?(node)
+          target_ruby_version >= 3.0 && (node.regexp_type? || node.range_type?)
         end
 
         def requires_parentheses?(node)
