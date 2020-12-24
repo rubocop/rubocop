@@ -11,6 +11,11 @@ module RuboCop
       # that are hard to debug. To ensure this doesn't happen,
       # always sort the list.
       #
+      # `Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
+      # So all bad cases are acceptable when Ruby 3.0 or higher are used.
+      #
+      # This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+      #
       # @example
       #
       #   # bad
@@ -23,8 +28,6 @@ module RuboCop
       #     require file
       #   end
       #
-      # @example
-      #
       #   # bad
       #   Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')) do |file|
       #     require file
@@ -35,15 +38,11 @@ module RuboCop
       #     require file
       #   end
       #
-      # @example
-      #
       #   # bad
       #   Dir['./lib/**/*.rb'].each(&method(:require))
       #
       #   # good
       #   Dir['./lib/**/*.rb'].sort.each(&method(:require))
-      #
-      # @example
       #
       #   # bad
       #   Dir.glob(Rails.root.join('test', '*.rb'), &method(:require))
@@ -51,12 +50,16 @@ module RuboCop
       #   # good
       #   Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
       #
+      #   # good - Respect intent if `sort` keyword option is specified in Ruby 3.0 or higher.
+      #   Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), sort: false).each(&method(:require))
+      #
       class NonDeterministicRequireOrder < Base
         extend AutoCorrector
 
         MSG = 'Sort files before requiring them.'
 
         def on_block(node)
+          return if target_ruby_version >= 3.0
           return unless node.body
           return unless unsorted_dir_loop?(node.send_node)
 
@@ -70,6 +73,7 @@ module RuboCop
         end
 
         def on_block_pass(node)
+          return if target_ruby_version >= 3.0
           return unless method_require?(node)
           return unless unsorted_dir_pass?(node.parent)
 
