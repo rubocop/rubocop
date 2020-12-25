@@ -4,26 +4,74 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when referencing' do
-    it 'registers an offense and corrects when using space between receiver and left brackets' do
+    it 'registers an offense and corrects when using space between lvar receiver and left brackets' do
       expect_offense(<<~RUBY)
+        collection = do_something
         collection [index_or_key]
                   ^ Remove the space before the opening brackets.
       RUBY
 
       expect_correction(<<~RUBY)
+        collection = do_something
         collection[index_or_key]
       RUBY
     end
 
-    it 'does not register an offense when not using space between receiver and left brackets' do
+    it 'registers an offense and corrects when using space between ivar receiver and left brackets' do
+      expect_offense(<<~RUBY)
+        @collection [index_or_key]
+                   ^ Remove the space before the opening brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @collection[index_or_key]
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using space between cvar receiver and left brackets' do
+      expect_offense(<<~RUBY)
+        @@collection [index_or_key]
+                    ^ Remove the space before the opening brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @@collection[index_or_key]
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using space between gvar receiver and left brackets' do
+      expect_offense(<<~RUBY)
+        $collection [index_or_key]
+                   ^ Remove the space before the opening brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        $collection[index_or_key]
+      RUBY
+    end
+
+    it 'does not register an offense when using space between method call and left brackets' do
       expect_no_offenses(<<~RUBY)
+        do_something [item_of_array_literal]
+      RUBY
+    end
+
+    it 'does not register an offense when not using space between variable receiver and left brackets' do
+      expect_no_offenses(<<~RUBY)
+        collection = do_something
         collection[index_or_key]
+      RUBY
+    end
+
+    it 'does not register an offense when not using space between method call and left brackets' do
+      expect_no_offenses(<<~RUBY)
+        do_something[item_of_array_literal]
       RUBY
     end
 
     it 'does not register an offense when array literal argument is enclosed in parentheses' do
       expect_no_offenses(<<~RUBY)
-        collection([index_or_key])
+        do_something([item_of_array_literal])
       RUBY
     end
 
@@ -68,6 +116,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
   it 'does not register an offense when assigning an array' do
     expect_no_offenses(<<~RUBY)
       task.options = ['--no-output']
+    RUBY
+  end
+
+  it 'does not register an offense when using array literal argument without parentheses' do
+    expect_no_offenses(<<~RUBY)
+      before_validation { to_downcase ['email'] }
+    RUBY
+  end
+
+  it 'does not register an offense when using percent array literal argument without parentheses' do
+    expect_no_offenses(<<~RUBY)
+      before_validation { to_downcase %w[email] }
     RUBY
   end
 end

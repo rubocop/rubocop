@@ -1197,7 +1197,6 @@ Layout/SpaceBeforeBrackets:
   StyleGuide: '#space-in-brackets-access'
   Enabled: pending
   VersionAdded: '1.7'
-  Safe: false
 
 Layout/SpaceBeforeComma:
   Description: 'No spaces before commas.'
