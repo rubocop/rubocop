@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   }
 
   s.add_runtime_dependency('parallel', '~> 1.10')
-  s.add_runtime_dependency('parser', '>= 2.7.1.5')
+  s.add_runtime_dependency('parser', '>= 3.0.0.0')
   s.add_runtime_dependency('rainbow', '>= 2.2.2', '< 4.0')
   s.add_runtime_dependency('regexp_parser', '>= 1.8', '< 3.0')
   s.add_runtime_dependency('rexml')
