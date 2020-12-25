@@ -16,14 +16,14 @@ module RuboCop
       #   if a +
       #       b
       #     something &&
-      #     something_else
+      #       something_else
       #   end
       #
       #   # good
       #   if a +
       #      b
       #     something &&
-      #       something_else
+      #     something_else
       #   end
       #
       # @example EnforcedStyle: indented
