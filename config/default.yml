@@ -473,7 +473,7 @@ Layout/EmptyLineBetweenDefs:
   StyleGuide: '#empty-lines-between-methods'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   EmptyLineBetweenMethodDefs: true
   EmptyLineBetweenClassDefs: true
   EmptyLineBetweenModuleDefs: true
@@ -1196,7 +1196,7 @@ Layout/SpaceBeforeBrackets:
   Description: 'Checks for receiver with a space before the opening brackets.'
   StyleGuide: '#space-in-brackets-access'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.7'
   Safe: false
 
 Layout/SpaceBeforeComma:
@@ -1364,7 +1364,7 @@ Layout/TrailingWhitespace:
 Lint/AmbiguousAssignment:
   Description: 'Checks for mistyped shorthand assignments.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.7'
 
 Lint/AmbiguousBlockAssociation:
   Description: >-
@@ -1408,7 +1408,7 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
 
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
@@ -1485,7 +1485,7 @@ Lint/DuplicateBranch:
   Description: Checks that there are no repeated bodies within `if/unless`, `case-when` and `rescue` constructs.
   Enabled: pending
   VersionAdded: '1.3'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   IgnoreLiteralBranches: false
   IgnoreConstantBranches: false
 
@@ -1858,7 +1858,7 @@ Lint/RedundantSplatExpansion:
   Description: 'Checks for splat unnecessarily being called on literals.'
   Enabled: true
   VersionAdded: '0.76'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   AllowPercentLiteralArrayArgument: true
 
 Lint/RedundantStringCoercion:
@@ -2063,7 +2063,7 @@ Lint/UnreachableLoop:
   Description: 'This cop checks for loops that will have at most one iteration.'
   Enabled: true
   VersionAdded: '0.89'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   IgnoredPatterns:
     # RSpec uses `times` in its message expectations
     # eg. `exactly(2).times`
@@ -2918,7 +2918,7 @@ Style/CollectionMethods:
   StyleGuide: '#map-find-select-reduce-include-size'
   Enabled: false
   VersionAdded: '0.9'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   Safe: false
   # Mapping from undesired method to desired method
   # e.g. to use `detect` over `find`:
@@ -2997,7 +2997,7 @@ Style/CommentedKeyword:
   Description: 'Do not place comments on the same line as certain keywords.'
   Enabled: true
   VersionAdded: '0.51'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
 
 Style/ConditionalAssignment:
   Description: >-
@@ -3362,7 +3362,7 @@ Style/HashExcept:
                  Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
                  that can be replaced with `Hash#except` method.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.7'
 
 Style/HashLikeCase:
   Description: >-
@@ -3518,7 +3518,7 @@ Style/KeywordParametersOrder:
   StyleGuide: '#keyword-parameters-order'
   Enabled: true
   VersionAdded: '0.90'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
 
 Style/Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
@@ -3557,7 +3557,7 @@ Style/MethodCallWithArgsParentheses:
   StyleGuide: '#method-invocation-parens'
   Enabled: false
   VersionAdded: '0.47'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   IgnoreMacros: true
   IgnoredMethods: []
   IgnoredPatterns: []
@@ -3591,7 +3591,7 @@ Style/MethodDefParentheses:
   StyleGuide: '#method-parens'
   Enabled: true
   VersionAdded: '0.16'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   EnforcedStyle: require_parentheses
   SupportedStyles:
     - require_parentheses
@@ -3697,7 +3697,7 @@ Style/MultilineMethodSignature:
   Description: 'Avoid multi-line method signatures.'
   Enabled: false
   VersionAdded: '0.59'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
 
 Style/MultilineTernaryOperator:
   Description: >-
@@ -4064,7 +4064,7 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   Methods:
     # Array#join
     join: ''
@@ -4330,7 +4330,7 @@ Style/SingleLineMethods:
   StyleGuide: '#no-single-line-methods'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: <<next>>
+  VersionChanged: '1.7'
   AllowIfMethodIsEmpty: true
 
 Style/SlicingWithRange:

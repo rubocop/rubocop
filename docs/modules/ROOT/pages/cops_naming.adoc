@@ -522,7 +522,9 @@ EOS
 |===
 
 This cop checks for memoized methods whose instance variable name
-does not match the method name.
+does not match the method name. Applies to both regular methods
+(defined with `def`) and dynamic methods (defined with
+`define_method` or `define_singleton_method`).
 
 This cop can be configured with the EnforcedStyleForLeadingUnderscores
 directive. It can be configured to allow for memoized instance variables
@@ -570,6 +572,17 @@ def foo
   helper_variable = something_we_need_to_calculate_foo
   @foo ||= calculate_expensive_thing(helper_variable)
 end
+
+# good
+define_method(:foo) do
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+define_method(:foo) do
+  return @foo if defined?(@foo)
+  @foo = calculate_expensive_thing
+end
 ----
 
 ==== EnforcedStyleForLeadingUnderscores: required
@@ -605,6 +618,17 @@ def foo
   return @_foo if defined?(@_foo)
   @_foo = calculate_expensive_thing
 end
+
+# good
+define_method(:foo) do
+  @_foo ||= calculate_expensive_thing
+end
+
+# good
+define_method(:foo) do
+  return @_foo if defined?(@_foo)
+  @_foo = calculate_expensive_thing
+end
 ----
 
 ==== EnforcedStyleForLeadingUnderscores :optional
@@ -635,6 +659,16 @@ end
 def foo
   return @_foo if defined?(@_foo)
   @_foo = calculate_expensive_thing
+end
+
+# good
+define_method(:foo) do
+  @foo ||= calculate_expensive_thing
+end
+
+# good
+define_method(:foo) do
+  @_foo ||= calculate_expensive_thing
 end
 ----
 

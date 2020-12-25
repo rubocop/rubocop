@@ -163,6 +163,7 @@ In the following section you find all available cops:
 * xref:cops_layout.adoc#layoutspacearoundmethodcalloperator[Layout/SpaceAroundMethodCallOperator]
 * xref:cops_layout.adoc#layoutspacearoundoperators[Layout/SpaceAroundOperators]
 * xref:cops_layout.adoc#layoutspacebeforeblockbraces[Layout/SpaceBeforeBlockBraces]
+* xref:cops_layout.adoc#layoutspacebeforebrackets[Layout/SpaceBeforeBrackets]
 * xref:cops_layout.adoc#layoutspacebeforecomma[Layout/SpaceBeforeComma]
 * xref:cops_layout.adoc#layoutspacebeforecomment[Layout/SpaceBeforeComment]
 * xref:cops_layout.adoc#layoutspacebeforefirstarg[Layout/SpaceBeforeFirstArg]
@@ -182,6 +183,7 @@ In the following section you find all available cops:
 
 === Department xref:cops_lint.adoc[Lint]
 
+* xref:cops_lint.adoc#lintambiguousassignment[Lint/AmbiguousAssignment]
 * xref:cops_lint.adoc#lintambiguousblockassociation[Lint/AmbiguousBlockAssociation]
 * xref:cops_lint.adoc#lintambiguousoperator[Lint/AmbiguousOperator]
 * xref:cops_lint.adoc#lintambiguousregexpliteral[Lint/AmbiguousRegexpLiteral]
@@ -409,6 +411,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleguardclause[Style/GuardClause]
 * xref:cops_style.adoc#stylehashaslastarrayitem[Style/HashAsLastArrayItem]
 * xref:cops_style.adoc#stylehasheachmethods[Style/HashEachMethods]
+* xref:cops_style.adoc#stylehashexcept[Style/HashExcept]
 * xref:cops_style.adoc#stylehashlikecase[Style/HashLikeCase]
 * xref:cops_style.adoc#stylehashsyntax[Style/HashSyntax]
 * xref:cops_style.adoc#stylehashtransformkeys[Style/HashTransformKeys]

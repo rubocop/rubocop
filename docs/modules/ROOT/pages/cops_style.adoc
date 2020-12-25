@@ -1410,7 +1410,7 @@ hash.compact!
 | No
 | Yes (Unsafe)
 | 0.9
-| 0.27
+| 1.7
 |===
 
 This cop enforces the use of consistent method names
@@ -1459,6 +1459,10 @@ items.include?
 | PreferredMethods
 | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
 | 
+
+| MethodsAcceptingSymbol
+| `inject`, `reduce`
+| Array
 |===
 
 === References
@@ -1799,17 +1803,20 @@ annotation.
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.51
-| -
+| 1.7
 |===
 
 This cop checks for comments put on the same line as some keywords.
-These keywords are: `begin`, `class`, `def`, `end`, `module`.
+These keywords are: `class`, `module`, `def`, `begin`, `end`.
 
 Note that some comments
 (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
 are allowed.
+
+Auto-correction removes comments from `end` keyword and keeps comments
+for `class`, `module`, `def` and `begin` above the keyword.
 
 === Examples
 
@@ -4078,6 +4085,43 @@ hash.each_value { |v| p v }
 
 * https://rubystyle.guide#hash-each
 
+== Style/HashExcept
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.7
+| -
+|===
+
+This cop checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
+that can be replaced with `Hash#except` method.
+
+This cop should only be enabled on Ruby version 3.0 or higher.
+(`Hash#except` was added in Ruby 3.0.)
+
+For safe detection, it is limited to commonly used string and symbol comparisons
+when used `==`.
+And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+{foo: 1, bar: 2, baz: 3}.reject {|k, v| k == :bar }
+{foo: 1, bar: 2, baz: 3}.select {|k, v| k != :bar }
+{foo: 1, bar: 2, baz: 3}.filter {|k, v| k != :bar }
+
+# good
+{foo: 1, bar: 2, baz: 3}.except(:bar)
+----
+
 == Style/HashLikeCase
 
 |===
@@ -4821,7 +4865,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | Yes
 | Yes
 | 0.90
-| -
+| 1.7
 |===
 
 This cop enforces that optional keyword parameters are placed at the
@@ -4842,6 +4886,16 @@ end
 
 # good
 def some_method(second:, first: false, third: 10)
+  # body omitted
+end
+
+# bad
+do_something do |first: false, second:, third: 10|
+  # body omitted
+end
+
+# good
+do_something do |second:, first: false, third: 10|
   # body omitted
 end
 ----
@@ -5026,7 +5080,7 @@ some_str = 'ala' \
 | Yes
 | Yes
 | 0.47
-| 0.61
+| 1.7
 |===
 
 This cop enforces the presence (default) or absence of parentheses in
@@ -5065,6 +5119,9 @@ options.
     begins with a capital letter and which has no arguments. Setting it
     to `true` allows the presence of parentheses in such a method call
     even with arguments.
+
+NOTE: Parens are required around a method with arguments when inside an
+endless method definition (>= Ruby 3.0).
 
 === Examples
 
@@ -5331,11 +5388,14 @@ foo.c
 | Yes
 | Yes
 | 0.16
-| 0.35
+| 1.7
 |===
 
 This cop checks for parentheses around the arguments in method
 definitions. Both instance and class/singleton methods are checked.
+
+This cop does not consider endless methods, since parentheses are
+always required for them.
 
 === Examples
 
@@ -6042,9 +6102,9 @@ foo ||= (
 
 | Disabled
 | Yes
-| No
+| Yes
 | 0.59
-| -
+| 1.7
 |===
 
 This cop checks for method signatures that span multiple lines.
@@ -6237,6 +6297,8 @@ updated with an exhaustive list of all methods that will produce
 frozen objects so there is a decent chance of getting some false
 positives. Luckily, there is no harm in freezing an already
 frozen object.
+
+NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
 
 === Examples
 
@@ -7898,7 +7960,7 @@ rand(1...7)
 | No
 | Yes (Unsafe)
 | 1.4
-| 1.6
+| 1.7
 |===
 
 This cop checks for a redundant argument passed to certain methods.
@@ -7908,7 +7970,7 @@ Limitations:
 1. This cop matches for method names only and hence cannot tell apart
    methods with same name in different classes.
 2. This cop is limited to methods with single parameter.
-3. This cop is unsafe if certain special global variables (e.g. `$;`) are set.
+3. This cop is unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
    That depends on the nature of the target methods, of course.
 
 Method names and their redundant arguments can be configured like this:
@@ -7916,6 +7978,8 @@ Method names and their redundant arguments can be configured like this:
 Methods:
   join: ''
   split: ' '
+  chomp: "\n"
+  chomp!: "\n"
   foo: 2
 
 === Examples
@@ -7927,6 +7991,8 @@ array.join('')
 [1, 2, 3].join("")
 string.split(" ")
 "first\nsecond".split(" ")
+string.chomp("\n")
+string.chomp!("\n")
 A.foo(2)
 
 # good
@@ -7934,6 +8000,8 @@ array.join
 [1, 2, 3].join
 string.split
 "first second".split
+string.chomp
+string.chomp!
 A.foo
 ----
 
@@ -7943,7 +8011,7 @@ A.foo
 | Name | Default value | Configurable values
 
 | Methods
-| `{"join"=>"", "split"=>" "}`
+| `{"join"=>"", "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
 | 
 |===
 
@@ -8338,7 +8406,9 @@ require_relative '../foo.so'
 | 0.66
 |===
 
-This cop check for uses of Object#freeze on immutable objects.
+This cop check for uses of `Object#freeze` on immutable objects.
+
+NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
 
 === Examples
 
@@ -9638,11 +9708,13 @@ end
 | Yes
 | Yes
 | 0.9
-| 0.19
+| 1.7
 |===
 
 This cop checks for single-line method definitions that contain a body.
 It will accept single-line methods with no body.
+
+Endless methods added in Ruby 3.0 are also accepted by this cop.
 
 === Examples
 
@@ -9656,6 +9728,7 @@ def @table.columns; super; end
 # good
 def self.resource_class=(klass); end
 def @table.columns; end
+def some_method() = body
 ----
 
 ==== AllowIfMethodIsEmpty: true (default)

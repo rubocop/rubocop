@@ -1,5 +1,36 @@
 = Lint
 
+== Lint/AmbiguousAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 1.7
+| -
+|===
+
+This cop checks for mistyped shorthand assignments.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+x =- y
+x =+ y
+x =* y
+x =! y
+
+# good
+x -= y # or x = -y
+x += y # or x = +y
+x *= y # or x = *y
+x != y # or x = !y
+----
+
 == Lint/AmbiguousBlockAssociation
 
 |===
@@ -222,7 +253,7 @@ BigDecimal(123.456, 3)
 | No
 | No
 | 0.89
-| -
+| 1.7
 |===
 
 This cop checks for places where binary operator has identical operands.
@@ -242,6 +273,7 @@ and thus can generate false positives:
 [source,ruby]
 ----
 # bad
+x / x
 x.top >= x.top
 
 if a.x != 0 && a.x != 0
@@ -251,6 +283,10 @@ end
 def childs?
   left_child || left_child
 end
+
+# good
+x + x
+1 << 1
 ----
 
 == Lint/BooleanSymbol
@@ -726,11 +762,20 @@ end
 | Yes
 | No
 | 1.3
-| -
+| 1.7
 |===
 
 This cop checks that there are no repeated bodies
 within `if/unless`, `case-when` and `rescue` constructs.
+
+With `IgnoreLiteralBranches: true`, branches are not registered
+as offenses if they return a basic literal value (string, symbol,
+integer, float, rational, complex, `true`, `false`, or `nil`), or
+return an array, hash, regexp or range that only contains one of
+the above basic literal values.
+
+With `IgnoreConstantBranches: true`, branches are not registered
+as offenses if they return a constant value.
 
 === Examples
 
@@ -785,6 +830,46 @@ rescue FooError, BarError
   handle_error
 end
 ----
+
+==== IgnoreLiteralBranches: true
+
+[source,ruby]
+----
+# good
+case size
+when "small" then 100
+when "medium" then 250
+when "large" then 1000
+else 250
+end
+----
+
+==== IgnoreLiteralBranches: true
+
+[source,ruby]
+----
+# good
+case size
+when "small" then SMALL_SIZE
+when "medium" then MEDIUM_SIZE
+when "large" then LARGE_SIZE
+else MEDIUM_SIZE
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoreLiteralBranches
+| `false`
+| Boolean
+
+| IgnoreConstantBranches
+| `false`
+| Boolean
+|===
 
 == Lint/DuplicateCaseCondition
 
@@ -3447,7 +3532,7 @@ foo&.respond_to?(:to_a)
 | Yes
 | Yes
 | 0.76
-| -
+| 1.7
 |===
 
 This cop checks for unneeded usages of splat expansion
@@ -3457,42 +3542,49 @@ This cop checks for unneeded usages of splat expansion
 [source,ruby]
 ----
 # bad
-
 a = *[1, 2, 3]
 a = *'a'
 a = *1
+['a', 'b', *%w(c d e), 'f', 'g']
 
-begin
-  foo
-rescue *[StandardError, ApplicationError]
-  bar
-end
-
-case foo
-when *[1, 2, 3]
-  bar
-else
-  baz
-end
-----
-
-[source,ruby]
-----
 # good
-
 c = [1, 2, 3]
 a = *c
 a, b = *c
 a, *b = *c
 a = *1..10
 a = ['a']
+['a', 'b', 'c', 'd', 'e', 'f', 'g']
 
+# bad
+do_something(*['foo', 'bar', 'baz'])
+
+# good
+do_something('foo', 'bar', 'baz')
+
+# bad
+begin
+  foo
+rescue *[StandardError, ApplicationError]
+  bar
+end
+
+# good
 begin
   foo
 rescue StandardError, ApplicationError
   bar
 end
 
+# bad
+case foo
+when *[1, 2, 3]
+  bar
+else
+  baz
+end
+
+# good
 case foo
 when 1, 2, 3
   bar
@@ -3500,6 +3592,32 @@ else
   baz
 end
 ----
+
+==== AllowPercentLiteralArrayArgument: true (default)
+
+[source,ruby]
+----
+# good
+do_something(*%w[foo bar baz])
+----
+
+==== AllowPercentLiteralArrayArgument: false
+
+[source,ruby]
+----
+# bad
+do_something(*%w[foo bar baz])
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowPercentLiteralArrayArgument
+| `true`
+| Boolean
+|===
 
 == Lint/RedundantStringCoercion
 
@@ -4832,7 +4950,7 @@ end
 | Yes
 | No
 | 0.89
-| -
+| 1.7
 |===
 
 This cop checks for loops that will have at most one iteration.
@@ -4840,6 +4958,12 @@ This cop checks for loops that will have at most one iteration.
 A loop that can never reach the second iteration is a possible error in the code.
 In rare cases where only one iteration (or at most one iteration) is intended behavior,
 the code should be refactored to use `if` conditionals.
+
+NOTE: Block methods that are used with `Enumerable`s are considered to be loops.
+
+`IgnoredPatterns` can be used to match against the block receiver in order to allow
+code that would otherwise be registered as an offense (eg. `times` used not in an
+`Enumerable` context).
 
 === Examples
 
@@ -4904,7 +5028,28 @@ def find_something(items)
   end
   raise NotFoundError
 end
+
+# bad
+2.times { raise ArgumentError }
 ----
+
+==== IgnoredPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
+
+[source,ruby]
+----
+# good
+exactly(2).times { raise StandardError }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoredPatterns
+| `(?-mix:(exactly|at_least|at_most)\(\d+\)\.times)`
+| Array
+|===
 
 == Lint/UnusedBlockArgument
 

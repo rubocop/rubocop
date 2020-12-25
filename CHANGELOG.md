@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.7.0 (2020-12-25)
+
 ### New features
 
 * [#9260](https://github.com/rubocop-hq/rubocop/pull/9260): Support auto-correction for `Style/MultilineMethodSignature`. ([@koic][])
