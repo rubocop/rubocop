@@ -2,6 +2,49 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#9260](https://github.com/rubocop-hq/rubocop/pull/9260): Support auto-correction for `Style/MultilineMethodSignature`. ([@koic][])
+* [#9282](https://github.com/rubocop-hq/rubocop/pull/9282): Make `Style/RedundantFreeze` and `Style/MutableConstant` cops aware of frozen regexp and range literals when using Ruby 3.0. ([@koic][])
+* [#9223](https://github.com/rubocop-hq/rubocop/issues/9223): Add new `Lint/AmbiguousAssignment` cop. ([@fatkodima][])
+* [#9243](https://github.com/rubocop-hq/rubocop/pull/9243): Support auto-correction for `Style/CommentedKeyword`. ([@koic][])
+* [#9283](https://github.com/rubocop-hq/rubocop/pull/9283): Add new `Style/HashExcept` cop. ([@koic][])
+* [#9231](https://github.com/rubocop-hq/rubocop/pull/9231): Add new `Layout/SpaceBeforeBrackets` cop. ([@koic][])
+
+### Bug fixes
+
+* [#9232](https://github.com/rubocop-hq/rubocop/pull/9232): Fix `Style/SymbolProc` registering wrong offense when using a symbol numbered block argument greater than 1, i.e. `[[1, 2]].map { _2.succ }`. ([@tdeo][])
+* [#9274](https://github.com/rubocop-hq/rubocop/issues/9274): Fix error in `Metrics/ClassLength` when the class only contains comments. ([@dvandersluis][])
+* [#9213](https://github.com/rubocop-hq/rubocop/issues/9213): Fix a false positive for `Style/RedanduntFreeze` when using `Array#*`. ([@koic][])
+* [#9279](https://github.com/rubocop-hq/rubocop/pull/9279): Add support for endless methods to `Style/MethodCallWithArgsParentheses`. ([@dvandersluis][])
+* [#9245](https://github.com/rubocop-hq/rubocop/issues/9245): Fix `Lint/AmbiguousRegexpLiteral` when given a `match_with_lvasgn` node. ([@dvandersluis][])
+* [#9276](https://github.com/rubocop-hq/rubocop/pull/9276): Add support for endless methods to `Style/SingleLineMethods`. ([@dvandersluis][])
+* [#9225](https://github.com/rubocop-hq/rubocop/issues/9225): Fix Style/LambdaCall ignoring further offenses after opposite style is detected. ([@sswander][])
+* [#9234](https://github.com/rubocop-hq/rubocop/issues/9234): Fix the error for `Style/KeywordParametersOrder` and make it aware of block keyword parameters. ([@koic][])
+* [#8938](https://github.com/rubocop-hq/rubocop/pull/8938): Fix some ConfigurableEnforcedStyle cops to output `Exclude` file lists in `--auto-gen-config` runs. ([@h-lame][])
+* [#9257](https://github.com/rubocop-hq/rubocop/issues/9257): Fix false positive for `Style/SymbolProc` when the block uses a variable from outside the block. ([@dvandersluis][])
+* [#9251](https://github.com/rubocop-hq/rubocop/issues/9251): Fix extracted cop warning when the extension is loaded using `--require`. ([@dvandersluis][])
+* [#9244](https://github.com/rubocop-hq/rubocop/issues/9244): When a cop defined in an extension is explicitly enabled, ensure that it remains enabled. ([@dvandersluis][])
+* [#8046](https://github.com/rubocop-hq/rubocop/issues/8046): Fix an error for `Layout/HeredocArgumentClosingParenthesis` when there is an argument between a heredoc argument and the closing paretheses. ([@koic][])
+* [#9261](https://github.com/rubocop-hq/rubocop/pull/9261): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when one line for multiple condidate values of `when` statement. ([@makicamel][])
+* [#9258](https://github.com/rubocop-hq/rubocop/pull/9258): Fix calculation of cop department for nested departments. ([@mvz][])
+* [#9277](https://github.com/rubocop-hq/rubocop/pull/9277): Fix `Layout/EmptyLineBetweenDefs` error with endless method definitions. ([@dvandersluis][])
+* [#9278](https://github.com/rubocop-hq/rubocop/pull/9278): Update `Style/MethodDefParentheses` to ignore endless method definitions since parentheses are always required. ([@dvandersluis][])
+
+### Changes
+
+* [#9212](https://github.com/rubocop-hq/rubocop/pull/9212): Make `Style/RedundantArgument` aware of `String#chomp` and `String#chomp!`. ([@koic][])
+* [#8482](https://github.com/rubocop-hq/rubocop/issues/8482): Allow simple math for `Lint/BinaryOperatorWithIdenticalOperands` cop. ([@fatkodima][])
+* [#9237](https://github.com/rubocop-hq/rubocop/issues/9237): Add `IgnoredPatterns` configuration to `Lint/UnreachableLoop` to allow for block methods that share a name with an `Enumerable` method. ([@dvandersluis][])
+* [#9206](https://github.com/rubocop-hq/rubocop/pull/9206): Allow extensions to disable cop obsoletions. ([@dvandersluis][])
+* [#9262](https://github.com/rubocop-hq/rubocop/issues/9262): Update `Style/CollectionMethods` to be handle additional arguments and methods that accept a symbol instead of a block. ([@dvandersluis][])
+* [#9235](https://github.com/rubocop-hq/rubocop/issues/9235): Allow `--only` and `--except` to be able to properly qualify cops added by require. ([@dvandersluis][])
+* [#9205](https://github.com/rubocop-hq/rubocop/issues/9205): Update `Naming/MemoizedInstanceVariableName` to handle dynamically defined methods. ([@dvandersluis][])
+* [#9285](https://github.com/rubocop-hq/rubocop/pull/9285): Add `AllowPercentLiteralArrayArgument` option for `Lint/RedundantSplatExpansion` to enable the option by default. ([@koic][])
+* [#9208](https://github.com/rubocop-hq/rubocop/issues/9208): Use Array#bsearch instead of Array#include? to detect hidden files. ([@dark-panda][])
+* [#9228](https://github.com/rubocop-hq/rubocop/pull/9228): Suppress any config warnings for `rubocop -V`. ([@dvandersluis][])
+* [#9193](https://github.com/rubocop-hq/rubocop/pull/9193): Add `IgnoreLiteralBranches` and `IgnoreConstantBranches` options to `Lint/DuplicateBranch`. ([@dvandersluis][])
+
 ## 1.6.1 (2020-12-10)
 
 ### Bug fixes
@@ -5268,3 +5311,5 @@
 [@PhilCoggins]: https://github.com/PhilCoggins
 [@tas50]: https://github.com/tas50
 [@dark-panda]: https://github.com/dark-panda
+[@sswander]: https://github.com/sswander
+[@makicamel]: https://github.com/makicamel

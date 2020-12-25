@@ -1,1 +1,0 @@
-* [#9237](https://github.com/rubocop-hq/rubocop/issues/9237): Add `IgnoredPatterns` configuration to `Lint/UnreachableLoop` to allow for block methods that share a name with an `Enumerable` method. ([@dvandersluis][])
