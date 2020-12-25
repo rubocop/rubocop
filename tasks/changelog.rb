@@ -17,7 +17,7 @@ class Changelog
   REF_URL = 'https://github.com/rubocop-hq/rubocop'
   MAX_LENGTH = 40
   CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
-  SIGNATURE = Regexp.new(format(Regexp.escape("([@%<user>s][])\n"), user: '(\w+)'))
+  SIGNATURE = Regexp.new(format(Regexp.escape("([@%<user>s][])\n"), user: '([\w-]+)'))
   EOF = "\n"
 
   # New entry
