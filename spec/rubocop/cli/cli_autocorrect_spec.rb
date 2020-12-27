@@ -1162,6 +1162,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'can correct single line methods' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/EndlessMethod:
+        EnforcedStyle: disallow
+    YAML
     create_file('example.rb', <<~RUBY)
       def func1; do_something end # comment
       def func2() do_1; do_2; end
