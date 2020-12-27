@@ -1469,6 +1469,34 @@ Lint/DeprecatedClassMethods:
   Enabled: true
   VersionAdded: '0.19'
 
+Lint/DeprecatedConstants:
+  Description: 'Checks for deprecated constants.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  # You can configure deprecated constants.
+  # If there is an alternative method, you can set alternative value as `Alternative`.
+  # And you can set the deprecated version as `DeprecatedVersion`.
+  # These options can be omitted if they are not needed.
+  #
+  # DeprecatedConstants:
+  #   'DEPRECATED_CONSTANT':
+  #     Alternative: 'alternative_value'
+  #     DeprecatedVersion: 'deprecated_version'
+  #
+  DeprecatedConstants:
+    'NIL':
+      Alternative: 'nil'
+      DeprecatedVersion: '2.4'
+    'TRUE':
+      Alternative: 'true'
+      DeprecatedVersion: '2.4'
+    'FALSE':
+      Alternative: 'false'
+      DeprecatedVersion: '2.4'
+    'Random::DEFAULT':
+      Alternative: 'Random.new'
+      DeprecatedVersion: '3.0'
+
 Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
   Enabled: true
