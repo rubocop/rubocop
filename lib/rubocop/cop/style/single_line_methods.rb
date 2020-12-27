@@ -8,6 +8,10 @@ module RuboCop
       #
       # Endless methods added in Ruby 3.0 are also accepted by this cop.
       #
+      # If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow` or
+      # `allow_always`, single-line methods will be auto-corrected to endless
+      # methods if there is only one statement in the body.
+      #
       # @example
       #   # bad
       #   def some_method; body end
@@ -47,6 +51,28 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
+          if correct_to_endless?(node.body)
+            correct_to_endless(corrector, node)
+          else
+            correct_to_multiline(corrector, node)
+          end
+        end
+
+        def allow_empty?
+          cop_config['AllowIfMethodIsEmpty']
+        end
+
+        def correct_to_endless?(body_node)
+          endless_method_config = config.for_cop('Style/EndlessMethod')
+
+          return false unless endless_method_config['Enabled']
+          return false if endless_method_config['EnforcedStyle'] == 'disallow'
+          return false unless body_node
+
+          !(body_node.begin_type? || body_node.kwbegin_type?)
+        end
+
+        def correct_to_multiline(corrector, node)
           each_part(node.body) do |part|
             LineBreakCorrector.break_line_before(
               range: part, node: node, corrector: corrector,
@@ -62,8 +88,9 @@ module RuboCop
           move_comment(node, corrector)
         end
 
-        def allow_empty?
-          cop_config['AllowIfMethodIsEmpty']
+        def correct_to_endless(corrector, node)
+          replacement = "def #{node.method_name}(#{node.arguments.source}) = #{node.body.source}"
+          corrector.replace(node, replacement)
         end
 
         def each_part(body)
