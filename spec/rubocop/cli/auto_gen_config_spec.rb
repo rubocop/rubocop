@@ -2,8 +2,8 @@
 
 require 'timeout'
 
-RSpec.describe RuboCop::CLI, :isolated_environment do
-  subject(:cli) { described_class.new }
+RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubocop:disable RSpec/DescribeClass
+  subject(:cli) { RuboCop::CLI.new }
 
   include_context 'cli spec behavior'
 
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           YAML
           expect(IO.read('.rubocop.yml').strip).to eq(exp_dotfile.join($RS))
           $stdout = StringIO.new
-          expect(described_class.new.run([])).to eq(0)
+          expect(RuboCop::CLI.new.run([])).to eq(0)
           expect($stderr.string).to eq('')
           expect($stdout.string).to include('no offenses detected')
         end
@@ -191,7 +191,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               Enabled: true
           YAML
           $stdout = StringIO.new
-          expect(described_class.new.run(%w[--format simple --debug])).to eq(1)
+          expect(RuboCop::CLI.new.run(%w[--format simple --debug])).to eq(1)
           expect($stdout.string)
             .to include('.rubocop.yml: Layout/LineLength:Max overrides the ' \
                         "same parameter in .rubocop_todo.yml\n")
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               Enabled: false
           YAML
           $stdout = StringIO.new
-          expect(described_class.new.run(%w[--format simple])).to eq(0)
+          expect(RuboCop::CLI.new.run(%w[--format simple])).to eq(0)
           expect($stderr.string).to eq('')
           expect($stdout.string).to eq(<<~OUTPUT)
 
@@ -295,7 +295,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               Enabled: true
           YAML
           $stdout = StringIO.new
-          expect(described_class.new.run(%w[--format simple])).to eq(0)
+          expect(RuboCop::CLI.new.run(%w[--format simple])).to eq(0)
           expect($stderr.string).to eq('')
           expect($stdout.string).to eq(<<~OUTPUT)
 
@@ -345,7 +345,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 '  Max: 125'])
 
       # Create new CLI instance to avoid using cached configuration.
-      new_cli = described_class.new
+      new_cli = RuboCop::CLI.new
 
       expect(new_cli.run(['example1.rb'])).to eq(0)
     end
