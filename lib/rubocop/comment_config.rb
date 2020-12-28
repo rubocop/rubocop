@@ -47,6 +47,12 @@ module RuboCop
       )
     end
 
+    def comment_only_line?(line_number)
+      non_comment_token_line_numbers.none? do |non_comment_line_number|
+        non_comment_line_number == line_number
+      end
+    end
+
     private
 
     def extra_enabled_comments_with_names(extras:, names:)
@@ -164,12 +170,6 @@ module RuboCop
 
     def all_cop_names
       @all_cop_names ||= Cop::Registry.global.names - [REDUNDANT_DISABLE]
-    end
-
-    def comment_only_line?(line_number)
-      non_comment_token_line_numbers.none? do |non_comment_line_number|
-        non_comment_line_number == line_number
-      end
     end
 
     def non_comment_token_line_numbers

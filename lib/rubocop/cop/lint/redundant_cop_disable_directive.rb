@@ -61,7 +61,8 @@ module RuboCop
         end
 
         def comment_range_with_surrounding_space(range)
-          if previous_line_blank?(range)
+          if previous_line_blank?(range) &&
+             processed_source.comment_config.comment_only_line?(range.line)
             # When the previous line is blank, it should be retained
             range_with_surrounding_space(range: range, side: :right)
           else

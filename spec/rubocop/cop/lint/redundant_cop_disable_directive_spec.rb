@@ -465,6 +465,29 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           RUBY
         end
       end
+
+      context 'when there is a blank line before inline comment' do
+        it 'removes the comment and preceding whitespace' do
+          expect_offense(<<~RUBY)
+            def foo; end
+
+            def bar # rubocop:disable Metrics/ClassLength
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+              do_something do
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo; end
+
+            def bar
+              do_something do
+              end
+            end
+          RUBY
+        end
+      end
     end
   end
 end
