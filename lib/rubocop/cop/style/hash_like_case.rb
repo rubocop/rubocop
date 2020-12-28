@@ -68,7 +68,8 @@ module RuboCop
           length = cop_config['MinBranchesCount'] || 3
           return length if length.is_a?(Integer) && length.positive?
 
-          raise 'MinBranchesCount needs to be a positive integer!'
+          warn Rainbow('`MinBranchesCount` needs to be a positive integer!').red
+          exit!
         end
       end
     end
