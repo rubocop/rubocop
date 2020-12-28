@@ -1835,6 +1835,11 @@ Lint/RedundantCopEnableDirective:
   Enabled: true
   VersionAdded: '0.76'
 
+Lint/RedundantDirGlobSort:
+  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
   Enabled: true
