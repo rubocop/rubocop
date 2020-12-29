@@ -1,0 +1,1 @@
+* [#9303](https://github.com/rubocop-hq/rubocop/issues/9303): Fix an incorrect auto-correct for `Style/RaiseArgs` with `EnforcedStyle: compact` when using exception instantiation argument. ([@koic][])
