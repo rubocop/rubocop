@@ -554,7 +554,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
     end
 
-    context 'between regular and endless  methods' do
+    context 'between regular and endless methods' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
           def foo
@@ -570,6 +570,46 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           end
 
           def bar() = y
+        RUBY
+      end
+    end
+
+    context 'between endless class method and regular methods' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def self.foo = x
+          def bar
+          ^^^^^^^ Use empty lines between method definitions.
+            y
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo = x
+
+          def bar
+            y
+          end
+        RUBY
+      end
+    end
+
+    context 'between endless class method and regular class methods' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def self.foo = x
+          def self.bar
+          ^^^^^^^^^^^^ Use empty lines between method definitions.
+            y
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo = x
+
+          def self.bar
+            y
+          end
         RUBY
       end
     end
