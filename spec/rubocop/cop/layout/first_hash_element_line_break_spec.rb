@@ -31,6 +31,22 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     RUBY
   end
 
+  it 'registers an offense and corrects single element multi-line hash' do
+    expect_offense(<<~RUBY)
+      { foo: {
+        ^^^^^^ Add a line break before the first element of a multi-line hash.
+        bar: 2,
+      } }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {#{trailing_whitespace}
+      foo: {
+        bar: 2,
+      } }
+    RUBY
+  end
+
   it 'ignores implicit hashes in method calls with parens' do
     expect_no_offenses(<<~RUBY)
       method(
