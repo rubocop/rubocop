@@ -6,6 +6,9 @@ module RuboCop
       # This cop enforces the use of explicit block argument to avoid writing
       # block literal that just passes its arguments to another block.
       #
+      # NOTE: This cop only registers an offense if the block args match the
+      # yield args exactly.
+      #
       # @example
       #   # bad
       #   def with_tmp_dir
@@ -75,7 +78,14 @@ module RuboCop
         private
 
         def yielding_arguments?(block_args, yield_args)
+          yield_args = yield_args.dup.fill(
+            nil,
+            yield_args.length, block_args.length - yield_args.length
+          )
+
           yield_args.zip(block_args).all? do |yield_arg, block_arg|
+            next false unless yield_arg && block_arg
+
             block_arg && yield_arg.children.first == block_arg.children.first
           end
         end

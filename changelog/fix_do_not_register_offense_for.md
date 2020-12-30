@@ -1,0 +1,1 @@
+* [#9304](https://github.com/rubocop-hq/rubocop/issues/9304): Do not register an offense for `Style/ExplicitBlockArgument` when the `yield` arguments are not an exact match with the block arguments. ([@dvandersluis][])

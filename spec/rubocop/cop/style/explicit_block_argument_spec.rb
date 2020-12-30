@@ -18,17 +18,25 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
     RUBY
   end
 
-  it 'registers an offense and corrects when block yields several first its arguments' do
+  it 'registers an offense and corrects when multiple arguments are yielded' do
     expect_offense(<<~RUBY)
       def m
-        items.something { |i, j| yield i }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+        items.something(first_arg) { |i, j| yield i, j }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
       end
     RUBY
 
     expect_correction(<<~RUBY)
       def m(&block)
-        items.something(&block)
+        items.something(first_arg, &block)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when arguments are yielded in a different order' do
+    expect_no_offenses(<<~RUBY)
+      def m
+        items.something(first_arg) { |i, j| yield j, i }
       end
     RUBY
   end
@@ -92,8 +100,8 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
           3.times { yield }
           ^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
         else
-          other_items.something { |i, j| yield i }
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+          other_items.something { |i, j| yield i, j }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
         end
       end
     RUBY
@@ -151,6 +159,14 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
     expect_no_offenses(<<~RUBY)
       def m
         items.something { |i, j, k| yield j, k }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when there is more than one block argument and not all are yielded' do
+    expect_no_offenses(<<~RUBY)
+      def m
+        items.something { |i, j| yield i }
       end
     RUBY
   end
