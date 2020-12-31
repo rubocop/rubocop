@@ -66,7 +66,7 @@ module RuboCop
         end
 
         def correct_with_arguments(return_node, corrector)
-          if return_node.arguments.size > 1
+          if return_node.children.size > 1
             add_brackets(corrector, return_node)
           elsif hash_without_braces?(return_node.first_argument)
             add_braces(corrector, return_node.first_argument)
