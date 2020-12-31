@@ -244,6 +244,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
         end
       RUBY
     end
+
+    it 'reports an offense when multiple return values have a parenthesized return value' do
+      expect_offense(<<~RUBY)
+        def do_something
+          return (foo && bar), 42
+          ^^^^^^ Redundant `return` detected. To return multiple values, use an array.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def do_something
+          [(foo && bar), 42]
+        end
+      RUBY
+    end
   end
 
   context 'when multi-value returns are allowed' do
