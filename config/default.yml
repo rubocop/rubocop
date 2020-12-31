@@ -1673,6 +1673,11 @@ Lint/InterpolationCheck:
   VersionAdded: '0.50'
   VersionChanged: '0.87'
 
+Lint/LambdaWithoutLiteralBlock:
+  Description: 'Checks uses of lambda without a literal block.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/LiteralAsCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true
