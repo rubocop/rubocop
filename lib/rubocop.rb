@@ -7,7 +7,7 @@ require 'rainbow'
 require 'set'
 require 'forwardable'
 require 'regexp_parser'
-require 'unicode/display_width/no_string_ext'
+require 'unicode/display_width'
 
 # we have to require RuboCop's version, before rubocop-ast's
 require_relative 'rubocop/version'
