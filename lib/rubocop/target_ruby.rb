@@ -44,30 +44,58 @@ module RuboCop
     # The target ruby version may be found in a .ruby-version file.
     # @api private
     class RubyVersionFile < Source
-      FILENAME = '.ruby-version'
+      RUBY_VERSION_FILENAME = '.ruby-version'
+      RUBY_VERSION_PATTERN = /\A(?:ruby-)?(?<version>\d+\.\d+)/.freeze
 
       def name
-        "`#{FILENAME}`"
+        "`#{RUBY_VERSION_FILENAME}`"
       end
 
       private
 
+      def filename
+        RUBY_VERSION_FILENAME
+      end
+
+      def pattern
+        RUBY_VERSION_PATTERN
+      end
+
       def find_version
-        file = ruby_version_file
+        file = version_file
         return unless file && File.file?(file)
 
-        # rubocop:disable Lint/MixedRegexpCaptureTypes
-        # `(ruby-)` is not a capture type.
-        File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
-          # rubocop:enable Lint/MixedRegexpCaptureTypes
+        File.read(file).match(pattern) do |md|
           md[:version].to_f
         end
       end
 
-      def ruby_version_file
-        @ruby_version_file ||=
-          @config.find_file_upwards(FILENAME,
+      def version_file
+        @version_file ||=
+          @config.find_file_upwards(filename,
                                     @config.base_dir_for_path_parameters)
+      end
+    end
+
+    # The target ruby version may be found in a .tool-versions file, in a line
+    # starting with `ruby`.
+    # @api private
+    class ToolVersionsFile < RubyVersionFile
+      TOOL_VERSIONS_FILENAME = '.tool-versions'
+      TOOL_VERSIONS_PATTERN = /\Aruby (?:ruby-)?(?<version>\d+\.\d+)/.freeze
+
+      def name
+        "`#{TOOL_VERSIONS_FILENAME}`"
+      end
+
+      private
+
+      def filename
+        TOOL_VERSIONS_FILENAME
+      end
+
+      def pattern
+        TOOL_VERSIONS_PATTERN
       end
     end
 
@@ -194,7 +222,15 @@ module RuboCop
       KNOWN_RUBIES
     end
 
-    SOURCES = [RuboCopConfig, RubyVersionFile, BundlerLockFile, GemspecFile, Default].freeze
+    SOURCES = [
+      RuboCopConfig,
+      RubyVersionFile,
+      ToolVersionsFile,
+      BundlerLockFile,
+      GemspecFile,
+      Default
+    ].freeze
+
     private_constant :SOURCES
 
     def initialize(config)

@@ -96,10 +96,42 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
-      it 'does not read Gemfile.lock or gems.locked' do
+      it 'does not read .tool-versions, Gemfile.lock or gems.locked' do
+        expect(File).not_to receive(:file?).with('.tool-versions')
         expect(File).not_to receive(:file?).with('Gemfile')
         expect(File).not_to receive(:file?).with('gems.locked')
         target_ruby.version
+      end
+    end
+
+    context 'when .tool-versions is present' do
+      before do
+        dir = configuration.base_dir_for_path_parameters
+        create_file(File.join(dir, '.tool-versions'), tool_versions)
+      end
+
+      context 'when .tool-versions contains a ruby version' do
+        let(:tool_versions) { ['ruby 3.0.0', 'nodejs 14.9.0'] }
+        let(:ruby_version_to_f) { 3.0 }
+
+        it 'reads it to determine the target ruby version' do
+          expect(target_ruby.version).to eq ruby_version_to_f
+        end
+
+        it 'does not read Gemfile.lock, gems.locked' do
+          expect(File).not_to receive(:file?).with(/Gemfile/)
+          expect(File).not_to receive(:file?).with(/gems\.locked/)
+          target_ruby.version
+        end
+      end
+
+      context 'when .tool-versions does not contain a ruby version' do
+        let(:tool_versions) { ['nodejs 14.9.0'] }
+        let(:ruby_version_to_f) { 3.0 }
+
+        it 'uses the default ruby version' do
+          expect(target_ruby.version).to eq default_version
+        end
       end
     end
 
