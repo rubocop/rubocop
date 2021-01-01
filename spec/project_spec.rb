@@ -105,12 +105,19 @@ RSpec.describe 'RuboCop Project', type: :feature do
       raise errors.join("\n") unless errors.empty?
     end
 
-    it 'does not have nay duplication' do
+    it 'does not have any duplication' do
       fname = File.expand_path('../config/default.yml', __dir__)
       content = File.read(fname)
       RuboCop::YAMLDuplicationChecker.check(content, fname) do |key1, key2|
         raise "#{fname} has duplication of #{key1.value} " \
               "on line #{key1.start_line} and line #{key2.start_line}"
+      end
+    end
+
+    it 'does not include `Safe: true`' do
+      cop_names.each do |name|
+        safe = config[name]['Safe']
+        expect(safe).not_to eq(true), "`#{name}` has unnecessary `Safe: true` config."
       end
     end
   end
