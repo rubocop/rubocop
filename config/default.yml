@@ -1806,6 +1806,11 @@ Lint/NumberConversion:
     - Time
     - DateTime
 
+Lint/NumberedParameterAssignment:
+  Description: 'Checks for uses of numbered parameter assignment.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/OrderedMagicComments:
   Description: 'Checks the proper ordering of magic comments and whether a magic comment is not placed before a shebang.'
   Enabled: true
