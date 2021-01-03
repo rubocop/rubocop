@@ -3746,7 +3746,8 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
-  VersionChanged: '0.65'
+  VersionChanged: <<next>>
+  SafeAutoCorrect: false
   EnforcedStyle: literals
   SupportedStyles:
     # literals: freeze literals assigned to constants
