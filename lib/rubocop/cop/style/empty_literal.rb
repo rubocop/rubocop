@@ -32,8 +32,12 @@ module RuboCop
         def_node_matcher :str_node, '(send (const {nil? cbase} :String) :new)'
         def_node_matcher :array_with_block,
                          '(block (send (const {nil? cbase} :Array) :new) args _)'
-        def_node_matcher :hash_with_block,
-                         '(block (send (const {nil? cbase} :Hash) :new) args _)'
+        def_node_matcher :hash_with_block, <<~PATTERN
+          {
+            (block (send (const {nil? cbase} :Hash) :new) args _)
+            (numblock (send (const {nil? cbase} :Hash) :new) ...)
+          }
+        PATTERN
 
         def on_send(node)
           return unless (message = offense_message(node))

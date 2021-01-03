@@ -108,6 +108,16 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
       expect_no_offenses('test = ::Hash.new { block }')
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it 'does not register an offense for Hash.new { _1[_2] = [] }' do
+        expect_no_offenses('test = Hash.new { _1[_2] = [] }')
+      end
+
+      it 'does not register an offense for ::Hash.new { _1[_2] = [] }' do
+        expect_no_offenses('test = ::Hash.new { _1[_2] = [] }')
+      end
+    end
+
     it 'auto-corrects Hash.new in block ' do
       expect_offense(<<~RUBY)
         puts { Hash.new }
