@@ -157,6 +157,10 @@ module RuboCop
         include OmitParentheses
         extend AutoCorrector
 
+        def self.autocorrect_incompatible_with
+          [Style::NestedParenthesizedCalls]
+        end
+
         def on_send(node)
           send(style, node) # call require_parentheses or omit_parentheses
         end

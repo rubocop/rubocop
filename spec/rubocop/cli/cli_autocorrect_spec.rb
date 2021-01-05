@@ -197,6 +197,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+    YAML
+    source = <<~RUBY
+      a(b 1)
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/NestedParenthesizedCalls'
+                   ])).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      a(b(1))
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifier` with `Style/SoleNestedConditional`' do
     source = <<~RUBY
       def foo
