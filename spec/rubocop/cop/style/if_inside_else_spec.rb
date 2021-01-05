@@ -84,6 +84,29 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     RUBY
   end
 
+  it 'catches a modifier if nested inside an else after elsif' do
+    expect_offense(<<~RUBY)
+      if a
+        blah
+      elsif b
+        foo
+      else
+        bar if condition
+            ^^ Convert `if` nested inside `else` to `elsif`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        blah
+      elsif b
+        foo
+      elsif condition
+        bar
+      end
+    RUBY
+  end
+
   context 'when AllowIfModifier is false' do
     it 'catches a modifier if nested inside an else' do
       expect_offense(<<~RUBY)
