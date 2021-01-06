@@ -10,7 +10,6 @@ require 'rubocop/cop/internal_affairs'
 require 'webmock/rspec'
 
 require_relative 'core_ext/string'
-require 'pry'
 
 # Require supporting files exposed for testing.
 require 'rubocop/rspec/support'

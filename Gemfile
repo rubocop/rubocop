@@ -12,7 +12,6 @@ if RUBY_VERSION >= '2.5.0'
 else
   gem 'memory_profiler', '<= 1.0.0', platform: :mri
 end
-gem 'pry'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.9.0'
