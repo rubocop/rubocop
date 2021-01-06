@@ -2540,10 +2540,12 @@ Naming/VariableName:
   StyleGuide: '#snake-case-symbols-methods-vars'
   Enabled: true
   VersionAdded: '0.50'
+  VersionChanged: <<next>>
   EnforcedStyle: snake_case
   SupportedStyles:
     - snake_case
     - camelCase
+  AllowedIdentifiers: []
 
 Naming/VariableNumber:
   Description: 'Use the configured style when numbering symbols, methods and variables.'
