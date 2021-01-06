@@ -100,7 +100,7 @@ module RuboCop
         def correct_for_comment(corrector, node, if_branch)
           return if config.for_cop('Style/IfUnlessModifier')['Enabled']
 
-          comments = processed_source.comments_before_line(if_branch.source_range.line)
+          comments = processed_source.ast_with_comments[if_branch]
           comment_text = comments.map(&:text).join("\n") << "\n"
 
           corrector.insert_before(node.loc.keyword, comment_text) unless comments.empty?

@@ -221,6 +221,27 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
           end
       RUBY
     end
+
+    it 'registers an offense and corrects when there are outer and inline comments' do
+      expect_offense(<<~RUBY)
+        # Outer comment.
+        if foo
+          # Comment.
+          if bar # nested condition
+          ^^ Consider merging nested conditions into outer `if` conditions.
+            do_something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Outer comment.
+        # Comment.
+        if foo && bar # nested condition
+            do_something
+          end
+      RUBY
+    end
   end
 
   it 'registers an offense and corrects when using guard conditional with outer comment' do
