@@ -97,6 +97,7 @@ module RuboCop
       #   expect(Open3).to receive(:capture3)
       #
       class VariableNumber < Base
+        include AllowedIdentifiers
         include ConfigurableNumbering
 
         MSG = 'Use %<style>s for %<identifier_type>s numbers.'
@@ -138,14 +139,6 @@ module RuboCop
             end
 
           format(MSG, style: style, identifier_type: identifier_type)
-        end
-
-        def allowed_identifier?(name)
-          allowed_identifiers.include?(name.to_s.delete('@'))
-        end
-
-        def allowed_identifiers
-          cop_config.fetch('AllowedIdentifiers', [])
         end
       end
     end

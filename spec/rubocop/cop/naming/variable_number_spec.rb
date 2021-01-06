@@ -311,6 +311,12 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       RUBY
     end
 
+    it 'does not register an offense for a global variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        $capture3 = :foo
+      RUBY
+    end
+
     it 'does not register an offense for a method name that is allowed' do
       expect_no_offenses(<<~RUBY)
         def capture3
