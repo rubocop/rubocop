@@ -2689,7 +2689,8 @@ Style/AsciiComments:
   Enabled: true
   VersionAdded: '0.9'
   VersionChanged: '0.52'
-  AllowedChars: []
+  AllowedChars:
+    - ©
 
 Style/Attr:
   Description: 'Checks for uses of Module#attr.'
