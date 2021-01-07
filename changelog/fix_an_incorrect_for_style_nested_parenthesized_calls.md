@@ -1,1 +1,0 @@
-* [#9335](https://github.com/rubocop-hq/rubocop/issues/9335): Fix an incorrect auto-correct for `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`. ([@koic][])
