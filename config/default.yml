@@ -1472,7 +1472,7 @@ Lint/DeprecatedClassMethods:
 Lint/DeprecatedConstants:
   Description: 'Checks for deprecated constants.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.8'
   # You can configure deprecated constants.
   # If there is an alternative method, you can set alternative value as `Alternative`.
   # And you can set the deprecated version as `DeprecatedVersion`.
@@ -1705,7 +1705,7 @@ Lint/InterpolationCheck:
 Lint/LambdaWithoutLiteralBlock:
   Description: 'Checks uses of lambda without a literal block.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.8'
 
 Lint/LiteralAsCondition:
   Description: 'Checks of literals used in conditions.'
@@ -1872,7 +1872,7 @@ Lint/RedundantCopEnableDirective:
 Lint/RedundantDirGlobSort:
   Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.8'
 
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
@@ -2540,7 +2540,7 @@ Naming/VariableName:
   StyleGuide: '#snake-case-symbols-methods-vars'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: <<next>>
+  VersionChanged: '1.8'
   EnforcedStyle: snake_case
   SupportedStyles:
     - snake_case
@@ -3241,7 +3241,7 @@ Style/EndlessMethod:
   Description: 'Avoid the use of multi-lined endless method definitions.'
   StyleGuide: '#endless-methods'
   Enabled: pending
-  VersionAdded: <<next>>
+  VersionAdded: '1.8'
   EnforcedStyle: allow_single_line
   SupportedStyles:
     - allow_single_line
@@ -3777,7 +3777,7 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
-  VersionChanged: <<next>>
+  VersionChanged: '1.8'
   SafeAutoCorrect: false
   EnforcedStyle: literals
   SupportedStyles:
@@ -4382,7 +4382,7 @@ Style/SingleLineMethods:
   StyleGuide: '#no-single-line-methods'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: <<next>>
+  VersionChanged: '1.8'
   AllowIfMethodIsEmpty: true
 
 Style/SlicingWithRange:

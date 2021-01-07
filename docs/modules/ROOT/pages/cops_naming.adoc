@@ -989,7 +989,7 @@ end
 | Yes
 | No
 | 0.50
-| -
+| 1.8
 |===
 
 This cop makes sure that all variables use the configured style,
@@ -1027,6 +1027,10 @@ fooBar = 1
 | EnforcedStyle
 | `snake_case`
 | `snake_case`, `camelCase`
+
+| AllowedIdentifiers
+| `[]`
+| Array
 |===
 
 === References

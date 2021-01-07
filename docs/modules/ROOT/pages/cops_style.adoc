@@ -3113,6 +3113,90 @@ at_exit { puts 'Goodbye!' }
 
 * https://rubystyle.guide#no-END-blocks
 
+== Style/EndlessMethod
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+This cop checks for endless methods.
+
+It can enforce either the use of endless methods definitions
+for single-lined method bodies, or disallow endless methods.
+
+Other method definition types are not considered by this cop.
+
+The supported styles are:
+* allow_single_line (default) - only single line endless method definitions are allowed.
+* allow_always - all endless method definitions are allowed.
+* disallow - all endless method definitions are disallowed.
+
+NOTE: Incorrect endless method definitions will always be
+corrected to a multi-line definition.
+
+=== Examples
+
+==== EnforcedStyle: allow_single_line (default)
+
+[source,ruby]
+----
+# good
+def my_method() = x
+
+# bad, multi-line endless method
+def my_method() = x.foo
+                   .bar
+                   .baz
+----
+
+==== EnforcedStyle: allow_always
+
+[source,ruby]
+----
+# good
+def my_method() = x
+
+# good
+def my_method() = x.foo
+                   .bar
+                   .baz
+----
+
+==== EnforcedStyle: disallow
+
+[source,ruby]
+----
+# bad
+def my_method; x end
+
+# bad
+def my_method() = x.foo
+                   .bar
+                   .baz
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `allow_single_line`
+| `allow_single_line`, `allow_always`, `disallow`
+|===
+
+=== References
+
+* https://rubystyle.guide#endless-methods
+
 == Style/EvalWithLocation
 
 |===
@@ -6282,9 +6366,9 @@ foo if [b.lightweight, b.heavyweight].include?(a)
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.34
-| 0.65
+| 1.8
 |===
 
 This cop checks whether some constant value isn't a
@@ -9708,13 +9792,17 @@ end
 | Yes
 | Yes
 | 0.9
-| 1.7
+| 1.8
 |===
 
 This cop checks for single-line method definitions that contain a body.
 It will accept single-line methods with no body.
 
 Endless methods added in Ruby 3.0 are also accepted by this cop.
+
+If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow` or
+`allow_always`, single-line methods will be auto-corrected to endless
+methods if there is only one statement in the body.
 
 === Examples
 

@@ -666,6 +666,58 @@ Dir.exist?(some_path)
 block_given?
 ----
 
+== Lint/DeprecatedConstants
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+This cop checks for deprecated constants.
+
+It has `DeprecatedConstants` config. If there is an alternative method, you can set
+alternative value as `Alternative`. And you can set the deprecated version as
+`DeprecatedVersion`. These options can be omitted if they are not needed.
+
+  DeprecatedConstants:
+    'DEPRECATED_CONSTANT':
+      Alternative: 'alternative_value'
+      DeprecatedVersion: 'deprecated_version'
+
+By default, `NIL`, `TRUE`, `FALSE` and `Random::DEFAULT` are configured.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+NIL
+TRUE
+FALSE
+Random::DEFAULT # Return value of Ruby 2 is `Random` instance, Ruby 3.0 is `Random` class.
+
+# good
+nil
+true
+false
+Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible with Ruby 2.
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| DeprecatedConstants
+| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}}`
+| 
+|===
+
 == Lint/DeprecatedOpenSSLConstant
 
 |===
@@ -2361,6 +2413,43 @@ foo = 'something with #{interpolation} inside'
 foo = "something with #{interpolation} inside"
 ----
 
+== Lint/LambdaWithoutLiteralBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+This cop checks uses of lambda without a literal block.
+It emulates the following warning in Ruby 3.0:
+
+  % ruby -vwe 'lambda(&proc {})'
+  ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
+  -e:1: warning: lambda without a literal block is deprecated; use the proc without
+  lambda instead
+
+This way, proc object is never converted to lambda.
+Auto-correction replaces with compatible proc argument.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+lambda(&proc { do_something })
+lambda(&Proc.new { do_something })
+
+# good
+proc { do_something }
+Proc.new { do_something }
+lambda { do_something } # If you use lambda.
+----
+
 == Lint/LiteralAsCondition
 
 |===
@@ -2918,6 +3007,11 @@ such as requiring files, can lead to intermittent failures
 that are hard to debug. To ensure this doesn't happen,
 always sort the list.
 
+`Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
+So all bad cases are acceptable when Ruby 3.0 or higher are used.
+
+This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+
 === Examples
 
 [source,ruby]
@@ -2931,10 +3025,7 @@ end
 Dir["./lib/**/*.rb"].sort.each do |file|
   require file
 end
-----
 
-[source,ruby]
-----
 # bad
 Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')) do |file|
   require file
@@ -2944,24 +3035,21 @@ end
 Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')).sort.each do |file|
   require file
 end
-----
 
-[source,ruby]
-----
 # bad
 Dir['./lib/**/*.rb'].each(&method(:require))
 
 # good
 Dir['./lib/**/*.rb'].sort.each(&method(:require))
-----
 
-[source,ruby]
-----
 # bad
 Dir.glob(Rails.root.join('test', '*.rb'), &method(:require))
 
 # good
 Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
+
+# good - Respect intent if `sort` keyword option is specified in Ruby 3.0 or higher.
+Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), sort: false).each(&method(:require))
 ----
 
 == Lint/NonLocalExitFromIterator
@@ -3429,6 +3517,42 @@ baz
 foo = "1"
 # rubocop:enable all
 baz
+----
+
+== Lint/RedundantDirGlobSort
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+Sort globbed results by default in Ruby 3.0.
+This cop checks for redundant `sort` method to `Dir.glob` and `Dir[]`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Dir.glob('./lib/**/*.rb').sort.each do |file|
+end
+
+Dir['./lib/**/*.rb'].sort.each do |file|
+end
+
+# good
+Dir.glob('./lib/**/*.rb').each do |file|
+end
+
+Dir['./lib/**/*.rb'].each do |file|
+end
 ----
 
 == Lint/RedundantRequireStatement

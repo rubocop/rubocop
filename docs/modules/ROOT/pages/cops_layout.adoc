@@ -4810,14 +4810,14 @@ style.
 if a +
     b
   something &&
-  something_else
+    something_else
 end
 
 # good
 if a +
    b
   something &&
-    something_else
+  something_else
 end
 ----
 
@@ -5531,18 +5531,14 @@ foo.map{ |a|
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Pending
-| No
-| Yes (Unsafe)
+| Yes
+| Yes
 | 1.7
 | -
 |===
 
 Checks for space between the name of a receiver and a left
 brackets.
-
-This cop is marked as unsafe because it can occur false positives
-for `do_something [this_is_an_array_literal_argument]` that take
-an array without parentheses as an argument.
 
 === Examples
 

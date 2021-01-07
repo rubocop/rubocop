@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.8.0 (2021-01-07)
+
 ### New features
 
 * [#9324](https://github.com/rubocop-hq/rubocop/pull/9324): Add new `Lint/DeprecatedConstants` cop. ([@koic][])
