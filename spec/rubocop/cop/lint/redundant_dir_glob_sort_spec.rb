@@ -54,6 +54,12 @@ RSpec.describe RuboCop::Cop::Lint::RedundantDirGlobSort, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when using `collection.sort`' do
+      expect_no_offenses(<<~RUBY)
+        collection.sort
+      RUBY
+    end
   end
 
   context 'when Ruby 2.7 or lower', :ruby27 do
