@@ -116,7 +116,7 @@ module RuboCop
             parts.map do |part|
               if part.str_type?
                 if single_quoted?(part)
-                  part.value.gsub('\\') { '\\\\' }
+                  part.value.gsub(/(\\|")/, '\\\\\&')
                 else
                   part.value.inspect[1..-2]
                 end
