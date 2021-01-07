@@ -190,4 +190,17 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
       RUBY
     end
   end
+
+  context 'double quotes inside string surrounded single quotes' do
+    it 'registers an offense and corrects with double quotes' do
+      expect_offense(<<-RUBY)
+        '"bar"' + foo
+        ^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<-RUBY)
+        "\\\"bar\\\"\#{foo}"
+      RUBY
+    end
+  end
 end
