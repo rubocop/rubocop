@@ -34,11 +34,13 @@ module RuboCop
 
         def on_send(node)
           return unless (receiver = node.receiver)
-          return unless receiver.receiver.const_type? && receiver.receiver.short_name == :Dir
+          return unless receiver.receiver&.const_type? && receiver.receiver.short_name == :Dir
           return unless GLOB_METHODS.include?(receiver.method_name)
 
-          add_offense(node.loc.selector) do |corrector|
-            corrector.remove(node.loc.selector)
+          selector = node.loc.selector
+
+          add_offense(selector) do |corrector|
+            corrector.remove(selector)
             corrector.remove(node.loc.dot)
           end
         end
