@@ -22,4 +22,16 @@ RSpec.describe RuboCop::Cop::Lint::MultipleComparison, :config do
   it 'accepts to use one compare operator' do
     expect_no_offenses('x < 1')
   end
+
+  it 'accepts to use `&` operator' do
+    expect_no_offenses('x >= y & x < z')
+  end
+
+  it 'accepts to use `|` operator' do
+    expect_no_offenses('x >= y | x < z')
+  end
+
+  it 'accepts to use `^` operator' do
+    expect_no_offenses('x >= y ^ x < z')
+  end
 end

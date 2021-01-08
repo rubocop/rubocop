@@ -1,0 +1,1 @@
+* [#9349](https://github.com/rubocop-hq/rubocop/issues/9349): Fix a false positive for `Lint/MultipleComparison` when using `&`, `|`, and `^` set operation operators in multiple comparison. ([@koic][])
