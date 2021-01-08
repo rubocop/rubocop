@@ -177,6 +177,31 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when requiring redundant extension cop' do
+      before do
+        create_file('ext.yml', <<~YAML)
+          require:
+            - rubocop-rspec
+        YAML
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from: ext.yml
+          require:
+            - rubocop-performance
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'shows with version of each extension cop once' do
+        output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).to match(
+          /- rubocop-performance \d+\.\d+\.\d+\n  - rubocop-rspec \d+\.\d+\.\d+\n\z/
+        )
+      end
+    end
+
     context 'when there are pending cops' do
       let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
         The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
