@@ -175,7 +175,7 @@ module RuboCop
       end
 
       def loaded_features
-        @loaded_features.flatten.compact
+        @loaded_features.flatten.compact.uniq
       end
 
       # @api private
