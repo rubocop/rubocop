@@ -63,12 +63,12 @@ module RuboCop
         end
 
         def autocorrect(corrector, node, if_branch)
+          corrector.wrap(node.condition, '(', ')') if node.condition.or_type?
+
           if node.unless?
             corrector.replace(node.loc.keyword, 'if')
             corrector.insert_before(node.condition, '!')
           end
-
-          corrector.wrap(node.condition, '(', ')') if node.condition.or_type?
 
           and_operator = if_branch.unless? ? ' && !' : ' && '
           if if_branch.modifier_form?
