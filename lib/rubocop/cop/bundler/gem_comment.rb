@@ -43,6 +43,18 @@ module RuboCop
       #   # Version 2.1 introduces breaking change baz
       #   gem 'foo', '< 2.1'
       #
+      # @example OnlyFor: ['limiting_version_specifiers']
+      #   # bad
+      #
+      #   gem 'foo', '< 2.1'
+      #
+      #   # good
+      #
+      #   gem 'foo', '>= 1.0'
+      #
+      #   # Version 2.1 introduces breaking change baz
+      #   gem 'foo', '< 2.1'
+      #
       # @example OnlyFor: ['version_specifiers', 'github']
       #   # bad
       #
@@ -64,6 +76,8 @@ module RuboCop
         MSG = 'Missing gem description comment.'
         CHECKED_OPTIONS_CONFIG = 'OnlyFor'
         VERSION_SPECIFIERS_OPTION = 'version_specifiers'
+        LIMITING_VERSION_SPECIFIERS_OPTION = 'limiting_version_specifiers'
+        LIMITING_VERSION_PATTERN = /<|~>/.freeze
         RESTRICT_ON_SEND = %i[gem].freeze
 
         # @!method gem_declaration?(node)
@@ -113,6 +127,8 @@ module RuboCop
         def checked_options_present?(node)
           (cop_config[CHECKED_OPTIONS_CONFIG].include?(VERSION_SPECIFIERS_OPTION) &&
             version_specified_gem?(node)) ||
+            (cop_config[CHECKED_OPTIONS_CONFIG].include?(LIMITING_VERSION_SPECIFIERS_OPTION) &&
+              limiting_version_specified_gem?(node)) ||
             contains_checked_options?(node)
         end
 
@@ -121,6 +137,15 @@ module RuboCop
         def version_specified_gem?(node)
           # arguments[0] is the gem name
           node.arguments[1]&.str_type?
+        end
+
+        # Version specifications that limit all updates going forward. This excludes versions
+        # like ">= 1.0" or "!= "
+        # as long as it has one we know there's at least one version specifier.
+        def limiting_version_specified_gem?(node)
+          return unless version_specified_gem?(node)
+
+          node.arguments.any? { |arg| arg&.str_type? && LIMITING_VERSION_PATTERN.match?(arg.to_s) }
         end
 
         def contains_checked_options?(node)
