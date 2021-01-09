@@ -80,6 +80,95 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
       RUBY
     end
 
+    it "doesn't break when used as RHS of local var assignment" do
+      expect_offense(<<~RUBY, keyword: keyword)
+        a = %{keyword} b
+            ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+          1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = (1 #{keyword} b)
+      RUBY
+    end
+
+    it "doesn't break when used as RHS of instance var assignment" do
+      expect_offense(<<~RUBY, keyword: keyword)
+        @a = %{keyword} b
+             ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+          1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @a = (1 #{keyword} b)
+      RUBY
+    end
+
+    it "doesn't break when used as RHS of class var assignment" do
+      expect_offense(<<~RUBY, keyword: keyword)
+        @@a = %{keyword} b
+              ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+          1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @@a = (1 #{keyword} b)
+      RUBY
+    end
+
+    it "doesn't break when used as RHS of constant assignment" do
+      expect_offense(<<~RUBY, keyword: keyword)
+        A = %{keyword} b
+            ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+          1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        A = (1 #{keyword} b)
+      RUBY
+    end
+
+    it "doesn't break when used as RHS of binary arithmetic" do
+      expect_offense(<<~RUBY, keyword: keyword)
+        a + %{keyword} b
+            ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+          1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a + (1 #{keyword} b)
+      RUBY
+    end
+
+    it 'handles inline comments during autocorrection' do
+      expect_offense(<<~RUBY, keyword: keyword)
+        %{keyword} bar # important comment not to be nuked
+        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        baz #{keyword} bar # important comment not to be nuked
+      RUBY
+    end
+
+    it 'handles one-line usage' do
+      expect_offense(<<~RUBY, keyword: keyword)
+        %{keyword} foo; bar; end
+        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar #{keyword} foo
+      RUBY
+    end
+
     # See: https://github.com/rubocop-hq/rubocop/issues/8273
     context 'accepts multiline condition in modifier form' do
       it 'registers an offense' do
