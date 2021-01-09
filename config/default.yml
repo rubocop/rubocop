@@ -3340,6 +3340,7 @@ Style/FormatStringToken:
   MaxUnannotatedPlaceholdersAllowed: 1
   VersionAdded: '0.49'
   VersionChanged: '1.0'
+  IgnoredMethods: []
 
 Style/FrozenStringLiteralComment:
   Description: >-

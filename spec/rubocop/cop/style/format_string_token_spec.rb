@@ -2,12 +2,14 @@
 
 RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   let(:enforced_style) { :annotated }
+  let(:ignored_methods) { [] }
 
   let(:cop_config) do
     {
       'EnforcedStyle' => enforced_style,
       'SupportedStyles' => %i[annotated template unannotated],
-      'MaxUnannotatedPlaceholdersAllowed' => 0
+      'MaxUnannotatedPlaceholdersAllowed' => 0,
+      'IgnoredMethods' => ignored_methods
     }
   end
 
@@ -247,6 +249,27 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
          ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
       RUBY
       expect_no_corrections
+    end
+
+    context 'when `IgnoredMethods: redirect`' do
+      let(:ignored_methods) { ['redirect'] }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          redirect("%{foo}")
+        RUBY
+      end
+    end
+
+    context 'when `IgnoredMethods: []`' do
+      let(:ignored_methods) { [] }
+
+      it 'does not register an offense' do
+        expect_offense(<<~RUBY)
+          redirect("%{foo}")
+                    ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+        RUBY
+      end
     end
   end
 
