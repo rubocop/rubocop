@@ -99,6 +99,18 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
+  it 'registers offense when parameter with prefix is less than minimum length' do
+    expect_offense(<<~RUBY)
+      def something(_a, __b, *c, **__d)
+                    ^^ Method parameter must be at least 3 characters long.
+                        ^^^ Method parameter must be at least 3 characters long.
+                             ^^ Method parameter must be at least 3 characters long.
+                                 ^^^^^ Method parameter must be at least 3 characters long.
+        do_stuff
+      end
+    RUBY
+  end
+
   it 'registers offense when parameter contains uppercase characters' do
     expect_offense(<<~RUBY)
       def something(number_One)
