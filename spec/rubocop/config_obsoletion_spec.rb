@@ -16,70 +16,70 @@ RSpec.describe RuboCop::ConfigObsoletion do
       let(:hash) do
         {
           # Renamed cops
-          'Layout/AlignArguments' => { 'Enabled': true },
-          'Layout/AlignArray' => { 'Enabled': true },
-          'Layout/AlignHash' => { 'Enabled': true },
-          'Layout/AlignParameters' => { 'Enabled': true },
-          'Layout/FirstParameterIndentation' => { 'Enabled': true },
-          'Layout/IndentArray' => { 'Enabled': true },
-          'Layout/IndentAssignment' => { 'Enabled': true },
-          'Layout/IndentFirstArgument' => { 'Enabled': true },
-          'Layout/IndentFirstArrayElement' => { 'Enabled': true },
-          'Layout/IndentFirstHashElement' => { 'Enabled': true },
-          'Layout/IndentFirstParameter' => { 'Enabled': true },
-          'Layout/IndentHash' => { 'Enabled': true },
-          'Layout/IndentHeredoc' => { 'Enabled': true },
-          'Layout/LeadingBlankLines' => { 'Enabled': true },
-          'Layout/Tab' => { 'Enabled': true },
-          'Layout/TrailingBlankLines' => { 'Enabled': true },
-          'Lint/DuplicatedKey' => { 'Enabled': true },
-          'Lint/HandleExceptions' => { 'Enabled': true },
-          'Lint/MultipleCompare' => { 'Enabled': true },
-          'Lint/StringConversionInInterpolation' => { 'Enabled': true },
-          'Lint/UnneededCopDisableDirective' => { 'Enabled': true },
-          'Lint/UnneededCopEnableDirective' => { 'Enabled': true },
-          'Lint/UnneededRequireStatement' => { 'Enabled': true },
-          'Lint/UnneededSplatExpansion' => { 'Enabled': true },
-          'Naming/UncommunicativeBlockParamName' => { 'Enabled': true },
-          'Naming/UncommunicativeMethodParamName' => { 'Enabled': true },
-          'Style/DeprecatedHashMethods' => { 'Enabled': true },
-          'Style/MethodCallParentheses' => { 'Enabled': true },
-          'Style/OpMethod' => { 'Enabled': true },
-          'Style/SingleSpaceBeforeFirstArg' => { 'Enabled': true },
-          'Style/UnneededCapitalW' => { 'Enabled': true },
-          'Style/UnneededCondition' => { 'Enabled': true },
-          'Style/UnneededInterpolation' => { 'Enabled': true },
-          'Style/UnneededPercentQ' => { 'Enabled': true },
-          'Style/UnneededSort' => { 'Enabled': true },
+          'Layout/AlignArguments' => { Enabled: true },
+          'Layout/AlignArray' => { Enabled: true },
+          'Layout/AlignHash' => { Enabled: true },
+          'Layout/AlignParameters' => { Enabled: true },
+          'Layout/FirstParameterIndentation' => { Enabled: true },
+          'Layout/IndentArray' => { Enabled: true },
+          'Layout/IndentAssignment' => { Enabled: true },
+          'Layout/IndentFirstArgument' => { Enabled: true },
+          'Layout/IndentFirstArrayElement' => { Enabled: true },
+          'Layout/IndentFirstHashElement' => { Enabled: true },
+          'Layout/IndentFirstParameter' => { Enabled: true },
+          'Layout/IndentHash' => { Enabled: true },
+          'Layout/IndentHeredoc' => { Enabled: true },
+          'Layout/LeadingBlankLines' => { Enabled: true },
+          'Layout/Tab' => { Enabled: true },
+          'Layout/TrailingBlankLines' => { Enabled: true },
+          'Lint/DuplicatedKey' => { Enabled: true },
+          'Lint/HandleExceptions' => { Enabled: true },
+          'Lint/MultipleCompare' => { Enabled: true },
+          'Lint/StringConversionInInterpolation' => { Enabled: true },
+          'Lint/UnneededCopDisableDirective' => { Enabled: true },
+          'Lint/UnneededCopEnableDirective' => { Enabled: true },
+          'Lint/UnneededRequireStatement' => { Enabled: true },
+          'Lint/UnneededSplatExpansion' => { Enabled: true },
+          'Naming/UncommunicativeBlockParamName' => { Enabled: true },
+          'Naming/UncommunicativeMethodParamName' => { Enabled: true },
+          'Style/DeprecatedHashMethods' => { Enabled: true },
+          'Style/MethodCallParentheses' => { Enabled: true },
+          'Style/OpMethod' => { Enabled: true },
+          'Style/SingleSpaceBeforeFirstArg' => { Enabled: true },
+          'Style/UnneededCapitalW' => { Enabled: true },
+          'Style/UnneededCondition' => { Enabled: true },
+          'Style/UnneededInterpolation' => { Enabled: true },
+          'Style/UnneededPercentQ' => { Enabled: true },
+          'Style/UnneededSort' => { Enabled: true },
           # Moved cops
-          'Lint/BlockAlignment' => { 'Enabled': true },
-          'Lint/DefEndAlignment' => { 'Enabled': true },
-          'Lint/EndAlignment' => { 'Enabled': true },
-          'Lint/Eval' => { 'Enabled': true },
-          'Style/AccessorMethodName' => { 'Enabled': true },
-          'Style/AsciiIdentifiers' => { 'Enabled': true },
-          'Style/ClassAndModuleCamelCase' => { 'Enabled': true },
-          'Style/ConstantName' => { 'Enabled': true },
-          'Style/FileName' => { 'Enabled': true },
-          'Style/FlipFlop' => { 'Enabled': true },
-          'Style/MethodName' => { 'Enabled': true },
-          'Style/PredicateName' => { 'Enabled': true },
-          'Style/VariableName' => { 'Enabled': true },
-          'Style/VariableNumber' => { 'Enabled': true },
+          'Lint/BlockAlignment' => { Enabled: true },
+          'Lint/DefEndAlignment' => { Enabled: true },
+          'Lint/EndAlignment' => { Enabled: true },
+          'Lint/Eval' => { Enabled: true },
+          'Style/AccessorMethodName' => { Enabled: true },
+          'Style/AsciiIdentifiers' => { Enabled: true },
+          'Style/ClassAndModuleCamelCase' => { Enabled: true },
+          'Style/ConstantName' => { Enabled: true },
+          'Style/FileName' => { Enabled: true },
+          'Style/FlipFlop' => { Enabled: true },
+          'Style/MethodName' => { Enabled: true },
+          'Style/PredicateName' => { Enabled: true },
+          'Style/VariableName' => { Enabled: true },
+          'Style/VariableNumber' => { Enabled: true },
           # Removed cops
-          'Layout/SpaceAfterControlKeyword' => { 'Enabled': true },
-          'Layout/SpaceBeforeModifierKeyword' => { 'Enabled': true },
-          'Lint/InvalidCharacterLiteral' => { 'Enabled': true },
-          'Style/MethodMissingSuper' => { 'Enabled': true },
-          'Lint/UselessComparison' => { 'Enabled': true },
-          'Lint/RescueWithoutErrorClass' => { 'Enabled': true },
-          'Lint/SpaceBeforeFirstArg' => { 'Enabled': true },
-          'Style/SpaceAfterControlKeyword' => { 'Enabled': true },
-          'Style/SpaceBeforeModifierKeyword' => { 'Enabled': true },
-          'Style/TrailingComma' => { 'Enabled': true },
-          'Style/TrailingCommaInLiteral' => { 'Enabled': true },
+          'Layout/SpaceAfterControlKeyword' => { Enabled: true },
+          'Layout/SpaceBeforeModifierKeyword' => { Enabled: true },
+          'Lint/InvalidCharacterLiteral' => { Enabled: true },
+          'Style/MethodMissingSuper' => { Enabled: true },
+          'Lint/UselessComparison' => { Enabled: true },
+          'Lint/RescueWithoutErrorClass' => { Enabled: true },
+          'Lint/SpaceBeforeFirstArg' => { Enabled: true },
+          'Style/SpaceAfterControlKeyword' => { Enabled: true },
+          'Style/SpaceBeforeModifierKeyword' => { Enabled: true },
+          'Style/TrailingComma' => { Enabled: true },
+          'Style/TrailingCommaInLiteral' => { Enabled: true },
           # Split cops
-          'Style/MethodMissing' => { 'Enabled': true }
+          'Style/MethodMissing' => { Enabled: true }
         }
       end
 
@@ -221,10 +221,10 @@ RSpec.describe RuboCop::ConfigObsoletion do
     context 'when the configuration includes any extracted cops' do
       let(:hash) do
         {
-          'Performance/Casecmp' => { 'Enabled': true },
-          'Performance/RedundantSortBlock' => { 'Enabled': true },
-          'Rails/Date' => { 'Enabled': true },
-          'Rails/DynamicFindBy' => { 'Enabled': true }
+          'Performance/Casecmp' => { Enabled: true },
+          'Performance/RedundantSortBlock' => { Enabled: true },
+          'Rails/Date' => { Enabled: true },
+          'Rails/DynamicFindBy' => { Enabled: true }
         }
       end
 
@@ -283,7 +283,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
         let(:hash) do
           {
             'inherit_gem' => { 'rubocop-includes' => '.rubocop.yml' },
-            'Performance/Casecmp' => { 'Enabled': true }
+            'Performance/Casecmp' => { Enabled: true }
           }
         end
 
@@ -440,11 +440,11 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
       let(:hash) do
         {
-          'Foo/Bar' => { 'Enabled': true },
-          'Vegetable/Tomato' => { 'Enabled': true },
-          'Legacy/Test' => { 'Enabled': true },
-          'Other/Cop' => { 'Enabled': true },
-          'Style/FlipFlop' => { 'Enabled': true }
+          'Foo/Bar' => { Enabled: true },
+          'Vegetable/Tomato' => { Enabled: true },
+          'Legacy/Test' => { Enabled: true },
+          'Other/Cop' => { Enabled: true },
+          'Style/FlipFlop' => { Enabled: true }
         }
       end
 
@@ -506,7 +506,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
       let(:hash) do
         {
-          'Performance/CollectionLiteralInLoop' => { 'Enabled': true }
+          'Performance/CollectionLiteralInLoop' => { Enabled: true }
         }
       end
 
