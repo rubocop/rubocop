@@ -109,6 +109,7 @@ Here's a list of RuboCop's core developers:
 * [Maxim Krizhanovski](https://github.com/darhazer)
 * [Benjamin Quorning](https://github.com/bquorning)
 * [Marc-André Lafortune](https://github.com/marcandre)
+* [Daniel Vandersluis](https://github.com/dvandersluis)
 
 See the [team page](https://docs.rubocop.org/rubocop/about/team.html) for more details.
 

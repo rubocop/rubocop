@@ -16,6 +16,7 @@ of the RuboCop core team, listed in the order of joining it:
 * https://github.com/darhazer[Maxim Krizhanovski]
 * https://github.com/bquorning[Benjamin Quorning] (also head maintainer of RuboCop RSpec)
 * https://github.com/marcandre[Marc-André Lafortune] (also head maintainer of RuboCop AST)
+* https://github.com/dvandersluis[Daniel Vandersluis]
 
 == RuboCop Alumni
 
