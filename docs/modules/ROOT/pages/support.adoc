@@ -14,10 +14,10 @@ https://github.com/rubocop-hq/rubocop/discussions[here].
 It's a great place to share ideas, help other RuboCop users and just be up-to-date
 with interesting developments.
 
-== Gitter
+== Discord
 
 If you're into chat you can drop by RuboCop's
-https://gitter.im/bbatsov/rubocop[gitter channel]. You can often find some
+https://discord.gg/wJjWvGRDmm[Discord server]. You can often find some
 RuboCop maintainers there and get some interesting news from the project's
 kitchen.
 
