@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::HashEachMethods do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
   context 'when node matches a keys#each or values#each' do
     context 'when receiver is a send' do
       it 'registers offense, auto-corrects foo#keys.each to foo#each_key' do

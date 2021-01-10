@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::CaseLikeIf, :config do
   it 'registers an offense and corrects when using `===`' do
     expect_offense(<<~RUBY)
       if Integer === x

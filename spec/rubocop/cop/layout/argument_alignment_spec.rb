@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
   let(:config) do
     RuboCop::Config.new('Layout/ArgumentAlignment' => cop_config,
                         'Layout/IndentationWidth' => {

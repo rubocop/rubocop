@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor, :config do
   it 'registers an offense and corrects when both accessors of the name exists' do
     expect_offense(<<~RUBY)
       class Foo

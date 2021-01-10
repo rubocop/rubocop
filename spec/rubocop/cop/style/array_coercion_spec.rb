@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ArrayCoercion do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::ArrayCoercion, :config do
   it 'registers an offense and corrects when splatting variable into array' do
     expect_offense(<<~RUBY)
       [*paths].each { |path| do_something(path) }

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) do
     { 'Methods' => { 'join' => '', 'split' => ' ', 'chomp' => "\n", 'chomp!' => "\n" } }
   end

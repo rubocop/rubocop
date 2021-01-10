@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
   it 'registers an offense for missing newline in do/end block w/o params' do
     expect_offense(<<~RUBY)
       test do foo

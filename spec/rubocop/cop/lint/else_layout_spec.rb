@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ElseLayout do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
   it 'registers an offense and corrects for expr on same line as else' do
     expect_offense(<<~RUBY)
       if something

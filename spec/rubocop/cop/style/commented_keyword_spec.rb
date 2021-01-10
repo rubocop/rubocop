@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CommentedKeyword do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense and corrects when commenting on the same line as `end`' do

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::SymbolConversion do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
   shared_examples 'offense' do |from, to|
     it "registers an offense for #{from}" do
       expect_offense(<<~RUBY, from: from)

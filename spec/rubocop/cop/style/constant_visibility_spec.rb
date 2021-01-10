@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ConstantVisibility do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
   let(:config) { RuboCop::Config.new }
 
   context 'when defining a constant in a class' do

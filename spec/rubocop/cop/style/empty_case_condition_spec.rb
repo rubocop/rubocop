@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
   shared_examples 'detect/correct empty case, accept non-empty case' do
     it 'registers an offense and autocorrects' do
       expect_offense(source)

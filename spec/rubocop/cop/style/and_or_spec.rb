@@ -6,8 +6,6 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       'EnforcedStyle' => 'conditionals'
     }
 
-    subject(:cop) { described_class.new(config) }
-
     let(:cop_config) { cop_config }
 
     { 'and' => '&&', 'or' => '||' }.each do |operator, prefer|
@@ -152,8 +150,6 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     cop_config = {
       'EnforcedStyle' => 'always'
     }
-
-    subject(:cop) { described_class.new(config) }
 
     let(:cop_config) { cop_config }
 

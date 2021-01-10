@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EachWithObject do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
   it 'finds inject and reduce with passed in and returned hash' do
     expect_offense(<<~RUBY)
       [].inject({}) { |a, e| a }

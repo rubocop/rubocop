@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::StringConcatenation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
   it 'registers an offense and corrects for string concatenation' do
     expect_offense(<<~RUBY)
       email_with_name = user.name + ' <' + user.email + '>'

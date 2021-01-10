@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::MissingSuper do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
   context 'constructor' do
     it 'registers an offense when no `super` call' do
       expect_offense(<<~RUBY)

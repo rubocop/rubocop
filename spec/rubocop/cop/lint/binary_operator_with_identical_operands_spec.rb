@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands, :config do
   %i[== != === <=> =~ && || - > >= < <= / % | ^].each do |operator|
     it "registers an offense for `#{operator}` with duplicate operands" do
       expect_offense(<<~RUBY, operator: operator)

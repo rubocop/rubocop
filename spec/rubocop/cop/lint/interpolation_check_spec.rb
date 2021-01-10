@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::InterpolationCheck do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
   it 'registers an offense and corrects for interpolation in single quoted string' do
     expect_offense(<<~'RUBY')
       'foo #{bar}'

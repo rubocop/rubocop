@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::StructInheritance do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
   it 'registers an offense when extending instance of Struct' do
     expect_offense(<<~RUBY)
       class Person < Struct.new(:first_name, :last_name)

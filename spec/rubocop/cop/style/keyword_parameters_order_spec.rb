@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder, :config do
   it 'registers an offense and corrects when `kwoptarg` is before `kwarg`' do
     expect_offense(<<~RUBY)
       def m(arg, optional: 1, required:)

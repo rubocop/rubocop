@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters, :config do
   let(:message) do
     'Do not use spaces inside percent literal delimiters.'
   end

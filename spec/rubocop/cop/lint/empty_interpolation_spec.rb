@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
   it 'registers an offense and corrects #{} in interpolation' do
     expect_offense(<<~'RUBY')
       "this is the #{}"

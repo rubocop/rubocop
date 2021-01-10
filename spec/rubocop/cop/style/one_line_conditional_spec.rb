@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::OneLineConditional do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
   let(:config) { RuboCop::Config.new(config_data) }
   let(:config_data) { cop_config_data }
   let(:cop_config_data) do

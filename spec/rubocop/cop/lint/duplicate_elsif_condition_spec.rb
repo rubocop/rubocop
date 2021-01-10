@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateElsifCondition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateElsifCondition, :config do
   it 'registers an offense for repeated elsif conditions' do
     expect_offense(<<~RUBY)
       if x == 1

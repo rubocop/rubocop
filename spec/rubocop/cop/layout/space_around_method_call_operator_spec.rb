@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
   let(:config) { RuboCop::Config.new }
 
   # FIXME: Remove unused vars

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
   it 'registers an offense and corrects when block just yields its arguments' do
     expect_offense(<<~RUBY)
       def m

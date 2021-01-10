@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RescueType do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
   let(:config) { RuboCop::Config.new }
 
   it 'accepts rescue modifier' do

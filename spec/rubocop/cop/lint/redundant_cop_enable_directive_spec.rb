@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
   it 'registers offense and corrects unnecessary enable' do
     expect_offense(<<~RUBY)
       foo

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement, :config do
   context 'with a repeated character class element' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)

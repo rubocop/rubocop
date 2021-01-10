@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs, :config do
   let(:config) { RuboCop::Config.new }
 
   context 'curly brace block format' do

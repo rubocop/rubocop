@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::PerlBackrefs do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::PerlBackrefs, :config do
   it 'auto-corrects puts $1 to puts Regexp.last_match(1)' do
     expect_offense(<<~RUBY)
       puts $1

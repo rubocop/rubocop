@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
   it 'registers an offense for empty when statement with then' do
     expect_offense(<<~RUBY)
       case foo

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NestedModifier do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
   shared_examples 'not correctable' do |keyword|
     it "does not auto-correct when #{keyword} is the outer modifier" do
       expect_offense(<<~RUBY, keyword: keyword)

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
   shared_examples 'variables' do |variable|
     it 'does not register an offense for % called on a variable' do
       expect_no_offenses(<<~RUBY)

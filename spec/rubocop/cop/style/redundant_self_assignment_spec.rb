@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
   context 'when lhs and receiver are the same' do
     it 'registers an offense and corrects when assigning to local variable' do
       expect_offense(<<~RUBY)

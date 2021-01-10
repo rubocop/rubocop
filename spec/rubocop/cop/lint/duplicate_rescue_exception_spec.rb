@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateRescueException do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateRescueException, :config do
   it 'registers an offense when duplicate exception exists' do
     expect_offense(<<~RUBY)
       begin

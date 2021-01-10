@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::ColonMethodCall, :config do
   it 'registers an offense for instance method call' do
     expect_offense(<<~RUBY)
       test::method_name

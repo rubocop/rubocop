@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ShadowedException do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
   context 'modifier rescue' do
     it 'accepts rescue in its modifier form' do
       expect_no_offenses('foo rescue nil')

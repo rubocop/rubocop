@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers an offense for string concat at line end' do
     expect_offense(<<~RUBY)
       top = "test" +

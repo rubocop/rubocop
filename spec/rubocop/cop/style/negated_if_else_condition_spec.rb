@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
   it 'registers an offense and corrects when negating condition with `!` for `if-else`' do
     expect_offense(<<~RUBY)
       if !x
