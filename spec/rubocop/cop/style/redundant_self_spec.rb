@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantSelf do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   it 'reports an offense a self receiver on an rvalue' do
     expect_offense(<<~RUBY)
       a = self.b

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
   context 'on if..else with identical bodies' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

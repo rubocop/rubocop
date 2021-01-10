@@ -80,8 +80,6 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
   end
 
   context 'when allowing semantic changes' do
-    subject(:cop) { described_class.new(config) }
-
     let(:cop_config) do
       {
         'IncludeSemanticChanges' => true

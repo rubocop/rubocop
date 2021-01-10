@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::IndentationStyle do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[spaces tabs]

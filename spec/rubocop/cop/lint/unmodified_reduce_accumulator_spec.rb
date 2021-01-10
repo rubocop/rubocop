@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
   shared_examples 'reduce/inject' do |method|
     it "does not affect #{method} called with no block args" do
       expect_no_offenses(<<~RUBY)

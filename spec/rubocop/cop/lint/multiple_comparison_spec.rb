@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::MultipleComparison do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::MultipleComparison, :config do
   let(:config) { RuboCop::Config.new }
 
   shared_examples 'Check to use two comparison operator' do |operator1, operator2|

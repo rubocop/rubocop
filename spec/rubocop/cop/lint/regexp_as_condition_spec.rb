@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RegexpAsCondition do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::RegexpAsCondition, :config do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense and corrects for a regexp literal in `if` condition' do

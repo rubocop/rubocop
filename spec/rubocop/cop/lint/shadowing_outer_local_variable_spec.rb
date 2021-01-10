@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
   context 'when a block argument has same name ' \
           'as an outer scope variable' do
     it 'registers an offense' do

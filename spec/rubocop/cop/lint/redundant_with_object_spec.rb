@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RedundantWithObject do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
   let(:config) { RuboCop::Config.new }
 
   it 'registers an offense and corrects when using ' \

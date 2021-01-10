@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::AmbiguousAssignment do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::AmbiguousAssignment, :config do
   RuboCop::Cop::Lint::AmbiguousAssignment::MISTAKES.each_key do |mistake|
     operator = mistake[1]
 

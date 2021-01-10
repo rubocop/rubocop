@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop, :config do
   it 'does not register offense if range startpoint is not constant' do
     expect_no_offenses('(a..10).each {}')
   end

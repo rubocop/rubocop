@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::MultilineIfThen, :config do
   # if
 
   it 'does not get confused by empty elsif branch' do

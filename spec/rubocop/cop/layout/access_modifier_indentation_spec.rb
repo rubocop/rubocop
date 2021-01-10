@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation, :config do
   let(:config) do
     c = cop_config.merge('SupportedStyles' => %w[indent outdent])
     RuboCop::Config

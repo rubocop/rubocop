@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::Loop do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::Loop, :config do
   it 'registers an offense and corrects for begin/end/while' do
     expect_offense(<<~RUBY)
       begin

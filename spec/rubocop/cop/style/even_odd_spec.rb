@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EvenOdd do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::EvenOdd, :config do
   it 'converts x % 2 == 0 to #even?' do
     expect_offense(<<~RUBY)
       x % 2 == 0

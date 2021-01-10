@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CollectionCompact do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
   it 'registers an offense and corrects when using `reject` on array to reject nils' do
     expect_offense(<<~RUBY)
       array.reject { |e| e.nil? }

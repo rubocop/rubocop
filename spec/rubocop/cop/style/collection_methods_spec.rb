@@ -11,8 +11,6 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
     }
   }
 
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { cop_config }
 
   cop_config['PreferredMethods'].each do |method, preferred_method|

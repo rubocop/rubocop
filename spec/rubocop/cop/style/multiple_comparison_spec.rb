@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'does not register an offense for comparing an lvar' do
     expect_no_offenses(<<~RUBY)
       a = "a"

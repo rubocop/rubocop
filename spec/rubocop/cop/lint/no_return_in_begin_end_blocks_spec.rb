@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks, :config do
   let(:config) { RuboCop::Config.new }
 
   shared_examples 'rejects return inside a block' do |operator|

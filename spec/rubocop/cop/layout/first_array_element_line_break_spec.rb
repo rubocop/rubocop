@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak, :config do
   context 'elements listed on the first line' do
     it 'registers and corrects the offense' do
       expect_offense(<<~RUBY)

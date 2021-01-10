@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::AsciiComments do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::AsciiComments, :config do
   it 'registers an offense for a comment with non-ascii chars' do
     expect_offense(<<~RUBY)
       # 这是什么？

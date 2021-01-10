@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :config do
   let(:config) do
     RuboCop::Config.new('Style/ConditionalAssignment' => {
                           'Enabled' => true,
@@ -1486,8 +1484,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   context 'configured to check conditions with multiple statements' do
-    subject(:cop) { described_class.new(config) }
-
     let(:config) do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
@@ -2143,8 +2139,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   context 'EndAlignment configured to start_of_line' do
-    subject(:cop) { described_class.new(config) }
-
     context 'auto-correct' do
       it 'uses proper end alignment in if' do
         expect_offense(<<~RUBY)

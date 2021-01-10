@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::CharacterLiteral, :config do
   it 'registers an offense for character literals' do
     expect_offense(<<~RUBY)
       x = ?x

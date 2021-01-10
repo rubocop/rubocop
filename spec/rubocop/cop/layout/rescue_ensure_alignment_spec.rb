@@ -728,9 +728,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
-  describe 'excluded file' do
-    subject(:cop) { described_class.new(config) }
-
+  describe 'excluded file', :config do
     let(:config) do
       RuboCop::Config.new('Layout/RescueEnsureAlignment' =>
                           { 'Enabled' => true,

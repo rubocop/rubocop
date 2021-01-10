@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
   end

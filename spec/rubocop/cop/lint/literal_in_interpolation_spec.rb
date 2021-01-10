@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it 'accepts empty interpolation' do
     expect_no_offenses('"this is #{a} silly"')
   end

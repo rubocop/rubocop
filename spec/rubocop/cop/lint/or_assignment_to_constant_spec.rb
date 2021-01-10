@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::OrAssignmentToConstant, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'registers an offense with or-assignment to a constant' do
     expect_offense(<<~RUBY)
       CONST ||= 1

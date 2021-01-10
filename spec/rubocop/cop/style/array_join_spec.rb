@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ArrayJoin do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::ArrayJoin, :config do
   it 'registers an offense for an array followed by string' do
     expect_offense(<<~RUBY)
       %w(one two three) * ", "

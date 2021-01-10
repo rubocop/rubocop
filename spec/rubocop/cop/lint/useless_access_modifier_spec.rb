@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
   let(:config) { RuboCop::Config.new }
 
   context 'when an access modifier has no effect' do

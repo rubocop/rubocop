@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when referencing' do
     it 'registers an offense and corrects when using space between lvar receiver and left brackets' do
       expect_offense(<<~RUBY)

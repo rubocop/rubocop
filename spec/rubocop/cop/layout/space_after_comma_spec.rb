@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma, :config do
   let(:config) do
     RuboCop::Config.new('Layout/SpaceInsideHashLiteralBraces' => brace_config)
   end

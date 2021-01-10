@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantCondition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
   context 'when regular condition (if)' do
     it 'accepts different when the condition does not match the branch' do
       expect_no_offenses(<<~RUBY)

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock, :config do
   context 'with a multi-line do..end block' do
     it 'registers an offense for a chained call' do
       expect_offense(<<~RUBY)

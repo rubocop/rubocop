@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::ConditionPosition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::ConditionPosition, :config do
   %w[if unless while until].each do |keyword|
     it 'registers an offense and corrects for condition on the next line' do
       expect_offense(<<~RUBY)

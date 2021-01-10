@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
   let(:config) { RuboCop::Config.new }
 
   shared_examples 'in scope' do |type, opening_line|

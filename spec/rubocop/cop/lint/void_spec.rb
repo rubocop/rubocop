@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::Void do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Lint::Void, :config do
   let(:config) { RuboCop::Config.new }
 
   described_class::BINARY_OPERATORS.each do |op|
