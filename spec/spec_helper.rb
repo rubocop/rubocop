@@ -11,6 +11,12 @@ require 'webmock/rspec'
 
 require_relative 'core_ext/string'
 
+begin
+  require 'pry'
+rescue LoadError
+  # Pry is not activated.
+end
+
 # Require supporting files exposed for testing.
 require 'rubocop/rspec/support'
 
