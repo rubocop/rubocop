@@ -176,6 +176,18 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
         RUBY
       end
 
+      it 'handles arguments properly' do
+        expect_correction(<<~RUBY.strip, source: 'def some_method(a, b, c) body end')
+          def some_method(a, b, c) = body
+        RUBY
+      end
+
+      it 'does not add parens if they are already present' do
+        expect_correction(<<~RUBY.strip, source: 'def some_method() body end')
+          def some_method() = body
+        RUBY
+      end
+
       it 'does not correct to an endless method if the method body contains multiple statements' do
         expect_correction(<<~RUBY.strip, source: 'def some_method; foo; bar end')
           def some_method;#{trailing_whitespace}

@@ -89,7 +89,8 @@ module RuboCop
         end
 
         def correct_to_endless(corrector, node)
-          replacement = "def #{node.method_name}(#{node.arguments.source}) = #{node.body.source}"
+          arguments = node.arguments.any? ? node.arguments.source : '()'
+          replacement = "def #{node.method_name}#{arguments} = #{node.body.source}"
           corrector.replace(node, replacement)
         end
 
