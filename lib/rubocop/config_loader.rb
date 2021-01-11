@@ -25,13 +25,14 @@ module RuboCop
       attr_accessor :debug, :ignore_parent_exclusion,
                     :disable_pending_cops, :enable_pending_cops
       attr_writer :default_configuration, :project_root
+      attr_reader :loaded_features
 
       alias debug? debug
       alias ignore_parent_exclusion? ignore_parent_exclusion
 
       def clear_options
         @debug = nil
-        @loaded_features = []
+        @loaded_features = Set.new
         FileFinder.root_level = nil
       end
 
@@ -174,19 +175,11 @@ module RuboCop
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
 
-      def loaded_features
-        @loaded_features.flatten.compact.uniq
-      end
-
       # @api private
       # Used to add features that were required inside a config or from
       # the CLI using `--require`.
       def add_loaded_features(loaded_features)
-        if instance_variable_defined?(:@loaded_features)
-          instance_variable_get(:@loaded_features) << loaded_features
-        else
-          instance_variable_set(:@loaded_features, [loaded_features])
-        end
+        @loaded_features.merge(Array(loaded_features))
       end
 
       private
