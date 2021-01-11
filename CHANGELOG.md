@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.8.1 (2021-01-11)
+
 ### Bug fixes
 
 * [#9342](https://github.com/rubocop-hq/rubocop/issues/9342): Fix an error for `Lint/RedundantDirGlobSort` when using `collection.sort`. ([@koic][])

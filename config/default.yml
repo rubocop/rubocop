@@ -3272,7 +3272,7 @@ Style/ExplicitBlockArgument:
   StyleGuide: '#block-argument'
   Enabled: true
   VersionAdded: '0.89'
-  VersionChanged: <<next>>
+  VersionChanged: '1.8'
 
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'

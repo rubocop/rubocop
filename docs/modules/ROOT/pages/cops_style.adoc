@@ -3333,14 +3333,17 @@ Pathname.new(__dir__).expand_path
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| No
-| Yes (Unsafe)
+| Yes
+| Yes
 | 0.89
-| -
+| 1.8
 |===
 
 This cop enforces the use of explicit block argument to avoid writing
 block literal that just passes its arguments to another block.
+
+NOTE: This cop only registers an offense if the block args match the
+yield args exactly.
 
 === Examples
 
