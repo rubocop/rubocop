@@ -1811,6 +1811,12 @@ Lint/NumberedParameterAssignment:
   Enabled: pending
   VersionAdded: '<<next>>'
 
+Lint/OrAssignmentToConstant:
+  Description: 'Checks unintended or-assignment to constant.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Lint/OrderedMagicComments:
   Description: 'Checks the proper ordering of magic comments and whether a magic comment is not placed before a shebang.'
   Enabled: true
