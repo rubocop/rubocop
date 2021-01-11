@@ -37,7 +37,7 @@ module RuboCop
       features = Util.silence_warnings do
         # Suppress any config issues when loading the config (ie. deprecations,
         # pending cops, etc.).
-        env.config_store.for_pwd.loaded_features.sort
+        env.config_store.unvalidated.for_pwd.loaded_features.sort
       end
 
       features.map do |loaded_feature|
