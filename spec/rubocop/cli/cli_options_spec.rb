@@ -177,6 +177,32 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when requiring extension cops in multiple layers' do
+      before do
+        create_file('.rubocop-parent.yml', <<~YAML)
+          require:
+            - rubocop-performance
+        YAML
+
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from: ./.rubocop-parent.yml
+          require:
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'shows with version of extension cops' do
+        # Run in different process that requiring rubocop-performance and rubocop-rspec
+        # does not affect other testing processes.
+        output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-performance \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-rspec \d+\.\d+\.\d+/)
+      end
+    end
+
     context 'when requiring redundant extension cop' do
       before do
         create_file('ext.yml', <<~YAML)
