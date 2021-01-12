@@ -210,6 +210,54 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `unless` and method arguments without parentheses ' \
+     'in the outer condition and nested modifier condition' do
+    expect_offense(<<~RUBY)
+      unless foo.is_a? Foo
+        do_something if bar
+                     ^^ Consider merging nested conditions into outer `unless` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if !foo.is_a?(Foo) && bar
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `unless` and method arguments with parentheses ' \
+     'in the outer condition and nested modifier condition' do
+    expect_offense(<<~RUBY)
+      unless foo.is_a?(Foo)
+        do_something if bar
+                     ^^ Consider merging nested conditions into outer `unless` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if !foo.is_a?(Foo) && bar
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `unless` and multiple method arguments with parentheses' \
+     'in the outer condition and nested modifier condition' do
+    expect_offense(<<~RUBY)
+      unless foo.bar arg1, arg2
+        do_something if baz
+                     ^^ Consider merging nested conditions into outer `unless` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if !foo.bar(arg1, arg2) && baz
+        do_something
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects for multiple nested conditionals' do
     expect_offense(<<~RUBY)
       if foo
