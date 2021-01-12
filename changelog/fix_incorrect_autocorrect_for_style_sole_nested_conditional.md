@@ -1,0 +1,1 @@
+* [#9366](https://github.com/rubocop-hq/rubocop/issues/9366): Fix an incorrect auto-correct for `Style/SoleNestedConditional` when using method arguments without parentheses for outer condition. ([@koic][])

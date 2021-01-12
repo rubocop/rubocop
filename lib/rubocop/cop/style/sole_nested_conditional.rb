@@ -80,8 +80,11 @@ module RuboCop
         end
 
         def correct_for_guard_condition_style(corrector, node, if_branch, and_operator)
+          outer_condition = node.condition
+          correct_outer_condition(corrector, outer_condition)
+
           condition = if_branch.condition
-          corrector.insert_after(node.condition, replacement_condition(and_operator, condition))
+          corrector.insert_after(outer_condition, replacement_condition(and_operator, condition))
 
           range = range_between(if_branch.loc.keyword.begin_pos, condition.source_range.end_pos)
           corrector.remove(range_with_surrounding_space(range: range, newlines: false))
@@ -104,6 +107,27 @@ module RuboCop
           comment_text = comments.map(&:text).join("\n") << "\n"
 
           corrector.insert_before(node.loc.keyword, comment_text) unless comments.empty?
+        end
+
+        def correct_outer_condition(corrector, condition)
+          return unless requrie_parentheses?(condition)
+
+          range = range_between(
+            condition.loc.selector.end_pos, condition.first_argument.source_range.begin_pos
+          )
+
+          corrector.replace(range, '(')
+          corrector.insert_after(condition.last_argument.source_range, ')')
+        end
+
+        def requrie_parentheses?(condition)
+          condition.send_type? && !condition.arguments.empty? && !condition.parenthesized?
+        end
+
+        def arguments_range(node)
+          range_between(
+            node.first_argument.source_range.begin_pos, node.last_argument.source_range.end_pos
+          )
         end
 
         def wrap_condition?(node)
