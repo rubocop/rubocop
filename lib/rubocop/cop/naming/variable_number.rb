@@ -92,7 +92,7 @@ module RuboCop
       #   # good
       #   :some_sym_1
       #
-      # @example AllowedIdentifier: [capture3]
+      # @example AllowedIdentifiers: [capture3]
       #   # good
       #   expect(Open3).to receive(:capture3)
       #
