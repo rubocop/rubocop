@@ -1130,6 +1130,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       it 'prints all cops in their right department listing' do
         lines = stdout.lines
+        # FIXME: Remove the following workaround condition for JRuby.
+        # https://github.com/jruby/jruby/issues/6528
+        if RUBY_ENGINE == 'jruby' && Encoding.default_external == Encoding::ASCII
+          lines = lines.select(&:valid_encoding?)
+        end
         lines.slice_before(/Department /).each do |slice|
           departments = registry.departments.map(&:to_s)
           current =
