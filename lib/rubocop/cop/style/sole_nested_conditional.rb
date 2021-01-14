@@ -131,7 +131,7 @@ module RuboCop
         end
 
         def wrap_condition?(node)
-          node.or_type? ||
+          node.and_type? || node.or_type? ||
             (node.send_type? && node.arguments.any? && !node.parenthesized?)
         end
 
