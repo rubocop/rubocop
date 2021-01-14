@@ -51,6 +51,31 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     RUBY
   end
 
+  it 'catches an `if..else` nested inside an `else` and nested inside `if` branch code is empty' do
+    expect_offense(<<~RUBY)
+      if a
+        foo
+      else
+        if b
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          # TODO: comment.
+        else
+          bar
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        foo
+      elsif b
+          # TODO: comment.
+        else
+          bar
+      end
+    RUBY
+  end
+
   it 'catches an if..elsif..else nested inside an else' do
     expect_offense(<<~RUBY)
       if a
