@@ -3306,7 +3306,7 @@ Style/FloatDivision:
   Reference: 'https://blog.rubystyle.guide/ruby/2019/06/21/float-division.html'
   Enabled: true
   VersionAdded: '0.72'
-  VersionChanged: '1.6'
+  VersionChanged: <<next>>
   Safe: false
   EnforcedStyle: single_coerce
   SupportedStyles:
