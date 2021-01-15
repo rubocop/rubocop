@@ -86,9 +86,10 @@ module RuboCop
             correct_to_elsif_from_if_inside_else_form(corrector, node, node.condition)
           end
           corrector.remove(range_by_whole_lines(find_end_range(node), include_final_newline: true))
-          corrector.remove(
-            range_by_whole_lines(node.if_branch.source_range, include_final_newline: true)
-          )
+          return unless (if_branch = node.if_branch)
+
+          range = range_by_whole_lines(if_branch.source_range, include_final_newline: true)
+          corrector.remove(range)
         end
 
         def correct_to_elsif_from_modifier_form(corrector, node)
@@ -101,10 +102,12 @@ module RuboCop
 
         def correct_to_elsif_from_if_inside_else_form(corrector, node, condition)
           corrector.replace(node.parent.loc.else, "elsif #{condition.source}")
-          if_condition_range = range_between(
-            node.loc.keyword.begin_pos, condition.source_range.end_pos
-          )
-          corrector.replace(if_condition_range, node.if_branch.source)
+          if_condition_range = if_condition_range(node, condition)
+          if (if_branch = node.if_branch)
+            corrector.replace(if_condition_range, if_branch.source)
+          else
+            corrector.remove(range_by_whole_lines(if_condition_range, include_final_newline: true))
+          end
           corrector.remove(condition)
         end
 
@@ -113,6 +116,10 @@ module RuboCop
           return end_range if end_range
 
           find_end_range(node.parent)
+        end
+
+        def if_condition_range(node, condition)
+          range_between(node.loc.keyword.begin_pos, condition.source_range.end_pos)
         end
 
         def allow_if_modifier_in_else_branch?(else_branch)
