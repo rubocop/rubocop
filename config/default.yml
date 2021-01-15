@@ -3301,6 +3301,7 @@ Style/FloatDivision:
   Enabled: true
   VersionAdded: '0.72'
   VersionChanged: '1.6'
+  Safe: false
   EnforcedStyle: single_coerce
   SupportedStyles:
     - left_coerce
