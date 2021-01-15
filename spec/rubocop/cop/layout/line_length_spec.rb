@@ -596,6 +596,75 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         end
       end
 
+      context 'with a hash with a too long first item' do
+        context 'when parenthesized' do
+          it 'corrects' do
+            expect_offense(<<~RUBY)
+              foo(abc: '10000000000000000000000000000000000000000000000000000', def: '1000')
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [78/40]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              foo(
+              abc: '10000000000000000000000000000000000000000000000000000', def: '1000')
+            RUBY
+          end
+        end
+
+        context 'when the hash is parenthesized' do
+          it 'corrects' do
+            expect_offense(<<~RUBY)
+              foo({ abc: '10000000000000000000000000000000000000000000000000000', def: '1000' })
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [82/40]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              foo({#{trailing_whitespace}
+              abc: '10000000000000000000000000000000000000000000000000000', def: '1000' })
+            RUBY
+          end
+        end
+
+        context 'when not parenthesized' do
+          context 'when there is only one element' do
+            it 'does not autocorrect' do
+              expect_offense(<<~RUBY)
+                foo abc: '10000000000000000000000000000000000000000000000000000'
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [64/40]
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
+          context 'when there are multiple elements' do
+            it 'moves the 2nd element to a new line' do
+              expect_offense(<<~RUBY)
+                foo abc: '10000000000000000000000000000000000000000000000000000', ghi: '1000'
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [77/40]
+              RUBY
+
+              expect_correction(<<~RUBY, loop: false)
+                foo abc: '10000000000000000000000000000000000000000000000000000',#{trailing_whitespace}
+                ghi: '1000'
+              RUBY
+            end
+          end
+
+          context 'when on multiple lines' do
+            it 'does not correct' do
+              expect_offense(<<~RUBY)
+                foo abc: '10000000000000000000000000000000000000000000000000000',
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [65/40]
+                    ghi: '1000'
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+        end
+      end
+
       context 'when two method calls' do
         it 'adds an offense only to outer and autocorrects it' do
           expect_offense(<<~RUBY)
