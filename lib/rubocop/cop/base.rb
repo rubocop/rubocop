@@ -351,7 +351,7 @@ module RuboCop
       def use_corrector(range, corrector)
         if autocorrect?
           attempt_correction(range, corrector)
-        elsif corrector
+        elsif corrector && cop_config.fetch('AutoCorrect', true)
           :uncorrected
         else
           :unsupported
