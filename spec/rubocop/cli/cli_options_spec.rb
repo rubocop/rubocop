@@ -1089,7 +1089,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                       '--display-style-guide',
                       'example1.rb'])).to eq(1)
 
-      output = "#{file}:1:6: C: [Correctable] Security/JSONLoad: " \
+      output = "#{file}:1:6: C: Security/JSONLoad: " \
                "Prefer `JSON.parse` over `JSON.load`. (#{url})"
       expect($stdout.string.lines.to_a[-1])
         .to eq([output, ''].join("\n"))
@@ -1782,6 +1782,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           '1 file inspected, 2 offenses detected, 1 offense corrected, 1 more offense '\
           "can be corrected with `rubocop -A`\n"
         )
+      end
+    end
+
+    context 'when setting `AutoCorrect: false` for `Style/StringLiterals`' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Style/StringLiterals:
+            AutoCorrect: false
+        YAML
+      end
+
+      it 'does not suggest `1 more offense can be corrected with `rubocop -A` for `Style/StringLiterals`' do
+        create_file(target_file, <<~RUBY)
+          # frozen_string_literal: true
+
+          a = "Hello"
+        RUBY
+
+        expect(cli.run(['--auto-correct', '--format', 'simple', target_file])).to eq(1)
+        expect($stdout.string.lines.to_a.last).to eq("1 file inspected, 2 offenses detected\n")
       end
     end
   end
