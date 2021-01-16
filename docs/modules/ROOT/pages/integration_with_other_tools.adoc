@@ -63,7 +63,7 @@ capabilities of this extension.
 Here's one great opportunity to contribute to RuboCop - implement
 RuboCop integration for your favorite editor.
 
-== Git pre-commit hook integration
+== Git pre-commit hook integration with overcommit
 
 https://github.com/brigade/overcommit[overcommit] is a fully configurable and
 extendable Git commit hook manager. To use RuboCop with overcommit, add the
@@ -74,6 +74,20 @@ following to your `.overcommit.yml` file:
 PreCommit:
   RuboCop:
     enabled: true
+----
+
+== Git pre-commit hook integration with pre-commit
+
+https://pre-commit.com/[pre-commit] is a framework for managing and maintaining
+multi-language pre-commit hooks. To use RuboCop with pre-commit, add the
+following to your `.pre-commit-config.yaml` file:
+
+[source,yaml]
+----
+- repo: https://github.com/rubocop-hq/rubocop
+  rev: v1.8.1
+  hooks:
+    - id: rubocop
 ----
 
 == Guard integration
