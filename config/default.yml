@@ -4700,6 +4700,16 @@ Style/UnlessElse:
   Enabled: true
   VersionAdded: '0.9'
 
+Style/UnlessLogicalOperators:
+  Description: >-
+                 Checks for use of logical operators in an unless condition.
+  Enabled: false
+  VersionAdded: '<<next>>'
+  EnforcedStyle: forbid_mixed_logical_operators
+  SupportedStyles:
+    - forbid_mixed_logical_operators
+    - forbid_logical_operators
+
 Style/UnpackFirst:
   Description: >-
                  Checks for accessing the first element of `String#unpack`
