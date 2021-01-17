@@ -40,5 +40,16 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
         x == nil
       RUBY
     end
+
+    it 'registers and corrects an offense for `!x.nil?`' do
+      expect_offense(<<~RUBY)
+        !x.nil?
+           ^^^^ Prefer the use of the `==` comparison.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        !(x == nil)
+      RUBY
+    end
   end
 end
