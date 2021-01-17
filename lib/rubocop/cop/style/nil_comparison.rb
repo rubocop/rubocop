@@ -50,6 +50,7 @@ module RuboCop
                          end
 
               corrector.replace(node, new_code)
+              corrector.wrap(node, '(', ')') if node.parent&.method?(:!)
             end
           end
         end
