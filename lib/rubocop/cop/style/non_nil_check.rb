@@ -8,6 +8,9 @@ module RuboCop
       # With `IncludeSemanticChanges` set to `false` by default, this cop
       # does not report offenses for `!x.nil?` and does no changes that might
       # change behavior.
+      # Also `IncludeSemanticChanges` set to `false` with `EnforcedStyle: comparison` of
+      # `Style/NilComparison` cop, this cop does not report offenses for `x != nil` and
+      # does no changes to `!x.nil?` style.
       #
       # With `IncludeSemanticChanges` set to `true`, this cop reports offenses
       # for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
@@ -49,7 +52,8 @@ module RuboCop
         def_node_matcher :not_and_nil_check?, '(send (send _ :nil?) :!)'
 
         def on_send(node)
-          return if ignored_node?(node)
+          return if ignored_node?(node) ||
+                    !include_semantic_changes? && nil_comparison_style == 'comparison'
           return unless (offense_node = find_offense_node(node))
 
           message = message(node)
@@ -137,6 +141,12 @@ module RuboCop
         def autocorrect_unless_nil(corrector, node, receiver)
           corrector.replace(node.parent.loc.keyword, 'if')
           corrector.replace(node, receiver.source)
+        end
+
+        def nil_comparison_style
+          nil_comparison_conf = config.for_cop('Style/NilComparison')
+
+          nil_comparison_conf['Enabled'] && nil_comparison_conf['EnforcedStyle']
         end
       end
     end

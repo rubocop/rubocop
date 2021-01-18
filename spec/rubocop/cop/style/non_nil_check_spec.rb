@@ -162,4 +162,43 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       RUBY
     end
   end
+
+  context 'when `EnforcedStyle: comparison` of `Style/NilComparison` cop' do
+    let(:other_cops) do
+      {
+        'Style/NilComparison' => { 'EnforcedStyle' => 'comparison' }
+      }
+    end
+
+    context '`IncludeSemanticChanges: false`' do
+      let(:cop_config) do
+        {
+          'IncludeSemanticChanges' => false
+        }
+      end
+
+      it 'does not register an offense for `foo != nil`' do
+        expect_no_offenses('foo != nil')
+      end
+    end
+
+    context '`IncludeSemanticChanges: true`' do
+      let(:cop_config) do
+        {
+          'IncludeSemanticChanges' => true
+        }
+      end
+
+      it 'does not register an offense for `foo != nil`' do
+        expect_offense(<<~RUBY)
+          foo != nil
+              ^^ Prefer `!expression.nil?` over `expression != nil`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo
+        RUBY
+      end
+    end
+  end
 end

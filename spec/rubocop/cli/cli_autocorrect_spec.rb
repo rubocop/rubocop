@@ -1639,6 +1639,37 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects `Style/InverseMethods` offenses when specifying `IncludeSemanticChanges: false` of ' \
+     '`Style/NonNilCheck` and `EnforcedStyle: comparison` of `Style/NilComparison`' do
+    create_file('example.rb', <<~RUBY)
+      # frozen_string_literal: true
+
+      !(foo == nil)
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Style/NilComparison:
+        Enabled: true
+        EnforcedStyle: comparison # alternative config
+
+      Style/NonNilCheck:
+        Enabled: true
+        IncludeSemanticChanges: false # default config
+    YAML
+
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only',
+                     'Style/InverseMethods,Style/NonNilCheck,Style/NilComparison'
+                   ])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      foo != nil
+    RUBY
+  end
+
   it 'corrects Lint/ParenthesesAsGroupedExpression and offenses and ' \
      'accepts Style/RedundantParentheses' do
     create_file('example.rb', <<~RUBY)
