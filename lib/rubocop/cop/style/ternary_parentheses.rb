@@ -120,7 +120,7 @@ module RuboCop
           if condition.begin_type?
             condition.to_a.any? { |x| complex_condition?(x) }
           else
-            non_complex_expression?(condition) ? false : true
+            !non_complex_expression?(condition)
           end
         end
 
