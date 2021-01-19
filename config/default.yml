@@ -3517,6 +3517,11 @@ Style/IfUnlessModifierOfIfUnless:
   VersionAdded: '0.39'
   VersionChanged: '0.87'
 
+Style/IfWithBooleanLiteralBranches:
+  Description: 'Checks for redundant `if` with boolean literal branches.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/IfWithSemicolon:
   Description: 'Do not use if x; .... Use the ternary operator instead.'
   StyleGuide: '#no-semicolon-ifs'
