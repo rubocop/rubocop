@@ -1585,7 +1585,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       cli.run(%w[--format simple -c rubocop.yml])
       expect($stderr.string)
         .to eq(["Warning: Invalid severity 'superbad'. " \
-                'Valid severities are refactor, convention, ' \
+                'Valid severities are info, refactor, convention, ' \
                 'warning, error, fatal.',
                 ''].join("\n"))
     end
@@ -2066,6 +2066,101 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'when given an invalid path' do
       it 'does not show the suggestion' do
         expect { cli.run(['example1.rb']) }.not_to suggest_extensions
+      end
+    end
+  end
+
+  describe 'info severity' do
+    let(:code) do
+      <<~RUBY
+        # frozen-string-literal: true
+
+        'this line is longer than the accepted maximum'
+      RUBY
+    end
+
+    before do
+      create_file('.rubocop.yml', <<~YAML)
+        Lint/LineLength:
+          Max: 30
+          Severity: info
+      YAML
+
+      create_file('test.rb', code)
+    end
+
+    context 'when there are only info offenses' do
+      it 'returns a 0 code' do
+        expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(0)
+        expect($stdout.string).to eq <<~RESULT
+          == test.rb ==
+          I:  3: 31: Layout/LineLength: Line is too long. [47/30]
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
+    context 'when there are not only info offenses' do
+      let(:code) do
+        <<~RUBY
+          'this line is longer than the accepted maximum'
+        RUBY
+      end
+
+      it 'returns a 1 code' do
+        expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(1)
+        expect($stdout.string).to eq <<~RESULT
+          == test.rb ==
+          C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+          I:  1: 31: Layout/LineLength: Line is too long. [47/30]
+
+          1 file inspected, 2 offenses detected, 1 offense auto-correctable
+        RESULT
+      end
+    end
+
+    context 'when given `--fail-level info`' do
+      it 'returns a 1 code' do
+        expect(cli.run(['--format', 'simple', '--fail-level', 'info', 'test.rb'])).to eq(1)
+        expect($stdout.string).to eq <<~RESULT
+          == test.rb ==
+          I:  3: 31: Layout/LineLength: Line is too long. [47/30]
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
+    context 'when given `--display-only-fail-level-offenses`' do
+      it 'returns a 0 code but does not list offenses' do
+        expect(cli.run(['--format', 'simple', '--display-only-fail-level-offenses', 'test.rb']))
+          .to eq(0)
+        expect($stdout.string).to eq <<~RESULT
+
+          1 file inspected, no offenses detected
+        RESULT
+      end
+    end
+
+    context 'when `Lint/Syntax` is given `Severity: info`' do
+      let(:code) do
+        <<~RUBY
+          1 /// 2
+        RUBY
+      end
+
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Lint/Syntax:
+            Severity: info
+        YAML
+      end
+
+      it 'is an invalid configuration' do
+        expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(2)
+        expect($stderr.string)
+          .to include('Error: configuration for Syntax cop found in .rubocop.yml')
       end
     end
   end
