@@ -6,10 +6,10 @@ module RuboCop
     class Severity
       include Comparable
 
-      NAMES = %i[refactor convention warning error fatal].freeze
+      NAMES = %i[info refactor convention warning error fatal].freeze
 
       # @api private
-      CODE_TABLE = { R: :refactor, C: :convention,
+      CODE_TABLE = { I: :info, R: :refactor, C: :convention,
                      W: :warning, E: :error, F: :fatal }.freeze
 
       # @api public
@@ -18,7 +18,7 @@ module RuboCop
       #
       # @return [Symbol]
       #   severity.
-      #   any of `:refactor`, `:convention`, `:warning`, `:error` or `:fatal`.
+      #   any of `:info`, `:refactor`, `:convention`, `:warning`, `:error` or `:fatal`.
       attr_reader :name
 
       def self.name_from_code(code)

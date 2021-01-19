@@ -390,6 +390,7 @@ module RuboCop
 
     def minimum_severity_to_fail
       @minimum_severity_to_fail ||= begin
+        # Unless given explicitly as `fail_level`, `:info` severity offenses do not fail
         name = @options[:fail_level] || :refactor
         RuboCop::Cop::Severity.new(name)
       end

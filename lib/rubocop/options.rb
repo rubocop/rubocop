@@ -470,7 +470,7 @@ module RuboCop
                                          'This option applies to the previously',
                                          'specified --format, or the default format',
                                          'if no format is specified.'],
-      fail_level:                       ['Minimum severity (A/R/C/W/E/F) for exit',
+      fail_level:                       ['Minimum severity (A/I/R/C/W/E/F) for exit',
                                          'with error code.'],
       display_time:                     'Display elapsed time in seconds.',
       display_only_failed:              ['Only output offense messages. Omit passing',
