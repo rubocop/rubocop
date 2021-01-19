@@ -9,7 +9,6 @@ module RuboCop
       def source_range_with_comment(node)
         begin_pos = begin_pos_with_comment(node)
         end_pos = end_position_for(node)
-        end_pos += 1 if node.def_type?
 
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end

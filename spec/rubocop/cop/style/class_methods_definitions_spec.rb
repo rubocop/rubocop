@@ -23,6 +23,32 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
         class A
           class << self
             attr_reader :two
+
+          end
+
+          def self.three
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when defining class methods with `class << self` and ' \
+       'there is no blank line between method definition and attribute accessor' do
+      expect_offense(<<~RUBY)
+        class A
+          class << self
+          ^^^^^^^^^^^^^ Do not define public methods within class << self.
+            def three
+            end
+            attr_reader :two
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          class << self
+            attr_reader :two
           end
 
           def self.three
@@ -50,6 +76,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
         class A
           class << self
             attr_reader :one
+
           end
 
           # Multiline
@@ -139,6 +166,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
           class << self
             def self.one
             end
+
           end
 
           def self.two
