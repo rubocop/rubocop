@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     it 'registers an offense for != nil' do
       expect_offense(<<~RUBY)
         x != nil
-          ^^ Prefer `!expression.nil?` over `expression != nil`.
+        ^^^^^^^^ Prefer `!x.nil?` over `x != nil`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     it 'does not report corrected when the code was not modified' do
       expect_offense(<<~RUBY)
         return nil unless (line =~ //) != nil
-                                       ^^ Prefer `!expression.nil?` over `expression != nil`.
+                          ^^^^^^^^^^^^^^^^^^^ Prefer `!(line =~ //).nil?` over `(line =~ //) != nil`.
       RUBY
 
       expect_no_corrections
@@ -123,6 +123,10 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
         not x.nil?
         ^^^^^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x
+      RUBY
     end
 
     it 'does not blow up with ternary operators' do
@@ -132,7 +136,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     it 'autocorrects by changing `x != nil` to `x`' do
       expect_offense(<<~RUBY)
         x != nil
-          ^^ Prefer `!expression.nil?` over `expression != nil`.
+        ^^^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -154,7 +158,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
        'IncludeSemanticChanges were false' do
       expect_offense(<<~RUBY)
         return nil unless (line =~ //) != nil
-                                       ^^ Prefer `!expression.nil?` over `expression != nil`.
+                          ^^^^^^^^^^^^^^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -192,7 +196,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       it 'does not register an offense for `foo != nil`' do
         expect_offense(<<~RUBY)
           foo != nil
-              ^^ Prefer `!expression.nil?` over `expression != nil`.
+          ^^^^^^^^^^ Explicit non-nil checks are usually redundant.
         RUBY
 
         expect_correction(<<~RUBY)
