@@ -44,6 +44,9 @@ module RuboCop
       class NonNilCheck < Base
         extend AutoCorrector
 
+        MSG_FOR_REPLACEMENT = 'Prefer `%<prefer>s` over `%<current>s`.'
+        MSG_FOR_REDUNDANCY = 'Explicit non-nil checks are usually redundant.'
+
         RESTRICT_ON_SEND = %i[!= nil? !].freeze
 
         def_node_matcher :not_equal_to_nil?, '(send _ :!= nil)'
@@ -54,10 +57,10 @@ module RuboCop
         def on_send(node)
           return if ignored_node?(node) ||
                     !include_semantic_changes? && nil_comparison_style == 'comparison'
-          return unless (offense_node = find_offense_node(node))
+          return unless register_offense?(node)
 
           message = message(node)
-          add_offense(offense_node, message: message) do |corrector|
+          add_offense(node, message: message) do |corrector|
             autocorrect(corrector, node)
           end
         end
@@ -77,13 +80,9 @@ module RuboCop
 
         private
 
-        def find_offense_node(node)
-          if not_equal_to_nil?(node)
-            node.loc.selector
-          elsif include_semantic_changes? &&
-                (not_and_nil_check?(node) || unless_and_nil_check?(node))
-            node
-          end
+        def register_offense?(node)
+          not_equal_to_nil?(node) ||
+            include_semantic_changes? && (not_and_nil_check?(node) || unless_and_nil_check?(node))
         end
 
         def autocorrect(corrector, node)
@@ -105,10 +104,11 @@ module RuboCop
         end
 
         def message(node)
-          if node.method?(:!=)
-            'Prefer `!expression.nil?` over `expression != nil`.'
+          if node.method?(:!=) && !include_semantic_changes?
+            prefer = "!#{node.receiver.source}.nil?"
+            format(MSG_FOR_REPLACEMENT, prefer: prefer, current: node.source)
           else
-            'Explicit non-nil checks are usually redundant.'
+            MSG_FOR_REDUNDANCY
           end
         end
 
