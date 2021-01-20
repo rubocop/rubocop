@@ -69,6 +69,11 @@ module RuboCop
       # @api private
       def extract_first_element_over_column_limit(node, elements, max)
         line = node.first_line
+
+        # If the first argument is a hash pair but the method is not parenthesized,
+        # the argument cannot be moved to another line because it cause a syntax error.
+        elements.shift if node.send_type? && !node.parenthesized? && elements.first.pair_type?
+
         i = 0
         i += 1 while within_column_limit?(elements[i], max, line)
         return elements.first if i.zero?
