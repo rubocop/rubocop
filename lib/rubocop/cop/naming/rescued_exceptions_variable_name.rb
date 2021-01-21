@@ -71,7 +71,7 @@ module RuboCop
           add_offense(range, message: message) do |corrector|
             corrector.replace(range, preferred_name)
 
-            node.body&.each_descendant(:lvar) do |var|
+            node.body&.each_node(:lvar) do |var|
               next unless var.children.first == offending_name
 
               corrector.replace(var, preferred_name)
