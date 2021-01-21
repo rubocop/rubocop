@@ -42,6 +42,25 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           RUBY
         end
 
+        it 'registers an offense when using `exc` and renames its usage' do
+          expect_offense(<<~RUBY)
+            begin
+              something
+            rescue MyException => exc
+                                  ^^^ Use `e` instead of `exc`.
+              exc
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            begin
+              something
+            rescue MyException => e
+              e
+            end
+          RUBY
+        end
+
         it 'registers offenses when using `foo` and `bar` ' \
            'in multiple rescues' do
           expect_offense(<<~RUBY)
