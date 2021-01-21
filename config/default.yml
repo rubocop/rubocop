@@ -2073,6 +2073,11 @@ Lint/TrailingCommaInAttributeDeclaration:
   Enabled: true
   VersionAdded: '0.90'
 
+Lint/TripleQuotes:
+  Description: 'Checks for useless triple quote constructs.'
+  Enabled: pending
+  VersionAdded: <<next>>
+
 Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
