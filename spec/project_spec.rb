@@ -40,17 +40,18 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
     it 'has a nicely formatted description for all cops' do
       cop_names.each do |name|
-        description = config[name]['Description']
-        expect(description.nil?).to be(false)
+        description = config.dig(name, 'Description')
+        expect(description.nil?).to(be(false),
+                                    "`Description` configuration is required for `#{name}`.")
         expect(description).not_to include("\n")
       end
     end
 
     it 'requires a nicely formatted `VersionAdded` metadata for all cops' do
       cop_names.each do |name|
-        version = config[name]['VersionAdded']
+        version = config.dig(name, 'VersionAdded')
         expect(version.nil?).to(be(false),
-                                "VersionAdded is required for #{name}.")
+                                "`VersionAdded` configuration is required for `#{name}`.")
         expect(version).to(match(version_regexp),
                            "#{version} should be format ('X.Y' or '<<next>>') for #{name}.")
       end
@@ -59,7 +60,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     %w[VersionChanged VersionRemoved].each do |version_type|
       it "requires a nicely formatted `#{version_type}` metadata for all cops" do
         cop_names.each do |name|
-          version = config[name][version_type]
+          version = config.dig(name, version_type)
           next unless version
 
           expect(version).to(match(version_regexp),
@@ -70,8 +71,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
     it 'has a period at EOL of description' do
       cop_names.each do |name|
-        description = config[name]['Description']
+        next unless config[name]
 
+        description = config[name]['Description']
         expect(description).to match(/\.\z/)
       end
     end
@@ -87,6 +89,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
       'and EnforcedStyle is valid' do
       errors = []
       cop_names.each do |name|
+        next unless config[name]
+
         enforced_styles = config[name]
                           .select { |key, _| key.start_with?('Enforced') }
         enforced_styles.each do |style_name, style|
@@ -116,7 +120,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
     it 'does not include `Safe: true`' do
       cop_names.each do |name|
-        safe = config[name]['Safe']
+        safe = config.dig(name, 'Safe')
         expect(safe).not_to eq(true), "`#{name}` has unnecessary `Safe: true` config."
       end
     end
