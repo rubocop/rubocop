@@ -8,6 +8,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       x % 2 == 0
       ^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.even?
     RUBY
@@ -18,6 +19,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       x % 2 != 0
       ^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.odd?
     RUBY
@@ -28,6 +30,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (x % 2) == 0
       ^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.even?
     RUBY
@@ -38,6 +41,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (x % 2) != 0
       ^^^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.odd?
     RUBY
@@ -48,6 +52,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       x % 2 == 1
       ^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.odd?
     RUBY
@@ -58,6 +63,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       x % 2 != 1
       ^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.even?
     RUBY
@@ -68,6 +74,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (x % 2) == 1
       ^^^^^^^^^^^^ Replace with `Integer#odd?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.odd?
     RUBY
@@ -78,6 +85,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (y % 2) != 1
       ^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       y.even?
     RUBY
@@ -88,6 +96,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (x.y % 2) != 1
       ^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x.y.even?
     RUBY
@@ -98,6 +107,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (x(y) % 2) != 1
       ^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x(y).even?
     RUBY
@@ -120,6 +130,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (x._(y) % 2) != 1
       ^^^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x._(y).even?
     RUBY
@@ -130,6 +141,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       (x._(y)) % 2 != 1
       ^^^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       (x._(y)).even?
     RUBY
@@ -140,6 +152,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       x._(y) % 2 != 1
       ^^^^^^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       x._(y).even?
     RUBY
@@ -150,6 +163,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
       1 % 2 != 1
       ^^^^^^^^^^ Replace with `Integer#even?`.
     RUBY
+
     expect_correction(<<~RUBY)
       1.even?
     RUBY
@@ -165,6 +179,7 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd do
         method == :== ? :odd : :even
       end
     RUBY
+
     expect_correction(<<~RUBY)
       if y.even?
         method == :== ? :even : :odd

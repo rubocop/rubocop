@@ -7,6 +7,7 @@ RSpec.describe RuboCop::Cop::Style::Dir, :config do
         File.expand_path(File.dirname(__FILE__))
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
       RUBY
+
       expect_correction(<<~RUBY)
         __dir__
       RUBY
@@ -17,6 +18,7 @@ RSpec.describe RuboCop::Cop::Style::Dir, :config do
         ::File.expand_path(::File.dirname(__FILE__))
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
       RUBY
+
       expect_correction(<<~RUBY)
         __dir__
       RUBY
@@ -29,6 +31,7 @@ RSpec.describe RuboCop::Cop::Style::Dir, :config do
         File.dirname(File.realpath(__FILE__))
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
       RUBY
+
       expect_correction(<<~RUBY)
         __dir__
       RUBY
@@ -39,6 +42,7 @@ RSpec.describe RuboCop::Cop::Style::Dir, :config do
         ::File.dirname(::File.realpath(__FILE__))
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `__dir__` to get an absolute path to the current file's directory.
       RUBY
+
       expect_correction(<<~RUBY)
         __dir__
       RUBY

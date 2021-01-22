@@ -34,6 +34,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
             #{code_example('a\   b \ c')}
                   ^^ Use only a single space inside array percent literal.
           RUBY
+
           expect_correction("#{code_example('a\  b \ c')}\n")
         end
 

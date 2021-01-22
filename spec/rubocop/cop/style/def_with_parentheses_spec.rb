@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
               ^ Omit the parentheses in defs when the method doesn't accept any arguments.
       end
     RUBY
+
     expect_correction(<<~RUBY)
       def func
       end
@@ -22,6 +23,7 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
         something
       end
     RUBY
+
     expect_correction(<<~RUBY)
       def Test.func
         something

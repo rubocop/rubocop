@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::DoubleCopDisableDirective do
                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ More than one disable comment on one line.
       end
     RUBY
+
     expect_correction(<<~RUBY)
       def choose_move(who_to_move) # rubocop:disable Metrics/CyclomaticComplexity
       end
@@ -21,6 +22,7 @@ RSpec.describe RuboCop::Cop::Style::DoubleCopDisableDirective do
                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ More than one disable comment on one line.
       end
     RUBY
+
     expect_correction(<<~RUBY)
       def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity
       end

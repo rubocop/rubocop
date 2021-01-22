@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Array.new()
                ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = []
       RUBY
@@ -19,6 +20,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Array.new
                ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = []
       RUBY
@@ -29,6 +31,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = ::Array.new
                ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = []
       RUBY
@@ -43,6 +46,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         puts { Array.new }
                ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts { [] }
       RUBY
@@ -67,6 +71,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Hash.new()
                ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = {}
       RUBY
@@ -77,6 +82,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = Hash.new
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = {}
       RUBY
@@ -87,6 +93,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = ::Hash.new
                ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = {}
       RUBY
@@ -123,6 +130,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         puts { Hash.new }
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts { {} }
       RUBY
@@ -137,6 +145,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         yadayada.map { a }.reduce(Hash.new, :merge)
                                   ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = {}
         {}.merge("a" => 3)
@@ -149,6 +158,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         yadayada.map { a }.reduce Hash.new
                                   ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         yadayada.map { a }.reduce({})
       RUBY
@@ -159,6 +169,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         yadayada.map { a }.reduce Hash.new, :merge
                                   ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         yadayada.map { a }.reduce({}, :merge)
       RUBY
@@ -172,6 +183,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
                 ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
         end
       RUBY
+
       expect_correction(<<~RUBY)
         def foo
           super({})
@@ -187,6 +199,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
                 ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
         end
       RUBY
+
       expect_correction(<<~RUBY)
         def foo
           super({}, something)
@@ -201,6 +214,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = String.new()
                ^^^^^^^^^^^^ Use string literal `''` instead of `String.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = ''
       RUBY
@@ -211,6 +225,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = String.new
                ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = ''
       RUBY
@@ -221,6 +236,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
         test = ::String.new
                ^^^^^^^^^^^^ Use string literal `''` instead of `String.new`.
       RUBY
+
       expect_correction(<<~RUBY)
         test = ''
       RUBY
@@ -251,6 +267,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
           test = String.new
                  ^^^^^^^^^^ Use string literal `""` instead of `String.new`.
         RUBY
+
         expect_correction(<<~RUBY)
           test = ""
         RUBY
@@ -261,6 +278,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral do
           test = ::String.new
                  ^^^^^^^^^^^^ Use string literal `""` instead of `String.new`.
         RUBY
+
         expect_correction(<<~RUBY)
           test = ""
         RUBY

@@ -58,6 +58,7 @@ RSpec.describe RuboCop::Cop::Style::Attr do
         attr :name
         ^^^^ Do not use `attr`. Use `attr_reader` instead.
       RUBY
+
       expect_correction(<<~RUBY)
         attr_reader :name
       RUBY
@@ -68,6 +69,7 @@ RSpec.describe RuboCop::Cop::Style::Attr do
         attr :name, false
         ^^^^ Do not use `attr`. Use `attr_reader` instead.
       RUBY
+
       expect_correction(<<~RUBY)
         attr_reader :name
       RUBY
@@ -78,6 +80,7 @@ RSpec.describe RuboCop::Cop::Style::Attr do
         attr :name, true
         ^^^^ Do not use `attr`. Use `attr_accessor` instead.
       RUBY
+
       expect_correction(<<~RUBY)
         attr_accessor :name
       RUBY
@@ -88,6 +91,7 @@ RSpec.describe RuboCop::Cop::Style::Attr do
         attr :foo, :bar
         ^^^^ Do not use `attr`. Use `attr_reader` instead.
       RUBY
+
       expect_correction(<<~RUBY)
         attr_reader :foo, :bar
       RUBY

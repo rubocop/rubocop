@@ -97,6 +97,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
         a.call
         ^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
       RUBY
+
       expect_correction(<<~RUBY)
         a.()
       RUBY
@@ -107,6 +108,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
         a.call asdf, x123
         ^^^^^^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
       RUBY
+
       expect_correction(<<~RUBY)
         a.(asdf, x123)
       RUBY

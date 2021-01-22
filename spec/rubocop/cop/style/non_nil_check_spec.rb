@@ -149,6 +149,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
         !nil?
         ^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
+
       expect_correction(<<~RUBY)
         self
       RUBY

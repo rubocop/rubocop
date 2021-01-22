@@ -34,6 +34,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
         a = *%{literal}
             ^^{literal} Replace splat expansion with comma separated values.
       RUBY
+
       expect_correction(<<~RUBY)
         a = #{as_array}
       RUBY
@@ -47,6 +48,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
           array.push(*%{literal})
                      ^^{literal} Pass array contents as separate arguments.
         RUBY
+
         expect_correction(<<~RUBY)
           array.push(#{as_args})
         RUBY
@@ -64,6 +66,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
           array.push(*%{literal})
                      ^^{literal} Replace splat expansion with comma separated values.
         RUBY
+
         expect_correction(<<~RUBY)
           array.push(#{as_array})
         RUBY

@@ -87,6 +87,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
 
 
       RUBY
+
       expect_correction("x = 0\n")
     end
   end

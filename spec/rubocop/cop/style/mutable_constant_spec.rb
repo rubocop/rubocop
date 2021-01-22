@@ -72,6 +72,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             FOO = (1..10).to_a.freeze
           RUBY
@@ -83,6 +84,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
+
             expect_correction(<<~RUBY)
               FOO = (1..10).to_a.freeze
             RUBY
@@ -97,6 +99,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = [YYY, ZZZ].freeze
         RUBY
@@ -107,6 +110,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           XXX = %w(YYY ZZZ)
                 ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = %w(YYY ZZZ).freeze
         RUBY
@@ -162,6 +166,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             XXX = /regexp/
                   ^^^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             XXX = /regexp/.freeze
           RUBY
@@ -174,6 +179,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             XXX = 1..99
                   ^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             XXX = (1..99).freeze
           RUBY
@@ -184,6 +190,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             XXX = (1..99)
                   ^^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             XXX = (1..99).freeze
           RUBY
@@ -196,6 +203,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             XXX = 1...99
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             XXX = (1...99).freeze
           RUBY
@@ -206,6 +214,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             XXX = (1...99)
                   ^^^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             XXX = (1...99).freeze
           RUBY
@@ -300,6 +309,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             FOO = (1..10).to_a.freeze
           RUBY
@@ -311,6 +321,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
+
             expect_correction(<<~RUBY)
               FOO = (1..10).to_a.freeze
             RUBY
@@ -326,6 +337,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             CONST = FOO %{o} BAR
                     ^^^^^{o}^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             CONST = (FOO #{o} BAR).freeze
           RUBY
@@ -349,6 +361,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = FOO + BAR + BAZ
                   ^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           FOO = [1].freeze
           BAR = [2].freeze
@@ -416,6 +429,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = FOO + 'bar'
                   ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           CONST = (FOO + 'bar').freeze
         RUBY
@@ -426,6 +440,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = 'foo' + 'bar' + 'baz'
                   ^^^^^^^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           CONST = ('foo' + 'bar' + 'baz').freeze
         RUBY
@@ -438,6 +453,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = [YYY, ZZZ].freeze
         RUBY
@@ -448,6 +464,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           XXX = %w(YYY ZZZ)
                 ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = %w(YYY ZZZ).freeze
         RUBY
@@ -461,6 +478,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           SOMETHING
         HERE
       RUBY
+
       expect_correction(<<~RUBY)
         FOO = <<-HERE.freeze
           SOMETHING

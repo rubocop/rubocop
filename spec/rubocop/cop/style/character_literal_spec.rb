@@ -8,6 +8,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
       x = ?x
           ^^ Do not use the character literal - use string literal instead.
     RUBY
+
     expect_correction(<<~RUBY)
       x = 'x'
     RUBY
@@ -18,6 +19,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
       x = ?\n
           ^^^ Do not use the character literal - use string literal instead.
     RUBY
+
     expect_correction(<<~'RUBY')
       x = "\n"
     RUBY
@@ -36,6 +38,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
       x = ?'
           ^^ Do not use the character literal - use string literal instead.
     RUBY
+
     expect_correction(<<~RUBY)
       x = "'"
     RUBY

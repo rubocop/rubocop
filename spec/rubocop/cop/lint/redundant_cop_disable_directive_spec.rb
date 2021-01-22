@@ -26,6 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/MethodLength
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
               RUBY
+
               expect_correction('')
             end
           end
@@ -36,6 +37,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable UnknownCop
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `UnknownCop` (unknown cop).
               RUBY
+
               expect_correction('')
             end
           end
@@ -121,6 +123,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/ClassLength, Metrics/MethodLength
                                   ^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
               RUBY
+
               expect_correction(<<~RUBY)
                 # rubocop:disable Metrics/MethodLength
               RUBY

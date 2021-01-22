@@ -11,6 +11,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
         test { |a, b,| a + b }
                     ^ Useless trailing comma present in block arguments.
       RUBY
+
       expect_correction(<<~RUBY)
         test { |a, b| a + b }
       RUBY
@@ -68,6 +69,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
           a + b
         end
       RUBY
+
       expect_correction(<<~RUBY)
         test do |a, b|
           a + b

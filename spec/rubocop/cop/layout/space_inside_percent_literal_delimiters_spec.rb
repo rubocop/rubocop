@@ -48,6 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
                          ^ #{message}
                ^ #{message}
           RUBY
+
           expect_correction("#{code_example('\ a b c\ ')}\n")
         end
 

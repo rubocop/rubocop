@@ -8,6 +8,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       test::method_name
           ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       test.method_name
     RUBY
@@ -18,6 +19,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       test::method_name(arg)
           ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       test.method_name(arg)
     RUBY
@@ -28,6 +30,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       Class::method_name
            ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       Class.method_name
     RUBY
@@ -38,6 +41,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       Class::method_name(arg, arg2)
            ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       Class.method_name(arg, arg2)
     RUBY

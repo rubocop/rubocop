@@ -86,6 +86,7 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def self.test(param); end
                      ^^^^^^^ Use def without parentheses.
       RUBY
+
       expect_correction(<<~RUBY)
         def self.test param; end
       RUBY
