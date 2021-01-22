@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                    ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+
     expect_correction(<<~RUBY)
       top = "test" \\
       "top"
@@ -21,6 +22,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                    ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+
     expect_correction(<<~RUBY)
       top = "test" \\
       "top"
@@ -34,6 +36,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "bar"
     RUBY
+
     expect_correction(<<~RUBY)
       top = "test " \\
       "foo" \\
@@ -47,6 +50,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                        ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+
     expect_correction(<<~'RUBY')
       top = "test#{x}" \
       "top"
@@ -59,6 +63,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                        ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+
     expect_correction(<<~'RUBY')
       top = "test#{x}" \
       "top"
@@ -73,6 +78,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "ubertop"
     RUBY
+
     expect_correction(<<~'RUBY')
       top = "test#{x}" \
       "top" \
@@ -88,6 +94,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "foo"
     RUBY
+
     expect_correction(<<~'RUBY')
       top = "test#{x}" \
       "top" \
@@ -106,6 +113,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "bar"
     RUBY
+
     expect_correction(<<~'RUBY')
       top = "test#{x}" \
       "top" \
@@ -178,6 +186,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
             ^ Use `\` instead of `+` or `<<` to concatenate those strings.
       "qux"
     RUBY
+
     expect_correction(<<~'RUBY')
       top = "test#{x}" + # comment
       "foo" +
@@ -196,6 +205,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                    ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+
     expect_correction(<<~RUBY)
       top = "test" \\
       "top"
@@ -208,6 +218,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
                    ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
       "top"
     RUBY
+
     expect_correction(<<~RUBY)
       top = "test" \\
       "top"
@@ -225,6 +236,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation do
       %(baz) +
       "qux"
     RUBY
+
     expect_correction(<<~'RUBY')
       top = "test#{x}" \
       "top" + # comment

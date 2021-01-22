@@ -21,6 +21,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
         [1, 2, 3].%{method} { |e| e + 1 }
                   ^{method} Prefer `#{preferred_method}` over `#{method}`.
       RUBY
+
       expect_correction(<<~RUBY)
         [1, 2, 3].#{preferred_method} { |e| e + 1 }
       RUBY
@@ -31,6 +32,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
         [1, 2, 3].%{method}(&:test)
                   ^{method} Prefer `#{preferred_method}` over `#{method}`.
       RUBY
+
       expect_correction(<<~RUBY)
         [1, 2, 3].#{preferred_method}(&:test)
       RUBY

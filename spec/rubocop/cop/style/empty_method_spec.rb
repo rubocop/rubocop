@@ -11,6 +11,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           ^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
+
         expect_correction(<<~'RUBY')
           def foo; end
         RUBY
@@ -22,6 +23,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           ^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
+
         expect_correction(<<~'RUBY')
           def foo(bar, baz); end
         RUBY
@@ -33,6 +35,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           ^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
+
         expect_correction(<<~'RUBY')
           def foo bar, baz; end
         RUBY
@@ -45,6 +48,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
           end
         RUBY
+
         expect_correction(<<~'RUBY')
           def foo; end
         RUBY
@@ -56,6 +60,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           ^^^^^^^^^^^ Put empty method definitions on a single line.
           ); end
         RUBY
+
         expect_correction(<<~RUBY)
           def foo(arg); end
         RUBY
@@ -95,6 +100,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           ^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
+
         expect_correction(<<~'RUBY')
           def self.foo; end
         RUBY
@@ -106,6 +112,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           ^^^^^^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
+
         expect_correction(<<~'RUBY')
           def self.foo(bar, baz); end
         RUBY
@@ -118,6 +125,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
           end
         RUBY
+
         expect_correction(<<~'RUBY')
           def self.foo; end
         RUBY
@@ -175,6 +183,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           def foo; end
           ^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
         RUBY
+
         expect_correction(<<~'RUBY')
           def foo
           end
@@ -225,6 +234,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
           def self.foo; end
           ^^^^^^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
         RUBY
+
         expect_correction(<<~'RUBY')
           def self.foo
           end
@@ -262,6 +272,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
             ^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
           end
         RUBY
+
         expect_correction(<<~RUBY)
           class Foo
             def bar

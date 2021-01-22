@@ -36,6 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
           #!/usr/bin/ruby
           ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
         RUBY
+
         expect_correction(<<~RUBY)
           #!/usr/bin/ruby
         RUBY
@@ -54,6 +55,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
             #!/usr/bin/ruby
             ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
           RUBY
+
           expect_no_corrections
           expect(file.stat.executable?).to be false
         end

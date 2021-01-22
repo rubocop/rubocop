@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
     context 'MissingElse is disabled' do
       it 'does auto-correction' do
         expect_offense(source)
+
         expect_correction(corrected_source)
       end
     end
@@ -23,11 +24,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
         if ['both', keyword].include? missing_else_style
           it 'does not auto-correct' do
             expect_offense(source)
+
             expect_no_corrections
           end
         else
           it 'does auto-correction' do
             expect_offense(source)
+
             expect_correction(corrected_source)
           end
         end

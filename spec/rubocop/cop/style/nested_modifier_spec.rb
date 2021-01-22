@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
         something if a %{keyword} b
                   ^^ Avoid using nested modifiers.
       RUBY
+
       expect_no_corrections
     end
 
@@ -17,6 +18,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
         something %{keyword} a if b
                   ^{keyword} Avoid using nested modifiers.
       RUBY
+
       expect_no_corrections
     end
   end
@@ -26,6 +28,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something if a if b
                 ^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something if b && a
     RUBY
@@ -36,6 +39,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something unless a unless b
                 ^^^^^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something unless b || a
     RUBY
@@ -46,6 +50,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something if a unless b
                 ^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something unless b || !a
     RUBY
@@ -56,6 +61,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something unless b > 1 if true
                 ^^^^^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something if true && !(b > 1)
     RUBY
@@ -66,6 +72,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something unless a if b
                 ^^^^^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something if b && !a
     RUBY
@@ -76,6 +83,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something if a || b if c || d
                 ^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something if (c || d) && (a || b)
     RUBY
@@ -87,6 +95,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       a unless [1, 2].include? a if a
         ^^^^^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       a if a && ![1, 2].include?(a)
     RUBY
@@ -97,6 +106,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something if a unless c || d
                 ^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something unless c || d || !a
     RUBY
@@ -115,6 +125,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier do
       something until a while b unless c if d
                                 ^^^^^^ Avoid using nested modifiers.
     RUBY
+
     expect_correction(<<~RUBY)
       something until a while b if d && !c
     RUBY

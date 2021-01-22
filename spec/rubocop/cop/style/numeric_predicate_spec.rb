@@ -14,6 +14,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           0 == number
           ^^^^^^^^^^^ Use `number.zero?` instead of `0 == number`.
         RUBY
+
         expect_correction(<<~RUBY)
           number.zero?
           number.zero?
@@ -27,6 +28,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           0 == foo - 1
           ^^^^^^^^^^^^ Use `(foo - 1).zero?` instead of `0 == foo - 1`.
         RUBY
+
         expect_correction(<<~RUBY)
           (foo - 1).zero?
           (foo - 1).zero?
@@ -46,6 +48,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
               ^^^^^^^^ Use `foo.zero?` instead of `foo == 0`.
             end
           RUBY
+
           expect_correction(<<~RUBY)
             def m(foo)
               foo.zero?
@@ -60,6 +63,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
               ^^^^^^^^^^^^ Use `(foo - 1).zero?` instead of `foo - 1 == 0`.
             end
           RUBY
+
           expect_correction(<<~RUBY)
             def m(foo)
               (foo - 1).zero?
@@ -92,6 +96,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           number > 0
           ^^^^^^^^^^ Use `number.positive?` instead of `number > 0`.
         RUBY
+
         expect_correction(<<~RUBY)
           number.positive?
         RUBY
@@ -102,6 +107,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           0 < number
           ^^^^^^^^^^ Use `number.positive?` instead of `0 < number`.
         RUBY
+
         expect_correction(<<~RUBY)
           number.positive?
         RUBY
@@ -113,6 +119,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             foo - 1 > 0
             ^^^^^^^^^^^ Use `(foo - 1).positive?` instead of `foo - 1 > 0`.
           RUBY
+
           expect_correction(<<~RUBY)
             (foo - 1).positive?
           RUBY
@@ -123,6 +130,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             0 < foo - 1
             ^^^^^^^^^^^ Use `(foo - 1).positive?` instead of `0 < foo - 1`.
           RUBY
+
           expect_correction(<<~RUBY)
             (foo - 1).positive?
           RUBY
@@ -136,6 +144,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           number < 0
           ^^^^^^^^^^ Use `number.negative?` instead of `number < 0`.
         RUBY
+
         expect_correction(<<~RUBY)
           number.negative?
         RUBY
@@ -146,6 +155,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           0 > number
           ^^^^^^^^^^ Use `number.negative?` instead of `0 > number`.
         RUBY
+
         expect_correction(<<~RUBY)
           number.negative?
         RUBY
@@ -157,6 +167,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             foo - 1 < 0
             ^^^^^^^^^^^ Use `(foo - 1).negative?` instead of `foo - 1 < 0`.
           RUBY
+
           expect_correction(<<~RUBY)
             (foo - 1).negative?
           RUBY
@@ -167,6 +178,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             0 > foo - 1
             ^^^^^^^^^^^ Use `(foo - 1).negative?` instead of `0 > foo - 1`.
           RUBY
+
           expect_correction(<<~RUBY)
             (foo - 1).negative?
           RUBY
@@ -185,6 +197,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         number.zero?
         ^^^^^^^^^^^^ Use `number == 0` instead of `number.zero?`.
       RUBY
+
       expect_correction(<<~RUBY)
         number == 0
       RUBY
@@ -199,6 +212,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         number.positive?
         ^^^^^^^^^^^^^^^^ Use `number > 0` instead of `number.positive?`.
       RUBY
+
       expect_correction(<<~RUBY)
         number > 0
       RUBY
@@ -209,6 +223,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         number.negative?
         ^^^^^^^^^^^^^^^^ Use `number < 0` instead of `number.negative?`.
       RUBY
+
       expect_correction(<<~RUBY)
         number < 0
       RUBY
@@ -289,6 +304,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             exclude(number > 0)
                     ^^^^^^^^^^ Use `number.positive?` instead of `number > 0`.
           RUBY
+
           expect_correction(<<~RUBY)
             exclude(number.positive?)
           RUBY
@@ -299,6 +315,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             exclude(number < 0)
                     ^^^^^^^^^^ Use `number.negative?` instead of `number < 0`.
           RUBY
+
           expect_correction(<<~RUBY)
             exclude(number.negative?)
           RUBY
@@ -335,6 +352,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             exclude { number > 0 }
                       ^^^^^^^^^^ Use `number.positive?` instead of `number > 0`.
           RUBY
+
           expect_correction(<<~RUBY)
             exclude { number.positive? }
           RUBY
@@ -345,6 +363,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             exclude { number < 0 }
                       ^^^^^^^^^^ Use `number.negative?` instead of `number < 0`.
           RUBY
+
           expect_correction(<<~RUBY)
             exclude { number.negative? }
           RUBY

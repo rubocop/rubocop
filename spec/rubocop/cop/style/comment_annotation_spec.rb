@@ -78,6 +78,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
         # HACK:
           ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
       RUBY
+
       expect_no_corrections
     end
   end

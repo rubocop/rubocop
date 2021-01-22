@@ -57,6 +57,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
               _{annotated}       ^{template} Prefer annotated tokens [...]
           HEREDOC
         RUBY
+
         expect_no_corrections
       end
 
@@ -65,6 +66,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           "a#{b}%{annotated} c#{d}%{template} e#{f}"
                 _{annotated}      ^{template} Prefer annotated tokens [...]
         RUBY
+
         expect_no_corrections
       end
 
@@ -81,6 +83,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           "%{a}"
            ^^^^ Prefer annotated tokens [...]
         RUBY
+
         expect_no_corrections
 
         expect(cop.config_to_allow_offenses).to eq(
@@ -101,6 +104,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
               _{template}       ^{annotated} Prefer template tokens [...]
           HEREDOC
         RUBY
+
         expect_no_corrections
       end
 
@@ -109,6 +113,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           "a#{b}%{template} c#{d}%{annotated} e#{f}"
                 _{template}      ^{annotated} Prefer template tokens [...]
         RUBY
+
         expect_no_corrections
       end
 
@@ -117,6 +122,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           "%<a>s"
            ^^^^^ Prefer template tokens [...]
         RUBY
+
         expect_no_corrections
 
         expect(cop.config_to_allow_offenses).to eq(
@@ -179,6 +185,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       "c#{b}%{template}"
             ^^^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
     RUBY
+
     expect_no_corrections
   end
 
@@ -205,6 +212,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       { bar: format('%{foo}', foo: 'foo') }
                      ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
     RUBY
+
     expect_no_corrections
   end
 
@@ -214,6 +222,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
               ^^^^^ Prefer annotated tokens (like `%<foo>s`) over unannotated tokens (like `%s`).
                     ^^^^^ Prefer annotated tokens (like `%<foo>s`) over unannotated tokens (like `%s`).
     RUBY
+
     expect_no_corrections
   end
 
@@ -248,6 +257,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         "%{foo}"
          ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
       RUBY
+
       expect_no_corrections
     end
 
@@ -281,6 +291,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         "%<foo>d"
          ^^^^^^^ Prefer template tokens (like `%{foo}`) over annotated tokens (like `%<foo>s`).
       RUBY
+
       expect_no_corrections
     end
   end
@@ -293,6 +304,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         "%{foo}"
          ^^^^^^ Prefer unannotated tokens (like `%s`) over template tokens (like `%{foo}`).
       RUBY
+
       expect_no_corrections
     end
   end

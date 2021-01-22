@@ -225,6 +225,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             x
           }
         RUBY
+
         expect_correction(<<~RUBY)
           each do |x|
             x
@@ -239,6 +240,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             x
           }
         RUBY
+
         expect_correction(<<~RUBY)
           each do |x|
             x
@@ -270,6 +272,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         end
       RUBY
+
       expect_correction(<<~RUBY)
         foo = map { |x|
           x
@@ -284,6 +287,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         end
       RUBY
+
       expect_correction(<<~RUBY)
         foo = map { |x|
           x
@@ -299,6 +303,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         end)
       RUBY
+
       expect_correction(<<~RUBY)
         puts (map { |x|
           x
@@ -322,6 +327,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         block do |x| end
               ^^ Prefer `{...}` over `do...end` for single-line blocks.
       RUBY
+
       expect_correction(<<~RUBY)
         block { |x| }
       RUBY
@@ -332,6 +338,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         s.subspec 'Subspec' do |sp| end
                             ^^ Prefer `{...}` over `do...end` for single-line blocks.
       RUBY
+
       expect_no_corrections
     end
 
@@ -434,6 +441,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             other_method
           }
         RUBY
+
         expect_correction(<<~RUBY)
           each do |x|
             some_method
@@ -450,6 +458,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             puts a
           }}
         RUBY
+
         expect_correction(<<~RUBY)
           (0..3).each do |a| a.times do
             puts a
@@ -630,6 +639,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         s.subspec 'Subspec' do |sp| end
                             ^^ Prefer `{...}` over `do...end` for blocks.
       RUBY
+
       expect_no_corrections
     end
 

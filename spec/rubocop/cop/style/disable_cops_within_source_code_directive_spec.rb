@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective do
                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Comment to disable/enable RuboCop.
       end
     RUBY
+
     expect_correction(<<~RUBY)
       def choose_move(who_to_move)
       end
@@ -21,6 +22,7 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective do
                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Comment to disable/enable RuboCop.
       end
     RUBY
+
     expect_correction(<<~RUBY)
       def choose_move(who_to_move)
       end

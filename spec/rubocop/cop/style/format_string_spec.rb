@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "%d" % 10
                   ^ Favor `sprintf` over `String#%`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts sprintf("%d", 10)
       RUBY
@@ -19,6 +20,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts x % [10, 11]
                ^ Favor `sprintf` over `String#%`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts sprintf(x, 10, 11)
       RUBY
@@ -29,6 +31,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts x % { a: 10, b: 11 }
                ^ Favor `sprintf` over `String#%`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts sprintf(x, a: 10, b: 11)
       RUBY
@@ -39,6 +42,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "%f" % a
                   ^ Favor `sprintf` over `String#%`.
       RUBY
+
       expect_no_corrections
     end
 
@@ -49,6 +53,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "%d" % a
                   ^ Favor `sprintf` over `String#%`.
       RUBY
+
       expect_no_corrections
     end
 
@@ -65,6 +70,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "#{x * 5} %d #{@test}" % 10
                                     ^ Favor `sprintf` over `String#%`.
       RUBY
+
       expect_correction(<<~'RUBY')
         puts sprintf("#{x * 5} %d #{@test}", 10)
       RUBY
@@ -75,6 +81,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         format(something, a, b)
         ^^^^^^ Favor `sprintf` over `format`.
       RUBY
+
       expect_correction(<<~RUBY)
         sprintf(something, a, b)
       RUBY
@@ -85,6 +92,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         format("%X", 123)
         ^^^^^^ Favor `sprintf` over `format`.
       RUBY
+
       expect_correction(<<~RUBY)
         sprintf("%X", 123)
       RUBY
@@ -99,6 +107,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "%d" % 10
                   ^ Favor `format` over `String#%`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts format("%d", 10)
       RUBY
@@ -109,6 +118,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts x % [10, 11]
                ^ Favor `format` over `String#%`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts format(x, 10, 11)
       RUBY
@@ -119,6 +129,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts x % { a: 10, b: 11 }
                ^ Favor `format` over `String#%`.
       RUBY
+
       expect_correction(<<~RUBY)
         puts format(x, a: 10, b: 11)
       RUBY
@@ -129,6 +140,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "%f" % a
                   ^ Favor `format` over `String#%`.
       RUBY
+
       expect_no_corrections
     end
 
@@ -145,6 +157,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "#{x * 5} %d #{@test}" % 10
                                     ^ Favor `format` over `String#%`.
       RUBY
+
       expect_correction(<<~'RUBY')
         puts format("#{x * 5} %d #{@test}", 10)
       RUBY
@@ -155,6 +168,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         sprintf(something, a, b)
         ^^^^^^^ Favor `format` over `sprintf`.
       RUBY
+
       expect_correction(<<~RUBY)
         format(something, a, b)
       RUBY
@@ -165,6 +179,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         sprintf('%020d', 123)
         ^^^^^^^ Favor `format` over `sprintf`.
       RUBY
+
       expect_correction(<<~RUBY)
         format('%020d', 123)
       RUBY
@@ -176,6 +191,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         puts "%d" % a
                   ^ Favor `format` over `String#%`.
       RUBY
+
       expect_no_corrections
     end
   end
@@ -188,6 +204,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         format(something, a)
         ^^^^^^ Favor `String#%` over `format`.
       RUBY
+
       expect_correction(<<~RUBY)
         something % a
       RUBY
@@ -198,6 +215,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         format(something, a, b)
         ^^^^^^ Favor `String#%` over `format`.
       RUBY
+
       expect_correction(<<~RUBY)
         something % [a, b]
       RUBY
@@ -208,6 +226,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         format(something, a: 10, b: 11)
         ^^^^^^ Favor `String#%` over `format`.
       RUBY
+
       expect_correction(<<~RUBY)
         something % { a: 10, b: 11 }
       RUBY
@@ -218,6 +237,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         sprintf(something, a)
         ^^^^^^^ Favor `String#%` over `sprintf`.
       RUBY
+
       expect_correction(<<~RUBY)
         something % a
       RUBY
@@ -228,6 +248,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         format(something, a + 42)
         ^^^^^^ Favor `String#%` over `format`.
       RUBY
+
       expect_correction(<<~RUBY)
         something % (a + 42)
       RUBY
@@ -238,6 +259,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         format("%d %04x", 123, 123)
         ^^^^^^ Favor `String#%` over `format`.
       RUBY
+
       expect_correction(<<~RUBY)
         "%d %04x" % [123, 123]
       RUBY
@@ -248,6 +270,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
         sprintf(something, a: 10, b: 11)
         ^^^^^^^ Favor `String#%` over `sprintf`.
       RUBY
+
       expect_correction(<<~RUBY)
         something % { a: 10, b: 11 }
       RUBY

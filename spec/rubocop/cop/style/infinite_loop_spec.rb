@@ -15,6 +15,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
           top
         end
       RUBY
+
       expect_correction(<<~RUBY)
         loop do
           top
@@ -31,6 +32,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
           top
         end
       RUBY
+
       expect_correction(<<~RUBY)
         loop do
           top
@@ -78,6 +80,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
                               ^^^^^ Use `Kernel#loop` for infinite loops.
       p a
     RUBY
+
     expect_correction(<<~RUBY)
       a = nil
       loop { a = next_value or break }
@@ -101,6 +104,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
       puts a
     RUBY
+
     expect_correction(<<~RUBY)
       while true
         a = 42
@@ -125,6 +129,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         break
       end
     RUBY
+
     expect_correction(<<~RUBY)
       loop do
         a = 43
@@ -149,6 +154,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
       puts a
     RUBY
+
     expect_correction(<<~RUBY)
       a = 0
       loop do
@@ -173,6 +179,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
       puts @a
     RUBY
+
     expect_correction(<<~RUBY)
       loop do
         @a = 42
@@ -188,6 +195,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         something += 1 %{keyword} %{lit} # comment
                        ^{keyword} Use `Kernel#loop` for infinite loops.
       RUBY
+
       expect_correction(<<~RUBY)
         loop { something += 1 } # comment
       RUBY
@@ -206,6 +214,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
               2 %{keyword} %{lit}
                 ^{keyword} Use `Kernel#loop` for infinite loops.
         RUBY
+
         expect_correction(<<~RUBY)
           # comment
           loop do
@@ -224,6 +233,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         end %{keyword} %{lit} # comment 3
             ^{keyword} Use `Kernel#loop` for infinite loops.
       RUBY
+
       expect_correction(<<~RUBY)
         loop do # comment 1
           something += 1 # comment 2
@@ -239,6 +249,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         end %{keyword} %{lit}
             ^{keyword} Use `Kernel#loop` for infinite loops.
       RUBY
+
       expect_correction(<<~RUBY)
         loop do
           something += 1
@@ -252,6 +263,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         something and something_else %{keyword} %{lit}
                                      ^{keyword} Use `Kernel#loop` for infinite loops.
       RUBY
+
       expect_correction(<<~RUBY)
         loop { something and something_else }
       RUBY
@@ -263,6 +275,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         ^{keyword} Use `Kernel#loop` for infinite loops.
         end
       RUBY
+
       expect_correction(<<~RUBY)
         loop do
         end
@@ -275,6 +288,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         ^{keyword} Use `Kernel#loop` for infinite loops.
         end
       RUBY
+
       expect_correction(<<~RUBY)
         loop do
         end

@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
   shared_examples 'offense' do |name, _code, offense, correction|
     it "registers an offense and corrects when #{name}" do
       expect_offense(offense)
+
       expect_correction(correction)
     end
   end

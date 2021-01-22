@@ -10,6 +10,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
       comment
       =end
     RUBY
+
     expect_correction(<<~RUBY)
       # comment
     RUBY
@@ -30,6 +31,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
       def foo
       end
     RUBY
+
     expect_correction(<<~RUBY)
       # comment line 1
       #
@@ -47,6 +49,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
       def foo
       end
     RUBY
+
     expect_correction(<<~RUBY)
       def foo
       end
@@ -63,6 +66,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
       comment line 2
       =end
     RUBY
+
     expect_correction(<<~RUBY)
       # comment line 1
       #
