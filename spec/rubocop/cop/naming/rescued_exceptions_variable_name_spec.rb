@@ -320,6 +320,77 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         RUBY
       end
     end
+
+    context 'when the variable is reassigned' do
+      it 'only corrects uses of the exception' do
+        expect_offense(<<~RUBY)
+          def main
+            raise
+          rescue StandardError => error
+                                  ^^^^^ Use `e` instead of `error`.
+            error = {
+              error_message: error.message
+            }
+            puts error
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def main
+            raise
+          rescue StandardError => e
+            error = {
+              error_message: e.message
+            }
+            puts error
+          end
+        RUBY
+      end
+
+      it 'does not correct other variables or assignments' do
+        expect_offense(<<~RUBY)
+          def main
+            raise
+          rescue StandardError => error
+                                  ^^^^^ Use `e` instead of `error`.
+            message = error.message
+            puts message
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def main
+            raise
+          rescue StandardError => e
+            message = e.message
+            puts message
+          end
+        RUBY
+      end
+    end
+
+    context 'when the variable is reassigned using multiple assignment' do
+      it 'only corrects uses of the exception' do
+        expect_offense(<<~RUBY)
+          def main
+            raise
+          rescue StandardError => error
+                                  ^^^^^ Use `e` instead of `error`.
+            error, foo = 1, error
+            puts error
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def main
+            raise
+          rescue StandardError => e
+            error, foo = 1, e
+            puts error
+          end
+        RUBY
+      end
+    end
   end
 
   context 'with the `PreferredName` setup' do
