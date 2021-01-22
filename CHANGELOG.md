@@ -24,6 +24,7 @@
 * [#9319](https://github.com/rubocop-hq/rubocop/pull/9319): Support asdf's .tool-versions file. ([@noon-ng][])
 * [#9301](https://github.com/rubocop-hq/rubocop/pull/9301): Add new `Lint/RedundantDirGlobSort` cop. ([@koic][])
 * [#9281](https://github.com/rubocop-hq/rubocop/pull/9281): Add new cop `Style/EndlessMethod`. ([@dvandersluis][])
+* [#9321](https://github.com/rubocop-hq/rubocop/pull/9321): Add new `Lint/LambdaWithoutLiteralBlock` cop. ([@koic][])
 
 ### Bug fixes
 
