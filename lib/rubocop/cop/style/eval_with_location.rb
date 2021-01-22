@@ -41,6 +41,18 @@ module RuboCop
       #     def do_something
       #     end
       #   RUBY
+      #
+      # This cop works only when a string literal is given as a code string.
+      # No offence is reported if a string variable is given as below:
+      #
+      # @example
+      #   # not checked
+      #   code = <<-RUBY
+      #     def do_something
+      #     end
+      #   RUBY
+      #   eval code
+      #
       class EvalWithLocation < Base
         extend AutoCorrector
 
