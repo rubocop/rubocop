@@ -25,11 +25,11 @@ module RuboCop
       end
 
       def consecutive_lines(previous, current)
-        first_line = get_source_range(
-          current,
-          treat_comments_as_separators
-        ).first_line
-        previous.source_range.last_line == first_line - 1
+        end_pos = current.source_range.first_line
+        begin_pos = previous.source_range.last_line
+        return true if begin_pos == end_pos - 1
+
+        !treat_comments_as_separators && contains_only_comments?(begin_pos, end_pos - 2)
       end
 
       def register_offense(previous, current)
@@ -55,6 +55,10 @@ module RuboCop
 
       def treat_comments_as_separators
         cop_config['TreatCommentsAsGroupSeparators']
+      end
+
+      def contains_only_comments?(begin_pos, end_pos)
+        processed_source.lines[begin_pos..end_pos].all? { |line| comment_line?(line) }
       end
     end
   end

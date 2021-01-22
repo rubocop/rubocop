@@ -155,6 +155,17 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
           gem 'rubocop'
         RUBY
       end
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # For code quality
+          gem 'rubocop'
+          # For
+
+          # test
+          gem 'rspec'
+        RUBY
+      end
     end
   end
 
