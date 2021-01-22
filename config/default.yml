@@ -3136,6 +3136,8 @@ Style/DisableCopsWithinSourceCodeDirective:
                  Forbids disabling/enabling cops within source code.
   Enabled: false
   VersionAdded: '0.82'
+  VersionChanged: <<next>>
+  AllowedCops: []
 
 Style/DocumentDynamicEvalDefinition:
   Description: >-
