@@ -39,25 +39,15 @@ module RuboCop
       class EvalWithLocation < Base
         MSG = 'Pass `__FILE__` and `__LINE__` to `%<method_name>s`.'
         MSG_EVAL = 'Pass a binding, `__FILE__` and `__LINE__` to `eval`.'
+        MSG_INCORRECT_FILE = 'Incorrect file for `%<method_name>s`; ' \
+                             'use `%<expected>s` instead of `%<actual>s`.'
         MSG_INCORRECT_LINE = 'Incorrect line number for `%<method_name>s`; ' \
                              'use `%<expected>s` instead of `%<actual>s`.'
 
         RESTRICT_ON_SEND = %i[eval class_eval module_eval instance_eval].freeze
 
-        def_node_matcher :eval_without_location?, <<~PATTERN
-          {
-            (send nil? :eval ${str dstr})
-            (send nil? :eval ${str dstr} _)
-            (send nil? :eval ${str dstr} _ #special_file_keyword?)
-            (send nil? :eval ${str dstr} _ #special_file_keyword? _)
-
-            (send _ {:class_eval :module_eval :instance_eval}
-              ${str dstr})
-            (send _ {:class_eval :module_eval :instance_eval}
-              ${str dstr} #special_file_keyword?)
-            (send _ {:class_eval :module_eval :instance_eval}
-              ${str dstr} #special_file_keyword? _)
-          }
+        def_node_matcher :valid_eval_receiver?, <<~PATTERN
+          { nil? (const {nil? cbase} :Kernel) }
         PATTERN
 
         def_node_matcher :line_with_offset?, <<~PATTERN
@@ -68,17 +58,30 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          eval_without_location?(node) do |code|
-            if with_lineno?(node)
-              on_with_lineno(node, code)
-            else
-              msg = node.method?(:eval) ? MSG_EVAL : format(MSG, method_name: node.method_name)
-              add_offense(node, message: msg)
-            end
+          # Classes should not redefine eval, but in case one does, it shouldn't
+          # register an offense. Only `eval` without a receiver and `Kernel.eval`
+          # are considered.
+          return if node.method?(:eval) && !valid_eval_receiver?(node.receiver)
+
+          code = node.arguments.first
+          return unless code.str_type? || code.dstr_type?
+
+          file, line = file_and_line(node)
+
+          if line
+            check_file(node, file)
+            check_line(node, code)
+          else
+            register_offense(node)
           end
         end
 
         private
+
+        def register_offense(node)
+          msg = node.method?(:eval) ? MSG_EVAL : format(MSG, method_name: node.method_name)
+          add_offense(node, message: msg)
+        end
 
         def special_file_keyword?(node)
           node.str_type? &&
@@ -88,6 +91,11 @@ module RuboCop
         def special_line_keyword?(node)
           node.int_type? &&
             node.source == '__LINE__'
+        end
+
+        def file_and_line(node)
+          base = node.method?(:eval) ? 2 : 1
+          [node.arguments[base], node.arguments[base + 1]]
         end
 
         # FIXME: It's a Style/ConditionalAssignment's false positive.
@@ -115,7 +123,18 @@ module RuboCop
                  expected: expected)
         end
 
-        def on_with_lineno(node, code)
+        def check_file(node, file_node)
+          return true if special_file_keyword?(file_node)
+
+          message = format(MSG_INCORRECT_FILE,
+                           method_name: node.method_name,
+                           expected: '__FILE__',
+                           actual: file_node.source)
+
+          add_offense(file_node, message: message)
+        end
+
+        def check_line(node, code)
           line_node = node.arguments.last
           lineno_range = line_node.loc.expression
           line_diff = string_first_line(code) - lineno_range.first_line
