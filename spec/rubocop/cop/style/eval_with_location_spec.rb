@@ -12,6 +12,30 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
     RUBY
   end
 
+  it 'registers an offense when using `Kernel.eval` without any arguments' do
+    expect_offense(<<~RUBY)
+      Kernel.eval <<-CODE
+      ^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+        do_something
+      CODE
+    RUBY
+  end
+
+  it 'registers an offense when using `::Kernel.eval` without any arguments' do
+    expect_offense(<<~RUBY)
+      ::Kernel.eval <<-CODE
+      ^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+        do_something
+      CODE
+    RUBY
+  end
+
+  it 'does not register an offense if `eval` is called on another object' do
+    expect_no_offenses(<<~RUBY)
+      foo.eval "CODE"
+    RUBY
+  end
+
   it 'registers an offense when using `#eval` with `binding` only' do
     expect_offense(<<~RUBY)
       eval <<-CODE, binding
@@ -118,6 +142,55 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
     expect_no_offenses(<<~RUBY)
       eval 'do_something', binding, __FILE__,
            __LINE__ - 1
+    RUBY
+  end
+
+  it 'registers an offense when using `eval` with improper arguments' do
+    expect_offense(<<~RUBY)
+      eval <<-CODE, binding, 'foo', 'bar'
+                                    ^^^^^ Incorrect line number for `eval`; use `__LINE__ + 1` instead of `'bar'`.
+                             ^^^^^ Incorrect file for `eval`; use `__FILE__` instead of `'foo'`.
+        do_something
+      CODE
+    RUBY
+  end
+
+  it 'registers an offense when using `instance_eval` with improper arguments' do
+    expect_offense(<<~RUBY)
+      instance_eval <<-CODE, 'foo', 'bar'
+                                    ^^^^^ Incorrect line number for `instance_eval`; use `__LINE__ + 1` instead of `'bar'`.
+                             ^^^^^ Incorrect file for `instance_eval`; use `__FILE__` instead of `'foo'`.
+        do_something
+      CODE
+    RUBY
+  end
+
+  it 'registers an offense when using `class_eval` with improper arguments' do
+    expect_offense(<<~RUBY)
+      class_eval <<-CODE, 'foo', 'bar'
+                                 ^^^^^ Incorrect line number for `class_eval`; use `__LINE__ + 1` instead of `'bar'`.
+                          ^^^^^ Incorrect file for `class_eval`; use `__FILE__` instead of `'foo'`.
+        do_something
+      CODE
+    RUBY
+  end
+
+  it 'registers an offense when using `module_eval` with improper arguments' do
+    expect_offense(<<~RUBY)
+      module_eval <<-CODE, 'foo', 'bar'
+                                  ^^^^^ Incorrect line number for `module_eval`; use `__LINE__ + 1` instead of `'bar'`.
+                           ^^^^^ Incorrect file for `module_eval`; use `__FILE__` instead of `'foo'`.
+        do_something
+      CODE
+    RUBY
+  end
+
+  it 'registers an offense when using correct file argument but incorrect line' do
+    expect_offense(<<~RUBY)
+      module_eval <<-CODE, __FILE__, 'bar'
+                                     ^^^^^ Incorrect line number for `module_eval`; use `__LINE__ + 1` instead of `'bar'`.
+        do_something
+      CODE
     RUBY
   end
 end
