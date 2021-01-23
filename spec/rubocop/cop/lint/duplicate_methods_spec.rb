@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
       RUBY
     end
 
-    it 'registers offense for a duplicate instance method in separate files' do
+    it 'only registers an offense for the second instance of a duplicate instance method in separate files' do
       expect_no_offenses(<<~RUBY, 'first.rb')
         #{opening_line}
           def some_method
@@ -191,6 +191,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           end
         end
       RUBY
+
       expect_offense(<<~RUBY, 'second.rb')
         #{opening_line}
           def some_method

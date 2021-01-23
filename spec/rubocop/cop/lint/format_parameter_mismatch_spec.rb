@@ -117,13 +117,13 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
         RUBY
       end
 
-      it 'registers an offense for `#format`' do
+      it 'does not registes an offense for `#format`' do
         expect_no_offenses(<<~RUBY)
           puts format("%s, %s, %s", 1, 2, 3, 4, *arr)
         RUBY
       end
 
-      it 'registers an offense for `#sprintf`' do
+      it 'does not register an offense for `#sprintf`' do
         expect_no_offenses(<<~RUBY)
           puts sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)
         RUBY

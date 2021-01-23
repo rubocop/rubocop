@@ -274,7 +274,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     context 'when `IgnoredMethods: []`' do
       let(:ignored_methods) { [] }
 
-      it 'does not register an offense' do
+      it 'registers an offense' do
         expect_offense(<<~RUBY)
           redirect("%{foo}")
                     ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).

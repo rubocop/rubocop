@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       }
     end
 
-    it 'accepts long lines matching a pattern but not other long lines' do
+    it 'only registers an offense for lines not matching the pattern' do
       expect_offense(<<~RUBY)
         class ExampleTest < TestCase
                           ^^^^^^^^^^ Line is too long. [28/18]

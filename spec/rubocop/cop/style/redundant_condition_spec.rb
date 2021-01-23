@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
         RUBY
       end
 
-      it 'registers an offense and corrects when using assignment by hash key access' do
+      it 'does not register an offense when using assignment by hash key access' do
         expect_no_offenses(<<~RUBY)
           if @cache[key]
             @cache[key]

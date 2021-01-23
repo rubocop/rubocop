@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     RUBY
   end
 
-  it 'does not report an offense for save_and_open_page with Kernel' do
+  it 'reports an offense for save_and_open_page with Kernel' do
     expect_offense(<<~RUBY)
       Kernel.save_and_open_page
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.save_and_open_page`.
