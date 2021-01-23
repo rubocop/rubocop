@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'internal_affairs/empty_line_between_expect_offense_and_correction'
+require_relative 'internal_affairs/example_description'
 require_relative 'internal_affairs/method_name_equal'
 require_relative 'internal_affairs/node_destructuring'
 require_relative 'internal_affairs/node_type_predicate'
