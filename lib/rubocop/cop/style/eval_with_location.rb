@@ -3,9 +3,14 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks `eval` method usage. `eval` can receive source location
-      # metadata, that are filename and line number. The metadata is used by
-      # backtraces. This cop recommends to pass the metadata to `eval` method.
+      # This cop ensures that eval methods (`eval`, `instance_eval`, `class_eval`
+      # and `module_eval`) are given filename and line number values (`__FILE__`
+      # and `__LINE__`). This data is used to ensure that any errors raised
+      # within the evaluated code will be given the correct identification
+      # in a backtrace.
+      #
+      # The cop also checks that the line number given relative to `__LINE__` is
+      # correct.
       #
       # @example
       #   # bad
@@ -32,10 +37,10 @@ module RuboCop
       #     end
       #   RUBY
       class EvalWithLocation < Base
-        MSG = 'Pass `__FILE__` and `__LINE__` to `eval` method, ' \
-              'as they are used by backtraces.'
-        MSG_INCORRECT_LINE = 'Use `%<expected>s` instead of `%<actual>s`, ' \
-                             'as they are used by backtraces.'
+        MSG = 'Pass `__FILE__` and `__LINE__` to `%<method_name>s`.'
+        MSG_EVAL = 'Pass a binding, `__FILE__` and `__LINE__` to `eval`.'
+        MSG_INCORRECT_LINE = 'Incorrect line number for `%<method_name>s`; ' \
+                             'use `%<expected>s` instead of `%<actual>s`.'
 
         RESTRICT_ON_SEND = %i[eval class_eval module_eval instance_eval].freeze
 
@@ -67,7 +72,8 @@ module RuboCop
             if with_lineno?(node)
               on_with_lineno(node, code)
             else
-              add_offense(node)
+              msg = node.method?(:eval) ? MSG_EVAL : format(MSG, method_name: node.method_name)
+              add_offense(node, message: msg)
             end
           end
         end
@@ -95,14 +101,18 @@ module RuboCop
         end
         # rubocop:enable Style/ConditionalAssignment
 
-        def message_incorrect_line(actual, sign, line_diff)
+        def message_incorrect_line(method_name, actual, sign, line_diff)
           expected =
             if line_diff.zero?
               '__LINE__'
             else
               "__LINE__ #{sign} #{line_diff}"
             end
-          format(MSG_INCORRECT_LINE, actual: actual.source, expected: expected)
+
+          format(MSG_INCORRECT_LINE,
+                 method_name: method_name,
+                 actual: actual.source,
+                 expected: expected)
         end
 
         def on_with_lineno(node, code)
@@ -124,22 +134,22 @@ module RuboCop
           end
         end
 
-        def add_offense_for_same_line(_node, line_node)
+        def add_offense_for_same_line(node, line_node)
           return if special_line_keyword?(line_node)
 
           add_offense(
             line_node.loc.expression,
-            message: message_incorrect_line(line_node, nil, 0)
+            message: message_incorrect_line(node.method_name, line_node, nil, 0)
           )
         end
 
-        def add_offense_for_different_line(_node, line_node, line_diff)
+        def add_offense_for_different_line(node, line_node, line_diff)
           sign = line_diff.positive? ? :+ : :-
           return if line_with_offset?(line_node, sign, line_diff.abs)
 
           add_offense(
             line_node.loc.expression,
-            message: message_incorrect_line(line_node, sign, line_diff.abs)
+            message: message_incorrect_line(node.method_name, line_node, sign, line_diff.abs)
           )
         end
       end
