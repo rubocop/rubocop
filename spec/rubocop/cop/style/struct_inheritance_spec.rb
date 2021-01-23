@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
     expect_no_offenses('Person = Struct.new(:first_name, :last_name)')
   end
 
-  it 'acceps assignment to ::Struct.new' do
+  it 'accepts assignment to ::Struct.new' do
     expect_no_offenses('Person = ::Struct.new(:first_name, :last_name)')
   end
 

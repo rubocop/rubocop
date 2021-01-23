@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       expect_no_offenses('!nil?')
     end
 
-    it 'does not report corrected when the code was not modified' do
+    it 'registers an offense but does not correct when the code was not modified' do
       expect_offense(<<~RUBY)
         return nil unless (line =~ //) != nil
                           ^^^^^^^^^^^^^^^^^^^ Prefer `!(line =~ //).nil?` over `(line =~ //) != nil`.
@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
         }
       end
 
-      it 'does not register an offense for `foo != nil`' do
+      it 'registers an offense for `foo != nil`' do
         expect_offense(<<~RUBY)
           foo != nil
           ^^^^^^^^^^ Explicit non-nil checks are usually redundant.

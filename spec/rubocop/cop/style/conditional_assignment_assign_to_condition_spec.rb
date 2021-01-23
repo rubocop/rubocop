@@ -1096,7 +1096,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
         RUBY
       end
 
-      it 'registers an offense when multiple assignment is in else' do
+      it 'does not register an offense when multiple assignment is in else' do
         expect_no_offenses(<<~RUBY)
           if foo
             method_call

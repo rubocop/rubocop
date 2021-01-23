@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         RUBY
       end
 
-      it 'does not add brackets to %w() arrays' do
+      it 'does not insert brackets for %w() arrays' do
         expect_offense(<<~RUBY)
           XXX = %w(YYY ZZZ)
                 ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           RUBY
         end
 
-        it 'does not add parenthesis to range enclosed in parentheses' do
+        it 'does not insert parenthesis to range enclosed in parentheses' do
           expect_offense(<<~RUBY)
             XXX = (1..99)
                   ^^^^^^^ Freeze mutable objects assigned to constants.
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           RUBY
         end
 
-        it 'does not add parenthesis to range enclosed in parentheses' do
+        it 'does not insert parenthesis to range enclosed in parentheses' do
           expect_offense(<<~RUBY)
             XXX = (1...99)
                   ^^^^^^^^ Freeze mutable objects assigned to constants.
@@ -459,7 +459,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         RUBY
       end
 
-      it 'does not add brackets to %w() arrays' do
+      it 'does not insert brackets for %w() arrays' do
         expect_offense(<<~RUBY)
           XXX = %w(YYY ZZZ)
                 ^^^^^^^^^^^ Freeze mutable objects assigned to constants.

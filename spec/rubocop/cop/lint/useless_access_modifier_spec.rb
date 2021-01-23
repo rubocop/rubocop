@@ -599,7 +599,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
   end
 
   shared_examples 'method named by access modifier name' do |keyword, modifier|
-    it "registers an offense for `#{modifier}`" do
+    it "does not register an offense for `#{modifier}`" do
       expect_no_offenses(<<~RUBY)
         #{keyword} A
           def foo

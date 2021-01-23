@@ -186,7 +186,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
-      it 'does not correct to an endless method if the method body contains multiple statements' do
+      it 'corrects to a normal method if the method body contains multiple statements' do
         expect_correction(<<~RUBY.strip, source: 'def some_method; foo; bar end')
           def some_method;#{trailing_whitespace}
             foo;#{trailing_whitespace}

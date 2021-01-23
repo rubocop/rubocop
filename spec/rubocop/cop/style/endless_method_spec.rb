@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects for a multiline endless method' do
+      it 'does not register an offense for a multiline endless method' do
         expect_no_offenses(<<~RUBY)
           def my_method() = x.foo
                              .bar
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects for a multiline endless method with begin' do
+      it 'does not register an offense for a multiline endless method with begin' do
         expect_no_offenses(<<~RUBY)
           def my_method() = begin
             foo && bar
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects for a multiline endless method with arguments' do
+      it 'does not register an offense for a multiline endless method with arguments' do
         expect_no_offenses(<<~RUBY)
           def my_method(a, b) = x.foo
                                  .bar

@@ -99,9 +99,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
       ^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
     RUBY
 
-    expect_correction(<<~RUBY)
-      foo&.zero? || foo > 5
-    RUBY
+    expect_no_corrections
   end
 
   it 'registers an offense and corrects assignment' do

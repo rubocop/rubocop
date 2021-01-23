@@ -347,7 +347,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         RUBY
       end
 
-      it 'does not correct other variables or assignments' do
+      it 'only corrects the exception variable' do
         expect_offense(<<~RUBY)
           def main
             raise

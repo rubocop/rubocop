@@ -633,7 +633,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     context 'with AllowAdjacentOneLineDefs: true' do
       let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
 
-      it ' does not register an offense' do
+      it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           def foo() = x
           def bar() = y

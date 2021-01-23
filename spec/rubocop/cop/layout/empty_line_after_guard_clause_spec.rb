@@ -361,7 +361,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accepta a guard clause after a single line heredoc' do
+  it 'accepts a guard clause after a single line heredoc' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, <<-MSG unless path
@@ -373,7 +373,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accepta a guard clause that is after multiline heredoc' do
+  it 'accepts a guard clause that is after multiline heredoc' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, <<-MSG unless path

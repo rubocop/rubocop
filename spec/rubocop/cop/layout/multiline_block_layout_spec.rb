@@ -316,8 +316,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'does not auto-correct a trailing comma when only one argument ' \
-     'is present' do
+  it 'does not remove a trailing comma when only one argument is present' do
     expect_offense(<<~RUBY)
       def f
         X.map do |

@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   context 'when overlapping constant assignments' do
-    it 'registers an offense' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         X = Y = Z = do_something
       RUBY
