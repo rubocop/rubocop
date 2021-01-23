@@ -130,3 +130,7 @@ Performance/CollectionLiteralInLoop:
 
 RSpec/StubbedMock:
   Enabled: false
+
+InternalAffairs/ExampleDescription:
+  Include:
+    - 'spec/rubocop/cop/**/*.rb'
