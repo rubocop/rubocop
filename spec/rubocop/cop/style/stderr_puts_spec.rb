@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::StderrPuts, :config do
-  let(:config) { RuboCop::Config.new }
-
   it "registers an offense when using `$stderr.puts('hello')`" do
     expect_offense(<<~RUBY)
       $stderr.puts('hello')

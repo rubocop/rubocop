@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs, :config do
-  let(:config) { RuboCop::Config.new }
-
   context 'curly brace block format' do
     it 'registers an offense when a trailing comma is not needed' do
       expect_offense(<<~RUBY)

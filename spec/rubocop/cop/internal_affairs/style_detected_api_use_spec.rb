@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::InternalAffairs::StyleDetectedApiUse, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'registers an offense when correct_style_detected is used without a negative *_style_detected follow up' do
     expect_offense(<<~RUBY)
       def on_send(node)

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
-  let(:config) { RuboCop::Config.new }
-
   # FIXME: Remove unused vars
   shared_examples 'offense' do |name, _code, offense, correction|
     it "registers an offense and corrects when #{name}" do

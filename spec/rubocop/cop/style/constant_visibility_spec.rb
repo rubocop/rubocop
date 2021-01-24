@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
-  let(:config) { RuboCop::Config.new }
-
   context 'when defining a constant in a class' do
     context 'with a single-statement body' do
       it 'registers an offense when not using a visibility declaration' do

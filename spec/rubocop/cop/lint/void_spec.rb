@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::Void, :config do
-  let(:config) { RuboCop::Config.new }
-
   described_class::BINARY_OPERATORS.each do |op|
     it "registers an offense for void op #{op} if not on last line" do
       expect_offense(<<~RUBY, op: op)

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'registers an offense when using `#eval` without any arguments' do
     expect_offense(<<~RUBY)
       eval <<-CODE

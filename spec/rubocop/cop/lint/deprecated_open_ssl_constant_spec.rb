@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'registers an offense with cipher constant and two arguments and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES.new(128, :GCM)

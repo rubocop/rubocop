@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'accepts rescue modifier' do
     expect_no_offenses('foo rescue nil')
   end

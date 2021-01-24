@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UriRegexp, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'does not register an offense when using `regexp` without receiver' do
     expect_no_offenses(<<~RUBY)
       regexp('http://example.com')
