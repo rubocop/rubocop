@@ -123,6 +123,41 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     end
   end
 
+  context 'to_method in symbol form' do
+    it 'registers offense and autocorrects' do
+      expect_offense(<<~RUBY)
+        "1,2,3,foo,5,6,7,8".split(',').map(&:to_i)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using &:to_i, use stricter { |i| Integer(i, 10) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "1,2,3,foo,5,6,7,8".split(',').map({ |i| Integer(i, 10) })
+      RUBY
+    end
+
+    it 'registers offense with try' do
+      expect_offense(<<~RUBY)
+        "foo".try(:to_f)
+        ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using :to_f, use stricter { |i| Float(i) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "foo".try({ |i| Float(i) })
+      RUBY
+    end
+
+    it 'registers offense with send' do
+      expect_offense(<<~RUBY)
+        "foo".send(:to_c)
+        ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using :to_c, use stricter { |i| Complex(i) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "foo".send({ |i| Complex(i) })
+      RUBY
+    end
+  end
+
   context 'IgnoredClasses' do
     let(:cop_config) { { 'IgnoredClasses' => %w[Time DateTime] } }
 
