@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEqual, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'registers an offense when using `#method == :do_something`' do
     expect_offense(<<~RUBY)
       node.method_name == :do_something

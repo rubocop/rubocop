@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'registers an offense when respond_to_missing? is not implemented' do
     expect_offense(<<~RUBY)
       class Test

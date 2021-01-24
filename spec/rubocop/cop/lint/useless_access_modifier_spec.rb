@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
-  let(:config) { RuboCop::Config.new }
-
   context 'when an access modifier has no effect' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::MultipleComparison, :config do
-  let(:config) { RuboCop::Config.new }
-
   shared_examples 'Check to use two comparison operator' do |operator1, operator2|
     it "registers an offense for x #{operator1} y #{operator2} z" do
       expect_offense(<<~RUBY, operator1: operator1, operator2: operator2)

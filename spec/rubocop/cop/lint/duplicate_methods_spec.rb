@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
-  let(:config) { RuboCop::Config.new }
-
   shared_examples 'in scope' do |type, opening_line|
     it "registers an offense for duplicate method in #{type}" do
       expect_offense(<<~RUBY)

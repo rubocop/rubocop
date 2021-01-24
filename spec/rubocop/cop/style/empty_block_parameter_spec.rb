@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::EmptyBlockParameter, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'registers an offense for an empty block parameter with do-end wtyle' do
     expect_offense(<<~RUBY)
       a do ||

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::TrailingCommaInAttributeDeclaration, :config do
-  let(:config) { RuboCop::Config.new }
-
   it 'registers an offense when using trailing comma' do
     expect_offense(<<~RUBY)
       class Foo
