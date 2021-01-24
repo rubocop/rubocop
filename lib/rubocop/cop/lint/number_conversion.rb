@@ -25,12 +25,18 @@ module RuboCop
       #   '10'.to_i
       #   '10.2'.to_f
       #   '10'.to_c
+      #   ['1', '2', '3'].map(&:to_i)
+      #   foo.try(:to_f)
+      #   bar.send(:to_c)
       #
       #   # good
       #
       #   Integer('10', 10)
       #   Float('10.2')
       #   Complex('10')
+      #   ['1', '2', '3'].map { |i| Integer(i, 10) }
+      #   foo.try { |i| Float(i) }
+      #   bar.send { |i| Complex(i) }
       #
       # @example IgnoredMethods: [minutes]
       #
@@ -52,22 +58,33 @@ module RuboCop
         }.freeze
         MSG = 'Replace unsafe number conversion with number '\
               'class parsing, instead of using '\
-              '%<number_object>s.%<to_method>s, use stricter '\
+              '%<current>s, use stricter '\
               '%<corrected_method>s.'
-        RESTRICT_ON_SEND = CONVERSION_METHOD_CLASS_MAPPING.keys.freeze
+        METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 
         def_node_matcher :to_method, <<~PATTERN
-          (send $_ ${:to_i :to_f :to_c})
+          (send $_ ${#{METHODS}})
+        PATTERN
+
+        def_node_matcher :to_method_symbol, <<~PATTERN
+          {(send _ $_ ${(sym ${#{METHODS}})} ...)
+           (send _ $_ ${(block_pass (sym ${#{METHODS}}))} ...)}
         PATTERN
 
         def on_send(node)
+          handle_conversion_method(node)
+          handle_as_symbol(node)
+        end
+
+        private
+
+        def handle_conversion_method(node)
           to_method(node) do |receiver, to_method|
             next if receiver.nil? || ignore_receiver?(receiver)
 
             message = format(
               MSG,
-              number_object: receiver.source,
-              to_method: to_method,
+              current: "#{receiver.source}.#{to_method}",
               corrected_method: correct_method(node, receiver)
             )
             add_offense(node, message: message) do |corrector|
@@ -76,11 +93,29 @@ module RuboCop
           end
         end
 
-        private
+        def handle_as_symbol(node)
+          to_method_symbol(node) do |receiver, sym_node, to_method|
+            next if receiver.nil?
+
+            message = format(
+              MSG,
+              current: sym_node.source,
+              corrected_method: correct_sym_method(to_method)
+            )
+            add_offense(node, message: message) do |corrector|
+              corrector.replace(sym_node, correct_sym_method(to_method))
+            end
+          end
+        end
 
         def correct_method(node, receiver)
           format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name],
                  number_object: receiver.source)
+        end
+
+        def correct_sym_method(to_method)
+          body = format(CONVERSION_METHOD_CLASS_MAPPING[to_method], number_object: 'i')
+          "{ |i| #{body} }"
         end
 
         def ignore_receiver?(receiver)
