@@ -51,6 +51,47 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment do
     RUBY
   end
 
+  it 'accepts magic comment followed by encoding' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+      # encoding: utf-8
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'accepts magic comment with shareable_constant_value' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+      # shareable_constant_value: literal
+
+      class Foo; end
+    RUBY
+
+    expect_no_offenses(<<~RUBY)
+      # shareable_constant_value: experimental_everything
+      # frozen_string_literal: true
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'registers offense when frozen_string_literal used with shareable_constant_value without empty line' do
+    expect_offense(<<~RUBY)
+      # frozen_string_literal: true
+      # shareable_constant_value: none
+      class Foo; end
+      ^ Add an empty line after magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # frozen_string_literal: true
+      # shareable_constant_value: none
+
+      class Foo; end
+    RUBY
+  end
+
   it 'accepts code that separates the comment from the code with a newline' do
     expect_no_offenses(<<~RUBY)
       # frozen_string_literal: true
