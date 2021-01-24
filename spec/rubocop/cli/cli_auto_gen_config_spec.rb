@@ -482,6 +482,43 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when existing config file has a YAML document start header' do
+      it 'inserts `inherit_from` key after hearder' do
+        create_file('example1.rb', <<~RUBY)
+          def foo; end
+        RUBY
+        create_file('.rubocop.yml', <<~YAML)
+          # rubocop config file
+          ---  # YAML document start
+          # The following cop does not support auto-correction.
+          Naming/MethodName:
+            Enabled: true
+        YAML
+        expect(cli.run(%w[--auto-gen-config])).to eq(0)
+        expect($stderr.string).to eq('')
+        expect(Dir['.*']).to include('.rubocop_todo.yml')
+        todo_contents = IO.read('.rubocop_todo.yml').lines[8..-1].join
+        expect(todo_contents).to eq(<<~YAML)
+          # Offense count: 1
+          # Cop supports --auto-correct.
+          # Configuration parameters: EnforcedStyle.
+          # SupportedStyles: always, always_true, never
+          Style/FrozenStringLiteralComment:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
+          # rubocop config file
+          ---  # YAML document start
+          inherit_from: .rubocop_todo.yml
+
+          # The following cop does not support auto-correction.
+          Naming/MethodName:
+            Enabled: true
+        YAML
+      end
+    end
+
     context 'when working in a subdirectory' do
       it 'can generate a todo list' do
         create_file('dir/example1.rb', ['$x = 0 ',
