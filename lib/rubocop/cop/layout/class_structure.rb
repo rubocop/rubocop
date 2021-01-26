@@ -213,7 +213,12 @@ module RuboCop
           name = node.method_name.to_s
           category, = categories.find { |_, names| names.include?(name) }
           key = category || name
-          visibility_key = "#{node_visibility(node)}_#{key}"
+          visibility_key =
+            if node.def_modifier?
+              "#{name}_methods"
+            else
+              "#{node_visibility(node)}_#{key}"
+            end
           expected_order.include?(visibility_key) ? visibility_key : key
         end
 
@@ -264,7 +269,7 @@ module RuboCop
 
         def source_range_with_comment(node)
           begin_pos, end_pos =
-            if node.def_type?
+            if node.def_type? || node.send_type? && node.def_modifier?
               start_node = find_visibility_start(node) || node
               end_node = find_visibility_end(node) || node
               [begin_pos_with_comment(start_node),

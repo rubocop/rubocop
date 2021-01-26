@@ -172,9 +172,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
         private :other_public_method
 
-        private def something_inline
-        end
-
         def yet_other_public_method
         end
 
@@ -320,5 +317,53 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         end
       end
     RUBY
+  end
+
+  context 'when def modifier is used' do
+    it 'registers an offense and corrects public method with modifier declared after private method with modifier' do
+      expect_offense(<<~RUBY)
+        class A
+          private def foo
+          end
+
+          public def bar
+          ^^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          public def bar
+          end
+
+          private def foo
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects public method without modifier declared after private method with modifier' do
+      expect_offense(<<~RUBY)
+        class A
+          private def foo
+          end
+
+          def bar
+          ^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          def bar
+          end
+
+          private def foo
+          end
+        end
+      RUBY
+    end
   end
 end
