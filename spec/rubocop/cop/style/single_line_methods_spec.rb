@@ -229,8 +229,8 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
       end
     end
 
-    context 'with `allow` style' do
-      let(:endless_method_config) { { 'EnforcedStyle' => 'allow' } }
+    context 'with `allow_single_line` style' do
+      let(:endless_method_config) { { 'EnforcedStyle' => 'allow_single_line' } }
 
       it_behaves_like 'convert to endless method'
     end
