@@ -54,28 +54,24 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'registers an offense for no final newline after assignment' do
-      expect { expect_no_offenses('x = 0') }.to raise_error(
-        RSpec::Expectations::ExpectationNotMetError,
-        /Final newline missing/
-      )
+      expect_offense(<<~RUBY, chomp: true)
+        x = 0
+             ^{} Final newline missing.
+      RUBY
     end
 
     it 'registers an offense for no final newline after block comment' do
-      expect do
-        expect_no_offenses(<<~RUBY.chomp)
-          puts 'testing rubocop when final new line is missing
-                                    after block comments'
+      expect_offense(<<~RUBY, chomp: true)
+        puts 'testing rubocop when final new line is missing
+                                  after block comments'
 
-          =begin
-          first line
-          second line
-          third line
-          =end
-        RUBY
-      end.to raise_error(
-        RSpec::Expectations::ExpectationNotMetError,
-        /Final newline missing/
-      )
+        =begin
+        first line
+        second line
+        third line
+        =end
+            ^{} Final newline missing.
+      RUBY
     end
 
     it 'auto-corrects even if some lines have space' do
@@ -96,10 +92,10 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'final_blank_line' } }
 
     it 'registers an offense for final newline' do
-      expect { expect_no_offenses("x = 0\n") }.to raise_error(
-        RSpec::Expectations::ExpectationNotMetError,
-        /Trailing blank line missing./
-      )
+      expect_offense(<<~RUBY, chomp: true)
+        x = 0\n
+        ^{} Trailing blank line missing.
+      RUBY
     end
 
     it 'registers an offense for multiple trailing blank lines' do
@@ -133,10 +129,10 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
     end
 
     it 'registers an offense for no final newline' do
-      expect { expect_no_offenses('x = 0') }.to raise_error(
-        RSpec::Expectations::ExpectationNotMetError,
-        /Final newline missing./
-      )
+      expect_offense(<<~RUBY, chomp: true)
+        x = 0
+             ^{} Final newline missing.
+      RUBY
     end
 
     it 'accepts final blank line' do

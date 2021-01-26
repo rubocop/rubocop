@@ -111,9 +111,12 @@ module RuboCop
         source
       end
 
-      def expect_offense(source, file = nil, severity: nil, **replacements)
+      def expect_offense(source, file = nil, severity: nil, chomp: false, **replacements)
         expected_annotations = parse_annotations(source, **replacements)
-        @processed_source = parse_processed_source(expected_annotations.plain_source, file)
+        source = expected_annotations.plain_source
+        source = source.chomp if chomp
+
+        @processed_source = parse_processed_source(source, file)
         @offenses = _investigate(cop, @processed_source)
         actual_annotations =
           expected_annotations.with_offense_annotations(@offenses)
