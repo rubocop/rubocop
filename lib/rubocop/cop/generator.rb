@@ -81,9 +81,7 @@ module RuboCop
       SPEC_TEMPLATE = <<~SPEC
         # frozen_string_literal: true
 
-        RSpec.describe RuboCop::Cop::%<department>s::%<cop_name>s do
-          subject(:cop) { described_class.new(config) }
-
+        RSpec.describe RuboCop::Cop::%<department>s::%<cop_name>s, :config do
           let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code

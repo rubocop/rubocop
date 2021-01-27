@@ -110,9 +110,7 @@ RSpec.describe RuboCop::Cop::Generator do
       generated_source = <<~SPEC
         # frozen_string_literal: true
 
-        RSpec.describe RuboCop::Cop::Style::FakeCop do
-          subject(:cop) { described_class.new(config) }
-
+        RSpec.describe RuboCop::Cop::Style::FakeCop, :config do
           let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code
