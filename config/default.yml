@@ -3102,6 +3102,8 @@ Style/ConstantVisibility:
                  visibility declarations.
   Enabled: false
   VersionAdded: '0.66'
+  VersionChanged: <<next>>
+  IgnoreModules: false
 
 # Checks that you have put a copyright in a comment before any code.
 #
