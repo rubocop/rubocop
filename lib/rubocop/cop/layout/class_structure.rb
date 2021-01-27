@@ -269,7 +269,7 @@ module RuboCop
 
         def source_range_with_comment(node)
           begin_pos, end_pos =
-            if node.def_type? || node.send_type? && node.def_modifier?
+            if node.def_type? && !node.method?(:initialize) || node.send_type? && node.def_modifier?
               start_node = find_visibility_start(node) || node
               end_node = find_visibility_end(node) || node
               [begin_pos_with_comment(start_node),
