@@ -67,6 +67,38 @@ RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
     end
   end
 
+  it 'registers an offense for module definitions' do
+    expect_offense(<<~RUBY)
+      module Foo
+        MyClass = Class.new()
+        ^^^^^^^^^^^^^^^^^^^^^ Explicitly make `MyClass` public or private using either `#public_constant` or `#private_constant`.
+      end
+    RUBY
+  end
+
+  context 'IgnoreModules' do
+    let(:cop_config) { { 'IgnoreModules' => true } }
+
+    it 'does not register an offense for class definitions' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          SomeClass = Class.new()
+          SomeModule = Module.new()
+          SomeStruct = Struct.new()
+        end
+      RUBY
+    end
+
+    it 'registers an offense for constants' do
+      expect_offense(<<~RUBY)
+        module Foo
+          BAR = 42
+          ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
+        end
+      RUBY
+    end
+  end
+
   it 'does not register an offense when passing a string to the ' \
      'visibility declaration' do
     expect_no_offenses(<<~RUBY)
