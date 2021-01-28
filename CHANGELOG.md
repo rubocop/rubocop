@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.9.0 (2021-01-28)
+
 ### New features
 
 * [#9396](https://github.com/rubocop-hq/rubocop/pull/9396): Add new `Style/IfWithBooleanLiteralBranches` cop. ([@koic][])

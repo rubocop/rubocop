@@ -452,7 +452,7 @@ array literal or the second is a string literal.
 
 This cop checks for non-ascii (non-English) characters
 in comments. You could set an array of allowed non-ascii chars in
-AllowedChars attribute (empty by default).
+`AllowedChars` attribute (copyright notice "©" by default).
 
 === Examples
 
@@ -471,7 +471,7 @@ AllowedChars attribute (empty by default).
 | Name | Default value | Configurable values
 
 | AllowedChars
-| `[]`
+| `©`
 | Array
 |===
 
@@ -2220,12 +2220,15 @@ path = __dir__
 | Yes
 | Yes
 | 0.82
-| -
+| 1.9
 |===
 
 Detects comments to enable/disable RuboCop.
 This is useful if want to make sure that every RuboCop error gets fixed
 and not quickly disabled with a comment.
+
+Specific cops can be allowed with the `AllowedCops` configuration. Note that
+if this configuration is set, `rubocop:disable all` is still disallowed.
 
 === Examples
 
@@ -2233,14 +2236,35 @@ and not quickly disabled with a comment.
 ----
 # bad
 # rubocop:disable Metrics/AbcSize
-def f
+def foo
 end
 # rubocop:enable Metrics/AbcSize
 
 # good
-def fixed_method_name_and_no_rubocop_comments
+def foo
 end
 ----
+
+==== AllowedCops: [Metrics/AbcSize]
+
+[source,ruby]
+----
+# good
+# rubocop:disable Metrics/AbcSize
+def foo
+end
+# rubocop:enable Metrics/AbcSize
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedCops
+| `[]`
+| Array
+|===
 
 == Style/DocumentDynamicEvalDefinition
 
@@ -3209,9 +3233,14 @@ def my_method() = x.foo
 | -
 |===
 
-This cop checks `eval` method usage. `eval` can receive source location
-metadata, that are filename and line number. The metadata is used by
-backtraces. This cop recommends to pass the metadata to `eval` method.
+This cop ensures that eval methods (`eval`, `instance_eval`, `class_eval`
+and `module_eval`) are given filename and line number values (`__FILE__`
+and `__LINE__`). This data is used to ensure that any errors raised
+within the evaluated code will be given the correct identification
+in a backtrace.
+
+The cop also checks that the line number given relative to `__LINE__` is
+correct.
 
 === Examples
 
@@ -3483,15 +3512,18 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| Yes
-| Yes
+| No
+| Yes (Unsafe)
 | 0.72
-| 1.6
+| 1.9
 |===
 
 This cop checks for division with integers coerced to floats.
 It is recommended to either always use `fdiv` or coerce one side only.
 This cop also provides other options for code consistency.
+
+This cop is marked as unsafe, because if operand variable is a string object
+then `.to_f` will be removed and an error will occur.
 
 === Examples
 
@@ -3722,6 +3754,8 @@ which are passed as arguments to those methods:
 The reason is that _unannotated_ format is very similar
 to encoded URLs or Date/Time formatting strings.
 
+This cop can be customized ignored methods with `IgnoredMethods`.
+
 It is allowed to contain unannotated token
 if the number of them is less than or equals to
 `MaxUnannotatedPlaceholdersAllowed`.
@@ -3787,6 +3821,14 @@ format('%s %s.', 'Hello', 'world')
 format('%06d', 10)
 ----
 
+==== IgnoredMethods: [redirect]
+
+[source,ruby]
+----
+# good
+redirect('foo/%{bar_id}')
+----
+
 === Configurable attributes
 
 |===
@@ -3799,6 +3841,10 @@ format('%06d', 10)
 | MaxUnannotatedPlaceholdersAllowed
 | `1`
 | Integer
+
+| IgnoredMethods
+| `[]`
+| Array
 |===
 
 == Style/FrozenStringLiteralComment
@@ -4713,6 +4759,40 @@ end if running?
 if running?
   tired? ? 'stop' : 'go faster'
 end
+----
+
+== Style/IfWithBooleanLiteralBranches
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.9
+| -
+|===
+
+This cop checks for redundant `if` with boolean literal branches.
+It checks only conditions to return boolean value (`true` or `false`) for safe detection.
+The conditions to be checked are comparison methods, predicate methods, and double negative.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if foo == bar
+  true
+else
+  false
+end
+
+# bad
+foo == bar ? true : false
+
+# good
+foo == bar
 ----
 
 == Style/IfWithSemicolon
@@ -7019,6 +7099,9 @@ This cop checks for non-nil checks, which are usually redundant.
 With `IncludeSemanticChanges` set to `false` by default, this cop
 does not report offenses for `!x.nil?` and does no changes that might
 change behavior.
+Also `IncludeSemanticChanges` set to `false` with `EnforcedStyle: comparison` of
+`Style/NilComparison` cop, this cop does not report offenses for `x != nil` and
+does no changes to `!x.nil?` style.
 
 With `IncludeSemanticChanges` set to `true`, this cop reports offenses
 for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
@@ -9803,7 +9886,7 @@ It will accept single-line methods with no body.
 
 Endless methods added in Ruby 3.0 are also accepted by this cop.
 
-If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow` or
+If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow_single_line` or
 `allow_always`, single-line methods will be auto-corrected to endless
 methods if there is only one statement in the body.
 

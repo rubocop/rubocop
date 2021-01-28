@@ -1168,7 +1168,7 @@ def some_method_1; end
 :some_sym_1
 ----
 
-==== AllowedIdentifier: [capture3]
+==== AllowedIdentifiers: [capture3]
 
 [source,ruby]
 ----

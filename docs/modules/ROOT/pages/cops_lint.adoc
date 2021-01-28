@@ -3138,12 +3138,18 @@ with `Integer()` and can be ignored with `IgnoredMethods`.
 '10'.to_i
 '10.2'.to_f
 '10'.to_c
+['1', '2', '3'].map(&:to_i)
+foo.try(:to_f)
+bar.send(:to_c)
 
 # good
 
 Integer('10', 10)
 Float('10.2')
 Complex('10')
+['1', '2', '3'].map { |i| Integer(i, 10) }
+foo.try { |i| Float(i) }
+bar.send { |i| Complex(i) }
 ----
 
 ==== IgnoredMethods: [minutes]
@@ -3175,6 +3181,77 @@ Time.now.to_datetime.to_i
 | `Time`, `DateTime`
 | Array
 |===
+
+== Lint/NumberedParameterAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 1.9
+| -
+|===
+
+This cop checks for uses of numbered parameter assignment.
+It emulates the following warning in Ruby 2.7:
+
+  % ruby -ve '_1 = :value'
+  ruby 2.7.2p137 (2020-10-01 revision 5445e04352) [x86_64-darwin19]
+  -e:1: warning: `_1' is reserved for numbered parameter; consider another name
+
+Assiging to numbered parameter (from `_1` to `_9`) cause an error in Ruby 3.0.
+
+  % ruby -ve '_1 = :value'
+  ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
+  -e:1: _1 is reserved for numbered parameter
+
+NOTE: The parametered parameters are from `_1` to `_9`. This cop checks `_0`, and over `_10`
+as well to prevent confusion.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+_1 = :value
+
+# good
+non_numbered_parameter_name = :value
+----
+
+== Lint/OrAssignmentToConstant
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.9
+| -
+|===
+
+This cop checks for unintended or-assignment to a constant.
+
+Constants should always be assigned in the same location. And its value
+should always be the same. If constants are assigned in multiple
+locations, the result may vary depending on the order of `require`.
+
+Also, if you already have such an implementation, auto-correction may
+change the result.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+CONST ||= 1
+
+# good
+CONST = 1
+----
 
 == Lint/OrderedMagicComments
 
@@ -4638,6 +4715,40 @@ end
 
 * https://rubystyle.guide#dont-hide-exceptions
 
+== Lint/SymbolConversion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.9
+| -
+|===
+
+This cop checks for uses of literal strings converted to
+a symbol where a literal symbol could be used instead.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+'string'.to_sym
+:symbol.to_sym
+'underscored_string'.to_sym
+:'underscored_symbol'
+'hyphenated-string'.to_sym
+
+# good
+:string
+:symbol
+:underscored_string
+:underscored_symbol
+:'hyphenated-string'
+----
+
 == Lint/Syntax
 
 |===
@@ -4786,6 +4897,59 @@ class Foo
     puts "No problem!"
   end
 end
+----
+
+== Lint/TripleQuotes
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.9
+| -
+|===
+
+This cop checks for "triple quotes" (strings delimted by any odd number
+of quotes greater than 1).
+
+Ruby allows multiple strings to be implicitly concatenated by just
+being adjacent in a statement (ie. `"foo""bar" == "foobar"`). This sometimes
+gives the impression that there is something special about triple quotes, but
+in fact it is just extra unnecessary quotes and produces the same string. Each
+pair of quotes produces an additional concatenated empty string, so the result
+is still only the "actual" string within the delimiters.
+
+NOTE: Although this cop is called triple quotes, the same behavior is present
+for strings delimited by 5, 7, etc. quotation marks.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+"""
+  A string
+"""
+
+# bad
+'''
+  A string
+'''
+
+# good
+"
+  A string
+"
+
+# good
+<<STRING
+  A string
+STRING
+
+# good (but not the same spacing as the bad case)
+'A string'
 ----
 
 == Lint/UnderscorePrefixedVariableName
