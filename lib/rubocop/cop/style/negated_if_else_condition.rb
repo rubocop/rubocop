@@ -29,6 +29,7 @@ module RuboCop
       #
       class NegatedIfElseCondition < Base
         include RangeHelp
+        include CommentsHelp
         extend AutoCorrector
 
         MSG = 'Invert the negated condition and swap the %<type>s branches.'
@@ -96,9 +97,21 @@ module RuboCop
           if node.if_branch.nil?
             corrector.remove(range_by_whole_lines(node.loc.else, include_final_newline: true))
           else
-            corrector.replace(node.if_branch, node.else_branch.source)
-            corrector.replace(node.else_branch, node.if_branch.source)
+            if_range = node_with_comments(node.if_branch)
+            else_range = node_with_comments(node.else_branch)
+
+            corrector.replace(if_range, else_range.source)
+            corrector.replace(else_range, if_range.source)
           end
+        end
+
+        def node_with_comments(node)
+          first_statement = node.begin_type? ? node.children[0] : node
+          return node if processed_source.ast_with_comments[first_statement].empty?
+
+          begin_pos = source_range_with_comment(first_statement).begin_pos
+          end_pos = node.source_range.end_pos
+          Parser::Source::Range.new(buffer, begin_pos, end_pos)
         end
       end
     end
