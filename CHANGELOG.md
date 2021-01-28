@@ -5409,3 +5409,5 @@
 [@uplus]: https://github.com/uplus
 [@asterite]: https://github.com/asterite
 [@AndreiEres]: https://github.com/AndreiEres
+[@jdufresne]: https://github.com/jdufresne
+[@adithyabsk]: https://github.com/adithyabsk
