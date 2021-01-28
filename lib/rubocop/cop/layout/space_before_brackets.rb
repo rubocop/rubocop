@@ -39,12 +39,17 @@ module RuboCop
 
             range_between(receiver_end_pos, selector_begin_pos)
           elsif node.method?(:[]=)
-            end_pos = node.receiver.source_range.end_pos
-
-            return if begin_pos - end_pos == 1
-
-            range_between(end_pos, begin_pos - 1)
+            offense_range_for_assignment(node, begin_pos)
           end
+        end
+
+        def offense_range_for_assignment(node, begin_pos)
+          end_pos = node.receiver.source_range.end_pos
+
+          return if begin_pos - end_pos == 1 ||
+                    (range = range_between(end_pos, begin_pos - 1)).source == '['
+
+          range
         end
 
         def register_offense(range)
