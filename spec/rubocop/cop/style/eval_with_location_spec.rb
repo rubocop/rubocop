@@ -8,6 +8,8 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense when using `Kernel.eval` without any arguments' do
@@ -17,6 +19,8 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense when using `::Kernel.eval` without any arguments' do
@@ -26,6 +30,8 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_no_corrections
   end
 
   it 'does not register an offense if `eval` is called on another object' do
@@ -41,12 +47,24 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_correction(<<~RUBY)
+      eval <<-CODE, binding, __FILE__, __LINE__ + 1
+        do_something
+      CODE
+    RUBY
   end
 
   it 'registers an offense when using `#eval` without lineno' do
     expect_offense(<<~RUBY)
       eval <<-CODE, binding, __FILE__
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+        do_something
+      CODE
+    RUBY
+
+    expect_correction(<<~RUBY)
+      eval <<-CODE, binding, __FILE__, __LINE__ + 1
         do_something
       CODE
     RUBY
@@ -57,6 +75,10 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
       eval 'do_something', binding, __FILE__, __LINE__ + 1
                                               ^^^^^^^^^^^^ Incorrect line number for `eval`; use `__LINE__` instead of `__LINE__ + 1`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      eval 'do_something', binding, __FILE__, __LINE__
+    RUBY
   end
 
   it 'registers an offense when using `#eval` with a heredoc and ' \
@@ -64,6 +86,12 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
     expect_offense(<<~RUBY)
       eval <<-CODE, binding, __FILE__, __LINE__ + 2
                                        ^^^^^^^^^^^^ Incorrect line number for `eval`; use `__LINE__ + 1` instead of `__LINE__ + 2`.
+        do_something
+      CODE
+    RUBY
+
+    expect_correction(<<~RUBY)
+      eval <<-CODE, binding, __FILE__, __LINE__ + 1
         do_something
       CODE
     RUBY
@@ -77,12 +105,25 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
            __LINE__)
            ^^^^^^^^ Incorrect line number for `eval`; use `__LINE__ - 3` instead of `__LINE__`.
     RUBY
+
+    expect_correction(<<~RUBY)
+      eval('puts 42',
+           binding,
+           __FILE__,
+           __LINE__ - 3)
+    RUBY
   end
 
   it 'registers an offense when using `#class_eval` without any arguments' do
     expect_offense(<<~RUBY)
       C.class_eval <<-CODE
       ^^^^^^^^^^^^^^^^^^^^ Pass `__FILE__` and `__LINE__` to `class_eval`.
+        do_something
+      CODE
+    RUBY
+
+    expect_correction(<<~RUBY)
+      C.class_eval <<-CODE, __FILE__, __LINE__ + 1
         do_something
       CODE
     RUBY
@@ -95,6 +136,12 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_correction(<<~RUBY)
+      M.module_eval <<-CODE, __FILE__, __LINE__ + 1
+        do_something
+      CODE
+    RUBY
   end
 
   it 'registers an offense when using `#instance_eval` without any arguments' do
@@ -104,12 +151,24 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo.instance_eval <<-CODE, __FILE__, __LINE__ + 1
+        do_something
+      CODE
+    RUBY
   end
 
   it 'registers an offense when using `#class_eval` with an incorrect lineno' do
     expect_offense(<<~RUBY)
       C.class_eval <<-CODE, __FILE__, __LINE__
                                       ^^^^^^^^ Incorrect line number for `class_eval`; use `__LINE__ + 1` instead of `__LINE__`.
+        do_something
+      CODE
+    RUBY
+
+    expect_correction(<<~RUBY)
+      C.class_eval <<-CODE, __FILE__, __LINE__ + 1
         do_something
       CODE
     RUBY
@@ -151,6 +210,12 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_correction(<<~RUBY)
+      eval <<-CODE, binding, __FILE__, __LINE__ + 1
+        do_something
+      CODE
+    RUBY
   end
 
   it 'registers an offense when using `instance_eval` with improper arguments' do
@@ -158,6 +223,12 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
       instance_eval <<-CODE, 'foo', 'bar'
                                     ^^^^^ Incorrect line number for `instance_eval`; use `__LINE__ + 1` instead of `'bar'`.
                              ^^^^^ Incorrect file for `instance_eval`; use `__FILE__` instead of `'foo'`.
+        do_something
+      CODE
+    RUBY
+
+    expect_correction(<<~RUBY)
+      instance_eval <<-CODE, __FILE__, __LINE__ + 1
         do_something
       CODE
     RUBY
@@ -171,6 +242,12 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_correction(<<~RUBY)
+      class_eval <<-CODE, __FILE__, __LINE__ + 1
+        do_something
+      CODE
+    RUBY
   end
 
   it 'registers an offense when using `module_eval` with improper arguments' do
@@ -181,12 +258,24 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
         do_something
       CODE
     RUBY
+
+    expect_correction(<<~RUBY)
+      module_eval <<-CODE, __FILE__, __LINE__ + 1
+        do_something
+      CODE
+    RUBY
   end
 
   it 'registers an offense when using correct file argument but incorrect line' do
     expect_offense(<<~RUBY)
       module_eval <<-CODE, __FILE__, 'bar'
                                      ^^^^^ Incorrect line number for `module_eval`; use `__LINE__ + 1` instead of `'bar'`.
+        do_something
+      CODE
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module_eval <<-CODE, __FILE__, __LINE__ + 1
         do_something
       CODE
     RUBY
