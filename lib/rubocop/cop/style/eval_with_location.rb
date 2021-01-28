@@ -12,6 +12,11 @@ module RuboCop
       # The cop also checks that the line number given relative to `__LINE__` is
       # correct.
       #
+      # This cop will autocorrect incorrect or missing filename and line number
+      # values. However, if `eval` is called without a binding argument, the cop
+      # will not attempt to automatically add a binding, or add filename and
+      # line values.
+      #
       # @example
       #   # bad
       #   eval <<-RUBY
@@ -37,6 +42,8 @@ module RuboCop
       #     end
       #   RUBY
       class EvalWithLocation < Base
+        extend AutoCorrector
+
         MSG = 'Pass `__FILE__` and `__LINE__` to `%<method_name>s`.'
         MSG_EVAL = 'Pass a binding, `__FILE__` and `__LINE__` to `eval`.'
         MSG_INCORRECT_FILE = 'Incorrect file for `%<method_name>s`; ' \
@@ -66,21 +73,28 @@ module RuboCop
           code = node.arguments.first
           return unless code && (code.str_type? || code.dstr_type?)
 
+          check_location(node, code)
+        end
+
+        private
+
+        def check_location(node, code)
           file, line = file_and_line(node)
 
           if line
             check_file(node, file)
             check_line(node, code)
+          elsif file
+            check_file(node, file)
+            add_offense_for_missing_line(node, code)
           else
-            register_offense(node)
+            add_offense_for_missing_location(node, code)
           end
         end
 
-        private
-
-        def register_offense(node)
+        def register_offense(node, &block)
           msg = node.method?(:eval) ? MSG_EVAL : format(MSG, method_name: node.method_name)
-          add_offense(node, message: msg)
+          add_offense(node, message: msg, &block)
         end
 
         def special_file_keyword?(node)
@@ -98,6 +112,10 @@ module RuboCop
           [node.arguments[base], node.arguments[base + 1]]
         end
 
+        def with_binding?(node)
+          node.method?(:eval) ? node.arguments.size >= 2 : true
+        end
+
         # FIXME: It's a Style/ConditionalAssignment's false positive.
         # rubocop:disable Style/ConditionalAssignment
         def with_lineno?(node)
@@ -109,18 +127,16 @@ module RuboCop
         end
         # rubocop:enable Style/ConditionalAssignment
 
-        def message_incorrect_line(method_name, actual, sign, line_diff)
-          expected =
-            if line_diff.zero?
-              '__LINE__'
-            else
-              "__LINE__ #{sign} #{line_diff}"
-            end
+        def add_offense_for_incorrect_line(method_name, line_node, sign, line_diff)
+          expected = expected_line(sign, line_diff)
+          message = format(MSG_INCORRECT_LINE,
+                           method_name: method_name,
+                           actual: line_node.source,
+                           expected: expected)
 
-          format(MSG_INCORRECT_LINE,
-                 method_name: method_name,
-                 actual: actual.source,
-                 expected: expected)
+          add_offense(line_node.loc.expression, message: message) do |corrector|
+            corrector.replace(line_node, expected)
+          end
         end
 
         def check_file(node, file_node)
@@ -131,18 +147,23 @@ module RuboCop
                            expected: '__FILE__',
                            actual: file_node.source)
 
-          add_offense(file_node, message: message)
+          add_offense(file_node, message: message) do |corrector|
+            corrector.replace(file_node, '__FILE__')
+          end
         end
 
         def check_line(node, code)
           line_node = node.arguments.last
-          lineno_range = line_node.loc.expression
-          line_diff = string_first_line(code) - lineno_range.first_line
+          line_diff = line_difference(line_node, code)
           if line_diff.zero?
             add_offense_for_same_line(node, line_node)
           else
             add_offense_for_different_line(node, line_node, line_diff)
           end
+        end
+
+        def line_difference(line_node, code)
+          string_first_line(code) - line_node.loc.expression.first_line
         end
 
         def string_first_line(str_node)
@@ -156,20 +177,47 @@ module RuboCop
         def add_offense_for_same_line(node, line_node)
           return if special_line_keyword?(line_node)
 
-          add_offense(
-            line_node.loc.expression,
-            message: message_incorrect_line(node.method_name, line_node, nil, 0)
-          )
+          add_offense_for_incorrect_line(node.method_name, line_node, nil, 0)
         end
 
         def add_offense_for_different_line(node, line_node, line_diff)
           sign = line_diff.positive? ? :+ : :-
           return if line_with_offset?(line_node, sign, line_diff.abs)
 
-          add_offense(
-            line_node.loc.expression,
-            message: message_incorrect_line(node.method_name, line_node, sign, line_diff.abs)
-          )
+          add_offense_for_incorrect_line(node.method_name, line_node, sign, line_diff.abs)
+        end
+
+        def expected_line(sign, line_diff)
+          if line_diff.zero?
+            '__LINE__'
+          else
+            "__LINE__ #{sign} #{line_diff.abs}"
+          end
+        end
+
+        def add_offense_for_missing_line(node, code)
+          register_offense(node) do |corrector|
+            line_str = missing_line(node, code)
+            corrector.insert_after(node.loc.expression.end, ", #{line_str}")
+          end
+        end
+
+        def add_offense_for_missing_location(node, code)
+          if node.method?(:eval) && !with_binding?(node)
+            register_offense(node)
+            return
+          end
+
+          register_offense(node) do |corrector|
+            line_str = missing_line(node, code)
+            corrector.insert_after(node.loc.expression.end, ", __FILE__, #{line_str}")
+          end
+        end
+
+        def missing_line(node, code)
+          line_diff = line_difference(node.arguments.last, code)
+          sign = line_diff.positive? ? :+ : :-
+          expected_line(sign, line_diff)
         end
       end
     end
