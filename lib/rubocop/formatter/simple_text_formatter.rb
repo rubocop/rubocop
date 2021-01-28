@@ -13,6 +13,7 @@ module RuboCop
       include PathUtil
 
       COLOR_FOR_SEVERITY = {
+        info:       :gray,
         refactor:   :yellow,
         convention: :yellow,
         warning:    :magenta,
