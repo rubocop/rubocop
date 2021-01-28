@@ -28,6 +28,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[to_sym intern].freeze
 
         def on_send(node)
+          return unless node.receiver
           return unless node.receiver.str_type? || node.receiver.sym_type?
 
           register_offense(node, correction: node.receiver.value.to_sym.inspect)
