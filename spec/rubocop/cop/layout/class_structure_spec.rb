@@ -366,4 +366,31 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       RUBY
     end
   end
+
+  context 'initializer is private and comes after attribute macro' do
+    it 'registers offense and auto-corrects' do
+      expect_offense(<<~RUBY)
+        class A
+          private
+
+          attr_accessor :foo
+
+          def initialize
+          ^^^^^^^^^^^^^^ `initializer` is supposed to appear before `private_attribute_macros`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          private
+
+          def initialize
+          end
+          attr_accessor :foo
+
+        end
+      RUBY
+    end
+  end
 end
