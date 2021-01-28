@@ -81,5 +81,16 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
         RUBY
       end
     end
+
+    context 'when using leading source comment' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # comment
+
+          class Foo
+          end
+        RUBY
+      end
+    end
   end
 end
