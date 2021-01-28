@@ -126,4 +126,12 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
       RUBY
     end
   end
+
+  context 'implicit `to_sym` call' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        to_sym == other
+      RUBY
+    end
+  end
 end
