@@ -191,4 +191,14 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
       CODE
     RUBY
   end
+
+  it 'does not register an offense when using eval with block argument' do
+    expect_no_offenses(<<~RUBY)
+      def self.included(base)
+        base.class_eval do
+          include OtherModule
+        end
+      end
+    RUBY
+  end
 end

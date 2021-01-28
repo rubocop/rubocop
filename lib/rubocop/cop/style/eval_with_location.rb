@@ -64,7 +64,7 @@ module RuboCop
           return if node.method?(:eval) && !valid_eval_receiver?(node.receiver)
 
           code = node.arguments.first
-          return unless code.str_type? || code.dstr_type?
+          return unless code && (code.str_type? || code.dstr_type?)
 
           file, line = file_and_line(node)
 
