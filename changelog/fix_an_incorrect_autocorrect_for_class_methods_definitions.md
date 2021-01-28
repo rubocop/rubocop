@@ -1,1 +1,0 @@
-* [#9424](https://github.com/rubocop-hq/rubocop/pull/9424): Fix an incorrect auto-correct for `Style/ClassMethodsDefinitions` when defining class methods with `class << self` and there is no blank line between method definition and attribute accessor. ([@koic][])

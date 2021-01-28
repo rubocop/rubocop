@@ -1,1 +1,0 @@
-* [#9389](https://github.com/rubocop-hq/rubocop/pull/9389): Fix an infinite loop error for `IncludeSemanticChanges: false` of `Style/NonNilCheck` with `EnforcedStyle: comparison` of `Style/NilComparison`. ([@koic][])
