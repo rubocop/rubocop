@@ -52,7 +52,7 @@ module RuboCop
       #
       class ParameterLists < Base
         exclude_limit 'Max'
-
+        exclude_limit 'MaxOptionalParameters'
 
         MSG = 'Avoid parameter lists longer than %<max>d parameters. ' \
               '[%<count>d/%<max>d]'
@@ -71,7 +71,9 @@ module RuboCop
             count: optargs.count
           )
 
-          add_offense(node, message: message)
+          add_offense(node, message: message) do
+            self.max_optional_parameters = optargs.count
+          end
         end
         alias on_defs on_def
 
