@@ -1,0 +1,1 @@
+* [#9454](https://github.com/rubocop-hq/rubocop/issues/9454): Fix an incorrect auto-correct for `Style/IfWithBooleanLiteralBranches` when using `elsif do_something?` with boolean literal branches. ([@koic][])
