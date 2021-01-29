@@ -63,6 +63,8 @@ module RuboCop
         end
 
         def correct_to_endless?(body_node)
+          return false if target_ruby_version < 3.0
+
           endless_method_config = config.for_cop('Style/EndlessMethod')
 
           return false unless endless_method_config['Enabled']
