@@ -34,6 +34,7 @@ module RuboCop
     class Base # rubocop:disable Metrics/ClassLength
       extend RuboCop::AST::Sexp
       extend NodePattern::Macros
+      extend ExcludeLimit
       include RuboCop::AST::Sexp
       include Util
       include IgnoredNode

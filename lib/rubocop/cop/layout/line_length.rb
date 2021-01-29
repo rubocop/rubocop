@@ -60,11 +60,12 @@ module RuboCop
       #   }
       class LineLength < Base
         include CheckLineBreakable
-        include ConfigurableMax
         include IgnoredPattern
         include RangeHelp
         include LineLengthHelp
         extend AutoCorrector
+
+        exclude_limit 'Max'
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'
 

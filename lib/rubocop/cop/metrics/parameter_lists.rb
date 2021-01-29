@@ -51,7 +51,8 @@ module RuboCop
       #   end
       #
       class ParameterLists < Base
-        include ConfigurableMax
+        exclude_limit 'Max'
+
 
         MSG = 'Avoid parameter lists longer than %<max>d parameters. ' \
               '[%<count>d/%<max>d]'
