@@ -60,7 +60,7 @@ module RuboCop
         end
 
         def properly_quoted?(source, value)
-          return true unless source.match?(/['"]/)
+          return true if !source.match?(/['"]/) || value.end_with?('=')
 
           source == value ||
             # `Symbol#inspect` uses double quotes, but allow single-quoted

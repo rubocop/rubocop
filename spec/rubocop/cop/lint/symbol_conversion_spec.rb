@@ -68,6 +68,12 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
         RUBY
       end
 
+      it 'does not register an offense for a require quoted symbol that ends with `=`' do
+        expect_no_offenses(<<~RUBY)
+          { 'foo=': 'bar' }
+        RUBY
+      end
+
       it 'registers an offense for a quoted symbol' do
         expect_offense(<<~RUBY)
           { 'foo': 'bar' }
@@ -76,6 +82,28 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
 
         expect_correction(<<~RUBY)
           { foo: 'bar' }
+        RUBY
+      end
+
+      it 'registers and corrects an offense for a quoted symbol that ends with `!`' do
+        expect_offense(<<~RUBY)
+          { 'foo!': 'bar' }
+            ^^^^^^ Unnecessary symbol conversion; use `foo!:` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          { foo!: 'bar' }
+        RUBY
+      end
+
+      it 'registers and corrects an offense for a quoted symbol that ends with `?`' do
+        expect_offense(<<~RUBY)
+          { 'foo?': 'bar' }
+            ^^^^^^ Unnecessary symbol conversion; use `foo?:` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          { foo?: 'bar' }
         RUBY
       end
 
