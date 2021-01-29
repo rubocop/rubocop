@@ -508,4 +508,14 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
       RUBY
     end
   end
+
+  context 'when `AllowedMethods: nonzero?`' do
+    let(:cop_config) { { 'AllowedMethods' => ['nonzero?'] } }
+
+    it 'does not register an offense when using `nonzero?`' do
+      expect_no_offenses(<<~RUBY)
+        num.nonzero? ? true : false
+      RUBY
+    end
+  end
 end

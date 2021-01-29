@@ -3521,6 +3521,8 @@ Style/IfWithBooleanLiteralBranches:
   Description: 'Checks for redundant `if` with boolean literal branches.'
   Enabled: pending
   VersionAdded: '1.9'
+  AllowedMethods:
+    - nonzero?
 
 Style/IfWithSemicolon:
   Description: 'Do not use if x; .... Use the ternary operator instead.'
