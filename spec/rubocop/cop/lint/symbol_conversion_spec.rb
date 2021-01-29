@@ -62,6 +62,12 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
         RUBY
       end
 
+      it 'does not register an offense for a require quoted symbol that contains `:`' do
+        expect_no_offenses(<<~RUBY)
+          { 'foo:bar': 'bar' }
+        RUBY
+      end
+
       it 'registers an offense for a quoted symbol' do
         expect_offense(<<~RUBY)
           { 'foo': 'bar' }
