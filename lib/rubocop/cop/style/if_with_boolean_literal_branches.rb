@@ -21,7 +21,12 @@ module RuboCop
       #   # good
       #   foo == bar
       #
+      # @example AllowedMethods: ['nonzero?']
+      #   # good
+      #   num.nonzero? ? true : false
+      #
       class IfWithBooleanLiteralBranches < Base
+        include AllowedMethods
         extend AutoCorrector
 
         MSG = 'Remove redundant %<keyword>s with boolean literal branches.'
@@ -68,6 +73,7 @@ module RuboCop
 
         def assume_boolean_value?(condition)
           return false unless condition.send_type?
+          return false if allowed_method?(condition.method_name)
 
           condition.comparison_method? || condition.predicate_method? || double_negative?(condition)
         end
