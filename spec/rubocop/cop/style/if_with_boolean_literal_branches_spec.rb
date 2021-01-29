@@ -157,6 +157,52 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
         !foo.do_something?
       RUBY
     end
+
+    it 'registers and corrects an offense when using `elsif foo.do_something?` with boolean literal branches' do
+      expect_offense(<<~RUBY)
+        if condition
+          bar
+          false
+        elsif foo.do_something?
+        ^^^^^ Use `else` instead of redundant `elsif` with boolean literal branches.
+          true
+        else
+          false
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if condition
+          bar
+          false
+        else
+          foo.do_something?
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense when using `elsif foo.do_something?` with opposite boolean literal branches' do
+      expect_offense(<<~RUBY)
+        if condition
+          bar
+          false
+        elsif foo.do_something?
+        ^^^^^ Use `else` instead of redundant `elsif` with boolean literal branches.
+          false
+        else
+          true
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if condition
+          bar
+          false
+        else
+          !foo.do_something?
+        end
+      RUBY
+    end
   end
 
   context 'when double negative is used in condition' do

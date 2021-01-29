@@ -25,6 +25,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Remove redundant %<keyword>s with boolean literal branches.'
+        MSG_FOR_ELSIF = 'Use `else` instead of redundant `elsif` with boolean literal branches.'
 
         def_node_matcher :if_with_boolean_literal_branches?, <<~PATTERN
           (if #return_boolean_value? {(true) (false) | (false) (true)})
@@ -35,24 +36,39 @@ module RuboCop
           return unless if_with_boolean_literal_branches?(node)
 
           condition = node.condition
-          range, keyword = if node.ternary?
-                             range = condition.source_range.end.join(node.source_range.end)
+          range, keyword = offense_range_with_keyword(node, condition)
 
-                             [range, 'ternary operator']
-                           else
-                             keyword = node.loc.keyword
-
-                             [keyword, "`#{keyword.source}`"]
-                           end
-
-          add_offense(range, message: format(MSG, keyword: keyword)) do |corrector|
+          add_offense(range, message: message(node, keyword)) do |corrector|
             replacement = replacement_condition(node, condition)
 
-            corrector.replace(node, replacement)
+            if node.elsif?
+              corrector.insert_before(node, "else\n")
+              corrector.replace(node, "#{indent(node.if_branch)}#{replacement}")
+            else
+              corrector.replace(node, replacement)
+            end
           end
         end
 
         private
+
+        def offense_range_with_keyword(node, condition)
+          if node.ternary?
+            range = condition.source_range.end.join(node.source_range.end)
+
+            [range, 'ternary operator']
+          else
+            keyword = node.loc.keyword
+
+            [keyword, "`#{keyword.source}`"]
+          end
+        end
+
+        def message(node, keyword)
+          message_template = node.elsif? ? MSG_FOR_ELSIF : MSG
+
+          format(message_template, keyword: keyword)
+        end
 
         def return_boolean_value?(condition)
           if condition.begin_type?
