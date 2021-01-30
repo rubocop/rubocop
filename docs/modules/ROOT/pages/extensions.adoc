@@ -1,6 +1,6 @@
 = Extensions
 
-It's possible to extend RuboCop with custom cops and formatters.
+It's possible to extend RuboCop with custom (third-party) cops and formatters.
 
 == Loading Extensions
 
@@ -56,7 +56,14 @@ If you'd like to create an extension gem, you can use https://github.com/rubocop
 
 See xref:development.adoc[development] to learn how to implement a cop.
 
-=== Known Custom Cops
+=== Cop Extensions
+
+The main RuboCop gem focuses on the core Ruby language and doesn't
+include functionality related to any external Ruby libraries/frameworks.
+There are, however, many RuboCop extensions dedicated to those and
+a few of them are maintained by RuboCop's Core Team.
+
+==== Official Extensions
 
 * https://github.com/rubocop-hq/rubocop-performance[rubocop-performance] -
 Performance optimization analysis
@@ -66,18 +73,21 @@ Rails-specific analysis
 RSpec-specific analysis
 * https://github.com/rubocop-hq/rubocop-minitest[rubocop-minitest] -
 Minitest-specific analysis
+* https://github.com/rubocop-hq/rubocop-rake[rubocop-rake] -
+Rake-specific analysis
+* https://github.com/rubocop-hq/rubocop-sequel[rubocop-sequel] -
+Code style checking for Sequel gem
+
+==== Third-party Extensions
+
 * https://github.com/covermymeds/rubocop-thread_safety[rubocop-thread_safety] -
 Thread-safety analysis
 * https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
 Dynamic analysis for missing `require` statements
 * https://github.com/puppetlabs/rubocop-i18n[rubocop-i18n] -
 i18n wrapper function analysis (`gettext` and `rails-i18n`)
-* https://github.com/rubocop-hq/rubocop-sequel[rubocop-sequel] -
-Code style checking for Sequel gem
 * https://github.com/chef/cookstyle[cookstyle] -
 Custom cops and config defaults for Chef Infra Cookbooks
-* https://github.com/rubocop-hq/rubocop-rake[rubocop-rake] -
-Rake-specific analysis
 * https://github.com/utkarsh2102/rubocop-packaging[rubocop-packaging] -
 Upstream best practices and coding conventions for downstream (e.g. Debian packages) compatibility.
 * https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet]
