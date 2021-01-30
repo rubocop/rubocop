@@ -69,9 +69,9 @@ Minitest-specific analysis
 * https://github.com/covermymeds/rubocop-thread_safety[rubocop-thread_safety] -
 Thread-safety analysis
 * https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
-Dynamic analysis for missing require statements
+Dynamic analysis for missing `require` statements
 * https://github.com/puppetlabs/rubocop-i18n[rubocop-i18n] -
-i18n wrapper function analysis (gettext and rails-i18n)
+i18n wrapper function analysis (`gettext` and `rails-i18n`)
 * https://github.com/rubocop-hq/rubocop-sequel[rubocop-sequel] -
 Code style checking for Sequel gem
 * https://github.com/chef/cookstyle[cookstyle] -
@@ -79,7 +79,7 @@ Custom cops and config defaults for Chef Infra Cookbooks
 * https://github.com/rubocop-hq/rubocop-rake[rubocop-rake] -
 Rake-specific analysis
 * https://github.com/utkarsh2102/rubocop-packaging[rubocop-packaging] -
-Upstream best practices and coding conventions for downstream compatibility.
+Upstream best practices and coding conventions for downstream (e.g. Debian packages) compatibility.
 * https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet]
 Sorbet-specific analysis
 
@@ -90,6 +90,7 @@ Any extensions missing? Send us a Pull Request!
 If you're writing an extension, you can tie some of its configuration into RuboCop.
 
 === Config Obsoletions
+
 When a cop that has been released is later renamed or removed, or one of its parameters is, RuboCop can output error messages letting users know to update their configuration to the newest values. If any obsolete configurations are encountered, RuboCop will output an error message and quit.
 
 You can tie your extension into this system by creating your own `obsoletions.yml` file and letting RuboCop know where to find it:
