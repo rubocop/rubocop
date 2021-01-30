@@ -129,6 +129,28 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
         end
       end
 
+      context 'when a nested department is specified' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => {
+              'StyleGuideBaseURL' => 'http://example.org/styleguide'
+            },
+            'Foo/Bar' => {
+              'StyleGuideBaseURL' => 'http://foo.example.org'
+            }
+          )
+        end
+
+        let(:cop_name) { 'Foo/Bar/Cop' }
+        let(:urls) { annotator.urls }
+
+        it 'returns style guide url when it is specified' do
+          config['Foo/Bar/Cop'] = { 'StyleGuide' => '#target_style_guide' }
+
+          expect(urls).to eq(%w[http://foo.example.org#target_style_guide])
+        end
+      end
+
       it 'can use a path-based setting' do
         config['Cop/Cop'] = { 'StyleGuide' => 'cop/path/rule#target_based_url' }
         expect(annotate).to include('http://example.org/cop/path/rule#target_based_url')
