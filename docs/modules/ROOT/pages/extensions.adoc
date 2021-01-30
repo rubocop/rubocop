@@ -80,6 +80,8 @@ Custom cops and config defaults for Chef Infra Cookbooks
 Rake-specific analysis
 * https://github.com/utkarsh2102/rubocop-packaging[rubocop-packaging] -
 Upstream best practices and coding conventions for downstream compatibility.
+* https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet]
+Sorbet-specific analysis
 
 Any extensions missing? Send us a Pull Request!
 
