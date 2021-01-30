@@ -112,11 +112,11 @@ module RuboCop
         def correct_outer_condition(corrector, condition)
           return unless requrie_parentheses?(condition)
 
-          range = range_between(
-            condition.loc.selector.end_pos, condition.first_argument.source_range.begin_pos
-          )
+          end_pos = condition.loc.selector.end_pos
+          begin_pos = condition.first_argument.source_range.begin_pos
+          return if end_pos > begin_pos
 
-          corrector.replace(range, '(')
+          corrector.replace(range_between(end_pos, begin_pos), '(')
           corrector.insert_after(condition.last_argument.source_range, ')')
         end
 

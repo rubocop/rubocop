@@ -113,6 +113,29 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using nested `unless` modifier with a single expression condition' do
+    expect_offense(<<~RUBY)
+      class A
+        def foo
+          if h[:a]
+            h[:b] = true unless h.has_key?(:b)
+                         ^^^^^^ Consider merging nested conditions into outer `if` conditions.
+          end
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class A
+        def foo
+          if h[:a] && !h.has_key?(:b)
+            h[:b] = true
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when using nested `unless` modifier multiple conditional' do
     expect_offense(<<~RUBY)
       if foo
