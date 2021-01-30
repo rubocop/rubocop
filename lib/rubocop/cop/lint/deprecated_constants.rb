@@ -37,6 +37,11 @@ module RuboCop
         DO_NOT_USE_MSG = 'Do not use `%<bad>s`%<deprecated_message>s.'
 
         def on_const(node)
+          # FIXME: Workaround for "`undefined method `expression' for nil:NilClass`" when processing
+          #        `__ENCODING__`. It is better to be able to work without this condition.
+          #        Maybe further investigation of RuboCop AST will lead to an essential solution.
+          return unless node.loc
+
           constant = node.absolute? ? consntant_name(node, node.short_name.to_s) : node.source
           return unless (deprecated_constant = deprecated_constants[constant])
 

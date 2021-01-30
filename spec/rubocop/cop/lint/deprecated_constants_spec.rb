@@ -139,4 +139,10 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
       Foo::TRUE
     RUBY
   end
+
+  it 'does not register an offense when using `__ENCODING__' do
+    expect_no_offenses(<<~RUBY)
+      __ENCODING__
+    RUBY
+  end
 end
