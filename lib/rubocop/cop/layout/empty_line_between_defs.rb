@@ -88,7 +88,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use empty lines between %<type>s definitions.'
+        MSG = 'Expected %<expected>s between %<type>s definitions; found %<actual>d.'
 
         def self.autocorrect_incompatible_with
           [Layout::EmptyLines]
@@ -107,19 +107,21 @@ module RuboCop
         end
 
         def check_defs(nodes)
-          return if blank_lines_between?(*nodes)
+          count = blank_lines_count_between(*nodes)
+
+          return if line_count_allowed?(count)
           return if multiple_blank_lines_groups?(*nodes)
           return if nodes.all?(&:single_line?) &&
                     cop_config['AllowAdjacentOneLineDefs']
 
           correction_node = nodes.last
           location = correction_node.loc.keyword.join(correction_node.loc.name)
-          add_offense(location, message: message(correction_node)) do |corrector|
-            autocorrect(corrector, *nodes)
+          add_offense(location, message: message(correction_node, count: count)) do |corrector|
+            autocorrect(corrector, *nodes, count)
           end
         end
 
-        def autocorrect(corrector, prev_def, node)
+        def autocorrect(corrector, prev_def, node, count)
           # finds position of first newline
           end_pos = end_loc(prev_def).end_pos
           source_buffer = end_loc(prev_def).source_buffer
@@ -127,8 +129,6 @@ module RuboCop
 
           # Handle the case when multiple one-liners are on the same line.
           newline_pos = end_pos + 1 if newline_pos > node.source_range.begin_pos
-
-          count = blank_lines_count_between(prev_def, node)
 
           if count > maximum_empty_lines
             autocorrect_remove_lines(corrector, newline_pos, count)
@@ -157,14 +157,22 @@ module RuboCop
           cop_config['EmptyLineBetweenModuleDefs'] && node.module_type?
         end
 
-        def message(node)
-          type = case node.type
-                 when :def, :defs
-                   :method
-                 else
-                   node.type
-                 end
-          format(MSG, type: type)
+        def message(node, count: nil)
+          type = node_type(node)
+
+          format(MSG,
+                 type: type,
+                 expected: expected_lines,
+                 actual: count)
+        end
+
+        def expected_lines
+          if allowance_range?
+            "#{minimum_empty_lines..maximum_empty_lines} empty lines"
+          else
+            lines = maximum_empty_lines == 1 ? 'line' : 'lines'
+            "#{maximum_empty_lines} empty #{lines}"
+          end
         end
 
         def multiple_blank_lines_groups?(first_def_node, second_def_node)
@@ -176,8 +184,7 @@ module RuboCop
           blank_start > non_blank_end
         end
 
-        def blank_lines_between?(first_def_node, second_def_node)
-          count = blank_lines_count_between(first_def_node, second_def_node)
+        def line_count_allowed?(count)
           (minimum_empty_lines..maximum_empty_lines).cover?(count)
         end
 
@@ -229,6 +236,19 @@ module RuboCop
           where_to_insert = range_between(newline_pos, newline_pos + 1)
 
           corrector.insert_after(where_to_insert, "\n" * difference)
+        end
+
+        def node_type(node)
+          case node.type
+          when :def, :defs
+            :method
+          else
+            node.type
+          end
+        end
+
+        def allowance_range?
+          minimum_empty_lines != maximum_empty_lines
         end
       end
     end
