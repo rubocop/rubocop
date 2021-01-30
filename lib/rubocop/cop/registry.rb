@@ -185,7 +185,7 @@ module RuboCop
 
       def sort!
         clear_enrollment_queue
-        @registry = Hash[@registry.sort_by { |badge, _| badge.cop_name }]
+        @registry = @registry.sort_by { |badge, _| badge.cop_name }.to_h
 
         self
       end
