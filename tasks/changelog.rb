@@ -17,7 +17,7 @@ class Changelog
   REF_URL = 'https://github.com/rubocop-hq/rubocop'
   MAX_LENGTH = 40
   CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
-  SIGNATURE = Regexp.new(format(Regexp.escape("([@%<user>s][])\n"), user: '([\w-]+)'))
+  SIGNATURE = Regexp.new(format(Regexp.escape('[@%<user>s][]'), user: '([\w-]+)'))
   EOF = "\n"
 
   # New entry
@@ -143,8 +143,11 @@ class Changelog
   end
 
   def contributors
-    @entries.values.join("\n")
-            .scan(SIGNATURE).flatten
+    contributors = @entries.values.flat_map do |entry|
+      entry.match(/\. \((?<contributors>.+)\)\n/)[:contributors].split(',')
+    end
+
+    contributors.join.scan(SIGNATURE).flatten
   end
 
   private
