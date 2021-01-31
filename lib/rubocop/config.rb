@@ -34,7 +34,10 @@ module RuboCop
     end
 
     def self.create(hash, path, check: true)
-      new(hash, path).tap { |config| config.check if check }
+      config = new(hash, path)
+      config.check if check
+
+      config
     end
 
     def loaded_features
