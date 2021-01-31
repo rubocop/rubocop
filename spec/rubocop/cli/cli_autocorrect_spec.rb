@@ -1688,6 +1688,38 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'does not crash `Layout/ArgumentAlignment` and offenses and accepts `Layout/FirstArgumentIndentation` ' \
+     'when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment`' do
+    create_file('example.rb', <<~RUBY)
+      # frozen_string_literal: true
+
+      expect(response).to redirect_to(path(
+        obj1,
+        id: obj2.id
+      ))
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ArgumentAlignment:
+        EnforcedStyle: with_fixed_indentation
+    YAML
+
+    expect(cli.run([
+                     '--auto-correct',
+                     '--only',
+                     'Layout/ArgumentAlignment,Layout/FirstArgumentIndentation'
+                   ])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      expect(response).to redirect_to(path(
+        obj1,
+        id: obj2.id
+      ))
+    RUBY
+  end
+
   it 'does not crash Lint/SafeNavigationWithEmpty and offenses and accepts Style/SafeNavigation ' \
      'when checking `foo&.empty?` in a conditional' do
     create_file('example.rb', <<~RUBY)

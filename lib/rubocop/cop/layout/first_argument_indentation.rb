@@ -4,11 +4,14 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks the indentation of the first argument in a method call.
-      # Arguments after the first one are checked by Layout/ArgumentAlignment,
+      # Arguments after the first one are checked by `Layout/ArgumentAlignment`,
       # not by this cop.
       #
       # For indenting the first parameter of method _definitions_, check out
-      # Layout/FirstParameterIndentation.
+      # `Layout/FirstParameterIndentation`.
+      #
+      # This cop will respect `Layout/ArgumentAlignment` and will not work when
+      # `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArgumentAlignment`.
       #
       # @example
       #
@@ -149,6 +152,7 @@ module RuboCop
         MSG = 'Indent the first argument one step more than %<base>s.'
 
         def on_send(node)
+          return if enforce_first_argument_with_fixed_indentation?
           return if !node.arguments? || node.operator_method?
 
           indent = base_indentation(node) + configured_indentation_width
@@ -249,6 +253,16 @@ module RuboCop
 
         def on_new_investigation
           @comment_lines = nil
+        end
+
+        def enforce_first_argument_with_fixed_indentation?
+          return false unless argument_alignment_config['Enabled']
+
+          argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def argument_alignment_config
+          config.for_cop('Layout/ArgumentAlignment')
         end
       end
     end
