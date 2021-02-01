@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.9.1 (2021-02-01)
+
 ### New features
 
 * [#9459](https://github.com/rubocop-hq/rubocop/issues/9459): Add `AllowedMethods` option to `Style/IfWithBooleanLiteralBranches` and set `nonzero?` as default value. ([@koic][])

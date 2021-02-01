@@ -4768,7 +4768,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Yes (Unsafe)
 | 1.9
 | -
 |===
@@ -4776,6 +4776,8 @@ end
 This cop checks for redundant `if` with boolean literal branches.
 It checks only conditions to return boolean value (`true` or `false`) for safe detection.
 The conditions to be checked are comparison methods, predicate methods, and double negative.
+However, auto-correction is unsafe because there is no guarantee that all predicate methods
+will return boolean value. Those methods can be allowed with `AllowedMethods` config.
 
 === Examples
 
@@ -4794,6 +4796,24 @@ foo == bar ? true : false
 # good
 foo == bar
 ----
+
+==== AllowedMethods: ['nonzero?']
+
+[source,ruby]
+----
+# good
+num.nonzero? ? true : false
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedMethods
+| `nonzero?`
+| Array
+|===
 
 == Style/IfWithSemicolon
 
