@@ -1688,35 +1688,87 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
-  it 'does not crash `Layout/ArgumentAlignment` and offenses and accepts `Layout/FirstArgumentIndentation` ' \
-     'when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment`' do
-    create_file('example.rb', <<~RUBY)
-      # frozen_string_literal: true
+  %i[
+    consistent_relative_to_receiver
+    special_for_inner_method_call
+    special_for_inner_method_call_in_parentheses
+  ].each do |style|
+    it 'does not crash `Layout/ArgumentAlignment` and offenses and accepts `Layout/FirstArgumentIndentation` ' \
+       'when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` ' \
+       "and `EnforcedStyle: #{style}` of `Layout/FirstArgumentIndentation`" do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
 
-      expect(response).to redirect_to(path(
-        obj1,
-        id: obj2.id
-      ))
+        expect(response).to redirect_to(path(
+          obj1,
+          id: obj2.id
+        ))
+      RUBY
+
+      create_file('.rubocop.yml', <<~YAML)
+        Layout/ArgumentAlignment:
+          EnforcedStyle: with_fixed_indentation
+        Layout/FirstArgumentIndentation:
+          EnforcedStyle: #{style} # Not `EnforcedStyle: consistent`.
+      YAML
+
+      expect(cli.run([
+                       '--auto-correct',
+                       '--only',
+                       'Layout/ArgumentAlignment,Layout/FirstArgumentIndentation'
+                     ])).to eq(0)
+      expect($stderr.string).to eq('')
+      expect(IO.read('example.rb')).to eq(<<~RUBY)
+        # frozen_string_literal: true
+
+        expect(response).to redirect_to(path(
+          obj1,
+          id: obj2.id
+        ))
+      RUBY
+    end
+  end
+
+  it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
+     '`EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation`' do
+    create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            def do_even_more_stuff
+            foo = begin
+      do_stuff(
+                      a: 1,
+                               b: 2,
+                               c: 3
+                              )
+                                    rescue StandardError
+                             nil
+      end
+        foo
+      end
     RUBY
 
     create_file('.rubocop.yml', <<~YAML)
       Layout/ArgumentAlignment:
         EnforcedStyle: with_fixed_indentation
+      Layout/FirstArgumentIndentation:
+        EnforcedStyle: consistent
     YAML
 
-    expect(cli.run([
-                     '--auto-correct',
-                     '--only',
-                     'Layout/ArgumentAlignment,Layout/FirstArgumentIndentation'
-                   ])).to eq(0)
+    expect(cli.run(['--auto-correct'])).to eq(0)
     expect($stderr.string).to eq('')
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
-      expect(response).to redirect_to(path(
-        obj1,
-        id: obj2.id
-      ))
+      def do_even_more_stuff
+        do_stuff(
+          a: 1,
+          b: 2,
+          c: 3
+        )
+      rescue StandardError
+        nil
+      end
     RUBY
   end
 
