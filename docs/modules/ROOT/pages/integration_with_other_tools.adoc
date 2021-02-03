@@ -90,6 +90,20 @@ following to your `.pre-commit-config.yaml` file:
     - id: rubocop
 ----
 
+If your RuboCop configuration uses extensions, be sure to include the gems as
+entries in `additional_dependencies`:
+
+[source,yaml]
+----
+- repo: https://github.com/rubocop-hq/rubocop
+  rev: v1.8.1
+  hooks:
+    - id: rubocop
+      additional_dependencies:
+        - rubocop-rails
+        - rubocop-rspec
+----
+
 == Guard integration
 
 If you're fond of https://github.com/guard/guard[Guard] you might
