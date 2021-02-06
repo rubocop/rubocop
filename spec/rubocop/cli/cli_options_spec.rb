@@ -541,6 +541,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 Enabled: false
               Layout:
                 Enabled: false
+              Gemspec:
+                Enabled: false
 
               Style/SomeCop:
                 Description: Something

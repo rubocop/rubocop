@@ -152,6 +152,7 @@ require_relative 'rubocop/cop/bundler/gem_comment'
 require_relative 'rubocop/cop/bundler/insecure_protocol_source'
 require_relative 'rubocop/cop/bundler/ordered_gems'
 
+require_relative 'rubocop/cop/gemspec/date_assignment'
 require_relative 'rubocop/cop/gemspec/duplicated_assignment'
 require_relative 'rubocop/cop/gemspec/ordered_dependencies'
 require_relative 'rubocop/cop/gemspec/required_ruby_version'
