@@ -47,7 +47,7 @@ module RuboCop
           end_pos = node.receiver.source_range.end_pos
 
           return if begin_pos - end_pos == 1 ||
-                    (range = range_between(end_pos, begin_pos - 1)).source == '['
+                    (range = range_between(end_pos, begin_pos - 1)).source.start_with?('[')
 
           range
         end

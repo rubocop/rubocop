@@ -115,6 +115,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
         @collections[ index_or_key ] = :value
       RUBY
     end
+
+    it 'does not register an offense when multiple spaces are inserted inside the left bracket' do
+      expect_no_offenses(<<~RUBY)
+        @collections[  index_or_key] = value
+      RUBY
+    end
   end
 
   it 'does not register an offense when assigning an array' do
