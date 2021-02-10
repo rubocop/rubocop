@@ -142,6 +142,21 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when `yield` is inside block of `super`' do
+    expect_offense(<<~RUBY)
+      def do_something
+        super { yield }
+        ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_something(&block)
+        super(&block)
+      end
+    RUBY
+  end
+
   it 'does not register an offense when `yield` is the sole block body' do
     expect_no_offenses(<<~RUBY)
       def m

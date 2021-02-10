@@ -97,7 +97,7 @@ module RuboCop
             replacement = ' &block'
             replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
             corrector.insert_after(arg_range, replacement) unless last_arg.blockarg_type?
-          elsif node.call_type?
+          elsif node.call_type? || node.zsuper_type?
             corrector.insert_after(node, '(&block)')
           else
             corrector.insert_after(node.loc.name, '(&block)')
