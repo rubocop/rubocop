@@ -25,6 +25,7 @@ module RuboCop
               'Perhaps you meant `rand(2)` or `rand`?'
         RESTRICT_ON_SEND = %i[rand].freeze
 
+        # @!method rand_one?(node)
         def_node_matcher :rand_one?, <<~PATTERN
           (send {(const {nil? cbase} :Kernel) nil?} :rand {(int {-1 1}) (float {-1.0 1.0})})
         PATTERN

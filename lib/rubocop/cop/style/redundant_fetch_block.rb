@@ -38,6 +38,7 @@ module RuboCop
 
         MSG = 'Use `%<good>s` instead of `%<bad>s`.'
 
+        # @!method redundant_fetch_block_candidate?(node)
         def_node_matcher :redundant_fetch_block_candidate?, <<~PATTERN
           (block
             $(send _ :fetch _)
@@ -78,6 +79,7 @@ module RuboCop
             rails_cache?(send.receiver)
         end
 
+        # @!method rails_cache?(node)
         def_node_matcher :rails_cache?, <<~PATTERN
           (send (const _ :Rails) :cache)
         PATTERN

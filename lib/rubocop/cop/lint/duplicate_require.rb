@@ -24,6 +24,7 @@ module RuboCop
         REQUIRE_METHODS = Set.new(%i[require require_relative]).freeze
         RESTRICT_ON_SEND = REQUIRE_METHODS
 
+        # @!method require_call?(node)
         def_node_matcher :require_call?, <<~PATTERN
           (send {nil? (const _ :Kernel)} %REQUIRE_METHODS _)
         PATTERN

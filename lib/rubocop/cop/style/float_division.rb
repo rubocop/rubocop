@@ -55,15 +55,19 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[/].freeze
 
+        # @!method right_coerce?(node)
         def_node_matcher :right_coerce?, <<~PATTERN
           (send _ :/ (send _ :to_f))
         PATTERN
+        # @!method left_coerce?(node)
         def_node_matcher :left_coerce?, <<~PATTERN
           (send (send _ :to_f) :/ _)
         PATTERN
+        # @!method both_coerce?(node)
         def_node_matcher :both_coerce?, <<~PATTERN
           (send (send _ :to_f) :/ (send _ :to_f))
         PATTERN
+        # @!method any_coerce?(node)
         def_node_matcher :any_coerce?, <<~PATTERN
           {(send _ :/ (send _ :to_f)) (send (send _ :to_f) :/ _)}
         PATTERN

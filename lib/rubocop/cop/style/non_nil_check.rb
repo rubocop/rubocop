@@ -49,9 +49,16 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[!= nil? !].freeze
 
+        # @!method not_equal_to_nil?(node)
         def_node_matcher :not_equal_to_nil?, '(send _ :!= nil)'
+
+        # @!method unless_check?(node)
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
+
+        # @!method nil_check?(node)
         def_node_matcher :nil_check?, '(send _ :nil?)'
+
+        # @!method not_and_nil_check?(node)
         def_node_matcher :not_and_nil_check?, '(send (send _ :nil?) :!)'
 
         def on_send(node)

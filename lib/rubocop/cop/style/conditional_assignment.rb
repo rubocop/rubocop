@@ -231,6 +231,7 @@ module RuboCop
 
         # The shovel operator `<<` does not have its own type. It is a `send`
         # type.
+        # @!method assignment_type?(node)
         def_node_matcher :assignment_type?, <<~PATTERN
           {
             #{ASSIGNMENT_TYPES.join(' ')}
@@ -300,6 +301,7 @@ module RuboCop
           style == :assign_inside_condition && assignment_rhs_exist?(node)
         end
 
+        # @!method candidate_condition?(node)
         def_node_matcher :candidate_condition?, '[{if case} !#allowed_ternary?]'
 
         def allowed_ternary?(assignment)

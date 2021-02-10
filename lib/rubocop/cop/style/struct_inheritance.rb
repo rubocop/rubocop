@@ -37,6 +37,7 @@ module RuboCop
           end
         end
 
+        # @!method struct_constructor?(node)
         def_node_matcher :struct_constructor?, <<~PATTERN
           {(send (const {nil? cbase} :Struct) :new ...)
            (block (send (const {nil? cbase} :Struct) :new ...) ...)}

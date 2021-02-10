@@ -12,7 +12,10 @@ module RuboCop
 
       private
 
+      # @!method single_negative?(node)
       def_node_matcher :single_negative?, '(send !(send _ :!) :!)'
+
+      # @!method empty_condition?(node)
       def_node_matcher :empty_condition?, '(begin)'
 
       def check_negative_conditional(node, message:, &block)

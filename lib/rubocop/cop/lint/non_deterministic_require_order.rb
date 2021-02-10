@@ -129,32 +129,39 @@ module RuboCop
           unsorted_dir_glob_pass?(node) || unsorted_dir_each_pass?(node)
         end
 
+        # @!method unsorted_dir_block?(node)
         def_node_matcher :unsorted_dir_block?, <<~PATTERN
           (send (const {nil? cbase} :Dir) :glob ...)
         PATTERN
 
+        # @!method unsorted_dir_each?(node)
         def_node_matcher :unsorted_dir_each?, <<~PATTERN
           (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each)
         PATTERN
 
+        # @!method method_require?(node)
         def_node_matcher :method_require?, <<~PATTERN
           (block-pass (send nil? :method (sym :require)))
         PATTERN
 
+        # @!method unsorted_dir_glob_pass?(node)
         def_node_matcher :unsorted_dir_glob_pass?, <<~PATTERN
           (send (const {nil? cbase} :Dir) :glob ...
             (block-pass (send nil? :method (sym :require))))
         PATTERN
 
+        # @!method unsorted_dir_each_pass?(node)
         def_node_matcher :unsorted_dir_each_pass?, <<~PATTERN
           (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each
             (block-pass (send nil? :method (sym :require))))
         PATTERN
 
+        # @!method loop_variable(node)
         def_node_matcher :loop_variable, <<~PATTERN
           (args (arg $_))
         PATTERN
 
+        # @!method var_is_required?(node, name)
         def_node_search :var_is_required?, <<~PATTERN
           (send nil? :require (lvar %1))
         PATTERN

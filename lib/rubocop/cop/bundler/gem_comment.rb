@@ -66,6 +66,7 @@ module RuboCop
         VERSION_SPECIFIERS_OPTION = 'version_specifiers'
         RESTRICT_ON_SEND = %i[gem].freeze
 
+        # @!method gem_declaration?(node)
         def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 
         def on_send(node)

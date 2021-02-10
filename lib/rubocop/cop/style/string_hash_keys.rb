@@ -17,10 +17,12 @@ module RuboCop
 
         MSG = 'Prefer symbols instead of strings as hash keys.'
 
+        # @!method string_hash_key?(node)
         def_node_matcher :string_hash_key?, <<~PATTERN
           (pair (str _) _)
         PATTERN
 
+        # @!method receive_environments_method?(node)
         def_node_matcher :receive_environments_method?, <<~PATTERN
           {
             ^^(send (const {nil? cbase} :IO) :popen ...)

@@ -31,6 +31,7 @@ module RuboCop
 
         MSG = 'Use the double pipe equals operator `||=` instead.'
 
+        # @!method ternary_assignment?(node)
         def_node_matcher :ternary_assignment?, <<~PATTERN
           ({lvasgn ivasgn cvasgn gvasgn} _var
             (if
@@ -39,6 +40,7 @@ module RuboCop
               $_))
         PATTERN
 
+        # @!method unless_assignment?(node)
         def_node_matcher :unless_assignment?, <<~PATTERN
           (if
             ({lvar ivar cvar gvar} _var) nil?

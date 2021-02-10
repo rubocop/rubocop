@@ -147,6 +147,7 @@ module RuboCop
         MSG = '`%<category>s` is supposed to appear before ' \
               '`%<previous>s`.'
 
+        # @!method dynamic_constant?(node)
         def_node_matcher :dynamic_constant?, <<~PATTERN
           (casgn nil? _ (send ...))
         PATTERN

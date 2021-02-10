@@ -40,6 +40,7 @@ module RuboCop
         MSG_SPLAT = 'Prefer array_of_pairs.to_h to Hash[*array].'
         RESTRICT_ON_SEND = %i[[]].freeze
 
+        # @!method hash_from_array?(node)
         def_node_matcher :hash_from_array?, '(send (const {nil? cbase} :Hash) :[] ...)'
 
         def on_send(node)

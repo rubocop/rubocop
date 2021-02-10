@@ -148,6 +148,7 @@ module RuboCop
           'with `_`. Use `@%<suggested_var>s` instead.'
         DYNAMIC_DEFINE_METHODS = %i[define_method define_singleton_method].to_set.freeze
 
+        # @!method method_definition?(node)
         def_node_matcher :method_definition?, <<~PATTERN
           ${
             (block (send _ %DYNAMIC_DEFINE_METHODS ({sym str} $_)) ...)
@@ -179,6 +180,7 @@ module RuboCop
         end
         # rubocop:enable Metrics/AbcSize
 
+        # @!method defined_memoized?(node, ivar)
         def_node_matcher :defined_memoized?, <<~PATTERN
           (begin
             (if (defined $(ivar %1)) (return $(ivar %1)) nil?)

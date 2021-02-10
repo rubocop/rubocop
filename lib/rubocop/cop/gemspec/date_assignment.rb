@@ -25,6 +25,7 @@ module RuboCop
 
         MSG = 'Do not use `date =` in gemspec, it is set automatically when the gem is packaged.'
 
+        # @!method gem_specification(node)
         def_node_matcher :gem_specification, <<~PATTERN
           (block
             (send

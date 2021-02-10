@@ -114,7 +114,10 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
+        # @!method kernel_call?(node, name)
         def_node_matcher :kernel_call?, '(send (const {nil? cbase} :Kernel) %1 ...)'
+
+        # @!method custom_fail_methods(node)
         def_node_search :custom_fail_methods,
                         '{(def :fail ...) (defs _ :fail ...)}'
 

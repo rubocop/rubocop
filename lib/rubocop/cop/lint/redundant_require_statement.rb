@@ -28,6 +28,7 @@ module RuboCop
         MSG = 'Remove unnecessary `require` statement.'
         RESTRICT_ON_SEND = %i[require].freeze
 
+        # @!method unnecessary_require_statement?(node)
         def_node_matcher :unnecessary_require_statement?, <<~PATTERN
           (send nil? :require
             (str {"enumerator" "rational" "complex" "thread"}))

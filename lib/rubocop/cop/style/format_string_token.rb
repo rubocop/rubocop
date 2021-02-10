@@ -89,6 +89,7 @@ module RuboCop
 
         private
 
+        # @!method format_string_in_typical_context?(node)
         def_node_matcher :format_string_in_typical_context?, <<~PATTERN
           {
             ^(send _ {:format :sprintf :printf} %0 ...)

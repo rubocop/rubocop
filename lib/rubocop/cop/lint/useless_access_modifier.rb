@@ -150,18 +150,22 @@ module RuboCop
           corrector.remove(range)
         end
 
+        # @!method static_method_definition?(node)
         def_node_matcher :static_method_definition?, <<~PATTERN
           {def (send nil? {:attr :attr_reader :attr_writer :attr_accessor} ...)}
         PATTERN
 
+        # @!method dynamic_method_definition?(node)
         def_node_matcher :dynamic_method_definition?, <<~PATTERN
           {(send nil? :define_method ...) (block (send nil? :define_method ...) ...)}
         PATTERN
 
+        # @!method class_or_instance_eval?(node)
         def_node_matcher :class_or_instance_eval?, <<~PATTERN
           (block (send _ {:class_eval :instance_eval}) ...)
         PATTERN
 
+        # @!method class_or_module_or_struct_new_call?(node)
         def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
           (block (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
         PATTERN

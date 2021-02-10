@@ -42,6 +42,7 @@ module RuboCop
       class ShadowingOuterLocalVariable < Base
         MSG = 'Shadowing outer local variable - `%<variable>s`.'
 
+        # @!method ractor_block?(node)
         def_node_matcher :ractor_block?, <<~PATTERN
           (block (send (const nil? :Ractor) :new ...) ...)
         PATTERN

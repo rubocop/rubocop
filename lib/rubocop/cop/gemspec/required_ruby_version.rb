@@ -55,10 +55,12 @@ module RuboCop
                         '.rubocop.yml) should be equal.'
         MISSING_MSG = '`required_ruby_version` should be specified.'
 
+        # @!method required_ruby_version(node)
         def_node_search :required_ruby_version, <<~PATTERN
           (send _ :required_ruby_version= $_)
         PATTERN
 
+        # @!method defined_ruby_version(node)
         def_node_matcher :defined_ruby_version, <<~PATTERN
           {$(str _) $(array (str _) (str _))
             (send (const (const nil? :Gem) :Requirement) :new $(str _))}

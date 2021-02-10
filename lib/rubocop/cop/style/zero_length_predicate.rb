@@ -71,6 +71,7 @@ module RuboCop
           end
         end
 
+        # @!method zero_length_predicate(node)
         def_node_matcher :zero_length_predicate, <<~PATTERN
           {(send (send (...) ${:length :size}) $:== (int $0))
            (send (int $0) $:== (send (...) ${:length :size}))
@@ -78,6 +79,7 @@ module RuboCop
            (send (int $1) $:> (send (...) ${:length :size}))}
         PATTERN
 
+        # @!method nonzero_length_predicate(node)
         def_node_matcher :nonzero_length_predicate, <<~PATTERN
           {(send (send (...) ${:length :size}) ${:> :!=} (int $0))
            (send (int $0) ${:< :!=} (send (...) ${:length :size}))}
@@ -90,6 +92,7 @@ module RuboCop
           "!#{other_receiver(node).source}.empty?"
         end
 
+        # @!method zero_length_receiver(node)
         def_node_matcher :zero_length_receiver, <<~PATTERN
           {(send (send $_ _) :== (int 0))
            (send (int 0) :== (send $_ _))
@@ -97,6 +100,7 @@ module RuboCop
            (send (int 1) :> (send $_ _))}
         PATTERN
 
+        # @!method other_receiver(node)
         def_node_matcher :other_receiver, <<~PATTERN
           {(send (send $_ _) _ _)
            (send _ _ (send $_ _))}
@@ -105,6 +109,7 @@ module RuboCop
         # Some collection like objects in the Ruby standard library
         # implement `#size`, but not `#empty`. We ignore those to
         # reduce false positives.
+        # @!method non_polymorphic_collection?(node)
         def_node_matcher :non_polymorphic_collection?, <<~PATTERN
           {(send (send (send (const {nil? cbase} :File) :stat _) ...) ...)
            (send (send (send (const {nil? cbase} {:Tempfile :StringIO}) {:new :open} ...) ...) ...)}

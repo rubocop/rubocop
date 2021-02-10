@@ -52,12 +52,17 @@ module RuboCop
         FORBID_MIXED_LOGICAL_OPERATORS = 'Do not use mixed logical operators in an `unless`.'
         FORBID_LOGICAL_OPERATORS = 'Do not use any logical operator in an `unless`.'
 
+        # @!method or_with_and?(node)
         def_node_matcher :or_with_and?, <<~PATTERN
           (if (or <`and ...> ) ...)
         PATTERN
+
+        # @!method and_with_or?(node)
         def_node_matcher :and_with_or?, <<~PATTERN
           (if (and <`or ...> ) ...)
         PATTERN
+
+        # @!method logical_operator?(node)
         def_node_matcher :logical_operator?, <<~PATTERN
           (if ({and or} ... ) ...)
         PATTERN

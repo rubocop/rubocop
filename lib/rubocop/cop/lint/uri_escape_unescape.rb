@@ -47,6 +47,7 @@ module RuboCop
         METHOD_NAMES = %i[escape encode unescape decode].freeze
         RESTRICT_ON_SEND = METHOD_NAMES
 
+        # @!method uri_escape_unescape?(node)
         def_node_matcher :uri_escape_unescape?, <<~PATTERN
           (send
             (const ${nil? cbase} :URI) ${:#{METHOD_NAMES.join(' :')}}

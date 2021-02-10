@@ -65,8 +65,13 @@ module RuboCop
 
         MSG = 'Missing top-level %<type>s documentation comment.'
 
+        # @!method constant_definition?(node)
         def_node_matcher :constant_definition?, '{class module casgn}'
+
+        # @!method outer_module(node)
         def_node_search :outer_module, '(const (const nil? _) _)'
+
+        # @!method constant_visibility_declaration?(node)
         def_node_matcher :constant_visibility_declaration?, <<~PATTERN
           (send nil? {:public_constant :private_constant} ({sym str} _))
         PATTERN

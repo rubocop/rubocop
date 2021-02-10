@@ -66,6 +66,7 @@ module RuboCop
         MSG = 'Ensure the accumulator `%<accum>s` will be modified by `%<method>s`.'
         MSG_INDEX = 'Do not return an element of the accumulator in `%<method>s`.'
 
+        # @!method reduce_with_block?(node)
         def_node_matcher :reduce_with_block?, <<~PATTERN
           {
             (block (send _recv {:reduce :inject} ...) args ...)
@@ -73,10 +74,12 @@ module RuboCop
           }
         PATTERN
 
+        # @!method accumulator_index?(node, accumulator_name)
         def_node_matcher :accumulator_index?, <<~PATTERN
           (send (lvar %1) {:[] :[]=} ...)
         PATTERN
 
+        # @!method element_modified?(node, element_name)
         def_node_search :element_modified?, <<~PATTERN
           {
             (send _receiver !{:[] :[]=} <`(lvar %1) `_ ...>)               # method(el, ...)
@@ -86,6 +89,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method lvar_used?(node, name)
         def_node_matcher :lvar_used?, <<~PATTERN
           {
             (lvar %1)
@@ -96,6 +100,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method expression_values(node)
         def_node_search :expression_values, <<~PATTERN
           {
             (%RuboCop::AST::Node::VARIABLES $_)

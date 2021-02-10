@@ -34,9 +34,11 @@ module RuboCop
         MSG = 'Remove redundant %<keyword>s with boolean literal branches.'
         MSG_FOR_ELSIF = 'Use `else` instead of redundant `elsif` with boolean literal branches.'
 
+        # @!method if_with_boolean_literal_branches?(node)
         def_node_matcher :if_with_boolean_literal_branches?, <<~PATTERN
           (if #return_boolean_value? {(true) (false) | (false) (true)})
         PATTERN
+        # @!method double_negative?(node)
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
         def on_if(node)

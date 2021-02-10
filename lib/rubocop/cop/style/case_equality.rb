@@ -35,6 +35,7 @@ module RuboCop
         MSG = 'Avoid the use of the case equality operator `===`.'
         RESTRICT_ON_SEND = %i[===].freeze
 
+        # @!method case_equality?(node)
         def_node_matcher :case_equality?, '(send $#const? :=== $_)'
 
         def on_send(node)

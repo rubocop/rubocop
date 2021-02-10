@@ -21,6 +21,7 @@ module RuboCop
 
         MSG = 'Remove the redundant `subject`%<additional_message>s.'
 
+        # @!method described_class_subject?(node)
         def_node_matcher :described_class_subject?, <<~PATTERN
           (block
             (send nil? :subject

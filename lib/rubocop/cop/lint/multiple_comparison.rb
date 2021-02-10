@@ -25,6 +25,7 @@ module RuboCop
         SET_OPERATION_OPERATORS = %i[& | ^].freeze
         RESTRICT_ON_SEND = COMPARISON_METHODS
 
+        # @!method multiple_compare?(node)
         def_node_matcher :multiple_compare?, <<~PATTERN
           (send (send _ {:< :> :<= :>=} $_) {:#{COMPARISON_METHODS.join(' :')}} _)
         PATTERN

@@ -90,6 +90,7 @@ module RuboCop
 
         private
 
+        # @!method argument_to_lambda_or_proc?(node)
         def_node_matcher :argument_to_lambda_or_proc?, <<~PATTERN
           ^lambda_or_proc?
         PATTERN
