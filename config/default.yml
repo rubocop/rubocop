@@ -1453,23 +1453,31 @@ Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
   VersionAdded: '0.14'
-  VersionChanged: '0.49'
-  DebuggerReceivers:
-    - binding
-    - Kernel
-    - Pry
+  VersionChanged: <<next>>
+  DebuggerReceivers: [] # deprecated
   DebuggerMethods:
-    - debugger
-    - byebug
-    - remote_byebug
-    - pry
-    - remote_pry
-    - pry_remote
-    - console
-    - rescue
-    - save_and_open_page
-    - save_and_open_screenshot
-    - irb
+    # Groups are available so that a specific group can be disabled in
+    # a user's configuration, but are otherwise not significant.
+    Kernel:
+      - binding.irb
+    Byebug:
+      - byebug
+      - remote_byebug
+      - Kernel.byebug
+      - Kernel.remote_byebug
+    Capybara:
+      - save_and_open_page
+      - save_and_open_screenshot
+    Pry:
+      - binding.pry
+      - binding.remote_pry
+      - binding.pry_remote
+      - Pry.rescue
+    Rails:
+      - debugger
+      - Kernel.debugger
+    WebConsole:
+      - binding.console
 
 Lint/DeprecatedClassMethods:
   Description: 'Check for deprecated class method calls.'

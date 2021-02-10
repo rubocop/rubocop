@@ -187,6 +187,10 @@ changed_parameters:
     parameters: ExcludedMethods
     alternative: IgnoredMethods
     severity: warning
+  - cops: Lint/Debugger
+    parameters: DebuggerReceivers
+    reason: "`DebuggerReceivers` is no longer necessary, method receivers should be specified in `DebuggerMethods` instead."
+    severity: warning
 
 # Enforced styles that have been removed or replaced
 changed_enforced_styles:
