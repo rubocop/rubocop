@@ -21,11 +21,11 @@ module RuboCop
       #
       class DuplicateRequire < Base
         MSG = 'Duplicate `%<method>s` detected.'
-        REQUIRE_METHODS = %i[require require_relative].freeze
+        REQUIRE_METHODS = Set.new(%i[require require_relative]).freeze
         RESTRICT_ON_SEND = REQUIRE_METHODS
 
         def_node_matcher :require_call?, <<~PATTERN
-          (send {nil? (const _ :Kernel)} {:#{REQUIRE_METHODS.join(' :')}} _)
+          (send {nil? (const _ :Kernel)} %REQUIRE_METHODS _)
         PATTERN
 
         def on_new_investigation
