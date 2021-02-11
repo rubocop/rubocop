@@ -140,13 +140,15 @@ module RuboCop
         def replacement_range_and_content(node)
           variable, = *node
           loc = node.loc
+          expression = loc.expression
 
           if array_new?(variable)
-            [node.parent.loc.expression, variable.source]
+            expression = node.parent.loc.expression if node.parent.array_type?
+            [expression, variable.source]
           elsif !variable.array_type?
-            [loc.expression, "[#{variable.source}]"]
+            [expression, "[#{variable.source}]"]
           elsif redundant_brackets?(node)
-            [loc.expression, remove_brackets(variable)]
+            [expression, remove_brackets(variable)]
           else
             [loc.operator, '']
           end
