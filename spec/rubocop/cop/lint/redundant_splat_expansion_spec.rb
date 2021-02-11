@@ -330,6 +330,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
     end
   end
 
+  describe 'expanding Array.new call on method argument' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        send(method, *Array.new(foo))
+                     ^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        send(method, Array.new(foo))
+      RUBY
+    end
+  end
+
   context 'arrays being expanded with %i variants using splat expansion' do
     context 'splat expansion inside of an array' do
       it 'registers an offense and corrects %i to a list of symbols' do
