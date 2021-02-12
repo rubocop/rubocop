@@ -69,6 +69,36 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using multiple `elsif`s' do
+    expect_offense(<<~RUBY)
+      if condition_foo
+        foo
+      elsif condition_bar
+        bar
+      elsif condition_baz
+        baz
+      else qux
+           ^^^ Odd `else` layout detected. Did you mean to use `elsif`?
+        quux
+        corge
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition_foo
+        foo
+      elsif condition_bar
+        bar
+      elsif condition_baz
+        baz
+      else
+        qux
+        quux
+        corge
+      end
+    RUBY
+  end
+
   it 'handles ternary ops' do
     expect_no_offenses('x ? a : b')
   end
