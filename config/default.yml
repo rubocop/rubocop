@@ -4407,6 +4407,11 @@ Style/RedundantSelfAssignment:
   Safe: false
   VersionAdded: '0.90'
 
+Style/RedundantSelfAssignmentBranch:
+  Description: 'Checks for places where conditional branch makes redundant self-assignment.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantSort:
   Description: >-
                   Use `min` instead of `sort.first`,
