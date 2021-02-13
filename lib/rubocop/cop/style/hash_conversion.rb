@@ -22,7 +22,8 @@ module RuboCop
         extend AutoCorrector
 
         MSG_TO_H = 'Prefer ary.to_h to Hash[ary].'
-        MSG_LITERAL = 'Prefer literal hash to Hash[arg1, arg2, ...].'
+        MSG_LITERAL_MULTI_ARG = 'Prefer literal hash to Hash[arg1, arg2, ...].'
+        MSG_LITERAL_HASH_ARG = 'Prefer literal hash to Hash[key: value, ...].'
         MSG_SPLAT = 'Prefer array_of_pairs.to_h to Hash[*array].'
         RESTRICT_ON_SEND = %i[[]].freeze
 
@@ -44,20 +45,25 @@ module RuboCop
         private
 
         def single_argument(node)
-          if node.arguments.first.splat_type?
+          first_argument = node.first_argument
+          if first_argument.hash_type?
+            add_offense(node, message: MSG_LITERAL_HASH_ARG) do |corrector|
+              corrector.replace(node, "{#{first_argument.source}}")
+            end
+          elsif first_argument.splat_type?
             add_offense(node, message: MSG_SPLAT)
           else
             add_offense(node, message: MSG_TO_H) do |corrector|
-              corrector.replace(node, "#{node.arguments.first.source}.to_h")
+              corrector.replace(node, "#{first_argument.source}.to_h")
             end
           end
         end
 
         def multi_argument(node)
           if node.arguments.count.odd?
-            add_offense(node, message: MSG_LITERAL)
+            add_offense(node, message: MSG_LITERAL_MULTI_ARG)
           else
-            add_offense(node, message: MSG_LITERAL) do |corrector|
+            add_offense(node, message: MSG_LITERAL_MULTI_ARG) do |corrector|
               corrector.replace(node, args_to_hash(node.arguments))
             end
           end

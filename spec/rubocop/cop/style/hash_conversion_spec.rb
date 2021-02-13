@@ -23,6 +23,17 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'reports different offense for hash argument Hash[]' do
+    expect_offense(<<~RUBY)
+      Hash[a: b, c: d]
+      ^^^^^^^^^^^^^^^^ Prefer literal hash to Hash[key: value, ...].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {a: b, c: d}
+    RUBY
+  end
+
   it 'reports different offense for empty Hash[]' do
     expect_offense(<<~RUBY)
       Hash[]
