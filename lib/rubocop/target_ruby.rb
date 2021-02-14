@@ -165,14 +165,14 @@ module RuboCop
         file = gemspec_filepath
         return unless file && File.file?(file)
 
-        version = version_from_gemspec_file(file)
-        return if version.nil?
+        right_hand_side = version_from_gemspec_file(file)
+        return if right_hand_side.nil?
 
-        requirement = version.children.last
-        return version_from_array(version) if version.array_type?
-        return version_from_array(requirement) if gem_requirement? version
+        version = version_from_right_hand_side(right_hand_side)
+        requirement = Gem::Requirement.new(version)
+        match = KNOWN_RUBIES.each.lazy.map { |r| Matcher.new(r, requirement) }.detect(&:satisfied?)
 
-        version_from_str(version.str_content)
+        match.version.to_f if match
       end
 
       def gemspec_filename
@@ -192,14 +192,40 @@ module RuboCop
         required_ruby_version(processed_source.ast).first
       end
 
-      def version_from_array(array)
-        versions = array.children.map { |v| version_from_str(v.is_a?(String) ? v : v.str_content) }
-        versions.compact.min
+      def version_from_right_hand_side(right_hand_side)
+        if right_hand_side.array_type?
+          version_from_array(right_hand_side)
+        elsif gem_requirement?(right_hand_side)
+          remove_patch_from_version(right_hand_side.children.last.value)
+        else
+          remove_patch_from_version(right_hand_side.value)
+        end
       end
 
-      def version_from_str(str)
-        str.match(/^(?:>=|<=)?\s*(?<version>\d+(?:\.\d+)*)/) do |md|
-          md[:version].to_f
+      def version_from_array(array)
+        array.children.map { |v| remove_patch_from_version(v.value) }
+      end
+
+      def remove_patch_from_version(str)
+        str.to_s.match(/^(?<prefix>>=?|<=?|~>|!=)?\s*(?<version>\d+(?:\.\d+)*)/) do |md|
+          "#{md[:prefix]}#{md[:version].to_f}"
+        end
+      end
+
+      # Helper to check if the requirement is satisfied by a given known ruby version
+      # @api private
+      class Matcher
+        def initialize(ruby_version, requirement)
+          @gem_version = Gem::Version.new(ruby_version)
+          @requirement = requirement
+        end
+
+        def satisfied?
+          @requirement.satisfied_by?(@gem_version)
+        end
+
+        def version
+          @gem_version.version
         end
       end
     end
