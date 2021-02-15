@@ -4181,6 +4181,39 @@ foo = if expression
 end
 ----
 
+==== SupportedTypes: ['block', 'case', 'class', 'if', 'kwbegin', 'module'] (default)
+
+[source,ruby]
+----
+# good
+foo =
+  if expression
+    'bar'
+  end
+
+# good
+foo =
+  [1].map do |i|
+    i + 1
+  end
+----
+
+==== SupportedTypes: ['block']
+
+[source,ruby]
+----
+# good
+foo = if expression
+  'bar'
+end
+
+# good
+foo =
+  [1].map do |i|
+    'bar' * i
+  end
+----
+
 === Configurable attributes
 
 |===

@@ -206,7 +206,7 @@ Bundler/OrderedGems:
 Gemspec/DateAssignment:
   Description: 'Checks that `date =` is not used in gemspec file, it is set automatically when the gem is packaged.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.10'
   Include:
     - '**/*.gemspec'
 
@@ -1453,7 +1453,7 @@ Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
   VersionAdded: '0.14'
-  VersionChanged: <<next>>
+  VersionChanged: '1.10'
   DebuggerReceivers: [] # deprecated
   DebuggerMethods:
     # Groups are available so that a specific group can be disabled in
@@ -3102,7 +3102,7 @@ Style/ConstantVisibility:
                  visibility declarations.
   Enabled: false
   VersionAdded: '0.66'
-  VersionChanged: <<next>>
+  VersionChanged: '1.10'
   IgnoreModules: false
 
 # Checks that you have put a copyright in a comment before any code.
@@ -3445,7 +3445,7 @@ Style/HashAsLastArrayItem:
 Style/HashConversion:
   Description: 'Avoid Hash[] in favor of ary.to_h or literal hashes.'
   Enabled: pending
-  VersionAdded: <<next>>
+  VersionAdded: '1.10'
 
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'

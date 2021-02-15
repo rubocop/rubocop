@@ -80,6 +80,7 @@ In the following section you find all available cops:
 
 === Department xref:cops_gemspec.adoc[Gemspec]
 
+* xref:cops_gemspec.adoc#gemspecdateassignment[Gemspec/DateAssignment]
 * xref:cops_gemspec.adoc#gemspecduplicatedassignment[Gemspec/DuplicatedAssignment]
 * xref:cops_gemspec.adoc#gemspecordereddependencies[Gemspec/OrderedDependencies]
 * xref:cops_gemspec.adoc#gemspecrequiredrubyversion[Gemspec/RequiredRubyVersion]
@@ -418,6 +419,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleglobalvars[Style/GlobalVars]
 * xref:cops_style.adoc#styleguardclause[Style/GuardClause]
 * xref:cops_style.adoc#stylehashaslastarrayitem[Style/HashAsLastArrayItem]
+* xref:cops_style.adoc#stylehashconversion[Style/HashConversion]
 * xref:cops_style.adoc#stylehasheachmethods[Style/HashEachMethods]
 * xref:cops_style.adoc#stylehashexcept[Style/HashExcept]
 * xref:cops_style.adoc#stylehashlikecase[Style/HashLikeCase]

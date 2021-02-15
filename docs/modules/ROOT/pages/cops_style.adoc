@@ -1989,7 +1989,7 @@ end
 | Yes
 | No
 | 0.66
-| -
+| 1.10
 |===
 
 This cop checks that constants defined in classes and modules have
@@ -2017,6 +2017,42 @@ class Foo
   public_constant :BAZ
 end
 ----
+
+==== IgnoreModules: false (default)
+
+[source,ruby]
+----
+# bad
+class Foo
+  MyClass = Struct.new()
+end
+
+# good
+class Foo
+  MyClass = Struct.new()
+  public_constant :MyClass
+end
+----
+
+==== IgnoreModules: true
+
+[source,ruby]
+----
+# good
+class Foo
+  MyClass = Struct.new()
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoreModules
+| `false`
+| Boolean
+|===
 
 == Style/Copyright
 
@@ -2614,8 +2650,8 @@ end
 
 This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
 
-When using `EnforcedStyle: allowed_in_returns`, allow double nagation in contexts
-that use boolean as a return value. When using `EnforcedStyle: forbidden`, double nagation
+When using `EnforcedStyle: allowed_in_returns`, allow double negation in contexts
+that use boolean as a return value. When using `EnforcedStyle: forbidden`, double negation
 should be forbidden always.
 
 Please, note that when something is a boolean value
@@ -3228,7 +3264,7 @@ def my_method() = x.foo
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.52
 | -
 |===
@@ -3241,6 +3277,14 @@ in a backtrace.
 
 The cop also checks that the line number given relative to `__LINE__` is
 correct.
+
+This cop will autocorrect incorrect or missing filename and line number
+values. However, if `eval` is called without a binding argument, the cop
+will not attempt to automatically add a binding, or add filename and
+line values.
+
+This cop works only when a string literal is given as a code string.
+No offence is reported if a string variable is given as below:
 
 === Examples
 
@@ -3269,6 +3313,16 @@ C.class_eval <<-RUBY, __FILE__, __LINE__ + 1
   def do_something
   end
 RUBY
+----
+
+[source,ruby]
+----
+# not checked
+code = <<-RUBY
+  def do_something
+  end
+RUBY
+eval code
 ----
 
 == Style/EvenOdd
@@ -3425,13 +3479,12 @@ end
 
 This cop enforces consistency when using exponential notation
 for numbers in the code (eg 1.2e4). Different styles are supported:
-* `scientific` which enforces a mantissa between 1 (inclusive)
-               and 10 (exclusive).
-* `engineering` which enforces the exponent to be a multiple of 3
-                and the mantissa to be between 0.1 (inclusive)
-                and 10 (exclusive).
-* `integral` which enforces the mantissa to always be a whole number
-             without trailing zeroes.
+
+* `scientific` which enforces a mantissa between 1 (inclusive) and 10 (exclusive).
+* `engineering` which enforces the exponent to be a multiple of 3 and the mantissa
+  to be between 0.1 (inclusive) and 10 (exclusive).
+* `integral` which enforces the mantissa to always be a whole number without
+  trailing zeroes.
 
 === Examples
 
@@ -4182,6 +4235,38 @@ EnforcedStyle.
 === References
 
 * https://rubystyle.guide#hash-literal-as-last-array-item
+
+== Style/HashConversion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.10
+| -
+|===
+
+This cop checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
+sequences of values to hashes.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Hash[ary]
+
+# good
+ary.to_h
+
+# bad
+Hash[key1, value1, key2, value2]
+
+# good
+{key1 => value1, key2 => value2}
+----
 
 == Style/HashEachMethods
 

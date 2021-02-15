@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.10.0 (2021-02-15)
+
 ### New features
 
 * [#9478](https://github.com/rubocop-hq/rubocop/pull/9478): Add new `Style/HashConversion` cop. ([@zverok][])
