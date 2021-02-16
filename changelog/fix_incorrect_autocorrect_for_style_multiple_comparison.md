@@ -1,0 +1,1 @@
+* [#9520](https://github.com/rubocop-hq/rubocop/issues/9520): Fix an incorrect auto-correct for `Style/MultipleComparison` when comparing a variable with multiple items in `if` and `elsif` conditions. ([@koic][])

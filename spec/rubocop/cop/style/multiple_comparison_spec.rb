@@ -96,6 +96,28 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when `a` is compared twice in `if` and `elsif` conditions' do
+    expect_offense(<<~RUBY)
+      def foo(a)
+        if a == 'foo' || a == 'bar'
+           ^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+        elsif a == 'baz' || a == 'qux'
+              ^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+        elsif a == 'quux'
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo(a)
+        if ['foo', 'bar'].include?(a)
+        elsif ['baz', 'qux'].include?(a)
+        elsif a == 'quux'
+        end
+      end
+    RUBY
+  end
+
   it 'does not register an offense for comparing multiple literal strings' do
     expect_no_offenses(<<~RUBY)
       if "a" == "a" || "a" == "c"
