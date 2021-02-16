@@ -294,54 +294,12 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           let(:base_path) { configuration.base_dir_for_path_parameters }
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
 
-          it 'sets target_ruby from exact numeric version' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = 2.7
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
-
-            create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.7
-          end
-
-          it 'sets target_ruby from exacts string version' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = '2.7.4'
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
-
-            create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.7
-          end
-
-          it 'sets target_ruby to default from unknown ruby' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = '2.3.0'
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
-
-            create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq default_version
-          end
-
           it 'sets target_ruby from inclusive range' do
             content =
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = '>= 2.6.0'
+                  s.required_ruby_version = '>= 2.6.1'
                   s.licenses = ['MIT']
                 end
               HEREDOC
@@ -355,13 +313,13 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = '> 2.4.0'
+                  s.required_ruby_version = '> 2.4.1'
                   s.licenses = ['MIT']
                 end
               HEREDOC
 
             create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.5
+            expect(target_ruby.version).to eq 2.4
           end
 
           it 'sets target_ruby from approximate version' do
@@ -369,21 +327,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = '~> 2.5.4'
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
-
-            create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.5
-          end
-
-          it 'sets target_ruby from not equal version' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = '!= 2.4.4'
+                  s.required_ruby_version = '~> 2.5.0'
                   s.licenses = ['MIT']
                 end
               HEREDOC
@@ -396,20 +340,6 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         context 'when file contains `required_ruby_version` as a requirement' do
           let(:base_path) { configuration.base_dir_for_path_parameters }
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
-
-          it 'sets target_ruby from required_ruby_version from exact requirement version' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = Gem::Requirement.new('2.7.4')
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
-
-            create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.7
-          end
 
           it 'sets target_ruby from required_ruby_version from inclusive requirement range' do
             content =
@@ -444,7 +374,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           let(:base_path) { configuration.base_dir_for_path_parameters }
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
 
-          it 'sets target_ruby from the lowest value' do
+          it 'sets target_ruby to the minimal version satisfying the requirements' do
             content =
               <<-HEREDOC
                 Gem::Specification.new do |s|
@@ -463,7 +393,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = ['<=2.7.4', '>2.4.5', '!=2.4']
+                  s.required_ruby_version = ['<=2.7.4', '>2.4.5', '~>2.5.1']
                   s.licenses = ['MIT']
                 end
               HEREDOC

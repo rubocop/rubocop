@@ -168,11 +168,7 @@ module RuboCop
         right_hand_side = version_from_gemspec_file(file)
         return if right_hand_side.nil?
 
-        version = version_from_right_hand_side(right_hand_side)
-        requirement = Gem::Requirement.new(version)
-        match = KNOWN_RUBIES.each.lazy.map { |r| Matcher.new(r, requirement) }.detect(&:satisfied?)
-
-        match.version.to_f if match
+        find_minimal_known_ruby(right_hand_side)
       end
 
       def gemspec_filename
@@ -196,37 +192,21 @@ module RuboCop
         if right_hand_side.array_type?
           version_from_array(right_hand_side)
         elsif gem_requirement?(right_hand_side)
-          remove_patch_from_version(right_hand_side.children.last.value)
+          right_hand_side.children.last.value
         else
-          remove_patch_from_version(right_hand_side.value)
+          right_hand_side.value
         end
       end
 
       def version_from_array(array)
-        array.children.map { |v| remove_patch_from_version(v.value) }
+        array.children.map(&:value)
       end
 
-      def remove_patch_from_version(str)
-        str.to_s.match(/^(?<prefix>>=?|<=?|~>|!=)?\s*(?<version>\d+(?:\.\d+)*)/) do |md|
-          "#{md[:prefix]}#{md[:version].to_f}"
-        end
-      end
+      def find_minimal_known_ruby(right_hand_side)
+        version = version_from_right_hand_side(right_hand_side)
+        requirement = Gem::Requirement.new(version)
 
-      # Helper to check if the requirement is satisfied by a given known ruby version
-      # @api private
-      class Matcher
-        def initialize(ruby_version, requirement)
-          @gem_version = Gem::Version.new(ruby_version)
-          @requirement = requirement
-        end
-
-        def satisfied?
-          @requirement.satisfied_by?(@gem_version)
-        end
-
-        def version
-          @gem_version.version
-        end
+        KNOWN_RUBIES.detect { |v| requirement.satisfied_by?(Gem::Version.new("#{v}.99")) }
       end
     end
 
