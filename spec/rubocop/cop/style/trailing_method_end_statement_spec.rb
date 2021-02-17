@@ -122,4 +122,20 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
       end
     RUBY
   end
+
+  context 'when Ruby 3.0 or higher', :ruby30 do
+    it 'does not register an offense when using endless method definition' do
+      expect_no_offenses(<<~RUBY)
+        def foo = bar
+      RUBY
+    end
+
+    it 'does not register an offense when endless method definition signature and body are ' \
+       'on different lines' do
+      expect_no_offenses(<<~RUBY)
+        def foo =
+                  bar
+      RUBY
+    end
+  end
 end
