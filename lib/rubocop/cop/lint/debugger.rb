@@ -16,7 +16,7 @@ module RuboCop
       # ----
       # Lint/Debugger:
       #   WebConsole: ~
-      # ---
+      # ----
       #
       #
       # @example
