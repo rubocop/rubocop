@@ -6,6 +6,10 @@ module RuboCop
       # This cop checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
       # sequences of values to hashes.
       #
+      # Correction code from splat argument (`Hash[*ary]`) is not simply determined. For example,
+      # `Hash[*ary]` can be replaced with `ary.each_slice(2).to_h` but it will be complicated.
+      # So, `AllowSplatArgument` option is true by default to allow splat argument for simple code.
+      #
       # @example
       #   # bad
       #   Hash[ary]
@@ -18,6 +22,15 @@ module RuboCop
       #
       #   # good
       #   {key1 => value1, key2 => value2}
+      #
+      # @example AllowSplatArgument: true (default)
+      #   # good
+      #   Hash[*ary]
+      #
+      # @example AllowSplatArgument: false
+      #   # bad
+      #   Hash[*ary]
+      #
       class HashConversion < Base
         extend AutoCorrector
 
@@ -51,7 +64,7 @@ module RuboCop
               corrector.replace(node, "{#{first_argument.source}}")
             end
           elsif first_argument.splat_type?
-            add_offense(node, message: MSG_SPLAT)
+            add_offense(node, message: MSG_SPLAT) unless allowed_splat_argument?
           else
             add_offense(node, message: MSG_TO_H) do |corrector|
               corrector.replace(node, "#{first_argument.source}.to_h")
@@ -74,6 +87,10 @@ module RuboCop
                         .map { |arg1, arg2| "#{arg1.source} => #{arg2.source}" }
                         .join(', ')
           "{#{content}}"
+        end
+
+        def allowed_splat_argument?
+          cop_config.fetch('AllowSplatArgument', true)
         end
       end
     end
