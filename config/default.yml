@@ -3446,6 +3446,8 @@ Style/HashConversion:
   Description: 'Avoid Hash[] in favor of ary.to_h or literal hashes.'
   Enabled: pending
   VersionAdded: '1.10'
+  VersionChanged: <<next>>
+  AllowSplatArgument: true
 
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'

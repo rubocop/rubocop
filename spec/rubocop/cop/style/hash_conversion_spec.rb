@@ -54,12 +54,26 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     expect_no_corrections
   end
 
-  it 'reports uncorrectable offense for unpacked ary' do
-    expect_offense(<<~RUBY)
-      Hash[*ary]
-      ^^^^^^^^^^ Prefer array_of_pairs.to_h to Hash[*array].
-    RUBY
+  context 'AllowSplatArgument: true' do
+    let(:cop_config) { { 'AllowSplatArgument' => true } }
 
-    expect_no_corrections
+    it 'does not register an offense for unpacked array' do
+      expect_no_offenses(<<~RUBY)
+        Hash[*ary]
+      RUBY
+    end
+  end
+
+  context 'AllowSplatArgument: false' do
+    let(:cop_config) { { 'AllowSplatArgument' => false } }
+
+    it 'reports uncorrectable offense for unpacked array' do
+      expect_offense(<<~RUBY)
+        Hash[*ary]
+        ^^^^^^^^^^ Prefer array_of_pairs.to_h to Hash[*array].
+      RUBY
+
+      expect_no_corrections
+    end
   end
 end
