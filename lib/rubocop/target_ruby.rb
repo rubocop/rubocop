@@ -165,14 +165,10 @@ module RuboCop
         file = gemspec_filepath
         return unless file && File.file?(file)
 
-        version = version_from_gemspec_file(file)
-        return if version.nil?
+        right_hand_side = version_from_gemspec_file(file)
+        return if right_hand_side.nil?
 
-        requirement = version.children.last
-        return version_from_array(version) if version.array_type?
-        return version_from_array(requirement) if gem_requirement? version
-
-        version_from_str(version.str_content)
+        find_minimal_known_ruby(right_hand_side)
       end
 
       def gemspec_filename
@@ -192,15 +188,25 @@ module RuboCop
         required_ruby_version(processed_source.ast).first
       end
 
-      def version_from_array(array)
-        versions = array.children.map { |v| version_from_str(v.is_a?(String) ? v : v.str_content) }
-        versions.compact.min
+      def version_from_right_hand_side(right_hand_side)
+        if right_hand_side.array_type?
+          version_from_array(right_hand_side)
+        elsif gem_requirement?(right_hand_side)
+          right_hand_side.children.last.value
+        else
+          right_hand_side.value
+        end
       end
 
-      def version_from_str(str)
-        str.match(/^(?:>=|<=)?\s*(?<version>\d+(?:\.\d+)*)/) do |md|
-          md[:version].to_f
-        end
+      def version_from_array(array)
+        array.children.map(&:value)
+      end
+
+      def find_minimal_known_ruby(right_hand_side)
+        version = version_from_right_hand_side(right_hand_side)
+        requirement = Gem::Requirement.new(version)
+
+        KNOWN_RUBIES.detect { |v| requirement.satisfied_by?(Gem::Version.new("#{v}.99")) }
       end
     end
 
