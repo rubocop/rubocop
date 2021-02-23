@@ -5,6 +5,9 @@ module RuboCop
     module Style
       # Use symbols as procs when possible.
       #
+      # If you prefer a style that allows block for method with arguments,
+      # please set `true` to `AllowMethodsWithArguments`.
+      #
       # @example
       #   # bad
       #   something.map { |s| s.upcase }
@@ -12,6 +15,17 @@ module RuboCop
       #
       #   # good
       #   something.map(&:upcase)
+      #
+      # @example AllowMethodsWithArguments: false (default)
+      #   # bad
+      #   something.do_something(foo) { |o| o.bar }
+      #
+      #   # good
+      #   something.do_something(foo, &:bar)
+      #
+      # @example AllowMethodsWithArguments: true
+      #   # good
+      #   something.do_something(foo) { |o| o.bar }
       class SymbolProc < Base
         include RangeHelp
         include IgnoredMethods
@@ -42,6 +56,7 @@ module RuboCop
             return if proc_node?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)
             return if ignored_method?(dispatch_node.method_name)
+            return if allow_if_method_has_argument?(node)
             return if node.block_type? && destructuring_block_argument?(arguments_node)
 
             register_offense(node, method_name, dispatch_node.method_name)
@@ -102,6 +117,10 @@ module RuboCop
           else
             node.loc.begin.begin_pos
           end
+        end
+
+        def allow_if_method_has_argument?(node)
+          !!cop_config.fetch('AllowMethodsWithArguments', false) && !node.arguments.count.zero?
         end
       end
     end
