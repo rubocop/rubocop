@@ -142,16 +142,53 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(&run).not_to raise_error
   end
 
-  context 'when `super` has arguments' do
-    it 'registers an offense' do
-      expect_offense(<<~RUBY)
-        super(one, two) { |x| x.test }
-                        ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
-      RUBY
+  context 'when `AllowMethodsWithArguments: true`' do
+    let(:cop_config) { { 'AllowMethodsWithArguments' => true } }
 
-      expect_correction(<<~RUBY)
-        super(one, two, &:test)
-      RUBY
+    context 'when method has arguments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          do_something(one, two) { |x| x.test }
+        RUBY
+      end
+    end
+
+    context 'when `super` has arguments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          super(one, two) { |x| x.test }
+        RUBY
+      end
+    end
+  end
+
+  context 'when `AllowMethodsWithArguments: false`' do
+    let(:cop_config) { { 'AllowMethodsWithArguments' => false } }
+
+    context 'when method has arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          do_something(one, two) { |x| x.test }
+                                 ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `do_something` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something(one, two, &:test)
+        RUBY
+      end
+    end
+
+    context 'when `super` has arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          super(one, two) { |x| x.test }
+                          ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          super(one, two, &:test)
+        RUBY
+      end
     end
   end
 
