@@ -11,6 +11,7 @@ module RuboCop
       # Other method definition types are not considered by this cop.
       #
       # The supported styles are:
+      #
       # * allow_single_line (default) - only single line endless method definitions are allowed.
       # * allow_always - all endless method definitions are allowed.
       # * disallow - all endless method definitions are disallowed.
