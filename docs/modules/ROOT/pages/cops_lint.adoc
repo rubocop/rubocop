@@ -919,7 +919,7 @@ else 250
 end
 ----
 
-==== IgnoreLiteralBranches: true
+==== IgnoreConstantBranches: true
 
 [source,ruby]
 ----

@@ -74,7 +74,7 @@ module RuboCop
       #   else 250
       #   end
       #
-      # @example IgnoreLiteralBranches: true
+      # @example IgnoreConstantBranches: true
       #   # good
       #   case size
       #   when "small" then SMALL_SIZE
