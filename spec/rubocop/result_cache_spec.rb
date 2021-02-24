@@ -59,7 +59,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
     end
 
-    # Fixes https://github.com/rubocop-hq/rubocop/issues/6274
+    # Fixes https://github.com/rubocop/rubocop/issues/6274
     context 'when offenses are saved' do
       context 'an offence with status corrected' do
         let(:offense) do

@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::WhenThen, :config do
     RUBY
   end
 
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/3868
+  # Regression: https://github.com/rubocop/rubocop/issues/3868
   context 'when inspecting a case statement with an empty branch' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

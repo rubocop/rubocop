@@ -11,12 +11,12 @@ module RuboCop
       #   name      = "RuboCop"
       #   # Some comment and an empty line
       #
-      #   website  += "/rubocop-hq/rubocop" unless cond
+      #   website  += "/rubocop/rubocop" unless cond
       #   puts        "rubocop"          if     debug
       #
       #   # bad for any configuration
       #   set_app("RuboCop")
-      #   website  = "https://github.com/rubocop-hq/rubocop"
+      #   website  = "https://github.com/rubocop/rubocop"
       #
       #   # good only if AllowBeforeTrailingComments is true
       #   object.method(arg)  # this is a comment

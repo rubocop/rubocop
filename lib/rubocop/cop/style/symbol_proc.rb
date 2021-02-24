@@ -51,7 +51,7 @@ module RuboCop
         def on_block(node)
           symbol_proc?(node) do |dispatch_node, arguments_node, method_name|
             # TODO: Rails-specific handling that we should probably make
-            # configurable - https://github.com/rubocop-hq/rubocop/issues/1485
+            # configurable - https://github.com/rubocop/rubocop/issues/1485
             # we should ignore lambdas & procs
             return if proc_node?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)

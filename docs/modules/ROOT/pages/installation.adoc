@@ -25,7 +25,7 @@ in your `Gemfile`:
 gem 'rubocop', '~> 1.10', require: false
 ----
 
-NOTE: You can check out our progress on the road to version 1.0 https://github.com/rubocop-hq/rubocop/milestone/4[here].
+NOTE: You can check out our progress on the road to version 1.0 https://github.com/rubocop/rubocop/milestone/4[here].
 You can also help us get there faster! :-)
 
 .A Modular RuboCop

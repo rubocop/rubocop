@@ -61,7 +61,7 @@ module RuboCop
           # by `EnforcedStyle: line_count_based` of `Style/BlockDelimiters` cop.
           # That means preventing auto-correction to incorrect auto-corrected
           # code.
-          # See: https://github.com/rubocop-hq/rubocop/issues/7534
+          # See: https://github.com/rubocop/rubocop/issues/7534
           return if conflict_with_block_delimiters?(node)
 
           left_brace = node.loc.begin

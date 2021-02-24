@@ -166,7 +166,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
           entries.map do |entry|
             entry.match(%r{
               (?<=^\*\s)
-              \[(?<ref>(?:(?<repo>rubocop-hq/[a-z_-]+)?\#(?<number>\d+))|.*)\]
+              \[(?<ref>(?:(?<repo>rubocop/[a-z_-]+)?\#(?<number>\d+))|.*)\]
               \((?<url>[^)]+)\)
             }x)
           end.compact
@@ -187,7 +187,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         it 'has a valid URL' do
           issues.each do |issue|
             number = issue[:number]&.gsub(/\D/, '')
-            repo = issue[:repo] || 'rubocop-hq/rubocop'
+            repo = issue[:repo] || 'rubocop/rubocop'
             pattern = %r{^https://github\.com/#{repo}/(?:issues|pull)/#{number}$}
             expect(issue[:url]).to match(pattern)
           end

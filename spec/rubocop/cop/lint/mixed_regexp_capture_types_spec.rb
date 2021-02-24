@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes, :config do
     RUBY
   end
 
-  # See https://github.com/rubocop-hq/rubocop/issues/8083
+  # See https://github.com/rubocop/rubocop/issues/8083
   it 'does not register offense when using a Regexp cannot be processed by regexp_parser gem' do
     expect_no_offenses(<<~'RUBY')
       /data = ({"words":.+}}}[^}]*})/m

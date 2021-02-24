@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      # Bug: https://github.com/rubocop-hq/rubocop/issues/5019
+      # Bug: https://github.com/rubocop/rubocop/issues/5019
       it 'auto-corrects a missing space when hash is used as argument' do
         expect_offense(<<~RUBY)
           foo:bar => 1

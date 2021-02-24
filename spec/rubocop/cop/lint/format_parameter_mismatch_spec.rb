@@ -178,14 +178,14 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
     end
   end
 
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/3869
+  # Regression: https://github.com/rubocop/rubocop/issues/3869
   context 'when passed an empty array' do
     it 'does not register an offense' do
       expect_no_offenses("'%' % []")
     end
   end
 
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/8115
+  # Regression: https://github.com/rubocop/rubocop/issues/8115
   context 'when argument itself contains format characters and ' \
           'formats in format string and argument are not equal' do
     it 'ignores argument formatting' do
