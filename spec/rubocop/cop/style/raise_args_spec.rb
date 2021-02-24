@@ -310,6 +310,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       expect_no_offenses('raise MyCustomError.new(*args)')
     end
 
+    it 'ignores a raise with an exception argument' do
+      expect_no_offenses('raise Ex.new(entity), message')
+    end
+
     it 'accepts a raise with 3 args' do
       expect_no_offenses('raise RuntimeError, msg, caller')
     end
