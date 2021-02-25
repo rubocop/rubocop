@@ -222,6 +222,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'does not register an offense when using body of `begin` is empty' do
+    expect_no_offenses(<<~RUBY)
+      begin
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `begin` for or assignment and method call' do
     expect_no_offenses(<<~RUBY)
       var ||= begin

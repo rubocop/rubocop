@@ -85,7 +85,9 @@ module RuboCop
         end
 
         def on_kwbegin(node)
-          return if contain_rescue_or_ensure?(node) || valid_context_using_only_begin?(node)
+          return if empty_begin?(node) ||
+                    contain_rescue_or_ensure?(node) ||
+                    valid_context_using_only_begin?(node)
 
           register_offense(node)
         end
@@ -97,6 +99,10 @@ module RuboCop
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end
+        end
+
+        def empty_begin?(node)
+          node.children.empty?
         end
 
         def contain_rescue_or_ensure?(node)
