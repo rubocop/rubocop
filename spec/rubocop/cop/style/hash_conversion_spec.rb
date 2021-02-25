@@ -54,6 +54,17 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     expect_no_corrections
   end
 
+  it 'wraps complex statements in parens if needed' do
+    expect_offense(<<~RUBY)
+      Hash[a.foo :bar]
+      ^^^^^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (a.foo :bar).to_h
+    RUBY
+  end
+
   context 'AllowSplatArgument: true' do
     let(:cop_config) { { 'AllowSplatArgument' => true } }
 
