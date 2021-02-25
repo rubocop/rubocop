@@ -52,7 +52,7 @@ other cop.
 
 === Writing your own Cops
 
-If you'd like to create an extension gem, you can use https://github.com/rubocop-hq/rubocop-extension-generator[rubocop-extension-generator].
+If you'd like to create an extension gem, you can use https://github.com/rubocop/rubocop-extension-generator[rubocop-extension-generator].
 
 See xref:development.adoc[development] to learn how to implement a cop.
 
@@ -65,17 +65,17 @@ a few of them are maintained by RuboCop's Core Team.
 
 ==== Official Extensions
 
-* https://github.com/rubocop-hq/rubocop-performance[rubocop-performance] -
+* https://github.com/rubocop/rubocop-performance[rubocop-performance] -
 Performance optimization analysis
-* https://github.com/rubocop-hq/rubocop-rails[rubocop-rails] -
+* https://github.com/rubocop/rubocop-rails[rubocop-rails] -
 Rails-specific analysis
-* https://github.com/rubocop-hq/rubocop-rspec[rubocop-rspec] -
+* https://github.com/rubocop/rubocop-rspec[rubocop-rspec] -
 RSpec-specific analysis
-* https://github.com/rubocop-hq/rubocop-minitest[rubocop-minitest] -
+* https://github.com/rubocop/rubocop-minitest[rubocop-minitest] -
 Minitest-specific analysis
-* https://github.com/rubocop-hq/rubocop-rake[rubocop-rake] -
+* https://github.com/rubocop/rubocop-rake[rubocop-rake] -
 Rake-specific analysis
-* https://github.com/rubocop-hq/rubocop-sequel[rubocop-sequel] -
+* https://github.com/rubocop/rubocop-sequel[rubocop-sequel] -
 Code style checking for Sequel gem
 
 ==== Third-party Extensions

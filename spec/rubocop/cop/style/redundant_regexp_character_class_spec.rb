@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
   end
 
   context 'with a character class containing an escaped-b' do
-    # See https://github.com/rubocop-hq/rubocop/issues/8193 for details - in short \b != [\b] - the
+    # See https://github.com/rubocop/rubocop/issues/8193 for details - in short \b != [\b] - the
     # former matches a word boundary, the latter a backspace character.
     it 'does not register an offense' do
       expect_no_offenses('foo = /[\b]/')

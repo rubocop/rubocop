@@ -18,16 +18,16 @@ Gem::Specification.new do |s|
   s.bindir = 'exe'
   s.executables = ['rubocop']
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
-  s.homepage = 'https://github.com/rubocop-hq/rubocop'
+  s.homepage = 'https://github.com/rubocop/rubocop'
   s.licenses = ['MIT']
   s.summary = 'Automatic Ruby code style checking tool.'
 
   s.metadata = {
     'homepage_uri' => 'https://rubocop.org/',
-    'changelog_uri' => 'https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md',
-    'source_code_uri' => 'https://github.com/rubocop-hq/rubocop/',
+    'changelog_uri' => 'https://github.com/rubocop/rubocop/blob/master/CHANGELOG.md',
+    'source_code_uri' => 'https://github.com/rubocop/rubocop/',
     'documentation_uri' => "https://docs.rubocop.org/rubocop/#{RuboCop::Version.document_version}/",
-    'bug_tracker_uri' => 'https://github.com/rubocop-hq/rubocop/issues'
+    'bug_tracker_uri' => 'https://github.com/rubocop/rubocop/issues'
   }
 
   s.add_runtime_dependency('parallel', '~> 1.10')

@@ -1593,7 +1593,7 @@ RSpec.describe RuboCop::ConfigLoader do
     before do
       create_empty_file('.rubocop.yml')
 
-      # Setup similar to https://github.com/rubocop-hq/rubocop-rspec/blob/master/lib/rubocop/rspec/inject.rb#L16
+      # Setup similar to https://github.com/rubocop/rubocop-rspec/blob/master/lib/rubocop/rspec/inject.rb#L16
       # and https://github.com/runtastic/rt_rubocop_defaults/blob/master/lib/rt_rubocop_defaults/inject.rb#L21
       config = RuboCop::Config.new(parent_config)
       described_class.instance_variable_set(:@default_configuration, config)

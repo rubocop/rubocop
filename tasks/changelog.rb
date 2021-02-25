@@ -14,7 +14,7 @@ class Changelog
   TYPE_TO_HEADER = { new: 'New features', fix: 'Bug fixes', change: 'Changes' }.freeze
   HEADER = /### (.*)/.freeze
   PATH = 'CHANGELOG.md'
-  REF_URL = 'https://github.com/rubocop-hq/rubocop'
+  REF_URL = 'https://github.com/rubocop/rubocop'
   MAX_LENGTH = 40
   CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
   SIGNATURE = Regexp.new(format(Regexp.escape('[@%<user>s][]'), user: '([\w-]+)'))

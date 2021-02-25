@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     RUBY
   end
 
-  # See https://github.com/rubocop-hq/rubocop/issues/8781
+  # See https://github.com/rubocop/rubocop/issues/8781
   it 'does not move comments that are inside an inner block' do
     expect_offense(<<~RUBY)
       # Comment 1

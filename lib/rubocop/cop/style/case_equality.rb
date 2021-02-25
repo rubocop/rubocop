@@ -64,7 +64,7 @@ module RuboCop
             # The automatic correction from `a === b` to `a.match?(b)` needs to
             # consider `Regexp.last_match?`, `$~`, `$1`, and etc.
             # This correction is expected to be supported by `Performance/Regexp` cop.
-            # See: https://github.com/rubocop-hq/rubocop-performance/issues/152
+            # See: https://github.com/rubocop/rubocop-performance/issues/152
             #
             # So here is noop.
           when :begin

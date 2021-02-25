@@ -89,7 +89,7 @@ module RuboCop
           # preventing auto-correction to single-line empty braces. It will
           # conflict with auto-correction by `Layout/SpaceInsideBlockBraces` cop
           # if auto-corrected to a single-line empty braces.
-          # See: https://github.com/rubocop-hq/rubocop/issues/7363
+          # See: https://github.com/rubocop/rubocop/issues/7363
           return if node.body.nil? && node.multiline?
 
           left_brace = node.loc.begin

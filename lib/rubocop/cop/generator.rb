@@ -9,7 +9,7 @@ module RuboCop
     # @api private
     class Generator
       # NOTE: RDoc 5.1.0 or lower has the following issue.
-      # https://github.com/rubocop-hq/rubocop/issues/7043
+      # https://github.com/rubocop/rubocop/issues/7043
       #
       # The following `String#gsub` can be replaced with
       # squiggly heredoc when RuboCop supports Ruby 2.5 or higher
@@ -58,7 +58,7 @@ module RuboCop
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
-                # See https://github.com/rubocop-hq/rubocop-ast/blob/master/lib/rubocop/ast/node_pattern.rb
+                # See https://github.com/rubocop/rubocop-ast/blob/master/lib/rubocop/ast/node_pattern.rb
                 #
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'

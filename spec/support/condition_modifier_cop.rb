@@ -169,7 +169,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
       RUBY
     end
 
-    # See: https://github.com/rubocop-hq/rubocop/issues/8273
+    # See: https://github.com/rubocop/rubocop/issues/8273
     context 'accepts multiline condition in modifier form' do
       it 'registers an offense' do
         expect_no_offenses(<<~RUBY)

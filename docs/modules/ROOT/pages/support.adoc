@@ -9,7 +9,7 @@ harder to track.
 == GitHub Discussions
 
 These days our primary discussion board is
-https://github.com/rubocop-hq/rubocop/discussions[here].
+https://github.com/rubocop/rubocop/discussions[here].
 
 It's a great place to share ideas, help other RuboCop users and just be up-to-date
 with interesting developments.
