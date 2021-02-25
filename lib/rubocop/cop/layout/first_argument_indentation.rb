@@ -153,7 +153,7 @@ module RuboCop
 
         def on_send(node)
           return if style != :consistent && enforce_first_argument_with_fixed_indentation?
-          return if !node.arguments? || node.operator_method?
+          return if !node.arguments? || bare_operator?(node)
 
           indent = base_indentation(node) + configured_indentation_width
 
@@ -166,6 +166,10 @@ module RuboCop
         end
 
         private
+
+        def bare_operator?(node)
+          node.operator_method? && !node.dot?
+        end
 
         def message(arg_node)
           return 'Bad indentation of the first argument.' unless arg_node

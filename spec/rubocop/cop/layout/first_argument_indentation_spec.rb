@@ -34,6 +34,57 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects an over-indented first argument on an alphanumeric method name' do
+        expect_offense(<<~RUBY)
+          self.run(
+              :foo,
+              ^^^^ Indent the first argument one step more than the start of the previous line.
+              bar: 3
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          self.run(
+            :foo,
+              bar: 3
+          )
+        RUBY
+      end
+
+      it 'registers an offense and corrects an over-indented first argument on a pipe method name' do
+        expect_offense(<<~RUBY)
+          self.|(
+              :foo,
+              ^^^^ Indent the first argument one step more than the start of the previous line.
+              bar: 3
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          self.|(
+            :foo,
+              bar: 3
+          )
+        RUBY
+      end
+
+      it 'registers an offense and corrects an over-indented first argument on a plus sign method name' do
+        expect_offense(<<~RUBY)
+          self.+(
+              :foo,
+              ^^^^ Indent the first argument one step more than the start of the previous line.
+              bar: 3
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          self.+(
+            :foo,
+              bar: 3
+          )
+        RUBY
+      end
+
       it 'registers an offense and corrects an under-indented first argument' do
         expect_offense(<<~RUBY)
           run(
