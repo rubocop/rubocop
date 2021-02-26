@@ -34,6 +34,7 @@ module RuboCop
 
         def on_def(node)
           return unless trailing_body?(node)
+          return if node.endless? && node.body.parenthesized_call?
 
           add_offense(first_part_of(node.body)) do |corrector|
             LineBreakCorrector.correct_trailing_body(
