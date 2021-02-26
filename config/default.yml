@@ -2055,8 +2055,9 @@ Lint/SuppressedException:
   StyleGuide: '#dont-hide-exceptions'
   Enabled: true
   AllowComments: true
+  AllowNil: true
   VersionAdded: '0.9'
-  VersionChanged: '0.81'
+  VersionChanged: <<next>>
 
 Lint/SymbolConversion:
   Description: 'Checks for unnecessary symbol conversions.'

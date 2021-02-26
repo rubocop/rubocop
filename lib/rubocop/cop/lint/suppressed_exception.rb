@@ -64,12 +64,51 @@ module RuboCop
       #   rescue
       #     # do nothing
       #   end
+      #
+      # @example AllowNil: true (default)
+      #
+      #   # good
+      #   def some_method
+      #     do_something
+      #   rescue
+      #     nil
+      #   end
+      #
+      #   # good
+      #   begin
+      #     do_something
+      #   rescue
+      #     # do nothing
+      #   end
+      #
+      #   # good
+      #   do_something rescue nil
+      #
+      # @example AllowNil: false
+      #
+      #   # bad
+      #   def some_method
+      #     do_something
+      #   rescue
+      #     nil
+      #   end
+      #
+      #   # bad
+      #   begin
+      #     do_something
+      #   rescue
+      #     nil
+      #   end
+      #
+      #   # bad
+      #   do_something rescue nil
       class SuppressedException < Base
         MSG = 'Do not suppress exceptions.'
 
         def on_resbody(node)
-          return if node.body
+          return if node.body && !nil_body?(node)
           return if cop_config['AllowComments'] && comment_between_rescue_and_end?(node)
+          return if cop_config['AllowNil'] && nil_body?(node)
 
           add_offense(node)
         end
@@ -82,6 +121,10 @@ module RuboCop
 
           end_line = ancestor.loc.end.line
           processed_source[node.first_line...end_line].any? { |line| comment_line?(line) }
+        end
+
+        def nil_body?(node)
+          node.body&.nil_type?
         end
       end
     end
