@@ -67,9 +67,15 @@ module RuboCop
             add_offense(node, message: MSG_SPLAT) unless allowed_splat_argument?
           else
             add_offense(node, message: MSG_TO_H) do |corrector|
-              corrector.replace(node, "#{first_argument.source}.to_h")
+              replacement = first_argument.source
+              replacement = "(#{replacement})" if requires_parens?(first_argument)
+              corrector.replace(node, "#{replacement}.to_h")
             end
           end
+        end
+
+        def requires_parens?(node)
+          node.call_type? && node.arguments.any? && !node.parenthesized?
         end
 
         def multi_argument(node)
