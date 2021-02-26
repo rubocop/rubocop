@@ -91,6 +91,16 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition, :config do
     RUBY
   end
 
+  context 'Ruby 3.0 or higher', :ruby30 do
+    it 'does not register offense when endless method definition body is after newline in opening parenthesis' do
+      expect_no_offenses(<<~RUBY)
+        def some_method = (
+          body
+        )
+      RUBY
+    end
+  end
+
   it 'auto-corrects with comment after body' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method; body # stuff
