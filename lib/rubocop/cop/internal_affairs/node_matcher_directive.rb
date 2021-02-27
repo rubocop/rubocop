@@ -97,7 +97,7 @@ module RuboCop
 
         def insert_directive(corrector, node, actual_name)
           # If the pattern matcher uses arguments (`%1`, `%2`, etc.), include them in the directive
-          arguments = pattern_arguments(node.arguments[1].value)
+          arguments = pattern_arguments(node.arguments[1].source)
 
           range = range_with_surrounding_space(
             range: node.loc.expression,

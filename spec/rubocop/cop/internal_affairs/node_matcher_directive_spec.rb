@@ -29,6 +29,18 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
       RUBY
     end
 
+    it 'registers an offense if the matcher does not have a directive and a method call is used for a pattern argument' do
+      expect_offense(<<~RUBY, method: method)
+        #{method} :foo?, format(PATTERN, type: 'const')
+        ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @!method foo?(node)
+        #{method} :foo?, format(PATTERN, type: 'const')
+      RUBY
+    end
+
     it 'registers an offense if the matcher does not have a directive but has preceeding comments' do
       expect_offense(<<~RUBY, method: method)
         # foo
