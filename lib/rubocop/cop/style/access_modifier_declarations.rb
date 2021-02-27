@@ -77,6 +77,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[private protected public module_function].freeze
 
+        # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
           (send nil? {:private :protected :public} (sym _))
         PATTERN

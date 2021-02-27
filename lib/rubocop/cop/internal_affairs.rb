@@ -4,6 +4,7 @@ require_relative 'internal_affairs/empty_line_between_expect_offense_and_correct
 require_relative 'internal_affairs/example_description'
 require_relative 'internal_affairs/method_name_equal'
 require_relative 'internal_affairs/node_destructuring'
+require_relative 'internal_affairs/node_matcher_directive'
 require_relative 'internal_affairs/node_type_predicate'
 require_relative 'internal_affairs/offense_location_keyword'
 require_relative 'internal_affairs/redundant_described_class_as_subject'

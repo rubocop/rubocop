@@ -25,6 +25,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[== equal? eql?].freeze
 
+        # @!method class_comparison_candidate?(node)
         def_node_matcher :class_comparison_candidate?, <<~PATTERN
           (send
             {$(send _ :class) (send $(send _ :class) :name)}

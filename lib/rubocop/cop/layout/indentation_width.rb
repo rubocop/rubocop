@@ -52,6 +52,7 @@ module RuboCop
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
               'spaces for%<name>s indentation.'
 
+        # @!method access_modifier?(node)
         def_node_matcher :access_modifier?, <<~PATTERN
           [(send ...) access_modifier?]
         PATTERN

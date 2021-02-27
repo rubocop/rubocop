@@ -45,6 +45,7 @@ module RuboCop
         MSG = 'Consider using explicit block argument in the '\
               "surrounding method's signature over `yield`."
 
+        # @!method yielding_block?(node)
         def_node_matcher :yielding_block?, <<~PATTERN
           (block $_ (args $...) (yield $...))
         PATTERN

@@ -45,11 +45,13 @@ module RuboCop
               'or `module`.'
         RESTRICT_ON_SEND = %i[include extend prepend].freeze
 
+        # @!method include_statement(node)
         def_node_matcher :include_statement, <<~PATTERN
           (send nil? ${:include :extend :prepend}
             const)
         PATTERN
 
+        # @!method in_top_level_scope?(node)
         def_node_matcher :in_top_level_scope?, <<~PATTERN
           {
             root?                        # either at the top level

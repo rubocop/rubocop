@@ -33,6 +33,7 @@ module RuboCop
         MSG = 'Use `%<prefer>s` instead.'
         RESTRICT_ON_SEND = %i[reject select filter].freeze
 
+        # @!method bad_method?(node)
         def_node_matcher :bad_method?, <<~PATTERN
           (block
             (send _ _)

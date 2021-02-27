@@ -154,12 +154,14 @@ module RuboCop
           end
         end
 
+        # @!method splat_value(node)
         def_node_matcher :splat_value, <<~PATTERN
           (array (splat $_))
         PATTERN
 
         # Some of these patterns may not actually return an immutable object,
         # but we want to consider them immutable for this cop.
+        # @!method operation_produces_immutable_object?(node)
         def_node_matcher :operation_produces_immutable_object?, <<~PATTERN
           {
             (const _ _)
@@ -176,6 +178,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method range_enclosed_in_parentheses?(node)
         def_node_matcher :range_enclosed_in_parentheses?, <<~PATTERN
           (begin ({irange erange} _ _))
         PATTERN

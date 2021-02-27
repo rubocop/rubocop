@@ -145,6 +145,7 @@ module RuboCop
           corrector.replace(node.old_identifier, node.old_identifier.source[1..-1])
         end
 
+        # @!method identifier(node)
         def_node_matcher :identifier, <<~PATTERN
           (sym $_)
         PATTERN

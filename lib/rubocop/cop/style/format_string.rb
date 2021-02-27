@@ -42,6 +42,7 @@ module RuboCop
         MSG = 'Favor `%<prefer>s` over `%<current>s`.'
         RESTRICT_ON_SEND = %i[format sprintf %].freeze
 
+        # @!method formatter(node)
         def_node_matcher :formatter, <<~PATTERN
           {
             (send nil? ${:sprintf :format} _ _ ...)
@@ -50,6 +51,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method variable_argument?(node)
         def_node_matcher :variable_argument?, <<~PATTERN
           (send {str dstr} :% {send_type? lvar_type?})
         PATTERN

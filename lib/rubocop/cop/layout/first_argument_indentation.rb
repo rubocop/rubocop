@@ -210,6 +210,7 @@ module RuboCop
           node.source_range.begin_pos > parent.source_range.begin_pos
         end
 
+        # @!method eligible_method_call?(node)
         def_node_matcher :eligible_method_call?, <<~PATTERN
           (send _ !:[]= ...)
         PATTERN

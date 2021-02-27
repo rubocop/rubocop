@@ -29,6 +29,7 @@ module RuboCop
         MSG = 'Use `%<receiver>s[%<argument>s]` instead of `%<original>s`.'
         RESTRICT_ON_SEND = %i[dig].freeze
 
+        # @!method single_argument_dig?(node)
         def_node_matcher :single_argument_dig?, <<~PATTERN
           (send _ :dig $!splat)
         PATTERN

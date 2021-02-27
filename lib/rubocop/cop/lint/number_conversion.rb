@@ -62,10 +62,12 @@ module RuboCop
               '%<corrected_method>s.'
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 
+        # @!method to_method(node)
         def_node_matcher :to_method, <<~PATTERN
           (send $_ ${#{METHODS}})
         PATTERN
 
+        # @!method to_method_symbol(node)
         def_node_matcher :to_method_symbol, <<~PATTERN
           {(send _ $_ ${(sym ${#{METHODS}})} ...)
            (send _ $_ ${(block_pass (sym ${#{METHODS}}))} ...)}

@@ -35,8 +35,13 @@ module RuboCop
               'instead of a block.'
         SUPER_TYPES = %i[super zsuper].freeze
 
+        # @!method proc_node?(node)
         def_node_matcher :proc_node?, '(send (const {nil? cbase} :Proc) :new)'
+
+        # @!method symbol_proc_receiver?(node)
         def_node_matcher :symbol_proc_receiver?, '{(send ...) (super ...) zsuper}'
+
+        # @!method symbol_proc?(node)
         def_node_matcher :symbol_proc?, <<~PATTERN
           {
             (block $#symbol_proc_receiver? $(args (arg _var)) (send (lvar _var) $_))

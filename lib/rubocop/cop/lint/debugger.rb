@@ -59,10 +59,12 @@ module RuboCop
 
         RESTRICT_ON_SEND = [].freeze
 
+        # @!method kernel?(node)
         def_node_matcher :kernel?, <<~PATTERN
           (const {nil? cbase} :Kernel)
         PATTERN
 
+        # @!method valid_receiver?(node, arg1)
         def_node_matcher :valid_receiver?, <<~PATTERN
           {
             (const {nil? cbase} %1)

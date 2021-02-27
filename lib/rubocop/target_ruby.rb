@@ -147,10 +147,12 @@ module RuboCop
 
       GEMSPEC_EXTENSION = '.gemspec'
 
+      # @!method required_ruby_version(node)
       def_node_search :required_ruby_version, <<~PATTERN
         (send _ :required_ruby_version= $_)
       PATTERN
 
+      # @!method gem_requirement?(node)
       def_node_matcher :gem_requirement?, <<~PATTERN
         (send (const(const _ :Gem):Requirement) :new $str)
       PATTERN

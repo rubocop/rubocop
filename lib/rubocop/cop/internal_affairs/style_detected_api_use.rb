@@ -67,18 +67,22 @@ module RuboCop
           no_acceptable_style! style_detected
         ].freeze
 
+        # @!method correct_style_detected_check(node)
         def_node_matcher :correct_style_detected_check, <<~PATTERN
           (send nil? :correct_style_detected)
         PATTERN
 
+        # @!method negative_style_detected_method_check(node)
         def_node_matcher :negative_style_detected_method_check, <<~PATTERN
           (send nil? /(?:opposite|unexpected|ambiguous|unrecognized)_style_detected|conflicting_styles_detected/ ...)
         PATTERN
 
+        # @!method no_acceptable_style_check(node)
         def_node_matcher :no_acceptable_style_check, <<~PATTERN
           (send nil? :no_acceptable_style!)
         PATTERN
 
+        # @!method style_detected_check(node)
         def_node_matcher :style_detected_check, <<~PATTERN
           (send nil? :style_detected ...)
         PATTERN

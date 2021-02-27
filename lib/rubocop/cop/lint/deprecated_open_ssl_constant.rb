@@ -46,6 +46,7 @@ module RuboCop
 
         NO_ARG_ALGORITHM = %w[BF DES IDEA RC4].freeze
 
+        # @!method algorithm_const(node)
         def_node_matcher :algorithm_const, <<~PATTERN
           (send
             $(const

@@ -81,14 +81,17 @@ module RuboCop
             class_or_module_or_struct_new_call?(child)
         end
 
+        # @!method eval_call?(node)
         def_node_matcher :eval_call?, <<~PATTERN
           (block (send _ {:instance_eval :class_eval :module_eval} ...) ...)
         PATTERN
 
+        # @!method exec_call?(node)
         def_node_matcher :exec_call?, <<~PATTERN
           (block (send _ {:instance_exec :class_exec :module_exec} ...) ...)
         PATTERN
 
+        # @!method class_or_module_or_struct_new_call?(node)
         def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
           (block (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
         PATTERN

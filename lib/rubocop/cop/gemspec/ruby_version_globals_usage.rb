@@ -28,8 +28,10 @@ module RuboCop
       class RubyVersionGlobalsUsage < Base
         MSG = 'Do not use `RUBY_VERSION` in gemspec file.'
 
+        # @!method ruby_version?(node)
         def_node_matcher :ruby_version?, '(const {cbase nil?} :RUBY_VERSION)'
 
+        # @!method gem_specification?(node)
         def_node_search :gem_specification?, <<~PATTERN
           (block
             (send

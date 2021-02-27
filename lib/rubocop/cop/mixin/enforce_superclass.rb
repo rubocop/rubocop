@@ -13,10 +13,12 @@ module RuboCop
     # @api private
     module EnforceSuperclass
       def self.included(base)
+        # @!method class_definition(node)
         base.def_node_matcher :class_definition, <<~PATTERN
           (class (const _ !:#{base::SUPERCLASS}) #{base::BASE_PATTERN} ...)
         PATTERN
 
+        # @!method class_new_definition(node)
         base.def_node_matcher :class_new_definition, <<~PATTERN
           [!^(casgn {nil? cbase} :#{base::SUPERCLASS} ...)
            !^^(casgn {nil? cbase} :#{base::SUPERCLASS} (block ...))

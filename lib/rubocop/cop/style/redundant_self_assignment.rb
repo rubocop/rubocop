@@ -82,6 +82,7 @@ module RuboCop
           METHODS_RETURNING_SELF.include?(method_name)
         end
 
+        # @!method redundant_self_assignment?(node, method_name)
         def_node_matcher :redundant_self_assignment?, <<~PATTERN
           (send
             (self) _
@@ -91,6 +92,7 @@ module RuboCop
               ...))
         PATTERN
 
+        # @!method redundant_nonself_assignment?(node, receiver, method_name)
         def_node_matcher :redundant_nonself_assignment?, <<~PATTERN
           (send
             %1 _

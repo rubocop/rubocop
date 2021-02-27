@@ -39,6 +39,7 @@ module RuboCop
         MSG = 'Avoid the use of double negation (`!!`).'
         RESTRICT_ON_SEND = %i[!].freeze
 
+        # @!method double_negative?(node)
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
         def on_send(node)

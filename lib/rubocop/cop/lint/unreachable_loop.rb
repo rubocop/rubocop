@@ -131,6 +131,7 @@ module RuboCop
           end
         end
 
+        # @!method break_command?(node)
         def_node_matcher :break_command?, <<~PATTERN
           {
             return break

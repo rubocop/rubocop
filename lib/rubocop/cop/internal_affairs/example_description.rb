@@ -57,6 +57,7 @@ module RuboCop
           /\b(does not|doesn't) (auto[- ]?)?correct/
         ].freeze
 
+        # @!method offense_example?(node)
         def_node_matcher :offense_example?, <<~PATTERN
           (block
             (send _ {:it :specify} $_description)

@@ -60,6 +60,7 @@ module RuboCop
 
           private
 
+          # @!method attribute_call?(node)
           def_node_matcher :attribute_call?, <<~PATTERN
             ( {csend send} _receiver _method # and no parameters
             )
@@ -90,6 +91,7 @@ module RuboCop
             end
           end
 
+          # @!method root_node?(node)
           def_node_matcher :root_node?, <<~PATTERN
             { nil? | self               # e.g. receiver of `my_method` or `self.my_attr`
             | lvar | ivar | cvar | gvar # e.g. receiver of `var.my_method`

@@ -39,6 +39,7 @@ module RuboCop
       class HashLikeCase < Base
         MSG = 'Consider replacing `case-when` with a hash lookup.'
 
+        # @!method hash_like_case?(node)
         def_node_matcher :hash_like_case?, <<~PATTERN
           (case
             _

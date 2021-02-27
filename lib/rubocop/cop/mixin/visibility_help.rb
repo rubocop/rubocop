@@ -28,6 +28,7 @@ module RuboCop
         end || right.last
       end
 
+      # @!method visibility_block?(node)
       def_node_matcher :visibility_block?, <<~PATTERN
         (send nil? { :private :protected :public })
       PATTERN

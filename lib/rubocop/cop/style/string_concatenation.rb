@@ -34,6 +34,7 @@ module RuboCop
         MSG = 'Prefer string interpolation to string concatenation.'
         RESTRICT_ON_SEND = %i[+].freeze
 
+        # @!method string_concatenation?(node)
         def_node_matcher :string_concatenation?, <<~PATTERN
           {
             (send str_type? :+ _)

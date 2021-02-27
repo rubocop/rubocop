@@ -65,10 +65,12 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[eval class_eval module_eval instance_eval].freeze
 
+        # @!method valid_eval_receiver?(node)
         def_node_matcher :valid_eval_receiver?, <<~PATTERN
           { nil? (const {nil? cbase} :Kernel) }
         PATTERN
 
+        # @!method line_with_offset?(node, sign, num)
         def_node_matcher :line_with_offset?, <<~PATTERN
           {
             (send #special_line_keyword? %1 (int %2))

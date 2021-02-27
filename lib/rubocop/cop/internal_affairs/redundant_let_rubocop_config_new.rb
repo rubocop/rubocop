@@ -25,6 +25,7 @@ module RuboCop
 
         MSG = 'Remove `let` that is `RuboCop::Config.new` with no arguments%<additional_message>s.'
 
+        # @!method let_rubocop_config_new?(node)
         def_node_matcher :let_rubocop_config_new?, <<~PATTERN
           (block
             (send nil? :let

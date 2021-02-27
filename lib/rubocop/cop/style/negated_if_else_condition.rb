@@ -35,6 +35,7 @@ module RuboCop
 
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
 
+        # @!method double_negation?(node)
         def_node_matcher :double_negation?, '(send (send _ :!) :!)'
 
         def self.autocorrect_incompatible_with

@@ -53,10 +53,12 @@ module RuboCop
           end
         end
 
+        # @!method exploded?(node)
         def_node_matcher :exploded?, <<~PATTERN
           (send nil? ${:raise :fail} (const {nil? cbase} :RuntimeError) $_)
         PATTERN
 
+        # @!method compact?(node)
         def_node_matcher :compact?, <<~PATTERN
           (send nil? {:raise :fail} $(send (const {nil? cbase} :RuntimeError) :new $_))
         PATTERN
