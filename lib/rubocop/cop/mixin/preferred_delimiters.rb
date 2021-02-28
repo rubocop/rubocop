@@ -15,7 +15,7 @@ module RuboCop
       end
 
       def delimiters
-        preferred_delimiters[type].split(//)
+        preferred_delimiters[type].split('')
       end
 
       private

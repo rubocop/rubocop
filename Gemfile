@@ -14,7 +14,7 @@ else
 end
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
-gem 'rubocop-performance', '~> 1.9.0'
+gem 'rubocop-performance', '~> 1.10.0'
 gem 'rubocop-rspec', '~> 2.2.0'
 # Workaround for cc-test-reporter with SimpleCov 0.18.
 # Stop upgrading SimpleCov until the following issue will be resolved.
