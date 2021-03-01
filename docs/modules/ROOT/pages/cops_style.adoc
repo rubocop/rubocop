@@ -4246,11 +4246,15 @@ EnforcedStyle.
 | Yes
 | Yes
 | 1.10
-| -
+| 1.11
 |===
 
 This cop checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
 sequences of values to hashes.
+
+Correction code from splat argument (`Hash[*ary]`) is not simply determined. For example,
+`Hash[*ary]` can be replaced with `ary.each_slice(2).to_h` but it will be complicated.
+So, `AllowSplatArgument` option is true by default to allow splat argument for simple code.
 
 === Examples
 
@@ -4268,6 +4272,32 @@ Hash[key1, value1, key2, value2]
 # good
 {key1 => value1, key2 => value2}
 ----
+
+==== AllowSplatArgument: true (default)
+
+[source,ruby]
+----
+# good
+Hash[*ary]
+----
+
+==== AllowSplatArgument: false
+
+[source,ruby]
+----
+# bad
+Hash[*ary]
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowSplatArgument
+| `true`
+| Boolean
+|===
 
 == Style/HashEachMethods
 
@@ -10781,6 +10811,9 @@ This cop checks symbol literal syntax.
 
 Use symbols as procs when possible.
 
+If you prefer a style that allows block for method with arguments,
+please set `true` to `AllowMethodsWithArguments`.
+
 === Examples
 
 [source,ruby]
@@ -10793,10 +10826,33 @@ something.map { _1.upcase }
 something.map(&:upcase)
 ----
 
+==== AllowMethodsWithArguments: false (default)
+
+[source,ruby]
+----
+# bad
+something.do_something(foo) { |o| o.bar }
+
+# good
+something.do_something(foo, &:bar)
+----
+
+==== AllowMethodsWithArguments: true
+
+[source,ruby]
+----
+# good
+something.do_something(foo) { |o| o.bar }
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
+
+| AllowMethodsWithArguments
+| `false`
+| Boolean
 
 | IgnoredMethods
 | `respond_to`, `define_method`
@@ -11617,6 +11673,82 @@ end
 === References
 
 * https://rubystyle.guide#no-else-with-unless
+
+== Style/UnlessLogicalOperators
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| No
+| 1.11
+| -
+|===
+
+This cop checks for the use of logical operators in an `unless` condition.
+It discourages such code, as the condition becomes more difficult
+to read and understand.
+
+This cop supports two styles:
+- `forbid_mixed_logical_operators` (default)
+- `forbid_logical_operators`
+
+`forbid_mixed_logical_operators` style forbids the use of more than one type
+of logical operators. This makes the `unless` condition easier to read
+because either all conditions need to be met or any condition need to be met
+in order for the expression to be truthy or falsey.
+
+`forbid_logical_operators` style forbids any use of logical operator.
+This makes it even more easy to read the `unless` condition as
+there is only one condition in the expression.
+
+=== Examples
+
+==== EnforcedStyle: forbid_mixed_logical_operators (default)
+
+[source,ruby]
+----
+# bad
+return unless a || b && c
+return unless a && b || c
+return unless a && b and c
+return unless a || b or c
+return unless a && b or c
+return unless a || b and c
+
+# good
+return unless a && b && c
+return unless a || b || c
+return unless a and b and c
+return unless a or b or c
+return unless a?
+----
+
+==== EnforcedStyle: forbid_logical_operators
+
+[source,ruby]
+----
+# bad
+return unless a || b
+return unless a && b
+return unless a or b
+return unless a and b
+
+# good
+return unless a
+return unless a?
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `forbid_mixed_logical_operators`
+| `forbid_mixed_logical_operators`, `forbid_logical_operators`
+|===
 
 == Style/UnpackFirst
 

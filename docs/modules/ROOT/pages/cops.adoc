@@ -551,6 +551,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styletrailingunderscorevariable[Style/TrailingUnderscoreVariable]
 * xref:cops_style.adoc#styletrivialaccessors[Style/TrivialAccessors]
 * xref:cops_style.adoc#styleunlesselse[Style/UnlessElse]
+* xref:cops_style.adoc#styleunlesslogicaloperators[Style/UnlessLogicalOperators]
 * xref:cops_style.adoc#styleunpackfirst[Style/UnpackFirst]
 * xref:cops_style.adoc#stylevariableinterpolation[Style/VariableInterpolation]
 * xref:cops_style.adoc#stylewhenthen[Style/WhenThen]

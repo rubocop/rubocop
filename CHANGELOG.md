@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.11.0 (2021-03-01)
+
 ### New features
 
 * [#5388](https://github.com/rubocop/rubocop/issues/5388): Add new `Style/UnlessLogicalOperators` cop. ([@caalberts][])
