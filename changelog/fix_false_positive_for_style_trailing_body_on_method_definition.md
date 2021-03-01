@@ -1,1 +1,0 @@
-* [#9548](https://github.com/rubocop/rubocop/pull/9548): Fix a false positive for `Style/TrailingBodyOnMethodDefinition` when endless method definition body is after newline in opening parenthesis. ([@koic][])
