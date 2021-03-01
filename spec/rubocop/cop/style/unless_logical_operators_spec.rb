@@ -116,6 +116,26 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         return unless a?
       RUBY
     end
+
+    it 'does not register an offense when using `||` operator and invoked method name includes "or" in the conditional branch' do
+      expect_no_offenses(<<~RUBY)
+        unless condition
+          includes_or_in_the_name
+
+          foo || bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `&&` operator and invoked method name includes "and" in the conditional branch' do
+      expect_no_offenses(<<~RUBY)
+        unless condition
+          includes_and_in_the_name
+
+          foo && bar
+        end
+      RUBY
+    end
   end
 
   context 'EnforcedStyle is `forbid_logical_operators`' do
