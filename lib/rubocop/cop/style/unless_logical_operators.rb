@@ -48,6 +48,7 @@ module RuboCop
       #   return unless a?
       class UnlessLogicalOperators < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         FORBID_MIXED_LOGICAL_OPERATORS = 'Do not use mixed logical operators in an `unless`.'
         FORBID_LOGICAL_OPERATORS = 'Do not use any logical operator in an `unless`.'
@@ -71,9 +72,13 @@ module RuboCop
           return unless node.unless?
 
           if style == :forbid_mixed_logical_operators && mixed_logical_operator?(node)
-            add_offense(node, message: FORBID_MIXED_LOGICAL_OPERATORS)
+            add_offense(node, message: FORBID_MIXED_LOGICAL_OPERATORS) do |corrector|
+              autocorrect(corrector, node)
+            end
           elsif style == :forbid_logical_operators && logical_operator?(node)
-            add_offense(node, message: FORBID_LOGICAL_OPERATORS)
+            add_offense(node, message: FORBID_LOGICAL_OPERATORS) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
@@ -98,6 +103,21 @@ module RuboCop
           or_sources << node.condition.operator if node.condition.or_type?
 
           !(or_sources.all? { |s| s == '||' } || or_sources.all? { |s| s == 'or' })
+        end
+
+        def autocorrect(corrector, node)
+          corrector.replace(node.loc.keyword, 'if')
+          corrector.replace(node.condition.loc.operator, node.condition.inverse_operator)
+          autocorrect_subcondition(corrector, node.condition.lhs)
+          autocorrect_subcondition(corrector, node.condition.rhs)
+        end
+
+        def autocorrect_subcondition(corrector, subcondition)
+          unless subcondition.send_type? ||
+                 (subcondition.source.start_with?('(') && subcondition.source.end_with?(')'))
+            corrector.wrap(subcondition, '(', ')')
+          end
+          corrector.insert_before(subcondition, '!')
         end
       end
     end

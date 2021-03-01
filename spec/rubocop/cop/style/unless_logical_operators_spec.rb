@@ -12,9 +12,17 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
       RUBY
 
+      expect_correction(<<~RUBY)
+        return if !(a && b) && !c
+      RUBY
+
       expect_offense(<<~RUBY)
         return unless a || b && c
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a && !(b && c)
       RUBY
     end
 
@@ -24,9 +32,17 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
       RUBY
 
+      expect_correction(<<~RUBY)
+        return if !(a && b) or !c
+      RUBY
+
       expect_offense(<<~RUBY)
         return unless a and b && c
         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a or !(b && c)
       RUBY
     end
 
@@ -36,9 +52,17 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
       RUBY
 
+      expect_correction(<<~RUBY)
+        return if !(a && b) and !c
+      RUBY
+
       expect_offense(<<~RUBY)
         return unless a or b && c
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a and !(b && c)
       RUBY
     end
 
@@ -48,9 +72,17 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
       RUBY
 
+      expect_correction(<<~RUBY)
+        return if !(a || b) and !c
+      RUBY
+
       expect_offense(<<~RUBY)
         return unless a or b || c
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a and !(b || c)
       RUBY
     end
 
@@ -60,9 +92,17 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
       RUBY
 
+      expect_correction(<<~RUBY)
+        return if !(a || b) or !c
+      RUBY
+
       expect_offense(<<~RUBY)
         return unless a and b || c
         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a or !(b || c)
       RUBY
     end
 
@@ -70,6 +110,10 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
       expect_offense(<<~RUBY)
         return unless a || (b && c) || d
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use mixed logical operators in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !(a || (b && c)) && !d
       RUBY
     end
 
@@ -148,12 +192,20 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         return unless a && b
         ^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a || !b
+      RUBY
     end
 
     it 'registers an offense when using only `||`' do
       expect_offense(<<~RUBY)
         return unless a || b
         ^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a && !b
       RUBY
     end
 
@@ -162,6 +214,10 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         return unless a and b
         ^^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a or !b
+      RUBY
     end
 
     it 'registers an offense when using only `or`' do
@@ -169,12 +225,20 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
         return unless a or b
         ^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        return if !a and !b
+      RUBY
     end
 
     it 'registers an offense when using `&&` followed by ||' do
       expect_offense(<<~RUBY)
         return unless a && b || c
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use any logical operator in an `unless`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return if !(a && b) && !c
       RUBY
     end
 
