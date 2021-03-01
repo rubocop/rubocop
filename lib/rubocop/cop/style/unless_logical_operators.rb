@@ -87,11 +87,17 @@ module RuboCop
         end
 
         def mixed_precedence_and?(node)
-          node.source.include?('&&') && node.source.include?('and')
+          and_sources = node.condition.each_descendant(:and).map(&:operator)
+          and_sources << node.condition.operator if node.condition.and_type?
+
+          !(and_sources.all? { |s| s == '&&' } || and_sources.all? { |s| s == 'and' })
         end
 
         def mixed_precedence_or?(node)
-          node.source.include?('||') && node.source.include?('or')
+          or_sources = node.condition.each_descendant(:or).map(&:operator)
+          or_sources << node.condition.operator if node.condition.or_type?
+
+          !(or_sources.all? { |s| s == '||' } || or_sources.all? { |s| s == 'or' })
         end
       end
     end
