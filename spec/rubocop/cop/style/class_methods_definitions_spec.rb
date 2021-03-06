@@ -175,6 +175,46 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
       RUBY
     end
 
+    it 'registers and corrects an offense when defining class methods with `class << self` with comment only body' do
+      expect_offense(<<~RUBY)
+        class Foo
+          class << self
+          ^^^^^^^^^^^^^ Do not define public methods within class << self.
+            def do_something
+              # TODO
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          def self.do_something
+            # TODO
+          end
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense when defining class methods with `class << self` with inline comment' do
+      expect_offense(<<~RUBY)
+        class Foo
+          class << self
+          ^^^^^^^^^^^^^ Do not define public methods within class << self.
+            def do_something # TODO
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          def self.do_something # TODO
+          end
+        end
+      RUBY
+    end
+
     it 'does not register an offense when `class << self` contains non public methods' do
       expect_no_offenses(<<~RUBY)
         class A

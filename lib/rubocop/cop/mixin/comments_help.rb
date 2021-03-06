@@ -23,7 +23,11 @@ module RuboCop
       def begin_pos_with_comment(node)
         first_comment = processed_source.ast_with_comments[node].first
 
-        start_line_position(first_comment || node)
+        if first_comment && (first_comment.loc.line < node.loc.line)
+          start_line_position(first_comment)
+        else
+          start_line_position(node)
+        end
       end
 
       def start_line_position(node)
