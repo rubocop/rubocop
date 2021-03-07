@@ -201,10 +201,10 @@ RSpec.describe RuboCop::Cop::Team do
       include_context 'mock console output'
 
       before do
-        allow_any_instance_of(RuboCop::Cop::Style::HashSyntax)
+        allow_any_instance_of(RuboCop::Cop::Style::RescueModifier)
           .to receive(:autocorrect).and_return(buggy_correction)
 
-        create_file(file_path, '{ :key => value }')
+        create_file(file_path, 'some_method rescue handle_error')
       end
 
       let(:buggy_correction) do
@@ -217,8 +217,8 @@ RSpec.describe RuboCop::Cop::Team do
       let(:cause) { StandardError.new('cause') }
 
       let(:error_message) do
-        'An error occurred while Style/HashSyntax cop was inspecting ' \
-        '/tmp/example.rb:1:0.'
+        'An error occurred while Style/RescueModifier cop was inspecting ' \
+        '/tmp/example.rb:1:12.'
       end
 
       it 'records Team#errors' do
