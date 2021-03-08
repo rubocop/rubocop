@@ -216,6 +216,16 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
       end
     end
 
+    it 'does not register an offense on a ClassMethods module' do
+      expect_no_offenses(<<~RUBY)
+        module ClassMethods
+          def foo
+            bar
+          end
+        end
+      RUBY
+    end
+
     context 'macro-only class' do
       it 'does not register offense with single macro' do
         expect_no_offenses(<<~RUBY)

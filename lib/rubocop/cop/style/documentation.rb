@@ -76,6 +76,11 @@ module RuboCop
           (send nil? {:public_constant :private_constant} ({sym str} _))
         PATTERN
 
+        # @!method class_methods?(node)
+        def_node_matcher :class_methods?, <<~PATTERN
+          (const nil? :ClassMethods)
+        PATTERN
+
         def on_class(node)
           return unless node.body
 
@@ -83,6 +88,8 @@ module RuboCop
         end
 
         def on_module(node)
+          return if class_methods?(node.identifier)
+
           check(node, node.body, :module)
         end
 

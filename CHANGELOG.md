@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* Change `Style/Documentation` to not require documentation for `ClassMethods` modules. ([@drenmi][])
+
 ## 1.11.0 (2021-03-01)
 
 ### New features
