@@ -70,8 +70,8 @@ module RuboCop
         end
 
         def directive_cops(comment)
-          match = CommentConfig::COMMENT_DIRECTIVE_REGEXP.match(comment.text)
-          match && match[2] ? match[2].split(',').map(&:strip) : []
+          match_captures = DirectiveComment.new(comment).match_captures
+          match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
         end
 
         def allowed_cops
