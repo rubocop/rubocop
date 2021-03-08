@@ -151,10 +151,10 @@ module RuboCop
     end
 
     def directive_parts(comment)
-      match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)
-      return unless match
+      match_captures = DirectiveComment.new(comment).match_captures
+      return unless match_captures
 
-      switch, cops_string = match.captures
+      switch, cops_string = match_captures
 
       cop_names =
         cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
@@ -180,7 +180,7 @@ module RuboCop
     end
 
     def enable_all?(comment)
-      _, cops = comment.text.match(COMMENT_DIRECTIVE_REGEXP).captures
+      _, cops = DirectiveComment.new(comment).match_captures
       cops == 'all'
     end
 
