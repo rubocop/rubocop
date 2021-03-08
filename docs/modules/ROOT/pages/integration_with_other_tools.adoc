@@ -4,7 +4,7 @@
 
 === Emacs
 
-https://github.com/rubocop-hq/rubocop-emacs[rubocop.el] is a simple
+https://github.com/rubocop/rubocop-emacs[rubocop.el] is a simple
 Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
 and quickly jump between problems in your code.
 
