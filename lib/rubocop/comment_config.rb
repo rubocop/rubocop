@@ -7,19 +7,6 @@ module RuboCop
     # @api private
     REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
 
-    # @api private
-    COP_NAME_PATTERN = '([A-Z]\w+/)*(?:[A-Z]\w+)'
-    # @api private
-    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
-    # @api private
-    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
-
-    # @api private
-    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
-        .gsub(' ', '\s*')
-    )
-
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
 
     attr_reader :processed_source
