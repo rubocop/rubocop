@@ -124,6 +124,27 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
     end
 
+    context 'and the excessive characters include part of a URL in double quotes' do
+      it 'does not include the quote as part of the offense' do
+        expect_offense(<<-RUBY)
+          # See: "https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c" and
+                                                                                                     ^^^^ Line is too long. [105/80]
+          #   "http://google.com/"
+        RUBY
+      end
+    end
+
+    context 'and the excessive characters include part of a URL ' \
+            'and trailing whitespace' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # See: https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c#{trailing_whitespace}
+                                                                                                   ^ Line is too long. [100/80]
+          #   http://google.com/
+        RUBY
+      end
+    end
+
     context 'and an error other than URI::InvalidURIError is raised ' \
             'while validating a URI-ish string' do
       let(:cop_config) do
@@ -158,6 +179,26 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             #{'x' * 40} = 'otherprotocol://a.very.long.line.which.violates.LineLength/sadf'
           RUBY
         end
+      end
+    end
+
+    context 'and the URI is assigned' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #{'x' * 40} = 'https://a.very.long.line.which.violates.LineLength/sadf'
+          #{'x' * 40} = "https://a.very.long.line.which.violates.LineLength/sadf"
+        RUBY
+      end
+    end
+
+    context 'and the URI is an argument' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #{'x' * 40}("https://a.very.long.line.which.violates.LineLength/sadf")
+          #{'x' * 40} "https://a.very.long.line.which.violates.LineLength/sadf"
+          #{'x' * 40}('https://a.very.long.line.which.violates.LineLength/sadf')
+          #{'x' * 40} 'https://a.very.long.line.which.violates.LineLength/sadf'
+        RUBY
       end
     end
   end
