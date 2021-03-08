@@ -96,4 +96,21 @@ RSpec.describe RuboCop::DirectiveComment do
       end
     end
   end
+
+  describe '#match_captures' do
+    subject { directive_comment.match_captures }
+
+    [
+      ['when disable', '# rubocop:disable all', ['disable', 'all', nil, nil]],
+      ['when enable', '# rubocop:enable Foo/Bar', ['enable', 'Foo/Bar', nil, 'Foo/']],
+      ['when todo', '# rubocop:todo all', ['todo', 'all', nil, nil]],
+      ['when typo', '# rudocop:todo Dig/ThisMine', nil]
+    ].each do |example|
+      context example[0] do
+        let(:text) { example[1] }
+
+        it { is_expected.to eq example[2] }
+      end
+    end
+  end
 end

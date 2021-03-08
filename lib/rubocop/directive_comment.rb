@@ -5,6 +5,18 @@ module RuboCop
   # special `rubocop:disable` and `rubocop:enable` comment and exposes what
   # cops it contains.
   class DirectiveComment
+    # @api private
+    COP_NAME_PATTERN = '([A-Z]\w+/)*(?:[A-Z]\w+)'
+    # @api private
+    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
+    # @api private
+    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
+    # @api private
+    DIRECTIVE_COMMENT_REGEXP = Regexp.new(
+      "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
+        .gsub(' ', '\s*')
+    )
+
     attr_reader :comment
 
     def initialize(comment)
@@ -13,10 +25,9 @@ module RuboCop
 
     # Return all the cops specified in the directive
     def cops
-      match = comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
-      return unless match
+      return unless match_captures
 
-      cops_string = match.captures[1]
+      cops_string = match_captures[1]
       cops_string.split(/,\s*/).uniq.sort
     end
 
@@ -27,6 +38,11 @@ module RuboCop
 
     def range
       comment.location.expression
+    end
+
+    # Returns match captures to directive comment pattern
+    def match_captures
+      @match_captures ||= comment.text.match(DIRECTIVE_COMMENT_REGEXP)&.captures
     end
   end
 end
