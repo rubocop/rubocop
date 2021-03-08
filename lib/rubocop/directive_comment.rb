@@ -35,6 +35,11 @@ module RuboCop
       cops_string.split(/,\s*/).uniq.sort
     end
 
+    # Checks if this directive relates to single line
+    def single_line?
+      !self.class.before_comment(comment.text).empty?
+    end
+
     # Checks if this directive contains all the given cop names
     def match?(cop_names)
       cops == cop_names.uniq.sort

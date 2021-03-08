@@ -138,7 +138,7 @@ module RuboCop
     end
 
     def directive_on_comment_line?(comment)
-      comment.text[1..-1].match?(COMMENT_DIRECTIVE_REGEXP)
+      DirectiveComment.new(comment).single_line?
     end
 
     def each_directive
