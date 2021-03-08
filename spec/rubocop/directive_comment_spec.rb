@@ -128,4 +128,19 @@ RSpec.describe RuboCop::DirectiveComment do
       end
     end
   end
+
+  describe '#single_line?' do
+    subject { directive_comment.single_line? }
+
+    [
+      ['when relates to single line', 'def foo # rubocop:disable all', true],
+      ['when does NOT relate to single line', '# rubocop:disable all', false]
+    ].each do |example|
+      context example[0] do
+        let(:text) { example[1] }
+
+        it { is_expected.to eq example[2] }
+      end
+    end
+  end
 end
