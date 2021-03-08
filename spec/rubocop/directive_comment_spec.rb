@@ -7,6 +7,21 @@ RSpec.describe RuboCop::DirectiveComment do
   let(:comment_cop_names) { 'all' }
   let(:text) { "#rubocop:enable #{comment_cop_names}" }
 
+  describe '.before_comment' do
+    subject { described_class.before_comment(text) }
+
+    [
+      ['when line has code', 'def foo # rubocop:disable all', 'def foo '],
+      ['when line has NO code', '# rubocop:disable all', '']
+    ].each do |example|
+      context example[0] do
+        let(:text) { example[1] }
+
+        it { is_expected.to eq example[2] }
+      end
+    end
+  end
+
   describe '#cops' do
     subject(:cops) { directive_comment.cops }
 

@@ -79,8 +79,7 @@ module RuboCop
       end
 
       def line_length_without_directive(line)
-        before_comment, = line.split(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
-        before_comment.rstrip.length
+        DirectiveComment.before_comment(line).rstrip.length
       end
     end
   end
