@@ -17,6 +17,10 @@ module RuboCop
         .gsub(' ', '\s*')
     )
 
+    def self.before_comment(line)
+      line.split(DIRECTIVE_COMMENT_REGEXP).first
+    end
+
     attr_reader :comment
 
     def initialize(comment)
