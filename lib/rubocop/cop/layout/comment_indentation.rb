@@ -32,29 +32,30 @@ module RuboCop
       #     true
       #   end
       #
-      class CommentIndentation < Cop
+      class CommentIndentation < Base
         include Alignment
+        extend AutoCorrector
 
         MSG = 'Incorrect indentation detected (column %<column>d ' \
           'instead of %<correct_comment_indentation>d).'
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.comments.each { |comment| check(comment) }
         end
 
-        def autocorrect(comment)
-          corrections = autocorrect_preceding_comments(comment) <<
-                        autocorrect_one(comment)
-          ->(corrector) { corrections.each { |corr| corr.call(corrector) } }
-        end
-
         private
+
+        def autocorrect(corrector, comment)
+          autocorrect_preceding_comments(corrector, comment)
+
+          autocorrect_one(corrector, comment)
+        end
 
         # Corrects all comment lines that occur immediately before the given
         # comment and have the same indentation. This is to avoid a long chain
         # of correcting, saving the file, parsing and inspecting again, and
         # then correcting one more line, and so on.
-        def autocorrect_preceding_comments(comment)
+        def autocorrect_preceding_comments(corrector, comment)
           comments = processed_source.comments
           index = comments.index(comment)
 
@@ -62,7 +63,7 @@ module RuboCop
             .reverse_each
             .each_cons(2)
             .take_while { |below, above| should_correct?(above, below) }
-            .map { |_, above| autocorrect_one(above) }
+            .map { |_, above| autocorrect_one(corrector, above) }
         end
 
         def should_correct?(preceding_comment, reference_comment)
@@ -71,8 +72,8 @@ module RuboCop
           loc.line == ref_loc.line - 1 && loc.column == ref_loc.column
         end
 
-        def autocorrect_one(comment)
-          AlignmentCorrector.correct(processed_source, comment, @column_delta)
+        def autocorrect_one(corrector, comment)
+          AlignmentCorrector.correct(corrector, processed_source, comment, @column_delta)
         end
 
         def check(comment)
@@ -93,10 +94,9 @@ module RuboCop
             return if column == correct_comment_indentation
           end
 
-          add_offense(
-            comment,
-            message: message(column, correct_comment_indentation)
-          )
+          add_offense(comment, message: message(column, correct_comment_indentation)) do |corrector|
+            autocorrect(corrector, comment)
+          end
         end
 
         def message(column, correct_comment_indentation)

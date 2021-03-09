@@ -144,10 +144,11 @@ module RuboCop
       #     nested_first_param),
       #   second_param
       #
-      class FirstArgumentIndentation < Cop
+      class FirstArgumentIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Indent the first argument one step more than %<base>s.'
 
@@ -161,11 +162,11 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+        end
 
         def bare_operator?(node)
           node.operator_method? && !node.dot?
