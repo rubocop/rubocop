@@ -5,62 +5,63 @@ RSpec.describe RuboCop::CommentConfig do
 
   describe '#cop_enabled_at_line?' do
     let(:source) do
-      [
-        '# rubocop:disable Metrics/MethodLength with a comment why',
-        'def some_method',
-        "  puts 'foo'",                                      # 3
-        'end',
-        '# rubocop:enable Metrics/MethodLength',
-        '',
-        '# rubocop:disable all',
-        'some_method',                                       # 8
-        '# rubocop:enable all',
-        '',
-        "code = 'This is evil.'",
-        'eval(code) # rubocop:disable Security/Eval',
-        "puts 'This is not evil.'",                          # 12
-        '',
-        'def some_method',
-        "  puts 'Disabling indented single line' # rubocop:disable " \
-        'Layout/LineLength',
-        'end',
-        '',                                                  # 18
-        'string = <<END',
-        'This is a string not a real comment # rubocop:disable Style/Loop',
-        'END',
-        '',
-        'foo # rubocop:disable Style/MethodCallWithoutArgsParentheses', # 23
-        '',
-        '# rubocop:enable Lint/Void',
-        '',
-        '# rubocop:disable Style/For, Style/Not,Layout/IndentationStyle',
-        'foo',                                               # 28
-        '',
-        'class One',
-        '  # rubocop:disable Style/ClassVars',
-        '  @@class_var = 1',
-        'end',                                               # 33
-        '',
-        'class Two',
-        '  # rubocop:disable Style/ClassVars',
-        '  @@class_var = 2',
-        'end',                                               # 38
-        '# rubocop:enable Style/Not,Layout/IndentationStyle',
-        '# rubocop:disable Style/Send, Lint/RandOne some comment why',
-        '# rubocop:disable Layout/BlockAlignment some comment why',
-        '# rubocop:enable Style/Send, Layout/BlockAlignment but why?',
-        '# rubocop:enable Lint/RandOne foo bar!',            # 43
-        '# rubocop:disable Lint/EmptyInterpolation',
-        '"result is #{}"',
-        '# rubocop:enable Lint/EmptyInterpolation',
-        '# rubocop:disable RSpec/Example',
-        '# rubocop:disable Custom2/Number9',                 # 48
-        '',
-        '#=SomeDslDirective # rubocop:disable Layout/LeadingCommentSpace',
-        '# rubocop:disable RSpec/Rails/HttpStatus',
-        'it { is_expected.to have_http_status 200 }',        # 52
-        '# rubocop:enable RSpec/Rails/HttpStatus'
-      ].join("\n")
+      # rubocop:disable Lint/EmptyExpression, Lint/EmptyInterpolation
+      <<~RUBY
+        # rubocop:disable Metrics/MethodLength with a comment why
+        def some_method
+          puts 'foo'                                                        # 03
+        end
+        # rubocop:enable Metrics/MethodLength
+
+        # rubocop:disable all
+        some_method                                                         # 08
+        # rubocop:enable all
+
+        code = 'This is evil.'
+        eval(code) # rubocop:disable Security/Eval
+        puts 'This is not evil.'                                            # 12
+
+        def some_method
+          puts 'Disabling indented single line' # rubocop:disable Layout/LineLength
+        end
+                                                                            # 18
+        string = <<END
+        This is a string not a real comment # rubocop:disable Style/Loop
+        END
+
+        foo # rubocop:disable Style/MethodCallWithoutArgsParentheses        # 23
+
+        # rubocop:enable Lint/Void
+
+        # rubocop:disable Style/For, Style/Not,Layout/IndentationStyle
+        foo                                                                 # 28
+
+        class One
+          # rubocop:disable Style/ClassVars
+          @@class_var = 1
+        end                                                                 # 33
+
+        class Two
+          # rubocop:disable Style/ClassVars
+          @@class_var = 2
+        end                                                                 # 38
+        # rubocop:enable Style/Not,Layout/IndentationStyle
+        # rubocop:disable Style/Send, Lint/RandOne some comment why
+        # rubocop:disable Layout/BlockAlignment some comment why
+        # rubocop:enable Style/Send, Layout/BlockAlignment but why?
+        # rubocop:enable Lint/RandOne foo bar!                              # 43
+        # rubocop:disable Lint/EmptyInterpolation
+        "result is #{}"
+        # rubocop:enable Lint/EmptyInterpolation
+        # rubocop:disable RSpec/Example
+        # rubocop:disable Custom2/Number9                                   # 48
+
+        #=SomeDslDirective # rubocop:disable Layout/LeadingCommentSpace
+        # rubocop:disable RSpec/Rails/HttpStatus
+        it { is_expected.to have_http_status 200 }                          # 52
+        # rubocop:enable RSpec/Rails/HttpStatus
+      RUBY
+      # rubocop:enable Lint/EmptyExpression, Lint/EmptyInterpolation
     end
 
     def disabled_lines_of_cop(cop)
