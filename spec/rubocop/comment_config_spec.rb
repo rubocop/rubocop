@@ -180,4 +180,26 @@ RSpec.describe RuboCop::CommentConfig do
         .to eq([7, 8, 9, 50])
     end
   end
+
+  describe '#cop_disabled_line_ranges' do
+    subject(:range) { comment_config.cop_disabled_line_ranges }
+
+    let(:source) do
+      <<~RUBY
+        # rubocop:disable Metrics/MethodLength with a comment why'
+        def some_method
+          puts 'foo'
+        end
+        # rubocop:enable Metrics/MethodLength
+
+        code = 'This is evil.'
+        eval(code) # rubocop:disable Security/Eval
+        puts 'This is not evil.'
+      RUBY
+    end
+
+    it 'collects line ranges by disabled cops' do
+      expect(range).to eq({ 'Metrics/MethodLength' => [1..5], 'Security/Eval' => [8..8] })
+    end
+  end
 end
