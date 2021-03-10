@@ -201,10 +201,10 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
       expect_correction(<<~RUBY)
         begin
           begin
-            blah
-          rescue
-            1
-          end
+          blah
+        rescue
+          1
+        end
         rescue
           2
         end
