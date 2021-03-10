@@ -6,6 +6,8 @@ module RuboCop
   # cops it contains.
   class DirectiveComment
     # @api private
+    REDUNDANT_COP = 'Lint/RedundantCopDisableDirective'
+    # @api private
     COP_NAME_PATTERN = '([A-Z]\w+/)*(?:[A-Z]\w+)'
     # @api private
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
@@ -47,10 +49,29 @@ module RuboCop
       @match_captures ||= comment.text.match(DIRECTIVE_COMMENT_REGEXP)&.captures
     end
 
+    # Checks if this directive disables cops
+    def disabled?
+      %w[disable todo].include?(mode)
+    end
+
+    # Checks if all cops specified in this directive
+    def all_cops?
+      cops == 'all'
+    end
+
+    # Returns array of specified in this directive cop names
+    def cop_names
+      @cop_names ||= all_cops? ? all_cop_names : parsed_cop_names
+    end
+
     private
 
     def parsed_cop_names
       (cops || '').split(/,\s*/)
+    end
+
+    def all_cop_names
+      Cop::Registry.global.names - [REDUNDANT_COP]
     end
   end
 end

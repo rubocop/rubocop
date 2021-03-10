@@ -4,9 +4,6 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
-    # @api private
-    REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
-
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
 
     attr_reader :processed_source
@@ -130,33 +127,16 @@ module RuboCop
 
     def each_directive
       processed_source.comments.each do |comment|
-        directive = directive_parts(comment)
-        next unless directive
+        directive = DirectiveComment.new(comment)
+        next unless directive.cop_names
 
-        yield comment, *directive
+        # TODO: pass only directive
+        yield directive.comment, directive.cop_names, directive.disabled?
       end
-    end
-
-    def directive_parts(comment)
-      match_captures = DirectiveComment.new(comment).match_captures
-      return unless match_captures
-
-      switch, cops_string = match_captures
-
-      cop_names =
-        cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
-
-      disabled = %w[disable todo].include?(switch)
-
-      [cop_names, disabled]
     end
 
     def qualified_cop_name(cop_name)
       Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path)
-    end
-
-    def all_cop_names
-      @all_cop_names ||= Cop::Registry.global.names - [REDUNDANT_DISABLE]
     end
 
     def non_comment_token_line_numbers
