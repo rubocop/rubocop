@@ -9,6 +9,11 @@ module RuboCop
       # The `PreferredName` config option takes a `String`. It represents
       # the required name of the variable. Its default is `e`.
       #
+      # NOTE: This cop does not consider nested rescues because it cannot
+      # guarantee that the variable from the outer rescue is not used within
+      # the inner rescue (in which case, changing the inner variable would
+      # shadow the outer variable).
+      #
       # @example PreferredName: e (default)
       #   # bad
       #   begin
@@ -61,6 +66,11 @@ module RuboCop
         def on_resbody(node)
           offending_name = variable_name(node)
           return unless offending_name
+
+          # Handle nested rescues by only requiring the outer one to use the
+          # configured variable name, so that nested rescues don't use the same
+          # variable.
+          return if node.each_ancestor(:resbody).any?
 
           preferred_name = preferred_name(offending_name)
           return if preferred_name.to_sym == offending_name
