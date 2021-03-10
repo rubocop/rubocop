@@ -50,6 +50,8 @@ module RuboCop
 
         def class_name(class_node, node)
           if node.children.first.method?(:name)
+            return class_node.receiver.source if class_node.receiver
+
             class_node.source.delete('"').delete("'")
           else
             class_node.source
