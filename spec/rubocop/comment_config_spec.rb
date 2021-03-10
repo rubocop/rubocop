@@ -25,7 +25,7 @@ RSpec.describe RuboCop::CommentConfig do
           puts 'Disabling indented single line' # rubocop:disable Layout/LineLength
         end
                                                                             # 18
-        string = <<END
+        string = <<~END
         This is a string not a real comment # rubocop:disable Style/Loop
         END
 
@@ -224,6 +224,53 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'has values as arrays of extra enabled cops' do
       expect(extra.values.first).to eq ['Metrics/MethodLength', 'Security/Eval']
+    end
+  end
+
+  describe 'comment_only_line?' do
+    let(:source) do
+      <<~RUBY
+        # rubocop:disable Metrics/MethodLength                                01
+        def some_method
+          puts 'foo'
+        end
+        # rubocop:enable Metrics/MethodLength                                 05
+
+        code = 'This is evil.'
+        eval(code) # rubocop:disable Security/Eval
+      RUBY
+    end
+
+    context 'when line contains only comment' do
+      [1, 5].each do |line_number|
+        it 'returns true' do
+          expect(comment_config.comment_only_line?(line_number)).to be true
+        end
+      end
+    end
+
+    context 'when line is empty' do
+      [6].each do |line_number|
+        it 'returns true' do
+          expect(comment_config.comment_only_line?(line_number)).to be true
+        end
+      end
+    end
+
+    context 'when line contains only code' do
+      [2, 3, 4, 7].each do |line_number|
+        it 'returns false' do
+          expect(comment_config.comment_only_line?(line_number)).to be false
+        end
+      end
+    end
+
+    context 'when line contains code and comment' do
+      [8].each do |line_number|
+        it 'returns false' do
+          expect(comment_config.comment_only_line?(line_number)).to be false
+        end
+      end
     end
   end
 end
