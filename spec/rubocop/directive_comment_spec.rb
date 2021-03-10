@@ -22,42 +22,6 @@ RSpec.describe RuboCop::DirectiveComment do
     end
   end
 
-  describe '#cops' do
-    subject(:cops) { directive_comment.cops }
-
-    context 'all' do
-      let(:comment_cop_names) { 'all' }
-
-      it 'returns [all]' do
-        expect(cops).to eq(%w[all])
-      end
-    end
-
-    context 'single cop' do
-      let(:comment_cop_names) { 'Metrics/AbcSize' }
-
-      it 'returns [Metrics/AbcSize]' do
-        expect(cops).to eq(%w[Metrics/AbcSize])
-      end
-    end
-
-    context 'single cop duplicated' do
-      let(:comment_cop_names) { 'Metrics/AbcSize,Metrics/AbcSize' }
-
-      it 'returns [Metrics/AbcSize]' do
-        expect(cops).to eq(%w[Metrics/AbcSize])
-      end
-    end
-
-    context 'multiple cops' do
-      let(:comment_cop_names) { 'Style/Not, Metrics/AbcSize' }
-
-      it 'returns the cops in alphabetical order' do
-        expect(cops).to eq(%w[Metrics/AbcSize Style/Not])
-      end
-    end
-  end
-
   describe '#match?' do
     subject(:match) { directive_comment.match?(cop_names) }
 
@@ -105,6 +69,15 @@ RSpec.describe RuboCop::DirectiveComment do
 
     context 'duplicate names' do
       let(:cop_names) { %w[Metrics/AbcSize Metrics/AbcSize Metrics/PerceivedComplexity Style/Not] }
+
+      it 'returns true' do
+        expect(match).to eq(true)
+      end
+    end
+
+    context 'all' do
+      let(:comment_cop_names) { 'all' }
+      let(:cop_names) { %w[all] }
 
       it 'returns true' do
         expect(match).to eq(true)
