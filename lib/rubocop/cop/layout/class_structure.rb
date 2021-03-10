@@ -137,12 +137,6 @@ module RuboCop
         include VisibilityHelp
         extend AutoCorrector
 
-        HUMANIZED_NODE_TYPE = {
-          casgn: 'constants',
-          defs: 'class_methods',
-          sclass: 'class_singleton'
-        }.freeze
-
         MSG = '`%<category>s` is supposed to appear before `%<previous>s`.'
 
         # @!method dynamic_constant?(node)
@@ -187,10 +181,19 @@ module RuboCop
         # @return [Array<Node>] class elements
         def classify_all(class_node)
           @classification = {}
-          class_elements(class_node).each do |node|
-            classification = complete_classification(node, classify(node))
+          @classification_index = {}
+          elements = class_elements(class_node)
+          elements.each do |node|
+            classification = classify(node)
             @classification[node] = classification
+            Array(classification[:names]).each do |name|
+              @classification_index[name] = node
+            end
           end
+          @classification.each do |node, classification|
+            complete_classification(node, classification)
+          end
+          elements
         end
 
         def complete_classification(node, classification)
@@ -200,8 +203,6 @@ module RuboCop
           visibility_key = "#{visibility}_#{key}"
           classification[:group_order] =
             expected_order.index(visibility_key) || expected_order.index(key)
-
-          classification
         end
 
         # @return [Integer | nil]
@@ -219,9 +220,9 @@ module RuboCop
           when :send
             classify_macro(node) unless node.receiver
           when :def
-            { category: classify_def(node) }
+            { category: classify_def(node), names: node.method_name }
           else
-            { category: humanize_node(node) }
+            humanize_node(node)
           end || {}
         end
 
@@ -243,6 +244,9 @@ module RuboCop
           case name
           when :public, :protected, :private
             classify_visibility_macro(node)
+          when :private_constant
+            affected_nodes = set_visibility(:private, node.arguments)
+            return { visibility: :private, category: 'constants' } unless affected_nodes.empty?
           end || { category: macro_name_to_category(name) }
         end
 
@@ -252,6 +256,27 @@ module RuboCop
           return unless args.size == 1 && arg.send_type? && !arg.receiver
 
           { visibility: node.method_name, category: macro_name_to_category(arg.method_name) }
+        end
+
+        # @return [Array<Node>] affected nodes
+        def set_visibility(visibility, arg_nodes)
+          symbols = args_to_symbol_literals(arg_nodes)
+          affected = @classification_index.values_at(*symbols).compact
+          affected.each do |node|
+            @classification[node][:visibility] = visibility
+          end
+        end
+
+        # Ignores not literal values
+        # @return [Array<Symbol>]
+        def args_to_symbol_literals(arg_nodes)
+          arg_nodes.flat_map do |arg|
+            case arg.type
+            when :sym, :str then arg.value.to_sym
+            when :array then args_to_symbol_literals(arg.children)
+            else []
+            end
+          end
         end
 
         def macro_name_to_category(name)
@@ -280,9 +305,14 @@ module RuboCop
             dynamic_constant?(node)
         end
 
-        # @return [String]
+        # @return [Hash]
         def humanize_node(node)
-          HUMANIZED_NODE_TYPE[node.type]
+          case node.type
+          when :casgn then { category: 'constants', names: node.children[1] }
+          when :defs then { category: 'class_methods', names: node.method_name }
+          when :sclass then { category: 'class_singleton' }
+          else {}
+          end
         end
 
         def source_range_with_comment(node)
