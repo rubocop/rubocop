@@ -391,6 +391,59 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         RUBY
       end
     end
+
+    context 'with multiple branches' do
+      it 'registers and corrects each offense' do
+        expect_offense(<<~RUBY)
+          begin
+            something
+          rescue MyException => exc
+                                ^^^ Use `e` instead of `exc`.
+            # do something
+          rescue OtherException => exc
+                                   ^^^ Use `e` instead of `exc`.
+            # do something else
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          begin
+            something
+          rescue MyException => e
+            # do something
+          rescue OtherException => e
+            # do something else
+          end
+        RUBY
+      end
+    end
+
+    context 'with nested rescues' do
+      it 'handles it' do
+        expect_offense(<<~RUBY)
+          begin
+          rescue StandardError => e1
+                                  ^^ Use `e` instead of `e1`.
+            begin
+              log(e1)
+            rescue StandardError => e2
+              log(e1, e2)
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          begin
+          rescue StandardError => e
+            begin
+              log(e)
+            rescue StandardError => e2
+              log(e, e2)
+            end
+          end
+        RUBY
+      end
+    end
   end
 
   context 'with the `PreferredName` setup' do
