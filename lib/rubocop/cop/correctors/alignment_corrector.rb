@@ -12,7 +12,7 @@ module RuboCop
       class << self
         attr_reader :processed_source
 
-        def correct(processed_source, node, column_delta)
+        def correct(corrector, processed_source, node, column_delta)
           return unless node
 
           @processed_source = processed_source
@@ -21,11 +21,8 @@ module RuboCop
 
           taboo_ranges = inside_string_ranges(node)
 
-          lambda do |corrector|
-            each_line(expr) do |line_begin_pos|
-              autocorrect_line(corrector, line_begin_pos, expr, column_delta,
-                               taboo_ranges)
-            end
+          each_line(expr) do |line_begin_pos|
+            autocorrect_line(corrector, line_begin_pos, expr, column_delta, taboo_ranges)
           end
         end
 

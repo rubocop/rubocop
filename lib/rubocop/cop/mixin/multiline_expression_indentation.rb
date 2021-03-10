@@ -91,9 +91,10 @@ module RuboCop
       end
 
       def incorrect_style_detected(range, node, lhs, rhs)
-        add_offense(range, location: range, message: message(node, lhs, rhs)) do
-          if supported_styles.size > 2 ||
-             offending_range(node, lhs, rhs, alternative_style)
+        add_offense(range, message: message(node, lhs, rhs)) do |corrector|
+          autocorrect(corrector, range)
+
+          if supported_styles.size > 2 || offending_range(node, lhs, rhs, alternative_style)
             unrecognized_style_detected
           else
             opposite_style_detected

@@ -42,12 +42,13 @@ module RuboCop
       #     end
       #   end
       #   end
-      class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
+      class IndentationWidth < Base # rubocop:disable Metrics/ClassLength
         include EndKeywordAlignment
         include Alignment
         include CheckAssignment
         include IgnoredPattern
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
               'spaces for%<name>s indentation.'
@@ -145,11 +146,11 @@ module RuboCop
           check_if(node, node.body, node.else_branch, base.loc)
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def check_members(base, members)
           check_indentation(base, select_check_member(members.first))
@@ -280,8 +281,9 @@ module RuboCop
           name = style == 'normal' ? '' : " #{style}"
           message = message(configured_indentation_width, indentation, name)
 
-          add_offense(node, location: offending_range(body_node, indentation),
-                            message: message)
+          add_offense(offending_range(body_node, indentation), message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def message(configured_indentation_width, indentation, name)

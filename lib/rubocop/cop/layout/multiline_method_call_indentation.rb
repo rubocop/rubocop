@@ -46,10 +46,11 @@ module RuboCop
       #                  .a
       #                  .b
       #                  .c
-      class MultilineMethodCallIndentation < Cop
+      class MultilineMethodCallIndentation < Base
         include ConfigurableEnforcedStyle
         include Alignment
         include MultilineExpressionIndentation
+        extend AutoCorrector
 
         def validate_config
           return unless style == :aligned && cop_config['IndentationWidth']
@@ -61,11 +62,11 @@ module RuboCop
                 '`EnforcedStyle` is `indented`.'
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def relevant_node?(send_node)
           send_node.loc.dot # Only check method calls with dot operator
