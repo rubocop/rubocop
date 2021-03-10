@@ -186,7 +186,7 @@ RSpec.describe RuboCop::CommentConfig do
 
     let(:source) do
       <<~RUBY
-        # rubocop:disable Metrics/MethodLength with a comment why'
+        # rubocop:disable Metrics/MethodLength with a comment why
         def some_method
           puts 'foo'
         end
@@ -200,6 +200,30 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'collects line ranges by disabled cops' do
       expect(range).to eq({ 'Metrics/MethodLength' => [1..5], 'Security/Eval' => [8..8] })
+    end
+  end
+
+  describe '#extra_enabled_comments' do
+    subject(:extra) { comment_config.extra_enabled_comments }
+
+    let(:source) do
+      <<~RUBY
+        # rubocop:enable Metrics/MethodLength, Security/Eval
+        def some_method
+          puts 'foo'
+        end
+      RUBY
+    end
+
+    it 'has keys as instances of Parser::Source::Comment for extra enabled comments' do
+      key = extra.keys.first
+
+      expect(key.is_a?(Parser::Source::Comment)).to be true
+      expect(key.text).to eq '# rubocop:enable Metrics/MethodLength, Security/Eval'
+    end
+
+    it 'has values as arrays of extra enabled cops' do
+      expect(extra.values.first).to eq ['Metrics/MethodLength', 'Security/Eval']
     end
   end
 end
