@@ -54,7 +54,7 @@ in your `Gemfile`:
 gem 'rubocop', '~> 1.11', require: false
 ```
 
-See [versioning](https://docs.rubocop.org/rubocop/1.0/versioning.html) for further details.
+See [our versioning policy](https://docs.rubocop.org/rubocop/versioning.html) for further details.
 
 ## Quickstart
 
