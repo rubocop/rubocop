@@ -116,4 +116,59 @@ RSpec.describe RuboCop::DirectiveComment do
       end
     end
   end
+
+  describe '#disabled?' do
+    subject { directive_comment.disabled? }
+
+    [
+      ['when disable', '# rubocop:disable all', true],
+      ['when enable', '# rubocop:enable Foo/Bar', false],
+      ['when todo', '# rubocop:todo all', true]
+    ].each do |example|
+      context example[0] do
+        let(:text) { example[1] }
+
+        it { is_expected.to eq example[2] }
+      end
+    end
+  end
+
+  describe '#all_cops?' do
+    subject { directive_comment.all_cops? }
+
+    [
+      ['when mentioned all', '# rubocop:disable all', true],
+      ['when mentioned specific cops', '# rubocop:enable Foo/Bar', false]
+    ].each do |example|
+      context example[0] do
+        let(:text) { example[1] }
+
+        it { is_expected.to eq example[2] }
+      end
+    end
+  end
+
+  describe '#cop_names' do
+    subject(:cop_names) { directive_comment.cop_names }
+
+    context 'when all cops mentioned' do
+      let(:comment_cop_names) { 'all' }
+      let(:global) { instance_double(RuboCop::Cop::Registry, names: names) }
+      let(:names) { %w[all_names Lint/RedundantCopDisableDirective] }
+
+      before { allow(RuboCop::Cop::Registry).to receive(:global).and_return(global) }
+
+      it 'returns all cop names except redundant' do
+        expect(cop_names).to eq(%w[all_names])
+      end
+    end
+
+    context 'when cop specified' do
+      let(:comment_cop_names) { 'Foo/Bar' }
+
+      it 'returns parsed cop names' do
+        expect(cop_names).to eq(%w[Foo/Bar])
+      end
+    end
+  end
 end
