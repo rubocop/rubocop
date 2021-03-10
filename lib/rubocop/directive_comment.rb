@@ -21,18 +21,11 @@ module RuboCop
       line.split(DIRECTIVE_COMMENT_REGEXP).first
     end
 
-    attr_reader :comment
+    attr_reader :comment, :mode, :cops
 
     def initialize(comment)
       @comment = comment
-    end
-
-    # Return all the cops specified in the directive
-    def cops
-      return unless match_captures
-
-      cops_string = match_captures[1]
-      cops_string.split(/,\s*/).uniq.sort
+      @mode, @cops = match_captures
     end
 
     # Checks if this directive relates to single line
@@ -42,7 +35,7 @@ module RuboCop
 
     # Checks if this directive contains all the given cop names
     def match?(cop_names)
-      cops == cop_names.uniq.sort
+      parsed_cop_names.uniq.sort == cop_names.uniq.sort
     end
 
     def range
@@ -52,6 +45,12 @@ module RuboCop
     # Returns match captures to directive comment pattern
     def match_captures
       @match_captures ||= comment.text.match(DIRECTIVE_COMMENT_REGEXP)&.captures
+    end
+
+    private
+
+    def parsed_cop_names
+      (cops || '').split(/,\s*/)
     end
   end
 end
