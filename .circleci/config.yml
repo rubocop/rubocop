@@ -187,10 +187,7 @@ jobs:
   # JRuby 9.2
   jruby-9.2-spec:
     docker:
-      # FIXME: Workaround for JRuby 9.2.15.0.
-      # Please specify `circleci/jruby:9.2` when the following issue will be resolved.
-      # https://github.com/jruby/jruby/issues/6581
-      - image: circleci/jruby:9.2.14
+      - image: circleci/jruby:9.2
     environment:
       <<: *common_env
       <<: *jruby_env
@@ -198,10 +195,7 @@ jobs:
       *spec_steps
   jruby-9.2-ascii_spec:
     docker:
-      # FIXME: Workaround for JRuby 9.2.15.0.
-      # Please specify `circleci/jruby:9.2` when the following issue will be resolved.
-      # https://github.com/jruby/jruby/issues/6581
-      - image: circleci/jruby:9.2.14
+      - image: circleci/jruby:9.2
     environment:
       <<: *common_env
       <<: *jruby_env
@@ -209,10 +203,7 @@ jobs:
       *ascii_spec_steps
   jruby-9.2-rubocop:
     docker:
-      # FIXME: Workaround for JRuby 9.2.15.0.
-      # Please specify `circleci/jruby:9.2` when the following issue will be resolved.
-      # https://github.com/jruby/jruby/issues/6581
-      - image: circleci/jruby:9.2.14
+      - image: circleci/jruby:9.2
     environment:
       <<: *common_env
       <<: *jruby_env
