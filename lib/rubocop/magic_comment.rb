@@ -47,7 +47,7 @@ module RuboCop
     end
 
     def valid_shareable_constant_value?
-      %w[none literal experimental_everything experimental_copy].include?(shareable_constant_values)
+      %w[none literal experimental_everything experimental_copy].include?(shareable_constant_value)
     end
 
     # Was a magic comment for the frozen string literal found?
