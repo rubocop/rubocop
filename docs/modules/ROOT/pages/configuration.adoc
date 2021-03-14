@@ -89,10 +89,11 @@ Other types, such as `AllCops` / `Include` (an array), are overridden by the
 child setting.
 
 Arrays override because if they were merged, there would be no way to
-remove elements in child files.
+remove elements in child files. An exception to this rule is `Exclude`, which
+is an array but is still merged because that is more convenient for most users.
 
-However, advanced users can still merge arrays using the `inherit_mode` setting.
-See "Merging arrays using inherit_mode" below.
+Whether individual array parameters are overridden or merged is controlled
+through the `inherit_mode` setting. See "Merging arrays using inherit_mode" below.
 
 === Inheriting from another configuration file in the project
 
@@ -193,6 +194,26 @@ value.
 This applies to explicit inheritance using `inherit_from` as well as implicit
 inheritance from https://github.com/rubocop/rubocop/blob/master/config/default.yml[the default configuration].
 
+The setting for `inherit_mode` in the default configuration is:
+
+[source,yaml]
+----
+inherit_mode:
+  merge:
+    - Exclude
+----
+
+This makes `Exclude` a special case, being merged by default even though it is
+an array. If this behavior is not desired, user configuration should have the
+following setting:
+
+[source,yaml]
+----
+inherit_mode:
+  override:
+    - Exclude
+----
+
 Given the following config:
 
 [source,yaml]
@@ -203,40 +224,36 @@ inherit_from:
 
 inherit_mode:
   merge:
-    - Exclude
+    - Include
 
 AllCops:
-  Exclude:
-    - 'generated/**/*.rb'
+  Include:
+    - '**/*.special_ext'
 
 Style/For:
-  Exclude:
-    - bar.rb
+  Include:
+    - Somefile
 ----
 
 [source,yaml]
 ----
 # .shared.yml
 Style/For:
-  Exclude:
-    - foo.rb
+  Include:
+    - Otherfile
 ----
 
 The list of ``Exclude``s for the `Style/For` cop in this example will be
-`['foo.rb', 'bar.rb']`. Similarly, the `AllCops:Exclude` list will contain all
-the default patterns plus the `+generated/**/*.rb+` entry that was added locally.
+`['Somefile', 'Otherfile']`. Similarly, the `AllCops:Exclude` list will contain all
+the default patterns plus the `+**/*.special_ext+` entry that was added locally.
 
-The directive can also be used on individual cop configurations to override
-the global setting.
+The `inherit_mode` directive can also be used on individual cop configurations
+to override the global setting.
 
 [source,yaml]
 ----
 inherit_from:
   - shared.yml
-
-inherit_mode:
-  merge:
-    - Exclude
 
 Style/For:
   inherit_mode:

@@ -35,7 +35,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     let(:configuration_keys) { config.keys }
 
     it 'has configuration for all cops' do
-      expect(configuration_keys).to match_all_cops
+      expect(configuration_keys - ['inherit_mode']).to match_all_cops
     end
 
     it 'has a nicely formatted description for all cops' do
@@ -79,8 +79,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
     end
 
     it 'sorts configuration keys alphabetically' do
-      expected = configuration_keys.sort
-      configuration_keys.each_with_index do |key, idx|
+      cop_keys = configuration_keys - ['inherit_mode']
+      expected = cop_keys.sort
+      cop_keys.each_with_index do |key, idx|
         expect(key).to eq expected[idx]
       end
     end

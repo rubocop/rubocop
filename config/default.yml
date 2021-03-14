@@ -1,5 +1,9 @@
 # Common configuration.
 
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   RubyInterpreters:
     - ruby

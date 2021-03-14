@@ -701,8 +701,6 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# Configuration parameters: AllowedConstants.',
          'Style/Documentation:',
          '  Exclude:',
-         "    - 'spec/**/*'", # Copied from default configuration
-         "    - 'test/**/*'", # Copied from default configuration
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
@@ -833,66 +831,78 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                                     'puts x'])
       end
 
-      it 'generates Excludes that appear in .rubocop.yml' do
-        create_file('.rubocop.yml', <<~YAML)
-          Layout/TrailingWhitespace:
-            Exclude:
-              - 'example1.rb'
-        YAML
-        expect(cli.run(['--auto-gen-config'])).to eq(0)
-        expect($stderr.string.chomp)
-          .to eq('`Layout/TrailingWhitespace: Exclude` in `.rubocop.yml` overrides a generated ' \
-                 '`Exclude` in `.rubocop_todo.yml`. Either remove ' \
-                 '`Layout/TrailingWhitespace: Exclude` or add `inherit_mode: merge: - Exclude`.')
-        expected = <<~YAML
-          Layout/TrailingWhitespace:
-            Exclude:
-              - 'example1.rb'
-              - 'example2.rb'
-        YAML
-        actual = IO.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
-        expect(actual.join).to eq(expected)
-
-        $stdout = StringIO.new
-        expect(cli.run(['--format', 'offenses'])).to eq(1)
-        expect($stdout.string.lines.grep(%r{/})).to eq(["1  Layout/TrailingWhitespace\n"])
-      end
-
-      shared_examples 'leaves out Excludes' do |merge_style, config|
-        it "leaves out Excludes that appear in .rubocop.yml but are merged #{merge_style}" do
-          create_file('.rubocop.yml', config)
+      context 'when inherit_mode is merge' do
+        it 'leaves out Excludes that appear in .rubocop.yml but are merged by default' do
+          create_file('.rubocop.yml', <<~YAML)
+            Layout/TrailingWhitespace:
+              Exclude:
+                - 'example1.rb'
+          YAML
           expect(cli.run(['--auto-gen-config'])).to eq(0)
-          expect($stderr.string).to eq('')
-          expected = <<~YAML
+          actual = IO.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+          expect(actual.join).to eq(<<~YAML)
             Layout/TrailingWhitespace:
               Exclude:
                 - 'example2.rb'
           YAML
-          actual = IO.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
-          expect(actual.join).to eq(expected)
 
           expect(cli.run([])).to eq(0)
         end
       end
 
-      include_examples 'leaves out Excludes', 'globally', <<~YAML
-        inherit_mode:
-          merge:
-            - Exclude
+      context 'when inherit_mode is override' do
+        shared_examples 'generates Excludes' do
+          it 'generates Excludes that appear in .rubocop.yml' do
+            expect(cli.run(['--auto-gen-config'])).to eq(0)
+            expect($stderr.string.chomp)
+              .to eq('`Layout/TrailingWhitespace: Exclude` in `.rubocop.yml` overrides a ' \
+                     'generated `Exclude` in `.rubocop_todo.yml` due to configuration ' \
+                     '`inherit_mode: override: - Exclude`.')
+            expected = <<~YAML
+              Layout/TrailingWhitespace:
+                Exclude:
+                  - 'example1.rb'
+                  - 'example2.rb'
+            YAML
+            actual = IO.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+            expect(actual.join).to eq(expected)
 
-        Layout/TrailingWhitespace:
-          Exclude:
-            - 'example1.rb'
-      YAML
-      include_examples 'leaves out Excludes', 'for the cop', <<~YAML
-        Layout/TrailingWhitespace:
-          inherit_mode:
-            merge:
-              - Exclude
+            $stdout = StringIO.new
+            expect(cli.run(['--format', 'offenses'])).to eq(1)
+            expect($stdout.string.lines.grep(%r{/})).to eq(["1  Layout/TrailingWhitespace\n"])
+          end
+        end
 
-          Exclude:
-            - 'example1.rb'
-      YAML
+        context 'on the top level' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              inherit_mode:
+                override:
+                  - Exclude
+              Layout/TrailingWhitespace:
+                Exclude:
+                  - 'example1.rb'
+            YAML
+          end
+
+          include_examples 'generates Excludes'
+        end
+
+        context 'for one cop' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              Layout/TrailingWhitespace:
+                inherit_mode:
+                  override:
+                    - Exclude
+                Exclude:
+                  - 'example1.rb'
+            YAML
+          end
+
+          include_examples 'generates Excludes'
+        end
+      end
     end
 
     it 'does not generate configuration for the Syntax cop' do
@@ -1071,8 +1081,6 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# Configuration parameters: AllowedConstants.',
          'Style/Documentation:',
          '  Exclude:',
-         "    - 'spec/**/*'", # Copied from default configuration
-         "    - 'test/**/*'", # Copied from default configuration
          "    - 'example2.rb'",
          '',
          '# Configuration parameters: AllowedVariables.',

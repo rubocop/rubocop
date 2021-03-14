@@ -929,7 +929,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('file.rb', 'x=0') # Included by default
       create_file('example', 'x=0')
       create_file('regexp', 'x=0')
-      create_file('vendor/bundle/ruby/2.4.0/gems/backports-3.6.8/.irbrc', 'x=0')
+      create_file('vendor/bundle/ruby/2.4.0/gems/backports-3.6.8/.irbrc', # Excluded by default
+                  'x=0')
+      create_file('junk/file.rb', 'x=0') # Excluded in .rubocop.yml
       create_file('.dot1/file.rb', 'x=0') # Hidden but explicitly included
       create_file('.dot2/file.rb', 'x=0') # Hidden, excluded by default
       create_file('.dot3/file.rake', 'x=0') # Hidden, not included by wildcard
@@ -943,7 +945,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             - !ruby/regexp /regexp$/
             - .dot1/**/*
           Exclude:
-            - vendor/bundle/**/*
+            - junk/**/*
       YAML
       expect(cli.run(%w[--format files])).to eq(1)
       expect($stderr.string).to eq('')
@@ -968,6 +970,27 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offenses detected',
                 ''].join("\n"))
+    end
+
+    it 'honors per cop Exclude settings' do
+      src = <<~RUBY
+        f do
+          puts 1
+          puts 2
+          puts 3
+        end
+      RUBY
+      create_file('example.rb', src)
+      create_file('example.gemspec', src) # excluded for the cop in default.yml
+      create_file('example.ruby', src) # excluded for the cop here
+      create_file('.rubocop.yml', <<~YAML)
+        Metrics/BlockLength:
+          Max: 2
+          Exclude:
+            - '**/*.ruby'
+      YAML
+      expect(cli.run(%w[--format files --only Metrics/BlockLength])).to eq(1)
+      expect($stdout.string).to eq([File.expand_path('example.rb'), ''].join("\n"))
     end
 
     it 'only reads configuration in explicitly included hidden directories' do

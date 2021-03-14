@@ -119,15 +119,12 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
        '# Offense count: 2',
        'Test/Cop1:',
        '  Exclude:',
-       "    - 'Gemfile'",
        "    - 'test_a.rb'",
        "    - 'test_b.rb'",
        '',
        '# Offense count: 1',
        'Test/Cop2:',
        '  Exclude:',
-       "    - '**/*.blah'",
-       "    - !ruby/regexp /.*/bar/*/foo\.rb$/",
        "    - 'test_a.rb'",
        ''].join("\n")
     end

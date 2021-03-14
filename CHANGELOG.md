@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#9325](https://github.com/rubocop/rubocop/issues/9325): Make the `Exclude` configuration parameter merge by default. ([@jonas054][])
+
 ## 1.11.0 (2021-03-01)
 
 ### New features
