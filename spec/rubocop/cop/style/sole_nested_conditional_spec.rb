@@ -428,6 +428,22 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'does not register an offense when using nested modifier on value assigned in single condition' do
+    expect_no_offenses(<<~RUBY)
+      if var = foo
+        do_something if var
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using nested modifier on value assigned in multiple conditions' do
+    expect_no_offenses(<<~RUBY)
+      if cond && var = foo
+        do_something if var
+      end
+    RUBY
+  end
+
   context 'when the inner condition has a send node without parens' do
     context 'in guard style' do
       it 'registers an offense and corrects' do

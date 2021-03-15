@@ -43,6 +43,7 @@ module RuboCop
           return if node.ternary? || node.else? || node.elsif?
 
           if_branch = node.if_branch
+          return if use_variable_assignment_in_condition?(node.condition, if_branch)
           return unless offending_branch?(if_branch)
 
           message = format(MSG, conditional_type: node.keyword)
@@ -52,6 +53,21 @@ module RuboCop
         end
 
         private
+
+        def use_variable_assignment_in_condition?(condition, if_branch)
+          assigned_variables = assigned_variables(condition)
+
+          assigned_variables && if_branch&.if_type? &&
+            assigned_variables.include?(if_branch.condition.source)
+        end
+
+        def assigned_variables(condition)
+          assigned_variables = condition.assignment? ? [condition.children.first.to_s] : []
+
+          assigned_variables + condition.descendants.select(&:assignment?).map do |node|
+            node.children.first.to_s
+          end
+        end
 
         def offending_branch?(branch)
           return false unless branch
