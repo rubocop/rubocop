@@ -195,11 +195,50 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `begin` for or assignment' do
+  it 'registers and corrects an offense when using `begin` with single statement for or assignment' do
+    expect_offense(<<~RUBY)
+      var ||= begin
+              ^^^^^ Redundant `begin` block detected.
+        foo
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var ||= foo
+
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with single statement that called a block for or assignment' do
+    expect_offense(<<~RUBY)
+      var ||= begin
+              ^^^^^ Redundant `begin` block detected.
+        foo do |arg|
+          bar
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var ||= foo do |arg|
+          bar
+        end
+
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with multiple statement for or assignment' do
     expect_no_offenses(<<~RUBY)
       var ||= begin
         foo
         bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with no statements for or assignment' do
+    expect_no_offenses(<<~RUBY)
+      var ||= begin
       end
     RUBY
   end

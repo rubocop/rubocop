@@ -63,6 +63,7 @@ module RuboCop
       #     end
       #   end
       class RedundantBegin < Base
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Redundant `begin` block detected.'
@@ -95,10 +96,24 @@ module RuboCop
         private
 
         def register_offense(node)
-          add_offense(node.loc.begin) do |corrector|
-            corrector.remove(node.loc.begin)
+          offense_range = node.loc.begin
+
+          add_offense(offense_range) do |corrector|
+            if any_ancestor_assignment_node?(node)
+              replace_begin_with_statement(corrector, offense_range, node)
+            else
+              corrector.remove(offense_range)
+            end
+
             corrector.remove(node.loc.end)
           end
+        end
+
+        def replace_begin_with_statement(corrector, offense_range, node)
+          first_child = node.children.first
+
+          corrector.replace(offense_range, first_child.source)
+          corrector.remove(range_between(offense_range.end_pos, first_child.source_range.end_pos))
         end
 
         def empty_begin?(node)
@@ -114,8 +129,16 @@ module RuboCop
         def valid_context_using_only_begin?(node)
           parent = node.parent
 
-          node.each_ancestor.any?(&:assignment?) || parent&.post_condition_loop? ||
+          valid_begin_assignment?(node) || parent&.post_condition_loop? ||
             parent&.send_type? || parent&.operator_keyword?
+        end
+
+        def valid_begin_assignment?(node)
+          any_ancestor_assignment_node?(node) && !node.children.one?
+        end
+
+        def any_ancestor_assignment_node?(node)
+          node.each_ancestor.any?(&:assignment?)
         end
       end
     end

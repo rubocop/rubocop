@@ -39,9 +39,8 @@ module RuboCop
 
             # Shortcut to `loc.expression`
             def expression
-              @expression ||= begin
-                origin.adjust(begin_pos: start_index, end_pos: start_index + full_length)
-              end
+              end_pos = start_index + full_length
+              @expression ||= origin.adjust(begin_pos: start_index, end_pos: end_pos)
             end
           end
 
@@ -60,9 +59,7 @@ module RuboCop
           #
           # Please open issue if you need other locations
           def loc
-            @loc ||= begin
-              Map.new(expression, **build_location)
-            end
+            @loc ||= Map.new(expression, **build_location)
           end
 
           private
