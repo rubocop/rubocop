@@ -9,6 +9,33 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         "#{}"
       RUBY
     end
+
+    it 'accepts when using access modifier at the top level' do
+      expect_no_offenses(<<~'RUBY')
+        public
+
+        def foo
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense when using access modifier and dedented method definition ' \
+       'at the top level' do
+      expect_offense(<<~'RUBY')
+        public
+
+          def foo
+          ^^^^^^^ Inconsistent indentation detected.
+          end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        public
+
+        def foo
+        end
+      RUBY
+    end
   end
 
   context 'with if statement' do
