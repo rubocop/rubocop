@@ -199,6 +199,50 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'registers and corrects when using guard clause is after `rubocop:disable` comment' do
+    expect_offense(<<~RUBY)
+      def foo
+        return if condition
+        ^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        # rubocop:disable Department/Cop
+        bar
+        # rubocop:enable Department/Cop
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        return if condition
+
+        # rubocop:disable Department/Cop
+        bar
+        # rubocop:enable Department/Cop
+      end
+    RUBY
+  end
+
+  it 'registers and corrects when using guard clause is after `rubocop:enable` comment' do
+    expect_offense(<<~RUBY)
+      def foo
+        # rubocop:disable Department/Cop
+        return if condition
+        ^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        # rubocop:enable Department/Cop
+        bar
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        # rubocop:disable Department/Cop
+        return if condition
+        # rubocop:enable Department/Cop
+
+        bar
+      end
+    RUBY
+  end
+
   it 'accepts modifier if' do
     expect_no_offenses(<<~RUBY)
       def foo
@@ -266,6 +310,18 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
         raise ArgumentError, 'HTTP redirect too deep' if limit.zero?
 
         foobar
+      end
+    RUBY
+  end
+
+  it 'accepts using guard clause is after `rubocop:enable` comment' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        # rubocop:disable Department/Cop
+        return if condition
+        # rubocop:enable Department/Cop
+
+        bar
       end
     RUBY
   end
