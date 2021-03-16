@@ -2490,6 +2490,7 @@ Naming/MemoizedInstanceVariableName:
     - disallowed
     - required
     - optional
+  Safe: false
 
 Naming/MethodName:
   Description: 'Use the configured style when naming methods.'
