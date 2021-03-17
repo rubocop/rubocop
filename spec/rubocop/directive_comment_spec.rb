@@ -214,4 +214,20 @@ RSpec.describe RuboCop::DirectiveComment do
       end
     end
   end
+
+  describe '#disabled_next_line?' do
+    subject { directive_comment.disabled_next_line? }
+
+    [
+      ['when disabled next line', '# rubocop:disable-next-line all', true],
+      ['when disabled current line', 'def foo # rubocop:disable all', false],
+      ['when disabled few lines', '# rubocop:disable Foo/Bar', false]
+    ].each do |example|
+      context example[0] do
+        let(:text) { example[1] }
+
+        it { is_expected.to eq example[2] }
+      end
+    end
+  end
 end
