@@ -54,6 +54,11 @@ module RuboCop
       %w[disable todo].include?(mode)
     end
 
+    # Checks if this directive enables all cops
+    def enabled_all?
+      !disabled? && all_cops?
+    end
+
     # Checks if all cops specified in this directive
     def all_cops?
       cops == 'all'
@@ -62,6 +67,11 @@ module RuboCop
     # Returns array of specified in this directive cop names
     def cop_names
       @cop_names ||= all_cops? ? all_cop_names : parsed_cop_names
+    end
+
+    # Returns line number for directive
+    def line_number
+      comment.loc.expression.line
     end
 
     private

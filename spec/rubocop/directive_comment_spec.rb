@@ -171,4 +171,31 @@ RSpec.describe RuboCop::DirectiveComment do
       end
     end
   end
+
+  describe '#line_number' do
+    let(:comment) { instance_double(Parser::Source::Comment, text: text, loc: loc) }
+    let(:loc) { instance_double(Parser::Source::Map, expression: expression) }
+    let(:expression) { instance_double(Parser::Source::Range, line: 1) }
+
+    it 'returns line number for directive' do
+      expect(directive_comment.line_number).to be 1
+    end
+  end
+
+  describe '#enabled_all?' do
+    subject { directive_comment.enabled_all? }
+
+    [
+      ['when enabled all cops', 'def foo # rubocop:enable all', true],
+      ['when enabled specific cops', '# rubocop:enable Foo/Bar', false],
+      ['when disabled all cops', '# rubocop:disable all', false],
+      ['when disabled specific cops', '# rubocop:disable Foo/Bar', false]
+    ].each do |example|
+      context example[0] do
+        let(:text) { example[1] }
+
+        it { is_expected.to eq example[2] }
+      end
+    end
+  end
 end
