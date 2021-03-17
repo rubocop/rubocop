@@ -753,6 +753,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('Something.find(criteria: given)&.field')
     end
 
+    it 'accepts parens in safe operator calls' do
+      expect_no_offenses('foo&.[](bar)')
+    end
+
     context 'allowing parenthesis in chaining' do
       let(:cop_config) do
         {

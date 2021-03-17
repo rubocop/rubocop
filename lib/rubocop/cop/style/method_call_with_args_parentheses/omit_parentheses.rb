@@ -98,7 +98,7 @@ module RuboCop
 
           def call_with_ambiguous_arguments?(node)
             call_with_braced_block?(node) ||
-              call_as_argument_or_chain?(node) ||
+              call_in_safe_navigation_argument_or_chain?(node) ||
               hash_literal_in_arguments?(node) ||
               node.descendants.any? do |n|
                 ambigious_literal?(n) || logical_operator?(n) ||
@@ -111,10 +111,10 @@ module RuboCop
               node.block_node && node.block_node.braces?
           end
 
-          def call_as_argument_or_chain?(node)
-            node.parent &&
+          def call_in_safe_navigation_argument_or_chain?(node)
+            node.csend_type? || node.parent &&
               (node.parent.send_type? && !assigned_before?(node.parent, node) ||
-              node.parent.csend_type? || node.parent.super_type?)
+               node.parent.csend_type? || node.parent.super_type?)
           end
 
           def hash_literal_in_arguments?(node)
