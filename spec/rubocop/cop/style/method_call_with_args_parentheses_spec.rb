@@ -769,6 +769,16 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('Something.find(criteria: given)&.field')
     end
 
+    it 'accepts parens in operator method calls' do
+      expect_no_offenses(<<~RUBY)
+        data.[](value)
+        data&.[](value)
+        string.<<(even_more_string)
+        ruby.==(good)
+        ruby&.===(better)
+      RUBY
+    end
+
     context 'allowing parenthesis in chaining' do
       let(:cop_config) do
         {

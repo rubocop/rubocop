@@ -17,7 +17,7 @@ module RuboCop
           def omit_parentheses(node)
             return unless node.parenthesized?
             return if inside_endless_method_def?(node)
-            return if node.implicit_call?
+            return if syntax_like_method_call?(node)
             return if super_call_without_arguments?(node)
             return if allowed_camel_case_method_call?(node)
             return if legitimate_call_with_parentheses?(node)
@@ -45,6 +45,10 @@ module RuboCop
           def inside_endless_method_def?(node)
             # parens are required around arguments inside an endless method
             node.each_ancestor(:def).any?(&:endless?) && node.arguments.any?
+          end
+
+          def syntax_like_method_call?(node)
+            node.implicit_call? || node.operator_method?
           end
 
           def super_call_without_arguments?(node)
