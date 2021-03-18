@@ -2057,6 +2057,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when given --stdin' do
+      it 'does not show the suggestion' do
+        begin
+          $stdin = StringIO.new('p $/')
+          expect { cli.run(['--stdin', 'example.rb']) }.not_to suggest_extensions
+        ensure
+          $stdin = STDIN
+        end
+      end
+    end
+
     context 'when given a non-supported formatter' do
       it 'does not show the suggestion' do
         expect { cli.run(['example.rb', '--format', 'simple']) }.not_to suggest_extensions

@@ -43,7 +43,8 @@ module RuboCop
           # 2. When given RuboCop options that it doesn't make sense for
           # 3. For all formatters except specified in `INCLUDED_FORMATTERS'`
           ENV['CI'] ||
-            @options[:only] || @options[:debug] || @options[:list_target_files] || @options[:out] ||
+            @options[:only] || @options[:debug] || @options[:list_target_files] ||
+            @options[:out] || @options[:stdin] ||
             !INCLUDED_FORMATTERS.include?(current_formatter)
         end
 
