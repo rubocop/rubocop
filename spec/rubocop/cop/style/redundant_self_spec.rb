@@ -234,4 +234,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   it 'accepts a self receiver of methods also defined on `Kernel`' do
     expect_no_offenses('self.open')
   end
+
+  it 'accepts a self receiver on an lvalue of mlhs arguments' do
+    expect_no_offenses(<<~RUBY)
+      def do_something((a, b)) # This method expects Array that has 2 elements as argument.
+        self.a = a
+        self.b.some_method_call b
+      end
+    RUBY
+  end
 end
