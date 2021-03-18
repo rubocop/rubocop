@@ -144,8 +144,12 @@ module RuboCop
         end
 
         def on_argument(node)
-          name, = *node
-          @local_variables_scopes[node] << name
+          if node.mlhs_type?
+            on_args(node)
+          else
+            name, = *node
+            @local_variables_scopes[node] << name
+          end
         end
 
         def allow_self(node)
