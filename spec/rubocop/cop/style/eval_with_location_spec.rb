@@ -159,6 +159,17 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
     RUBY
   end
 
+  it 'registers an offense when using `#instance_eval` with a string argument in parentheses' do
+    expect_offense(<<~RUBY)
+      instance_eval('@foo = foo')
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Pass `__FILE__` and `__LINE__` to `instance_eval`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      instance_eval('@foo = foo', __FILE__, __LINE__)
+    RUBY
+  end
+
   it 'registers an offense when using `#class_eval` with an incorrect lineno' do
     expect_offense(<<~RUBY)
       C.class_eval <<-CODE, __FILE__, __LINE__

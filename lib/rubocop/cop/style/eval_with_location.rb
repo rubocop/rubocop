@@ -224,7 +224,7 @@ module RuboCop
 
           register_offense(node) do |corrector|
             line_str = missing_line(node, code)
-            corrector.insert_after(node.loc.expression.end, ", __FILE__, #{line_str}")
+            corrector.insert_after(node.last_argument.source_range.end, ", __FILE__, #{line_str}")
           end
         end
 
