@@ -150,7 +150,7 @@ module RuboCop
 
         def preferred_delimiters
           config.for_cop('Style/PercentLiteralDelimiters') \
-            ['PreferredDelimiters']['%r'].split('')
+            ['PreferredDelimiters']['%r'].chars
         end
 
         def correct_delimiters(node, corrector)
