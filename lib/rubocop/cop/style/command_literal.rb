@@ -165,7 +165,7 @@ module RuboCop
         end
 
         def preferred_delimiter
-          (command_delimiter || default_delimiter).split('')
+          (command_delimiter || default_delimiter).chars
         end
 
         def command_delimiter
