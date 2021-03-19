@@ -310,12 +310,20 @@ module RuboCop
         def indentation_to_check?(base_loc, body_node)
           return false if skip_check?(base_loc, body_node)
 
-          if %i[rescue ensure].include?(body_node.type)
+          if body_node.rescue_type?
+            check_rescue?(body_node)
+          elsif body_node.ensure_type?
             block_body, = *body_node
             return unless block_body
-          end
 
-          true
+            check_rescue?(block_body) if block_body.rescue_type?
+          else
+            true
+          end
+        end
+
+        def check_rescue?(rescue_node)
+          rescue_node.body
         end
 
         def skip_check?(base_loc, body_node)
