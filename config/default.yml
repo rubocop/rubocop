@@ -2063,6 +2063,10 @@ Lint/SymbolConversion:
   Description: 'Checks for unnecessary symbol conversions.'
   Enabled: pending
   VersionAdded: '1.9'
+  EnforcedStyle: strict
+  SupportedStyles:
+    - strict
+    - consistent
 
 Lint/Syntax:
   Description: 'Checks for syntax errors.'
