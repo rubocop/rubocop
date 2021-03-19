@@ -213,6 +213,46 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'accepts `rescue`/`ensure` after an empty body' do
+        expect_no_offenses(<<~RUBY)
+          begin
+          rescue
+            handle_error
+          ensure
+            something
+          end
+        RUBY
+      end
+
+      it 'accepts `rescue` after an empty def' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+          rescue
+            handle_error
+          end
+        RUBY
+      end
+
+      it 'accepts `ensure` after an empty def' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+          ensure
+            something
+          end
+        RUBY
+      end
+
+      it 'accepts `rescue`/`ensure` after an empty def' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+          rescue
+            handle_error
+          ensure
+            something
+          end
+        RUBY
+      end
+
       it 'does not raise any error with empty braces' do
         expect_no_offenses(<<~RUBY)
           if cond
@@ -1294,16 +1334,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
             puts 'do something error prone'
             ^{} Use 2 (not 0) spaces for indentation.
             rescue SomeException, SomeOther => e
-             puts 'wrongly intended error handling'
+             puts 'wrongly indented error handling'
             ^ Use 2 (not 1) spaces for indentation.
             rescue
-             puts 'wrongly intended error handling'
+             puts 'wrongly indented error handling'
             ^ Use 2 (not 1) spaces for indentation.
             else
-               puts 'wrongly intended normal case handling'
+               puts 'wrongly indented normal case handling'
             ^^^ Use 2 (not 3) spaces for indentation.
             ensure
-                puts 'wrongly intended common handling'
+                puts 'wrongly indented common handling'
             ^^^^ Use 2 (not 4) spaces for indentation.
             end
           end
@@ -1317,11 +1357,21 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           def my_func
             puts 'do something error prone'
           rescue SomeException
-           puts 'wrongly intended error handling'
+           puts 'wrongly indented error handling'
           ^ Use 2 (not 1) spaces for indentation.
           rescue
-           puts 'wrongly intended error handling'
+           puts 'wrongly indented error handling'
           ^ Use 2 (not 1) spaces for indentation.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def my_func
+            puts 'do something error prone'
+          rescue SomeException
+            puts 'wrongly indented error handling'
+          rescue
+            puts 'wrongly indented error handling'
           end
         RUBY
       end
@@ -1331,10 +1381,10 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           foo def self.my_func
             puts 'do something error prone'
           rescue SomeException
-           puts 'wrongly intended error handling'
+           puts 'wrongly indented error handling'
           ^ Use 2 (not 1) spaces for indentation.
           rescue
-           puts 'wrongly intended error handling'
+           puts 'wrongly indented error handling'
           ^ Use 2 (not 1) spaces for indentation.
           end
         RUBY

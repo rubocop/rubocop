@@ -1885,4 +1885,49 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(status).to eq(0)
     expect(source_file.read).to eq(source)
   end
+
+  it 'corrects indentation for a begin/rescue/else/ensure/end block properly' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def my_func
+        puts 'do something outside block'
+        begin
+        puts 'do something error prone'
+        rescue SomeException, SomeOther
+         puts 'wrongly indented error handling'
+        rescue StandardError
+         puts 'another wrongly indented error handling'
+        else
+           puts 'wrongly indented normal case handling'
+        ensure
+            puts 'wrongly indented common handling'
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '--auto-correct',
+        '--only',
+        'Layout/IndentationWidth,Layout/RescueEnsureAlignment,Layout/ElseAlignment'
+      ]
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      def my_func
+        puts 'do something outside block'
+        begin
+          puts 'do something error prone'
+        rescue SomeException, SomeOther
+          puts 'wrongly indented error handling'
+        rescue StandardError
+          puts 'another wrongly indented error handling'
+        else
+          puts 'wrongly indented normal case handling'
+        ensure
+          puts 'wrongly indented common handling'
+        end
+      end
+    RUBY
+  end
 end
