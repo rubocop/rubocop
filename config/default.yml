@@ -4496,6 +4496,7 @@ Style/StderrPuts:
 
 Style/StringChars:
   Description: 'Checks for uses of `String#split` with empty string or regexp literal argument.'
+  StyleGuide: '#string-chars'
   Enabled: pending
   Safe: false
   VersionAdded: '<<next>>'
