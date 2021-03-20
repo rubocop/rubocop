@@ -1,0 +1,1 @@
+* [#9625](https://github.com/rubocop/rubocop/pull/9625): Allow parentheses in yield arguments with `Style/MethodCallWithArgsParentheses` `EnforcedStyle: omit_parentheses` to fix invalid Ruby auto-correction. ([@gsamokovarov][])

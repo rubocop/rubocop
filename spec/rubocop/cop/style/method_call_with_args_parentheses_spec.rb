@@ -658,6 +658,11 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo &block')
     end
 
+    it 'accepts parens in yield argument method calls' do
+      expect_no_offenses('yield File.basepath(path)')
+      expect_no_offenses('yield path, File.basepath(path)')
+    end
+
     it 'accepts parens in super without args' do
       expect_no_offenses('super()')
     end

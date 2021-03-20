@@ -114,7 +114,7 @@ module RuboCop
           def call_as_argument_or_chain?(node)
             node.parent &&
               (node.parent.send_type? && !assigned_before?(node.parent, node) ||
-              node.parent.csend_type? || node.parent.super_type?)
+              node.parent.csend_type? || node.parent.super_type? || node.parent.yield_type?)
           end
 
           def hash_literal_in_arguments?(node)
