@@ -5,6 +5,7 @@ module RuboCop
     module Style
       class MethodCallWithArgsParentheses
         # Style omit_parentheses
+        # rubocop:disable Metrics/ModuleLength
         module OmitParentheses
           TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
           OMIT_MSG = 'Omit parentheses for method calls with arguments.'
@@ -12,6 +13,7 @@ module RuboCop
 
           private
 
+          # rubocop:disable Metrics/CyclomaticComplexity
           def omit_parentheses(node)
             return unless node.parenthesized?
             return if inside_endless_method_def?(node)
@@ -19,11 +21,13 @@ module RuboCop
             return if super_call_without_arguments?(node)
             return if allowed_camel_case_method_call?(node)
             return if legitimate_call_with_parentheses?(node)
+            return if allowed_string_interpolation_method_call?(node)
 
             add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
               auto_correct(corrector, node)
             end
           end
+          # rubocop:enable Metrics/CyclomaticComplexity
 
           def auto_correct(corrector, node)
             if parentheses_at_the_end_of_multiline_call?(node)
@@ -51,6 +55,11 @@ module RuboCop
             node.camel_case_method? &&
               (node.arguments.none? ||
               cop_config['AllowParenthesesInCamelCaseMethod'])
+          end
+
+          def allowed_string_interpolation_method_call?(node)
+            cop_config['AllowParenthesesInStringInterpolation'] &&
+              inside_string_interpolation?(node)
           end
 
           def parentheses_at_the_end_of_multiline_call?(node)
@@ -172,7 +181,12 @@ module RuboCop
             node.assignment? &&
               node.loc.operator.begin < target.loc.begin
           end
+
+          def inside_string_interpolation?(node)
+            node.ancestors.drop_while { |a| !a.begin_type? }.any?(&:dstr_type?)
+          end
         end
+        # rubocop:enable Metrics/ModuleLength
       end
     end
   end
