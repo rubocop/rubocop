@@ -171,7 +171,54 @@ module RuboCop
 
         alias on_sclass on_class
 
+        def initialize(*)
+          super
+          @symbolized_categories = categories.to_h do |key, values|
+            [key.to_sym, values.map(&:to_sym)]
+          end
+          @classifer = Utils::ClassChildrenClassifier.new(@symbolized_categories)
+          @expected_order_index = expected_order.map.with_index.to_h.transform_keys(&:to_sym)
+        end
+
+        def self.support_multiple_source?
+          true
+        end
+
         private
+
+        def classify_all(class_node)
+          @classification = @classifer.classify_children(class_node)
+          @classification.map do |node, classification|
+            node if complete_classification(node, classification)
+          end.compact
+        end
+
+        def complete_classification(_node, classification) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          return unless classification
+
+          categ = classification[:categories]
+          # post macros without a particular category and
+          # refering only to unknowns are ignored
+          # (e.g. `private :some_unknown_method`)
+          return if classification[:macro] == :post && categ.nil?
+
+          categ ||= classification[:group]
+          visibility = classification[:visibility]
+          classification[:group_order] = \
+            if categ.is_a?(Array)
+              all = categ.map do |name|
+                find_group_order(visibility, name)
+              end
+              classification[:macro] == :pre ? all.min : all.max
+            else
+              find_group_order(visibility, categ)
+            end
+        end
+
+        def find_group_order(visibility, categ)
+          visibility_categ = :"#{visibility}_#{categ}"
+          @expected_order_index[visibility_categ] || @expected_order_index[categ]
+        end
 
         # Autocorrect by swapping between two nodes autocorrecting them
         def autocorrect(corrector, node)
@@ -187,124 +234,11 @@ module RuboCop
           corrector.remove(current_range)
         end
 
-        # @return [Array<Node>] class elements
-        def classify_all(class_node)
-          @classification = {}
-          @classification_index = {}
-          elements = class_elements(class_node)
-          elements.each do |node|
-            classification = classify(node)
-            @classification[node] = classification
-            Array(classification[:names]).each do |name|
-              @classification_index[name] = node
-            end
-          end
-          @classification.each do |node, classification|
-            complete_classification(node, classification)
-          end
-          elements
-        end
-
-        def complete_classification(node, classification)
-          return classification unless (key = classification[:category])
-
-          visibility = classification[:visibility] || node_visibility(node)
-          visibility_key = "#{visibility}_#{key}"
-          classification[:group_order] =
-            expected_order.index(visibility_key) || expected_order.index(key)
-        end
-
         # @return [Integer | nil]
         def group_order(node)
-          @classification[node][:group_order]
-        end
+          return unless (c = @classification[node])
 
-        # Classifies a node to match with something in the {expected_order}
-        # @param node to be analysed
-        # @return [Hash] with keys `category` and `visibility`
-        def classify(node)
-          node = node.send_node if node.block_type?
-
-          case node.type
-          when :send
-            classify_macro(node) unless node.receiver
-          when :def
-            { category: classify_def(node), names: node.method_name }
-          else
-            humanize_node(node)
-          end || {}
-        end
-
-        def classify_def(node)
-          return 'initializer' if node.method?(:initialize)
-
-          'methods'
-        end
-
-        # Categorize a node according to the {expected_order}
-        # Try to match {categories} values against the node's method_name given
-        # also its visibility.
-        # @param node to be analysed.
-        # @return [String] with the key category or the `method_name` as string
-        def classify_macro(node) # rubocop:disable Metrics/CyclomaticComplexity
-          name = node.method_name
-          return VISIBILITY_CLASS[name]&.dup || { category: 'methods' } if node.def_modifier?
-
-          case name
-          when :public, :protected, :private, :public_class_method, :private_class_method
-            classify_visibility_macro(node)
-          when :private_constant
-            affected_nodes = set_visibility(:private, node.arguments)
-            return { visibility: :private, category: 'constants' } unless affected_nodes.empty?
-          end || { category: macro_name_to_category(name) }
-        end
-
-        def classify_visibility_macro(node)
-          args = node.arguments
-          arg, = args
-          return unless args.size == 1 && arg.send_type? && !arg.receiver
-
-          (VISIBILITY_CLASS[node.method_name] || {}).merge(
-            category: macro_name_to_category(arg.method_name)
-          )
-        end
-
-        # @return [Array<Node>] affected nodes
-        def set_visibility(visibility, arg_nodes)
-          symbols = args_to_symbol_literals(arg_nodes)
-          affected = @classification_index.values_at(*symbols).compact
-          affected.each do |node|
-            @classification[node][:visibility] = visibility
-          end
-        end
-
-        # Ignores not literal values
-        # @return [Array<Symbol>]
-        def args_to_symbol_literals(arg_nodes)
-          arg_nodes.flat_map do |arg|
-            case arg.type
-            when :sym, :str then arg.value.to_sym
-            when :array then args_to_symbol_literals(arg.children)
-            else []
-            end
-          end
-        end
-
-        def macro_name_to_category(name)
-          name = name.to_s
-          category, = categories.find { |_, names| names.include?(name) }
-          category || name
-        end
-
-        def class_elements(class_node)
-          elems = [class_node.body].compact
-
-          loop do
-            single = elems.first
-            return elems unless elems.size == 1 && (single.begin_type? || single.kwbegin_type?)
-
-            elems = single.children
-          end
+          c[:group_order]
         end
 
         def ignore_for_autocorrect?(node, sibling)
@@ -314,16 +248,6 @@ module RuboCop
           sibling_index.nil? ||
             index == sibling_index ||
             dynamic_constant?(node)
-        end
-
-        # @return [Hash]
-        def humanize_node(node)
-          case node.type
-          when :casgn then { category: 'constants', names: node.children[1] }
-          when :defs then { category: 'class_methods', names: node.method_name }
-          when :sclass then { category: 'class_singleton' }
-          else {}
-          end
         end
 
         def source_range_with_comment(node)
