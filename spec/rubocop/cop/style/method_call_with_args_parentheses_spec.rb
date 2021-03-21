@@ -467,6 +467,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense for parens in string interpolation' do
+      expect_offense(<<~'RUBY')
+        "#{t('no.parens')}"
+            ^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{t 'no.parens'}"
+      RUBY
+    end
+
     it 'register an offense in complex conditionals' do
       expect_offense(<<~RUBY)
         def foo
@@ -828,6 +839,22 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       it 'accepts parens for camel-case method names' do
         expect_no_offenses('Array(nil)')
       end
+    end
+  end
+
+  context 'allowing parens in string interpolation' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'omit_parentheses',
+        'AllowParenthesesInStringInterpolation' => true
+      }
+    end
+
+    it 'accepts parens for camel-case method names' do
+      expect_no_offenses(<<~'RUBY')
+        "#{t('this.is.good')}"
+        "#{t 'this.is.also.good'}"
+      RUBY
     end
   end
 

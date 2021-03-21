@@ -146,6 +146,22 @@ module RuboCop
       #
       #   # good
       #   Array 1
+      #
+      # @example AllowParenthesesInStringInterpolation: false (default)
+      #
+      #   # bad
+      #   "#{t('this.is.bad')}"
+      #
+      #   # good
+      #   "#{t 'this.is.better'}"
+      #
+      # @example AllowParenthesesInStringInterpolation: true
+      #
+      #   # good
+      #   "#{t('this.is.good')}"
+      #
+      #   # good
+      #   "#{t 'this.is.also.good'}"
       class MethodCallWithArgsParentheses < Base
         require_relative 'method_call_with_args_parentheses/omit_parentheses'
         require_relative 'method_call_with_args_parentheses/require_parentheses'
