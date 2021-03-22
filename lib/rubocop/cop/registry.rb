@@ -64,6 +64,11 @@ module RuboCop
         with(without_department.values.flatten)
       end
 
+      # @return [Boolean] Checks if given name is department
+      def department?(name)
+        departments.include? name.to_sym
+      end
+
       def contains_cop_matching?(names)
         cops.any? { |cop| cop.match?(names) }
       end

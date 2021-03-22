@@ -340,4 +340,14 @@ RSpec.describe RuboCop::Cop::Registry do
       ]
     )
   end
+
+  describe '#department?' do
+    it 'returns true for department name' do
+      expect(registry.department?('Lint')).to be true
+    end
+
+    it 'returns false for other names' do
+      expect(registry.department?('Foo')).to be false
+    end
+  end
 end
