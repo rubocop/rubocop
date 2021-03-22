@@ -184,6 +184,10 @@ module RuboCop
         cops.map(&:cop_name)
       end
 
+      def names_for_department(department)
+        cops.select { |cop| cop.department == department.to_sym }.map(&:cop_name)
+      end
+
       def ==(other)
         cops == other.cops
       end
