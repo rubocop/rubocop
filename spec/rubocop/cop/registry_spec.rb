@@ -350,4 +350,11 @@ RSpec.describe RuboCop::Cop::Registry do
       expect(registry.department?('Foo')).to be false
     end
   end
+
+  describe 'names_for_department' do
+    it 'returns array of cops for specified department' do
+      expect(registry.names_for_department('Lint'))
+        .to eq %w[Lint/BooleanSymbol Lint/DuplicateMethods]
+    end
+  end
 end
