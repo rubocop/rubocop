@@ -60,6 +60,10 @@ RSpec.describe RuboCop::CommentConfig do
         # rubocop:disable RSpec/Rails/HttpStatus
         it { is_expected.to have_http_status 200 }                          # 52
         # rubocop:enable RSpec/Rails/HttpStatus
+
+        # rubocop:disable-next-line Style/EmptyMethod
+        def foo                                                             # 56
+        end
       RUBY
       # rubocop:enable Lint/EmptyExpression, Lint/EmptyInterpolation
     end
@@ -172,6 +176,11 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'supports disabling cops on a comment line with an EOL comment' do
       expect(disabled_lines_of_cop('Layout/LeadingCommentSpace')).to eq([7, 8, 9, 50])
+    end
+
+    it 'supports disabling cops on next line' do
+      expect(disabled_lines_of_cop('Style/EmptyMethod'))
+        .to eq([7, 8, 9, 56])
     end
   end
 

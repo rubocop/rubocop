@@ -68,6 +68,8 @@ module RuboCop
       # Disabling cops after comments like `#=SomeDslDirective` does not related to single line
       if !comment_only_line?(directive.line_number) || directive.single_line?
         analyze_single_line(analysis, directive)
+      elsif directive.disabled_next_line?
+        analyze_next_line(analysis, directive)
       elsif directive.disabled?
         analyze_disabled(analysis, directive)
       else
@@ -79,6 +81,13 @@ module RuboCop
       return analysis unless directive.disabled?
 
       line = directive.line_number
+      start_line = analysis.start_line_number
+
+      CopAnalysis.new(analysis.line_ranges + [(line..line)], start_line)
+    end
+
+    def analyze_next_line(analysis, directive)
+      line = directive.line_number + 1
       start_line = analysis.start_line_number
 
       CopAnalysis.new(analysis.line_ranges + [(line..line)], start_line)
