@@ -105,6 +105,8 @@ module RuboCop
               corrected_method: correct_sym_method(to_method)
             )
             add_offense(node, message: message) do |corrector|
+              remove_parentheses(corrector, node) if node.parenthesized?
+
               corrector.replace(sym_node, correct_sym_method(to_method))
             end
           end
@@ -118,6 +120,11 @@ module RuboCop
         def correct_sym_method(to_method)
           body = format(CONVERSION_METHOD_CLASS_MAPPING[to_method], number_object: 'i')
           "{ |i| #{body} }"
+        end
+
+        def remove_parentheses(corrector, node)
+          corrector.replace(node.loc.begin, ' ')
+          corrector.remove(node.loc.end)
         end
 
         def ignore_receiver?(receiver)
