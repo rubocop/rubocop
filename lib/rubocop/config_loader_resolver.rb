@@ -62,7 +62,7 @@ module RuboCop
     # only cops from user configuration are enabled. If
     # AllCops::EnabledByDefault is true, it changes the Enabled params so that
     # only cops explicitly disabled in user configuration are disabled.
-    def merge_with_default(config, config_file, unset_nil:)
+    def merge_with_default(config, config_file, unset_nil:) # rubocop:disable Metrics/MethodLength
       default_configuration = ConfigLoader.default_configuration
 
       disabled_by_default = config.for_all_cops['DisabledByDefault']
@@ -77,8 +77,11 @@ module RuboCop
       config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
       override_enabled_for_disabled_departments(default_configuration, config)
 
-      opts = { inherit_mode: config['inherit_mode'] || {},
-               unset_nil: unset_nil }
+      opts = {
+        inherit_mode: merge_inherit_mode(default_configuration, config),
+        unset_nil: unset_nil
+      }
+
       Config.new(merge(default_configuration, config, **opts), config_file)
     end
 
@@ -155,13 +158,8 @@ module RuboCop
     end
 
     def warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
-      return unless duplicate_setting?(base_hash, derived_hash,
-                                       key, opts[:inherited_file])
-
-      inherit_mode = opts[:inherit_mode]['merge'] ||
-                     opts[:inherit_mode]['override']
-      return if base_hash[key].is_a?(Array) &&
-                inherit_mode && inherit_mode.include?(key)
+      return unless duplicate_setting?(base_hash, derived_hash, key, opts[:inherited_file])
+      return if should_union?(base_hash, key, opts[:inherit_mode])
 
       puts "#{PathUtil.smart_path(opts[:file])}: " \
            "#{opts[:cop_name]}:#{key} overrides " \
@@ -171,14 +169,23 @@ module RuboCop
     def determine_inherit_mode(hash, key)
       cop_cfg = hash[key]
       local_inherit = cop_cfg.delete('inherit_mode') if cop_cfg.is_a?(Hash)
-      local_inherit || hash['inherit_mode'] || {}
+      merge(merge_inherit_mode(ConfigLoader.default_configuration, hash),
+            local_inherit || {},
+            inherit_mode: { 'merge' => %w[merge override] })
+    end
+
+    def merge_inherit_mode(base_hash, derived_hash)
+      merge(base_hash['inherit_mode'] || {},
+            derived_hash['inherit_mode'] || {},
+            inherit_mode: { 'merge' => %w[merge override] })
     end
 
     def should_union?(base_hash, key, inherit_mode)
+      # If a key is listed in both merge and override, override takes precedence.
       base_hash[key].is_a?(Array) &&
         inherit_mode &&
-        inherit_mode['merge'] &&
-        inherit_mode['merge'].include?(key)
+        inherit_mode.fetch('merge', []).include?(key) &&
+        !inherit_mode.fetch('override', []).include?(key)
     end
 
     def merge_hashes?(base_hash, derived_hash, key)

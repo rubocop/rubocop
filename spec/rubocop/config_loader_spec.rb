@@ -164,7 +164,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
             Exclude:
-              - vendor/**
+              - special/**/*
         YAML
 
         create_file(file_path, <<~YAML)
@@ -175,7 +175,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'gets AllCops/Exclude from the highest directory level' do
         excludes = configuration_from_file['AllCops']['Exclude']
-        expect(excludes).to eq([File.expand_path('vendor/**')])
+        expect(excludes).to include(File.expand_path('special/**/*'))
       end
 
       context 'and there is a personal config file in the home folder' do
@@ -183,13 +183,13 @@ RSpec.describe RuboCop::ConfigLoader do
           create_file('~/.rubocop.yml', <<~YAML)
             AllCops:
               Exclude:
-                - tmp/**
+                - personal/**/*
           YAML
         end
 
         it 'ignores personal AllCops/Exclude' do
           excludes = configuration_from_file['AllCops']['Exclude']
-          expect(excludes).to eq([File.expand_path('vendor/**')])
+          expect(excludes).not_to include(File.expand_path('personal/**/*'))
         end
       end
     end
@@ -201,7 +201,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_file(file_path, <<~YAML)
           AllCops:
             Exclude:
-              - vendor/**
+              - special/**/*
         YAML
       end
 
@@ -210,13 +210,13 @@ RSpec.describe RuboCop::ConfigLoader do
           create_file('~/.rubocop.yml', <<~YAML)
             AllCops:
               Exclude:
-                - tmp/**
+                - personal/**/*
           YAML
         end
 
         it 'ignores personal AllCops/Exclude' do
           excludes = configuration_from_file['AllCops']['Exclude']
-          expect(excludes).to eq([File.expand_path('vendor/**')])
+          expect(excludes).not_to include([File.expand_path('personal/**/*')])
         end
       end
     end
@@ -239,13 +239,13 @@ RSpec.describe RuboCop::ConfigLoader do
           create_file('~/.rubocop.yml', <<~YAML)
             AllCops:
               Exclude:
-                - tmp/**
+                - personal/**/*
           YAML
         end
 
         it 'ignores personal AllCops/Exclude' do
           excludes = configuration_from_file['AllCops']['Exclude']
-          expect(excludes).to eq([File.expand_path('vendor/**')])
+          expect(excludes).not_to include([File.expand_path('personal/**/*')])
         end
       end
     end
@@ -284,7 +284,13 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'gets an absolute AllCops/Exclude' do
         excludes = configuration_from_file['AllCops']['Exclude']
-        expect(excludes).to eq([File.expand_path('vendor/**'), /[A-Z]/])
+        expect(excludes.map(&:to_s).sort.map { |path| RuboCop::PathUtil.smart_path(path) })
+          .to eq(['(?-mix:[A-Z])',
+                  '.git/**/*',
+                  'node_modules/**/*',
+                  'tmp/**/*',
+                  'vendor/**',
+                  'vendor/**/*'])
       end
 
       it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
@@ -335,7 +341,12 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'gets an absolute AllCops/Exclude' do
         excludes = configuration_from_file['AllCops']['Exclude']
-        expect(excludes).to eq([File.expand_path('src/vendor/**')])
+        expect(excludes.sort.map { |path| RuboCop::PathUtil.smart_path(path) })
+          .to eq(['.git/**/*',
+                  'node_modules/**/*',
+                  'src/vendor/**',
+                  'tmp/**/*',
+                  'vendor/**/*'])
       end
     end
 
@@ -349,6 +360,10 @@ RSpec.describe RuboCop::ConfigLoader do
       before do
         create_file(file_path, <<~YAML)
           inherit_from: .rubocop_todo.yml
+
+          inherit_mode:
+            override:
+              - Exclude
 
           Style/For:
             Exclude:
@@ -486,11 +501,17 @@ RSpec.describe RuboCop::ConfigLoader do
           inherit_from: .rubocop_parent.yml
           inherit_mode:
             merge:
-              - Exclude
+              - Include
+
+          AllCops:
+            Include:
+              - file_with.unusual_extension
 
           Style/For:
             Exclude:
               - spec/requests/group_invite_spec.rb
+            Include:
+              - file_with.other_extension
 
           Style/Dir:
             inherit_mode:
@@ -498,7 +519,8 @@ RSpec.describe RuboCop::ConfigLoader do
                 - Exclude
             Exclude:
               - spec/requests/group_invite_spec.rb
-
+            Include:
+              - file_with.other_extension
         YAML
 
         create_file('.rubocop_parent.yml', <<~YAML)
@@ -522,7 +544,11 @@ RSpec.describe RuboCop::ConfigLoader do
             .to eq([File.expand_path('spec/requests/group_invite_spec.rb'),
                     File.expand_path('spec/models/expense_spec.rb'),
                     File.expand_path('spec/models/group_spec.rb')].sort)
-        end.not_to output(/overrides the same parameter/).to_stdout
+        end.not_to output(%r{Style/For:Exclude overrides the same parameter}).to_stdout
+
+        %w[Style/For Style/Dir].each do |cop|
+          expect(configuration_from_file[cop]['Include']).to eq(['file_with.other_extension'])
+        end
       end
 
       it 'overwrites the Exclude from the parent when the cop overrides' \
@@ -531,7 +557,11 @@ RSpec.describe RuboCop::ConfigLoader do
           excludes = configuration_from_file['Style/Dir']['Exclude']
           expect(excludes)
             .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
-        end.not_to output(/overrides the same parameter/).to_stdout
+        end.to output(%r{Style/Dir:Exclude overrides the same parameter}).to_stdout
+
+        includes = configuration_from_file['AllCops']['Include']
+        expect(includes.length > 1).to be(true)
+        expect(includes).to include('file_with.unusual_extension')
       end
     end
 

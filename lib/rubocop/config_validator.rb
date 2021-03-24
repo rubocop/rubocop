@@ -147,6 +147,8 @@ module RuboCop
       valid_cop_names.each do |name|
         validate_section_presence(name)
         each_invalid_parameter(name) do |param, supported_params|
+          next if name == 'inherit_mode' && param == 'override'
+
           warn Rainbow(<<~MESSAGE).yellow
             Warning: #{name} does not support #{param} parameter.
 

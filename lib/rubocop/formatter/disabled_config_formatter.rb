@@ -201,24 +201,29 @@ module RuboCop
         # excludes in .rubocop.yml, so in order to retain those excludes we must copy them.
         # There can be multiple .rubocop.yml files in subdirectories, but we just look at the
         # current working directory.
-        config = ConfigStore.new.for(parent)
-        cfg = config[cop_name] || {}
+        parent_config = ConfigStore.new.for(parent)
+        cop_config = parent_config[cop_name] || {}
 
-        if merge_mode_for_exclude?(config) || merge_mode_for_exclude?(cfg)
-          offending_files
-        else
-          cop_exclude = cfg['Exclude']
+        if override_mode_for_exclude?(parent_config, cop_config)
+          cop_exclude = cop_config['Exclude']
           if cop_exclude && cop_exclude != default_config(cop_name)['Exclude']
-            warn "`#{cop_name}: Exclude` in `#{smart_path(config.loaded_path)}` overrides a " \
-                 'generated `Exclude` in `.rubocop_todo.yml`. Either remove ' \
-                 "`#{cop_name}: Exclude` or add `inherit_mode: merge: - Exclude`."
+            warn "`#{cop_name}: Exclude` in `#{smart_path(parent_config.loaded_path)}` overrides " \
+                 'a generated `Exclude` in `.rubocop_todo.yml` due to configuration ' \
+                 '`inherit_mode: override: - Exclude`.'
           end
           ((cop_exclude || []) + offending_files).uniq
+        else
+          offending_files
         end
       end
 
-      def merge_mode_for_exclude?(cfg)
-        Array(cfg.to_h.dig('inherit_mode', 'merge')).include?('Exclude')
+      def override_mode_for_exclude?(parent_config, cop_config)
+        mode = inherit_mode(parent_config).merge(inherit_mode(cop_config))
+        Array(mode['override']).include?('Exclude')
+      end
+
+      def inherit_mode(config)
+        config.to_h['inherit_mode'] || {}
       end
 
       def output_exclude_path(output_buffer, exclude_path, parent)
