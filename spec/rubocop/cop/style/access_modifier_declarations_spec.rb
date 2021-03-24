@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
       }
     end
 
-    %w[private protected public].each do |access_modifier|
+    %w[private protected public module_function].each do |access_modifier|
       it "offends when #{access_modifier} is inlined with a method" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Test
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
       }
     end
 
-    %w[private protected public].each do |access_modifier|
+    %w[private protected public module_function].each do |access_modifier|
       it "offends when #{access_modifier} is not inlined" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Test
