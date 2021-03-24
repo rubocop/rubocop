@@ -131,7 +131,18 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        "1,2,3,foo,5,6,7,8".split(',').map({ |i| Integer(i, 10) })
+        "1,2,3,foo,5,6,7,8".split(',').map { |i| Integer(i, 10) }
+      RUBY
+    end
+
+    it 'registers offense and autocorrects without parentheses' do
+      expect_offense(<<~RUBY)
+        "1,2,3,foo,5,6,7,8".split(',').map &:to_i
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using &:to_i, use stricter { |i| Integer(i, 10) }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "1,2,3,foo,5,6,7,8".split(',').map { |i| Integer(i, 10) }
       RUBY
     end
 
@@ -142,7 +153,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        "foo".try({ |i| Float(i) })
+        "foo".try { |i| Float(i) }
       RUBY
     end
 
@@ -153,7 +164,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        "foo".send({ |i| Complex(i) })
+        "foo".send { |i| Complex(i) }
       RUBY
     end
   end
