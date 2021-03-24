@@ -2467,10 +2467,26 @@ end
   end
 ----
 
+==== AllowedConstants: ['ClassMethods']
+
+[source,ruby]
+----
+# good
+module A
+  module ClassMethods
+    # ...
+  end
+ end
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedConstants
+| `[]`
+| Array
 
 | Exclude
 | `spec/**/*`, `test/**/*`
@@ -5468,6 +5484,30 @@ foo.enforce(strict: true)
 
 # good
 foo.enforce strict: true
+
+# good
+# Allows parens for calls that won't produce valid Ruby or be ambiguous.
+model.validate strict(true)
+
+# good
+# Allows parens for calls that won't produce valid Ruby or be ambiguous.
+yield path, File.basename(path)
+
+# good
+# Operators methods calls with parens
+array&.[](index)
+
+# good
+# Operators methods without parens, if you prefer
+array.[] index
+
+# good
+# Operators methods calls with parens
+array&.[](index)
+
+# good
+# Operators methods without parens, if you prefer
+array.[] index
 ----
 
 ==== IgnoreMacros: true (default)
@@ -5562,6 +5602,28 @@ Array(1)
 Array 1
 ----
 
+==== AllowParenthesesInStringInterpolation: false (default)
+
+[source,ruby]
+----
+# bad
+"#{t('this.is.bad')}"
+
+# good
+"#{t 'this.is.better'}"
+----
+
+==== AllowParenthesesInStringInterpolation: true
+
+[source,ruby]
+----
+# good
+"#{t('this.is.good')}"
+
+# good
+"#{t 'this.is.also.good'}"
+----
+
 === Configurable attributes
 
 |===
@@ -5592,6 +5654,10 @@ Array 1
 | Boolean
 
 | AllowParenthesesInCamelCaseMethod
+| `false`
+| Boolean
+
+| AllowParenthesesInStringInterpolation
 | `false`
 | Boolean
 
@@ -10385,6 +10451,39 @@ warn('hello')
 
 * https://rubystyle.guide#warn
 
+== Style/StringChars
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.12
+| -
+|===
+
+Checks for uses of `String#split` with empty string or regexp literal argument.
+
+This cop is marked as unsafe. But probably it's quite unlikely that some other class would
+define a `split` method that takes exactly the same arguments.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+string.split(//)
+string.split('')
+
+# good
+string.chars
+----
+
+=== References
+
+* https://rubystyle.guide#string-chars
+
 == Style/StringConcatenation
 
 |===
@@ -11000,6 +11099,8 @@ end
 
 This cop checks for trailing code after the method definition.
 
+NOTE: It always accepts endless method definitions that are basically on the same line.
+
 === Examples
 
 [source,ruby]
@@ -11021,6 +11122,8 @@ def f(x)
   b = foo
   b[c: x]
 end
+
+def endless_method = do_stuff
 ----
 
 == Style/TrailingBodyOnModule

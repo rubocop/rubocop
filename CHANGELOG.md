@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.12.0 (2021-03-24)
+
 ### New features
 
 * [#9615](https://github.com/rubocop/rubocop/pull/9615): Add new `Style/StringChars` cop. ([@koic][])

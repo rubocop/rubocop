@@ -2057,7 +2057,7 @@ Lint/SuppressedException:
   AllowComments: true
   AllowNil: true
   VersionAdded: '0.9'
-  VersionChanged: <<next>>
+  VersionChanged: '1.12'
 
 Lint/SymbolConversion:
   Description: 'Checks for unnecessary symbol conversions.'
@@ -4504,7 +4504,7 @@ Style/StringChars:
   StyleGuide: '#string-chars'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.12'
 
 Style/StringConcatenation:
   Description: 'Checks for places where string concatenation can be replaced with string interpolation.'

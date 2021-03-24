@@ -515,7 +515,7 @@ EOS
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| Yes
+| No
 | No
 | 0.53
 | 1.2
@@ -531,6 +531,10 @@ directive. It can be configured to allow for memoized instance variables
 prefixed with an underscore. Prefixing ivars with an underscore is a
 convention that is used to implicitly indicate that an ivar should not
 be set or referenced outside of the memoization method.
+
+This cop relies on the pattern `@instance_var ||= ...`,
+but this is sometimes used for other purposes than memoization
+so this cop is considered unsafe.
 
 === Examples
 
@@ -915,6 +919,11 @@ expected.
 
 The `PreferredName` config option takes a `String`. It represents
 the required name of the variable. Its default is `e`.
+
+NOTE: This cop does not consider nested rescues because it cannot
+guarantee that the variable from the outer rescue is not used within
+the inner rescue (in which case, changing the inner variable would
+shadow the outer variable).
 
 === Examples
 

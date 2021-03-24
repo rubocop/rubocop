@@ -4645,7 +4645,7 @@ g.count #=> 2
 | Yes
 | No
 | 0.9
-| 0.81
+| 1.12
 |===
 
 This cop checks for `rescue` blocks with no body.
@@ -4719,12 +4719,60 @@ rescue
 end
 ----
 
+==== AllowNil: true (default)
+
+[source,ruby]
+----
+# good
+def some_method
+  do_something
+rescue
+  nil
+end
+
+# good
+begin
+  do_something
+rescue
+  # do nothing
+end
+
+# good
+do_something rescue nil
+----
+
+==== AllowNil: false
+
+[source,ruby]
+----
+# bad
+def some_method
+  do_something
+rescue
+  nil
+end
+
+# bad
+begin
+  do_something
+rescue
+  nil
+end
+
+# bad
+do_something rescue nil
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
 
 | AllowComments
+| `true`
+| Boolean
+
+| AllowNil
 | `true`
 | Boolean
 |===
@@ -4748,6 +4796,12 @@ end
 This cop checks for uses of literal strings converted to
 a symbol where a literal symbol could be used instead.
 
+There are two possible styles for this cop.
+`strict` (default) will register an offense for any incorrect usage.
+`consistent` additionally requires hashes to use the same style for
+every symbol key (ie. if any symbol key needs to be quoted it requires
+all keys to be quoted).
+
 === Examples
 
 [source,ruby]
@@ -4766,6 +4820,58 @@ a symbol where a literal symbol could be used instead.
 :underscored_symbol
 :'hyphenated-string'
 ----
+
+==== EnforcedStyle: strict (default)
+
+[source,ruby]
+----
+# bad
+{
+  'a': 1,
+  "b": 2,
+  'c-d': 3
+}
+
+# good (don't quote keys that don't require quoting)
+{
+  a: 1,
+  b: 2,
+  'c-d': 3
+}
+----
+
+==== EnforcedStyle: consistent
+
+[source,ruby]
+----
+# bad
+{
+  a: 1,
+  'b-c': 2
+}
+
+# good (quote all keys if any need quoting)
+{
+  'a': 1,
+  'b-c': 2
+}
+
+# good (no quoting required)
+{
+  a: 1,
+  b: 2
+}
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `strict`
+| `strict`, `consistent`
+|===
 
 == Lint/Syntax
 
