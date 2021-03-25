@@ -47,7 +47,7 @@ module RuboCop
       #
       #   end
       #
-      # @example AllowModifiersOnSymbols: true
+      # @example AllowModifiersOnSymbols: true (default)
       #   # good
       #   class Foo
       #
