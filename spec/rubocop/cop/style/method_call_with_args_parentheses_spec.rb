@@ -361,6 +361,26 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
     it_behaves_like 'endless methods', omit: true
 
+    context 'forwarded arguments in 2.7', :ruby27 do
+      it 'accepts parens for forwarded arguments' do
+        expect_no_offenses(<<~RUBY)
+          def delegated_call(...)
+            @proxy.call(...)
+          end
+        RUBY
+      end
+    end
+
+    context 'forwarded arguments in 3.0', :ruby30 do
+      it 'accepts parens for forwarded arguments' do
+        expect_no_offenses(<<~RUBY)
+          def method_missing(name, ...)
+            @proxy.call(name, ...)
+          end
+        RUBY
+      end
+    end
+
     it 'register an offense for parens in method call without args' do
       trailing_whitespace = ' '
 
