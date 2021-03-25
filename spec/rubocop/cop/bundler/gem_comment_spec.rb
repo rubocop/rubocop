@@ -130,8 +130,8 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
         end
       end
 
-      context 'including "limiting_version_specifiers"' do
-        let(:checked_options) { ['limiting_version_specifiers'] }
+      context 'including "restrictive_version_specifiers"' do
+        let(:checked_options) { ['restrictive_version_specifiers'] }
 
         context 'when a gem is commented' do
           it 'does not register an offense' do
