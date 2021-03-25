@@ -5,7 +5,7 @@ module RuboCop
     module Style
       class MethodCallWithArgsParentheses
         # Style omit_parentheses
-        # rubocop:disable Metrics/ModuleLength
+        # rubocop:disable Metrics/ModuleLength, Metrics/CyclomaticComplexity
         module OmitParentheses
           TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
           OMIT_MSG = 'Omit parentheses for method calls with arguments.'
@@ -13,7 +13,6 @@ module RuboCop
 
           private
 
-          # rubocop:disable Metrics/CyclomaticComplexity
           def omit_parentheses(node)
             return unless node.parenthesized?
             return if inside_endless_method_def?(node)
@@ -27,7 +26,6 @@ module RuboCop
               auto_correct(corrector, node)
             end
           end
-          # rubocop:enable Metrics/CyclomaticComplexity
 
           def auto_correct(corrector, node)
             if parentheses_at_the_end_of_multiline_call?(node)
@@ -114,7 +112,7 @@ module RuboCop
               call_as_argument_or_chain?(node) ||
               hash_literal_in_arguments?(node) ||
               node.descendants.any? do |n|
-                ambigious_literal?(n) || logical_operator?(n) ||
+                n.forwarded_args_type? || ambigious_literal?(n) || logical_operator?(n) ||
                   call_with_braced_block?(n)
               end
           end
@@ -190,7 +188,7 @@ module RuboCop
             node.ancestors.drop_while { |a| !a.begin_type? }.any?(&:dstr_type?)
           end
         end
-        # rubocop:enable Metrics/ModuleLength
+        # rubocop:enable Metrics/ModuleLength, Metrics/CyclomaticComplexity
       end
     end
   end
