@@ -114,6 +114,17 @@ module RuboCop
 
           corrector.replace(offense_range, first_child.source)
           corrector.remove(range_between(offense_range.end_pos, first_child.source_range.end_pos))
+
+          restore_removed_comments(corrector, offense_range, node, first_child)
+        end
+
+        # Restore comments that occur between "begin" and "first_child".
+        # These comments will be moved to above the assignment line.
+        def restore_removed_comments(corrector, offense_range, node, first_child)
+          comments_range = range_between(offense_range.end_pos, first_child.source_range.begin_pos)
+          comments = comments_range.source
+
+          corrector.insert_before(node.parent, comments) unless comments.blank?
         end
 
         def empty_begin?(node)
