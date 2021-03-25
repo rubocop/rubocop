@@ -1060,5 +1060,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         end
       end
     end
+
+    context 'multiple assignment' do
+      context 'when over limit at right hand side' do
+        it 'registers and corrects an offense' do
+          expect_offense(<<~RUBY)
+            a = fooooooooooooooooooooooooooooooooooooo, b
+                                                    ^^^^^ Line is too long. [45/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a =#{trailing_whitespace}
+            fooooooooooooooooooooooooooooooooooooo,#{trailing_whitespace}
+            b
+          RUBY
+        end
+      end
+    end
   end
 end

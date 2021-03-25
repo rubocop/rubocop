@@ -83,7 +83,7 @@ module RuboCop
 
       # @api private
       def within_column_limit?(element, max, line)
-        element && element.loc.column < max && element.loc.line == line
+        element && element.loc.column <= max && element.loc.line == line
       end
 
       # @api private
