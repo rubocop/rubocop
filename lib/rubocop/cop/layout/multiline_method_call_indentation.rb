@@ -72,6 +72,18 @@ module RuboCop
           send_node.loc.dot # Only check method calls with dot operator
         end
 
+        def right_hand_side(send_node)
+          dot = send_node.loc.dot
+          selector = send_node.loc.selector
+          if send_node.dot? && selector && dot.line == selector.line
+            dot.join(selector)
+          elsif selector
+            selector
+          elsif send_node.implicit_call?
+            dot.join(send_node.loc.begin)
+          end
+        end
+
         def offending_range(node, lhs, rhs, given_style)
           return false unless begins_its_line?(rhs)
           return false if not_for_this_cop?(node)

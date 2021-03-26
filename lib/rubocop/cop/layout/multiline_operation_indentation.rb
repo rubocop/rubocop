@@ -118,6 +118,10 @@ module RuboCop
               "spaces for indenting #{what} spanning multiple lines."
           end
         end
+
+        def right_hand_side(send_node)
+          send_node.first_argument.source_range
+        end
       end
     end
   end

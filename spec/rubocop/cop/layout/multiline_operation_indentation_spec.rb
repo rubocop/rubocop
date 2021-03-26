@@ -81,6 +81,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
         .a
           .b(c)
 
+        Foo.&(
+            foo,
+            bar
+        )
+
         expect { Foo.new }.
           to change { Bar.count }.
               from(1).to(2)

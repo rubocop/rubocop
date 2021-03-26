@@ -95,6 +95,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           .my_method
       RUBY
     end
+
+    it 'accepts alignment of method with assignment and operator-like method' do
+      expect_no_offenses(<<~RUBY)
+        query = x.|(
+          foo,
+          bar
+        )
+      RUBY
+    end
   end
 
   shared_examples 'common for aligned and indented' do
