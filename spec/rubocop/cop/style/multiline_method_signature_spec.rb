@@ -17,6 +17,25 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when line break after opening parenthesis' do
+        expect_offense(<<~RUBY)
+          class Foo
+            def foo(
+            ^^^^^^^^ Avoid multi-line method signatures.
+              arg
+          )
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            def foo(arg)
+            end
+          end
+        RUBY
+      end
+
       context 'when method signature is on a single line' do
         it 'does not register an offense for parameterized method' do
           expect_no_offenses(<<~RUBY)
