@@ -137,8 +137,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
-              -P, --parallel                   Use available CPUs to execute inspection in
-                                               parallel.
+              -P, --[no-]parallel              Use available CPUs to execute inspection in
+                                               parallel. Default is false.
               -l, --lint                       Run only lint cops.
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
@@ -226,24 +226,20 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       context 'combined with --fail-fast' do
-        it 'ignores parallel' do
-          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
-          options.parse %w[--parallel --fail-fast]
-          expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
-        end
-      end
-
-      context 'combined with --auto-correct and --fail-fast' do
-        it 'ignores parallel' do
-          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
-          options.parse %w[--parallel --fail-fast --auto-correct]
-          expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+        it 'fails with an error message' do
+          msg = '-P/--parallel cannot be combined with -F/--fail-fast.'
+          expect { options.parse %w[--parallel --fail-fast] }
+            .to raise_error(RuboCop::OptionArgumentError, msg)
         end
       end
     end
 
+    describe '--no-parallel' do
+      it 'disables parallel from file' do
+        results = options.parse %w[--no-parallel]
+        expect(results).to eq([{:parallel=>false}, []])
+      end
+    end
     describe '--display-only-failed' do
       it 'fails if given without --format junit' do
         expect { options.parse %w[--display-only-failed] }
