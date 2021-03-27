@@ -58,8 +58,8 @@ module RuboCop
         }.freeze
         MSG = 'Replace unsafe number conversion with number '\
               'class parsing, instead of using '\
-              '%<current>s, use stricter '\
-              '%<corrected_method>s.'
+              '`%<current>s`, use stricter '\
+              '`%<corrected_method>s`.'
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 
         # @!method to_method(node)
