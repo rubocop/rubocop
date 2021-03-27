@@ -498,7 +498,8 @@ module RuboCop
       version:                          'Display version.',
       verbose_version:                  'Display verbose version.',
       parallel:                         ['Use available CPUs to execute inspection in',
-                                         'parallel.'],
+                                         'parallel. Default is false.'],
+      no_parallel:                      ['Disable parallel if it is set in the configuration.'],
       stdin:                            ['Pipe source from STDIN, using FILE in offense',
                                          'reports. This is useful for editor integration.'],
       init:                             'Generate a .rubocop.yml file in the current directory.'
