@@ -40,8 +40,12 @@ module RuboCop
       #     to `true` allows the presence of parentheses in such a method call
       #     even with arguments.
       #
-      # NOTE: Parens are required around a method with arguments when inside an
-      # endless method definition (>= Ruby 3.0).
+      # NOTE: Parentheses are still allowed in cases where omitting them
+      # results in ambiguous or syntactically incorrect code. For example,
+      # parentheses are required around a method with arguments when inside an
+      # endless method definition introduced in Ruby 3.0.  Parentheses are also
+      # allowed when forwarding arguments with the triple-dot syntax introduced
+      # in Ruby 2.7 as omitting them starts an endless range.
       #
       # @example EnforcedStyle: require_parentheses (default)
       #
