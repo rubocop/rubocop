@@ -168,6 +168,12 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to an endless class method definition' do
+        expect_correction(<<~RUBY.strip, source: 'def self.some_method; body end')
+          def self.some_method() = body
+        RUBY
+      end
+
       it 'retains comments' do
         source = 'def some_method; body end # comment'
         expect_correction(<<~RUBY.strip, source: source)
