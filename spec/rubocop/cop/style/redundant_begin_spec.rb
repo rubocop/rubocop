@@ -197,14 +197,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
   it 'registers and corrects an offense when using `begin` with single statement for or assignment' do
     expect_offense(<<~RUBY)
-      var ||= begin
+      # outer comment
+      var ||= begin # inner comment 1
               ^^^^^ Redundant `begin` block detected.
+        # inner comment 2
         foo
+        # inner comment 3
       end
     RUBY
 
     expect_correction(<<~RUBY)
-      var ||= foo
+      # outer comment
+       # inner comment 1
+        # inner comment 2
+        var ||= foo
+        # inner comment 3
 
     RUBY
   end
