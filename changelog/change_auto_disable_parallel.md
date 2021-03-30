@@ -1,0 +1,1 @@
+* [#9647](https://github.com/rubocop/rubocop/pull/9647): The parallel flag will now be automatically ignored when combined with `--auto-correct`, `--auto-gen-config`, or `-F/--fail-fast`. Previously, an error was raised and execution stopped. ([@rrosenblum][])

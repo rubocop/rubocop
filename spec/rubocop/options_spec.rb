@@ -208,28 +208,38 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       context 'combined with --auto-correct' do
-        it 'fails with an error message' do
-          msg = '-P/--parallel cannot be combined with --auto-correct.'
-          expect { options.parse %w[--parallel --auto-correct] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with --auto-correct'
+          options.parse %w[--parallel --auto-correct]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
       end
 
       context 'combined with --auto-gen-config' do
-        it 'fails with an error message' do
-          msg = '-P/--parallel uses caching to speed up execution, while ' \
-                '--auto-gen-config needs a non-cached run, so they cannot be ' \
-                'combined.'
-          expect { options.parse %w[--parallel --auto-gen-config] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignore parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with --auto-gen-config'
+          options.parse %w[--parallel --auto-gen-config]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
       end
 
       context 'combined with --fail-fast' do
-        it 'fails with an error message' do
-          msg = '-P/--parallel cannot be combined with -F/--fail-fast.'
-          expect { options.parse %w[--parallel --fail-fast] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
+          options.parse %w[--parallel --fail-fast]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+        end
+      end
+
+      context 'combined with --auto-correct and --fail-fast' do
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
+          options.parse %w[--parallel --fail-fast --auto-correct]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
       end
     end
