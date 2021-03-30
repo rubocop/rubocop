@@ -103,32 +103,30 @@ task documentation_syntax_check: :yard_for_generate_documentation do
     end
 
     examples.each do |example|
-      begin
-        buffer = Parser::Source::Buffer.new('<code>', 1)
-        buffer.source = example.text
+      buffer = Parser::Source::Buffer.new('<code>', 1)
+      buffer.source = example.text
 
-        # Ruby 2.6 or higher does not support a syntax used in
-        # `Lint/UselessElseWithoutRescue` cop's example.
-        parser = if cop == RuboCop::Cop::Lint::UselessElseWithoutRescue
-                   Parser::Ruby25.new(RuboCop::AST::Builder.new)
-                 # Ruby 2.7 raises a syntax error in
-                 # `Lint/CircularArgumentReference` cop's example.
-                 elsif cop == RuboCop::Cop::Lint::CircularArgumentReference
-                   Parser::Ruby26.new(RuboCop::AST::Builder.new)
-                 # Ruby 3.0 raises a syntax error in
-                 # `Lint/NumberedParameterAssignment` cop's example.
-                 elsif cop == RuboCop::Cop::Lint::NumberedParameterAssignment
-                   Parser::Ruby27.new(RuboCop::AST::Builder.new)
-                 else
-                   Parser::Ruby30.new(RuboCop::AST::Builder.new)
-                 end
-        parser.diagnostics.all_errors_are_fatal = true
-        parser.parse(buffer)
-      rescue Parser::SyntaxError => e
-        path = example.object.file
-        puts "#{path}: Syntax Error in an example. #{e}"
-        ok = false
-      end
+      # Ruby 2.6 or higher does not support a syntax used in
+      # `Lint/UselessElseWithoutRescue` cop's example.
+      parser = if cop == RuboCop::Cop::Lint::UselessElseWithoutRescue
+                 Parser::Ruby25.new(RuboCop::AST::Builder.new)
+               # Ruby 2.7 raises a syntax error in
+               # `Lint/CircularArgumentReference` cop's example.
+               elsif cop == RuboCop::Cop::Lint::CircularArgumentReference
+                 Parser::Ruby26.new(RuboCop::AST::Builder.new)
+               # Ruby 3.0 raises a syntax error in
+               # `Lint/NumberedParameterAssignment` cop's example.
+               elsif cop == RuboCop::Cop::Lint::NumberedParameterAssignment
+                 Parser::Ruby27.new(RuboCop::AST::Builder.new)
+               else
+                 Parser::Ruby30.new(RuboCop::AST::Builder.new)
+               end
+      parser.diagnostics.all_errors_are_fatal = true
+      parser.parse(buffer)
+    rescue Parser::SyntaxError => e
+      path = example.object.file
+      puts "#{path}: Syntax Error in an example. #{e}"
+      ok = false
     end
   end
   abort unless ok

@@ -46,11 +46,9 @@ module RuboCop
       http.use_ssl = uri.instance_of?(URI::HTTPS)
 
       generate_request(uri) do |request|
-        begin
-          handle_response(http.request(request), limit, &block)
-        rescue SocketError => e
-          handle_response(e, limit, &block)
-        end
+        handle_response(http.request(request), limit, &block)
+      rescue SocketError => e
+        handle_response(e, limit, &block)
       end
     end
 

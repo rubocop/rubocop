@@ -152,7 +152,7 @@ module RuboCop
           # will be ignored.
           return unless node.value.to_s.match?(/\A[a-z0-9_]/i)
 
-          correction = node.value.inspect.gsub(/\A:/, '')
+          correction = node.value.inspect.delete_prefix(':')
           return if properly_quoted?(node.source, correction)
 
           register_offense(

@@ -32,9 +32,7 @@ module RuboCop
     end
 
     def comment_only_line?(line_number)
-      non_comment_token_line_numbers.none? do |non_comment_line_number|
-        non_comment_line_number == line_number
-      end
+      non_comment_token_line_numbers.none?(line_number)
     end
 
     private

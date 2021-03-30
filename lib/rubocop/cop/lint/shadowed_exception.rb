@@ -111,14 +111,12 @@ module RuboCop
 
           if rescued_exceptions.any?
             rescued_exceptions.each_with_object([]) do |exception, converted|
-              begin
-                RuboCop::Util.silence_warnings do
-                  # Avoid printing deprecation warnings about constants
-                  converted << Kernel.const_get(exception.source)
-                end
-              rescue NameError
-                converted << nil
+              RuboCop::Util.silence_warnings do
+                # Avoid printing deprecation warnings about constants
+                converted << Kernel.const_get(exception.source)
               end
+            rescue NameError
+              converted << nil
             end
           else
             # treat an empty `rescue` as `rescue StandardError`

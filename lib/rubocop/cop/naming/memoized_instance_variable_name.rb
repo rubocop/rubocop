@@ -260,7 +260,7 @@ module RuboCop
         end
 
         def variable_name_candidates(method_name)
-          no_underscore = method_name.sub(/\A_/, '')
+          no_underscore = method_name.delete_prefix('_')
           with_underscore = "_#{method_name}"
           case style
           when :required

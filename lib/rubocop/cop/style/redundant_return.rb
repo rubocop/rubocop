@@ -73,7 +73,7 @@ module RuboCop
           end
           if return_node.splat_argument?
             first_argument = return_node.first_argument
-            corrector.replace(first_argument, first_argument.source.gsub(/\A\*/, ''))
+            corrector.replace(first_argument, first_argument.source.delete_prefix('*'))
           end
 
           keyword = range_with_surrounding_space(range: return_node.loc.keyword,

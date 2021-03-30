@@ -90,14 +90,14 @@ module RuboCop
           and_sources = node.condition.each_descendant(:and).map(&:operator)
           and_sources << node.condition.operator if node.condition.and_type?
 
-          !(and_sources.all? { |s| s == '&&' } || and_sources.all? { |s| s == 'and' })
+          !(and_sources.all?('&&') || and_sources.all?('and'))
         end
 
         def mixed_precedence_or?(node)
           or_sources = node.condition.each_descendant(:or).map(&:operator)
           or_sources << node.condition.operator if node.condition.or_type?
 
-          !(or_sources.all? { |s| s == '||' } || or_sources.all? { |s| s == 'or' })
+          !(or_sources.all?('||') || or_sources.all?('or'))
         end
       end
     end

@@ -14,7 +14,7 @@ AllCops:
     - 'tmp/**/*'
     - '.git/**/*'
     - 'bin/*'
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
   SuggestExtensions: false
 
 Naming/PredicateName:
