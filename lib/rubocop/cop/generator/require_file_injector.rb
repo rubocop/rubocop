@@ -29,9 +29,7 @@ module RuboCop
         attr_reader :require_entries, :root_file_path, :source_path, :output
 
         def require_exists?
-          require_entries.any? do |entry|
-            entry == injectable_require_directive
-          end
+          require_entries.any?(injectable_require_directive)
         end
 
         def updated_directives

@@ -51,7 +51,7 @@ module RuboCop
         def remove_parentheses(source)
           return source unless source.start_with?('(')
 
-          source.gsub(/\A\(/, '').gsub(/\)\z/, '')
+          source.delete_prefix('(').delete_suffix(')')
         end
       end
     end

@@ -82,12 +82,10 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
     end
 
     around do |example|
-      begin
-        $stdout = StringIO.new
-        example.run
-      ensure
-        $stdout = STDOUT
-      end
+      $stdout = StringIO.new
+      example.run
+    ensure
+      $stdout = STDOUT
     end
 
     it 'closes all output files' do

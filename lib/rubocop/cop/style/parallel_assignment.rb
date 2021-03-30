@@ -164,9 +164,7 @@ module RuboCop
           # Does `rhs` access the same value which is assigned by `lhs`?
           def accesses?(rhs, lhs)
             if lhs.method?(:[]=)
-              matching_calls(rhs, lhs.receiver, :[]).any? do |args|
-                args == lhs.arguments
-              end
+              matching_calls(rhs, lhs.receiver, :[]).any?(lhs.arguments)
             else
               access_method = lhs.method_name.to_s.chop.to_sym
               matching_calls(rhs, lhs.receiver, access_method).any?

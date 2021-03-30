@@ -209,12 +209,10 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
 
       it 'prints a warning message' do
-        begin
-          config_obsoletion.reject_obsolete!
-          raise 'Expected a RuboCop::ValidationError'
-        rescue RuboCop::ValidationError => e
-          expect(expected_message).to eq(e.message)
-        end
+        config_obsoletion.reject_obsolete!
+        raise 'Expected a RuboCop::ValidationError'
+      rescue RuboCop::ValidationError => e
+        expect(expected_message).to eq(e.message)
       end
     end
 
@@ -247,12 +245,10 @@ RSpec.describe RuboCop::ConfigObsoletion do
         end
 
         it 'prints a warning message' do
-          begin
-            config_obsoletion.reject_obsolete!
-            raise 'Expected a RuboCop::ValidationError'
-          rescue RuboCop::ValidationError => e
-            expect(expected_message).to eq(e.message)
-          end
+          config_obsoletion.reject_obsolete!
+          raise 'Expected a RuboCop::ValidationError'
+        rescue RuboCop::ValidationError => e
+          expect(expected_message).to eq(e.message)
         end
       end
 
@@ -267,12 +263,10 @@ RSpec.describe RuboCop::ConfigObsoletion do
         end
 
         it 'prints a warning message' do
-          begin
-            config_obsoletion.reject_obsolete!
-            raise 'Expected a RuboCop::ValidationError'
-          rescue RuboCop::ValidationError => e
-            expect(expected_message).to eq(e.message)
-          end
+          config_obsoletion.reject_obsolete!
+          raise 'Expected a RuboCop::ValidationError'
+        rescue RuboCop::ValidationError => e
+          expect(expected_message).to eq(e.message)
         end
       end
 
@@ -395,12 +389,10 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
 
       it 'prints a error message' do
-        begin
-          config_obsoletion.reject_obsolete!
-          raise 'Expected a RuboCop::ValidationError'
-        rescue RuboCop::ValidationError => e
-          expect(expected_message).to eq(e.message)
-        end
+        config_obsoletion.reject_obsolete!
+        raise 'Expected a RuboCop::ValidationError'
+      rescue RuboCop::ValidationError => e
+        expect(expected_message).to eq(e.message)
       end
     end
 

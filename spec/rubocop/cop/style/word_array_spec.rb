@@ -150,11 +150,6 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect_no_offenses("['-', '----']")
     end
 
-    # Bug: https://github.com/rubocop/rubocop/issues/4481
-    it 'does not register an offense in an ambiguous block context' do
-      expect_no_offenses('foo ["bar", "baz"] { qux }')
-    end
-
     it 'registers an offense in a non-ambiguous block context' do
       expect_offense(<<~RUBY)
         foo(['bar', 'baz']) { qux }

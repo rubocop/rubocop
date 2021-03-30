@@ -137,7 +137,7 @@ module RuboCop
         end
 
         def acceptable_19_syntax_symbol?(sym_name)
-          sym_name.sub!(/\A:/, '')
+          sym_name.delete_prefix!(':')
 
           if cop_config['PreferHashRocketsForNonAlnumEndingSymbols'] &&
              # Prefer { :production? => false } over { production?: false } and

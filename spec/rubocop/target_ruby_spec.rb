@@ -12,7 +12,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
   let(:loaded_path) { 'example/.rubocop.yml' }
 
   context 'when TargetRubyVersion is set' do
-    let(:ruby_version) { 2.4 }
+    let(:ruby_version) { 2.5 }
 
     let(:hash) do
       {
@@ -46,8 +46,8 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
       end
 
       context 'when .ruby-version contains an MRI version' do
-        let(:ruby_version) { '2.3.8' }
-        let(:ruby_version_to_f) { 2.3 }
+        let(:ruby_version) { '2.4.10' }
+        let(:ruby_version_to_f) { 2.4 }
 
         it 'reads it to determine the target ruby version' do
           expect(target_ruby.version).to eq ruby_version_to_f
@@ -64,8 +64,8 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
       end
 
       context 'when .ruby-version contains a version prefixed by "ruby-"' do
-        let(:ruby_version) { 'ruby-2.3.0' }
-        let(:ruby_version_to_f) { 2.3 }
+        let(:ruby_version) { 'ruby-2.4.0' }
+        let(:ruby_version_to_f) { 2.4 }
 
         it 'correctly determines the target ruby version' do
           expect(target_ruby.version).to eq ruby_version_to_f
@@ -299,13 +299,13 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = '>= 2.6.1'
+                  s.required_ruby_version = '>= 2.7.2'
                   s.licenses = ['MIT']
                 end
               HEREDOC
 
             create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.6
+            expect(target_ruby.version).to eq 2.7
           end
 
           it 'sets target_ruby from exclusive range' do
@@ -313,13 +313,13 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = '> 2.4.1'
+                  s.required_ruby_version = '> 2.5.8'
                   s.licenses = ['MIT']
                 end
               HEREDOC
 
             create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.4
+            expect(target_ruby.version).to eq 2.5
           end
 
           it 'sets target_ruby from approximate version' do
@@ -327,13 +327,13 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = '~> 2.5.0'
+                  s.required_ruby_version = '~> 2.6.0'
                   s.licenses = ['MIT']
                 end
               HEREDOC
 
             create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.5
+            expect(target_ruby.version).to eq 2.6
           end
         end
 
@@ -393,13 +393,13 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = ['<=2.7.4', '>2.4.5', '~>2.5.1']
+                  s.required_ruby_version = ['<=3.0.0', '>2.5.8', '~>2.6.1']
                   s.licenses = ['MIT']
                 end
               HEREDOC
 
             create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.5
+            expect(target_ruby.version).to eq 2.6
           end
         end
 
@@ -428,11 +428,11 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
     context 'when .ruby-version is in a parent directory' do
       before do
         dir = configuration.base_dir_for_path_parameters
-        create_file(File.join(dir, '..', '.ruby-version'), '2.4.1')
+        create_file(File.join(dir, '..', '.ruby-version'), '2.5.8')
       end
 
       it 'reads it to determine the target ruby version' do
-        expect(target_ruby.version).to eq 2.4
+        expect(target_ruby.version).to eq 2.5
       end
     end
 

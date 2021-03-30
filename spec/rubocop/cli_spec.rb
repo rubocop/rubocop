@@ -155,7 +155,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stderr.string).to eq ''
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
-              'token $end (Using Ruby 2.4 parser; configure using ' \
+              'token $end (Using Ruby 2.5 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
@@ -929,7 +929,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('file.rb', 'x=0') # Included by default
       create_file('example', 'x=0')
       create_file('regexp', 'x=0')
-      create_file('vendor/bundle/ruby/2.4.0/gems/backports-3.6.8/.irbrc', 'x=0')
+      create_file('vendor/bundle/ruby/2.5.0/gems/backports-3.6.8/.irbrc', 'x=0')
       create_file('.dot1/file.rb', 'x=0') # Hidden but explicitly included
       create_file('.dot2/file.rb', 'x=0') # Hidden, excluded by default
       create_file('.dot3/file.rake', 'x=0') # Hidden, not included by wildcard
@@ -1646,13 +1646,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'shows an error if the input file cannot be found' do
-      begin
-        cli.run(%w[/tmp/not_a_file])
-      rescue SystemExit => e
-        expect(e.status).to eq(1)
-        expect(e.message)
-          .to eq 'rubocop: No such file or directory -- /tmp/not_a_file'
-      end
+      cli.run(%w[/tmp/not_a_file])
+    rescue SystemExit => e
+      expect(e.status).to eq(1)
+      expect(e.message).to eq 'rubocop: No such file or directory -- /tmp/not_a_file'
     end
   end
 
@@ -1690,7 +1687,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           'Error: RuboCop found unknown Ruby version 4.0 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.4, 2.5, 2.6, 2.7, 3.0/
+          /Supported versions: 2.5, 2.6, 2.7, 3.0/
         )
       end
     end
@@ -1713,7 +1710,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         )
 
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.4/
+          /Supported versions: 2.5/
         )
       end
     end
@@ -2059,12 +2056,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     context 'when given --stdin' do
       it 'does not show the suggestion' do
-        begin
-          $stdin = StringIO.new('p $/')
-          expect { cli.run(['--stdin', 'example.rb']) }.not_to suggest_extensions
-        ensure
-          $stdin = STDIN
-        end
+        $stdin = StringIO.new('p $/')
+        expect { cli.run(['--stdin', 'example.rb']) }.not_to suggest_extensions
+      ensure
+        $stdin = STDIN
       end
     end
 

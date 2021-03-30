@@ -1879,161 +1879,145 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
   describe '--stdin' do
     it 'causes source code to be read from stdin' do
-      begin
-        $stdin = StringIO.new('p $/')
-        argv   = ['--only=Style/SpecialGlobalVars',
-                  '--format=simple',
-                  '--stdin',
-                  'fake.rb']
-        expect(cli.run(argv)).to eq(1)
-        expect($stdout.string).to eq(<<~RESULT)
-          == fake.rb ==
-          C:  1:  3: [Correctable] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
+      $stdin = StringIO.new('p $/')
+      argv   = ['--only=Style/SpecialGlobalVars',
+                '--format=simple',
+                '--stdin',
+                'fake.rb']
+      expect(cli.run(argv)).to eq(1)
+      expect($stdout.string).to eq(<<~RESULT)
+        == fake.rb ==
+        C:  1:  3: [Correctable] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
 
-          1 file inspected, 1 offense detected, 1 offense auto-correctable
-        RESULT
-      ensure
-        $stdin = STDIN
-      end
+        1 file inspected, 1 offense detected, 1 offense auto-correctable
+      RESULT
+    ensure
+      $stdin = STDIN
     end
 
     it 'requires a file path' do
-      begin
-        $stdin = StringIO.new('p $/')
-        argv   = ['--only=Style/SpecialGlobalVars',
-                  '--format=simple',
-                  '--stdin']
-        expect(cli.run(argv)).to eq(2)
-        expect($stderr.string).to include('missing argument: --stdin')
-      ensure
-        $stdin = STDIN
-      end
+      $stdin = StringIO.new('p $/')
+      argv   = ['--only=Style/SpecialGlobalVars',
+                '--format=simple',
+                '--stdin']
+      expect(cli.run(argv)).to eq(2)
+      expect($stderr.string).to include('missing argument: --stdin')
+    ensure
+      $stdin = STDIN
     end
 
     it 'does not accept more than one file path' do
-      begin
-        $stdin = StringIO.new('p $/')
-        argv   = ['--only=Style/SpecialGlobalVars',
-                  '--format=simple',
-                  '--stdin',
-                  'fake1.rb',
-                  'fake2.rb']
-        expect(cli.run(argv)).to eq(2)
-        expect($stderr.string).to include(
-          '-s/--stdin requires exactly one path'
-        )
-      ensure
-        $stdin = STDIN
-      end
+      $stdin = StringIO.new('p $/')
+      argv   = ['--only=Style/SpecialGlobalVars',
+                '--format=simple',
+                '--stdin',
+                'fake1.rb',
+                'fake2.rb']
+      expect(cli.run(argv)).to eq(2)
+      expect($stderr.string).to include(
+        '-s/--stdin requires exactly one path'
+      )
+    ensure
+      $stdin = STDIN
     end
 
     it 'prints corrected code to stdout if --auto-correct-all is used' do
-      begin
-        $stdin = StringIO.new('p $/')
-        argv   = ['--auto-correct-all',
-                  '--only=Style/SpecialGlobalVars',
-                  '--format=simple',
-                  '--stdin',
-                  'fake.rb']
-        expect(cli.run(argv)).to eq(0)
-        expect($stdout.string).to eq(<<~RESULT.chomp)
-          == fake.rb ==
-          C:  1:  3: [Corrected] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
+      $stdin = StringIO.new('p $/')
+      argv   = ['--auto-correct-all',
+                '--only=Style/SpecialGlobalVars',
+                '--format=simple',
+                '--stdin',
+                'fake.rb']
+      expect(cli.run(argv)).to eq(0)
+      expect($stdout.string).to eq(<<~RESULT.chomp)
+        == fake.rb ==
+        C:  1:  3: [Corrected] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
 
-          1 file inspected, 1 offense detected, 1 offense corrected
-          ====================
-          p $INPUT_RECORD_SEPARATOR
-        RESULT
-      ensure
-        $stdin = STDIN
-      end
+        1 file inspected, 1 offense detected, 1 offense corrected
+        ====================
+        p $INPUT_RECORD_SEPARATOR
+      RESULT
+    ensure
+      $stdin = STDIN
     end
 
     it 'prints offence reports to stderr and corrected code to stdout if --auto-correct-all and --stderr are used' do
-      begin
-        $stdin = StringIO.new('p $/')
-        argv   = ['--auto-correct-all',
-                  '--only=Style/SpecialGlobalVars',
-                  '--format=simple',
-                  '--stderr',
-                  '--stdin',
-                  'fake.rb']
-        expect(cli.run(argv)).to eq(0)
-        expect($stderr.string).to eq(<<~RESULT)
-          == fake.rb ==
-          C:  1:  3: [Corrected] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
+      $stdin = StringIO.new('p $/')
+      argv   = ['--auto-correct-all',
+                '--only=Style/SpecialGlobalVars',
+                '--format=simple',
+                '--stderr',
+                '--stdin',
+                'fake.rb']
+      expect(cli.run(argv)).to eq(0)
+      expect($stderr.string).to eq(<<~RESULT)
+        == fake.rb ==
+        C:  1:  3: [Corrected] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
 
-          1 file inspected, 1 offense detected, 1 offense corrected
-          ====================
-        RESULT
-        expect($stdout.string).to eq(<<~RESULT.chomp)
-          p $INPUT_RECORD_SEPARATOR
-        RESULT
-      ensure
-        $stdin = STDIN
-      end
+        1 file inspected, 1 offense detected, 1 offense corrected
+        ====================
+      RESULT
+      expect($stdout.string).to eq(<<~RESULT.chomp)
+        p $INPUT_RECORD_SEPARATOR
+      RESULT
+    ensure
+      $stdin = STDIN
     end
 
     it 'can parse JSON result when specifying `--format=json` and `--stdin` options' do
-      begin
-        $stdin = StringIO.new('p $/')
-        argv   = ['--auto-correct-all',
-                  '--only=Style/SpecialGlobalVars',
-                  '--format=json',
-                  '--stdin',
-                  'fake.rb']
-        expect(cli.run(argv)).to eq(0)
-        expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
-      ensure
-        $stdin = STDIN
-      end
+      $stdin = StringIO.new('p $/')
+      argv   = ['--auto-correct-all',
+                '--only=Style/SpecialGlobalVars',
+                '--format=json',
+                '--stdin',
+                'fake.rb']
+      expect(cli.run(argv)).to eq(0)
+      expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
+    ensure
+      $stdin = STDIN
     end
 
     it 'can parse JSON result when specifying `--format=j` and `--stdin` options' do
-      begin
-        $stdin = StringIO.new('p $/')
-        argv   = ['--auto-correct-all',
-                  '--only=Style/SpecialGlobalVars',
-                  '--format=j',
-                  '--stdin',
-                  'fake.rb']
-        expect(cli.run(argv)).to eq(0)
-        expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
-      ensure
-        $stdin = STDIN
-      end
+      $stdin = StringIO.new('p $/')
+      argv   = ['--auto-correct-all',
+                '--only=Style/SpecialGlobalVars',
+                '--format=j',
+                '--stdin',
+                'fake.rb']
+      expect(cli.run(argv)).to eq(0)
+      expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
+    ensure
+      $stdin = STDIN
     end
 
     it 'detects CR at end of line' do
-      begin
-        create_file('example.rb', "puts 'hello world'\r")
-        # Make Style/EndOfLine give same output regardless of platform.
-        create_file('.rubocop.yml', <<~YAML)
-          Layout/EndOfLine:
-            EnforcedStyle: lf
-        YAML
-        File.open('example.rb') do |file|
-          # We must use a File object to simulate the behavior of
-          # STDIN, which is an IO object. StringIO won't do in this
-          # case, as its read() method doesn't handle line endings the
-          # same way IO#read() does.
-          $stdin = file
-          argv = ['--only=Layout/EndOfLine',
-                  '--format=simple',
-                  '--stdin',
-                  'fake.rb']
-          expect(cli.run(argv)).to eq(1)
-          expect($stdout.string)
-            .to eq(<<~RESULT)
-              == fake.rb ==
-              C:  1:  1: Layout/EndOfLine: Carriage return character detected.
+      create_file('example.rb', "puts 'hello world'\r")
+      # Make Style/EndOfLine give same output regardless of platform.
+      create_file('.rubocop.yml', <<~YAML)
+        Layout/EndOfLine:
+          EnforcedStyle: lf
+      YAML
+      File.open('example.rb') do |file|
+        # We must use a File object to simulate the behavior of
+        # STDIN, which is an IO object. StringIO won't do in this
+        # case, as its read() method doesn't handle line endings the
+        # same way IO#read() does.
+        $stdin = file
+        argv = ['--only=Layout/EndOfLine',
+                '--format=simple',
+                '--stdin',
+                'fake.rb']
+        expect(cli.run(argv)).to eq(1)
+        expect($stdout.string)
+          .to eq(<<~RESULT)
+            == fake.rb ==
+            C:  1:  1: Layout/EndOfLine: Carriage return character detected.
 
-              1 file inspected, 1 offense detected
-            RESULT
-        end
-      ensure
-        $stdin = STDIN
+            1 file inspected, 1 offense detected
+          RESULT
       end
+    ensure
+      $stdin = STDIN
     end
   end
 

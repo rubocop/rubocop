@@ -142,7 +142,7 @@ module RuboCop
         def switch_comparison?(node)
           return true if @last_comparison.nil?
 
-          @last_comparison.descendants.none? { |descendant| descendant == node }
+          @last_comparison.descendants.none?(node)
         end
 
         def reset_comparison
