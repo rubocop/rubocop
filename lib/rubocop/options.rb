@@ -343,21 +343,24 @@ module RuboCop
                                    'false is not allowed.'
       end
 
-      validate_parallel_with_combo_option
+      disable_parallel_when_invalid_combo
     end
 
-    def validate_parallel_with_combo_option
+    def disable_parallel_when_invalid_combo
       combos = {
-        auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
-                         'while --auto-gen-config needs a non-cached run, ' \
-                         'so they cannot be combined.',
-        fail_fast: '-P/--parallel cannot be combined with -F/--fail-fast.',
-        auto_correct: '-P/--parallel cannot be combined with --auto-correct.'
+        auto_gen_config: '--auto-gen-config',
+        fail_fast: '-F/--fail-fast.',
+        auto_correct: '--auto-correct.'
       }
 
-      combos.each do |key, msg|
-        raise OptionArgumentError, msg if @options.key?(key)
-      end
+      invalid_combos = combos.select { |key, _flag| @options.key?(key) }
+
+      return if invalid_combos.empty?
+
+      @options.delete(:parallel)
+
+      puts '-P/--parallel is being ignored because ' \
+           "it is not compatible with #{invalid_combos.values.join(', ')}"
     end
 
     def only_includes_redundant_disable?
