@@ -3,15 +3,24 @@
 module RuboCop
   module Cop
     module Bundler
-      # Add a comment describing each gem in your Gemfile.
+      # Each gem in the Gemfile should have a comment explaining
+      # its purpose in the project, or the reason for its version
+      # or source.
       #
-      # Optionally, the "OnlyFor" configuration
+      # The optional "OnlyFor" configuration array
       # can be used to only register offenses when the gems
       # use certain options or have version specifiers.
-      # Add "version_specifiers" and/or the gem option names
-      # you want to check.
       #
-      # A useful use-case is to enforce a comment when using
+      # When "version_specifiers" is included, a comment
+      # will be enforced if the gem has any version specifier.
+      #
+      # When "restrictive_version_specifiers" is included, a comment
+      # will be enforced if the gem has a version specifier that
+      # holds back the version of the gem.
+      #
+      # For any other value in the array, a comment will be enforced for
+      # a gem if an option by the same name is present.
+      # A useful use case is to enforce a comment when using
       # options that change the source of a gem:
       #
       # - `bitbucket`
@@ -21,7 +30,8 @@ module RuboCop
       # - `source`
       #
       # For a full list of options supported by bundler,
-      # you can check the https://bundler.io/man/gemfile.5.html[official documentation].
+      # see https://bundler.io/man/gemfile.5.html
+      # .
       #
       # @example OnlyFor: [] (default)
       #   # bad
