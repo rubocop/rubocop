@@ -25,6 +25,14 @@ require 'rubocop/rspec/support'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
+  # This config option will be enabled by default on RSpec 4,
+  # but for reasons of backwards compatibility, you have to
+  # set it on RSpec 3.
+  #
+  # It causes the host group and examples to inherit metadata
+  # from the shared context.
+  config.shared_context_metadata_behavior = :apply_to_host_groups
+
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples
