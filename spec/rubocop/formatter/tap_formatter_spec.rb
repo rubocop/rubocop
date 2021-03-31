@@ -143,4 +143,33 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
       end
     end
   end
+
+  describe '#report_file', :config do
+    let(:cop_class) { RuboCop::Cop::Cop }
+    let(:output) { StringIO.new }
+
+    before { cop.send(:begin_investigation, processed_source) }
+
+    context 'when the source contains multibyte characters' do
+      let(:source) do
+        <<~RUBY
+          do_something("あああ", ["いいい"])
+        RUBY
+      end
+
+      it 'displays text containing the offending source line' do
+        location = source_range(source.index('[')..source.index(']'))
+
+        cop.add_offense(nil, location: location, message: 'message 1')
+        formatter.report_file('test', cop.offenses)
+
+        expect(output.string)
+          .to eq <<~OUTPUT
+            # test:1:21: C: message 1
+            # do_something("あああ", ["いいい"])
+            #                        ^^^^^^^^^^
+        OUTPUT
+      end
+    end
+  end
 end

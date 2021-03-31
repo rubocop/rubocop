@@ -123,5 +123,27 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
           .to include(': [Corrected] This is a message.')
       end
     end
+
+    context 'when the source contains multibyte characters' do
+      let(:source) do
+        <<~RUBY
+          do_something("あああ", ["いいい"])
+        RUBY
+      end
+
+      it 'displays text containing the offending source line' do
+        location = source_range(source.index('[')..source.index(']'))
+
+        cop.add_offense(nil, location: location, message: 'message 1')
+        formatter.report_file('test', cop.offenses)
+
+        expect(output.string)
+          .to eq <<~OUTPUT
+            test:1:21: C: message 1
+            do_something("あああ", ["いいい"])
+                                   ^^^^^^^^^^
+        OUTPUT
+      end
+    end
   end
 end
