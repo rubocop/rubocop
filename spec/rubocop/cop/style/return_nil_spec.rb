@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ReturnNil do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::ReturnNil, :config do
   context 'when enforced style is `return`' do
     let(:config) do
       RuboCop::Config.new(
@@ -18,14 +16,10 @@ RSpec.describe RuboCop::Cop::Style::ReturnNil do
         return nil
         ^^^^^^^^^^ Use `return` instead of `return nil`.
       RUBY
-    end
 
-    it 'auto-corrects `return nil` into `return`' do
-      expect(autocorrect_source('return nil')).to eq 'return'
-    end
-
-    it 'does not register an offense for return' do
-      expect_no_offenses('return')
+      expect_correction(<<~RUBY)
+        return
+      RUBY
     end
 
     it 'does not register an offense for returning others' do
@@ -56,14 +50,10 @@ RSpec.describe RuboCop::Cop::Style::ReturnNil do
         return
         ^^^^^^ Use `return nil` instead of `return`.
       RUBY
-    end
 
-    it 'auto-corrects `return` into `return nil`' do
-      expect(autocorrect_source('return')).to eq 'return nil'
-    end
-
-    it 'does not register an offense for return nil' do
-      expect_no_offenses('return nil')
+      expect_correction(<<~RUBY)
+        return nil
+      RUBY
     end
 
     it 'does not register an offense for returning others' do

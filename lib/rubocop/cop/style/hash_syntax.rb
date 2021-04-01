@@ -13,11 +13,11 @@ module RuboCop
       # The supported styles are:
       #
       # * ruby19 - forces use of the 1.9 syntax (e.g. `{a: 1}`) when hashes have
-      #   all symbols for keys
+      # all symbols for keys
       # * hash_rockets - forces use of hash rockets for all hashes
       # * no_mixed_keys - simply checks for hashes with mixed syntaxes
       # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
-      #   syntax hashes
+      # syntax hashes
       #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
@@ -54,9 +54,10 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}
       #   {:c => 3, 'd' => 4}
-      class HashSyntax < Cop
+      class HashSyntax < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'
         MSG_NO_MIXED_KEYS = "Don't mix styles in the same hash."
@@ -73,7 +74,7 @@ module RuboCop
             ruby19_no_mixed_keys_check(pairs)
           elsif style == :no_mixed_keys
             no_mixed_keys_check(pairs)
-          else
+          elsif node.source.include?('=>')
             ruby19_check(pairs)
           end
         end
@@ -97,22 +98,10 @@ module RuboCop
         end
 
         def no_mixed_keys_check(pairs)
-          if !sym_indices?(pairs)
-            check(pairs, ':', MSG_NO_MIXED_KEYS)
-          else
+          if sym_indices?(pairs)
             check(pairs, pairs.first.inverse_delimiter, MSG_NO_MIXED_KEYS)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if style == :hash_rockets || force_hash_rockets?(node.parent.pairs)
-              autocorrect_hash_rockets(corrector, node)
-            elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
-              autocorrect_no_mixed_keys(corrector, node)
-            else
-              autocorrect_ruby19(corrector, node)
-            end
+          else
+            check(pairs, ':', MSG_NO_MIXED_KEYS)
           end
         end
 
@@ -127,6 +116,16 @@ module RuboCop
 
         private
 
+        def autocorrect(corrector, node)
+          if style == :hash_rockets || force_hash_rockets?(node.parent.pairs)
+            autocorrect_hash_rockets(corrector, node)
+          elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
+            autocorrect_no_mixed_keys(corrector, node)
+          else
+            autocorrect_ruby19(corrector, node)
+          end
+        end
+
         def sym_indices?(pairs)
           pairs.all? { |p| word_symbol_pair?(p) }
         end
@@ -140,25 +139,28 @@ module RuboCop
         def acceptable_19_syntax_symbol?(sym_name)
           sym_name.sub!(/\A:/, '')
 
-          if cop_config['PreferHashRocketsForNonAlnumEndingSymbols']
-            # Prefer { :production? => false } over { production?: false } and
-            # similarly for other non-alnum final characters (except quotes,
-            # to prefer { "x y": 1 } over { :"x y" => 1 }).
-            return false unless /[\p{Alnum}"']\z/.match?(sym_name)
+          if cop_config['PreferHashRocketsForNonAlnumEndingSymbols'] &&
+             # Prefer { :production? => false } over { production?: false } and
+             # similarly for other non-alnum final characters (except quotes,
+             # to prefer { "x y": 1 } over { :"x y" => 1 }).
+             !/[\p{Alnum}"']\z/.match?(sym_name)
+            return false
           end
 
           # Most hash keys can be matched against a simple regex.
           return true if /\A[_a-z]\w*[?!]?\z/i.match?(sym_name)
 
           # For more complicated hash keys, let the parser validate the syntax.
-          parse("{ #{sym_name}: :foo }").valid_syntax?
+          ProcessedSource.new("{ #{sym_name}: :foo }", target_ruby_version).valid_syntax?
         end
 
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.delimiter == delim
               location = pair.source_range.begin.join(pair.loc.operator)
-              add_offense(pair, location: location, message: msg) do
+              add_offense(location, message: msg) do |corrector|
+                autocorrect(corrector, pair)
+
                 opposite_style_detected
               end
             else
@@ -174,7 +176,7 @@ module RuboCop
 
           corrector.replace(
             range,
-            range.source.sub(/^:(.*\S)\s*=>\s*$/, space.to_s + '\1: ')
+            range.source.sub(/^:(.*\S)\s*=>\s*$/, "#{space}\\1: ")
           )
 
           hash_node = pair_node.parent
@@ -199,7 +201,8 @@ module RuboCop
         def autocorrect_hash_rockets(corrector, pair_node)
           op = pair_node.loc.operator
 
-          corrector.wrap(pair_node.key, ':', pair_node.inverse_delimiter(true))
+          key_with_hash_rocket = ":#{pair_node.key.source}#{pair_node.inverse_delimiter(true)}"
+          corrector.replace(pair_node.key, key_with_hash_rocket)
           corrector.remove(range_with_surrounding_space(range: op))
         end
 

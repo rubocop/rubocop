@@ -1,0 +1,112 @@
+RuboCop Logo
+
+Ruby Style Guide Gem Version CircleCI Status Actions Status Test Coverage Maintainability SemVer
+
+Role models are important.
+-- Officer Alex J. Murphy / RoboCop
+
+RuboCop is a Ruby static code analyzer (a.k.a. linter) and code formatter. Out of the box it will enforce many of the guidelines outlined in the community Ruby Style Guide. Apart from reporting the problems discovered in your code, RuboCop can also automatically fix many of them for you.
+
+RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various configuration options.
+
+Patreon OpenCollective OpenCollective Tidelift
+
+Please consider financially supporting its ongoing development.
+
+Installation
+RuboCop's installation is pretty standard:
+
+$ gem install rubocop
+If you'd rather install RuboCop using bundler, add a line for it in your Gemfile (but set the require option to false, as it is a standalone tool):
+
+gem 'rubocop', require: false
+RuboCop is stable between major versions, both in terms of API and cop configuration. We aim to ease the maintenance of RuboCop extensions and the upgrades between RuboCop releases. All big changes are reserved for major releases. To prevent an unwanted RuboCop update you might want to use a conservative version lock in your Gemfile:
+
+gem 'rubocop', '~> 1.12', require: false
+See our versioning policy for further details.
+
+Quickstart
+Just type rubocop in a Ruby project's folder and watch the magic happen.
+
+$ cd my/cool/ruby/project
+$ rubocop
+Documentation
+You can read a lot more about RuboCop in its official docs.
+
+Compatibility
+RuboCop officially supports the following Ruby implementations:
+
+MRI 2.4+
+JRuby 9.2+
+See the compatibility documentation for further details.
+
+Readme Badge
+If you use RuboCop in your project, you can include one of these badges in your readme to let people know that your code is written following the community Ruby Style Guide.
+
+Ruby Style Guide
+
+Ruby Style Guide
+
+Here are the Markdown snippets for the two badges:
+
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
+
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-community-brightgreen.svg)](https://rubystyle.guide)
+Team
+Here's a list of RuboCop's core developers:
+
+Bozhidar Batsov (author & head maintainer)
+Jonas Arvidsson
+Yuji Nakayama (retired)
+Evgeni Dzhelyov (retired)
+Ted Johansson
+Masataka Kuwabara
+Koichi Ito
+Maxim Krizhanovski
+Benjamin Quorning
+Marc-André Lafortune
+Daniel Vandersluis
+See the team page for more details.
+
+Logo
+RuboCop's logo was created by Dimiter Petrov. You can find the logo in various formats here.
+
+The logo is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
+
+Contributors
+Here's a list of all the people who have contributed to the development of RuboCop.
+
+I'm extremely grateful to each and every one of them!
+
+If you'd like to contribute to RuboCop, please take the time to go through our short contribution guidelines.
+
+Converting more of the Ruby Style Guide into RuboCop cops is our top priority right now. Writing a new cop is a great way to dive into RuboCop!
+
+Of course, bug reports and suggestions for improvements are always welcome. GitHub pull requests are even better! :-)
+
+Funding
+While RuboCop is free software and will always be, the project would benefit immensely from some funding. Raising a monthly budget of a couple of thousand dollars would make it possible to pay people to work on certain complex features, fund other development related stuff (e.g. hardware, conference trips) and so on. Raising a monthly budget of over $5000 would open the possibility of someone working full-time on the project which would speed up the pace of development significantly.
+
+We welcome both individual and corporate sponsors! We also offer a wide array of funding channels to account for your preferences (although currently Open Collective is our preferred funding platform).
+
+If you're working in a company that's making significant use of RuboCop we'd appreciate it if you suggest to your company to become a RuboCop sponsor.
+
+You can support the development of RuboCop via GitHub Sponsors, Patreon, PayPal, Open Collective and Tidelift .
+
+Note: If doing a sponsorship in the form of donation is problematic for your company from an accounting standpoint, we'd recommend the use of Tidelift, where you can get a support-like subscription instead.
+
+Open Collective Backers
+Support us with a monthly donation and help us continue our activities. [Become a backer]
+
+                             
+
+Open Collective Sponsors
+Become a sponsor and get your logo on our README on GitHub with a link to your site. [Become a sponsor]
+
+                             
+
+Changelog
+RuboCop's changelog is available here.
+
+Copyright
+Copyright (c) 2012-2021 Bozhidar Batsov. See LICENSE.txt for further details.

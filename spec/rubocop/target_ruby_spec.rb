@@ -96,10 +96,42 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
-      it 'does not read Gemfile.lock or gems.locked' do
+      it 'does not read .tool-versions, Gemfile.lock or gems.locked' do
+        expect(File).not_to receive(:file?).with('.tool-versions')
         expect(File).not_to receive(:file?).with('Gemfile')
         expect(File).not_to receive(:file?).with('gems.locked')
         target_ruby.version
+      end
+    end
+
+    context 'when .tool-versions is present' do
+      before do
+        dir = configuration.base_dir_for_path_parameters
+        create_file(File.join(dir, '.tool-versions'), tool_versions)
+      end
+
+      context 'when .tool-versions contains a ruby version' do
+        let(:tool_versions) { ['ruby 3.0.0', 'nodejs 14.9.0'] }
+        let(:ruby_version_to_f) { 3.0 }
+
+        it 'reads it to determine the target ruby version' do
+          expect(target_ruby.version).to eq ruby_version_to_f
+        end
+
+        it 'does not read Gemfile.lock, gems.locked' do
+          expect(File).not_to receive(:file?).with(/Gemfile/)
+          expect(File).not_to receive(:file?).with(/gems\.locked/)
+          target_ruby.version
+        end
+      end
+
+      context 'when .tool-versions does not contain a ruby version' do
+        let(:tool_versions) { ['nodejs 14.9.0'] }
+        let(:ruby_version_to_f) { 3.0 }
+
+        it 'uses the default ruby version' do
+          expect(target_ruby.version).to eq default_version
+        end
       end
     end
 
@@ -254,6 +286,141 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
       context 'when bundler lock files are not present' do
         it 'uses the default target ruby version' do
           expect(target_ruby.version).to eq default_version
+        end
+      end
+
+      context 'gemspec file' do
+        context 'when file contains `required_ruby_version` as a string' do
+          let(:base_path) { configuration.base_dir_for_path_parameters }
+          let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
+
+          it 'sets target_ruby from inclusive range' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = '>= 2.6.1'
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq 2.6
+          end
+
+          it 'sets target_ruby from exclusive range' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = '> 2.4.1'
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq 2.4
+          end
+
+          it 'sets target_ruby from approximate version' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = '~> 2.5.0'
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq 2.5
+          end
+        end
+
+        context 'when file contains `required_ruby_version` as a requirement' do
+          let(:base_path) { configuration.base_dir_for_path_parameters }
+          let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
+
+          it 'sets target_ruby from required_ruby_version from inclusive requirement range' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new('>= 2.3.1')
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
+
+          it 'sets first known ruby version that satisfies requirement' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new('< 3.0.0')
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
+        end
+
+        context 'when file contains `required_ruby_version` as an array' do
+          let(:base_path) { configuration.base_dir_for_path_parameters }
+          let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
+
+          it 'sets target_ruby to the minimal version satisfying the requirements' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = ['<=2.7.4', '>=2.6.5']
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq 2.6
+          end
+
+          it 'sets target_ruby from required_ruby_version with many requirements' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = ['<=2.7.4', '>2.4.5', '~>2.5.1']
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq 2.5
+          end
+        end
+
+        context 'when file does not contain `required_ruby_version`' do
+          let(:base_path) { configuration.base_dir_for_path_parameters }
+          let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
+
+          it 'sets default target_ruby' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.platform = Gem::Platform::RUBY
+                  s.licenses = ['MIT']
+                  s.summary = 'test tool.'
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
         end
       end
     end

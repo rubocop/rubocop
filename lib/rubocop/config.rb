@@ -24,7 +24,7 @@ module RuboCop
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
-        qualified_cop_name = Cop::Cop.qualified_cop_name(cop, loaded_path)
+        qualified_cop_name = Cop::Registry.qualified_cop_name(cop, loaded_path)
         cop_options = self[qualified_cop_name] || {}
         cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
         h[cop] = cop_options
@@ -33,8 +33,15 @@ module RuboCop
       @validator = ConfigValidator.new(self)
     end
 
-    def self.create(hash, path)
-      new(hash, path).check
+    def self.create(hash, path, check: true)
+      config = new(hash, path)
+      config.check if check
+
+      config
+    end
+
+    def loaded_features
+      @loaded_features ||= ConfigLoader.loaded_features
     end
 
     def check
@@ -46,8 +53,8 @@ module RuboCop
       self
     end
 
-    def_delegators :@hash, :[], :[]=, :delete, :each, :key?, :keys, :each_key,
-                   :map, :merge, :to_h, :to_hash, :transform_values
+    def_delegators :@hash, :[], :[]=, :delete, :dig, :each, :key?, :keys, :each_key,
+                   :fetch, :map, :merge, :replace, :to_h, :to_hash, :transform_values
     def_delegators :@validator, :validate, :target_ruby_version
 
     def to_s
@@ -104,12 +111,29 @@ module RuboCop
       end
     end
 
+    # @return [Config] for the given cop / cop name.
+    # Note: the 'Enabled' attribute is calculated according to the department's
+    # and 'AllCops' configuration; other attributes are not inherited.
     def for_cop(cop)
       @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
     end
 
+    # @return [Config] for the given cop merged with that of its department (if any)
+    # Note: the 'Enabled' attribute is same as that returned by `for_cop`
+    def for_badge(badge)
+      cop_config = for_cop(badge.to_s)
+      fetch(badge.department.to_s) { return cop_config }
+        .merge(cop_config)
+    end
+
+    # @return [Config] for the given department name.
+    # Note: the 'Enabled' attribute will be present only if specified
+    # at the department's level
     def for_department(department_name)
-      @for_cop[department_name]
+      @for_department ||= Hash.new do |h, dept|
+        h[dept] = self[dept] || {}
+      end
+      @for_department[department_name.to_s]
     end
 
     def for_all_cops
@@ -152,7 +176,7 @@ module RuboCop
       return true if File.extname(file) == '.gemspec'
 
       file_to_include?(file) do |pattern, relative_path, absolute_path|
-        pattern.to_s =~ /[A-Z]/ &&
+        /[A-Z]/.match?(pattern.to_s) &&
           (match_path?(pattern, relative_path) ||
            match_path?(pattern, absolute_path))
       end
@@ -260,6 +284,9 @@ module RuboCop
     end
 
     def enable_cop?(qualified_cop_name, cop_options)
+      # If the cop is explicitly enabled, the other checks can be skipped.
+      return true if cop_options['Enabled'] == true
+
       department = department_of(qualified_cop_name)
       cop_enabled = cop_options.fetch('Enabled') do
         !for_all_cops['DisabledByDefault']
@@ -271,10 +298,10 @@ module RuboCop
     end
 
     def department_of(qualified_cop_name)
-      cop_department, cop_name = qualified_cop_name.split('/')
-      return nil if cop_name.nil?
+      *cop_department, _ = qualified_cop_name.split('/')
+      return nil if cop_department.empty?
 
-      self[cop_department]
+      self[cop_department.join('/')]
     end
   end
 end

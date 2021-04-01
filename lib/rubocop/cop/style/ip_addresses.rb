@@ -18,7 +18,7 @@ module RuboCop
       #
       #   # good
       #   ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
-      class IpAddresses < Cop
+      class IpAddresses < Base
         include StringHelp
 
         IPV6_MAX_SIZE = 45 # IPv4-mapped IPv6 is the longest
@@ -34,7 +34,7 @@ module RuboCop
           # shortcut out if the string does not look like an IP address
           return false unless could_be_ip?(contents)
 
-          contents =~ ::Resolv::IPv4::Regex || contents =~ ::Resolv::IPv6::Regex
+          ::Resolv::IPv4::Regex.match?(contents) || ::Resolv::IPv6::Regex.match?(contents)
         end
 
         # Dummy implementation of method in ConfigurableEnforcedStyle that is

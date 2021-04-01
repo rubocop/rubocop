@@ -1,0 +1,193 @@
+= Extensions
+
+It's possible to extend RuboCop with custom (third-party) cops and formatters.
+
+== Loading Extensions
+
+Besides the `--require` command line option you can also specify ruby
+files that should be loaded with the optional `require` directive in the
+`.rubocop.yml` file:
+
+[source,yaml]
+----
+require:
+ - ../my/custom/file.rb
+ - rubocop-extension
+----
+
+NOTE: The paths are directly passed to `Kernel.require`. If your
+extension file is not in `$LOAD_PATH`, you need to specify the path as
+relative path prefixed with `./` explicitly or absolute path. Paths
+starting with a `.` are resolved relative to `.rubocop.yml`.
+
+== Extension Suggestions
+
+Depending on what gems you have in your bundle, RuboCop might suggest extensions
+that can be added to provide further functionality. For instance, if you are using
+`rspec` without the corresponding `rubocop-rspec` extension, RuboCop will suggest
+enabling it.
+
+This message can be disabled by adding the following to your configuration:
+
+[source,yaml]
+----
+AllCops:
+  SuggestExtensions: false
+----
+
+You can also opt-out of suggestions for a particular extension library as so (unspecified
+extensions will continue to be notified, as appropriate):
+
+[source,yaml]
+----
+AllCops:
+  SuggestExtensions:
+    rubocop-rake: false
+----
+
+== Custom Cops
+
+You can configure the custom cops in your `.rubocop.yml` just like any
+other cop.
+
+=== Writing your own Cops
+
+If you'd like to create an extension gem, you can use https://github.com/rubocop/rubocop-extension-generator[rubocop-extension-generator].
+
+See xref:development.adoc[development] to learn how to implement a cop.
+
+=== Cop Extensions
+
+The main RuboCop gem focuses on the core Ruby language and doesn't
+include functionality related to any external Ruby libraries/frameworks.
+There are, however, many RuboCop extensions dedicated to those and
+a few of them are maintained by RuboCop's Core Team.
+
+==== Official Extensions
+
+* https://github.com/rubocop/rubocop-performance[rubocop-performance] -
+Performance optimization analysis
+* https://github.com/rubocop/rubocop-rails[rubocop-rails] -
+Rails-specific analysis
+* https://github.com/rubocop/rubocop-rspec[rubocop-rspec] -
+RSpec-specific analysis
+* https://github.com/rubocop/rubocop-minitest[rubocop-minitest] -
+Minitest-specific analysis
+* https://github.com/rubocop/rubocop-rake[rubocop-rake] -
+Rake-specific analysis
+* https://github.com/rubocop/rubocop-sequel[rubocop-sequel] -
+Code style checking for Sequel gem
+
+==== Third-party Extensions
+
+* https://github.com/covermymeds/rubocop-thread_safety[rubocop-thread_safety] -
+Thread-safety analysis
+* https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
+Dynamic analysis for missing `require` statements
+* https://github.com/puppetlabs/rubocop-i18n[rubocop-i18n] -
+i18n wrapper function analysis (`gettext` and `rails-i18n`)
+* https://github.com/chef/cookstyle[cookstyle] -
+Custom cops and config defaults for Chef Infra Cookbooks
+* https://github.com/utkarsh2102/rubocop-packaging[rubocop-packaging] -
+Upstream best practices and coding conventions for downstream (e.g. Debian packages) compatibility.
+* https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet]
+Sorbet-specific analysis
+
+Any extensions missing? Send us a Pull Request!
+
+== Configuring an Extension
+
+If you're writing an extension, you can tie some of its configuration into RuboCop.
+
+=== Config Obsoletions
+
+When a cop that has been released is later renamed or removed, or one of its parameters is, RuboCop can output error messages letting users know to update their configuration to the newest values. If any obsolete configurations are encountered, RuboCop will output an error message and quit.
+
+You can tie your extension into this system by creating your own `obsoletions.yml` file and letting RuboCop know where to find it:
+
+[source,ruby]
+----
+RuboCop::ConfigObsoletion.files << File.expand_path(filename)
+----
+
+There are currently three types of obsoletions that can be defined for cops:
+
+* `renamed`: A cop was changed to have a new name, or moved to a different department.
+* `removed`: A cop was deleted (usually this is configured with `alternatives` or a `reason` why it was removed).
+* `split`: A cop was removed and replaced with multiple other cops.
+
+Two additional types are available to be defined for parameter changes. These configurations can apply to multiple cops and multiple parameters at the same time (so are expressed in YAML as an array of hashes):
+
+* `changed_parameters`: A parameter has been renamed.
+* `changed_enforced_styles`: A previously accepted `EnforcedStyle` value has been changed or removed.
+
+NOTE: Parameter obsoletions can be set with `severity: warning` to deprecate an old parameter but still accept it. RuboCop will output a warning but continue to run.
+
+==== Example Obsoletion Configuration
+
+See `config/obsoletion.yml` for more examples.
+
+NOTE: All plural keys (eg. `cops`, `parameters`, `alternatives`, etc.) can either take a single value or an array.
+
+[source, yaml]
+----
+renamed:
+  Layout/AlignArguments: Layout/ArgumentAlignment
+  Lint/BlockAlignment: Layout/BlockAlignment
+
+removed:
+  Layout/SpaceAfterControlKeyword:
+    alternatives: Layout/SpaceAroundKeyword
+  Lint/InvalidCharacterLiteral:
+    reason: it was never being actually triggered
+
+split:
+  Style/MethodMissing:
+    alternatives:
+      - Style/MethodMissingSuper
+      - Style/MissingRespondToMissing
+
+changed_parameters: # must be an array of hashes
+  - cops:
+      - Metrics/BlockLength
+      - Metrics/MethodLength
+    parameters: ExcludedMethods
+    alternative: IgnoredMethods
+    severity: warning
+
+changed_enforced_styles: # must be an array of hashes
+  - cops: Layout/IndentationConsistency
+    parameters: EnforcedStyle
+    value: rails
+    reason: >
+      `EnforcedStyle: rails` has been renamed to
+      `EnforcedStyle: indented_internal_methods`
+----
+
+== Custom Formatters
+
+You can customize RuboCop's output format with custom formatters.
+
+=== Creating a Custom Formatter
+
+To implement a custom formatter, you need to subclass
+`RuboCop::Formatter::BaseFormatter` and override some methods,
+or implement all formatter API methods by duck typing.
+
+Please see the documents below for more formatter API details.
+
+* https://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter[RuboCop::Formatter::BaseFormatter]
+* https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense[RuboCop::Cop::Offense]
+* https://www.rubydoc.info/gems/parser/Parser/Source/Range[Parser::Source::Range]
+
+=== Using a Custom Formatter from the Command Line
+
+You can tell RuboCop to use your custom formatter with a combination of
+`--format` and `--require` option.
+For example, when you have defined `MyCustomFormatter` in
+`./path/to/my_custom_formatter.rb`, you would type this command:
+
+[source,sh]
+----
+$ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
+----

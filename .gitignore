@@ -61,3 +61,10 @@ TAGS
 
 # For rubinius:
 #*.rbc
+
+# For bundle binstubs
+bin/*
+!bin/rubocop-profile
+
+# For stackprof or others
+tmp/*

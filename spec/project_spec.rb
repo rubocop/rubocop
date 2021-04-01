@@ -10,37 +10,70 @@ RSpec.describe 'RuboCop Project', type: :feature do
       .map(&:cop_name)
   end
 
+  version_regexp = /\A\d+\.\d+\z|\A<<next>>\z/
+
   describe 'default configuration file' do
+    matcher :match_all_cops do
+      def expected
+        %w[AllCops] + cop_names
+      end
+
+      match do |actual|
+        (expected.to_set ^ actual.to_set).none?
+      end
+
+      failure_message do
+        diff = RSpec::Support::Differ.new.diff_as_object(expected.sort, actual.sort)
+        "Cop registry does not match configuration keys.\n" \
+          'Check if a new cop is missing configuration, or if cops were accidentally ' \
+          "added to the registry in another test.\n\nDiff:\n#{diff}"
+      end
+    end
+
     subject(:config) { RuboCop::ConfigLoader.load_file('config/default.yml') }
 
     let(:configuration_keys) { config.keys }
 
     it 'has configuration for all cops' do
-      expect(configuration_keys).to match_array(%w[AllCops] + cop_names)
+      expect(configuration_keys).to match_all_cops
     end
 
     it 'has a nicely formatted description for all cops' do
       cop_names.each do |name|
-        description = config[name]['Description']
-        expect(description.nil?).to be(false)
+        description = config.dig(name, 'Description')
+        expect(description.nil?).to(be(false),
+                                    "`Description` configuration is required for `#{name}`.")
         expect(description).not_to include("\n")
       end
     end
 
     it 'requires a nicely formatted `VersionAdded` metadata for all cops' do
       cop_names.each do |name|
-        version = config[name]['VersionAdded']
+        version = config.dig(name, 'VersionAdded')
         expect(version.nil?).to(be(false),
-                                "VersionAdded is required for #{name}.")
-        expect(version).to(match(/\A\d+\.\d+\z/),
-                           "#{version} should be format ('X.Y') for #{name}.")
+                                "`VersionAdded` configuration is required for `#{name}`.")
+        expect(version).to(match(version_regexp),
+                           "#{version} should be format ('X.Y' or '<<next>>') for #{name}.")
       end
     end
 
-    it 'have a period at EOL of description' do
-      cop_names.each do |name|
-        description = config[name]['Description']
+    %w[VersionChanged VersionRemoved].each do |version_type|
+      it "requires a nicely formatted `#{version_type}` metadata for all cops" do
+        cop_names.each do |name|
+          version = config.dig(name, version_type)
+          next unless version
 
+          expect(version).to(match(version_regexp),
+                             "#{version} should be format ('X.Y' or '<<next>>') for #{name}.")
+        end
+      end
+    end
+
+    it 'has a period at EOL of description' do
+      cop_names.each do |name|
+        next unless config[name]
+
+        description = config[name]['Description']
         expect(description).to match(/\.\z/)
       end
     end
@@ -56,6 +89,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
       'and EnforcedStyle is valid' do
       errors = []
       cop_names.each do |name|
+        next unless config[name]
+
         enforced_styles = config[name]
                           .select { |key, _| key.start_with?('Enforced') }
         enforced_styles.each do |style_name, style|
@@ -74,7 +109,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
       raise errors.join("\n") unless errors.empty?
     end
 
-    it 'does not have nay duplication' do
+    it 'does not have any duplication' do
       fname = File.expand_path('../config/default.yml', __dir__)
       content = File.read(fname)
       RuboCop::YAMLDuplicationChecker.check(content, fname) do |key1, key2|
@@ -82,10 +117,17 @@ RSpec.describe 'RuboCop Project', type: :feature do
               "on line #{key1.start_line} and line #{key2.start_line}"
       end
     end
+
+    it 'does not include `Safe: true`' do
+      cop_names.each do |name|
+        safe = config.dig(name, 'Safe')
+        expect(safe).not_to eq(true), "`#{name}` has unnecessary `Safe: true` config."
+      end
+    end
   end
 
   describe 'cop message' do
-    let(:cops) { RuboCop::Cop::Cop.all }
+    let(:cops) { RuboCop::Cop::Registry.all }
 
     it 'end with a period or a question mark' do
       cops.each do |cop|
@@ -99,12 +141,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     end
   end
 
-  describe 'changelog' do
-    subject(:changelog) do
-      path = File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md')
-      File.read(path)
-    end
-
+  shared_examples 'has Changelog format' do
     let(:lines) { changelog.each_line }
 
     let(:non_reference_lines) do
@@ -119,51 +156,39 @@ RSpec.describe 'RuboCop Project', type: :feature do
       expect(non_reference_lines).to all(match(/^(\*|#|$)/))
     end
 
-    it 'has link definitions for all implicit links' do
-      implicit_link_names = changelog.scan(/\[([^\]]+)\]\[\]/).flatten.uniq
-      implicit_link_names.each do |name|
-        expect(changelog.include?("[#{name}]: http"))
-          .to be(true), "CHANGELOG.md is missing a link for #{name}. " \
-                        'Please add this link to the bottom of the file.'
-      end
-    end
-
     describe 'entry' do
-      subject(:entries) { lines.grep(/^\*/).map(&:chomp) }
-
       it 'has a whitespace between the * and the body' do
         expect(entries).to all(match(/^\* \S/))
-      end
-
-      context 'after version 0.14.0' do
-        let(:lines) do
-          changelog.each_line.take_while do |line|
-            !line.start_with?('## 0.14.0')
-          end
-        end
-
-        it 'has a link to the contributors at the end' do
-          expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
-        end
       end
 
       describe 'link to related issue' do
         let(:issues) do
           entries.map do |entry|
-            entry.match(/\[(?<number>[#\d]+)\]\((?<url>[^\)]+)\)/)
+            entry.match(%r{
+              (?<=^\*\s)
+              \[(?<ref>(?:(?<repo>rubocop/[a-z_-]+)?\#(?<number>\d+))|.*)\]
+              \((?<url>[^)]+)\)
+            }x)
           end.compact
         end
 
-        it 'has an issue number prefixed with #' do
+        it 'has a reference' do
           issues.each do |issue|
-            expect(issue[:number]).to match(/^#\d+$/)
+            expect(issue[:ref].blank?).to eq(false)
+          end
+        end
+
+        it 'has a valid issue number prefixed with #' do
+          issues.each do |issue|
+            expect(issue[:number]).to match(/^\d+$/)
           end
         end
 
         it 'has a valid URL' do
           issues.each do |issue|
-            number = issue[:number].gsub(/\D/, '')
-            pattern = %r{^https://github\.com/rubocop-hq/rubocop/(?:issues|pull)/#{number}$}
+            number = issue[:number]&.gsub(/\D/, '')
+            repo = issue[:repo] || 'rubocop/rubocop'
+            pattern = %r{^https://github\.com/#{repo}/(?:issues|pull)/#{number}$}
             expect(issue[:url]).to match(pattern)
           end
         end
@@ -191,7 +216,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
             entry
               .gsub(/`[^`]+`/, '``')
               .sub(/^\*\s*(?:\[.+?\):\s*)?/, '')
-              .sub(/\s*\([^\)]+\)$/, '')
+              .sub(/\s*\([^)]+\)$/, '')
           end
         end
 
@@ -202,8 +227,68 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'ends with a punctuation' do
-          expect(bodies).to all(match(/[\.\!]$/))
+          expect(bodies).to all(match(/[.!]$/))
         end
+
+        it 'does not include a [Fix #x] directive' do
+          bodies.each do |body|
+            expect(body).not_to match(/\[Fix(es)? \#.*?\]/i)
+          end
+        end
+      end
+    end
+  end
+
+  describe 'Changelog' do
+    subject(:changelog) do
+      File.read(path)
+    end
+
+    let(:path) do
+      File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md')
+    end
+    let(:entries) { lines.grep(/^\*/).map(&:chomp) }
+
+    include_examples 'has Changelog format'
+
+    context 'future entries' do
+      dir = File.join(File.dirname(__FILE__), '..', 'changelog')
+
+      Dir["#{dir}/*.md"].each do |path|
+        context "For #{path}" do
+          let(:path) { path }
+
+          include_examples 'has Changelog format'
+
+          it 'has a link to the contributors at the end' do
+            expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
+          end
+
+          it 'starts with `new_`, `fix_`, or `change_`' do
+            expect(File.basename(path)).to(match(/\A(new|fix|change)_.+/))
+          end
+        end
+      end
+    end
+
+    it 'has link definitions for all implicit links' do
+      implicit_link_names = changelog.scan(/\[([^\]]+)\]\[\]/).flatten.uniq
+      implicit_link_names.each do |name|
+        expect(changelog.include?("[#{name}]: http"))
+          .to be(true), "missing a link for #{name}. " \
+                        'Please add this link to the bottom of the file.'
+      end
+    end
+
+    context 'after version 0.14.0' do
+      let(:lines) do
+        changelog.each_line.take_while do |line|
+          !line.start_with?('## 0.14.0')
+        end
+      end
+
+      it 'has a link to the contributors at the end' do
+        expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
       end
     end
   end

@@ -7,6 +7,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
         MAP = { a: 1001, b: 2020, c: 3333, }
                                          ^ Avoid comma after the last item of a hash#{extra_info}.
       RUBY
+
+      expect_correction(<<~RUBY)
+        MAP = { a: 1001, b: 2020, c: 3333 }
+      RUBY
     end
 
     it 'accepts literal without trailing comma' do
@@ -19,11 +23,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
 
     it 'accepts empty literal' do
       expect_no_offenses('MAP = {}')
-    end
-
-    it 'auto-corrects unwanted comma in literal' do
-      new_source = autocorrect_source('MAP = { a: 1001, b: 2020, c: 3333, }')
-      expect(new_source).to eq('MAP = { a: 1001, b: 2020, c: 3333 }')
     end
   end
 
@@ -61,6 +60,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
                          ^ Avoid comma after the last item of a hash.
                 }
         RUBY
+
+        expect_correction(<<~RUBY)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333
+                }
+        RUBY
       end
 
       it 'accepts literal with no trailing comma' do
@@ -91,21 +97,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
           }
         RUBY
       end
-
-      it 'auto-corrects unwanted comma in literal' do
-        new_source = autocorrect_source(<<~RUBY)
-          MAP = { a: 1001,
-                  b: 2020,
-                  c: 3333,
-                }
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          MAP = { a: 1001,
-                  b: 2020,
-                  c: 3333
-                }
-        RUBY
-      end
     end
 
     context 'when EnforcedStyleForMultiline is comma' do
@@ -130,6 +121,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
                   ^^^^^^^ Put a comma after the last item of a multiline hash.
           }
         RUBY
+
+        expect_correction(<<~RUBY)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333,
+          }
+        RUBY
       end
 
       it 'registers an offense for trailing comma in a comment' do
@@ -138,6 +136,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
                   b: 2020,
                   c: 3333 # a comment,
                   ^^^^^^^ Put a comma after the last item of a multiline hash.
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333, # a comment,
           }
         RUBY
       end
@@ -159,21 +164,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
           ...
           HELP
           })
-        RUBY
-      end
-
-      it 'auto-corrects missing comma' do
-        new_source = autocorrect_source(<<~RUBY)
-          MAP = { a: 1001,
-                  b: 2020,
-                  c: 3333
-          }
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          MAP = { a: 1001,
-                  b: 2020,
-                  c: 3333,
-          }
         RUBY
       end
 
@@ -198,18 +188,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
                        d: "e"}
                        ^^^^^^ Put a comma after the last item of a multiline hash.
           RUBY
-        end
 
-        it 'auto-corrects a missing comma' do
-          new_source = autocorrect_source(<<~RUBY)
-            MAP = { a: 1001,
-                    b: 2020,
-                    c: 3333}
-          RUBY
-          expect(new_source).to eq(<<~RUBY)
-            MAP = { a: 1001,
-                    b: 2020,
-                    c: 3333,}
+          expect_correction(<<~RUBY)
+            VALUES = {
+                       a: "b",
+                       b: "c",
+                       d: "e",}
           RUBY
         end
       end
@@ -220,6 +204,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
                   b: 2020,
                   c: 3333
                   ^^^^^^^ Put a comma after the last item of a multiline hash.
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          MAP = { a: 1001,
+                  b: 2020,
+                  c: 3333,
           }
         RUBY
       end
@@ -241,21 +232,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
           ...
           HELP
           })
-        RUBY
-      end
-
-      it 'auto-corrects missing comma' do
-        new_source = autocorrect_source(<<~RUBY)
-          MAP = { a: 1001,
-                  b: 2020,
-                  c: 3333
-          }
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          MAP = { a: 1001,
-                  b: 2020,
-                  c: 3333,
-          }
         RUBY
       end
 

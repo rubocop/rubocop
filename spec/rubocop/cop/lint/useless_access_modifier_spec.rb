@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
   context 'when an access modifier has no effect' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
@@ -487,19 +483,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'repeated visibility modifiers' do |keyword, modifier|
     it "registers an offense when `#{modifier}` is repeated" do
-      src = <<~RUBY
+      expect_offense(<<~RUBY, modifier: modifier)
         #{keyword} A
           #{modifier == 'private' ? 'protected' : 'private'}
           def method1
           end
-          #{modifier}
-          #{modifier}
+          %{modifier}
+          %{modifier}
+          ^{modifier} Useless `#{modifier}` access modifier.
           def method2
           end
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
@@ -553,23 +548,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
 
   shared_examples 'at the end of the body' do |keyword, modifier|
     it "registers an offense for trailing `#{modifier}`" do
-      src = <<~RUBY
+      expect_offense(<<~RUBY, modifier: modifier)
         #{keyword} A
           def method1
           end
           def method2
           end
-          #{modifier}
+          %{modifier}
+          ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
   shared_examples 'nested in a begin..end block' do |keyword, modifier|
     it "still flags repeated `#{modifier}`" do
-      src = <<~RUBY
+      expect_offense(<<~RUBY, modifier: modifier)
         #{keyword} A
           #{modifier == 'private' ? 'protected' : 'private'}
           def blah
@@ -577,15 +571,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
           begin
             def method1
             end
-            #{modifier}
-            #{modifier}
+            %{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
             def method2
             end
           end
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
 
     unless modifier == 'public'
@@ -604,7 +597,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   shared_examples 'method named by access modifier name' do |keyword, modifier|
-    it "registers an offense for `#{modifier}`" do
+    it "does not register an offense for `#{modifier}`" do
       expect_no_offenses(<<~RUBY)
         #{keyword} A
           def foo
@@ -634,7 +627,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         #{keyword} A
           private
           def method1
@@ -734,44 +727,41 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
       end
 
       it 'registers an offense if no method is defined' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           #{keyword} A
             class << self
-              #{modifier}
+              %{modifier}
+              ^{modifier} Useless `#{modifier}` access modifier.
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense if no method is defined after the modifier' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           #{keyword} A
             class << self
               def method1
               end
-              #{modifier}
+              %{modifier}
+              ^{modifier} Useless `#{modifier}` access modifier.
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense even if a non-singleton-class method is ' \
         'defined' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           #{keyword} A
             def method1
             end
             class << self
-              #{modifier}
+              %{modifier}
+              ^{modifier} Useless `#{modifier}` access modifier.
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
     end
 
@@ -787,25 +777,23 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
       end
 
       it 'registers an offense if no method is defined' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           class << A
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers an offense if no method is defined after the modifier' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           class << A
             def method1
             end
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
     end
   end
@@ -822,43 +810,41 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense if no method is defined' do
-      src = <<~RUBY
+      expect_offense(<<~RUBY, modifier: modifier)
         A.class_eval do
-          #{modifier}
+          %{modifier}
+          ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
 
     context 'inside a class' do
       it 'registers an offense when a modifier is ouside the block and a ' \
         'method is defined only inside the block' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           class A
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
             A.class_eval do
               def method1
               end
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers two offenses when a modifier is inside and outside the ' \
         ' block and no method is defined' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           class A
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
             A.class_eval do
-              #{modifier}
+              %{modifier}
+              ^{modifier} Useless `#{modifier}` access modifier.
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(2)
       end
     end
   end
@@ -875,13 +861,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it "registers an offense if no method is defined in #{klass}.new" do
-      src = <<~RUBY
+      expect_offense(<<~RUBY, modifier: modifier)
         #{klass}.new do
-          #{modifier}
+          %{modifier}
+          ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
@@ -897,43 +882,41 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
 
     it 'registers an offense if no method is defined' do
-      src = <<~RUBY
+      expect_offense(<<~RUBY, modifier: modifier)
         A.instance_eval do
-          #{modifier}
+          %{modifier}
+          ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
-      inspect_source(src)
-      expect(cop.offenses.size).to eq(1)
     end
 
     context 'inside a class' do
       it 'registers an offense when a modifier is ouside the block and a ' \
         'method is defined only inside the block' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           class A
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
             self.instance_eval do
               def method1
               end
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
 
       it 'registers two offenses when a modifier is inside and outside the ' \
         ' and no method is defined' do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           class A
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
             self.instance_eval do
-              #{modifier}
+              %{modifier}
+              ^{modifier} Useless `#{modifier}` access modifier.
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(2)
       end
     end
   end
@@ -958,42 +941,40 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
 
     context 'unused modifiers' do
       it "registers an offense with a nested #{keyword}" do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           #{keyword} A
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
             #{keyword} B
-              #{modifier}
+              %{modifier}
+              ^{modifier} Useless `#{modifier}` access modifier.
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(2)
       end
 
       it "registers an offense when outside a nested #{keyword}" do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           #{keyword} A
-            #{modifier}
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
             #{keyword} B
               def method1
               end
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
 
       it "registers an offense when inside a nested #{keyword}" do
-        src = <<~RUBY
+        expect_offense(<<~RUBY, modifier: modifier)
           #{keyword} A
             #{keyword} B
-              #{modifier}
+              %{modifier}
+              ^{modifier} Useless `#{modifier}` access modifier.
             end
           end
         RUBY
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
       end
     end
   end
@@ -1003,7 +984,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
     it_behaves_like('method defined using instance_eval', modifier)
   end
 
-  %w[Class Module Struct].each do |klass|
+  %w[Class ::Class Module ::Module Struct ::Struct].each do |klass|
     %w[protected private].each do |modifier|
       it_behaves_like('def in new block', klass, modifier)
     end

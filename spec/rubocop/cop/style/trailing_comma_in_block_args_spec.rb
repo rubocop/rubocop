@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs, :config do
   context 'curly brace block format' do
     it 'registers an offense when a trailing comma is not needed' do
       expect_offense(<<~RUBY)
         test { |a, b,| a + b }
                     ^ Useless trailing comma present in block arguments.
       RUBY
+
       expect_correction(<<~RUBY)
         test { |a, b| a + b }
       RUBY
@@ -65,12 +62,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
       expect_offense(<<~RUBY)
         test do |a, b,|
                      ^ Useless trailing comma present in block arguments.
-          a + b 
+          a + b
         end
       RUBY
+
       expect_correction(<<~RUBY)
         test do |a, b|
-          a + b 
+          a + b
         end
       RUBY
     end
@@ -78,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
     it 'does not register an offense when a trailing comma is required' do
       expect_no_offenses(<<~RUBY)
         test do |a,|
-          a 
+          a
         end
       RUBY
     end
@@ -86,7 +84,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
     it 'does not register an offense when no arguments are present' do
       expect_no_offenses(<<~RUBY)
         test do
-          a 
+          a
         end
       RUBY
     end
@@ -125,15 +123,15 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
 
     it 'ignores commas in default argument strings' do
       expect_no_offenses(<<~RUBY)
-        add do |foo, bar = ','| 
-          foo + bar 
+        add do |foo, bar = ','|
+          foo + bar
         end
       RUBY
     end
 
     it 'preserves semicolons in block/local variables' do
       expect_no_offenses(<<~RUBY)
-        add do |foo, bar,; baz| 
+        add do |foo, bar,; baz|
           foo + bar
         end
       RUBY

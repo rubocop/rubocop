@@ -30,11 +30,11 @@ module RuboCop
       #     some_var = 1
       #     do_something(some_var)
       #   end
-      class UselessAssignment < Cop
+      class UselessAssignment < Base
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 
-        def join_force?(force_class)
-          force_class == VariableForce
+        def self.joining_forces
+          VariableForce
         end
 
         def after_leaving_scope(scope, _variable_table)
@@ -57,7 +57,7 @@ module RuboCop
                          assignment.node.loc.name
                        end
 
-            add_offense(nil, location: location, message: message)
+            add_offense(location, message: message)
           end
         end
 

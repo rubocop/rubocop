@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
       #
-      # When using `EnforcedStyle: allowed_in_returns`, allow double nagation in contexts
-      # that use boolean as a return value. When using `EnforcedStyle: forbidden`, double nagation
+      # When using `EnforcedStyle: allowed_in_returns`, allow double negation in contexts
+      # that use boolean as a return value. When using `EnforcedStyle: forbidden`, double negation
       # should be forbidden always.
       #
       # @example
@@ -32,18 +32,25 @@ module RuboCop
       # !!something and !something.nil? are not the same thing.
       # As you're unlikely to write code that can accept values of any type
       # this is rarely a problem in practice.
-      class DoubleNegation < Cop
+      class DoubleNegation < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Avoid the use of double negation (`!!`).'
+        RESTRICT_ON_SEND = %i[!].freeze
 
+        # @!method double_negative?(node)
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
         def on_send(node)
           return unless double_negative?(node) && node.prefix_bang?
           return if style == :allowed_in_returns && allowed_in_returns?(node)
 
-          add_offense(node, location: :selector)
+          location = node.loc.selector
+          add_offense(location) do |corrector|
+            corrector.remove(location)
+            corrector.insert_after(node, '.nil?')
+          end
         end
 
         private

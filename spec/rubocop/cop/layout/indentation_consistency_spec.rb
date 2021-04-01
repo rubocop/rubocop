@@ -9,6 +9,33 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
         "#{}"
       RUBY
     end
+
+    it 'accepts when using access modifier at the top level' do
+      expect_no_offenses(<<~'RUBY')
+        public
+
+        def foo
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense when using access modifier and dedented method definition ' \
+       'at the top level' do
+      expect_offense(<<~'RUBY')
+        public
+
+          def foo
+          ^^^^^^^ Inconsistent indentation detected.
+          end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        public
+
+        def foo
+        end
+      RUBY
+    end
   end
 
   context 'with if statement' do
@@ -527,6 +554,42 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
           end
         RUBY
       end
+
+      it 'accepts different indentation in different visibility sections when using `Struct.new`' do
+        expect_no_offenses(<<~RUBY)
+          Foo = Struct.new(:foo) do
+            def meow
+              puts('Meow!')
+            end
+
+            protected
+
+              def can_we_be_friends?(another_cat)
+                # some logic
+              end
+
+              def related_to?(another_cat)
+                # some logic
+              end
+
+            private
+
+                        # Here we go back an indentation level again. This is a
+                        # violation of the indented_internal_methods style,
+                        # but it's not for this cop to report.
+                        # Layout/IndentationWidth will handle it.
+            def meow_at_3am?
+              rand < 0.8
+            end
+
+                        # As long as the indentation of this method is
+                        # consistent with that of the last one, we're fine.
+            def meow_at_4am?
+              rand < 0.8
+            end
+          end
+        RUBY
+      end
     end
 
     context 'with normal style configured' do
@@ -749,7 +812,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
 
-    it 'does not auto-correct an offense within another offense' do
+    it 'does not auto-correct an offense within another offense' do # rubocop:disable InternalAffairs/ExampleDescription
       expect_offense(<<~RUBY)
         require 'spec_helper'
         describe ArticlesController do
@@ -768,7 +831,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
 
       # The offense on line 4 is corrected, affecting lines 4 to 11.
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         require 'spec_helper'
         describe ArticlesController do
           render_views

@@ -13,10 +13,12 @@ module RuboCop
       #   # good
       #   x = !something
       #
-      class Not < Cop
+      class Not < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `!` instead of `not`.'
+        RESTRICT_ON_SEND = %i[!].freeze
 
         OPPOSITE_METHODS = {
           :== => :!=,
@@ -30,19 +32,16 @@ module RuboCop
         def on_send(node)
           return unless node.prefix_not?
 
-          add_offense(node, location: :selector)
-        end
+          add_offense(node.loc.selector) do |corrector|
+            range = range_with_surrounding_space(range: node.loc.selector, side: :right)
 
-        def autocorrect(node)
-          range = range_with_surrounding_space(range: node.loc.selector,
-                                               side: :right)
-
-          if opposite_method?(node.receiver)
-            correct_opposite_method(range, node.receiver)
-          elsif requires_parens?(node.receiver)
-            correct_with_parens(range, node)
-          else
-            correct_without_parens(range)
+            if opposite_method?(node.receiver)
+              correct_opposite_method(corrector, range, node.receiver)
+            elsif requires_parens?(node.receiver)
+              correct_with_parens(corrector, range, node)
+            else
+              correct_without_parens(corrector, range)
+            end
           end
         end
 
@@ -58,23 +57,18 @@ module RuboCop
             child.if_type? && child.ternary?
         end
 
-        def correct_opposite_method(range, child)
-          lambda do |corrector|
-            corrector.remove(range)
-            corrector.replace(child.loc.selector,
-                              OPPOSITE_METHODS[child.method_name].to_s)
-          end
+        def correct_opposite_method(corrector, range, child)
+          corrector.remove(range)
+          corrector.replace(child.loc.selector, OPPOSITE_METHODS[child.method_name].to_s)
         end
 
-        def correct_with_parens(range, node)
-          lambda do |corrector|
-            corrector.replace(range, '!(')
-            corrector.insert_after(node, ')')
-          end
+        def correct_with_parens(corrector, range, node)
+          corrector.replace(range, '!(')
+          corrector.insert_after(node, ')')
         end
 
-        def correct_without_parens(range)
-          ->(corrector) { corrector.replace(range, '!') }
+        def correct_without_parens(corrector, range)
+          corrector.replace(range, '!')
         end
       end
     end

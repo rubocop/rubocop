@@ -2,11 +2,22 @@
 
 module RuboCop
   module Cop
+    # @api private
+    #
     # This module handles measurement and reporting of complexity in methods.
     module MethodComplexity
-      include ConfigurableMax
       include IgnoredMethods
+      include Metrics::Utils::RepeatedCsendDiscount
       extend NodePattern::Macros
+      extend ExcludeLimit
+
+      exclude_limit 'Max'
+
+      # Ensure cops that include `MethodComplexity` have the config
+      # `attr_accessor`s that `ignored_method?` needs.
+      def self.included(base)
+        base.extend(IgnoredMethods::Config)
+      end
 
       def on_def(node)
         return if ignored_method?(node.method_name)
@@ -25,6 +36,7 @@ module RuboCop
 
       private
 
+      # @!method define_method?(node)
       def_node_matcher :define_method?, <<~PATTERN
         (block
          (send nil? :define_method ({sym str} $_))
@@ -37,6 +49,7 @@ module RuboCop
         return unless node.body
 
         max = cop_config['Max']
+        reset_repeated_csend
         complexity, abc_vector = complexity(node.body)
 
         return unless complexity > max
@@ -53,8 +66,12 @@ module RuboCop
       end
 
       def complexity(body)
-        body.each_node(*self.class::COUNTED_NODES).reduce(1) do |score, n|
-          score + complexity_score_for(n)
+        body.each_node(:lvasgn, *self.class::COUNTED_NODES).reduce(1) do |score, node|
+          if node.lvasgn_type?
+            reset_on_lvasgn(node)
+            next score
+          end
+          score + complexity_score_for(node)
         end
       end
     end

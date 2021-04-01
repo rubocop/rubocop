@@ -15,9 +15,13 @@ module RuboCop
       #   # good
       #   if x.even?
       #   end
-      class EvenOdd < Cop
-        MSG = 'Replace with `Integer#%<method>s?`.'
+      class EvenOdd < Base
+        extend AutoCorrector
 
+        MSG = 'Replace with `Integer#%<method>s?`.'
+        RESTRICT_ON_SEND = %i[== !=].freeze
+
+        # @!method even_odd_candidate?(node)
         def_node_matcher :even_odd_candidate?, <<~PATTERN
           (send
             {(send $_ :% (int 2))
@@ -27,18 +31,12 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          even_odd_candidate?(node) do |_base_number, method, arg|
-            replacement_method = replacement_method(arg, method)
-            add_offense(node, message: format(MSG, method: replacement_method))
-          end
-        end
-
-        def autocorrect(node)
           even_odd_candidate?(node) do |base_number, method, arg|
             replacement_method = replacement_method(arg, method)
-
-            correction = "#{base_number.source}.#{replacement_method}?"
-            ->(corrector) { corrector.replace(node, correction) }
+            add_offense(node, message: format(MSG, method: replacement_method)) do |corrector|
+              correction = "#{base_number.source}.#{replacement_method}?"
+              corrector.replace(node, correction)
+            end
           end
         end
 

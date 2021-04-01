@@ -11,28 +11,39 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
     }
   }
 
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { cop_config }
 
   cop_config['PreferredMethods'].each do |method, preferred_method|
     it "registers an offense for #{method} with block" do
-      inspect_source("[1, 2, 3].#{method} { |e| e + 1 }")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Prefer `#{preferred_method}` over `#{method}`."])
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].%{method} { |e| e + 1 }
+                  ^{method} Prefer `#{preferred_method}` over `#{method}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{preferred_method} { |e| e + 1 }
+      RUBY
     end
 
     it "registers an offense for #{method} with proc param" do
-      inspect_source("[1, 2, 3].#{method}(&:test)")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Prefer `#{preferred_method}` over `#{method}`."])
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].%{method}(&:test)
+                  ^{method} Prefer `#{preferred_method}` over `#{method}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{preferred_method}(&:test)
+      RUBY
     end
 
-    it "accepts #{method} with more than 1 param" do
-      expect_no_offenses(<<~RUBY)
-        [1, 2, 3].#{method}(other, &:test)
+    it "registers an offense for #{method} with an argument and proc param" do
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].%{method}(0, &:test)
+                  ^{method} Prefer `#{preferred_method}` over `#{method}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{preferred_method}(0, &:test)
       RUBY
     end
 
@@ -41,10 +52,43 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
         [1, 2, 3].#{method}
       RUBY
     end
+  end
 
-    it 'auto-corrects to preferred method' do
-      new_source = autocorrect_source('some.collect(&:test)')
-      expect(new_source).to eq('some.map(&:test)')
+  context 'for methods that accept a symbol as implicit block' do
+    it 'registers an offense with a final symbol param' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].inject(:+)
+                  ^^^^^^ Prefer `reduce` over `inject`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].reduce(:+)
+      RUBY
+    end
+
+    it 'registers an offense with an argument and final symbol param' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].inject(0, :+)
+                  ^^^^^^ Prefer `reduce` over `inject`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].reduce(0, :+)
+      RUBY
+    end
+  end
+
+  context 'for methods that do not accept a symbol as implicit block' do
+    it 'does not register an offense for a final symbol param' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].collect(:+)
+      RUBY
+    end
+
+    it 'does not register an offense for a final symbol param with extra args' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].collect(0, :+)
+      RUBY
     end
   end
 end

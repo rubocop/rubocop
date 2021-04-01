@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NegatedWhile do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::NegatedWhile, :config do
   it 'registers an offense for while with exclamation point condition' do
     expect_offense(<<~RUBY)
       while !a_condition
@@ -11,6 +9,13 @@ RSpec.describe RuboCop::Cop::Style::NegatedWhile do
       end
       some_method while !a_condition
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      until a_condition
+        some_method
+      end
+      some_method until a_condition
     RUBY
   end
 
@@ -23,6 +28,13 @@ RSpec.describe RuboCop::Cop::Style::NegatedWhile do
       some_method until !a_condition
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `while` over `until` for negative conditions.
     RUBY
+
+    expect_correction(<<~RUBY)
+      while a_condition
+        some_method
+      end
+      some_method while a_condition
+    RUBY
   end
 
   it 'registers an offense for while with "not" condition' do
@@ -33,6 +45,13 @@ RSpec.describe RuboCop::Cop::Style::NegatedWhile do
       end
       some_method while not a_condition
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      until (a_condition)
+        some_method
+      end
+      some_method until a_condition
     RUBY
   end
 
@@ -58,19 +77,28 @@ RSpec.describe RuboCop::Cop::Style::NegatedWhile do
   end
 
   it 'autocorrects by replacing while not with until' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       something while !x.even?
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
       something while(!x.even?)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Favor `until` over `while` for negative conditions.
     RUBY
-    expect(corrected).to eq <<~RUBY
+
+    expect_correction(<<~RUBY)
       something until x.even?
       something until(x.even?)
     RUBY
   end
 
   it 'autocorrects by replacing until not with while' do
-    corrected = autocorrect_source('something until !x.even?')
-    expect(corrected).to eq 'something while x.even?'
+    expect_offense(<<~RUBY)
+      something until !x.even?
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Favor `while` over `until` for negative conditions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something while x.even?
+    RUBY
   end
 
   it 'does not blow up for empty while condition' do

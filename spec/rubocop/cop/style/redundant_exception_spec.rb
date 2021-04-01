@@ -1,74 +1,62 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantException do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Style::RedundantException, :config do
+  shared_examples 'common behavior' do |keyword, runtime_error|
+    it "reports an offense for a #{keyword} with #{runtime_error}" do
+      expect_offense(<<~RUBY, keyword: keyword, runtime_error: runtime_error)
+        %{keyword} %{runtime_error}, msg
+        ^{keyword}^^{runtime_error}^^^^^ Redundant `RuntimeError` argument can be removed.
+      RUBY
 
-  shared_examples 'common behavior' do |keyword|
-    it "reports an offense for a #{keyword} with RuntimeError" do
-      src = "#{keyword} RuntimeError, msg"
-      inspect_source(src)
-      expect(cop.highlights).to eq([src])
-      expect(cop.messages)
-        .to eq(['Redundant `RuntimeError` argument can be removed.'])
+      expect_correction(<<~RUBY)
+        #{keyword} msg
+      RUBY
     end
 
-    it "reports an offense for a #{keyword} with RuntimeError.new" do
-      src = "#{keyword} RuntimeError.new(msg)"
-      inspect_source(src)
-      expect(cop.highlights).to eq([src])
-      expect(cop.messages)
-        .to eq(['Redundant `RuntimeError.new` call can be replaced with ' \
-                'just the message.'])
+    it "reports an offense for a #{keyword} with #{runtime_error} and ()" do
+      expect_offense(<<~RUBY, keyword: keyword, runtime_error: runtime_error)
+        %{keyword}(%{runtime_error}, msg)
+        ^{keyword}^^{runtime_error}^^^^^^ Redundant `RuntimeError` argument can be removed.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword}(msg)
+      RUBY
     end
 
-    it "accepts a #{keyword} with RuntimeError if it does not have 2 args" do
-      expect_no_offenses("#{keyword} RuntimeError, msg, caller")
+    it "reports an offense for a #{keyword} with #{runtime_error}.new" do
+      expect_offense(<<~RUBY, keyword: keyword, runtime_error: runtime_error)
+        %{keyword} %{runtime_error}.new msg
+        ^{keyword}^^{runtime_error}^^^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} msg
+      RUBY
     end
 
-    it "auto-corrects a #{keyword} RuntimeError by removing RuntimeError" do
-      src = "#{keyword} RuntimeError, msg"
-      result_src = "#{keyword} msg"
-      new_src = autocorrect_source(src)
-      expect(new_src).to eq(result_src)
+    it "reports an offense for a #{keyword} with #{runtime_error}.new" do
+      expect_offense(<<~RUBY, keyword: keyword, runtime_error: runtime_error)
+        %{keyword} %{runtime_error}.new(msg)
+        ^{keyword}^^{runtime_error}^^^^^^^^^ Redundant `RuntimeError.new` call can be replaced with just the message.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} msg
+      RUBY
     end
 
-    it "auto-corrects a #{keyword} RuntimeError and leaves parentheses" do
-      src = "#{keyword}(RuntimeError, msg)"
-      result_src = "#{keyword}(msg)"
-      new_src = autocorrect_source(src)
-      expect(new_src).to eq(result_src)
+    it "accepts a #{keyword} with #{runtime_error} if it does not have 2 args" do
+      expect_no_offenses("#{keyword} #{runtime_error}, msg, caller")
     end
 
-    it "auto-corrects a #{keyword} RuntimeError.new with parentheses by " \
-       'removing RuntimeError.new' do
-      src = "#{keyword} RuntimeError.new(msg)"
-      result_src = "#{keyword} msg"
-      new_src = autocorrect_source(src)
-      expect(new_src).to eq(result_src)
-    end
-
-    it "auto-corrects a #{keyword} RuntimeError.new without parentheses by " \
-       'removing RuntimeError.new' do
-      src = "#{keyword} RuntimeError.new msg"
-      result_src = "#{keyword} msg"
-      new_src = autocorrect_source(src)
-      expect(new_src).to eq(result_src)
-    end
-
-    it "does not modify #{keyword} w/ RuntimeError if it does not have 2 " \
-       'args' do
-      src = "#{keyword} runtimeError, msg, caller"
-      new_src = autocorrect_source(src)
-      expect(new_src).to eq(src)
-    end
-
-    it 'does not modify rescue w/ non redundant error' do
-      src = "#{keyword} OtherError, msg"
-      new_src = autocorrect_source(src)
-      expect(new_src).to eq(src)
+    it 'accepts rescue w/ non redundant error' do
+      expect_no_offenses "#{keyword} OtherError, msg"
     end
   end
 
-  include_examples 'common behavior', 'raise'
-  include_examples 'common behavior', 'fail'
+  include_examples 'common behavior', 'raise', 'RuntimeError'
+  include_examples 'common behavior', 'raise', '::RuntimeError'
+  include_examples 'common behavior', 'fail', 'RuntimeError'
+  include_examples 'common behavior', 'fail', '::RuntimeError'
 end

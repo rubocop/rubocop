@@ -27,16 +27,18 @@ module RuboCop
       #   # bad
       #   10_000_00 # typical representation of $10,000 in cents
       #
-      class NumericLiterals < Cop
-        # The parameter is called MinDigits (meaning the minimum number of
-        # digits for which an offense can be registered), but essentially it's
-        # a Max parameter (the maximum number of something that's allowed).
-        include ConfigurableMax
+      class NumericLiterals < Base
         include IntegerNode
+        extend AutoCorrector
 
         MSG = 'Use underscores(_) as thousands separator and ' \
               'separate every 3 digits with them.'
         DELIMITER_REGEXP = /[eE.]/.freeze
+
+        # The parameter is called MinDigits (meaning the minimum number of
+        # digits for which an offense can be registered), but essentially it's
+        # a Max parameter (the maximum number of something that's allowed).
+        exclude_limit 'MinDigits'
 
         def on_int(node)
           check(node)
@@ -46,17 +48,7 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, format_number(node))
-          end
-        end
-
         private
-
-        def max_parameter_name
-          'MinDigits'
-        end
 
         def check(node)
           int = integer_part(node)
@@ -67,11 +59,19 @@ module RuboCop
 
           case int
           when /^\d+$/
-            add_offense(node) { self.max = int.size + 1 }
+            return unless (self.min_digits = int.size + 1)
+
+            register_offense(node)
           when /\d{4}/, short_group_regex
-            add_offense(node) do
-              self.config_to_allow_offenses = { 'Enabled' => false }
-            end
+            return unless (self.config_to_allow_offenses = { 'Enabled' => false })
+
+            register_offense(node)
+          end
+        end
+
+        def register_offense(node)
+          add_offense(node) do |corrector|
+            corrector.replace(node, format_number(node))
           end
         end
 

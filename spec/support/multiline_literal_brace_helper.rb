@@ -37,6 +37,6 @@ module MultilineLiteralBraceHelper
   # Construct a piece of source code for brace layout testing. This farms
   # out most of the work to `#braces` but it also includes a prefix and suffix.
   def construct(*args)
-    (prefix + braces(*args) + "\n" + suffix)
+    "#{prefix}#{braces(*args)}\n#{suffix}"
   end
 end

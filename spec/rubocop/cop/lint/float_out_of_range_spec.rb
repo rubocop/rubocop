@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::FloatOutOfRange do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::FloatOutOfRange, :config do
   it 'does not register an offense for 0.0' do
     expect_no_offenses('0.0')
   end

@@ -67,9 +67,10 @@ module RuboCop
       #   foo = [ ]
       #   bar = [ ]
       #
-      class SpaceInsideArrayLiteralBrackets < Cop
+      class SpaceInsideArrayLiteralBrackets < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = '%<command>s space inside array brackets.'
         EMPTY_MSG = '%<command>s space inside empty array brackets.'
@@ -86,36 +87,32 @@ module RuboCop
           issue_offenses(node, left, right, start_ok, end_ok)
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           left, right = array_brackets(node)
 
-          lambda do |corrector|
-            if empty_brackets?(left, right)
-              SpaceCorrector.empty_corrections(processed_source, corrector,
-                                               empty_config, left, right)
-            elsif style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector,
-                                          left, right)
-            elsif style == :space
-              SpaceCorrector.add_space(processed_source, corrector, left, right)
-            else
-              compact_corrections(corrector, node, left, right)
-            end
+          if empty_brackets?(left, right)
+            SpaceCorrector.empty_corrections(processed_source, corrector, empty_config, left, right)
+          elsif style == :no_space
+            SpaceCorrector.remove_space(processed_source, corrector, left, right)
+          elsif style == :space
+            SpaceCorrector.add_space(processed_source, corrector, left, right)
+          else
+            compact_corrections(corrector, node, left, right)
           end
         end
-
-        private
 
         def array_brackets(node)
           [left_array_bracket(node), right_array_bracket(node)]
         end
 
         def left_array_bracket(node)
-          tokens(node).find(&:left_array_bracket?)
+          processed_source.tokens_within(node).find(&:left_array_bracket?)
         end
 
         def right_array_bracket(node)
-          tokens(node).reverse.find(&:right_bracket?)
+          processed_source.tokens_within(node).reverse.find(&:right_bracket?)
         end
 
         def empty_config
@@ -123,18 +120,18 @@ module RuboCop
         end
 
         def next_to_newline?(node, token)
-          tokens(node)[index_for(node, token) + 1].line != token.line
+          processed_source.tokens_within(node)[index_for(node, token) + 1].line != token.line
         end
 
         def end_has_own_line?(token)
           line, col = line_and_column_for(token)
           return true if col == -1
 
-          processed_source.lines[line][0..col] !~ /\S/
+          !/\S/.match?(processed_source.lines[line][0..col])
         end
 
         def index_for(node, token)
-          tokens(node).index(token)
+          processed_source.tokens_within(node).index(token)
         end
 
         def line_and_column_for(token)
@@ -142,11 +139,12 @@ module RuboCop
         end
 
         def issue_offenses(node, left, right, start_ok, end_ok)
-          if style == :no_space
+          case style
+          when :no_space
             start_ok = next_to_comment?(node, left)
             no_space_offenses(node, left, right, MSG, start_ok: start_ok,
                                                       end_ok: end_ok)
-          elsif style == :space
+          when :space
             space_offenses(node, left, right, MSG, start_ok: start_ok,
                                                    end_ok: end_ok)
           else
@@ -155,7 +153,7 @@ module RuboCop
         end
 
         def next_to_comment?(node, token)
-          tokens(node)[index_for(node, token) + 1].comment?
+          processed_source.tokens_within(node)[index_for(node, token) + 1].comment?
         end
 
         def compact_offenses(node, left, right, start_ok, end_ok)
@@ -186,9 +184,9 @@ module RuboCop
         def multi_dimensional_array?(node, token, side: :right)
           i = index_for(node, token)
           if side == :right
-            tokens(node)[i - 1].right_bracket?
+            processed_source.tokens_within(node)[i - 1].right_bracket?
           else
-            tokens(node)[i + 1].left_array_bracket?
+            processed_source.tokens_within(node)[i + 1].left_array_bracket?
           end
         end
 

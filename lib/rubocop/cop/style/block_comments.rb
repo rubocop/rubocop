@@ -16,34 +16,30 @@ module RuboCop
       #   # Multiple lines
       #   # of comments...
       #
-      class BlockComments < Cop
+      class BlockComments < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Do not use block comments.'
         BEGIN_LENGTH = "=begin\n".length
         END_LENGTH = "\n=end".length
 
-        def investigate(processed_source)
-          processed_source.each_comment do |comment|
+        def on_new_investigation
+          processed_source.comments.each do |comment|
             next unless comment.document?
 
-            add_offense(comment)
-          end
-        end
+            add_offense(comment) do |corrector|
+              eq_begin, eq_end, contents = parts(comment)
 
-        def autocorrect(comment)
-          eq_begin, eq_end, contents = parts(comment)
-
-          lambda do |corrector|
-            corrector.remove(eq_begin)
-            unless contents.length.zero?
-              corrector.replace(contents,
-                                contents.source
-                                  .gsub(/\A/, '# ')
-                                  .gsub(/\n\n/, "\n#\n")
-                                  .gsub(/\n(?=[^#])/, "\n# "))
+              corrector.remove(eq_begin)
+              unless contents.length.zero?
+                corrector.replace(
+                  contents,
+                  contents.source.gsub(/\A/, '# ').gsub(/\n\n/, "\n#\n").gsub(/\n(?=[^#])/, "\n# ")
+                )
+              end
+              corrector.remove(eq_end)
             end
-            corrector.remove(eq_end)
           end
         end
 

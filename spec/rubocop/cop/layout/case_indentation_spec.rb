@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
   let(:config) do
     merged = RuboCop::ConfigLoader
              .default_configuration['Layout/CaseIndentation'].merge(cop_config)
@@ -434,7 +432,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation do
   context 'when case is preceded by something else than whitespace' do
     let(:cop_config) { {} }
 
-    it 'registers an offense and does not correct' do
+    it 'registers an offense and auto-corrects' do
       expect_offense(<<~RUBY)
         case test when something
                   ^^^^ Indent `when` as deep as `case`.

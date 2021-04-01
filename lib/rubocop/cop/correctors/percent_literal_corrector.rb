@@ -13,23 +13,18 @@ module RuboCop
         @preferred_delimiters = preferred_delimiters
       end
 
-      def correct(node, char)
+      def correct(corrector, node, char)
         escape = escape_words?(node)
         char = char.upcase if escape
         delimiters = delimiters_for("%#{char}")
         contents = new_contents(node, escape, delimiters)
-        wrap_contents(node, contents, char, delimiters)
+        wrap_contents(corrector, node, contents, char, delimiters)
       end
 
       private
 
-      def wrap_contents(node, contents, char, delimiters)
-        lambda do |corrector|
-          corrector.replace(
-            node,
-            "%#{char}#{delimiters[0]}#{contents}#{delimiters[1]}"
-          )
-        end
+      def wrap_contents(corrector, node, contents, char, delimiters)
+        corrector.replace(node, "%#{char}#{delimiters[0]}#{contents}#{delimiters[1]}")
       end
 
       def escape_words?(node)
@@ -53,7 +48,7 @@ module RuboCop
       def autocorrect_multiline_words(node, escape, delimiters)
         contents = process_multiline_words(node, escape, delimiters)
         contents << end_content(node.source)
-        contents.join('')
+        contents.join
       end
 
       def autocorrect_words(node, escape, delimiters)
@@ -71,7 +66,7 @@ module RuboCop
                                     prev_line_num,
                                     base_line_num,
                                     index)
-          prev_line_num = word_node.first_line
+          prev_line_num = word_node.last_line
           content = fix_escaped_content(word_node, escape, delimiters)
           line_breaks + content
         end
@@ -94,7 +89,7 @@ module RuboCop
         begin_line_num = previous_line_num - base_line_num + 1
         end_line_num = node.first_line - base_line_num + 1
         lines = source_in_lines[begin_line_num...end_line_num]
-        "\n#{(lines.join("\n").split(node.source).first || '')}"
+        "\n#{lines.join("\n").split(node.source).first || ''}"
       end
 
       def fix_escaped_content(word_node, escape, delimiters)
@@ -110,7 +105,7 @@ module RuboCop
 
       def end_content(source)
         result = /\A(\s*)\]/.match(source.split("\n").last)
-        ("\n" + result[1]) if result
+        "\n#{result[1]}" if result
       end
     end
   end

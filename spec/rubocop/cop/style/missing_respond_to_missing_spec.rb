@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing, :config do
   it 'registers an offense when respond_to_missing? is not implemented' do
     expect_offense(<<~RUBY)
       class Test
@@ -47,6 +43,31 @@ RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing do
         end
 
         def self.method_missing
+        end
+      end
+    RUBY
+  end
+
+  it 'allows method_missing and respond_to_missing? when defined with inline access modifier' do
+    expect_no_offenses(<<~RUBY)
+      class Test
+        private def respond_to_missing?
+        end
+
+        private def method_missing
+        end
+      end
+    RUBY
+  end
+
+  it 'allows method_missing and respond_to_missing? when defined with inline access modifier and ' \
+     'method_missing is not qualified by inline access modifier' do
+    expect_no_offenses(<<~RUBY)
+      class Test
+        private def respond_to_missing?
+        end
+
+        def method_missing
         end
       end
     RUBY

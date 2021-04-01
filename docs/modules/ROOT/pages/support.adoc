@@ -1,0 +1,42 @@
+= Support
+
+RuboCop currently has several official & unofficial support channels.
+For questions, suggestions, and support refer to one of them.
+
+NOTE: Please, don't use the support channels to report issues, as this makes them
+harder to track.
+
+== GitHub Discussions
+
+These days our primary discussion board is
+https://github.com/rubocop/rubocop/discussions[here].
+
+It's a great place to share ideas, help other RuboCop users and just be up-to-date
+with interesting developments.
+
+== Discord
+
+If you're into chat you can drop by RuboCop's
+https://discord.gg/wJjWvGRDmm[Discord server]. You can often find some
+RuboCop maintainers there and get some interesting news from the project's
+kitchen.
+
+== Mailing List
+
+The https://groups.google.com/forum/#!forum/rubocop[official mailing list] is
+hosted at Google Groups. It's a low-traffic list, so don't be too hesitant to subscribe.
+
+== Freenode
+
+If you're into IRC you can visit the `#rubocop` channel on Freenode.
+It's not actively
+monitored by the RuboCop maintainers themselves, but still you can get support
+from other RuboCop users there.
+
+== StackOverflow
+
+We're also encouraging users to ask RuboCop-related questions on StackOverflow.
+
+When doing so you should use the
+https://stackoverflow.com/questions/tagged/rubocop[RuboCop] tag (ideally combined
+with the tag `ruby`).

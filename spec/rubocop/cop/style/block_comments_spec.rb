@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::BlockComments do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::BlockComments, :config do
   it 'registers an offense for block comments' do
     expect_offense(<<~RUBY)
       =begin
       ^^^^^^ Do not use block comments.
       comment
       =end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
     RUBY
   end
 
@@ -17,8 +19,9 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
   end
 
   it 'auto-corrects a block comment into a regular comment' do
-    new_source = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       =begin
+      ^^^^^^ Do not use block comments.
       comment line 1
 
       comment line 2
@@ -26,7 +29,8 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
       def foo
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       # comment line 1
       #
       # comment line 2
@@ -36,13 +40,15 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
   end
 
   it 'auto-corrects an empty block comment by removing it' do
-    new_source = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       =begin
+      ^^^^^^ Do not use block comments.
       =end
       def foo
       end
     RUBY
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       def foo
       end
     RUBY
@@ -50,22 +56,19 @@ RSpec.describe RuboCop::Cop::Style::BlockComments do
 
   it 'auto-corrects a block comment into a regular comment (without trailing' \
     'newline)' do
-    source = <<~RUBY
+    expect_offense(<<~RUBY)
       =begin
+      ^^^^^^ Do not use block comments.
       comment line 1
 
       comment line 2
       =end
     RUBY
 
-    new_source = autocorrect_source(source.chomp)
-
-    expected_source = <<~RUBY
+    expect_correction(<<~RUBY)
       # comment line 1
       #
       # comment line 2
     RUBY
-
-    expect(new_source).to eq(expected_source)
   end
 end

@@ -11,12 +11,9 @@ module RuboCop
       #
       #   # good
       #   x = 1; y = 2
-      class SpaceBeforeSemicolon < Cop
+      class SpaceBeforeSemicolon < Base
         include SpaceBeforePunctuation
-
-        def autocorrect(space)
-          PunctuationCorrector.remove_space(space)
-        end
+        extend AutoCorrector
 
         def kind(token)
           'semicolon' if token.semicolon?

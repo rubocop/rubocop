@@ -129,6 +129,28 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
         end
       end
 
+      context 'when a nested department is specified' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => {
+              'StyleGuideBaseURL' => 'http://example.org/styleguide'
+            },
+            'Foo/Bar' => {
+              'StyleGuideBaseURL' => 'http://foo.example.org'
+            }
+          )
+        end
+
+        let(:cop_name) { 'Foo/Bar/Cop' }
+        let(:urls) { annotator.urls }
+
+        it 'returns style guide url when it is specified' do
+          config['Foo/Bar/Cop'] = { 'StyleGuide' => '#target_style_guide' }
+
+          expect(urls).to eq(%w[http://foo.example.org#target_style_guide])
+        end
+      end
+
       it 'can use a path-based setting' do
         config['Cop/Cop'] = { 'StyleGuide' => 'cop/path/rule#target_based_url' }
         expect(annotate).to include('http://example.org/cop/path/rule#target_based_url')
@@ -136,12 +158,12 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
 
       it 'can accept relative paths if base has a full path' do
         config['AllCops'] = {
-          'StyleGuideBaseURL' => 'https://github.com/rubocop-hq/ruby-style-guide/'
+          'StyleGuideBaseURL' => 'https://github.com/rubocop/ruby-style-guide/'
         }
         config['Cop/Cop'] = {
           'StyleGuide' => '../rails-style-guide#target_based_url'
         }
-        expect(annotate).to include('https://github.com/rubocop-hq/rails-style-guide#target_based_url')
+        expect(annotate).to include('https://github.com/rubocop/rails-style-guide#target_based_url')
       end
 
       it 'allows absolute URLs in the cop config' do

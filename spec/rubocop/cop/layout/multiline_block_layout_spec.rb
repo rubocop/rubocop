@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
   it 'registers an offense for missing newline in do/end block w/o params' do
     expect_offense(<<~RUBY)
       test do foo
@@ -11,7 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test do 
+      test do#{trailing_whitespace}
         foo
       end
     RUBY
@@ -26,7 +24,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test { 
+      test {#{trailing_whitespace}
         foo
       }
     RUBY
@@ -41,7 +39,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test do |x| 
+      test do |x|#{trailing_whitespace}
         foo
       end
     RUBY
@@ -56,7 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test { |x| 
+      test { |x|#{trailing_whitespace}
         foo
       }
     RUBY
@@ -78,15 +76,49 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
-  it 'does not register offenses when there are too many parameters to fit ' \
-     'on one line' do
+  it 'does not register offenses when there are too many parameters to fit on one line' do
     expect_no_offenses(<<~RUBY)
       some_result = lambda do |
         so_many,
         parameters,
         it_will,
         be_too_long,
-        for_one_line|
+        for_one_line,
+        line_length,
+        has_increased,
+        add_3_more|
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers offenses when there are not too many parameters to fit on one line' do
+    expect_offense(<<~RUBY)
+      some_result = lambda do |
+                              ^ Block argument expression is not on the same line as the block start.
+        so_many,
+        parameters,
+        it_will,
+        be_too_long,
+        for_one_line,
+        line_length,
+        has_increased,
+        add_3_mor|
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      some_result = lambda do |so_many, parameters, it_will, be_too_long, for_one_line, line_length, has_increased, add_3_mor|
+        do_something
+      end
+    RUBY
+  end
+
+  it 'considers the extra space required to join the lines together' do
+    expect_no_offenses(<<~RUBY)
+      some_result = lambda do
+        |so_many, parameters, it_will, be_too_long, for_one_line, line_length, has_increased, add_3_more|
         do_something
       end
     RUBY
@@ -116,7 +148,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      -> (x) do 
+      -> (x) do#{trailing_whitespace}
         foo
         bar
       end
@@ -132,7 +164,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      -> x do 
+      -> x do#{trailing_whitespace}
         foo
         bar
       end
@@ -192,7 +224,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      test do |foo| 
+      test do |foo|#{trailing_whitespace}
         bar
         test
       end
@@ -209,10 +241,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
 
     expect_correction(<<~RUBY)
-      x = -> (y) { 
+      x = -> (y) {#{trailing_whitespace}
             foo
         bar
       }
+    RUBY
+  end
+
+  it 'registers an offense and corrects for missing newline before opening parenthesis `(` for block body' do
+    expect_offense(<<~RUBY)
+      foo do |o| (
+                 ^ Block body expression is on the same line as the block start.
+          bar
+        )
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do |o|#{trailing_whitespace}
+        (
+          bar
+        )
+      end
     RUBY
   end
 
@@ -266,8 +316,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
-  it 'does not auto-correct a trailing comma when only one argument ' \
-     'is present' do
+  it 'does not remove a trailing comma when only one argument is present' do
     expect_offense(<<~RUBY)
       def f
         X.map do |
