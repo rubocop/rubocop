@@ -12,7 +12,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
 
     expect_correction(<<~RUBY)
       foo
-
     RUBY
   end
 
@@ -43,7 +42,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
 
     expect_correction(<<~RUBY)
       foo
-      # rubocop:enable
       bar
     RUBY
   end
@@ -53,6 +51,23 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
       # rubocop:disable Layout/LineLength
       fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
       # rubocop:enable Metrics/AbcSize, Layout/LineLength
+                       ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+      bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Layout/LineLength
+      fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+      # rubocop:enable Layout/LineLength
+      bar
+    RUBY
+  end
+
+  it 'registers correct offense when combined with necessary enable, no white-space after comma' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Layout/LineLength
+      fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+      # rubocop:enable Metrics/AbcSize,Layout/LineLength
                        ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
       bar
     RUBY
@@ -85,7 +100,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
 
       bar
 
-
       bar
     RUBY
   end
@@ -100,7 +114,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
 
       expect_correction(<<~RUBY)
         foo
-
       RUBY
     end
 
@@ -177,6 +190,44 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective do
         foo
         # rubocop:enable Layout/LineLength,  Lint/Debugger
       RUBY
+    end
+  end
+
+  context 'when all cops are unnecessarily enabled' do
+    context 'on the same line' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo
+          # rubocop:enable Layout/LineLength, Metrics/AbcSize, Lint/Debugger
+                                                               ^^^^^^^^^^^^^ Unnecessary enabling of Lint/Debugger.
+                                              ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+                           ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/LineLength.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo
+        RUBY
+      end
+    end
+
+    context 'on separate lines' do
+      it 'registers an offense and corrects when there is extra white space' do
+        expect_offense(<<~RUBY)
+          foo
+          # rubocop:enable Metrics/ModuleSize
+                           ^^^^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/ModuleSize.
+          # rubocop:enable Layout/LineLength, Metrics/ClassSize
+                           ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/LineLength.
+                                              ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/ClassSize.
+          # rubocop:enable Metrics/AbcSize, Lint/Debugger
+                                            ^^^^^^^^^^^^^ Unnecessary enabling of Lint/Debugger.
+                           ^^^^^^^^^^^^^^^ Unnecessary enabling of Metrics/AbcSize.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo
+        RUBY
+      end
     end
   end
 end

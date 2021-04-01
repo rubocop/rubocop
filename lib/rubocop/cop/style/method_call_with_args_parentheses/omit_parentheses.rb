@@ -7,22 +7,19 @@ module RuboCop
         # Style omit_parentheses
         module OmitParentheses
           TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
+          OMIT_MSG = 'Omit parentheses for method calls with arguments.'
+          private_constant :OMIT_MSG
 
-          def on_send(node)
+          private
+
+          def omit_parentheses(node)
             return unless node.parenthesized?
             return if node.implicit_call?
             return if super_call_without_arguments?(node)
             return if allowed_camel_case_method_call?(node)
             return if legitimate_call_with_parentheses?(node)
 
-            add_offense(node, location: node.loc.begin.join(node.loc.end))
-          end
-          alias on_csend on_send
-          alias on_super on_send
-          alias on_yield on_send
-
-          def autocorrect(node)
-            lambda do |corrector|
+            add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
               if parentheses_at_the_end_of_multiline_call?(node)
                 corrector.replace(args_begin(node), ' \\')
               else
@@ -32,11 +29,9 @@ module RuboCop
             end
           end
 
-          def message(_node = nil)
-            'Omit parentheses for method calls with arguments.'
+          def offense_range(node)
+            node.loc.begin.join(node.loc.end)
           end
-
-          private
 
           def super_call_without_arguments?(node)
             node.super_type? && node.arguments.none?
@@ -60,6 +55,7 @@ module RuboCop
               call_with_ambiguous_arguments?(node) ||
               call_in_logical_operators?(node) ||
               call_in_optional_arguments?(node) ||
+              call_in_single_line_inheritance?(node) ||
               allowed_multiline_call_with_parentheses?(node) ||
               allowed_chained_call_with_parentheses?(node)
           end
@@ -78,12 +74,16 @@ module RuboCop
             parent &&
               (logical_operator?(parent) ||
               parent.send_type? &&
-              parent.arguments.any?(&method(:logical_operator?)))
+              parent.arguments.any? { |argument| logical_operator?(argument) })
           end
 
           def call_in_optional_arguments?(node)
             node.parent &&
               (node.parent.optarg_type? || node.parent.kwoptarg_type?)
+          end
+
+          def call_in_single_line_inheritance?(node)
+            node.parent&.class_type? && node.parent&.single_line?
           end
 
           def call_with_ambiguous_arguments?(node)
@@ -110,7 +110,7 @@ module RuboCop
           def hash_literal_in_arguments?(node)
             node.arguments.any? do |n|
               hash_literal?(n) ||
-                n.send_type? && node.descendants.any?(&method(:hash_literal?))
+                n.send_type? && node.descendants.any? { |descendant| hash_literal?(descendant) }
             end
           end
 

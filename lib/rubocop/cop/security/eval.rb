@@ -11,8 +11,9 @@ module RuboCop
       #
       #   eval(something)
       #   binding.eval(something)
-      class Eval < Cop
+      class Eval < Base
         MSG = 'The use of `eval` is a serious security risk.'
+        RESTRICT_ON_SEND = %i[eval].freeze
 
         def_node_matcher :eval?, <<~PATTERN
           (send {nil? (send nil? :binding)} :eval $!str ...)
@@ -22,7 +23,7 @@ module RuboCop
           eval?(node) do |code|
             return if code.dstr_type? && code.recursive_literal?
 
-            add_offense(node, location: :selector)
+            add_offense(node.loc.selector)
           end
         end
       end

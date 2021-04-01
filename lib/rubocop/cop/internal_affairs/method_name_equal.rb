@@ -12,11 +12,13 @@ module RuboCop
       #   # good
       #   node.method?(:do_something)
       #
-      class MethodNameEqual < Cop
+      class MethodNameEqual < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `method?(%<method_name>s)` instead of ' \
               '`method_name == %<method_name>s`.'
+        RESTRICT_ON_SEND = %i[==].freeze
 
         def_node_matcher :method_name?, <<~PATTERN
           (send
@@ -31,17 +33,8 @@ module RuboCop
 
             range = range(method_name_node, node)
 
-            add_offense(node, location: range, message: message)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            method_name?(node) do |method_name_node, method_name_arg|
-              corrector.replace(
-                range(method_name_node, node),
-                "method?(#{method_name_arg.first.source})"
-              )
+            add_offense(range, message: message) do |corrector|
+              corrector.replace(range, "method?(#{method_name_arg.first.source})")
             end
           end
         end

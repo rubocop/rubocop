@@ -10,7 +10,7 @@ shared_examples_for 'misaligned' do |annotated_source, used_style|
                              end
   annotated_source.split(/\n\n/).each do |chunk|
     chunk << "\n" unless chunk.end_with?("\n")
-    source = chunk.lines.reject { |line| line =~ /^ *\^/ }.join
+    source = chunk.lines.reject { |line| /^ *\^/.match?(line) }.join
     name = source.gsub(/\n(?=[a-z ])/, ' <newline> ').gsub(/\s+/, ' ')
 
     it "registers an offense for mismatched #{name}" do
@@ -35,7 +35,6 @@ shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   name ||= alignment_base
   name = name.gsub(/\n/, ' <newline>')
   it "accepts matching #{name} ... end" do
-    inspect_source("#{alignment_base} #{arg}\n#{end_kw}")
-    expect(cop.offenses.empty?).to be(true)
+    expect_no_offenses("#{alignment_base} #{arg}\n#{end_kw}")
   end
 end

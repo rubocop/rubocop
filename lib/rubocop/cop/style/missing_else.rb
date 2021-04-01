@@ -93,7 +93,7 @@ module RuboCop
       #   else
       #     # the content of `else` branch will be determined by Style/EmptyElse
       #   end
-      class MissingElse < Cop
+      class MissingElse < Base
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
 
@@ -121,28 +121,18 @@ module RuboCop
         def check(node)
           return if node.else?
 
-          if empty_else_cop_enabled?
-            if empty_else_style == :empty
-              add_offense(node)
-            elsif empty_else_style == :nil
-              add_offense(node)
-            end
-          end
-
-          add_offense(node)
+          add_offense(node, message: format(message_template, type: node.type))
         end
 
-        def message(node)
-          template = case empty_else_style
-                     when :empty
-                       MSG_NIL
-                     when :nil
-                       MSG_EMPTY
-                     else
-                       MSG
-                     end
-
-          format(template, type: node.type)
+        def message_template
+          case empty_else_style
+          when :empty
+            MSG_NIL
+          when :nil
+            MSG_EMPTY
+          else
+            MSG
+          end
         end
 
         def if_style?

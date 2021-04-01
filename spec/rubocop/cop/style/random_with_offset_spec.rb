@@ -10,12 +10,20 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
       rand(6) + 1
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..6)
+    RUBY
   end
 
   it 'registers an offense when using offset + rand(int)' do
     expect_offense(<<~RUBY)
       1 + rand(6)
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..6)
     RUBY
   end
 
@@ -24,12 +32,20 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
       rand(6).succ
       ^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..6)
+    RUBY
   end
 
   it 'registers an offense when using rand(int) - offset' do
     expect_offense(<<~RUBY)
       rand(6) - 1
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(-1..4)
     RUBY
   end
 
@@ -38,12 +54,20 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
       1 - rand(6)
       ^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
+
+    expect_correction(<<~RUBY)
+      rand(-4..1)
+    RUBY
   end
 
   it 'registers an offense when using rand(int).pred' do
     expect_offense(<<~RUBY)
       rand(6).pred
       ^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(-1..4)
     RUBY
   end
 
@@ -52,12 +76,31 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
       rand(6).next
       ^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..6)
+    RUBY
   end
 
   it 'registers an offense when using Kernel.rand' do
     expect_offense(<<~RUBY)
       Kernel.rand(6) + 1
       ^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Kernel.rand(1..6)
+    RUBY
+  end
+
+  it 'registers an offense when using ::Kernel.rand' do
+    expect_offense(<<~RUBY)
+      ::Kernel.rand(6) + 1
+      ^^^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::Kernel.rand(1..6)
     RUBY
   end
 
@@ -66,12 +109,31 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
       Random.rand(6) + 1
       ^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
+
+    expect_correction(<<~RUBY)
+      Random.rand(1..6)
+    RUBY
+  end
+
+  it 'registers an offense when using ::Random.rand' do
+    expect_offense(<<~RUBY)
+      ::Random.rand(6) + 1
+      ^^^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::Random.rand(1..6)
+    RUBY
   end
 
   it 'registers an offense when using rand(irange) + offset' do
     expect_offense(<<~RUBY)
       rand(0..6) + 1
       ^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..7)
     RUBY
   end
 
@@ -80,91 +142,144 @@ RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
       rand(0...6) + 1
       ^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
     RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..6)
+    RUBY
   end
 
-  it 'autocorrects rand(int) + offset' do
-    new_source = autocorrect_source('rand(6) + 1')
-    expect(new_source).to eq 'rand(1..6)'
+  it 'registers an offense when using offset + Random.rand(int)' do
+    expect_offense(<<~RUBY)
+      1 + Random.rand(6)
+      ^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Random.rand(1..6)
+    RUBY
   end
 
-  it 'autocorrects offset + rand(int)' do
-    new_source = autocorrect_source('1 + rand(6)')
-    expect(new_source).to eq 'rand(1..6)'
+  it 'registers an offense when using offset - ::Random.rand(int)' do
+    expect_offense(<<~RUBY)
+      1 - ::Random.rand(6)
+      ^^^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::Random.rand(-4..1)
+    RUBY
   end
 
-  it 'autocorrects rand(int) - offset' do
-    new_source = autocorrect_source('rand(6) - 1')
-    expect(new_source).to eq 'rand(-1..4)'
+  it 'registers an offense when using Random.rand(int).succ' do
+    expect_offense(<<~RUBY)
+      Random.rand(6).succ
+      ^^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Random.rand(1..6)
+    RUBY
   end
 
-  it 'autocorrects offset - rand(int)' do
-    new_source = autocorrect_source('1 - rand(6)')
-    expect(new_source).to eq 'rand(-4..1)'
+  it 'registers an offense when using ::Random.rand(int).pred' do
+    expect_offense(<<~RUBY)
+      ::Random.rand(6).pred
+      ^^^^^^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ::Random.rand(-1..4)
+    RUBY
   end
 
-  it 'autocorrects rand(int).succ' do
-    new_source = autocorrect_source('rand(6).succ')
-    expect(new_source).to eq 'rand(1..6)'
+  it 'registers an offense when using rand(irange) - offset' do
+    expect_offense(<<~RUBY)
+      rand(0..6) - 1
+      ^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(-1..5)
+    RUBY
   end
 
-  it 'autocorrects rand(int).pred' do
-    new_source = autocorrect_source('rand(6).pred')
-    expect(new_source).to eq 'rand(-1..4)'
+  it 'registers an offense when using rand(erange) - offset' do
+    expect_offense(<<~RUBY)
+      rand(0...6) - 1
+      ^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(-1..4)
+    RUBY
   end
 
-  it 'autocorrects rand(int).next' do
-    new_source = autocorrect_source('rand(6).next')
-    expect(new_source).to eq 'rand(1..6)'
+  it 'registers an offense when using offset - rand(irange)' do
+    expect_offense(<<~RUBY)
+      1 - rand(0..6)
+      ^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(-5..1)
+    RUBY
   end
 
-  it 'autocorrects the use of Random.rand' do
-    new_source = autocorrect_source('Random.rand(6) + 1')
-    expect(new_source).to eq 'Random.rand(1..6)'
+  it 'registers an offense when using offset - rand(erange)' do
+    expect_offense(<<~RUBY)
+      1 - rand(0...6)
+      ^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(-4..1)
+    RUBY
   end
 
-  it 'autocorrects the use of Kernel.rand' do
-    new_source = autocorrect_source('Kernel.rand(6) + 1')
-    expect(new_source).to eq 'Kernel.rand(1..6)'
+  it 'registers an offense when using rand(irange).succ' do
+    expect_offense(<<~RUBY)
+      rand(0..6).succ
+      ^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..7)
+    RUBY
   end
 
-  it 'autocorrects rand(irange) + offset' do
-    new_source = autocorrect_source('rand(0..6) + 1')
-    expect(new_source).to eq 'rand(1..7)'
+  it 'registers an offense when using rand(erange).succ' do
+    expect_offense(<<~RUBY)
+      rand(0...6).succ
+      ^^^^^^^^^^^^^^^^ Prefer ranges when generating random numbers instead of integers with offsets.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..6)
+    RUBY
   end
 
-  it 'autocorrects rand(3range) + offset' do
-    new_source = autocorrect_source('rand(0...6) + 1')
-    expect(new_source).to eq 'rand(1..6)'
+  it 'does not register an offense when using rand(irange) + offset with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      rand(0..limit) + 1
+    RUBY
   end
 
-  it 'autocorrects rand(irange) - offset' do
-    new_source = autocorrect_source('rand(0..6) - 1')
-    expect(new_source).to eq 'rand(-1..5)'
+  it 'does not register an offense when using offset - rand(erange) with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      1 - rand(0...limit)
+    RUBY
   end
 
-  it 'autocorrects rand(erange) - offset' do
-    new_source = autocorrect_source('rand(0...6) - 1')
-    expect(new_source).to eq 'rand(-1..4)'
+  it 'does not register an offense when using rand(irange).succ with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      rand(0..limit).succ
+    RUBY
   end
 
-  it 'autocorrects offset - rand(irange)' do
-    new_source = autocorrect_source('1 - rand(0..6)')
-    expect(new_source).to eq 'rand(-5..1)'
-  end
-
-  it 'autocorrects offset - rand(erange)' do
-    new_source = autocorrect_source('1 - rand(0...6)')
-    expect(new_source).to eq 'rand(-4..1)'
-  end
-
-  it 'autocorrects rand(irange).succ' do
-    new_source = autocorrect_source('rand(0..6).succ')
-    expect(new_source).to eq 'rand(1..7)'
-  end
-
-  it 'autocorrects rand(erange).succ' do
-    new_source = autocorrect_source('rand(0...6).succ')
-    expect(new_source).to eq 'rand(1..6)'
+  it 'does not register an offense when using rand(erange).pred with a non-integer range value' do
+    expect_no_offenses(<<~RUBY)
+      rand(0...limit).pred
+    RUBY
   end
 
   it 'does not register an offense when using range with double dots' do

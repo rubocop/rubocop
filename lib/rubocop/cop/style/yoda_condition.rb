@@ -19,6 +19,8 @@ module RuboCop
       #   foo == "bar"
       #   foo <= 42
       #   bar > 10
+      #   "#{interpolation}" == foo
+      #   /#{interpolation}/ == foo
       #
       # @example EnforcedStyle: forbid_for_equality_operators_only
       #   # bad
@@ -50,9 +52,10 @@ module RuboCop
       #   # good
       #   99 == foo
       #   "bar" != foo
-      class YodaCondition < Cop
+      class YodaCondition < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Reverse the order of the operands `%<source>s`.'
 
@@ -78,11 +81,7 @@ module RuboCop
           return if equality_only? && non_equality_operator?(node) ||
                     file_constant_equal_program_name?(node)
 
-          valid_yoda?(node) || add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          valid_yoda?(node) || add_offense(node) do |corrector|
             corrector.replace(actual_code_range(node), corrected_code(node))
           end
         end
@@ -109,7 +108,8 @@ module RuboCop
           rhs = node.first_argument
 
           return true if lhs.literal? && rhs.literal? ||
-                         !lhs.literal? && !rhs.literal?
+                         !lhs.literal? && !rhs.literal? ||
+                         interpolation?(lhs)
 
           enforce_yoda? ? lhs.literal? : rhs.literal?
         end
@@ -149,6 +149,12 @@ module RuboCop
 
         def program_name?(name)
           PROGRAM_NAMES.include?(name)
+        end
+
+        def interpolation?(node)
+          return true if node.dstr_type?
+
+          node.regexp_type? && node.interpolation?
         end
       end
     end

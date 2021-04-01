@@ -17,11 +17,11 @@ module RuboCop
       #   foo.each do |f|
       #     f.bar # Trailing inline comment
       #   end
-      class InlineComment < Cop
+      class InlineComment < Base
         MSG = 'Avoid trailing inline comments.'
 
-        def investigate(processed_source)
-          processed_source.each_comment do |comment|
+        def on_new_investigation
+          processed_source.comments.each do |comment|
             next if comment_line?(processed_source[comment.loc.line - 1]) ||
                     comment.text.match?(/\A# rubocop:(enable|disable)/)
 

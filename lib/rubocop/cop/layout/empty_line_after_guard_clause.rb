@@ -35,8 +35,9 @@ module RuboCop
       #       return if need_return?
       #     end
       #   end
-      class EmptyLineAfterGuardClause < Cop
+      class EmptyLineAfterGuardClause < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Add empty line after guard clause.'
         END_OF_HEREDOC_LINE = 1
@@ -49,27 +50,29 @@ module RuboCop
 
             return if next_line_empty?(heredoc_line(node, heredoc_node))
 
-            add_offense(heredoc_node, location: :heredoc_end)
+            add_offense(heredoc_node.loc.heredoc_end) do |corrector|
+              autocorrect(corrector, heredoc_node)
+            end
           else
             return if next_line_empty?(node.last_line)
 
-            add_offense(node, location: offense_location(node))
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            node_range = if node.respond_to?(:heredoc?) && node.heredoc?
-                           range_by_whole_lines(node.loc.heredoc_body)
-                         else
-                           range_by_whole_lines(node.source_range)
-                         end
-
-            corrector.insert_after(node_range, "\n")
+            add_offense(offense_location(node)) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          node_range = if node.respond_to?(:heredoc?) && node.heredoc?
+                         range_by_whole_lines(node.loc.heredoc_body)
+                       else
+                         range_by_whole_lines(node.source_range)
+                       end
+
+          corrector.insert_after(node_range, "\n")
+        end
 
         def correct_style?(node)
           !contains_guard_clause?(node) ||
@@ -92,7 +95,7 @@ module RuboCop
         end
 
         def next_sibling_parent_empty_or_else?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
+          next_sibling = node.right_sibling
           return true if next_sibling.nil?
 
           parent = next_sibling.parent
@@ -101,7 +104,7 @@ module RuboCop
         end
 
         def next_sibling_empty_or_guard_clause?(node)
-          next_sibling = node.parent.children[node.sibling_index + 1]
+          next_sibling = node.right_sibling
           return true if next_sibling.nil?
 
           next_sibling.if_type? && contains_guard_clause?(next_sibling)
@@ -146,9 +149,9 @@ module RuboCop
 
         def offense_location(node)
           if node.loc.respond_to?(:end) && node.loc.end
-            :end
+            node.loc.end
           else
-            :expression
+            node
           end
         end
       end

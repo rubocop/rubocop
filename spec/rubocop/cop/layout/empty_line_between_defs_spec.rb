@@ -276,6 +276,19 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     RUBY
   end
 
+  it 'registers an offense for multiple one-liners on the same line' do
+    expect_offense(<<~RUBY)
+      def a; end; def b; end
+                  ^^^^^ Use empty lines between method definitions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def a; end;#{trailing_whitespace}
+
+      def b; end
+    RUBY
+  end
+
   context 'when AllowAdjacentOneLineDefs is enabled' do
     let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
 

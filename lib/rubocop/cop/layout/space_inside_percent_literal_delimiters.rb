@@ -16,9 +16,10 @@ module RuboCop
       #
       #   # bad
       #   %x(  ls -l )
-      class SpaceInsidePercentLiteralDelimiters < Cop
+      class SpaceInsidePercentLiteralDelimiters < Base
         include MatchRange
         include PercentLiteral
+        extend AutoCorrector
 
         MSG = 'Do not use spaces inside percent literal delimiters.'
         BEGIN_REGEX = /\A( +)/.freeze
@@ -36,21 +37,15 @@ module RuboCop
           add_offenses_for_unnecessary_spaces(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            regex_matches(node) do |match_range|
-              corrector.remove(match_range)
-            end
-          end
-        end
-
         private
 
         def add_offenses_for_unnecessary_spaces(node)
           return unless node.single_line?
 
           regex_matches(node) do |match_range|
-            add_offense(node, location: match_range)
+            add_offense(match_range) do |corrector|
+              corrector.remove(match_range)
+            end
           end
         end
 

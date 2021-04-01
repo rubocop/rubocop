@@ -49,9 +49,12 @@ module RuboCop
       #   end
       #
       #   alias bar foo
-      class DuplicateMethods < Cop
+      class DuplicateMethods < Base
         MSG = 'Method `%<method>s` is defined at both %<defined>s and ' \
               '%<current>s.'
+
+        RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer
+                              attr_accessor attr].freeze
 
         def initialize(config = nil, options = nil)
           super
@@ -96,10 +99,8 @@ module RuboCop
         PATTERN
 
         def_node_matcher :sym_name, '(sym $_name)'
-
         def on_send(node)
           if (name = alias_method?(node))
-            return unless name
             return if node.ancestors.any?(&:if_type?)
             return if possible_dsl?(node)
 
@@ -126,7 +127,7 @@ module RuboCop
         end
 
         def message_for_dup(node, method_name)
-          format(MSG, method: method_name, defined: @definitions[method_name],
+          format(MSG, method: method_name, defined: source_location(@definitions[method_name]),
                       current: source_location(node))
         end
 
@@ -150,9 +151,9 @@ module RuboCop
                   end
             message = message_for_dup(node, method_name)
 
-            add_offense(node, location: loc, message: message)
+            add_offense(loc, message: message)
           else
-            @definitions[method_name] = source_location(node)
+            @definitions[method_name] = node
           end
         end
 

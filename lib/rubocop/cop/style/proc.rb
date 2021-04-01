@@ -13,20 +13,20 @@ module RuboCop
       #   # good
       #   p = proc { |n| puts n }
       #
-      class Proc < Cop
+      class Proc < Base
+        extend AutoCorrector
+
         MSG = 'Use `proc` instead of `Proc.new`.'
 
         def_node_matcher :proc_new?,
-                         '(block $(send (const nil? :Proc) :new) ...)'
+                         '(block $(send (const {nil? cbase} :Proc) :new) ...)'
 
         def on_block(node)
           proc_new?(node) do |block_method|
-            add_offense(block_method)
+            add_offense(block_method) do |corrector|
+              corrector.replace(block_method, 'proc')
+            end
           end
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node, 'proc') }
         end
       end
     end

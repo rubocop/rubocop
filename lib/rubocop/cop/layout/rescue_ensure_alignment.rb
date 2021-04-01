@@ -21,8 +21,10 @@ module RuboCop
       #   rescue
       #     puts 'error'
       #   end
-      class RescueEnsureAlignment < Cop
+      class RescueEnsureAlignment < Base
         include RangeHelp
+        include EndKeywordAlignment
+        extend AutoCorrector
 
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
               'aligned with `%<beginning>s` at ' \
@@ -41,19 +43,7 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          whitespace = whitespace_range(node)
-          # Some inline node is sitting before current node.
-          return nil unless whitespace.source.strip.empty?
-
-          alignment_node = alignment_node(node)
-          return false if alignment_node.nil?
-
-          new_column = alignment_node.loc.column
-          ->(corrector) { corrector.replace(whitespace, ' ' * new_column) }
-        end
-
-        def investigate(processed_source)
+        def on_new_investigation
           @modifier_locations =
             processed_source.tokens.each_with_object([]) do |token, locations|
               next unless token.rescue_modifier?
@@ -70,18 +60,26 @@ module RuboCop
           alignment_node = alignment_node(node)
           return if alignment_node.nil?
 
-          alignment_loc = alignment_node.loc.expression
+          alignment_loc = alignment_location(alignment_node)
           kw_loc        = node.loc.keyword
 
-          return if
-            alignment_loc.column == kw_loc.column ||
-            alignment_loc.line   == kw_loc.line
+          return if alignment_loc.column == kw_loc.column || alignment_loc.line == kw_loc.line
 
           add_offense(
-            node,
-            location: kw_loc,
-            message: format_message(alignment_node, alignment_loc, kw_loc)
-          )
+            kw_loc, message: format_message(alignment_node, alignment_loc, kw_loc)
+          ) do |corrector|
+            autocorrect(corrector, node, alignment_loc)
+          end
+        end
+
+        def autocorrect(corrector, node, alignment_location)
+          whitespace = whitespace_range(node)
+          # Some inline node is sitting before current node.
+          return nil unless whitespace.source.strip.empty?
+
+          new_column = alignment_location.column
+
+          corrector.replace(whitespace, ' ' * new_column)
         end
 
         def format_message(alignment_node, alignment_loc, kw_loc)
@@ -96,7 +94,6 @@ module RuboCop
           )
         end
 
-        # rubocop:disable Metrics/AbcSize
         def alignment_source(node, starting_loc)
           ending_loc =
             case node.type
@@ -115,7 +112,6 @@ module RuboCop
 
           range_between(starting_loc.begin_pos, ending_loc.end_pos).source
         end
-        # rubocop:enable Metrics/AbcSize
 
         # We will use ancestor or wrapper with access modifier.
 
@@ -184,6 +180,27 @@ module RuboCop
                          ALTERNATIVE_ACCESS_MODIFIERS.include?(node.method_name)
 
           false
+        end
+
+        def alignment_location(alignment_node)
+          if begin_end_alignment_style == 'start_of_line'
+            start_line_range(alignment_node)
+          else
+            alignment_node.loc.expression
+          end
+        end
+
+        def begin_end_alignment_style
+          # FIXME: Workaround for pending status for `Layout/BeginEndAlignment` cop
+          #        When RuboCop 1.0 is released, please replace it with the following condition.
+          #
+          # config.for_cop('Layout/BeginEndAlignment')['Enabled'] &&
+          #   config.for_cop('Layout/BeginEndAlignment')['EnforcedStyleAlignWith']
+          if config.for_all_cops['NewCops'] == 'enable' ||
+             config.for_cop('Layout/BeginEndAlignment')['Enabled'] &&
+             config.for_cop('Layout/BeginEndAlignment')['Enabled'] != 'pending'
+            config.for_cop('Layout/BeginEndAlignment')['EnforcedStyleAlignWith']
+          end
         end
       end
     end

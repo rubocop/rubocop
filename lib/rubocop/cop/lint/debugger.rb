@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for calls to debugger or pry.
+      # The cop can be configured to define which methods and receivers must be fixed.
       #
       # @example
       #
@@ -32,32 +33,14 @@ module RuboCop
       #   def some_method
       #     do_something
       #   end
-      class Debugger < Cop
+      class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
 
-        def_node_matcher :kernel?, <<~PATTERN
-          {
-            (const nil? :Kernel)
-            (const (cbase) :Kernel)
-          }
-        PATTERN
-
-        def_node_matcher :debugger_call?, <<~PATTERN
-          {(send {nil? #kernel?} {:debugger :byebug :remote_byebug} ...)
-           (send (send {#kernel? nil?} :binding)
-             {:pry :remote_pry :pry_remote :console} ...)
-           (send (const {nil? (cbase)} :Pry) :rescue ...)
-           (send nil? {:save_and_open_page
-                      :save_and_open_screenshot
-                      :save_screenshot} ...)}
-        PATTERN
-
-        def_node_matcher :binding_irb_call?, <<~PATTERN
-          (send (send {#kernel? nil?} :binding) :irb ...)
-        PATTERN
+        RESTRICT_ON_SEND = [].freeze
 
         def on_send(node)
-          return unless debugger_call?(node) || binding_irb?(node)
+          return unless debugger_method?(node.method_name)
+          return if !node.receiver.nil? && !debugger_receiver?(node)
 
           add_offense(node)
         end
@@ -68,8 +51,19 @@ module RuboCop
           format(MSG, source: node.source)
         end
 
-        def binding_irb?(node)
-          binding_irb_call?(node)
+        def debugger_method?(name)
+          cop_config.fetch('DebuggerMethods', []).include?(name.to_s)
+        end
+
+        def debugger_receiver?(node)
+          receiver = case node.receiver
+                     when RuboCop::AST::SendNode
+                       node.receiver.method_name
+                     when RuboCop::AST::ConstNode
+                       node.receiver.const_name
+                     end
+
+          cop_config.fetch('DebuggerReceivers', []).include?(receiver.to_s)
         end
       end
     end

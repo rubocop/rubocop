@@ -7,10 +7,11 @@ module RuboCop
     module SpaceAfterPunctuation
       MSG = 'Space missing after %<token>s.'
 
-      def investigate(processed_source)
+      def on_new_investigation
         each_missing_space(processed_source.tokens) do |token|
-          add_offense(token, location: token.pos,
-                             message: format(MSG, token: kind(token)))
+          add_offense(token.pos, message: format(MSG, token: kind(token))) do |corrector|
+            PunctuationCorrector.add_space(corrector, token)
+          end
         end
       end
 

@@ -3,7 +3,10 @@
 RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
   subject(:formatter) { described_class.new(output) }
 
+  let(:cop_class) { RuboCop::Cop::Cop }
   let(:output) { StringIO.new }
+
+  before { cop.send(:begin_investigation, processed_source) }
 
   describe '#report_file' do
     let(:file) { '/path/to/file' }

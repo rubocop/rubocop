@@ -16,31 +16,43 @@ module RuboCop
       #   # good
       #
       #   "result is 10"
-      class LiteralInInterpolation < Cop
+      class LiteralInInterpolation < Base
         include Interpolation
         include RangeHelp
         include PercentLiteral
+        extend AutoCorrector
 
         MSG = 'Literal interpolation detected.'
         COMPOSITE = %i[array hash pair irange erange].freeze
 
         def on_interpolation(begin_node)
           final_node = begin_node.children.last
-          return unless final_node
-          return if special_keyword?(final_node)
-          return unless prints_as_self?(final_node)
+          return unless offending?(final_node)
 
-          add_offense(final_node)
-        end
+          # %W and %I split the content into words before expansion
+          # treating each interpolation as a word component, so
+          # interpolation should not be removed if the expanded value
+          # contains a space character.
+          expanded_value = autocorrected_value(final_node)
+          return if in_array_percent_literal?(begin_node) &&
+                    /\s/.match?(expanded_value)
 
-        def autocorrect(node)
-          return if node.dstr_type? # nested, fixed in next iteration
+          add_offense(final_node) do |corrector|
+            return if final_node.dstr_type? # nested, fixed in next iteration
 
-          value = autocorrected_value(node)
-          ->(corrector) { corrector.replace(node.parent, value) }
+            corrector.replace(final_node.parent, expanded_value)
+          end
         end
 
         private
+
+        def offending?(node)
+          node &&
+            !special_keyword?(node) &&
+            prints_as_self?(node) &&
+            # Special case for Layout/TrailingWhitespace
+            !(space_literal?(node) && ends_heredoc_line?(node))
+        end
 
         def special_keyword?(node)
           # handle strings like __FILE__
@@ -91,6 +103,26 @@ module RuboCop
           node.basic_literal? ||
             (COMPOSITE.include?(node.type) &&
               node.children.all? { |child| prints_as_self?(child) })
+        end
+
+        def space_literal?(node)
+          node.str_type? && node.value.blank?
+        end
+
+        def ends_heredoc_line?(node)
+          grandparent = node.parent.parent
+          return false unless grandparent&.dstr_type? && grandparent&.heredoc?
+
+          line = processed_source.lines[node.last_line - 1]
+          line.size == node.loc.last_column + 1
+        end
+
+        def in_array_percent_literal?(node)
+          parent = node.parent
+          return false unless parent.dstr_type? || parent.dsym_type?
+
+          grandparent = parent.parent
+          grandparent&.array_type? && grandparent&.percent_literal?
         end
       end
     end

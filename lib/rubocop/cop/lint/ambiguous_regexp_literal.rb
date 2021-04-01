@@ -21,35 +21,51 @@ module RuboCop
       #
       #   # With parentheses, there's no ambiguity.
       #   do_something(/pattern/i)
-      class AmbiguousRegexpLiteral < Cop
-        include ParserDiagnostic
+      class AmbiguousRegexpLiteral < Base
+        extend AutoCorrector
 
         MSG = 'Ambiguous regexp literal. Parenthesize the method arguments ' \
               "if it's surely a regexp literal, or add a whitespace to the " \
               'right of the `/` if it should be a division.'
 
-        def autocorrect(node)
-          lambda do |corrector|
-            add_parentheses(node, corrector)
+        def on_new_investigation
+          processed_source.diagnostics.each do |diagnostic|
+            next unless diagnostic.reason == :ambiguous_literal
+
+            offense_node = find_offense_node_by(diagnostic)
+
+            add_offense(diagnostic.location, severity: diagnostic.level) do |corrector|
+              add_parentheses(offense_node, corrector)
+            end
           end
         end
 
         private
-
-        def relevant_diagnostic?(diagnostic)
-          diagnostic.reason == :ambiguous_literal
-        end
 
         def find_offense_node_by(diagnostic)
           node = processed_source.ast.each_node(:regexp).find do |regexp_node|
             regexp_node.source_range.begin_pos == diagnostic.location.begin_pos
           end
 
-          node.parent
+          find_offense_node(node.parent, node)
         end
 
-        def alternative_message(_diagnostic)
-          MSG
+        def find_offense_node(node, regexp_receiver)
+          return node unless node.parent
+
+          if (node.parent.send_type? && node.receiver) ||
+             method_chain_to_regexp_receiver?(node, regexp_receiver)
+            node = find_offense_node(node.parent, regexp_receiver)
+          end
+
+          node
+        end
+
+        def method_chain_to_regexp_receiver?(node, regexp_receiver)
+          return false unless (parent = node.parent)
+          return false unless (parent_receiver = parent.receiver)
+
+          parent.parent && parent_receiver.receiver == regexp_receiver
         end
       end
     end

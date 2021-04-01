@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::NumberConversion do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
   context 'registers an offense' do
     it 'when using `#to_i`' do
       expect_offense(<<~RUBY)
@@ -120,6 +116,16 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
       RUBY
     end
 
+    it 'when `#to_i` called without a receiver' do
+      expect_no_offenses(<<~RUBY)
+        to_i
+      RUBY
+    end
+  end
+
+  context 'IgnoredClasses' do
+    let(:cop_config) { { 'IgnoredClasses' => %w[Time DateTime] } }
+
     it 'when using Time' do
       expect_no_offenses(<<~RUBY)
         Time.now.to_i
@@ -149,10 +155,21 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion do
                 .to_i
       RUBY
     end
+  end
 
-    it 'when `#to_i` called without a receiver' do
+  context 'IgnoredMethods' do
+    let(:cop_config) { { 'IgnoredMethods' => %w[minutes] } }
+
+    it 'does not register an offense for an ignored method' do
       expect_no_offenses(<<~RUBY)
-        to_i
+        10.minutes.to_i
+      RUBY
+    end
+
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        10.hours.to_i
+        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.hours.to_i, use stricter Integer(10.hours, 10).
       RUBY
     end
   end

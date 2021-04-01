@@ -3,9 +3,9 @@
 require 'timeout'
 
 RSpec.describe RuboCop::CLI, :isolated_environment do
-  include_context 'cli spec behavior'
-
   subject(:cli) { described_class.new }
+
+  include_context 'cli spec behavior'
 
   context 'when interrupted' do
     it 'returns 130' do
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           x = 1
         RUBY
         create_empty_file('other/empty')
-        RuboCop::PathUtil.chdir('other') do
+        Dir.chdir('other') do
           expect(cli.run(['--format', 'simple', checked_path])).to eq(1)
         end
         expect($stdout.string).to eq(<<~RESULT)
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  1: Layout/EndOfLine: Carriage return character detected.
           C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
 
-          1 file inspected, 2 offenses detected
+          1 file inspected, 2 offenses detected, 1 offense auto-correctable
       RESULT
       expect($stderr.string).to eq(<<~RESULT)
         #{abs('.rubocop.yml')}: Warning: no department given for EndOfLine.
@@ -145,13 +145,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example.rb ==
         C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-        1 file inspected, 1 offense detected
+        1 file inspected, 1 offense detected, 1 offense auto-correctable
     RESULT
   end
 
   it 'registers an offense for a syntax error' do
     create_file('example.rb', ['class Test', 'en'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+    expect($stderr.string).to eq ''
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
               'token $end (Using Ruby 2.4 parser; configure using ' \
@@ -174,8 +175,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 "if it's surely a splat operator, or add a whitespace to the " \
                 'right of the `*` if it should be a multiplication.',
                 "#{abs('example.rb')}:4:1: C: Style/OneLineConditional: " \
-                'Favor the ternary operator (`?:`) over `if/then/else/end` ' \
-                'constructs.',
+                'Favor the ternary operator (`?:`) or multi-line constructs over ' \
+                'single-line `if/then/else/end` constructs.',
                 ''].join("\n"))
     end
   end
@@ -183,6 +184,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   it 'can process a file with an invalid UTF-8 byte sequence' do
     create_file('example.rb', ["# #{'f9'.hex.chr}#{'29'.hex.chr}"])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+    expect($stderr.string).to eq ''
     expect($stdout.string)
       .to eq(<<~RESULT)
         #{abs('example.rb')}:1:1: F: Lint/Syntax: Invalid byte sequence in utf-8.
@@ -214,7 +216,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
              'y("123")',
              'def func',
              '  # rubocop: enable Layout/LineLength,Style/StringLiterals',
-             '  ' + '#' * 130,
+             "  #{'#' * 130}",
              '  x(123456)',
              '  y("123")',
              'end']
@@ -243,7 +245,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             # RuboCop will start looking for the configuration file in the directory
             # where the inspected file is and continue its way up to the root directory.
             #
-            # See https://github.com/rubocop-hq/rubocop/blob/master/manual/configuration.md
+            # See https://docs.rubocop.org/rubocop/configuration
           YAML
         end
       end
@@ -258,7 +260,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    context 'when --auto-correct is given' do
+    context 'when --auto-correct-all is given' do
       it 'does not trigger RedundantCopDisableDirective due to ' \
          'lines moving around' do
         src = ['a = 1 # rubocop:disable Lint/UselessAssignment']
@@ -270,7 +272,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Layout/EmptyLineAfterMagicComment:
             Enabled: false
         YAML
-        expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
+        expect(cli.run(['--format', 'offenses', '-A', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(<<~RESULT)
 
           1  Style/FrozenStringLiteralComment
@@ -298,7 +300,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                    'def func',
                    '  # rubocop: enable Layout/LineLength, ' \
                    'Style/StringLiterals',
-                   '  ' + '#' * 130,
+                   "  #{'#' * 130}",
                    '  x(123456)',
                    '  y("123")',
                    '  # rubocop: enable Style/NumericLiterals',
@@ -327,7 +329,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example.rb',
                   ['# frozen_string_literal: true',
                    '',
-                   'a' * 130 + ' # rubocop:disable Layout/LineLength',
+                   "#{'a' * 130} # rubocop:disable Layout/LineLength",
                    '#' * 130,
                    'y("123", 123456) # rubocop:disable Style/StringLiterals,' \
                    'Style/NumericLiterals'])
@@ -343,7 +345,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# frozen_string_literal: true',
                      '',
-                     'a' * 130 + ' # rubocop:disable LineLength',
+                     "#{'a' * 130} # rubocop:disable LineLength",
                      '#' * 130,
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
@@ -383,8 +385,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       context 'and there are no other offenses' do
         it 'exits with error code' do
-          create_file('example.rb', 'a' * 10 + ' # rubocop:disable LineLength')
+          create_file('example.rb', "#{'a' * 10} # rubocop:disable LineLength")
           expect(cli.run(['example.rb'])).to eq(1)
+        end
+      end
+
+      context 'when using `rubocop:disable` line comment for `Lint/EmptyBlock`' do
+        it 'does not register an offense for `Lint/RedundantCopDisableDirective`' do
+          create_file('.rubocop.yml', <<~YAML)
+            Lint/EmptyBlock:
+              Enabled: true
+            Lint/RedundantCopDisableDirective:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            assert_equal nil, combinator {}.call # rubocop:disable Lint/EmptyBlock'
+          RUBY
+          expect(cli.run(['example.rb'])).to eq(0)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
         end
       end
 
@@ -396,7 +416,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                          '',
                          '#' * 130,
                          '# rubocop:disable all',
-                         'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
+                         "#{'a' * 10} # rubocop:disable LineLength,ClassLength",
                          'y(123) # rubocop:disable all'])
             create_file('.rubocop.yml', config)
             expect(cli.run(['--format', 'emacs'])).to eq(1)
@@ -727,7 +747,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               C:  9:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
               C: 15:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
 
-              1 file inspected, 2 offenses detected
+              1 file inspected, 2 offenses detected, 2 offenses auto-correctable
           RESULT
         end
       end
@@ -816,7 +836,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               == example.rb ==
               C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-              1 file inspected, 1 offense detected
+              1 file inspected, 1 offense detected, 1 offense auto-correctable
             RESULT
         end
       end
@@ -856,7 +876,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example1.rb ==
         C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-        2 files inspected, 2 offenses detected
+        2 files inspected, 2 offenses detected, 2 offenses auto-correctable
       RESULT
     end
 
@@ -882,7 +902,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example1.rb ==
         C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-        2 files inspected, 2 offenses detected
+        2 files inspected, 2 offenses detected, 2 offenses auto-correctable
       RESULT
     end
 
@@ -1030,7 +1050,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == special.dsl ==
         C:  3:  9: Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
 
-        1 file inspected, 1 offense detected
+        1 file inspected, 1 offense detected, 1 offense auto-correctable
       RESULT
     end
 
@@ -1070,7 +1090,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example1.rb ==
           C:  3:  7: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense auto-correctable
         RESULT
     end
 
@@ -1093,7 +1113,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             == example1.rb ==
             C:  3:  7: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-            1 file inspected, 1 offense detected
+            1 file inspected, 1 offense detected, 1 offense auto-correctable
           RESULT
       end
     end
@@ -1153,7 +1173,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         C:  4:  6: Style/PercentLiteralDelimiters: %q-literals should be delimited by ( and ).
         C:  4:  6: Style/RedundantPercentQ: Use %q only for strings that contain both single quotes and double quotes.
 
-        1 file inspected, 3 offenses detected
+        1 file inspected, 3 offenses detected, 3 offenses auto-correctable
       RESULT
     end
 
@@ -1184,7 +1204,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  5: Style/CollectionMethods: Prefer find_all over select.
           C:  1: 26: Style/CollectionMethods: Prefer map over collect.
 
-          1 file inspected, 2 offenses detected
+          1 file inspected, 2 offenses detected, 2 offenses auto-correctable
         RESULT
     end
 
@@ -1209,7 +1229,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example1.rb ==
         C:  3:  1: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
 
-        1 file inspected, 1 offense detected
+        1 file inspected, 1 offense detected, 1 offense auto-correctable
       RESULT
       expect(result).to eq(1)
     end
@@ -1232,7 +1252,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example_src/example1.rb ==
           C:  3:  7: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense auto-correctable
         RESULT
     end
 
@@ -1561,7 +1581,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'fails when a configuration file has invalid YAML syntax' do
+    # FIXME: Remove `broken_on: jruby`, which works around a JRuby 9.2.13.0 regression:
+    # https://github.com/jruby/jruby/issues/6365
+    it 'fails when a configuration file has invalid YAML syntax', broken_on: :jruby do
       create_file('example/.rubocop.yml', <<~YAML)
         AllCops:
           Exclude:
@@ -1630,14 +1652,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
-            TargetRubyVersion: 2.8
+            TargetRubyVersion: 4.0
         YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to start_with(
-          'Error: RuboCop found unknown Ruby version 2.8 in `TargetRubyVersion`'
+          'Error: RuboCop found unknown Ruby version 4.0 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.4, 2.5, 2.6, 2.7/
+          /Supported versions: 2.4, 2.5, 2.6, 2.7, 3.0/
         )
       end
     end

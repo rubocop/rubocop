@@ -3,10 +3,6 @@
 RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
   subject(:cop) { described_class.new }
 
-  let(:message) do
-    'Use only a single space inside array percent literal.'
-  end
-
   %w[i I w W].each do |type|
     [%w[{ }], %w[( )], %w([ ]), %w[! !]].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do
@@ -14,31 +10,31 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral do
           ['%', type, ldelim, content, rdelim].join
         end
 
-        def expect_corrected(source, expected)
-          expect(autocorrect_source(source)).to eq expected
-        end
-
         it 'registers an offense for unnecessary spaces' do
-          source = code_example('1   2')
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(1)
-          expect(cop.highlights).to eq(['   '])
-          expect(cop.messages).to eq([message])
-          expect_corrected(source, code_example('1 2'))
+          expect_offense(<<~RUBY)
+            #{code_example('1   2')}
+                ^^^ Use only a single space inside array percent literal.
+          RUBY
+
+          expect_correction("#{code_example('1 2')}\n")
         end
 
         it 'registers an offense for multiple spaces between items' do
-          source = code_example('1   2   3')
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(2)
-          expect_corrected(source, code_example('1 2 3'))
+          expect_offense(<<~RUBY)
+            #{code_example('1   2   3')}
+                    ^^^ Use only a single space inside array percent literal.
+                ^^^ Use only a single space inside array percent literal.
+          RUBY
+
+          expect_correction("#{code_example('1 2 3')}\n")
         end
 
         it 'accepts literals with escaped and additional spaces' do
-          source = code_example('a\   b \ c')
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(1)
-          expect_corrected(source, code_example('a\  b \ c'))
+          expect_offense(<<~RUBY)
+            #{code_example('a\   b \ c')}
+                  ^^ Use only a single space inside array percent literal.
+          RUBY
+          expect_correction("#{code_example('a\  b \ c')}\n")
         end
 
         it 'accepts literals without additional spaces' do

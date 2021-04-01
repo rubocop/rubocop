@@ -18,14 +18,14 @@ module RuboCop
       #   # good
       #
       #   float = 42.9
-      class FloatOutOfRange < Cop
+      class FloatOutOfRange < Base
         MSG = 'Float out of range.'
 
         def on_float(node)
           value, = *node
 
           return unless value.infinite? ||
-                        value.zero? && node.source =~ /[1-9]/
+                        value.zero? && /[1-9]/.match?(node.source)
 
           add_offense(node)
         end

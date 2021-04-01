@@ -3,8 +3,13 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for identical lines at the beginning or end of
-      # each branch of a conditional statement.
+      # This cop checks for identical expressions at the beginning or end of
+      # each branch of a conditional expression. Such expressions should normally
+      # be placed outside the conditional expression - before or after it.
+      #
+      # NOTE: The cop is poorly named and some people might think that it actually
+      # checks for duplicated conditional branches. The name will probably be changed
+      # in a future major RuboCop release.
       #
       # @example
       #   # bad
@@ -62,7 +67,7 @@ module RuboCop
       #     do_x
       #     do_z
       #   end
-      class IdenticalConditionalBranches < Cop
+      class IdenticalConditionalBranches < Base
         MSG = 'Move `%<source>s` out of the conditional.'
 
         def on_if(node)
@@ -81,7 +86,7 @@ module RuboCop
 
         private
 
-        def check_branches(branches)
+        def check_branches(branches) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else` or a branch that contains only comments.
           return if branches.any?(&:nil?)

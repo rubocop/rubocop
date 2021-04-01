@@ -18,7 +18,7 @@ module RuboCop
       #           baz)
       #   end
       #
-      class MultilineMethodSignature < Cop
+      class MultilineMethodSignature < Base
         MSG = 'Avoid multi-line method signatures.'
 
         def on_def(node)
@@ -53,7 +53,7 @@ module RuboCop
         end
 
         def max_line_length
-          config.for_cop('Layout/LineLength')['Max'] || 80
+          config.for_cop('Layout/LineLength')['Max'] || 120
         end
       end
     end

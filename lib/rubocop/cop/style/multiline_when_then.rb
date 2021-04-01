@@ -28,8 +28,9 @@ module RuboCop
       #                              arg2)
       #   end
       #
-      class MultilineWhenThen < Cop
+      class MultilineWhenThen < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Do not use `then` for multiline `when` statement.'
 
@@ -43,30 +44,28 @@ module RuboCop
           # Requires `then` for write `when` and its body on the same line.
           return if require_then?(node)
 
-          # With more than one statements after then, there's not offense
+          # For arrays and hashes there's no offense
           return if accept_node_type?(node.body)
 
-          add_offense(node, location: :begin)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          range = node.loc.begin
+          add_offense(range) do |corrector|
             corrector.remove(
-              range_with_surrounding_space(
-                range: node.loc.begin, side: :left, newlines: false
-              )
+              range_with_surrounding_space(range: range, side: :left, newlines: false)
             )
           end
         end
 
+        private
+
         def require_then?(when_node)
+          return true if when_node.conditions.count >= 2
           return false unless when_node.body
 
           when_node.loc.line == when_node.body.loc.line
         end
 
         def accept_node_type?(node)
-          node&.begin_type? || node&.array_type? || node&.hash_type?
+          node&.array_type? || node&.hash_type?
         end
       end
     end

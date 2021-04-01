@@ -10,14 +10,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
       top.test()
               ^^ Do not use parentheses for method calls with no arguments.
     RUBY
+
+    expect_correction(<<~RUBY)
+      top.test
+    RUBY
   end
 
   it 'accepts parentheses for methods starting with an upcase letter' do
     expect_no_offenses('Test()')
-  end
-
-  it 'accepts no parens in method call without args' do
-    expect_no_offenses('top.test')
   end
 
   it 'accepts parens in method call with args' do
@@ -67,12 +67,20 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
       obj.method ||= func()
                          ^^ Do not use parentheses for method calls with no arguments.
     RUBY
+
+    expect_correction(<<~RUBY)
+      obj.method ||= func
+    RUBY
   end
 
   it 'registers an offense for `obj.method &&= func()`' do
     expect_offense(<<~RUBY)
       obj.method &&= func()
                          ^^ Do not use parentheses for method calls with no arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.method &&= func
     RUBY
   end
 
@@ -81,23 +89,25 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
       obj.method += func()
                         ^^ Do not use parentheses for method calls with no arguments.
     RUBY
-  end
 
-  it 'auto-corrects by removing unneeded braces' do
-    new_source = autocorrect_source('test()')
-    expect(new_source).to eq('test')
+    expect_correction(<<~RUBY)
+      obj.method += func
+    RUBY
   end
 
   # These will be offenses for the EmptyLiteral cop. The autocorrect loop will
   # handle that.
   it 'auto-corrects calls that could be empty literals' do
-    original = <<~RUBY
+    expect_offense(<<~RUBY)
       Hash.new()
+              ^^ Do not use parentheses for method calls with no arguments.
       Array.new()
+               ^^ Do not use parentheses for method calls with no arguments.
       String.new()
+                ^^ Do not use parentheses for method calls with no arguments.
     RUBY
-    new_source = autocorrect_source(original)
-    expect(new_source).to eq(<<~RUBY)
+
+    expect_correction(<<~RUBY)
       Hash.new
       Array.new
       String.new
@@ -114,12 +124,20 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
         _a = c(d())
                 ^^ Do not use parentheses for method calls with no arguments.
       RUBY
+
+      expect_correction(<<~RUBY)
+        _a = c(d)
+      RUBY
     end
 
     it 'registers an empty parens offense for multiple assignment' do
       expect_offense(<<~RUBY)
         _a, _b, _c = d(e())
                         ^^ Do not use parentheses for method calls with no arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        _a, _b, _c = d(e)
       RUBY
     end
   end

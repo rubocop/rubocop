@@ -28,7 +28,7 @@ module RuboCop
       #
       #   # good
       #   def fooBar; end
-      class MethodName < Cop
+      class MethodName < Base
         include ConfigurableNaming
         include IgnoredPattern
         include RangeHelp

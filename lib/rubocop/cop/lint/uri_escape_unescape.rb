@@ -29,7 +29,7 @@ module RuboCop
       #   CGI.unescape(enc_uri)
       #   URI.decode_www_form(enc_uri)
       #   URI.decode_www_form_component(enc_uri)
-      class UriEscapeUnescape < Cop
+      class UriEscapeUnescape < Base
         ALTERNATE_METHODS_OF_URI_ESCAPE = %w[
           CGI.escape
           URI.encode_www_form
@@ -44,10 +44,12 @@ module RuboCop
         MSG = '`%<uri_method>s` method is obsolete and should not be used. ' \
               'Instead, use %<replacements>s depending on your specific use ' \
               'case.'
+        METHOD_NAMES = %i[escape encode unescape decode].freeze
+        RESTRICT_ON_SEND = METHOD_NAMES
 
         def_node_matcher :uri_escape_unescape?, <<~PATTERN
           (send
-            (const ${nil? cbase} :URI) ${:escape :encode :unescape :decode}
+            (const ${nil? cbase} :URI) ${:#{METHOD_NAMES.join(' :')}}
             ...)
         PATTERN
 

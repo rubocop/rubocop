@@ -7,25 +7,28 @@ RSpec.describe RuboCop::Formatter::HTMLFormatter, :isolated_environment do
     project_path = File.join(spec_root, 'fixtures/html_formatter/project')
     FileUtils.cp_r(project_path, '.')
 
-    RuboCop::PathUtil.chdir(File.basename(project_path)) do
+    Dir.chdir(File.basename(project_path)) do
       example.run
     end
   end
 
+  # Run without Style/EndOfLine as it gives different results on
+  # different platforms.
+  # Metrics/AbcSize is very strict, exclude it too
+  let(:options) do
+    %w[--except Layout/EndOfLine,Metrics/AbcSize --format html --out]
+  end
+
   let(:actual_html_path) do
     path = File.expand_path('result.html')
-    # Run without Style/EndOfLine as it gives different results on
-    # different platforms.
-    RuboCop::CLI.new.run(['--except', 'Layout/EndOfLine', '--format', 'html',
-                          '--out', path])
+    RuboCop::CLI.new.run([*options, path])
     path
   end
 
   let(:actual_html_path_cached) do
     path = File.expand_path('result_cached.html')
     2.times do
-      RuboCop::CLI.new.run(['--except', 'Layout/EndOfLine', '--format', 'html',
-                            '--out', path])
+      RuboCop::CLI.new.run([*options, path])
     end
     path
   end

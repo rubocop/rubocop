@@ -7,14 +7,38 @@ module RuboCop
       # Comment lines can optionally be ignored.
       # The maximum allowed length is configurable.
       # The cop can be configured to ignore blocks passed to certain methods.
-      class BlockLength < Cop
-        include TooManyLines
+      #
+      # You can set literals you want to fold with `CountAsOne`.
+      # Available are: 'array', 'hash', and 'heredoc'. Each literal
+      # will be counted as one line regardless of its actual size.
+      #
+      # @example CountAsOne: ['array', 'heredoc']
+      #
+      #   something do
+      #     array = [         # +1
+      #       1,
+      #       2
+      #     ]
+      #
+      #     hash = {          # +3
+      #       key: 'value'
+      #     }
+      #
+      #     msg = <<~HEREDOC  # +1
+      #       Heredoc
+      #       content.
+      #     HEREDOC
+      #   end                 # 5 points
+      #
+      # NOTE: This cop does not apply for `Struct` definitions.
+      class BlockLength < Base
+        include CodeLength
 
         LABEL = 'Block'
 
         def on_block(node)
           return if excluded_method?(node)
-          return if node.class_constructor?
+          return if node.class_constructor? || node.struct_constructor?
 
           check_code_length(node)
         end

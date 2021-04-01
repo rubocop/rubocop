@@ -17,7 +17,9 @@ module RuboCop
       #   time = "8 o'clock"
       #   question = '"What did you say?"'
       #
-      class RedundantPercentQ < Cop
+      class RedundantPercentQ < Base
+        extend AutoCorrector
+
         MSG = 'Use `%<q_type>s` only for strings that contain both ' \
               'single quotes and double quotes%<extra>s.'
         DYNAMIC_MSG = ', or for dynamic strings that contain ' \
@@ -27,7 +29,7 @@ module RuboCop
         EMPTY = ''
         PERCENT_Q = '%q'
         PERCENT_CAPITAL_Q = '%Q'
-        STRING_INTERPOLATION_REGEXP = /#\{.+}/.freeze
+        STRING_INTERPOLATION_REGEXP = /#\{.+\}/.freeze
         ESCAPED_NON_BACKSLASH = /\\[^\\]/.freeze
 
         def on_dstr(node)
@@ -45,22 +47,18 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          delimiter =
-            /^%Q[^"]+$|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
-          lambda do |corrector|
-            corrector.replace(node.loc.begin, delimiter)
-            corrector.replace(node.loc.end, delimiter)
-          end
-        end
-
         private
 
         def check(node)
           return unless start_with_percent_q_variant?(node)
           return if interpolated_quotes?(node) || allowed_percent_q?(node)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            delimiter = /^%Q[^"]+$|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
+
+            corrector.replace(node.loc.begin, delimiter)
+            corrector.replace(node.loc.end, delimiter)
+          end
         end
 
         def interpolated_quotes?(node)
@@ -97,13 +95,13 @@ module RuboCop
 
           return true if STRING_INTERPOLATION_REGEXP.match?(src)
 
-          src.scan(/\\./).any? { |s| s =~ ESCAPED_NON_BACKSLASH }
+          src.scan(/\\./).any? { |s| ESCAPED_NON_BACKSLASH.match?(s) }
         end
 
         def acceptable_capital_q?(node)
           src = node.source
           src.include?(QUOTE) &&
-            (src =~ STRING_INTERPOLATION_REGEXP ||
+            (STRING_INTERPOLATION_REGEXP.match?(src) ||
             (node.str_type? && double_quotes_required?(src)))
         end
       end

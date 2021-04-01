@@ -4,14 +4,19 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
+    # @api private
     REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
 
-    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
+    # @api private
+    COP_NAME_PATTERN = '([A-Z]\w+/)*(?:[A-Z]\w+)'
+    # @api private
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
+    # @api private
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
 
+    # @api private
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
+      "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
         .gsub(' ', '\s*')
     )
 
@@ -36,12 +41,15 @@ module RuboCop
     end
 
     def extra_enabled_comments
-      extra_enabled_comments_with_names([], {})
+      extra_enabled_comments_with_names(
+        extras: Hash.new { |h, k| h[k] = [] },
+        names: Hash.new(0)
+      )
     end
 
     private
 
-    def extra_enabled_comments_with_names(extras, names)
+    def extra_enabled_comments_with_names(extras:, names:)
       each_directive do |comment, cop_names, disabled|
         next unless comment_only_line?(comment.loc.expression.line)
 
@@ -55,7 +63,7 @@ module RuboCop
       extras
     end
 
-    def analyze
+    def analyze # rubocop:todo Metrics/AbcSize
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
 
       each_mentioned_cop do |cop_name, disabled, line, single_line|
@@ -128,9 +136,7 @@ module RuboCop
     end
 
     def each_directive
-      return if processed_source.comments.nil?
-
-      processed_source.each_comment do |comment|
+      processed_source.comments.each do |comment|
         directive = directive_parts(comment)
         next unless directive
 
@@ -153,11 +159,11 @@ module RuboCop
     end
 
     def qualified_cop_name(cop_name)
-      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.file_path)
+      Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path)
     end
 
     def all_cop_names
-      @all_cop_names ||= Cop::Cop.registry.names - [REDUNDANT_DISABLE]
+      @all_cop_names ||= Cop::Registry.global.names - [REDUNDANT_DISABLE]
     end
 
     def comment_only_line?(line_number)
@@ -187,18 +193,19 @@ module RuboCop
         enabled_cops += 1
       end
 
-      extras << [comment, 'all'] if enabled_cops.zero?
+      extras[comment] << 'all' if enabled_cops.zero?
     end
 
+    # Collect cops that have been disabled or enabled by name in a directive comment
+    # so that `Lint/RedundantCopEnableDirective` can register offenses correctly.
     def handle_switch(cop_names, names, disabled, extras, comment)
       cop_names.each do |name|
-        names[name] ||= 0
         if disabled
           names[name] += 1
         elsif (names[name]).positive?
           names[name] -= 1
         else
-          extras << [comment, name]
+          extras[comment] << name
         end
       end
     end

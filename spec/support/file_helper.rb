@@ -17,6 +17,8 @@ module FileHelper
         file.puts content.join("\n")
       end
     end
+
+    file_path
   end
 
   def create_empty_file(file_path)

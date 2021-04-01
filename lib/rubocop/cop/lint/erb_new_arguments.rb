@@ -59,9 +59,10 @@ module RuboCop
       #     ERB.new(str, nil, '-', '@output_buffer')
       #   end
       #
-      class ErbNewArguments < Cop
-        extend TargetRubyVersion
+      class ErbNewArguments < Base
         include RangeHelp
+        extend TargetRubyVersion
+        extend AutoCorrector
 
         minimum_target_ruby_version 2.6
 
@@ -76,6 +77,8 @@ module RuboCop
           'deprecated. Use keyword argument like ' \
           '`ERB.new(str, eoutvar: %<arg_value>s)` instead.'
         ].freeze
+
+        RESTRICT_ON_SEND = %i[new].freeze
 
         def_node_matcher :erb_new_with_non_keyword_arguments, <<~PATTERN
           (send
@@ -92,13 +95,17 @@ module RuboCop
               message = format(MESSAGES[i], arg_value: argument.source)
 
               add_offense(
-                node, location: argument.source_range, message: message
-              )
+                argument.source_range, message: message
+              ) do |corrector|
+                autocorrect(corrector, node)
+              end
             end
           end
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           str_arg = node.arguments[0].source
 
           kwargs = build_kwargs(node)
@@ -108,12 +115,8 @@ module RuboCop
             str_arg, overridden_kwargs
           ].flatten.compact.join(', ')
 
-          lambda do |corrector|
-            corrector.replace(arguments_range(node), good_arguments)
-          end
+          corrector.replace(arguments_range(node), good_arguments)
         end
-
-        private
 
         def correct_arguments?(arguments)
           arguments.size == 1 ||

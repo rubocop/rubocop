@@ -41,9 +41,16 @@ module RuboCop
       #       self.bar == bar  # Resolves name clash with argument of the block.
       #     end
       #   end
-      class RedundantSelf < Cop
+      class RedundantSelf < Base
+        extend AutoCorrector
+
         MSG = 'Redundant `self` detected.'
         KERNEL_METHODS = Kernel.methods(false)
+        KEYWORDS = %i[alias and begin break case class def defined? do
+                      else elsif end ensure false for if in module
+                      next nil not or redo rescue retry return self
+                      super then true undef unless until when while
+                      yield __FILE__ __LINE__ __ENCODING__].freeze
 
         def self.autocorrect_incompatible_with
           [ColonMethodCall]
@@ -52,7 +59,7 @@ module RuboCop
         def initialize(config = nil, options = nil)
           super
           @allowed_send_nodes = []
-          @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }
+          @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }.compare_by_identity
         end
 
         # Assignment of self.x
@@ -101,24 +108,20 @@ module RuboCop
 
           return if allowed_send_node?(node)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            corrector.remove(node.receiver)
+            corrector.remove(node.loc.dot)
+          end
         end
 
         def on_block(node)
           add_scope(node, @local_variables_scopes[node])
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.receiver)
-            corrector.remove(node.loc.dot)
-          end
-        end
-
         private
 
         def add_scope(node, local_variables = [])
-          node.descendants.each do |child_node|
+          node.each_descendant do |child_node|
             @local_variables_scopes[child_node] = local_variables
           end
         end
@@ -126,12 +129,15 @@ module RuboCop
         def allowed_send_node?(node)
           @allowed_send_nodes.include?(node) ||
             @local_variables_scopes[node].include?(node.method_name) ||
+            node.each_ancestor.any? do |ancestor|
+              @local_variables_scopes[ancestor].include?(node.method_name)
+            end ||
             KERNEL_METHODS.include?(node.method_name)
         end
 
         def regular_method_call?(node)
           !(node.operator_method? ||
-            keyword?(node.method_name) ||
+            KEYWORDS.include?(node.method_name) ||
             node.camel_case_method? ||
             node.setter_method? ||
             node.implicit_call?)
@@ -140,14 +146,6 @@ module RuboCop
         def on_argument(node)
           name, = *node
           @local_variables_scopes[node] << name
-        end
-
-        def keyword?(method_name)
-          %i[alias and begin break case class def defined? do
-             else elsif end ensure false for if in module
-             next nil not or redo rescue retry return self
-             super then true undef unless until when while
-             yield __FILE__ __LINE__ __ENCODING__].include?(method_name)
         end
 
         def allow_self(node)

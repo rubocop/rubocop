@@ -27,16 +27,19 @@ module RuboCop
       #       raise Exception # This exception means `Gem::Exception`.
       #     end
       #   end
-      class RaiseException < Cop
+      class RaiseException < Base
+        extend AutoCorrector
+
         MSG = 'Use `StandardError` over `Exception`.'
+        RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def_node_matcher :exception?, <<~PATTERN
-          (send nil? {:raise :fail} (const ${cbase nil?} :Exception) ... )
+          (send nil? {:raise :fail} $(const ${cbase nil?} :Exception) ... )
         PATTERN
 
         def_node_matcher :exception_new_with_message?, <<~PATTERN
           (send nil? {:raise :fail}
-            (send (const ${cbase nil?} :Exception) :new ... ))
+            (send $(const ${cbase nil?} :Exception) :new ... ))
         PATTERN
 
         def on_send(node)
@@ -47,10 +50,18 @@ module RuboCop
         private
 
         def check(node)
-          lambda do |cbase|
+          lambda do |exception_class, cbase|
             return if cbase.nil? && implicit_namespace?(node)
 
-            add_offense(node)
+            add_offense(exception_class) do |corrector|
+              prefer_exception = if exception_class.children.first&.cbase_type?
+                                   '::StandardError'
+                                 else
+                                   'StandardError'
+                                 end
+
+              corrector.replace(exception_class, prefer_exception)
+            end
           end
         end
 

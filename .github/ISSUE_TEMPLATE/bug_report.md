@@ -23,6 +23,7 @@ Describe here how you expected RuboCop to behave in this particular situation.
 ## Actual behavior
 
 Describe here what actually happened.
+Please use `rubocop --debug` when pasting rubocop output as it contains additional information.
 
 ## Steps to reproduce the problem
 
@@ -35,5 +36,5 @@ Include the output of `rubocop -V` or `bundle exec rubocop -V` if using Bundler.
 
 ```
 $ [bundle exec] rubocop -V
-0.84.0 (using Parser 2.5.1.2, running on ruby 2.5.1 x86_64-linux)
+1.3.1 (using Parser 2.7.2.0, rubocop-ast 1.1.1, running on ruby 2.7.2 x86_64-linux)
 ```

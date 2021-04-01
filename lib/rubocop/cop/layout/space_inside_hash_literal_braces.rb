@@ -63,46 +63,23 @@ module RuboCop
       #   foo = {  }
       #   foo = {     }
       #
-      class SpaceInsideHashLiteralBraces < Cop
+      class SpaceInsideHashLiteralBraces < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Space inside %<problem>s.'
 
         def on_hash(node)
-          tokens = processed_source.tokens
+          tokens = processed_source.tokens_within(node)
+          return unless tokens.first.left_brace? && tokens.last.right_curly_brace?
 
-          hash_literal_with_braces(node) do |begin_index, end_index|
-            check(tokens[begin_index], tokens[begin_index + 1])
-            return if begin_index == end_index - 1
-
-            check(tokens[end_index - 1], tokens[end_index])
-          end
-        end
-
-        def autocorrect(range)
-          lambda do |corrector|
-            case range.source
-            when /\s/ then corrector.remove(range)
-            when '{' then corrector.insert_after(range, ' ')
-            else corrector.insert_before(range, ' ')
-            end
-          end
+          check(tokens[0], tokens[1])
+          check(tokens[-2], tokens[-1]) if tokens.size > 2
         end
 
         private
-
-        def hash_literal_with_braces(node)
-          tokens = processed_source.tokens
-          begin_index = index_of_first_token(node)
-          return unless tokens[begin_index].left_brace?
-
-          end_index = index_of_last_token(node)
-          return unless tokens[end_index].right_curly_brace?
-
-          yield begin_index, end_index
-        end
 
         def check(token1, token2)
           # No offense if line break inside.
@@ -135,16 +112,21 @@ module RuboCop
 
         def incorrect_style_detected(token1, token2,
                                      expect_space, is_empty_braces)
+          return unless ambiguous_or_unexpected_style_detected(style, token1.text == token2.text)
+
           brace = (token1.text == '{' ? token1 : token2).pos
           range = expect_space ? brace : space_range(brace)
-          add_offense(
-            range,
-            location: range,
-            message: message(brace, is_empty_braces, expect_space)
-          ) do
-            style = expect_space ? :no_space : :space
-            ambiguous_or_unexpected_style_detected(style,
-                                                   token1.text == token2.text)
+
+          add_offense(range, message: message(brace, is_empty_braces, expect_space)) do |corrector|
+            autocorrect(corrector, range)
+          end
+        end
+
+        def autocorrect(corrector, range)
+          case range.source
+          when /\s/ then corrector.remove(range)
+          when '{' then corrector.insert_after(range, ' ')
+          else corrector.insert_before(range, ' ')
           end
         end
 
@@ -182,7 +164,7 @@ module RuboCop
         def range_of_space_to_the_right(range)
           src = range.source_buffer.source
           end_pos = range.end_pos
-          end_pos += 1 while src[end_pos] =~ /[ \t]/
+          end_pos += 1 while /[ \t]/.match?(src[end_pos])
 
           range_between(range.begin_pos + 1, end_pos)
         end
@@ -190,7 +172,7 @@ module RuboCop
         def range_of_space_to_the_left(range)
           src = range.source_buffer.source
           begin_pos = range.begin_pos
-          begin_pos -= 1 while src[begin_pos - 1] =~ /[ \t]/
+          begin_pos -= 1 while /[ \t]/.match?(src[begin_pos - 1])
 
           range_between(begin_pos, range.end_pos - 1)
         end

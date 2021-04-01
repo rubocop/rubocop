@@ -7,15 +7,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
 
   shared_examples 'immutable objects' do |o|
     it "registers an offense for frozen #{o}" do
-      source = [prefix, "CONST = #{o}.freeze"].compact.join("\n")
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(1)
-    end
+      expect_offense([prefix, <<~RUBY].compact.join("\n"), o: o)
+        CONST = %{o}.freeze
+                ^{o}^^^^^^^ Do not freeze immutable objects, as freezing them has no effect.
+      RUBY
 
-    it 'auto-corrects by removing .freeze' do
-      source = [prefix, "CONST = #{o}.freeze"].compact.join("\n")
-      new_source = autocorrect_source(source)
-      expect(new_source).to eq(source.chomp('.freeze'))
+      expect_correction([prefix, <<~RUBY].compact.join("\n"))
+        CONST = #{o}
+      RUBY
     end
   end
 
@@ -24,6 +23,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like 'immutable objects', ':sym'
   it_behaves_like 'immutable objects', ':""'
   it_behaves_like 'immutable objects', "ENV['foo']"
+  it_behaves_like 'immutable objects', "::ENV['foo']"
   it_behaves_like 'immutable objects', "'foo'.count"
   it_behaves_like 'immutable objects', '(1 + 2)'
   it_behaves_like 'immutable objects', '(2 > 1)'

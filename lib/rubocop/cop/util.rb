@@ -13,10 +13,12 @@ module RuboCop
 
       module_function
 
+      # This is a bad API
       def comment_line?(line_source)
-        line_source =~ /^\s*#/
+        /^\s*#/.match?(line_source)
       end
 
+      # @deprecated Use `ProcessedSource#line_with_comment?`, `contains_comment?` or similar
       def comment_lines?(node)
         processed_source[line_range(node)].any? { |line| comment_line?(line) }
       end
@@ -51,7 +53,7 @@ module RuboCop
       end
 
       def on_node(syms, sexp, excludes = [], &block)
-        return to_enum(:on_node, syms, sexp, excludes) unless block_given?
+        return to_enum(:on_node, syms, sexp, excludes) unless block
 
         yield sexp if Array(syms).include?(sexp.type)
         return if Array(excludes).include?(sexp.type)
@@ -60,7 +62,7 @@ module RuboCop
       end
 
       def begins_its_line?(range)
-        (range.source_line =~ /\S/) == range.column
+        range.source_line.index(/\S/) == range.column
       end
 
       # Returns, for example, a bare `if` node if the given node is an `if`
@@ -88,7 +90,7 @@ module RuboCop
 
         # Regex matches IF there is a ' or there is a \\ in the string that is
         # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
-        string =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
+        /'|(?<! \\) \\{2}* \\ (?![\\"])/x.match?(string)
       end
 
       def needs_escaping?(string)
@@ -108,7 +110,7 @@ module RuboCop
       end
 
       def trim_string_interporation_escape_character(str)
-        str.gsub(/\\\#{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
+        str.gsub(/\\\#\{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
       end
 
       def interpret_string_escapes(string)
@@ -121,23 +123,14 @@ module RuboCop
           node1.loc.line == node2.loc.line
       end
 
+      def indent(node)
+        ' ' * node.loc.column
+      end
+
       def to_supported_styles(enforced_style)
         enforced_style
           .sub(/^Enforced/, 'Supported')
           .sub('Style', 'Styles')
-      end
-
-      def tokens(node)
-        @tokens ||= {}
-        return @tokens[node.object_id] if @tokens[node.object_id]
-
-        source_range = node.source_range
-        begin_pos = source_range.begin_pos
-        end_pos = source_range.end_pos
-
-        @tokens[node.object_id] = processed_source.tokens.select do |token|
-          token.end_pos <= end_pos && token.begin_pos >= begin_pos
-        end
       end
 
       private

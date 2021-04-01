@@ -24,10 +24,12 @@ module RuboCop
       #
       #   # good
       #   x != y
-      class RedundantConditional < Cop
+      class RedundantConditional < Base
         include Alignment
+        extend AutoCorrector
 
-        COMPARISON_OPERATORS = RuboCop::AST::Node::COMPARISON_OPERATORS
+        operators = RuboCop::AST::Node::COMPARISON_OPERATORS.to_a
+        COMPARISON_OPERATOR_MATCHER = "{:#{operators.join(' :')}}"
 
         MSG = 'This conditional expression can just be replaced ' \
               'by `%<msg>s`.'
@@ -35,11 +37,9 @@ module RuboCop
         def on_if(node)
           return unless offense?(node)
 
-          add_offense(node)
-        end
+          message = message(node)
 
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node, message: message) do |corrector|
             corrector.replace(node, replacement_condition(node))
           end
         end
@@ -54,11 +54,11 @@ module RuboCop
         end
 
         def_node_matcher :redundant_condition?, <<~RUBY
-          (if (send _ {:#{COMPARISON_OPERATORS.join(' :')}} _) true false)
+          (if (send _ #{COMPARISON_OPERATOR_MATCHER} _) true false)
         RUBY
 
         def_node_matcher :redundant_condition_inverted?, <<~RUBY
-          (if (send _ {:#{COMPARISON_OPERATORS.join(' :')}} _) false true)
+          (if (send _ #{COMPARISON_OPERATOR_MATCHER} _) false true)
         RUBY
 
         def offense?(node)

@@ -18,28 +18,29 @@ module RuboCop
       # @example
       #   # bad
       #   {a: 1, b: 2}.each_with_object({}) { |(k, v), h| h[foo(k)] = v }
-      #   {a: 1, b: 2}.map { |k, v| [k.to_s, v] }
+      #   Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
+      #   {a: 1, b: 2}.map { |k, v| [k.to_s, v] }.to_h
+      #   {a: 1, b: 2}.to_h { |k, v| [k.to_s, v] }
       #
       #   # good
       #   {a: 1, b: 2}.transform_keys { |k| foo(k) }
       #   {a: 1, b: 2}.transform_keys { |k| k.to_s }
-      class HashTransformKeys < Cop
-        extend TargetRubyVersion
+      class HashTransformKeys < Base
         include HashTransformMethod
+        extend TargetRubyVersion
+        extend AutoCorrector
 
         minimum_target_ruby_version 2.5
 
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block
-            ({send csend}
-              !{(send _ :each_with_index) (array ...)}
-              :each_with_object (hash))
+            ({send csend} !#array_receiver? :each_with_object (hash))
             (args
               (mlhs
                 (arg $_)
                 (arg _val))
               (arg _memo))
-            ({send csend} (lvar _memo) :[]= $_ $(lvar _val)))
+            ({send csend} (lvar _memo) :[]= $!`_memo $(lvar _val)))
         PATTERN
 
         def_node_matcher :on_bad_hash_brackets_map, <<~PATTERN
@@ -47,7 +48,7 @@ module RuboCop
             (const _ :Hash)
             :[]
             (block
-              ({send csend} !(send _ :each_with_index) {:map :collect})
+              ({send csend} !#array_receiver? {:map :collect})
               (args
                 (arg $_)
                 (arg _val))
@@ -57,14 +58,21 @@ module RuboCop
         def_node_matcher :on_bad_map_to_h, <<~PATTERN
           ({send csend}
             (block
-              ({send csend}
-                !{(send _ :each_with_index) (array ...)}
-                {:map :collect})
+              ({send csend} !#array_receiver? {:map :collect})
               (args
                 (arg $_)
                 (arg _val))
               (array $_ $(lvar _val)))
             :to_h)
+        PATTERN
+
+        def_node_matcher :on_bad_to_h, <<~PATTERN
+          (block
+            ({send csend} !#array_receiver? :to_h)
+            (args
+              (arg $_)
+              (arg _val))
+            (array $_ $(lvar _val)))
         PATTERN
 
         private

@@ -6,11 +6,14 @@ module RuboCop
       # This cop checks for methods with too many parameters.
       # The maximum number of parameters is configurable.
       # Keyword arguments can optionally be excluded from the total count.
-      class ParameterLists < Cop
+      class ParameterLists < Base
         include ConfigurableMax
 
         MSG = 'Avoid parameter lists longer than %<max>d parameters. ' \
               '[%<count>d/%<max>d]'
+
+        NAMED_KEYWORD_TYPES = %i[kwoptarg kwarg].freeze
+        private_constant :NAMED_KEYWORD_TYPES
 
         def on_args(node)
           count = args_count(node)
@@ -18,7 +21,7 @@ module RuboCop
 
           return if argument_to_lambda_or_proc?(node)
 
-          add_offense(node) do
+          add_offense(node, message: format(MSG, max: max_params, count: args_count(node))) do
             self.max = count
           end
         end
@@ -29,15 +32,11 @@ module RuboCop
           ^lambda_or_proc?
         PATTERN
 
-        def message(node)
-          format(MSG, max: max_params, count: args_count(node))
-        end
-
         def args_count(node)
           if count_keyword_args?
             node.children.size
           else
-            node.children.count { |a| !%i[kwoptarg kwarg].include?(a.type) }
+            node.children.count { |a| !NAMED_KEYWORD_TYPES.include?(a.type) }
           end
         end
 

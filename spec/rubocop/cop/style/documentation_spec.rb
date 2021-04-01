@@ -217,12 +217,45 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
         end
       end
     end
+
+    context 'macro-only class' do
+      it 'does not register offense with single macro' do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            extend Bar
+          end
+        RUBY
+      end
+
+      it 'does not register offense with multiple macros' do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            extend A
+            extend B
+            include C
+          end
+        RUBY
+      end
+
+      it 'registers offense for macro with other methods' do
+        expect_offense(<<~RUBY)
+          module Foo
+          ^^^^^^ Missing top-level module documentation comment.
+            extend B
+            include C
+
+            def foo; end
+          end
+        RUBY
+      end
+    end
   end
 
   it 'does not raise an error for an implicit match conditional' do
     expect do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         class Test
+        ^^^^^ Missing top-level class documentation comment.
           if //
           end
         end
@@ -280,16 +313,16 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
       end
 
       it "ignores sparse comments inside #{keyword} node" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY, keyword: keyword)
           module TestModule
-            #{keyword} Test
+            %{keyword} Test
+            ^{keyword} Missing top-level #{keyword} documentation comment.
               def method
               end
               # sparse comment
             end
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
       end
     end
   end
@@ -315,16 +348,16 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
       end
 
       it "registers an offense for nested #{keyword} without documentation" do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY, keyword: keyword)
           module TestModule #:nodoc:
             TEST = 20
-            #{keyword} Test
+            %{keyword} Test
+            ^{keyword} Missing top-level #{keyword} documentation comment.
               def method
               end
             end
           end
         RUBY
-        expect(cop.offenses.size).to eq(1)
       end
 
       context 'with `all` modifier' do

@@ -5,156 +5,173 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
 
   let(:config) { RuboCop::Config.new }
 
-  shared_examples 'offense' do |name, message, code, correction|
-    it "registers an offense for #{name} with a blank" do
-      inspect_source(code)
-      expect(cop.messages)
-        .to eq(["Extra empty line detected at `begin` body #{message}."])
-    end
-
-    it "autocorrects for #{name} with a blank" do
-      corrected = autocorrect_source(code)
-
-      expect(corrected).to eq(correction)
-    end
-  end
-
   shared_examples 'accepts' do |name, code|
     it "accepts #{name}" do
       expect_no_offenses(code)
     end
   end
 
-  include_examples 'offense', 'begin body starting', 'beginning',
-                   <<-CODE, <<-CORRECTION
-    begin
-
-      foo
-    end
-  CODE
-    begin
-      foo
-    end
-  CORRECTION
-
-  include_examples 'offense', 'begin body ending', 'end', <<-CODE, <<-CORRECTION
-    begin
-      foo
-
-    end
-  CODE
-    begin
-      foo
-    end
-  CORRECTION
-
-  include_examples 'offense',
-                   'begin body starting in method', 'beginning',
-                   <<-CODE, <<-CORRECTION
-    def bar
+  it 'registers an offense for begin body starting with a blank' do
+    expect_offense(<<~RUBY)
       begin
 
+      ^{} Extra empty line detected at `begin` body beginning.
         foo
       end
-    end
-  CODE
-    def bar
+    RUBY
+
+    expect_correction(<<~RUBY)
       begin
         foo
       end
-    end
-  CORRECTION
+    RUBY
+  end
 
-  include_examples 'offense',
-                   'begin body ending in method', 'end', <<-CODE, <<-CORRECTION
-    def bar
+  it 'registers an offense for ensure body ending' do
+    expect_offense(<<~RUBY)
+      begin
+        foo
+      ensure
+        bar
+
+      ^{} Extra empty line detected at `begin` body end.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      ensure
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for begin body ending with a blank' do
+    expect_offense(<<~RUBY)
       begin
         foo
 
+      ^{} Extra empty line detected at `begin` body end.
       end
-    end
-  CODE
-    def bar
+    RUBY
+
+    expect_correction(<<~RUBY)
       begin
         foo
       end
-    end
-  CORRECTION
+    RUBY
+  end
 
-  include_examples 'offense',
-                   'begin body starting with rescue', 'beginning',
-                   <<-CODE, <<-CORRECTION
-    begin
+  it 'registers an offense for begin body starting in method' do
+    expect_offense(<<~RUBY)
+      def bar
+        begin
 
-      foo
-    rescue
-      bar
-    end
-  CODE
-    begin
-      foo
-    rescue
-      bar
-    end
-  CORRECTION
+      ^{} Extra empty line detected at `begin` body beginning.
+          foo
+        end
+      end
+    RUBY
 
-  include_examples 'offense',
-                   'rescue body ending', 'end',
-                   <<-CODE, <<-CORRECTION
-    begin
-      foo
-    rescue
-      bar
+    expect_correction(<<~RUBY)
+      def bar
+        begin
+          foo
+        end
+      end
+    RUBY
+  end
 
-    end
-  CODE
-    begin
-      foo
-    rescue
-      bar
-    end
-  CORRECTION
+  it 'registers an offense for begin body ending in method' do
+    expect_offense(<<~RUBY)
+      def bar
+        begin
+          foo
 
-  include_examples 'offense', 'else body ending', 'end', <<-CODE, <<-CORRECTION
-    begin
-      foo
-    rescue
-      bar
-    else
-      baz
+      ^{} Extra empty line detected at `begin` body end.
+        end
+      end
+    RUBY
 
-    end
-  CODE
-    begin
-      foo
-    rescue
-      bar
-    else
-      baz
-    end
-  CORRECTION
+    expect_correction(<<~RUBY)
+      def bar
+        begin
+          foo
+        end
+      end
+    RUBY
+  end
 
-  include_examples 'offense',
-                   'ensure body ending', 'end',
-                   <<-CODE, <<-CORRECTION
-    begin
-      foo
-    ensure
-      bar
-
-    end
-  CODE
-    begin
-      foo
-    ensure
-      bar
-    end
-  CORRECTION
-
-  context 'with complex begin-end' do
-    let(:source) { <<~RUBY }
+  it 'registers an offense for begin body starting with rescue' do
+    expect_offense(<<~RUBY)
       begin
 
+      ^{} Extra empty line detected at `begin` body beginning.
+        foo
+      rescue
+        bar
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      rescue
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for rescue body ending' do
+    expect_offense(<<~RUBY)
+      begin
+        foo
+      rescue
+        bar
+
+      ^{} Extra empty line detected at `begin` body end.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      rescue
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for else body ending' do
+    expect_offense(<<~RUBY)
+      begin
+        foo
+      rescue
+        bar
+      else
+        baz
+
+      ^{} Extra empty line detected at `begin` body end.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      rescue
+        bar
+      else
+        baz
+      end
+    RUBY
+  end
+
+  it 'registers many offenses with complex begin-end' do
+    expect_offense(<<~RUBY)
+      begin
+
+      ^{} Extra empty line detected at `begin` body beginning.
         do_something1
       rescue RuntimeError
         do_something2
@@ -167,10 +184,11 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
       ensure
         do_something4
 
+      ^{} Extra empty line detected at `begin` body end.
       end
     RUBY
 
-    let(:correction) { <<~RUBY }
+    expect_correction(<<~RUBY)
       begin
         do_something1
       rescue RuntimeError
@@ -185,16 +203,6 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
         do_something4
       end
     RUBY
-
-    it 'registers many offenses' do
-      inspect_source(source)
-      expect(cop.offenses.size).to eq(2)
-    end
-
-    it 'autocorrects' do
-      corrected = autocorrect_source(source)
-      expect(corrected).to eq correction
-    end
   end
 
   include_examples 'accepts', 'begin block without empty line', <<-RUBY

@@ -1,0 +1,171 @@
+# frozen_string_literal: true
+
+module RuboCop
+  module Cop
+    module Lint
+      # This cop checks for loops that will have at most one iteration.
+      #
+      # A loop that can never reach the second iteration is a possible error in the code.
+      # In rare cases where only one iteration (or at most one iteration) is intended behavior,
+      # the code should be refactored to use `if` conditionals.
+      #
+      # @example
+      #   # bad
+      #   while node
+      #     do_something(node)
+      #     node = node.parent
+      #     break
+      #   end
+      #
+      #   # good
+      #   while node
+      #     do_something(node)
+      #     node = node.parent
+      #   end
+      #
+      #   # bad
+      #   def verify_list(head)
+      #     item = head
+      #     begin
+      #       if verify(item)
+      #         return true
+      #       else
+      #         return false
+      #       end
+      #     end while(item)
+      #   end
+      #
+      #   # good
+      #   def verify_list(head)
+      #     item = head
+      #     begin
+      #       if verify(item)
+      #         item = item.next
+      #       else
+      #         return false
+      #       end
+      #     end while(item)
+      #
+      #     true
+      #   end
+      #
+      #   # bad
+      #   def find_something(items)
+      #     items.each do |item|
+      #       if something?(item)
+      #         return item
+      #       else
+      #         raise NotFoundError
+      #       end
+      #     end
+      #   end
+      #
+      #   # good
+      #   def find_something(items)
+      #     items.each do |item|
+      #       if something?(item)
+      #         return item
+      #       end
+      #     end
+      #     raise NotFoundError
+      #   end
+      #
+      class UnreachableLoop < Base
+        MSG = 'This loop will have at most one iteration.'
+
+        def on_while(node)
+          check(node)
+        end
+        alias on_until on_while
+        alias on_while_post on_while
+        alias on_until_post on_while
+        alias on_for on_while
+
+        def on_block(node)
+          check(node) if loop_method?(node)
+        end
+
+        private
+
+        def loop_method?(node)
+          return false unless node.block_type?
+
+          send_node = node.send_node
+          send_node.enumerable_method? || send_node.enumerator_method? || send_node.method?(:loop)
+        end
+
+        def check(node)
+          statements = statements(node)
+          break_statement = statements.find { |statement| break_statement?(statement) }
+          return unless break_statement
+
+          add_offense(node) unless preceded_by_continue_statement?(break_statement)
+        end
+
+        def statements(node)
+          body = node.body
+
+          if body.nil?
+            []
+          elsif body.begin_type?
+            body.children
+          else
+            [body]
+          end
+        end
+
+        def_node_matcher :break_command?, <<~PATTERN
+          {
+            return break
+            (send
+             {nil? (const {nil? cbase} :Kernel)}
+             {:raise :fail :throw :exit :exit! :abort}
+             ...)
+          }
+        PATTERN
+
+        def break_statement?(node)
+          return true if break_command?(node)
+
+          case node.type
+          when :begin, :kwbegin
+            statements = *node
+            break_statement = statements.find { |statement| break_statement?(statement) }
+            break_statement && !preceded_by_continue_statement?(break_statement)
+          when :if
+            check_if(node)
+          when :case
+            check_case(node)
+          else
+            false
+          end
+        end
+
+        def check_if(node)
+          if_branch = node.if_branch
+          else_branch = node.else_branch
+          if_branch && else_branch &&
+            break_statement?(if_branch) && break_statement?(else_branch)
+        end
+
+        def check_case(node)
+          else_branch = node.else_branch
+          return false unless else_branch
+          return false unless break_statement?(else_branch)
+
+          node.when_branches.all? do |branch|
+            branch.body && break_statement?(branch.body)
+          end
+        end
+
+        def preceded_by_continue_statement?(break_statement)
+          break_statement.left_siblings.any? do |sibling|
+            next if sibling.loop_keyword? || loop_method?(sibling)
+
+            sibling.each_descendant(:next, :redo).any?
+          end
+        end
+      end
+    end
+  end
+end

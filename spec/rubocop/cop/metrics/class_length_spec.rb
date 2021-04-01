@@ -18,8 +18,9 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(<<~RUBY)
+    offenses = expect_offense(<<~RUBY)
       class Test
+      ^^^^^^^^^^ Class has too many lines. [6/5]
         a = 1
         a = 2
         a = 3
@@ -29,8 +30,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
       end
     RUBY
 
-    offense = cop.offenses.first
-    expect(offense.location.first_line).to eq(1)
+    offense = offenses.first
     expect(offense.location.last_line).to eq(8)
   end
 
@@ -152,11 +152,98 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
     end
   end
 
+  context 'when `CountAsOne` is not empty' do
+    before { cop_config['CountAsOne'] = ['array'] }
+
+    it 'folds array into one line' do
+      expect_no_offenses(<<~RUBY)
+        class Test
+          a = 1
+          a = [
+            2,
+            3,
+            4,
+            5
+          ]
+        end
+      RUBY
+    end
+  end
+
   context 'when inspecting a class defined with Class.new' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         Foo = Class.new do
-        ^^^ Class has too many lines. [6/5]
+              ^^^^^^^^^^^^ Class has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
+
+  context 'when inspecting a class defined with ::Class.new' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        Foo = ::Class.new do
+              ^^^^^^^^^^^^^^ Class has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+  end
+
+  context 'when overlapping constant assignments' do
+    it 'registers an offense' do
+      expect_no_offenses(<<~RUBY)
+        X = Y = Z = do_something
+      RUBY
+    end
+  end
+
+  context 'when inspecting a class defined with Struct.new' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        Foo = Struct.new(:foo, :bar) do
+              ^^^^^^^^^^^^^^^^^^^^^^^^^ Class has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+
+    it 'registers an offense when inspecting or equals (`||=`) for consntant' do
+      expect_offense(<<~RUBY)
+        Foo ||= Struct.new(:foo, :bar) do
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Class has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+
+    it 'registers an offense when multiple assignments to constants' do
+      # `Bar` is always nil, but syntax is valid.
+      expect_offense(<<~RUBY)
+        Foo, Bar = Struct.new(:foo, :bar) do
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^ Class has too many lines. [6/5]
           a = 1
           a = 2
           a = 3

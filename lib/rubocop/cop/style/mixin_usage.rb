@@ -40,48 +40,29 @@ module RuboCop
       #   class C
       #     prepend M
       #   end
-      class MixinUsage < Cop
+      class MixinUsage < Base
         MSG = '`%<statement>s` is used at the top level. Use inside `class` ' \
               'or `module`.'
+        RESTRICT_ON_SEND = %i[include extend prepend].freeze
 
         def_node_matcher :include_statement, <<~PATTERN
           (send nil? ${:include :extend :prepend}
             const)
         PATTERN
 
-        def_node_matcher :wrapped_macro_scope?, <<~PATTERN
-          {({sclass class module block} ... ({begin if} ...))}
+        def_node_matcher :in_top_level_scope?, <<~PATTERN
+          {
+            root?                        # either at the top level
+            ^[  {kwbegin begin if def}   # or wrapped within one of these
+                #in_top_level_scope? ]   # that is in top level scope
+          }
         PATTERN
 
         def on_send(node)
           include_statement(node) do |statement|
-            return if node.argument? ||
-                      accepted_include?(node) ||
-                      belongs_to_class_or_module?(node)
+            return unless in_top_level_scope?(node)
 
             add_offense(node, message: format(MSG, statement: statement))
-          end
-        end
-
-        private
-
-        def accepted_include?(node)
-          node.parent && (node.macro? || ascend_macro_scope?(node.parent))
-        end
-
-        def ascend_macro_scope?(ancestor)
-          return true if wrapped_macro_scope?(ancestor)
-
-          ancestor.parent && ascend_macro_scope?(ancestor.parent)
-        end
-
-        def belongs_to_class_or_module?(node)
-          if !node.parent
-            false
-          else
-            return true if node.parent.class_type? || node.parent.module_type?
-
-            belongs_to_class_or_module?(node.parent)
           end
         end
       end

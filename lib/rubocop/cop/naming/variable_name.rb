@@ -19,7 +19,7 @@ module RuboCop
       #
       #   # good
       #   fooBar = 1
-      class VariableName < Cop
+      class VariableName < Base
         include ConfigurableNaming
 
         MSG = 'Use %<style>s for variable names.'

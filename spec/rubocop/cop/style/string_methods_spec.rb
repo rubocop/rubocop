@@ -8,12 +8,10 @@ RSpec.describe RuboCop::Cop::Style::StringMethods, :config do
       'something'.intern
                   ^^^^^^ Prefer `to_sym` over `intern`.
     RUBY
-  end
 
-  it 'auto-corrects' do
-    corrected = autocorrect_source("'something'.intern")
-
-    expect(corrected).to eq("'something'.to_sym")
+    expect_correction(<<~RUBY)
+      'something'.to_sym
+    RUBY
   end
 
   context 'when using safe navigation operator' do
@@ -22,12 +20,10 @@ RSpec.describe RuboCop::Cop::Style::StringMethods, :config do
         something&.intern
                    ^^^^^^ Prefer `to_sym` over `intern`.
       RUBY
-    end
 
-    it 'auto-corrects' do
-      corrected = autocorrect_source('something&.intern')
-
-      expect(corrected).to eq('something&.to_sym')
+      expect_correction(<<~RUBY)
+        something&.to_sym
+      RUBY
     end
   end
 end

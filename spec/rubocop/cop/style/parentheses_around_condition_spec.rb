@@ -28,32 +28,8 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       x += 1 while (x < 10)
                    ^^^^^^^^ Don't use parentheses around the condition of a `while`.
     RUBY
-  end
 
-  it 'accepts parentheses if there is no space between the keyword and (.' do
-    expect_no_offenses(<<~RUBY)
-      if(x > 5) then something end
-      do_something until(x > 5)
-    RUBY
-  end
-
-  it 'auto-corrects parentheses around condition' do
-    corrected = autocorrect_source(<<~RUBY)
-      if (x > 10)
-      elsif (x < 3)
-      end
-      unless (x > 10)
-      end
-      while (x > 10)
-      end
-      until (x > 10)
-      end
-      x += 1 if (x < 10)
-      x += 1 unless (x < 10)
-      x += 1 while (x < 10)
-      x += 1 until (x < 10)
-    RUBY
-    expect(corrected).to eq <<~RUBY
+    expect_correction(<<~RUBY)
       if x > 10
       elsif x < 3
       end
@@ -65,25 +41,15 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       end
       x += 1 if x < 10
       x += 1 unless x < 10
-      x += 1 while x < 10
       x += 1 until x < 10
+      x += 1 while x < 10
     RUBY
   end
 
-  it 'accepts condition without parentheses' do
+  it 'accepts parentheses if there is no space between the keyword and (.' do
     expect_no_offenses(<<~RUBY)
-      if x > 10
-      end
-      unless x > 10
-      end
-      while x > 10
-      end
-      until x > 10
-      end
-      x += 1 if x < 10
-      x += 1 unless x < 10
-      x += 1 while x < 10
-      x += 1 until x < 10
+      if(x > 5) then something end
+      do_something until(x > 5)
     RUBY
   end
 
@@ -95,7 +61,7 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     expect_no_offenses('(a > b) && other ? one : two')
   end
 
-  it 'is not confused by unbalanced parentheses' do
+  it 'is not confused by parentheses in subexpression' do
     expect_no_offenses(<<~RUBY)
       if (a + b).c()
       end
@@ -115,6 +81,10 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     expect_offense(<<~RUBY)
       x if (a ? b : c)
            ^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x if a ? b : c
     RUBY
   end
 
@@ -165,6 +135,11 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
            ^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if test = 10
+        end
+      RUBY
     end
 
     it 'does not accept element assignment in condition surrounded with ' \
@@ -172,6 +147,11 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       expect_offense(<<~RUBY)
         if (test[0] = 10)
            ^^^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if test[0] = 10
         end
       RUBY
     end
@@ -198,6 +178,12 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
           return true
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if x > 3 && x < 10
+          return true
+        end
+      RUBY
     end
   end
 
@@ -211,6 +197,15 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
           x > 3 &&
           x < 10
         )
+          return true
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if#{trailing_whitespace}
+          x > 3 &&
+          x < 10
+
           return true
         end
       RUBY

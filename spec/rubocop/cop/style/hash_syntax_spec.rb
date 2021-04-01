@@ -26,8 +26,12 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers offense for hash rocket syntax when new is possible' do
         expect_offense(<<~RUBY)
-          x = { :a => 0 }
+          x = { :a => 0, :b   =>  2}
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
+                         ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          x = { a: 0, b: 2}
         RUBY
       end
 
@@ -36,12 +40,18 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :a => 0, b: 1 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { a: 0, b: 1 }
+        RUBY
       end
 
       it 'registers an offense for hash rockets in method calls' do
         expect_offense(<<~RUBY)
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          func(3, a: 0)
         RUBY
       end
 
@@ -58,11 +68,19 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"string" => 0 }
                 ^^^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { "string": 0 }
+        RUBY
       end
 
       it 'preserves quotes during autocorrection' do
-        new_source = autocorrect_source("{ :'&&' => foo }")
-        expect(new_source).to eq("{ '&&': foo }")
+        expect_offense(<<~RUBY)
+          { :'&&' => foo }
+            ^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          { '&&': foo }
+        RUBY
       end
 
       context 'if PreferHashRocketsForNonAlnumEndingSymbols is false' do
@@ -71,12 +89,18 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             x = { :a? => 0 }
                   ^^^^^^ Use the new Ruby 1.9 hash syntax.
           RUBY
+          expect_correction(<<~RUBY)
+            x = { a?: 0 }
+          RUBY
         end
 
         it 'registers an offense for hash rockets when symbols end with !' do
           expect_offense(<<~RUBY)
             x = { :a! => 0 }
                   ^^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
+          expect_correction(<<~RUBY)
+            x = { a!: 0 }
           RUBY
         end
       end
@@ -110,6 +134,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :A => 0 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { A: 0 }
+        RUBY
       end
 
       it 'accepts new syntax in a hash literal' do
@@ -120,22 +147,28 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('func(3, a: 0)')
       end
 
-      it 'auto-corrects old to new style' do
-        new_source = autocorrect_source('{ :a => 1, :b   =>  2}')
-        expect(new_source).to eq('{ a: 1, b: 2}')
-      end
-
       it 'auto-corrects even if it interferes with SpaceAroundOperators' do
         # Clobbering caused by two cops changing in the same range is dealt with
         # by the auto-correct loop, so there's no reason to avoid a change.
-        new_source = autocorrect_source('{ :a=>1, :b=>2 }')
-        expect(new_source).to eq('{ a: 1, b: 2 }')
+        expect_offense(<<~RUBY)
+          { :a=>1, :b=>2 }
+            ^^^^ Use the new Ruby 1.9 hash syntax.
+                   ^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          { a: 1, b: 2 }
+        RUBY
       end
 
       # Bug: https://github.com/rubocop-hq/rubocop/issues/5019
       it 'auto-corrects a missing space when hash is used as argument' do
-        new_source = autocorrect_source('foo:bar => 1')
-        expect(new_source).to eq('foo bar: 1')
+        expect_offense(<<~RUBY)
+          foo:bar => 1
+             ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          foo bar: 1
+        RUBY
       end
 
       context 'when using a return value uses `return`' do
@@ -179,8 +212,14 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       it 'auto-corrects even if there is no space around =>' do
-        new_source = autocorrect_source('{ :a=>1, :b=>2 }')
-        expect(new_source).to eq('{ a: 1, b: 2 }')
+        expect_offense(<<~RUBY)
+          { :a=>1, :b=>2 }
+            ^^^^ Use the new Ruby 1.9 hash syntax.
+                   ^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          { a: 1, b: 2 }
+        RUBY
       end
     end
 
@@ -212,6 +251,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^ Use hash rockets syntax.
                       ^^ Use hash rockets syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { :a => 1, :b => :c }
+        RUBY
       end
 
       it 'registers an offense when any element has a symbol value ' \
@@ -219,6 +261,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_offense(<<~RUBY)
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          func(3, :b => :c)
         RUBY
       end
 
@@ -229,6 +274,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
                          ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { a: 1, b: 2 }
+        RUBY
       end
 
       it 'registers an offense for hashes with elements on multiple lines' do
@@ -237,6 +285,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^ Use hash rockets syntax.
            c: :d }
            ^^ Use hash rockets syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          x = { :a => :b,
+           :c => :d }
         RUBY
       end
 
@@ -247,27 +299,22 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'auto-corrects to ruby19 style when there are no symbol values' do
-        new_source = autocorrect_source('{ :a => 1, :b => 2 }')
-        expect(new_source).to eq('{ a: 1, b: 2 }')
-      end
-
-      it 'auto-corrects to hash rockets ' \
-        'when there is an element with a symbol value' do
-        new_source = autocorrect_source('{ a: 1, :b => :c }')
-        expect(new_source).to eq('{ :a => 1, :b => :c }')
-      end
-
       it 'auto-corrects to hash rockets ' \
         'when all elements have symbol value' do
-        new_source = autocorrect_source('{ a: :b, c: :d }')
-        expect(new_source).to eq('{ :a => :b, :c => :d }')
+        expect_offense(<<~RUBY)
+          { a: :b, c: :d }
+            ^^ Use hash rockets syntax.
+                   ^^ Use hash rockets syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          { :a => :b, :c => :d }
+        RUBY
       end
 
-      it 'auto-correct does not change anything when the hash ' \
-        'is already ruby19 style and there are no symbol values' do
-        new_source = autocorrect_source('{ a: 1, b: 2 }')
-        expect(new_source).to eq('{ a: 1, b: 2 }')
+      it 'accepts hash in ruby19 style with no symbol values' do
+        expect_no_offenses(<<~RUBY)
+          { a: 1, b: 2 }
+        RUBY
       end
     end
   end
@@ -283,8 +330,12 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
     it 'registers offense for Ruby 1.9 style' do
       expect_offense(<<~RUBY)
-        x = { a: 0 }
+        x = { a: 0, b: 2}
               ^^ Use hash rockets syntax.
+                    ^^ Use hash rockets syntax.
+      RUBY
+      expect_correction(<<~RUBY)
+        x = { :a => 0, :b => 2}
       RUBY
     end
 
@@ -293,12 +344,18 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         x = { a => 0, b: 1 }
                       ^^ Use hash rockets syntax.
       RUBY
+      expect_correction(<<~RUBY)
+        x = { a => 0, :b => 1 }
+      RUBY
     end
 
     it 'registers an offense for 1.9 style in method calls' do
       expect_offense(<<~RUBY)
         func(3, a: 0)
                 ^^ Use hash rockets syntax.
+      RUBY
+      expect_correction(<<~RUBY)
+        func(3, :a => 0)
       RUBY
     end
 
@@ -312,11 +369,6 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
     it 'accepts an empty hash' do
       expect_no_offenses('{}')
-    end
-
-    it 'auto-corrects new style to hash rockets' do
-      new_source = autocorrect_source('{ a: 1, b: 2}')
-      expect(new_source).to eq('{ :a => 1, :b => 2}')
     end
 
     context 'UseHashRocketsWithSymbolValues has no impact' do
@@ -349,8 +401,12 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers offense for hash rocket syntax when new is possible' do
         expect_offense(<<~RUBY)
-          x = { :a => 0 }
+          x = { :a => 0, :b => 2 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
+                         ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          x = { a: 0, b: 2 }
         RUBY
       end
 
@@ -358,6 +414,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_offense(<<~RUBY)
           x = { :a => 0, b: 1 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          x = { a: 0, b: 1 }
         RUBY
       end
 
@@ -369,6 +428,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_offense(<<~RUBY)
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          func(3, a: 0)
         RUBY
       end
 
@@ -386,12 +448,18 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^ Don't mix styles in the same hash.
         RUBY
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_correction(<<~RUBY)
+          x = { :a => 0, "b" => 1 }
+        RUBY
       end
 
       it 'registers an offense when keys have whitespaces in them' do
         expect_offense(<<~RUBY)
           x = { :"t o" => 0 }
                 ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          x = { "t o": 0 }
         RUBY
       end
 
@@ -400,6 +468,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"\tab" => 1 }
                 ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~'RUBY')
+          x = { "\tab": 1 }
+        RUBY
       end
 
       it 'registers an offense when keys start with a digit' do
@@ -407,21 +478,13 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"1" => 1 }
                 ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { "1": 1 }
+        RUBY
       end
 
       it 'accepts new syntax when keys are interpolated string' do
         expect_no_offenses('{"#{foo}": 1, "#{@foo}": 2, "#@foo": 3}')
-      end
-
-      it 'auto-corrects old to new style' do
-        new_source = autocorrect_source('{ :a => 1, :b => 2 }')
-        expect(new_source).to eq('{ a: 1, b: 2 }')
-      end
-
-      it 'auto-corrects to hash rockets when new style cannot be used ' \
-        'for all' do
-        new_source = autocorrect_source('{ a: 1, "b" => 2 }')
-        expect(new_source).to eq('{ :a => 1, "b" => 2 }')
       end
     end
 
@@ -439,6 +502,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^ Use hash rockets syntax.
                       ^^ Use hash rockets syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { :a => 1, :b => :c }
+        RUBY
       end
 
       it 'registers an offense when any element has a symbol value ' \
@@ -447,18 +513,21 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
         RUBY
-      end
-
-      it 'auto-corrects to hash rockets ' \
-        'when there is an element with a symbol value' do
-        new_source = autocorrect_source('{ a: 1, :b => :c }')
-        expect(new_source).to eq('{ :a => 1, :b => :c }')
+        expect_correction(<<~RUBY)
+          func(3, :b => :c)
+        RUBY
       end
 
       it 'auto-corrects to hash rockets ' \
         'when all elements have symbol value' do
-        new_source = autocorrect_source('{ a: :b, c: :d }')
-        expect(new_source).to eq('{ :a => :b, :c => :d }')
+        expect_offense(<<~RUBY)
+          { a: :b, c: :d }
+            ^^ Use hash rockets syntax.
+                   ^^ Use hash rockets syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          { :a => :b, :c => :d }
+        RUBY
       end
 
       it 'accepts new syntax in a hash literal' do
@@ -467,11 +536,15 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       it 'registers offense for hash rocket syntax when new is possible' do
         expect_offense(<<~RUBY)
-          x = { :a => 0 }
+          x = { :a => 0, :b => 2 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
+                         ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
         expect(cop.config_to_allow_offenses)
           .to eq('EnforcedStyle' => 'hash_rockets')
+        expect_correction(<<~RUBY)
+          x = { a: 0, b: 2 }
+        RUBY
       end
 
       it 'registers an offense for mixed syntax when new is possible' do
@@ -480,6 +553,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_correction(<<~RUBY)
+          x = { a: 0, b: 1 }
+        RUBY
       end
 
       it 'accepts new syntax in method calls' do
@@ -490,6 +566,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_offense(<<~RUBY)
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          func(3, a: 0)
         RUBY
       end
 
@@ -507,12 +586,18 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^ Don't mix styles in the same hash.
         RUBY
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_correction(<<~RUBY)
+          x = { :a => 0, "b" => 1 }
+        RUBY
       end
 
       it 'registers an offense when keys have whitespaces in them' do
         expect_offense(<<~RUBY)
           x = { :"t o" => 0 }
                 ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+        expect_correction(<<~RUBY)
+          x = { "t o": 0 }
         RUBY
       end
 
@@ -521,6 +606,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"\tab" => 1 }
                 ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~'RUBY')
+          x = { "\tab": 1 }
+        RUBY
       end
 
       it 'registers an offense when keys start with a digit' do
@@ -528,21 +616,13 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"1" => 1 }
                 ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+        expect_correction(<<~RUBY)
+          x = { "1": 1 }
+        RUBY
       end
 
       it 'accepts new syntax when keys are interpolated string' do
         expect_no_offenses('{"#{foo}": 1, "#{@foo}": 2, "#@foo": 3}')
-      end
-
-      it 'auto-corrects old to new style' do
-        new_source = autocorrect_source('{ :a => 1, :b => 2 }')
-        expect(new_source).to eq('{ a: 1, b: 2 }')
-      end
-
-      it 'auto-corrects to hash rockets when new style cannot be used ' \
-        'for all' do
-        new_source = autocorrect_source('{ a: 1, "b" => 2 }')
-        expect(new_source).to eq('{ :a => 1, "b" => 2 }')
       end
     end
   end
@@ -568,6 +648,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                        ^^ Don't mix styles in the same hash.
       RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_correction(<<~RUBY)
+        x = { :a => 0, :b => 1 }
+      RUBY
     end
 
     it 'accepts new syntax in method calls' do
@@ -592,6 +675,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
               ^^ Don't mix styles in the same hash.
       RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_correction(<<~RUBY)
+        x = { :a => 0, "b" => 1 }
+      RUBY
     end
 
     it 'accepts hash rockets when keys have whitespaces in them' do
@@ -604,6 +690,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                            ^^ Don't mix styles in the same hash.
       RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_correction(<<~RUBY)
+        x = { :"t o" => 0, :b => 1 }
+      RUBY
     end
 
     it 'accepts hash rockets when keys have special symbols in them' do
@@ -612,9 +701,14 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
     it 'registers an offense when keys have special symbols and '\
       'mix styles' do
-      inspect_source('x = { :"\tab" => 1, b: 1 }')
-      expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+      expect_offense(<<~RUBY, tab: "\t")
+        x = { :"%{tab}ab" => 1, b: 1 }
+                _{tab}          ^^ Don't mix styles in the same hash.
+      RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_correction(<<~RUBY)
+        x = { :"\tab" => 1, :b => 1 }
+      RUBY
     end
 
     it 'accepts hash rockets when keys start with a digit' do
@@ -627,27 +721,27 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                          ^^ Don't mix styles in the same hash.
       RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      expect_correction(<<~RUBY)
+        x = { :"1" => 1, :b => 1 }
+      RUBY
     end
 
-    it 'does not auto-correct old to new style' do
-      new_source = autocorrect_source('{ :a => 1, :b => 2 }')
-      expect(new_source).to eq('{ :a => 1, :b => 2 }')
+    it 'accepts old hash rockets style' do
+      expect_no_offenses('{ :a => 1, :b => 2 }')
     end
 
-    it 'does not auto-correct new to hash rockets style' do
-      new_source = autocorrect_source('{ a: 1, b: 2 }')
-      expect(new_source).to eq('{ a: 1, b: 2 }')
+    it 'accepts new hash style' do
+      expect_no_offenses('{ a: 1, b: 2 }')
     end
 
     it 'auto-corrects mixed key hashes' do
-      new_source = autocorrect_source('{ a: 1, :b => 2 }')
-      expect(new_source).to eq('{ a: 1, b: 2 }')
-    end
-
-    it 'auto-corrects to hash rockets when new style cannot be used ' \
-      'for all' do
-      new_source = autocorrect_source('{ a: 1, "b" => 2 }')
-      expect(new_source).to eq('{ :a => 1, "b" => 2 }')
+      expect_offense(<<~RUBY)
+        { a: 1, :b => 2 }
+                ^^^^^ Don't mix styles in the same hash.
+      RUBY
+      expect_correction(<<~RUBY)
+        { a: 1, b: 2 }
+      RUBY
     end
   end
 end

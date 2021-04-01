@@ -11,12 +11,20 @@ module RuboCop
     class InfiniteCorrectionLoop < RuntimeError
       attr_reader :offenses
 
-      def initialize(path, offenses)
-        super "Infinite loop detected in #{path}."
-        @offenses = offenses
+      def initialize(path, offenses_by_iteration, loop_start: -1)
+        @offenses = offenses_by_iteration.flatten.uniq
+        root_cause = offenses_by_iteration[loop_start..-1]
+                     .map { |x| x.map(&:cop_name).uniq.join(', ') }
+                     .join(' -> ')
+
+        message = 'Infinite loop detected'
+        message += " in #{path}" if path
+        message += " and caused by #{root_cause}" if root_cause
+        super message
       end
     end
 
+    # @api private
     MAX_ITERATIONS = 200
 
     attr_reader :errors, :warnings
@@ -56,7 +64,7 @@ module RuboCop
     # instances that each inspects its allotted group of files.
     def warm_cache(target_files)
       puts 'Running parallel inspection' if @options[:debug]
-      Parallel.each(target_files, &method(:file_offenses))
+      Parallel.each(target_files) { |target_file| file_offenses(target_file) }
     end
 
     def find_target_files(paths)
@@ -80,7 +88,10 @@ module RuboCop
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
       # by an editor, it should be inspecting only one file.
-      ResultCache.cleanup(@config_store, @options[:debug]) if files.size > 1 && cached_run?
+      if files.size > 1 && cached_run?
+        ResultCache.cleanup(@config_store, @options[:debug], @options[:cache_root])
+      end
+
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end
@@ -118,9 +129,9 @@ module RuboCop
 
     def file_offenses(file)
       file_offense_cache(file) do
-        source = get_processed_source(file)
-        source, offenses = do_inspection_loop(file, source)
-        add_redundant_disables(file, offenses.compact.sort, source)
+        source, offenses = do_inspection_loop(file)
+        offenses = add_redundant_disables(file, offenses.compact.sort, source)
+        offenses.sort.reject(&:disabled?).freeze
       end
     end
 
@@ -129,7 +140,7 @@ module RuboCop
     end
 
     def file_offense_cache(file)
-      config = @config_store.for(file)
+      config = @config_store.for_file(file)
       cache = cached_result(file, standby_team(config)) if cached_run?
 
       if cache&.valid?
@@ -151,16 +162,29 @@ module RuboCop
     end
 
     def add_redundant_disables(file, offenses, source)
-      if check_for_redundant_disables?(source)
-        redundant_cop_disable_directive(file) do |cop|
-          cop.check(offenses, source.disabled_line_ranges, source.comments)
-          offenses += cop.offenses
-          offenses += autocorrect_redundant_disables(file, source, cop,
-                                                     offenses)
+      team_for_redundant_disables(file, offenses, source) do |team|
+        new_offenses, redundant_updated = inspect_file(source, team)
+        offenses += new_offenses
+        if redundant_updated
+          # Do one extra inspection loop if any redundant disables were
+          # removed. This is done in order to find rubocop:enable directives that
+          # have now become useless.
+          _source, new_offenses = do_inspection_loop(file)
+          offenses |= new_offenses
         end
       end
+      offenses
+    end
 
-      offenses.sort.reject(&:disabled?).freeze
+    def team_for_redundant_disables(file, offenses, source)
+      return unless check_for_redundant_disables?(source)
+
+      config = @config_store.for_file(file)
+      team = Cop::Team.mobilize([Cop::Lint::RedundantCopDisableDirective], config, @options)
+      return if team.cops.empty?
+
+      team.cops.first.offenses_to_check = offenses
+      yield team
     end
 
     def check_for_redundant_disables?(source)
@@ -168,7 +192,7 @@ module RuboCop
     end
 
     def redundant_cop_disable_directive(file)
-      config = @config_store.for(file)
+      config = @config_store.for_file(file)
       if config.for_cop(Cop::Lint::RedundantCopDisableDirective)
                .fetch('Enabled')
         cop = Cop::Lint::RedundantCopDisableDirective.new(config, @options)
@@ -178,22 +202,6 @@ module RuboCop
 
     def filtered_run?
       @options[:except] || @options[:only]
-    end
-
-    def autocorrect_redundant_disables(file, source, cop, offenses)
-      cop.processed_source = source
-
-      team = Cop::Team.mobilize(RuboCop::Cop::Registry.new, nil, @options)
-      team.autocorrect(source.buffer, [cop])
-
-      return [] unless team.updated_source_file?
-
-      # Do one extra inspection loop if any redundant disables were
-      # removed. This is done in order to find rubocop:enable directives that
-      # have now become useless.
-      _source, new_offenses = do_inspection_loop(file,
-                                                 get_processed_source(file))
-      new_offenses - offenses
     end
 
     def file_started(file)
@@ -214,7 +222,7 @@ module RuboCop
       @cached_run ||=
         (@options[:cache] == 'true' ||
          @options[:cache] != 'false' &&
-         @config_store.for(Dir.pwd).for_all_cops['UseCache']) &&
+         @config_store.for_pwd.for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
         # need to do that processing and cannot use caching.
@@ -233,19 +241,23 @@ module RuboCop
       cache.save(offenses)
     end
 
-    def do_inspection_loop(file, processed_source)
-      offenses = []
+    def do_inspection_loop(file)
+      processed_source = get_processed_source(file)
+      # This variable is 2d array used to track corrected offenses after each
+      # inspection iteration. This is used to output meaningful infinite loop
+      # error message.
+      offenses_by_iteration = []
 
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
-      iterate_until_no_changes(processed_source, offenses) do
+      iterate_until_no_changes(processed_source, offenses_by_iteration) do
         # The offenses that couldn't be corrected will be found again so we
         # only keep the corrected ones in order to avoid duplicate reporting.
-        offenses.select!(&:corrected?)
+        !offenses_by_iteration.empty? && offenses_by_iteration.last.select!(&:corrected?)
         new_offenses, updated_source_file = inspect_file(processed_source)
-        offenses.concat(new_offenses).uniq!
+        offenses_by_iteration.push(new_offenses)
 
         # We have to reprocess the source to pickup the changes. Since the
         # change could (theoretically) introduce parsing errors, we break the
@@ -255,10 +267,12 @@ module RuboCop
         processed_source = get_processed_source(file)
       end
 
+      # Return summary of corrected offenses after all iterations
+      offenses = offenses_by_iteration.flatten.uniq
       [processed_source, offenses]
     end
 
-    def iterate_until_no_changes(source, offenses)
+    def iterate_until_no_changes(source, offenses_by_iteration)
       # Keep track of the state of the source. If a cop modifies the source
       # and another cop undoes it producing identical source we have an
       # infinite loop.
@@ -270,10 +284,10 @@ module RuboCop
       iterations = 0
 
       loop do
-        check_for_infinite_loop(source, offenses)
+        check_for_infinite_loop(source, offenses_by_iteration)
 
         if (iterations += 1) > MAX_ITERATIONS
-          raise InfiniteCorrectionLoop.new(source.path, offenses)
+          raise InfiniteCorrectionLoop.new(source.path, offenses_by_iteration)
         end
 
         source = yield
@@ -283,29 +297,36 @@ module RuboCop
 
     # Check whether a run created source identical to a previous run, which
     # means that we definitely have an infinite loop.
-    def check_for_infinite_loop(processed_source, offenses)
+    def check_for_infinite_loop(processed_source, offenses_by_iteration)
       checksum = processed_source.checksum
 
-      if @processed_sources.include?(checksum)
-        raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
+      if (loop_start_index = @processed_sources.index(checksum))
+        raise InfiniteCorrectionLoop.new(
+          processed_source.path,
+          offenses_by_iteration,
+          loop_start: loop_start_index
+        )
       end
 
       @processed_sources << checksum
     end
 
-    def inspect_file(processed_source)
-      config = @config_store.for(processed_source.path)
-      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
-      offenses = team.inspect_file(processed_source)
+    def inspect_file(processed_source, team = mobilize_team(processed_source))
+      report = team.investigate(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
-      [offenses, team.updated_source_file?]
+      [report.offenses, team.updated_source_file?]
+    end
+
+    def mobilize_team(processed_source)
+      config = @config_store.for_file(processed_source.path)
+      Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
 
     def mobilized_cop_classes(config)
-      @mobilized_cop_classes ||= {}
-      @mobilized_cop_classes[config.object_id] ||= begin
-        cop_classes = Cop::Cop.all
+      @mobilized_cop_classes ||= {}.compare_by_identity
+      @mobilized_cop_classes[config] ||= begin
+        cop_classes = Cop::Registry.all
 
         OptionsValidator.new(@options).validate_cop_options
 
@@ -360,7 +381,7 @@ module RuboCop
     end
 
     def get_processed_source(file)
-      ruby_version = @config_store.for(file).target_ruby_version
+      ruby_version = @config_store.for_file(file).target_ruby_version
 
       if @options[:stdin]
         ProcessedSource.new(@options[:stdin], ruby_version, file)
@@ -378,8 +399,8 @@ module RuboCop
     # otherwise dormant team that can be used for config- and option-
     # level caching in ResultCache.
     def standby_team(config)
-      @team_by_config ||= {}
-      @team_by_config[config.object_id] ||=
+      @team_by_config ||= {}.compare_by_identity
+      @team_by_config[config] ||=
         Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
   end

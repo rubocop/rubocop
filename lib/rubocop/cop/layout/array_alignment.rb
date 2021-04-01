@@ -44,6 +44,7 @@ module RuboCop
 
         def on_array(node)
           return if node.children.size < 2
+          return if node.parent&.masgn_type?
 
           check_alignment(node.children, base_column(node, node.children))
         end

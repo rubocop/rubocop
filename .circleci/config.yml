@@ -1,3 +1,5 @@
+###
+# Please keep /.mergify.yml synced!
 version: 2
 
 jruby_env: &jruby_env
@@ -232,9 +234,6 @@ jobs:
       - run:
           name: Check documentation syntax
           command: bundle exec rake documentation_syntax_check
-      - run:
-          name: Build documentation and check that manual files are in sync
-          command: bundle exec rake generate_cops_documentation
 
 workflows:
   version: 2

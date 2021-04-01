@@ -40,8 +40,9 @@ module RuboCop
       #   # good
       #   Pathname.new(__dir__).expand_path
       #
-      class ExpandPathArguments < Cop
+      class ExpandPathArguments < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `expand_path(%<new_path>s%<new_default_dir>s)` instead of ' \
               '`expand_path(%<current_path>s, __FILE__)`.'
@@ -51,9 +52,11 @@ module RuboCop
                            'instead of ' \
                            '`Pathname.new(__FILE__).parent.expand_path`.'
 
+        RESTRICT_ON_SEND = %i[expand_path].freeze
+
         def_node_matcher :file_expand_path, <<~PATTERN
           (send
-            (const nil? :File) :expand_path
+            (const {nil? cbase} :File) :expand_path
             $_
             $_)
         PATTERN
@@ -69,49 +72,45 @@ module RuboCop
           (send
             (send
               (send
-                (const nil? :Pathname) :new
+                (const {nil? cbase} :Pathname) :new
                 $_) :parent) :expand_path)
         PATTERN
 
         def on_send(node)
-          if (captured_values = file_expand_path(node))
-            current_path, default_dir = captured_values
-
+          if (current_path, default_dir = file_expand_path(node))
             inspect_offense_for_expand_path(node, current_path, default_dir)
           elsif (default_dir = pathname_parent_expand_path(node))
             return unless unrecommended_argument?(default_dir)
 
-            add_offense(node, message: PATHNAME_MSG)
+            add_offense(node, message: PATHNAME_MSG) do |corrector|
+              autocorrect(corrector, node)
+            end
           elsif (default_dir = pathname_new_parent_expand_path(node))
             return unless unrecommended_argument?(default_dir)
 
-            add_offense(node, message: PATHNAME_NEW_MSG)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if (captured_values = file_expand_path(node))
-              current_path, default_dir = captured_values
-
-              autocorrect_expand_path(corrector, current_path, default_dir)
-            elsif (default_dir = pathname_parent_expand_path(node)) ||
-                  (default_dir = pathname_new_parent_expand_path(node))
-              corrector.replace(default_dir, '__dir__')
-              remove_parent_method(corrector, default_dir)
+            add_offense(node, message: PATHNAME_NEW_MSG) do |corrector|
+              autocorrect(corrector, node)
             end
           end
         end
 
         private
 
+        def autocorrect(corrector, node)
+          if (current_path, default_dir = file_expand_path(node))
+            autocorrect_expand_path(corrector, current_path, default_dir)
+          elsif (dir = pathname_parent_expand_path(node) || pathname_new_parent_expand_path(node))
+            corrector.replace(dir, '__dir__')
+            remove_parent_method(corrector, dir)
+          end
+        end
+
         def unrecommended_argument?(default_dir)
           default_dir.source == '__FILE__'
         end
 
         def inspect_offense_for_expand_path(node, current_path, default_dir)
-          return unless unrecommended_argument?(default_dir) &&
-                        current_path.str_type?
+          return unless unrecommended_argument?(default_dir) && current_path.str_type?
 
           current_path = strip_surrounded_quotes!(current_path.source)
 
@@ -127,7 +126,9 @@ module RuboCop
             current_path: "'#{current_path}'"
           )
 
-          add_offense(node, location: :selector, message: message)
+          add_offense(node.loc.selector, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def autocorrect_expand_path(corrector, current_path, default_dir)

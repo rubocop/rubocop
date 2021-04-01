@@ -7,8 +7,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     described_class.new(file, team, options, config_store, cache_root)
   end
 
-  let(:cops) { RuboCop::Cop::Cop.all }
-  let(:registry) { RuboCop::Cop::Cop.registry }
+  let(:registry) { RuboCop::Cop::Registry.global }
   let(:team) do
     RuboCop::Cop::Team.mobilize(
       registry,
@@ -20,7 +19,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   let(:file) { 'example.rb' }
   let(:options) { {} }
   let(:config_store) do
-    instance_double(RuboCop::ConfigStore, for: RuboCop::Config.new)
+    instance_double(RuboCop::ConfigStore, for_pwd: RuboCop::Config.new)
   end
   let(:cache_root) { "#{Dir.pwd}/rubocop_cache" }
   let(:offenses) do
@@ -42,8 +41,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       # Hello
       x = 1
     RUBY
-    allow(config_store).to receive(:for).with('example.rb')
-                                        .and_return(RuboCop::Config.new)
+    allow(config_store).to receive(:for_file).with('example.rb')
+                                             .and_return(RuboCop::Config.new)
     allow(team).to receive(:external_dependency_checksum).and_return('foo')
   end
 
@@ -61,25 +60,70 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     end
 
     # Fixes https://github.com/rubocop-hq/rubocop/issues/6274
-    context 'when offenses are saved by autocorrect run' do
-      let(:corrected_offense) do
-        RuboCop::Cop::Offense.new(
-          :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected
-        )
-      end
-      let(:uncorrected_offense) do
-        RuboCop::Cop::Offense.new(
-          corrected_offense.severity.name,
-          corrected_offense.location,
-          corrected_offense.message,
-          corrected_offense.cop_name,
-          :uncorrected
-        )
+    context 'when offenses are saved' do
+      context 'an offence with status corrected' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected
+          )
+        end
+
+        it 'serializes them with uncorrected status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:uncorrected)
+        end
       end
 
-      it 'serializes them with :uncorrected status' do
-        cache.save([corrected_offense])
-        expect(cache.load).to match_array([uncorrected_offense])
+      context 'an offence with status corrected_with_todo' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected_with_todo
+          )
+        end
+
+        it 'serializes them with uncorrected status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:uncorrected)
+        end
+      end
+
+      context 'an offence with status uncorrected' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :uncorrected
+          )
+        end
+
+        it 'serializes them with uncorrected status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:uncorrected)
+        end
+      end
+
+      context 'an offence with status unsupported' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :unsupported
+          )
+        end
+
+        it 'serializes them with unsupported status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:unsupported)
+        end
+      end
+
+      context 'an offence with status new_status' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :new_status
+          )
+        end
+
+        it 'serializes them with new_status status' do
+          cache.save([offense])
+          expect(cache.load[0].status).to eq(:new_status)
+        end
       end
     end
 
@@ -192,7 +236,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
         context 'and symlink attack protection is disabled' do
           before do
-            allow(config_store).to receive(:for).with('.').and_return(
+            allow(config_store).to receive(:for_pwd).and_return(
               RuboCop::Config.new(
                 'AllCops' => {
                   'AllowSymlinksInCacheRootDirectory' => true
@@ -209,6 +253,16 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
               .not_to match(/Warning: .* is a symlink, which is not allowed.\n/)
           end
         end
+      end
+    end
+
+    context 'when --cache-root is given' do
+      it 'takes the cache_root from the options' do
+        cache2 = described_class.new(file, team,
+                                     { cache_root: 'some/path' },
+                                     config_store)
+
+        expect(cache2.path).to start_with('some/path')
       end
     end
 
@@ -302,8 +356,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   describe '.cleanup' do
     before do
       cfg = RuboCop::Config.new('AllCops' => { 'MaxFilesInCache' => 1 })
-      allow(config_store).to receive(:for).with('.').and_return(cfg)
-      allow(config_store).to receive(:for).with('other.rb').and_return(cfg)
+      allow(config_store).to receive(:for_pwd).and_return(cfg)
+      allow(config_store).to receive(:for_file).with('other.rb').and_return(cfg)
       create_file('other.rb', ['x = 1'])
       $stdout = StringIO.new
     end
@@ -341,7 +395,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         'AllCops' => { 'CacheRootDirectory' => cache_root_directory }
       }
       config = RuboCop::Config.new(all_cops)
-      allow(config_store).to receive(:for).with('.').and_return(config)
+      allow(config_store).to receive(:for_pwd).and_return(config)
     end
 
     context 'when CacheRootDirectory not set' do
@@ -381,6 +435,22 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it 'contains the given root' do
         cacheroot = described_class.cache_root(config_store)
         expect(cacheroot).to eq(File.join('/opt', 'rubocop_cache'))
+      end
+
+      context 'and RUBOCOP_CACHE_ROOT is set' do
+        around do |example|
+          ENV['RUBOCOP_CACHE_ROOT'] = '/tmp/cache-from-env'
+          begin
+            example.run
+          ensure
+            ENV.delete('RUBOCOP_CACHE_ROOT')
+          end
+        end
+
+        it 'contains the root from RUBOCOP_CACHE_ROOT' do
+          cacheroot = described_class.cache_root(config_store)
+          expect(cacheroot).to eq(File.join('/tmp/cache-from-env', 'rubocop_cache'))
+        end
       end
     end
   end

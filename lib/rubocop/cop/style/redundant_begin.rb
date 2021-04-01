@@ -28,6 +28,14 @@ module RuboCop
       #   end
       #
       #   # bad
+      #   begin
+      #     do_something
+      #   end
+      #
+      #   # good
+      #   do_something
+      #
+      #   # bad
       #   # When using Ruby 2.5 or later.
       #   do_something do
       #     begin
@@ -54,11 +62,15 @@ module RuboCop
       #       baz
       #     end
       #   end
-      class RedundantBegin < Cop
+      class RedundantBegin < Base
+        extend AutoCorrector
+
         MSG = 'Redundant `begin` block detected.'
 
         def on_def(node)
-          check(node)
+          return unless node.body&.kwbegin_type?
+
+          register_offense(node.body)
         end
         alias on_defs on_def
 
@@ -67,23 +79,37 @@ module RuboCop
 
           return if node.send_node.lambda_literal?
           return if node.braces?
+          return unless node.body&.kwbegin_type?
 
-          check(node)
+          register_offense(node.body)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
+        def on_kwbegin(node)
+          return if contain_rescue_or_ensure?(node) || valid_context_using_only_begin?(node)
+
+          register_offense(node)
+        end
+
+        private
+
+        def register_offense(node)
+          add_offense(node.loc.begin) do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end
         end
 
-        private
+        def contain_rescue_or_ensure?(node)
+          first_child = node.children.first
 
-        def check(node)
-          return unless node.body&.kwbegin_type?
+          first_child.rescue_type? || first_child.ensure_type?
+        end
 
-          add_offense(node.body, location: :begin)
+        def valid_context_using_only_begin?(node)
+          parent = node.parent
+
+          node.each_ancestor.any?(&:assignment?) || parent&.post_condition_loop? ||
+            parent&.send_type? || parent&.operator_keyword?
         end
       end
     end

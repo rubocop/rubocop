@@ -44,17 +44,14 @@ module RuboCop
       #       # ...
       #     end
       #   end
-      class EmptyLinesAroundModuleBody < Cop
+      class EmptyLinesAroundModuleBody < Base
         include EmptyLinesAroundBody
+        extend AutoCorrector
 
         KIND = 'module'
 
         def on_module(node)
           check(node, node.body)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
       end
     end

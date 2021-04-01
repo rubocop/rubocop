@@ -2,16 +2,18 @@
 
 module RuboCop
   # The kind of Ruby that code inspected by RuboCop is written in.
+  # @api private
   class TargetRuby
-    KNOWN_RUBIES = [2.4, 2.5, 2.6, 2.7].freeze
+    KNOWN_RUBIES = [2.4, 2.5, 2.6, 2.7, 3.0].freeze
     DEFAULT_VERSION = KNOWN_RUBIES.first
 
     OBSOLETE_RUBIES = {
-      1.9 => '0.50', 2.0 => '0.50', 2.1 => '0.58', 2.2 => '0.69', 2.3 => '0.82'
+      1.9 => '0.41', 2.0 => '0.50', 2.1 => '0.57', 2.2 => '0.68', 2.3 => '0.81'
     }.freeze
     private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES
 
     # A place where information about a target ruby version is found.
+    # @api private
     class Source
       attr_reader :version, :name
 
@@ -26,6 +28,7 @@ module RuboCop
     end
 
     # The target ruby version may be configured in RuboCop's config.
+    # @api private
     class RuboCopConfig < Source
       def name
         "`TargetRubyVersion` parameter (in #{@config.smart_loaded_path})"
@@ -39,6 +42,7 @@ module RuboCop
     end
 
     # The target ruby version may be found in a .ruby-version file.
+    # @api private
     class RubyVersionFile < Source
       FILENAME = '.ruby-version'
 
@@ -52,7 +56,10 @@ module RuboCop
         file = ruby_version_file
         return unless file && File.file?(file)
 
+        # rubocop:disable Lint/MixedRegexpCaptureTypes
+        # `(ruby-)` is not a capture type.
         File.read(file).match(/\A(ruby-)?(?<version>\d+\.\d+)/) do |md|
+          # rubocop:enable Lint/MixedRegexpCaptureTypes
           md[:version].to_f
         end
       end
@@ -65,6 +72,7 @@ module RuboCop
     end
 
     # The lock file of Bundler may identify the target ruby version.
+    # @api private
     class BundlerLockFile < Source
       def name
         "`#{bundler_lock_file_path}`"
@@ -104,7 +112,72 @@ module RuboCop
       end
     end
 
+    # The target ruby version may be found in a .gemspec file.
+    # @api private
+    class GemspecFile < Source
+      extend NodePattern::Macros
+
+      GEMSPEC_EXTENSION = '.gemspec'
+
+      def_node_search :required_ruby_version, <<~PATTERN
+        (send _ :required_ruby_version= $_)
+      PATTERN
+
+      def_node_matcher :gem_requirement?, <<~PATTERN
+        (send (const(const _ :Gem):Requirement) :new $str)
+      PATTERN
+
+      def name
+        "`required_ruby_version` parameter (in #{gemspec_filename})"
+      end
+
+      private
+
+      def find_version
+        file = gemspec_filepath
+        return unless file && File.file?(file)
+
+        version = version_from_gemspec_file(file)
+        return if version.nil?
+
+        requirement = version.children.last
+        return version_from_array(version) if version.array_type?
+        return version_from_array(requirement) if gem_requirement? version
+
+        version_from_str(version.str_content)
+      end
+
+      def gemspec_filename
+        @gemspec_filename ||= begin
+          basename = Pathname.new(@config.base_dir_for_path_parameters).basename.to_s
+          "#{basename}#{GEMSPEC_EXTENSION}"
+        end
+      end
+
+      def gemspec_filepath
+        @gemspec_filepath ||=
+          @config.find_file_upwards(gemspec_filename, @config.base_dir_for_path_parameters)
+      end
+
+      def version_from_gemspec_file(file)
+        processed_source = ProcessedSource.from_file(file, DEFAULT_VERSION)
+        required_ruby_version(processed_source.ast).first
+      end
+
+      def version_from_array(array)
+        versions = array.children.map { |v| version_from_str(v.is_a?(String) ? v : v.str_content) }
+        versions.compact.min
+      end
+
+      def version_from_str(str)
+        str.match(/^(?:>=|<=)?\s*(?<version>\d+(?:\.\d+)*)/) do |md|
+          md[:version].to_f
+        end
+      end
+    end
+
     # If all else fails, a default version will be picked.
+    # @api private
     class Default < Source
       def name
         'default'
@@ -121,7 +194,7 @@ module RuboCop
       KNOWN_RUBIES
     end
 
-    SOURCES = [RuboCopConfig, RubyVersionFile, BundlerLockFile, Default].freeze
+    SOURCES = [RuboCopConfig, RubyVersionFile, BundlerLockFile, GemspecFile, Default].freeze
     private_constant :SOURCES
 
     def initialize(config)

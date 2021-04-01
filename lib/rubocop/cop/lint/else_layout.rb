@@ -3,9 +3,13 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for odd else block layout - like
-      # having an expression on the same line as the else keyword,
+      # This cop checks for odd `else` block layout - like
+      # having an expression on the same line as the `else` keyword,
       # which is usually a mistake.
+      #
+      # Its auto-correction tweaks layout to keep the syntax. So, this auto-correction
+      # is compatible correction for bad case syntax, but if your code makes a mistake
+      # with `elsif` and `else`, you will have to correct it manually.
       #
       # @example
       #
@@ -21,13 +25,25 @@ module RuboCop
       #
       #   # good
       #
+      #   # This code is compatible with the bad case. It will be auto-corrected like this.
       #   if something
       #     # ...
       #   else
       #     do_this
       #     do_that
       #   end
-      class ElseLayout < Cop
+      #
+      #   # This code is incompatible with the bad case.
+      #   # If `do_this` is a condition, `elsif` should be used instead of `else`.
+      #   if something
+      #     # ...
+      #   elsif do_this
+      #     do_that
+      #   end
+      class ElseLayout < Base
+        include RangeHelp
+        extend AutoCorrector
+
         MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'
 
         def on_if(node)
@@ -58,7 +74,17 @@ module RuboCop
           return unless first_else
           return unless first_else.source_range.line == node.loc.else.line
 
-          add_offense(first_else)
+          add_offense(first_else) do |corrector|
+            autocorrect(corrector, node, first_else)
+          end
+        end
+
+        def autocorrect(corrector, node, first_else)
+          corrector.insert_after(node.loc.else, "\n")
+
+          blank_range = range_between(node.loc.else.end_pos, first_else.loc.expression.begin_pos)
+          indentation = indent(node.else_branch.children[1])
+          corrector.replace(blank_range, indentation)
         end
       end
     end

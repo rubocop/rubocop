@@ -69,6 +69,27 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
           RUBY
         end
 
+        context 'with ::StandardError' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              begin
+                foo
+              rescue ::StandardError
+              ^^^^^^^^^^^^^^^^^^^^^^ Omit the error class when rescuing `StandardError` by itself.
+                bar
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              begin
+                foo
+              rescue
+                bar
+              end
+            RUBY
+          end
+        end
+
         context 'when the error is assigned to a variable' do
           it 'registers an offense' do
             expect_offense(<<~RUBY)
@@ -88,6 +109,19 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
               end
             RUBY
           end
+
+          context 'with ::StandardError' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                begin
+                  foo
+                rescue ::StandardError => e
+                ^^^^^^^^^^^^^^^^^^^^^^ Omit the error class when rescuing `StandardError` by itself.
+                  bar
+                end
+              RUBY
+            end
+          end
         end
       end
 
@@ -98,6 +132,18 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
           rescue StandardError, BarError
             bar
           rescue BazError, StandardError
+            baz
+          end
+        RUBY
+      end
+
+      it 'accepts rescuing ::StandardError with other errors' do
+        expect_no_offenses(<<~RUBY)
+          begin
+            foo
+          rescue ::StandardError, BarError
+            bar
+          rescue ::BazError, ::StandardError
             baz
           end
         RUBY

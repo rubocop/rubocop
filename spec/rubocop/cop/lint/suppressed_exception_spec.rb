@@ -48,6 +48,53 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
         RUBY
       end
     end
+
+    context 'when empty rescue for defs' do
+      it 'registers an offense for empty rescue without comment' do
+        expect_offense(<<~RUBY)
+          def self.foo
+            do_something
+          rescue
+          ^^^^^^ Do not suppress exceptions.
+          end
+        RUBY
+      end
+
+      it 'registers an offense for empty rescue with comment' do
+        expect_offense(<<~RUBY)
+          def self.foo
+            do_something
+          rescue
+          ^^^^^^ Do not suppress exceptions.
+            # do nothing
+          end
+        RUBY
+      end
+    end
+
+    context 'Ruby 2.5 or higher', :ruby25 do
+      context 'when empty rescue for `do` block' do
+        it 'registers an offense for empty rescue without comment' do
+          expect_offense(<<~RUBY)
+            foo do
+              do_something
+            rescue
+            ^^^^^^ Do not suppress exceptions.
+            end
+          RUBY
+        end
+
+        it 'registers an offense for empty rescue with comment' do
+          expect_offense(<<~RUBY)
+            foo do
+            rescue
+            ^^^^^^ Do not suppress exceptions.
+              # do nothing
+            end
+          RUBY
+        end
+      end
+    end
   end
 
   context 'with AllowComments set to true' do
@@ -83,6 +130,51 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
             # do nothing
           end
         RUBY
+      end
+    end
+
+    context 'when empty rescue for `defs`' do
+      it 'registers an offense for empty rescue without comment' do
+        expect_offense(<<~RUBY)
+          def self.foo
+            do_something
+          rescue
+          ^^^^^^ Do not suppress exceptions.
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for empty rescue with comment' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            do_something
+          rescue
+            # do nothing
+          end
+        RUBY
+      end
+    end
+
+    context 'Ruby 2.5 or higher', :ruby25 do
+      context 'when empty rescue for `do` block' do
+        it 'registers an offense for empty rescue without comment' do
+          expect_offense(<<~RUBY)
+            foo do
+              do_something
+            rescue
+            ^^^^^^ Do not suppress exceptions.
+            end
+          RUBY
+        end
+
+        it 'does not register an offense for empty rescue with comment' do
+          expect_no_offenses(<<~RUBY)
+            foo do
+            rescue
+              # do nothing
+            end
+          RUBY
+        end
       end
     end
 

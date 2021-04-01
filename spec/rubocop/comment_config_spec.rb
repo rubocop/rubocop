@@ -56,7 +56,10 @@ RSpec.describe RuboCop::CommentConfig do
         '# rubocop:disable RSpec/Example',
         '# rubocop:disable Custom2/Number9',                 # 48
         '',
-        '#=SomeDslDirective # rubocop:disable Layout/LeadingCommentSpace'
+        '#=SomeDslDirective # rubocop:disable Layout/LeadingCommentSpace',
+        '# rubocop:disable RSpec/Rails/HttpStatus',
+        'it { is_expected.to have_http_status 200 }',        # 52
+        '# rubocop:enable RSpec/Rails/HttpStatus'
       ].join("\n")
     end
 
@@ -92,6 +95,12 @@ RSpec.describe RuboCop::CommentConfig do
         actual = disabled_lines_of_cop(cop_name)
         expect(actual & expected.to_a).to eq(expected.to_a)
       end
+    end
+
+    it 'supports disabling cops with multiple levels in department name' do
+      disabled_lines = disabled_lines_of_cop('RSpec/Rails/HttpStatus')
+      expected_part = (51..53).to_a
+      expect(disabled_lines & expected_part).to eq(expected_part)
     end
 
     it 'supports enabling/disabling cops without a prefix' do
@@ -137,7 +146,7 @@ RSpec.describe RuboCop::CommentConfig do
        'with keyword all' do
       expected_part = (7..8).to_a
 
-      cops = RuboCop::Cop::Cop.all.reject do |klass|
+      cops = RuboCop::Cop::Registry.all.reject do |klass|
         klass == RuboCop::Cop::Lint::RedundantCopDisableDirective
       end
 

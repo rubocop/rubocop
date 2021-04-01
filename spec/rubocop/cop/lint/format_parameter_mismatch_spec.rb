@@ -171,10 +171,27 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
+  context 'when format is invalid' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        format('%s %2$s', 'foo', 'bar')
+        ^^^^^^ Format string is invalid because formatting sequence types (numbered, named or unnumbered) are mixed.
+      RUBY
+    end
+  end
+
   # Regression: https://github.com/rubocop-hq/rubocop/issues/3869
   context 'when passed an empty array' do
     it 'does not register an offense' do
       expect_no_offenses("'%' % []")
+    end
+  end
+
+  # Regression: https://github.com/rubocop-hq/rubocop/issues/8115
+  context 'when argument itself contains format characters and ' \
+          'formats in format string and argument are not equal' do
+    it 'ignores argument formatting' do
+      expect_no_offenses(%{format('%<t>s', t: '%d')})
     end
   end
 
@@ -203,6 +220,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
 
   it 'does not register an offense when using named parameters' do
     expect_no_offenses('"foo %{bar} baz" % { bar: 42 }')
+  end
+
+  it 'does not register an offense when using named parameters with escaped `%`' do
+    expect_no_offenses('format("%%%<hex>02X", hex: 10)')
   end
 
   it 'identifies correctly digits for spacing in format' do

@@ -5,6 +5,18 @@ RSpec.describe RuboCop::Cop::Lint::UriRegexp do
 
   let(:config) { RuboCop::Config.new }
 
+  it 'does not register an offense when using `regexp` without receiver' do
+    expect_no_offenses(<<~RUBY)
+      regexp('http://example.com')
+    RUBY
+  end
+
+  it 'does not register an offense when using `regexp` with variable receiver' do
+    expect_no_offenses(<<~RUBY)
+      m.regexp('http://example.com')
+    RUBY
+  end
+
   it 'registers an offense and corrects using `URI.regexp` with argument' do
     expect_offense(<<~RUBY)
       URI.regexp('http://example.com')

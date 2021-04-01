@@ -14,10 +14,12 @@ module RuboCop
       #   attr_accessor :something
       #   attr_reader :one, :two, :three
       #
-      class Attr < Cop
+      class Attr < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'
+        RESTRICT_ON_SEND = %i[attr].freeze
 
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?
@@ -26,10 +28,15 @@ module RuboCop
                     !node.parent.class_type? &&
                     !class_eval?(node.parent)
 
-          add_offense(node, location: :selector)
+          message = message(node)
+          add_offense(node.loc.selector, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           attr_name, setter = *node.arguments
 
           node_expr = node.source_range
@@ -37,13 +44,9 @@ module RuboCop
 
           remove = range_between(attr_expr.end_pos, node_expr.end_pos) if setter&.boolean_type?
 
-          lambda do |corrector|
-            corrector.replace(node.loc.selector, replacement_method(node))
-            corrector.remove(remove) if remove
-          end
+          corrector.replace(node.loc.selector, replacement_method(node))
+          corrector.remove(remove) if remove
         end
-
-        private
 
         def message(node)
           format(MSG, replacement: replacement_method(node))

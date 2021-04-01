@@ -41,18 +41,15 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       end
 
       context 'when using safe navigation operator' do
-        let(:source) { 'puts(receiver&.compute something)' }
-
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             puts(receiver&.compute something)
                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add parentheses to nested method call `receiver&.compute something`.
           RUBY
-        end
 
-        it 'auto-corrects by adding parentheses' do
-          new_source = autocorrect_source(source)
-          expect(new_source).to eq('puts(receiver&.compute(something))')
+          expect_correction(<<~RUBY)
+            puts(receiver&.compute(something))
+          RUBY
         end
       end
     end
@@ -102,16 +99,16 @@ RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
   end
 
   context 'backslash newline in method call' do
-    let(:source) do
-      <<~RUBY
+    it 'registers an offense' do
+      expect_offense(<<~'RUBY')
         puts(nex \
+             ^^^^^ Add parentheses to nested method call [...]
                5)
       RUBY
-    end
 
-    it 'auto-corrects by adding parentheses' do
-      new_source = autocorrect_source(source.strip)
-      expect(new_source).to eq('puts(nex(5))')
+      expect_correction(<<~RUBY)
+        puts(nex(5))
+      RUBY
     end
   end
 end

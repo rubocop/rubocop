@@ -325,7 +325,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
 
     it 'registers an offense and corrects misaligned string operand ' \
       'when the first operand has backslash continuation' do
-      expect_offense(<<~RUBY)
+      expect_offense(<<~'RUBY')
         def f
           flash[:error] = 'Here is a string ' \
                           'That spans' <<
@@ -334,7 +334,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~'RUBY')
         def f
           flash[:error] = 'Here is a string ' \
                           'That spans' <<
@@ -459,7 +459,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
     end
 
     it 'accepts the indentation of a broken string' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~'RUBY')
         MSG = 'Use 2 (not %d) spaces for indenting a ' \
               'broken line.'
       RUBY
@@ -518,7 +518,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         expect_no_offenses(<<~RUBY)
           #{keyword} receiver.nil? &&
               !args.empty? &&
-              BLACKLIST.include?(method_name)
+              FORBIDDEN_METHODS.include?(method_name)
           end
           #{keyword} receiver.
               nil?
@@ -532,8 +532,8 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           #{keyword} receiver.nil? &&
             !args.empty? &&
             ^^^^^^^^^^^^ Use 4 (not 2) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
-            BLACKLIST.include?(method_name)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 4 (not 2) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
+            FORBIDDEN_METHODS.include?(method_name)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 4 (not 2) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
           end
         RUBY
       end
@@ -553,7 +553,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         expect_no_offenses(<<~RUBY)
           return #{keyword} receiver.nil? &&
             !args.empty? &&
-            BLACKLIST.include?(method_name)
+            FORBIDDEN_METHODS.include?(method_name)
         RUBY
       end
 
@@ -656,7 +656,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
           expect_no_offenses(<<~RUBY)
             #{keyword} receiver.nil? &&
                     !args.empty? &&
-                    BLACKLIST.include?(method_name)
+                    FORBIDDEN_METHODS.include?(method_name)
             end
             #{keyword} receiver.
                     nil?
@@ -670,8 +670,8 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
             #{keyword} receiver.nil? &&
                 !args.empty? &&
                 ^^^^^^^^^^^^ Use 8 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
-                BLACKLIST.include?(method_name)
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 8 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
+                FORBIDDEN_METHODS.include?(method_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 8 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
             end
           RUBY
         end

@@ -20,9 +20,6 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
   let(:def_end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
   end
-  let(:indented_internal_methods_offense_message) do
-    'Use 2 (not 0) spaces for indented_internal_methods indentation.'
-  end
 
   context 'with Width set to 4' do
     let(:cop_config) { { 'Width' => 4 } }
@@ -1179,7 +1176,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
 
         it 'registers an offense for normal non-indented internal methods ' \
            'indentation' do
-          inspect_source(<<~RUBY)
+          expect_offense(<<~RUBY)
             class Test
               public
 
@@ -1189,22 +1186,21 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               protected
 
               def f
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
 
               private
 
               def g
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
             end
           RUBY
-          expect(cop.messages)
-            .to eq([indented_internal_methods_offense_message] * 2)
-          expect(cop.offenses.map(&:line)).to eq([9, 14])
         end
 
         it 'registers an offense for normal non-indented internal methods ' \
            'indentation when defined in a singleton class' do
-          inspect_source(<<~RUBY)
+          expect_offense(<<~RUBY)
             class << self
               public
 
@@ -1214,18 +1210,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               protected
 
               def f
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
 
               private
 
               def g
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
               end
             end
           RUBY
-
-          expect(cop.messages)
-            .to eq([indented_internal_methods_offense_message] * 2)
-          expect(cop.offenses.map(&:line)).to eq([9, 14])
         end
       end
     end
@@ -1284,27 +1278,27 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
 
     context 'with begin/rescue/else/ensure/end' do
       it 'registers an offense for bad indentation of bodies' do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           def my_func
             puts 'do something outside block'
             begin
             puts 'do something error prone'
+            ^{} Use 2 (not 0) spaces for indentation.
             rescue SomeException, SomeOther => e
              puts 'wrongly intended error handling'
+            ^ Use 2 (not 1) spaces for indentation.
             rescue
              puts 'wrongly intended error handling'
+            ^ Use 2 (not 1) spaces for indentation.
             else
                puts 'wrongly intended normal case handling'
+            ^^^ Use 2 (not 3) spaces for indentation.
             ensure
                 puts 'wrongly intended common handling'
+            ^^^^ Use 2 (not 4) spaces for indentation.
             end
           end
         RUBY
-        expect(cop.messages).to eq(['Use 2 (not 0) spaces for indentation.',
-                                    'Use 2 (not 1) spaces for indentation.',
-                                    'Use 2 (not 1) spaces for indentation.',
-                                    'Use 2 (not 3) spaces for indentation.',
-                                    'Use 2 (not 4) spaces for indentation.'])
       end
     end
 
@@ -1345,7 +1339,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
         end
 
         it 'registers an offense for bad indentation in a do/end body' do
-          inspect_source(<<~RUBY)
+          expect_offense(<<~RUBY)
             concern :Authenticatable do
               def foo
                 puts "foo"
@@ -1354,12 +1348,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth do
               private
 
               def bar
+              ^{} Use 2 (not 0) spaces for indented_internal_methods indentation.
                 puts "bar"
               end
             end
           RUBY
-          expect(cop.messages)
-            .to eq([indented_internal_methods_offense_message])
         end
       end
 

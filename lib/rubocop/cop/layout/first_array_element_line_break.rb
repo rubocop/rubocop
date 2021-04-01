@@ -17,8 +17,9 @@ module RuboCop
       #       :a,
       #       :b]
       #
-      class FirstArrayElementLineBreak < Cop
+      class FirstArrayElementLineBreak < Base
         include FirstElementLineBreak
+        extend AutoCorrector
 
         MSG = 'Add a line break before the first element of a ' \
               'multi-line array.'
@@ -29,15 +30,11 @@ module RuboCop
           check_children_line_break(node, node.children)
         end
 
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
-        end
-
         private
 
         def assignment_on_same_line?(node)
           source = node.source_range.source_line[0...node.loc.column]
-          source =~ /\s*\=\s*$/
+          /\s*=\s*$/.match?(source)
         end
       end
     end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::CLI, :isolated_environment do
-  include_context 'cli spec behavior'
-
   subject(:cli) { described_class.new }
+
+  include_context 'cli spec behavior'
 
   let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
 
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'exits cleanly' do
       expect(cli.run(['-v'])).to eq(0)
       expect(cli.run(['--version'])).to eq(0)
-      expect($stdout.string).to eq((RuboCop::Version::STRING + "\n") * 2)
+      expect($stdout.string).to eq("#{RuboCop::Version::STRING}\n" * 2)
     end
   end
 
@@ -152,8 +152,29 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'exits cleanly' do
       expect(cli.run(['-V'])).to eq(0)
       expect($stdout.string).to include(RuboCop::Version::STRING)
-      expect($stdout.string).to match(/Parser \d\.\d\.\d/)
-      expect($stdout.string).to match(/rubocop-ast \d\.\d\.\d/)
+      expect($stdout.string).to match(/Parser \d+\.\d+\.\d+/)
+      expect($stdout.string).to match(/rubocop-ast \d+\.\d+\.\d+/)
+    end
+
+    context 'when requiring extension cops' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          require:
+            - rubocop-performance
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'shows with version of extension cops' do
+        # Run in different process that requiring rubocop-perfmance and rubocop-rspec
+        # does not affect other testing processes.
+        output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-performance \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-rspec \d+\.\d+\.\d+/)
+      end
     end
   end
 
@@ -177,7 +198,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                   'usage when having a single-line body. Another good ' \
                   'alternative is the usage of control flow &&/||.',
                   '',
-                  '1 file inspected, 1 offense detected',
+                  '1 file inspected, 1 offense detected, 1 offense auto-correctable',
                   ''].join("\n"))
       end
 
@@ -272,7 +293,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
 
         let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
-          The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file:
+          The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
         PENDING_COP_WARNING
 
         let(:inspected_output) { <<~INSPECTED_OUTPUT }
@@ -283,7 +304,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         INSPECTED_OUTPUT
 
         let(:versioning_manual_url) { <<~VERSIONING_MANUAL_URL.chop }
-          For more information: https://docs.rubocop.org/en/latest/versioning/
+          For more information: https://docs.rubocop.org/rubocop/versioning.html
         VERSIONING_MANUAL_URL
 
         before do
@@ -327,9 +348,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               remaining_range =
                 pending_cop_warning.length..-(inspected_output.length + 1)
-              pending_cops = output[remaining_range].split("\n")
+              pending_cops = output[remaining_range]
 
-              expect(pending_cops).to include(' - Style/SomeCop (0.80)')
+              expect(pending_cops).to include("Style/SomeCop: # (new in 0.80)\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
@@ -346,9 +367,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               remaining_range =
                 pending_cop_warning.length..-(inspected_output.length + 1)
-              pending_cops = output[remaining_range].split("\n")
+              pending_cops = output[remaining_range]
 
-              expect(pending_cops).to include(' - Style/SomeCop (N/A)')
+              expect(pending_cops).to include("Style/SomeCop: # (new in N/A)\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
@@ -457,7 +478,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                     'usage when having a single-line body. Another good ' \
                     'alternative is the usage of control flow &&/||.',
                     '',
-                    '1 file inspected, 1 offense detected',
+                    '1 file inspected, 1 offense detected, 1 offense auto-correctable',
                     ''].join("\n"))
         end
       end
@@ -483,7 +504,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             == example.rb ==
             C:  1:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
 
-            1 file inspected, 1 offense detected
+            1 file inspected, 1 offense detected, 1 offense auto-correctable
           RESULT
       end
     end
@@ -505,7 +526,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  5: Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
           C:  2:  1: Layout/IndentationStyle: Tab detected in indentation.
 
-          1 file inspected, 3 offenses detected
+          1 file inspected, 3 offenses detected, 3 offenses auto-correctable
         RESULT
       end
 
@@ -528,7 +549,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               C:  2:  1: Layout/IndentationStyle: Tab detected in indentation.
               W:  2:  2: Lint/UselessAssignment: Useless assignment to variable - y.
 
-              1 file inspected, 3 offenses detected
+              1 file inspected, 3 offenses detected, 2 offenses auto-correctable
             RESULT
         end
       end
@@ -537,7 +558,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'when a namespace is given' do
       it 'runs all enabled cops in that namespace' do
         create_file('example.rb', ['if x== 100000000000000 ',
-                                   '  ' + '#' * 130,
+                                   "  #{'#' * 130}",
                                    "\ty",
                                    'end'])
         expect(cli.run(%w[-f offenses --only Layout example.rb])).to eq(1)
@@ -559,7 +580,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'when three namespaces are given' do
       it 'runs all enabled cops in those namespaces' do
         create_file('example.rb', ['if x== 100000000000000 ',
-                                   '  # ' + '-' * 130,
+                                   "  # #{'-' * 130}",
                                    "\ty",
                                    'end'])
         create_file('.rubocop.yml', <<~YAML)
@@ -642,7 +663,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'offenses',
                         '--except', 'Style/IfUnlessModifier,Lint',
                         'example.rb'])).to eq(1)
-        # Note: No Lint/UselessAssignment offense.
+        # NOTE: No Lint/UselessAssignment offense.
         expect($stdout.string)
           .to eq(<<~RESULT)
 
@@ -768,6 +789,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe '--display-time' do
+    before do
+      create_file('example1.rb', '')
+    end
+
+    regex = /Finished in [0-9]*\.[0-9]* seconds/
+
+    context 'without --display-time' do
+      it 'does not display elapsed time in seconds' do
+        expect(`rubocop example1.rb`).not_to match(regex)
+      end
+    end
+
+    context 'with --display-time' do
+      it 'displays elapsed time in seconds' do
+        expect(`rubocop --display-time example1.rb`).to match(regex)
+      end
+    end
+  end
+
   describe '-D/--display-cop-names' do
     before do
       create_file('example1.rb', 'puts 0 # rubocop:disable NumericLiterals ')
@@ -873,7 +914,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     it 'shows reference entry' do
       create_file('example1.rb', "JSON.load('{}')")
       file = abs('example1.rb')
-      url = 'https://ruby-doc.org/stdlib-2.3.0/libdoc/json/rdoc/JSON.html' \
+      url = 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html' \
             '#method-i-load'
 
       expect(cli.run(['--format',
@@ -922,8 +963,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    let(:cops) { RuboCop::Cop::Cop.all }
-    let(:registry) { RuboCop::Cop::Cop.registry }
+    let(:cops) { RuboCop::Cop::Registry.all }
+    let(:registry) { RuboCop::Cop::Registry.global }
 
     let(:global_conf) do
       config_path =
@@ -1005,8 +1046,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
            '  Description: Consistent indentation either with tabs only or spaces only.',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
-           /^  VersionAdded: '[0-9\.]+'$/,
-           /^  VersionChanged: '[0-9\.]+'$/,
+           /^  VersionAdded: '[0-9.]+'$/,
+           /^  VersionChanged: '[0-9.]+'$/,
            '  IndentationWidth:'].join("\n")
         )
       end
@@ -1060,7 +1101,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
               C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
-              1 file inspected, 2 offenses detected
+              1 file inspected, 2 offenses detected, 1 offense auto-correctable
             RESULT
         end
       end
@@ -1208,7 +1249,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             '    end',
             '    ^^^',
             '',
-            '3 files inspected, 15 offenses detected',
+            '3 files inspected, 15 offenses detected, 12 offenses auto-correctable',
             ''
           ].join("\n"))
         end
@@ -1328,7 +1369,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
-        1 file inspected, 2 offenses detected
+        1 file inspected, 2 offenses detected, 1 offense auto-correctable
       RESULT
 
       expect(File.read('emacs_output.txt'))
@@ -1447,7 +1488,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    context 'with --auto-correct' do
+    context 'with --auto-correct-all' do
       def expect_auto_corrected
         expect_offense_detected
         expect($stdout.string.lines.to_a.last)
@@ -1457,7 +1498,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       it 'fails when option is autocorrect and all offenses are ' \
          'autocorrected' do
-        expect(cli.run(['--auto-correct', '--format', 'simple',
+        expect(cli.run(['--auto-correct-all', '--format', 'simple',
                         '--fail-level', 'autocorrect',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
@@ -1465,7 +1506,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'fails when option is A and all offenses are autocorrected' do
-        expect(cli.run(['--auto-correct', '--format', 'simple',
+        expect(cli.run(['--auto-correct-all', '--format', 'simple',
                         '--fail-level', 'A',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
@@ -1474,7 +1515,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       it 'succeeds when option is not given and all offenses are ' \
          'autocorrected' do
-        expect(cli.run(['--auto-correct', '--format', 'simple',
+        expect(cli.run(['--auto-correct-all', '--format', 'simple',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(0)
         expect_auto_corrected
@@ -1482,7 +1523,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       it 'succeeds when option is refactor and all offenses are ' \
          'autocorrected' do
-        expect(cli.run(['--auto-correct', '--format', 'simple',
+        expect(cli.run(['--auto-correct-all', '--format', 'simple',
                         '--fail-level', 'refactor',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(0)
@@ -1491,7 +1532,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
-  describe 'with --auto-correct and disabled offense' do
+  describe 'with --auto-correct-all and disabled offense' do
     let(:target_file) { 'example.rb' }
 
     before do
@@ -1508,13 +1549,73 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       RUBY
 
-      expect(cli.run(['--auto-correct', '--format', 'simple',
+      expect(cli.run(['--auto-correct-all', '--format', 'simple',
                       '--fail-level', 'autocorrect',
                       target_file])).to eq(0)
 
       expect($stdout.string.lines.to_a.last)
         .to eq('1 file inspected, no offenses detected' \
                "\n")
+    end
+  end
+
+  describe 'with --auto-correct' do
+    let(:target_file) { 'example.rb' }
+
+    context 'all offenses are corrected' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Style/FrozenStringLiteralComment:
+            Enabled: false
+        YAML
+      end
+
+      it 'succeeds when there is only a disabled offense' do
+        create_file(target_file, <<~RUBY)
+          a = "Hello"
+        RUBY
+
+        expect(cli.run(['--auto-correct', '--format', 'simple',
+                        target_file])).to eq(1)
+
+        expect($stdout.string.lines.to_a.last)
+          .to eq('1 file inspected, 2 offenses detected, 1 offense corrected' \
+                 "\n")
+      end
+    end
+
+    context 'no offense corrected, 1 offense auto-correctable' do
+      it 'succeeds when there is only a disabled offense' do
+        create_file(target_file, <<~RUBY)
+          a = 'Hello'.freeze
+          puts a
+        RUBY
+
+        expect(cli.run(['--auto-correct', '--format', 'simple',
+                        target_file])).to eq(1)
+
+        expect($stdout.string.lines.to_a.last).to eq(
+          '1 file inspected, 1 offense detected, 1 more offense '\
+          "can be corrected with `rubocop -A`\n"
+        )
+      end
+    end
+
+    context 'a offense corrected, a offense auto-correctable' do
+      it 'succeeds when there is only a disabled offense' do
+        create_file(target_file, <<~RUBY)
+          a = "Hello".freeze
+          puts a
+        RUBY
+
+        expect(cli.run(['--auto-correct', '--format', 'simple',
+                        target_file])).to eq(1)
+
+        expect($stdout.string.lines.to_a.last).to eq(
+          '1 file inspected, 2 offenses detected, 1 offense corrected, 1 more offense '\
+          "can be corrected with `rubocop -A`\n"
+        )
+      end
     end
   end
 
@@ -1600,7 +1701,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == fake.rb ==
           C:  1:  3: Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense auto-correctable
         RESULT
       ensure
         $stdin = STDIN
@@ -1637,10 +1738,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    it 'prints corrected code to stdout if --auto-correct is used' do
+    it 'prints corrected code to stdout if --auto-correct-all is used' do
       begin
         $stdin = StringIO.new('p $/')
-        argv   = ['--auto-correct',
+        argv   = ['--auto-correct-all',
                   '--only=Style/SpecialGlobalVars',
                   '--format=simple',
                   '--stdin',
@@ -1654,6 +1755,61 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           ====================
           p $INPUT_RECORD_SEPARATOR
         RESULT
+      ensure
+        $stdin = STDIN
+      end
+    end
+
+    it 'prints offence reports to stderr and corrected code to stdout if --auto-correct-all and --stderr are used' do
+      begin
+        $stdin = StringIO.new('p $/')
+        argv   = ['--auto-correct-all',
+                  '--only=Style/SpecialGlobalVars',
+                  '--format=simple',
+                  '--stderr',
+                  '--stdin',
+                  'fake.rb']
+        expect(cli.run(argv)).to eq(0)
+        expect($stderr.string).to eq(<<~RESULT)
+          == fake.rb ==
+          C:  1:  3: [Corrected] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
+
+          1 file inspected, 1 offense detected, 1 offense corrected
+          ====================
+        RESULT
+        expect($stdout.string).to eq(<<~RESULT.chomp)
+          p $INPUT_RECORD_SEPARATOR
+        RESULT
+      ensure
+        $stdin = STDIN
+      end
+    end
+
+    it 'can parse JSON result when specifying `--format=json` and `--stdin` options' do
+      begin
+        $stdin = StringIO.new('p $/')
+        argv   = ['--auto-correct-all',
+                  '--only=Style/SpecialGlobalVars',
+                  '--format=json',
+                  '--stdin',
+                  'fake.rb']
+        expect(cli.run(argv)).to eq(0)
+        expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
+      ensure
+        $stdin = STDIN
+      end
+    end
+
+    it 'can parse JSON result when specifying `--format=j` and `--stdin` options' do
+      begin
+        $stdin = StringIO.new('p $/')
+        argv   = ['--auto-correct-all',
+                  '--only=Style/SpecialGlobalVars',
+                  '--format=j',
+                  '--stdin',
+                  'fake.rb']
+        expect(cli.run(argv)).to eq(0)
+        expect { JSON.parse($stdout.string) }.not_to raise_error(JSON::ParserError)
       ensure
         $stdin = STDIN
       end

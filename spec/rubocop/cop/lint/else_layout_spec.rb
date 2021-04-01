@@ -3,12 +3,22 @@
 RSpec.describe RuboCop::Cop::Lint::ElseLayout do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for expr on same line as else' do
+  it 'registers an offense and corrects for expr on same line as else' do
     expect_offense(<<~RUBY)
       if something
         test
       else ala
            ^^^ Odd `else` layout detected. Did you mean to use `elsif`?
+        something
+        test
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if something
+        test
+      else
+        ala
         something
         test
       end
@@ -35,7 +45,7 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
     RUBY
   end
 
-  it 'can handle elsifs' do
+  it 'registers an offense and corrects for elsifs' do
     expect_offense(<<~RUBY)
       if something
         test
@@ -43,6 +53,18 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
         bala
       else ala
            ^^^ Odd `else` layout detected. Did you mean to use `elsif`?
+        something
+        test
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if something
+        test
+      elsif something
+        bala
+      else
+        ala
         something
         test
       end

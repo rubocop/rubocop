@@ -18,6 +18,18 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
       def @table.columns; super; end
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
     RUBY
+
+    expect_correction(<<~RUBY)
+      def some_method;#{trailing_whitespace}
+        body#{trailing_whitespace}
+      end
+      def link_to(name, url);#{trailing_whitespace}
+        {:name => name};#{trailing_whitespace}
+      end
+      def @table.columns;#{trailing_whitespace}
+        super;#{trailing_whitespace}
+      end
+    RUBY
   end
 
   context 'when AllowIfMethodIsEmpty is disabled' do
@@ -32,14 +44,13 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
         def @table.columns; end
         ^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
       RUBY
-    end
 
-    it 'auto-corrects an empty method' do
-      corrected = autocorrect_source(<<~RUBY)
-        def x; end
-      RUBY
-      expect(corrected).to eq(<<~RUBY)
-        def x; 
+      expect_correction(<<~RUBY)
+        def no_op;#{trailing_whitespace}
+        end
+        def self.resource_class=(klass);#{trailing_whitespace}
+        end
+        def @table.columns;#{trailing_whitespace}
         end
       RUBY
     end
@@ -73,39 +84,69 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods do
   end
 
   it 'auto-corrects def with semicolon after method name' do
-    corrected = autocorrect_source('  def some_method; body end # Cmnt')
-    expect(corrected).to eq ['  # Cmnt',
-                             '  def some_method; ',
-                             '    body ',
-                             '  end '].join("\n")
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def some_method; body end # Cmnt
+      |  ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  # Cmnt
+      |  def some_method;#{trailing_whitespace}
+      |    body#{trailing_whitespace}
+      |  end#{trailing_whitespace}
+    RUBY
   end
 
   it 'auto-corrects defs with parentheses after method name' do
-    corrected = autocorrect_source('  def self.some_method() body end')
-    expect(corrected).to eq ['  def self.some_method() ',
-                             '    body ',
-                             '  end'].join("\n")
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def self.some_method() body end
+      |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  def self.some_method()#{trailing_whitespace}
+      |    body#{trailing_whitespace}
+      |  end
+    RUBY
   end
 
   it 'auto-corrects def with argument in parentheses' do
-    corrected = autocorrect_source('  def some_method(arg) body end')
-    expect(corrected).to eq ['  def some_method(arg) ',
-                             '    body ',
-                             '  end'].join("\n")
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def some_method(arg) body end
+      |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  def some_method(arg)#{trailing_whitespace}
+      |    body#{trailing_whitespace}
+      |  end
+    RUBY
   end
 
   it 'auto-corrects def with argument and no parentheses' do
-    corrected = autocorrect_source('  def some_method arg; body end')
-    expect(corrected).to eq ['  def some_method arg; ',
-                             '    body ',
-                             '  end'].join("\n")
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def some_method arg; body end
+      |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  def some_method arg;#{trailing_whitespace}
+      |    body#{trailing_whitespace}
+      |  end
+    RUBY
   end
 
   it 'auto-corrects def with semicolon before end' do
-    corrected = autocorrect_source('  def some_method; b1; b2; end')
-    expect(corrected).to eq ['  def some_method; ',
-                             '    b1; ',
-                             '    b2; ',
-                             '  end'].join("\n")
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def some_method; b1; b2; end
+      |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+    RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  def some_method;#{trailing_whitespace}
+      |    b1;#{trailing_whitespace}
+      |    b2;#{trailing_whitespace}
+      |  end
+    RUBY
   end
 end

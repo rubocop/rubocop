@@ -18,30 +18,33 @@ module RuboCop
       #
       #  # good
       #  lambda.(x, y)
-      class LambdaCall < Cop
+      class LambdaCall < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
+
+        RESTRICT_ON_SEND = %i[call].freeze
 
         def on_send(node)
-          return unless node.receiver && node.method?(:call)
+          return unless node.receiver
 
-          if offense?(node)
-            add_offense(node) { opposite_style_detected }
+          if offense?(node) && opposite_style_detected
+            add_offense(node) do |corrector|
+              autocorrect(corrector, node)
+            end
           else
             correct_style_detected
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if explicit_style?
-              receiver = node.receiver.source
-              replacement = node.source.sub("#{receiver}.", "#{receiver}.call")
+        def autocorrect(corrector, node)
+          if explicit_style?
+            receiver = node.receiver.source
+            replacement = node.source.sub("#{receiver}.", "#{receiver}.call")
 
-              corrector.replace(node, replacement)
-            else
-              add_parentheses(node, corrector) unless node.parenthesized?
-              corrector.remove(node.loc.selector)
-            end
+            corrector.replace(node, replacement)
+          else
+            add_parentheses(node, corrector) unless node.parenthesized?
+            corrector.remove(node.loc.selector)
           end
         end
 

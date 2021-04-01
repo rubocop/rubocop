@@ -150,6 +150,16 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
       RUBY
     end
 
+    it 'registers an offense for &&=' do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+          foo = nil
+          foo &&= 42
+        end
+      RUBY
+    end
+
     it 'registers an offense for and' do
       expect_offense(<<~RUBY)
         def method_name
@@ -164,6 +174,16 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
         def method_name
         ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo || call_bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense for ||=' do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+          foo = nil
+          foo ||= 42
         end
       RUBY
     end
@@ -189,6 +209,30 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
       RUBY
     end
 
+    it 'registers an offense for &.' do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+          foo&.bar
+          foo&.bar
+        end
+      RUBY
+    end
+
+    it 'counts repeated &. on same untouched local variable as 1' do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+          var = 1
+          var&.foo
+          var&.dont_count_me
+          var = 2
+          var&.bar
+          var&.dont_count_me_eother
+        end
+      RUBY
+    end
+
     it 'counts only a single method' do
       expect_offense(<<~RUBY)
         def method_name_1
@@ -208,6 +252,41 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
         define_method :method_name do
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo if some_condition
+        end
+      RUBY
+    end
+
+    it 'counts enumerating methods with blocks as +1' do
+      expect_offense(<<~RUBY)
+        define_method :method_name do
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+          (1..4).map do |i|                            # map: +1
+            i * 2
+          end.each.with_index { |val, i| puts val, i } # each: +0, with_index: +1
+          return treasure.map
+        end
+      RUBY
+    end
+
+    it 'counts enumerating methods with block-pass as +1' do
+      expect_offense(<<~RUBY)
+        define_method :method_name do
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+          [].map(&:to_s)
+        end
+      RUBY
+    end
+
+    it 'does not count blocks in general' do
+      expect_no_offenses(<<~RUBY)
+        define_method :method_name do
+          Struct.new(:foo, :bar) do
+            String.class_eval do
+              [42].tap do |answer|
+                foo { bar }
+              end
+            end
+          end
         end
       RUBY
     end

@@ -11,7 +11,7 @@ module RuboCop
       #
       # With `IncludeSemanticChanges` set to `true`, this cop reports offenses
       # for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
-      # is **usually** OK, but might change behavior.
+      # is *usually* OK, but might change behavior.
       #
       # @example
       #   # bad
@@ -38,7 +38,11 @@ module RuboCop
       #   if !x.nil?
       #   end
       #
-      class NonNilCheck < Cop
+      class NonNilCheck < Base
+        extend AutoCorrector
+
+        RESTRICT_ON_SEND = %i[!= nil? !].freeze
+
         def_node_matcher :not_equal_to_nil?, '(send _ :!= nil)'
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
         def_node_matcher :nil_check?, '(send _ :nil?)'
@@ -46,12 +50,11 @@ module RuboCop
 
         def on_send(node)
           return if ignored_node?(node)
+          return unless (offense_node = find_offense_node(node))
 
-          if not_equal_to_nil?(node)
-            add_offense(node, location: :selector)
-          elsif include_semantic_changes? &&
-                (not_and_nil_check?(node) || unless_and_nil_check?(node))
-            add_offense(node)
+          message = message(node)
+          add_offense(offense_node, message: message) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
@@ -68,18 +71,27 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          case node.method_name
-          when :!=
-            autocorrect_comparison(node)
-          when :!
-            autocorrect_non_nil(node, node.receiver)
-          when :nil?
-            autocorrect_unless_nil(node, node.receiver)
+        private
+
+        def find_offense_node(node)
+          if not_equal_to_nil?(node)
+            node.loc.selector
+          elsif include_semantic_changes? &&
+                (not_and_nil_check?(node) || unless_and_nil_check?(node))
+            node
           end
         end
 
-        private
+        def autocorrect(corrector, node)
+          case node.method_name
+          when :!=
+            autocorrect_comparison(corrector, node)
+          when :!
+            autocorrect_non_nil(corrector, node, node.receiver)
+          when :nil?
+            autocorrect_unless_nil(corrector, node, node.receiver)
+          end
+        end
 
         def unless_and_nil_check?(send_node)
           parent = send_node.parent
@@ -100,7 +112,7 @@ module RuboCop
           cop_config['IncludeSemanticChanges']
         end
 
-        def autocorrect_comparison(node)
+        def autocorrect_comparison(corrector, node)
           expr = node.source
 
           new_code = if include_semantic_changes?
@@ -111,24 +123,20 @@ module RuboCop
 
           return if expr == new_code
 
-          ->(corrector) { corrector.replace(node, new_code) }
+          corrector.replace(node, new_code)
         end
 
-        def autocorrect_non_nil(node, inner_node)
-          lambda do |corrector|
-            if inner_node.receiver
-              corrector.replace(node, inner_node.receiver.source)
-            else
-              corrector.replace(node, 'self')
-            end
+        def autocorrect_non_nil(corrector, node, inner_node)
+          if inner_node.receiver
+            corrector.replace(node, inner_node.receiver.source)
+          else
+            corrector.replace(node, 'self')
           end
         end
 
-        def autocorrect_unless_nil(node, receiver)
-          lambda do |corrector|
-            corrector.replace(node.parent.loc.keyword, 'if')
-            corrector.replace(node, receiver.source)
-          end
+        def autocorrect_unless_nil(corrector, node, receiver)
+          corrector.replace(node.parent.loc.keyword, 'if')
+          corrector.replace(node, receiver.source)
         end
       end
     end

@@ -25,51 +25,60 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      class RedundantCopDisableDirective < Cop
+      class RedundantCopDisableDirective < Base
         include RangeHelp
+        extend AutoCorrector
 
         COP_NAME = 'Lint/RedundantCopDisableDirective'
 
-        def check(offenses, cop_disabled_line_ranges, comments)
+        attr_accessor :offenses_to_check
+
+        def initialize(config = nil, options = nil, offenses = nil)
+          @offenses_to_check = offenses
+          super(config, options)
+        end
+
+        def on_new_investigation
+          return unless offenses_to_check
+
+          cop_disabled_line_ranges = processed_source.disabled_line_ranges
+
           redundant_cops = Hash.new { |h, k| h[k] = Set.new }
 
           each_redundant_disable(cop_disabled_line_ranges,
-                                 offenses, comments) do |comment, redundant_cop|
+                                 offenses_to_check) do |comment, redundant_cop|
             redundant_cops[comment].add(redundant_cop)
           end
 
           add_offenses(redundant_cops)
-        end
-
-        def autocorrect(args)
-          lambda do |corrector|
-            ranges, range = *args # Ranges are sorted by position.
-
-            range = if range.source.start_with?('#')
-                      comment_range_with_surrounding_space(range)
-                    else
-                      directive_range_in_list(range, ranges)
-                    end
-
-            corrector.remove(range)
-          end
+          super
         end
 
         private
 
+        def previous_line_blank?(range)
+          processed_source.buffer.source_line(range.line - 1).blank?
+        end
+
         def comment_range_with_surrounding_space(range)
-          # Eat the entire comment, the preceding space, and the preceding
-          # newline if there is one.
-          original_begin = range.begin_pos
-          range = range_with_surrounding_space(range: range,
-                                               side: :left,
-                                               newlines: true)
-          range_with_surrounding_space(range: range,
-                                       side: :right,
-                                       # Special for a comment that
-                                       # begins the file: remove
-                                       # the newline at the end.
-                                       newlines: original_begin.zero?)
+          if previous_line_blank?(range)
+            # When the previous line is blank, it should be retained
+            range_with_surrounding_space(range: range, side: :right)
+          else
+            # Eat the entire comment, the preceding space, and the preceding
+            # newline if there is one.
+            original_begin = range.begin_pos
+            range = range_with_surrounding_space(range: range,
+                                                 side: :left,
+                                                 newlines: true)
+
+            range_with_surrounding_space(range: range,
+                                         side: :right,
+                                         # Special for a comment that
+                                         # begins the file: remove
+                                         # the newline at the end.
+                                         newlines: original_begin.zero?)
+          end
         end
 
         def directive_range_in_list(range, ranges)
@@ -88,25 +97,25 @@ module RuboCop
                                        newlines: false)
         end
 
-        def each_redundant_disable(cop_disabled_line_ranges, offenses, comments,
+        def each_redundant_disable(cop_disabled_line_ranges, offenses,
                                    &block)
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
             each_already_disabled(line_ranges,
-                                  disabled_ranges, comments) do |comment|
+                                  disabled_ranges) do |comment|
               yield comment, cop
             end
 
-            each_line_range(line_ranges, disabled_ranges, offenses, comments,
+            each_line_range(line_ranges, disabled_ranges, offenses,
                             cop, &block)
           end
         end
 
-        def each_line_range(line_ranges, disabled_ranges, offenses, comments,
+        def each_line_range(line_ranges, disabled_ranges, offenses,
                             cop)
           line_ranges.each_with_index do |line_range, ix|
-            comment = comments.find { |c| c.loc.line == line_range.begin }
+            comment = processed_source.comment_at_line(line_range.begin)
             next if ignore_offense?(disabled_ranges, line_range)
 
             redundant_cop = find_redundant(comment, offenses, cop, line_range,
@@ -115,7 +124,7 @@ module RuboCop
           end
         end
 
-        def each_already_disabled(line_ranges, disabled_ranges, comments)
+        def each_already_disabled(line_ranges, disabled_ranges)
           line_ranges.each_cons(2) do |previous_range, range|
             next if ignore_offense?(disabled_ranges, range)
             next if previous_range.end != range.begin
@@ -124,17 +133,16 @@ module RuboCop
             # the end of the previous range, it means that the cop was
             # already disabled by an earlier comment. So it's redundant
             # whether there are offenses or not.
-            redundant_comment = comments.find do |c|
-              c.loc.line == range.begin &&
-                # Comments disabling all cops don't count since it's reasonable
-                # to disable a few select cops first and then all cops further
-                # down in the code.
-                !all_disabled?(c)
-            end
-            yield redundant_comment if redundant_comment
+            comment = processed_source.comment_at_line(range.begin)
+
+            # Comments disabling all cops don't count since it's reasonable
+            # to disable a few select cops first and then all cops further
+            # down in the code.
+            yield comment if comment && !all_disabled?(comment)
           end
         end
 
+        # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def find_redundant(comment, offenses, cop, line_range, next_line_range)
           if all_disabled?(comment)
             # If there's a disable all comment followed by a comment
@@ -152,9 +160,10 @@ module RuboCop
             cop if cop_offenses.none? { |o| line_range.cover?(o.line) }
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def all_disabled?(comment)
-          comment.text =~ /rubocop\s*:\s*(?:disable|todo)\s+all\b/
+          /rubocop\s*:\s*(?:disable|todo)\s+all\b/.match?(comment.text)
         end
 
         def ignore_offense?(disabled_ranges, line_range)
@@ -185,10 +194,12 @@ module RuboCop
           cop_list = cops.sort.map { |c| describe(c) }
 
           add_offense(
-            [[location], location],
-            location: location,
+            location,
             message: "Unnecessary disabling of #{cop_list.join(', ')}."
-          )
+          ) do |corrector|
+            range = comment_range_with_surrounding_space(location)
+            corrector.remove(range)
+          end
         end
 
         def add_offense_for_some_cops(comment, cops)
@@ -198,10 +209,12 @@ module RuboCop
 
           cop_ranges.each do |cop, range|
             add_offense(
-              [ranges, range],
-              location: range,
+              range,
               message: "Unnecessary disabling of #{describe(cop)}."
-            )
+            ) do |corrector|
+              range = directive_range_in_list(range, ranges)
+              corrector.remove(range)
+            end
           end
         end
 
@@ -225,7 +238,7 @@ module RuboCop
             .drop_while { |r| !r.equal?(range) }
             .each_cons(2)
             .map { |range1, range2| range1.end.join(range2.begin).source }
-            .all? { |intervening| intervening =~ /\A\s*,\s*\Z/ }
+            .all? { |intervening| /\A\s*,\s*\Z/.match?(intervening) }
         end
 
         def describe(cop)
@@ -244,7 +257,7 @@ module RuboCop
         end
 
         def all_cop_names
-          @all_cop_names ||= Cop.registry.names
+          @all_cop_names ||= Registry.global.names
         end
 
         def ends_its_line?(range)

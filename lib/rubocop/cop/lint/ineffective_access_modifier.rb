@@ -45,7 +45,7 @@ module RuboCop
       #       end
       #     end
       #   end
-      class IneffectiveAccessModifier < Cop
+      class IneffectiveAccessModifier < Base
         MSG = '`%<modifier>s` (on line %<line>d) does not make singleton ' \
               'methods %<modifier>s. Use %<alternative>s instead.'
         ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a ' \
@@ -58,24 +58,17 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          check_node(node.children[2]) # class body
+          check_node(node.body)
         end
-
-        def on_module(node)
-          check_node(node.children[1]) # module body
-        end
+        alias on_module on_class
 
         private
 
         def check_node(node)
           return unless node&.begin_type?
 
-          ignored_methods = private_class_method_names(node)
-
-          ineffective_modifier(node, ignored_methods) do |defs_node, modifier|
-            add_offense(defs_node,
-                        location: :keyword,
-                        message: format_message(modifier))
+          ineffective_modifier(node) do |defs_node, modifier|
+            add_offense(defs_node.loc.keyword, message: format_message(modifier))
           end
         end
 
@@ -97,20 +90,24 @@ module RuboCop
                       alternative: alternative)
         end
 
-        def ineffective_modifier(node, ignored_methods, modifier = nil, &block)
+        # rubocop:disable Metrics/CyclomaticComplexity
+        def ineffective_modifier(node, ignored_methods = nil, modifier = nil, &block)
           node.each_child_node do |child|
             case child.type
             when :send
               modifier = child if access_modifier?(child)
             when :defs
+              ignored_methods ||= private_class_method_names(node)
               next if correct_visibility?(child, modifier, ignored_methods)
 
               yield child, modifier
             when :kwbegin
+              ignored_methods ||= private_class_method_names(node)
               ineffective_modifier(child, ignored_methods, modifier, &block)
             end
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def access_modifier?(node)
           node.bare_access_modifier? && !node.method?(:module_function)

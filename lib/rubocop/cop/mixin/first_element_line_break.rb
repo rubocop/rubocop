@@ -17,7 +17,7 @@ module RuboCop
 
       def method_uses_parens?(node, limit)
         source = node.source_range.source_line[0...limit.loc.column]
-        source =~ /\s*\(\s*$/
+        /\s*\(\s*$/.match?(source)
       end
 
       def check_children_line_break(node, children, start = node)
@@ -31,7 +31,9 @@ module RuboCop
         max = last_by_line(children)
         return if line == max.last_line
 
-        add_offense(min)
+        add_offense(min) do |corrector|
+          EmptyLineCorrector.insert_before(corrector, min)
+        end
       end
 
       def first_by_line(nodes)

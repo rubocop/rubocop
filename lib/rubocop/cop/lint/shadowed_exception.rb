@@ -43,7 +43,7 @@ module RuboCop
       #     handle_standard_error
       #   end
       #
-      class ShadowedException < Cop
+      class ShadowedException < Base
         include RescueNode
         include RangeHelp
 
@@ -62,7 +62,7 @@ module RuboCop
           return if !rescue_group_rescues_multiple_levels &&
                     sorted?(rescued_groups)
 
-          add_offense(node, location: offense_range(rescues))
+          add_offense(offense_range(rescues))
         end
 
         private
@@ -75,8 +75,7 @@ module RuboCop
 
         def rescued_groups_for(rescues)
           rescues.map do |group|
-            rescue_group, = *group
-            evaluate_exceptions(rescue_group)
+            evaluate_exceptions(group)
           end
         end
 
@@ -117,14 +116,15 @@ module RuboCop
           $VERBOSE = old_verbose
         end
 
-        def evaluate_exceptions(rescue_group)
-          if rescue_group
-            rescued_exceptions = rescued_exceptions(rescue_group)
+        def evaluate_exceptions(group)
+          rescued_exceptions = group.exceptions
+
+          if rescued_exceptions.any?
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
                 silence_warnings do
                   # Avoid printing deprecation warnings about constants
-                  converted << Kernel.const_get(exception)
+                  converted << Kernel.const_get(exception.source)
                 end
               rescue NameError
                 converted << nil
@@ -140,11 +140,10 @@ module RuboCop
           rescued_groups.each_cons(2).all? do |x, y|
             if x.include?(Exception)
               false
-            elsif y.include?(Exception)
-              true
-            elsif x.none? || y.none?
-              # consider sorted if a group is empty or only contains
-              # `nil`s
+            elsif y.include?(Exception) ||
+                  # consider sorted if a group is empty or only contains
+                  # `nil`s
+                  x.none? || y.none?
               true
             else
               (x <=> y || 0) <= 0

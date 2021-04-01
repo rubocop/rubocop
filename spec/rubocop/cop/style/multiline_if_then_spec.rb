@@ -32,6 +32,19 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
               ^^^^ Do not use `then` for multi-line `if`.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if cond
+      end
+      if cond\t
+      end
+      if cond
+      end
+      if cond
+      end
+      if cond # bad
+      end
+    RUBY
   end
 
   it 'registers an offense for then in multiline elsif' do
@@ -43,11 +56,12 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
         b
       end
     RUBY
-  end
 
-  it 'accepts multiline if without then' do
-    expect_no_offenses(<<~RUBY)
-      if cond
+    expect_correction(<<~RUBY)
+      if cond1
+        a
+      elsif cond2
+        b
       end
     RUBY
   end
@@ -84,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
 
   it 'does not raise an error for an implicit match if' do
     expect do
-      inspect_source(<<~RUBY)
+      expect_no_offenses(<<~RUBY)
         if //
         end
       RUBY
@@ -99,10 +113,8 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
                   ^^^^ Do not use `then` for multi-line `unless`.
       end
     RUBY
-  end
 
-  it 'accepts multiline unless without then' do
-    expect_no_offenses(<<~RUBY)
+    expect_correction(<<~RUBY)
       unless cond
       end
     RUBY
@@ -122,23 +134,10 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen do
 
   it 'does not raise an error for an implicit match unless' do
     expect do
-      inspect_source(<<~RUBY)
+      expect_no_offenses(<<~RUBY)
         unless //
         end
       RUBY
     end.not_to raise_error
-  end
-
-  it 'auto-corrects the usage of "then" in multiline if' do
-    new_source = autocorrect_source(<<~RUBY)
-      if cond then
-        something
-      end
-    RUBY
-    expect(new_source).to eq(<<~RUBY)
-      if cond
-        something
-      end
-    RUBY
   end
 end

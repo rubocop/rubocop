@@ -9,6 +9,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
         %q('hi')
         ^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
       RUBY
+
+      expect_correction(<<~RUBY)
+        "'hi'"
+      RUBY
     end
 
     it 'registers an offense for only double quotes' do
@@ -16,12 +20,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
         %q("hi")
         ^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
       RUBY
+
+      expect_correction(<<~RUBY)
+        '"hi"'
+      RUBY
     end
 
     it 'registers an offense for no quotes' do
       expect_offense(<<~RUBY)
         %q(hi)
         ^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        'hi'
       RUBY
     end
 
@@ -33,6 +45,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
       expect_offense(<<~'RUBY')
         %q(\\\\foo\\\\)
         ^^^^^^^^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        '\\\\foo\\\\'
       RUBY
     end
 
@@ -48,35 +64,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
       expect_no_offenses('/%q?/')
     end
 
-    context 'auto-correct' do
-      it 'registers an offense for only single quotes' do
-        new_source = autocorrect_source("%q('hi')")
+    it 'auto-corrects for strings that are concatenated with backslash' do
+      expect_offense(<<~'RUBY')
+        %q(foo bar baz) \
+        ^^^^^^^^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+          'boogers'
+      RUBY
 
-        expect(new_source).to eq(%q("'hi'"))
-      end
-
-      it 'registers an offense for only double quotes' do
-        new_source = autocorrect_source('%q("hi")')
-
-        expect(new_source).to eq(%q('"hi"'))
-      end
-
-      it 'registers an offense for no quotes' do
-        new_source = autocorrect_source('%q(hi)')
-
-        expect(new_source).to eq("'hi'")
-      end
-
-      it 'auto-corrects for strings that is concated with backslash' do
-        new_source = autocorrect_source(<<~RUBY)
-          %q(foo bar baz) \
-            'boogers'
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          'foo bar baz' \
-            'boogers'
-        RUBY
-      end
+      expect_correction(<<~'RUBY')
+        'foo bar baz' \
+          'boogers'
+      RUBY
     end
   end
 
@@ -86,6 +84,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
         %Q(hi)
         ^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
       RUBY
+
+      expect_correction(<<~RUBY)
+        "hi"
+      RUBY
     end
 
     it 'registers an offense for static string with only double quotes' do
@@ -93,12 +95,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
         %Q("hi")
         ^^^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
       RUBY
+
+      expect_correction(<<~RUBY)
+        '"hi"'
+      RUBY
     end
 
     it 'registers an offense for dynamic string without quotes' do
       expect_offense(<<~'RUBY')
         %Q(hi#{4})
         ^^^^^^^^^^ Use `%Q` only for strings that contain both single quotes and double quotes, or for dynamic strings that contain double quotes.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "hi#{4}"
       RUBY
     end
 
@@ -122,35 +132,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ do
       expect_no_offenses('/%Q?/')
     end
 
-    context 'auto-correct' do
-      it 'corrects a static string without quotes' do
-        new_source = autocorrect_source('%Q(hi)')
+    it 'auto-corrects for strings that are concatenated with backslash' do
+      expect_offense(<<~'RUBY')
+        %Q(foo bar baz) \
+        ^^^^^^^^^^^^^^^ Use `%Q` only for strings that contain both single [...]
+          'boogers'
+      RUBY
 
-        expect(new_source).to eq('"hi"')
-      end
-
-      it 'corrects a static string with only double quotes' do
-        new_source = autocorrect_source('%Q("hi")')
-
-        expect(new_source).to eq(%q('"hi"'))
-      end
-
-      it 'corrects a dynamic string without quotes' do
-        new_source = autocorrect_source("%Q(hi\#{4})")
-
-        expect(new_source).to eq(%("hi\#{4}"))
-      end
-
-      it 'auto-corrects for strings that is concated with backslash' do
-        new_source = autocorrect_source(<<~RUBY)
-          %Q(foo bar baz) \
-            'boogers'
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          "foo bar baz" \
-            'boogers'
-        RUBY
-      end
+      expect_correction(<<~'RUBY')
+        "foo bar baz" \
+          'boogers'
+      RUBY
     end
   end
 

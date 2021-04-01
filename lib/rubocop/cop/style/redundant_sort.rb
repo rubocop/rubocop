@@ -49,11 +49,14 @@ module RuboCop
       #   # good
       #   arr.max_by(&:foo)
       #
-      class RedundantSort < Cop
+      class RedundantSort < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<suggestion>s` instead of '\
               '`%<sorter>s...%<accessor_source>s`.'
+
+        RESTRICT_ON_SEND = %i[sort sort_by].freeze
 
         def_node_matcher :redundant_sort?, <<~MATCHER
           {
@@ -72,41 +75,34 @@ module RuboCop
         MATCHER
 
         def on_send(node)
-          redundant_sort?(node) do |sort_node, sorter, accessor|
-            range = range_between(
-              sort_node.loc.selector.begin_pos,
-              node.loc.expression.end_pos
-            )
-
-            add_offense(node,
-                        location: range,
-                        message: message(node,
-                                         sorter,
-                                         accessor))
+          if (sort_node, sorter, accessor = redundant_sort?(node.parent))
+            ancestor = node.parent
+          elsif (sort_node, sorter, accessor = redundant_sort?(node.parent&.parent))
+            ancestor = node.parent.parent
+          else
+            return
           end
-        end
 
-        def autocorrect(node)
-          sort_node, sorter, accessor = redundant_sort?(node)
+          message = message(ancestor, sorter, accessor)
 
-          lambda do |corrector|
-            # Remove accessor, e.g. `first` or `[-1]`.
-            corrector.remove(
-              range_between(
-                accessor_start(node),
-                node.loc.expression.end_pos
-              )
-            )
-
-            # Replace "sort" or "sort_by" with the appropriate min/max method.
-            corrector.replace(
-              sort_node.loc.selector,
-              suggestion(sorter, accessor, arg_value(node))
-            )
+          add_offense(offense_range(sort_node, ancestor), message: message) do |corrector|
+            autocorrect(corrector, ancestor, sort_node, sorter, accessor)
           end
         end
 
         private
+
+        def autocorrect(corrector, node, sort_node, sorter, accessor)
+          # Remove accessor, e.g. `first` or `[-1]`.
+          corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
+
+          # Replace "sort" or "sort_by" with the appropriate min/max method.
+          corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
+        end
+
+        def offense_range(sort_node, ancestor)
+          range_between(sort_node.loc.selector.begin_pos, ancestor.loc.expression.end_pos)
+        end
 
         def message(node, sorter, accessor)
           accessor_source = range_between(
@@ -135,9 +131,10 @@ module RuboCop
         end
 
         def suffix(sorter)
-          if sorter == :sort
+          case sorter
+          when :sort
             ''
-          elsif sorter == :sort_by
+          when :sort_by
             '_by'
           end
         end

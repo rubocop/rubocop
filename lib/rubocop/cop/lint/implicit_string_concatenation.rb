@@ -22,7 +22,7 @@ module RuboCop
       #     'Item 1' \
       #     'Item 2'
       #   ]
-      class ImplicitStringConcatenation < Cop
+      class ImplicitStringConcatenation < Base
         MSG = 'Combine %<string1>s and %<string2>s into a single string ' \
               'literal, rather than using implicit string concatenation.'
         FOR_ARRAY = ' Or, if they were intended to be separate array ' \
@@ -41,7 +41,7 @@ module RuboCop
             elsif node.parent&.send_type?
               message << FOR_METHOD
             end
-            add_offense(node, location: range, message: message)
+            add_offense(range, message: message)
           end
         end
 
@@ -64,9 +64,10 @@ module RuboCop
 
         def ending_delimiter(str)
           # implicit string concatenation does not work with %{}, etc.
-          if str.source[0] == "'"
+          case str.source[0]
+          when "'"
             "'"
-          elsif str.source[0] == '"'
+          when '"'
             '"'
           end
         end

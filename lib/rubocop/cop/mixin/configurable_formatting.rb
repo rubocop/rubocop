@@ -10,7 +10,7 @@ module RuboCop
         if valid_name?(node, name)
           correct_style_detected
         else
-          add_offense(node, location: name_range, message: message(style)) do
+          add_offense(name_range, message: message(style)) do
             report_opposing_styles(node, name)
           end
         end

@@ -41,7 +41,9 @@ module RuboCop
       #
       #   # good
       #   something.to_time
-      class DateTime < Cop
+      class DateTime < Base
+        extend AutoCorrector
+
         CLASS_MSG = 'Prefer Time over DateTime.'
         COERCION_MSG = 'Do not use #to_datetime.'
 
@@ -50,7 +52,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :historic_date?, <<~PATTERN
-          (send _ _ _ (const (const nil? :Date) _))
+          (send _ _ _ (const (const {nil? (cbase)} :Date) _))
         PATTERN
 
         def_node_matcher :to_datetime?, <<~PATTERN
@@ -63,13 +65,22 @@ module RuboCop
           return if historic_date?(node)
 
           message = to_datetime?(node) ? COERCION_MSG : CLASS_MSG
-          add_offense(node, message: message)
+
+          add_offense(node, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         private
 
         def disallow_coercion?
           !cop_config['AllowCoercion']
+        end
+
+        def autocorrect(corrector, node)
+          return if to_datetime?(node)
+
+          corrector.replace(node.receiver.loc.name, 'Time')
         end
       end
     end

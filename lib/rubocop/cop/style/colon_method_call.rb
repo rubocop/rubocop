@@ -17,7 +17,9 @@ module RuboCop
       #   FileUtils.rmdir(dir)
       #   Marshal.dump(obj)
       #
-      class ColonMethodCall < Cop
+      class ColonMethodCall < Base
+        extend AutoCorrector
+
         MSG = 'Do not use `::` for method calls.'
 
         def_node_matcher :java_type_node?, <<~PATTERN
@@ -30,17 +32,14 @@ module RuboCop
         end
 
         def on_send(node)
+          return unless node.receiver && node.double_colon?
+          return if node.camel_case_method?
           # ignore Java interop code like Java::int
           return if java_type_node?(node)
 
-          return unless node.receiver && node.double_colon?
-          return if node.camel_case_method?
-
-          add_offense(node, location: :dot)
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.dot, '.') }
+          add_offense(node.loc.dot) do |corrector|
+            corrector.replace(node.loc.dot, '.')
+          end
         end
       end
     end

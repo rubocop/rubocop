@@ -52,14 +52,19 @@ module RuboCop
       #     foo
       #   end
       #
-      class UnusedBlockArgument < Cop
+      class UnusedBlockArgument < Base
         include UnusedArgument
+        extend AutoCorrector
 
-        def autocorrect(node)
-          UnusedArgCorrector.correct(processed_source, node)
+        def self.joining_forces
+          VariableForce
         end
 
         private
+
+        def autocorrect(corrector, node)
+          UnusedArgCorrector.correct(corrector, processed_source, node)
+        end
 
         def check_argument(variable)
           return if allowed_block?(variable) ||

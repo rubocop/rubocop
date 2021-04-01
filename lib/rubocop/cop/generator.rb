@@ -6,8 +6,9 @@ module RuboCop
     #
     # This generator will take a cop name and generate a source file
     # and spec file when given a valid qualified cop name.
+    # @api private
     class Generator
-      # Note: RDoc 5.1.0 or lower has the following issue.
+      # NOTE: RDoc 5.1.0 or lower has the following issue.
       # https://github.com/rubocop-hq/rubocop/issues/7043
       #
       # The following `String#gsub` can be replaced with
@@ -16,7 +17,6 @@ module RuboCop
       SOURCE_TEMPLATE = <<-RUBY.gsub(/^ {8}/, '')
         # frozen_string_literal: true
 
-        # TODO: when finished, run `rake generate_cops_documentation` to update the docs
         module RuboCop
           module Cop
             module %<department>s
@@ -54,11 +54,11 @@ module RuboCop
               #   # good
               #   good_foo_method(args)
               #
-              class %<cop_name>s < Cop
+              class %<cop_name>s < Base
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
-                # See https://github.com/rubocop-hq/rubocop-ast/blob/master/lib/rubocop/node_pattern.rb
+                # See https://github.com/rubocop-hq/rubocop-ast/blob/master/lib/rubocop/ast/node_pattern.rb
                 #
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'
@@ -133,7 +133,7 @@ module RuboCop
       end
 
       def inject_config(config_file_path: 'config/default.yml',
-                        version_added: bump_minor_version)
+                        version_added: '<<next>>')
         injector =
           ConfigurationInjector.new(configuration_file_path: config_file_path,
                                     badge: badge,
@@ -211,12 +211,6 @@ module RuboCop
           .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
           .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
           .downcase
-      end
-
-      def bump_minor_version
-        versions = RuboCop::Version::STRING.split('.')
-
-        "#{versions[0]}.#{versions[1].succ}"
       end
     end
   end

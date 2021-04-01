@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   something.is_a?(Array)
       #   (1..100).include?(7)
-      #   some_string =~ /something/
+      #   /something/.match?(some_string)
       #
       # @example AllowOnConstant
       #   # Style/CaseEquality:
@@ -27,15 +27,25 @@ module RuboCop
       #   # good
       #   Array === something
       #   (1..100).include?(7)
-      #   some_string =~ /something/
+      #   /something/.match?(some_string)
       #
-      class CaseEquality < Cop
-        MSG = 'Avoid the use of the case equality operator `===`.'
+      class CaseEquality < Base
+        extend AutoCorrector
 
-        def_node_matcher :case_equality?, '(send #const? :=== _)'
+        MSG = 'Avoid the use of the case equality operator `===`.'
+        RESTRICT_ON_SEND = %i[===].freeze
+
+        def_node_matcher :case_equality?, '(send $#const? :=== $_)'
 
         def on_send(node)
-          case_equality?(node) { add_offense(node, location: :selector) }
+          case_equality?(node) do |lhs, rhs|
+            return if lhs.const_type? && !lhs.module_name?
+
+            add_offense(node.loc.selector) do |corrector|
+              replacement = replacement(lhs, rhs)
+              corrector.replace(node, replacement) if replacement
+            end
+          end
         end
 
         private
@@ -45,6 +55,23 @@ module RuboCop
             !node&.const_type?
           else
             true
+          end
+        end
+
+        def replacement(lhs, rhs)
+          case lhs.type
+          when :regexp
+            # The automatic correction from `a === b` to `a.match?(b)` needs to
+            # consider `Regexp.last_match?`, `$~`, `$1`, and etc.
+            # This correction is expected to be supported by `Performance/Regexp` cop.
+            # See: https://github.com/rubocop-hq/rubocop-performance/issues/152
+            #
+            # So here is noop.
+          when :begin
+            child = lhs.children.first
+            "#{lhs.source}.include?(#{rhs.source})" if child&.range_type?
+          when :const
+            "#{rhs.source}.is_a?(#{lhs.source})"
           end
         end
       end

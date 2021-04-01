@@ -3,10 +3,10 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks how the *when*s of a *case* expression
-      # are indented in relation to its *case* or *end* keyword.
+      # This cop checks how the ``when``s of a `case` expression
+      # are indented in relation to its `case` or `end` keyword.
       #
-      # It will register a separate offense for each misaligned *when*.
+      # It will register a separate offense for each misaligned `when`.
       #
       # @example
       #   # If Layout/EndAlignment is set to keyword style (default)
@@ -67,10 +67,11 @@ module RuboCop
       #   else
       #     y / 3
       #   end
-      class CaseIndentation < Cop
+      class CaseIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Indent `when` %<depth>s `%<base>s`.'
 
@@ -79,16 +80,6 @@ module RuboCop
 
           case_node.each_when do |when_node|
             check_when(when_node)
-          end
-        end
-
-        def autocorrect(node)
-          whitespace = whitespace_range(node)
-
-          return false unless whitespace.source.strip.empty?
-
-          lambda do |corrector|
-            corrector.replace(whitespace, replacement(node))
           end
         end
 
@@ -114,22 +105,27 @@ module RuboCop
         end
 
         def incorrect_style(when_node)
-          when_column = when_node.loc.keyword.column
-          base_column = base_column(when_node.parent, alternative_style)
+          depth = indent_one_step? ? 'one step more than' : 'as deep as'
+          message = format(MSG, depth: depth, base: style)
 
-          add_offense(when_node, location: :keyword, message: message(style)) do
-            if when_column == base_column
-              opposite_style_detected
-            else
-              unrecognized_style_detected
-            end
+          add_offense(when_node.loc.keyword, message: message) do |corrector|
+            detect_incorrect_style(when_node)
+
+            whitespace = whitespace_range(when_node)
+
+            corrector.replace(whitespace, replacement(when_node)) if whitespace.source.strip.empty?
           end
         end
 
-        def message(base)
-          depth = indent_one_step? ? 'one step more than' : 'as deep as'
+        def detect_incorrect_style(when_node)
+          when_column = when_node.loc.keyword.column
+          base_column = base_column(when_node.parent, alternative_style)
 
-          format(MSG, depth: depth, base: base)
+          if when_column == base_column
+            opposite_style_detected
+          else
+            unrecognized_style_detected
+          end
         end
 
         def base_column(case_node, base)

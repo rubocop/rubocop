@@ -26,13 +26,11 @@ module RuboCop
       #       do_something until a && b   # 2
       #     end                           # ===
       #   end                             # 7 complexity points
-      class PerceivedComplexity < Cop
-        include MethodComplexity
-
+      class PerceivedComplexity < CyclomaticComplexity
         MSG = 'Perceived complexity for %<method>s is too high. ' \
               '[%<complexity>d/%<max>d]'
-        COUNTED_NODES = %i[if case while until
-                           for rescue and or].freeze
+
+        COUNTED_NODES = (CyclomaticComplexity::COUNTED_NODES - [:when] + [:case]).freeze
 
         private
 
@@ -42,17 +40,18 @@ module RuboCop
             # If cond is nil, that means each when has an expression that
             # evaluates to true or false. It's just an alternative to
             # if/elsif/elsif... so the when nodes count.
+            nb_branches = node.when_branches.length + (node.else_branch ? 1 : 0)
             if node.condition.nil?
-              node.when_branches.length
+              nb_branches
             else
               # Otherwise, the case node gets 0.8 complexity points and each
               # when gets 0.2.
-              (0.8 + 0.2 * node.when_branches.length).round
+              (0.8 + 0.2 * nb_branches).round
             end
           when :if
             node.else? && !node.elsif? ? 2 : 1
           else
-            1
+            super
           end
         end
       end

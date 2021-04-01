@@ -19,6 +19,18 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def some_method#{trailing_whitespace}
+        body
+      end
+      def extra_large#{trailing_whitespace}
+        { size: 15 };
+      end
+      def seven_times(stuff)#{trailing_whitespace}
+        7.times { do_this(stuff) }
+      end
+    RUBY
   end
 
   it 'registers when body starts on def line & continues one more line' do
@@ -28,12 +40,27 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
         more_body(foo)
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def some_method#{trailing_whitespace}
+        foo = {}
+        more_body(foo)
+      end
+    RUBY
   end
 
   it 'registers when body starts on def line & continues many more lines' do
     expect_offense(<<~RUBY)
       def do_stuff(thing) process(thing)
                           ^^^^^^^^^^^^^^ Place the first line of a multi-line method definition's body on its own line.
+        8.times { thing + 9 }
+        even_more(thing)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_stuff(thing)#{trailing_whitespace}
+        process(thing)
         8.times { thing + 9 }
         even_more(thing)
       end
@@ -66,78 +93,64 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition do
     RUBY
   end
 
-  it 'auto-corrects body after method definition' do
-    corrected = autocorrect_source(['  def some_method; body',
-                                    '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method ',
-                             '    body',
-                             '  end'].join("\n")
-  end
-
   it 'auto-corrects with comment after body' do
-    corrected = autocorrect_source(['  def some_method; body # stuff',
-                                    '  end'].join("\n"))
-    expect(corrected).to eq ['  # stuff',
-                             '  def some_method ',
-                             '    body ',
-                             '  end'].join("\n")
-  end
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def some_method; body # stuff
+      |                   ^^^^ Place the first line of a multi-line method definition's body on its own line.
+      |  end
+    RUBY
 
-  it 'auto-corrects body with method definition with args in parens' do
-    corrected = autocorrect_source(['  def some_method(arg1, arg2) body',
-                                    '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method(arg1, arg2) ',
-                             '    body',
-                             '  end'].join("\n")
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  # stuff
+      |  def some_method#{trailing_whitespace}
+      |    body#{trailing_whitespace}
+      |  end
+    RUBY
   end
 
   it 'auto-corrects body with method definition with args not in parens' do
-    corrected = autocorrect_source(['  def some_method arg1, arg2; body',
-                                    '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method arg1, arg2 ',
-                             '    body',
-                             '  end'].join("\n")
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def some_method arg1, arg2; body
+      |                              ^^^^ Place the first line of a multi-line method definition's body on its own line.
+      |  end
+    RUBY
+
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  def some_method arg1, arg2#{trailing_whitespace}
+      |    body
+      |  end
+    RUBY
   end
 
   it 'auto-correction removes semicolon from method definition but not body' do
-    corrected = autocorrect_source(['  def some_method; body; more_body;',
-                                    '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method ',
-                             '    body; more_body;',
-                             '  end'].join("\n")
-  end
+    expect_offense(<<-RUBY.strip_margin('|'))
+      |  def some_method; body; more_body;
+      |                   ^^^^ Place the first line of a multi-line method definition's body on its own line.
+      |  end
+    RUBY
 
-  it 'auto-corrects when body continues on one more line' do
-    corrected = autocorrect_source(['  def some_method; body',
-                                    '    more_body',
-                                    '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method ',
-                             '    body',
-                             '    more_body',
-                             '  end'].join("\n")
-  end
-
-  it 'auto-corrects when body continues on multiple more line' do
-    corrected = autocorrect_source(['  def some_method; []',
-                                    '    more_body',
-                                    '    even_more',
-                                    '  end'].join("\n"))
-    expect(corrected).to eq ['  def some_method ',
-                             '    []',
-                             '    more_body',
-                             '    even_more',
-                             '  end'].join("\n")
+    expect_correction(<<-RUBY.strip_margin('|'))
+      |  def some_method#{trailing_whitespace}
+      |    body; more_body;
+      |  end
+    RUBY
   end
 
   context 'when method is not on first line of processed_source' do
     it 'auto-corrects offense' do
-      corrected = autocorrect_source(['',
-                                      '  def some_method; body',
-                                      '  end'].join("\n"))
-      expect(corrected).to eq ['',
-                               '  def some_method ',
-                               '    body',
-                               '  end'].join("\n")
+      expect_offense(<<-RUBY.strip_margin('|'))
+        |
+        |  def some_method; body
+        |                   ^^^^ Place the first line of a multi-line method definition's body on its own line.
+        |  end
+      RUBY
+
+      expect_correction(<<-RUBY.strip_margin('|'))
+        |
+        |  def some_method#{trailing_whitespace}
+        |    body
+        |  end
+      RUBY
     end
   end
 end

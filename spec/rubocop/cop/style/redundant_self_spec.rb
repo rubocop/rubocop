@@ -8,10 +8,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
       a = self.b
           ^^^^^^ Redundant `self` detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = b
+    RUBY
   end
 
   it 'does not report an offense when receiver and lvalue have the same name' do
     expect_no_offenses('a = self.a')
+  end
+
+  it 'accepts when nested receiver and lvalue have the name name' do
+    expect_no_offenses('a = self.a || b || c')
   end
 
   it 'does not report an offense when receiver and multiple assigned lvalue ' \
@@ -219,11 +227,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
       self.call
       ^^^^^^^^^ Redundant `self` detected.
     RUBY
-  end
 
-  it 'auto-corrects by removing redundant self' do
-    new_source = autocorrect_source('self.x')
-    expect(new_source).to eq('x')
+    expect_correction(<<~RUBY)
+      call
+    RUBY
   end
 
   it 'accepts a self receiver of methods also defined on `Kernel`' do

@@ -41,9 +41,10 @@ module RuboCop
       #   foo == 0
       #   0 > foo
       #   bar.baz > 0
-      class NumericPredicate < Cop
+      class NumericPredicate < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods
+        extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
@@ -53,26 +54,19 @@ module RuboCop
           'negative?' => '<'
         }.freeze
 
+        RESTRICT_ON_SEND = %i[== > < positive? negative? zero?].freeze
+
         def on_send(node)
+          numeric, replacement = check(node)
+          return unless numeric
+
           return if ignored_method?(node.method_name) ||
                     node.each_ancestor(:send, :block).any? do |ancestor|
                       ignored_method?(ancestor.method_name)
                     end
 
-          numeric, replacement = check(node)
-
-          return unless numeric
-
-          add_offense(node,
-                      message: format(MSG,
-                                      prefer: replacement,
-                                      current: node.source))
-        end
-
-        def autocorrect(node)
-          _, replacement = check(node)
-
-          lambda do |corrector|
+          message = format(MSG, prefer: replacement, current: node.source)
+          add_offense(node, message: message) do |corrector|
             corrector.replace(node, replacement)
           end
         end

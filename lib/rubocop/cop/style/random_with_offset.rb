@@ -23,25 +23,28 @@ module RuboCop
       #   # good
       #   rand(1..6)
       #   rand(1...7)
-      class RandomWithOffset < Cop
+      class RandomWithOffset < Base
+        extend AutoCorrector
+
         MSG = 'Prefer ranges when generating random numbers instead of ' \
           'integers with offsets.'
+        RESTRICT_ON_SEND = %i[+ - succ pred next].freeze
 
         def_node_matcher :integer_op_rand?, <<~PATTERN
           (send
             int {:+ :-}
             (send
-              {nil? (const nil? :Random) (const nil? :Kernel)}
+              {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int irange erange}))
+              {int (irange int int) (erange int int)}))
         PATTERN
 
         def_node_matcher :rand_op_integer?, <<~PATTERN
           (send
             (send
-              {nil? (const nil? :Random) (const nil? :Kernel)}
+              {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int irange erange})
+              {int (irange int int) (erange int int)})
             {:+ :-}
             int)
         PATTERN
@@ -49,32 +52,20 @@ module RuboCop
         def_node_matcher :rand_modified?, <<~PATTERN
           (send
             (send
-              {nil? (const nil? :Random) (const nil? :Kernel)}
+              {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int irange erange})
+              {int (irange int int) (erange int int)})
             {:succ :pred :next})
         PATTERN
 
         def on_send(node)
+          return unless node.receiver
           return unless integer_op_rand?(node) ||
                         rand_op_integer?(node) ||
                         rand_modified?(node)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            if integer_op_rand?(node)
-              corrector.replace(node,
-                                corrected_integer_op_rand(node))
-            elsif rand_op_integer?(node)
-              corrector.replace(node,
-                                corrected_rand_op_integer(node))
-            elsif rand_modified?(node)
-              corrector.replace(node,
-                                corrected_rand_modified(node))
-            end
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
@@ -84,6 +75,16 @@ module RuboCop
           {(send (send $_ _ $_) ...)
            (send _ _ (send $_ _ $_))}
         PATTERN
+
+        def autocorrect(corrector, node)
+          if integer_op_rand?(node)
+            corrector.replace(node, corrected_integer_op_rand(node))
+          elsif rand_op_integer?(node)
+            corrector.replace(node, corrected_rand_op_integer(node))
+          elsif rand_modified?(node)
+            corrector.replace(node, corrected_rand_modified(node))
+          end
+        end
 
         def corrected_integer_op_rand(node)
           random_call(node) do |prefix_node, random_node|
@@ -128,14 +129,8 @@ module RuboCop
           end
         end
 
-        def_node_matcher :namespace, <<~PATTERN
-          {$nil? (const nil? $_)}
-        PATTERN
-
         def prefix_from_prefix_node(node)
-          namespace(node) do |namespace|
-            [namespace, 'rand'].compact.join('.')
-          end
+          [node&.source, 'rand'].compact.join('.')
         end
 
         def boundaries_from_random_node(random_node)

@@ -19,17 +19,17 @@ module RuboCop
       #     end
       #   end
       #
-      class ColonMethodDefinition < Cop
+      class ColonMethodDefinition < Base
+        extend AutoCorrector
+
         MSG = 'Do not use `::` for defining class methods.'
 
         def on_defs(node)
           return unless node.loc.operator.source == '::'
 
-          add_offense(node, location: :operator)
-        end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.operator, '.') }
+          add_offense(node.loc.operator) do |corrector|
+            corrector.replace(node.loc.operator, '.')
+          end
         end
       end
     end

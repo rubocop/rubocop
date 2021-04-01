@@ -19,7 +19,7 @@ module RuboCop
       #   FOO = 2
       #   foo = 2
       #   $stdin.read
-      class GlobalVars < Cop
+      class GlobalVars < Base
         MSG = 'Do not introduce global variables.'
 
         # built-in global variables and their English aliases
@@ -72,7 +72,7 @@ module RuboCop
         def check(node)
           global_var, = *node
 
-          add_offense(node, location: :name) unless allowed_var?(global_var)
+          add_offense(node.loc.name) unless allowed_var?(global_var)
         end
       end
     end

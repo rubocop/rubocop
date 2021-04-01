@@ -15,6 +15,11 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
           top
         end
       RUBY
+      expect_correction(<<~RUBY)
+        loop do
+          top
+        end
+      RUBY
     end
   end
 
@@ -23,6 +28,11 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       expect_offense(<<~RUBY)
         until #{lit}
         ^^^^^ Use `Kernel#loop` for infinite loops.
+          top
+        end
+      RUBY
+      expect_correction(<<~RUBY)
+        loop do
           top
         end
       RUBY
@@ -68,6 +78,11 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
                               ^^^^^ Use `Kernel#loop` for infinite loops.
       p a
     RUBY
+    expect_correction(<<~RUBY)
+      a = nil
+      loop { a = next_value or break }
+      p a
+    RUBY
   end
 
   it 'registers an offense for until false if loop {} would work because of ' \
@@ -79,7 +94,20 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
       until false
       ^^^^^ Use `Kernel#loop` for infinite loops.
-        # The variable `a` already exits here, having been introduced in the
+        # The variable `a` already exists here, having been introduced in the
+        # above `while` loop. We can therefore safely change it too `Kernel#loop`.
+        a = 43
+        break
+      end
+      puts a
+    RUBY
+    expect_correction(<<~RUBY)
+      while true
+        a = 42
+        break
+      end
+      loop do
+        # The variable `a` already exists here, having been introduced in the
         # above `while` loop. We can therefore safely change it too `Kernel#loop`.
         a = 43
         break
@@ -97,6 +125,12 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
         break
       end
     RUBY
+    expect_correction(<<~RUBY)
+      loop do
+        a = 43
+        break
+      end
+    RUBY
   end
 
   it 'registers an offense for while true or until false if loop {} would ' \
@@ -110,7 +144,19 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
       until false
       ^^^^^ Use `Kernel#loop` for infinite loops.
-        a = 43 # `a` is in scope outside of the `while`
+        a = 43 # `a` is in scope outside of the `until`
+        break
+      end
+      puts a
+    RUBY
+    expect_correction(<<~RUBY)
+      a = 0
+      loop do
+        a = 42 # `a` is in scope outside of the `while`
+        break
+      end
+      loop do
+        a = 43 # `a` is in scope outside of the `until`
         break
       end
       puts a
@@ -127,13 +173,24 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
       puts @a
     RUBY
+    expect_correction(<<~RUBY)
+      loop do
+        @a = 42
+        break
+      end
+      puts @a
+    RUBY
   end
 
   shared_examples_for 'auto-corrector' do |keyword, lit|
     it "auto-corrects single line modifier #{keyword}" do
-      new_source =
-        autocorrect_source("something += 1 #{keyword} #{lit} # comment")
-      expect(new_source).to eq('loop { something += 1 } # comment')
+      expect_offense(<<~RUBY, keyword: keyword, lit: lit)
+        something += 1 %{keyword} %{lit} # comment
+                       ^{keyword} Use `Kernel#loop` for infinite loops.
+      RUBY
+      expect_correction(<<~RUBY)
+        loop { something += 1 } # comment
+      RUBY
     end
 
     context 'with non-default indentation width' do
@@ -142,13 +199,14 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
       end
 
       it "auto-corrects multi-line modifier #{keyword} and indents correctly" do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY, keyword: keyword, lit: lit)
           # comment
           something 1, # comment 1
               # comment 2
-              2 #{keyword} #{lit}
+              2 %{keyword} %{lit}
+                ^{keyword} Use `Kernel#loop` for infinite loops.
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           # comment
           loop do
               something 1, # comment 1
@@ -160,12 +218,13 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects begin-end-#{keyword} with one statement" do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         begin # comment 1
           something += 1 # comment 2
-        end #{keyword} #{lit} # comment 3
+        end %{keyword} %{lit} # comment 3
+            ^{keyword} Use `Kernel#loop` for infinite loops.
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         loop do # comment 1
           something += 1 # comment 2
         end # comment 3
@@ -173,13 +232,14 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects begin-end-#{keyword} with two statements" do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         begin
           something += 1
           something_else += 1
-        end #{keyword} #{lit}
+        end %{keyword} %{lit}
+            ^{keyword} Use `Kernel#loop` for infinite loops.
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         loop do
           something += 1
           something_else += 1
@@ -188,28 +248,34 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop do
     end
 
     it "auto-corrects single line modifier #{keyword} with and" do
-      new_source =
-        autocorrect_source("something and something_else #{keyword} #{lit}")
-      expect(new_source).to eq('loop { something and something_else }')
+      expect_offense(<<~RUBY, keyword: keyword, lit: lit)
+        something and something_else %{keyword} %{lit}
+                                     ^{keyword} Use `Kernel#loop` for infinite loops.
+      RUBY
+      expect_correction(<<~RUBY)
+        loop { something and something_else }
+      RUBY
     end
 
     it "auto-corrects the usage of #{keyword} with do" do
-      new_source = autocorrect_source(<<~RUBY)
-        #{keyword} #{lit} do
+      expect_offense(<<~RUBY, keyword: keyword, lit: lit)
+        %{keyword} %{lit} do
+        ^{keyword} Use `Kernel#loop` for infinite loops.
         end
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         loop do
         end
       RUBY
     end
 
     it "auto-corrects the usage of #{keyword} without do" do
-      new_source = autocorrect_source(<<~RUBY)
-        #{keyword} #{lit}
+      expect_offense(<<~RUBY, keyword: keyword, lit: lit)
+        %{keyword} %{lit}
+        ^{keyword} Use `Kernel#loop` for infinite loops.
         end
       RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         loop do
         end
       RUBY

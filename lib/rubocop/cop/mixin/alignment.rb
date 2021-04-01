@@ -42,6 +42,7 @@ module RuboCop
         end
       end
 
+      # @api private
       def each_bad_alignment(items, base_column)
         prev_line = -1
         items.each do |current|
@@ -55,17 +56,20 @@ module RuboCop
         end
       end
 
+      # @api public
       def display_column(range)
         line = processed_source.lines[range.line - 1]
         Unicode::DisplayWidth.of(line[0, range.column])
       end
 
+      # @api public
       def within?(inner, outer)
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end
 
+      # @deprecated Use processed_source.comment_at_line(line)
       def end_of_line_comment(line)
-        processed_source.find_comment { |c| c.loc.line == line }
+        processed_source.line_with_comment?(line)
       end
     end
   end

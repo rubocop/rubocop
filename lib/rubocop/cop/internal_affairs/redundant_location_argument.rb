@@ -16,10 +16,12 @@ module RuboCop
       #   add_offense(node)
       #   add_offense(node, location: :selector)
       #
-      class RedundantLocationArgument < Cop
+      class RedundantLocationArgument < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Redundant location argument to `#add_offense`.'
+        RESTRICT_ON_SEND = %i[add_offense].freeze
 
         def_node_matcher :redundant_location_argument, <<~PATTERN
           (send nil? :add_offense _
@@ -28,14 +30,16 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          redundant_location_argument(node) { |argument| add_offense(argument) }
+          redundant_location_argument(node) do |argument|
+            add_offense(argument) do |corrector|
+              range = offending_range(argument)
+
+              corrector.remove(range)
+            end
+          end
         end
 
-        def autocorrect(node)
-          range = offending_range(node)
-
-          ->(corrector) { corrector.remove(range) }
-        end
+        private
 
         def offending_range(node)
           with_space = range_with_surrounding_space(range: node.loc.expression)

@@ -7,39 +7,52 @@ RSpec.describe RuboCop::Cop::Lint::Void do
 
   described_class::BINARY_OPERATORS.each do |op|
     it "registers an offense for void op #{op} if not on last line" do
-      inspect_source(<<~RUBY)
-        a #{op} b
-        a #{op} b
-        a #{op} b
+      expect_offense(<<~RUBY, op: op)
+        a %{op} b
+          ^{op} Operator `#{op}` used in void context.
+        a %{op} b
+          ^{op} Operator `#{op}` used in void context.
+        a %{op} b
       RUBY
-      expect(cop.offenses.size).to eq(2)
     end
-  end
 
-  described_class::BINARY_OPERATORS.each do |op|
     it "accepts void op #{op} if on last line" do
       expect_no_offenses(<<~RUBY)
         something
         a #{op} b
       RUBY
     end
-  end
 
-  described_class::BINARY_OPERATORS.each do |op|
     it "accepts void op #{op} by itself without a begin block" do
       expect_no_offenses("a #{op} b")
     end
   end
 
-  unary_operators = %i[+ - ~ !]
-  unary_operators.each do |op|
-    it "registers an offense for void unary op #{op} if not on last line" do
-      inspect_source(<<~RUBY)
-        #{op}b
-        #{op}b
-        #{op}b
+  sign_unary_operators = %i[+ -]
+  other_unary_operators = %i[~ !]
+  unary_operators = sign_unary_operators + other_unary_operators
+
+  sign_unary_operators.each do |op|
+    it "registers an offense for void sign op #{op} if not on last line" do
+      expect_offense(<<~RUBY, op: op)
+        %{op}b
+        ^{op} Operator `#{op}@` used in void context.
+        %{op}b
+        ^{op} Operator `#{op}@` used in void context.
+        %{op}b
       RUBY
-      expect(cop.offenses.size).to eq(2)
+    end
+  end
+
+  other_unary_operators.each do |op|
+    it "registers an offense for void unary op #{op} if not on last line" do
+      expect_offense(<<~RUBY, op: op)
+        %{op}b
+        ^{op} Operator `#{op}` used in void context.
+        %{op}b
+        ^{op} Operator `#{op}` used in void context.
+        %{op}b
+      RUBY
     end
   end
 
@@ -50,9 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::Void do
         #{op}b
       RUBY
     end
-  end
 
-  unary_operators.each do |op|
     it "accepts void unary op #{op} by itself without a begin block" do
       expect_no_offenses("#{op}b")
     end
@@ -60,22 +71,22 @@ RSpec.describe RuboCop::Cop::Lint::Void do
 
   %w[var @var @@var VAR $var].each do |var|
     it "registers an offense for void var #{var} if not on last line" do
-      inspect_source(<<~RUBY)
-        #{var} = 5
-        #{var}
+      expect_offense(<<~RUBY, var: var)
+        %{var} = 5
+        %{var}
+        ^{var} Variable `#{var}` used in void context.
         top
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
   end
 
   %w(1 2.0 :test /test/ [1] {}).each do |lit|
     it "registers an offense for void lit #{lit} if not on last line" do
-      inspect_source(<<~RUBY)
-        #{lit}
+      expect_offense(<<~RUBY, lit: lit)
+        %{lit}
+        ^{lit} Literal `#{lit}` used in void context.
         top
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
   end
 

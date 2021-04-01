@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense for a duplicate class method in separate ' \
        "#{type} blocks" do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY, 'test.rb')
         #{opening_line}
           def self.some_method
             implement 1
@@ -176,15 +176,15 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
         end
         #{opening_line}
           def self.some_method
+          ^^^^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both test.rb:2 and test.rb:7.
             implement 2
           end
         end
       RUBY
-      expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers offense for a duplicate instance method in separate files' do
-      inspect_source(<<~RUBY, 'first.rb')
+      expect_no_offenses(<<~RUBY, 'first.rb')
         #{opening_line}
           def some_method
             implement 1
@@ -240,19 +240,19 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
 
     it 'registers an offense when class << exp is used' do
       pending
-      inspect_source(<<~RUBY, 'test.rb')
+      expect_offense(<<~RUBY, 'test.rb')
         #{opening_line}
           class << blah
             def some_method
               implement 1
             end
             def some_method
+            ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both test.rb:3 and test.rb:6.
               implement 2
             end
           end
         end
       RUBY
-      expect(cop.offenses.empty?).to be(false)
     end
 
     it "registers an offense for duplicate alias in #{type}" do

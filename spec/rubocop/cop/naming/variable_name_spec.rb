@@ -17,6 +17,14 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     it 'accepts assignment with indexing of self' do
       expect_no_offenses('self[:a] = b')
     end
+
+    it 'accepts local variables marked as unused' do
+      expect_no_offenses('_ = 1')
+    end
+
+    it 'accepts one symbol size local variables' do
+      expect_no_offenses('i = 1')
+    end
   end
 
   context 'when configured for snake_case' do
@@ -203,6 +211,10 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
                      ^^^^^^^^^ Use camelCase for variable names.
                                 ^^^^^^^^^^ Use camelCase for variable names.
       RUBY
+    end
+
+    it 'works with non-ascii characters' do
+      expect_no_offenses('léo = 1')
     end
 
     include_examples 'always accepted'

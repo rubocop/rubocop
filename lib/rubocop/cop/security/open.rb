@@ -3,34 +3,37 @@
 module RuboCop
   module Cop
     module Security
-      # This cop checks for the use of `Kernel#open`.
+      # This cop checks for the use of `Kernel#open` and `URI.open`.
       #
-      # `Kernel#open` enables not only file access but also process invocation
-      # by prefixing a pipe symbol (e.g., `open("| ls")`). So, it may lead to
-      # a serious security risk by using variable input to the argument of
-      # `Kernel#open`. It would be better to use `File.open`, `IO.popen` or
-      # `URI#open` explicitly.
+      # `Kernel#open` and `URI.open` enable not only file access but also process
+      # invocation by prefixing a pipe symbol (e.g., `open("| ls")`).
+      # So, it may lead to a serious security risk by using variable input to
+      # the argument of `Kernel#open` and `URI.open`. It would be better to use
+      # `File.open`, `IO.popen` or `URI.parse#open` explicitly.
       #
       # @example
       #   # bad
       #   open(something)
+      #   URI.open(something)
       #
       #   # good
       #   File.open(something)
       #   IO.popen(something)
       #   URI.parse(something).open
-      class Open < Cop
-        MSG = 'The use of `Kernel#open` is a serious security risk.'
+      class Open < Base
+        MSG = 'The use of `%<receiver>sopen` is a serious security risk.'
+        RESTRICT_ON_SEND = %i[open].freeze
 
         def_node_matcher :open?, <<~PATTERN
-          (send nil? :open $!str ...)
+          (send ${nil? (const {nil? cbase} :URI)} :open $!str ...)
         PATTERN
 
         def on_send(node)
-          open?(node) do |code|
+          open?(node) do |receiver, code|
             return if safe?(code)
 
-            add_offense(node, location: :selector)
+            message = format(MSG, receiver: receiver ? "#{receiver.source}." : 'Kernel#')
+            add_offense(node.loc.selector, message: message)
           end
         end
 

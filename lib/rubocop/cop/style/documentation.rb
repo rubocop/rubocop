@@ -55,7 +55,12 @@ module RuboCop
       #       Public = Class.new
       #     end
       #
-      class Documentation < Cop
+      #     # Macro calls
+      #     module Namespace
+      #       extend Foo
+      #     end
+      #
+      class Documentation < Base
         include DocumentationComment
 
         MSG = 'Missing top-level %<type>s documentation comment.'
@@ -83,17 +88,21 @@ module RuboCop
           return if documentation_comment?(node) || nodoc_comment?(node)
           return if compact_namespace?(node) &&
                     nodoc_comment?(outer_module(node).first)
+          return if macro_only?(body)
 
-          add_offense(node,
-                      location: :keyword,
-                      message: format(MSG, type: type))
+          add_offense(node.loc.keyword, message: format(MSG, type: type))
+        end
+
+        def macro_only?(body)
+          body.respond_to?(:macro?) && body.macro? ||
+            body.respond_to?(:children) && body.children&.all? { |child| macro_only?(child) }
         end
 
         def namespace?(node)
           return false unless node
 
           if node.begin_type?
-            node.children.all?(&method(:constant_declaration?))
+            node.children.all? { |child| constant_declaration?(child) }
           else
             constant_definition?(node)
           end
@@ -104,7 +113,7 @@ module RuboCop
         end
 
         def compact_namespace?(node)
-          node.loc.name.source =~ /::/
+          /::/.match?(node.loc.name.source)
         end
 
         # First checks if the :nodoc: comment is associated with the
@@ -112,18 +121,18 @@ module RuboCop
         # proceeds to check its ancestors for :nodoc: all.
         # Note: How end-of-line comments are associated with code changed in
         # parser-2.2.0.4.
-        def nodoc_comment?(node, require_all = false)
+        def nodoc_comment?(node, require_all: false)
           return false unless node&.children&.first
 
           nodoc = nodoc(node)
 
-          return true if same_line?(nodoc, node) && nodoc?(nodoc, require_all)
+          return true if same_line?(nodoc, node) && nodoc?(nodoc, require_all: require_all)
 
-          nodoc_comment?(node.parent, true)
+          nodoc_comment?(node.parent, require_all: true)
         end
 
-        def nodoc?(comment, require_all = false)
-          comment.text =~ /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/
+        def nodoc?(comment, require_all: false)
+          /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/.match?(comment.text)
         end
 
         def nodoc(node)

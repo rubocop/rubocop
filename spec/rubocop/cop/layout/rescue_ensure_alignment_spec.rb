@@ -26,36 +26,158 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     context 'as RHS of assignment' do
-      it 'accepts multi-line, aligned' do
-        expect_no_offenses(<<~RUBY)
-          x ||= begin
-                  1
-                rescue
-                  2
-                end
-        RUBY
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'require_parentheses' }
       end
 
-      it 'accepts multi-line, indented' do
-        expect_no_offenses(<<~RUBY)
-          x ||=
-            begin
+      context '`Layout/BeginEndAlignment` cop is not enabled' do
+        let(:other_cops) do
+          {
+            'Layout/BeginEndAlignment' => {
+              'Enabled' => false,
+              'EnforcedStyleAlignWith' => 'start_of_line'
+            }
+          }
+        end
+
+        it 'accepts multi-line, aligned' do
+          expect_no_offenses(<<~RUBY)
+            x ||= begin
+                    1
+                  rescue
+                    2
+                  end
+          RUBY
+        end
+
+        it 'accepts multi-line, indented' do
+          expect_no_offenses(<<~RUBY)
+            x ||=
+              begin
+                1
+              rescue
+                2
+              end
+          RUBY
+        end
+
+        it 'registers an offense and corrects for incorrect alignment' do
+          expect_offense(<<~RUBY)
+            x ||= begin
+              1
+            rescue
+            ^^^^^^ `rescue` at 3, 0 is not aligned with `begin` at 1, 6.
+              2
+            end
+          RUBY
+
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          expect_correction(<<~RUBY)
+            x ||= begin
+              1
+                  rescue
+              2
+            end
+          RUBY
+        end
+      end
+
+      context 'when `EnforcedStyleAlignWith: start_of_line` of `Layout/BeginEndAlignment` cop' do
+        let(:other_cops) do
+          {
+            'Layout/BeginEndAlignment' => { 'EnforcedStyleAlignWith' => 'start_of_line' }
+          }
+        end
+
+        it 'accepts multi-line, aligned' do
+          expect_no_offenses(<<~RUBY)
+            x ||= begin
               1
             rescue
               2
             end
-        RUBY
+          RUBY
+        end
+
+        it 'accepts multi-line, indented' do
+          expect_no_offenses(<<~RUBY)
+            x ||=
+              begin
+                1
+              rescue
+                2
+              end
+          RUBY
+        end
+
+        it 'registers an offense and corrects for incorrect alignment' do
+          expect_offense(<<~RUBY)
+            x ||= begin
+                    1
+                  rescue
+                  ^^^^^^ `rescue` at 3, 6 is not aligned with `x ||= begin` at 1, 0.
+                    2
+                  end
+          RUBY
+
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          expect_correction(<<~RUBY)
+            x ||= begin
+                    1
+            rescue
+                    2
+                  end
+          RUBY
+        end
       end
 
-      it 'registers offense for incorrect alignment' do
-        expect_offense(<<~RUBY)
-          x ||= begin
-            1
-          rescue
-          ^^^^^^ `rescue` at 3, 0 is not aligned with `begin` at 1, 6.
-            2
-          end
-        RUBY
+      context 'when `EnforcedStyleAlignWith: begin` of `Layout/BeginEndAlignment` cop' do
+        let(:other_cops) do
+          {
+            'Layout/BeginEndAlignment' => { 'EnforcedStyleAlignWith' => 'begin' }
+          }
+        end
+
+        it 'accepts multi-line, aligned' do
+          expect_no_offenses(<<~RUBY)
+            x ||= begin
+                    1
+                  rescue
+                    2
+                 end
+          RUBY
+        end
+
+        it 'accepts multi-line, indented' do
+          expect_no_offenses(<<~RUBY)
+            x ||=
+              begin
+                1
+              rescue
+                2
+              end
+          RUBY
+        end
+
+        it 'registers an offense and corrects for incorrect alignment' do
+          expect_offense(<<~RUBY)
+            x ||= begin
+              1
+            rescue
+            ^^^^^^ `rescue` at 3, 0 is not aligned with `begin` at 1, 6.
+              2
+            end
+          RUBY
+
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          expect_correction(<<~RUBY)
+            x ||= begin
+              1
+                  rescue
+              2
+            end
+          RUBY
+        end
       end
     end
   end

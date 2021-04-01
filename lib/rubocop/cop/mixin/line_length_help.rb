@@ -12,9 +12,7 @@ module RuboCop
 
       def directive_on_source_line?(line_index)
         source_line_number = line_index + processed_source.buffer.first_line
-        comment =
-          processed_source.comments
-                          .detect { |e| e.location.line == source_line_number }
+        comment = processed_source.comment_at_line(source_line_number)
 
         return false unless comment
 
@@ -59,7 +57,7 @@ module RuboCop
       def indentation_difference(line)
         return 0 unless tab_indentation_width
 
-        line.match(/^\t*/)[0].size * (tab_indentation_width - 1)
+        (line.index(/[^\t]/) || 0) * (tab_indentation_width - 1)
       end
 
       def tab_indentation_width

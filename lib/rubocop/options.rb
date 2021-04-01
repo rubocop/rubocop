@@ -8,6 +8,7 @@ module RuboCop
   class OptionArgumentError < StandardError; end
 
   # This class handles command line options.
+  # @api private
   class Options
     E_STDIN_NO_PATH = '-s/--stdin requires exactly one path, relative to the ' \
       'root of the project. RuboCop will use this path to determine which ' \
@@ -68,6 +69,7 @@ module RuboCop
 
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
+        add_cache_options(opts)
         add_boolean_flags(opts)
         add_aliases(opts)
 
@@ -94,7 +96,7 @@ module RuboCop
             ['']
           else
             list.split(',').map do |c|
-              Cop::Cop.qualified_cop_name(c, "--#{option} option")
+              Cop::Registry.qualified_cop_name(c, "--#{option} option")
             end
           end
       end
@@ -112,20 +114,19 @@ module RuboCop
     def add_auto_gen_options(opts)
       option(opts, '--auto-gen-config')
 
+      option(opts, '--regenerate-todo') do
+        @options.replace(ConfigRegeneration.new.options.merge(@options))
+      end
+
       option(opts, '--exclude-limit COUNT') do
         @validator.validate_exclude_limit_option
       end
 
       option(opts, '--disable-uncorrectable')
 
-      option(opts, '--no-offense-counts') do
-        @options[:no_offense_counts] = true
-      end
-
-      option(opts, '--auto-gen-only-exclude')
-      option(opts, '--no-auto-gen-timestamp') do
-        @options[:no_auto_gen_timestamp] = true
-      end
+      option(opts, '--[no-]offense-counts')
+      option(opts, '--[no-]auto-gen-only-exclude')
+      option(opts, '--[no-]auto-gen-timestamp')
 
       option(opts, '--init')
     end
@@ -143,6 +144,9 @@ module RuboCop
           @options[:output_path] = path
         end
       end
+
+      option(opts, '--display-time')
+      option(opts, '--display-only-failed')
     end
 
     def add_severity_option(opts)
@@ -161,28 +165,44 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
+    def add_cache_options(opts)
+      option(opts, '-C', '--cache FLAG')
+      option(opts, '--cache-root DIR') do
+        @validator.validate_cache_enabled_for_cache_root
+      end
+    end
+
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
-      option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
       option(opts, '-D', '--[no-]display-cop-names')
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
-      option(opts, '-a', '--auto-correct')
+      option(opts, '-a', '--auto-correct') do
+        @options[:safe_auto_correct] = true
+      end
+      option(opts, '--safe-auto-correct') do
+        warn '--safe-auto-correct is deprecated; use --auto-correct'
+        @options[:safe_auto_correct] = @options[:auto_correct] = true
+      end
+      option(opts, '-A', '--auto-correct-all') do
+        @options[:auto_correct] = true
+      end
       option(opts, '--disable-pending-cops')
       option(opts, '--enable-pending-cops')
       option(opts, '--ignore-disable-comments')
 
       option(opts, '--safe')
 
+      option(opts, '--stderr')
       option(opts, '--[no-]color')
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
       option(opts, '-P', '--parallel')
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def add_aliases(opts)
       option(opts, '-l', '--lint') do
@@ -192,9 +212,6 @@ module RuboCop
       option(opts, '-x', '--fix-layout') do
         @options[:only] ||= []
         @options[:only] << 'Layout'
-        @options[:auto_correct] = true
-      end
-      option(opts, '--safe-auto-correct') do
         @options[:auto_correct] = true
       end
     end
@@ -224,20 +241,24 @@ module RuboCop
   end
 
   # Validates option arguments and the options' compatibility with each other.
+  # @api private
   class OptionsValidator
     class << self
+      SYNTAX_DEPARTMENTS = %w[Syntax Lint/Syntax].freeze
+      private_constant :SYNTAX_DEPARTMENTS
+
       # Cop name validation must be done later than option parsing, so it's not
       # called from within Options.
       def validate_cop_list(names)
         return unless names
 
-        cop_names = Cop::Cop.registry.names
-        departments = Cop::Cop.registry.departments.map(&:to_s)
+        cop_names = Cop::Registry.global.names
+        departments = Cop::Registry.global.departments.map(&:to_s)
 
         names.each do |name|
           next if cop_names.include?(name)
           next if departments.include?(name)
-          next if %w[Syntax Lint/Syntax].include?(name)
+          next if SYNTAX_DEPARTMENTS.include?(name)
 
           raise IncorrectCopNameError, format_message_from(name, cop_names)
         end
@@ -286,6 +307,7 @@ module RuboCop
       end
       validate_auto_gen_config
       validate_auto_correct
+      validate_display_only_failed
       validate_parallel
 
       return if incompatible_options.size <= 1
@@ -300,7 +322,7 @@ module RuboCop
 
       message = '--%<flag>s can only be used together with --auto-gen-config.'
 
-      %i[exclude_limit no_offense_counts no_auto_gen_timestamp
+      %i[exclude_limit offense_counts auto_gen_timestamp
          auto_gen_only_exclude].each do |option|
         if @options.key?(option)
           raise OptionArgumentError,
@@ -309,13 +331,20 @@ module RuboCop
       end
     end
 
+    def validate_display_only_failed
+      return unless @options.key?(:display_only_failed)
+      return if @options[:format] == 'junit'
+
+      raise OptionArgumentError,
+            format('--display-only-failed can only be used together with --format junit.')
+    end
+
     def validate_auto_correct
       return if @options.key?(:auto_correct)
       return unless @options.key?(:disable_uncorrectable)
 
       raise OptionArgumentError,
-            format('--%<flag>s can only be used together with --auto-correct.',
-                   flag: '--disable-uncorrectable')
+            format('--disable-uncorrectable can only be used together with --auto-correct.')
     end
 
     def validate_parallel
@@ -374,9 +403,17 @@ module RuboCop
       # of option order.
       raise OptionParser::MissingArgument
     end
+
+    def validate_cache_enabled_for_cache_root
+      return unless @options[:cache] == 'false'
+
+      raise OptionArgumentError, '--cache-root can not be used with ' \
+                                  '--cache false'
+    end
   end
 
   # This module contains help texts for command line options.
+  # @api private
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
@@ -390,17 +427,20 @@ module RuboCop
       config:                           'Specify configuration file.',
       auto_gen_config:                  ['Generate a configuration file acting as a',
                                          'TODO list.'],
-      no_offense_counts:                ['Do not include offense counts in configuration',
-                                         'file generated by --auto-gen-config.'],
-      no_auto_gen_timestamp:
-                                        ['Do not include the date and time when',
-                                         'the --auto-gen-config was run in the file it',
-                                         'generates.'],
+      regenerate_todo:                  ['Regenerate the TODO configuration file using',
+                                         'the last configuration. If there is no existing',
+                                         'TODO file, acts like --auto-gen-config.'],
+      offense_counts:                   ['Include offense counts in configuration',
+                                         'file generated by --auto-gen-config.',
+                                         'Default is true.'],
+      auto_gen_timestamp:
+                                        ['Include the date and time when the --auto-gen-config',
+                                         'was run in the file it generates. Default is true.'],
       auto_gen_only_exclude:
                                         ['Generate only Exclude parameters and not Max',
                                          'when running --auto-gen-config, except if the',
                                          'number of files with offenses is bigger than',
-                                         'exclude-limit.'],
+                                         'exclude-limit. Default is false.'],
       exclude_limit:                    ['Used together with --auto-gen-config to',
                                          'set the limit for how many Exclude',
                                          "properties to generate. Default is #{MAX_EXCL}."],
@@ -431,6 +471,9 @@ module RuboCop
                                          'if no format is specified.'],
       fail_level:                       ['Minimum severity (A/R/C/W/E/F) for exit',
                                          'with error code.'],
+      display_time:                     'Display elapsed time in seconds.',
+      display_only_failed:              ['Only output offense messages. Omit passing',
+                                         'cops. Only valid for --format junit.'],
       display_only_fail_level_offenses:
                                         ['Only output offense messages at',
                                          'the specified --fail-level or above'],
@@ -443,6 +486,10 @@ module RuboCop
       cache:                            ["Use result caching (FLAG=true) or don't",
                                          '(FLAG=false), default determined by',
                                          'configuration parameter AllCops: UseCache.'],
+      cache_root:                       ['Set the cache root directory.',
+                                         'Takes precedence over the configuration',
+                                         'parameter AllCops: CacheRootDirectory and',
+                                         'the $RUBOCOP_CACHE_ROOT environment variable.'],
       debug:                            'Display debug info.',
       display_cop_names:                ['Display cop names in offense messages.',
                                          'Default is true.'],
@@ -452,9 +499,13 @@ module RuboCop
       extra_details:                    'Display extra details in offense messages.',
       lint:                             'Run only lint cops.',
       safe:                             'Run only safe cops.',
+      stderr:                           ['Write all output to stderr except for the',
+                                         'autocorrected source. This is especially useful',
+                                         'when combined with --auto-correct and --stdin.'],
       list_target_files:                'List all files RuboCop will inspect.',
-      auto_correct:                     'Auto-correct offenses.',
-      safe_auto_correct:                'Run auto-correct only when it\'s safe.',
+      auto_correct:                     'Auto-correct offenses (only when it\'s safe).',
+      safe_auto_correct:                '(same, deprecated)',
+      auto_correct_all:                 'Auto-correct offenses (safe and unsafe)',
       fix_layout:                       'Run only layout cops, with auto-correct on.',
       color:                            'Force color output on or off.',
       version:                          'Display version.',

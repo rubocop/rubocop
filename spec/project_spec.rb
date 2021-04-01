@@ -37,7 +37,19 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
     end
 
-    it 'have a period at EOL of description' do
+    %w[VersionChanged VersionRemoved].each do |version_type|
+      it "requires a nicely formatted `#{version_type}` metadata for all cops" do
+        cop_names.each do |name|
+          version = config[name][version_type]
+          next unless version
+
+          expect(version).to(match(/\A\d+\.\d+\z/),
+                             "#{version} should be format ('X.Y') for #{name}.")
+        end
+      end
+    end
+
+    it 'has a period at EOL of description' do
       cop_names.each do |name|
         description = config[name]['Description']
 
@@ -85,7 +97,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
   end
 
   describe 'cop message' do
-    let(:cops) { RuboCop::Cop::Cop.all }
+    let(:cops) { RuboCop::Cop::Registry.all }
 
     it 'end with a period or a question mark' do
       cops.each do |cop|
@@ -99,12 +111,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     end
   end
 
-  describe 'changelog' do
-    subject(:changelog) do
-      path = File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md')
-      File.read(path)
-    end
-
+  shared_examples 'has Changelog format' do
     let(:lines) { changelog.each_line }
 
     let(:non_reference_lines) do
@@ -119,51 +126,39 @@ RSpec.describe 'RuboCop Project', type: :feature do
       expect(non_reference_lines).to all(match(/^(\*|#|$)/))
     end
 
-    it 'has link definitions for all implicit links' do
-      implicit_link_names = changelog.scan(/\[([^\]]+)\]\[\]/).flatten.uniq
-      implicit_link_names.each do |name|
-        expect(changelog.include?("[#{name}]: http"))
-          .to be(true), "CHANGELOG.md is missing a link for #{name}. " \
-                        'Please add this link to the bottom of the file.'
-      end
-    end
-
     describe 'entry' do
-      subject(:entries) { lines.grep(/^\*/).map(&:chomp) }
-
       it 'has a whitespace between the * and the body' do
         expect(entries).to all(match(/^\* \S/))
-      end
-
-      context 'after version 0.14.0' do
-        let(:lines) do
-          changelog.each_line.take_while do |line|
-            !line.start_with?('## 0.14.0')
-          end
-        end
-
-        it 'has a link to the contributors at the end' do
-          expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
-        end
       end
 
       describe 'link to related issue' do
         let(:issues) do
           entries.map do |entry|
-            entry.match(/\[(?<number>[#\d]+)\]\((?<url>[^\)]+)\)/)
+            entry.match(%r{
+              (?<=^\*\s)
+              \[(?<ref>(?:(?<repo>rubocop-hq/[a-z_-]+)?\#(?<number>\d+))|.*)\]
+              \((?<url>[^)]+)\)
+            }x)
           end.compact
         end
 
-        it 'has an issue number prefixed with #' do
+        it 'has a reference' do
           issues.each do |issue|
-            expect(issue[:number]).to match(/^#\d+$/)
+            expect(issue[:ref].blank?).to eq(false)
+          end
+        end
+
+        it 'has a valid issue number prefixed with #' do
+          issues.each do |issue|
+            expect(issue[:number]).to match(/^\d+$/)
           end
         end
 
         it 'has a valid URL' do
           issues.each do |issue|
-            number = issue[:number].gsub(/\D/, '')
-            pattern = %r{^https://github\.com/rubocop-hq/rubocop/(?:issues|pull)/#{number}$}
+            number = issue[:number]&.gsub(/\D/, '')
+            repo = issue[:repo] || 'rubocop-hq/rubocop'
+            pattern = %r{^https://github\.com/#{repo}/(?:issues|pull)/#{number}$}
             expect(issue[:url]).to match(pattern)
           end
         end
@@ -191,7 +186,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
             entry
               .gsub(/`[^`]+`/, '``')
               .sub(/^\*\s*(?:\[.+?\):\s*)?/, '')
-              .sub(/\s*\([^\)]+\)$/, '')
+              .sub(/\s*\([^)]+\)$/, '')
           end
         end
 
@@ -202,8 +197,60 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'ends with a punctuation' do
-          expect(bodies).to all(match(/[\.\!]$/))
+          expect(bodies).to all(match(/[.!]$/))
         end
+
+        it 'does not include a [Fix #x] directive' do
+          bodies.each do |body|
+            expect(body).not_to match(/\[Fix(es)? \#.*?\]/i)
+          end
+        end
+      end
+    end
+  end
+
+  describe 'Changelog' do
+    subject(:changelog) do
+      File.read(path)
+    end
+
+    let(:path) do
+      File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md')
+    end
+    let(:entries) { lines.grep(/^\*/).map(&:chomp) }
+
+    include_examples 'has Changelog format'
+
+    context 'future entries' do
+      dir = File.join(File.dirname(__FILE__), '..', 'changelog')
+
+      Dir["#{dir}/*.md"].each do |path|
+        context "For #{path}" do
+          let(:path) { path }
+
+          include_examples 'has Changelog format'
+        end
+      end
+    end
+
+    it 'has link definitions for all implicit links' do
+      implicit_link_names = changelog.scan(/\[([^\]]+)\]\[\]/).flatten.uniq
+      implicit_link_names.each do |name|
+        expect(changelog.include?("[#{name}]: http"))
+          .to be(true), "missing a link for #{name}. " \
+                        'Please add this link to the bottom of the file.'
+      end
+    end
+
+    context 'after version 0.14.0' do
+      let(:lines) do
+        changelog.each_line.take_while do |line|
+          !line.start_with?('## 0.14.0')
+        end
+      end
+
+      it 'has a link to the contributors at the end' do
+        expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
       end
     end
   end

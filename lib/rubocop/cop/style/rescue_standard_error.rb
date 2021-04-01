@@ -70,10 +70,11 @@ module RuboCop
       #   rescue StandardError, SecurityError
       #     bar
       #   end
-      class RescueStandardError < Cop
+      class RescueStandardError < Base
         include RescueNode
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_IMPLICIT = 'Omit the error class when rescuing ' \
           '`StandardError` by itself.'
@@ -85,7 +86,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :rescue_standard_error?, <<~PATTERN
-          (resbody $(array (const nil? :StandardError)) _ _)
+          (resbody $(array (const {nil? cbase} :StandardError)) _ _)
         PATTERN
 
         def on_resbody(node)
@@ -94,28 +95,31 @@ module RuboCop
           case style
           when :implicit
             rescue_standard_error?(node) do |error|
-              add_offense(node,
-                          location: node.loc.keyword.join(error.loc.expression),
-                          message: MSG_IMPLICIT)
+              offense_for_implicit_enforced_style(node, error)
             end
           when :explicit
             rescue_without_error_class?(node) do
-              add_offense(node, location: :keyword, message: MSG_EXPLICIT)
+              offense_for_exlicit_enforced_style(node)
             end
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            case style
-            when :implicit
-              error = rescue_standard_error?(node)
-              range = range_between(node.loc.keyword.end_pos,
-                                    error.loc.expression.end_pos)
-              corrector.remove(range)
-            when :explicit
-              corrector.insert_after(node.loc.keyword, ' StandardError')
-            end
+        private
+
+        def offense_for_implicit_enforced_style(node, error)
+          range = node.loc.keyword.join(error.loc.expression)
+
+          add_offense(range, message: MSG_IMPLICIT) do |corrector|
+            error = rescue_standard_error?(node)
+            range = range_between(node.loc.keyword.end_pos, error.loc.expression.end_pos)
+
+            corrector.remove(range)
+          end
+        end
+
+        def offense_for_exlicit_enforced_style(node)
+          add_offense(node.loc.keyword, message: MSG_EXPLICIT) do |corrector|
+            corrector.insert_after(node.loc.keyword, ' StandardError')
           end
         end
       end

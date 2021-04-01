@@ -11,7 +11,11 @@ RSpec.describe RuboCop::ConfigLoader do
     described_class.default_configuration = nil
   end
 
-  after { described_class.debug = false }
+  after do
+    described_class.debug = false
+    # Remove custom configuration
+    described_class.default_configuration = nil
+  end
 
   let(:default_config) { described_class.default_configuration }
 
@@ -79,6 +83,26 @@ RSpec.describe RuboCop::ConfigLoader do
         it 'falls back to the provided default file' do
           expect(configuration_file_for).to end_with('config/default.yml')
         end
+      end
+    end
+
+    context 'when there is a spurious rubocop config outside of the project', root: 'dir' do
+      let(:dir_path) { 'dir' }
+
+      before do
+        # Force reload of project root
+        described_class.project_root = nil
+        create_empty_file('Gemfile')
+        create_empty_file('../.rubocop.yml')
+      end
+
+      after do
+        # Don't leak project root change
+        described_class.project_root = nil
+      end
+
+      it 'ignores the spurious config and falls back to the provided default file if run from the project' do
+        expect(configuration_file_for).to end_with('config/default.yml')
       end
     end
 
@@ -152,6 +176,77 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'gets AllCops/Exclude from the highest directory level' do
         excludes = configuration_from_file['AllCops']['Exclude']
         expect(excludes).to eq([File.expand_path('vendor/**')])
+      end
+
+      context 'and there is a personal config file in the home folder' do
+        before do
+          create_file('~/.rubocop.yml', <<~YAML)
+            AllCops:
+              Exclude:
+                - tmp/**
+          YAML
+        end
+
+        it 'ignores personal AllCops/Exclude' do
+          excludes = configuration_from_file['AllCops']['Exclude']
+          expect(excludes).to eq([File.expand_path('vendor/**')])
+        end
+      end
+    end
+
+    context 'when configuration has a custom name' do
+      let(:file_path) { '.custom_rubocop.yml' }
+
+      before do
+        create_file(file_path, <<~YAML)
+          AllCops:
+            Exclude:
+              - vendor/**
+        YAML
+      end
+
+      context 'and there is a personal config file in the home folder' do
+        before do
+          create_file('~/.rubocop.yml', <<~YAML)
+            AllCops:
+              Exclude:
+                - tmp/**
+          YAML
+        end
+
+        it 'ignores personal AllCops/Exclude' do
+          excludes = configuration_from_file['AllCops']['Exclude']
+          expect(excludes).to eq([File.expand_path('vendor/**')])
+        end
+      end
+    end
+
+    context 'when project has a Gemfile', :project_inside_home do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_empty_file('Gemfile')
+
+        create_file(file_path, <<~YAML)
+          AllCops:
+            Exclude:
+              - vendor/**
+        YAML
+      end
+
+      context 'and there is a personal config file in the home folder' do
+        before do
+          create_file('~/.rubocop.yml', <<~YAML)
+            AllCops:
+              Exclude:
+                - tmp/**
+          YAML
+        end
+
+        it 'ignores personal AllCops/Exclude' do
+          excludes = configuration_from_file['AllCops']['Exclude']
+          expect(excludes).to eq([File.expand_path('vendor/**')])
+        end
       end
     end
 
@@ -526,39 +621,16 @@ RSpec.describe RuboCop::ConfigLoader do
       include_examples 'resolves enabled/disabled for all cops', true, false
     end
 
-    context 'when a third party require defines a new gem' do
-      before do
-        allow(RuboCop::Cop::Cop)
-          .to receive(:registry)
-          .and_return(
-            RuboCop::Cop::Registry.new(RuboCop::Cop::Cop.registry.cops)
-          )
+    context 'when a third party require defines a new gem', :restore_registry do
+      context 'when the gem is not loaded' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            Custom/Loop:
+              Enabled: false
+          YAML
+        end
 
-        create_file('third_party/gem.rb', <<~RUBY)
-          module RuboCop
-            module Cop
-              module Custom
-                class Loop < Cop
-                end
-              end
-            end
-          end
-        RUBY
-
-        create_file('.rubocop.yml', <<~YAML)
-          Custom/Loop:
-            Enabled: false
-        YAML
-
-        create_file('.rubocop_with_require.yml', <<~YAML)
-          require: ./third_party/gem
-          Custom/Loop:
-            Enabled: false
-        YAML
-      end
-
-      it 'does not emit a warning' do
-        aggregate_failures('loads requires before resolving namespace') do
+        it 'emits a warning' do
           expect { described_class.configuration_from_file('.rubocop.yml') }
             .to output(
               a_string_including(
@@ -566,7 +638,30 @@ RSpec.describe RuboCop::ConfigLoader do
                 "wrong namespace - should be Lint\n"
               )
             ).to_stderr
+        end
+      end
 
+      context 'when the gem is loaded' do
+        before do
+          create_file('third_party/gem.rb', <<~RUBY)
+            module RuboCop
+              module Cop
+                module Custom
+                  class Loop < Cop
+                  end
+                end
+              end
+            end
+          RUBY
+
+          create_file('.rubocop_with_require.yml', <<~YAML)
+            require: ./third_party/gem
+            Custom/Loop:
+              Enabled: false
+          YAML
+        end
+
+        it 'does not emit a warning' do
           expect do
             described_class.configuration_from_file('.rubocop_with_require.yml')
           end.not_to output.to_stderr
@@ -637,6 +732,7 @@ RSpec.describe RuboCop::ConfigLoader do
               default_config['Metrics/MethodLength']['VersionChanged'],
               'CountComments' => false,
               'Max' => 5,
+              'CountAsOne' => [],
               'ExcludedMethods' => []
             }
           )
@@ -823,31 +919,67 @@ RSpec.describe RuboCop::ConfigLoader do
         YAML
       end
 
-      it 'returns values from the gem config with local overrides' do
-        gem_class = Struct.new(:gem_dir)
-        %w[gemone gemtwo].each do |gem_name|
-          mock_spec = gem_class.new(File.join(gem_root, gem_name))
-          allow(Gem::Specification).to receive(:find_by_name)
-            .with(gem_name).and_return(mock_spec)
+      context 'and the gem is globally installed' do
+        before do
+          gem_class = Struct.new(:gem_dir)
+          %w[gemone gemtwo].each do |gem_name|
+            mock_spec = gem_class.new(File.join(gem_root, gem_name))
+            allow(Gem::Specification).to receive(:find_by_name)
+              .with(gem_name).and_return(mock_spec)
+          end
+          allow(Gem).to receive(:path).and_return([gem_root])
         end
-        allow(Gem).to receive(:path).and_return([gem_root])
 
-        expected = { 'Enabled' => true,        # overridden in .rubocop.yml
-                     'CountComments' => true,  # overridden in local.yml
-                     'Max' => 200 }            # inherited from somegem
-        expect do
-          expect(configuration_from_file['Metrics/MethodLength']
-                   .to_set.superset?(expected.to_set)).to be(true)
-        end.to output('').to_stderr
+        it 'returns values from the gem config with local overrides' do
+          expected = { 'Enabled' => true, # overridden in .rubocop.yml
+                       'CountComments' => true,  # overridden in local.yml
+                       'Max' => 200 }            # inherited from somegem
+          expect do
+            expect(configuration_from_file['Metrics/MethodLength']
+                    .to_set.superset?(expected.to_set)).to be(true)
+          end.to output('').to_stderr
 
-        expected = { 'Enabled' => true,        # gemtwo/config/default.yml
-                     'Max' => 72,              # gemtwo/config/strict.yml
-                     'AllowHeredoc' => false,  # gemtwo/config/strict.yml
-                     'AllowURI' => false }     # overridden in .rubocop.yml
-        expect(
-          configuration_from_file['Layout/LineLength']
-            .to_set.superset?(expected.to_set)
-        ).to be(true)
+          expected = { 'Enabled' => true, # gemtwo/config/default.yml
+                       'Max' => 72,              # gemtwo/config/strict.yml
+                       'AllowHeredoc' => false,  # gemtwo/config/strict.yml
+                       'AllowURI' => false }     # overridden in .rubocop.yml
+          expect(
+            configuration_from_file['Layout/LineLength']
+              .to_set.superset?(expected.to_set)
+          ).to be(true)
+        end
+      end
+
+      context 'and the gem is bundled' do
+        before do
+          require 'bundler'
+
+          specs = {
+            'gemone' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemone'))],
+            'gemtwo' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemtwo'))]
+          }
+
+          allow(Bundler).to receive(:load).and_return(OpenStruct.new(specs: specs))
+        end
+
+        it 'returns values from the gem config with local overrides' do
+          expected = { 'Enabled' => true, # overridden in .rubocop.yml
+                       'CountComments' => true,  # overridden in local.yml
+                       'Max' => 200 }            # inherited from somegem
+          expect do
+            expect(configuration_from_file['Metrics/MethodLength']
+                    .to_set.superset?(expected.to_set)).to be(true)
+          end.to output('').to_stderr
+
+          expected = { 'Enabled' => true, # gemtwo/config/default.yml
+                       'Max' => 72,              # gemtwo/config/strict.yml
+                       'AllowHeredoc' => false,  # gemtwo/config/strict.yml
+                       'AllowURI' => false }     # overridden in .rubocop.yml
+          expect(
+            configuration_from_file['Layout/LineLength']
+              .to_set.superset?(expected.to_set)
+          ).to be(true)
+        end
       end
     end
 
@@ -911,9 +1043,9 @@ RSpec.describe RuboCop::ConfigLoader do
     end
 
     context 'when a file inherits from a url inheriting from another file' do
-      let(:file_path) { '.robocop.yml' }
+      let(:file_path) { '.rubocop.yml' }
       let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
-      let(:cache_file_2) { '.rubocop-http---example-com-inherit-yml' }
+      let(:cache_file2) { '.rubocop-http---example-com-inherit-yml' }
 
       before do
         stub_request(:get, %r{example.com/rubocop})
@@ -926,7 +1058,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       after do
-        [cache_file, cache_file_2].each do |f|
+        [cache_file, cache_file2].each do |f|
           File.unlink f if File.exist? f
         end
       end
@@ -934,7 +1066,7 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'downloads the inherited file from the same url and caches it' do
         configuration_from_file
         expect(File.exist?(cache_file)).to be true
-        expect(File.exist?(cache_file_2)).to be true
+        expect(File.exist?(cache_file2)).to be true
       end
     end
 
@@ -1175,51 +1307,6 @@ RSpec.describe RuboCop::ConfigLoader do
       expect(configuration.to_h).to eq({})
     end
 
-    context 'when SafeYAML is required' do
-      before do
-        create_file(configuration_path, <<~YAML)
-          Style/WordArray:
-            WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'
-        YAML
-      end
-
-      context 'when it is fully required' do
-        it 'de-serializes Regexp class' do
-          in_its_own_process_with('safe_yaml') do
-            configuration = described_class.load_file('.rubocop.yml')
-
-            word_regexp = configuration['Style/WordArray']['WordRegex']
-            expect(word_regexp.is_a?(::Regexp)).to be(true)
-          end
-        end
-      end
-
-      context 'when safe_yaml is required without monkey patching' do
-        it 'de-serializes Regexp class' do
-          in_its_own_process_with('safe_yaml/load') do
-            configuration = described_class.load_file('.rubocop.yml')
-
-            word_regexp = configuration['Style/WordArray']['WordRegex']
-            expect(word_regexp.is_a?(::Regexp)).to be(true)
-          end
-        end
-
-        context 'and SafeYAML.load is private' do
-          # According to issue #2935, SafeYAML.load can be private in some
-          # circumstances.
-          it 'does not raise private method load called for SafeYAML:Module' do
-            in_its_own_process_with('safe_yaml/load') do
-              SafeYAML.send :private_class_method, :load
-              configuration = described_class.load_file('.rubocop.yml')
-
-              word_regexp = configuration['Style/WordArray']['WordRegex']
-              expect(word_regexp.is_a?(::Regexp)).to be(true)
-            end
-          end
-        end
-      end
-    end
-
     context 'set neither true nor false to value to Enabled' do
       before do
         create_file(configuration_path, <<~YAML)
@@ -1382,7 +1469,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     it 'uses paths relative to the .rubocop.yml, not cwd' do
       config_path = described_class.configuration_file_for('.')
-      RuboCop::PathUtil.chdir '..' do
+      Dir.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end
@@ -1394,13 +1481,13 @@ RSpec.describe RuboCop::ConfigLoader do
 
     before do
       create_file('.rubocop.yml', ['require:', "  - #{required_file_path}"])
-      create_file(required_file_path + '.rb', ['class MyClass', 'end'])
+      create_file("#{required_file_path}.rb", ['class MyClass', 'end'])
     end
 
     it 'works without a starting .' do
       config_path = described_class.configuration_file_for('.')
       $LOAD_PATH.unshift(File.dirname(config_path))
-      RuboCop::PathUtil.chdir '..' do
+      Dir.chdir '..' do
         described_class.configuration_from_file(config_path)
         expect(defined?(MyClass)).to be_truthy
       end

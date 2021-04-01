@@ -4,27 +4,6 @@ RSpec.describe RuboCop::Cop::Registry do
   subject(:registry) { described_class.new(cops, options) }
 
   let(:cops) do
-    stub_const('RuboCop::Cop::Test', Module.new)
-    stub_const('RuboCop::Cop::RSpec', Module.new)
-
-    # rubocop:disable RSpec/LeakyConstantDeclaration
-    module RuboCop
-      module Cop
-        module Test
-          # Create another cop with a different namespace
-          class FirstArrayElementIndentation < Cop
-          end
-        end
-
-        module RSpec
-          # Define a dummy rspec cop which has special namespace inflection
-          class Foo < Cop
-          end
-        end
-      end
-    end
-    # rubocop:enable RSpec/LeakyConstantDeclaration
-
     [
       RuboCop::Cop::Lint::BooleanSymbol,
       RuboCop::Cop::Lint::DuplicateMethods,
@@ -37,19 +16,49 @@ RSpec.describe RuboCop::Cop::Registry do
 
   let(:options) { {} }
 
+  before do
+    stub_const('RuboCop::Cop::Test::FirstArrayElementIndentation', Class.new(RuboCop::Cop::Cop))
+    stub_const('RuboCop::Cop::RSpec::Foo', Class.new(RuboCop::Cop::Cop))
+  end
+
   # `RuboCop::Cop::Cop` mutates its `registry` when inherited from.
   # This can introduce nondeterministic failures in other parts of the
   # specs if this mutation occurs before code that depends on this global cop
   # store. The workaround is to replace the global cop store with a temporary
   # store during these tests
   around do |test|
-    registry        = RuboCop::Cop::Cop.registry
-    temporary_store = described_class.new(registry.cops)
-    RuboCop::Cop::Cop.instance_variable_set(:@registry, temporary_store)
+    described_class.with_temporary_global { test.run }
+  end
 
-    test.run
+  it 'can be cloned' do
+    klass = ::RuboCop::Cop::Metrics::AbcSize
+    copy = registry.dup
+    copy.enlist(klass)
+    expect(copy.cops).to include(klass)
+    expect(registry.cops).not_to include(klass)
+  end
 
-    RuboCop::Cop::Cop.instance_variable_set(:@registry, registry)
+  context 'when dismissing a cop class' do
+    let(:cop_class) { ::RuboCop::Cop::Metrics::AbcSize }
+
+    before { registry.enlist(cop_class) }
+
+    it 'allows it if done rapidly' do
+      registry.dismiss(cop_class)
+      expect(registry.cops).not_to include(cop_class)
+    end
+
+    it 'disallows it if done too late' do
+      expect(registry.cops).to include(cop_class)
+      expect { registry.dismiss(cop_class) }.to raise_error(RuntimeError)
+    end
+
+    it 'allows re-listing' do
+      registry.dismiss(cop_class)
+      expect(registry.cops).not_to include(cop_class)
+      registry.enlist(cop_class)
+      expect(registry.cops).to include(cop_class)
+    end
   end
 
   it 'exposes cop departments' do
@@ -163,6 +172,21 @@ RSpec.describe RuboCop::Cop::Registry do
     it 'exposes a list of cops' do
       expect(registry.cops).to eql(cops)
     end
+
+    context 'with cops having the same inner-most module' do
+      let(:cops) do
+        [RuboCop::Cop::Foo::Bar, RuboCop::Cop::Baz::Foo::Bar]
+      end
+
+      before do
+        stub_const('RuboCop::Cop::Foo::Bar', Class.new(RuboCop::Cop::Base))
+        stub_const('RuboCop::Cop::Baz::Foo::Bar', Class.new(RuboCop::Cop::Base))
+      end
+
+      it 'exposes both cops' do
+        expect(registry.cops).to match_array([RuboCop::Cop::Foo::Bar, RuboCop::Cop::Baz::Foo::Bar])
+      end
+    end
   end
 
   it 'exposes the number of stored cops' do
@@ -187,7 +211,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'selects only safe cops if :safe passed' do
-      enabled_cops = registry.enabled(config, [], true)
+      enabled_cops = registry.enabled(config, [], only_safe: true)
       expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
     end
 

@@ -32,10 +32,12 @@ module RuboCop
       # !!something and !something.nil? are not the same thing.
       # As you're unlikely to write code that can accept values of any type
       # this is rarely a problem in practice.
-      class DoubleNegation < Cop
+      class DoubleNegation < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Avoid the use of double negation (`!!`).'
+        RESTRICT_ON_SEND = %i[!].freeze
 
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
@@ -43,7 +45,11 @@ module RuboCop
           return unless double_negative?(node) && node.prefix_bang?
           return if style == :allowed_in_returns && allowed_in_returns?(node)
 
-          add_offense(node, location: :selector)
+          location = node.loc.selector
+          add_offense(location) do |corrector|
+            corrector.remove(location)
+            corrector.insert_after(node, '.nil?')
+          end
         end
 
         private
