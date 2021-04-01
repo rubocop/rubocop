@@ -20,17 +20,27 @@ module RuboCop
       module Expression
         # Add `expression` and `loc` to all `regexp_parser` nodes
         module Base
-          attr_accessor :origin, :source
+          attr_accessor :origin
 
-          def start_index
-            # ts is a byte index; convert it to a character index
-            @start_index ||= source.byteslice(0, ts).length
-          end
+          if Gem::Version.new(Regexp::Parser::VERSION) >= Gem::Version.new('2.0')
+            # Shortcut to `loc.expression`
+            def expression
+              @expression ||= origin.adjust(begin_pos: ts, end_pos: ts + full_length)
+            end
+          # Please remove this `else` branch when support for regexp_parser 1.8 will be dropped.
+          # It's for compatibility with regexp_arser 1.8 and will never be maintained.
+          else
+            attr_accessor :source
 
-          # Shortcut to `loc.expression`
-          def expression
-            @expression ||= begin
-              origin.adjust(begin_pos: start_index, end_pos: start_index + full_length)
+            def start_index
+              # ts is a byte index; convert it to a character index
+              @start_index ||= source.byteslice(0, ts).length
+            end
+
+            # Shortcut to `loc.expression`
+            def expression
+              end_pos = start_index + full_length
+              @expression ||= origin.adjust(begin_pos: start_index, end_pos: end_pos)
             end
           end
 
@@ -49,9 +59,7 @@ module RuboCop
           #
           # Please open issue if you need other locations
           def loc
-            @loc ||= begin
-              Map.new(expression, **build_location)
-            end
+            @loc ||= Map.new(expression, **build_location)
           end
 
           private

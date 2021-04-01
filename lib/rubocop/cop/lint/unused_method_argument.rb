@@ -62,6 +62,7 @@ module RuboCop
         include UnusedArgument
         extend AutoCorrector
 
+        # @!method not_implemented?(node)
         def_node_matcher :not_implemented?, <<~PATTERN
           {(send nil? :raise (const {nil? cbase} :NotImplementedError))
            (send nil? :fail ...)}

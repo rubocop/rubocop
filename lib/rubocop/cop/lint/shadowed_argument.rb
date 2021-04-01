@@ -67,6 +67,7 @@ module RuboCop
         MSG = 'Argument `%<argument>s` was shadowed by a local variable ' \
               'before it was used.'
 
+        # @!method uses_var?(node)
         def_node_search :uses_var?, '(lvar %)'
 
         def self.joining_forces

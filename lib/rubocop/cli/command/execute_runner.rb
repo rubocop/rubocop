@@ -86,7 +86,7 @@ module RuboCop
         def maybe_print_corrected_source
           # Integration tools (like RubyMine) expect to have only the JSON result
           # when specifying JSON format. Similar HTML and JUnit are targeted as well.
-          # See: https://github.com/rubocop-hq/rubocop/issues/8673
+          # See: https://github.com/rubocop/rubocop/issues/8673
           return if INTEGRATION_FORMATTERS.include?(@options[:format])
 
           return unless @options[:stdin] && @options[:auto_correct]

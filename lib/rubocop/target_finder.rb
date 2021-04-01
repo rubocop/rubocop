@@ -58,7 +58,7 @@ module RuboCop
       base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
       # use file.include? for performance optimization
-      hidden_files = all_files.select { |file| file.include?(HIDDEN_PATH_SUBSTRING) }
+      hidden_files = all_files.select { |file| file.include?(HIDDEN_PATH_SUBSTRING) }.sort
       base_dir_config = @config_store.for(base_dir)
 
       target_files = all_files.select do |file|
@@ -70,7 +70,9 @@ module RuboCop
 
     def to_inspect?(file, hidden_files, base_dir_config)
       return false if base_dir_config.file_to_exclude?(file)
-      return true if !hidden_files.include?(file) && ruby_file?(file)
+      return true if !hidden_files.bsearch do |hidden_file|
+        file <=> hidden_file
+      end && ruby_file?(file)
 
       base_dir_config.file_to_include?(file)
     end
@@ -94,6 +96,7 @@ module RuboCop
     end
 
     def wanted_dir_patterns(base_dir, exclude_pattern, flags)
+      base_dir = base_dir.gsub('/{}/', '/\{}/')
       dirs = Dir.glob(File.join(base_dir.gsub('/**/', '/\**/'), '*/'), flags)
                 .reject do |dir|
                   dir.end_with?('/./', '/../') || File.fnmatch?(exclude_pattern, dir, flags)

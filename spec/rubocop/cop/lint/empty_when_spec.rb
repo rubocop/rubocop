@@ -12,6 +12,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         ^^^^^^^^^ Avoid `when` branches without a body.
         end
       RUBY
+
       expect_no_corrections
     end
 
@@ -24,6 +25,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         else 3
         end
       RUBY
+
       expect_no_corrections
     end
 
@@ -35,6 +37,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         ^^^^^^^^^ Avoid `when` branches without a body.
         end
       RUBY
+
       expect_no_corrections
     end
 
@@ -47,6 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         else 3
         end
       RUBY
+
       expect_no_corrections
     end
 
@@ -60,6 +64,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
           # nothing
         end
       RUBY
+
       expect_no_corrections
     end
 
@@ -76,6 +81,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
           3
         end
       RUBY
+
       expect_no_corrections
     end
 
@@ -91,6 +97,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
           3
         end
       RUBY
+
       expect_no_corrections
     end
   end
@@ -181,6 +188,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
           # do nothing
         end
       RUBY
+
       expect_no_corrections
     end
   end

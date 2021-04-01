@@ -27,6 +27,49 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     end
   end
 
+  shared_examples 'allowed identifiers' do |identifier|
+    context 'when AllowedIdentifiers is set' do
+      let(:cop_config) do
+        super().merge('AllowedIdentifiers' => [identifier])
+      end
+
+      it 'does not register an offense for a local variable name that is allowed' do
+        expect_no_offenses(<<~RUBY)
+          #{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a instance variable name that is allowed' do
+        expect_no_offenses(<<~RUBY)
+          @#{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a class variable name that is allowed' do
+        expect_no_offenses(<<~RUBY)
+          @@#{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a global variable name that is allowed' do
+        expect_no_offenses(<<~RUBY)
+          $#{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a method name that is allowed' do
+        expect_no_offenses(<<~RUBY)
+          def #{identifier}
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a symbol that is allowed' do
+        expect_no_offenses(":#{identifier}")
+      end
+    end
+  end
+
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
@@ -122,6 +165,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     end
 
     include_examples 'always accepted'
+    include_examples 'allowed identifiers', 'firstArg'
   end
 
   context 'when configured for camelCase' do
@@ -218,5 +262,6 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     end
 
     include_examples 'always accepted'
+    include_examples 'allowed identifiers', 'first_arg'
   end
 end

@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ConstantVisibility do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
   context 'when defining a constant in a class' do
     context 'with a single-statement body' do
       it 'registers an offense when not using a visibility declaration' do
@@ -66,6 +62,38 @@ RSpec.describe RuboCop::Cop::Style::ConstantVisibility do
         class Foo
           BAR = 42
           public_constant :BAR
+        end
+      RUBY
+    end
+  end
+
+  it 'registers an offense for module definitions' do
+    expect_offense(<<~RUBY)
+      module Foo
+        MyClass = Class.new()
+        ^^^^^^^^^^^^^^^^^^^^^ Explicitly make `MyClass` public or private using either `#public_constant` or `#private_constant`.
+      end
+    RUBY
+  end
+
+  context 'IgnoreModules' do
+    let(:cop_config) { { 'IgnoreModules' => true } }
+
+    it 'does not register an offense for class definitions' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          SomeClass = Class.new()
+          SomeModule = Module.new()
+          SomeStruct = Struct.new()
+        end
+      RUBY
+    end
+
+    it 'registers an offense for constants' do
+      expect_offense(<<~RUBY)
+        module Foo
+          BAR = 42
+          ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
         end
       RUBY
     end

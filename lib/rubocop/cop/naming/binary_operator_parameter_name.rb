@@ -22,6 +22,7 @@ module RuboCop
         OP_LIKE_METHODS = %i[eql? equal?].freeze
         EXCLUDED = %i[+@ -@ [] []= << === ` =~].freeze
 
+        # @!method op_method_candidate?(node)
         def_node_matcher :op_method_candidate?, <<~PATTERN
           (def [#op_method? $_] (args $(arg [!:other !:_other])) _)
         PATTERN

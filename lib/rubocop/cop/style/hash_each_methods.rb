@@ -23,6 +23,7 @@ module RuboCop
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
+        # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN
           (block $(send (send _ ${:keys :values}) :each) ...)
         PATTERN

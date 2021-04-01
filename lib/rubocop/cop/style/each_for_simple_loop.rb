@@ -46,6 +46,7 @@ module RuboCop
 
         private
 
+        # @!method offending_each_range(node)
         def_node_matcher :offending_each_range, <<~PATTERN
           (block (send (begin (${irange erange} (int $_) (int $_))) :each) (args) ...)
         PATTERN

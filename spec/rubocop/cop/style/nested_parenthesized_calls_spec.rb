@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::NestedParenthesizedCalls, :config do
   let(:config) do
     RuboCop::Config.new(
       'Style/NestedParenthesizedCalls' => { 'AllowedMethods' => ['be'] }

@@ -51,6 +51,7 @@ module RuboCop
 
         private
 
+        # @!method flow_command?(node)
         def_node_matcher :flow_command?, <<~PATTERN
           {
             return next break retry redo

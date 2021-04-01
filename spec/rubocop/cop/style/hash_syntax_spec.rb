@@ -30,6 +30,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
                          ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { a: 0, b: 2}
         RUBY
@@ -40,6 +41,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :a => 0, b: 1 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { a: 0, b: 1 }
         RUBY
@@ -50,6 +52,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           func(3, a: 0)
         RUBY
@@ -68,6 +71,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"string" => 0 }
                 ^^^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { "string": 0 }
         RUBY
@@ -78,6 +82,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           { :'&&' => foo }
             ^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           { '&&': foo }
         RUBY
@@ -89,6 +94,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             x = { :a? => 0 }
                   ^^^^^^ Use the new Ruby 1.9 hash syntax.
           RUBY
+
           expect_correction(<<~RUBY)
             x = { a?: 0 }
           RUBY
@@ -99,6 +105,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             x = { :a! => 0 }
                   ^^^^^^ Use the new Ruby 1.9 hash syntax.
           RUBY
+
           expect_correction(<<~RUBY)
             x = { a!: 0 }
           RUBY
@@ -134,6 +141,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :A => 0 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { A: 0 }
         RUBY
@@ -155,17 +163,19 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             ^^^^ Use the new Ruby 1.9 hash syntax.
                    ^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           { a: 1, b: 2 }
         RUBY
       end
 
-      # Bug: https://github.com/rubocop-hq/rubocop/issues/5019
+      # Bug: https://github.com/rubocop/rubocop/issues/5019
       it 'auto-corrects a missing space when hash is used as argument' do
         expect_offense(<<~RUBY)
           foo:bar => 1
              ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           foo bar: 1
         RUBY
@@ -217,6 +227,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             ^^^^ Use the new Ruby 1.9 hash syntax.
                    ^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           { a: 1, b: 2 }
         RUBY
@@ -251,6 +262,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^ Use hash rockets syntax.
                       ^^ Use hash rockets syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { :a => 1, :b => :c }
         RUBY
@@ -262,6 +274,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           func(3, :b => :c)
         RUBY
@@ -274,6 +287,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
                          ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { a: 1, b: 2 }
         RUBY
@@ -286,6 +300,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
            c: :d }
            ^^ Use hash rockets syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { :a => :b,
            :c => :d }
@@ -306,6 +321,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             ^^ Use hash rockets syntax.
                    ^^ Use hash rockets syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           { :a => :b, :c => :d }
         RUBY
@@ -334,6 +350,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
               ^^ Use hash rockets syntax.
                     ^^ Use hash rockets syntax.
       RUBY
+
       expect_correction(<<~RUBY)
         x = { :a => 0, :b => 2}
       RUBY
@@ -344,6 +361,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         x = { a => 0, b: 1 }
                       ^^ Use hash rockets syntax.
       RUBY
+
       expect_correction(<<~RUBY)
         x = { a => 0, :b => 1 }
       RUBY
@@ -354,6 +372,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         func(3, a: 0)
                 ^^ Use hash rockets syntax.
       RUBY
+
       expect_correction(<<~RUBY)
         func(3, :a => 0)
       RUBY
@@ -405,6 +424,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
                          ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { a: 0, b: 2 }
         RUBY
@@ -415,6 +435,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :a => 0, b: 1 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { a: 0, b: 1 }
         RUBY
@@ -429,6 +450,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           func(3, a: 0)
         RUBY
@@ -458,6 +480,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"t o" => 0 }
                 ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { "t o": 0 }
         RUBY
@@ -468,6 +491,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"\tab" => 1 }
                 ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~'RUBY')
           x = { "\tab": 1 }
         RUBY
@@ -478,6 +502,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"1" => 1 }
                 ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { "1": 1 }
         RUBY
@@ -502,6 +527,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^ Use hash rockets syntax.
                       ^^ Use hash rockets syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { :a => 1, :b => :c }
         RUBY
@@ -513,6 +539,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           func(3, :b => :c)
         RUBY
@@ -525,6 +552,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             ^^ Use hash rockets syntax.
                    ^^ Use hash rockets syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           { :a => :b, :c => :d }
         RUBY
@@ -567,6 +595,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           func(3, :a => 0)
                   ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           func(3, a: 0)
         RUBY
@@ -596,6 +625,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"t o" => 0 }
                 ^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { "t o": 0 }
         RUBY
@@ -606,6 +636,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"\tab" => 1 }
                 ^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~'RUBY')
           x = { "\tab": 1 }
         RUBY
@@ -616,6 +647,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           x = { :"1" => 1 }
                 ^^^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
+
         expect_correction(<<~RUBY)
           x = { "1": 1 }
         RUBY
@@ -739,6 +771,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         { a: 1, :b => 2 }
                 ^^^^^ Don't mix styles in the same hash.
       RUBY
+
       expect_correction(<<~RUBY)
         { a: 1, b: 2 }
       RUBY

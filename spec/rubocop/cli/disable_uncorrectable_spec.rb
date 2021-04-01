@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::CLI, :isolated_environment do
-  subject(:cli) { described_class.new }
+RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do # rubocop:disable RSpec/DescribeClass
+  subject(:cli) { RuboCop::CLI.new }
 
   include_context 'cli spec behavior'
 
@@ -227,6 +227,40 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           # rubocop:enable Style/IpAddresses
           # last line
         RUBY
+      end
+
+      context 'and the offense is inside a heredoc' do
+        it 'adds before-and-after disable statement around the heredoc' do
+          create_file('example.rb', <<~'RUBY')
+            # frozen_string_literal: true
+
+            def our_function
+              ourVariable = "foo"
+              script = <<~JS
+                <script>
+                  window.stuff = "#{ourVariable}"
+                </script>
+              JS
+              puts(script)
+            end
+          RUBY
+          expect(exit_code).to eq(0)
+          expect(IO.read('example.rb')).to eq(<<~'RUBY')
+            # frozen_string_literal: true
+
+            def our_function
+              ourVariable = 'foo' # rubocop:todo Naming/VariableName
+              # rubocop:todo Naming/VariableName
+              script = <<~JS
+                <script>
+                  window.stuff = "#{ourVariable}"
+                </script>
+              JS
+              # rubocop:enable Naming/VariableName
+              puts(script)
+            end
+          RUBY
+        end
       end
     end
   end

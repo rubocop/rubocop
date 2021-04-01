@@ -47,14 +47,17 @@ module RuboCop
 
         MSG = 'Use arguments forwarding.'
 
+        # @!method use_rest_arguments?(node)
         def_node_matcher :use_rest_arguments?, <<~PATTERN
           (args (restarg $_) $...)
         PATTERN
 
+        # @!method only_rest_arguments?(node, name)
         def_node_matcher :only_rest_arguments?, <<~PATTERN
           (send _ _ (splat (lvar %1)))
         PATTERN
 
+        # @!method forwarding_method_arguments?(node, rest_name, block_name, kwargs_name)
         def_node_matcher :forwarding_method_arguments?, <<~PATTERN
           {
             (send _ _

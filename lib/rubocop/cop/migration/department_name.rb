@@ -71,7 +71,7 @@ module RuboCop
         end
 
         def qualified_legacy_cop_name(cop_name)
-          legacy_cop_names = RuboCop::ConfigObsoletion::OBSOLETE_COPS.keys
+          legacy_cop_names = RuboCop::ConfigObsoletion.legacy_cop_names
 
           legacy_cop_names.detect do |legacy_cop_name|
             legacy_cop_name.split('/')[1] == cop_name

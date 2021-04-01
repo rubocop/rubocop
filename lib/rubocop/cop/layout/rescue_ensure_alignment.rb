@@ -191,16 +191,9 @@ module RuboCop
         end
 
         def begin_end_alignment_style
-          # FIXME: Workaround for pending status for `Layout/BeginEndAlignment` cop
-          #        When RuboCop 1.0 is released, please replace it with the following condition.
-          #
-          # config.for_cop('Layout/BeginEndAlignment')['Enabled'] &&
-          #   config.for_cop('Layout/BeginEndAlignment')['EnforcedStyleAlignWith']
-          if config.for_all_cops['NewCops'] == 'enable' ||
-             config.for_cop('Layout/BeginEndAlignment')['Enabled'] &&
-             config.for_cop('Layout/BeginEndAlignment')['Enabled'] != 'pending'
-            config.for_cop('Layout/BeginEndAlignment')['EnforcedStyleAlignWith']
-          end
+          begin_end_alignment_conf = config.for_cop('Layout/BeginEndAlignment')
+
+          begin_end_alignment_conf['Enabled'] && begin_end_alignment_conf['EnforcedStyleAlignWith']
         end
       end
     end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'when EnforcedStyle is grouped' do
     let(:cop_config) do
       { 'EnforcedStyle' => 'grouped' }

@@ -13,26 +13,12 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
 
   let(:output) { StringIO.new }
 
-  describe '#report_file' do
-    before do
-      formatter.report_file(file, [offense])
-    end
-
-    let(:file) { '/path/to/file' }
-
+  shared_examples 'report for severity' do |severity|
     let(:offense) do
-      RuboCop::Cop::Offense.new(:convention, location,
+      RuboCop::Cop::Offense.new(severity, location,
                                 'This is a message with `colored text`.',
                                 'CopName', status)
     end
-
-    let(:location) do
-      source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = "a\n"
-      Parser::Source::Range.new(source_buffer, 0, 1)
-    end
-
-    let(:status) { :uncorrected }
 
     context 'the file is under the current working directory' do
       let(:file) { File.expand_path('spec/spec_helper.rb') }
@@ -55,11 +41,20 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
     end
 
     context 'when the offense is not corrected' do
-      let(:status) { :uncorrected }
+      let(:status) { :unsupported }
 
       it 'prints message as-is' do
         expect(output.string)
           .to include(': This is a message with colored text.')
+      end
+    end
+
+    context 'when the offense is correctable' do
+      let(:status) { :uncorrected }
+
+      it 'prints message as-is' do
+        expect(output.string)
+          .to include(': [Correctable] This is a message with colored text.')
       end
     end
 
@@ -80,6 +75,29 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
           .to include(': [Todo] This is a message with colored text.')
       end
     end
+  end
+
+  describe '#report_file' do
+    before do
+      formatter.report_file(file, [offense])
+    end
+
+    let(:file) { '/path/to/file' }
+
+    let(:location) do
+      source_buffer = Parser::Source::Buffer.new('test', 1)
+      source_buffer.source = "a\n"
+      Parser::Source::Range.new(source_buffer, 0, 1)
+    end
+
+    let(:status) { :uncorrected }
+
+    it_behaves_like 'report for severity', :info
+    it_behaves_like 'report for severity', :refactor
+    it_behaves_like 'report for severity', :convention
+    it_behaves_like 'report for severity', :warning
+    it_behaves_like 'report for severity', :error
+    it_behaves_like 'report for severity', :fatal
   end
 
   describe '#report_summary' do

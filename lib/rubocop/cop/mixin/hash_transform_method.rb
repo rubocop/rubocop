@@ -9,6 +9,7 @@ module RuboCop
 
       RESTRICT_ON_SEND = %i[[] to_h].freeze
 
+      # @!method array_receiver?(node)
       def_node_matcher :array_receiver?, <<~PATTERN
         {(array ...) (send _ :each_with_index) (send _ :with_index _ ?) (send _ :zip ...)}
       PATTERN

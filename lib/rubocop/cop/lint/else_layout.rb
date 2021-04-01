@@ -47,7 +47,7 @@ module RuboCop
         MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'
 
         def on_if(node)
-          return if node.ternary? || node.elsif?
+          return if node.ternary?
 
           check(node)
         end

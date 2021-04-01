@@ -35,6 +35,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[reject reject! select select!].freeze
 
+        # @!method reject_method?(node)
         def_node_matcher :reject_method?, <<~PATTERN
           (block
             (send
@@ -44,6 +45,7 @@ module RuboCop
               $(lvar _) :nil?))
         PATTERN
 
+        # @!method select_method?(node)
         def_node_matcher :select_method?, <<~PATTERN
           (block
             (send

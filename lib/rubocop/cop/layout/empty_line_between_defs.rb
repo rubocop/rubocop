@@ -3,17 +3,18 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether method definitions are
-      # separated by one empty line.
+      # This cop checks whether class/module/method definitions are
+      # separated by one or more empty lines.
       #
       # `NumberOfEmptyLines` can be an integer (default is 1) or
       # an array (e.g. [1, 2]) to specify a minimum and maximum
       # number of empty lines permitted.
       #
       # `AllowAdjacentOneLineDefs` configures whether adjacent
-      # one-line method definitions are considered an offense.
+      # one-line definitions are considered an offense.
       #
-      # @example
+      # @example EmptyLineBetweenMethodDefs: true (default)
+      #   # checks for empty lines between method definitions.
       #
       #   # bad
       #   def a
@@ -29,11 +30,65 @@ module RuboCop
       #
       #   def b
       #   end
+      #
+      # @example EmptyLineBetweenClassDefs: true (default)
+      #   # checks for empty lines between class definitions.
+      #
+      #   # bad
+      #   class A
+      #   end
+      #   class B
+      #   end
+      #   def b
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #   class A
+      #   end
+      #
+      #   class B
+      #   end
+      #
+      #   def b
+      #   end
+      #
+      # @example EmptyLineBetweenModuleDefs: true (default)
+      #   # checks for empty lines between module definitions.
+      #
+      #   # bad
+      #   module A
+      #   end
+      #   module B
+      #   end
+      #   def b
+      #   end
+      #
+      # @example
+      #
+      #   # good
+      #   module A
+      #   end
+      #
+      #   module B
+      #   end
+      #
+      #   def b
+      #   end
+      #
+      # @example AllowAdjacentOneLineDefs: true
+      #
+      #   # good
+      #   class ErrorA < BaseError; end
+      #   class ErrorB < BaseError; end
+      #   class ErrorC < BaseError; end
+      #
       class EmptyLineBetweenDefs < Base
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use empty lines between method definitions.'
+        MSG = 'Expected %<expected>s between %<type>s definitions; found %<actual>d.'
 
         def self.autocorrect_incompatible_with
           [Layout::EmptyLines]
@@ -47,32 +102,33 @@ module RuboCop
         def on_begin(node)
           node.children.each_cons(2) do |prev, n|
             nodes = [prev, n]
-            check_defs(nodes) if nodes.all? { |def_candidate| def_node?(def_candidate) }
+            check_defs(nodes) if nodes.all? { |def_candidate| candidate?(def_candidate) }
           end
         end
 
         def check_defs(nodes)
-          return if blank_lines_between?(*nodes)
+          count = blank_lines_count_between(*nodes)
+
+          return if line_count_allowed?(count)
           return if multiple_blank_lines_groups?(*nodes)
           return if nodes.all?(&:single_line?) &&
                     cop_config['AllowAdjacentOneLineDefs']
 
-          location = nodes.last.loc.keyword.join(nodes.last.loc.name)
-          add_offense(location) do |corrector|
-            autocorrect(corrector, *nodes)
+          correction_node = nodes.last
+          location = correction_node.loc.keyword.join(correction_node.loc.name)
+          add_offense(location, message: message(correction_node, count: count)) do |corrector|
+            autocorrect(corrector, *nodes, count)
           end
         end
 
-        def autocorrect(corrector, prev_def, node)
+        def autocorrect(corrector, prev_def, node, count)
           # finds position of first newline
-          end_pos = prev_def.loc.end.end_pos
-          source_buffer = prev_def.loc.end.source_buffer
+          end_pos = end_loc(prev_def).end_pos
+          source_buffer = end_loc(prev_def).source_buffer
           newline_pos = source_buffer.source.index("\n", end_pos)
 
           # Handle the case when multiple one-liners are on the same line.
           newline_pos = end_pos + 1 if newline_pos > node.source_range.begin_pos
-
-          count = blank_lines_count_between(prev_def, node)
 
           if count > maximum_empty_lines
             autocorrect_remove_lines(corrector, newline_pos, count)
@@ -83,10 +139,40 @@ module RuboCop
 
         private
 
-        def def_node?(node)
+        def candidate?(node)
           return unless node
 
-          node.def_type? || node.defs_type?
+          method_candidate?(node) || class_candidate?(node) || module_candidate?(node)
+        end
+
+        def method_candidate?(node)
+          cop_config['EmptyLineBetweenMethodDefs'] && (node.def_type? || node.defs_type?)
+        end
+
+        def class_candidate?(node)
+          cop_config['EmptyLineBetweenClassDefs'] && node.class_type?
+        end
+
+        def module_candidate?(node)
+          cop_config['EmptyLineBetweenModuleDefs'] && node.module_type?
+        end
+
+        def message(node, count: nil)
+          type = node_type(node)
+
+          format(MSG,
+                 type: type,
+                 expected: expected_lines,
+                 actual: count)
+        end
+
+        def expected_lines
+          if allowance_range?
+            "#{minimum_empty_lines..maximum_empty_lines} empty lines"
+          else
+            lines = maximum_empty_lines == 1 ? 'line' : 'lines'
+            "#{maximum_empty_lines} empty #{lines}"
+          end
         end
 
         def multiple_blank_lines_groups?(first_def_node, second_def_node)
@@ -98,8 +184,7 @@ module RuboCop
           blank_start > non_blank_end
         end
 
-        def blank_lines_between?(first_def_node, second_def_node)
-          count = blank_lines_count_between(first_def_node, second_def_node)
+        def line_count_allowed?(count)
           (minimum_empty_lines..maximum_empty_lines).cover?(count)
         end
 
@@ -128,7 +213,15 @@ module RuboCop
         end
 
         def def_end(node)
-          node.loc.end.line
+          end_loc(node).line
+        end
+
+        def end_loc(node)
+          if (node.def_type? || node.defs_type?) && node.endless?
+            node.loc.expression.end
+          else
+            node.loc.end
+          end
         end
 
         def autocorrect_remove_lines(corrector, newline_pos, count)
@@ -143,6 +236,19 @@ module RuboCop
           where_to_insert = range_between(newline_pos, newline_pos + 1)
 
           corrector.insert_after(where_to_insert, "\n" * difference)
+        end
+
+        def node_type(node)
+          case node.type
+          when :def, :defs
+            :method
+          else
+            node.type
+          end
+        end
+
+        def allowance_range?
+          minimum_empty_lines != maximum_empty_lines
         end
       end
     end

@@ -44,6 +44,9 @@ module RuboCop
         MSG = 'Use `%<constant>s.%<method>s(%<replacement_args>s)`' \
           ' instead of `%<original>s`.'
 
+        NO_ARG_ALGORITHM = %w[BF DES IDEA RC4].freeze
+
+        # @!method algorithm_const(node)
         def_node_matcher :algorithm_const, <<~PATTERN
           (send
             $(const
@@ -104,7 +107,7 @@ module RuboCop
         def algorithm_name(node)
           name = node.loc.name.source
 
-          if openssl_class(node) == 'OpenSSL::Cipher'
+          if openssl_class(node) == 'OpenSSL::Cipher' && !NO_ARG_ALGORITHM.include?(name)
             name.scan(/.{3}/).join('-')
           else
             name
@@ -124,16 +127,23 @@ module RuboCop
           algorithm_name = algorithm_name(algorithm_constant)
 
           if openssl_class(algorithm_constant) == 'OpenSSL::Cipher'
-            build_cipher_arguments(node, algorithm_name)
+            build_cipher_arguments(node, algorithm_name, node.arguments.empty?)
           else
             (["'#{algorithm_name}'"] + node.arguments.map(&:source)).join(', ')
           end
         end
 
-        def build_cipher_arguments(node, algorithm_name)
+        def build_cipher_arguments(node, algorithm_name, no_arguments)
           algorithm_parts = algorithm_name.downcase.split('-')
           size_and_mode = sanitize_arguments(node.arguments).map(&:downcase)
-          "'#{(algorithm_parts + size_and_mode + ['cbc']).take(3).join('-')}'"
+
+          if NO_ARG_ALGORITHM.include?(algorithm_parts.first.upcase) && no_arguments
+            "'#{algorithm_parts.first}'"
+          else
+            mode = 'cbc' unless size_and_mode == ['cbc']
+
+            "'#{(algorithm_parts + size_and_mode + [mode]).compact.take(3).join('-')}'"
+          end
         end
       end
     end

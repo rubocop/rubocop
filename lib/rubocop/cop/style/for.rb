@@ -51,6 +51,7 @@ module RuboCop
           if style == :each
             add_offense(node, message: PREFER_EACH) do |corrector|
               ForToEachCorrector.new(node).call(corrector)
+              opposite_style_detected
             end
           else
             correct_style_detected
@@ -63,6 +64,7 @@ module RuboCop
           if style == :for
             add_offense(node, message: PREFER_FOR) do |corrector|
               EachToForCorrector.new(node).call(corrector)
+              opposite_style_detected
             end
           else
             correct_style_detected

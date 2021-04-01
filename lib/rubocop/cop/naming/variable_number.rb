@@ -92,11 +92,12 @@ module RuboCop
       #   # good
       #   :some_sym_1
       #
-      # @example AllowedIdentifier: [capture3]
+      # @example AllowedIdentifiers: [capture3]
       #   # good
       #   expect(Open3).to receive(:capture3)
       #
       class VariableNumber < Base
+        include AllowedIdentifiers
         include ConfigurableNumbering
 
         MSG = 'Use %<style>s for %<identifier_type>s numbers.'
@@ -104,6 +105,8 @@ module RuboCop
         def on_arg(node)
           @node = node
           name, = *node
+          return if allowed_identifier?(name)
+
           check_name(node, name, node.loc.name)
         end
         alias on_lvasgn on_arg
@@ -136,14 +139,6 @@ module RuboCop
             end
 
           format(MSG, style: style, identifier_type: identifier_type)
-        end
-
-        def allowed_identifier?(name)
-          allowed_identifiers.include?(name.to_s)
-        end
-
-        def allowed_identifiers
-          cop_config.fetch('AllowedIdentifiers', [])
         end
       end
     end

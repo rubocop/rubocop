@@ -16,7 +16,7 @@ module RuboCop
       match = generation_command.match(COMMAND_REGEX)
       return DEFAULT_OPTIONS unless match
 
-      options = match[1].split(' ')
+      options = match[1].split
       Options.new.parse(options).first
     end
 

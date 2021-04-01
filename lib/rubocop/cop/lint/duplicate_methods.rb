@@ -82,6 +82,7 @@ module RuboCop
           end
         end
 
+        # @!method method_alias?(node)
         def_node_matcher :method_alias?, <<~PATTERN
           (alias (sym $_name) sym)
         PATTERN
@@ -94,10 +95,12 @@ module RuboCop
           found_instance_method(node, name)
         end
 
+        # @!method alias_method?(node)
         def_node_matcher :alias_method?, <<~PATTERN
           (send nil? :alias_method (sym $_name) _)
         PATTERN
 
+        # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
         def on_send(node)
           if (name = alias_method?(node))

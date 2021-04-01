@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
   context 'when an access modifier has no effect' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
@@ -601,7 +597,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier do
   end
 
   shared_examples 'method named by access modifier name' do |keyword, modifier|
-    it "registers an offense for `#{modifier}`" do
+    it "does not register an offense for `#{modifier}`" do
       expect_no_offenses(<<~RUBY)
         #{keyword} A
           def foo

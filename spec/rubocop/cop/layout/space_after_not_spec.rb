@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot, :config do
   it 'registers an offense and corrects a single space after !' do
     expect_offense(<<~RUBY)
       ! something

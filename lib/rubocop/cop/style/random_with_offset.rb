@@ -30,6 +30,7 @@ module RuboCop
           'integers with offsets.'
         RESTRICT_ON_SEND = %i[+ - succ pred next].freeze
 
+        # @!method integer_op_rand?(node)
         def_node_matcher :integer_op_rand?, <<~PATTERN
           (send
             int {:+ :-}
@@ -39,6 +40,7 @@ module RuboCop
               {int (irange int int) (erange int int)}))
         PATTERN
 
+        # @!method rand_op_integer?(node)
         def_node_matcher :rand_op_integer?, <<~PATTERN
           (send
             (send
@@ -49,6 +51,7 @@ module RuboCop
             int)
         PATTERN
 
+        # @!method rand_modified?(node)
         def_node_matcher :rand_modified?, <<~PATTERN
           (send
             (send
@@ -71,6 +74,7 @@ module RuboCop
 
         private
 
+        # @!method random_call(node)
         def_node_matcher :random_call, <<~PATTERN
           {(send (send $_ _ $_) ...)
            (send _ _ (send $_ _ $_))}
@@ -144,6 +148,7 @@ module RuboCop
           end
         end
 
+        # @!method to_int(node)
         def_node_matcher :to_int, <<~PATTERN
           (int $_)
         PATTERN

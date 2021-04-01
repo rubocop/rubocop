@@ -8,6 +8,14 @@ module RuboCop
       # given by `ruby -cw` prior to Ruby 2.6:
       # "shadowing outer local variable - foo".
       #
+      # NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
+      # because `Ractor` should not access outer variables.
+      # eg. following syle is encouraged:
+      #
+      #   worker_id, pipe = env
+      #   Ractor.new(worker_id, pipe) do |worker_id, pipe|
+      #   end
+      #
       # @example
       #
       #   # bad
@@ -34,12 +42,18 @@ module RuboCop
       class ShadowingOuterLocalVariable < Base
         MSG = 'Shadowing outer local variable - `%<variable>s`.'
 
+        # @!method ractor_block?(node)
+        def_node_matcher :ractor_block?, <<~PATTERN
+          (block (send (const nil? :Ractor) :new ...) ...)
+        PATTERN
+
         def self.joining_forces
           VariableForce
         end
 
         def before_declaring_variable(variable, variable_table)
           return if variable.should_be_unused?
+          return if ractor_block?(variable.scope.node)
 
           outer_local_variable = variable_table.find_variable(variable.name)
           return unless outer_local_variable

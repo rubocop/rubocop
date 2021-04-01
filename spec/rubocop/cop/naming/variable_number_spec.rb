@@ -69,6 +69,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'snake_case', '@foo'
     it_behaves_like 'accepts', 'snake_case', '@__foo__'
     it_behaves_like 'accepts', 'snake_case', 'emparejó'
+    it_behaves_like 'accepts', 'snake_case', '_1'
 
     it_behaves_like 'accepts integer symbols'
 
@@ -136,6 +137,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'normalcase', '@foo'
     it_behaves_like 'accepts', 'normalcase', '@__foo__'
     it_behaves_like 'accepts', 'normalcase', 'emparejó'
+    it_behaves_like 'accepts', 'normalcase', '_1'
 
     it_behaves_like 'accepts integer symbols'
 
@@ -198,6 +200,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'non_integer', '_foo'
     it_behaves_like 'accepts', 'non_integer', '@__foo__'
     it_behaves_like 'accepts', 'non_integer', 'emparejó'
+    it_behaves_like 'accepts', 'non_integer', '_1'
 
     it_behaves_like 'accepts integer symbols'
 
@@ -288,6 +291,30 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
         'CheckMethodNames' => true,
         'EnforcedStyle' => 'snake_case'
       }
+    end
+
+    it 'does not register an offense for a local variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        capture3 = :foo
+      RUBY
+    end
+
+    it 'does not register an offense for a instance variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        @capture3 = :foo
+      RUBY
+    end
+
+    it 'does not register an offense for a class variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        @@capture3 = :foo
+      RUBY
+    end
+
+    it 'does not register an offense for a global variable name that is allowed' do
+      expect_no_offenses(<<~RUBY)
+        $capture3 = :foo
+      RUBY
     end
 
     it 'does not register an offense for a method name that is allowed' do

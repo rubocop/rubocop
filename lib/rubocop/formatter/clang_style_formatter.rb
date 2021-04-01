@@ -49,8 +49,10 @@ module RuboCop
       end
 
       def report_highlighted_area(highlighted_area)
-        output.puts("#{' ' * highlighted_area.begin_pos}" \
-                    "#{'^' * highlighted_area.size}")
+        space_area  = highlighted_area.source_buffer.slice(0...highlighted_area.begin_pos)
+        source_area = highlighted_area.source
+        output.puts("#{' ' * Unicode::DisplayWidth.of(space_area)}" \
+                    "#{'^' * Unicode::DisplayWidth.of(source_area)}")
       end
     end
   end

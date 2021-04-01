@@ -53,10 +53,12 @@ module RuboCop
           format(MSG, msg: msg)
         end
 
+        # @!method redundant_condition?(node)
         def_node_matcher :redundant_condition?, <<~RUBY
           (if (send _ #{COMPARISON_OPERATOR_MATCHER} _) true false)
         RUBY
 
+        # @!method redundant_condition_inverted?(node)
         def_node_matcher :redundant_condition_inverted?, <<~RUBY
           (if (send _ #{COMPARISON_OPERATOR_MATCHER} _) false true)
         RUBY

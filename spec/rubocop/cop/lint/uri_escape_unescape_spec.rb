@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UriEscapeUnescape do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::UriEscapeUnescape, :config do
   it "registers an offense when using `URI.escape('http://example.com')`" do
     expect_offense(<<~RUBY)
       URI.escape('http://example.com')

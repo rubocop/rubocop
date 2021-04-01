@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EmptyLambdaParameter do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::EmptyLambdaParameter, :config do
   it 'registers an offense for an empty block parameter with a lambda' do
     expect_offense(<<~RUBY)
       -> () { do_something }

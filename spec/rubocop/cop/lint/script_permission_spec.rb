@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 # rubocop:disable Style/NumericLiteralPrefix
-RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
+RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
   subject(:cop) { described_class.new(config, options) }
 
-  let(:config) { RuboCop::Config.new }
   let(:options) { nil }
 
   let(:file) { Tempfile.new('') }
@@ -36,6 +35,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
           #!/usr/bin/ruby
           ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
         RUBY
+
         expect_correction(<<~RUBY)
           #!/usr/bin/ruby
         RUBY
@@ -54,6 +54,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission do
             #!/usr/bin/ruby
             ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
           RUBY
+
           expect_no_corrections
           expect(file.stat.executable?).to be false
         end

@@ -19,47 +19,61 @@ module RuboCop
       #   end
       #
       class BisectedAttrAccessor < Base
-        include VisibilityHelp
+        require_relative 'bisected_attr_accessor/macro'
+
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Combine both accessors into `attr_accessor %<name>s`.'
 
-        def on_class(class_node)
-          VISIBILITY_SCOPES.each do |visibility|
-            reader_names, writer_names = accessor_names(class_node, visibility)
-            next unless reader_names && writer_names
+        def on_new_investigation
+          @macros_to_rewrite = {}
+        end
 
-            accessor_macroses(class_node, visibility).each do |macro|
-              check(macro, reader_names, writer_names)
+        def on_class(class_node)
+          @macros_to_rewrite[class_node] = Set.new
+
+          find_macros(class_node.body).each do |_visibility, macros|
+            bisected = find_bisection(macros)
+            next unless bisected.any?
+
+            macros.each do |macro|
+              attrs = macro.bisect(*bisected)
+              next if attrs.none?
+
+              @macros_to_rewrite[class_node] << macro
+              attrs.each { |attr| register_offense(attr) }
             end
           end
         end
         alias on_sclass on_class
         alias on_module on_class
 
-        private
+        # Each offending macro is captured and registered in `on_class` but correction
+        # happens in `after_class` because a macro might have multiple attributes
+        # rewritten from it
+        def after_class(class_node)
+          @macros_to_rewrite[class_node].each do |macro|
+            node = macro.node
+            range = range_by_whole_lines(node.loc.expression, include_final_newline: true)
 
-        def accessor_names(class_node, visibility)
-          reader_names = nil
-          writer_names = nil
-
-          accessor_macroses(class_node, visibility).each do |macro|
-            names = macro.arguments.map(&:source)
-
-            names.each do |name|
-              if attr_reader?(macro)
-                (reader_names ||= Set.new).add(name)
+            correct(range) do |corrector|
+              if macro.writer?
+                correct_writer(corrector, macro, node, range)
               else
-                (writer_names ||= Set.new).add(name)
+                correct_reader(corrector, macro, node, range)
               end
             end
           end
-
-          [reader_names, writer_names]
         end
+        alias after_sclass after_class
+        alias after_module after_class
 
-        def accessor_macroses(class_node, visibility)
-          class_def = class_node.body
+        private
+
+        def find_macros(class_def)
+          # Find all the macros (`attr_reader`, `attr_writer`, etc.) in the class body
+          # and turn them into `Macro` objects so that they can be processed.
           return [] if !class_def || class_def.def_type?
 
           send_nodes =
@@ -69,66 +83,40 @@ module RuboCop
               class_def.each_child_node(:send)
             end
 
-          send_nodes.select { |node| attr_within_visibility_scope?(node, visibility) }
+          send_nodes.each_with_object([]) do |node, macros|
+            macros << Macro.new(node) if Macro.macro?(node)
+          end.group_by(&:visibility)
         end
 
-        def attr_within_visibility_scope?(node, visibility)
-          node.macro? &&
-            (attr_reader?(node) || attr_writer?(node)) &&
-            node_visibility(node) == visibility
+        def find_bisection(macros)
+          # Find which attributes are defined in both readers and writers so that they
+          # can be replaced with accessors.
+          readers, writers = macros.partition(&:reader?)
+          readers.flat_map(&:attr_names) & writers.flat_map(&:attr_names)
         end
 
-        def attr_reader?(send_node)
-          send_node.method?(:attr_reader) || send_node.method?(:attr)
+        def register_offense(attr)
+          add_offense(attr, message: format(MSG, name: attr.source))
         end
 
-        def attr_writer?(send_node)
-          send_node.method?(:attr_writer)
-        end
+        def correct_reader(corrector, macro, node, range)
+          attr_accessor = "attr_accessor #{macro.bisected_names.join(', ')}\n"
 
-        def check(macro, reader_names, writer_names)
-          macro.arguments.each do |arg_node|
-            name = arg_node.source
-
-            next unless (attr_reader?(macro) && writer_names.include?(name)) ||
-                        (attr_writer?(macro) && reader_names.include?(name))
-
-            add_offense(arg_node, message: format(MSG, name: name)) do |corrector|
-              macro = arg_node.parent
-
-              corrector.replace(macro, replacement(macro, arg_node))
-            end
-          end
-        end
-
-        def replacement(macro, node)
-          class_node = macro.each_ancestor(:class, :sclass, :module).first
-          reader_names, writer_names = accessor_names(class_node, node_visibility(macro))
-
-          rest_args = rest_args(macro.arguments, reader_names, writer_names)
-
-          if attr_reader?(macro)
-            attr_reader_replacement(macro, node, rest_args)
-          elsif rest_args.empty?
-            ''
+          if macro.all_bisected?
+            corrector.replace(range, "#{indent(node)}#{attr_accessor}")
           else
-            "#{macro.method_name} #{rest_args.map(&:source).join(', ')}"
+            correction = "#{indent(node)}attr_reader #{macro.rest.join(', ')}"
+            corrector.insert_before(node, attr_accessor)
+            corrector.replace(node, correction)
           end
         end
 
-        def rest_args(args, reader_names, writer_names)
-          args.reject do |arg|
-            name = arg.source
-            reader_names.include?(name) && writer_names.include?(name)
-          end
-        end
-
-        def attr_reader_replacement(macro, node, rest_args)
-          if rest_args.empty?
-            "attr_accessor #{node.source}"
+        def correct_writer(corrector, macro, node, range)
+          if macro.all_bisected?
+            corrector.remove(range)
           else
-            "attr_accessor #{node.source}\n"\
-            "#{indent(macro)}#{macro.method_name} #{rest_args.map(&:source).join(', ')}"
+            correction = "attr_writer #{macro.rest.join(', ')}"
+            corrector.replace(node, correction)
           end
         end
       end

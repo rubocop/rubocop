@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::Documentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::Documentation, :config do
   let(:config) do
     RuboCop::Config.new('Style/CommentAnnotation' => {
                           'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW]
@@ -407,6 +405,21 @@ RSpec.describe RuboCop::Cop::Style::Documentation do
                 TEST = 20
                 class Test < Parent
                   TEST = 20
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
+      describe 'when AllowedConstants is configured' do
+        before { config['Style/Documentation'] = { 'AllowedConstants' => ['ClassMethods'] } }
+
+        it 'ignores the constants in the config' do
+          expect_no_offenses(<<~RUBY)
+            module A
+              module ClassMethods
+                def do_something
                 end
               end
             end

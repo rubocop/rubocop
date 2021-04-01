@@ -30,6 +30,7 @@ module RuboCop
       class PredicateName < Base
         include AllowedMethods
 
+        # @!method dynamic_method_define(node)
         def_node_matcher :dynamic_method_define, <<~PATTERN
           (send nil? #method_definition_macros
             (sym $_)

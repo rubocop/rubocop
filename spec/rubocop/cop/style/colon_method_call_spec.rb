@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::ColonMethodCall, :config do
   it 'registers an offense for instance method call' do
     expect_offense(<<~RUBY)
       test::method_name
           ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       test.method_name
     RUBY
@@ -18,6 +17,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       test::method_name(arg)
           ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       test.method_name(arg)
     RUBY
@@ -28,6 +28,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       Class::method_name
            ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       Class.method_name
     RUBY
@@ -38,6 +39,7 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall do
       Class::method_name(arg, arg2)
            ^^ Do not use `::` for method calls.
     RUBY
+
     expect_correction(<<~RUBY)
       Class.method_name(arg, arg2)
     RUBY

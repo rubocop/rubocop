@@ -15,7 +15,7 @@ module RuboCop
       end
 
       def delimiters
-        preferred_delimiters[type].split(//)
+        preferred_delimiters[type].chars
       end
 
       private
@@ -35,10 +35,10 @@ module RuboCop
             ensure_valid_preferred_delimiters
 
             if preferred_delimiters_config.key?('default')
-              Hash[PERCENT_LITERAL_TYPES.map do |type|
+              PERCENT_LITERAL_TYPES.map do |type|
                 [type, preferred_delimiters_config[type] ||
                   preferred_delimiters_config['default']]
-              end]
+              end.to_h
             else
               preferred_delimiters_config
             end

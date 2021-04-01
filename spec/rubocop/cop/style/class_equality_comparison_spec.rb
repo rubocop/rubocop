@@ -49,6 +49,17 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when comparing `Module#name` for equality' do
+    expect_offense(<<~RUBY)
+      var.class.name == Date.name
+          ^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?(Date)` instead of comparing classes.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var.instance_of?(Date)
+    RUBY
+  end
+
   it 'registers an offense and corrects when comparing double quoted class name for equality' do
     expect_offense(<<~RUBY)
       var.class.name == "Date"
@@ -67,17 +78,34 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
   end
 
   context 'when IgnoredMethods is specified' do
-    let(:cop_config) do
-      { 'IgnoredMethods' => ['=='] }
+    context 'with a string' do
+      let(:cop_config) do
+        { 'IgnoredMethods' => ['=='] }
+      end
+
+      it 'does not register an offense when comparing class for equality' do
+        expect_no_offenses(<<~RUBY)
+          def ==(other)
+            self.class == other.class &&
+              name == other.name
+          end
+        RUBY
+      end
     end
 
-    it 'does not register an offense when comparing class for equality' do
-      expect_no_offenses(<<~RUBY)
-        def ==(other)
-          self.class == other.class &&
-            name == other.name
-        end
-      RUBY
+    context 'with a regex' do
+      let(:cop_config) do
+        { 'IgnoredMethods' => [/equal/] }
+      end
+
+      it 'does not register an offense when comparing class for equality' do
+        expect_no_offenses(<<~RUBY)
+          def equal?(other)
+            self.class == other.class &&
+              name == other.name
+          end
+        RUBY
+      end
     end
   end
 end

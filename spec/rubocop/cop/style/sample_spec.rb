@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::Sample do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::Sample, :config do
   shared_examples 'offense' do |wrong, right|
     it "registers an offense for #{wrong}" do
       expect_offense(<<~RUBY, wrong: wrong)

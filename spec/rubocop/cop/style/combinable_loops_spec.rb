@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CombinableLoops do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
   context 'when looping method' do
     it 'registers an offense when looping over the same data as previous loop' do
       expect_offense(<<~RUBY)

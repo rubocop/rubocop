@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ElseLayout do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
   it 'registers an offense and corrects for expr on same line as else' do
     expect_offense(<<~RUBY)
       if something
@@ -67,6 +65,36 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout do
         ala
         something
         test
+      end
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using multiple `elsif`s' do
+    expect_offense(<<~RUBY)
+      if condition_foo
+        foo
+      elsif condition_bar
+        bar
+      elsif condition_baz
+        baz
+      else qux
+           ^^^ Odd `else` layout detected. Did you mean to use `elsif`?
+        quux
+        corge
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition_foo
+        foo
+      elsif condition_bar
+        bar
+      elsif condition_baz
+        baz
+      else
+        qux
+        quux
+        corge
       end
     RUBY
   end

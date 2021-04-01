@@ -41,10 +41,11 @@ module RuboCop
       #   second_param)
       #     123
       #   end
-      class FirstParameterIndentation < Cop
+      class FirstParameterIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include MultilineElementIndentation
+        extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
              'in method args, relative to %<base_description>s.'
@@ -57,11 +58,11 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def brace_alignment_style
           :align_parentheses

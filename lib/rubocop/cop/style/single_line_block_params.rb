@@ -29,6 +29,8 @@ module RuboCop
       #     c + d
       #   end
       class SingleLineBlockParams < Base
+        extend AutoCorrector
+
         MSG = 'Name `%<method>s` block params `|%<params>s|`.'
 
         def on_block(node)
@@ -37,20 +39,41 @@ module RuboCop
           return unless eligible_method?(node)
           return unless eligible_arguments?(node)
 
-          return if args_match?(node.send_node.method_name, node.arguments)
+          method_name = node.send_node.method_name
+          return if args_match?(method_name, node.arguments)
 
-          message = message(node.arguments)
+          preferred_block_arguments = build_preferred_arguments_map(node, target_args(method_name))
+          joined_block_arguments = preferred_block_arguments.values.join(', ')
 
-          add_offense(node.arguments, message: message)
+          message = format(MSG, method: method_name, params: joined_block_arguments)
+
+          add_offense(node.arguments, message: message) do |corrector|
+            autocorrect(corrector, node, preferred_block_arguments, joined_block_arguments)
+          end
         end
 
         private
 
-        def message(node)
-          method_name = node.parent.send_node.method_name
-          arguments   = target_args(method_name).join(', ')
+        def build_preferred_arguments_map(node, preferred_arguments)
+          preferred_arguments_map = {}
+          node.arguments.each_with_index do |current_lvar, index|
+            preferred_argument = preferred_arguments[index]
+            current_argument = current_lvar.source
+            preferred_argument = "_#{preferred_argument}" if current_argument.start_with?('_')
+            preferred_arguments_map[current_argument] = preferred_argument
+          end
 
-          format(MSG, method: method_name, params: arguments)
+          preferred_arguments_map
+        end
+
+        def autocorrect(corrector, node, preferred_block_arguments, joined_block_arguments)
+          corrector.replace(node.arguments, "|#{joined_block_arguments}|")
+
+          node.each_descendant(:lvar) do |lvar|
+            if (preferred_lvar = preferred_block_arguments[lvar.source])
+              corrector.replace(lvar, preferred_lvar)
+            end
+          end
         end
 
         def eligible_arguments?(node)

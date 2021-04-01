@@ -47,14 +47,13 @@ module RuboCop
 
           if node.modifier_form? && last_argument_is_heredoc?(node)
             heredoc_node = last_heredoc_argument(node)
-
-            return if next_line_empty?(heredoc_line(node, heredoc_node))
+            return if next_line_empty_or_enable_directive_comment?(heredoc_line(node, heredoc_node))
 
             add_offense(heredoc_node.loc.heredoc_end) do |corrector|
               autocorrect(corrector, heredoc_node)
             end
           else
-            return if next_line_empty?(node.last_line)
+            return if next_line_empty_or_enable_directive_comment?(node.last_line)
 
             add_offense(offense_location(node)) do |corrector|
               autocorrect(corrector, node)
@@ -71,6 +70,11 @@ module RuboCop
                          range_by_whole_lines(node.source_range)
                        end
 
+          next_line = node_range.last_line + 1
+          if next_line_enable_directive_comment?(next_line)
+            node_range = processed_source.comment_at_line(next_line)
+          end
+
           corrector.insert_after(node_range, "\n")
         end
 
@@ -85,8 +89,21 @@ module RuboCop
           node.if_branch&.guard_clause?
         end
 
+        def next_line_empty_or_enable_directive_comment?(line)
+          return true if next_line_empty?(line)
+
+          next_line = line + 1
+          next_line_enable_directive_comment?(next_line) && next_line_empty?(next_line)
+        end
+
         def next_line_empty?(line)
           processed_source[line].blank?
+        end
+
+        def next_line_enable_directive_comment?(line)
+          return false unless (comment = processed_source.comment_at_line(line))
+
+          DirectiveComment.new(comment).enabled?
         end
 
         def next_line_rescue_or_ensure?(node)

@@ -11,6 +11,8 @@ module RuboCop
       # The reason is that _unannotated_ format is very similar
       # to encoded URLs or Date/Time formatting strings.
       #
+      # This cop can be customized ignored methods with `IgnoredMethods`.
+      #
       # @example EnforcedStyle: annotated (default)
       #
       #   # bad
@@ -58,12 +60,18 @@ module RuboCop
       #
       #   # good
       #   format('%06d', 10)
+      #
+      # @example IgnoredMethods: [redirect]
+      #
+      #   # good
+      #   redirect('foo/%{bar_id}')
+      #
       class FormatStringToken < Base
         include ConfigurableEnforcedStyle
+        include IgnoredMethods
 
         def on_str(node)
-          return unless node.value.include?('%')
-          return if node.each_ancestor(:xstr, :regexp).any?
+          return if format_string_token?(node) || use_ignored_method?(node)
 
           detections = collect_detections(node)
           return if detections.empty?
@@ -81,12 +89,21 @@ module RuboCop
 
         private
 
+        # @!method format_string_in_typical_context?(node)
         def_node_matcher :format_string_in_typical_context?, <<~PATTERN
           {
             ^(send _ {:format :sprintf :printf} %0 ...)
             ^(send %0 :% _)
           }
         PATTERN
+
+        def format_string_token?(node)
+          !node.value.include?('%') || node.each_ancestor(:xstr, :regexp).any?
+        end
+
+        def use_ignored_method?(node)
+          (parent = node.parent) && parent.send_type? && ignored_method?(parent.method_name)
+        end
 
         def unannotated_format?(node, detected_style)
           detected_style == :unannotated && !format_string_in_typical_context?(node)
