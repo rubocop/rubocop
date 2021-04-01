@@ -4,7 +4,6 @@ autoload :Changelog, "#{__dir__}/changelog"
 
 namespace :changelog do
   %i[new fix change].each do |type|
-    desc "Create a Changelog entry (#{type})"
       ref_type = :pull if args[:id]
       path = Changelog::Entry.new(type: type, ref_id: args[:id], ref_type: ref_type).write
       cmd = "git add #{path}"
