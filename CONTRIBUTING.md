@@ -1,4 +1,4 @@
-# Contributing
+ # Contributing
 
 If you discover issues, have ideas for improvements or new features,
 please report them to the [issue tracker][1] of the repository or
