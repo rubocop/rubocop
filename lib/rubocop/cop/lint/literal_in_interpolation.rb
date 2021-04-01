@@ -95,7 +95,7 @@ module RuboCop
         def autocorrected_value_for_array(node)
           return node.source.gsub('"', '\"') unless node.percent_literal?
 
-          contents_range(node).source.split(' ').to_s.gsub('"', '\"')
+          contents_range(node).source.split.to_s.gsub('"', '\"')
         end
 
         # Does node print its own source when converted to a string?

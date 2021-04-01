@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef, :config do
   it 'registers an offense when references are used before any regexp' do
     expect_offense(<<~RUBY)
       puts $3

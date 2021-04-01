@@ -26,10 +26,12 @@ module RuboCop
             return length if @foldable_types.empty?
 
             each_top_level_descendant(@node, @foldable_types) do |descendant|
-              if foldable_node?(descendant)
-                descendant_length = code_length(descendant)
-                length = length - descendant_length + 1
-              end
+              next unless foldable_node?(descendant)
+
+              descendant_length = code_length(descendant)
+              length = length - descendant_length + 1
+              # Subtract 2 length of opening and closing brace if method argument omits hash braces.
+              length -= 2 if descendant.hash_type? && !descendant.braces?
             end
 
             length
@@ -124,7 +126,7 @@ module RuboCop
           end
 
           def classlike_node?(node)
-            CLASSLIKE_TYPES.include?(node.type)
+            CLASSLIKE_TYPES.include?(node&.type)
           end
 
           def foldable_node?(node)

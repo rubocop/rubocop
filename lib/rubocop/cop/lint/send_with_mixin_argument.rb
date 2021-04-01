@@ -43,6 +43,7 @@ module RuboCop
         SEND_METHODS = %i[send public_send __send__].freeze
         RESTRICT_ON_SEND = SEND_METHODS
 
+        # @!method send_with_mixin_argument?(node)
         def_node_matcher :send_with_mixin_argument?, <<~PATTERN
           (send
             (const _ _) {:#{SEND_METHODS.join(' :')}}

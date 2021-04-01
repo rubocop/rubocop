@@ -30,6 +30,7 @@ module RuboCop
         MSG = 'Redundant `.rb` file extension detected.'
         RESTRICT_ON_SEND = %i[require require_relative].freeze
 
+        # @!method require_call?(node)
         def_node_matcher :require_call?, <<~PATTERN
           (send nil? {:require :require_relative} $str_type?)
         PATTERN

@@ -81,11 +81,12 @@ module RuboCop
           return node.source if message_nodes.size > 1
 
           argument = message_nodes.first.source
+          exception_class = exception_node.const_name || exception_node.receiver.source
 
           if node.parent && requires_parens?(node.parent)
-            "#{node.method_name}(#{exception_node.const_name}.new(#{argument}))"
+            "#{node.method_name}(#{exception_class}.new(#{argument}))"
           else
-            "#{node.method_name} #{exception_node.const_name}.new(#{argument})"
+            "#{node.method_name} #{exception_class}.new(#{argument})"
           end
         end
 
@@ -95,6 +96,7 @@ module RuboCop
               replacement = correction_exploded_to_compact(node)
 
               corrector.replace(node, replacement)
+              opposite_style_detected
             end
           else
             correct_style_detected
@@ -115,6 +117,7 @@ module RuboCop
             replacement = correction_compact_to_exploded(node)
 
             corrector.replace(node, replacement)
+            opposite_style_detected
           end
         end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RequireParentheses do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
   it 'registers an offense for missing parentheses around expression with ' \
      '&& operator' do
     expect_offense(<<~RUBY)

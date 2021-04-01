@@ -47,7 +47,7 @@ module RuboCop
       #
       #   end
       #
-      # @example AllowModifiersOnSymbols: true
+      # @example AllowModifiersOnSymbols: true (default)
       #   # good
       #   class Foo
       #
@@ -77,8 +77,9 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[private protected public module_function].freeze
 
+        # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
-          (send nil? {:private :protected :public} (sym _))
+          (send nil? {:private :protected :public :module_function} (sym _))
         PATTERN
 
         def on_send(node)
@@ -87,7 +88,9 @@ module RuboCop
           return if allow_modifiers_on_symbols?(node)
 
           if offense?(node)
-            add_offense(node.loc.selector) if opposite_style_detected
+            add_offense(node.loc.selector) do
+              opposite_style_detected
+            end
           else
             correct_style_detected
           end

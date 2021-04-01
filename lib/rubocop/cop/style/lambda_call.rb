@@ -27,8 +27,9 @@ module RuboCop
         def on_send(node)
           return unless node.receiver
 
-          if offense?(node) && opposite_style_detected
+          if offense?(node)
             add_offense(node) do |corrector|
+              opposite_style_detected
               autocorrect(corrector, node)
             end
           else

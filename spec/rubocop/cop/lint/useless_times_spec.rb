@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UselessTimes do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
   it 'registers an offense and corrects with 0.times' do
     expect_offense(<<~RUBY)
       0.times { something }

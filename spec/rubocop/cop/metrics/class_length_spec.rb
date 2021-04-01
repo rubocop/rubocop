@@ -134,6 +134,21 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
     end
   end
 
+  context 'when CountComments is disabled' do
+    it 'accepts classes that only contain comments' do
+      expect_no_offenses(<<~RUBY)
+        class Test
+          # comment
+          # comment
+          # comment
+          # comment
+          # comment
+          # comment
+        end
+      RUBY
+    end
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 
@@ -147,6 +162,20 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
           #a = 4
           a = 5
           a = 6
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a class that only contains comments' do
+      expect_offense(<<~RUBY)
+        class Test
+        ^^^^^^^^^^ Class has too many lines. [6/5]
+          # comment
+          # comment
+          # comment
+          # comment
+          # comment
+          # comment
         end
       RUBY
     end
@@ -203,7 +232,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
   end
 
   context 'when overlapping constant assignments' do
-    it 'registers an offense' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         X = Y = Z = do_something
       RUBY

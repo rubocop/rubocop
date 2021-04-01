@@ -1,7 +1,107 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateBranch do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
+  shared_examples_for 'literal if allowed' do |type, value|
+    context "when returning a #{type} in multiple branches" do
+      it 'allows branches to be duplicated' do
+        expect_no_offenses(<<~RUBY)
+          if x
+            #{value}
+          elsif y
+            #{value}
+          else
+            #{value}
+          end
+        RUBY
+      end
+    end
+  end
+
+  shared_examples_for 'literal if disallowed' do |type, value|
+    context "when returning a #{type} in multiple branches" do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          if x
+            #{value}
+          elsif y
+          ^^^^^^^ Duplicate branch body detected.
+            #{value}
+          else
+          ^^^^ Duplicate branch body detected.
+            #{value}
+          end
+        RUBY
+      end
+    end
+  end
+
+  shared_examples_for 'literal case allowed' do |type, value|
+    context "when returning a #{type} in multiple branches" do
+      it 'allows branches to be duplicated' do
+        expect_no_offenses(<<~RUBY)
+          case foo
+          when x then #{value}
+          when y then #{value}
+          else #{value}
+          end
+        RUBY
+      end
+    end
+  end
+
+  shared_examples_for 'literal case disallowed' do |type, value|
+    context "when returning a #{type} in multiple branches" do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY, value: value)
+          case foo
+          when x then #{value}
+          when y then #{value}
+          ^^^^^^^^^^^^^{value} Duplicate branch body detected.
+          else #{value}
+          ^^^^ Duplicate branch body detected.
+          end
+        RUBY
+      end
+    end
+  end
+
+  shared_examples_for 'literal rescue allowed' do |type, value|
+    context "when returning a #{type} in multiple branches" do
+      it 'allows branches to be duplicated' do
+        expect_no_offenses(<<~RUBY)
+          begin
+            foo
+          rescue FooError
+            #{value}
+          rescue BarError
+            #{value}
+          else
+            #{value}
+          end
+        RUBY
+      end
+    end
+  end
+
+  shared_examples_for 'literal rescue disallowed' do |type, value|
+    context "when returning a #{type} in multiple branches" do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          begin
+            foo
+          rescue FooError
+            #{value}
+          rescue BarError
+          ^^^^^^^^^^^^^^^ Duplicate branch body detected.
+            #{value}
+          else
+          ^^^^ Duplicate branch body detected.
+            #{value}
+          end
+        RUBY
+      end
+    end
+  end
 
   it 'registers an offense when `if` has duplicate `else` branch' do
     expect_offense(<<~RUBY)
@@ -244,5 +344,68 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch do
         handle_bar_error(x)
       end
     RUBY
+  end
+
+  context 'with IgnoreLiteralBranches: true' do
+    let(:cop_config) { { 'IgnoreLiteralBranches' => true } }
+
+    %w[if case rescue].each do |keyword|
+      context "with `#{keyword}`" do
+        it_behaves_like "literal #{keyword} allowed", 'integer', '5'
+        it_behaves_like "literal #{keyword} allowed", 'float', '5.0'
+        it_behaves_like "literal #{keyword} allowed", 'rational', '5r'
+        it_behaves_like "literal #{keyword} allowed", 'complex', '5i'
+        it_behaves_like "literal #{keyword} allowed", 'string', '"string"'
+        it_behaves_like "literal #{keyword} allowed", 'symbol', ':symbol'
+        it_behaves_like "literal #{keyword} allowed", 'true', 'true'
+        it_behaves_like "literal #{keyword} allowed", 'false', 'false'
+        it_behaves_like "literal #{keyword} allowed", 'nil', 'nil'
+        it_behaves_like "literal #{keyword} allowed", 'regexp', '/foo/'
+        it_behaves_like "literal #{keyword} allowed", 'regexp with modifier', '/foo/i'
+        it_behaves_like "literal #{keyword} allowed", 'simple irange', '1..5'
+        it_behaves_like "literal #{keyword} allowed", 'simple erange', '1...5'
+        it_behaves_like "literal #{keyword} allowed", 'empty array', '[]'
+        it_behaves_like "literal #{keyword} allowed", 'array of literals', '[1, 2, 3]'
+        it_behaves_like "literal #{keyword} allowed", 'empty hash', '{}'
+        it_behaves_like "literal #{keyword} allowed", 'hash of literals', '{ foo: 1, bar: 2 }'
+
+        it_behaves_like "literal #{keyword} disallowed", 'dstr', '"#{foo}"'
+        it_behaves_like "literal #{keyword} disallowed", 'dsym', ':"#{foo}"'
+        it_behaves_like "literal #{keyword} disallowed", 'xstr', '`foo bar`'
+        it_behaves_like "literal #{keyword} disallowed", 'complex array', '[foo, bar, baz]'
+        it_behaves_like "literal #{keyword} disallowed", 'complex hash', '{ foo: foo, bar: bar }'
+        it_behaves_like "literal #{keyword} disallowed", 'complex irange', '1..foo'
+        it_behaves_like "literal #{keyword} disallowed", 'complex erange', '1...foo'
+        it_behaves_like "literal #{keyword} disallowed", 'complex regexp', '/#{foo}/i'
+        it_behaves_like "literal #{keyword} disallowed", 'variable', 'foo'
+        it_behaves_like "literal #{keyword} disallowed", 'method call', 'foo(bar)'
+
+        context 'and IgnoreConstBranches: true' do
+          let(:cop_config) { super().merge('IgnoreConstantBranches' => true) }
+
+          it_behaves_like "literal #{keyword} allowed", 'array of constants', '[CONST1, CONST2]'
+          it_behaves_like "literal #{keyword} allowed", 'hash of constants', '{ foo: CONST1, bar: CONST2 }'
+        end
+
+        context 'and IgnoreConstBranches: false' do
+          let(:cop_config) { super().merge('IgnoreConstantBranches' => false) }
+
+          it_behaves_like "literal #{keyword} disallowed", 'array of constants', '[CONST1, CONST2]'
+          it_behaves_like "literal #{keyword} disallowed", 'hash of constants', '{ foo: CONST1, bar: CONST2 }'
+        end
+      end
+    end
+  end
+
+  context 'with IgnoreConstantBranches: true' do
+    let(:cop_config) { { 'IgnoreConstantBranches' => true } }
+
+    %w[if case rescue].each do |keyword|
+      context "with `#{keyword}`" do
+        it_behaves_like "literal #{keyword} allowed", 'constant', 'MY_CONST'
+
+        it_behaves_like "literal #{keyword} disallowed", 'object', 'Object.new'
+      end
+    end
   end
 end

@@ -19,6 +19,10 @@ module RuboCop
 
         MSG = 'Add parentheses to nested method call `%<source>s`.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_send(node)
           return unless node.parenthesized?
 

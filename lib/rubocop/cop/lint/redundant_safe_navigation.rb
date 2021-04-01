@@ -43,6 +43,7 @@ module RuboCop
 
         NIL_SPECIFIC_METHODS = (nil.methods - Object.new.methods).to_set.freeze
 
+        # @!method respond_to_nil_specific_method?(node)
         def_node_matcher :respond_to_nil_specific_method?, <<~PATTERN
           (csend _ :respond_to? (sym %NIL_SPECIFIC_METHODS))
         PATTERN

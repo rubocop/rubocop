@@ -34,6 +34,7 @@ module RuboCop
 
         STD_STREAMS = %i[STDIN STDOUT STDERR].to_set.freeze
 
+        # @!method const_to_gvar_assignment?(node, name)
         def_node_matcher :const_to_gvar_assignment?, <<~PATTERN
           (gvasgn %1 (const nil? _))
         PATTERN

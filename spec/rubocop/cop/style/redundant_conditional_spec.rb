@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantConditional do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantConditional, :config do
   it 'registers an offense for ternary with boolean results' do
     expect_offense(<<~RUBY)
       x == y ? true : false

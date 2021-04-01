@@ -9,13 +9,39 @@
 | Yes
 | No
 | 0.27
-| 0.81
+| 1.5
 |===
 
 This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
 (method calls), and conditions. See http://c2.com/cgi/wiki?AbcMetric
 and https://en.wikipedia.org/wiki/ABC_Software_Metric.
+
+You can have repeated "attributes" calls count as a single "branch".
+For this purpose, attributes are any method with no argument; no attempt
+is meant to distinguish actual `attr_reader` from other methods.
+
+This cop also takes into account `IgnoredMethods` (defaults to `[]`)
+
+=== Examples
+
+==== CountRepeatedAttributes: false (default is true)
+
+[source,ruby]
+----
+# `model` and `current_user`, refenced 3 times each,
+# are each counted as only 1 branch each if
+# `CountRepeatedAttributes` is set to 'false'
+
+def search
+  @posts = model.active.visible_by(current_user)
+            .search(params[:q])
+  @posts = model.some_process(@posts, current_user)
+  @posts = model.another_process(@posts, current_user)
+
+  render 'pages/search/page'
+end
+----
 
 === Configurable attributes
 
@@ -25,6 +51,10 @@ and https://en.wikipedia.org/wiki/ABC_Software_Metric.
 | IgnoredMethods
 | `[]`
 | Array
+
+| CountRepeatedAttributes
+| `true`
+| Boolean
 
 | Max
 | `17`
@@ -45,7 +75,7 @@ and https://en.wikipedia.org/wiki/ABC_Software_Metric.
 | Yes
 | No
 | 0.44
-| 0.87
+| 1.5
 |===
 
 This cop checks if the length of a block exceeds some maximum value.
@@ -56,6 +86,10 @@ The cop can be configured to ignore blocks passed to certain methods.
 You can set literals you want to fold with `CountAsOne`.
 Available are: 'array', 'hash', and 'heredoc'. Each literal
 will be counted as one line regardless of its actual size.
+
+
+NOTE: The `ExcludedMethods` configuration is deprecated and only kept
+for backwards compatibility. Please use `IgnoredMethods` instead.
 
 NOTE: This cop does not apply for `Struct` definitions.
 
@@ -100,6 +134,10 @@ end                 # 5 points
 | Array
 
 | ExcludedMethods
+| `[]`
+| Array
+
+| IgnoredMethods
 | `refine`
 | Array
 
@@ -272,7 +310,7 @@ Blocks that are calls to builtin iteration methods
 | Yes
 | No
 | 0.25
-| 0.87
+| 1.5
 |===
 
 This cop checks if the length of a method exceeds some maximum value.
@@ -282,6 +320,9 @@ The maximum allowed length is configurable.
 You can set literals you want to fold with `CountAsOne`.
 Available are: 'array', 'hash', and 'heredoc'. Each literal
 will be counted as one line regardless of its actual size.
+
+NOTE: The `ExcludedMethods` configuration is deprecated and only kept
+for backwards compatibility. Please use `IgnoredMethods` instead.
 
 === Examples
 
@@ -324,6 +365,10 @@ end               # 5 points
 | Array
 
 | ExcludedMethods
+| `[]`
+| Array
+
+| IgnoredMethods
 | `[]`
 | Array
 |===
@@ -402,12 +447,81 @@ end                 # 5 points
 | Yes
 | No
 | 0.25
-| -
+| 1.5
 |===
 
 This cop checks for methods with too many parameters.
+
 The maximum number of parameters is configurable.
-Keyword arguments can optionally be excluded from the total count.
+Keyword arguments can optionally be excluded from the total count,
+as they add less complexity than positional or optional parameters.
+
+This cop also checks for the maximum number of optional parameters.
+This can be configured using the `MaxOptionalParameters` config option.
+
+=== Examples
+
+==== Max: 3
+
+[source,ruby]
+----
+# good
+def foo(a, b, c = 1)
+end
+----
+
+==== Max: 2
+
+[source,ruby]
+----
+# bad
+def foo(a, b, c = 1)
+end
+----
+
+==== CountKeywordArgs: true (default)
+
+[source,ruby]
+----
+# counts keyword args towards the maximum
+
+# bad (assuming Max is 3)
+def foo(a, b, c, d: 1)
+end
+
+# good (assuming Max is 3)
+def foo(a, b, c: 1)
+end
+----
+
+==== CountKeywordArgs: false
+
+[source,ruby]
+----
+# don't count keyword args towards the maximum
+
+# good (assuming Max is 3)
+def foo(a, b, c, d: 1)
+end
+----
+
+==== MaxOptionalParameters: 3 (default)
+
+[source,ruby]
+----
+# good
+def foo(a = 1, b = 2, c = 3)
+end
+----
+
+==== MaxOptionalParameters: 2
+
+[source,ruby]
+----
+# bad
+def foo(a = 1, b = 2, c = 3)
+end
+----
 
 === Configurable attributes
 
@@ -421,6 +535,10 @@ Keyword arguments can optionally be excluded from the total count.
 | CountKeywordArgs
 | `true`
 | Boolean
+
+| MaxOptionalParameters
+| `3`
+| Integer
 |===
 
 === References

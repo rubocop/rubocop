@@ -55,13 +55,18 @@ module RuboCop
           padding = ((' ' * indent_width) + leading_spaces(node)).to_s
           padding_for_trailing_end = padding.sub(' ' * node.loc.end.column, '')
 
-          replace_keyword_with_module(corrector, node)
+          replace_namespace_keyword(corrector, node)
           split_on_double_colon(corrector, node, padding)
           add_trailing_end(corrector, node, padding_for_trailing_end)
         end
 
-        def replace_keyword_with_module(corrector, node)
-          corrector.replace(node.loc.keyword, 'module')
+        def replace_namespace_keyword(corrector, node)
+          class_definition = node.left_sibling&.each_node(:class)&.find do |class_node|
+            class_node.identifier == node.identifier.namespace
+          end
+          namespace_keyword = class_definition ? 'class' : 'module'
+
+          corrector.replace(node.loc.keyword, namespace_keyword)
         end
 
         def split_on_double_colon(corrector, node, padding)

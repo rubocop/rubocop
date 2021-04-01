@@ -26,16 +26,19 @@ module RuboCop
         MSG = 'Redundant message argument to `#add_offense`.'
         RESTRICT_ON_SEND = %i[add_offense].freeze
 
+        # @!method node_type_check(node)
         def_node_matcher :node_type_check, <<~PATTERN
           (send nil? :add_offense $_node $hash)
         PATTERN
 
+        # @!method redundant_message_argument(node)
         def_node_matcher :redundant_message_argument, <<~PATTERN
           (pair
             (sym :message)
             ${(const nil? :MSG) (send nil? :message) (send nil? :message _)})
         PATTERN
 
+        # @!method message_method_call(node)
         def_node_matcher :message_method_call, '(send nil? :message $_node)'
 
         def on_send(node)

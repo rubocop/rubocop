@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
   it 'registers an offense for `ary.each_with_index { |v| v }` ' \
     'and corrects to `ary.each`' do
     expect_offense(<<~RUBY)

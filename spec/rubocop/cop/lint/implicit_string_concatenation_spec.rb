@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
   context 'on a single string literal' do
     it 'does not register an offense' do
       expect_no_offenses('abc')

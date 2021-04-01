@@ -58,7 +58,9 @@ module RuboCop
         private
 
         def require_then?(when_node)
-          return true if when_node.conditions.count >= 2
+          unless when_node.conditions.first.first_line == when_node.conditions.last.last_line
+            return true
+          end
           return false unless when_node.body
 
           when_node.loc.line == when_node.body.loc.line

@@ -8,6 +8,9 @@ module RuboCop
       # With `IncludeSemanticChanges` set to `false` by default, this cop
       # does not report offenses for `!x.nil?` and does no changes that might
       # change behavior.
+      # Also `IncludeSemanticChanges` set to `false` with `EnforcedStyle: comparison` of
+      # `Style/NilComparison` cop, this cop does not report offenses for `x != nil` and
+      # does no changes to `!x.nil?` style.
       #
       # With `IncludeSemanticChanges` set to `true`, this cop reports offenses
       # for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
@@ -41,19 +44,30 @@ module RuboCop
       class NonNilCheck < Base
         extend AutoCorrector
 
+        MSG_FOR_REPLACEMENT = 'Prefer `%<prefer>s` over `%<current>s`.'
+        MSG_FOR_REDUNDANCY = 'Explicit non-nil checks are usually redundant.'
+
         RESTRICT_ON_SEND = %i[!= nil? !].freeze
 
+        # @!method not_equal_to_nil?(node)
         def_node_matcher :not_equal_to_nil?, '(send _ :!= nil)'
+
+        # @!method unless_check?(node)
         def_node_matcher :unless_check?, '(if (send _ :nil?) ...)'
+
+        # @!method nil_check?(node)
         def_node_matcher :nil_check?, '(send _ :nil?)'
+
+        # @!method not_and_nil_check?(node)
         def_node_matcher :not_and_nil_check?, '(send (send _ :nil?) :!)'
 
         def on_send(node)
-          return if ignored_node?(node)
-          return unless (offense_node = find_offense_node(node))
+          return if ignored_node?(node) ||
+                    !include_semantic_changes? && nil_comparison_style == 'comparison'
+          return unless register_offense?(node)
 
           message = message(node)
-          add_offense(offense_node, message: message) do |corrector|
+          add_offense(node, message: message) do |corrector|
             autocorrect(corrector, node)
           end
         end
@@ -73,13 +87,9 @@ module RuboCop
 
         private
 
-        def find_offense_node(node)
-          if not_equal_to_nil?(node)
-            node.loc.selector
-          elsif include_semantic_changes? &&
-                (not_and_nil_check?(node) || unless_and_nil_check?(node))
-            node
-          end
+        def register_offense?(node)
+          not_equal_to_nil?(node) ||
+            include_semantic_changes? && (not_and_nil_check?(node) || unless_and_nil_check?(node))
         end
 
         def autocorrect(corrector, node)
@@ -101,10 +111,11 @@ module RuboCop
         end
 
         def message(node)
-          if node.method?(:!=)
-            'Prefer `!expression.nil?` over `expression != nil`.'
+          if node.method?(:!=) && !include_semantic_changes?
+            prefer = "!#{node.receiver.source}.nil?"
+            format(MSG_FOR_REPLACEMENT, prefer: prefer, current: node.source)
           else
-            'Explicit non-nil checks are usually redundant.'
+            MSG_FOR_REDUNDANCY
           end
         end
 
@@ -137,6 +148,12 @@ module RuboCop
         def autocorrect_unless_nil(corrector, node, receiver)
           corrector.replace(node.parent.loc.keyword, 'if')
           corrector.replace(node, receiver.source)
+        end
+
+        def nil_comparison_style
+          nil_comparison_conf = config.for_cop('Style/NilComparison')
+
+          nil_comparison_conf['Enabled'] && nil_comparison_conf['EnforcedStyle']
         end
       end
     end

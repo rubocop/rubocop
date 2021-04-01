@@ -1,0 +1,6 @@
+- id: rubocop
+  name: rubocop
+  entry: rubocop
+  language: ruby
+  types: ['ruby']
+  args: ['--auto-correct', '--force-exclusion']

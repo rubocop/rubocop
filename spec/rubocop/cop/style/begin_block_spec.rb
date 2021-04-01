@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::BeginBlock do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::BeginBlock, :config do
   it 'reports an offense for a BEGIN block' do
     expect_offense(<<~RUBY)
       BEGIN { test }

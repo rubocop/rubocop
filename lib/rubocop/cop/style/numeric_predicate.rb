@@ -8,7 +8,7 @@ module RuboCop
       # These can be replaced by their respective predicate methods.
       # The cop can also be configured to do the reverse.
       #
-      # The cop disregards `#nonzero?` as it its value is truthy or falsey,
+      # The cop disregards `#nonzero?` as its value is truthy or falsey,
       # but not `true` and `false`, and thus not always interchangeable with
       # `!= 0`.
       #
@@ -115,14 +115,17 @@ module RuboCop
           end
         end
 
+        # @!method predicate(node)
         def_node_matcher :predicate, <<~PATTERN
           (send $(...) ${:zero? :positive? :negative?})
         PATTERN
 
+        # @!method comparison(node)
         def_node_matcher :comparison, <<~PATTERN
           (send [$(...) !gvar_type?] ${:== :> :<} (int 0))
         PATTERN
 
+        # @!method inverted_comparison(node)
         def_node_matcher :inverted_comparison, <<~PATTERN
           (send (int 0) ${:== :> :<} [$(...) !gvar_type?])
         PATTERN

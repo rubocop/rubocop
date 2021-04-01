@@ -25,16 +25,18 @@ module RuboCop
       attr_accessor :debug, :ignore_parent_exclusion,
                     :disable_pending_cops, :enable_pending_cops
       attr_writer :default_configuration, :project_root
+      attr_reader :loaded_features
 
       alias debug? debug
       alias ignore_parent_exclusion? ignore_parent_exclusion
 
       def clear_options
         @debug = nil
+        @loaded_features = Set.new
         FileFinder.root_level = nil
       end
 
-      def load_file(file)
+      def load_file(file, check: true)
         path = file_path(file)
 
         hash = load_yaml_configuration(path)
@@ -51,7 +53,7 @@ module RuboCop
 
         hash.delete('inherit_from')
 
-        Config.create(hash, path)
+        Config.create(hash, path, check: check)
       end
 
       def load_yaml_configuration(absolute_path)
@@ -98,10 +100,10 @@ module RuboCop
           find_user_xdg_config || DEFAULT_FILE
       end
 
-      def configuration_from_file(config_file)
+      def configuration_from_file(config_file, check: true)
         return default_configuration if config_file == DEFAULT_FILE
 
-        config = load_file(config_file)
+        config = load_file(config_file, check: check)
         if ignore_parent_exclusion?
           print 'Ignoring AllCops/Exclude from parent folders' if debug?
         else
@@ -109,7 +111,7 @@ module RuboCop
         end
 
         merge_with_default(config, config_file).tap do |merged_config|
-          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(config)
+          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(merged_config)
         end
       end
 
@@ -173,22 +175,17 @@ module RuboCop
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
 
-      def loaded_features
-        @loaded_features.flatten.compact
+      # @api private
+      # Used to add features that were required inside a config or from
+      # the CLI using `--require`.
+      def add_loaded_features(loaded_features)
+        @loaded_features.merge(Array(loaded_features))
       end
 
       private
 
       def file_path(file)
         File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
-      end
-
-      def add_loaded_features(loaded_features)
-        if instance_variable_defined?(:@loaded_features)
-          instance_variable_get(:@loaded_features) << loaded_features
-        else
-          instance_variable_set(:@loaded_features, [loaded_features])
-        end
       end
 
       def find_project_dotfile(target_dir)

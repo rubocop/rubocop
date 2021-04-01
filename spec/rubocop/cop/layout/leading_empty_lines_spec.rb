@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingEmptyLines, :config do
     context 'in collaboration' do
       let(:config) do
         RuboCop::Config.new('Layout/SpaceAroundEqualsInParameterDefault' => {
-                              'SupportedStyles' => [:space],
+                              'SupportedStyles' => %i[space no_space],
                               'EnforcedStyle' => :space
                             })
       end

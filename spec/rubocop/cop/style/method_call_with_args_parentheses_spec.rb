@@ -1,10 +1,47 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
-  context 'when EnforcedStyle is require_parentheses (default)' do
-    let(:cop_config) do
-      { 'IgnoredMethods' => %w[puts] }
+  shared_examples 'endless methods' do |omit: false|
+    context 'endless methods', :ruby30 do
+      context 'with arguments' do
+        it 'requires method calls to have parens' do
+          expect_no_offenses(<<~RUBY)
+            def x() = foo("bar")
+          RUBY
+        end
+      end
+
+      context 'without arguments' do
+        if omit
+          it 'registers an offense when there are parens' do
+            expect_offense(<<~RUBY)
+              def x() = foo()
+                           ^^ Omit parentheses for method calls with arguments.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def x() = foo#{trailing_whitespace}
+            RUBY
+          end
+        else
+          it 'does not register an offense when there are parens' do
+            expect_no_offenses(<<~RUBY)
+              def x() = foo()
+            RUBY
+          end
+        end
+
+        it 'does not register an offense when there are no parens' do
+          expect_no_offenses(<<~RUBY)
+            def x() = foo
+          RUBY
+        end
+      end
     end
+  end
+
+  context 'when EnforcedStyle is require_parentheses (default)' do
+    it_behaves_like 'endless methods'
 
     it 'accepts no parens in method call without args' do
       expect_no_offenses('top.test')
@@ -256,8 +293,22 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'ignores method listed in IgnoredMethods' do
-      expect_no_offenses('puts :test')
+    context 'with IgnoredMethods' do
+      context 'with a string' do
+        let(:cop_config) { { 'IgnoredMethods' => %w[puts] } }
+
+        it 'ignores method listed in IgnoredMethods' do
+          expect_no_offenses('puts :test')
+        end
+      end
+
+      context 'with a regex' do
+        let(:cop_config) { { 'IgnoredMethods' => [/puts/] } }
+
+        it 'ignores method listed in IgnoredMethods' do
+          expect_no_offenses('puts :test')
+        end
+      end
     end
 
     context 'when inspecting macro methods' do
@@ -307,6 +358,8 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     let(:cop_config) do
       { 'EnforcedStyle' => 'omit_parentheses' }
     end
+
+    it_behaves_like 'endless methods', omit: true
 
     it 'register an offense for parens in method call without args' do
       trailing_whitespace = ' '
@@ -411,6 +464,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
       expect_correction(<<~RUBY)
         method_call %r{foo}
+      RUBY
+    end
+
+    it 'register an offense for parens in string interpolation' do
+      expect_offense(<<~'RUBY')
+        "#{t('no.parens')}"
+            ^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{t 'no.parens'}"
       RUBY
     end
 
@@ -605,6 +669,11 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo &block')
     end
 
+    it 'accepts parens in yield argument method calls' do
+      expect_no_offenses('yield File.basepath(path)')
+      expect_no_offenses('yield path, File.basepath(path)')
+    end
+
     it 'accepts parens in super without args' do
       expect_no_offenses('super()')
     end
@@ -700,6 +769,16 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('Something.find(criteria: given)&.field')
     end
 
+    it 'accepts parens in operator method calls' do
+      expect_no_offenses(<<~RUBY)
+        data.[](value)
+        data&.[](value)
+        string.<<(even_more_string)
+        ruby.==(good)
+        ruby&.===(better)
+      RUBY
+    end
+
     context 'allowing parenthesis in chaining' do
       let(:cop_config) do
         {
@@ -778,6 +857,22 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
   end
 
+  context 'allowing parens in string interpolation' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'omit_parentheses',
+        'AllowParenthesesInStringInterpolation' => true
+      }
+    end
+
+    it 'accepts parens for camel-case method names' do
+      expect_no_offenses(<<~'RUBY')
+        "#{t('this.is.good')}"
+        "#{t 'this.is.also.good'}"
+      RUBY
+    end
+  end
+
   context 'when inspecting macro methods with IncludedMacros' do
     let(:cop_config) do
       {
@@ -785,6 +880,8 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         'IncludedMacros' => ['bar']
       }
     end
+
+    it_behaves_like 'endless methods'
 
     context 'in a class body' do
       it 'finds offense' do

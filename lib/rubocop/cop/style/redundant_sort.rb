@@ -58,6 +58,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[sort sort_by].freeze
 
+        # @!method redundant_sort?(node)
         def_node_matcher :redundant_sort?, <<~MATCHER
           {
             (send $(send _ $:sort ...) ${:last :first})

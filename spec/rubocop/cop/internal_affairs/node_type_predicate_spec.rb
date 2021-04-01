@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypePredicate do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypePredicate, :config do
   context 'comparison node type check' do
     it 'registers an offense and auto-corrects' do
       expect_offense(<<~RUBY)

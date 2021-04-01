@@ -3,7 +3,7 @@
 == Issues
 
 Report issues and suggest features and improvements on the
-https://github.com/rubocop-hq/rubocop/issues[GitHub issue tracker].
+https://github.com/rubocop/rubocop/issues[GitHub issue tracker].
 
 If you want to file an issue (bug report or feature request), please provide all
 the necessary info listed in our issue reporting template (it's loaded
@@ -18,7 +18,7 @@ instead.
 Patches in any form are always welcome! GitHub pull requests are even better! :-)
 
 Before submitting a patch or a pull request make sure all tests are
-passing and that your patch is in line with the https://github.com/rubocop-hq/rubocop/blob/master/CONTRIBUTING.md[contribution
+passing and that your patch is in line with the https://github.com/rubocop/rubocop/blob/master/CONTRIBUTING.md[contribution
 guidelines].
 
 A handy way to test only the files that you have modified in the last commit
@@ -37,7 +37,7 @@ adding or improving Cop descriptions.
 
 === Working on the Docs
 
-The manual is generated from the AsciiDoc files in the https://github.com/rubocop-hq/rubocop/tree/master/docs[docs] folder of RuboCop's GitHub repo and is published to https://docs.rubocop.org.
+The manual is generated from the AsciiDoc files in the https://github.com/rubocop/rubocop/tree/master/docs[docs] folder of RuboCop's GitHub repo and is published to https://docs.rubocop.org.
 https://antora.org[Antora] is used to convert the manual into HTML.
 The filesystem layout is described at https://docs.antora.org/antora/2.0/component-structure/.
 
@@ -60,7 +60,7 @@ if you run into any problems.
 
 ==== Building the Site
 
-You can build the documentation locally from the https://github.com/rubocop-hq/docs.rubocop.org[docs.rubocop.org] repo.
+You can build the documentation locally from the https://github.com/rubocop/docs.rubocop.org[docs.rubocop.org] repo.
 
 [source]
 ----
@@ -80,7 +80,7 @@ NOTE: You'll need commit access to the repository for this to work.
 To check the generated site you can simply open `docs/index.html` in your favourite browser.
 
 If you want to make changes to the manual's page structure you'll have to edit
-https://github.com/rubocop-hq/rubocop/blob/master/docs/modules/ROOT/nav.adoc[nav.adoc].
+https://github.com/rubocop/rubocop/blob/master/docs/modules/ROOT/nav.adoc[nav.adoc].
 
 == Funding
 

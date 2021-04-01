@@ -29,6 +29,7 @@ module RuboCop
         STRUCT_METHOD_NAMES = Struct.instance_methods
         STRUCT_MEMBER_NAME_TYPES = %i[sym str].freeze
 
+        # @!method struct_new(node)
         def_node_matcher :struct_new, <<~PATTERN
           (send
             (const ${nil? cbase} :Struct) :new ...)

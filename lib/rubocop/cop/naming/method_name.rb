@@ -35,7 +35,10 @@ module RuboCop
 
         MSG = 'Use %<style>s for method names.'
 
+        # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
+
+        # @!method str_name(node)
         def_node_matcher :str_name, '(str $_name)'
 
         def on_send(node)

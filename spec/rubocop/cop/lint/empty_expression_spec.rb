@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::EmptyExpression do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::EmptyExpression, :config do
   context 'when used as a standalone expression' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

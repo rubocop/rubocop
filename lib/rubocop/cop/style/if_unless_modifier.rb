@@ -46,6 +46,10 @@ module RuboCop
         MSG_USE_NORMAL =
           'Modifier form of `%<keyword>s` makes the line too long.'
 
+        def self.autocorrect_incompatible_with
+          [Style::SoleNestedConditional]
+        end
+
         def on_if(node)
           msg = if single_line_as_modifier?(node) && !named_capture_in_condition?(node)
                   MSG_USE_MODIFIER

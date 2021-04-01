@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
   %w(1 2.0 [1] {} :sym :"#{a}").each do |lit|
     it "registers an offense for literal #{lit} in if" do
       expect_offense(<<~RUBY, lit: lit)

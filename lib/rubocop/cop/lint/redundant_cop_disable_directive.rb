@@ -61,7 +61,8 @@ module RuboCop
         end
 
         def comment_range_with_surrounding_space(range)
-          if previous_line_blank?(range)
+          if previous_line_blank?(range) &&
+             processed_source.comment_config.comment_only_line?(range.line)
             # When the previous line is blank, it should be retained
             range_with_surrounding_space(range: range, side: :right)
           else
@@ -173,8 +174,7 @@ module RuboCop
         end
 
         def directive_count(comment)
-          match = comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
-          _, cops_string = match.captures
+          _, cops_string = DirectiveComment.new(comment).match_captures
           cops_string.split(/,\s*/).size
         end
 

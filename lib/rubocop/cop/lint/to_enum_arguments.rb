@@ -23,14 +23,17 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[to_enum enum_for].freeze
 
+        # @!method enum_conversion_call?(node)
         def_node_matcher :enum_conversion_call?, <<~PATTERN
           (send {nil? self} {:to_enum :enum_for} $_ $...)
         PATTERN
 
+        # @!method method_name?(node, name)
         def_node_matcher :method_name?, <<~PATTERN
           {(send nil? {:__method__ :__callee__}) (sym %1)}
         PATTERN
 
+        # @!method passing_keyword_arg?(node, name)
         def_node_matcher :passing_keyword_arg?, <<~PATTERN
           (pair (sym %1) (lvar %1))
         PATTERN

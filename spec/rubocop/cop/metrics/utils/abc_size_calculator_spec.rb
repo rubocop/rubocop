@@ -2,7 +2,12 @@
 
 RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
   describe '#calculate' do
-    subject(:vector) { described_class.calculate(node).last }
+    subject(:vector) do
+      described_class.calculate(node,
+                                discount_repeated_attributes: discount_repeated_attributes).last
+    end
+
+    let(:discount_repeated_attributes) { false }
 
     let(:node) { parse_source(source).ast }
 
@@ -318,6 +323,72 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::AbcSizeCalculator do
       RUBY
 
       it { is_expected.to eq '<0, 1, 0>' }
+    end
+
+    context 'when counting repeated calls' do
+      let(:discount_repeated_attributes) { false }
+      let(:source) { <<~RUBY }
+        def method_name(var)
+          var.foo
+          var.foo
+          bar
+          bar
+        end
+      RUBY
+
+      it { is_expected.to eq '<1, 4, 0>' }
+    end
+
+    context 'when discounting repeated calls' do
+      let(:discount_repeated_attributes) { true }
+
+      context 'when root receiver is a var' do
+        let(:source) { <<~RUBY }
+          def method_name(var)  #   1, 0, 0
+            var.foo.bar.baz     #     +3
+            var.foo.bar.qux     #     +1
+            var.foo.bar = 42    #  +1 +1   (partial invalidation)
+            var.foo             #     +0
+            var.foo.bar         #     +1
+            var.foo.bar.baz     #     +1
+            var = 42            #  +1      (complete invalidation)
+            var.foo.bar         #     +2
+          end
+        RUBY
+
+        it { is_expected.to eq '<3, 9, 0>' }
+      end
+
+      context 'when root receiver is self/nil' do
+        let(:source) { <<~RUBY }
+          def method_name       #   0, 0, 0
+            self.foo.bar.baz    #     +3
+            foo.bar.qux         #     +1
+            foo.bar = 42        #  +1 +1    (partial invalidation)
+            foo                 #     +0
+            self.foo.bar        #     +1
+            foo&.bar.baz        #     +1    (C += 0 since `csend` treated as `send`)
+            self.foo ||= 42     #  +1 +1 +1 (complete invalidation)
+            self.foo.bar        #     +2
+          end
+        RUBY
+
+        it { is_expected.to eq '<2, 9, 1>' }
+      end
+
+      context 'when some calls have arguments' do
+        let(:source) { <<~RUBY }
+          def method_name(var)  #   1, 0, 0
+            var.foo(42).bar     #     +2
+            var.foo(42).bar     #     +2
+            var.foo.bar         #     +2
+            var.foo.bar         #     +0
+            var.foo.bar(42)     #     +1
+          end
+        RUBY
+
+        it { is_expected.to eq '<1, 7, 0>' }
+      end
     end
   end
 end

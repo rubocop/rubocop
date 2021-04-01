@@ -39,14 +39,29 @@ module RuboCop
       private
 
       def disable_offense(range)
-        eol_comment = " # rubocop:todo #{cop_name}"
-        needed_line_length = (range.source_line + eol_comment).length
-        if needed_line_length <= max_line_length
-          disable_offense_at_end_of_line(range_of_first_line(range),
-                                         eol_comment)
+        heredoc_range = surrounding_heredoc(range)
+        if heredoc_range
+          disable_offense_before_and_after(range_by_lines(heredoc_range))
         else
-          disable_offense_before_and_after(range_by_lines(range))
+          eol_comment = " # rubocop:todo #{cop_name}"
+          needed_line_length = (range.source_line + eol_comment).length
+          if needed_line_length <= max_line_length
+            disable_offense_at_end_of_line(range_of_first_line(range), eol_comment)
+          else
+            disable_offense_before_and_after(range_by_lines(range))
+          end
         end
+      end
+
+      def surrounding_heredoc(offense_range)
+        # The empty offense range is an edge case that can be reached from the Lint/Syntax cop.
+        return nil if offense_range.empty?
+
+        heredoc_nodes = processed_source.ast.each_descendant.select do |node|
+          node.respond_to?(:heredoc?) && node.heredoc?
+        end
+        heredoc_nodes.map { |node| node.loc.expression.join(node.loc.heredoc_end) }
+                     .find { |range| range.contains?(offense_range) }
       end
 
       def range_of_first_line(range)

@@ -6,6 +6,11 @@ module RuboCop
       # This cop checks for the presence of constructors and lifecycle callbacks
       # without calls to `super`.
       #
+      # This cop does not consider `method_missing` (and `respond_to_missing?`)
+      # because in some cases it makes sense to overtake what is considered a
+      # missing method. In other cases, the theoretical ideal handling could be
+      # challenging or verbose for no actual gain.
+      #
       # @example
       #   # bad
       #   class Employee < Person
@@ -43,15 +48,13 @@ module RuboCop
 
         STATELESS_CLASSES = %w[BasicObject Object].freeze
 
-        OBJECT_LIFECYCLE_CALLBACKS  = %i[method_missing respond_to_missing?].freeze
         CLASS_LIFECYCLE_CALLBACKS   = %i[inherited].freeze
         METHOD_LIFECYCLE_CALLBACKS  = %i[method_added method_removed method_undefined
                                          singleton_method_added singleton_method_removed
                                          singleton_method_undefined].freeze
 
-        CALLBACKS = (OBJECT_LIFECYCLE_CALLBACKS +
-                      CLASS_LIFECYCLE_CALLBACKS +
-                      METHOD_LIFECYCLE_CALLBACKS).to_set.freeze
+        CALLBACKS = (CLASS_LIFECYCLE_CALLBACKS +
+                     METHOD_LIFECYCLE_CALLBACKS).to_set.freeze
 
         def on_def(node)
           return unless offender?(node)

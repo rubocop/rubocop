@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
   context 'with a single-line `//` regexp' do
     context 'without escapes' do
       it 'does not register an offense' do
@@ -444,7 +442,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape do
 
     context 'with a # inside a character class' do
       it 'does not register an offense' do
-        # See https://github.com/rubocop-hq/rubocop/issues/8805 - the # inside the character class
+        # See https://github.com/rubocop/rubocop/issues/8805 - the # inside the character class
         # must not be treated as starting a comment (which makes the following \. redundant)
         expect_no_offenses(<<~'RUBY')
           regexp = %r{

@@ -61,7 +61,7 @@ module RuboCop
           # by `EnforcedStyle: line_count_based` of `Style/BlockDelimiters` cop.
           # That means preventing auto-correction to incorrect auto-corrected
           # code.
-          # See: https://github.com/rubocop-hq/rubocop/issues/7534
+          # See: https://github.com/rubocop/rubocop/issues/7534
           return if conflict_with_block_delimiters?(node)
 
           left_brace = node.loc.begin
@@ -106,6 +106,7 @@ module RuboCop
         def space_missing(left_brace)
           add_offense(left_brace, message: MISSING_MSG) do |corrector|
             autocorrect(corrector, left_brace)
+            opposite_style_detected
           end
         end
 
@@ -114,6 +115,7 @@ module RuboCop
 
           add_offense(space, message: DETECTED_MSG) do |corrector|
             autocorrect(corrector, space)
+            opposite_style_detected
           end
         end
 

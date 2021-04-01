@@ -47,6 +47,48 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
           end
         RUBY
       end
+
+      context 'with AllowNil set to true' do
+        let(:cop_config) { { 'AllowComments' => false, 'AllowNil' => true } }
+
+        it 'does not register an offense for rescue block with nil' do
+          expect_no_offenses(<<~RUBY)
+            begin
+              do_something
+            rescue
+              nil
+            end
+          RUBY
+        end
+
+        it 'does not register an offense for inline nil rescue' do
+          expect_no_offenses(<<~RUBY)
+            something rescue nil
+          RUBY
+        end
+      end
+
+      context 'with AllowNil set to false' do
+        let(:cop_config) { { 'AllowComments' => false, 'AllowNil' => false } }
+
+        it 'registers an offense for rescue block with nil' do
+          expect_offense(<<~RUBY)
+            begin
+              do_something
+            rescue
+            ^^^^^^ Do not suppress exceptions.
+              nil
+            end
+          RUBY
+        end
+
+        it 'registers an offense for inline nil rescue' do
+          expect_offense(<<~RUBY)
+            something rescue nil
+                      ^^^^^^^^^^ Do not suppress exceptions.
+          RUBY
+        end
+      end
     end
 
     context 'when empty rescue for defs' do

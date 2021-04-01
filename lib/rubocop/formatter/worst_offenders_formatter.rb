@@ -51,7 +51,7 @@ module RuboCop
       # rubocop:enable Metrics/AbcSize
 
       def ordered_offense_counts(offense_counts)
-        Hash[offense_counts.sort_by { |k, v| [-v, k] }]
+        offense_counts.sort_by { |k, v| [-v, k] }.to_h
       end
 
       def total_offense_count(offense_counts)

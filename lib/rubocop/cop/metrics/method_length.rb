@@ -11,6 +11,9 @@ module RuboCop
       # Available are: 'array', 'hash', and 'heredoc'. Each literal
       # will be counted as one line regardless of its actual size.
       #
+      # NOTE: The `ExcludedMethods` configuration is deprecated and only kept
+      # for backwards compatibility. Please use `IgnoredMethods` instead.
+      #
       # @example CountAsOne: ['array', 'heredoc']
       #
       #   def m
@@ -31,12 +34,14 @@ module RuboCop
       #
       class MethodLength < Base
         include CodeLength
+        include IgnoredMethods
+
+        ignored_methods deprecated_key: 'ExcludedMethods'
 
         LABEL = 'Method'
 
         def on_def(node)
-          excluded_methods = cop_config['ExcludedMethods']
-          return if excluded_methods.include?(String(node.method_name))
+          return if ignored_method?(node.method_name)
 
           check_code_length(node)
         end

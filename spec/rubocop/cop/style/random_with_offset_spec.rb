@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RandomWithOffset do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::RandomWithOffset, :config do
   it 'registers an offense when using rand(int) + offset' do
     expect_offense(<<~RUBY)
       rand(6) + 1

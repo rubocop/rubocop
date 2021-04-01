@@ -29,6 +29,7 @@ module RuboCop
         MSG = 'Do not chain ordinary method call' \
               ' after safe navigation operator.'
 
+        # @!method bad_method?(node)
         def_node_matcher :bad_method?, <<~PATTERN
           {
             (send $(csend ...) $_ ...)
