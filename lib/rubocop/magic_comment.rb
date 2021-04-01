@@ -27,7 +27,7 @@ module RuboCop
     end
 
     def any?
-      frozen_string_literal_specified? || encoding_specified?
+      frozen_string_literal_specified? || encoding_specified? || shareable_constant_value_specified?
     end
 
     # Does the magic comment enable the frozen string literal feature.
@@ -46,11 +46,22 @@ module RuboCop
       [true, false].include?(frozen_string_literal)
     end
 
+    def valid_shareable_constant_value?
+      %w[none literal experimental_everything experimental_copy].include?(shareable_constant_value)
+    end
+
     # Was a magic comment for the frozen string literal found?
     #
     # @return [Boolean]
     def frozen_string_literal_specified?
       specified?(frozen_string_literal)
+    end
+
+    # Was a shareable_constant_value specified?
+    #
+    # @return [Boolean]
+    def shareable_constant_value_specified?
+      specified?(shareable_constant_value)
     end
 
     # Expose the `frozen_string_literal` value coerced to a boolean if possible.
@@ -67,6 +78,13 @@ module RuboCop
       else
         setting
       end
+    end
+
+    # Expose the `shareable_constant_value` value coerced to a boolean if possible.
+    #
+    # @return [String] for shareable_constant_value config
+    def shareable_constant_value
+      extract_shareable_constant_value
     end
 
     def encoding_specified?
@@ -133,7 +151,7 @@ module RuboCop
     # @see https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html
     # @see https://git.io/vMCXh Emacs handling in Ruby's parse.y
     class EmacsComment < EditorComment
-      FORMAT    = /\-\*\-(.+)\-\*\-/.freeze
+      FORMAT    = /-\*-(.+)-\*-/.freeze
       SEPARATOR = ';'
       OPERATOR  = ':'
 
@@ -145,6 +163,10 @@ module RuboCop
 
       def extract_frozen_string_literal
         match('frozen[_-]string[_-]literal')
+      end
+
+      def extract_shareable_constant_value
+        match('shareable[_-]constant[_-]values')
       end
     end
 
@@ -176,6 +198,9 @@ module RuboCop
 
       # Vim comments cannot specify frozen string literal behavior.
       def frozen_string_literal; end
+
+      # Vim comments cannot specify shareable constant values behavior.
+      def shareable_constant_value; end
     end
 
     # Wrapper for regular magic comments not bound to an editor.
@@ -194,7 +219,7 @@ module RuboCop
     class SimpleComment < MagicComment
       # Match `encoding` or `coding`
       def encoding
-        extract(/\A\s*\#.*\b(?:en)?coding: (#{TOKEN})/i)
+        extract(/\A\s*\#.*\b(?:en)?coding: (#{TOKEN})/io)
       end
 
       private
@@ -207,7 +232,11 @@ module RuboCop
       # Case-insensitive and dashes/underscores are acceptable.
       # @see https://git.io/vM7Mg
       def extract_frozen_string_literal
-        extract(/\A\s*#\s*frozen[_-]string[_-]literal:\s*(#{TOKEN})\s*\z/i)
+        extract(/\A\s*#\s*frozen[_-]string[_-]literal:\s*(#{TOKEN})\s*\z/io)
+      end
+
+      def extract_shareable_constant_value
+        extract(/\A\s*#\s*shareable[_-]constant[_-]value:\s*(#{TOKEN})\s*\z/io)
       end
     end
   end

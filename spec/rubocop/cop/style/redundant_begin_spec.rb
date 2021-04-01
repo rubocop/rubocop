@@ -6,6 +6,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       def func; begin; x; y; rescue; z end; end
                 ^^^^^ Redundant `begin` block detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      def func; ; x; y; rescue; z ; end
+    RUBY
   end
 
   it 'reports an offense for def with redundant begin block' do
@@ -19,6 +23,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+       #{trailing_whitespace}
+          ala
+        rescue => e
+          bala
+       #{trailing_whitespace}
+      end
+    RUBY
   end
 
   it 'reports an offense for defs with redundant begin block' do
@@ -30,6 +44,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         rescue => e
           bala
         end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def Test.func
+       #{trailing_whitespace}
+          ala
+        rescue => e
+          bala
+       #{trailing_whitespace}
       end
     RUBY
   end
@@ -73,46 +97,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'auto-corrects source separated by newlines ' \
-     'by removing redundant begin blocks' do
-    src = <<~RUBY
-      def func
-        begin
-          foo
-          bar
-        rescue
-          baz
-        end
-      end
-    RUBY
-
-    result_src = <<~RUBY
-      def func
-        
-          foo
-          bar
-        rescue
-          baz
-        
-      end
-    RUBY
-
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
-  end
-
-  it 'auto-corrects source separated by semicolons ' \
-     'by removing redundant begin blocks' do
-    src = '  def func; begin; x; y; rescue; z end end'
-    result_src = '  def func; ; x; y; rescue; z  end'
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
-  end
-
   it "doesn't modify spacing when auto-correcting" do
-    src = <<~RUBY
+    expect_offense(<<~RUBY)
       def method
         begin
+        ^^^^^ Redundant `begin` block detected.
           BlockA do |strategy|
             foo
           end
@@ -127,9 +116,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       end
     RUBY
 
-    result_src = <<~RUBY
+    expect_correction(<<~RUBY)
       def method
-        
+       #{trailing_whitespace}
           BlockA do |strategy|
             foo
           end
@@ -140,24 +129,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
         rescue => e # some problem
           bar
-        
+       #{trailing_whitespace}
       end
     RUBY
-
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
   end
 
   it 'auto-corrects when there are trailing comments' do
-    src = <<~RUBY
+    expect_offense(<<~RUBY)
       def method
         begin # comment 1
+        ^^^^^ Redundant `begin` block detected.
           do_some_stuff
         rescue # comment 2
         end # comment 3
       end
     RUBY
-    result_src = <<~RUBY
+
+    expect_correction(<<~RUBY)
       def method
          # comment 1
           do_some_stuff
@@ -165,8 +153,164 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
          # comment 3
       end
     RUBY
-    new_source = autocorrect_source(src)
-    expect(new_source).to eq(result_src)
+  end
+
+  it 'registers an offense and corrects when using `begin` without `rescue` or `ensure`' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        do_something
+      end
+    RUBY
+
+    expect_correction("\n  do_something\n\n")
+  end
+
+  it 'does not register an offense when using `begin` with `rescue`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      rescue
+        handle_exception
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with `ensure`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_something
+      ensure
+        finalize
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for assignment' do
+    expect_no_offenses(<<~RUBY)
+      var = begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with single statement for or assignment' do
+    expect_offense(<<~RUBY)
+      # outer comment
+      var ||= begin # inner comment 1
+              ^^^^^ Redundant `begin` block detected.
+        # inner comment 2
+        foo
+        # inner comment 3
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # outer comment
+       # inner comment 1
+        # inner comment 2
+        var ||= foo
+        # inner comment 3
+
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `begin` with single statement that called a block for or assignment' do
+    expect_offense(<<~RUBY)
+      var ||= begin
+              ^^^^^ Redundant `begin` block detected.
+        foo do |arg|
+          bar
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var ||= foo do |arg|
+          bar
+        end
+
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with multiple statement for or assignment' do
+    expect_no_offenses(<<~RUBY)
+      var ||= begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with no statements for or assignment' do
+    expect_no_offenses(<<~RUBY)
+      var ||= begin
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with `while`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_first_thing
+        some_value = do_second_thing
+      end while some_value
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` with `until`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        do_first_thing
+        some_value = do_second_thing
+      end until some_value
+    RUBY
+  end
+
+  it 'does not register an offense when using body of `begin` is empty' do
+    expect_no_offenses(<<~RUBY)
+      begin
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for or assignment and method call' do
+    expect_no_offenses(<<~RUBY)
+      var ||= begin
+        foo
+        bar
+      end.baz do
+        qux
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for method argument' do
+    expect_no_offenses(<<~RUBY)
+      do_something begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for logical operator conditions' do
+    expect_no_offenses(<<~RUBY)
+      condition && begin
+        foo
+        bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `begin` for semantic operator conditions' do
+    expect_no_offenses(<<~RUBY)
+      condition and begin
+        foo
+        bar
+      end
+    RUBY
   end
 
   context '< Ruby 2.5', :ruby24 do
@@ -193,6 +337,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
           rescue => e
             bar
           end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something do
+         #{trailing_whitespace}
+            foo
+          rescue => e
+            bar
+         #{trailing_whitespace}
         end
       RUBY
     end

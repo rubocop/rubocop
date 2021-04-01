@@ -23,15 +23,14 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
     end
   end
 
-  describe '#find_files_upwards' do
-    it 'returns an array of files to be found upwards' do
-      expect(finder.find_files_upwards('file', 'dir'))
-        .to eq([File.expand_path('file', 'dir'),
-                File.expand_path('file')])
+  describe '#find_last_file_upwards' do
+    it 'returns the last file found upwards' do
+      expect(finder.find_last_file_upwards('file', 'dir'))
+        .to eq(File.expand_path('file'))
     end
 
-    it 'returns an empty array when file is not found' do
-      expect(finder.find_files_upwards('xyz', 'dir')).to eq([])
+    it 'returns nil when file is not found' do
+      expect(finder.find_last_file_upwards('xyz', 'dir')).to be(nil)
     end
   end
 end

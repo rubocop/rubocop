@@ -37,8 +37,9 @@ module RuboCop
       #   items.select
       #   items.include?
       #
-      class CollectionMethods < Cop
+      class CollectionMethods < Base
         include MethodPreference
+        extend AutoCorrector
 
         MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
 
@@ -47,31 +48,37 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless node.arguments.one? &&
-                        node.first_argument.block_pass_type?
+          return unless implicit_block?(node)
 
           check_method_node(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.selector,
-                              preferred_method(node.loc.selector.source))
-          end
-        end
-
         private
-
-        def message(node)
-          format(MSG,
-                 prefer: preferred_method(node.method_name),
-                 current: node.method_name)
-        end
 
         def check_method_node(node)
           return unless preferred_methods[node.method_name]
 
-          add_offense(node, location: :selector)
+          message = message(node)
+          add_offense(node.loc.selector, message: message) do |corrector|
+            corrector.replace(node.loc.selector, preferred_method(node.loc.selector.source))
+          end
+        end
+
+        def implicit_block?(node)
+          return false unless node.arguments.any?
+
+          node.last_argument.block_pass_type? ||
+            node.last_argument.sym_type? && methods_accepting_symbol.include?(node.method_name.to_s)
+        end
+
+        def message(node)
+          format(MSG, prefer: preferred_method(node.method_name), current: node.method_name)
+        end
+
+        # Some enumerable methods accept a bare symbol (ie. _not_ Symbol#to_proc) instead
+        # of a block.
+        def methods_accepting_symbol
+          Array(cop_config['MethodsAcceptingSymbol'])
         end
       end
     end

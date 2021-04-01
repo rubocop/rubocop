@@ -91,12 +91,13 @@ module RuboCop
       #     end
       #   end
       #
-      class DocumentationMethod < Cop
+      class DocumentationMethod < Base
         include DocumentationComment
         include DefNode
 
         MSG = 'Missing method documentation comment.'
 
+        # @!method module_function_node?(node)
         def_node_matcher :module_function_node?, <<~PATTERN
           (send nil? :module_function ...)
         PATTERN

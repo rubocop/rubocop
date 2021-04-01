@@ -4,7 +4,8 @@ module RuboCop
   module Cop
     module Style
       # This cop looks for uses of Perl-style regexp match
-      # backreferences like $1, $2, etc.
+      # backreferences and their English versions like
+      # $1, $2, $&, &+, $MATCH, $PREMATCH, etc.
       #
       # @example
       #   # bad
@@ -12,24 +13,98 @@ module RuboCop
       #
       #   # good
       #   puts Regexp.last_match(1)
-      class PerlBackrefs < Cop
-        MSG = 'Avoid the use of Perl-style backrefs.'
+      class PerlBackrefs < Base
+        extend AutoCorrector
 
-        def on_nth_ref(node)
-          add_offense(node)
+        MESSAGE_FORMAT = 'Prefer `%<preferred_expression>s` over `%<original_expression>s`.'
+
+        def on_back_ref(node)
+          on_back_ref_or_gvar_or_nth_ref(node)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            backref, = *node
-            parent_type = node.parent ? node.parent.type : nil
-            if %i[dstr xstr regexp].include?(parent_type)
-              corrector.replace(node,
-                                "{Regexp.last_match(#{backref})}")
-            else
-              corrector.replace(node,
-                                "Regexp.last_match(#{backref})")
+        def on_gvar(node)
+          on_back_ref_or_gvar_or_nth_ref(node)
+        end
+
+        def on_nth_ref(node)
+          on_back_ref_or_gvar_or_nth_ref(node)
+        end
+
+        private
+
+        # @private
+        # @param [RuboCop::AST::Node] node
+        # @return [Boolean]
+        def derived_from_braceless_interpolation?(node)
+          %i[
+            dstr
+            regexp
+            xstr
+          ].include?(node.parent&.type)
+        end
+
+        # @private
+        # @param [RuboCop::AST::Node] node
+        # @param [String] preferred_expression
+        # @return [String]
+        def format_message(node:, preferred_expression:)
+          original_expression = original_expression_of(node)
+          format(
+            MESSAGE_FORMAT,
+            original_expression: original_expression,
+            preferred_expression: preferred_expression
+          )
+        end
+
+        # @private
+        # @param [RuboCop::AST::Node] node
+        # @return [String]
+        def original_expression_of(node)
+          first = node.to_a.first
+          if first.is_a?(::Integer)
+            "$#{first}"
+          else
+            first.to_s
+          end
+        end
+
+        # @private
+        # @param [RuboCop::AST::Node] node
+        # @return [String, nil]
+        def preferred_expression_to(node)
+          first = node.to_a.first
+          case first
+          when ::Integer
+            "Regexp.last_match(#{first})"
+          when :$&, :$MATCH
+            'Regexp.last_match(0)'
+          when :$`, :$PREMATCH
+            'Regexp.last_match.pre_match'
+          when :$', :$POSTMATCH
+            'Regexp.last_match.post_match'
+          when :$+, :$LAST_PAREN_MATCH
+            'Regexp.last_match(-1)'
+          end
+        end
+
+        # @private
+        # @param [RuboCop::AST::Node] node
+        def on_back_ref_or_gvar_or_nth_ref(node)
+          preferred_expression = preferred_expression_to(node)
+          return unless preferred_expression
+
+          add_offense(
+            node,
+            message: format_message(
+              node: node,
+              preferred_expression: preferred_expression
+            )
+          ) do |corrector|
+            if derived_from_braceless_interpolation?(node)
+              preferred_expression = "{#{preferred_expression}}"
             end
+
+            corrector.replace(node, preferred_expression)
           end
         end
       end

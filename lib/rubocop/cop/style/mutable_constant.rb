@@ -14,6 +14,8 @@ module RuboCop
       # positives. Luckily, there is no harm in freezing an already
       # frozen object.
       #
+      # NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
+      #
       # @example EnforcedStyle: literals (default)
       #   # bad
       #   CONST = [1, 2, 3]
@@ -50,9 +52,10 @@ module RuboCop
       #       puts 1
       #     end
       #   end.freeze
-      class MutableConstant < Cop
+      class MutableConstant < Base
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Freeze mutable objects assigned to constants.'
 
@@ -67,23 +70,6 @@ module RuboCop
           return unless lhs&.casgn_type?
 
           on_assignment(value)
-        end
-
-        def autocorrect(node)
-          expr = node.source_range
-
-          lambda do |corrector|
-            splat_value = splat_value(node)
-            if splat_value
-              correct_splat_expansion(corrector, expr, splat_value)
-            elsif node.array_type? && !node.bracketed?
-              corrector.wrap(expr, '[', ']')
-            elsif requires_parentheses?(node)
-              corrector.wrap(expr, '(', ')')
-            end
-
-            corrector.insert_after(expr, '.freeze')
-          end
         end
 
         private
@@ -101,31 +87,58 @@ module RuboCop
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
         end
 
         def check(value)
           range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
 
           return unless mutable_literal?(value) ||
-                        range_enclosed_in_parentheses
+                        target_ruby_version <= 2.7 && range_enclosed_in_parentheses
+
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          expr = node.source_range
+
+          splat_value = splat_value(node)
+          if splat_value
+            correct_splat_expansion(corrector, expr, splat_value)
+          elsif node.array_type? && !node.bracketed?
+            corrector.wrap(expr, '[', ']')
+          elsif requires_parentheses?(node)
+            corrector.wrap(expr, '(', ')')
+          end
+
+          corrector.insert_after(expr, '.freeze')
         end
 
         def mutable_literal?(value)
-          value&.mutable_literal?
+          return false if value.nil?
+          return false if frozen_regexp_or_range_literals?(value)
+
+          value.mutable_literal?
         end
 
         def immutable_literal?(node)
-          node.nil? || node.immutable_literal?
+          node.nil? || frozen_regexp_or_range_literals?(node) || node.immutable_literal?
         end
 
         def frozen_string_literal?(node)
           FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
             frozen_string_literals_enabled?
+        end
+
+        def frozen_regexp_or_range_literals?(node)
+          target_ruby_version >= 3.0 && (node.regexp_type? || node.range_type?)
         end
 
         def requires_parentheses?(node)
@@ -141,28 +154,31 @@ module RuboCop
           end
         end
 
+        # @!method splat_value(node)
         def_node_matcher :splat_value, <<~PATTERN
           (array (splat $_))
         PATTERN
 
         # Some of these patterns may not actually return an immutable object,
         # but we want to consider them immutable for this cop.
+        # @!method operation_produces_immutable_object?(node)
         def_node_matcher :operation_produces_immutable_object?, <<~PATTERN
           {
             (const _ _)
-            (send (const nil? :Struct) :new ...)
-            (block (send (const nil? :Struct) :new ...) ...)
+            (send (const {nil? cbase} :Struct) :new ...)
+            (block (send (const {nil? cbase} :Struct) :new ...) ...)
             (send _ :freeze)
             (send {float int} {:+ :- :* :** :/ :% :<<} _)
             (send _ {:+ :- :* :** :/ :%} {float int})
             (send _ {:== :=== :!= :<= :>= :< :>} _)
-            (send (const nil? :ENV) :[] _)
-            (or (send (const nil? :ENV) :[] _) _)
+            (send (const {nil? cbase} :ENV) :[] _)
+            (or (send (const {nil? cbase} :ENV) :[] _) _)
             (send _ {:count :length :size} ...)
             (block (send _ {:count :length :size} ...) ...)
           }
         PATTERN
 
+        # @!method range_enclosed_in_parentheses?(node)
         def_node_matcher :range_enclosed_in_parentheses?, <<~PATTERN
           (begin ({irange erange} _ _))
         PATTERN

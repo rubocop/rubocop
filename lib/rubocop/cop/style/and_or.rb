@@ -36,9 +36,10 @@ module RuboCop
       #   # good
       #   if foo && bar
       #   end
-      class AndOr < Cop
+      class AndOr < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
@@ -55,34 +56,31 @@ module RuboCop
         alias on_until      on_if
         alias on_until_post on_if
 
-        def autocorrect(node)
-          lambda do |corrector|
+        private
+
+        def process_logical_operator(node)
+          return if node.logical_operator?
+
+          message = message(node)
+          add_offense(node.loc.operator, message: message) do |corrector|
             node.each_child_node do |expr|
               if expr.send_type?
                 correct_send(expr, corrector)
-              elsif expr.return_type?
-                correct_other(expr, corrector)
-              elsif expr.assignment?
+              elsif expr.return_type? || expr.assignment?
                 correct_other(expr, corrector)
               end
             end
 
             corrector.replace(node.loc.operator, node.alternate_operator)
+
+            keep_operator_precedence(corrector, node)
           end
         end
-
-        private
 
         def on_conditionals(node)
           node.condition.each_node(*AST::Node::OPERATOR_KEYWORDS) do |operator|
             process_logical_operator(operator)
           end
-        end
-
-        def process_logical_operator(node)
-          return if node.logical_operator?
-
-          add_offense(node, location: :operator)
         end
 
         def message(node)
@@ -96,7 +94,9 @@ module RuboCop
 
           return unless correctable_send?(node)
 
-          corrector.replace(whitespace_before_arg(node), '(')
+          whitespace_before_arg_range = whitespace_before_arg(node)
+          corrector.remove(whitespace_before_arg_range)
+          corrector.insert_before(whitespace_before_arg_range, '(')
           corrector.insert_after(node.last_argument, ')')
         end
 
@@ -125,6 +125,14 @@ module RuboCop
           return if node.source_range.begin.is?('(')
 
           corrector.wrap(node, '(', ')')
+        end
+
+        def keep_operator_precedence(corrector, node)
+          if node.or_type? && node.parent&.and_type?
+            corrector.wrap(node, '(', ')')
+          elsif node.and_type? && node.rhs.or_type?
+            corrector.wrap(node.rhs, '(', ')')
+          end
         end
 
         def correctable_send?(node)

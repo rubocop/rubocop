@@ -16,6 +16,14 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        blah
+      elsif b
+        foo
+      end
+    RUBY
   end
 
   it 'catches an if..else nested inside an else' do
@@ -26,9 +34,100 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         if b
         ^^ Convert `if` nested inside `else` to `elsif`.
           foo
+        else # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+          bar
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        blah
+      elsif b
+        foo
+        else # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+          bar
+      end
+    RUBY
+  end
+
+  it 'catches an `if..else` nested inside an `else` and nested inside `if` branch code is empty' do
+    expect_offense(<<~RUBY)
+      if a
+        foo
+      else
+        if b
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          # TODO: comment.
         else
           bar
         end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        foo
+      elsif b
+          # TODO: comment.
+        else
+          bar
+      end
+    RUBY
+  end
+
+  it 'catches an if..elsif..else nested inside an else' do
+    expect_offense(<<~RUBY)
+      if a
+        blah
+      else
+        if b
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          foo
+        elsif c # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+            bar
+        elsif d
+          baz
+        else
+          qux
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        blah
+      elsif b
+        foo
+        elsif c # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+            bar
+        elsif d
+          baz
+        else
+          qux
+      end
+    RUBY
+  end
+
+  it 'catches a modifier if nested inside an else after elsif' do
+    expect_offense(<<~RUBY)
+      if a
+        blah
+      elsif b
+        foo
+      else
+        bar if condition
+            ^^ Convert `if` nested inside `else` to `elsif`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        blah
+      elsif b
+        foo
+      elsif condition
+        bar
       end
     RUBY
   end
@@ -41,6 +140,14 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         else
           foo if b
               ^^ Convert `if` nested inside `else` to `elsif`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if a
+          blah
+        elsif b
+          foo
         end
       RUBY
     end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
   context 'when a block argument has same name ' \
           'as an outer scope variable' do
     it 'registers an offense' do
@@ -167,6 +165,17 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
           foo = 1
           puts foo
           def some_method(foo)
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'with Ractor.new' do
+    it 'does not regiser an offense' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args)
+          Ractor.new(*args) do |*args|
           end
         end
       RUBY

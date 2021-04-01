@@ -22,36 +22,36 @@ module RuboCop
       #   a = 1
       #   b = 2
       #   c = 3
-      class ParallelAssignment < Cop
+      class ParallelAssignment < Base
         include RescueNode
+        extend AutoCorrector
 
         MSG = 'Do not use parallel assignment.'
 
         def on_masgn(node)
           lhs, rhs = *node
           lhs_elements = *lhs
-          rhs_elements = [*rhs].compact # edge case for one constant
+          rhs_elements = Array(rhs).compact # edge case for one constant
 
           return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
                     allowed_masign?(lhs_elements, rhs_elements)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            left, right = *node
-            left_elements = *left
-            right_elements = [*right].compact
-            order = find_valid_order(left_elements, right_elements)
-            correction = assignment_corrector(node, order)
-
-            corrector.replace(correction.correction_range,
-                              correction.correction)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          left, right = *node
+          left_elements = *left
+          right_elements = Array(right).compact
+          order = find_valid_order(left_elements, right_elements)
+          correction = assignment_corrector(node, order)
+
+          corrector.replace(correction.correction_range, correction.correction)
+        end
 
         def allowed_masign?(lhs_elements, rhs_elements)
           lhs_elements.size != rhs_elements.size ||
@@ -69,7 +69,7 @@ module RuboCop
 
         def allowed_rhs?(node)
           # Edge case for one constant
-          elements = [*node].compact
+          elements = Array(node).compact
 
           # Account for edge case of `Constant::CONSTANT`
           !node.array_type? ||
@@ -115,6 +115,7 @@ module RuboCop
           end
         end
 
+        # @!method implicit_self_getter?(node)
         def_node_matcher :implicit_self_getter?, '(send nil? $_)'
 
         # Helper class necessitated by silly design of TSort prior to Ruby 2.1
@@ -123,16 +124,21 @@ module RuboCop
           include TSort
           extend RuboCop::NodePattern::Macros
 
+          # @!method var_name(node)
           def_node_matcher :var_name, '{(casgn _ $_) (_ $_)}'
+
+          # @!method uses_var?(node)
           def_node_search :uses_var?, '{({lvar ivar cvar gvar} %) (const _ %)}'
+
+          # @!method matching_calls(node, receiver, method_name)
           def_node_search :matching_calls, '(send %1 %2 $...)'
 
           def initialize(assignments)
             @assignments = assignments
           end
 
-          def tsort_each_node
-            @assignments.each { |a| yield a }
+          def tsort_each_node(&block)
+            @assignments.each(&block)
           end
 
           def tsort_each_child(assignment)

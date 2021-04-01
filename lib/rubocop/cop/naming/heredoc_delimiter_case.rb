@@ -27,16 +27,22 @@ module RuboCop
       #   <<-sql
       #     SELECT * FROM foo
       #   sql
-      class HeredocDelimiterCase < Cop
+      class HeredocDelimiterCase < Base
         include Heredoc
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Use %<style>s heredoc delimiters.'
 
         def on_heredoc(node)
           return if correct_case_delimiters?(node)
 
-          add_offense(node, location: :heredoc_end)
+          add_offense(node.loc.heredoc_end) do |corrector|
+            expr = node.loc.expression
+
+            corrector.replace(expr, correct_delimiters(expr.source))
+            corrector.replace(node.loc.heredoc_end, correct_delimiters(delimiter_string(expr)))
+          end
         end
 
         private
@@ -46,14 +52,14 @@ module RuboCop
         end
 
         def correct_case_delimiters?(node)
-          delimiter_string(node) == correct_delimiters(node)
+          delimiter_string(node) == correct_delimiters(delimiter_string(node))
         end
 
-        def correct_delimiters(node)
+        def correct_delimiters(source)
           if style == :uppercase
-            delimiter_string(node).upcase
+            source.upcase
           else
-            delimiter_string(node).downcase
+            source.downcase
           end
         end
       end

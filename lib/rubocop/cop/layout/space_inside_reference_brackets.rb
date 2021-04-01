@@ -53,20 +53,20 @@ module RuboCop
       #   # good
       #   foo[ ]
       #
-      class SpaceInsideReferenceBrackets < Cop
+      class SpaceInsideReferenceBrackets < Base
         include SurroundingSpace
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = '%<command>s space inside reference brackets.'
         EMPTY_MSG = '%<command>s space inside empty reference brackets.'
 
-        BRACKET_METHODS = %i[[] []=].freeze
+        RESTRICT_ON_SEND = %i[[] []=].freeze
 
         def on_send(node)
           return if node.multiline?
-          return unless bracket_method?(node)
 
-          tokens = tokens(node)
+          tokens = processed_source.tokens_within(node)
           left_token = left_ref_bracket(node, tokens)
           return unless left_token
 
@@ -83,32 +83,24 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            left, right = reference_brackets(node)
+        private
 
-            if empty_brackets?(left, right)
-              SpaceCorrector.empty_corrections(processed_source, corrector,
-                                               empty_config, left, right)
-            elsif style == :no_space
-              SpaceCorrector.remove_space(processed_source, corrector,
-                                          left, right)
-            else
-              SpaceCorrector.add_space(processed_source, corrector, left, right)
-            end
+        def autocorrect(corrector, node)
+          left, right = reference_brackets(node)
+
+          if empty_brackets?(left, right)
+            SpaceCorrector.empty_corrections(processed_source, corrector, empty_config, left, right)
+          elsif style == :no_space
+            SpaceCorrector.remove_space(processed_source, corrector, left, right)
+          else
+            SpaceCorrector.add_space(processed_source, corrector, left, right)
           end
         end
 
-        private
-
         def reference_brackets(node)
-          tokens = tokens(node)
+          tokens = processed_source.tokens_within(node)
           left = left_ref_bracket(node, tokens)
           [left, closing_bracket(tokens, left)]
-        end
-
-        def bracket_method?(node)
-          BRACKET_METHODS.include?(node.method_name)
         end
 
         def left_ref_bracket(node, tokens)

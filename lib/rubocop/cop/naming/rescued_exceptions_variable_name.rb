@@ -9,6 +9,11 @@ module RuboCop
       # The `PreferredName` config option takes a `String`. It represents
       # the required name of the variable. Its default is `e`.
       #
+      # NOTE: This cop does not consider nested rescues because it cannot
+      # guarantee that the variable from the outer rescue is not used within
+      # the inner rescue (in which case, changing the inner variable would
+      # shadow the outer variable).
+      #
       # @example PreferredName: e (default)
       #   # bad
       #   begin
@@ -53,28 +58,30 @@ module RuboCop
       #     # do something
       #   end
       #
-      class RescuedExceptionsVariableName < Cop
+      class RescuedExceptionsVariableName < Base
+        extend AutoCorrector
+
         MSG = 'Use `%<preferred>s` instead of `%<bad>s`.'
 
         def on_resbody(node)
-          name = variable_name(node)
-          return unless name
-          return if preferred_name(name).to_sym == name
+          offending_name = variable_name(node)
+          return unless offending_name
 
-          add_offense(node, location: offense_range(node))
-        end
+          # Handle nested rescues by only requiring the outer one to use the
+          # configured variable name, so that nested rescues don't use the same
+          # variable.
+          return if node.each_ancestor(:resbody).any?
 
-        def autocorrect(node)
-          lambda do |corrector|
-            offending_name = variable_name(node)
-            preferred_name = preferred_name(offending_name)
-            corrector.replace(offense_range(node), preferred_name)
+          preferred_name = preferred_name(offending_name)
+          return if preferred_name.to_sym == offending_name
 
-            node.body&.each_descendant(:lvar) do |var|
-              next unless var.children.first == offending_name
+          range = offense_range(node)
+          message = message(node)
 
-              corrector.replace(var, preferred_name)
-            end
+          add_offense(range, message: message) do |corrector|
+            corrector.replace(range, preferred_name)
+
+            correct_node(corrector, node.body, offending_name, preferred_name)
           end
         end
 
@@ -83,6 +90,43 @@ module RuboCop
         def offense_range(resbody)
           variable = resbody.exception_variable
           variable.loc.expression
+        end
+
+        def variable_name_matches?(node, name)
+          if node.masgn_type?
+            node.each_descendant(:lvasgn).any? do |lvasgn_node|
+              variable_name_matches?(lvasgn_node, name)
+            end
+          else
+            node.children.first == name
+          end
+        end
+
+        def correct_node(corrector, node, offending_name, preferred_name)
+          return unless node
+
+          node.each_node(:lvar, :lvasgn, :masgn) do |child_node|
+            next unless variable_name_matches?(child_node, offending_name)
+
+            corrector.replace(child_node, preferred_name) if child_node.lvar_type?
+
+            if child_node.masgn_type? || child_node.lvasgn_type?
+              correct_reassignment(corrector, child_node, offending_name, preferred_name)
+              break
+            end
+          end
+        end
+
+        # If the exception variable is reassigned, that assignment needs to be corrected.
+        # Further `lvar` nodes will not be corrected though since they now refer to a
+        # different variable.
+        def correct_reassignment(corrector, node, offending_name, preferred_name)
+          if node.lvasgn_type?
+            correct_node(corrector, node.child_nodes.first, offending_name, preferred_name)
+          elsif node.masgn_type?
+            # With multiple assign, the assignments are in an array as the last child
+            correct_node(corrector, node.children.last, offending_name, preferred_name)
+          end
         end
 
         def preferred_name(variable_name)

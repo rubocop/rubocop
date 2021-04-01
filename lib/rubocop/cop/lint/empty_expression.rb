@@ -22,13 +22,13 @@ module RuboCop
       #   if (some_expression)
       #     bar
       #   end
-      class EmptyExpression < Cop
+      class EmptyExpression < Base
         MSG = 'Avoid empty expressions.'
 
         def on_begin(node)
           return unless empty_expression?(node)
 
-          add_offense(node, location: node.source_range)
+          add_offense(node)
         end
 
         private

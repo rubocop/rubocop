@@ -1,0 +1,13 @@
+= History
+
+[quote]
+You don't know where you're going until you know where you've been.
+
+RuboCop was created by Bozhidar Batsov in the spring of 2012, as an attempt
+to make it easy to apply consistently the guidelines from the community Ruby Style Guide.
+
+
+== Notable Milestones
+
+* 21 Apr 2012 - Initial commit by Bozhidar Batsov.
+* 21 Oct 2020 - RuboCop 1.0 is released (exactly 7.5 years after the first commit).

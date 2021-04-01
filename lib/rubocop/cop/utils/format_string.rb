@@ -41,8 +41,7 @@ module RuboCop
         #
         # @see https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-format
         class FormatSequence
-          attr_reader :begin_pos, :end_pos
-          attr_reader :flags, :width, :precision, :name, :type
+          attr_reader :begin_pos, :end_pos, :flags, :width, :precision, :name, :type
 
           def initialize(match)
             @source = match[0]
@@ -97,6 +96,10 @@ module RuboCop
           @format_sequences ||= parse
         end
 
+        def valid?
+          !mixed_formats?
+        end
+
         def named_interpolation?
           format_sequences.any?(&:name)
         end
@@ -108,11 +111,23 @@ module RuboCop
         private
 
         def parse
-          @source.to_enum(:scan, SEQUENCE).map do
-            FormatSequence.new(
-              Regexp.last_match
-            )
+          matches = []
+          @source.scan(SEQUENCE) { matches << FormatSequence.new(Regexp.last_match) }
+          matches
+        end
+
+        def mixed_formats?
+          formats = format_sequences.reject(&:percent?).map do |seq|
+            if seq.name
+              :named
+            elsif seq.max_digit_dollar_num
+              :numbered
+            else
+              :unnumbered
+            end
           end
+
+          formats.uniq.size > 1
         end
       end
     end

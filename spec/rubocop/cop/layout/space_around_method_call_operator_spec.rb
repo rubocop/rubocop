@@ -1,19 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
-  shared_examples 'offense' do |name, code, offense, correction|
-    it "registers an offense when #{name}" do
+RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
+  # FIXME: Remove unused vars
+  shared_examples 'offense' do |name, _code, offense, correction|
+    it "registers an offense and corrects when #{name}" do
       expect_offense(offense)
-    end
 
-    it "autocorrects offense when #{name}" do
-      corrected = autocorrect_source(code)
-
-      expect(corrected).to eq(correction)
+      expect_correction(correction)
     end
   end
 
@@ -69,6 +62,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
       foo.bar
     CORRECTION
 
+    include_examples 'offense', 'spaces after `Proc#call` shorthand call',
+                     <<-CODE, <<-OFFENSE, <<-CORRECTION
+      foo. ()
+    CODE
+      foo. ()
+          ^ Avoid using spaces around a method call operator.
+    OFFENSE
+      foo.()
+    CORRECTION
+
     context 'when multi line method call' do
       include_examples 'offense', 'space before method call',
                        <<-CODE, <<-OFFENSE, <<-CORRECTION
@@ -90,7 +93,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
       CODE
         foo .
            ^ Avoid using spaces around a method call operator.
-            bar
+          bar
       OFFENSE
         foo.
           bar
@@ -274,7 +277,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
       CODE
         foo &.
            ^ Avoid using spaces around a method call operator.
-            bar
+          bar
       OFFENSE
         foo&.
           bar
@@ -499,6 +502,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator do
   it 'does not register an offense when no method call operator' do
     expect_no_offenses(<<~RUBY)
       'foo' + 'bar'
+    RUBY
+  end
+
+  it 'does not register an offense when using `__ENCODING__`' do
+    expect_no_offenses(<<~RUBY)
+      __ENCODING__
     RUBY
   end
 end

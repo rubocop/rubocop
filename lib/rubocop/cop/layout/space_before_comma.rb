@@ -15,12 +15,10 @@ module RuboCop
       #   [1, 2, 3]
       #   a(1, 2)
       #   each { |a, b| }
-      class SpaceBeforeComma < Cop
+      #
+      class SpaceBeforeComma < Base
         include SpaceBeforePunctuation
-
-        def autocorrect(space)
-          PunctuationCorrector.remove_space(space)
-        end
+        extend AutoCorrector
 
         def kind(token)
           'comma' if token.comma?

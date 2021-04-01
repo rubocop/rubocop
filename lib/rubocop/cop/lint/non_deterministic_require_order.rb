@@ -11,6 +11,11 @@ module RuboCop
       # that are hard to debug. To ensure this doesn't happen,
       # always sort the list.
       #
+      # `Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
+      # So all bad cases are acceptable when Ruby 3.0 or higher are used.
+      #
+      # This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+      #
       # @example
       #
       #   # bad
@@ -23,8 +28,6 @@ module RuboCop
       #     require file
       #   end
       #
-      # @example
-      #
       #   # bad
       #   Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')) do |file|
       #     require file
@@ -35,51 +38,130 @@ module RuboCop
       #     require file
       #   end
       #
-      class NonDeterministicRequireOrder < Cop
+      #   # bad
+      #   Dir['./lib/**/*.rb'].each(&method(:require))
+      #
+      #   # good
+      #   Dir['./lib/**/*.rb'].sort.each(&method(:require))
+      #
+      #   # bad
+      #   Dir.glob(Rails.root.join('test', '*.rb'), &method(:require))
+      #
+      #   # good
+      #   Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
+      #
+      #   # good - Respect intent if `sort` keyword option is specified in Ruby 3.0 or higher.
+      #   Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), sort: false).each(&method(:require))
+      #
+      class NonDeterministicRequireOrder < Base
+        extend AutoCorrector
+
         MSG = 'Sort files before requiring them.'
 
         def on_block(node)
+          return if target_ruby_version >= 3.0
           return unless node.body
           return unless unsorted_dir_loop?(node.send_node)
 
           loop_variable(node.arguments) do |var_name|
             return unless var_is_required?(node.body, var_name)
 
-            add_offense(node.send_node)
+            add_offense(node.send_node) do |corrector|
+              correct_block(corrector, node.send_node)
+            end
           end
         end
 
-        def autocorrect(node)
-          if unsorted_dir_block?(node)
-            lambda do |corrector|
-              corrector.replace(node, "#{node.source}.sort.each")
-            end
-          else
-            lambda do |corrector|
-              source = node.receiver.source
-              corrector.replace(node, "#{source}.sort.each")
+        def on_block_pass(node)
+          return if target_ruby_version >= 3.0
+          return unless method_require?(node)
+          return unless unsorted_dir_pass?(node.parent)
+
+          parent_node = node.parent
+
+          add_offense(parent_node) do |corrector|
+            if parent_node.arguments.last&.block_pass_type?
+              correct_block_pass(corrector, parent_node)
+            else
+              correct_block(corrector, parent_node)
             end
           end
         end
 
         private
 
+        def correct_block(corrector, node)
+          if unsorted_dir_block?(node)
+            corrector.replace(node, "#{node.source}.sort.each")
+          else
+            source = node.receiver.source
+
+            corrector.replace(node, "#{source}.sort.each")
+          end
+        end
+
+        def correct_block_pass(corrector, node)
+          if unsorted_dir_glob_pass?(node)
+            block_arg = node.arguments.last
+
+            corrector.remove(last_arg_range(node))
+            corrector.insert_after(node, ".sort.each(#{block_arg.source})")
+          else
+            corrector.replace(node.loc.selector, 'sort.each')
+          end
+        end
+
+        # Returns range of last argument including comma and whitespace.
+        #
+        # @return [Parser::Source::Range]
+        #
+        def last_arg_range(node)
+          node.arguments.last.source_range.with(
+            begin_pos: node.arguments[-2].source_range.end_pos
+          )
+        end
+
         def unsorted_dir_loop?(node)
           unsorted_dir_block?(node) || unsorted_dir_each?(node)
         end
 
+        def unsorted_dir_pass?(node)
+          unsorted_dir_glob_pass?(node) || unsorted_dir_each_pass?(node)
+        end
+
+        # @!method unsorted_dir_block?(node)
         def_node_matcher :unsorted_dir_block?, <<~PATTERN
-          (send (const nil? :Dir) :glob ...)
+          (send (const {nil? cbase} :Dir) :glob ...)
         PATTERN
 
+        # @!method unsorted_dir_each?(node)
         def_node_matcher :unsorted_dir_each?, <<~PATTERN
-          (send (send (const nil? :Dir) {:[] :glob} ...) :each)
+          (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each)
         PATTERN
 
+        # @!method method_require?(node)
+        def_node_matcher :method_require?, <<~PATTERN
+          (block-pass (send nil? :method (sym :require)))
+        PATTERN
+
+        # @!method unsorted_dir_glob_pass?(node)
+        def_node_matcher :unsorted_dir_glob_pass?, <<~PATTERN
+          (send (const {nil? cbase} :Dir) :glob ...
+            (block-pass (send nil? :method (sym :require))))
+        PATTERN
+
+        # @!method unsorted_dir_each_pass?(node)
+        def_node_matcher :unsorted_dir_each_pass?, <<~PATTERN
+          (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each
+            (block-pass (send nil? :method (sym :require))))
+        PATTERN
+
+        # @!method loop_variable(node)
         def_node_matcher :loop_variable, <<~PATTERN
           (args (arg $_))
         PATTERN
 
+        # @!method var_is_required?(node, name)
         def_node_search :var_is_required?, <<~PATTERN
           (send nil? :require (lvar %1))
         PATTERN

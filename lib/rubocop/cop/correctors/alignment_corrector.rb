@@ -12,7 +12,7 @@ module RuboCop
       class << self
         attr_reader :processed_source
 
-        def correct(processed_source, node, column_delta)
+        def correct(corrector, processed_source, node, column_delta)
           return unless node
 
           @processed_source = processed_source
@@ -21,21 +21,18 @@ module RuboCop
 
           taboo_ranges = inside_string_ranges(node)
 
-          lambda do |corrector|
-            each_line(expr) do |line_begin_pos|
-              autocorrect_line(corrector, line_begin_pos, expr, column_delta,
-                               taboo_ranges)
-            end
+          each_line(expr) do |line_begin_pos|
+            autocorrect_line(corrector, line_begin_pos, expr, column_delta, taboo_ranges)
           end
         end
 
-        def align_end(processed_source, node, align_to)
+        def align_end(corrector, processed_source, node, align_to)
           @processed_source = processed_source
           whitespace = whitespace_range(node)
           return false unless whitespace.source.strip.empty?
 
           column = alignment_column(align_to)
-          ->(corrector) { corrector.replace(whitespace, ' ' * column) }
+          corrector.replace(whitespace, ' ' * column)
         end
 
         private
@@ -47,8 +44,8 @@ module RuboCop
           # string literals
           return if taboo_ranges.any? { |t| within?(range, t) }
 
-          if column_delta.positive?
-            corrector.insert_before(range, ' ' * column_delta) unless range.resize(1).source == "\n"
+          if column_delta.positive? && range.resize(1).source != "\n"
+            corrector.insert_before(range, ' ' * column_delta)
           elsif /\A[ \t]+\z/.match?(range.source)
             remove(range, corrector)
           end

@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for unreachable code.
       # The check are based on the presence of flow of control
-      # statement in non-final position in *begin*(implicit) blocks.
+      # statement in non-final position in `begin` (implicit) blocks.
       #
       # @example
       #
@@ -34,7 +34,7 @@ module RuboCop
       #   def some_method
       #     do_something
       #   end
-      class UnreachableCode < Cop
+      class UnreachableCode < Base
         MSG = 'Unreachable code detected.'
 
         def on_begin(node)
@@ -51,6 +51,7 @@ module RuboCop
 
         private
 
+        # @!method flow_command?(node)
         def_node_matcher :flow_command?, <<~PATTERN
           {
             return next break retry redo

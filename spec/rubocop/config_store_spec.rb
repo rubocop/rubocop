@@ -10,7 +10,7 @@ RSpec.describe RuboCop::ConfigStore do
       # dir/.rubocop.yml
       # dir/file2
       # dir/subdir/file3
-      (/dir/.match?(arg) ? 'dir' : '.') + '/.rubocop.yml'
+      "#{/dir/.match?(arg) ? 'dir' : '.'}/.rubocop.yml"
     end
     allow(RuboCop::ConfigLoader)
       .to receive(:configuration_from_file) { |arg| arg }
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::ConfigStore do
         # The stub returns the same config path for dir and dir/subdir.
         expect(RuboCop::ConfigLoader)
           .to receive(:configuration_from_file)
-          .with('dir/.rubocop.yml').once
+          .with('dir/.rubocop.yml', check: true).once
 
         config_store.for('dir/file2')
         config_store.for('dir/file2')

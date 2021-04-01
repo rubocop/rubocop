@@ -77,10 +77,11 @@ module RuboCop
       #   and_now_for_something = {
       #                             completely: :different
       #                           }
-      class FirstHashElementIndentation < Cop
+      class FirstHashElementIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include MultilineElementIndentation
+        extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
               'in a hash, relative to %<base_description>s.'
@@ -96,11 +97,11 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def brace_alignment_style
           :align_braces
@@ -134,16 +135,10 @@ module RuboCop
           @column_delta = expected_column - right_brace.column
           return if @column_delta.zero?
 
-          msg = if style == :align_braces
-                  'Indent the right brace the same as the left brace.'
-                elsif style == :special_inside_parentheses && left_parenthesis
-                  'Indent the right brace the same as the first position ' \
-                  'after the preceding left parenthesis.'
-                else
-                  'Indent the right brace the same as the start of the line ' \
-                  'where the left brace is.'
-                end
-          add_offense(right_brace, location: right_brace, message: msg)
+          message = message_for_right_brace(left_parenthesis)
+          add_offense(right_brace, message: message) do |corrector|
+            autocorrect(corrector, right_brace)
+          end
         end
 
         def separator_style?(first_pair)
@@ -177,6 +172,18 @@ module RuboCop
             configured_indentation_width: configured_indentation_width,
             base_description: base_description
           )
+        end
+
+        def message_for_right_brace(left_parenthesis)
+          if style == :align_braces
+            'Indent the right brace the same as the left brace.'
+          elsif style == :special_inside_parentheses && left_parenthesis
+            'Indent the right brace the same as the first position ' \
+            'after the preceding left parenthesis.'
+          else
+            'Indent the right brace the same as the start of the line ' \
+            'where the left brace is.'
+          end
         end
       end
     end

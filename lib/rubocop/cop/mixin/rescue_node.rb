@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for checking `rescue` nodes.
     module RescueNode
-      def investigate(processed_source)
+      def on_new_investigation
         @modifier_locations = processed_source
                               .tokens
                               .select(&:rescue_modifier?)
@@ -16,6 +16,16 @@ module RuboCop
       def rescue_modifier?(node)
         node&.resbody_type? &&
           @modifier_locations.include?(node.loc.keyword)
+      end
+
+      # @deprecated Use ResbodyNode#exceptions instead
+      def rescued_exceptions(resbody)
+        rescue_group, = *resbody
+        if rescue_group
+          rescue_group.values
+        else
+          []
+        end
       end
     end
   end

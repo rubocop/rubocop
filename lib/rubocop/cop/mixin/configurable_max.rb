@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     # Handles `Max` configuration parameters, especially setting them to an
     # appropriate value with --auto-gen-config.
+    # @deprecated Use `exclude_limit ParameterName` instead.
     module ConfigurableMax
       private
 

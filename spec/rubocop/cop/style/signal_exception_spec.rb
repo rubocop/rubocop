@@ -13,6 +13,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
           #do nothing
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          fail
+        rescue Exception
+          #do nothing
+        end
+      RUBY
     end
 
     it 'registers an offense for raise in def body' do
@@ -20,6 +28,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         def test
           raise
           ^^^^^ Use `fail` instead of `raise` to signal exceptions.
+        rescue Exception
+          #do nothing
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          fail
         rescue Exception
           #do nothing
         end
@@ -33,6 +49,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         rescue Exception
           fail
           ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          fail
+        rescue Exception
+          raise
         end
       RUBY
     end
@@ -68,6 +92,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
           ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          fail
+        rescue Exception
+          raise
+        end
+      RUBY
     end
 
     it 'registers an offense for fail in second rescue' do
@@ -81,6 +113,16 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
           ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          fail
+        rescue StandardError
+          # handle error
+        rescue Exception
+          raise
+        end
+      RUBY
     end
 
     it 'registers only offense for one raise that should be fail' do
@@ -89,6 +131,12 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         map do
           raise 'I'
           ^^^^^ Use `fail` instead of `raise` to signal exceptions.
+        end.flatten.compact
+      RUBY
+
+      expect_correction(<<~RUBY)
+        map do
+          fail 'I'
         end.flatten.compact
       RUBY
     end
@@ -124,6 +172,35 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
                  ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          Kernel.fail
+        rescue Exception
+          Kernel.raise
+        end
+      RUBY
+    end
+
+    it 'registers an offense for `raise` and `fail` with `::Kernel` as ' \
+       'explicit receiver' do
+      expect_offense(<<~RUBY)
+        def test
+          ::Kernel.raise
+                   ^^^^^ Use `fail` instead of `raise` to signal exceptions.
+        rescue Exception
+          ::Kernel.fail
+                   ^^^^ Use `raise` instead of `fail` to rethrow exceptions.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          ::Kernel.fail
+        rescue Exception
+          ::Kernel.raise
+        end
+      RUBY
     end
 
     it 'registers an offense for raise not in a begin/rescue/end' do
@@ -135,6 +212,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
              ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        case cop_config['EnforcedStyle']
+        when 'single_quotes' then true
+        when 'double_quotes' then false
+        else fail 'Unknown StringLiterals style'
+        end
+      RUBY
     end
 
     it 'registers one offense for each raise' do
@@ -143,6 +228,11 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
                             ^^^^^ Use `fail` instead of `raise` to signal exceptions.
         cop.stub(:on_def) { raise RuntimeError }
                             ^^^^^ Use `fail` instead of `raise` to signal exceptions.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cop.stub(:on_def) { fail RuntimeError }
+        cop.stub(:on_def) { fail RuntimeError }
       RUBY
     end
 
@@ -162,38 +252,17 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
           #do nothing
         end
       RUBY
-    end
 
-    it 'auto-corrects raise to fail when appropriate' do
-      new_source = autocorrect_source(<<~RUBY)
-        begin
-          raise
-        rescue Exception
-          raise
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         begin
           fail
+          begin
+            fail
+          rescue
+            raise
+          end
         rescue Exception
-          raise
-        end
-      RUBY
-    end
-
-    it 'auto-corrects fail to raise when appropriate' do
-      new_source = autocorrect_source(<<~RUBY)
-        begin
-          fail
-        rescue Exception
-          fail
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        begin
-          fail
-        rescue Exception
-          raise
+          #do nothing
         end
       RUBY
     end
@@ -211,6 +280,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
           #do nothing
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          raise
+        rescue Exception
+          #do nothing
+        end
+      RUBY
     end
 
     it 'registers an offense for fail in def body' do
@@ -218,6 +295,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         def test
           fail
           ^^^^ Always use `raise` to signal exceptions.
+        rescue Exception
+          #do nothing
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          raise
         rescue Exception
           #do nothing
         end
@@ -231,6 +316,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         rescue Exception
           fail
           ^^^^ Always use `raise` to signal exceptions.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          raise
+        rescue Exception
+          raise
         end
       RUBY
     end
@@ -268,22 +361,9 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         Kernel.fail
                ^^^^ Always use `raise` to signal exceptions.
       RUBY
-    end
 
-    it 'auto-corrects fail to raise always' do
-      new_source = autocorrect_source(<<~RUBY)
-        begin
-          fail
-        rescue Exception
-          fail
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        begin
-          raise
-        rescue Exception
-          raise
-        end
+      expect_correction(<<~RUBY)
+        Kernel.raise
       RUBY
     end
   end
@@ -300,6 +380,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
           #do nothing
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          fail
+        rescue Exception
+          #do nothing
+        end
+      RUBY
     end
 
     it 'registers an offense for raise in def body' do
@@ -307,6 +395,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         def test
           raise
           ^^^^^ Always use `fail` to signal exceptions.
+        rescue Exception
+          #do nothing
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          fail
         rescue Exception
           #do nothing
         end
@@ -322,6 +418,14 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
           ^^^^^ Always use `fail` to signal exceptions.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          fail
+        rescue Exception
+          fail
+        end
+      RUBY
     end
 
     it 'accepts `raise` with explicit receiver' do
@@ -333,22 +437,9 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
         Kernel.raise
                ^^^^^ Always use `fail` to signal exceptions.
       RUBY
-    end
 
-    it 'auto-corrects raise to fail always' do
-      new_source = autocorrect_source(<<~RUBY)
-        begin
-          raise
-        rescue Exception
-          raise
-        end
-      RUBY
-      expect(new_source).to eq(<<~RUBY)
-        begin
-          fail
-        rescue Exception
-          fail
-        end
+      expect_correction(<<~RUBY)
+        Kernel.fail
       RUBY
     end
   end

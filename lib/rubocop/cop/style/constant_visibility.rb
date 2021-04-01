@@ -26,18 +26,46 @@ module RuboCop
       #     public_constant :BAZ
       #   end
       #
-      class ConstantVisibility < Cop
+      # @example IgnoreModules: false (default)
+      #   # bad
+      #   class Foo
+      #     MyClass = Struct.new()
+      #   end
+      #
+      #   # good
+      #   class Foo
+      #     MyClass = Struct.new()
+      #     public_constant :MyClass
+      #   end
+      #
+      # @example IgnoreModules: true
+      #   # good
+      #   class Foo
+      #     MyClass = Struct.new()
+      #   end
+      #
+      class ConstantVisibility < Base
         MSG = 'Explicitly make `%<constant_name>s` public or private using ' \
               'either `#public_constant` or `#private_constant`.'
 
         def on_casgn(node)
           return unless class_or_module_scope?(node)
           return if visibility_declaration?(node)
+          return if ignore_modules? && module?(node)
 
-          add_offense(node)
+          message = message(node)
+          add_offense(node, message: message)
         end
 
         private
+
+        def ignore_modules?
+          cop_config.fetch('IgnoreModules', false)
+        end
+
+        def module?(node)
+          node.children.last.class_constructor?
+        end
 
         def message(node)
           _namespace, constant_name, _value = *node
@@ -64,6 +92,7 @@ module RuboCop
           end
         end
 
+        # @!method visibility_declaration_for?(node, const_name)
         def_node_matcher :visibility_declaration_for?, <<~PATTERN
           (send nil? {:public_constant :private_constant} ({sym str} #match_name?(%1)))
         PATTERN

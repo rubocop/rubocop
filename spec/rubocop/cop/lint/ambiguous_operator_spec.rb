@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator, :config do
   context 'with `+` unary operator in the first argument' do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do
@@ -192,6 +190,14 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator do
           do_something(**kwargs)
         RUBY
       end
+    end
+  end
+
+  context 'when using safe navigation operator with a unary operator' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        do_something&.* -1
+      RUBY
     end
   end
 end

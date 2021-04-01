@@ -1,6 +1,12 @@
+###
+# Please keep /.mergify.yml synced!
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   main:
@@ -15,10 +21,10 @@ jobs:
       matrix:
         # [ ubuntu, macos, windows ]
         os: [ windows ]
-        ruby: [ 2.4, 2.5, 2.6, 2.7, head ]
+        ruby: [ '2.4', '2.5', '2.6', '2.7', '3.0', 'head' ]
         include:
           - { os: windows, ruby: mingw }
-        exclude: 
+        exclude:
           - { os: windows, ruby: head  }
 
     steps:
@@ -26,7 +32,7 @@ jobs:
         if: matrix.os == 'windows'
         run: |
           # set TMPDIR, git core.autocrlf
-          echo "::set-env name=TMPDIR::$env:RUNNER_TEMP"
+          echo "TMPDIR=$env:RUNNER_TEMP" >> $GITHUB_ENV
           git config --system core.autocrlf false
       - name: checkout
         uses: actions/checkout@v2

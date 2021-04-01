@@ -27,23 +27,18 @@ module RuboCop
       #   # good
       #   # (start of file)
       #   # a comment
-      class LeadingEmptyLines < Cop
+      class LeadingEmptyLines < Base
+        extend AutoCorrector
+
         MSG = 'Unnecessary blank line at the beginning of the source.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           token = processed_source.tokens[0]
           return unless token && token.line > 1
 
-          add_offense(processed_source.tokens[0],
-                      location: processed_source.tokens[0].pos)
-        end
+          add_offense(token.pos) do |corrector|
+            range = Parser::Source::Range.new(processed_source.buffer, 0, token.begin_pos)
 
-        def autocorrect(node)
-          range = Parser::Source::Range.new(processed_source.buffer,
-                                            0,
-                                            node.begin_pos)
-
-          lambda do |corrector|
             corrector.remove(range)
           end
         end

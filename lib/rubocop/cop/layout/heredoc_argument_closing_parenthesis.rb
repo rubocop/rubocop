@@ -50,11 +50,16 @@ module RuboCop
       #        123,
       #      )
       #
-      class HeredocArgumentClosingParenthesis < Cop
+      class HeredocArgumentClosingParenthesis < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Put the closing parenthesis for a method call with a ' \
         'HEREDOC parameter on the same line as the HEREDOC opening.'
+
+        def self.autocorrect_incompatible_with
+          [Style::TrailingCommaInArguments]
+        end
 
         def on_send(node)
           heredoc_arg = extract_heredoc_argument(node)
@@ -64,9 +69,15 @@ module RuboCop
           return unless outermost_send
           return unless outermost_send.loc.end
           return unless heredoc_arg.first_line != outermost_send.loc.end.line
+          return if subsequent_closing_parentheses_in_same_line?(outermost_send)
+          return if exist_argument_between_heredoc_end_and_closing_parentheses?(node)
 
-          add_offense(outermost_send, location: :end)
+          add_offense(outermost_send.loc.end) do |corrector|
+            autocorrect(corrector, outermost_send)
+          end
         end
+
+        private
 
         # Autocorrection note:
         #
@@ -94,21 +105,13 @@ module RuboCop
         #   SQL
         #   third_array_value,
         # ]
-        def autocorrect(node)
-          lambda do |corrector|
-            fix_closing_parenthesis(node, corrector)
+        def autocorrect(corrector, node)
+          fix_closing_parenthesis(node, corrector)
 
-            remove_internal_trailing_comma(node, corrector) if internal_trailing_comma?(node)
+          remove_internal_trailing_comma(node, corrector) if internal_trailing_comma?(node)
 
-            fix_external_trailing_comma(node, corrector) if external_trailing_comma?(node)
-          end
+          fix_external_trailing_comma(node, corrector) if external_trailing_comma?(node)
         end
-
-        def self.autocorrect_incompatible_with
-          [Style::TrailingCommaInArguments]
-        end
-
-        private
 
         def outermost_send_on_same_line(heredoc)
           previous = heredoc
@@ -159,6 +162,17 @@ module RuboCop
 
         # Closing parenthesis helpers.
 
+        def subsequent_closing_parentheses_in_same_line?(outermost_send)
+          last_arg_of_outer_send = outermost_send.last_argument
+          return false unless last_arg_of_outer_send&.loc.respond_to?(:end) &&
+                              (end_of_last_arg_of_outer_send = last_arg_of_outer_send.loc.end)
+
+          end_of_outer_send = outermost_send.loc.end
+
+          end_of_outer_send.line == end_of_last_arg_of_outer_send.line &&
+            end_of_outer_send.column == end_of_last_arg_of_outer_send.column + 1
+        end
+
         def fix_closing_parenthesis(node, corrector)
           remove_incorrect_closing_paren(node, corrector)
           add_correct_closing_paren(node, corrector)
@@ -190,7 +204,7 @@ module RuboCop
         def safe_to_remove_line_containing_closing_paren?(node)
           last_line = processed_source[node.loc.end.line - 1]
           # Safe to remove if last line only contains `)`, `,`, and whitespace.
-          last_line.match?(/^[ ]*\)[ ]{0,20},{0,1}[ ]*$/)
+          last_line.match?(/^ *\) {0,20},{0,1} *$/)
         end
 
         def incorrect_parenthesis_removal_end(node)
@@ -200,6 +214,19 @@ module RuboCop
           else
             end_pos
           end
+        end
+
+        def exist_argument_between_heredoc_end_and_closing_parentheses?(node)
+          return false unless (heredoc_end = find_most_bottom_of_heredoc_end(node.arguments))
+
+          heredoc_end < node.loc.end.begin_pos &&
+            range_between(heredoc_end, node.loc.end.begin_pos).source.strip != ''
+        end
+
+        def find_most_bottom_of_heredoc_end(arguments)
+          arguments.map do |argument|
+            argument.loc.heredoc_end.end_pos if argument.loc.respond_to?(:heredoc_end)
+          end.compact.max
         end
 
         # Internal trailing comma helpers.

@@ -42,16 +42,18 @@ module RuboCop
       #     end
       #   end
       #   end
-      class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
+      class IndentationWidth < Base # rubocop:disable Metrics/ClassLength
         include EndKeywordAlignment
         include Alignment
         include CheckAssignment
         include IgnoredPattern
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
               'spaces for%<name>s indentation.'
 
+        # @!method access_modifier?(node)
         def_node_matcher :access_modifier?, <<~PATTERN
           [(send ...) access_modifier?]
         PATTERN
@@ -144,11 +146,11 @@ module RuboCop
           check_if(node, node.body, node.else_branch, base.loc)
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def check_members(base, members)
           check_indentation(base, select_check_member(members.first))
@@ -279,8 +281,9 @@ module RuboCop
           name = style == 'normal' ? '' : " #{style}"
           message = message(configured_indentation_width, indentation, name)
 
-          add_offense(node, location: offending_range(body_node, indentation),
-                            message: message)
+          add_offense(offending_range(body_node, indentation), message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def message(configured_indentation_width, indentation, name)
@@ -307,12 +310,20 @@ module RuboCop
         def indentation_to_check?(base_loc, body_node)
           return false if skip_check?(base_loc, body_node)
 
-          if %i[rescue ensure].include?(body_node.type)
+          if body_node.rescue_type?
+            check_rescue?(body_node)
+          elsif body_node.ensure_type?
             block_body, = *body_node
             return unless block_body
-          end
 
-          true
+            check_rescue?(block_body) if block_body.rescue_type?
+          else
+            true
+          end
+        end
+
+        def check_rescue?(rescue_node)
+          rescue_node.body
         end
 
         def skip_check?(base_loc, body_node)

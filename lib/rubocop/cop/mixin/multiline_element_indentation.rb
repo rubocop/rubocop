@@ -77,7 +77,9 @@ module RuboCop
       def incorrect_style_detected(styles, first, left_parenthesis)
         msg = message(base_description(left_parenthesis))
 
-        add_offense(first, message: msg) do
+        add_offense(first, message: msg) do |corrector|
+          autocorrect(corrector, first)
+
           ambiguous_style_detected(*styles)
         end
       end
