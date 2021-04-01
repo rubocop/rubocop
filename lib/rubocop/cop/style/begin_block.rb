@@ -10,11 +10,11 @@ module RuboCop
       #   # bad
       #   BEGIN { test }
       #
-      class BeginBlock < Cop
+      class BeginBlock < Base
         MSG = 'Avoid the use of `BEGIN` blocks.'
 
         def on_preexe(node)
-          add_offense(node, location: :keyword)
+          add_offense(node.loc.keyword)
         end
       end
     end

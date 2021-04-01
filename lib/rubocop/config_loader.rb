@@ -18,31 +18,32 @@ module RuboCop
     XDG_CONFIG = 'config.yml'
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
-    AUTO_GENERATED_FILE = '.rubocop_todo.yml'
 
     class << self
       include FileFinder
 
-      attr_accessor :debug, :auto_gen_config, :ignore_parent_exclusion,
-                    :options_config, :disable_pending_cops, :enable_pending_cops
-      attr_writer :default_configuration
+      attr_accessor :debug, :ignore_parent_exclusion,
+                    :disable_pending_cops, :enable_pending_cops
+      attr_writer :default_configuration, :project_root
+      attr_reader :loaded_features
 
       alias debug? debug
-      alias auto_gen_config? auto_gen_config
       alias ignore_parent_exclusion? ignore_parent_exclusion
 
       def clear_options
-        @debug = @auto_gen_config = @options_config = nil
+        @debug = nil
+        @loaded_features = Set.new
         FileFinder.root_level = nil
       end
 
-      def load_file(file) # rubocop:disable Metrics/AbcSize
-        path = File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
+      def load_file(file, check: true)
+        path = file_path(file)
 
         hash = load_yaml_configuration(path)
 
         # Resolve requires first in case they define additional cops
-        resolver.resolve_requires(path, hash)
+        loaded_features = resolver.resolve_requires(path, hash)
+        add_loaded_features(loaded_features)
 
         add_missing_namespaces(path, hash)
 
@@ -52,7 +53,22 @@ module RuboCop
 
         hash.delete('inherit_from')
 
-        Config.create(hash, path)
+        Config.create(hash, path, check: check)
+      end
+
+      def load_yaml_configuration(absolute_path)
+        file_contents = read_file(absolute_path)
+        yaml_code = Dir.chdir(File.dirname(absolute_path)) do
+          ERB.new(file_contents).result
+        end
+        check_duplication(yaml_code, absolute_path)
+        hash = yaml_safe_load(yaml_code, absolute_path) || {}
+
+        puts "configuration from #{absolute_path}" if debug?
+
+        raise(TypeError, "Malformed configuration in #{absolute_path}") unless hash.is_a?(Hash)
+
+        hash
       end
 
       def add_missing_namespaces(path, hash)
@@ -60,7 +76,7 @@ module RuboCop
         # `can't add a new key into hash during iteration` error
         hash_keys = hash.keys
         hash_keys.each do |key|
-          q = Cop::Cop.qualified_cop_name(key, path)
+          q = Cop::Registry.qualified_cop_name(key, path)
           next if q == key
 
           hash[q] = hash.delete(key)
@@ -84,10 +100,10 @@ module RuboCop
           find_user_xdg_config || DEFAULT_FILE
       end
 
-      def configuration_from_file(config_file)
-        return ConfigLoader.default_configuration if config_file == DEFAULT_FILE
+      def configuration_from_file(config_file, check: true)
+        return default_configuration if config_file == DEFAULT_FILE
 
-        config = load_file(config_file)
+        config = load_file(config_file, check: check)
         if ignore_parent_exclusion?
           print 'Ignoring AllCops/Exclude from parent folders' if debug?
         else
@@ -95,7 +111,7 @@ module RuboCop
         end
 
         merge_with_default(config, config_file).tap do |merged_config|
-          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(config)
+          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(merged_config)
         end
       end
 
@@ -105,74 +121,83 @@ module RuboCop
       end
 
       def add_excludes_from_files(config, config_file)
-        found_files = find_files_upwards(DOTFILE, config_file) +
-                      [find_user_dotfile, find_user_xdg_config].compact
+        exclusion_file = find_last_file_upwards(DOTFILE, config_file, project_root)
 
-        return if found_files.empty?
-        return if PathUtil.relative_path(found_files.last) ==
-                  PathUtil.relative_path(config_file)
+        return unless exclusion_file
+        return if PathUtil.relative_path(exclusion_file) == PathUtil.relative_path(config_file)
 
         print 'AllCops/Exclude ' if debug?
-        config.add_excludes_from_higher_level(load_file(found_files.last))
+        config.add_excludes_from_higher_level(load_file(exclusion_file))
       end
 
       def default_configuration
         @default_configuration ||= begin
-                                     print 'Default ' if debug?
-                                     load_file(DEFAULT_FILE)
-                                   end
+          print 'Default ' if debug?
+          load_file(DEFAULT_FILE)
+        end
       end
+
+      # Returns the path rubocop inferred as the root of the project. No file
+      # searches will go past this directory.
+      def project_root
+        @project_root ||= find_project_root
+      end
+
+      PENDING_BANNER = <<~BANNER
+        The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
+
+        Please also note that can also opt-in to new cops by default by adding this to your config:
+          AllCops:
+            NewCops: enable
+      BANNER
 
       def warn_on_pending_cops(pending_cops)
         return if pending_cops.empty?
 
-        warn Rainbow('The following cops were added to RuboCop, but are not ' \
-                     'configured. Please set Enabled to either `true` or ' \
-                     '`false` in your `.rubocop.yml` file:').yellow
+        warn Rainbow(PENDING_BANNER).yellow
 
         pending_cops.each do |cop|
-          version = cop.metadata['VersionAdded'] || 'N/A'
-
-          warn Rainbow(" - #{cop.name} (#{version})").yellow
+          warn_pending_cop cop
         end
 
-        warn Rainbow('For more information: https://docs.rubocop.org/en/latest/versioning/').yellow
+        warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow
       end
 
-      # Merges the given configuration with the default one. If
-      # AllCops:DisabledByDefault is true, it changes the Enabled params so
-      # that only cops from user configuration are enabled.
-      # If AllCops::EnabledByDefault is true, it changes the Enabled params
-      # so that only cops explicitly disabled in user configuration are
-      # disabled.
+      def warn_pending_cop(cop)
+        version = cop.metadata['VersionAdded'] || 'N/A'
+
+        warn Rainbow("#{cop.name}: # (new in #{version})").yellow
+        warn Rainbow('  Enabled: true').yellow
+      end
+
+      # Merges the given configuration with the default one.
       def merge_with_default(config, config_file, unset_nil: true)
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
       end
 
-      def add_inheritance_from_auto_generated_file
-        file_string = " #{AUTO_GENERATED_FILE}"
-
-        config_file = options_config || DOTFILE
-
-        if File.exist?(config_file)
-          files = Array(load_yaml_configuration(config_file)['inherit_from'])
-
-          return if files.include?(AUTO_GENERATED_FILE)
-
-          files.unshift(AUTO_GENERATED_FILE)
-          file_string = "\n  - " + files.join("\n  - ") if files.size > 1
-          rubocop_yml_contents = existing_configuration(config_file)
-        end
-
-        write_config_file(config_file, file_string, rubocop_yml_contents)
-
-        puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{DOTFILE}`."
+      # @api private
+      # Used to add features that were required inside a config or from
+      # the CLI using `--require`.
+      def add_loaded_features(loaded_features)
+        @loaded_features.merge(Array(loaded_features))
       end
 
       private
 
+      def file_path(file)
+        File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
+      end
+
       def find_project_dotfile(target_dir)
-        find_file_upwards(DOTFILE, target_dir)
+        find_file_upwards(DOTFILE, target_dir, project_root)
+      end
+
+      def find_project_root
+        pwd = Dir.pwd
+        gems_file = find_last_file_upwards('Gemfile', pwd) || find_last_file_upwards('gems.rb', pwd)
+        return unless gems_file
+
+        File.dirname(gems_file)
       end
 
       def find_user_dotfile
@@ -196,36 +221,8 @@ module RuboCop
         path
       end
 
-      def existing_configuration(config_file)
-        IO.read(config_file, encoding: Encoding::UTF_8)
-          .sub(/^inherit_from: *[^\n]+/, '')
-          .sub(/^inherit_from: *(\n *- *[^\n]+)+/, '')
-      end
-
-      def write_config_file(file_name, file_string, rubocop_yml_contents)
-        File.open(file_name, 'w') do |f|
-          f.write "inherit_from:#{file_string}\n"
-          f.write "\n#{rubocop_yml_contents}" if /\S/.match?(rubocop_yml_contents)
-        end
-      end
-
       def resolver
         @resolver ||= ConfigLoaderResolver.new
-      end
-
-      def load_yaml_configuration(absolute_path)
-        file_contents = read_file(absolute_path)
-        yaml_code = Dir.chdir(File.dirname(absolute_path)) do
-          ERB.new(file_contents).result
-        end
-        check_duplication(yaml_code, absolute_path)
-        hash = yaml_safe_load(yaml_code, absolute_path) || {}
-
-        puts "configuration from #{absolute_path}" if debug?
-
-        raise(TypeError, "Malformed configuration in #{absolute_path}") unless hash.is_a?(Hash)
-
-        hash
       end
 
       def check_duplication(yaml_code, absolute_path)
@@ -256,16 +253,25 @@ module RuboCop
       end
 
       def yaml_safe_load(yaml_code, filename)
-        if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
-          SafeYAML.load(yaml_code, filename, whitelisted_tags: %w[!ruby/regexp])
-        # Ruby 2.6+
-        elsif Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
+        yaml_safe_load!(yaml_code, filename)
+      rescue ::StandardError
+        if defined?(::SafeYAML)
+          raise 'SafeYAML is unmaintained, no longer needed and should be removed'
+        end
+
+        raise
+      end
+
+      if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
+        def yaml_safe_load!(yaml_code, filename)
           YAML.safe_load(yaml_code,
                          permitted_classes: [Regexp, Symbol],
                          permitted_symbols: [],
                          aliases: true,
                          filename: filename)
-        else
+        end
+      else # Ruby < 2.6
+        def yaml_safe_load!(yaml_code, filename)
           YAML.safe_load(yaml_code, [Regexp, Symbol], [], true, filename)
         end
       end

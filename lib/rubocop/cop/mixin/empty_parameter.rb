@@ -8,6 +8,7 @@ module RuboCop
 
       private
 
+      # @!method empty_arguments?(node)
       def_node_matcher :empty_arguments?, <<~PATTERN
         (block _ $(args) _)
       PATTERN
@@ -16,7 +17,9 @@ module RuboCop
         empty_arguments?(node) do |args|
           return if args.empty_and_without_delimiters?
 
-          add_offense(args)
+          add_offense(args) do |corrector|
+            autocorrect(corrector, args)
+          end
         end
       end
     end

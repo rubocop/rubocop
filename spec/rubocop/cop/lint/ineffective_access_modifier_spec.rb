@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier, :config do
   context 'when `private` is applied to a class method' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
@@ -113,6 +111,20 @@ RSpec.describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
           def self.method
           ^^^ `private` (on line 3) does not make singleton methods private. Use `private_class_method` or `private` inside a `class << self` block instead.
             puts "hi"
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when there is `begin` before a method definition' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          begin
+          end
+
+          def do_something
           end
         end
       RUBY

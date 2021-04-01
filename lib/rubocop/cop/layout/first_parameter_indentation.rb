@@ -7,9 +7,9 @@ module RuboCop
       # definition. Parameters after the first one are checked by
       # Layout/ParameterAlignment, not by this cop.
       #
-      # For indenting the first argument of method *calls*, check out
+      # For indenting the first argument of method _calls_, check out
       # Layout/FirstArgumentIndentation, which supports options related to
-      # nesting that are irrelevant for method *definitions*.
+      # nesting that are irrelevant for method _definitions_.
       #
       # @example
       #
@@ -41,10 +41,11 @@ module RuboCop
       #   second_param)
       #     123
       #   end
-      class FirstParameterIndentation < Cop
+      class FirstParameterIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include MultilineElementIndentation
+        extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
              'in method args, relative to %<base_description>s.'
@@ -57,11 +58,11 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def brace_alignment_style
           :align_parentheses

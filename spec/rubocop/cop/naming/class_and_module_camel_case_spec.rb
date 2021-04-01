@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Naming::ClassAndModuleCamelCase do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Naming::ClassAndModuleCamelCase, :config do
   it 'registers an offense for underscore in class and module name' do
     expect_offense(<<~RUBY)
       class My_Class
@@ -35,5 +33,26 @@ RSpec.describe RuboCop::Cop::Naming::ClassAndModuleCamelCase do
       module Mine
       end
     RUBY
+  end
+
+  it 'allows module_parent method' do
+    expect_no_offenses(<<~RUBY)
+      class module_parent::MyClass
+      end
+    RUBY
+  end
+
+  context 'custom allowed names' do
+    let(:cop_config) { { 'AllowedNames' => %w[getter_class setter_class] } }
+
+    it 'does not register offense for multiple allowed names' do
+      expect_no_offenses(<<~RUBY)
+        class getter_class::MyClass
+        end
+
+        class setter_class::MyClass
+        end
+      RUBY
+    end
   end
 end

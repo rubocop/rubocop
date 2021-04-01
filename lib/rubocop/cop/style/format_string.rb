@@ -35,11 +35,14 @@ module RuboCop
       #   # good
       #   puts '%10s' % 'hoge'
       #
-      class FormatString < Cop
+      class FormatString < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Favor `%<prefer>s` over `%<current>s`.'
+        RESTRICT_ON_SEND = %i[format sprintf %].freeze
 
+        # @!method formatter(node)
         def_node_matcher :formatter, <<~PATTERN
           {
             (send nil? ${:sprintf :format} _ _ ...)
@@ -48,6 +51,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method variable_argument?(node)
         def_node_matcher :variable_argument?, <<~PATTERN
           (send {str dstr} :% {send_type? lvar_type?})
         PATTERN
@@ -58,40 +62,37 @@ module RuboCop
 
             return if detected_style == style
 
-            add_offense(node, location: :selector,
-                              message: message(detected_style))
+            add_offense(node.loc.selector, message: message(detected_style)) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
+        private
+
         def message(detected_style)
-          format(MSG,
-                 prefer: method_name(style),
-                 current: method_name(detected_style))
+          format(MSG, prefer: method_name(style), current: method_name(detected_style))
         end
 
         def method_name(style_name)
           style_name == :percent ? 'String#%' : style_name
         end
 
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           return if variable_argument?(node)
 
-          lambda do |corrector|
-            case node.method_name
-            when :%
-              autocorrect_from_percent(corrector, node)
+          case node.method_name
+          when :%
+            autocorrect_from_percent(corrector, node)
+          when :format, :sprintf
+            case style
+            when :percent
+              autocorrect_to_percent(corrector, node)
             when :format, :sprintf
-              case style
-              when :percent
-                autocorrect_to_percent(corrector, node)
-              when :format, :sprintf
-                corrector.replace(node.loc.selector, style.to_s)
-              end
+              corrector.replace(node.loc.selector, style.to_s)
             end
           end
         end
-
-        private
 
         def autocorrect_from_percent(corrector, node)
           percent_rhs = node.first_argument
@@ -112,14 +113,19 @@ module RuboCop
           format = format_arg.source
 
           args = if param_args.one?
-                   arg = param_args.last
-
-                   arg.hash_type? ? "{ #{arg.source} }" : arg.source
+                   format_single_parameter(param_args.last)
                  else
                    "[#{param_args.map(&:source).join(', ')}]"
                  end
 
           corrector.replace(node, "#{format} % #{args}")
+        end
+
+        def format_single_parameter(arg)
+          source = arg.source
+          return "{ #{source} }" if arg.hash_type?
+
+          arg.send_type? && arg.operator_method? && !arg.parenthesized? ? "(#{source})" : source
         end
       end
     end

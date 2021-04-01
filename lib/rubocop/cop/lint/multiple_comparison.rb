@@ -11,34 +11,34 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   x < y < z
       #   10 <= x <= 20
       #
-      # @example
-      #
       #   # good
-      #
       #   x < y && y < z
       #   10 <= x && x <= 20
-      class MultipleComparison < Cop
-        MSG = 'Use the `&&` operator to compare multiple values.'
+      class MultipleComparison < Base
+        extend AutoCorrector
 
+        MSG = 'Use the `&&` operator to compare multiple values.'
+        COMPARISON_METHODS = %i[< > <= >=].freeze
+        SET_OPERATION_OPERATORS = %i[& | ^].freeze
+        RESTRICT_ON_SEND = COMPARISON_METHODS
+
+        # @!method multiple_compare?(node)
         def_node_matcher :multiple_compare?, <<~PATTERN
-          (send (send _ {:< :> :<= :>=} $_) {:< :> :<= :>=} _)
+          (send (send _ {:< :> :<= :>=} $_) {:#{COMPARISON_METHODS.join(' :')}} _)
         PATTERN
 
         def on_send(node)
-          return unless multiple_compare?(node)
+          return unless (center = multiple_compare?(node))
+          # It allows multiple comparison using `&`, `|`, and `^` set operation operators.
+          # e.g. `x >= y & y < z`
+          return if center.send_type? && SET_OPERATION_OPERATORS.include?(center.method_name)
 
-          add_offense(node)
-        end
+          add_offense(node) do |corrector|
+            new_center = "#{center.source} && #{center.source}"
 
-        def autocorrect(node)
-          center = multiple_compare?(node)
-          new_center = "#{center.source} && #{center.source}"
-
-          lambda do |corrector|
             corrector.replace(center, new_center)
           end
         end

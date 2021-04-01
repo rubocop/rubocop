@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
   let(:config) do
     RuboCop::Config
       .new('Layout/IndentationWidth' => { 'Width' => indentation_width })
@@ -165,25 +163,31 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
     end
   end
 
-  it 'auto-corrects' do
-    new_source = autocorrect_source(<<~RUBY)
+  it 'registers an offense and corrects' do
+    # FIXME
+    expect_offense(<<~RUBY)
        # comment
        # comment
        # comment
+       ^^^^^^^^^ Incorrect indentation detected (column 1 instead of 0).
       hash1 = { a: 0,
            # comment
+           ^^^^^^^^^ Incorrect indentation detected (column 5 instead of 10).
                 bb: 1,
                 ccc: 2 }
         if a
         #
+        ^ Incorrect indentation detected (column 2 instead of 4).
           b
         # this is accepted
         elsif aa
           # so is this
         elsif bb
       #
+      ^ Incorrect indentation detected (column 0 instead of 4).
         else
          #
+         ^ Incorrect indentation detected (column 3 instead of 4).
         end
         case a
         # this is accepted
@@ -191,11 +195,12 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation do
           # so is this
         when 1
            #
+           ^ Incorrect indentation detected (column 5 instead of 4).
           b
         end
     RUBY
 
-    expect(new_source).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       # comment
       # comment
       # comment

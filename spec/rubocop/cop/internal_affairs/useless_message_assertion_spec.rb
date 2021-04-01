@@ -1,14 +1,24 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::InternalAffairs::UselessMessageAssertion do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::InternalAffairs::UselessMessageAssertion, :config do
   it 'registers an offense for specs that assert using the MSG' do
     expect_offense(<<~RUBY, 'example_spec.rb')
       it 'uses described_class::MSG to specify the expected message' do
         inspect_source(cop, 'foo')
         expect(cop.messages).to eq([described_class::MSG])
                                     ^^^^^^^^^^^^^^^^^^^^ Do not specify cop behavior using `described_class::MSG`.
+      end
+    RUBY
+  end
+
+  it 'registers an offense for specs that expect offense using the MSG' do
+    expect_offense(<<~'RUBY', 'example_spec.rb')
+      it 'uses described_class::MSG to expect offense' do
+        expect_offense(<<-SOURCE.strip_indent('|'))
+          |  foo
+          |  ^^^ #{described_class::MSG}
+                   ^^^^^^^^^^^^^^^^^^^^ Do not specify cop behavior using `described_class::MSG`.
+        SOURCE
       end
     RUBY
   end

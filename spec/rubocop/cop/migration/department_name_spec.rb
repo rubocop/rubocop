@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Migration::DepartmentName do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Migration::DepartmentName, :config do
   context 'when todo/enable comments have cop names without departments' do
     let(:tip) { 'Run `rubocop -a --only Migration/DepartmentName` to fix.' }
     let(:warning) do

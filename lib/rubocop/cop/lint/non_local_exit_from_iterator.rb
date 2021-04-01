@@ -6,13 +6,13 @@ module RuboCop
       # This cop checks for non-local exits from iterators without a return
       # value. It registers an offense under these conditions:
       #
-      #  - No value is returned,
-      #  - the block is preceded by a method chain,
-      #  - the block has arguments,
-      #  - the method which receives the block is not `define_method`
-      #    or `define_singleton_method`,
-      #  - the return is not contained in an inner scope, e.g. a lambda or a
-      #    method definition.
+      # * No value is returned,
+      # * the block is preceded by a method chain,
+      # * the block has arguments,
+      # * the method which receives the block is not `define_method`
+      # or `define_singleton_method`,
+      # * the return is not contained in an inner scope, e.g. a lambda or a
+      # method definition.
       #
       # @example
       #
@@ -38,7 +38,7 @@ module RuboCop
       #     end
       #   end
       #
-      class NonLocalExitFromIterator < Cop
+      class NonLocalExitFromIterator < Base
         MSG = 'Non-local exit from iterator, without return value. ' \
               '`next`, `break`, `Array#find`, `Array#any?`, etc. ' \
               'is preferred.'
@@ -57,7 +57,7 @@ module RuboCop
             next unless node.arguments?
 
             if chained_send?(node.send_node)
-              add_offense(return_node, location: :keyword)
+              add_offense(return_node.loc.keyword)
               break
             end
           end
@@ -73,7 +73,10 @@ module RuboCop
           !return_node.children.empty?
         end
 
+        # @!method chained_send?(node)
         def_node_matcher :chained_send?, '(send !nil? ...)'
+
+        # @!method define_method?(node)
         def_node_matcher :define_method?, <<~PATTERN
           (send _ {:define_method :define_singleton_method} _)
         PATTERN

@@ -39,33 +39,56 @@ module RuboCop
       #   rescue SomeException
       #     handle_error
       #   end
-      class RescueModifier < Cop
+      class RescueModifier < Base
         include Alignment
+        include RangeHelp
         include RescueNode
+        extend AutoCorrector
 
         MSG = 'Avoid using `rescue` in its modifier form.'
 
         def on_resbody(node)
           return unless rescue_modifier?(node)
 
-          add_offense(node.parent)
+          rescue_node = node.parent
+          add_offense(rescue_node) do |corrector|
+            parenthesized = parenthesized?(rescue_node)
+
+            correct_rescue_block(corrector, rescue_node, parenthesized)
+            ParenthesesCorrector.correct(corrector, rescue_node.parent) if parenthesized
+          end
         end
 
-        def autocorrect(node)
+        private
+
+        def parenthesized?(node)
+          node.parent && parentheses?(node.parent)
+        end
+
+        def correct_rescue_block(corrector, node, parenthesized)
           operation, rescue_modifier, = *node
           *_, rescue_args = *rescue_modifier
 
-          indent = indentation(node)
-          correction =
-            "begin\n" \
-            "#{operation.source.gsub(/^/, indent)}" \
-            "\n#{offset(node)}rescue\n" \
-            "#{rescue_args.source.gsub(/^/, indent)}" \
-            "\n#{offset(node)}end"
+          node_indentation, node_offset = indentation_and_offset(node, parenthesized)
 
-          lambda do |corrector|
-            corrector.replace(node, correction)
+          corrector.remove(range_between(operation.source_range.end_pos, node.source_range.end_pos))
+          corrector.insert_before(operation, "begin\n#{node_indentation}")
+          corrector.insert_after(operation, <<~RESCUE_CLAUSE.chop)
+
+            #{node_offset}rescue
+            #{node_indentation}#{rescue_args.source}
+            #{node_offset}end
+          RESCUE_CLAUSE
+        end
+
+        def indentation_and_offset(node, parenthesized)
+          node_indentation = indentation(node)
+          node_offset = offset(node)
+          if parenthesized
+            node_indentation = node_indentation[0...-1]
+            node_offset = node_offset[0...-1]
           end
+          [node_indentation, node_offset]
         end
       end
     end

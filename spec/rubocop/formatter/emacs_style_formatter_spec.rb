@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Formatter::EmacsStyleFormatter do
+RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
   subject(:formatter) { described_class.new(output) }
 
+  let(:cop_class) { RuboCop::Cop::Cop }
+  let(:source) { %w[a b cdefghi].join("\n") }
   let(:output) { StringIO.new }
+
+  before { cop.send(:begin_investigation, processed_source) }
 
   describe '#file_finished' do
     it 'displays parsable text' do
-      cop = RuboCop::Cop::Cop.new
-      source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = %w[a b cdefghi].join("\n")
-
       cop.add_offense(
         nil,
         location: Parser::Source::Range.new(source_buffer, 0, 1),
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter do
       it 'strips newlines out of the error message' do
         formatter.file_finished(file, [offense])
         expect(output.string).to eq(
-          '/path/to/file:1:1: E: unmatched close parenthesis: /    ' \
+          '/path/to/file:1:1: E: [Correctable] unmatched close parenthesis: /    ' \
           "world # Some comment containing a ) /\n"
         )
       end

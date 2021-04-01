@@ -4,7 +4,9 @@ module RuboCop
   module Cop
     module Naming
       # This cop checks for memoized methods whose instance variable name
-      # does not match the method name.
+      # does not match the method name. Applies to both regular methods
+      # (defined with `def`) and dynamic methods (defined with
+      # `define_method` or `define_singleton_method`).
       #
       # This cop can be configured with the EnforcedStyleForLeadingUnderscores
       # directive. It can be configured to allow for memoized instance variables
@@ -18,6 +20,11 @@ module RuboCop
       #   # not `@foo`. This can cause confusion and bugs.
       #   def foo
       #     @something ||= calculate_expensive_thing
+      #   end
+      #
+      #   def foo
+      #     return @something if defined?(@something)
+      #     @something = calculate_expensive_thing
       #   end
       #
       #   # good
@@ -43,6 +50,17 @@ module RuboCop
       #     @foo ||= calculate_expensive_thing(helper_variable)
       #   end
       #
+      #   # good
+      #   define_method(:foo) do
+      #     @foo ||= calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   define_method(:foo) do
+      #     return @foo if defined?(@foo)
+      #     @foo = calculate_expensive_thing
+      #   end
+      #
       # @example EnforcedStyleForLeadingUnderscores: required
       #   # bad
       #   def foo
@@ -54,6 +72,11 @@ module RuboCop
       #     @foo ||= calculate_expensive_thing
       #   end
       #
+      #   def foo
+      #     return @foo if defined?(@foo)
+      #     @foo = calculate_expensive_thing
+      #   end
+      #
       #   # good
       #   def foo
       #     @_foo ||= calculate_expensive_thing
@@ -62,6 +85,22 @@ module RuboCop
       #   # good
       #   def _foo
       #     @_foo ||= calculate_expensive_thing
+      #   end
+      #
+      #   def foo
+      #     return @_foo if defined?(@_foo)
+      #     @_foo = calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   define_method(:foo) do
+      #     @_foo ||= calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   define_method(:foo) do
+      #     return @_foo if defined?(@_foo)
+      #     @_foo = calculate_expensive_thing
       #   end
       #
       # @example EnforcedStyleForLeadingUnderscores :optional
@@ -84,45 +123,115 @@ module RuboCop
       #   def _foo
       #     @_foo ||= calculate_expensive_thing
       #   end
-      class MemoizedInstanceVariableName < Cop
+      #
+      #   # good
+      #   def foo
+      #     return @_foo if defined?(@_foo)
+      #     @_foo = calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   define_method(:foo) do
+      #     @foo ||= calculate_expensive_thing
+      #   end
+      #
+      #   # good
+      #   define_method(:foo) do
+      #     @_foo ||= calculate_expensive_thing
+      #   end
+      #
+      # This cop relies on the pattern `@instance_var ||= ...`,
+      # but this is sometimes used for other purposes than memoization
+      # so this cop is considered unsafe.
+      class MemoizedInstanceVariableName < Base
         include ConfigurableEnforcedStyle
 
         MSG = 'Memoized variable `%<var>s` does not match ' \
           'method name `%<method>s`. Use `@%<suggested_var>s` instead.'
         UNDERSCORE_REQUIRED = 'Memoized variable `%<var>s` does not start ' \
           'with `_`. Use `@%<suggested_var>s` instead.'
+        DYNAMIC_DEFINE_METHODS = %i[define_method define_singleton_method].to_set.freeze
 
-        def self.node_pattern
-          memo_assign = '(or_asgn $(ivasgn _) _)'
-          memoized_at_end_of_method = "(begin ... #{memo_assign})"
-          instance_method =
-            "(def $_ _ {#{memo_assign} #{memoized_at_end_of_method}})"
-          class_method =
-            "(defs self $_ _ {#{memo_assign} #{memoized_at_end_of_method}})"
-          "{#{instance_method} #{class_method}}"
-        end
+        # @!method method_definition?(node)
+        def_node_matcher :method_definition?, <<~PATTERN
+          ${
+            (block (send _ %DYNAMIC_DEFINE_METHODS ({sym str} $_)) ...)
+            (def $_ ...)
+            (defs _ $_ ...)
+          }
+        PATTERN
 
-        private_class_method :node_pattern
-        def_node_matcher :memoized?, node_pattern
+        # rubocop:disable Metrics/AbcSize
+        def on_or_asgn(node)
+          lhs, _value = *node
+          return unless lhs.ivasgn_type?
 
-        def on_def(node)
-          (method_name, ivar_assign) = memoized?(node)
-          return if matches?(method_name, ivar_assign)
+          method_node, method_name = find_definition(node)
+          return unless method_node
+
+          body = method_node.body
+          return unless body == node || body.children.last == node
+
+          return if matches?(method_name, lhs)
 
           msg = format(
-            message(ivar_assign.children.first.to_s),
-            var: ivar_assign.children.first.to_s,
+            message(lhs.children.first.to_s),
+            var: lhs.children.first.to_s,
             suggested_var: suggested_var(method_name),
             method: method_name
           )
-          add_offense(node, location: ivar_assign.source_range, message: msg)
+          add_offense(lhs, message: msg)
         end
-        alias on_defs on_def
+        # rubocop:enable Metrics/AbcSize
+
+        # @!method defined_memoized?(node, ivar)
+        def_node_matcher :defined_memoized?, <<~PATTERN
+          (begin
+            (if (defined $(ivar %1)) (return $(ivar %1)) nil?)
+            ...
+            $(ivasgn %1 _))
+        PATTERN
+
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        def on_defined?(node)
+          arg = node.arguments.first
+          return unless arg.ivar_type?
+
+          method_node, method_name = find_definition(node)
+          return unless method_node
+
+          var_name = arg.children.first
+          defined_memoized?(method_node.body, var_name) do |defined_ivar, return_ivar, ivar_assign|
+            return if matches?(method_name, ivar_assign)
+
+            msg = format(
+              message(var_name.to_s),
+              var: var_name.to_s,
+              suggested_var: suggested_var(method_name),
+              method: method_name
+            )
+            add_offense(defined_ivar, message: msg)
+            add_offense(return_ivar, message: msg)
+            add_offense(ivar_assign.loc.name, message: msg)
+          end
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         private
 
         def style_parameter_name
           'EnforcedStyleForLeadingUnderscores'
+        end
+
+        def find_definition(node)
+          # Methods can be defined in a `def` or `defs`,
+          # or dynamically via a `block` node.
+          node.each_ancestor(:def, :defs, :block).each do |ancestor|
+            method_node, method_name = method_definition?(ancestor)
+            return [method_node, method_name] if method_node
+          end
+
+          nil
         end
 
         def matches?(method_name, ivar_assign)

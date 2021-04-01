@@ -16,14 +16,14 @@ module RuboCop
       #   if a +
       #       b
       #     something &&
-      #     something_else
+      #       something_else
       #   end
       #
       #   # good
       #   if a +
       #      b
       #     something &&
-      #       something_else
+      #     something_else
       #   end
       #
       # @example EnforcedStyle: indented
@@ -41,10 +41,11 @@ module RuboCop
       #       something_else
       #   end
       #
-      class MultilineOperationIndentation < Cop
+      class MultilineOperationIndentation < Base
         include ConfigurableEnforcedStyle
         include Alignment
         include MultilineExpressionIndentation
+        extend AutoCorrector
 
         def on_and(node)
           check_and_or(node)
@@ -63,11 +64,11 @@ module RuboCop
                                 '`EnforcedStyle` is `indented`.'
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def relevant_node?(node)
           return false if node.send_type? && node.unary_operation?
@@ -116,6 +117,10 @@ module RuboCop
             "Use #{correct_indentation(node)} (not #{used_indentation}) " \
               "spaces for indenting #{what} spanning multiple lines."
           end
+        end
+
+        def right_hand_side(send_node)
+          send_node.first_argument.source_range
         end
       end
     end

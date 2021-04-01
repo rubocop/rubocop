@@ -5,24 +5,28 @@ require 'pathname'
 
 module RuboCop
   # A help class for ConfigLoader that handles configuration resolution.
+  # @api private
   class ConfigLoaderResolver
     def resolve_requires(path, hash)
       config_dir = File.dirname(path)
-      Array(hash.delete('require')).each do |r|
-        if r.start_with?('.')
-          require(File.join(config_dir, r))
-        else
-          require(r)
+      hash.delete('require').tap do |loaded_features|
+        Array(loaded_features).each do |feature|
+          if feature.start_with?('.')
+            require(File.join(config_dir, feature))
+          else
+            require(feature)
+          end
         end
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
-    def resolve_inheritance(path, hash, file, debug)
+    def resolve_inheritance(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       inherited_files = Array(hash['inherit_from'])
       base_configs(path, inherited_files, file)
         .reverse.each_with_index do |base_config, index|
         override_department_setting_for_cops(base_config, hash)
+        override_enabled_for_disabled_departments(base_config, hash)
+
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
 
@@ -36,7 +40,6 @@ module RuboCop
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def resolve_inheritance_from_gems(hash)
       gems = hash.delete('inherit_gem')
@@ -72,6 +75,7 @@ module RuboCop
       end
 
       config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
+      override_enabled_for_disabled_departments(default_configuration, config)
 
       opts = { inherit_mode: config['inherit_mode'] || {},
                unset_nil: unset_nil }
@@ -89,7 +93,7 @@ module RuboCop
       keys_appearing_in_both.each do |key|
         if opts[:unset_nil] && derived_hash[key].nil?
           result.delete(key)
-        elsif base_hash[key].is_a?(Hash)
+        elsif merge_hashes?(base_hash, derived_hash, key)
           result[key] = merge(base_hash[key], derived_hash[key], **opts)
         elsif should_union?(base_hash, key, opts[:inherit_mode])
           result[key] = base_hash[key] | derived_hash[key]
@@ -119,10 +123,26 @@ module RuboCop
       end
     end
 
+    # If a cop was previously explicitly enabled, but then superseded by the
+    # department being disabled, disable it.
+    def override_enabled_for_disabled_departments(base_hash, derived_hash)
+      cops_to_disable = derived_hash.each_key.with_object([]) do |key, cops|
+        next unless disabled?(derived_hash, key)
+
+        cops.concat(base_hash.keys.grep(Regexp.new("^#{key}/")))
+      end
+
+      cops_to_disable.each do |cop_name|
+        next unless base_hash.dig(cop_name, 'Enabled') == true
+
+        derived_hash.replace(merge({ cop_name => { 'Enabled' => false } }, derived_hash))
+      end
+    end
+
     private
 
     def disabled?(hash, department)
-      hash[department] && hash[department]['Enabled'] == false
+      hash[department].is_a?(Hash) && hash[department]['Enabled'] == false
     end
 
     def duplicate_setting?(base_hash, derived_hash, key, inherited_file)
@@ -161,6 +181,10 @@ module RuboCop
         inherit_mode['merge'].include?(key)
     end
 
+    def merge_hashes?(base_hash, derived_hash, key)
+      base_hash[key].is_a?(Hash) && derived_hash[key].is_a?(Hash)
+    end
+
     def base_configs(path, inherit_from, file)
       configs = Array(inherit_from).compact.map do |f|
         ConfigLoader.load_file(inherited_file(path, f, file))
@@ -192,7 +216,7 @@ module RuboCop
 
     def remote_file?(uri)
       regex = URI::DEFAULT_PARSER.make_regexp(%w[http https])
-      uri =~ /\A#{regex}\z/
+      /\A#{regex}\z/.match?(uri)
     end
 
     def handle_disabled_by_default(config, new_default_configuration)
@@ -201,7 +225,7 @@ module RuboCop
         next unless dept_params['Enabled']
 
         new_default_configuration.each do |cop, params|
-          next unless cop.start_with?(dept + '/')
+          next unless cop.start_with?("#{dept}/")
 
           # Retain original default configuration for cops in the department.
           params['Enabled'] = ConfigLoader.default_configuration[cop]['Enabled']
@@ -213,13 +237,19 @@ module RuboCop
       end
     end
 
-    def transform(config)
-      config.transform_values { |params| yield(params) }
+    def transform(config, &block)
+      config.transform_values(&block)
     end
 
     def gem_config_path(gem_name, relative_config_path)
-      spec = Gem::Specification.find_by_name(gem_name)
-      File.join(spec.gem_dir, relative_config_path)
+      if defined?(Bundler)
+        gem = Bundler.load.specs[gem_name].first
+        gem_path = gem.full_gem_path if gem
+      end
+
+      gem_path ||= Gem::Specification.find_by_name(gem_name).gem_dir
+
+      File.join(gem_path, relative_config_path)
     rescue Gem::LoadError => e
       raise Gem::LoadError,
             "Unable to find gem #{gem_name}; is the gem installed? #{e}"

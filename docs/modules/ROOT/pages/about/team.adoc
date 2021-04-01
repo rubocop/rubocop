@@ -1,0 +1,37 @@
+= Team
+
+== The Core Team
+
+The direction of the project and its official extensions is being
+stewarded by the RuboCop core team. This group of long-term
+contributors manages releases, evaluates pull-requests, and does a lot
+of the groundwork on major new features. Here are the current members
+of the RuboCop core team, listed in the order of joining it:
+
+* https://github.com/bbatsov[Bozhidar Batsov] (author & head maintainer)
+* https://github.com/jonas054[Jonas Arvidsson]
+* https://github.com/drenmi[Ted Johansson]
+* https://github.com/pocke[Masataka Kuwabara]
+* https://github.com/koic[Koichi Ito] (also head maintainer of RuboCop Rails, RuboCop Performance and RuboCop Minitest)
+* https://github.com/darhazer[Maxim Krizhanovski]
+* https://github.com/bquorning[Benjamin Quorning] (also head maintainer of RuboCop RSpec)
+* https://github.com/marcandre[Marc-André Lafortune] (also head maintainer of RuboCop AST)
+* https://github.com/dvandersluis[Daniel Vandersluis]
+
+== RuboCop Alumni
+
+In addition, we'd like to extend a special thanks the following retired RuboCop
+core team members. Lovingly known as The Alumni:
+
+* https://github.com/yujinakayama[Yuji Nakayama] (also author of `guard-rubocop`)
+* https://github.com/edzhelyov[Evgeni Dzhelyov]
+
+== Joining the Core Team
+
+We're always looking for more people to join our Core Team, as there's plenty of work to go around.
+There's no formal procedure for applying to the team, but it's fairly straightforward to get an invitation
+to join it:
+
+* contribute consistently over an extended period of time (e.g. 6-12 months)
+* demonstrate a passion for what we're doing
+* eventually an invitation will be extended to you to become part of RuboCop's team

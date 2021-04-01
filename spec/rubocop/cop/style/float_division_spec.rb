@@ -4,24 +4,36 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
   context 'EnforcedStyle is left_coerce' do
     let(:cop_config) { { 'EnforcedStyle' => 'left_coerce' } }
 
-    it 'registers offense for right coerce' do
+    it 'registers offense and corrects for right coerce' do
       expect_offense(<<~RUBY)
         a / b.to_f
         ^^^^^^^^^^ Prefer using `.to_f` on the left side.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.to_f / b
+      RUBY
     end
 
-    it 'registers offense for both coerce' do
+    it 'registers offense and corrects for both coerce' do
       expect_offense(<<~RUBY)
         a.to_f / b.to_f
         ^^^^^^^^^^^^^^^ Prefer using `.to_f` on the left side.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.to_f / b
+      RUBY
     end
 
-    it 'registers offense for right coerce with calculations' do
+    it 'registers offense and corrects for right coerce with calculations' do
       expect_offense(<<~RUBY)
         (a * b) / (c - d / 2).to_f
         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer using `.to_f` on the left side.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a * b).to_f / (c - d / 2)
       RUBY
     end
 
@@ -33,24 +45,36 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
   context 'EnforcedStyle is right_coerce' do
     let(:cop_config) { { 'EnforcedStyle' => 'right_coerce' } }
 
-    it 'registers offense for left coerce' do
+    it 'registers offense and corrects for left coerce' do
       expect_offense(<<~RUBY)
         a.to_f / b
         ^^^^^^^^^^ Prefer using `.to_f` on the right side.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a / b.to_f
+      RUBY
     end
 
-    it 'registers offense for both coerce' do
+    it 'registers offense and corrects for both coerce' do
       expect_offense(<<~RUBY)
         a.to_f / b.to_f
         ^^^^^^^^^^^^^^^ Prefer using `.to_f` on the right side.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a / b.to_f
+      RUBY
     end
 
-    it 'registers offense for left coerce with calculations' do
+    it 'registers offense and corrects for left coerce with calculations' do
       expect_offense(<<~RUBY)
         (a - b).to_f / (c * 3 * d / 2)
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer using `.to_f` on the right side.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a - b) / (c * 3 * d / 2).to_f
       RUBY
     end
 
@@ -62,17 +86,25 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
   context 'EnforcedStyle is single_coerce' do
     let(:cop_config) { { 'EnforcedStyle' => 'single_coerce' } }
 
-    it 'registers offense for both coerce' do
+    it 'registers offense and corrects for both coerce' do
       expect_offense(<<~RUBY)
         a.to_f / b.to_f
         ^^^^^^^^^^^^^^^ Prefer using `.to_f` on one side only.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.to_f / b
+      RUBY
     end
 
-    it 'registers offense for left coerce with calculations' do
+    it 'registers offense and corrects for left coerce with calculations' do
       expect_offense(<<~RUBY)
         (a - b).to_f / (3 * d / 2).to_f
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer using `.to_f` on one side only.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a - b).to_f / (3 * d / 2)
       RUBY
     end
 
@@ -88,31 +120,47 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
   context 'EnforcedStyle is fdiv' do
     let(:cop_config) { { 'EnforcedStyle' => 'fdiv' } }
 
-    it 'registers offense for right coerce' do
+    it 'registers offense and corrects for right coerce' do
       expect_offense(<<~RUBY)
         a / b.to_f
         ^^^^^^^^^^ Prefer using `fdiv` for float divisions.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.fdiv(b)
+      RUBY
     end
 
-    it 'registers offense for both coerce' do
+    it 'registers offense and corrects for both coerce' do
       expect_offense(<<~RUBY)
         a.to_f / b.to_f
         ^^^^^^^^^^^^^^^ Prefer using `fdiv` for float divisions.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.fdiv(b)
+      RUBY
     end
 
-    it 'registers offense for left coerce' do
+    it 'registers offense and corrects for left coerce' do
       expect_offense(<<~RUBY)
         a.to_f / b
         ^^^^^^^^^^ Prefer using `fdiv` for float divisions.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a.fdiv(b)
+      RUBY
     end
 
-    it 'registers offense for left coerce with calculations' do
+    it 'registers offense and corrects for left coerce with calculations' do
       expect_offense(<<~RUBY)
         (a - b).to_f / (c * 3 * d / 2)
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer using `fdiv` for float divisions.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a - b).fdiv(c * 3 * d / 2)
       RUBY
     end
 

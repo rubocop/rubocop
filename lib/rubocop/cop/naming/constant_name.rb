@@ -17,12 +17,13 @@ module RuboCop
       #
       #   # good
       #   INCH_IN_CM = 2.54
-      class ConstantName < Cop
+      class ConstantName < Base
         MSG = 'Use SCREAMING_SNAKE_CASE for constants.'
         # Use POSIX character classes, so we allow accented characters rather
         # than just standard ASCII characters
         SNAKE_CASE = /^[[:digit:][:upper:]_]+$/.freeze
 
+        # @!method class_or_struct_return_method?(node)
         def_node_matcher :class_or_struct_return_method?, <<~PATTERN
           (send
             (const _ {:Class :Struct}) :new
@@ -47,7 +48,7 @@ module RuboCop
           return if allowed_assignment?(value)
           return if SNAKE_CASE.match?(const_name)
 
-          add_offense(node, location: :name)
+          add_offense(node.loc.name)
         end
 
         private
@@ -64,6 +65,7 @@ module RuboCop
             (node.receiver.nil? || !literal_receiver?(node))
         end
 
+        # @!method literal_receiver?(node)
         def_node_matcher :literal_receiver?, <<~PATTERN
           {(send literal? ...)
            (send (begin literal?) ...)}

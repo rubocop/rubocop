@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Naming::ConstantName do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Naming::ConstantName, :config do
   it 'registers an offense for camel case in const name' do
     expect_offense(<<~RUBY)
       TopCase = 5

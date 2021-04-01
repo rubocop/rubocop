@@ -15,7 +15,7 @@ module RuboCop
         if style == :single_quotes
           !double_quotes_required?(src)
         else
-          src !~ /" | \\[^'] | \#(@|\{)/x
+          !/" | \\[^'] | \#(@|\{)/x.match?(src)
         end
       end
     end

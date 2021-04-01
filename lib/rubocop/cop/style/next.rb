@@ -46,10 +46,11 @@ module RuboCop
       #     next unless a == 1
       #     puts a
       #   end
-      class Next < Cop
+      class Next < Base
         include ConfigurableEnforcedStyle
         include MinBodyLength
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `next` to skip iteration.'
         EXIT_TYPES = %i[break return].freeze
@@ -58,7 +59,7 @@ module RuboCop
           [Style::SafeNavigation]
         end
 
-        def investigate(_processed_source)
+        def on_new_investigation
           # When correcting nested offenses, we need to keep track of how much
           # we have adjusted the indentation of each line
           @reindented_lines = Hash.new(0)
@@ -77,16 +78,6 @@ module RuboCop
         alias on_until on_while
         alias on_for on_while
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.modifier_form?
-              autocorrect_modifier(corrector, node)
-            else
-              autocorrect_block(corrector, node)
-            end
-          end
-        end
-
         private
 
         def check(node)
@@ -94,8 +85,13 @@ module RuboCop
 
           offending_node = offense_node(node.body)
 
-          add_offense(offending_node,
-                      location: offense_location(offending_node))
+          add_offense(offense_location(offending_node)) do |corrector|
+            if offending_node.modifier_form?
+              autocorrect_modifier(corrector, offending_node)
+            else
+              autocorrect_block(corrector, offending_node)
+            end
+          end
         end
 
         def ends_with_condition?(body)
@@ -191,7 +187,7 @@ module RuboCop
         end
 
         def end_followed_by_whitespace_only?(source_buffer, end_pos)
-          source_buffer.source[end_pos..-1] =~ /\A\s*$/
+          /\A\s*$/.match?(source_buffer.source[end_pos..-1])
         end
 
         def reindentable_lines(node)
@@ -201,7 +197,7 @@ module RuboCop
           lines = (node.source_range.line + 1)...node.loc.end.line
           lines = lines.to_a - heredoc_lines(node)
           # Skip blank lines
-          lines.reject { |lineno| buffer.source_line(lineno) =~ /\A\s*\z/ }
+          lines.reject { |lineno| /\A\s*\z/.match?(buffer.source_line(lineno)) }
         end
 
         # Adjust indentation of `lines` to match `node`

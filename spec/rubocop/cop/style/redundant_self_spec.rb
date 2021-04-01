@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantSelf do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   it 'reports an offense a self receiver on an rvalue' do
     expect_offense(<<~RUBY)
       a = self.b
           ^^^^^^ Redundant `self` detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = b
+    RUBY
   end
 
   it 'does not report an offense when receiver and lvalue have the same name' do
     expect_no_offenses('a = self.a')
+  end
+
+  it 'accepts when nested receiver and lvalue have the name name' do
+    expect_no_offenses('a = self.a || b || c')
   end
 
   it 'does not report an offense when receiver and multiple assigned lvalue ' \
@@ -219,14 +225,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
       self.call
       ^^^^^^^^^ Redundant `self` detected.
     RUBY
-  end
 
-  it 'auto-corrects by removing redundant self' do
-    new_source = autocorrect_source('self.x')
-    expect(new_source).to eq('x')
+    expect_correction(<<~RUBY)
+      call
+    RUBY
   end
 
   it 'accepts a self receiver of methods also defined on `Kernel`' do
     expect_no_offenses('self.open')
+  end
+
+  it 'accepts a self receiver on an lvalue of mlhs arguments' do
+    expect_no_offenses(<<~RUBY)
+      def do_something((a, b)) # This method expects Array that has 2 elements as argument.
+        self.a = a
+        self.b.some_method_call b
+      end
+    RUBY
   end
 end

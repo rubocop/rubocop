@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it 'accepts empty interpolation' do
     expect_no_offenses('"this is #{a} silly"')
   end
@@ -20,54 +18,74 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
   end
 
   shared_examples 'literal interpolation' do |literal, expected = literal|
-    it "registers an offense for #{literal} in interpolation" do
-      inspect_source(%("this is the \#{#{literal}}"))
-      expect(cop.offenses.size).to eq(1)
-    end
+    it "registers an offense for #{literal} in interpolation " \
+       'and removes interpolation around it' do
+      expect_offense(<<~'RUBY', literal: literal)
+        "this is the #{%{literal}}"
+                       ^{literal} Literal interpolation detected.
+      RUBY
 
-    it "has #{literal} as the message highlight" do
-      inspect_source(%("this is the \#{#{literal}}"))
-      expect(cop.highlights).to eq([literal.to_s])
-    end
-
-    it "removes interpolation around #{literal}" do
-      corrected = autocorrect_source(%("this is the \#{#{literal}}"))
-      expect(corrected).to eq(%("this is the #{expected}"))
+      expect_correction(<<~RUBY)
+        "this is the #{expected}"
+      RUBY
     end
 
     it "removes interpolation around #{literal} when there is more text" do
-      corrected =
-        autocorrect_source(%("this is the \#{#{literal}} literally"))
-      expect(corrected).to eq(%("this is the #{expected} literally"))
+      expect_offense(<<~'RUBY', literal: literal)
+        "this is the #{%{literal}} literally"
+                       ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "this is the #{expected} literally"
+      RUBY
     end
 
     it "removes interpolation around multiple #{literal}" do
-      corrected =
-        autocorrect_source(%("some \#{#{literal}} with \#{#{literal}} too"))
-      expect(corrected).to eq(%("some #{expected} with #{expected} too"))
+      expect_offense(<<~'RUBY', literal: literal)
+        "some #{%{literal}} with #{%{literal}} too"
+                ^{literal} Literal interpolation detected.
+                _{literal}         ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "some #{expected} with #{expected} too"
+      RUBY
     end
 
     context 'when there is non-literal and literal interpolation' do
       context 'when literal interpolation is before non-literal' do
-        it 'only remove interpolation around literal' do
-          corrected =
-            autocorrect_source(%("this is \#{#{literal}} with \#{a} now"))
-          expect(corrected).to eq(%("this is #{expected} with \#{a} now"))
+        it 'only removes interpolation around literal' do
+          expect_offense(<<~'RUBY', literal: literal)
+            "this is #{%{literal}} with #{a} now"
+                       ^{literal} Literal interpolation detected.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            "this is #{expected} with \#{a} now"
+          RUBY
         end
       end
 
       context 'when literal interpolation is after non-literal' do
-        it 'only remove interpolation around literal' do
-          corrected =
-            autocorrect_source(%("this is \#{a} with \#{#{literal}} now"))
-          expect(corrected).to eq(%("this is \#{a} with #{expected} now"))
+        it 'only removes interpolation around literal' do
+          expect_offense(<<~'RUBY', literal: literal)
+            "this is #{a} with #{%{literal}} now"
+                                 ^{literal} Literal interpolation detected.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            "this is \#{a} with #{expected} now"
+          RUBY
         end
       end
     end
 
     it "registers an offense only for final #{literal} in interpolation" do
-      inspect_source(%("this is the \#{#{literal};#{literal}}"))
-      expect(cop.offenses.size).to eq(1)
+      expect_offense(<<~'RUBY', literal: literal)
+        "this is the #{%{literal};%{literal}}"
+                       _{literal} ^{literal} Literal interpolation detected.
+      RUBY
     end
   end
 
@@ -98,10 +116,90 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', '%i[s1     s2]', '[\"s1\", \"s2\"]')
   it_behaves_like('literal interpolation', '%i[ s1   s2 ]', '[\"s1\", \"s2\"]')
 
+  shared_examples 'literal interpolation in words literal' do |prefix|
+    let(:word) { 'interpolation' }
+
+    it "accepts interpolation of a string literal with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{\"this interpolation\"} is significant]
+      RUBY
+    end
+
+    it "accepts interpolation of a symbol literal with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{:\"this interpolation\"} is significant]
+      RUBY
+    end
+
+    it "accepts interpolation of an array literal containing a string with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{[\"this interpolation\"]} is significant]
+      RUBY
+    end
+
+    it "accepts interpolation of an array literal containing a symbol with space in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{[:\"this interpolation\"]} is significant]
+      RUBY
+    end
+
+    it "removes interpolation of a string literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: word.inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{word} is not significant]
+      RUBY
+    end
+
+    it "removes interpolation of a symbol literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: word.to_sym.inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{word} is not significant]
+      RUBY
+    end
+
+    it "removes interpolation of an array containing a string literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: [word].inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{[word].inspect.gsub(/"/, '\"')} is not significant]
+      RUBY
+    end
+
+    it "removes interpolation of an array containing a symbol literal without space in #{prefix}[]" do
+      expect_offense(<<~'RUBY', prefix: prefix, literal: [word.to_sym].inspect)
+        %{prefix}[this #{%{literal}} is not significant]
+        _{prefix}        ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{prefix}[this #{[word.to_sym].inspect} is not significant]
+      RUBY
+    end
+  end
+
+  it_behaves_like('literal interpolation in words literal', '%W')
+  it_behaves_like('literal interpolation in words literal', '%I')
+
   it 'handles nested interpolations when auto-correction' do
-    corrected = autocorrect_source(%("this is \#{"\#{1}"} silly"))
+    expect_offense(<<~'RUBY')
+      "this is #{"#{1}"} silly"
+                    ^ Literal interpolation detected.
+    RUBY
     # next iteration fixes this
-    expect(corrected).to eq %("this is \#{"1"} silly")
+    expect_correction(<<~'RUBY', loop: false)
+      "this is #{"1"} silly"
+    RUBY
   end
 
   shared_examples 'special keywords' do |keyword|
@@ -111,20 +209,15 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
       RUBY
     end
 
-    it "does not try to autocorrect strings like #{keyword}" do
-      corrected = autocorrect_source(%("this is the \#{#{keyword}} silly"))
+    it "registers an offense and autocorrects interpolation after #{keyword}" do
+      expect_offense(<<~'RUBY', keyword: keyword)
+        "this is the #{%{keyword}} #{1}"
+                       _{keyword}    ^ Literal interpolation detected.
+      RUBY
 
-      expect(corrected).to eq(%("this is the \#{#{keyword}} silly"))
-    end
-
-    it "registers an offense for interpolation after #{keyword}" do
-      inspect_source(%("this is the \#{#{keyword}} \#{1}"))
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it "auto-corrects literal interpolation after #{keyword}" do
-      corrected = autocorrect_source(%("this is the \#{#{keyword}} \#{1}"))
-      expect(corrected).to eq(%("this is the \#{#{keyword}} 1"))
+      expect_correction(<<~RUBY)
+        "this is the \#{#{keyword}} 1"
+      RUBY
     end
   end
 
@@ -134,19 +227,16 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('special keywords', '__ENCODING__')
 
   shared_examples 'non-special string literal interpolation' do |string|
-    it "registers an offense for #{string}" do
-      inspect_source(%("this is the \#{#{string}}"))
-      expect(cop.offenses.size).to eq(1)
-    end
+    it "registers an offense for #{string} and removes the interpolation " \
+       "and quotes around #{string}" do
+      expect_offense(<<~'RUBY', string: string)
+        "this is the #{%{string}}"
+                       ^{string} Literal interpolation detected.
+      RUBY
 
-    it "has #{string} in the message highlight" do
-      inspect_source(%("this is the \#{#{string}}"))
-      expect(cop.highlights).to eq([string])
-    end
-
-    it "removes the interpolation and quotes around #{string}" do
-      corrected = autocorrect_source(%("this is the \#{#{string}}"))
-      expect(corrected).to eq(%("this is the #{string.gsub(/'|"/, '')}"))
+      expect_correction(<<~RUBY)
+        "this is the #{string.gsub(/'|"/, '')}"
+      RUBY
     end
   end
 
@@ -191,13 +281,21 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
                  ^^^^^^ Literal interpolation detected.
     RUBY
 
-    expect_correction(<<~'RUBY')
-      "this is 
+    expect_correction(<<~RUBY)
+      "this is#{trailing_whitespace}
        silly"
-      "this is 
+      "this is#{trailing_whitespace}
        silly"
-      "this is 
+      "this is#{trailing_whitespace}
        silly"
+    RUBY
+  end
+
+  it 'does not register an offense when space literal at the end of heredoc line' do
+    expect_no_offenses(<<~RUBY)
+      <<~HERE
+        Line with explicit space literal at the end. \#{'  '}
+      HERE
     RUBY
   end
 
@@ -206,18 +304,36 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
     let(:expected) { '42' }
 
     it 'removes interpolation in symbols' do
-      corrected = autocorrect_source(%(:"this is the \#{#{literal}}"))
-      expect(corrected).to eq(%(:"this is the #{expected}"))
+      expect_offense(<<~'RUBY', literal: literal)
+        :"this is the #{%{literal}}"
+                        ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        :"this is the #{expected}"
+      RUBY
     end
 
     it 'removes interpolation in backticks' do
-      corrected = autocorrect_source(%(\`this is the \#{#{literal}}\`))
-      expect(corrected).to eq(%(\`this is the #{expected}\`))
+      expect_offense(<<~'RUBY', literal: literal)
+        `this is the #{%{literal}}`
+                       ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        \`this is the #{expected}\`
+      RUBY
     end
 
     it 'removes interpolation in regular expressions' do
-      corrected = autocorrect_source(%(/this is the \#{#{literal}}/))
-      expect(corrected).to eq(%(/this is the #{expected}/))
+      expect_offense(<<~'RUBY', literal: literal)
+        /this is the #{%{literal}}/
+                       ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        /this is the #{expected}/
+      RUBY
     end
   end
 end

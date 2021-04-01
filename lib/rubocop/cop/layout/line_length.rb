@@ -21,23 +21,23 @@ module RuboCop
       # are recommended to further format the broken lines.
       # (Many of these are enabled by default.)
       #
-      #   - ArgumentAlignment
-      #   - BlockAlignment
-      #   - BlockDelimiters
-      #   - BlockEndNewline
-      #   - ClosingParenthesisIndentation
-      #   - FirstArgumentIndentation
-      #   - FirstArrayElementIndentation
-      #   - FirstHashElementIndentation
-      #   - FirstParameterIndentation
-      #   - HashAlignment
-      #   - IndentationWidth
-      #   - MultilineArrayLineBreaks
-      #   - MultilineBlockLayout
-      #   - MultilineHashBraceLayout
-      #   - MultilineHashKeyLineBreaks
-      #   - MultilineMethodArgumentLineBreaks
-      #   - ParameterAlignment
+      # * ArgumentAlignment
+      # * BlockAlignment
+      # * BlockDelimiters
+      # * BlockEndNewline
+      # * ClosingParenthesisIndentation
+      # * FirstArgumentIndentation
+      # * FirstArrayElementIndentation
+      # * FirstHashElementIndentation
+      # * FirstParameterIndentation
+      # * HashAlignment
+      # * IndentationWidth
+      # * MultilineArrayLineBreaks
+      # * MultilineBlockLayout
+      # * MultilineHashBraceLayout
+      # * MultilineHashKeyLineBreaks
+      # * MultilineMethodArgumentLineBreaks
+      # * ParameterAlignment
       #
       # Together, these cops will pretty print hashes, arrays,
       # method calls, etc. For example, let's say the max columns
@@ -58,12 +58,14 @@ module RuboCop
       #     bar: "0000000000",
       #     baz: "0000000000",
       #   }
-      class LineLength < Cop
+      class LineLength < Base
         include CheckLineBreakable
-        include ConfigurableMax
         include IgnoredPattern
         include RangeHelp
         include LineLengthHelp
+        extend AutoCorrector
+
+        exclude_limit 'Max'
 
         MSG = 'Line is too long. [%<length>d/%<max>d]'
 
@@ -78,25 +80,19 @@ module RuboCop
         alias on_hash on_potential_breakable_node
         alias on_send on_potential_breakable_node
 
-        def investigate(processed_source)
+        def on_new_investigation
           check_for_breakable_semicolons(processed_source)
         end
 
-        def investigate_post_walk(processed_source)
+        def on_investigation_end
           processed_source.lines.each_with_index do |line, line_index|
             check_line(line, line_index)
           end
         end
 
-        def autocorrect(range)
-          return if range.nil?
-
-          lambda do |corrector|
-            corrector.insert_before(range, "\n")
-          end
-        end
-
         private
+
+        attr_accessor :breakable_range
 
         def check_for_breakable_node(node)
           breakable_node = extract_breakable_node(node, max)
@@ -195,9 +191,11 @@ module RuboCop
         def register_offense(loc, line, line_index)
           message = format(MSG, length: line_length(line), max: max)
 
-          breakable_range = breakable_range_by_line_index[line_index]
-          add_offense(breakable_range, location: loc, message: message) do
+          self.breakable_range = breakable_range_by_line_index[line_index]
+
+          add_offense(loc, message: message) do |corrector|
             self.max = line_length(line)
+            corrector.insert_before(breakable_range, "\n") unless breakable_range.nil?
           end
         end
 

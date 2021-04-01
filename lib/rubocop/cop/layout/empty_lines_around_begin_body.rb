@@ -21,17 +21,14 @@ module RuboCop
       #     # ...
       #
       #   end
-      class EmptyLinesAroundBeginBody < Cop
+      class EmptyLinesAroundBeginBody < Base
         include EmptyLinesAroundBody
+        extend AutoCorrector
 
         KIND = '`begin`'
 
         def on_kwbegin(node)
           check(node, nil)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
 
         private

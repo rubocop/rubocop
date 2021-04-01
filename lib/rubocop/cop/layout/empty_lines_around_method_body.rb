@@ -20,8 +20,9 @@ module RuboCop
       #     # ...
       #
       #   end
-      class EmptyLinesAroundMethodBody < Cop
+      class EmptyLinesAroundMethodBody < Base
         include EmptyLinesAroundBody
+        extend AutoCorrector
 
         KIND = 'method'
 
@@ -29,10 +30,6 @@ module RuboCop
           check(node, node.body)
         end
         alias on_defs on_def
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
-        end
 
         private
 

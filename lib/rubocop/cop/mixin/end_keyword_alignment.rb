@@ -39,6 +39,15 @@ module RuboCop
         end
       end
 
+      def start_line_range(node)
+        expr   = node.source_range
+        buffer = expr.source_buffer
+        source = buffer.source_line(expr.line)
+        range  = buffer.line_range(expr.line)
+
+        range_between(range.begin_pos + (source =~ /\S/), range.begin_pos + (source =~ /\s*\z/))
+      end
+
       def add_offense_for_misalignment(node, align_with)
         end_loc = node.loc.end
         msg = format(MSG, end_line: end_loc.line,
@@ -46,12 +55,14 @@ module RuboCop
                           source: align_with.source,
                           align_line: align_with.line,
                           align_col: align_with.column)
-        add_offense(node, location: end_loc, message: msg)
+        add_offense(end_loc, message: msg) do |corrector|
+          autocorrect(corrector, node)
+        end
       end
 
       def accept_end_kw_alignment?(end_loc)
         end_loc.nil? || # Discard modifier forms of if/while/until.
-          processed_source.lines[end_loc.line - 1] !~ /\A[ \t]*end/
+          !/\A[ \t]*end/.match?(processed_source.lines[end_loc.line - 1])
       end
 
       def style_parameter_name

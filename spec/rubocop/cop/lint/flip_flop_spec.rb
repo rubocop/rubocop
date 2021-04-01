@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::FlipFlop do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::FlipFlop, :config do
   it 'registers an offense for inclusive flip-flops' do
     expect_offense(<<~RUBY)
       DATA.each_line do |line|

@@ -12,10 +12,13 @@ module RuboCop
 
       private
 
+      # @!method single_negative?(node)
       def_node_matcher :single_negative?, '(send !(send _ :!) :!)'
+
+      # @!method empty_condition?(node)
       def_node_matcher :empty_condition?, '(begin)'
 
-      def check_negative_conditional(node)
+      def check_negative_conditional(node, message:, &block)
         condition = node.condition
 
         return if empty_condition?(condition)
@@ -25,7 +28,7 @@ module RuboCop
         return unless single_negative?(condition)
         return if node.if_type? && node.else?
 
-        add_offense(node)
+        add_offense(node, message: message, &block)
       end
     end
   end

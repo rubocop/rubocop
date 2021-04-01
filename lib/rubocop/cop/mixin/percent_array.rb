@@ -28,24 +28,31 @@ module RuboCop
       end
 
       def comments_in_array?(node)
-        comments = processed_source.comments
-        array_range = node.source_range.to_a
-
-        comments.any? do |comment|
-          !(comment.loc.expression.to_a & array_range).empty?
-        end
+        line_span = node.source_range.first_line...node.source_range.last_line
+        processed_source.each_comment_in_lines(line_span).any?
       end
 
       def check_percent_array(node)
         array_style_detected(:percent, node.values.size)
-        add_offense(node) if style == :brackets
+
+        return unless style == :brackets
+
+        add_offense(node) do |corrector|
+          correct_bracketed(corrector, node)
+        end
       end
 
-      def check_bracketed_array(node)
+      def check_bracketed_array(node, literal_prefix)
         return if allowed_bracket_array?(node)
 
         array_style_detected(:brackets, node.values.size)
-        add_offense(node) if style == :percent
+
+        return unless style == :percent
+
+        add_offense(node) do |corrector|
+          percent_literal_corrector = PercentLiteralCorrector.new(@config, @preferred_delimiters)
+          percent_literal_corrector.correct(corrector, node, literal_prefix)
+        end
       end
     end
   end

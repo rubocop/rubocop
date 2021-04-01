@@ -27,8 +27,7 @@ module RuboCop
         last_element_line =
           last_element_range_with_trailing_comma(node).last_line
 
-        last_element_commented =
-          processed_source.comments.any? { |c| c.loc.line == last_element_line }
+        last_element_commented = processed_source.comment_at_line(last_element_line)
 
         last_element_commented && (node.chained? || node.argument?)
       end
@@ -44,30 +43,32 @@ module RuboCop
       def check_new_line(node)
         return unless closing_brace_on_same_line?(node)
 
-        add_offense(node,
-                    location: :end,
-                    message: self.class::ALWAYS_NEW_LINE_MESSAGE)
+        add_offense(node.loc.end, message: self.class::ALWAYS_NEW_LINE_MESSAGE) do |corrector|
+          MultilineLiteralBraceCorrector.correct(corrector, node, processed_source)
+        end
       end
 
       def check_same_line(node)
         return if closing_brace_on_same_line?(node)
 
-        add_offense(node,
-                    location: :end,
-                    message: self.class::ALWAYS_SAME_LINE_MESSAGE)
+        add_offense(node.loc.end, message: self.class::ALWAYS_SAME_LINE_MESSAGE) do |corrector|
+          MultilineLiteralBraceCorrector.correct(corrector, node, processed_source)
+        end
       end
 
       def check_symmetrical(node)
         if opening_brace_on_same_line?(node)
           return if closing_brace_on_same_line?(node)
 
-          add_offense(node, location: :end,
-                            message: self.class::SAME_LINE_MESSAGE)
+          add_offense(node.loc.end, message: self.class::SAME_LINE_MESSAGE) do |corrector|
+            MultilineLiteralBraceCorrector.correct(corrector, node, processed_source)
+          end
         else
           return unless closing_brace_on_same_line?(node)
 
-          add_offense(node, location: :end,
-                            message: self.class::NEW_LINE_MESSAGE)
+          add_offense(node.loc.end, message: self.class::NEW_LINE_MESSAGE) do |corrector|
+            MultilineLiteralBraceCorrector.correct(corrector, node, processed_source)
+          end
         end
       end
 

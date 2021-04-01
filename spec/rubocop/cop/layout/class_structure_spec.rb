@@ -106,22 +106,13 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           extend SomeModule
         end
       RUBY
-    end
 
-    specify do
-      expect(autocorrect_source_with_loop(<<~RUBY))
-        class Example
-          CONST = 1
+      expect_correction(<<~RUBY)
+        class Person
           include AnotherModule
           extend SomeModule
+          CONST = 'wrong place'
         end
-      RUBY
-        .to eq(<<~RUBY)
-          class Example
-            include AnotherModule
-            extend SomeModule
-            CONST = 1
-          end
       RUBY
     end
   end
@@ -181,9 +172,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
         private :other_public_method
 
-        private def something_inline
-        end
-
         def yet_other_public_method
         end
 
@@ -202,25 +190,207 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     it { expect_offense(code) }
   end
 
-  describe '#autocorrect' do
-    context 'when there is a comment in the macro method' do
-      it 'autocorrects the offenses' do
-        new_source = autocorrect_source(<<~RUBY)
-          class Foo
-            # This is a comment for macro method.
-            validates :attr
-            attr_reader :foo
-          end
-        RUBY
+  context 'constant is not a literal' do
+    it 'registers offense but does not autocorrect' do
+      expect_offense <<~RUBY
+        class Person
+          def name; end
 
-        expect(new_source).to eq(<<~RUBY)
-          class Foo
-            attr_reader :foo
-            # This is a comment for macro method.
-            validates :attr
-          end
-        RUBY
+          foo = 5
+          LIMIT = foo + 1
+          ^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
+  it 'registers an offense and corrects when there is a comment in the macro method' do
+    expect_offense(<<~RUBY)
+      class Foo
+        # This is a comment for macro method.
+        validates :attr
+        attr_reader :foo
+        ^^^^^^^^^^^^^^^^ `attribute_macros` is supposed to appear before `macros`.
       end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_reader :foo
+        # This is a comment for macro method.
+        validates :attr
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when literal constant is after method definitions' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def name; end
+
+        LIMIT = 10
+        ^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        LIMIT = 10
+        def name; end
+
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when str heredoc constant is defined after public method' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def do_something
+        end
+
+        CONSTANT = <<~EOS
+        ^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          str
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        CONSTANT = <<~EOS
+          str
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when dstr heredoc constant is defined after public method' do
+    expect_offense(<<~'RUBY')
+      class Foo
+        def do_something
+        end
+
+        CONSTANT = <<~EOS
+        ^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          #{str}
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      class Foo
+        CONSTANT = <<~EOS
+          #{str}
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when xstr heredoc constant is defined after public method' do
+    expect_offense(<<~'RUBY')
+      class Foo
+        def do_something
+        end
+
+        CONSTANT = <<~`EOS`
+        ^^^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          str
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      class Foo
+        CONSTANT = <<~`EOS`
+          str
+        EOS
+
+        def do_something
+        end
+      end
+    RUBY
+  end
+
+  context 'when def modifier is used' do
+    it 'registers an offense and corrects public method with modifier declared after private method with modifier' do
+      expect_offense(<<~RUBY)
+        class A
+          private def foo
+          end
+
+          public def bar
+          ^^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          public def bar
+          end
+
+          private def foo
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects public method without modifier declared after private method with modifier' do
+      expect_offense(<<~RUBY)
+        class A
+          private def foo
+          end
+
+          def bar
+          ^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          def bar
+          end
+
+          private def foo
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'initializer is private and comes after attribute macro' do
+    it 'registers offense and auto-corrects' do
+      expect_offense(<<~RUBY)
+        class A
+          private
+
+          attr_accessor :foo
+
+          def initialize
+          ^^^^^^^^^^^^^^ `initializer` is supposed to appear before `private_attribute_macros`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          private
+
+          def initialize
+          end
+          attr_accessor :foo
+
+        end
+      RUBY
     end
   end
 end

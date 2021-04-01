@@ -46,8 +46,9 @@ module RuboCop
       #         Hi
       #       EOS
       #
-      class ClosingHeredocIndentation < Cop
+      class ClosingHeredocIndentation < Base
         include Heredoc
+        extend AutoCorrector
 
         SIMPLE_HEREDOC = '<<'
         MSG = '`%<closing>s` is not aligned with `%<opening>s`.'
@@ -59,11 +60,8 @@ module RuboCop
                     opening_indentation(node) == closing_indentation(node) ||
                     argument_indentation_correct?(node)
 
-          add_offense(node, location: :heredoc_end)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          message = message(node)
+          add_offense(node.loc.heredoc_end, message: message) do |corrector|
             corrector.replace(node.loc.heredoc_end, indented_end(node))
           end
         end

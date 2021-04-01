@@ -61,7 +61,7 @@ module RuboCop
         end
 
         def each_node(&block)
-          return to_enum(__method__) unless block_given?
+          return to_enum(__method__) unless block
 
           yield node if naked_top_level?
           scan_node(node, &block)

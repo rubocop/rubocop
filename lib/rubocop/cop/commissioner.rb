@@ -7,15 +7,47 @@ module RuboCop
     class Commissioner
       include RuboCop::AST::Traversal
 
+      RESTRICTED_CALLBACKS = %i[on_send on_csend after_send after_csend].freeze
+      private_constant :RESTRICTED_CALLBACKS
+
+      # How a Commissioner returns the results of the investigation
+      # as a list of Cop::InvestigationReport and any errors caught
+      # during the investigation.
+      # Immutable
+      # Consider creation API private
+      InvestigationReport = Struct.new(:processed_source, :cop_reports, :errors) do
+        def cops
+          @cops ||= cop_reports.map(&:cop)
+        end
+
+        def offenses_per_cop
+          @offenses_per_cop ||= cop_reports.map(&:offenses)
+        end
+
+        def correctors
+          @correctors ||= cop_reports.map(&:corrector)
+        end
+
+        def offenses
+          @offenses ||= offenses_per_cop.flatten(1)
+        end
+
+        def merge(investigation)
+          InvestigationReport.new(processed_source,
+                                  cop_reports + investigation.cop_reports,
+                                  errors + investigation.errors)
+        end
+      end
+
       attr_reader :errors
 
       def initialize(cops, forces = [], options = {})
         @cops = cops
         @forces = forces
         @options = options
-        @callbacks = {}
+        initialize_callbacks
 
-        reset_errors
+        reset
       end
 
       # Create methods like :on_send, :on_super, etc. They will be called
@@ -28,82 +60,101 @@ module RuboCop
         method_name = :"on_#{node_type}"
         next unless method_defined?(method_name)
 
-        define_method(method_name) do |node|
-          trigger_responding_cops(method_name, node)
-          super(node) unless NO_CHILD_NODES.include?(node_type)
-        end
+        # Hacky: Comment-out code as needed
+        r = '#' unless RESTRICTED_CALLBACKS.include?(method_name) # has Restricted?
+        c = '#' if NO_CHILD_NODES.include?(node_type) # has Children?
+
+        class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
+                  def on_#{node_type}(node)                               # def on_send(node)
+                    trigger_responding_cops(:on_#{node_type}, node)       #   trigger_responding_cops(:on_send, node)
+              #{r}  trigger_restricted_cops(:on_#{node_type}, node)       #   trigger_restricted_cops(:on_send, node)
+          #{c}      super(node)                                           #   super(node)
+          #{c}      trigger_responding_cops(:after_#{node_type}, node)    #   trigger_responding_cops(:after_send, node)
+          #{c}#{r}  trigger_restricted_cops(:after_#{node_type}, node)    #   trigger_restricted_cops(:after_send, node)
+                  end                                                     # end
+        RUBY
       end
 
+      # @return [InvestigationReport]
       def investigate(processed_source)
-        reset_errors
-        reset_callbacks
-        prepare(processed_source)
-        invoke_custom_processing(@cops, processed_source)
-        invoke_custom_processing(@forces, processed_source)
-        walk(processed_source.ast) unless processed_source.blank?
-        invoke_custom_post_walk_processing(@cops, processed_source)
-        @cops.flat_map(&:offenses)
+        reset
+
+        @cops.each { |cop| cop.send :begin_investigation, processed_source }
+        if processed_source.valid_syntax?
+          invoke(:on_new_investigation, @cops)
+          invoke(:investigate, @forces, processed_source)
+          walk(processed_source.ast) unless @cops.empty?
+          invoke(:on_investigation_end, @cops)
+        else
+          invoke(:on_other_file, @cops)
+        end
+        reports = @cops.map { |cop| cop.send(:complete_investigation) }
+        InvestigationReport.new(processed_source, reports, @errors)
       end
 
       private
 
       def trigger_responding_cops(callback, node)
-        @callbacks[callback] ||= @cops.select do |cop|
-          cop.respond_to?(callback)
-        end
-        @callbacks[callback].each do |cop|
+        @callbacks[callback]&.each do |cop|
           with_cop_error_handling(cop, node) do
-            cop.send(callback, node)
+            cop.public_send(callback, node)
           end
         end
       end
 
-      def reset_errors
+      def reset
         @errors = []
       end
 
-      def reset_callbacks
-        @callbacks.clear
+      def initialize_callbacks
+        @callbacks = build_callbacks(@cops)
+        @restricted_map = restrict_callbacks(@callbacks)
       end
 
-      # TODO: Bad design.
-      def prepare(processed_source)
-        @cops.each { |cop| cop.processed_source = processed_source }
+      def build_callbacks(cops)
+        callbacks = {}
+        cops.each do |cop|
+          cop.callbacks_needed.each do |callback|
+            (callbacks[callback] ||= []) << cop
+          end
+        end
+        callbacks
       end
 
-      # There are cops/forces that require their own custom processing.
-      # If they define the #investigate method, all input parameters passed
-      # to the commissioner will be passed to the cop too in order to do
-      # its own processing.
-      #
-      # These custom processors are invoked before the AST traversal,
-      # so they can build initial state that is later used by callbacks
-      # during the AST traversal.
-      def invoke_custom_processing(cops_or_forces, processed_source)
-        cops_or_forces.each do |cop|
-          next unless cop.respond_to?(:investigate)
+      def restrict_callbacks(callbacks)
+        restricted = {}
+        RESTRICTED_CALLBACKS.each do |callback|
+          restricted[callback] = restricted_map(callbacks[callback])
+        end
+        restricted
+      end
 
-          with_cop_error_handling(cop) do
-            cop.investigate(processed_source)
+      def trigger_restricted_cops(event, node)
+        name = node.method_name
+        @restricted_map[event][name]&.each do |cop|
+          with_cop_error_handling(cop, node) do
+            cop.public_send(event, node)
           end
         end
       end
 
-      # There are cops that require their own custom processing **after**
-      # the AST traversal. By performing the walk before invoking these
-      # custom processors, we allow these cops to build their own
-      # state during the primary AST traversal instead of performing their
-      # own AST traversals. Minimizing the number of walks is more efficient.
-      #
-      # If they define the #investigate_post_walk method, all input parameters
-      # passed to the commissioner will be passed to the cop too in order to do
-      # its own processing.
-      def invoke_custom_post_walk_processing(cops, processed_source)
-        cops.each do |cop|
-          next unless cop.respond_to?(:investigate_post_walk)
+      # NOTE: mutates `callbacks` in place
+      def restricted_map(callbacks)
+        map = {}
+        callbacks&.select! do |cop|
+          restrictions = cop.class.send :restrict_on_send
+          restrictions.each do |name|
+            (map[name] ||= []) << cop
+          end
+          restrictions.empty?
+        end
+        map
+      end
 
+      def invoke(callback, cops, *args)
+        cops.each do |cop|
           with_cop_error_handling(cop) do
-            cop.investigate_post_walk(processed_source)
+            cop.send(callback, *args)
           end
         end
       end

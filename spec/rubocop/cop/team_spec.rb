@@ -3,9 +3,9 @@
 RSpec.describe RuboCop::Cop::Team do
   subject(:team) { described_class.mobilize(cop_classes, config, options) }
 
-  let(:cop_classes) { RuboCop::Cop::Cop.registry }
+  let(:cop_classes) { RuboCop::Cop::Registry.global }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
-  let(:options) { nil }
+  let(:options) { {} }
   let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
 
   before do
@@ -91,8 +91,8 @@ RSpec.describe RuboCop::Cop::Team do
     include FileHelper
 
     let(:file_path) { '/tmp/example.rb' }
+    let(:source) { RuboCop::ProcessedSource.from_file(file_path, ruby_version) }
     let(:offenses) do
-      source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
       team.inspect_file(source)
     end
 
@@ -156,6 +156,24 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
+    context 'when autocorrection is enabled and file encoding is mismatch' do
+      let(:options) { { auto_correct: true } }
+
+      before do
+        create_file(file_path, <<~RUBY)
+          # encoding: Shift_JIS
+          puts 'Ｔｈｉｓ ｆｉｌｅ ｅｎｃｏｄｉｎｇ ｉｓ ＵＴＦ－８．'
+        RUBY
+      end
+
+      it 'no error occurs' do
+        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
+        team.inspect_file(source)
+
+        expect(team.errors.empty?).to be(true)
+      end
+    end
+
     context 'when Cop#on_* raises an error' do
       include_context 'mock console output'
       before do
@@ -183,11 +201,16 @@ RSpec.describe RuboCop::Cop::Team do
       include_context 'mock console output'
 
       before do
-        allow_any_instance_of(RuboCop::Cop::Style::NumericLiterals)
+        allow_any_instance_of(RuboCop::Cop::Bundler::OrderedGems)
           .to receive(:autocorrect).and_return(buggy_correction)
 
-        create_file(file_path, '10_00_000')
+        create_file(file_path, <<~RUBY)
+          gem 'rubocop'
+          gem 'rspec'
+        RUBY
       end
+
+      let(:file_path) { '/tmp/Gemfile' }
 
       let(:buggy_correction) do
         lambda do |_corrector|
@@ -199,52 +222,34 @@ RSpec.describe RuboCop::Cop::Team do
       let(:cause) { StandardError.new('cause') }
 
       let(:error_message) do
-        'An error occurred while Style/NumericLiterals cop was inspecting ' \
-        '/tmp/example.rb:1:0.'
+        'An error occurred while Bundler/OrderedGems cop was inspecting ' \
+        '/tmp/Gemfile.'
       end
 
       it 'records Team#errors' do
         source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
 
-        expect { team.inspect_file(source) }.to raise_error(cause)
+        team.inspect_file(source)
         expect($stderr.string).to include(error_message)
       end
     end
 
-    context 'when a correction that receives Parser::Source::Range raises ' \
-            'an error' do
-      include_context 'mock console output'
-
-      before do
-        allow_any_instance_of(RuboCop::Cop::Layout::IndentationStyle)
-          .to receive(:autocorrect).and_return(buggy_correction)
-
-        create_file(file_path, <<~RUBY)
-          def foo
-          \tbar
+    context 'when done twice', :restore_registry do
+      let(:persisting_cop_class) do
+        stub_cop_class('Test::Persisting') do
+          def self.support_multiple_source?
+            true
           end
-        RUBY
-      end
-
-      let(:buggy_correction) do
-        lambda do |_corrector|
-          raise cause
         end
       end
-      let(:options) { { auto_correct: true } }
+      let(:cop_classes) { [persisting_cop_class, RuboCop::Cop::Base] }
 
-      let(:cause) { StandardError.new('cause') }
-
-      let(:error_message) do
-        'An error occurred while Layout/IndentationStyle cop was inspecting ' \
-        '/tmp/example.rb:2:0.'
-      end
-
-      it 'records Team#errors' do
-        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
-
-        expect { team.inspect_file(source) }.to raise_error(cause)
-        expect($stderr.string).to include(error_message)
+      it 'allows cops to get ready' do
+        before = team.cops.dup
+        team.inspect_file(source)
+        team.inspect_file(source)
+        expect(team.cops).to match_array([be(before.first), be_a(RuboCop::Cop::Base)])
+        expect(team.cops.last).not_to be(before.last)
       end
     end
   end
@@ -254,7 +259,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     it 'returns cop instances' do
       expect(cops.empty?).to be(false)
-      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Cop) }).to be_truthy
+      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Base) }).to be_truthy
     end
 
     context 'when only some cop classes are passed to .new' do
@@ -297,7 +302,7 @@ RSpec.describe RuboCop::Cop::Team do
   describe '#forces' do
     subject(:forces) { team.forces }
 
-    let(:cop_classes) { RuboCop::Cop::Cop.registry }
+    let(:cop_classes) { RuboCop::Cop::Registry.global }
 
     it 'returns force instances' do
       expect(forces.empty?).to be(false)
@@ -376,17 +381,13 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
-    context 'when cop with different checksum joins' do
+    context 'when cop with different checksum joins', :restore_registry do
       before do
-        # rubocop:disable RSpec/LeakyConstantDeclaration
-        module Test
-          class CopWithExternalDeps < ::RuboCop::Cop::Cop
-            def external_dependency_checksum
-              'something other than nil'
-            end
+        stub_cop_class('Test::CopWithExternalDeps') do
+          def external_dependency_checksum
+            'something other than nil'
           end
         end
-        # rubocop:enable RSpec/LeakyConstantDeclaration
       end
 
       let(:new_cop_classes) do
@@ -405,6 +406,19 @@ RSpec.describe RuboCop::Cop::Team do
         new_checksum = new_team.external_dependency_checksum
         expect(original_checksum).not_to eq(new_checksum)
       end
+    end
+  end
+
+  describe '.new' do
+    it 'calls mobilize when passed classes' do
+      expect(described_class).to receive(:mobilize).with(cop_classes, config, options)
+      described_class.new(cop_classes, config, options)
+    end
+
+    it 'accepts cops directly classes' do
+      cop = RuboCop::Cop::Metrics::AbcSize.new
+      team = described_class.new([cop], config, options)
+      expect(team.cops.first).to equal(cop)
     end
   end
 end

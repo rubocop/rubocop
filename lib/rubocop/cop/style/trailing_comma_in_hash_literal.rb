@@ -6,11 +6,11 @@ module RuboCop
       # This cop checks for trailing comma in hash literals.
       # The configuration options are:
       #
-      # - `consistent_comma`: Requires a comma after the
+      # * `consistent_comma`: Requires a comma after the
       # last item of all non-empty, multiline hash literals.
-      # - `comma`: Requires a comma after the last item in a hash,
+      # * `comma`: Requires a comma after the last item in a hash,
       # but only when each item is on its own line.
-      # - `no_comma`: Does not requires a comma after the
+      # * `no_comma`: Does not requires a comma after the
       # last item in a hash
       #
       # @example EnforcedStyleForMultiline: consistent_comma
@@ -84,15 +84,12 @@ module RuboCop
       #     foo: 1,
       #     bar: 2
       #   }
-      class TrailingCommaInHashLiteral < Cop
+      class TrailingCommaInHashLiteral < Base
         include TrailingComma
+        extend AutoCorrector
 
         def on_hash(node)
           check_literal(node, 'item of %<article>s hash')
-        end
-
-        def autocorrect(range)
-          PunctuationCorrector.swap_comma(range)
         end
       end
     end

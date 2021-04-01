@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RescueType do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
   it 'accepts rescue modifier' do
     expect_no_offenses('foo rescue nil')
   end
@@ -42,29 +38,17 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
   shared_examples 'offenses' do |rescues|
     context 'begin rescue' do
       context "rescuing from #{rescues}" do
-        let(:source) do
-          <<-RUBY
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
-            rescue #{rescues}
+            rescue %{rescues}
+            ^^^^^^^^{rescues} Rescuing from `#{rescues}` will raise a `TypeError` instead of catching the actual exception.
               bar
             end
           RUBY
-        end
 
-        it 'registers an offense' do
-          inspect_source(source)
-
-          expect(cop.highlights).to eq(["rescue #{rescues}"])
-          expect(cop.messages)
-            .to eq(["Rescuing from `#{rescues}` will raise a `TypeError` " \
-                    'instead of catching the actual exception.'])
-        end
-
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq(<<-RUBY)
+          expect_correction(<<~RUBY)
             begin
               foo
             rescue
@@ -75,29 +59,17 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
       end
 
       context "rescuing from #{rescues} before another exception" do
-        let(:source) do
-          <<-RUBY
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
-            rescue #{rescues}, StandardError
+            rescue %{rescues}, StandardError
+            ^^^^^^^^{rescues}^^^^^^^^^^^^^^^ Rescuing from `#{rescues}` will raise a `TypeError` instead of catching the actual exception.
               bar
             end
           RUBY
-        end
 
-        it 'registers an offense' do
-          inspect_source(source)
-
-          expect(cop.highlights).to eq(["rescue #{rescues}, StandardError"])
-          expect(cop.messages)
-            .to eq(["Rescuing from `#{rescues}` will raise a `TypeError` " \
-                    'instead of catching the actual exception.'])
-        end
-
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq(<<-RUBY)
+          expect_correction(<<~RUBY)
             begin
               foo
             rescue StandardError
@@ -108,29 +80,17 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
       end
 
       context "rescuing from #{rescues} after another exception" do
-        let(:source) do
-          <<-RUBY
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
-            rescue StandardError, #{rescues}
+            rescue StandardError, %{rescues}
+            ^^^^^^^^^^^^^^^^^^^^^^^{rescues} Rescuing from `#{rescues}` will raise a `TypeError` instead of catching the actual exception.
               bar
             end
           RUBY
-        end
 
-        it 'registers an offense' do
-          inspect_source(source)
-
-          expect(cop.highlights).to eq(["rescue StandardError, #{rescues}"])
-          expect(cop.messages)
-            .to eq(["Rescuing from `#{rescues}` will raise a `TypeError` " \
-                    'instead of catching the actual exception.'])
-        end
-
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq(<<-RUBY)
+          expect_correction(<<~RUBY)
             begin
               foo
             rescue StandardError
@@ -143,31 +103,19 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
 
     context 'begin rescue ensure' do
       context "rescuing from #{rescues}" do
-        let(:source) do
-          <<-RUBY
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
-            rescue #{rescues}
+            rescue %{rescues}
+            ^^^^^^^^{rescues} Rescuing from `#{rescues}` will raise a `TypeError` instead of catching the actual exception.
               bar
             ensure
               baz
             end
           RUBY
-        end
 
-        it 'registers an offense' do
-          inspect_source(source)
-
-          expect(cop.highlights).to eq(["rescue #{rescues}"])
-          expect(cop.messages)
-            .to eq(["Rescuing from `#{rescues}` will raise a `TypeError` " \
-                    'instead of catching the actual exception.'])
-        end
-
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq(<<-RUBY)
+          expect_correction(<<~RUBY)
             begin
               foo
             rescue
@@ -182,29 +130,17 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
 
     context 'def rescue' do
       context "rescuing from #{rescues}" do
-        let(:source) do
-          <<-RUBY
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<~RUBY, rescues: rescues)
             def foobar
               foo
-            rescue #{rescues}
+            rescue %{rescues}
+            ^^^^^^^^{rescues} Rescuing from `#{rescues}` will raise a `TypeError` instead of catching the actual exception.
               bar
             end
           RUBY
-        end
 
-        it 'registers an offense' do
-          inspect_source(source)
-
-          expect(cop.highlights).to eq(["rescue #{rescues}"])
-          expect(cop.messages)
-            .to eq(["Rescuing from `#{rescues}` will raise a `TypeError` " \
-                    'instead of catching the actual exception.'])
-        end
-
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq(<<-RUBY)
+          expect_correction(<<~RUBY)
             def foobar
               foo
             rescue
@@ -217,31 +153,19 @@ RSpec.describe RuboCop::Cop::Lint::RescueType do
 
     context 'def rescue ensure' do
       context "rescuing from #{rescues}" do
-        let(:source) do
-          <<-RUBY
+        it 'registers an offense and auto-corrects' do
+          expect_offense(<<~RUBY, rescues: rescues)
             def foobar
               foo
-            rescue #{rescues}
+            rescue %{rescues}
+            ^^^^^^^^{rescues} Rescuing from `#{rescues}` will raise a `TypeError` instead of catching the actual exception.
               bar
             ensure
               baz
             end
           RUBY
-        end
 
-        it 'registers an offense' do
-          inspect_source(source)
-
-          expect(cop.highlights).to eq(["rescue #{rescues}"])
-          expect(cop.messages)
-            .to eq(["Rescuing from `#{rescues}` will raise a `TypeError` " \
-                    'instead of catching the actual exception.'])
-        end
-
-        it 'auto-corrects' do
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq(<<-RUBY)
+          expect_correction(<<~RUBY)
             def foobar
               foo
             rescue
