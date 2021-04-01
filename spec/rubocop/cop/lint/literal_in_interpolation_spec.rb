@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it 'accepts empty interpolation' do
     expect_no_offenses('"this is #{a} silly"')
   end
@@ -26,6 +24,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         "this is the #{%{literal}}"
                        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         "this is the #{expected}"
       RUBY
@@ -36,6 +35,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         "this is the #{%{literal}} literally"
                        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         "this is the #{expected} literally"
       RUBY
@@ -47,6 +47,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
                 ^{literal} Literal interpolation detected.
                 _{literal}         ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         "some #{expected} with #{expected} too"
       RUBY
@@ -59,6 +60,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
             "this is #{%{literal}} with #{a} now"
                        ^{literal} Literal interpolation detected.
           RUBY
+
           expect_correction(<<~RUBY)
             "this is #{expected} with \#{a} now"
           RUBY
@@ -71,6 +73,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
             "this is #{a} with #{%{literal}} now"
                                  ^{literal} Literal interpolation detected.
           RUBY
+
           expect_correction(<<~RUBY)
             "this is \#{a} with #{expected} now"
           RUBY
@@ -145,6 +148,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         %{prefix}[this #{%{literal}} is not significant]
         _{prefix}        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         #{prefix}[this #{word} is not significant]
       RUBY
@@ -155,6 +159,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         %{prefix}[this #{%{literal}} is not significant]
         _{prefix}        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         #{prefix}[this #{word} is not significant]
       RUBY
@@ -165,6 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         %{prefix}[this #{%{literal}} is not significant]
         _{prefix}        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         #{prefix}[this #{[word].inspect.gsub(/"/, '\"')} is not significant]
       RUBY
@@ -175,6 +181,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         %{prefix}[this #{%{literal}} is not significant]
         _{prefix}        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         #{prefix}[this #{[word.to_sym].inspect} is not significant]
       RUBY
@@ -207,6 +214,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         "this is the #{%{keyword}} #{1}"
                        _{keyword}    ^ Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         "this is the \#{#{keyword}} 1"
       RUBY
@@ -300,6 +308,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         :"this is the #{%{literal}}"
                         ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         :"this is the #{expected}"
       RUBY
@@ -310,6 +319,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         `this is the #{%{literal}}`
                        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         \`this is the #{expected}\`
       RUBY
@@ -320,6 +330,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation do
         /this is the #{%{literal}}/
                        ^{literal} Literal interpolation detected.
       RUBY
+
       expect_correction(<<~RUBY)
         /this is the #{expected}/
       RUBY

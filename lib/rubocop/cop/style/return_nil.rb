@@ -35,7 +35,10 @@ module RuboCop
         RETURN_MSG = 'Use `return` instead of `return nil`.'
         RETURN_NIL_MSG = 'Use `return nil` instead of `return`.'
 
+        # @!method return_node?(node)
         def_node_matcher :return_node?, '(return)'
+
+        # @!method return_nil_node?(node)
         def_node_matcher :return_nil_node?, '(return nil)'
 
         def on_return(node)
@@ -79,7 +82,10 @@ module RuboCop
           node.def_type? || node.defs_type? || node.lambda?
         end
 
+        # @!method chained_send?(node)
         def_node_matcher :chained_send?, '(send !nil? ...)'
+
+        # @!method define_method?(node)
         def_node_matcher :define_method?, <<~PATTERN
           (send _ {:define_method :define_singleton_method} _)
         PATTERN

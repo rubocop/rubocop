@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
   it 'registers an offense with cipher constant and two arguments and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES.new(128, :GCM)
@@ -38,6 +34,17 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant do
     RUBY
   end
 
+  it 'registers an offense with cipher constant and `cbc` argument and corrects' do
+    expect_offense(<<~RUBY)
+      OpenSSL::Cipher::DES.new('cbc')
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('des-cbc')` instead of `OpenSSL::Cipher::DES.new('cbc')`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      OpenSSL::Cipher.new('des-cbc')
+    RUBY
+  end
+
   it 'registers an offense with AES + blocksize constant and mode argument and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES128.new(:GCM)
@@ -47,6 +54,19 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant do
     expect_correction(<<~RUBY)
       OpenSSL::Cipher.new('aes-128-gcm')
     RUBY
+  end
+
+  RuboCop::Cop::Lint::DeprecatedOpenSSLConstant::NO_ARG_ALGORITHM.each do |algorithm_name|
+    it 'registers an offense with cipher constant and no arguments and corrects' do
+      expect_offense(<<~RUBY, algorithm_name: algorithm_name)
+        OpenSSL::Cipher::#{algorithm_name}.new
+        ^^^^^^^^^^^^^^^^^^{algorithm_name}^^^^ Use `OpenSSL::Cipher.new('#{algorithm_name.downcase}')` instead of `OpenSSL::Cipher::#{algorithm_name}.new`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        OpenSSL::Cipher.new('#{algorithm_name.downcase}')
+      RUBY
+    end
   end
 
   it 'registers an offense with AES + blocksize constant and corrects' do

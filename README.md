@@ -1,14 +1,14 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/rubocop-hq/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
+ <p align="center">
+  <img src="https://raw.githubusercontent.com/rubocop/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
 </p>
 
 ----------
-[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
-[![CircleCI Status](https://circleci.com/gh/rubocop-hq/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop-hq/rubocop/tree/master)
-[![Actions Status](https://github.com/rubocop-hq/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop-hq/rubocop/actions?query=workflow%3ACI)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop-hq/rubocop/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop-hq/rubocop/maintainability)
+[![CircleCI Status](https://circleci.com/gh/rubocop/rubocop/tree/master.svg?style=svg)](https://circleci.com/gh/rubocop/rubocop/tree/master)
+[![Actions Status](https://github.com/rubocop/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop/rubocop/actions?query=workflow%3ACI)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop/rubocop/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop/rubocop/maintainability)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
 
 > Role models are important. <br/>
@@ -20,7 +20,7 @@ Guide](https://rubystyle.guide). Apart from reporting the problems discovered in
 RuboCop can also automatically fix many of them for you.
 
 RuboCop is extremely flexible and most aspects of its behavior can be tweaked via various
-[configuration options](https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml).
+[configuration options](https://github.com/rubocop/rubocop/blob/master/config/default.yml).
 
 ----------
 [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
@@ -45,16 +45,16 @@ gem 'rubocop', require: false
 ```
 
 RuboCop is stable between major versions, both in terms of API and cop configuration.
-We aim the ease the maintenance of RuboCop extensions and the upgrades between RuboCop
+We aim to ease the maintenance of RuboCop extensions and the upgrades between RuboCop
 releases. All big changes are reserved for major releases.
 To prevent an unwanted RuboCop update you might want to use a conservative version lock
 in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 1.3', require: false
+gem 'rubocop', '~> 1.12', require: false
 ```
 
-See [versioning](https://docs.rubocop.org/rubocop/1.0/versioning.html) for further details.
+See [our versioning policy](https://docs.rubocop.org/rubocop/versioning.html) for further details.
 
 ## Quickstart
 
@@ -82,7 +82,7 @@ See the [compatibility documentation](https://docs.rubocop.org/rubocop/compatibi
 
 If you use RuboCop in your project, you can include one of these badges in your readme to let people know that your code is written following the community Ruby Style Guide.
 
-[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-community-brightgreen.svg)](https://rubystyle.guide)
 
@@ -90,7 +90,7 @@ If you use RuboCop in your project, you can include one of these badges in your 
 Here are the Markdown snippets for the two badges:
 
 ``` markdown
-[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop-hq/rubocop)
+[![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-community-brightgreen.svg)](https://rubystyle.guide)
 ```
@@ -109,20 +109,21 @@ Here's a list of RuboCop's core developers:
 * [Maxim Krizhanovski](https://github.com/darhazer)
 * [Benjamin Quorning](https://github.com/bquorning)
 * [Marc-André Lafortune](https://github.com/marcandre)
+* [Daniel Vandersluis](https://github.com/dvandersluis)
 
 See the [team page](https://docs.rubocop.org/rubocop/about/team.html) for more details.
 
 ## Logo
 
 RuboCop's logo was created by [Dimiter Petrov](https://www.chadomoto.com/). You can find the logo in various
-formats [here](https://github.com/rubocop-hq/rubocop/tree/master/logo).
+formats [here](https://github.com/rubocop/rubocop/tree/master/logo).
 
 The logo is licensed under a
 [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/deed.en_GB).
 
 ## Contributors
 
-Here's a [list](https://github.com/rubocop-hq/rubocop/graphs/contributors) of
+Here's a [list](https://github.com/rubocop/rubocop/graphs/contributors) of
 all the people who have contributed to the development of RuboCop.
 
 I'm extremely grateful to each and every one of them!
@@ -241,5 +242,5 @@ RuboCop's changelog is available [here](CHANGELOG.md).
 
 ## Copyright
 
-Copyright (c) 2012-2020 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
+Copyright (c) 2012-2021 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
 further details.

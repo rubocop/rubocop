@@ -76,6 +76,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
                 baz
               )
             RUBY
+
             expect_correction(<<~RUBY)
               foo ||= begin
                 bar
@@ -93,6 +94,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
                   baz
                 )
             RUBY
+
             expect_correction(<<~RUBY)
               foo ||=
                 begin
@@ -108,6 +110,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
               ^^^^^^^^^^^^^^^ Wrap multiline memoization blocks in `begin` and `end`.
                         baz)
             RUBY
+
             expect_correction(<<~RUBY)
               foo ||= begin
                         bar ||
@@ -137,6 +140,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
                 baz
               end
             RUBY
+
             expect_correction(<<~RUBY)
               foo ||= (
                 bar
@@ -154,6 +158,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
                   baz
                 end
             RUBY
+
             expect_correction(<<~RUBY)
               foo ||=
                 (

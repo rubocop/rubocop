@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation, :config do
   let(:config) do
     RuboCop::Config.new('Layout/ClosingHeredocIndentation' => cop_config)
   end

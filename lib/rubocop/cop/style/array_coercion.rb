@@ -26,10 +26,12 @@ module RuboCop
         SPLAT_MSG = 'Use `Array(%<arg>s)` instead of `[*%<arg>s]`.'
         CHECK_MSG = 'Use `Array(%<arg>s)` instead of explicit `Array` check.'
 
+        # @!method array_splat?(node)
         def_node_matcher :array_splat?, <<~PATTERN
           (array (splat $_))
         PATTERN
 
+        # @!method unless_array?(node)
         def_node_matcher :unless_array?, <<~PATTERN
           (if
             (send

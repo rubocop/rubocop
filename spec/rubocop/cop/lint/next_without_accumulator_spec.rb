@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator, :config do
   shared_examples 'reduce/inject' do |reduce_alias|
     context "given a #{reduce_alias} block" do
       it 'registers an offense for a bare next' do

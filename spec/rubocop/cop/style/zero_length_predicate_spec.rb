@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
   context 'with arrays' do
     it 'registers an offense for `array.length == 0`' do
       expect_offense(<<~RUBY)

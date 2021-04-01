@@ -4,9 +4,11 @@ module RuboCop
   module Cop
     # Common functionality for checking length of code segments.
     module CodeLength
-      include ConfigurableMax
+      extend ExcludeLimit
 
       MSG = '%<label>s has too many lines. [%<length>d/%<max>d]'
+
+      exclude_limit 'Max'
 
       private
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::NonLocalExitFromIterator, :config do
   context 'when block is followed by method chain' do
     context 'and has single argument' do
       it 'registers an offense' do

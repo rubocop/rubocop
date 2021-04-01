@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ClassVars do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::ClassVars, :config do
   it 'registers an offense for class variable declaration' do
     expect_offense(<<~RUBY)
       class TestClass; @@test = 10; end

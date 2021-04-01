@@ -22,6 +22,7 @@ module RuboCop
 
         MSG = 'Do not use `::` for method calls.'
 
+        # @!method java_type_node?(node)
         def_node_matcher :java_type_node?, <<~PATTERN
           (send
             (const nil? :Java) _)

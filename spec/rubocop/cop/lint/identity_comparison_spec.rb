@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::IdentityComparison, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'registers an offense and corrects when using `==` for comparison between `object_id`s' do
     expect_offense(<<~RUBY)
       foo.object_id == bar.object_id

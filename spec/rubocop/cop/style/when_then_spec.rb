@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::WhenThen do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::WhenThen, :config do
   it 'registers an offense for when x;' do
     expect_offense(<<~RUBY)
       case a
@@ -31,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::WhenThen do
     RUBY
   end
 
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/3868
+  # Regression: https://github.com/rubocop/rubocop/issues/3868
   context 'when inspecting a case statement with an empty branch' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

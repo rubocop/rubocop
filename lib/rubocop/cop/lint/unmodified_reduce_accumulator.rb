@@ -66,14 +66,20 @@ module RuboCop
         MSG = 'Ensure the accumulator `%<accum>s` will be modified by `%<method>s`.'
         MSG_INDEX = 'Do not return an element of the accumulator in `%<method>s`.'
 
+        # @!method reduce_with_block?(node)
         def_node_matcher :reduce_with_block?, <<~PATTERN
-          (block (send _recv {:reduce :inject} ...) (args arg+) ...)
+          {
+            (block (send _recv {:reduce :inject} ...) args ...)
+            (numblock (send _recv {:reduce :inject} ...) ...)
+          }
         PATTERN
 
+        # @!method accumulator_index?(node, accumulator_name)
         def_node_matcher :accumulator_index?, <<~PATTERN
           (send (lvar %1) {:[] :[]=} ...)
         PATTERN
 
+        # @!method element_modified?(node, element_name)
         def_node_search :element_modified?, <<~PATTERN
           {
             (send _receiver !{:[] :[]=} <`(lvar %1) `_ ...>)               # method(el, ...)
@@ -83,6 +89,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method lvar_used?(node, name)
         def_node_matcher :lvar_used?, <<~PATTERN
           {
             (lvar %1)
@@ -93,6 +100,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method expression_values(node)
         def_node_search :expression_values, <<~PATTERN
           {
             (%RuboCop::AST::Node::VARIABLES $_)
@@ -106,9 +114,11 @@ module RuboCop
 
         def on_block(node)
           return unless reduce_with_block?(node)
+          return unless node.argument_list.length >= 2
 
           check_return_values(node)
         end
+        alias on_numblock on_block
 
         private
 
@@ -146,7 +156,7 @@ module RuboCop
         end
 
         def block_arg_name(node, index)
-          node.arguments[index].node_parts[0]
+          node.argument_list[index].name
         end
 
         # Look for an index of the accumulator being returned, except where the index

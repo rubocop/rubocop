@@ -22,6 +22,7 @@ module RuboCop
           'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
         RESTRICT_ON_SEND = %i[puts].freeze
 
+        # @!method stderr_puts?(node)
         def_node_matcher :stderr_puts?, <<~PATTERN
           (send
             {(gvar #stderr_gvar?) (const {nil? cbase} :STDERR)}

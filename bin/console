@@ -2,9 +2,9 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'pry'
+require 'irb'
 require 'rubocop'
 
 ARGV.clear
 
-RuboCop.pry
+IRB.start(__FILE__)

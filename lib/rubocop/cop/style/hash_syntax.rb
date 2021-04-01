@@ -54,9 +54,10 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}
       #   {:c => 3, 'd' => 4}
-      class HashSyntax < Cop
+      class HashSyntax < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'
         MSG_NO_MIXED_KEYS = "Don't mix styles in the same hash."
@@ -104,18 +105,6 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if style == :hash_rockets || force_hash_rockets?(node.parent.pairs)
-              autocorrect_hash_rockets(corrector, node)
-            elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
-              autocorrect_no_mixed_keys(corrector, node)
-            else
-              autocorrect_ruby19(corrector, node)
-            end
-          end
-        end
-
         def alternative_style
           case style
           when :hash_rockets
@@ -126,6 +115,16 @@ module RuboCop
         end
 
         private
+
+        def autocorrect(corrector, node)
+          if style == :hash_rockets || force_hash_rockets?(node.parent.pairs)
+            autocorrect_hash_rockets(corrector, node)
+          elsif style == :ruby19_no_mixed_keys || style == :no_mixed_keys
+            autocorrect_no_mixed_keys(corrector, node)
+          else
+            autocorrect_ruby19(corrector, node)
+          end
+        end
 
         def sym_indices?(pairs)
           pairs.all? { |p| word_symbol_pair?(p) }
@@ -152,14 +151,16 @@ module RuboCop
           return true if /\A[_a-z]\w*[?!]?\z/i.match?(sym_name)
 
           # For more complicated hash keys, let the parser validate the syntax.
-          parse("{ #{sym_name}: :foo }").valid_syntax?
+          ProcessedSource.new("{ #{sym_name}: :foo }", target_ruby_version).valid_syntax?
         end
 
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.delimiter == delim
               location = pair.source_range.begin.join(pair.loc.operator)
-              add_offense(pair, location: location, message: msg) do
+              add_offense(location, message: msg) do |corrector|
+                autocorrect(corrector, pair)
+
                 opposite_style_detected
               end
             else

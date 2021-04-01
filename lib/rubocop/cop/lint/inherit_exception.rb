@@ -58,6 +58,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[new].freeze
 
+        # @!method class_new_call?(node)
         def_node_matcher :class_new_call?, <<~PATTERN
           (send
             (const {cbase nil?} :Class) :new

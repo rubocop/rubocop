@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop, :config do
   it 'does not register offense if range startpoint is not constant' do
     expect_no_offenses('(a..10).each {}')
   end
@@ -32,6 +30,7 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
         (0..10).each {}
         ^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
       RUBY
+
       expect_correction(<<~RUBY)
         11.times {}
       RUBY
@@ -78,6 +77,7 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop do
         (0...10).each {}
         ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
       RUBY
+
       expect_correction(<<~RUBY)
         10.times {}
       RUBY

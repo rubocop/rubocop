@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::Proc do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::Proc, :config do
   it 'registers an offense for a Proc.new call' do
     expect_offense(<<~RUBY)
       f = Proc.new { |x| puts x }

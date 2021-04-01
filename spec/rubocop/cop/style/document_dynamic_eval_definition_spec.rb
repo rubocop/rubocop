@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
   it 'registers an offense when using eval-type method with string interpolation without comment docs' do
     expect_offense(<<~RUBY)
       class_eval <<-EOT, __FILE__, __LINE__ + 1
@@ -65,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition do
     end
 
     it 'does not evaluate comments if there is no interpolation' do
-      expect(cop).not_to receive(:comment_block_docs?) # rubocop:disable RSpec/SubjectStub
+      expect(cop).not_to receive(:comment_block_docs?)
 
       expect_no_offenses(<<~RUBY)
         class_eval <<-EOT, __FILE__, __LINE__ + 1

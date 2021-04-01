@@ -21,6 +21,7 @@ module RuboCop
         MSG = 'Prefer ary[n..] over ary[n..-1].'
         RESTRICT_ON_SEND = %i[[]].freeze
 
+        # @!method range_till_minus_one?(node)
         def_node_matcher :range_till_minus_one?, '(irange !nil? (int -1))'
 
         def on_send(node)

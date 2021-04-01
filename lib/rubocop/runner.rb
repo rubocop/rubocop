@@ -323,10 +323,15 @@ module RuboCop
       Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
     end
 
-    def mobilized_cop_classes(config)
+    def mobilized_cop_classes(config) # rubocop:disable Metrics/AbcSize
       @mobilized_cop_classes ||= {}.compare_by_identity
       @mobilized_cop_classes[config] ||= begin
         cop_classes = Cop::Registry.all
+
+        # `@options[:only]` and `@options[:except]` are not qualified until
+        # needed so that the Registry can be fully loaded, including any
+        # cops added by `require`s.
+        qualify_option_cop_names
 
         OptionsValidator.new(@options).validate_cop_options
 
@@ -339,6 +344,16 @@ module RuboCop
         cop_classes.reject! { |c| c.match?(@options[:except]) }
 
         Cop::Registry.new(cop_classes, @options)
+      end
+    end
+
+    def qualify_option_cop_names
+      %i[only except].each do |option|
+        next unless @options[option]
+
+        @options[option].map! do |cop_name|
+          Cop::Registry.qualified_cop_name(cop_name, "--#{option} option")
+        end
       end
     end
 
@@ -375,6 +390,7 @@ module RuboCop
 
     def minimum_severity_to_fail
       @minimum_severity_to_fail ||= begin
+        # Unless given explicitly as `fail_level`, `:info` severity offenses do not fail
         name = @options[:fail_level] || :refactor
         RuboCop::Cop::Severity.new(name)
       end

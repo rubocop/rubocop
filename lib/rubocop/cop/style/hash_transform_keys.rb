@@ -32,6 +32,7 @@ module RuboCop
 
         minimum_target_ruby_version 2.5
 
+        # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block
             ({send csend} !#array_receiver? :each_with_object (hash))
@@ -43,6 +44,7 @@ module RuboCop
             ({send csend} (lvar _memo) :[]= $!`_memo $(lvar _val)))
         PATTERN
 
+        # @!method on_bad_hash_brackets_map(node)
         def_node_matcher :on_bad_hash_brackets_map, <<~PATTERN
           (send
             (const _ :Hash)
@@ -55,6 +57,7 @@ module RuboCop
               (array $_ $(lvar _val))))
         PATTERN
 
+        # @!method on_bad_map_to_h(node)
         def_node_matcher :on_bad_map_to_h, <<~PATTERN
           ({send csend}
             (block
@@ -66,6 +69,7 @@ module RuboCop
             :to_h)
         PATTERN
 
+        # @!method on_bad_to_h(node)
         def_node_matcher :on_bad_to_h, <<~PATTERN
           (block
             ({send csend} !#array_receiver? :to_h)

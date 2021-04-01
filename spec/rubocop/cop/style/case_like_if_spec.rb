@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::CaseLikeIf, :config do
   it 'registers an offense and corrects when using `===`' do
     expect_offense(<<~RUBY)
       if Integer === x
@@ -153,6 +151,24 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf do
     expect_no_offenses(<<~RUBY)
       if match?(/foo/)
       elsif x.match?(/bar/)
+      else
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `include?` without a receiver' do
+    expect_no_offenses(<<~RUBY)
+      if include?(Foo)
+      elsif include?(Bar)
+      else
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `cover?` without a receiver' do
+    expect_no_offenses(<<~RUBY)
+      if x == 1
+      elsif cover?(Bar)
       else
       end
     RUBY

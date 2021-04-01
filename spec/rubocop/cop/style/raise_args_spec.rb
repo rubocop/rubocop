@@ -17,6 +17,19 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'with a raise with exception instantiation and message arguments' do
+      it 'reports an offense' do
+        expect_offense(<<~RUBY)
+          raise FooError.new, message
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise FooError.new(message)
+        RUBY
+      end
+    end
+
     context 'when used in a ternary expression' do
       it 'registers an offense and auto-corrects' do
         expect_offense(<<~RUBY)
@@ -295,6 +308,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     it 'accepts a raise with splatted arguments' do
       expect_no_offenses('raise MyCustomError.new(*args)')
+    end
+
+    it 'ignores a raise with an exception argument' do
+      expect_no_offenses('raise Ex.new(entity), message')
     end
 
     it 'accepts a raise with 3 args' do

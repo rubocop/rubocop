@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::HashCompareByIdentity do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::HashCompareByIdentity, :config do
   it 'registers an offense when using hash methods with `object_id` on receiver as a key' do
     expect_offense(<<~RUBY)
       hash.key?(foo.object_id)

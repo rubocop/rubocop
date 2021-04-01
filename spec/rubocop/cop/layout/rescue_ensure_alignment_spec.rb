@@ -408,6 +408,29 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
+  it 'accepts correctly aligned rescue/ensure with def' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        something
+      rescue StandardError
+        handle_error
+      ensure
+        error
+      end
+    RUBY
+  end
+
+  it 'accepts correctly aligned rescue/ensure with def with no body' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+      rescue StandardError
+        handle_error
+      ensure
+        error
+      end
+    RUBY
+  end
+
   it 'accepts correctly aligned rescue in assigned begin-end block' do
     expect_no_offenses(<<-RUBY)
       foo = begin
@@ -728,9 +751,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
-  describe 'excluded file' do
-    subject(:cop) { described_class.new(config) }
-
+  describe 'excluded file', :config do
     let(:config) do
       RuboCop::Config.new('Layout/RescueEnsureAlignment' =>
                           { 'Enabled' => true,

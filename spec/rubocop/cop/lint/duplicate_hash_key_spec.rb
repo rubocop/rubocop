@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateHashKey do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateHashKey, :config do
   context 'when there is a duplicated key in the hash literal' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

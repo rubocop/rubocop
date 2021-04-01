@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement, :config do
   context 'with a repeated character class element' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
@@ -30,7 +28,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement do
   end
 
   context 'with no repeated character class elements' do
-    it 'registers an offense and corrects' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         foo = /[xyz]/
       RUBY
@@ -38,7 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement do
   end
 
   context 'with repeated elements in different character classes' do
-    it 'registers an offense and corrects' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         foo = /[xyz][xyz]/
       RUBY

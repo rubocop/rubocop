@@ -10,7 +10,50 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
               ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
       RUBY
+
       expect_correction(<<~RUBY)
+        module FooClass
+          class BarClass
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for not nested classes when namespace is defined as a class' do
+      expect_offense(<<~RUBY)
+        class FooClass
+        end
+
+        class FooClass::BarClass
+              ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class FooClass
+        end
+
+        class FooClass
+          class BarClass
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for not nested classes when namespace is defined as a module' do
+      expect_offense(<<~RUBY)
+        module FooClass
+        end
+
+        class FooClass::BarClass
+              ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module FooClass
+        end
+
         module FooClass
           class BarClass
           end
@@ -24,6 +67,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
               ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
       RUBY
+
       expect_correction(<<~RUBY)
         module FooClass
           class BarClass < Super
@@ -38,6 +82,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
         end
       RUBY
+
       expect_correction(<<~RUBY)
         module FooModule
           module BarModule
@@ -98,6 +143,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           end
         end
       RUBY
+
       expect_correction(<<~RUBY)
         class FooClass::BarClass
         end
@@ -112,6 +158,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           end
         end
       RUBY
+
       expect_correction(<<~RUBY)
         module FooModule::BarModule
         end

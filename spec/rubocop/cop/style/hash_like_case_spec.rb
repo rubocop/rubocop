@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::HashLikeCase, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'MinBranchesCount: 2' do
     let(:cop_config) do
       { 'MinBranchesCount' => 2 }

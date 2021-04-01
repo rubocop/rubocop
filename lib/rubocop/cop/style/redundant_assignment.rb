@@ -42,6 +42,7 @@ module RuboCop
 
         MSG = 'Redundant assignment before returning detected.'
 
+        # @!method redundant_assignment?(node)
         def_node_matcher :redundant_assignment?, <<~PATTERN
           (... $(lvasgn _name _expression) (lvar _name))
         PATTERN

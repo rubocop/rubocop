@@ -10,7 +10,12 @@ require 'rubocop/cop/internal_affairs'
 require 'webmock/rspec'
 
 require_relative 'core_ext/string'
-require 'pry'
+
+begin
+  require 'pry'
+rescue LoadError
+  # Pry is not activated.
+end
 
 # Require supporting files exposed for testing.
 require 'rubocop/rspec/support'
@@ -46,6 +51,17 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.syntax = :expect # Disable `should_receive` and `stub`
     mocks.verify_partial_doubles = true
+  end
+
+  config.before(:suite) do
+    RuboCop::Cop::Registry.global.freeze
+    # This ensures that there are no side effects from running a particular spec.
+    # Use `:restore_registry` / `RuboCop::Cop::Registry.with_temporary_global` if
+    # need to modify registry (e.g. with `stub_cop_class`).
+  end
+
+  config.after(:suite) do
+    RuboCop::Cop::Registry.reset!
   end
 
   if %w[ruby-head-ascii_spec ruby-head-spec].include? ENV['CIRCLE_STAGE']

@@ -24,7 +24,11 @@ module RuboCop
           name = full_name.gsub(/\A(_+)/, '')
           next if allowed_names.include?(name)
 
-          range = arg_range(arg, name.size)
+          length = full_name.size
+          length += 1 if arg.restarg_type?
+          length += 2 if arg.kwrestarg_type?
+
+          range = arg_range(arg, length)
           issue_offenses(node, range, name)
         end
       end
@@ -49,12 +53,10 @@ module RuboCop
       end
 
       def name_type(node)
-        @name_type ||= begin
-          case node.type
-          when :block then 'block parameter'
-          when :def, :defs then 'method parameter'
-          end
-        end
+        @name_type ||= case node.type
+                       when :block then 'block parameter'
+                       when :def, :defs then 'method parameter'
+                       end
       end
 
       def num_offense(node, range)

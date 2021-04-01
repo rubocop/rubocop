@@ -89,7 +89,7 @@ module RuboCop
           # preventing auto-correction to single-line empty braces. It will
           # conflict with auto-correction by `Layout/SpaceInsideBlockBraces` cop
           # if auto-corrected to a single-line empty braces.
-          # See: https://github.com/rubocop-hq/rubocop/issues/7363
+          # See: https://github.com/rubocop/rubocop/issues/7363
           return if node.body.nil? && node.multiline?
 
           left_brace = node.loc.begin
@@ -111,7 +111,8 @@ module RuboCop
               braces_with_contents_inside(node, inner)
             elsif style_for_empty_braces == :no_space
               offense(range.begin_pos, range.end_pos,
-                      'Space inside empty braces detected.')
+                      'Space inside empty braces detected.',
+                      'EnforcedStyleForEmptyBraces')
             end
           end
         end
@@ -120,7 +121,8 @@ module RuboCop
           return if style_for_empty_braces != :space
 
           offense(left_brace.begin_pos, right_brace.end_pos,
-                  'Space missing inside empty braces.')
+                  'Space missing inside empty braces.',
+                  'EnforcedStyleForEmptyBraces')
         end
 
         def braces_with_contents_inside(node, inner)
@@ -164,9 +166,9 @@ module RuboCop
             if left_brace.end_pos == args_delimiter.begin_pos &&
                cop_config['SpaceBeforeBlockParameters']
               offense(left_brace.begin_pos, args_delimiter.end_pos,
-                      'Space between { and | missing.') do
-                opposite_style_detected
-              end
+                      'Space between { and | missing.')
+            else
+              correct_style_detected
             end
           else
             # We indicate the position after the left brace. Otherwise it's
@@ -179,11 +181,11 @@ module RuboCop
 
         def space_inside_left_brace(left_brace, args_delimiter)
           if pipe?(args_delimiter)
-            unless cop_config['SpaceBeforeBlockParameters']
+            if cop_config['SpaceBeforeBlockParameters']
+              correct_style_detected
+            else
               offense(left_brace.end_pos, args_delimiter.begin_pos,
-                      'Space between { and | detected.') do
-                opposite_style_detected
-              end
+                      'Space between { and | detected.')
             end
           else
             brace_with_space = range_with_surrounding_space(range: left_brace,
@@ -220,7 +222,7 @@ module RuboCop
           end
         end
 
-        def offense(begin_pos, end_pos, msg)
+        def offense(begin_pos, end_pos, msg, style_param = 'EnforcedStyle')
           range = range_between(begin_pos, end_pos)
           add_offense(range, message: msg) do |corrector|
             case range.source
@@ -229,6 +231,7 @@ module RuboCop
             when '{|' then corrector.replace(range, '{ |')
             else           corrector.insert_before(range, ' ')
             end
+            opposite_style_detected if style_param == 'EnforcedStyle'
           end
         end
 

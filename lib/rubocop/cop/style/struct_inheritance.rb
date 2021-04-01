@@ -37,6 +37,7 @@ module RuboCop
           end
         end
 
+        # @!method struct_constructor?(node)
         def_node_matcher :struct_constructor?, <<~PATTERN
           {(send (const {nil? cbase} :Struct) :new ...)
            (block (send (const {nil? cbase} :Struct) :new ...) ...)}
@@ -47,6 +48,8 @@ module RuboCop
         def correct_parent(parent, corrector)
           if parent.block_type?
             corrector.remove(range_with_surrounding_space(range: parent.loc.end, newlines: false))
+          elsif (class_node = parent.parent).body.nil?
+            corrector.remove(range_by_whole_lines(class_node.loc.end, include_final_newline: true))
           else
             corrector.insert_after(parent.loc.expression, ' do')
           end

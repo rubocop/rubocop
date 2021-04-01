@@ -133,6 +133,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
             foo = %r/\//
                   ^^^^^^ Use `//` around regular expression.
           RUBY
+
           expect_correction(<<~'RUBY')
             foo = /\//
           RUBY

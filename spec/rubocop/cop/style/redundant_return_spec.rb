@@ -54,6 +54,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     RUBY
   end
 
+  it 'reports an offense for def ending with return with splat argument' do
+    expect_offense(<<~RUBY)
+      def func
+        some_preceding_statements
+        return *something
+        ^^^^^^ Redundant `return` detected.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        some_preceding_statements
+        something
+      end
+    RUBY
+  end
+
   it 'reports an offense for defs ending with return' do
     expect_offense(<<~RUBY)
       def self.func
@@ -241,6 +258,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       expect_correction(<<~RUBY)
         def func
           {:a => 1, :b => 2}
+        end
+      RUBY
+    end
+
+    it 'reports an offense when multiple return values have a parenthesized return value' do
+      expect_offense(<<~RUBY)
+        def do_something
+          return (foo && bar), 42
+          ^^^^^^ Redundant `return` detected. To return multiple values, use an array.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def do_something
+          [(foo && bar), 42]
         end
       RUBY
     end

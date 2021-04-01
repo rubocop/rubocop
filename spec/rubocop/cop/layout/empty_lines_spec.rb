@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::EmptyLines do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::EmptyLines, :config do
   it 'registers an offense for consecutive empty lines' do
     expect_offense(<<~RUBY)
       test = 5

@@ -9,6 +9,7 @@ module RuboCop
         self.command_name = :auto_gen_config
 
         AUTO_GENERATED_FILE = '.rubocop_todo.yml'
+        YAML_OPTIONAL_DOC_START = /\A---(\s+#|\s*\z)/.freeze
 
         PHASE_1 = 'Phase 1 of 2: run Layout/LineLength cop'
         PHASE_2 = 'Phase 2 of 2: run all cops'
@@ -130,10 +131,10 @@ module RuboCop
         end
 
         def write_config_file(file_name, file_string, rubocop_yml_contents)
-          File.open(file_name, 'w') do |f|
-            f.write "inherit_from:#{file_string}\n"
-            f.write "\n#{rubocop_yml_contents}" if /\S/.match?(rubocop_yml_contents)
-          end
+          lines = /\S/.match?(rubocop_yml_contents) ? rubocop_yml_contents.split("\n", -1) : []
+          doc_start_index = lines.index { |line| YAML_OPTIONAL_DOC_START.match?(line) } || -1
+          lines.insert(doc_start_index + 1, "inherit_from:#{file_string}\n")
+          File.open(file_name, 'w') { |f| f.write lines.join("\n") }
         end
       end
     end

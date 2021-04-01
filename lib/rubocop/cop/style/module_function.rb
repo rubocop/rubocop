@@ -82,8 +82,13 @@ module RuboCop
         FORBIDDEN_MSG =
           'Do not use `module_function` or `extend self`.'
 
+        # @!method module_function_node?(node)
         def_node_matcher :module_function_node?, '(send nil? :module_function)'
+
+        # @!method extend_self_node?(node)
         def_node_matcher :extend_self_node?, '(send nil? :extend self)'
+
+        # @!method private_directive?(node)
         def_node_matcher :private_directive?, '(send nil? :private ...)'
 
         def on_module(node)

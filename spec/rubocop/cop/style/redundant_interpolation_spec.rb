@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantInterpolation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
   it 'registers an offense for "#{1 + 1}"' do
     expect_offense(<<~'RUBY')
       "#{1 + 1}"

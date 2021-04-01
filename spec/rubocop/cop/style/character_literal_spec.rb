@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::CharacterLiteral, :config do
   it 'registers an offense for character literals' do
     expect_offense(<<~RUBY)
       x = ?x
           ^^ Do not use the character literal - use string literal instead.
     RUBY
+
     expect_correction(<<~RUBY)
       x = 'x'
     RUBY
@@ -18,6 +17,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
       x = ?\n
           ^^^ Do not use the character literal - use string literal instead.
     RUBY
+
     expect_correction(<<~'RUBY')
       x = "\n"
     RUBY
@@ -36,6 +36,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral do
       x = ?'
           ^^ Do not use the character literal - use string literal instead.
     RUBY
+
     expect_correction(<<~RUBY)
       x = "'"
     RUBY

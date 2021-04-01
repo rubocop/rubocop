@@ -16,10 +16,12 @@ module RuboCop
       class UselessMessageAssertion < Base
         MSG = 'Do not specify cop behavior using `described_class::MSG`.'
 
+        # @!method described_class_msg(node)
         def_node_search :described_class_msg, <<~PATTERN
           (const (send nil? :described_class) :MSG)
         PATTERN
 
+        # @!method rspec_expectation_on_msg?(node)
         def_node_matcher :rspec_expectation_on_msg?, <<~PATTERN
           (send (send nil? :expect #contains_described_class_msg?) :to ...)
         PATTERN

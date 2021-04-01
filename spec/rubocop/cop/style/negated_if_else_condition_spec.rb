@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
   it 'registers an offense and corrects when negating condition with `!` for `if-else`' do
     expect_offense(<<~RUBY)
       if !x
@@ -127,6 +125,64 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition do
     expect_correction(<<~RUBY)
       if condition.nil?
         foo = 42
+      end
+    RUBY
+  end
+
+  it 'moves comments to correct branches during autocorrect' do
+    expect_offense(<<~RUBY)
+      if !condition.nil?
+      ^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        # part B
+        # and foo is 39
+        foo = 39
+      else
+        # part A
+        # and foo is 42
+        foo = 42
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition.nil?
+        # part A
+        # and foo is 42
+        foo = 42
+      else
+        # part B
+        # and foo is 39
+        foo = 39
+      end
+    RUBY
+  end
+
+  it 'works with comments and multiple statements' do
+    expect_offense(<<~RUBY)
+      if !condition.nil?
+      ^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        # part A
+        # and foo is 1 and bar is 2
+        foo = 1
+        bar = 2
+      else
+        # part B
+        # and foo is 3 and bar is 4
+        foo = 3
+        bar = 4
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition.nil?
+        # part B
+        # and foo is 3 and bar is 4
+        foo = 3
+        bar = 4
+      else
+        # part A
+        # and foo is 1 and bar is 2
+        foo = 1
+        bar = 2
       end
     RUBY
   end

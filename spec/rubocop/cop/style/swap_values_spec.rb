@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::SwapValues do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::SwapValues, :config do
   shared_examples 'verbosely swapping' do |type, x, y, correction|
     it "registers an offense and corrects when verbosely swapping #{type} variables" do
       expect_offense(<<~RUBY, x: x)

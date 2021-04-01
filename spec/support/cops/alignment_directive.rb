@@ -7,20 +7,26 @@ module RuboCop
       # annotated with a comment of the form `# << delta` or `# >> delta` where
       # `delta` is an integer will be shifted by `delta` columns in the
       # indicated direction.
-      class AlignmentDirective < RuboCop::Cop::Cop
+      class AlignmentDirective < RuboCop::Cop::Base
+        extend AutoCorrector
+
         MSG = 'Indent this node'
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.ast_with_comments.each do |node, comments|
-            add_offense(node) if comments.find { |c| @column_delta = delta(c) }
+            next unless comments.find { |c| @column_delta = delta(c) }
+
+            add_offense(node) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def delta(comment)
           /\A#\s*(<<|>>)\s*(\d+)\s*\z/.match(comment.text) do |m|
