@@ -85,6 +85,9 @@ module RuboCop
           else
             add_offense(node, message: MSG_LITERAL_MULTI_ARG) do |corrector|
               corrector.replace(node, args_to_hash(node.arguments))
+
+              parent = node.parent
+              add_parentheses(parent, corrector) if parent&.send_type? && !parent.parenthesized?
             end
           end
         end
