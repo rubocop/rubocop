@@ -18,8 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray, :config do
         end
       end
 
-      it 'adds an offense and corrects when tokens contain quotes ' \
-        'and are comma separated' do
+      it 'adds an offense and corrects when tokens contain quotes and are comma separated' do
         expect_offense(<<~RUBY)
           %#{char}('foo', 'bar', 'baz')
           ^^^^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
@@ -30,8 +29,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray, :config do
         RUBY
       end
 
-      it 'adds an offense and corrects when tokens contain ' \
-        'both types of quotes' do
+      it 'adds an offense and corrects when tokens contain both types of quotes' do
         expect_offense(<<~RUBY)
           %#{char}('foo' "bar" 'baz')
           ^^^^^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
@@ -42,8 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray, :config do
         RUBY
       end
 
-      it 'adds an offense and corrects when one token is quoted ' \
-        'but there are no commas' do
+      it 'adds an offense and corrects when one token is quoted but there are no commas' do
         expect_offense(<<~RUBY)
           %#{char}('foo' bar baz)
           ^^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
@@ -54,8 +51,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentStringArray, :config do
         RUBY
       end
 
-      it 'adds an offense and corrects when there are no quotes ' \
-        'but one comma' do
+      it 'adds an offense and corrects when there are no quotes but one comma' do
         expect_offense(<<~RUBY)
           %#{char}(foo, bar baz)
           ^^^^^^^^^^^^^^^^ Within `%w`/`%W`, quotes and ',' are unnecessary and may be unwanted in the resulting strings.

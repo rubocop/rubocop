@@ -2,17 +2,13 @@
 
 RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
   let(:config) do
-    supported_styles = {
-      'SupportedStyles' => %w[backticks percent_x mixed]
-    }
+    supported_styles = { 'SupportedStyles' => %w[backticks percent_x mixed] }
     RuboCop::Config.new('Style/PercentLiteralDelimiters' =>
                           percent_literal_delimiters_config,
                         'Style/CommandLiteral' =>
                           cop_config.merge(supported_styles))
   end
-  let(:percent_literal_delimiters_config) do
-    { 'PreferredDelimiters' => { '%x' => '()' } }
-  end
+  let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%x' => '()' } } }
 
   describe '%x commands with other delimiters than parentheses' do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
@@ -27,9 +23,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
 
   describe 'when PercentLiteralDelimiters is configured with curly braces' do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_x' } }
-    let(:percent_literal_delimiters_config) do
-      { 'PreferredDelimiters' => { '%x' => '[]' } }
-    end
+    let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%x' => '[]' } } }
 
     it 'respects the configuration when auto-correcting' do
       expect_offense(<<~RUBY)

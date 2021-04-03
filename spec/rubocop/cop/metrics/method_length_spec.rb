@@ -82,8 +82,7 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     RUBY
   end
 
-  it 'accepts a method with multiline arguments ' \
-     'and less than 5 lines of body' do
+  it 'accepts a method with multiline arguments and less than 5 lines of body' do
     expect_no_offenses(<<~RUBY)
       def m(x,
             y,

@@ -9,12 +9,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
   end
 
   shared_examples 'safe assignment disabled' do |style, message|
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => style,
-        'AllowSafeAssignment' => false
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => style, 'AllowSafeAssignment' => false } }
 
     it 'registers an offense for parens around assignment' do
       expect_offense(<<~RUBY)
@@ -228,8 +223,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         RUBY
       end
 
-      it 'registers an offense for double assignment with ' \
-         'equality check in condition' do
+      it 'registers an offense for double assignment with equality check in condition' do
         expect_offense(<<~RUBY)
           foo = bar = baz == 1 ? a : b
                       ^^^^^^^^^^^^^^^^ Use parentheses for ternary conditions.
@@ -521,9 +515,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
   end
 
   context 'configured for parentheses on complex and there are parens' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'require_parentheses_when_complex' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses_when_complex' } }
 
     context 'with a simple condition' do
       it 'registers an offense for query method in condition' do
@@ -681,8 +673,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
           expect_no_corrections
         end
 
-        it 'registers an offense for array include? with ' \
-          'multiple parameters without parens' do
+        it 'registers an offense for array include? with multiple parameters without parens' do
           expect_offense(<<~'RUBY')
             (%w(a b).include? params[:t], 3) ? "ab" : "c"
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
@@ -691,8 +682,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
           expect_no_corrections
         end
 
-        it 'registers an offense for array include? with ' \
-          'multiple parameters with parens' do
+        it 'registers an offense for array include? with multiple parameters with parens' do
           expect_offense(<<~RUBY)
             (%w(a b).include?(params[:t], x)) ? "ab" : "c"
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
@@ -751,9 +741,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
   end
 
   context 'configured for parentheses on complex and there are no parens' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'require_parentheses_when_complex' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses_when_complex' } }
 
     context 'with complex condition' do
       it 'registers an offense for arithmetic and equality check' do
@@ -889,9 +877,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
     let(:redundant_parens_enabled) { true }
 
     context 'when `EnforcedStyle: require_parentheses`' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'require_parentheses' }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 
       it 'accepts' do
         expect_no_offenses('foo = bar? ? a : b')
@@ -899,9 +885,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
     end
 
     context 'when `EnforcedStyle: require_parentheses_when_complex`' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'require_parentheses_when_complex' }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses_when_complex' } }
 
       it 'accepts' do
         expect_no_offenses('!condition.nil? ? foo : bar')

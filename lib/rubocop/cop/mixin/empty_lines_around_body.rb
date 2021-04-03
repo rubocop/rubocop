@@ -10,11 +10,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_EXTRA = 'Extra empty line detected at %<kind>s body ' \
-                    '%<location>s.'
+        MSG_EXTRA = 'Extra empty line detected at %<kind>s body %<location>s.'
         MSG_MISSING = 'Empty line missing at %<kind>s body %<location>s.'
-        MSG_DEFERRED = 'Empty line missing before first %<type>s ' \
-                       'definition'
+        MSG_DEFERRED = 'Empty line missing before first %<type>s definition'
 
         private
 
@@ -93,9 +91,7 @@ module RuboCop
           when :no_empty_lines
             check_line(style, line_no, message(MSG_EXTRA, desc), &:empty?)
           when :empty_lines
-            check_line(style, line_no, message(MSG_MISSING, desc)) do |line|
-              !line.empty?
-            end
+            check_line(style, line_no, message(MSG_MISSING, desc)) { |line| !line.empty? }
           end
         end
 

@@ -10,9 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
 
   context 'with EnforcedStyle: case' do
     context 'with IndentOneStep: false' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'case', 'IndentOneStep' => false }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'case', 'IndentOneStep' => false } }
 
       context 'with everything on a single line' do
         it 'does not register an offense' do
@@ -53,8 +51,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense and corrects assignment indented ' \
-          'some other way' do
+        it 'registers an offense and corrects assignment indented some other way' do
           expect_offense(<<~RUBY)
             output = case variable
               when 'value1'
@@ -109,8 +106,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
         end
       end
 
-      it 'registers an offense and corrects a when clause ' \
-        'that is indented deeper than case' do
+      it 'registers an offense and corrects a when clause that is indented deeper than case' do
         expect_offense(<<~RUBY)
           case a
               when 0 then return
@@ -196,9 +192,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
     end
 
     context 'with IndentOneStep: true' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'case', 'IndentOneStep' => true }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'case', 'IndentOneStep' => true } }
 
       context 'with everything on a single line' do
         it 'does not register an offense' do
@@ -218,8 +212,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense and corrects an assignment ' \
-          'indented some other way' do
+        it 'registers an offense and corrects an assignment indented some other way' do
           expect_offense(<<~RUBY)
             output = case variable
                      when 'value1'
@@ -253,8 +246,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects a when clause that is ' \
-        'equally indented with case' do
+      it 'registers an offense and corrects a when clause that is equally indented with case' do
         expect_offense(<<~RUBY)
           y = case a
               when 0 then break
@@ -314,9 +306,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
 
   context 'with EnforcedStyle: end' do
     context 'with IndentOneStep: false' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'end', 'IndentOneStep' => false }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'end', 'IndentOneStep' => false } }
 
       context 'with everything on a single line' do
         it 'does not register an offense' do
@@ -336,8 +326,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense and corrects an assignment indented ' \
-          'some other way' do
+        it 'registers an offense and corrects an assignment indented some other way' do
           expect_offense(<<~RUBY)
             output = case variable
               when 'value1'
@@ -361,9 +350,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
     end
 
     context 'with IndentOneStep: true' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'end', 'IndentOneStep' => true }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'end', 'IndentOneStep' => true } }
 
       context 'with everything on a single line' do
         it 'does not register an offense' do
@@ -404,8 +391,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense and corrects an assignment indented ' \
-          'some other way' do
+        it 'registers an offense and corrects an assignment indented some other way' do
           expect_offense(<<~RUBY)
             output = case variable
                    when 'value1'

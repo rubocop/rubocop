@@ -66,8 +66,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       RUBY
     end
 
-    it "accepts literal #{lit} in a when of a case with " \
-       'something after case keyword' do
+    it "accepts literal #{lit} in a when of a case with " + 'something after case keyword' do
       expect_no_offenses(<<~RUBY)
         case x
         when #{lit} then top

@@ -274,12 +274,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
         stub_const('Ex2', StandardError)
       end
 
-      let(:cop_config) do
-        {
-          'EnforcedStyle' => 'exploded',
-          'AllowedCompactTypes' => ['Ex1']
-        }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'exploded', 'AllowedCompactTypes' => ['Ex1'] } }
 
       it 'accepts exception constructor with no arguments' do
         expect_no_offenses('raise Ex1.new')

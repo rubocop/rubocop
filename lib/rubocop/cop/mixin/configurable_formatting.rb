@@ -10,9 +10,7 @@ module RuboCop
         if valid_name?(node, name)
           correct_style_detected
         else
-          add_offense(name_range, message: message(style)) do
-            report_opposing_styles(node, name)
-          end
+          add_offense(name_range, message: message(style)) { report_opposing_styles(node, name) }
         end
       end
 
@@ -23,8 +21,7 @@ module RuboCop
       end
 
       def valid_name?(node, name, given_style = style)
-        name.match?(self.class::FORMATS.fetch(given_style)) ||
-          class_emitter_method?(node, name)
+        name.match?(self.class::FORMATS.fetch(given_style)) || class_emitter_method?(node, name)
       end
 
       # A class emitter method is a singleton method in a class/module, where
@@ -36,9 +33,7 @@ module RuboCop
         # `def self.extended`, etc.
         node = node.parent while node.parent.defs_type?
 
-        node.parent.each_child_node(:class).any? do |c|
-          c.loc.name.is?(name.to_s)
-        end
+        node.parent.each_child_node(:class).any? { |c| c.loc.name.is?(name.to_s) }
       end
     end
   end

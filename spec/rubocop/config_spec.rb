@@ -26,9 +26,7 @@ RSpec.describe RuboCop::Config do
         $stderr = StringIO.new
       end
 
-      after do
-        $stderr = STDERR
-      end
+      after { $stderr = STDERR }
 
       it 'raises an validation error' do
         expect { configuration }.to raise_error(
@@ -39,9 +37,7 @@ RSpec.describe RuboCop::Config do
     end
 
     context 'when the configuration includes an empty section' do
-      before do
-        create_file(configuration_path, ['Layout/LineLength:'])
-      end
+      before { create_file(configuration_path, ['Layout/LineLength:']) }
 
       it 'raises validation error' do
         expect { configuration.validate }
@@ -51,9 +47,7 @@ RSpec.describe RuboCop::Config do
     end
 
     context 'when the empty section is AllCops' do
-      before do
-        create_file(configuration_path, ['AllCops:'])
-      end
+      before { create_file(configuration_path, ['AllCops:']) }
 
       it 'raises validation error' do
         expect { configuration.validate }
@@ -88,15 +82,11 @@ RSpec.describe RuboCop::Config do
         $stderr = StringIO.new
       end
 
-      after do
-        $stderr = STDERR
-      end
+      after { $stderr = STDERR }
 
       it 'prints a warning message' do
         configuration # ConfigLoader.load_file will validate config
-        expect($stderr.string).to match(
-          %r{Layout/LineLength does not support Min parameter.}
-        )
+        expect($stderr.string).to match(%r{Layout/LineLength does not support Min parameter.})
       end
     end
 
@@ -145,8 +135,7 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, /itisinvalid/)
       end
     end
 
@@ -172,8 +161,7 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, /itisinvalid/)
       end
     end
 
@@ -209,8 +197,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple '\
-            'but config does not allow' do
+    context 'when the configuration includes multiple but config does not allow' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/SpaceAroundBlockParameters:
@@ -220,8 +207,7 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /space/)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, /space/)
       end
     end
 
@@ -236,8 +222,7 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /itisinvalid/)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, /itisinvalid/)
       end
     end
 
@@ -265,13 +250,11 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /EnforcedStyle/)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, /EnforcedStyle/)
       end
     end
 
-    context 'when the configuration includes an obsolete EnforcedStyle ' \
-            'parameter' do
+    context 'when the configuration includes an obsolete EnforcedStyle parameter' do
       before do
         create_file(configuration_path, <<~YAML)
           Layout/IndentationConsistency:
@@ -304,10 +287,8 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    include_examples 'obsolete MaxLineLength parameter',
-                     'Style/WhileUntilModifier'
-    include_examples 'obsolete MaxLineLength parameter',
-                     'Style/IfUnlessModifier'
+    include_examples 'obsolete MaxLineLength parameter', 'Style/WhileUntilModifier'
+    include_examples 'obsolete MaxLineLength parameter', 'Style/IfUnlessModifier'
 
     context 'when the configuration includes obsolete parameters and cops' do
       before do
@@ -330,8 +311,7 @@ RSpec.describe RuboCop::Config do
             message.include?('EnforcedStyleAlignWith') &&
             message.include?('Layout/SpaceAroundKeyword')
         end
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, message_matcher)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, message_matcher)
       end
     end
 
@@ -428,16 +408,7 @@ RSpec.describe RuboCop::Config do
 
   describe '#make_excludes_absolute' do
     context 'when config is in root directory' do
-      let(:hash) do
-        {
-          'AllCops' => {
-            'Exclude' => [
-              'config/environment',
-              'spec'
-            ]
-          }
-        }
-      end
+      let(:hash) { { 'AllCops' => { 'Exclude' => ['config/environment', 'spec'] } } }
 
       before do
         allow(configuration)
@@ -447,13 +418,8 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'generates valid absolute directory' do
-        excludes = configuration['AllCops']['Exclude']
-                   .map { |e| e.sub(/^[A-Z]:/i, '') }
-        expect(excludes)
-          .to eq [
-            '/home/foo/project/config/environment',
-            '/home/foo/project/spec'
-          ]
+        excludes = configuration['AllCops']['Exclude'].map { |e| e.sub(/^[A-Z]:/i, '') }
+        expect(excludes).to eq ['/home/foo/project/config/environment', '/home/foo/project/spec']
       end
     end
 
@@ -477,25 +443,14 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'generates valid absolute directory' do
-        excludes = configuration['AllCops']['Exclude']
-                   .map { |e| e.sub(/^[A-Z]:/i, '') }
-        expect(excludes)
-          .to eq [
-            '/home/foo/project/config/environment',
-            '/home/foo/project/spec'
-          ]
+        excludes = configuration['AllCops']['Exclude'].map { |e| e.sub(/^[A-Z]:/i, '') }
+        expect(excludes).to eq ['/home/foo/project/config/environment', '/home/foo/project/spec']
       end
     end
   end
 
   describe '#file_to_include?' do
-    let(:hash) do
-      {
-        'AllCops' => {
-          'Include' => ['**/Gemfile', 'config/unicorn.rb.example']
-        }
-      }
-    end
+    let(:hash) { { 'AllCops' => { 'Include' => ['**/Gemfile', 'config/unicorn.rb.example'] } } }
 
     let(:loaded_path) { '/home/foo/project/.rubocop.yml' }
 
@@ -519,16 +474,7 @@ RSpec.describe RuboCop::Config do
 
     after { $stderr = STDERR }
 
-    let(:hash) do
-      {
-        'AllCops' => {
-          'Exclude' => [
-            "#{Dir.pwd}/log/**/*",
-            '**/bar.rb'
-          ]
-        }
-      }
-    end
+    let(:hash) { { 'AllCops' => { 'Exclude' => ["#{Dir.pwd}/log/**/*", '**/bar.rb'] } } }
 
     let(:loaded_path) { '/home/foo/project/.rubocop.yml' }
 
@@ -558,23 +504,15 @@ RSpec.describe RuboCop::Config do
   describe '#allowed_camel_case_file?' do
     subject { configuration.allowed_camel_case_file?(file_path) }
 
-    let(:hash) do
-      {
-        'AllCops' => {
-          'Include' => ['**/Gemfile']
-        }
-      }
-    end
+    let(:hash) { { 'AllCops' => { 'Include' => ['**/Gemfile'] } } }
 
-    context 'when the passed path matches allowed camel case patterns ' \
-            'to include' do
+    context 'when the passed path matches allowed camel case patterns to include' do
       let(:file_path) { '/home/foo/project/Gemfile' }
 
       it { is_expected.to be true }
     end
 
-    context 'when the passed path does not match allowed camel case patterns ' \
-            'to include' do
+    context 'when the passed path does not match allowed camel case patterns to include' do
       let(:file_path) { '/home/foo/project/testCase' }
 
       it { is_expected.to be false }
@@ -605,25 +543,18 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'returns the Include value' do
-        expect(patterns_to_include).to eq([
-                                            '**/Gemfile',
-                                            'config/unicorn.rb.example'
-                                          ])
+        expect(patterns_to_include).to eq(['**/Gemfile', 'config/unicorn.rb.example'])
       end
     end
   end
 
   describe '#possibly_include_hidden?' do
-    subject(:configuration) do
-      described_class.new(hash, loaded_path)
-    end
+    subject(:configuration) { described_class.new(hash, loaded_path) }
 
     let(:loaded_path) { 'example/.rubocop.yml' }
 
     it 'returns true when Include config only includes regular paths' do
-      configuration['AllCops'] = {
-        'Include' => ['**/Gemfile', 'config/unicorn.rb.example']
-      }
+      configuration['AllCops'] = { 'Include' => ['**/Gemfile', 'config/unicorn.rb.example'] }
 
       expect(configuration.possibly_include_hidden?).to be(false)
     end
@@ -656,13 +587,7 @@ RSpec.describe RuboCop::Config do
     let(:loaded_path) { 'example/.rubocop.yml' }
 
     context 'when config file has AllCops => Exclude key' do
-      let(:hash) do
-        {
-          'AllCops' => {
-            'Exclude' => ['log/*']
-          }
-        }
-      end
+      let(:hash) { { 'AllCops' => { 'Exclude' => ['log/*'] } } }
 
       it 'returns the Exclude value' do
         expect(patterns_to_exclude).to eq(['log/*'])
@@ -671,9 +596,7 @@ RSpec.describe RuboCop::Config do
   end
 
   describe '#check' do
-    subject(:configuration) do
-      described_class.new(hash, loaded_path)
-    end
+    subject(:configuration) { described_class.new(hash, loaded_path) }
 
     let(:loaded_path) { 'example/.rubocop.yml' }
 
@@ -686,9 +609,7 @@ RSpec.describe RuboCop::Config do
 
       it 'prints a warning message for the loaded path' do
         configuration.check
-        expect($stderr.string).to include(
-          "#{loaded_path} - AllCops/Includes was renamed"
-        )
+        expect($stderr.string).to include("#{loaded_path} - AllCops/Includes was renamed")
       end
     end
   end
@@ -707,9 +628,7 @@ RSpec.describe RuboCop::Config do
         let(:hash) { { 'AllCops' => { 'Exclude' => [], 'Include' => [] } } }
 
         it 'does not yield' do
-          expect do |b|
-            configuration.deprecation_check(&b)
-          end.not_to yield_control
+          expect { |b| configuration.deprecation_check(&b) }.not_to yield_control
         end
       end
 
@@ -717,9 +636,7 @@ RSpec.describe RuboCop::Config do
         let(:hash) { { 'AllCops' => { 'Includes' => [] } } }
 
         it 'yields' do
-          expect do |b|
-            configuration.deprecation_check(&b)
-          end.to yield_with_args(String)
+          expect { |b| configuration.deprecation_check(&b) }.to yield_with_args(String)
         end
       end
 
@@ -727,9 +644,7 @@ RSpec.describe RuboCop::Config do
         let(:hash) { { 'AllCops' => { 'Excludes' => [] } } }
 
         it 'yields' do
-          expect do |b|
-            configuration.deprecation_check(&b)
-          end.to yield_with_args(String)
+          expect { |b| configuration.deprecation_check(&b) }.to yield_with_args(String)
         end
       end
     end
@@ -797,11 +712,7 @@ RSpec.describe RuboCop::Config do
       end
 
       context 'and an individual cop is not specified' do
-        let(:hash) do
-          {
-            'Foo/Bar' => { 'Enabled' => false }
-          }
-        end
+        let(:hash) { { 'Foo/Bar' => { 'Enabled' => false } } }
 
         it 'the cop setting overrides the department' do
           cop_class = 'Foo/Bar/BazCop'
@@ -827,11 +738,7 @@ RSpec.describe RuboCop::Config do
     end
 
     context 'when a cop has configuration but no explicit Enabled setting' do
-      let(:hash) do
-        {
-          'Layout/TrailingWhitespace' => { 'Exclude' => ['foo'] }
-        }
-      end
+      let(:hash) { { 'Layout/TrailingWhitespace' => { 'Exclude' => ['foo'] } } }
 
       it 'enables the cop by default' do
         cop_class = RuboCop::Cop::Layout::TrailingWhitespace
@@ -840,20 +747,14 @@ RSpec.describe RuboCop::Config do
     end
 
     context 'when configuration has no mention of a cop' do
-      let(:hash) do
-        {}
-      end
+      let(:hash) { {} }
 
       it 'enables the cop that is not mentioned' do
         expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
       end
 
       context 'when all cops are disabled by default' do
-        let(:hash) do
-          {
-            'AllCops' => { 'DisabledByDefault' => true }
-          }
-        end
+        let(:hash) { { 'AllCops' => { 'DisabledByDefault' => true } } }
 
         it 'disables the cop that is not mentioned' do
           expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be false
@@ -861,11 +762,7 @@ RSpec.describe RuboCop::Config do
       end
 
       context 'when all cops are explicitly enabled by default' do
-        let(:hash) do
-          {
-            'AllCops' => { 'EnabledByDefault' => true }
-          }
-        end
+        let(:hash) { { 'AllCops' => { 'EnabledByDefault' => true } } }
 
         it 'enables the cop that is not mentioned' do
           expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
@@ -882,9 +779,7 @@ RSpec.describe RuboCop::Config do
       }
     end
 
-    before do
-      stub_cop_class('RuboCop::Foo::Foo')
-    end
+    before { stub_cop_class('RuboCop::Foo::Foo') }
 
     it "always returns the department's config" do
       expect(configuration.for_department('Foo')).to eq hash['Foo']

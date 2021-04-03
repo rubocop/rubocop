@@ -1,17 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
-  let(:cop_config) do
-    { 'EnforcedStyle' => style }
-  end
+  let(:cop_config) { { 'EnforcedStyle' => style } }
 
-  let(:other_cops) do
-    {
-      'Layout/IndentationWidth' => {
-        'Width' => indentation_width
-      }
-    }
-  end
+  let(:other_cops) { { 'Layout/IndentationWidth' => { 'Width' => indentation_width } } }
 
   shared_examples 'common behavior' do
     context 'when IndentationWidth:Width is 2' do
@@ -102,8 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects lines ' \
-        'affected by another offense' do
+      it 'registers an offense and corrects lines affected by another offense' do
         expect_offense(<<~RUBY)
           foo(
            bar(
@@ -163,8 +154,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense and corrects ' \
-            'an under-indented first argument' do
+          it 'registers an offense and corrects an under-indented first argument' do
             expect_offense(<<~RUBY)
               @x =
                 run(
@@ -198,8 +188,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense and corrects ' \
-          'an over-indented first argument' do
+        it 'registers an offense and corrects an over-indented first argument' do
           expect_offense(<<~RUBY)
             puts x.
               merge(
@@ -216,8 +205,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
-        it 'accepts a correctly indented first argument preceded by an ' \
-           'empty line' do
+        it 'accepts a correctly indented first argument preceded by an empty line' do
           expect_no_offenses(<<~RUBY)
             puts x.
               merge(
@@ -238,8 +226,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense and corrects ' \
-            'an under-indented first argument' do
+          it 'registers an offense and corrects an under-indented first argument' do
             expect_offense(<<~RUBY)
               puts x.
                 merge(
@@ -313,12 +300,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     end
 
     context 'when indentation width is overridden for this cop only' do
-      let(:cop_config) do
-        {
-          'EnforcedStyle'    => style,
-          'IndentationWidth' => 4
-        }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => style, 'IndentationWidth' => 4 } }
 
       it 'accepts a correctly indented first argument' do
         expect_no_offenses(<<~RUBY)
@@ -354,8 +336,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
 
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
-        it 'registers an offense and corrects ' \
-          'an over-indented first argument' do
+        it 'registers an offense and corrects an over-indented first argument' do
           expect_offense(<<~RUBY)
             run(:foo, defaults.merge(
                                     bar: 3))
@@ -380,8 +361,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     end
   end
 
-  context 'when EnforcedStyle is ' \
-          'special_for_inner_method_call_in_parentheses' do
+  context 'when EnforcedStyle is special_for_inner_method_call_in_parentheses' do
     let(:style) { 'special_for_inner_method_call_in_parentheses' }
     let(:indentation_width) { 2 }
 
@@ -389,8 +369,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
 
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
-        it 'registers an offense and corrects ' \
-          'an over-indented first argument' do
+        it 'registers an offense and corrects an over-indented first argument' do
           expect_offense(<<~RUBY)
             run(:foo, defaults.merge(
                                     bar: 3))
@@ -403,8 +382,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
-        it 'registers an offense and corrects ' \
-          'an under-indented first argument' do
+        it 'registers an offense and corrects an under-indented first argument' do
           expect_offense(<<~RUBY)
             run(:foo, defaults.
                       merge(
@@ -431,8 +409,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
-        it 'accepts a correctly indented first argument with fullwidth ' \
-           'characters' do
+        it 'accepts a correctly indented first argument with fullwidth characters' do
           expect_no_offenses(<<~RUBY)
             puts('Ｒｕｂｙ', f(
                                a))
@@ -569,8 +546,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense and corrects ' \
-            'an under-indented first argument' do
+          it 'registers an offense and corrects an under-indented first argument' do
             expect_offense(<<~RUBY)
               @x =
                 run(
@@ -643,8 +619,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           RUBY
         end
 
-        it 'accepts a correctly indented first argument preceded by an ' \
-           'empty line' do
+        it 'accepts a correctly indented first argument preceded by an empty line' do
           expect_no_offenses(<<~RUBY)
             puts x.
               merge(
@@ -665,8 +640,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
             RUBY
           end
 
-          it 'registers an offense and corrects ' \
-            'an under-indented first argument' do
+          it 'registers an offense and corrects an under-indented first argument' do
             expect_offense(<<~RUBY)
               puts x.
                 merge(
@@ -741,12 +715,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
 
     context 'when indentation width is overridden for this cop only' do
       let(:indentation_width) { nil }
-      let(:cop_config) do
-        {
-          'EnforcedStyle'    => style,
-          'IndentationWidth' => 4
-        }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => style, 'IndentationWidth' => 4 } }
 
       it 'accepts a correctly indented first argument' do
         expect_no_offenses(<<~RUBY)

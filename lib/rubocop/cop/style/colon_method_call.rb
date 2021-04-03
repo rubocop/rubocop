@@ -38,9 +38,7 @@ module RuboCop
           # ignore Java interop code like Java::int
           return if java_type_node?(node)
 
-          add_offense(node.loc.dot) do |corrector|
-            corrector.replace(node.loc.dot, '.')
-          end
+          add_offense(node.loc.dot) { |corrector| corrector.replace(node.loc.dot, '.') }
         end
       end
     end

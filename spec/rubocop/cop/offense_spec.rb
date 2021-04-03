@@ -26,8 +26,7 @@ RSpec.describe RuboCop::Cop::Offense do
   end
 
   it 'does not blow up if a message contains %' do
-    offense = described_class.new(:convention, location, 'message % test',
-                                  'CopName')
+    offense = described_class.new(:convention, location, 'message % test', 'CopName')
 
     expect(offense.to_s).to eq('C:  1:  1: message % test')
   end
@@ -93,13 +92,7 @@ RSpec.describe RuboCop::Cop::Offense do
 
   describe '#<=>' do
     def offense(hash = {})
-      attrs = {
-        sev:  :convention,
-        line: 5,
-        col:  5,
-        mes:  'message',
-        cop:  'CopName'
-      }.merge(hash)
+      attrs = { sev: :convention, line: 5, col: 5, mes: 'message', cop: 'CopName' }.merge(hash)
 
       described_class.new(
         attrs[:sev],
@@ -113,9 +106,7 @@ RSpec.describe RuboCop::Cop::Offense do
     def location(line, column, source)
       source_buffer = Parser::Source::Buffer.new('test', 1)
       source_buffer.source = source.join("\n")
-      begin_pos = source[0...(line - 1)].reduce(0) do |a, e|
-        a + e.length + 1
-      end + column
+      begin_pos = source[0...(line - 1)].reduce(0) { |a, e| a + e.length + 1 } + column
       Parser::Source::Range.new(source_buffer, begin_pos, begin_pos + 1)
     end
 

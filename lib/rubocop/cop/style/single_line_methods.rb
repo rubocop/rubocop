@@ -42,9 +42,7 @@ module RuboCop
           return if node.endless?
           return if allow_empty? && !node.body
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
         alias on_defs on_def
 

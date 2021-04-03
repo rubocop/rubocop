@@ -21,8 +21,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantStringCoercion, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects `to_s` in an interpolation ' \
-    'with several expressions' do
+  it 'registers an offense and corrects `to_s` in an interpolation with several expressions' do
     expect_offense(<<~'RUBY')
       "this is the #{top; result.to_s}"
                                  ^^^^ Redundant use of `Object#to_s` in interpolation.

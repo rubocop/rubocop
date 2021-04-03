@@ -84,10 +84,7 @@ module RuboCop
             # below the keyword
             check_line(style, line, message('after', keyword), &:empty?)
             # above the keyword
-            check_line(style,
-                       line - 2,
-                       message('before', keyword),
-                       &:empty?)
+            check_line(style, line - 2, message('before', keyword), &:empty?)
           end
         end
 
@@ -113,10 +110,7 @@ module RuboCop
         end
 
         def keyword_locations_in_rescue(node)
-          [
-            node.loc.else,
-            *node.resbody_branches.map { |body| body.loc.keyword }
-          ].compact
+          [node.loc.else, *node.resbody_branches.map { |body| body.loc.keyword }].compact
         end
 
         def keyword_locations_in_ensure(node)

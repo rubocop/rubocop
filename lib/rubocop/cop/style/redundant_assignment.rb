@@ -81,9 +81,7 @@ module RuboCop
         end
 
         def check_rescue_node(node)
-          node.child_nodes.each do |child_node|
-            check_branch(child_node)
-          end
+          node.child_nodes.each { |child_node| check_branch(child_node) }
         end
 
         def check_ensure_node(node)

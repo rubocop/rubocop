@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
   let(:config) do
-    supported_styles = {
-      'SupportedStyles' => %w[consistent align_parentheses]
-    }
+    supported_styles = { 'SupportedStyles' => %w[consistent align_parentheses] }
     RuboCop::Config.new('Layout/FirstParameterIndentation' =>
                         cop_config.merge(supported_styles).merge(
                           'IndentationWidth' => cop_indent
@@ -106,8 +104,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
 
     context 'invalid indentation on multi-line defs' do
       context 'normal arguments' do
-        it 'registers an offense and corrects incorrectly indented ' \
-          'first element' do
+        it 'registers an offense and corrects incorrectly indented first element' do
           expect_offense(<<~RUBY)
             def abc(
                         foo,
@@ -132,8 +129,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments' do
-        it 'registers an offense and corrects incorrectly indented ' \
-          'first element' do
+        it 'registers an offense and corrects incorrectly indented first element' do
           expect_offense(<<~RUBY)
             def abc(
                       foo: 1,
@@ -158,8 +154,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments static method def' do
-        it 'registers an offense and corrects incorrectly indented ' \
-          'first element' do
+        it 'registers an offense and corrects incorrectly indented first element' do
           expect_offense(<<~RUBY)
             def self.abc(
                       foo: 1,
@@ -252,8 +247,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
 
     context 'invalid indentation on multi-line defs' do
       context 'normal arguments' do
-        it 'registers an offense and corrects incorrectly indented ' \
-          'first element' do
+        it 'registers an offense and corrects incorrectly indented first element' do
           expect_offense(<<~RUBY)
             def abc(
                         foo,
@@ -278,8 +272,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments' do
-        it 'registers an offense and corrects incorrectly indented ' \
-          'first element' do
+        it 'registers an offense and corrects incorrectly indented first element' do
           expect_offense(<<~RUBY)
             def abc(
                       foo: 1,
@@ -304,8 +297,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstParameterIndentation, :config do
       end
 
       context 'hash arguments static def' do
-        it 'registers an offense and corrects incorrectly indented ' \
-          'first element' do
+        it 'registers an offense and corrects incorrectly indented first element' do
           expect_offense(<<~RUBY)
             def self.abc(
                       foo: 1,

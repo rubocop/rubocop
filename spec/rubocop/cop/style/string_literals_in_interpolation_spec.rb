@@ -15,8 +15,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
       RUBY
     end
 
-    it 'registers an offense for double quotes within embedded expression in ' \
-       'a heredoc string' do
+    it 'registers an offense for double quotes within embedded expression in a heredoc string' do
       expect_offense(<<~'SOURCE')
         <<RUBY
         #{"A"}
@@ -78,8 +77,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
       RUBY
     end
 
-    it 'registers an offense for single quotes within embedded expression in ' \
-       'a heredoc string' do
+    it 'registers an offense for single quotes within embedded expression in a heredoc string' do
       expect_offense(<<~'SOURCE')
         <<RUBY
         #{'A'}
@@ -99,8 +97,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { expect_no_offenses('a = "#{"b"}"') }
-        .to raise_error(RuntimeError)
+      expect { expect_no_offenses('a = "#{"b"}"') }.to raise_error(RuntimeError)
     end
   end
 end

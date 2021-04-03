@@ -29,9 +29,7 @@ module RuboCop
           return if processed_source.tokens.empty?
 
           lines = Set.new
-          processed_source.each_token do |token|
-            lines << token.line
-          end
+          processed_source.each_token { |token| lines << token.line }
 
           each_extra_empty_line(lines.sort) do |range|
             add_offense(range) do |corrector|

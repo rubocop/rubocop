@@ -9,9 +9,7 @@ require 'benchmark'
 cli = RuboCop::CLI.new
 result = 0
 
-time = Benchmark.realtime do
-  result = cli.run
-end
+time = Benchmark.realtime { result = cli.run }
 
 puts "Finished in #{time} seconds" if cli.options[:debug] || cli.options[:display_time]
 exit result

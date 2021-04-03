@@ -70,10 +70,7 @@ module RuboCop
         end
 
         def with_object_range(send)
-          range_between(
-            send.loc.selector.begin_pos,
-            send.loc.expression.end_pos
-          )
+          range_between(send.loc.selector.begin_pos, send.loc.expression.end_pos)
         end
       end
     end

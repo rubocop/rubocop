@@ -44,19 +44,14 @@ module RuboCop
         def on_case(case_node)
           return if case_node.condition
 
-          branch_bodies = [
-            *case_node.when_branches.map(&:body),
-            case_node.else_branch
-          ].compact
+          branch_bodies = [*case_node.when_branches.map(&:body), case_node.else_branch].compact
 
           return if branch_bodies.any? do |body|
             body.return_type? ||
             body.each_descendant.any?(&:return_type?)
           end
 
-          add_offense(case_node.loc.keyword) do |corrector|
-            autocorrect(corrector, case_node)
-          end
+          add_offense(case_node.loc.keyword) { |corrector| autocorrect(corrector, case_node) }
         end
 
         private

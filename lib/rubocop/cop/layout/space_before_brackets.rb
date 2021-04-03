@@ -53,9 +53,7 @@ module RuboCop
         end
 
         def register_offense(range)
-          add_offense(range) do |corrector|
-            corrector.remove(range)
-          end
+          add_offense(range) { |corrector| corrector.remove(range) }
         end
 
         def reference_variable_with_brackets?(node)

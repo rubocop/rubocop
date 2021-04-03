@@ -73,8 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
     context "when EnforcedStyle is empty_lines for #{open} #{close} block" do
       let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
 
-      it 'registers an offense for block body not starting or ending with a ' \
-         'blank' do
+      it 'registers an offense for block body not starting or ending with a blank' do
         expect_offense(<<~RUBY)
           some_method #{open}
             do_something

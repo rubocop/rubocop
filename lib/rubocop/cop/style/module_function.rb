@@ -75,12 +75,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MODULE_FUNCTION_MSG =
-          'Use `module_function` instead of `extend self`.'
-        EXTEND_SELF_MSG =
-          'Use `extend self` instead of `module_function`.'
-        FORBIDDEN_MSG =
-          'Do not use `module_function` or `extend self`.'
+        MODULE_FUNCTION_MSG = 'Use `module_function` instead of `extend self`.'
+        EXTEND_SELF_MSG = 'Use `extend self` instead of `module_function`.'
+        FORBIDDEN_MSG = 'Do not use `module_function` or `extend self`.'
 
         # @!method module_function_node?(node)
         def_node_matcher :module_function_node?, '(send nil? :module_function)'

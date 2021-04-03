@@ -81,8 +81,7 @@ module RuboCop
         end
 
         def eligible_method?(node)
-          node.send_node.receiver &&
-            method_names.include?(node.send_node.method_name)
+          node.send_node.receiver && method_names.include?(node.send_node.method_name)
         end
 
         def methods
@@ -108,9 +107,7 @@ module RuboCop
 
           # Prepending an underscore to mark an unused parameter is allowed, so
           # we remove any leading underscores before comparing.
-          actual_args_no_underscores = actual_args.map do |arg|
-            arg.to_s.sub(/^_+/, '')
-          end
+          actual_args_no_underscores = actual_args.map { |arg| arg.to_s.sub(/^_+/, '') }
 
           actual_args_no_underscores == target_args(method_name)
         end

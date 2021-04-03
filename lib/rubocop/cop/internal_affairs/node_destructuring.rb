@@ -30,9 +30,7 @@ module RuboCop
         PATTERN
 
         def on_masgn(node)
-          node_destructuring?(node) do
-            add_offense(node)
-          end
+          node_destructuring?(node) { add_offense(node) }
         end
 
         private

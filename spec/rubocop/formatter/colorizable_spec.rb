@@ -9,9 +9,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
 
   let(:options) { {} }
 
-  let(:formatter) do
-    formatter_class.new(output, options)
-  end
+  let(:formatter) { formatter_class.new(output, options) }
 
   let(:output) { instance_double(IO) }
 
@@ -35,14 +33,10 @@ RSpec.describe RuboCop::Formatter::Colorizable do
     end
 
     context 'when the global Rainbow.enabled is true' do
-      before do
-        Rainbow.enabled = true
-      end
+      before { Rainbow.enabled = true }
 
       context "and the formatter's output is a tty" do
-        before do
-          allow(output).to receive(:tty?).and_return(true)
-        end
+        before { allow(output).to receive(:tty?).and_return(true) }
 
         it 'colorizes the passed string' do
           expect(colorized_output).to eq("\e[31mfoo\e[0m")
@@ -50,9 +44,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
       end
 
       context "and the formatter's output is not a tty" do
-        before do
-          allow(output).to receive(:tty?).and_return(false)
-        end
+        before { allow(output).to receive(:tty?).and_return(false) }
 
         include_examples 'does nothing'
       end
@@ -60,9 +52,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
       context 'and output is not a tty, but --color option was provided' do
         let(:options) { { color: true } }
 
-        before do
-          allow(output).to receive(:tty?).and_return(false)
-        end
+        before { allow(output).to receive(:tty?).and_return(false) }
 
         it 'colorizes the passed string' do
           expect(colorized_output).to eq("\e[31mfoo\e[0m")
@@ -71,22 +61,16 @@ RSpec.describe RuboCop::Formatter::Colorizable do
     end
 
     context 'when the global Rainbow.enabled is false' do
-      before do
-        Rainbow.enabled = false
-      end
+      before { Rainbow.enabled = false }
 
       context "and the formatter's output is a tty" do
-        before do
-          allow(output).to receive(:tty?).and_return(true)
-        end
+        before { allow(output).to receive(:tty?).and_return(true) }
 
         include_examples 'does nothing'
       end
 
       context "and the formatter's output is not a tty" do
-        before do
-          allow(output).to receive(:tty?).and_return(false)
-        end
+        before { allow(output).to receive(:tty?).and_return(false) }
 
         include_examples 'does nothing'
       end

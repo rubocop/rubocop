@@ -2,11 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
   context 'when not allowing semantic changes' do
-    let(:cop_config) do
-      {
-        'IncludeSemanticChanges' => false
-      }
-    end
+    let(:cop_config) { { 'IncludeSemanticChanges' => false } }
 
     it 'registers an offense for != nil' do
       expect_offense(<<~RUBY)
@@ -80,11 +76,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
   end
 
   context 'when allowing semantic changes' do
-    let(:cop_config) do
-      {
-        'IncludeSemanticChanges' => true
-      }
-    end
+    let(:cop_config) { { 'IncludeSemanticChanges' => true } }
 
     it 'registers an offense for `!x.nil?`' do
       expect_offense(<<~RUBY)
@@ -153,8 +145,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       RUBY
     end
 
-    it 'corrects code that would not be modified if ' \
-       'IncludeSemanticChanges were false' do
+    it 'corrects code that would not be modified if IncludeSemanticChanges were false' do
       expect_offense(<<~RUBY)
         return nil unless (line =~ //) != nil
                           ^^^^^^^^^^^^^^^^^^^ Explicit non-nil checks are usually redundant.
@@ -167,18 +158,10 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
   end
 
   context 'when `EnforcedStyle: comparison` of `Style/NilComparison` cop' do
-    let(:other_cops) do
-      {
-        'Style/NilComparison' => { 'EnforcedStyle' => 'comparison' }
-      }
-    end
+    let(:other_cops) { { 'Style/NilComparison' => { 'EnforcedStyle' => 'comparison' } } }
 
     context '`IncludeSemanticChanges: false`' do
-      let(:cop_config) do
-        {
-          'IncludeSemanticChanges' => false
-        }
-      end
+      let(:cop_config) { { 'IncludeSemanticChanges' => false } }
 
       it 'does not register an offense for `foo != nil`' do
         expect_no_offenses('foo != nil')
@@ -186,11 +169,7 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     end
 
     context '`IncludeSemanticChanges: true`' do
-      let(:cop_config) do
-        {
-          'IncludeSemanticChanges' => true
-        }
-      end
+      let(:cop_config) { { 'IncludeSemanticChanges' => true } }
 
       it 'registers an offense for `foo != nil`' do
         expect_offense(<<~RUBY)

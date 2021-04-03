@@ -6,13 +6,9 @@ require 'rubocop/rake_task'
 RSpec.describe RuboCop::RakeTask do
   include FileHelper
 
-  before do
-    Rake::Task.clear
-  end
+  before { Rake::Task.clear }
 
-  after do
-    Rake::Task.clear
-  end
+  after { Rake::Task.clear }
 
   describe 'defining tasks' do
     it 'creates a rubocop task and a rubocop auto_correct task' do
@@ -79,8 +75,7 @@ RSpec.describe RuboCop::RakeTask do
 
       cli = instance_double(RuboCop::CLI, run: 0)
       allow(RuboCop::CLI).to receive(:new).and_return(cli)
-      options = ['--format', 'files', '--require', 'library',
-                 '--display-cop-names']
+      options = ['--format', 'files', '--require', 'library', '--display-cop-names']
 
       expect(cli).to receive(:run).with(options)
 
@@ -88,9 +83,7 @@ RSpec.describe RuboCop::RakeTask do
     end
 
     it 'will not error when result is not 0 and fail_on_error is false' do
-      described_class.new do |task|
-        task.fail_on_error = false
-      end
+      described_class.new { |task| task.fail_on_error = false }
 
       cli = instance_double(RuboCop::CLI, run: 1)
       allow(RuboCop::CLI).to receive(:new).and_return(cli)
@@ -115,9 +108,7 @@ RSpec.describe RuboCop::RakeTask do
       YAML
       create_file('test.rb', '$:')
 
-      described_class.new do |task|
-        task.options = ['test.rb']
-      end
+      described_class.new { |task| task.options = ['test.rb'] }
 
       expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
 

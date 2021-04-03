@@ -10,11 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
   let(:indentation_width) { 2 }
 
   context 'when aligned with first parameter' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_first_element'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_first_element' } }
 
     it 'registers an offense and corrects misaligned array elements' do
       expect_offense(<<~RUBY)
@@ -177,11 +173,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
   end
 
   context 'when aligned with fixed indentation' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_fixed_indentation'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_fixed_indentation' } }
 
     it 'registers an offense and corrects misaligned array elements' do
       expect_offense(<<~RUBY)

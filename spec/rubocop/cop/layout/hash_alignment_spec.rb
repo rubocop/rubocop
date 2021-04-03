@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
-  let(:cop_config) do
-    {
-      'EnforcedHashRocketStyle' => 'key',
-      'EnforcedColonStyle' => 'key'
-    }
-  end
+  let(:cop_config) { { 'EnforcedHashRocketStyle' => 'key', 'EnforcedColonStyle' => 'key' } }
 
   shared_examples 'not on separate lines' do
     it 'accepts single line hash' do
@@ -36,11 +31,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
   end
 
   context 'always inspect last argument hash' do
-    let(:cop_config) do
-      {
-        'EnforcedLastArgumentHashStyle' => 'always_inspect'
-      }
-    end
+    let(:cop_config) { { 'EnforcedLastArgumentHashStyle' => 'always_inspect' } }
 
     it 'registers offense and corrects misaligned keys in implicit hash' do
       expect_offense(<<~RUBY)
@@ -68,8 +59,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in implicit ' \
-      'hash for super' do
+    it 'registers an offense and corrects misaligned keys in implicit hash for super' do
       expect_offense(<<~RUBY)
         super(a: 0,
           b: 1)
@@ -82,8 +72,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in explicit ' \
-      'hash for super' do
+    it 'registers an offense and corrects misaligned keys in explicit hash for super' do
       expect_offense(<<~RUBY)
         super({a: 0,
           b: 1})
@@ -96,8 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in implicit ' \
-      'hash for yield' do
+    it 'registers an offense and corrects misaligned keys in implicit hash for yield' do
       expect_offense(<<~RUBY)
         yield(a: 0,
           b: 1)
@@ -110,8 +98,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in explicit ' \
-      'hash for yield' do
+    it 'registers an offense and corrects misaligned keys in explicit hash for yield' do
       expect_offense(<<~RUBY)
         yield({a: 0,
           b: 1})
@@ -126,11 +113,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
   end
 
   context 'always ignore last argument hash' do
-    let(:cop_config) do
-      {
-        'EnforcedLastArgumentHashStyle' => 'always_ignore'
-      }
-    end
+    let(:cop_config) { { 'EnforcedLastArgumentHashStyle' => 'always_ignore' } }
 
     it 'accepts misaligned keys in implicit hash' do
       expect_no_offenses(<<~RUBY)
@@ -176,11 +159,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
   end
 
   context 'ignore implicit last argument hash' do
-    let(:cop_config) do
-      {
-        'EnforcedLastArgumentHashStyle' => 'ignore_implicit'
-      }
-    end
+    let(:cop_config) { { 'EnforcedLastArgumentHashStyle' => 'ignore_implicit' } }
 
     it 'accepts misaligned keys in implicit hash' do
       expect_no_offenses(<<~RUBY)
@@ -209,8 +188,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in explicit ' \
-      'hash for super' do
+    it 'registers an offense and corrects misaligned keys in explicit hash for super' do
       expect_offense(<<~RUBY)
         super({a: 0,
           b: 1})
@@ -230,8 +208,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in explicit ' \
-      'hash for yield' do
+    it 'registers an offense and corrects misaligned keys in explicit hash for yield' do
       expect_offense(<<~RUBY)
         yield({a: 0,
           b: 1})
@@ -246,11 +223,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
   end
 
   context 'ignore explicit last argument hash' do
-    let(:cop_config) do
-      {
-        'EnforcedLastArgumentHashStyle' => 'ignore_explicit'
-      }
-    end
+    let(:cop_config) { { 'EnforcedLastArgumentHashStyle' => 'ignore_explicit' } }
 
     it 'registers an offense and corrects misaligned keys in implicit hash' do
       expect_offense(<<~RUBY)
@@ -272,8 +245,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in implicit ' \
-      'hash for super' do
+    it 'registers an offense and corrects misaligned keys in implicit hash for super' do
       expect_offense(<<~RUBY)
         super(a: 0,
           b: 1)
@@ -293,8 +265,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned keys in implicit ' \
-      'hash for yield' do
+    it 'registers an offense and corrects misaligned keys in implicit hash for yield' do
       expect_offense(<<~RUBY)
         yield(a: 0,
           b: 1)
@@ -342,8 +313,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned mixed multiline ' \
-      'hash keys' do
+    it 'registers an offense and corrects misaligned mixed multiline hash keys' do
       expect_offense(<<~RUBY)
         hash = { a: 1, b: 2,
                 c: 3 }
@@ -435,8 +405,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects multiline value starts ' \
-      'in wrong place' do
+    it 'registers an offense and corrects multiline value starts in wrong place' do
       expect_offense(<<~RUBY)
         hash = {
           'a' =>  (
@@ -538,8 +507,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects alignment when using double splat ' \
-       'in an explicit hash' do
+    it 'registers an offense and corrects alignment when using double splat in an explicit hash' do
       expect_offense(<<~RUBY)
         Hash(foo: 'bar',
                **extra_params
@@ -554,8 +522,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects alignment when using double splat ' \
-      'in braces' do
+    it 'registers an offense and corrects alignment when using double splat in braces' do
       expect_offense(<<~RUBY)
         {foo: 'bar',
                **extra_params
@@ -724,12 +691,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
   end
 
   context 'with invalid configuration' do
-    let(:cop_config) do
-      {
-        'EnforcedHashRocketStyle' => 'junk',
-        'EnforcedColonStyle' => 'junk'
-      }
-    end
+    let(:cop_config) { { 'EnforcedHashRocketStyle' => 'junk', 'EnforcedColonStyle' => 'junk' } }
 
     it 'fails' do
       expect do
@@ -969,8 +931,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned hash values, ' \
-      'prefer key when least offenses' do
+    it 'registers an offense and corrects misaligned hash values, prefer key when least offenses' do
       expect_offense(<<~RUBY)
         hash = {
           'abcdefg' => 0,
@@ -996,8 +957,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned hash keys ' \
-      'with mixed hash style' do
+    it 'registers an offense and corrects misaligned hash keys with mixed hash style' do
       expect_offense(<<~RUBY)
         headers = {
           "Content-Type" => 0,
@@ -1014,8 +974,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned hash values, ' \
-      'works separate for each hash' do
+    it 'registers an offense and corrects misaligned hash values, works separate for each hash' do
       expect_offense(<<~RUBY)
         hash = {
           'abcdefg' => 0,

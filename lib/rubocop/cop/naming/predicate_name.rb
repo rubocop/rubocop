@@ -44,8 +44,7 @@ module RuboCop
 
               add_offense(
                 node.first_argument.loc.expression,
-                message: message(method_name,
-                                 expected_name(method_name.to_s, prefix))
+                message: message(method_name, expected_name(method_name.to_s, prefix))
               )
             end
           end

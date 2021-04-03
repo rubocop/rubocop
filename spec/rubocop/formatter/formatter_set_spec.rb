@@ -29,17 +29,14 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
 
     it 'adds a formatter with specified formatter type' do
       formatter_set.add_formatter('simple')
-      expect(formatter_set.first.class)
-        .to eq(RuboCop::Formatter::SimpleTextFormatter)
+      expect(formatter_set.first.class).to eq(RuboCop::Formatter::SimpleTextFormatter)
     end
 
     it 'can add multiple formatters by being invoked multiple times' do
       formatter_set.add_formatter('simple')
       formatter_set.add_formatter('emacs')
-      expect(formatter_set[0].class)
-        .to eq(RuboCop::Formatter::SimpleTextFormatter)
-      expect(formatter_set[1].class)
-        .to eq(RuboCop::Formatter::EmacsStyleFormatter)
+      expect(formatter_set[0].class).to eq(RuboCop::Formatter::SimpleTextFormatter)
+      expect(formatter_set[1].class).to eq(RuboCop::Formatter::EmacsStyleFormatter)
     end
 
     context 'when output path is omitted' do
@@ -90,9 +87,7 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
 
     it 'closes all output files' do
       formatter_set.close_output_files
-      formatter_set[0..1].each do |formatter|
-        expect(formatter.output.closed?).to be(true)
-      end
+      formatter_set[0..1].each { |formatter| expect(formatter.output.closed?).to be(true) }
     end
 
     it 'does not close non file output' do
@@ -106,18 +101,15 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
     end
 
     it 'returns class which matches passed alias name exactly' do
-      expect(builtin_formatter_class('simple'))
-        .to eq(RuboCop::Formatter::SimpleTextFormatter)
+      expect(builtin_formatter_class('simple')).to eq(RuboCop::Formatter::SimpleTextFormatter)
     end
 
     it 'returns class which matches double character alias name' do
-      expect(builtin_formatter_class('pa'))
-        .to eq(RuboCop::Formatter::PacmanFormatter)
+      expect(builtin_formatter_class('pa')).to eq(RuboCop::Formatter::PacmanFormatter)
     end
 
     it 'returns class which matches single character alias name' do
-      expect(builtin_formatter_class('p'))
-        .to eq(RuboCop::Formatter::ProgressFormatter)
+      expect(builtin_formatter_class('p')).to eq(RuboCop::Formatter::ProgressFormatter)
     end
   end
 
@@ -140,8 +132,7 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
 
     context 'when non-existent constant name is passed' do
       it 'raises error' do
-        expect { custom_formatter_class('RuboCop::NonExistentClass') }
-          .to raise_error(NameError)
+        expect { custom_formatter_class('RuboCop::NonExistentClass') }.to raise_error(NameError)
       end
     end
   end

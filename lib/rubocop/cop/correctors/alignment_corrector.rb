@@ -54,8 +54,7 @@ module RuboCop
         def inside_string_ranges(node)
           return [] unless node.is_a?(Parser::AST::Node)
 
-          node.each_node(:str, :dstr, :xstr).map { |n| inside_string_range(n) }
-              .compact
+          node.each_node(:str, :dstr, :xstr).map { |n| inside_string_range(n) }.compact
         end
 
         def inside_string_range(node)
@@ -76,8 +75,7 @@ module RuboCop
         def delimited_string_literal?(node)
           loc = node.location
 
-          loc.respond_to?(:begin) && loc.begin &&
-            loc.respond_to?(:end) && loc.end
+          loc.respond_to?(:begin) && loc.begin && loc.respond_to?(:end) && loc.end
         end
 
         def block_comment_within?(expr)
@@ -89,8 +87,7 @@ module RuboCop
         def calculate_range(expr, line_begin_pos, column_delta)
           return range_between(line_begin_pos, line_begin_pos) if column_delta.positive?
 
-          starts_with_space =
-            expr.source_buffer.source[line_begin_pos].start_with?(' ')
+          starts_with_space = expr.source_buffer.source[line_begin_pos].start_with?(' ')
 
           if starts_with_space
             range_between(line_begin_pos, line_begin_pos + column_delta.abs)

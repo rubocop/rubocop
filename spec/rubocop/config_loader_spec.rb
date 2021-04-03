@@ -20,9 +20,7 @@ RSpec.describe RuboCop::ConfigLoader do
   let(:default_config) { described_class.default_configuration }
 
   describe '.configuration_file_for', :isolated_environment do
-    subject(:configuration_file_for) do
-      described_class.configuration_file_for(dir_path)
-    end
+    subject(:configuration_file_for) { described_class.configuration_file_for(dir_path) }
 
     context 'when no config file exists in ancestor directories' do
       let(:dir_path) { 'dir' }
@@ -41,9 +39,7 @@ RSpec.describe RuboCop::ConfigLoader do
         before { create_empty_file('~/.config/rubocop/config.yml') }
 
         it 'returns the path to the file in XDG directory' do
-          expect(configuration_file_for).to end_with(
-            'home/.config/rubocop/config.yml'
-          )
+          expect(configuration_file_for).to end_with('home/.config/rubocop/config.yml')
         end
       end
 
@@ -54,9 +50,7 @@ RSpec.describe RuboCop::ConfigLoader do
         end
 
         it 'returns the path to the file in XDG directory' do
-          expect(configuration_file_for).to end_with(
-            'home/xdg-stuff/rubocop/config.yml'
-          )
+          expect(configuration_file_for).to end_with('home/xdg-stuff/rubocop/config.yml')
         end
       end
 
@@ -135,9 +129,7 @@ RSpec.describe RuboCop::ConfigLoader do
   end
 
   describe '.configuration_from_file', :isolated_environment do
-    subject(:configuration_from_file) do
-      described_class.configuration_from_file(file_path)
-    end
+    subject(:configuration_from_file) { described_class.configuration_from_file(file_path) }
 
     context 'with any config file' do
       let(:file_path) { '.rubocop.yml' }
@@ -366,8 +358,7 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'gets the Exclude overriding the inherited one with a warning' do
         expect do
           excludes = configuration_from_file['Style/For']['Exclude']
-          expect(excludes)
-            .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
+          expect(excludes).to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
         end.to output(/#{message}/).to_stdout
       end
     end
@@ -399,15 +390,8 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'removes hash keys with nil values' do
-        inverse_methods =
-          configuration_from_file['Style/InverseMethods']['InverseMethods']
-        expect(inverse_methods).to eq(
-          '==': :!=,
-          '=~': :!~,
-          any?: :none?,
-          even?: :odd?,
-          foo: :bar
-        )
+        inverse_methods = configuration_from_file['Style/InverseMethods']['InverseMethods']
+        expect(inverse_methods).to eq('==': :!=, '=~': :!~, any?: :none?, even?: :odd?, foo: :bar)
       end
     end
 
@@ -464,8 +448,7 @@ RSpec.describe RuboCop::ConfigLoader do
                   default_config['AllCops']['Exclude']).sort)
       end
 
-      it 'merges Style/Documentation:Exclude with parent and ' \
-         'default configuration' do
+      it 'merges Style/Documentation:Exclude with parent and default configuration' do
         expect(configuration_from_file['Style/Documentation']['Exclude'].sort)
           .to eq(([File.expand_path('funk/*.rb'),
                    File.expand_path('junk/*.rb')] +
@@ -525,12 +508,10 @@ RSpec.describe RuboCop::ConfigLoader do
         end.not_to output(/overrides the same parameter/).to_stdout
       end
 
-      it 'overwrites the Exclude from the parent when the cop overrides' \
-          'the global inherit_mode' do
+      it 'overwrites the Exclude from the parent when the cop overridesthe global inherit_mode' do
         expect do
           excludes = configuration_from_file['Style/Dir']['Exclude']
-          expect(excludes)
-            .to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
+          expect(excludes).to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
         end.not_to output(/overrides the same parameter/).to_stdout
       end
     end
@@ -760,9 +741,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'ExcludedMethods' => []
             }
           )
-        expect do
-          expect(configuration_from_file.to_h).to eq(config)
-        end.to output('').to_stderr
+        expect { expect(configuration_from_file.to_h).to eq(config) }.to output('').to_stderr
       end
     end
 
@@ -1022,8 +1001,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_file("#{gem_root}/#{gem_name}/default.yml", ["Layout/LineLength:\n    Max: 48"])
 
         mock_spec = OpenStruct.new(gem_dir: File.join(gem_root, gem_name))
-        allow(Gem::Specification).to receive(:find_by_name)
-          .with(gem_name).and_return(mock_spec)
+        allow(Gem::Specification).to receive(:find_by_name).with(gem_name).and_return(mock_spec)
         allow(Gem).to receive(:path).and_return([gem_root])
       end
 
@@ -1101,9 +1079,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
       let(:file_path) { '.rubocop.yml' }
 
-      before do
-        create_file(file_path, config)
-      end
+      before { create_file(file_path, config) }
 
       context 'when DisabledByDefault is true' do
         let(:config) do
@@ -1353,9 +1329,7 @@ RSpec.describe RuboCop::ConfigLoader do
   end
 
   describe '.load_file', :isolated_environment do
-    subject(:load_file) do
-      described_class.load_file(configuration_path, check: check)
-    end
+    subject(:load_file) { described_class.load_file(configuration_path, check: check) }
 
     let(:configuration_path) { '.rubocop.yml' }
     let(:check) { true }
@@ -1366,9 +1340,7 @@ RSpec.describe RuboCop::ConfigLoader do
           Enabled: true
       YAML
       configuration = load_file
-      expect(configuration['Style/Encoding']).to eq(
-        'Enabled' => true
-      )
+      expect(configuration['Style/Encoding']).to eq('Enabled' => true)
     end
 
     it 'does ERB pre-processing of the configuration file' do
@@ -1397,8 +1369,7 @@ RSpec.describe RuboCop::ConfigLoader do
           <% end %>
       YAML
       configuration = described_class.load_file('dir/.rubocop.yml')
-      expect(configuration['Style/Encoding'])
-        .to eq('Exclude' => [abs('dir/c.rb')])
+      expect(configuration['Style/Encoding']).to eq('Exclude' => [abs('dir/c.rb')])
     end
 
     it 'fails with a TypeError when loading a malformed configuration file' do
@@ -1483,9 +1454,7 @@ RSpec.describe RuboCop::ConfigLoader do
               Enabled: false
           YAML
 
-          expect do
-            load_file
-          end.to output(%r{`Style/Encoding` is concealed by duplicat}).to_stderr
+          expect { load_file }.to output(%r{`Style/Encoding` is concealed by duplicat}).to_stderr
         end
       end
     end
@@ -1501,9 +1470,7 @@ RSpec.describe RuboCop::ConfigLoader do
               Enabled: false
           YAML
 
-          expect do
-            load_file
-          end.to output(%r{`Style/Encoding` is concealed by line 4}).to_stderr
+          expect { load_file }.to output(%r{`Style/Encoding` is concealed by line 4}).to_stderr
         end
       end
     end
@@ -1546,9 +1513,7 @@ RSpec.describe RuboCop::ConfigLoader do
         }
       }
     end
-    let(:derived) do
-      { 'AllCops' => { 'Exclude' => ['example.rb', 'exclude_*'] } }
-    end
+    let(:derived) { { 'AllCops' => { 'Exclude' => ['example.rb', 'exclude_*'] } } }
 
     it 'returns a recursive merge of its two arguments' do
       expect(merge).to eq('AllCops' => {
@@ -1566,8 +1531,7 @@ RSpec.describe RuboCop::ConfigLoader do
       described_class.configuration_from_file(config_path)
     end
 
-    context 'when .rubocop.yml inherits from a file with a name starting ' \
-            'with .rubocop' do
+    context 'when .rubocop.yml inherits from a file with a name starting with .rubocop' do
       before do
         create_file('test/.rubocop_rules.yml', <<~YAML)
           Style/CharacterLiteral:
@@ -1577,8 +1541,7 @@ RSpec.describe RuboCop::ConfigLoader do
         create_file('test/.rubocop.yml', 'inherit_from: .rubocop_rules.yml')
       end
 
-      it 'gets an Exclude relative to the inherited file converted to ' \
-         'absolute' do
+      it 'gets an Exclude relative to the inherited file converted to absolute' do
         expect(config.for_cop(RuboCop::Cop::Style::CharacterLiteral)['Exclude'])
           .to eq([File.join(Dir.pwd, 'test/blargh/blah.rb')])
       end
@@ -1586,9 +1549,7 @@ RSpec.describe RuboCop::ConfigLoader do
   end
 
   describe 'when pending cops exist', :isolated_environment do
-    subject(:from_file) do
-      described_class.configuration_from_file('.rubocop.yml')
-    end
+    subject(:from_file) { described_class.configuration_from_file('.rubocop.yml') }
 
     before do
       create_empty_file('.rubocop.yml')
@@ -1600,13 +1561,7 @@ RSpec.describe RuboCop::ConfigLoader do
     end
 
     context 'when NewCops is set in a required file' do
-      let(:parent_config) do
-        {
-          'AllCops' => {
-            'NewCops' => 'enable'
-          }
-        }
-      end
+      let(:parent_config) { { 'AllCops' => { 'NewCops' => 'enable' } } }
 
       it 'does not print a warning' do
         expect(described_class).not_to receive(:warn_on_pending_cops)
@@ -1615,13 +1570,7 @@ RSpec.describe RuboCop::ConfigLoader do
     end
 
     context 'when NewCops is not configured in a required file' do
-      let(:parent_config) do
-        {
-          'AllCops' => {
-            'Exclude:' => ['coverage/**/*']
-          }
-        }
-      end
+      let(:parent_config) { { 'AllCops' => { 'Exclude:' => ['coverage/**/*'] } } }
 
       it 'prints a warning' do
         expect(described_class).to receive(:warn_on_pending_cops)
@@ -1634,8 +1583,7 @@ RSpec.describe RuboCop::ConfigLoader do
     describe 'AllowSafeAssignment' do
       it 'is enabled by default' do
         default_config = described_class.default_configuration
-        symbol_name_config =
-          default_config.for_cop('Lint/AssignmentInCondition')
+        symbol_name_config = default_config.for_cop('Lint/AssignmentInCondition')
         expect(symbol_name_config['AllowSafeAssignment']).to be_truthy
       end
     end

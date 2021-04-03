@@ -13,11 +13,7 @@ module RuboCop
 
       def initialize(output, options = {})
         super
-        @output_hash = {
-          metadata: metadata_hash,
-          files:    [],
-          summary:  { offense_count: 0 }
-        }
+        @output_hash = { metadata: metadata_hash, files: [], summary: { offense_count: 0 } }
       end
 
       def started(target_files)

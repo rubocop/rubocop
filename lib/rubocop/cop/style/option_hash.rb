@@ -31,9 +31,7 @@ module RuboCop
           return if super_used?(node)
           return if allowlist.include?(node.parent.method_name.to_s)
 
-          option_hash(node) do |options|
-            add_offense(options)
-          end
+          option_hash(node) { |options| add_offense(options) }
         end
 
         private

@@ -304,8 +304,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects operators with ' \
-        'just a trailing space' do
+      it 'registers an offense and corrects operators with just a trailing space' do
         expect_offense(<<~RUBY)
           x == 0? 1: 2
                    ^ Surrounding space missing for operator `:`.
@@ -317,8 +316,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects operators with ' \
-        'just a leading space' do
+      it 'registers an offense and corrects operators with just a leading space' do
         expect_offense(<<~RUBY)
           x == 0 ?1 :2
                     ^ Surrounding space missing for operator `:`.
@@ -536,8 +534,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects `-` without space with a negative ' \
-      'lhs operand' do
+    it 'registers an offense and corrects `-` without space with a negative lhs operand' do
       expect_offense(<<~RUBY)
         -1-arg
           ^ Surrounding space missing for operator `-`.
@@ -561,8 +558,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects hash rocket without ' \
-      'space at rescue' do
+    it 'registers an offense and corrects hash rocket without space at rescue' do
       expect_offense(<<~RUBY)
         begin
         rescue Exception=>e
@@ -577,8 +573,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects string concatenation ' \
-      'without messing up new lines' do
+    it 'registers an offense and corrects string concatenation without messing up new lines' do
       expect_offense(<<~RUBY)
         'Here is a'+
                    ^ Surrounding space missing for operator `+`.
@@ -620,8 +615,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       end
     end
 
-    it 'registers an offense and corrects assignment with ' \
-      'too many spaces on either side' do
+    it 'registers an offense and corrects assignment with too many spaces on either side' do
       expect_offense(<<~RUBY)
         x   = 0
             ^ Operator `=` should be surrounded by a single space.
@@ -638,8 +632,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects ternary operator with ' \
-      'too many spaces' do
+    it 'registers an offense and corrects ternary operator with too many spaces' do
       expect_offense(<<~RUBY)
         x == 0  ? 1 :  2
                     ^ Operator `:` should be surrounded by a single space.
@@ -656,8 +649,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     it_behaves_like 'modifier with extra space', 'while'
     it_behaves_like 'modifier with extra space', 'until'
 
-    it 'registers an offense and corrects binary operators ' \
-      'that could be unary' do
+    it 'registers an offense and corrects binary operators that could be unary' do
       expect_offense(<<~RUBY)
         a -  3
           ^ Operator `-` should be surrounded by a single space.
@@ -727,8 +719,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects operators with ' \
-      'too many spaces on the same line' do
+    it 'registers an offense and corrects operators with too many spaces on the same line' do
       expect_offense(<<~RUBY)
         x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j
                                                           ^^ Operator `||` should be surrounded by a single space.
@@ -774,8 +765,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a hash rocket with an extra space' \
-      'on multiple line' do
+    it 'registers an offense and corrects a hash rocket with an extra spaceon multiple line' do
       expect_offense(<<~RUBY)
         {
           1 =>  2
@@ -790,8 +780,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'accepts for a hash rocket with an extra space for alignment' \
-      'on multiple line' do
+    it 'accepts for a hash rocket with an extra space for alignmenton multiple line' do
       expect_no_offenses(<<~RUBY)
         {
           1 =>  2,
@@ -821,8 +810,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       end
     end
 
-    it 'registers an offense and corrects match operators ' \
-      'with too many spaces' do
+    it 'registers an offense and corrects match operators with too many spaces' do
       expect_offense(<<~RUBY)
         x  =~ /abc/
            ^^ Operator `=~` should be surrounded by a single space.
@@ -836,8 +824,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects various assignments ' \
-      'with too many spaces' do
+    it 'registers an offense and corrects various assignments with too many spaces' do
       expect_offense(<<~RUBY)
         x ||=  0
           ^^^ Operator `||=` should be surrounded by a single space.
@@ -878,8 +865,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects equality operators ' \
-      'with too many spaces' do
+    it 'registers an offense and corrects equality operators with too many spaces' do
       expect_offense(<<~RUBY)
         x  ==  0
            ^^ Operator `==` should be surrounded by a single space.
@@ -896,8 +882,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects `-` with too many spaces with ' \
-       'negative lhs operand' do
+    it 'registers an offense and corrects `-` with too many spaces with negative lhs operand' do
       expect_offense(<<~RUBY)
         -1  - arg
             ^ Operator `-` should be surrounded by a single space.
@@ -921,8 +906,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects hash rocket with ' \
-      'too many spaces at rescue' do
+    it 'registers an offense and corrects hash rocket with too many spaces at rescue' do
       expect_offense(<<~RUBY)
         begin
         rescue Exception   =>      e

@@ -19,8 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects empty brackets ' \
-      'with multiple spaces inside' do
+    it 'registers an offense and corrects empty brackets with multiple spaces inside' do
       expect_offense(<<~RUBY)
         a[     ]
          ^^^^^^^ Do not use space inside empty reference brackets.
@@ -50,8 +49,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers offense and corrects empty brackets ' \
-      'with more than one space inside' do
+    it 'registers offense and corrects empty brackets with more than one space inside' do
       expect_offense(<<~RUBY)
         a[      ]
          ^^^^^^^^ Use one space inside empty reference brackets.
@@ -146,8 +144,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       expect_no_offenses('a[[ 1, 2 ]]')
     end
 
-    it 'registers an offense and corrects ref brackets ' \
-      'with leading whitespace' do
+    it 'registers an offense and corrects ref brackets with leading whitespace' do
       expect_offense(<<~RUBY)
         a[  :key]
           ^^ Do not use space inside reference brackets.
@@ -158,8 +155,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects ref brackets ' \
-      'with trailing whitespace' do
+    it 'registers an offense and corrects ref brackets with trailing whitespace' do
       expect_offense(<<~RUBY)
         b[:key ]
               ^ Do not use space inside reference brackets.
@@ -170,8 +166,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects second ref brackets ' \
-      'with leading whitespace' do
+    it 'registers an offense and corrects second ref brackets with leading whitespace' do
       expect_offense(<<~RUBY)
         a[:key][ "key"]
                 ^ Do not use space inside reference brackets.
@@ -182,8 +177,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects second ref brackets ' \
-      'with trailing whitespace' do
+    it 'registers an offense and corrects second ref brackets with trailing whitespace' do
       expect_offense(<<~RUBY)
         a[1][:key   ]
                  ^^^ Do not use space inside reference brackets.
@@ -194,8 +188,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects third ref brackets ' \
-      'with leading whitespace' do
+    it 'registers an offense and corrects third ref brackets with leading whitespace' do
       expect_offense(<<~RUBY)
         a[:key][3][ :key]
                    ^ Do not use space inside reference brackets.
@@ -206,8 +199,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects third ref brackets ' \
-      'with trailing whitespace' do
+    it 'registers an offense and corrects third ref brackets with trailing whitespace' do
       expect_offense(<<~RUBY)
         a[var]["key", 3][:key ]
                              ^ Do not use space inside reference brackets.
@@ -230,8 +222,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers multiple offenses and corrects ' \
-      'multiple sets of ref brackets' do
+    it 'registers multiple offenses and corrects multiple sets of ref brackets' do
       expect_offense(<<~RUBY)
         a[ :key]["foo"  ][   0 ]
           ^ Do not use space inside reference brackets.
@@ -257,8 +248,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'register and correct multiple offenses for multiple sets ' \
-      'of ref brackets' do
+    it 'register and correct multiple offenses for multiple sets of ref brackets' do
       expect_offense(<<~RUBY)
         b[ :key]["foo"  ][   0 ]
           ^ Do not use space inside reference brackets.
@@ -370,8 +360,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       expect_no_offenses('a[ [1, 2] ]')
     end
 
-    it 'registers an offense and corrects ref brackets ' \
-      'with no leading whitespace' do
+    it 'registers an offense and corrects ref brackets with no leading whitespace' do
       expect_offense(<<~RUBY)
         a[:key ]
          ^ Use space inside reference brackets.
@@ -382,8 +371,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects ref brackets ' \
-      'with no trailing whitespace' do
+    it 'registers an offense and corrects ref brackets with no trailing whitespace' do
       expect_offense(<<~RUBY)
         b[ :key]
                ^ Use space inside reference brackets.
@@ -394,8 +382,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects second ref brackets ' \
-      'with no leading whitespace' do
+    it 'registers an offense and corrects second ref brackets with no leading whitespace' do
       expect_offense(<<~RUBY)
         a[ :key ]["key" ]
                  ^ Use space inside reference brackets.
@@ -406,8 +393,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects second ref brackets ' \
-      'with no trailing whitespace' do
+    it 'registers an offense and corrects second ref brackets with no trailing whitespace' do
       expect_offense(<<~RUBY)
         a[ 5, 1 ][ :key]
                        ^ Use space inside reference brackets.
@@ -418,8 +404,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects third ref brackets ' \
-      'with no leading whitespace' do
+    it 'registers an offense and corrects third ref brackets with no leading whitespace' do
       expect_offense(<<~RUBY)
         a[ :key ][ 3 ][:key ]
                       ^ Use space inside reference brackets.
@@ -430,8 +415,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and correct third ref brackets ' \
-      'with no trailing whitespace' do
+    it 'registers an offense and correct third ref brackets with no trailing whitespace' do
       expect_offense(<<~RUBY)
         a[ var ][ "key" ][ :key]
                                ^ Use space inside reference brackets.
@@ -454,8 +438,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers and corrects multiple offenses for multiple sets ' \
-      'of ref brackets' do
+    it 'registers and corrects multiple offenses for multiple sets of ref brackets' do
       expect_offense(<<~RUBY)
         a[:key]["foo" ][0]
          ^ Use space inside reference brackets.

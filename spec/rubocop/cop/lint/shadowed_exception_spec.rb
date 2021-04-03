@@ -85,8 +85,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'registers an offense rescuing exceptions that are ' \
-      'ancestors of each other ' do
+    it 'registers an offense rescuing exceptions that are ancestors of each other ' do
       expect_offense(<<~RUBY)
         def
           something
@@ -97,8 +96,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'registers an offense rescuing Exception with any other error or ' \
-       'exception' do
+    it 'registers an offense rescuing Exception with any other error or exception' do
       expect_offense(<<~RUBY)
         begin
           something
@@ -143,8 +141,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'accepts rescuing a multiple exceptions that are not ancestors that ' \
-       'have an else' do
+    it 'accepts rescuing a multiple exceptions that are not ancestors that have an else' do
       expect_no_offenses(<<~RUBY)
         begin
           something
@@ -248,8 +245,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'registers an offense rescuing out of order exceptions when there ' \
-       'is an ensure' do
+    it 'registers an offense rescuing out of order exceptions when there is an ensure' do
       expect_offense(<<~RUBY)
         begin
           something
@@ -298,8 +294,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'accepts rescuing exceptions in order of level with multiple ' \
-       'exceptions in a group' do
+    it 'accepts rescuing exceptions in order of level with multiple exceptions in a group' do
       expect_no_offenses(<<~RUBY)
         begin
           something
@@ -362,8 +357,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
         RUBY
       end
 
-      it 'registers an offense for splat arguments rescued after ' \
-         'rescuing Exception' do
+      it 'registers an offense for splat arguments rescued after rescuing Exception' do
         expect_offense(<<~RUBY)
           begin
             a

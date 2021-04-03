@@ -132,9 +132,7 @@ module RuboCop
         end
 
         def extract_heredoc_argument(node)
-          node.arguments.find do |arg_node|
-            extract_heredoc(arg_node)
-          end
+          node.arguments.find { |arg_node| extract_heredoc(arg_node) }
         end
 
         def extract_heredoc(node)
@@ -234,12 +232,7 @@ module RuboCop
         def remove_internal_trailing_comma(node, corrector)
           offset = internal_trailing_comma_offset_from_last_arg(node)
           last_arg_end_pos = node.children.last.source_range.end_pos
-          corrector.remove(
-            range_between(
-              last_arg_end_pos,
-              last_arg_end_pos + offset
-            )
-          )
+          corrector.remove(range_between(last_arg_end_pos, last_arg_end_pos + offset))
         end
 
         def internal_trailing_comma?(node)

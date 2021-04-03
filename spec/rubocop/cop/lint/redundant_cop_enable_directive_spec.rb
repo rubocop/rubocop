@@ -13,8 +13,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when the first cop is ' \
-    'unnecessarily enabled' do
+  it 'registers an offense and corrects when the first cop is unnecessarily enabled' do
     expect_offense(<<~RUBY)
       # rubocop:disable Layout/LineLength
       foo
@@ -142,8 +141,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects when there is no space ' \
-      'between the cops and the comma' do
+    it 'registers an offense and corrects when there is no space between the cops and the comma' do
       expect_offense(<<~RUBY)
         # rubocop:disable Layout/LineLength
         foo

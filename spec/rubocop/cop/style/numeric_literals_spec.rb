@@ -151,12 +151,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   context 'strict' do
-    let(:cop_config) do
-      {
-        'MinDigits' => 5,
-        'Strict' => true
-      }
-    end
+    let(:cop_config) { { 'MinDigits' => 5, 'Strict' => true } }
 
     it 'registers an offense for an integer with misplaced underscore' do
       expect_offense(<<~RUBY)

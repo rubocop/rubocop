@@ -27,9 +27,7 @@ module RuboCop
         PATTERN
 
         def on_new_investigation
-          assertions_using_described_class_msg.each do |node|
-            add_offense(node)
-          end
+          assertions_using_described_class_msg.each { |node| add_offense(node) }
         end
 
         private

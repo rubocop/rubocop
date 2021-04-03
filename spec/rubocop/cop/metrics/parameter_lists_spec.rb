@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
-  let(:cop_config) do
-    {
-      'Max' => 4,
-      'CountKeywordArgs' => true,
-      'MaxOptionalParameters' => 3
-    }
-  end
+  let(:cop_config) { { 'Max' => 4, 'CountKeywordArgs' => true, 'MaxOptionalParameters' => 3 } }
 
   it 'registers an offense for a method def with 5 parameters' do
     expect_offense(<<~RUBY)

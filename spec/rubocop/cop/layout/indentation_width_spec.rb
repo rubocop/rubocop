@@ -12,9 +12,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
   end
   let(:access_modifier_config) { { 'EnforcedStyle' => 'indent' } }
   let(:consistency_config) { { 'EnforcedStyle' => 'normal' } }
-  let(:end_alignment_config) do
-    { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }
-  end
+  let(:end_alignment_config) { { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' } }
   let(:def_end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
   end
@@ -125,8 +123,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
-      it 'registers an offense for bad indentation of an else body when if ' \
-         'body contains no code' do
+      it 'registers an offense for bad indentation of an else body when if body contains no code' do
         expect_offense(<<~RUBY)
           if cond
             # nothing here
@@ -1219,12 +1216,9 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
 
       context 'when consistency style is indented_internal_methods' do
-        let(:consistency_config) do
-          { 'EnforcedStyle' => 'indented_internal_methods' }
-        end
+        let(:consistency_config) { { 'EnforcedStyle' => 'indented_internal_methods' } }
 
-        it 'registers an offense for normal non-indented internal methods ' \
-           'indentation' do
+        it 'registers an offense for normal non-indented internal methods indentation' do
           expect_offense(<<~RUBY)
             class Test
               public
@@ -1294,9 +1288,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
 
       context 'when consistency style is indented_internal_methods' do
-        let(:consistency_config) do
-          { 'EnforcedStyle' => 'indented_internal_methods' }
-        end
+        let(:consistency_config) { { 'EnforcedStyle' => 'indented_internal_methods' } }
 
         it 'registers an offense for bad indentation of a module body' do
           expect_offense(<<~RUBY)
@@ -1312,8 +1304,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           RUBY
         end
 
-        it 'accepts normal non-indented internal methods of' \
-           'module functions' do
+        it 'accepts normal non-indented internal methods ofmodule functions' do
           expect_no_offenses(<<~RUBY)
             module Test
               module_function
@@ -1393,9 +1384,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
 
     context 'with block' do
       context 'when consistency style is indented_internal_methods' do
-        let(:consistency_config) do
-          { 'EnforcedStyle' => 'indented_internal_methods' }
-        end
+        let(:consistency_config) { { 'EnforcedStyle' => 'indented_internal_methods' } }
 
         it 'registers an offense for bad indentation in a do/end body' do
           expect_offense(<<~RUBY)

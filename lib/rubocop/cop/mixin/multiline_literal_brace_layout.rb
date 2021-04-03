@@ -24,8 +24,7 @@ module RuboCop
       #    b # comment
       #   ].some_method
       def new_line_needed_before_closing_brace?(node)
-        last_element_line =
-          last_element_range_with_trailing_comma(node).last_line
+        last_element_line = last_element_range_with_trailing_comma(node).last_line
 
         last_element_commented = processed_source.comment_at_line(last_element_line)
 

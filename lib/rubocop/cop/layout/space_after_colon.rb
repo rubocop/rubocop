@@ -37,9 +37,7 @@ module RuboCop
         private
 
         def register_offense(colon)
-          add_offense(colon) do |corrector|
-            corrector.insert_after(colon, ' ')
-          end
+          add_offense(colon) { |corrector| corrector.insert_after(colon, ' ') }
         end
 
         def followed_by_space?(colon)

@@ -53,8 +53,7 @@ module RuboCop
                                          singleton_method_added singleton_method_removed
                                          singleton_method_undefined].freeze
 
-        CALLBACKS = (CLASS_LIFECYCLE_CALLBACKS +
-                     METHOD_LIFECYCLE_CALLBACKS).to_set.freeze
+        CALLBACKS = (CLASS_LIFECYCLE_CALLBACKS + METHOD_LIFECYCLE_CALLBACKS).to_set.freeze
 
         def on_def(node)
           return unless offender?(node)

@@ -72,8 +72,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports disabling multiple lines with a pair of directive' do
-      method_length_disabled_lines =
-        disabled_lines_of_cop('Metrics/MethodLength')
+      method_length_disabled_lines = disabled_lines_of_cop('Metrics/MethodLength')
       expected_part = (1..4).to_a
       expect(method_length_disabled_lines & expected_part).to eq(expected_part)
     end
@@ -105,8 +104,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports enabling/disabling cops without a prefix' do
-      empty_interpolation_disabled_lines =
-        disabled_lines_of_cop('Lint/EmptyInterpolation')
+      empty_interpolation_disabled_lines = disabled_lines_of_cop('Lint/EmptyInterpolation')
 
       expected = (44..46).to_a
 
@@ -137,14 +135,12 @@ RSpec.describe RuboCop::CommentConfig do
       expect(line_length_disabled_lines).not_to include(18)
     end
 
-    it 'does not confuse a comment directive embedded in a string literal ' \
-       'with a real comment' do
+    it 'does not confuse a comment directive embedded in a string literal with a real comment' do
       loop_disabled_lines = disabled_lines_of_cop('Loop')
       expect(loop_disabled_lines).not_to include(20)
     end
 
-    it 'supports disabling all cops except Lint/RedundantCopDisableDirective ' \
-       'with keyword all' do
+    it 'supports disabling all cops except Lint/RedundantCopDisableDirective with keyword all' do
       expected_part = (7..8).to_a
 
       cops = RuboCop::Cop::Registry.all.reject do |klass|
@@ -163,8 +159,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'can handle double disable of one cop' do
-      expect(disabled_lines_of_cop('Style/ClassVars'))
-        .to eq([7, 8, 9] + (31..source.size).to_a)
+      expect(disabled_lines_of_cop('Style/ClassVars')).to eq([7, 8, 9] + (31..source.size).to_a)
     end
 
     it 'supports disabling cops with multiple uppercase letters' do
@@ -176,8 +171,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports disabling cops on a comment line with an EOL comment' do
-      expect(disabled_lines_of_cop('Layout/LeadingCommentSpace'))
-        .to eq([7, 8, 9, 50])
+      expect(disabled_lines_of_cop('Layout/LeadingCommentSpace')).to eq([7, 8, 9, 50])
     end
   end
 

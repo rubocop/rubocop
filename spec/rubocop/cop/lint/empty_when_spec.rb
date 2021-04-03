@@ -68,8 +68,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
       expect_no_corrections
     end
 
-    it 'registers an offense for missing when body with a comment ' \
-       'followed by else' do
+    it 'registers an offense for missing when body with a comment followed by else' do
       expect_offense(<<~RUBY)
         case foo
         when :bar

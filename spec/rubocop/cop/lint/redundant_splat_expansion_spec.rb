@@ -73,8 +73,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
       end
     end
 
-    it_behaves_like 'splat literal assignment', literal,
-                    'converts to an array', as_array: as_array
+    it_behaves_like 'splat literal assignment', literal, 'converts to an array', as_array: as_array
   end
 
   it_behaves_like 'array splat expansion', '[1, 2, 3]', as_args: '1, 2, 3'
@@ -213,8 +212,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
     end
   end
 
-  it 'registers an offense and corrects an array literal ' \
-    'being expanded in a rescue' do
+  it 'registers an offense and corrects an array literal being expanded in a rescue' do
     expect_offense(<<~RUBY)
       begin
         foo
@@ -370,9 +368,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
   end
 
   context 'when `AllowPercentLiteralArrayArgument: true`' do
-    let(:cop_config) do
-      { 'AllowPercentLiteralArrayArgument' => true }
-    end
+    let(:cop_config) { { 'AllowPercentLiteralArrayArgument' => true } }
 
     it 'does not register an offense when using percent string literal array' do
       expect_no_offenses(<<~'RUBY')
@@ -388,9 +384,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
   end
 
   context 'when `AllowPercentLiteralArrayArgument: false`' do
-    let(:cop_config) do
-      { 'AllowPercentLiteralArrayArgument' => false }
-    end
+    let(:cop_config) { { 'AllowPercentLiteralArrayArgument' => false } }
 
     it_behaves_like 'array splat expansion', '%w(one two three)', as_args: "'one', 'two', 'three'"
     it_behaves_like 'array splat expansion', '%W(one #{two} three)', as_args: '"one", "#{two}", "three"'

@@ -30,8 +30,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   shared_examples 'keyword with arguments' do |keyword|
     it_behaves_like 'redundant', "(#{keyword})", keyword, 'a keyword'
     it_behaves_like 'redundant', "(#{keyword}())", "#{keyword}()", 'a keyword'
-    it_behaves_like 'redundant', "(#{keyword}(1, 2))", "#{keyword}(1, 2)",
-                    'a keyword'
+    it_behaves_like 'redundant', "(#{keyword}(1, 2))", "#{keyword}(1, 2)", 'a keyword'
     it_behaves_like 'plausible', "(#{keyword} 1, 2)"
   end
 
@@ -148,8 +147,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'registers an offense for parens around a literal in array ' \
-     'and following newline' do
+  it 'registers an offense for parens around a literal in array and following newline' do
     expect_offense(<<~RUBY)
       [(1
        ^^ Don't use parentheses around a literal.
@@ -175,8 +173,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'registers an offense for parens around a literal hash value ' \
-     'and following newline' do
+  it 'registers an offense for parens around a literal hash value and following newline' do
     expect_offense(<<~RUBY)
       {a: (1
           ^^ Don't use parentheses around a literal.
@@ -310,8 +307,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'accepts parentheses around a method call with unparenthesized ' \
-     'arguments' do
+  it 'accepts parentheses around a method call with unparenthesized arguments' do
     expect_no_offenses('(a 1, 2) && (1 + 1)')
   end
 
@@ -366,8 +362,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     expect_no_offenses('if x; y else (1)end')
   end
 
-  context 'when the first argument in a method call begins with a hash '\
-          'literal' do
+  context 'when the first argument in a method call begins with a hash literal' do
     it 'accepts parentheses if the argument list is not parenthesized ' do
       expect_no_offenses('x ({ y: 1 }), z')
       expect_no_offenses('x ({ y: 1 }.merge({ y: 2 })), z')

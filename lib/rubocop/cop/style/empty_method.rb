@@ -45,16 +45,13 @@ module RuboCop
         extend AutoCorrector
 
         MSG_COMPACT = 'Put empty method definitions on a single line.'
-        MSG_EXPANDED = 'Put the `end` of empty method definitions on the ' \
-                       'next line.'
+        MSG_EXPANDED = 'Put the `end` of empty method definitions on the next line.'
 
         def on_def(node)
           return if node.body || comment_lines?(node)
           return if correct_style?(node)
 
-          add_offense(node) do |corrector|
-            corrector.replace(node, corrected(node))
-          end
+          add_offense(node) { |corrector| corrector.replace(node, corrected(node)) }
         end
         alias on_defs on_def
 
@@ -65,8 +62,7 @@ module RuboCop
         end
 
         def correct_style?(node)
-          compact_style? && compact?(node) ||
-            expanded_style? && expanded?(node)
+          compact_style? && compact?(node) || expanded_style? && expanded?(node)
         end
 
         def corrected(node)

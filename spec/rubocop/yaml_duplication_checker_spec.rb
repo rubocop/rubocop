@@ -8,9 +8,7 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
   shared_examples 'call block' do
     it 'calls block' do
       called = false
-      check(yaml) do
-        called = true
-      end
+      check(yaml) { called = true }
       expect(called).to be(true)
     end
   end
@@ -104,9 +102,7 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
 
     it 'does not call block' do
       called = false
-      described_class.check(yaml, 'dummy.yaml') do
-        called = true
-      end
+      described_class.check(yaml, 'dummy.yaml') { called = true }
       expect(called).to be(false)
     end
   end

@@ -33,8 +33,7 @@ module RuboCop
         end
 
         def updated_directives
-          require_entries.insert(target_line,
-                                 injectable_require_directive).join
+          require_entries.insert(target_line, injectable_require_directive).join
         end
 
         def target_line

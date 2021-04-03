@@ -3,9 +3,7 @@
 RSpec.describe RuboCop::Cop::VariableForce::Assignment do
   include RuboCop::AST::Sexp
 
-  let(:ast) do
-    RuboCop::ProcessedSource.new(source, ruby_version).ast
-  end
+  let(:ast) { RuboCop::ProcessedSource.new(source, ruby_version).ast }
 
   let(:source) do
     <<-RUBY
@@ -27,15 +25,11 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
   let(:name) { lvasgn_node.children.first }
   let(:scope) { RuboCop::Cop::VariableForce::Scope.new(def_node) }
-  let(:variable) do
-    RuboCop::Cop::VariableForce::Variable.new(name, lvasgn_node, scope)
-  end
+  let(:variable) { RuboCop::Cop::VariableForce::Variable.new(name, lvasgn_node, scope) }
   let(:assignment) { described_class.new(lvasgn_node, variable) }
 
   describe '.new' do
-    let(:variable) do
-      instance_double(RuboCop::Cop::VariableForce::Variable)
-    end
+    let(:variable) { instance_double(RuboCop::Cop::VariableForce::Variable) }
 
     context 'when an assignment node is passed' do
       it 'does not raise error' do
@@ -47,16 +41,14 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
     context 'when an argument declaration node is passed' do
       it 'raises error' do
         node = s(:arg, :foo)
-        expect { described_class.new(node, variable) }
-          .to raise_error(ArgumentError)
+        expect { described_class.new(node, variable) }.to raise_error(ArgumentError)
       end
     end
 
     context 'when any other type node is passed' do
       it 'raises error' do
         node = s(:def)
-        expect { described_class.new(node, variable) }
-          .to raise_error(ArgumentError)
+        expect { described_class.new(node, variable) }.to raise_error(ArgumentError)
       end
     end
   end

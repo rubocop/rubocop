@@ -25,9 +25,7 @@ module RuboCop
         def on_when(node)
           return if node.multiline? || node.then? || !node.body
 
-          add_offense(node.loc.begin) do |corrector|
-            corrector.replace(node.loc.begin, ' then')
-          end
+          add_offense(node.loc.begin) { |corrector| corrector.replace(node.loc.begin, ' then') }
         end
       end
     end

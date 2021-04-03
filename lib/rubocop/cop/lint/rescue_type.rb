@@ -51,10 +51,7 @@ module RuboCop
 
           add_offense(
             node.loc.keyword.join(rescued.loc.expression),
-            message: format(
-              MSG, invalid_exceptions: invalid_exceptions.map(&:source)
-                                                         .join(', ')
-            )
+            message: format(MSG, invalid_exceptions: invalid_exceptions.map(&:source).join(', '))
           ) do |corrector|
             autocorrect(corrector, node)
           end
@@ -83,9 +80,7 @@ module RuboCop
         end
 
         def invalid_exceptions(exceptions)
-          exceptions.select do |exception|
-            INVALID_TYPES.include?(exception.type)
-          end
+          exceptions.select { |exception| INVALID_TYPES.include?(exception.type) }
         end
       end
     end

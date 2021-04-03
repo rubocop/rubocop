@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::EmptyBlock, :config do
-  let(:cop_config) do
-    { 'AllowComments' => true, 'AllowEmptyLambdas' => true }
-  end
+  let(:cop_config) { { 'AllowComments' => true, 'AllowEmptyLambdas' => true } }
 
   it 'registers an offense for empty block within method call' do
     expect_offense(<<~RUBY)
@@ -46,9 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyBlock, :config do
   end
 
   context 'when AllowComments is false' do
-    let(:cop_config) do
-      { 'AllowComments' => false }
-    end
+    let(:cop_config) { { 'AllowComments' => false } }
 
     it 'registers an offense for empty block with inner comments' do
       expect_offense(<<~RUBY)
@@ -68,9 +64,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyBlock, :config do
   end
 
   context 'when AllowEmptyLambdas is false' do
-    let(:cop_config) do
-      { 'AllowEmptyLambdas' => false }
-    end
+    let(:cop_config) { { 'AllowEmptyLambdas' => false } }
 
     it 'registers an offense for an empty lambda' do
       expect_offense(<<~RUBY)

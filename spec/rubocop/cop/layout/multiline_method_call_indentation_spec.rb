@@ -179,8 +179,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects extra indentation of 3rd line ' \
-      'in typical RSpec code' do
+    it 'registers an offense and corrects extra indentation of 3rd line in typical RSpec code' do
       expect_offense(<<~RUBY)
         expect { Foo.new }.
           to change { Bar.count }.
@@ -267,8 +266,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         end
       end
 
-      it 'accepts methods being aligned with method that is an argument in ' \
-         'assignment' do
+      it 'accepts methods being aligned with method that is an argument in assignment' do
         expect_no_offenses(<<~RUBY)
           user = authorize scope.includes(:user)
                                 .where(name: 'Bob')
@@ -497,8 +495,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned methods ' \
-      'in unless condition' do
+    it 'registers an offense and corrects misaligned methods in unless condition' do
       expect_offense(<<~RUBY)
         unless a
         .b
@@ -515,8 +512,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned methods ' \
-      'in while condition' do
+    it 'registers an offense and corrects misaligned methods in while condition' do
       expect_offense(<<~RUBY)
         while a.
             b
@@ -533,8 +529,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned methods ' \
-      'in until condition' do
+    it 'registers an offense and corrects misaligned methods in until condition' do
       expect_offense(<<~RUBY)
         until a.
             b
@@ -578,8 +573,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects misaligned methods ' \
-      'in local variable assignment' do
+    it 'registers an offense and corrects misaligned methods in local variable assignment' do
       expect_offense(<<~RUBY)
         a = b.c.
          d
@@ -682,8 +676,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects extra indentation of 3rd line ' \
-      'in typical RSpec code' do
+    it 'registers an offense and corrects extra indentation of 3rd line in typical RSpec code' do
       expect_offense(<<~RUBY)
         expect { Foo.new }.
           to change { Bar.count }.
@@ -746,8 +739,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects 3 spaces indentation ' \
-      'of second line' do
+    it 'registers an offense and corrects 3 spaces indentation of second line' do
       expect_offense(<<~RUBY)
         a.
            b
@@ -922,8 +914,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         RUBY
       end
 
-      it "registers an offense for a 2 space indentation of #{keyword} " \
-         'condition' do
+      it "registers an offense for a 2 space indentation of #{keyword} " + 'condition' do
         expect_offense(<<~RUBY)
           #{keyword} receiver
             .nil? &&
@@ -953,8 +944,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       end
     end
 
-    it 'registers an offense and corrects wrong indentation ' \
-      'of for expression' do
+    it 'registers an offense and corrects wrong indentation of for expression' do
       expect_offense(<<~RUBY)
         for n in a.
           b
@@ -1091,8 +1081,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           RUBY
         end
 
-        it "registers an offense for a 4 space indentation of #{keyword} " \
-           'condition' do
+        it "registers an offense for a 4 space indentation of #{keyword} " + 'condition' do
           expect_offense(<<~RUBY)
             #{keyword} receiver
                 .nil? &&

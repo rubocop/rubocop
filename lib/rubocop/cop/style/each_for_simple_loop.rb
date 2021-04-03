@@ -25,8 +25,7 @@ module RuboCop
       class EachForSimpleLoop < Base
         extend AutoCorrector
 
-        MSG = 'Use `Integer#times` for a simple loop which iterates a fixed ' \
-              'number of times.'
+        MSG = 'Use `Integer#times` for a simple loop which iterates a fixed number of times.'
 
         def on_block(node)
           return unless offending_each_range(node)

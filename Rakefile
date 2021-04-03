@@ -28,11 +28,7 @@ RuboCop::RakeTask.new(:internal_investigation).tap do |task|
   end
 end
 
-task default: %i[
-  documentation_syntax_check
-  spec ascii_spec
-  internal_investigation
-]
+task default: %i[documentation_syntax_check spec ascii_spec internal_investigation]
 
 require 'yard'
 YARD::Rake::YardocTask.new
@@ -51,9 +47,7 @@ task :bench_cop, %i[cop srcpath times] do |_task, args|
   cop_class = if cop_name.include?('/')
                 Cop::Registry.all.find { |klass| klass.cop_name == cop_name }
               else
-                Cop::Registry.all.find do |klass|
-                  klass.cop_name[/[a-zA-Z]+$/] == cop_name
-                end
+                Cop::Registry.all.find { |klass| klass.cop_name[/[a-zA-Z]+$/] == cop_name }
               end
   raise "No such cop: #{cop_name}" if cop_class.nil?
 
@@ -68,8 +62,7 @@ task :bench_cop, %i[cop srcpath times] do |_task, args|
             [src_path]
           end
 
-  puts "(#{pluralize(iterations, 'iteration')}, " \
-    "#{pluralize(files.size, 'file')})"
+  puts "(#{pluralize(iterations, 'iteration')}, #{pluralize(files.size, 'file')})"
 
   ruby_version = RuboCop::TargetRuby.supported_versions.last
   srcs = files.map { |file| ProcessedSource.from_file(file, ruby_version) }

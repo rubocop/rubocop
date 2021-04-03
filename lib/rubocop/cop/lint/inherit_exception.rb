@@ -66,8 +66,7 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          return unless node.parent_class &&
-                        illegal_class_name?(node.parent_class)
+          return unless node.parent_class && illegal_class_name?(node.parent_class)
 
           message = message(node.parent_class)
 

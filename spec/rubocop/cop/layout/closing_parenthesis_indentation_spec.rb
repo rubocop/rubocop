@@ -74,8 +74,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects misindented ) ' \
-        'when ) is aligned with the params' do
+      it 'registers an offense and corrects misindented ) when ) is aligned with the params' do
         expect_offense(<<~RUBY)
           some_method(a,
             x: 1,

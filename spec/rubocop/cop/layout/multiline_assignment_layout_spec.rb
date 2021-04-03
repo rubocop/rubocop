@@ -3,12 +3,7 @@
 RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
   let(:supported_types) { %w[if] }
 
-  let(:cop_config) do
-    {
-      'EnforcedStyle' => enforced_style,
-      'SupportedTypes' => supported_types
-    }
-  end
+  let(:cop_config) { { 'EnforcedStyle' => enforced_style, 'SupportedTypes' => supported_types } }
 
   context 'new_line style' do
     let(:enforced_style) { 'new_line' }
@@ -104,8 +99,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         RUBY
       end
 
-      it 'allows multi-line assignments when using block definition ' \
-         'on separate lines' do
+      it 'allows multi-line assignments when using block definition on separate lines' do
         expect_no_offenses(<<~RUBY)
           lambda =
             -> {
@@ -218,8 +212,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     context 'when supported types is block' do
       let(:supported_types) { %w[block] }
 
-      it 'allows when multi-line assignments using block definition ' \
-         'is on the same line' do
+      it 'allows when multi-line assignments using block definition is on the same line' do
         expect_no_offenses(<<~RUBY)
           lambda = -> {
             puts 'hello'

@@ -37,8 +37,7 @@ module RuboCop
         def_node_matcher :str_node, '(send (const {nil? cbase} :String) :new)'
 
         # @!method array_with_block(node)
-        def_node_matcher :array_with_block,
-                         '(block (send (const {nil? cbase} :Array) :new) args _)'
+        def_node_matcher :array_with_block, '(block (send (const {nil? cbase} :Array) :new) args _)'
 
         # @!method hash_with_block(node)
         def_node_matcher :hash_with_block, <<~PATTERN
@@ -84,20 +83,17 @@ module RuboCop
           parent = node.parent
           return false unless parent && %i[send super zsuper].include?(parent.type)
 
-          node.equal?(parent.arguments.first) &&
-            !parentheses?(node.parent)
+          node.equal?(parent.arguments.first) && !parentheses?(node.parent)
         end
 
         def replacement_range(node)
-          if hash_node(node) &&
-             first_argument_unparenthesized?(node)
+          if hash_node(node) && first_argument_unparenthesized?(node)
             # `some_method {}` is not same as `some_method Hash.new`
             # because the braces are interpreted as a block. We will have
             # to rewrite the arguments to wrap them in parenthesis.
             args = node.parent.arguments
 
-            range_between(args[0].source_range.begin_pos - 1,
-                          args[-1].source_range.end_pos)
+            range_between(args[0].source_range.begin_pos - 1, args[-1].source_range.end_pos)
           else
             node.source_range
           end

@@ -162,8 +162,7 @@ module RuboCop
         def check_if(node)
           if_branch = node.if_branch
           else_branch = node.else_branch
-          if_branch && else_branch &&
-            break_statement?(if_branch) && break_statement?(else_branch)
+          if_branch && else_branch && break_statement?(if_branch) && break_statement?(else_branch)
         end
 
         def check_case(node)
@@ -171,9 +170,7 @@ module RuboCop
           return false unless else_branch
           return false unless break_statement?(else_branch)
 
-          node.when_branches.all? do |branch|
-            branch.body && break_statement?(branch.body)
-          end
+          node.when_branches.all? { |branch| branch.body && break_statement?(branch.body) }
         end
 
         def preceded_by_continue_statement?(break_statement)

@@ -38,9 +38,7 @@ module RuboCop
 
           trailing_comma = trailing_comma_range(node)
 
-          add_offense(trailing_comma) do |corrector|
-            corrector.remove(trailing_comma)
-          end
+          add_offense(trailing_comma) { |corrector| corrector.remove(trailing_comma) }
         end
 
         private

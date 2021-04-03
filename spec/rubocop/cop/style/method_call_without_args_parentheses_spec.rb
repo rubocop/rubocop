@@ -31,9 +31,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
 
   context 'with IgnoredMethods' do
     context 'with a string' do
-      let(:cop_config) do
-        { 'IgnoredMethods' => %w[s] }
-      end
+      let(:cop_config) { { 'IgnoredMethods' => %w[s] } }
 
       it 'ignores method listed in IgnoredMethods' do
         expect_no_offenses('s()')
@@ -41,9 +39,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     end
 
     context 'with a regex' do
-      let(:cop_config) do
-        { 'IgnoredMethods' => [/test/] }
-      end
+      let(:cop_config) { { 'IgnoredMethods' => [/test/] } }
 
       it 'ignores method listed in IgnoredMethods' do
         expect_no_offenses('my_test()')

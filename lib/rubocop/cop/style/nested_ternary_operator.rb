@@ -18,8 +18,7 @@ module RuboCop
       class NestedTernaryOperator < Base
         extend AutoCorrector
 
-        MSG = 'Ternary operators must not be nested. Prefer `if` or `else` ' \
-              'constructs instead.'
+        MSG = 'Ternary operators must not be nested. Prefer `if` or `else` constructs instead.'
 
         def on_if(node)
           return unless node.ternary?

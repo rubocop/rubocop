@@ -480,8 +480,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
     RUBY
   end
 
-  it 'registers an offense in an if else if the assignment is already ' \
-    'at the line length limit' do
+  it 'registers an offense in an if else if the assignment is already at the line length limit' do
     expect_offense(<<~RUBY)
       if foo
       ^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -638,8 +637,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
 
     variable_types.each do |type, name|
       context "for a #{type} lval" do
-        it "registers an offense for assignment using #{assignment} " \
-          'in ternary' do
+        it "registers an offense for assignment using #{assignment} " + 'in ternary' do
           source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
           expect_offense(<<~RUBY, source: source)
             %{source}
@@ -662,8 +660,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
 
         variable_types.each do |type, name|
           context "for a #{type} lval" do
-            it "registers an offense for assignment using #{assignment} in " \
-              'if else' do
+            it "registers an offense for assignment using #{assignment} in " + 'if else' do
               expect_offense(<<~RUBY)
                 if foo
                 ^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -683,8 +680,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
               RUBY
             end
 
-            it "registers an offense for assignment using #{assignment} in "\
-            ' case when' do
+            it "registers an offense for assignment using #{assignment} in " + ' case when' do
               expect_offense(<<~RUBY)
                 case foo
                 ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -777,8 +773,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
     RUBY
   end
 
-  it 'autocorrects assignment in if else when the assignment ' \
-    'spans multiple lines' do
+  it 'autocorrects assignment in if else when the assignment spans multiple lines' do
     expect_offense(<<~RUBY)
       if foo
       ^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1038,8 +1033,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
       RUBY
     end
 
-    it 'allows variable assignment in unless else with more than ' \
-       'variable assignment' do
+    it 'allows variable assignment in unless else with more than variable assignment' do
       expect_no_offenses(<<~RUBY)
         unless foo
           method_call
@@ -1051,8 +1045,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
       RUBY
     end
 
-    it 'allows variable assignment in case when else with more than ' \
-       'variable assignment' do
+    it 'allows variable assignment in case when else with more than variable assignment' do
       expect_no_offenses(<<~RUBY)
         case foo
         when foobar
@@ -1202,8 +1195,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
     RUBY
   end
 
-  it 'allows assignment in multiple branches when it is ' \
-     'wrapped in a modifier' do
+  it 'allows assignment in multiple branches when it is wrapped in a modifier' do
     expect_no_offenses(<<~RUBY)
       if foo
         bar << 1
@@ -1527,8 +1519,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
         RUBY
       end
 
-      it 'registers an offense in if elsif else with more than ' \
-         'variable assignment' do
+      it 'registers an offense in if elsif else with more than variable assignment' do
         expect_offense(<<~RUBY)
           if foo
           ^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1669,8 +1660,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
         RUBY
       end
 
-      it 'registers offense for multiple assignments in case when with only ' \
-         'one when' do
+      it 'registers offense for multiple assignments in case when with only one when' do
         expect_offense(<<~RUBY)
           case foo
           ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1695,8 +1685,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
         RUBY
       end
 
-      it 'registers offense for multiple assignments in case when with ' \
-         'multiple whens' do
+      it 'registers offense for multiple assignments in case when with multiple whens' do
         expect_offense(<<~RUBY)
           case foo
           ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1760,8 +1749,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
         RUBY
       end
 
-      it 'registers an offense in unless else with more than ' \
-         'variable assignment' do
+      it 'registers an offense in unless else with more than variable assignment' do
         expect_offense(<<~RUBY)
           unless foo
           ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1784,8 +1772,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
         RUBY
       end
 
-      it 'registers an offense in case when else with more than ' \
-         'variable assignment' do
+      it 'registers an offense in case when else with more than variable assignment' do
         expect_offense(<<~RUBY)
           case foo
           ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1900,8 +1887,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
       end
     end
 
-    it 'allows assignment in multiple branches when it is ' \
-       'wrapped in a modifier' do
+    it 'allows assignment in multiple branches when it is wrapped in a modifier' do
       expect_no_offenses(<<~RUBY)
         if foo
           bar << 1
@@ -2104,8 +2090,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
         RUBY
       end
 
-      it 'corrects assignment in an if statement that is nested ' \
-        'in unless else' do
+      it 'corrects assignment in an if statement that is nested in unless else' do
         expect_offense(<<~RUBY)
           unless foo
             if foobar

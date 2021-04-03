@@ -95,8 +95,7 @@ module RuboCop
 
         line = node.loc.selector.nil? ? node.loc.line : node.loc.selector.line
 
-        line == node.last_argument.last_line &&
-          node.last_line == node.last_argument.last_line
+        line == node.last_argument.last_line && node.last_line == node.last_argument.last_line
       end
 
       # A single argument with the closing bracket on the same line as the end

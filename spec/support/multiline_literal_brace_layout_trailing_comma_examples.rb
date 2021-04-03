@@ -21,8 +21,7 @@ shared_examples_for 'multiline literal brace layout trailing comma' do
             #{suffix}
           RUBY
 
-          expect(new_source)
-            .to eq("#{prefix}#{open}#{a}, # a\n#{b},#{close} # b\n#{suffix}")
+          expect(new_source).to eq("#{prefix}#{open}#{a}, # a\n#{b},#{close} # b\n#{suffix}")
         end
       end
     end
@@ -41,8 +40,7 @@ shared_examples_for 'multiline literal brace layout trailing comma' do
             #{suffix}
           RUBY
 
-          expect(new_source)
-            .to eq("#{prefix}#{open}#{a}, # a\n#{b},#{close} # b\n#{suffix}")
+          expect(new_source).to eq("#{prefix}#{open}#{a}, # a\n#{b},#{close} # b\n#{suffix}")
         end
       end
     end

@@ -33,9 +33,7 @@ RSpec.describe RuboCop::Cop::Naming::AsciiIdentifiers, :config do
   end
 
   context 'when AsciiConstants is true' do
-    let(:cop_config) do
-      { 'AsciiConstants' => true }
-    end
+    let(:cop_config) { { 'AsciiConstants' => true } }
 
     include_examples 'checks identifiers'
 
@@ -49,9 +47,7 @@ RSpec.describe RuboCop::Cop::Naming::AsciiIdentifiers, :config do
   end
 
   context 'when AsciiConstants is false' do
-    let(:cop_config) do
-      { 'AsciiConstants' => false }
-    end
+    let(:cop_config) { { 'AsciiConstants' => false } }
 
     include_examples 'checks identifiers'
 

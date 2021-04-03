@@ -94,8 +94,7 @@ module RuboCop
 
         def on_splat(node)
           redundant_splat_expansion(node) do
-            if array_splat?(node) &&
-               (method_argument?(node) || part_of_an_array?(node))
+            if array_splat?(node) && (method_argument?(node) || part_of_an_array?(node))
               return if allow_percent_literal_array_argument? &&
                         use_percent_literal_array_argument?(node)
 
@@ -103,9 +102,7 @@ module RuboCop
                 autocorrect(corrector, node)
               end
             else
-              add_offense(node) do |corrector|
-                autocorrect(corrector, node)
-              end
+              add_offense(node) { |corrector| autocorrect(corrector, node) }
             end
           end
         end
@@ -124,8 +121,7 @@ module RuboCop
               return if array_new_inside_array_literal?(expanded_item)
 
               grandparent = node.parent.parent
-              return if grandparent &&
-                        !ASSIGNMENT_TYPES.include?(grandparent.type)
+              return if grandparent && !ASSIGNMENT_TYPES.include?(grandparent.type)
             end
 
             yield

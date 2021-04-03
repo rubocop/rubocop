@@ -31,8 +31,7 @@ module RuboCop
         include IgnoredMethods
         extend AutoCorrector
 
-        MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` ' \
-              'instead of a block.'
+        MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` instead of a block.'
         SUPER_TYPES = %i[super zsuper].freeze
 
         # @!method proc_node?(node)
@@ -81,9 +80,7 @@ module RuboCop
           range = range_between(block_start, block_end)
           message = format(MSG, method: method_name, block_method: block_method_name)
 
-          add_offense(range, message: message) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(range, message: message) { |corrector| autocorrect(corrector, node) }
         end
 
         def autocorrect(corrector, node)
@@ -95,8 +92,7 @@ module RuboCop
         end
 
         def autocorrect_without_args(corrector, node)
-          corrector.replace(block_range_with_space(node),
-                            "(&:#{node.body.method_name})")
+          corrector.replace(block_range_with_space(node), "(&:#{node.body.method_name})")
         end
 
         def autocorrect_with_args(corrector, node, args, method_name)
@@ -109,8 +105,7 @@ module RuboCop
         end
 
         def block_range_with_space(node)
-          block_range = range_between(begin_pos_for_replacement(node),
-                                      node.loc.end.end_pos)
+          block_range = range_between(begin_pos_for_replacement(node), node.loc.end.end_pos)
           range_with_surrounding_space(range: block_range, side: :left)
         end
 

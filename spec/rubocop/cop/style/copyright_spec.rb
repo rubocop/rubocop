@@ -55,19 +55,14 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
       RUBY
     end
 
-    it 'fails to autocorrect when the AutocorrectNotice does ' \
-       'not match the Notice pattern' do
+    it 'fails to autocorrect when the AutocorrectNotice does not match the Notice pattern' do
       cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
-      expect do
-        expect_offense(source)
-      end.to raise_error(RuboCop::Warning)
+      expect { expect_offense(source) }.to raise_error(RuboCop::Warning)
     end
 
     it 'fails to autocorrect if no AutocorrectNotice is given' do
       # cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
-      expect do
-        expect_offense(source)
-      end.to raise_error(RuboCop::Warning)
+      expect { expect_offense(source) }.to raise_error(RuboCop::Warning)
     end
   end
 
@@ -107,8 +102,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     end
   end
 
-  context 'when the copyright notice is missing and ' \
-          'the source code file starts with a shebang' do
+  context 'when the copyright notice is missing and the source code file starts with a shebang' do
     it 'adds an offense' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 

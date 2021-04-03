@@ -54,8 +54,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments, :config do
     RUBY
   end
 
-  it 'auto-corrects a block comment into a regular comment (without trailing' \
-    'newline)' do
+  it 'auto-corrects a block comment into a regular comment (without trailingnewline)' do
     expect_offense(<<~RUBY)
       =begin
       ^^^^^^ Do not use block comments.

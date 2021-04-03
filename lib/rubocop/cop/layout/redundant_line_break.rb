@@ -20,7 +20,7 @@ module RuboCop
 
         MSG = 'Redundant line break detected.'
 
-        def on_send(node) # rubocop:todo Metrics/CyclomaticComplexity
+        def on_send(node)
           # Include "the whole expression".
           node = node.parent while convertible_block?(node) ||
                                    node.parent.is_a?(RuboCop::AST::BinaryOperatorNode) ||

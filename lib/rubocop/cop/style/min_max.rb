@@ -40,8 +40,7 @@ module RuboCop
         PATTERN
 
         def message(offender, receiver)
-          format(MSG, offender: offender.source,
-                      receiver: receiver.source)
+          format(MSG, offender: offender.source, receiver: receiver.source)
         end
 
         def offending_range(node)

@@ -43,8 +43,7 @@ module RuboCop
           receiver = node.receiver.source
           argument = expression.source
 
-          message = format(MSG, receiver: receiver, argument: argument,
-                                original: node.source)
+          message = format(MSG, receiver: receiver, argument: argument, original: node.source)
           add_offense(node, message: message) do |corrector|
             correct_access = "#{receiver}[#{argument}]"
             corrector.replace(node, correct_access)

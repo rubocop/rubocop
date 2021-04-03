@@ -18,8 +18,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG =
-          'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
+        MSG = 'Use `warn` instead of `%<bad>s` to allow such output to be disabled.'
         RESTRICT_ON_SEND = %i[puts].freeze
 
         # @!method stderr_puts?(node)
@@ -50,10 +49,7 @@ module RuboCop
         end
 
         def stderr_puts_range(send)
-          range_between(
-            send.loc.expression.begin_pos,
-            send.loc.selector.end_pos
-          )
+          range_between(send.loc.expression.begin_pos, send.loc.selector.end_pos)
         end
       end
     end

@@ -6,10 +6,8 @@ module RuboCop
     module UncommunicativeName
       CASE_MSG = 'Only use lowercase characters for %<name_type>s.'
       NUM_MSG = 'Do not end %<name_type>s with a number.'
-      LENGTH_MSG = '%<name_type>s must be at least %<min>s ' \
-                   'characters long.'
-      FORBIDDEN_MSG = 'Do not use %<name>s as a name for a ' \
-                      '%<name_type>s.'
+      LENGTH_MSG = '%<name_type>s must be at least %<min>s characters long.'
+      FORBIDDEN_MSG = 'Do not use %<name>s as a name for a %<name_type>s.'
 
       def check(node, args)
         args.each do |arg|
@@ -79,9 +77,7 @@ module RuboCop
 
       def arg_range(arg, length)
         begin_pos = arg.source_range.begin_pos
-        Parser::Source::Range.new(processed_source.buffer,
-                                  begin_pos,
-                                  begin_pos + length)
+        Parser::Source::Range.new(processed_source.buffer, begin_pos, begin_pos + length)
       end
 
       def forbidden_offense(node, range, name)

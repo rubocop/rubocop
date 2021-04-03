@@ -49,9 +49,7 @@ module RuboCop
           /^(does not|doesn't) add (a|an|any )?offense/
         ].freeze
 
-        EXPECT_NO_CORRECTIONS_INCORRECT_DESCRIPTIONS = [
-          /^(auto[- ]?)?correct/
-        ].freeze
+        EXPECT_NO_CORRECTIONS_INCORRECT_DESCRIPTIONS = [/^(auto[- ]?)?correct/].freeze
 
         EXPECT_CORRECTION_INCORRECT_DESCRIPTIONS = [
           /\b(does not|doesn't) (auto[- ]?)?correct/

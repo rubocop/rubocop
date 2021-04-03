@@ -31,10 +31,7 @@ module RuboCop
 
         MSG = 'Use `Hash#%<prefer>s` instead of `Hash#%<current>s`.'
 
-        OFFENDING_SELECTORS = {
-          short: %i[has_key? has_value?],
-          verbose: %i[key? value?]
-        }.freeze
+        OFFENDING_SELECTORS = { short: %i[has_key? has_value?], verbose: %i[key? value?] }.freeze
 
         RESTRICT_ON_SEND = OFFENDING_SELECTORS.values.flatten.freeze
 

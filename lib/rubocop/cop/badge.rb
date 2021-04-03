@@ -38,8 +38,7 @@ module RuboCop
       end
 
       def match?(other)
-        cop_name == other.cop_name &&
-          (!qualified? || department == other.department)
+        cop_name == other.cop_name && (!qualified? || department == other.department)
       end
 
       def to_s

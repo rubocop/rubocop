@@ -79,9 +79,7 @@ module RuboCop
         def handle_disallow_style(node)
           return unless node.endless?
 
-          add_offense(node) do |corrector|
-            correct_to_multiline(corrector, node)
-          end
+          add_offense(node) { |corrector| correct_to_multiline(corrector, node) }
         end
 
         def correct_to_multiline(corrector, node)

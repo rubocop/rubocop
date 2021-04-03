@@ -21,8 +21,7 @@ module RuboCop
       end
 
       def safe_autocorrect?
-        cop_config.fetch('Safe', true) &&
-          cop_config.fetch('SafeAutoCorrect', true)
+        cop_config.fetch('Safe', true) && cop_config.fetch('SafeAutoCorrect', true)
       end
 
       def autocorrect_enabled?
@@ -68,9 +67,7 @@ module RuboCop
         begin_of_first_line = range.begin_pos - range.column
         end_of_first_line = begin_of_first_line + range.source_line.length
 
-        Parser::Source::Range.new(range.source_buffer,
-                                  begin_of_first_line,
-                                  end_of_first_line)
+        Parser::Source::Range.new(range.source_buffer, begin_of_first_line, end_of_first_line)
       end
 
       # Expand the given range to include all of any lines it covers. Does not
@@ -82,9 +79,7 @@ module RuboCop
         last_line_offset = last_line.length - range.last_column
         end_of_last_line = range.end_pos + last_line_offset
 
-        Parser::Source::Range.new(range.source_buffer,
-                                  begin_of_first_line,
-                                  end_of_last_line)
+        Parser::Source::Range.new(range.source_buffer, begin_of_first_line, end_of_last_line)
       end
 
       def max_line_length

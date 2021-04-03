@@ -121,8 +121,7 @@ module RuboCop
           def ==(other)
             return false unless other
 
-            control_node.equal?(other.control_node) &&
-              child_node.equal?(other.child_node)
+            control_node.equal?(other.control_node) && child_node.equal?(other.child_node)
           end
 
           alias_method :eql?, :==

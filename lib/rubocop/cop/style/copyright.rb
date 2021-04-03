@@ -19,10 +19,8 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Include a copyright notice matching /%<notice>s/ before ' \
-              'any code.'
-        AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in ' \
-                                    'your RuboCop config'
+        MSG = 'Include a copyright notice matching /%<notice>s/ before any code.'
+        AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in your RuboCop config'
 
         def on_new_investigation
           return if notice.empty? || notice_found?(processed_source)
@@ -57,8 +55,7 @@ module RuboCop
           regex = Regexp.new(notice)
           return if autocorrect_notice&.match?(regex)
 
-          raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
-                         "match Notice /#{notice}/"
+          raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must match Notice /#{notice}/"
         end
 
         def insert_notice_before(processed_source)

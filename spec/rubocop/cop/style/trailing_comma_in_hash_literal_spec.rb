@@ -36,15 +36,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
-      include_examples 'single line lists',
-                       ', unless each item is on its own line'
+      include_examples 'single line lists', ', unless each item is on its own line'
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
-      include_examples 'single line lists',
-                       ', unless items are split onto multiple lines'
+      include_examples 'single line lists', ', unless items are split onto multiple lines'
     end
   end
 
@@ -243,8 +241,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
         RUBY
       end
 
-      it 'accepts a multiline hash with pairs on a single line and' \
-         'trailing comma' do
+      it 'accepts a multiline hash with pairs on a single line andtrailing comma' do
         expect_no_offenses(<<~RUBY)
           bar = {
             a: 1001, b: 2020,

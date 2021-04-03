@@ -35,8 +35,7 @@ module RuboCop
           expression    = comment.loc.expression
           first_offense = first_non_ascii_chars(comment.text)
 
-          start_position = expression.begin_pos +
-                           comment.text.index(first_offense)
+          start_position = expression.begin_pos + comment.text.index(first_offense)
           end_position   = start_position + first_offense.length
 
           range_between(start_position, end_position)

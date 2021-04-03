@@ -6,8 +6,7 @@ module RuboCop
     module TrailingBody
       def trailing_body?(node)
         body = node.to_a.reverse[0]
-        body && node.multiline? &&
-          body_on_first_line?(node, body)
+        body && node.multiline? && body_on_first_line?(node, body)
       end
 
       def body_on_first_line?(node, body)

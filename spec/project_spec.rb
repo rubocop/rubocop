@@ -18,9 +18,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         %w[AllCops] + cop_names
       end
 
-      match do |actual|
-        (expected.to_set ^ actual.to_set).none?
-      end
+      match { |actual| (expected.to_set ^ actual.to_set).none? }
 
       failure_message do
         diff = RSpec::Support::Differ.new.diff_as_object(expected.sort, actual.sort)
@@ -80,19 +78,15 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
     it 'sorts configuration keys alphabetically' do
       expected = configuration_keys.sort
-      configuration_keys.each_with_index do |key, idx|
-        expect(key).to eq expected[idx]
-      end
+      configuration_keys.each_with_index { |key, idx| expect(key).to eq expected[idx] }
     end
 
-    it 'has a SupportedStyles for all EnforcedStyle ' \
-      'and EnforcedStyle is valid' do
+    it 'has a SupportedStyles for all EnforcedStyle and EnforcedStyle is valid' do
       errors = []
       cop_names.each do |name|
         next unless config[name]
 
-        enforced_styles = config[name]
-                          .select { |key, _| key.start_with?('Enforced') }
+        enforced_styles = config[name].select { |key, _| key.start_with?('Enforced') }
         enforced_styles.each do |style_name, style|
           supported_key = RuboCop::Cop::Util.to_supported_styles(style_name)
           valid = config[name][supported_key]
@@ -144,9 +138,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
   shared_examples 'has Changelog format' do
     let(:lines) { changelog.each_line }
 
-    let(:non_reference_lines) do
-      lines.take_while { |line| !line.start_with?('[@') }
-    end
+    let(:non_reference_lines) { lines.take_while { |line| !line.start_with?('[@') } }
 
     it 'has newline at end of file' do
       expect(changelog.end_with?("\n")).to be true
@@ -173,15 +165,11 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'has a reference' do
-          issues.each do |issue|
-            expect(issue[:ref].blank?).to eq(false)
-          end
+          issues.each { |issue| expect(issue[:ref].blank?).to eq(false) }
         end
 
         it 'has a valid issue number prefixed with #' do
-          issues.each do |issue|
-            expect(issue[:number]).to match(/^\d+$/)
-          end
+          issues.each { |issue| expect(issue[:number]).to match(/^\d+$/) }
         end
 
         it 'has a valid URL' do
@@ -194,9 +182,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'has a colon and a whitespace at the end' do
-          entries_including_issue_link = entries.select do |entry|
-            entry.match(/^\*\s*\[/)
-          end
+          entries_including_issue_link = entries.select { |entry| entry.match(/^\*\s*\[/) }
 
           expect(entries_including_issue_link).to all(include('): '))
         end
@@ -221,9 +207,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'does not start with a lower case' do
-          bodies.each do |body|
-            expect(body).not_to match(/^[a-z]/)
-          end
+          bodies.each { |body| expect(body).not_to match(/^[a-z]/) }
         end
 
         it 'ends with a punctuation' do
@@ -231,22 +215,16 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'does not include a [Fix #x] directive' do
-          bodies.each do |body|
-            expect(body).not_to match(/\[Fix(es)? \#.*?\]/i)
-          end
+          bodies.each { |body| expect(body).not_to match(/\[Fix(es)? \#.*?\]/i) }
         end
       end
     end
   end
 
   describe 'Changelog' do
-    subject(:changelog) do
-      File.read(path)
-    end
+    subject(:changelog) { File.read(path) }
 
-    let(:path) do
-      File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md')
-    end
+    let(:path) { File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md') }
     let(:entries) { lines.grep(/^\*/).map(&:chomp) }
 
     include_examples 'has Changelog format'
@@ -281,11 +259,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     end
 
     context 'after version 0.14.0' do
-      let(:lines) do
-        changelog.each_line.take_while do |line|
-          !line.start_with?('## 0.14.0')
-        end
-      end
+      let(:lines) { changelog.each_line.take_while { |line| !line.start_with?('## 0.14.0') } }
 
       it 'has a link to the contributors at the end' do
         expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))

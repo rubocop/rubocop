@@ -15,9 +15,7 @@ module RuboCop
       alias on_regexp on_dstr
 
       def on_node_with_interpolations(node)
-        node.each_child_node(:begin) do |begin_node|
-          on_interpolation(begin_node)
-        end
+        node.each_child_node(:begin) { |begin_node| on_interpolation(begin_node) }
       end
 
       # @!method on_interpolation(begin_node)

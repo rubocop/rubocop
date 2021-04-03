@@ -46,8 +46,7 @@ module RuboCop
         LIT_MSG = 'Literal `%<lit>s` used in void context.'
         SELF_MSG = '`self` used in void context.'
         DEFINED_MSG = '`%<defined>s` used in void context.'
-        NONMUTATING_MSG = 'Method `#%<method>s` used in void context. ' \
-          'Did you mean `#%<method>s!`?'
+        NONMUTATING_MSG = 'Method `#%<method>s` used in void context. Did you mean `#%<method>s!`?'
 
         BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
         UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
@@ -78,9 +77,7 @@ module RuboCop
         def check_begin(node)
           expressions = *node
           expressions.pop unless in_void_context?(node)
-          expressions.each do |expr|
-            check_expression(expr)
-          end
+          expressions.each { |expr| check_expression(expr) }
         end
 
         def check_expression(expr)
@@ -125,13 +122,9 @@ module RuboCop
         end
 
         def check_nonmutating(node)
-          unless node.send_type? &&
-                 NONMUTATING_METHODS.include?(node.method_name)
-            return
-          end
+          return unless node.send_type? && NONMUTATING_METHODS.include?(node.method_name)
 
-          add_offense(node, message: format(NONMUTATING_MSG,
-                                            method: node.method_name))
+          add_offense(node, message: format(NONMUTATING_MSG, method: node.method_name))
         end
 
         def in_void_context?(node)

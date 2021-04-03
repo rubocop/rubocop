@@ -52,8 +52,7 @@ module RuboCop
           return if node.when_branches.size < min_branches_count
 
           hash_like_case?(node) do |condition_nodes, body_nodes|
-            if nodes_of_same_type?(condition_nodes) &&
-               nodes_of_same_type?(body_nodes)
+            if nodes_of_same_type?(condition_nodes) && nodes_of_same_type?(body_nodes)
               add_offense(node)
             end
           end

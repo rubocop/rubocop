@@ -76,8 +76,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: '\
-                           'true`.'
+        MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: true`.'
         MSG_MISSING = 'Missing frozen string literal comment.'
         MSG_UNNECESSARY = 'Unnecessary frozen string literal comment.'
         MSG_DISABLED = 'Frozen string literal comment must be set to `true`.'
@@ -143,17 +142,13 @@ module RuboCop
         def missing_offense(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
-          add_offense(range, message: MSG_MISSING) do |corrector|
-            insert_comment(corrector)
-          end
+          add_offense(range, message: MSG_MISSING) { |corrector| insert_comment(corrector) }
         end
 
         def missing_true_offense(processed_source)
           range = source_range(processed_source.buffer, 0, 0)
 
-          add_offense(range, message: MSG_MISSING_TRUE) do |corrector|
-            insert_comment(corrector)
-          end
+          add_offense(range, message: MSG_MISSING_TRUE) { |corrector| insert_comment(corrector) }
         end
 
         def unnecessary_comment_offense(processed_source)

@@ -2,17 +2,13 @@
 
 RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
   let(:config) do
-    supported_styles = {
-      'SupportedStyles' => %w[slashes percent_r mixed]
-    }
+    supported_styles = { 'SupportedStyles' => %w[slashes percent_r mixed] }
     RuboCop::Config.new('Style/PercentLiteralDelimiters' =>
                           percent_literal_delimiters_config,
                         'Style/RegexpLiteral' =>
                           cop_config.merge(supported_styles))
   end
-  let(:percent_literal_delimiters_config) do
-    { 'PreferredDelimiters' => { '%r' => '{}' } }
-  end
+  let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '{}' } } }
 
   describe 'when regex contains slashes in interpolation' do
     let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
@@ -35,9 +31,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
   describe 'when PercentLiteralDelimiters is configured with brackets' do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_r' } }
-    let(:percent_literal_delimiters_config) do
-      { 'PreferredDelimiters' => { '%r' => '[]' } }
-    end
+    let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '[]' } } }
 
     it 'respects the configuration when auto-correcting' do
       expect_offense(<<~RUBY)
@@ -53,9 +47,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
   describe 'when PercentLiteralDelimiters is configured with slashes' do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_r' } }
-    let(:percent_literal_delimiters_config) do
-      { 'PreferredDelimiters' => { '%r' => '//' } }
-    end
+    let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '//' } } }
 
     it 'respects the configuration when auto-correcting' do
       expect_offense(<<~'RUBY')

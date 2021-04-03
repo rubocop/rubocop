@@ -72,8 +72,7 @@ module RuboCop
 
       def summarize_worker(worker)
         worker.summary = worker.lines.grep(/\A\d+ examples?, /).first
-        worker.failure_output = worker.output[
-          /^Failures:\n\n(.*)\n^Finished/m, 1]
+        worker.failure_output = worker.output[/^Failures:\n\n(.*)\n^Finished/m, 1]
       end
     end
 

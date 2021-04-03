@@ -10,12 +10,7 @@ module RuboCop
 
       def initialize(name, origin, badges)
         super(
-          format(
-            MSG,
-            name: name,
-            origin: origin,
-            options: badges.to_a.join(' or ')
-          )
+          format(MSG, name: name, origin: origin, options: badges.to_a.join(' or '))
         )
       end
     end
@@ -155,16 +150,13 @@ module RuboCop
       end
 
       def enabled(config, only = [], only_safe: false)
-        select do |cop|
-          only.include?(cop.cop_name) || enabled?(cop, config, only_safe)
-        end
+        select { |cop| only.include?(cop.cop_name) || enabled?(cop, config, only_safe) }
       end
 
       def enabled?(cop, config, only_safe)
         cfg = config.for_cop(cop)
 
-        cop_enabled = cfg.fetch('Enabled') == true ||
-                      enabled_pending_cop?(cfg, config)
+        cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config)
 
         if only_safe
           cop_enabled && cfg.fetch('Safe', true)

@@ -225,9 +225,7 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
   end
 
   context 'require_no_parentheses_except_multiline' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'require_no_parentheses_except_multiline' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'require_no_parentheses_except_multiline' } }
 
     it_behaves_like 'endless methods'
 

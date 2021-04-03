@@ -37,8 +37,7 @@ module RuboCop
         include StatementModifier
         extend AutoCorrector
 
-        MSG = 'Favor modifier `%<keyword>s` usage when ' \
-              'having a single-line body.'
+        MSG = 'Favor modifier `%<keyword>s` usage when having a single-line body.'
 
         def on_while(node)
           return unless single_line_as_modifier?(node)

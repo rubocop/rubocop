@@ -129,8 +129,7 @@ module RuboCop
           args_delimiter = node.arguments.loc.begin # Can be ( | or nil.
 
           check_left_brace(inner, node.loc.begin, args_delimiter)
-          check_right_brace(inner, node.loc.begin, node.loc.end,
-                            node.single_line?)
+          check_right_brace(inner, node.loc.begin, node.loc.end, node.single_line?)
         end
 
         def check_left_brace(inner, left_brace, args_delimiter)
@@ -143,8 +142,7 @@ module RuboCop
 
         def check_right_brace(inner, left_brace, right_brace, single_line)
           if single_line && /\S$/.match?(inner)
-            no_space(right_brace.begin_pos, right_brace.end_pos,
-                     'Space missing inside }.')
+            no_space(right_brace.begin_pos, right_brace.end_pos, 'Space missing inside }.')
           else
             return if multiline_block?(left_brace, right_brace) &&
                       aligned_braces?(left_brace, right_brace)
@@ -174,8 +172,7 @@ module RuboCop
             # We indicate the position after the left brace. Otherwise it's
             # difficult to distinguish between space missing to the left and to
             # the right of the brace in autocorrect.
-            no_space(left_brace.end_pos, left_brace.end_pos + 1,
-                     'Space missing inside {.')
+            no_space(left_brace.end_pos, left_brace.end_pos + 1, 'Space missing inside {.')
           end
         end
 
@@ -188,8 +185,7 @@ module RuboCop
                       'Space between { and | detected.')
             end
           else
-            brace_with_space = range_with_surrounding_space(range: left_brace,
-                                                            side: :right)
+            brace_with_space = range_with_surrounding_space(range: left_brace, side: :right)
             space(brace_with_space.begin_pos + 1, brace_with_space.end_pos,
                   'Space inside { detected.')
           end
@@ -200,8 +196,7 @@ module RuboCop
         end
 
         def space_inside_right_brace(right_brace)
-          brace_with_space = range_with_surrounding_space(range: right_brace,
-                                                          side: :left)
+          brace_with_space = range_with_surrounding_space(range: right_brace, side: :left)
           space(brace_with_space.begin_pos, brace_with_space.end_pos - 1,
                 'Space inside } detected.')
         end

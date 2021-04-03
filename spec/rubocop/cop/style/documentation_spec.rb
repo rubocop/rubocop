@@ -17,8 +17,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
     RUBY
   end
 
-  it 'does not consider comment followed by empty line to be class ' \
-     'documentation' do
+  it 'does not consider comment followed by empty line to be class documentation' do
     expect_offense(<<~RUBY)
       # Copyright 2014
       # Some company
@@ -105,8 +104,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
     RUBY
   end
 
-  it 'accepts non-empty class with annotation comment followed by other ' \
-     'comment' do
+  it 'accepts non-empty class with annotation comment followed by other comment' do
     expect_no_offenses(<<~RUBY)
       # OPTIMIZE: Make this faster.
       # Class comment.

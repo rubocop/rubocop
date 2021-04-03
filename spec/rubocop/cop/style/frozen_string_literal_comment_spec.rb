@@ -2,10 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
   context 'always' do
-    let(:cop_config) do
-      { 'Enabled'       => true,
-        'EnforcedStyle' => 'always' }
-    end
+    let(:cop_config) { { 'Enabled' => true, 'EnforcedStyle' => 'always' } }
 
     it 'accepts an empty source' do
       expect_no_offenses('')
@@ -37,8 +34,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for not having a frozen string literal comment ' \
-       'on the top line' do
+    it 'registers an offense for not having a frozen string literal comment on the top line' do
       expect_offense(<<~RUBY)
         puts 1
         ^ Missing frozen string literal comment.
@@ -50,8 +46,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for not having a frozen string literal comment ' \
-       'under a shebang' do
+    it 'registers an offense for not having a frozen string literal comment under a shebang' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         ^ Missing frozen string literal comment.
@@ -159,8 +154,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense with an empty line between magic comments ' \
-       'and the code' do
+    it 'registers an offense with an empty line between magic comments and the code' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         ^ Missing frozen string literal comment.
@@ -178,8 +172,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a frozen string literal comment below shebang and encoding ' \
-       'comments' do
+    it 'accepts a frozen string literal comment below shebang and encoding comments' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -188,8 +181,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a frozen string literal comment below newline-separated ' \
-       'magic comments' do
+    it 'accepts a frozen string literal comment below newline-separated magic comments' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
 
@@ -200,8 +192,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a disabled frozen string literal comment below shebang and ' \
-       'encoding comments' do
+    it 'accepts a disabled frozen string literal comment below shebang and encoding comments' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -210,8 +201,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a frozen string literal comment below shebang above an ' \
-       'encoding comments' do
+    it 'accepts a frozen string literal comment below shebang above an encoding comments' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
@@ -250,8 +240,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for having a frozen string literal comment ' \
-       'under ruby code' do
+    it 'registers an offense for having a frozen string literal comment under ruby code' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
         ^ Missing frozen string literal comment.
@@ -288,10 +277,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
   end
 
   context 'never' do
-    let(:cop_config) do
-      { 'Enabled'       => true,
-        'EnforcedStyle' => 'never' }
-    end
+    let(:cop_config) { { 'Enabled' => true, 'EnforcedStyle' => 'never' } }
 
     it 'accepts an empty source' do
       expect_no_offenses('')
@@ -301,8 +287,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       expect_no_offenses(' ')
     end
 
-    it 'registers an offense for a frozen string literal comment ' \
-      'on the top line' do
+    it 'registers an offense for a frozen string literal comment on the top line' do
       expect_offense(<<~RUBY)
         # frozen_string_literal: true
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -314,8 +299,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal comment ' \
-      'on the top line' do
+    it 'registers an offense for a disabled frozen string literal comment on the top line' do
       expect_offense(<<~RUBY)
         # frozen_string_literal: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
@@ -331,16 +315,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       expect_no_offenses('puts 1')
     end
 
-    it 'accepts not having not having a frozen string literal comment ' \
-      'under a shebang' do
+    it 'accepts not having not having a frozen string literal comment under a shebang' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         puts 1
       RUBY
     end
 
-    it 'registers an offense for a frozen string literal comment ' \
-      'below a shebang comment' do
+    it 'registers an offense for a frozen string literal comment below a shebang comment' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
@@ -354,8 +336,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal ' \
-      'below a shebang comment' do
+    it 'registers an offense for a disabled frozen string literal below a shebang comment' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
@@ -369,16 +350,14 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'allows not having a frozen string literal comment ' \
-      'under an encoding comment' do
+    it 'allows not having a frozen string literal comment under an encoding comment' do
       expect_no_offenses(<<~RUBY)
         # encoding: utf-8
         puts 1
       RUBY
     end
 
-    it 'registers an offense for a frozen string literal comment below ' \
-      'an encoding comment' do
+    it 'registers an offense for a frozen string literal comment below an encoding comment' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: true
@@ -392,8 +371,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal below ' \
-      'an encoding comment' do
+    it 'registers an offense for a disabled frozen string literal below an encoding comment' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: false
@@ -484,8 +462,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for having a frozen string literal comment ' \
-       'after other comments' do
+    it 'registers an offense for having a frozen string literal comment after other comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -516,10 +493,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
   end
 
   context 'always_true' do
-    let(:cop_config) do
-      { 'Enabled'       => true,
-        'EnforcedStyle' => 'always_true' }
-    end
+    let(:cop_config) { { 'Enabled' => true, 'EnforcedStyle' => 'always_true' } }
 
     it 'accepts an empty source' do
       expect_no_offenses('')
@@ -536,8 +510,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal on the top ' \
-       'line' do
+    it 'registers an offense for a disabled frozen string literal on the top line' do
       expect_offense(<<~RUBY)
         # frozen_string_literal: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
@@ -563,8 +536,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for not having a frozen string literal comment ' \
-       'on the top line' do
+    it 'registers an offense for not having a frozen string literal comment on the top line' do
       expect_offense(<<~RUBY)
         puts 1
         ^ Missing magic comment `# frozen_string_literal: true`.
@@ -590,8 +562,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal above ' \
-       'an empty line' do
+    it 'registers an offense for a disabled frozen string literal above an empty line' do
       expect_offense(<<~RUBY)
         # frozen_string_literal: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
@@ -643,8 +614,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal below ' \
-       'a shebang comment' do
+    it 'registers an offense for a disabled frozen string literal below a shebang comment' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
@@ -697,8 +667,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal ' \
-       'below an encoding comment' do
+    it 'registers an offense for a disabled frozen string literal below an encoding comment' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: false
@@ -745,8 +714,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a frozen string literal comment below shebang and encoding ' \
-       'comments' do
+    it 'accepts a frozen string literal comment below shebang and encoding comments' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -773,8 +741,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for arbitrary tokens below ' \
-       'shebang and encoding comments' do
+    it 'registers an offense for arbitrary tokens below shebang and encoding comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -791,8 +758,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a frozen string literal comment below shebang above an ' \
-       'encoding comments' do
+    it 'accepts a frozen string literal comment below shebang above an encoding comments' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
@@ -819,8 +785,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for arbitrary tokens below ' \
-       'shebang above an encoding comments' do
+    it 'registers an offense for arbitrary tokens below shebang above an encoding comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: tokens
@@ -933,8 +898,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a frozen string literal comment below an encoding ' \
-       'comment and extra space' do
+    it 'accepts a frozen string literal comment below an encoding comment and extra space' do
       expect_no_offenses(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: true
@@ -961,8 +925,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for arbitrary tokens below ' \
-       'an encoding comment and extra space' do
+    it 'registers an offense for arbitrary tokens below an encoding comment and extra space' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
         # frozen_string_literal: tokens
@@ -992,8 +955,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'accepts a frozen string literal comment ' \
-       'under shebang with no other code' do
+    it 'accepts a frozen string literal comment under shebang with no other code' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
@@ -1011,8 +973,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for a disabled frozen string literal comment ' \
-       'after other comments' do
+    it 'registers an offense for a disabled frozen string literal comment after other comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -1033,8 +994,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for having a frozen string literal comment ' \
-       'under ruby code' do
+    it 'registers an offense for having a frozen string literal comment under ruby code' do
       expect_offense(<<~RUBY)
         # encoding: utf-8
         ^ Missing magic comment `# frozen_string_literal: true`.
@@ -1069,8 +1029,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
 
-    it 'registers an offense for arbitrary tokens ' \
-       'under shebang with no other code' do
+    it 'registers an offense for arbitrary tokens under shebang with no other code' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: tokens

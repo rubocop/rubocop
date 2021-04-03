@@ -59,8 +59,7 @@ module RuboCop
             contains_multiple_levels_of_exceptions?(group)
           end
 
-          return if !rescue_group_rescues_multiple_levels &&
-                    sorted?(rescued_groups)
+          return if !rescue_group_rescues_multiple_levels && sorted?(rescued_groups)
 
           add_offense(offense_range(rescues))
         end
@@ -74,18 +73,14 @@ module RuboCop
         end
 
         def rescued_groups_for(rescues)
-          rescues.map do |group|
-            evaluate_exceptions(group)
-          end
+          rescues.map { |group| evaluate_exceptions(group) }
         end
 
         def contains_multiple_levels_of_exceptions?(group)
           # Always treat `Exception` as the highest level exception.
           return true if group.size > 1 && group.include?(Exception)
 
-          group.combination(2).any? do |a, b|
-            compare_exceptions(a, b)
-          end
+          group.combination(2).any? { |a, b| compare_exceptions(a, b) }
         end
 
         def compare_exceptions(exception, other_exception)

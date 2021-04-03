@@ -77,9 +77,7 @@ module RuboCop
     end
 
     def hidden_dir?(path)
-      File.dirname(path).split(File::SEPARATOR).any? do |dir|
-        dir.start_with?('.')
-      end
+      File.dirname(path).split(File::SEPARATOR).any? { |dir| dir.start_with?('.') }
     end
   end
 end

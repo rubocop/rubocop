@@ -48,9 +48,7 @@ module RuboCop
         end
 
         def after_leaving_scope(scope, _variable_table)
-          scope.variables.each_value do |variable|
-            check_variable(variable)
-          end
+          scope.variables.each_value { |variable| check_variable(variable) }
         end
 
         def check_variable(variable)

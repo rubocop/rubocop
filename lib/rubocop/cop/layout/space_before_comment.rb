@@ -25,9 +25,7 @@ module RuboCop
 
             range = token2.pos
 
-            add_offense(range) do |corrector|
-              corrector.insert_before(range, ' ')
-            end
+            add_offense(range) { |corrector| corrector.insert_before(range, ' ') }
           end
         end
       end

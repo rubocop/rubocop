@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/EndAlignment' => end_alignment_config)
-  end
-  let(:end_alignment_config) do
-    { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }
-  end
+  let(:config) { RuboCop::Config.new('Layout/EndAlignment' => end_alignment_config) }
+  let(:end_alignment_config) { { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' } }
 
   it 'accepts a ternary if' do
     expect_no_offenses('cond ? func1 : func2')
@@ -51,8 +47,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
       RUBY
     end
 
-    it 'accepts indentation after else when if is on new line after ' \
-       'assignment' do
+    it 'accepts indentation after else when if is on new line after assignment' do
       expect_no_offenses(<<~RUBY)
         Rails.application.config.ideal_postcodes_key =
           if Rails.env.production? || Rails.env.staging?

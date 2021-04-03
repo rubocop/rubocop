@@ -67,8 +67,7 @@ module RuboCop
 
         def starts_with_hex_or_colon?(str)
           first_char = str[0].ord
-          (48..58).cover?(first_char) || (65..70).cover?(first_char) ||
-            (97..102).cover?(first_char)
+          (48..58).cover?(first_char) || (65..70).cover?(first_char) || (97..102).cover?(first_char)
         end
       end
     end

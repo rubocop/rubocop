@@ -22,8 +22,7 @@ module RuboCop
       class SafeNavigationWithEmpty < Base
         extend AutoCorrector
 
-        MSG = 'Avoid calling `empty?` with the safe navigation operator ' \
-          'in conditionals.'
+        MSG = 'Avoid calling `empty?` with the safe navigation operator in conditionals.'
 
         # @!method safe_navigation_empty_in_conditional?(node)
         def_node_matcher :safe_navigation_empty_in_conditional?, <<~PATTERN

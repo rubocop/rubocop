@@ -59,8 +59,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects hash arg ' \
-    'without a line break before the first pair' do
+  it 'registers an offense and corrects hash arg without a line break before the first pair' do
     expect_offense(<<~RUBY)
       something(bar: 1,
                 ^^^^^^ Add a line break before the first argument of a multi-line method argument list.

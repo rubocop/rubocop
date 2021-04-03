@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Generator do
-  subject(:generator) do
-    described_class.new(cop_identifier, 'your_id', output: stdout)
-  end
+  subject(:generator) { described_class.new(cop_identifier, 'your_id', output: stdout) }
 
   let(:stdout) { StringIO.new }
   let(:cop_identifier) { 'Style/FakeCop' }
@@ -81,14 +79,11 @@ RSpec.describe RuboCop::Cop::Generator do
         end
       RUBY
 
-      expect(File)
-        .to receive(:write)
-        .with('lib/rubocop/cop/style/fake_cop.rb', generated_source)
+      expect(File).to receive(:write).with('lib/rubocop/cop/style/fake_cop.rb', generated_source)
 
       generator.write_source
 
-      expect(stdout.string)
-        .to eq("[create] lib/rubocop/cop/style/fake_cop.rb\n")
+      expect(stdout.string).to eq("[create] lib/rubocop/cop/style/fake_cop.rb\n")
     end
 
     it 'refuses to overwrite existing files' do
@@ -316,16 +311,13 @@ RSpec.describe RuboCop::Cop::Generator do
     include FileHelper
 
     around do |example|
-      new_global = RuboCop::Cop::Registry.new(
-        [RuboCop::Cop::InternalAffairs::NodeDestructuring]
-      )
+      new_global = RuboCop::Cop::Registry.new([RuboCop::Cop::InternalAffairs::NodeDestructuring])
       RuboCop::Cop::Registry.with_temporary_global(new_global) { example.run }
     end
 
     let(:config) do
       config = RuboCop::ConfigStore.new
-      path = File.join(RuboCop::ConfigLoader::RUBOCOP_HOME,
-                       RuboCop::ConfigLoader::DOTFILE)
+      path = File.join(RuboCop::ConfigLoader::RUBOCOP_HOME, RuboCop::ConfigLoader::DOTFILE)
       config.options_config = path
       config
     end

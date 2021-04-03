@@ -90,8 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::AssignmentIndentation, :config do
     end
   end
 
-  it 'registers an offense for incorrectly indented rhs ' \
-     'when multiple assignment' do
+  it 'registers an offense for incorrectly indented rhs when multiple assignment' do
     expect_offense(<<~RUBY)
       foo = bar =
       baz = ''

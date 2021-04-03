@@ -33,8 +33,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Do not use trailing `_`s in parallel assignment. ' \
-              'Prefer `%<code>s`.'
+        MSG = 'Do not use trailing `_`s in parallel assignment. Prefer `%<code>s`.'
         UNDERSCORE = '_'
         DISALLOW = %i[lvasgn splat].freeze
         private_constant :DISALLOW
@@ -91,8 +90,7 @@ module RuboCop
         end
 
         def allow_named_underscore_variables
-          @allow_named_underscore_variables ||=
-            cop_config['AllowNamedUnderscoreVariables']
+          @allow_named_underscore_variables ||= cop_config['AllowNamedUnderscoreVariables']
         end
 
         def unneeded_ranges(node)
@@ -121,8 +119,7 @@ module RuboCop
 
           return range_for_parentheses(first_offense, mlhs_node) if Util.parentheses?(mlhs_node)
 
-          range_between(first_offense.source_range.begin_pos,
-                        node.loc.operator.begin_pos)
+          range_between(first_offense.source_range.begin_pos, node.loc.operator.begin_pos)
         end
 
         def children_offenses(variables)
@@ -147,10 +144,7 @@ module RuboCop
         end
 
         def range_for_parentheses(offense, left)
-          range_between(
-            offense.source_range.begin_pos - 1,
-            left.loc.expression.end_pos - 1
-          )
+          range_between(offense.source_range.begin_pos - 1, left.loc.expression.end_pos - 1)
         end
       end
     end

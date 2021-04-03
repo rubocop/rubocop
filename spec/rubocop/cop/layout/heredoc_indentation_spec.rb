@@ -2,16 +2,11 @@
 
 RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
   let(:allow_heredoc) { true }
-  let(:other_cops) do
-    {
-      'Layout/LineLength' => { 'Max' => 5, 'AllowHeredoc' => allow_heredoc }
-    }
-  end
+  let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 5, 'AllowHeredoc' => allow_heredoc } } }
 
   shared_examples 'all heredoc type' do |quote|
     context "quoted by #{quote}" do
-      it 'does not register an offense when not indented but with ' \
-         'whitespace, with `-`' do
+      it 'does not register an offense when not indented but with whitespace, with `-`' do
         expect_no_offenses(<<-RUBY)
           def foo
             <<-#{quote}RUBY2#{quote}
@@ -256,7 +251,5 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
     end
   end
 
-  [nil, "'", '"', '`'].each do |quote|
-    include_examples 'all heredoc type', quote
-  end
+  [nil, "'", '"', '`'].each { |quote| include_examples 'all heredoc type', quote }
 end

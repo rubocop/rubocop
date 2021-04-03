@@ -26,9 +26,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     context 'as RHS of assignment' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'require_parentheses' }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 
       context '`Layout/BeginEndAlignment` cop is not enabled' do
         let(:other_cops) do

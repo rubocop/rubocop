@@ -107,8 +107,7 @@ module RuboCop
           current_token = tokens.reverse.find(&:left_ref_bracket?)
           previous_token = previous_token(current_token)
 
-          if node.method?(:[]=) ||
-             previous_token && !previous_token.right_bracket?
+          if node.method?(:[]=) || previous_token && !previous_token.right_bracket?
             tokens.find(&:left_ref_bracket?)
           else
             current_token

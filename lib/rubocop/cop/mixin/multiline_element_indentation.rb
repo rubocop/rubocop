@@ -28,8 +28,7 @@ module RuboCop
         expected_column = base_column(left_brace, left_parenthesis) +
                           configured_indentation_width + offset
         @column_delta = expected_column - actual_column
-        styles =
-          detected_styles(actual_column, offset, left_parenthesis, left_brace)
+        styles = detected_styles(actual_column, offset, left_parenthesis, left_brace)
 
         if @column_delta.zero?
           check_expected_style(styles)

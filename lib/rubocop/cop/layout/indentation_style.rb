@@ -46,9 +46,7 @@ module RuboCop
             next unless (range = find_offence(line, lineno))
             next if in_string_literal?(str_ranges, range)
 
-            add_offense(range) do |corrector|
-              autocorrect(corrector, range)
-            end
+            add_offense(range) { |corrector| autocorrect(corrector, range) }
           end
         end
 

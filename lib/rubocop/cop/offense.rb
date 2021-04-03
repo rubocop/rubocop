@@ -7,8 +7,7 @@ module RuboCop
       include Comparable
 
       # @api private
-      COMPARISON_ATTRIBUTES = %i[line column cop_name
-                                 message severity].freeze
+      COMPARISON_ATTRIBUTES = %i[line column cop_name message severity].freeze
 
       # @api public
       #
@@ -141,9 +140,7 @@ module RuboCop
       # @return [Parser::Source::Range]
       #   the range of the code that is highlighted
       def highlighted_area
-        Parser::Source::Range.new(source_line,
-                                  column,
-                                  column + column_length)
+        Parser::Source::Range.new(source_line, column, column + column_length)
       end
 
       # @api private
@@ -220,9 +217,7 @@ module RuboCop
       alias eql? ==
 
       def hash
-        COMPARISON_ATTRIBUTES.reduce(0) do |hash, attribute|
-          hash ^ public_send(attribute).hash
-        end
+        COMPARISON_ATTRIBUTES.reduce(0) { |hash, attribute| hash ^ public_send(attribute).hash }
       end
 
       # @api public

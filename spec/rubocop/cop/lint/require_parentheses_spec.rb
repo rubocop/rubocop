@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
-  it 'registers an offense for missing parentheses around expression with ' \
-     '&& operator' do
+  it 'registers an offense for missing parentheses around expression with && operator' do
     expect_offense(<<~RUBY)
       if day.is? 'monday' && month == :jan
          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
@@ -11,16 +10,14 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
     RUBY
   end
 
-  it 'registers an offense for missing parentheses around expression with ' \
-     '|| operator' do
+  it 'registers an offense for missing parentheses around expression with || operator' do
     expect_offense(<<~RUBY)
       day_is? 'tuesday' || true
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
     RUBY
   end
 
-  it 'registers an offense for missing parentheses around expression in ' \
-     'ternary' do
+  it 'registers an offense for missing parentheses around expression in ternary' do
     expect_offense(<<~RUBY)
       wd.include? 'tuesday' && true == true ? a : b
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
@@ -28,8 +25,7 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
   end
 
   context 'when using safe navigation operator' do
-    it 'registers an offense for missing parentheses around expression with ' \
-       '&& operator' do
+    it 'registers an offense for missing parentheses around expression with && operator' do
       expect_offense(<<~RUBY)
         if day&.is? 'monday' && month == :jan
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.

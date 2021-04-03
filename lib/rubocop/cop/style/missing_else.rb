@@ -98,10 +98,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = '`%<type>s` condition requires an `else`-clause.'
-        MSG_NIL = '`%<type>s` condition requires an `else`-clause with ' \
-                  '`nil` in it.'
-        MSG_EMPTY = '`%<type>s` condition requires an empty ' \
-                    '`else`-clause.'
+        MSG_NIL = '`%<type>s` condition requires an `else`-clause with `nil` in it.'
+        MSG_EMPTY = '`%<type>s` condition requires an empty `else`-clause.'
 
         def on_normal_if_unless(node)
           return if case_style?

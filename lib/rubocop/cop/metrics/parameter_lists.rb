@@ -54,8 +54,7 @@ module RuboCop
         exclude_limit 'Max'
         exclude_limit 'MaxOptionalParameters'
 
-        MSG = 'Avoid parameter lists longer than %<max>d parameters. ' \
-              '[%<count>d/%<max>d]'
+        MSG = 'Avoid parameter lists longer than %<max>d parameters. [%<count>d/%<max>d]'
         OPTIONAL_PARAMETERS_MSG = 'Method has too many optional parameters. [%<count>d/%<max>d]'
 
         NAMED_KEYWORD_TYPES = %i[kwoptarg kwarg].freeze
@@ -71,9 +70,7 @@ module RuboCop
             count: optargs.count
           )
 
-          add_offense(node, message: message) do
-            self.max_optional_parameters = optargs.count
-          end
+          add_offense(node, message: message) { self.max_optional_parameters = optargs.count }
         end
         alias on_defs on_def
 

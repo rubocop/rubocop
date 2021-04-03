@@ -32,8 +32,7 @@ module RuboCop
         ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
         RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
-        ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method
-                                          private_class_method].freeze
+        ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method private_class_method].freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)
@@ -118,8 +117,7 @@ module RuboCop
         def alignment_node(node)
           ancestor_node = ancestor_node(node)
 
-          return ancestor_node if ancestor_node.nil? ||
-                                  ancestor_node.kwbegin_type?
+          return ancestor_node if ancestor_node.nil? || ancestor_node.kwbegin_type?
 
           assignment_node = assignment_node(ancestor_node)
           return assignment_node if same_line?(ancestor_node, assignment_node)
@@ -173,8 +171,7 @@ module RuboCop
         end
 
         def access_modifier?(node)
-          return true if node.respond_to?(:access_modifier?) &&
-                         node.access_modifier?
+          return true if node.respond_to?(:access_modifier?) && node.access_modifier?
 
           return true if node.respond_to?(:method_name) &&
                          ALTERNATIVE_ACCESS_MODIFIERS.include?(node.method_name)

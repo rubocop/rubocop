@@ -107,9 +107,7 @@ module RuboCop
           begin_pos = forwarding_method.source_range.begin_pos
           end_pos = forwarding_method.source_range.end_pos
 
-          lvars.all? do |lvar|
-            lvar.source_range.begin_pos.between?(begin_pos, end_pos)
-          end
+          lvars.all? { |lvar| lvar.source_range.begin_pos.between?(begin_pos, end_pos) }
         end
 
         def register_offense_to_forwarding_method_arguments(forwarding_method)

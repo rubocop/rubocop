@@ -46,8 +46,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
       RUBY
     end
 
-    it 'does not register an offense when the disable cop is re-enabled ' \
-       'within the limit' do
+    it 'does not register an offense when the disable cop is re-enabled within the limit' do
       expect_no_offenses(<<~RUBY)
         # rubocop:disable Layout/SpaceAroundOperators
         x =   0

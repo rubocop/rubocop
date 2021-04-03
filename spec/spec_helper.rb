@@ -68,9 +68,7 @@ RSpec.configure do |config|
     # need to modify registry (e.g. with `stub_cop_class`).
   end
 
-  config.after(:suite) do
-    RuboCop::Cop::Registry.reset!
-  end
+  config.after(:suite) { RuboCop::Cop::Registry.reset! }
 
   if %w[ruby-head-ascii_spec ruby-head-spec].include? ENV['CIRCLE_STAGE']
     config.filter_run_excluding broken_on: :ruby_head

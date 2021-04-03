@@ -193,8 +193,7 @@ module RuboCop
 
           last_argument = node.last_argument
 
-          return unless last_argument.hash_type? &&
-                        ignore_hash_argument?(last_argument)
+          return unless last_argument.hash_type? && ignore_hash_argument?(last_argument)
 
           ignore_node(last_argument)
         end
@@ -282,13 +281,11 @@ module RuboCop
         end
 
         def alignment_for_hash_rockets
-          @alignment_for_hash_rockets ||=
-            new_alignment('EnforcedHashRocketStyle')
+          @alignment_for_hash_rockets ||= new_alignment('EnforcedHashRocketStyle')
         end
 
         def alignment_for_colons
-          @alignment_for_colons ||=
-            new_alignment('EnforcedColonStyle')
+          @alignment_for_colons ||= new_alignment('EnforcedColonStyle')
         end
 
         def correct_node(corrector, node, delta)

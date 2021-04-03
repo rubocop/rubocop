@@ -36,11 +36,7 @@ module RuboCop
         # @param [RuboCop::AST::Node] node
         # @return [Boolean]
         def derived_from_braceless_interpolation?(node)
-          %i[
-            dstr
-            regexp
-            xstr
-          ].include?(node.parent&.type)
+          %i[dstr regexp xstr].include?(node.parent&.type)
         end
 
         # @private
@@ -95,10 +91,7 @@ module RuboCop
 
           add_offense(
             node,
-            message: format_message(
-              node: node,
-              preferred_expression: preferred_expression
-            )
+            message: format_message(node: node, preferred_expression: preferred_expression)
           ) do |corrector|
             if derived_from_braceless_interpolation?(node)
               preferred_expression = "{#{preferred_expression}}"

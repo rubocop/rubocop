@@ -165,8 +165,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it 'accepts missing blank line when specifying a superclass ' \
-         'that breaks the line' do
+      it 'accepts missing blank line when specifying a superclass that breaks the line' do
         expect_no_offenses(<<~RUBY)
           class Foo <
                 Bar
@@ -178,8 +177,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it 'accepts missing blank line when specifying `self` ' \
-         'that breaks the line' do
+      it 'accepts missing blank line when specifying `self` that breaks the line' do
         expect_no_offenses(<<~RUBY)
           class <<
                 self
@@ -213,8 +211,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it 'accepts missing blank line when at the beginning of file' \
-         'and preceded by a comment' do
+      it 'accepts missing blank line when at the beginning of fileand preceded by a comment' do
         expect_no_offenses(<<~RUBY)
           # comment
           #{access_modifier}
@@ -291,8 +288,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it 'accepts missing blank line when at the end of specifying ' \
-         'a superclass' do
+      it 'accepts missing blank line when at the end of specifying a superclass' do
         expect_no_offenses(<<~RUBY)
           class Test < Base
             def test; end
@@ -302,8 +298,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it 'accepts missing blank line when at the end of specifying ' \
-         '`self`' do
+      it 'accepts missing blank line when at the end of specifying `self`' do
         expect_no_offenses(<<~RUBY)
           class << self
             def test; end

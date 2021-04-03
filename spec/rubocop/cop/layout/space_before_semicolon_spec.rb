@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/SpaceInsideBlockBraces' => brace_config)
-  end
+  let(:config) { RuboCop::Config.new('Layout/SpaceInsideBlockBraces' => brace_config) }
   let(:brace_config) { {} }
 
   it 'registers an offense and corrects space before semicolon' do
@@ -21,8 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon, :config do
     expect_no_offenses('x = 1; y = 2')
   end
 
-  it 'registers an offense and corrects more than one space ' \
-    'before a semicolon' do
+  it 'registers an offense and corrects more than one space before a semicolon' do
     expect_offense(<<~RUBY)
       x = 1  ; y = 2
            ^^ Space found before semicolon.
@@ -41,9 +38,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon, :config do
     end
 
     context 'when EnforcedStyle for SpaceInsideBlockBraces is space' do
-      let(:brace_config) do
-        { 'Enabled' => true, 'EnforcedStyle' => 'space' }
-      end
+      let(:brace_config) { { 'Enabled' => true, 'EnforcedStyle' => 'space' } }
 
       it_behaves_like 'common behavior'
 
@@ -53,14 +48,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon, :config do
     end
 
     context 'when EnforcedStyle for SpaceInsideBlockBraces is no_space' do
-      let(:brace_config) do
-        { 'Enabled' => true, 'EnforcedStyle' => 'no_space' }
-      end
+      let(:brace_config) { { 'Enabled' => true, 'EnforcedStyle' => 'no_space' } }
 
       it_behaves_like 'common behavior'
 
-      it 'registers an offense and corrects a space between an opening brace ' \
-        'and a semicolon' do
+      it 'registers an offense and corrects a space between an opening brace and a semicolon' do
         expect_offense(<<~RUBY)
           test { ; }
                 ^ Space found before semicolon.

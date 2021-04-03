@@ -31,9 +31,7 @@ module RuboCop
         max = last_by_line(children)
         return if line == max.last_line
 
-        add_offense(min) do |corrector|
-          EmptyLineCorrector.insert_before(corrector, min)
-        end
+        add_offense(min) { |corrector| EmptyLineCorrector.insert_before(corrector, min) }
       end
 
       def first_by_line(nodes)

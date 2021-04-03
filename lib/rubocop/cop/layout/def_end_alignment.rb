@@ -51,12 +51,8 @@ module RuboCop
           method_def = node.each_descendant(:def, :defs).first
           expr = node.source_range
 
-          line_start = range_between(expr.begin_pos,
-                                     method_def.loc.keyword.end_pos)
-          align_with = {
-            def: method_def.loc.keyword,
-            start_of_line: line_start
-          }
+          line_start = range_between(expr.begin_pos, method_def.loc.keyword.end_pos)
+          align_with = { def: method_def.loc.keyword, start_of_line: line_start }
 
           check_end_kw_alignment(method_def, align_with)
           ignore_node(method_def) # Don't check the same `end` again.

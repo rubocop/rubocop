@@ -48,8 +48,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       RUBY
     end
 
-    it 'injects a `require_relative` statement ' \
-       'on the right line in the root file' do
+    it 'injects a `require_relative` statement on the right line in the root file' do
       generated_source = <<~RUBY
         # frozen_string_literal: true
 
@@ -111,8 +110,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       RUBY
     end
 
-    it 'injects a `require_relative` statement ' \
-       'on the end of style department' do
+    it 'injects a `require_relative` statement on the end of style department' do
       generated_source = <<~RUBY
         # frozen_string_literal: true
 
@@ -172,9 +170,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       require_relative 'rubocop/cop/team'
     RUBY
 
-    before do
-      File.write(root_file_path, source)
-    end
+    before { File.write(root_file_path, source) }
 
     it 'does not write to any file' do
       injector.inject
@@ -211,9 +207,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       require_relative 'rubocop/cop/team'
     RUBY
 
-    before do
-      File.write(root_file_path, source)
-    end
+    before { File.write(root_file_path, source) }
 
     it 'inserts a `require_relative` statement to the bottom of the file' do
       generated_source = <<~RUBY

@@ -43,9 +43,7 @@ module RuboCop
           end
 
           def calculate
-            visit_depth_last(@node) do |child|
-              calculate_node(child)
-            end
+            visit_depth_last(@node) { |child| calculate_node(child) }
 
             [
               Math.sqrt(@assignment**2 + @branch**2 + @condition**2).round(2),
@@ -68,9 +66,7 @@ module RuboCop
           end
 
           def else_branch?(node)
-            %i[case if].include?(node.type) &&
-              node.else? &&
-              node.loc.else.is?('else')
+            %i[case if].include?(node.type) && node.else? && node.loc.else.is?('else')
           end
 
           private

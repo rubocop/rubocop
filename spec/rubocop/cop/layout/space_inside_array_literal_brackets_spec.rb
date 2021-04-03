@@ -33,8 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects empty brackets ' \
-      'with multiple spaces inside' do
+    it 'registers an offense and corrects empty brackets with multiple spaces inside' do
       expect_offense(<<~RUBY)
         a = [     ]
             ^^^^^^^ #{no_space_in_empty_message}
@@ -65,8 +64,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses('a = [ ]')
     end
 
-    it 'registers an offense and corrects empty brackets ' \
-      'with no space inside' do
+    it 'registers an offense and corrects empty brackets with no space inside' do
       expect_offense(<<~RUBY)
         a = []
             ^^ #{one_space_message}
@@ -77,8 +75,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects empty brackets ' \
-      'with more than one space inside' do
+    it 'registers an offense and corrects empty brackets with more than one space inside' do
       expect_offense(<<~RUBY)
         a = [      ]
             ^^^^^^^^ #{one_space_message}
@@ -139,8 +136,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'does not register offense when bottom bracket gets its ' \
-       'own line & has trailing method' do
+    it 'does not register offense when bottom bracket gets its own line & has trailing method' do
       expect_no_offenses(<<~RUBY)
         a = [
           1, 2, nil
@@ -148,8 +144,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'does not register offense when bottom bracket gets its ' \
-       'own line indented with tabs' do
+    it 'does not register offense when bottom bracket gets its own line indented with tabs' do
       expect_no_offenses(<<~RUBY)
         a =
         \t[
@@ -200,8 +195,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses('subject.[](0)')
     end
 
-    it 'registers an offense and corrects array brackets ' \
-      'with leading whitespace' do
+    it 'registers an offense and corrects array brackets with leading whitespace' do
       expect_offense(<<~RUBY)
         [ 2, 3, 4]
          ^ #{no_space_message}
@@ -212,8 +206,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects array brackets ' \
-      'with trailing whitespace' do
+    it 'registers an offense and corrects array brackets with trailing whitespace' do
       expect_offense(<<~RUBY)
         [b, c, d   ]
                 ^^^ #{no_space_message}
@@ -250,8 +243,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects multiline array on end bracket' \
-       'with trailing method' do
+    it 'registers an offense and corrects multiline array on end bracketwith trailing method' do
       expect_offense(<<~RUBY)
         [:good,
          :bad  ].compact
@@ -348,8 +340,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'does not register offense when bottom bracket gets its ' \
-       'own line & has trailing method' do
+    it 'does not register offense when bottom bracket gets its own line & has trailing method' do
       expect_no_offenses(<<~RUBY)
         a = [
           1, 2, nil
@@ -383,8 +374,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses('subject.[](0)')
     end
 
-    it 'registers an offense and corrects array brackets ' \
-      'with no leading whitespace' do
+    it 'registers an offense and corrects array brackets with no leading whitespace' do
       expect_offense(<<~RUBY)
         [2, 3, 4 ]
         ^ #{use_space_message}
@@ -395,8 +385,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects array brackets ' \
-      'with no trailing whitespace' do
+    it 'registers an offense and corrects array brackets with no trailing whitespace' do
       expect_offense(<<~RUBY)
         [ b, c, d]
                  ^ #{use_space_message}
@@ -434,8 +423,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects multiline array on end bracket' \
-       'with trailing method' do
+    it 'registers an offense and corrects multiline array on end bracketwith trailing method' do
       expect_offense(<<~RUBY)
         [ :good,
           :bad].compact
@@ -582,8 +570,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       end
     end
 
-    it 'registers an offense and corrects 2-dimensional array ' \
-      'with extra spaces' do
+    it 'registers an offense and corrects 2-dimensional array with extra spaces' do
       expect_offense(<<~RUBY)
         [ [ a, b ], [ 1, 7 ] ]
                             ^ #{no_space_message}
@@ -595,8 +582,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects 3-dimensional array ' \
-      'with extra spaces' do
+    it 'registers an offense and corrects 3-dimensional array with extra spaces' do
       expect_offense(<<~RUBY)
         [ [a, b ], [foo, [bar, baz] ] ]
                                      ^ #{no_space_message}

@@ -20,18 +20,13 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
 
     let(:source) { ('aa'..'az').to_a.join($RS) }
 
-    let(:location) do
-      source_range(0...1)
-    end
+    let(:location) { source_range(0...1) }
 
-    before do
-      formatter.file_finished(file, offenses)
-    end
+    before { formatter.file_finished(file, offenses) }
 
     context 'when offenses are detected' do
       it 'reports offenses as errors' do
-        expect(output.string)
-          .to include("::error file=#{file},line=1,col=1::This is a message.")
+        expect(output.string).to include("::error file=#{file},line=1,col=1::This is a message.")
       end
     end
 
@@ -47,8 +42,7 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
       let(:message) { "All occurrences of %, \r and \n must be escaped" }
 
       it 'escapes message' do
-        expect(output.string)
-          .to include('::All occurrences of %25, %0D and %0A must be escaped')
+        expect(output.string).to include('::All occurrences of %25, %0D and %0A must be escaped')
       end
     end
 
@@ -68,13 +62,11 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
       end
 
       it 'reports offenses above or at fail level as errors' do
-        expect(output.string)
-          .to include("::error file=#{file},line=1,col=1::This is a message.")
+        expect(output.string).to include("::error file=#{file},line=1,col=1::This is a message.")
       end
 
       it 'reports offenses below fail level as warnings' do
-        expect(output.string)
-          .to include("::warning file=#{file},line=1,col=3::This is a warning.")
+        expect(output.string).to include("::warning file=#{file},line=1,col=3::This is a warning.")
       end
     end
   end

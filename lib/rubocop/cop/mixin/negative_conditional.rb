@@ -7,8 +7,7 @@ module RuboCop
     module NegativeConditional
       extend NodePattern::Macros
 
-      MSG = 'Favor `%<inverse>s` over `%<current>s` for ' \
-            'negative conditions.'
+      MSG = 'Favor `%<inverse>s` over `%<current>s` for negative conditions.'
 
       private
 

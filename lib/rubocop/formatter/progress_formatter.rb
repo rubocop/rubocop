@@ -38,9 +38,7 @@ module RuboCop
           output.puts 'Offenses:'
           output.puts
 
-          @offenses_for_files.each do |file, offenses|
-            report_file(file, offenses)
-          end
+          @offenses_for_files.each { |file, offenses| report_file(file, offenses) }
         end
 
         report_summary(inspected_files.size,

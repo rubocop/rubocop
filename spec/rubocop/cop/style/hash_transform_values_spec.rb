@@ -105,8 +105,7 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
     RUBY
   end
 
-  it 'flags _.map {...}.to_h when transform_values could be used ' \
-     'when line break before `to_h`' do
+  it 'flags _.map {...}.to_h when transform_values could be used when line break before `to_h`' do
     expect_offense(<<~RUBY)
       x.map {|k, v| [k, foo(v)]}.
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `map {...}.to_h`.

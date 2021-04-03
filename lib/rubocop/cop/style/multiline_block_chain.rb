@@ -33,8 +33,7 @@ module RuboCop
 
             next unless receiver&.block_type? && receiver&.multiline?
 
-            range = range_between(receiver.loc.end.begin_pos,
-                                  node.send_node.source_range.end_pos)
+            range = range_between(receiver.loc.end.begin_pos, node.send_node.source_range.end_pos)
 
             add_offense(range)
 

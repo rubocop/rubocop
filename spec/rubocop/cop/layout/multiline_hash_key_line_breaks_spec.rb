@@ -22,8 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks, :config do
       end
     end
 
-    it 'registers an offense and corrects when key starts ' \
-      'on same line as another' do
+    it 'registers an offense and corrects when key starts on same line as another' do
       expect_offense(<<~RUBY)
         {
           foo: 1,
@@ -67,8 +66,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks, :config do
       end
     end
 
-    it 'registers an offense and corrects when key starts ' \
-      'on same line as another' do
+    it 'registers an offense and corrects when key starts on same line as another' do
       expect_offense(<<~RUBY)
         {foo: 1,
           baz: 3, bar: "2"}

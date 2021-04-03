@@ -1,19 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
-  let(:cop_config) do
-    { 'PreferredDelimiters' => { 'default' => '[]' } }
-  end
+  let(:cop_config) { { 'PreferredDelimiters' => { 'default' => '[]' } } }
 
   context '`default` override' do
-    let(:cop_config) do
-      {
-        'PreferredDelimiters' => {
-          'default' => '[]',
-          '%'       => '()'
-        }
-      }
-    end
+    let(:cop_config) { { 'PreferredDelimiters' => { 'default' => '[]', '%' => '()' } } }
 
     it 'allows all preferred delimiters to be set with one key' do
       expect_no_offenses('%w[string] + %i[string]')
@@ -155,18 +146,15 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       expect_no_offenses('%w[some words]')
     end
 
-    it 'does not register an offense for preferred delimiters ' \
-       'with a pairing delimiters' do
+    it 'does not register an offense for preferred delimiters with a pairing delimiters' do
       expect_no_offenses('%w(\(some words\))')
     end
 
-    it 'does not register an offense for preferred delimiters ' \
-       'with only a closing delimiter' do
+    it 'does not register an offense for preferred delimiters with only a closing delimiter' do
       expect_no_offenses('%w(only closing delimiter charapter\))')
     end
 
-    it 'does not register an offense for preferred delimiters ' \
-       'with not a pairing delimiter' do
+    it 'does not register an offense for preferred delimiters with not a pairing delimiter' do
       expect_no_offenses('%w|\|not pairirng delimiter|')
     end
 
@@ -271,8 +259,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       expect_no_offenses('%i[some symbols]')
     end
 
-    it 'does not register an offense for non-preferred delimiters ' \
-       'enclosing escaped delimiters' do
+    it 'does not register an offense for non-preferred delimiters enclosing escaped delimiters' do
       expect_no_offenses('%i(\(\) each)')
     end
 

@@ -29,9 +29,7 @@ module RuboCop
           return if opening_line(node) == closing_line(node)
           return if correction_exceeds_max_line_length?(node)
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
         alias on_defs on_def
 

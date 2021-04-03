@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config do
-  it 'registers an offense and corrects for code ' \
-     'that immediately follows accessor' do
+  it 'registers an offense and corrects for code that immediately follows accessor' do
     expect_offense(<<~RUBY)
       attr_accessor :foo
       ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
@@ -18,8 +17,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
-  it 'registers an offense and corrects for code ' \
-     'that immediately follows accessor with comment' do
+  it 'registers an offense and corrects for code that immediately follows accessor with comment' do
     expect_offense(<<~RUBY)
       attr_accessor :foo # comment
       ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
@@ -35,8 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
-  it 'accepts code that separates a attribute accessor from the code ' \
-     'with a newline' do
+  it 'accepts code that separates a attribute accessor from the code with a newline' do
     expect_no_offenses(<<~RUBY)
       attr_accessor :foo
 
@@ -49,8 +46,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     expect_no_offenses('attr_accessor :foo')
   end
 
-  it 'accepts code that separates attribute accessors from the code ' \
-     'with a newline' do
+  it 'accepts code that separates attribute accessors from the code with a newline' do
     expect_no_offenses(<<~RUBY)
       attr_accessor :foo
       attr_reader :bar
@@ -88,9 +84,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
   end
 
   context 'when `AllowAliasSyntax: true`' do
-    let(:cop_config) do
-      { 'AllowAliasSyntax' => true }
-    end
+    let(:cop_config) { { 'AllowAliasSyntax' => true } }
 
     it 'does not register an offense for code that immediately `alias` syntax after accessor' do
       expect_no_offenses(<<~RUBY)
@@ -104,9 +98,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
   end
 
   context 'when `AllowAliasSyntax: false`' do
-    let(:cop_config) do
-      { 'AllowAliasSyntax' => false }
-    end
+    let(:cop_config) { { 'AllowAliasSyntax' => false } }
 
     it 'registers an offense for code that immediately `alias` syntax after accessor' do
       expect_offense(<<~RUBY)
@@ -121,13 +113,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
   end
 
   context 'when `AllowedMethods: private`' do
-    let(:cop_config) do
-      {
-        'AllowedMethods' => [
-          'private'
-        ]
-      }
-    end
+    let(:cop_config) { { 'AllowedMethods' => ['private'] } }
 
     it 'does not register an offense for code that immediately ignored methods after accessor' do
       expect_no_offenses(<<~RUBY)
@@ -141,11 +127,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
   end
 
   context 'when `AllowedMethods: []`' do
-    let(:cop_config) do
-      {
-        'AllowedMethods' => []
-      }
-    end
+    let(:cop_config) { { 'AllowedMethods' => [] } }
 
     it 'registers an offense for code that immediately ignored methods after accessor' do
       expect_offense(<<~RUBY)

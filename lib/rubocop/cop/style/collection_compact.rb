@@ -69,9 +69,7 @@ module RuboCop
           good = good_method_name(method_name)
           message = format(MSG, good: good, bad: range.source)
 
-          add_offense(range, message: message) do |corrector|
-            corrector.replace(range, good)
-          end
+          add_offense(range, message: message) { |corrector| corrector.replace(range, good) }
         end
 
         private

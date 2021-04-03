@@ -50,9 +50,7 @@ module RuboCop
         def on_ensure(node)
           return if node.body
 
-          add_offense(node.loc.keyword) do |corrector|
-            corrector.remove(node.loc.keyword)
-          end
+          add_offense(node.loc.keyword) { |corrector| corrector.remove(node.loc.keyword) }
         end
       end
     end

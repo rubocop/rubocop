@@ -25,8 +25,7 @@ module RuboCop
           next unless space_missing?(token1, token2)
           next if space_required_after?(token1)
 
-          pos_before_punctuation = range_between(token1.end_pos,
-                                                 token2.begin_pos)
+          pos_before_punctuation = range_between(token1.end_pos, token2.begin_pos)
 
           yield token2, pos_before_punctuation
         end

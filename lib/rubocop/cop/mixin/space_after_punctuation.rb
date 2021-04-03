@@ -28,13 +28,11 @@ module RuboCop
       end
 
       def space_missing?(token1, token2)
-        token1.line == token2.line &&
-          token2.column == token1.column + offset
+        token1.line == token2.line && token2.column == token1.column + offset
       end
 
       def space_required_before?(token)
-        !(allowed_type?(token) ||
-          (token.right_curly_brace? && space_forbidden_before_rcurly?))
+        !(allowed_type?(token) || (token.right_curly_brace? && space_forbidden_before_rcurly?))
       end
 
       def allowed_type?(token)

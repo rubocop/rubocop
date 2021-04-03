@@ -464,23 +464,20 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
       RUBY
     end
 
-    it 'does not register an offense if no space before `::`
-      operator with assignment' do
+    it 'does not register an offense if no space before `::` operator with assignment' do
       expect_no_offenses(<<~RUBY)
         klass = ::RuboCop::Cop
       RUBY
     end
 
-    it 'does not register an offense if no space before `::`
-      operator with inheritance' do
+    it 'does not register an offense if no space before `::` operator with inheritance' do
       expect_no_offenses(<<~RUBY)
         class Test <  ::RuboCop::Cop
         end
       RUBY
     end
 
-    it 'does not register an offense if no space with
-      conditionals' do
+    it 'does not register an offense if no space with conditionals' do
       expect_no_offenses(<<~RUBY)
         ::RuboCop::Cop || ::RuboCop
       RUBY

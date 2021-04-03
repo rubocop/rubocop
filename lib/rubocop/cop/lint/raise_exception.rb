@@ -45,8 +45,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          exception?(node, &check(node)) ||
-            exception_new_with_message?(node, &check(node))
+          exception?(node, &check(node)) || exception_new_with_message?(node, &check(node))
         end
 
         private

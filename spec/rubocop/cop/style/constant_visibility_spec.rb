@@ -24,8 +24,7 @@ RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
         RUBY
       end
 
-      it 'registers an offense when there is ' \
-         'no matching visibility declaration' do
+      it 'registers an offense when there is no matching visibility declaration' do
         expect_offense(<<~RUBY)
           class Foo
             include Bar
@@ -99,8 +98,7 @@ RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
     end
   end
 
-  it 'does not register an offense when passing a string to the ' \
-     'visibility declaration' do
+  it 'does not register an offense when passing a string to the visibility declaration' do
     expect_no_offenses(<<~RUBY)
       class Foo
         BAR = 42

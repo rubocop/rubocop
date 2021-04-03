@@ -43,10 +43,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        EXPLODED_MSG = 'Provide an exception class and message ' \
-          'as arguments to `%<method>s`.'
-        COMPACT_MSG = 'Provide an exception object ' \
-          'as an argument to `%<method>s`.'
+        EXPLODED_MSG = 'Provide an exception class and message as arguments to `%<method>s`.'
+        COMPACT_MSG = 'Provide an exception object as an argument to `%<method>s`.'
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
@@ -66,8 +64,7 @@ module RuboCop
         def correction_compact_to_exploded(node)
           exception_node, _new, message_node = *node.first_argument
 
-          arguments =
-            [exception_node, message_node].compact.map(&:source).join(', ')
+          arguments = [exception_node, message_node].compact.map(&:source).join(', ')
 
           if node.parent && requires_parens?(node.parent)
             "#{node.method_name}(#{arguments})"
@@ -142,8 +139,7 @@ module RuboCop
         end
 
         def requires_parens?(parent)
-          parent.and_type? || parent.or_type? ||
-            parent.if_type? && parent.ternary?
+          parent.and_type? || parent.or_type? || parent.if_type? && parent.ternary?
         end
       end
     end

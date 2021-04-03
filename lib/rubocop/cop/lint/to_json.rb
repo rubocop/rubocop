@@ -31,8 +31,7 @@ module RuboCop
       class ToJSON < Base
         extend AutoCorrector
 
-        MSG = '`#to_json` requires an optional argument to be parsable ' \
-          'via JSON.generate(obj).'
+        MSG = '`#to_json` requires an optional argument to be parsable via JSON.generate(obj).'
 
         def on_def(node)
           return unless node.method?(:to_json) && node.arguments.empty?

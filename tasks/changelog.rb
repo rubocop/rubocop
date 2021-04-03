@@ -89,9 +89,7 @@ class Changelog
   end
 
   def and_delete!
-    @entries.each_key do |path|
-      File.delete(path)
-    end
+    @entries.each_key { |path| File.delete(path) }
   end
 
   def merge!
@@ -102,22 +100,11 @@ class Changelog
   def unreleased_content
     entry_map = parse_entries(@entries)
     merged_map = merge_entries(entry_map)
-    merged_map.flat_map do |header, things|
-      [
-        "### #{header}\n",
-        *things,
-        ''
-      ]
-    end.join("\n")
+    merged_map.flat_map { |header, things| ["### #{header}\n", *things, ''] }.join("\n")
   end
 
   def merge_content
-    merged_content = [
-      @header,
-      unreleased_content,
-      @rest.chomp,
-      *new_contributor_lines
-    ].join("\n")
+    merged_content = [@header, unreleased_content, @rest.chomp, *new_contributor_lines].join("\n")
 
     merged_content << EOF
   end
@@ -131,9 +118,7 @@ class Changelog
   end
 
   def self.read_entries
-    entry_paths.to_h do |path|
-      [path, File.read(path)]
-    end
+    entry_paths.to_h { |path| [path, File.read(path)] }
   end
 
   def new_contributor_lines

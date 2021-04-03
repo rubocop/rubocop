@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::EmptyClass, :config do
-  let(:cop_config) do
-    { 'AllowComments' => false }
-  end
+  let(:cop_config) { { 'AllowComments' => false } }
 
   it 'registers an offense for empty class' do
     expect_offense(<<~RUBY)
@@ -68,9 +66,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyClass, :config do
   end
 
   context 'when AllowComments is true' do
-    let(:cop_config) do
-      { 'AllowComments' => true }
-    end
+    let(:cop_config) { { 'AllowComments' => true } }
 
     it 'does not register an offense when empty class contains only comments' do
       expect_no_offenses(<<~RUBY)

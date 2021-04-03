@@ -110,8 +110,7 @@ module RuboCop
           if unexpected_single_quotes?(quote)
             all_children_with_quotes = children.all? { |c| wrong_quotes?(c) }
             register_offense(node) if all_children_with_quotes
-          elsif unexpected_double_quotes?(quote) &&
-                !accept_child_double_quotes?(children)
+          elsif unexpected_double_quotes?(quote) && !accept_child_double_quotes?(children)
             register_offense(node)
           end
         end
@@ -125,9 +124,7 @@ module RuboCop
         end
 
         def accept_child_double_quotes?(nodes)
-          nodes.any? do |n|
-            n.dstr_type? || double_quotes_required?(n.source)
-          end
+          nodes.any? { |n| n.dstr_type? || double_quotes_required?(n.source) }
         end
       end
     end

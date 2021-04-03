@@ -23,14 +23,12 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `\\` instead of `+` or `<<` to concatenate ' \
-              'those strings.'
+        MSG = 'Use `\\` instead of `+` or `<<` to concatenate those strings.'
         CONCAT_TOKEN_TYPES = %i[tPLUS tLSHFT].freeze
         SIMPLE_STRING_TOKEN_TYPE = :tSTRING
         COMPLEX_STRING_BEGIN_TOKEN = :tSTRING_BEG
         COMPLEX_STRING_END_TOKEN = :tSTRING_END
-        HIGH_PRECEDENCE_OP_TOKEN_TYPES = %i[tSTAR2 tPERCENT tDOT
-                                            tLBRACK2].freeze
+        HIGH_PRECEDENCE_OP_TOKEN_TYPES = %i[tSTAR2 tPERCENT tDOT tLBRACK2].freeze
         QUOTE_DELIMITERS = %w[' "].freeze
 
         def self.autocorrect_incompatible_with
@@ -38,9 +36,7 @@ module RuboCop
         end
 
         def on_new_investigation
-          processed_source.tokens.each_index do |index|
-            check_token_set(index)
-          end
+          processed_source.tokens.each_index { |index| check_token_set(index) }
         end
 
         private
@@ -56,9 +52,7 @@ module RuboCop
 
           return unless eligible_next_successor?(next_successor)
 
-          add_offense(operator.pos) do |corrector|
-            autocorrect(corrector, operator.pos)
-          end
+          add_offense(operator.pos) { |corrector| autocorrect(corrector, operator.pos) }
         end
 
         def autocorrect(corrector, operator_range)
@@ -89,8 +83,7 @@ module RuboCop
         end
 
         def eligible_next_successor?(next_successor)
-          !(next_successor &&
-            HIGH_PRECEDENCE_OP_TOKEN_TYPES.include?(next_successor.type))
+          !(next_successor && HIGH_PRECEDENCE_OP_TOKEN_TYPES.include?(next_successor.type))
         end
 
         def eligible_predecessor?(predecessor)

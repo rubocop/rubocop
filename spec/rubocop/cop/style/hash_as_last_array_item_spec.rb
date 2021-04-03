@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
   context 'when EnforcedStyle is braces' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'braces' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'braces' } }
 
     it 'registers an offense and corrects when hash without braces' do
       expect_offense(<<~RUBY)
@@ -43,9 +41,7 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
   end
 
   context 'when EnforcedStyle is no_braces' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'no_braces' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'no_braces' } }
 
     it 'registers an offense and corrects when hash with braces' do
       expect_offense(<<~RUBY)

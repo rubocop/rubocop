@@ -11,9 +11,7 @@ module RuboCop
       FROZEN_STRING_LITERAL_TYPES = %i[str dstr].freeze
 
       def frozen_string_literal_comment_exists?
-        leading_comment_lines.any? do |line|
-          MagicComment.parse(line).valid_literal_value?
-        end
+        leading_comment_lines.any? { |line| MagicComment.parse(line).valid_literal_value? }
       end
 
       private
@@ -34,9 +32,7 @@ module RuboCop
         # And the above `ruby_version >= 3.1` is undecided whether it will be
         # Ruby 3.1, 3.2, 4.0 or others.
         # See https://bugs.ruby-lang.org/issues/8976#note-41 for details.
-        leading_comment_lines.any? do |line|
-          MagicComment.parse(line).frozen_string_literal?
-        end
+        leading_comment_lines.any? { |line| MagicComment.parse(line).frozen_string_literal? }
       end
 
       def frozen_string_literal_specified?
@@ -46,9 +42,7 @@ module RuboCop
       end
 
       def leading_comment_lines
-        first_non_comment_token = processed_source.tokens.find do |token|
-          !token.comment?
-        end
+        first_non_comment_token = processed_source.tokens.find { |token| !token.comment? }
 
         if first_non_comment_token
           # `line` is 1-indexed so we need to subtract 1 to get the array index

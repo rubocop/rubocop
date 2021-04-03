@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
-  let(:cop_config) do
-    { 'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW] }
-  end
+  let(:cop_config) { { 'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW] } }
 
   context 'missing colon' do
     it 'registers an offense and adds colon' do
@@ -111,9 +109,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
   end
 
   context 'when a keyword is not in the configuration' do
-    let(:cop_config) do
-      { 'Keywords' => %w[FIXME OPTIMIZE HACK REVIEW] }
-    end
+    let(:cop_config) { { 'Keywords' => %w[FIXME OPTIMIZE HACK REVIEW] } }
 
     it 'accepts the word without colon' do
       expect_no_offenses('# TODO make better')

@@ -109,8 +109,7 @@ module RuboCop
         extend AutoCorrector
 
         FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'
-        RAISE_MSG = 'Use `raise` instead of `fail` to ' \
-                    'rethrow exceptions.'
+        RAISE_MSG = 'Use `raise` instead of `fail` to rethrow exceptions.'
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
@@ -118,8 +117,7 @@ module RuboCop
         def_node_matcher :kernel_call?, '(send (const {nil? cbase} :Kernel) %1 ...)'
 
         # @!method custom_fail_methods(node)
-        def_node_search :custom_fail_methods,
-                        '{(def :fail ...) (defs _ :fail ...)}'
+        def_node_search :custom_fail_methods, '{(def :fail ...) (defs _ :fail ...)}'
 
         def on_new_investigation
           ast = processed_source.ast
@@ -204,9 +202,7 @@ module RuboCop
         end
 
         def allow(method_name, node)
-          each_command_or_kernel_call(method_name, node) do |send_node|
-            ignore_node(send_node)
-          end
+          each_command_or_kernel_call(method_name, node) { |send_node| ignore_node(send_node) }
         end
 
         def each_command_or_kernel_call(method_name, node)

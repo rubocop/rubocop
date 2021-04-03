@@ -14,10 +14,8 @@ module RuboCop
         PHASE_1 = 'Phase 1 of 2: run Layout/LineLength cop'
         PHASE_2 = 'Phase 2 of 2: run all cops'
 
-        PHASE_1_OVERRIDDEN =
-          '(skipped because the default Layout/LineLength:Max is overridden)'
-        PHASE_1_DISABLED =
-          '(skipped because Layout/LineLength is disabled)'
+        PHASE_1_OVERRIDDEN = '(skipped because the default Layout/LineLength:Max is overridden)'
+        PHASE_1_DISABLED = '(skipped because Layout/LineLength is disabled)'
 
         def run
           add_formatter
@@ -31,9 +29,7 @@ module RuboCop
         def maybe_run_line_length_cop
           if !line_length_enabled?(@config_store.for_pwd)
             skip_line_length_cop(PHASE_1_DISABLED)
-          elsif !same_max_line_length?(
-            @config_store.for_pwd, ConfigLoader.default_configuration
-          )
+          elsif !same_max_line_length?(@config_store.for_pwd, ConfigLoader.default_configuration)
             skip_line_length_cop(PHASE_1_OVERRIDDEN)
           else
             run_line_length_cop
@@ -71,10 +67,7 @@ module RuboCop
           @options.delete(:only)
           @config_store = ConfigStore.new
           # Save the todo configuration of the LineLength cop.
-          IO.read(AUTO_GENERATED_FILE)
-            .lines
-            .drop_while { |line| line.start_with?('#') }
-            .join
+          IO.read(AUTO_GENERATED_FILE).lines.drop_while { |line| line.start_with?('#') }.join
         end
 
         def run_all_cops(line_length_contents)
@@ -82,9 +75,7 @@ module RuboCop
           result = execute_runner
           # This run was made with the current maximum length allowed, so append
           # the saved setting for LineLength.
-          File.open(AUTO_GENERATED_FILE, 'a') do |f|
-            f.write(line_length_contents)
-          end
+          File.open(AUTO_GENERATED_FILE, 'a') { |f| f.write(line_length_contents) }
           result
         end
 
@@ -96,8 +87,7 @@ module RuboCop
         end
 
         def add_formatter
-          @options[:formatters] << [Formatter::DisabledConfigFormatter,
-                                    AUTO_GENERATED_FILE]
+          @options[:formatters] << [Formatter::DisabledConfigFormatter, AUTO_GENERATED_FILE]
         end
 
         def execute_runner

@@ -66,8 +66,7 @@ module RuboCop
 
         def meta_assignment_node
           unless instance_variable_defined?(:@meta_assignment_node)
-            @meta_assignment_node =
-              operator_assignment_node || multiple_assignment_node
+            @meta_assignment_node = operator_assignment_node || multiple_assignment_node
           end
 
           @meta_assignment_node
