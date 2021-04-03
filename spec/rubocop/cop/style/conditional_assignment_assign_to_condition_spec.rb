@@ -637,7 +637,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
 
     variable_types.each do |type, name|
       context "for a #{type} lval" do
-        it "registers an offense for assignment using #{assignment} " + 'in ternary' do
+        it "registers an offense for assignment using #{assignment} in ternary" do
           source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
           expect_offense(<<~RUBY, source: source)
             %{source}
@@ -660,7 +660,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
 
         variable_types.each do |type, name|
           context "for a #{type} lval" do
-            it "registers an offense for assignment using #{assignment} in " + 'if else' do
+            it "registers an offense for assignment using #{assignment} in if else" do
               expect_offense(<<~RUBY)
                 if foo
                 ^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -680,7 +680,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
               RUBY
             end
 
-            it "registers an offense for assignment using #{assignment} in " + ' case when' do
+            it "registers an offense for assignment using #{assignment} in  case when" do
               expect_offense(<<~RUBY)
                 case foo
                 ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.

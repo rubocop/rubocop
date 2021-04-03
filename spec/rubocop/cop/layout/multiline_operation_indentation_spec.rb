@@ -381,7 +381,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
       %w[a while],
       %w[an until]
     ].each do |article, keyword|
-      it "registers an offense for misaligned operands in #{keyword} " + 'condition' do
+      it "registers an offense for misaligned operands in #{keyword} condition" do
         expect_offense(<<~RUBY)
           #{keyword} a or
               b
@@ -521,7 +521,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
         RUBY
       end
 
-      it "registers an offense for a 2 space indentation of #{keyword} " + 'condition' do
+      it "registers an offense for a 2 space indentation of #{keyword} condition" do
         expect_offense(<<~RUBY)
           #{keyword} receiver.nil? &&
             !args.empty? &&
@@ -657,7 +657,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
           RUBY
         end
 
-        it "registers an offense for a 4 space indentation of #{keyword} " + 'condition' do
+        it "registers an offense for a 4 space indentation of #{keyword} condition" do
           expect_offense(<<~RUBY)
             #{keyword} receiver.nil? &&
                 !args.empty? &&

@@ -301,7 +301,7 @@ module RuboCop
 
       return if incompatible_options.size <= 1
 
-      raise OptionArgumentError, 'Incompatible cli options: ' + incompatible_options.inspect.to_s
+      raise OptionArgumentError, "Incompatible cli options: #{incompatible_options.inspect}"
     end
     # rubocop:enable Metrics/AbcSize
 

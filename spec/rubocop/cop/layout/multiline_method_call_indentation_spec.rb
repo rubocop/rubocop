@@ -914,7 +914,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         RUBY
       end
 
-      it "registers an offense for a 2 space indentation of #{keyword} " + 'condition' do
+      it "registers an offense for a 2 space indentation of #{keyword} condition" do
         expect_offense(<<~RUBY)
           #{keyword} receiver
             .nil? &&
@@ -1081,7 +1081,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           RUBY
         end
 
-        it "registers an offense for a 4 space indentation of #{keyword} " + 'condition' do
+        it "registers an offense for a 4 space indentation of #{keyword} condition" do
           expect_offense(<<~RUBY)
             #{keyword} receiver
                 .nil? &&

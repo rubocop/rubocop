@@ -33,7 +33,7 @@ module RuboCop
         include TrailingBody
         extend AutoCorrector
 
-        MSG = "Place the first line of a multi-line method definition's " + 'body on its own line.'
+        MSG = "Place the first line of a multi-line method definition's body on its own line."
 
         def on_def(node)
           return unless trailing_body?(node)

@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         end
       end
 
-      context "and one argument is assigned to another, whilst other's value " + 'is not used' do
+      context "and one argument is assigned to another, whilst other's value is not used" do
         it 'registers an offense' do
           message = 'Unused block argument - `key`. ' \
                     "If it's necessary, use `_` or `_key` as an argument " \

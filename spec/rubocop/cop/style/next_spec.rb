@@ -325,7 +325,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       RUBY
     end
 
-    it "allows loops with #{condition} with else, nested in another " + 'condition' do
+    it "allows loops with #{condition} with else, nested in another condition" do
       expect_no_offenses(<<~RUBY)
         [].each do |o|
           if foo

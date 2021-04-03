@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           end
         end
 
-        context "and one argument is assigned to another, whilst other's " + 'value is not used' do
+        context "and one argument is assigned to another, whilst other's value is not used" do
           it 'registers an offense' do
             message = "Unused method argument - `a`. If it's necessary, use " \
                         '`_` or `_a` as an argument name to indicate that ' \

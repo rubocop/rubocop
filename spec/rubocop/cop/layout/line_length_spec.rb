@@ -380,7 +380,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         expect(cop.config_to_allow_offenses).to eq(exclude_limit: { 'Max' => 33 })
       end
 
-      it "accepts a line that's including 1 tab with size 2" + ' and 28 other characters' do
+      it "accepts a line that's including 1 tab with size 2 and 28 other characters" do
         expect_no_offenses("\t#{'#' * 28}")
       end
     end

@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it "does not offend when #{access_modifier} is not inlined and " + 'has a comment' do
+      it "does not offend when #{access_modifier} is not inlined and has a comment" do
         expect_no_offenses(<<~RUBY)
           class Test
             #{access_modifier} # hey

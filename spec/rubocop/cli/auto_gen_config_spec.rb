@@ -16,7 +16,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         # Style/IfUnlessModifier will register an offense when
         # Layout/LineLength:Max has been set to 99. With a lower
         # LineLength:Max there would be no IfUnlessModifier offense.
-        it "bases other cops' configuration on the code base's current " + 'maximum line length' do
+        it "bases other cops' configuration on the code base's current maximum line length" do
           if initial_dotfile
             initial_config = YAML.safe_load(initial_dotfile.join($RS)) || {}
             inherited_files = Array(initial_config['inherit_from'])
