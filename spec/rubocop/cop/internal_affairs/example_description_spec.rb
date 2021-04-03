@@ -46,6 +46,14 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
       RUBY
     end
 
+    it 'does not crash when given a proper description that is split with +' do
+      expect_no_offenses(<<~RUBY)
+        it "does " + 'not register an offense' do
+          expect_no_offense('code')
+        end
+      RUBY
+    end
+
     it 'does not register an offense when given an unexpected description' do
       expect_no_offenses(<<~RUBY)
         it 'foo bar baz' do
