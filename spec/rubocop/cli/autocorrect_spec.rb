@@ -236,6 +236,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
+     '`Lint/AmbiguousOperator`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      def foo(&block)
+        do_something &block
+      end
+    RUBY
+    expect(
+      cli.run(
+        ['--auto-correct', '--only', 'Style/MethodCallWithArgsParentheses,Lint/AmbiguousOperator']
+      )
+    ).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      def foo(&block)
+        do_something(&block)
+      end
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifier` with `Style/SoleNestedConditional`' do
     source = <<~RUBY
       def foo
