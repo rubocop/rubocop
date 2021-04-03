@@ -80,9 +80,13 @@ module RuboCop
         private
 
         def check_description(description, regexps, message)
-          return unless regexps.any? { |regexp| regexp.match?(description.value) }
+          return unless regexps.any? { |regexp| regexp.match?(string_contents(description)) }
 
           add_offense(description, message: message)
+        end
+
+        def string_contents(node)
+          node.str_type? ? node.value : node.source
         end
       end
     end
