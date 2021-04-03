@@ -38,7 +38,10 @@ module RuboCop
         elsif node.arguments.empty?
           corrector.insert_after(node, '()')
         else
-          corrector.replace(args_begin(node), '(')
+          args_begin = args_begin(node)
+
+          corrector.remove(args_begin)
+          corrector.insert_before(args_begin, '(')
           corrector.insert_after(args_end(node), ')')
         end
       end
