@@ -20,9 +20,7 @@ RSpec.describe RuboCop::Formatter::PacmanFormatter do
     context 'when a offense is detected in a file' do
       let(:location) { OpenStruct.new(line: 1, column: 5) }
       let(:expected_character) { Rainbow(described_class::GHOST).red }
-      let(:offenses) do
-        [RuboCop::Cop::Offense.new(:error, location, 'message', 'CopA')]
-      end
+      let(:offenses) { [RuboCop::Cop::Offense.new(:error, location, 'message', 'CopA')] }
 
       it 'calls the step function with a dot' do
         expect(formatter).to receive(:step).with(expected_character)
@@ -52,9 +50,7 @@ RSpec.describe RuboCop::Formatter::PacmanFormatter do
         let(:files) { 18 }
         let(:cols) { 10 }
 
-        before do
-          formatter.instance_variable_set(:@repetitions, 1)
-        end
+        before { formatter.instance_variable_set(:@repetitions, 1) }
 
         it 'updates the progress_line properly' do
           update_progress_line
@@ -77,19 +73,13 @@ RSpec.describe RuboCop::Formatter::PacmanFormatter do
   describe '#step' do
     subject(:step) { formatter.step(character) }
 
-    let(:initial_progress_line) do
-      format('..%s', described_class::PACDOT * 2)
-    end
+    let(:initial_progress_line) { format('..%s', described_class::PACDOT * 2) }
 
-    before do
-      formatter.instance_variable_set(:@progress_line, initial_progress_line)
-    end
+    before { formatter.instance_variable_set(:@progress_line, initial_progress_line) }
 
     context 'character is Pacman' do
       let(:character) { described_class::PACMAN }
-      let(:expected_progress_line) do
-        format('..%s%s', character, described_class::PACDOT)
-      end
+      let(:expected_progress_line) { format('..%s%s', character, described_class::PACDOT) }
 
       it 'removes the first • and puts a ᗧ' do
         step
@@ -116,9 +106,7 @@ RSpec.describe RuboCop::Formatter::PacmanFormatter do
 
     context 'character is ghost' do
       let(:character) { Rainbow(described_class::GHOST).red }
-      let(:expected_progress_line) do
-        format('..%s%s', character, described_class::PACDOT)
-      end
+      let(:expected_progress_line) { format('..%s%s', character, described_class::PACDOT) }
 
       it 'removes the first • and puts a ghosts' do
         step

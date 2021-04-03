@@ -80,8 +80,7 @@ module RuboCop
         end
 
         def correct_style?(node)
-          style == :prefix && node.modifier_form? ||
-            style == :postfix && !node.modifier_form?
+          style == :prefix && node.modifier_form? || style == :postfix && !node.modifier_form?
         end
       end
     end

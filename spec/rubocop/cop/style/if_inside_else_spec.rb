@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
-  let(:cop_config) do
-    { 'AllowIfModifier' => false }
-  end
+  let(:cop_config) { { 'AllowIfModifier' => false } }
 
   it 'catches an if node nested inside an else' do
     expect_offense(<<~RUBY)
@@ -154,9 +152,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
   end
 
   context 'when AllowIfModifier is true' do
-    let(:cop_config) do
-      { 'AllowIfModifier' => true }
-    end
+    let(:cop_config) { { 'AllowIfModifier' => true } }
 
     it 'accepts a modifier if nested inside an else' do
       expect_no_offenses(<<~RUBY)

@@ -26,10 +26,7 @@ module RuboCop
           registry = Cop::Registry.global
           show_all = @options[:show_cops].empty?
 
-          if show_all
-            puts "# Available cops (#{registry.length}) " \
-                 "+ config for #{Dir.pwd}: "
-          end
+          puts "# Available cops (#{registry.length}) + config for #{Dir.pwd}: " if show_all
 
           registry.departments.sort!.each do |department|
             print_cops_of_department(registry, department, show_all)

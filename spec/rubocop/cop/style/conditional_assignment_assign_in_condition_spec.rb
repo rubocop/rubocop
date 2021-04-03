@@ -55,8 +55,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
-    it 'registers an offense assigning any variable type to if else' \
-      'with multiple assignment' do
+    it 'registers an offense assigning any variable type to if elsewith multiple assignment' do
       expect_offense(<<~RUBY, variable: variable)
         %{variable}, %{variable} = if foo
         ^{variable}^^^{variable}^^^^^^^^^ Assign variables inside of conditionals
@@ -242,8 +241,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
-    it 'assigning any variable type to an if else with multiline ' \
-       'in one branch' do
+    it 'assigning any variable type to an if else with multiline in one branch' do
       expect_offense(<<~RUBY, variable: variable)
         %{variable} = if foo
         ^{variable}^^^^^^^^^ Assign variables inside of conditionals
@@ -361,8 +359,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
-    it 'assigning any variable type to an if else with multiline ' \
-       'in one branch' do
+    it 'assigning any variable type to an if else with multiline in one branch' do
       expect_no_offenses(<<~RUBY)
         #{variable} = if foo
                         1
@@ -756,8 +753,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       expect_no_offenses('bar << foo? ? 1 : 2')
     end
 
-    it 'registers an offense for assignment using a method that ends with ' \
-       'an equal sign' do
+    it 'registers an offense for assignment using a method that ends with an equal sign' do
       expect_offense(<<~RUBY)
         self.attributes = foo? ? 1 : 2
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals

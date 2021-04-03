@@ -73,8 +73,7 @@ module RuboCop
 
         def const_name?(name)
           name = name.to_s
-          (allowed_names.empty? || allowed_names.include?(name)) &&
-            !ignored_names.include?(name)
+          (allowed_names.empty? || allowed_names.include?(name)) && !ignored_names.include?(name)
         end
 
         def allowed_names

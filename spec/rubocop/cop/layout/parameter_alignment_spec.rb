@@ -10,11 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment, :config do
   let(:indentation_width) { 2 }
 
   context 'aligned with first parameter' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_first_parameter'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_first_parameter' } }
 
     it 'registers an offense and corrects parameters with single indent' do
       expect_offense(<<~RUBY)
@@ -141,11 +137,7 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment, :config do
   end
 
   context 'aligned with fixed indentation' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_fixed_indentation'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_fixed_indentation' } }
 
     it 'registers an offense and corrects parameters aligned to first param' do
       expect_offense(<<~RUBY)
@@ -227,8 +219,7 @@ RSpec.describe RuboCop::Cop::Layout::ParameterAlignment, :config do
     end
 
     context 'defining self.method' do
-      it 'registers an offense and corrects parameters ' \
-        'aligned to first param' do
+      it 'registers an offense and corrects parameters aligned to first param' do
         expect_offense(<<~RUBY)
           def self.method(a,
                           b)

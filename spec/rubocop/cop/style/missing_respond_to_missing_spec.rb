@@ -11,8 +11,7 @@ RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing, :config do
     RUBY
   end
 
-  it 'registers an offense when method_missing is implemented ' \
-    'as a class methods' do
+  it 'registers an offense when method_missing is implemented as a class methods' do
     expect_offense(<<~RUBY)
       class Test
         def self.method_missing
@@ -22,8 +21,7 @@ RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing, :config do
     RUBY
   end
 
-  it 'allows method_missing and respond_to_missing? implemented ' \
-    'as instance methods' do
+  it 'allows method_missing and respond_to_missing? implemented as instance methods' do
     expect_no_offenses(<<~RUBY)
       class Test
         def respond_to_missing?
@@ -35,8 +33,7 @@ RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing, :config do
     RUBY
   end
 
-  it 'allows method_missing and respond_to_missing? implemented ' \
-    'as class methods' do
+  it 'allows method_missing and respond_to_missing? implemented as class methods' do
     expect_no_offenses(<<~RUBY)
       class Test
         def self.respond_to_missing?

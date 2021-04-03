@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/ClosingHeredocIndentation' => cop_config)
-  end
+  let(:config) { RuboCop::Config.new('Layout/ClosingHeredocIndentation' => cop_config) }
   let(:cop_config) { { 'Enabled' => true } }
 
   it 'accepts correctly indented closing heredoc' do
@@ -18,8 +16,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation, :config do
     RUBY
   end
 
-  it 'accepts correctly indented closing heredoc when ' \
-     'heredoc contents is after closing heredoc' do
+  it 'accepts correctly indented closing heredoc when heredoc contents is after closing heredoc' do
     expect_no_offenses(<<~RUBY)
       include_examples :offense,
                        <<-EOS
@@ -29,8 +26,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation, :config do
     RUBY
   end
 
-  it 'accepts correctly indented closing heredoc when ' \
-     'heredoc contents with blank line' do
+  it 'accepts correctly indented closing heredoc when heredoc contents with blank line' do
     expect_no_offenses(<<~RUBY)
       def_node_matcher :eval_without_location?, <<~PATTERN
         {
@@ -70,8 +66,7 @@ RSpec.describe RuboCop::Cop::Layout::ClosingHeredocIndentation, :config do
     RUBY
   end
 
-  it 'accepts correctly indented closing heredoc when ' \
-     'heredoc contents is before closing heredoc' do
+  it 'accepts correctly indented closing heredoc when heredoc contents is before closing heredoc' do
     expect_no_offenses(<<~RUBY)
       include_examples :offense,
                        <<-EOS

@@ -111,8 +111,7 @@ module RuboCop
 
           return if line_count_allowed?(count)
           return if multiple_blank_lines_groups?(*nodes)
-          return if nodes.all?(&:single_line?) &&
-                    cop_config['AllowAdjacentOneLineDefs']
+          return if nodes.all?(&:single_line?) && cop_config['AllowAdjacentOneLineDefs']
 
           correction_node = nodes.last
           location = correction_node.loc.keyword.join(correction_node.loc.name)
@@ -160,10 +159,7 @@ module RuboCop
         def message(node, count: nil)
           type = node_type(node)
 
-          format(MSG,
-                 type: type,
-                 expected: expected_lines,
-                 actual: count)
+          format(MSG, type: type, expected: expected_lines, actual: count)
         end
 
         def expected_lines

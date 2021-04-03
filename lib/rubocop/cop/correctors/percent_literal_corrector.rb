@@ -32,9 +32,7 @@ module RuboCop
       end
 
       def delimiters_for(type)
-        PreferredDelimiters
-          .new(type, config, preferred_delimiters)
-          .delimiters
+        PreferredDelimiters.new(type, config, preferred_delimiters).delimiters
       end
 
       def new_contents(node, escape, delimiters)
@@ -61,11 +59,7 @@ module RuboCop
         base_line_num = node.first_line
         prev_line_num = base_line_num
         node.children.map.with_index do |word_node, index|
-          line_breaks = line_breaks(word_node,
-                                    node.source,
-                                    prev_line_num,
-                                    base_line_num,
-                                    index)
+          line_breaks = line_breaks(word_node, node.source, prev_line_num, base_line_num, index)
           prev_line_num = word_node.last_line
           content = fix_escaped_content(word_node, escape, delimiters)
           line_breaks + content

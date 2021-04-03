@@ -11,10 +11,7 @@ RSpec.describe RuboCop::Formatter::JUnitFormatter, :config do
 
   describe '#file_finished' do
     before do
-      cop.add_offense(
-        Parser::Source::Range.new(source_buffer, 0, 1),
-        message: 'message 1'
-      )
+      cop.add_offense(Parser::Source::Range.new(source_buffer, 0, 1), message: 'message 1')
       offenses = cop.add_offense(
         Parser::Source::Range.new(source_buffer, 9, 10),
         message: 'message 2'

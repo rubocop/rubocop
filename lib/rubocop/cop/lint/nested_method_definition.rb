@@ -55,8 +55,7 @@ module RuboCop
       #     end
       #   end
       class NestedMethodDefinition < Base
-        MSG = 'Method definitions must not be nested. ' \
-              'Use `lambda` instead.'
+        MSG = 'Method definitions must not be nested. Use `lambda` instead.'
 
         def on_def(node)
           subject, = *node

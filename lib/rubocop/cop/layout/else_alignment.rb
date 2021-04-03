@@ -63,9 +63,7 @@ module RuboCop
         def on_case_match(node)
           return unless node.else?
 
-          check_alignment(
-            node.in_pattern_branches.last.loc.keyword, node.loc.else
-          )
+          check_alignment(node.in_pattern_branches.last.loc.keyword, node.loc.else)
         end
 
         private

@@ -81,8 +81,7 @@ module RuboCop
         def check_if(node)
           if_branch = node.if_branch
           else_branch = node.else_branch
-          if_branch && else_branch &&
-            flow_expression?(if_branch) && flow_expression?(else_branch)
+          if_branch && else_branch && flow_expression?(if_branch) && flow_expression?(else_branch)
         end
 
         def check_case(node)
@@ -90,9 +89,7 @@ module RuboCop
           return false unless else_branch
           return false unless flow_expression?(else_branch)
 
-          node.when_branches.all? do |branch|
-            branch.body && flow_expression?(branch.body)
-          end
+          node.when_branches.all? { |branch| branch.body && flow_expression?(branch.body) }
         end
       end
     end

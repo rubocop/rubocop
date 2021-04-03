@@ -6,9 +6,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
   include_context 'cli spec behavior'
 
   describe '--disable-uncorrectable' do
-    let(:exit_code) do
-      cli.run(%w[--auto-correct-all --format simple --disable-uncorrectable])
-    end
+    let(:exit_code) { cli.run(%w[--auto-correct-all --format simple --disable-uncorrectable]) }
 
     let(:setup_long_line) do
       create_file('.rubocop.yml', <<~YAML)
@@ -128,8 +126,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
         end
       end
 
-      context "but there are more offenses on the line and they don't all " \
-              'fit' do
+      context "but there are more offenses on the line and they don't all " + 'fit' do
         it 'adds both one-line and before-and-after disable statements' do
           create_file('example.rb', <<~RUBY)
             # Chess engine.

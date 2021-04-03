@@ -142,8 +142,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'auto-corrects when using `<<` method higher precedence ' \
-         'than `||` operator' do
+      it 'auto-corrects when using `<<` method higher precedence than `||` operator' do
         expect_offense(<<~RUBY)
           ary << if foo
                  ^^^^^^ Use double pipes `||` instead.
@@ -214,8 +213,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when the else branch ' \
-        'contains an irange' do
+      it 'registers an offense and corrects when the else branch contains an irange' do
         expect_offense(<<~RUBY)
           if foo
           ^^^^^^ Use double pipes `||` instead.
@@ -282,8 +280,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when the else branch ' \
-        'contains an irange' do
+      it 'registers an offense and corrects when the else branch contains an irange' do
         expect_offense(<<~RUBY)
           time_period = updated_during ? updated_during : 2.days.ago..Time.now
                                        ^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
@@ -294,8 +291,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when the else branch ' \
-        'contains an erange' do
+      it 'registers an offense and corrects when the else branch contains an erange' do
         expect_offense(<<~RUBY)
           time_period = updated_during ? updated_during : 2.days.ago...Time.now
                                        ^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.

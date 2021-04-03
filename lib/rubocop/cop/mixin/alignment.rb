@@ -12,8 +12,7 @@ module RuboCop
       attr_reader :column_delta
 
       def configured_indentation_width
-        cop_config['IndentationWidth'] ||
-          config.for_cop('Layout/IndentationWidth')['Width']
+        cop_config['IndentationWidth'] || config.for_cop('Layout/IndentationWidth')['Width']
       end
 
       def indentation(node)
@@ -46,8 +45,7 @@ module RuboCop
       def each_bad_alignment(items, base_column)
         prev_line = -1
         items.each do |current|
-          if current.loc.line > prev_line &&
-             begins_its_line?(current.source_range)
+          if current.loc.line > prev_line && begins_its_line?(current.source_range)
             @column_delta = base_column - display_column(current.source_range)
 
             yield current if @column_delta.nonzero?

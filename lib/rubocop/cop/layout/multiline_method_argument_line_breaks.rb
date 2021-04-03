@@ -23,8 +23,7 @@ module RuboCop
         include MultilineElementLineBreaks
         extend AutoCorrector
 
-        MSG = 'Each argument in a multi-line method call must start ' \
-          'on a separate line.'
+        MSG = 'Each argument in a multi-line method call must start on a separate line.'
 
         def on_send(node)
           return if node.method?(:[]=)

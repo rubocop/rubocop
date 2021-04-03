@@ -13,8 +13,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when multiline block end ' \
-    'is not on its own line' do
+  it 'registers an offense and corrects when multiline block end is not on its own line' do
     expect_offense(<<~RUBY)
       test do
         foo end
@@ -28,8 +27,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when multiline block } ' \
-    'is not on its own line' do
+  it 'registers an offense and corrects when multiline block } is not on its own line' do
     expect_offense(<<~RUBY)
       test {
         foo }

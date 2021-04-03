@@ -55,8 +55,7 @@ module RuboCop
 
           def allowed_camel_case_method_call?(node)
             node.camel_case_method? &&
-              (node.arguments.none? ||
-              cop_config['AllowParenthesesInCamelCaseMethod'])
+              (node.arguments.none? || cop_config['AllowParenthesesInCamelCaseMethod'])
           end
 
           def allowed_string_interpolation_method_call?(node)
@@ -99,8 +98,7 @@ module RuboCop
           end
 
           def call_in_optional_arguments?(node)
-            node.parent &&
-              (node.parent.optarg_type? || node.parent.kwoptarg_type?)
+            node.parent && (node.parent.optarg_type? || node.parent.kwoptarg_type?)
           end
 
           def call_in_single_line_inheritance?(node)
@@ -118,8 +116,7 @@ module RuboCop
           end
 
           def call_with_braced_block?(node)
-            (node.send_type? || node.super_type?) &&
-              node.block_node && node.block_node.braces?
+            (node.send_type? || node.super_type?) && node.block_node && node.block_node.braces?
           end
 
           def call_as_argument_or_chain?(node)
@@ -145,13 +142,11 @@ module RuboCop
             previous = node.descendants.first
             return false unless previous&.send_type?
 
-            previous.parenthesized? ||
-              allowed_chained_call_with_parentheses?(previous)
+            previous.parenthesized? || allowed_chained_call_with_parentheses?(previous)
           end
 
           def ambigious_literal?(node)
-            splat?(node) || ternary_if?(node) || regexp_slash_literal?(node) ||
-              unary_literal?(node)
+            splat?(node) || ternary_if?(node) || regexp_slash_literal?(node) || unary_literal?(node)
           end
 
           def splat?(node)
@@ -180,8 +175,7 @@ module RuboCop
           end
 
           def assigned_before?(node, target)
-            node.assignment? &&
-              node.loc.operator.begin < target.loc.begin
+            node.assignment? && node.loc.operator.begin < target.loc.begin
           end
 
           def inside_string_interpolation?(node)

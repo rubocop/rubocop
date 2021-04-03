@@ -44,8 +44,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when `a` is compared three times on the right ' \
-    'hand side' do
+  it 'registers an offense and corrects when `a` is compared three times on the right hand side' do
     expect_offense(<<~RUBY)
       a = "a"
       if "a" == a || "b" == a || "c" == a
@@ -80,8 +79,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when multiple comparison is not ' \
-     'part of a conditional' do
+  it 'registers an offense and corrects when multiple comparison is not part of a conditional' do
     expect_offense(<<~RUBY)
       def foo(x)
         x == 1 || x == 2 || x == 3
@@ -144,8 +142,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
     RUBY
   end
 
-  it 'does not register an offense for comparing lvars when a string is ' \
-    'on the lefthand side' do
+  it 'does not register an offense for comparing lvars when a string is on the lefthand side' do
     expect_no_offenses(<<~RUBY)
       a = "a"
       b = "b"

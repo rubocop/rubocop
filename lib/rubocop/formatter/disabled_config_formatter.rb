@@ -71,9 +71,7 @@ module RuboCop
         command += ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
 
         if @exclude_limit_option
-          command +=
-            format(' --exclude-limit %<limit>d',
-                   limit: Integer(@exclude_limit_option))
+          command += format(' --exclude-limit %<limit>d', limit: Integer(@exclude_limit_option))
         end
         command += ' --no-offense-counts' unless show_offense_counts?
 
@@ -111,8 +109,7 @@ module RuboCop
 
         # In case auto_gen_only_exclude is set, only modify the maximum if the
         # files are not excluded one by one.
-        if !@options[:auto_gen_only_exclude] ||
-           @files_with_offenses[cop_name].size > @exclude_limit
+        if !@options[:auto_gen_only_exclude] || @files_with_offenses[cop_name].size > @exclude_limit
           cfg.merge!(cfg[:exclude_limit])
         end
 
@@ -144,9 +141,7 @@ module RuboCop
 
       def output_cop_param_comments(output_buffer, params, default_cfg)
         config_params = params.reject { |p| p.start_with?('Supported') }
-        output_buffer.puts(
-          "# Configuration parameters: #{config_params.join(', ')}."
-        )
+        output_buffer.puts("# Configuration parameters: #{config_params.join(', ')}.")
 
         params.each do |param|
           value = default_cfg[param]

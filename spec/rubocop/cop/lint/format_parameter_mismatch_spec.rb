@@ -30,16 +30,14 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
   it_behaves_like 'variables', '@@var'
   it_behaves_like 'variables', '$var'
 
-  it 'registers an offense when calling Kernel.format ' \
-     'and the fields do not match' do
+  it 'registers an offense when calling Kernel.format and the fields do not match' do
     expect_offense(<<~RUBY)
       Kernel.format("%s %s", 1)
              ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
     RUBY
   end
 
-  it 'registers an offense when calling Kernel.sprintf ' \
-     'and the fields do not match' do
+  it 'registers an offense when calling Kernel.sprintf and the fields do not match' do
     expect_offense(<<~RUBY)
       Kernel.sprintf("%s %s", 1)
              ^^^^^^^ Number of arguments (1) to `sprintf` doesn't match the number of fields (2).

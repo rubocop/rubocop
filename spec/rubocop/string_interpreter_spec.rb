@@ -21,8 +21,7 @@ RSpec.describe RuboCop::StringInterpreter do
     end
 
     it 'handles extended unicode' do
-      expect(described_class.interpret('\\\\u{0068 0068}'))
-        .to eq('\\u{0068 0068}')
+      expect(described_class.interpret('\\\\u{0068 0068}')).to eq('\\u{0068 0068}')
     end
 
     it_behaves_like 'simple escape', '\\\\a'

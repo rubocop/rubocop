@@ -168,8 +168,7 @@ module RuboCop
           return node.parent if node.case_type? && node.argument?
 
           assignment = node.ancestors.find(&:assignment_or_similar?)
-          if assignment && !line_break_before_keyword?(assignment.source_range,
-                                                       node)
+          if assignment && !line_break_before_keyword?(assignment.source_range, node)
             assignment
           else
             # Fall back to 'keyword' style if this node is not on the RHS of an

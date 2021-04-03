@@ -161,8 +161,7 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
       RUBY
     end
 
-    it 'registers an offense for `raise` and `fail` with `Kernel` as ' \
-       'explicit receiver' do
+    it 'registers an offense for `raise` and `fail` with `Kernel` as explicit receiver' do
       expect_offense(<<~RUBY)
         def test
           Kernel.raise
@@ -182,8 +181,7 @@ RSpec.describe RuboCop::Cop::Style::SignalException, :config do
       RUBY
     end
 
-    it 'registers an offense for `raise` and `fail` with `::Kernel` as ' \
-       'explicit receiver' do
+    it 'registers an offense for `raise` and `fail` with `::Kernel` as explicit receiver' do
       expect_offense(<<~RUBY)
         def test
           ::Kernel.raise

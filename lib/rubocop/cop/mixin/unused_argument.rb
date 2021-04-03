@@ -8,9 +8,7 @@ module RuboCop
         extend NodePattern::Macros
 
         def after_leaving_scope(scope, _variable_table)
-          scope.variables.each_value do |variable|
-            check_argument(variable)
-          end
+          scope.variables.each_value { |variable| check_argument(variable) }
         end
 
         private

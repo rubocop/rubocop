@@ -40,9 +40,7 @@ module RuboCop
         end
 
         def contains_only_comments?
-          processed_source.lines.all? do |line|
-            line.blank? || comment_line?(line)
-          end
+          processed_source.lines.all? { |line| line.blank? || comment_line?(line) }
         end
       end
     end

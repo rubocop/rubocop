@@ -28,9 +28,7 @@ module RuboCop
 
           return unless duplicates?(keys)
 
-          consecutive_duplicates(keys).each do |key|
-            add_offense(key)
-          end
+          consecutive_duplicates(keys).each { |key| add_offense(key) }
         end
       end
     end

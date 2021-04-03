@@ -48,13 +48,7 @@ RSpec.describe Changelog do
   end
 
   describe Changelog::Entry do
-    subject(:entry) do
-      described_class.new(
-        type: type,
-        body: body,
-        user: github_user
-      )
-    end
+    subject(:entry) { described_class.new(type: type, body: body, user: github_user) }
 
     let(:type) { :fix }
     let(:github_user) { 'johndoe' }

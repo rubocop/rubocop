@@ -27,8 +27,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage, :config do
       RUBY
     end
 
-    it 'registers an offense when using `include` in method definition ' \
-       'outside class or module' do
+    it 'registers an offense when using `include` in method definition outside class or module' do
       expect_offense(<<~RUBY)
         def foo
           include M
@@ -76,8 +75,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage, :config do
       RUBY
     end
 
-    it 'does not register an offense when using `include` in method ' \
-       'definition inside class' do
+    it 'does not register an offense when using `include` in method definition inside class' do
       expect_no_offenses(<<~RUBY)
         class X
           def foo
@@ -87,8 +85,7 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage, :config do
       RUBY
     end
 
-    it 'does not register an offense when using `include` in method ' \
-       'definition inside module' do
+    it 'does not register an offense when using `include` in method definition inside module' do
       expect_no_offenses(<<~RUBY)
         module X
           def foo

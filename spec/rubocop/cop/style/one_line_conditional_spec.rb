@@ -177,8 +177,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
-    it 'registers and corrects an offense with multi-line construct for ' \
-       'if-then-elsif-then-end' do
+    it 'registers and corrects an offense with multi-line construct for if-then-elsif-then-end' do
       expect_offense(<<~RUBY)
         if cond1 then run elsif cond2 then maybe end
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
@@ -469,9 +468,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     end
 
     context 'when IndentationWidth differs from default' do
-      let(:config_data) do
-        cop_config_data.merge('Layout/IndentationWidth' => { 'Width' => 4 })
-      end
+      let(:config_data) { cop_config_data.merge('Layout/IndentationWidth' => { 'Width' => 4 }) }
 
       it 'registers and corrects an offense with multi-line construct for if/then/else/end' do
         expect_offense(<<~RUBY)

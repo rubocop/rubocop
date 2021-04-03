@@ -76,8 +76,7 @@ module RuboCop
             corrector.replace(first_argument, first_argument.source.delete_prefix('*'))
           end
 
-          keyword = range_with_surrounding_space(range: return_node.loc.keyword,
-                                                 side: :right)
+          keyword = range_with_surrounding_space(range: return_node.loc.keyword, side: :right)
           corrector.remove(keyword)
         end
 
@@ -113,8 +112,7 @@ module RuboCop
         # rubocop:enable Metrics/CyclomaticComplexity
 
         def check_return_node(node)
-          return if cop_config['AllowMultipleReturnValues'] &&
-                    node.children.size > 1
+          return if cop_config['AllowMultipleReturnValues'] && node.children.size > 1
 
           add_offense(node.loc.keyword, message: message(node)) do |corrector|
             if node.arguments?

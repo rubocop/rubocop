@@ -2,8 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   shared_examples 'common behavior' do
-    it 'registers an offense and corrects alignment with token ' \
-      'not preceded by space' do
+    it 'registers an offense and corrects alignment with token not preceded by space' do
       # The = and the ( are on the same column, but this is not for alignment,
       # it's just a mistake.
       expect_offense(<<~RUBY)
@@ -94,8 +93,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects extra spacing before a unary plus ' \
-      'in an argument list' do
+    it 'registers an offense and corrects extra spacing before a unary plus in an argument list' do
       expect_offense(<<~RUBY)
         assert_difference(MyModel.count, +2,
                           3,  +3, # Extra spacing only here.
@@ -110,8 +108,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects double extra spacing ' \
-      'in variable assignment' do
+    it 'registers an offense and corrects double extra spacing in variable assignment' do
       expect_offense(<<~RUBY)
         m    = "hello"
          ^^^ Unnecessary spacing detected.
@@ -131,8 +128,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
 
     it 'ignores trailing whitespace' do
-      expect_no_offenses(['      class Benchmarker < Performer     ',
-                          '      end'].join("\n"))
+      expect_no_offenses(['      class Benchmarker < Performer     ', '      end'].join("\n"))
     end
 
     it 'registers an offense and corrects extra spacing in class inheritance' do
@@ -257,9 +253,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   }.freeze
 
   context 'when AllowForAlignment is true' do
-    let(:cop_config) do
-      { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => false }
-    end
+    let(:cop_config) { { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => false } }
 
     include_examples 'common behavior'
 
@@ -276,9 +270,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   end
 
   context 'when AllowForAlignment is false' do
-    let(:cop_config) do
-      { 'AllowForAlignment' => false, 'ForceEqualSignAlignment' => false }
-    end
+    let(:cop_config) { { 'AllowForAlignment' => false, 'ForceEqualSignAlignment' => false } }
 
     include_examples 'common behavior'
 
@@ -370,9 +362,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   end
 
   context 'when ForceEqualSignAlignment is true' do
-    let(:cop_config) do
-      { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true }
-    end
+    let(:cop_config) { { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true } }
 
     it 'does not register offenses for multiple complex nested assignments' do
       expect_no_offenses(<<~RUBY)
@@ -434,8 +424,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects consecutive assignments ' \
-      'that are not aligned' do
+    it 'registers an offense and corrects consecutive assignments that are not aligned' do
       expect_offense(<<~RUBY)
         a = 1
         bb = 2
@@ -461,8 +450,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'register offenses and correct consecutive operator assignments ' \
-      'which are not aligned' do
+    it 'register offenses and correct consecutive operator assignments which are not aligned' do
       expect_offense(<<~RUBY)
         a += 1
         bb = 2
@@ -487,8 +475,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects consecutive aref assignments ' \
-      'which are not aligned' do
+    it 'registers an offense and corrects consecutive aref assignments which are not aligned' do
       expect_offense(<<~RUBY)
         a[1] = 1
         bb[2,3] = 2
@@ -514,8 +501,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'register offenses and correct consecutive attribute assignments ' \
-      'which are not aligned' do
+    it 'register offenses and correct consecutive attribute assignments which are not aligned' do
       expect_offense(<<~RUBY)
         a.attr = 1
         bb &&= 2

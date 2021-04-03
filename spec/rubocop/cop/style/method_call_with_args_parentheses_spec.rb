@@ -312,9 +312,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     context 'when inspecting macro methods' do
-      let(:cop_config) do
-        { 'IgnoreMacros' => 'true' }
-      end
+      let(:cop_config) { { 'IgnoreMacros' => 'true' } }
 
       context 'in a class body' do
         it 'does not register an offense' do
@@ -338,9 +336,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     context 'IgnoredPatterns' do
-      let(:cop_config) do
-        { 'IgnoredPatterns' => %w[^assert ^refute] }
-      end
+      let(:cop_config) { { 'IgnoredPatterns' => %w[^assert ^refute] } }
 
       it 'ignored methods listed in IgnoredPatterns' do
         expect_no_offenses('assert 2 == 2')
@@ -355,9 +351,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   context 'when EnforcedStyle is omit_parentheses' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'omit_parentheses' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'omit_parentheses' } }
 
     it_behaves_like 'endless methods', omit: true
 
@@ -894,12 +888,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   context 'when inspecting macro methods with IncludedMacros' do
-    let(:cop_config) do
-      {
-        'IgnoreMacros' => 'true',
-        'IncludedMacros' => ['bar']
-      }
-    end
+    let(:cop_config) { { 'IgnoreMacros' => 'true', 'IncludedMacros' => ['bar'] } }
 
     it_behaves_like 'endless methods'
 

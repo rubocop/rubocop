@@ -23,9 +23,7 @@ module RuboCop
 
     def find_last_file_upwards(filename, start_dir, stop_dir = nil)
       last_file = nil
-      traverse_files_upwards(filename, start_dir, stop_dir) do |file|
-        last_file = file
-      end
+      traverse_files_upwards(filename, start_dir, stop_dir) { |file| last_file = file }
       last_file
     end
 

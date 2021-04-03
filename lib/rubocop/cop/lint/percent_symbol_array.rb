@@ -34,9 +34,7 @@ module RuboCop
         def on_percent_literal(node)
           return unless contains_colons_or_commas?(node)
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         private

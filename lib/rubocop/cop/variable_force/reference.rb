@@ -8,9 +8,7 @@ module RuboCop
         include Branchable
 
         VARIABLE_REFERENCE_TYPES = (
-          [VARIABLE_REFERENCE_TYPE] +
-          OPERATOR_ASSIGNMENT_TYPES +
-          [ZERO_ARITY_SUPER_TYPE, SEND_TYPE]
+          [VARIABLE_REFERENCE_TYPE] + OPERATOR_ASSIGNMENT_TYPES + [ZERO_ARITY_SUPER_TYPE, SEND_TYPE]
         ).freeze
 
         attr_reader :node, :scope

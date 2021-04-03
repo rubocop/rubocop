@@ -38,9 +38,7 @@ module RuboCop
 
         location = node.casgn_type? ? node.loc.name : node.loc.expression
 
-        add_offense(location, message: message(length, max_length)) do
-          self.max = length
-        end
+        add_offense(location, message: message(length, max_length)) { self.max = length }
       end
 
       # Returns true for lines that shall not be included in the count.

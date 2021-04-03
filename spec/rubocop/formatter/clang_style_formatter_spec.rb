@@ -18,9 +18,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
     let(:source) { ('aa'..'az').to_a.join($RS) }
 
-    let(:location) do
-      source_range(0...1)
-    end
+    let(:location) { source_range(0...1) }
 
     it 'displays text containing the offending source line' do
       cop.add_offense(
@@ -99,8 +97,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints message as-is' do
         formatter.report_file(file, [offense])
-        expect(output.string)
-          .to include(': This is a message.')
+        expect(output.string).to include(': This is a message.')
       end
     end
 
@@ -109,8 +106,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints message as-is' do
         formatter.report_file(file, [offense])
-        expect(output.string)
-          .to include(': [Correctable] This is a message.')
+        expect(output.string).to include(': [Correctable] This is a message.')
       end
     end
 
@@ -119,8 +115,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints [Corrected] along with message' do
         formatter.report_file(file, [offense])
-        expect(output.string)
-          .to include(': [Corrected] This is a message.')
+        expect(output.string).to include(': [Corrected] This is a message.')
       end
     end
 

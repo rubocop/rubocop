@@ -53,8 +53,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<suggestion>s` instead of '\
-              '`%<sorter>s...%<accessor_source>s`.'
+        MSG = 'Use `%<suggestion>s` instead of `%<sorter>s...%<accessor_source>s`.'
 
         RESTRICT_ON_SEND = %i[sort sort_by].freeze
 
@@ -112,9 +111,7 @@ module RuboCop
           ).source
 
           format(MSG,
-                 suggestion: suggestion(sorter,
-                                        accessor,
-                                        arg_value(node)),
+                 suggestion: suggestion(sorter, accessor, arg_value(node)),
                  sorter: sorter,
                  accessor_source: accessor_source)
         end

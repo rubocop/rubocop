@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
-  end
+  let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 }) }
 
   it 'registers an offense when the right side has mulitiple arrays' do
     expect_offense(<<~RUBY)
@@ -69,8 +67,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'registers an offense when assignments must be reordered to ' \
-     'preserve meaning' do
+  it 'registers an offense when assignments must be reordered to preserve meaning' do
     expect_offense(<<~RUBY)
       a, b = 1, a
       ^^^^^^^^^^^ Do not use parallel assignment.
@@ -241,19 +238,18 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('allowed', 'self.a, self.b = self.b, self.a')
   it_behaves_like('allowed', 'self.a, self.b = b, a')
 
-  it 'corrects when the number of left hand variables matches ' \
-    'the number of right hand variables' do
-      expect_offense(<<~RUBY)
-        a, b, c = 1, 2, 3
-        ^^^^^^^^^^^^^^^^^ Do not use parallel assignment.
-      RUBY
+  it 'corrects when the number of left hand variables matches the number of right hand variables' do
+    expect_offense(<<~RUBY)
+      a, b, c = 1, 2, 3
+      ^^^^^^^^^^^^^^^^^ Do not use parallel assignment.
+    RUBY
 
-      expect_correction(<<~RUBY)
-        a = 1
-        b = 2
-        c = 3
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      a = 1
+      b = 2
+      c = 3
+    RUBY
+  end
 
   it 'corrects when the right variable is an array' do
     expect_offense(<<~RUBY)
@@ -395,8 +391,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects when the expression uses a modifier if statement ' \
-      'inside a method' do
+  it 'corrects when the expression uses a modifier if statement inside a method' do
     expect_offense(<<~RUBY)
       def foo
         a, b = 1, 2 if foo
@@ -536,8 +531,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects parallel assignment inside rescue statements '\
-      'within method definitions' do
+  it 'corrects parallel assignment inside rescue statements within method definitions' do
     expect_offense(<<~RUBY)
       def bar
         a, b = 1, 2
@@ -557,8 +551,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects parallel assignment in rescue statements '\
-      'within begin ... rescue' do
+  it 'corrects parallel assignment in rescue statements within begin ... rescue' do
     expect_offense(<<~RUBY)
       begin
         a, b = 1, 2
@@ -597,8 +590,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects when the expression uses a modifier rescue statement ' \
-      'inside of a method' do
+  it 'corrects when the expression uses a modifier rescue statement inside of a method' do
     expect_offense(<<~RUBY)
       def foo
         a, b = %w(1 2) rescue foo
@@ -620,8 +612,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects when assignments must be reordered to avoid changing ' \
-      'meaning' do
+  it 'corrects when assignments must be reordered to avoid changing meaning' do
     expect_offense(<<~RUBY)
       a, b, c, d = 1, a + 1, b + 1, a + b + c
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use parallel assignment.

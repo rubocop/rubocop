@@ -33,8 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       expect_no_offenses('{}.each { |x,y| puts x }')
     end
 
-    it 'accepts block parameters with surrounding space that includes line ' \
-       'breaks' do
+    it 'accepts block parameters with surrounding space that includes line breaks' do
       # This is checked by Layout/MultilineBlockLayout.
       expect_no_offenses(<<~RUBY)
         some_result = lambda do |
@@ -86,8 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for space before ' \
-      'first parameter' do
+    it 'registers an offense and corrects a lambda for space before first parameter' do
       expect_offense(<<~RUBY)
         ->( x, y) { puts x }
            ^ Space before first block parameter detected.
@@ -98,8 +96,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for space after ' \
-      'the last parameter' do
+    it 'registers an offense and corrects a lambda for space after the last parameter' do
       expect_offense(<<~RUBY)
         ->(x, y  ) { puts x }
                ^^ Space after last block parameter detected.
@@ -181,8 +178,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects all types of spacing issues ' \
-      'for a lambda' do
+    it 'registers an offense and corrects all types of spacing issues for a lambda' do
       expect_offense(<<~RUBY)
         ->(  a,  b, c) { puts a }
                ^ Extra space before block parameter detected.
@@ -251,8 +247,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects multiple spaces ' \
-      'after last parameter' do
+    it 'registers an offense and corrects multiple spaces after last parameter' do
       expect_offense(<<~RUBY)
         {}.each { | x, y   | puts x }
                          ^^ Extra space after last block parameter detected.
@@ -274,8 +269,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for no space ' \
-      'before first parameter' do
+    it 'registers an offense and corrects a lambda for no space before first parameter' do
       expect_offense(<<~RUBY)
         ->(x ) { puts x }
            ^ Space before first block parameter missing.
@@ -286,8 +280,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for ' \
-      'no space after last parameter' do
+    it 'registers an offense and corrects a lambda for no space after last parameter' do
       expect_offense(<<~RUBY)
         ->( x, y) { puts x }
                ^ Space after last block parameter missing.
@@ -298,8 +291,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for extra space' \
-       'before first parameter' do
+    it 'registers an offense and corrects a lambda for extra spacebefore first parameter' do
       expect_offense(<<~RUBY)
         ->(  x ) { puts x }
            ^ Extra space before first block parameter detected.
@@ -310,8 +302,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for multiple spaces' \
-       'after last parameter' do
+    it 'registers an offense and corrects a lambda for multiple spacesafter last parameter' do
       expect_offense(<<~RUBY)
         ->( x, y   ) { puts x }
                  ^^ Extra space after last block parameter detected.

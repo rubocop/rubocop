@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Commissioner do
   describe '#investigate' do
-    subject(:offenses) do
-      report.offenses
-    end
+    subject(:offenses) { report.offenses }
 
     let(:report) { commissioner.investigate(processed_source) }
     let(:cop_class) do
@@ -41,9 +39,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
         .new(nil, processed_source, cop_offenses, nil)
     end
 
-    around do |example|
-      RuboCop::Cop::Registry.with_temporary_global { example.run }
-    end
+    around { |example| RuboCop::Cop::Registry.with_temporary_global { example.run } }
 
     context 'when a cop reports offenses' do
       let(:cop_offenses) { [Object.new] }
@@ -104,9 +100,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
 
       expect(offenses).to eq []
       expect(errors.size).to eq(1)
-      expect(
-        errors[0].cause.instance_of?(RuntimeError)
-      ).to be(true)
+      expect(errors[0].cause.instance_of?(RuntimeError)).to be(true)
       expect(errors[0].line).to eq 2
       expect(errors[0].column).to eq 0
     end
@@ -117,9 +111,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
       it 're-raises the exception received while processing' do
         allow(cop).to receive(:on_int) { raise RuntimeError }
 
-        expect do
-          offenses
-        end.to raise_error(RuntimeError)
+        expect { offenses }.to raise_error(RuntimeError)
       end
     end
 

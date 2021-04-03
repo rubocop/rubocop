@@ -65,15 +65,11 @@ module RuboCop
         file = version_file
         return unless file && File.file?(file)
 
-        File.read(file).match(pattern) do |md|
-          md[:version].to_f
-        end
+        File.read(file).match(pattern) { |md| md[:version].to_f }
       end
 
       def version_file
-        @version_file ||=
-          @config.find_file_upwards(filename,
-                                    @config.base_dir_for_path_parameters)
+        @version_file ||= @config.find_file_upwards(filename, @config.base_dir_for_path_parameters)
       end
     end
 

@@ -81,8 +81,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
     RUBY
   end
 
-  it 'registers an offense when using `#eval` with a heredoc and ' \
-     'an incorrect line number' do
+  it 'registers an offense when using `#eval` with a heredoc and an incorrect line number' do
     expect_offense(<<~RUBY)
       eval <<-CODE, binding, __FILE__, __LINE__ + 2
                                        ^^^^^^^^^^^^ Incorrect line number for `eval`; use `__LINE__ + 1` instead of `__LINE__ + 2`.

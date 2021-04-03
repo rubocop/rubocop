@@ -28,8 +28,7 @@ module RuboCop
       class MultilineTernaryOperator < Base
         extend AutoCorrector
 
-        MSG = 'Avoid multi-line ternary operators, ' \
-              'use `if` or `unless` instead.'
+        MSG = 'Avoid multi-line ternary operators, use `if` or `unless` instead.'
 
         def on_if(node)
           return unless offense?(node)

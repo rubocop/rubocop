@@ -59,16 +59,14 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `encoding` magic comment ' \
-     'is first line' do
+  it 'does not register an offense when using `encoding` magic comment is first line' do
     expect_no_offenses(<<~RUBY)
       # encoding: ascii
       # frozen_string_literal: true
     RUBY
   end
 
-  it 'does not register an offense when using `encoding` magic comment ' \
-     'is next of shebang' do
+  it 'does not register an offense when using `encoding` magic comment is next of shebang' do
     expect_no_offenses(<<~RUBY)
       #!/usr/bin/env ruby
       # encoding: ascii
@@ -82,8 +80,7 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `frozen_string_literal` ' \
-     'magic comment only' do
+  it 'does not register an offense when using `frozen_string_literal` magic comment only' do
     expect_no_offenses(<<~RUBY)
       # frozen_string_literal: true
     RUBY

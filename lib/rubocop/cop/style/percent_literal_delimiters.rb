@@ -72,9 +72,7 @@ module RuboCop
         end
 
         def preferred_delimiters_for(type)
-          PreferredDelimiters
-            .new(type, @config, nil)
-            .delimiters
+          PreferredDelimiters.new(type, @config, nil).delimiters
         end
 
         def uses_preferred_delimiter?(node, type)

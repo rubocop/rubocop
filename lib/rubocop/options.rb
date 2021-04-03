@@ -112,9 +112,7 @@ module RuboCop
         @options.replace(ConfigRegeneration.new.options.merge(@options))
       end
 
-      option(opts, '--exclude-limit COUNT') do
-        @validator.validate_exclude_limit_option
-      end
+      option(opts, '--exclude-limit COUNT') { @validator.validate_exclude_limit_option }
 
       option(opts, '--disable-uncorrectable')
 
@@ -161,9 +159,7 @@ module RuboCop
 
     def add_cache_options(opts)
       option(opts, '-C', '--cache FLAG')
-      option(opts, '--cache-root DIR') do
-        @validator.validate_cache_enabled_for_cache_root
-      end
+      option(opts, '--cache-root DIR') { @validator.validate_cache_enabled_for_cache_root }
     end
 
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
@@ -173,16 +169,12 @@ module RuboCop
       option(opts, '-D', '--[no-]display-cop-names')
       option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
-      option(opts, '-a', '--auto-correct') do
-        @options[:safe_auto_correct] = true
-      end
+      option(opts, '-a', '--auto-correct') { @options[:safe_auto_correct] = true }
       option(opts, '--safe-auto-correct') do
         warn '--safe-auto-correct is deprecated; use --auto-correct'
         @options[:safe_auto_correct] = @options[:auto_correct] = true
       end
-      option(opts, '-A', '--auto-correct-all') do
-        @options[:auto_correct] = true
-      end
+      option(opts, '-A', '--auto-correct-all') { @options[:auto_correct] = true }
       option(opts, '--disable-pending-cops')
       option(opts, '--enable-pending-cops')
       option(opts, '--ignore-disable-comments')
@@ -229,8 +221,7 @@ module RuboCop
     # e.g. [..., '--auto-correct', ...] to :auto_correct.
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
-      long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '')
-                     .tr('-', '_').gsub(/[\[\]]/, '').to_sym
+      long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
 
     def require_feature(file)
@@ -286,16 +277,13 @@ module RuboCop
     end
 
     def validate_cop_options
-      %i[only except].each do |opt|
-        OptionsValidator.validate_cop_list(@options[opt])
-      end
+      %i[only except].each { |opt| OptionsValidator.validate_cop_list(@options[opt]) }
     end
 
     # rubocop:disable Metrics/AbcSize
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_redundant_disable?
-        raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot ' \
-                                   'be used with --only.'
+        raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot be used with --only.'
       end
       raise OptionArgumentError, 'Syntax checking cannot be turned off.' if except_syntax?
       unless boolean_or_empty_cache?
@@ -313,8 +301,7 @@ module RuboCop
 
       return if incompatible_options.size <= 1
 
-      raise OptionArgumentError, 'Incompatible cli options: ' \
-                                 "#{incompatible_options.inspect}"
+      raise OptionArgumentError, 'Incompatible cli options: ' + incompatible_options.inspect.to_s
     end
     # rubocop:enable Metrics/AbcSize
 
@@ -326,8 +313,7 @@ module RuboCop
       %i[exclude_limit offense_counts auto_gen_timestamp
          auto_gen_only_exclude].each do |option|
         if @options.key?(option)
-          raise OptionArgumentError,
-                format(message, flag: option.to_s.tr('_', '-'))
+          raise OptionArgumentError, format(message, flag: option.to_s.tr('_', '-'))
         end
       end
     end
@@ -376,8 +362,7 @@ module RuboCop
 
     def only_includes_redundant_disable?
       @options.key?(:only) &&
-        (@options[:only] & %w[Lint/RedundantCopDisableDirective
-                              RedundantCopDisableDirective]).any?
+        (@options[:only] & %w[Lint/RedundantCopDisableDirective RedundantCopDisableDirective]).any?
     end
 
     def display_only_fail_level_offenses_with_autocorrect?
@@ -385,8 +370,7 @@ module RuboCop
     end
 
     def except_syntax?
-      @options.key?(:except) &&
-        (@options[:except] & %w[Lint/Syntax Syntax]).any?
+      @options.key?(:except) && (@options[:except] & %w[Lint/Syntax Syntax]).any?
     end
 
     def boolean_or_empty_cache?
@@ -408,8 +392,7 @@ module RuboCop
     def validate_cache_enabled_for_cache_root
       return unless @options[:cache] == 'false'
 
-      raise OptionArgumentError, '--cache-root can not be used with ' \
-                                  '--cache false'
+      raise OptionArgumentError, '--cache-root can not be used with --cache false'
     end
   end
 

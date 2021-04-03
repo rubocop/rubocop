@@ -27,8 +27,7 @@ module RuboCop
 
     def options_config=(options_config)
       loaded_config = ConfigLoader.load_file(options_config)
-      @options_config = ConfigLoader.merge_with_default(loaded_config,
-                                                        options_config)
+      @options_config = ConfigLoader.merge_with_default(loaded_config, options_config)
     end
 
     def force_default_config!

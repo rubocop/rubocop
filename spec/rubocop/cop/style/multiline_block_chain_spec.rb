@@ -38,8 +38,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain, :config do
       RUBY
     end
 
-    it 'registers an offense for a chain where the second block is ' \
-       'single-line' do
+    it 'registers an offense for a chain where the second block is single-line' do
       expect_offense(<<~RUBY)
         Thread.list.find_all { |t|
           t.alive?

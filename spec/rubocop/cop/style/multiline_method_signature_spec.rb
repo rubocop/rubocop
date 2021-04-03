@@ -172,11 +172,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
     end
 
     context 'when correction would exceed maximum line length' do
-      let(:other_cops) do
-        {
-          'Layout/LineLength' => { 'Max' => 5 }
-        }
-      end
+      let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 5 } } }
 
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
@@ -188,11 +184,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
     end
 
     context 'when correction would not exceed maximum line length' do
-      let(:other_cops) do
-        {
-          'Layout/LineLength' => { 'Max' => 25 }
-        }
-      end
+      let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 25 } } }
 
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)

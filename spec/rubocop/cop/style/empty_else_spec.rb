@@ -266,8 +266,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
         end
       end
 
-      context 'with an else-clause containing only the literal nil ' \
-              'using semicolons' do
+      context 'with an else-clause containing only the literal nil using semicolons' do
         context 'with one elsif' do
           let(:source) { <<~RUBY }
             if a; foo elsif b; bar else nil end

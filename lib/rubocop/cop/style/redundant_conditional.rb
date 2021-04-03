@@ -31,8 +31,7 @@ module RuboCop
         operators = RuboCop::AST::Node::COMPARISON_OPERATORS.to_a
         COMPARISON_OPERATOR_MATCHER = "{:#{operators.join(' :')}}"
 
-        MSG = 'This conditional expression can just be replaced ' \
-              'by `%<msg>s`.'
+        MSG = 'This conditional expression can just be replaced by `%<msg>s`.'
 
         def on_if(node)
           return unless offense?(node)
@@ -78,11 +77,9 @@ module RuboCop
 
         def invert_expression?(node)
           (
-            (node.if? || node.elsif? || node.ternary?) &&
-            redundant_condition_inverted?(node)
+            (node.if? || node.elsif? || node.ternary?) && redundant_condition_inverted?(node)
           ) || (
-            node.unless? &&
-            redundant_condition?(node)
+            node.unless? && redundant_condition?(node)
           )
         end
 

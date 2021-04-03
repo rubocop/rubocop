@@ -100,9 +100,7 @@ module RuboCop
         def check_expressions(expressions)
           return unless expressions.size > 1 && expressions.uniq.one?
 
-          expressions.each do |expression|
-            add_offense(expression)
-          end
+          expressions.each { |expression| add_offense(expression) }
         end
 
         def message(node)

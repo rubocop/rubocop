@@ -112,13 +112,11 @@ module RuboCop
         end
 
         def special_file_keyword?(node)
-          node.str_type? &&
-            node.source == '__FILE__'
+          node.str_type? && node.source == '__FILE__'
         end
 
         def special_line_keyword?(node)
-          node.int_type? &&
-            node.source == '__LINE__'
+          node.int_type? && node.source == '__LINE__'
         end
 
         def file_and_line(node)

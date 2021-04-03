@@ -32,10 +32,7 @@ module RuboCop
             return unless discount_repeated_attributes
 
             self_attributes = {} # Share hash for `(send nil? :foo)` and `(send (self) :foo)`
-            @known_attributes = {
-              s(:self) => self_attributes,
-              nil => self_attributes
-            }
+            @known_attributes = { s(:self) => self_attributes, nil => self_attributes }
             # example after running `obj = foo.bar; obj.baz.qux`
             # { nil => {foo: {bar: {}}},
             #   s(self) => same hash ^,
@@ -114,9 +111,7 @@ module RuboCop
               return yield nil
             end
 
-            calls.fetch(value) do
-              yield [calls, value]
-            end
+            calls.fetch(value) { yield [calls, value] }
           end
 
           VAR_SETTER_TO_GETTER = {

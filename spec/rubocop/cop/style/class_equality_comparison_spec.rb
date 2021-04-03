@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
-  let(:cop_config) do
-    { 'IgnoredMethods' => [] }
-  end
+  let(:cop_config) { { 'IgnoredMethods' => [] } }
 
   it 'registers an offense and corrects when comparing class using `==` for equality' do
     expect_offense(<<~RUBY)
@@ -79,9 +77,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
 
   context 'when IgnoredMethods is specified' do
     context 'with a string' do
-      let(:cop_config) do
-        { 'IgnoredMethods' => ['=='] }
-      end
+      let(:cop_config) { { 'IgnoredMethods' => ['=='] } }
 
       it 'does not register an offense when comparing class for equality' do
         expect_no_offenses(<<~RUBY)
@@ -94,9 +90,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
     end
 
     context 'with a regex' do
-      let(:cop_config) do
-        { 'IgnoredMethods' => [/equal/] }
-      end
+      let(:cop_config) { { 'IgnoredMethods' => [/equal/] } }
 
       it 'does not register an offense when comparing class for equality' do
         expect_no_offenses(<<~RUBY)

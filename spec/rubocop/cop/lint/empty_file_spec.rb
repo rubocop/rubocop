@@ -3,9 +3,7 @@
 RSpec.describe RuboCop::Cop::Lint::EmptyFile, :config do
   let(:commissioner) { RuboCop::Cop::Commissioner.new([cop]) }
   let(:offenses) { commissioner.investigate(processed_source).offenses }
-  let(:cop_config) do
-    { 'AllowComments' => true }
-  end
+  let(:cop_config) { { 'AllowComments' => true } }
   let(:source) { '' }
 
   it 'registers an offense when the file is empty' do
@@ -28,9 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyFile, :config do
   end
 
   context 'when AllowComments is false' do
-    let(:cop_config) do
-      { 'AllowComments' => false }
-    end
+    let(:cop_config) { { 'AllowComments' => false } }
     let(:source) { '# comment' }
 
     it 'registers an offense when the file contains comments' do

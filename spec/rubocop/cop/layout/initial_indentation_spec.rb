@@ -55,8 +55,7 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation, :config do
     expect_no_offenses('')
   end
 
-  it 'registers an offense and corrects indented assignment ' \
-    'disregarding comment' do
+  it 'registers an offense and corrects indented assignment disregarding comment' do
     expect_offense(<<-RUBY.strip_margin('|'))
     |   # comment
     |   x = 1

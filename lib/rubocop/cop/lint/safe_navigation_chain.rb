@@ -26,8 +26,7 @@ module RuboCop
       class SafeNavigationChain < Base
         include NilMethods
 
-        MSG = 'Do not chain ordinary method call' \
-              ' after safe navigation operator.'
+        MSG = 'Do not chain ordinary method call after safe navigation operator.'
 
         # @!method bad_method?(node)
         def_node_matcher :bad_method?, <<~PATTERN

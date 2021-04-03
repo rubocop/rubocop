@@ -20,8 +20,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG_1 = 'Redundant `RuntimeError` argument can be removed.'
-        MSG_2 = 'Redundant `RuntimeError.new` call can be replaced with ' \
-                'just the message.'
+        MSG_2 = 'Redundant `RuntimeError.new` call can be replaced with just the message.'
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
@@ -35,11 +34,9 @@ module RuboCop
           exploded?(node) do |command, message|
             add_offense(node, message: MSG_1) do |corrector|
               if node.parenthesized?
-                corrector.replace(node,
-                                  "#{command}(#{message.source})")
+                corrector.replace(node, "#{command}(#{message.source})")
               else
-                corrector.replace(node,
-                                  "#{command} #{message.source}")
+                corrector.replace(node, "#{command} #{message.source}")
               end
             end
           end

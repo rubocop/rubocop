@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
-  it 'registers an offense for a block with parameterless method call on ' \
-     'param' do
+  it 'registers an offense for a block with parameterless method call on param' do
     expect_offense(<<~RUBY)
       coll.map { |e| e.upcase }
                ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.

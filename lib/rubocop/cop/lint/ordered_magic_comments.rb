@@ -31,8 +31,7 @@ module RuboCop
         include FrozenStringLiteral
         extend AutoCorrector
 
-        MSG = 'The encoding magic comment should precede all other ' \
-              'magic comments.'
+        MSG = 'The encoding magic comment should precede all other magic comments.'
 
         def on_new_investigation
           return if processed_source.buffer.source.empty?

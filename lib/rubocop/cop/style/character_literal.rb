@@ -18,13 +18,11 @@ module RuboCop
         include StringHelp
         extend AutoCorrector
 
-        MSG = 'Do not use the character literal - ' \
-              'use string literal instead.'
+        MSG = 'Do not use the character literal - use string literal instead.'
 
         def offense?(node)
           # we don't register an offense for things like ?\C-\M-d
-          node.loc.begin.is?('?') &&
-            node.source.size.between?(2, 3)
+          node.loc.begin.is?('?') && node.source.size.between?(2, 3)
         end
 
         def autocorrect(corrector, node)

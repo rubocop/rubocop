@@ -53,8 +53,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
   context 'when EnforcedStyle is empty_lines' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines' } }
 
-    it 'registers an offense for module body not starting or ending with a ' \
-       'blank' do
+    it 'registers an offense for module body not starting or ending with a blank' do
       expect_offense(<<~RUBY)
         module SomeModule
           do_something
@@ -144,8 +143,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
         RUBY
       end
 
-      it 'registers offenses for namespaced module body not starting '\
-          'with a blank' do
+      it 'registers offenses for namespaced module body not starting with a blank' do
         expect_offense(<<~RUBY)
           module Parent
             module Child
@@ -157,8 +155,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
         RUBY
       end
 
-      it 'registers offenses for namespaced module body not ending '\
-          'with a blank' do
+      it 'registers offenses for namespaced module body not ending with a blank' do
         expect_offense(<<~RUBY)
           module Parent
             module Child
@@ -251,8 +248,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
         RUBY
       end
 
-      it 'registers offenses for namespace body starting '\
-        'and ending without a blank' do
+      it 'registers offenses for namespace body starting and ending without a blank' do
         expect_offense(<<~RUBY)
           module Parent
             module Mom

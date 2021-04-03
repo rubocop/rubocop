@@ -101,9 +101,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
         $0
         ^^ Prefer `$PROGRAM_NAME` over `$0`.
       RUBY
-      expect(cop.config_to_allow_offenses).to eq(
-        'EnforcedStyle' => 'use_perl_names'
-      )
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'use_perl_names')
 
       expect_correction(<<~RUBY)
         $PROGRAM_NAME

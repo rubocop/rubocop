@@ -96,9 +96,7 @@ module RuboCop
       end
 
       def display_style_guide?
-        (options[:display_style_guide] ||
-         config.for_all_cops['DisplayStyleGuide']) &&
-          !urls.empty?
+        (options[:display_style_guide] || config.for_all_cops['DisplayStyleGuide']) && !urls.empty?
       end
 
       def reference_urls

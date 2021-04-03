@@ -18,13 +18,10 @@ module RuboCop
       #   def foobar(a = 1, b = 2, c = 3)
       #   end
       class OptionalArguments < Base
-        MSG = 'Optional arguments should appear at the end ' \
-              'of the argument list.'
+        MSG = 'Optional arguments should appear at the end of the argument list.'
 
         def on_def(node)
-          each_misplaced_optional_arg(node.arguments) do |argument|
-            add_offense(argument)
-          end
+          each_misplaced_optional_arg(node.arguments) { |argument| add_offense(argument) }
         end
 
         private

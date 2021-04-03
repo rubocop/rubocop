@@ -43,8 +43,7 @@ module RuboCop
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
                            'single-line body. Another good alternative is ' \
                            'the usage of control flow `&&`/`||`.'
-        MSG_USE_NORMAL =
-          'Modifier form of `%<keyword>s` makes the line too long.'
+        MSG_USE_NORMAL = 'Modifier form of `%<keyword>s` makes the line too long.'
 
         def self.autocorrect_incompatible_with
           [Style::SoleNestedConditional]
@@ -123,8 +122,7 @@ module RuboCop
         end
 
         def line_length_enabled_at_line?(line)
-          processed_source.comment_config
-                          .cop_enabled_at_line?('Layout/LineLength', line)
+          processed_source.comment_config.cop_enabled_at_line?('Layout/LineLength', line)
         end
 
         def named_capture_in_condition?(node)
@@ -132,10 +130,7 @@ module RuboCop
         end
 
         def non_eligible_node?(node)
-          non_simple_if_unless?(node) ||
-            node.chained? ||
-            node.nested_conditional? ||
-            super
+          non_simple_if_unless?(node) || node.chained? || node.nested_conditional? || super
         end
 
         def non_simple_if_unless?(node)
@@ -153,8 +148,7 @@ module RuboCop
             node  = node.parent
           end
 
-          node && (sibling = node.children[index + 1]) &&
-            sibling.source_range.first_line == line_no
+          node && (sibling = node.children[index + 1]) && sibling.source_range.first_line == line_no
         end
 
         def to_normal_form(node)

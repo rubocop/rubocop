@@ -113,8 +113,7 @@ module RuboCop
         end
 
         def correct_method(node, receiver)
-          format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name],
-                 number_object: receiver.source)
+          format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name], number_object: receiver.source)
         end
 
         def correct_sym_method(to_method)

@@ -48,11 +48,7 @@ module RuboCop
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
-        REPLACEMENTS = {
-          'zero?' => '==',
-          'positive?' => '>',
-          'negative?' => '<'
-        }.freeze
+        REPLACEMENTS = { 'zero?' => '==', 'positive?' => '>', 'negative?' => '<' }.freeze
 
         RESTRICT_ON_SEND = %i[== > < positive? negative? zero?].freeze
 
@@ -88,8 +84,7 @@ module RuboCop
 
         def replacement(numeric, operation)
           if style == :predicate
-            [parenthesized_source(numeric),
-             REPLACEMENTS.invert[operation.to_s]].join('.')
+            [parenthesized_source(numeric), REPLACEMENTS.invert[operation.to_s]].join('.')
           else
             [numeric.source, REPLACEMENTS[operation.to_s], 0].join(' ')
           end

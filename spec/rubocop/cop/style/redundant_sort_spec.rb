@@ -244,8 +244,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
 
   context '>= Ruby 2.7', :ruby27 do
     context 'when using numbered parameter' do
-      it 'registers an offense and corrects when last is called on sort with ' \
-         'comparator' do
+      it 'registers an offense and corrects when last is called on sort with comparator' do
         expect_offense(<<~RUBY)
           foo.sort { _2 <=> _1 }.last
               ^^^^^^^^^^^^^^^^^^^^^^^ Use `max` instead of `sort...last`.

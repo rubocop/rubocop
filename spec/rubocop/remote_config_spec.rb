@@ -3,9 +3,7 @@
 RSpec.describe RuboCop::RemoteConfig do
   include FileHelper
 
-  subject(:remote_config) do
-    described_class.new(remote_config_url, base_dir).file
-  end
+  subject(:remote_config) { described_class.new(remote_config_url, base_dir).file }
 
   let(:remote_config_url) { 'http://example.com/rubocop.yml' }
   let(:base_dir) { '.' }
@@ -45,8 +43,7 @@ RSpec.describe RuboCop::RemoteConfig do
       let(:new_location) { 'http://cdn.example.com/rubocop.yml' }
 
       before do
-        stub_request(:get, remote_config_url)
-          .to_return(headers: { 'Location' => new_location })
+        stub_request(:get, remote_config_url).to_return(headers: { 'Location' => new_location })
 
         stub_request(:get, new_location)
           .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
@@ -59,26 +56,18 @@ RSpec.describe RuboCop::RemoteConfig do
     end
 
     context 'when the remote URL responds with not modified' do
-      before do
-        stub_request(:get, remote_config_url)
-          .to_return(status: 304)
-      end
+      before { stub_request(:get, remote_config_url).to_return(status: 304) }
 
       it 'reuses the existing cached file' do
         FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 30)
 
-        expect do
-          remote_config
-        end.not_to change(File.stat(cached_file_path), :mtime)
+        expect { remote_config }.not_to change(File.stat(cached_file_path), :mtime)
         assert_requested :get, remote_config_url
       end
     end
 
     context 'when the network is inaccessible' do
-      before do
-        stub_request(:get, remote_config_url)
-          .to_raise(SocketError)
-      end
+      before { stub_request(:get, remote_config_url).to_raise(SocketError) }
 
       it 'reuses the existing cached file' do
         expect(remote_config).to eq(cached_file_path)
@@ -86,10 +75,7 @@ RSpec.describe RuboCop::RemoteConfig do
     end
 
     context 'when the remote URL responds with 500' do
-      before do
-        stub_request(:get, remote_config_url)
-          .to_return(status: 500)
-      end
+      before { stub_request(:get, remote_config_url).to_return(status: 500) }
 
       it 'raises error' do
         expect do

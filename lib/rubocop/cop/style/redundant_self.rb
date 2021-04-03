@@ -92,9 +92,7 @@ module RuboCop
 
         def on_masgn(node)
           lhs, rhs = *node
-          lhs.children.each do |child|
-            add_lhs_to_local_variables_scopes(rhs, child.to_a.first)
-          end
+          lhs.children.each { |child| add_lhs_to_local_variables_scopes(rhs, child.to_a.first) }
         end
 
         def on_lvasgn(node)
@@ -160,9 +158,7 @@ module RuboCop
 
         def add_lhs_to_local_variables_scopes(rhs, lhs)
           if rhs&.send_type? && !rhs.arguments.empty?
-            rhs.arguments.each do |argument|
-              @local_variables_scopes[argument] << lhs
-            end
+            rhs.arguments.each { |argument| @local_variables_scopes[argument] << lhs }
           else
             @local_variables_scopes[rhs] << lhs
           end

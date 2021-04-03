@@ -23,9 +23,7 @@ module RuboCop
               ' The regexp literal matches `$_` implicitly.'
 
         def on_match_current_line(node)
-          add_offense(node) do |corrector|
-            corrector.replace(node, "#{node.source} =~ $_")
-          end
+          add_offense(node) { |corrector| corrector.replace(node, "#{node.source} =~ $_") }
         end
       end
     end

@@ -46,8 +46,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       expect_no_corrections
     end
 
-    it 'registers an offense for variable argument and assignment ' \
-       'but does not auto-correct' do
+    it 'registers an offense for variable argument and assignment but does not auto-correct' do
       expect_offense(<<~RUBY)
         a = something()
         puts "%d" % a

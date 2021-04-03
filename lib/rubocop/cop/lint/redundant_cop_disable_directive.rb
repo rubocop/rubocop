@@ -69,9 +69,7 @@ module RuboCop
             # Eat the entire comment, the preceding space, and the preceding
             # newline if there is one.
             original_begin = range.begin_pos
-            range = range_with_surrounding_space(range: range,
-                                                 side: :left,
-                                                 newlines: true)
+            range = range_with_surrounding_space(range: range, side: :left, newlines: true)
 
             range_with_surrounding_space(range: range,
                                          side: :right,
@@ -93,9 +91,7 @@ module RuboCop
 
           range = range_with_surrounding_comma(range, :right)
           # Eat following spaces up to EOL, but not the newline itself.
-          range_with_surrounding_space(range: range,
-                                       side: :right,
-                                       newlines: false)
+          range_with_surrounding_space(range: range, side: :right, newlines: false)
         end
 
         def each_redundant_disable(cop_disabled_line_ranges, offenses,
@@ -103,13 +99,9 @@ module RuboCop
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
-            each_already_disabled(line_ranges,
-                                  disabled_ranges) do |comment|
-              yield comment, cop
-            end
+            each_already_disabled(line_ranges, disabled_ranges) { |comment| yield comment, cop }
 
-            each_line_range(line_ranges, disabled_ranges, offenses,
-                            cop, &block)
+            each_line_range(line_ranges, disabled_ranges, offenses, cop, &block)
           end
         end
 
@@ -119,8 +111,7 @@ module RuboCop
             comment = processed_source.comment_at_line(line_range.begin)
             next if ignore_offense?(disabled_ranges, line_range)
 
-            redundant_cop = find_redundant(comment, offenses, cop, line_range,
-                                           line_ranges[ix + 1])
+            redundant_cop = find_redundant(comment, offenses, cop, line_range, line_ranges[ix + 1])
             yield comment, redundant_cop if redundant_cop
           end
         end
@@ -151,8 +142,7 @@ module RuboCop
             # comment. If the disable all comment is truly redundant, we will
             # detect that when examining the comments of another cop, and we
             # get the full line range for the disable all.
-            if (next_line_range.nil? ||
-                line_range.last != next_line_range.first) &&
+            if (next_line_range.nil? || line_range.last != next_line_range.first) &&
                offenses.none? { |o| line_range.cover?(o.line) }
               'all'
             end
@@ -180,8 +170,7 @@ module RuboCop
 
         def add_offenses(redundant_cops)
           redundant_cops.each do |comment, cops|
-            if all_disabled?(comment) ||
-               directive_count(comment) == cops.size
+            if all_disabled?(comment) || directive_count(comment) == cops.size
               add_offense_for_entire_comment(comment, cops)
             else
               add_offense_for_some_cops(comment, cops)
@@ -229,8 +218,7 @@ module RuboCop
           return unless offset
 
           offset += haystack.begin_pos
-          Parser::Source::Range.new(haystack.source_buffer, offset,
-                                    offset + needle.size)
+          Parser::Source::Range.new(haystack.source_buffer, offset, offset + needle.size)
         end
 
         def trailing_range?(ranges, range)

@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
   context 'enforce not yoda' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'forbid_for_all_comparison_operators' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'forbid_for_all_comparison_operators' } }
 
     it 'accepts method call on receiver on left' do
       expect_no_offenses('b.value == 2')
@@ -209,9 +207,7 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
     end
 
     context 'with EnforcedStyle: forbid_for_equality_operators_only' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'forbid_for_equality_operators_only' }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'forbid_for_equality_operators_only' } }
 
       it 'accepts number on left of comparison' do
         expect_no_offenses('42 < bar')
@@ -250,9 +246,7 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
   end
 
   context 'enforce yoda' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'require_for_all_comparison_operators' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'require_for_all_comparison_operators' } }
 
     it 'accepts method call on receiver on right' do
       expect_no_offenses('2 == b.value')
@@ -439,9 +433,7 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
     end
 
     context 'with EnforcedStyle: require_for_equality_operators_only' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'require_for_equality_operators_only' }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'require_for_equality_operators_only' } }
 
       it 'accepts number on right of comparison' do
         expect_no_offenses('bar > 42')

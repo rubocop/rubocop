@@ -153,23 +153,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
     RUBY
   end
 
-  it 'accepts %q at the beginning of a double quoted string ' \
-     'with interpolation' do
+  it 'accepts %q at the beginning of a double quoted string with interpolation' do
     expect_no_offenses("\"%q(a)\#{b}\"")
   end
 
-  it 'accepts %Q at the beginning of a double quoted string ' \
-     'with interpolation' do
+  it 'accepts %Q at the beginning of a double quoted string with interpolation' do
     expect_no_offenses("\"%Q(a)\#{b}\"")
   end
 
-  it 'accepts %q at the beginning of a section of a double quoted string ' \
-     'with interpolation' do
+  it 'accepts %q at the beginning of a section of a double quoted string with interpolation' do
     expect_no_offenses(%("%\#{b}%q(a)"))
   end
 
-  it 'accepts %Q at the beginning of a section of a double quoted string ' \
-     'with interpolation' do
+  it 'accepts %Q at the beginning of a section of a double quoted string with interpolation' do
     expect_no_offenses(%("%\#{b}%Q(a)"))
   end
 

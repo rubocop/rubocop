@@ -11,8 +11,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray, :config do
         expect_no_offenses("%#{char}{$,}")
       end
 
-      it 'registers an offense and corrects when symbols contain colons ' \
-        'and are comma separated' do
+      it 'registers an offense and corrects when symbols contain colons and are comma separated' do
         expect_offense(<<~RUBY)
           %#{char}(:foo, :bar, :baz)
           ^^^^^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
@@ -23,8 +22,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when one symbol has a colon ' \
-        'but there are no commas' do
+      it 'registers an offense and corrects when one symbol has a colon but there are no commas' do
         expect_offense(<<~RUBY)
           %#{char}(:foo bar baz)
           ^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.
@@ -35,8 +33,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when there are no colons ' \
-        'but one comma' do
+      it 'registers an offense and corrects when there are no colons but one comma' do
         expect_offense(<<~RUBY)
           %#{char}(foo, bar baz)
           ^^^^^^^^^^^^^^^^ Within `%i`/`%I`, ':' and ',' are unnecessary and may be unwanted in the resulting symbols.

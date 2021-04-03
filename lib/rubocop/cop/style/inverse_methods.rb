@@ -136,8 +136,7 @@ module RuboCop
         end
 
         def inverse_blocks
-          @inverse_blocks ||= cop_config['InverseBlocks']
-                              .merge(cop_config['InverseBlocks'].invert)
+          @inverse_blocks ||= cop_config['InverseBlocks'].merge(cop_config['InverseBlocks'].invert)
         end
 
         def negated?(node)
@@ -160,9 +159,7 @@ module RuboCop
         # `Integer > Numeric`.
         def possible_class_hierarchy_check?(lhs, rhs, method)
           CLASS_COMPARISON_METHODS.include?(method) &&
-            (camel_case_constant?(lhs) ||
-             (rhs.size == 1 &&
-              camel_case_constant?(rhs.first)))
+            (camel_case_constant?(lhs) || (rhs.size == 1 && camel_case_constant?(rhs.first)))
         end
 
         def camel_case_constant?(node)
@@ -174,8 +171,7 @@ module RuboCop
         end
 
         def remove_end_parenthesis(corrector, node, method, method_call)
-          return unless EQUALITY_METHODS.include?(method) ||
-                        method_call.parent.begin_type?
+          return unless EQUALITY_METHODS.include?(method) || method_call.parent.begin_type?
 
           corrector.remove(end_parentheses(node, method_call))
         end

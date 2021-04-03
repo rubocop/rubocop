@@ -56,8 +56,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
       expect_no_offenses('Dir.exist?(o)')
     end
 
-    it 'does not register an offense for offensive method `exists?`'\
-       'on other receivers' do
+    it 'does not register an offense for offensive method `exists?`on other receivers' do
       expect_no_offenses('Foo.exists?(o)')
     end
   end
@@ -78,8 +77,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
       expect_no_offenses('block_given?')
     end
 
-    it 'does not register an offense for offensive method `iterator?`'\
-       'on other receivers' do
+    it 'does not register an offense for offensive method `iterator?`on other receivers' do
       expect_no_offenses('Foo.iterator?')
     end
   end

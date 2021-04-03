@@ -25,10 +25,7 @@ module RuboCop
     end
 
     def extra_enabled_comments
-      extra_enabled_comments_with_names(
-        extras: Hash.new { |h, k| h[k] = [] },
-        names: Hash.new(0)
-      )
+      extra_enabled_comments_with_names(extras: Hash.new { |h, k| h[k] = [] }, names: Hash.new(0))
     end
 
     def comment_only_line?(line_number)

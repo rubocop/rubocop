@@ -66,9 +66,7 @@ module RuboCop
           loop_variable(node.arguments) do |var_name|
             return unless var_is_required?(node.body, var_name)
 
-            add_offense(node.send_node) do |corrector|
-              correct_block(corrector, node.send_node)
-            end
+            add_offense(node.send_node) { |corrector| correct_block(corrector, node.send_node) }
           end
         end
 

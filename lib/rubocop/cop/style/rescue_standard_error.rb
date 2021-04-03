@@ -76,10 +76,8 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_IMPLICIT = 'Omit the error class when rescuing ' \
-          '`StandardError` by itself.'
-        MSG_EXPLICIT = 'Avoid rescuing without specifying ' \
-          'an error class.'
+        MSG_IMPLICIT = 'Omit the error class when rescuing `StandardError` by itself.'
+        MSG_EXPLICIT = 'Avoid rescuing without specifying an error class.'
 
         # @!method rescue_without_error_class?(node)
         def_node_matcher :rescue_without_error_class?, <<~PATTERN
@@ -100,9 +98,7 @@ module RuboCop
               offense_for_implicit_enforced_style(node, error)
             end
           when :explicit
-            rescue_without_error_class?(node) do
-              offense_for_exlicit_enforced_style(node)
-            end
+            rescue_without_error_class?(node) { offense_for_exlicit_enforced_style(node) }
           end
         end
 

@@ -26,23 +26,18 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Put one space between the method name and ' \
-              'the first argument.'
+        MSG = 'Put one space between the method name and the first argument.'
 
         def on_send(node)
           return unless regular_method_call_with_arguments?(node)
 
           first_arg = node.first_argument.source_range
-          first_arg_with_space = range_with_surrounding_space(range: first_arg,
-                                                              side: :left)
-          space = range_between(first_arg_with_space.begin_pos,
-                                first_arg.begin_pos)
+          first_arg_with_space = range_with_surrounding_space(range: first_arg, side: :left)
+          space = range_between(first_arg_with_space.begin_pos, first_arg.begin_pos)
           return if space.length == 1
           return unless expect_params_after_method_name?(node)
 
-          add_offense(space) do |corrector|
-            corrector.replace(space, ' ')
-          end
+          add_offense(space) { |corrector| corrector.replace(space, ' ') }
         end
         alias on_csend on_send
 
@@ -59,8 +54,7 @@ module RuboCop
           first_arg = node.first_argument
 
           same_line?(first_arg, node) &&
-            !(allow_for_alignment? &&
-              aligned_with_something?(first_arg.source_range))
+            !(allow_for_alignment? && aligned_with_something?(first_arg.source_range))
         end
 
         def no_space_between_method_name_and_first_argument?(node)

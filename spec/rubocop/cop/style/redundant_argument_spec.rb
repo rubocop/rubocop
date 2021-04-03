@@ -107,9 +107,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   end
 
   context 'non-builtin method' do
-    let(:cop_config) do
-      { 'Methods' => { 'foo' => 2 } }
-    end
+    let(:cop_config) { { 'Methods' => { 'foo' => 2 } } }
 
     it 'registers an offense and corrects with configured argument' do
       expect_offense(<<~RUBY)

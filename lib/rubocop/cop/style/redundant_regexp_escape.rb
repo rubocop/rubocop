@@ -72,10 +72,7 @@ module RuboCop
         end
 
         def delimiter?(node, char)
-          delimiters = [
-            node.loc.begin.source[-1],
-            node.loc.end.source[0]
-          ]
+          delimiters = [node.loc.begin.source[-1], node.loc.end.source[0]]
 
           delimiters.include?(char)
         end

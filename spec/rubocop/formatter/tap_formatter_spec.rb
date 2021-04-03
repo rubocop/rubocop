@@ -29,9 +29,7 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
     context 'when any offenses are detected' do
       let(:offenses) do
         source_buffer = Parser::Source::Buffer.new('test', 1)
-        source = Array.new(9) do |index|
-          "This is line #{index + 1}."
-        end
+        source = Array.new(9) { |index| "This is line #{index + 1}." }
         source_buffer.source = source.join("\n")
         line_length = source[0].length + 1
 
@@ -54,16 +52,12 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
   end
 
   describe '#finished' do
-    before do
-      formatter.started(files)
-    end
+    before { formatter.started(files) }
 
     context 'when any offenses are detected' do
       before do
         source_buffer = Parser::Source::Buffer.new('test', 1)
-        source = Array.new(9) do |index|
-          "This is line #{index + 1}."
-        end
+        source = Array.new(9) { |index| "This is line #{index + 1}." }
         source_buffer.source = source.join("\n")
         line_length = source[0].length + 1
 

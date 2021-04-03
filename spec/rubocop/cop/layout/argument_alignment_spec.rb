@@ -10,11 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
   let(:indentation_width) { 2 }
 
   context 'aligned with first argument' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_first_argument'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_first_argument' } }
 
     it 'registers an offense and corrects arguments with single indent' do
       expect_offense(<<~RUBY)
@@ -299,8 +295,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and correct multi-line parameters' \
-      'indented too far' do
+    it 'registers an offense and correct multi-line parametersindented too far' do
       expect_offense(<<~RUBY)
         create :transaction, :closed,
                  account:          account,
@@ -355,11 +350,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
   end
 
   context 'aligned with fixed indentation' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_fixed_indentation'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_fixed_indentation' } }
 
     it 'autocorrects by outdenting when indented too far' do
       expect_offense(<<~RUBY)
@@ -424,8 +415,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
         RUBY
       end
 
-      it 'registers offenses and corrects double indentation ' \
-        'from relevant method' do
+      it 'registers offenses and corrects double indentation from relevant method' do
         expect_offense(<<~RUBY)
           something
             .method_name(

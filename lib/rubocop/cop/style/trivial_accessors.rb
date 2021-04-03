@@ -107,8 +107,7 @@ module RuboCop
         end
 
         def trivial_reader?(node)
-          looks_like_trivial_reader?(node) &&
-            !allowed_method_name?(node) && !allowed_reader?(node)
+          looks_like_trivial_reader?(node) && !allowed_method_name?(node) && !allowed_reader?(node)
         end
 
         def looks_like_trivial_reader?(node)
@@ -146,8 +145,7 @@ module RuboCop
         end
 
         def trivial_accessor_kind(node)
-          if trivial_writer?(node) &&
-             !dsl_writer?(node.method_name)
+          if trivial_writer?(node) && !dsl_writer?(node.method_name)
             'writer'
           elsif trivial_reader?(node)
             'reader'

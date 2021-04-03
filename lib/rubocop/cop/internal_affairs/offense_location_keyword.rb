@@ -16,8 +16,7 @@ module RuboCop
       class OffenseLocationKeyword < Base
         extend AutoCorrector
 
-        MSG = 'Use `:%<keyword>s` as the location argument to ' \
-              '`#add_offense`.'
+        MSG = 'Use `:%<keyword>s` as the location argument to `#add_offense`.'
         RESTRICT_ON_SEND = %i[add_offense].freeze
 
         def on_send(node)

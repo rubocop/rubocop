@@ -60,9 +60,7 @@ module RuboCop
                      abc_vector: abc_vector,
                      max: max)
 
-        add_offense(node, message: msg) do
-          self.max = complexity.ceil
-        end
+        add_offense(node, message: msg) { self.max = complexity.ceil }
       end
 
       def complexity(body)

@@ -69,8 +69,7 @@ module RuboCop
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'
-        LOGIC_JUMP_KEYWORDS = %i[break fail next raise
-                                 return throw yield].freeze
+        LOGIC_JUMP_KEYWORDS = %i[break fail next raise return throw yield].freeze
 
         # if format: (if checked_variable body nil)
         # unless format: (if checked_variable nil body)
@@ -112,9 +111,7 @@ module RuboCop
           return if unsafe_method_used?(method_chain, method)
           return if method_chain.method?(:empty?)
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         def use_var_only_in_unless_modifier?(node, variable)
@@ -139,8 +136,7 @@ module RuboCop
           comments = comments(node)
           return if comments.empty?
 
-          corrector.insert_before(method_call,
-                                  "#{comments.map(&:text).join("\n")}\n")
+          corrector.insert_before(method_call, "#{comments.map(&:text).join("\n")}\n")
         end
 
         def comments(node)
@@ -181,11 +177,9 @@ module RuboCop
         end
 
         def extract_parts_from_if(node)
-          variable, receiver =
-            modifier_if_safe_navigation_candidate(node)
+          variable, receiver = modifier_if_safe_navigation_candidate(node)
 
-          checked_variable, matching_receiver, method =
-            extract_common_parts(receiver, variable)
+          checked_variable, matching_receiver, method = extract_common_parts(receiver, variable)
 
           matching_receiver = nil if receiver && LOGIC_JUMP_KEYWORDS.include?(receiver.type)
 
@@ -195,18 +189,15 @@ module RuboCop
         def extract_parts_from_and(node)
           checked_variable, rhs = *node
           if cop_config['ConvertCodeThatCanStartToReturnNil']
-            checked_variable =
-              not_nil_check?(checked_variable) || checked_variable
+            checked_variable = not_nil_check?(checked_variable) || checked_variable
           end
 
-          checked_variable, matching_receiver, method =
-            extract_common_parts(rhs, checked_variable)
+          checked_variable, matching_receiver, method = extract_common_parts(rhs, checked_variable)
           [checked_variable, matching_receiver, rhs, method]
         end
 
         def extract_common_parts(method_chain, checked_variable)
-          matching_receiver =
-            find_matching_receiver_invocation(method_chain, checked_variable)
+          matching_receiver = find_matching_receiver_invocation(method_chain, checked_variable)
 
           method = matching_receiver.parent if matching_receiver
 
@@ -264,13 +255,11 @@ module RuboCop
         end
 
         def begin_range(node, method_call)
-          range_between(node.loc.expression.begin_pos,
-                        method_call.loc.expression.begin_pos)
+          range_between(node.loc.expression.begin_pos, method_call.loc.expression.begin_pos)
         end
 
         def end_range(node, method_call)
-          range_between(method_call.loc.expression.end_pos,
-                        node.loc.expression.end_pos)
+          range_between(method_call.loc.expression.end_pos, node.loc.expression.end_pos)
         end
 
         def add_safe_nav_to_all_methods_in_chain(corrector,

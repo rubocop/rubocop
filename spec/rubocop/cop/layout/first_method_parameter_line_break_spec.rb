@@ -19,8 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects params on first line ' \
-    'of singleton method' do
+  it 'registers an offense and corrects params on first line of singleton method' do
     expect_offense(<<~RUBY)
       def self.foo(bar,
                    ^^^ Add a line break before the first parameter of a multi-line method parameter list.

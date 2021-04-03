@@ -15,8 +15,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects for missing newline ' \
-    'in {} block w/o params' do
+  it 'registers an offense and corrects for missing newline in {} block w/o params' do
     expect_offense(<<~RUBY)
       test { foo
              ^^^ Block body expression is on the same line as the block start.
@@ -30,8 +29,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects for missing newline ' \
-    'in do/end block with params' do
+  it 'registers an offense and corrects for missing newline in do/end block with params' do
     expect_offense(<<~RUBY)
       test do |x| foo
                   ^^^ Block body expression is on the same line as the block start.
@@ -45,8 +43,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects for missing newline ' \
-    'in {} block with params' do
+  it 'registers an offense and corrects for missing newline in {} block with params' do
     expect_offense(<<~RUBY)
       test { |x| foo
                  ^^^ Block body expression is on the same line as the block start.
@@ -186,8 +183,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects line-break ' \
-    'before arguments with empty block' do
+  it 'registers an offense and corrects line-break before arguments with empty block' do
     expect_offense(<<~RUBY)
       test do
         |x|
@@ -281,8 +277,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects a line break ' \
-    'within destructured arguments' do
+  it 'registers an offense and corrects a line break within destructured arguments' do
     expect_offense(<<~RUBY)
       test do |(x,
               ^^^^ Block argument expression is not on the same line as the block start.

@@ -141,8 +141,7 @@ RSpec.describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
       RUBY
     end
 
-    it 'registers an offense for a case/when block without an expression ' \
-       'after case' do
+    it 'registers an offense for a case/when block without an expression after case' do
       expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Perceived complexity for method_name is too high. [3/1]

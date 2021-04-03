@@ -60,10 +60,8 @@ module RuboCop
 
         def deltas(first_pair, current_pair)
           key_delta = key_delta(first_pair, current_pair)
-          separator_delta = separator_delta(first_pair, current_pair,
-                                            key_delta)
-          value_delta = value_delta(first_pair, current_pair) -
-                        key_delta - separator_delta
+          separator_delta = separator_delta(first_pair, current_pair, key_delta)
+          value_delta = value_delta(first_pair, current_pair) - key_delta - separator_delta
 
           { key: key_delta, separator: separator_delta, value: value_delta }
         end
@@ -106,8 +104,7 @@ module RuboCop
         end
 
         def hash_rocket_delta(first_pair, current_pair)
-          first_pair.loc.column + max_key_width + 1 -
-            current_pair.loc.operator.column
+          first_pair.loc.column + max_key_width + 1 - current_pair.loc.operator.column
         end
 
         def value_delta(first_pair, current_pair)

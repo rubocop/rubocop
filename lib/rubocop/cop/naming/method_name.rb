@@ -53,8 +53,7 @@ module RuboCop
         end
 
         def on_def(node)
-          return if node.operator_method? ||
-                    matches_ignored_pattern?(node.method_name)
+          return if node.operator_method? || matches_ignored_pattern?(node.method_name)
 
           check_name(node, node.method_name, node.loc.name)
         end

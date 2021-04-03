@@ -144,8 +144,7 @@ module RuboCop
           sclass: :class_singleton
         }.freeze
 
-        MSG = '`%<category>s` is supposed to appear before ' \
-              '`%<previous>s`.'
+        MSG = '`%<category>s` is supposed to appear before `%<previous>s`.'
 
         # @!method dynamic_constant?(node)
         def_node_matcher :dynamic_constant?, <<~PATTERN
@@ -159,11 +158,8 @@ module RuboCop
           walk_over_nested_class_definition(class_node) do |node, category|
             index = expected_order.index(category)
             if index < previous
-              message = format(MSG, category: category,
-                                    previous: expected_order[previous])
-              add_offense(node, message: message) do |corrector|
-                autocorrect(corrector, node)
-              end
+              message = format(MSG, category: category, previous: expected_order[previous])
+              add_offense(node, message: message) { |corrector| autocorrect(corrector, node) }
             end
             previous = index
           end
@@ -254,9 +250,7 @@ module RuboCop
           classification = classify(node)
           sibling_class = classify(sibling)
 
-          ignore?(sibling_class) ||
-            classification == sibling_class ||
-            dynamic_constant?(node)
+          ignore?(sibling_class) || classification == sibling_class || dynamic_constant?(node)
         end
 
         def humanize_node(node)

@@ -37,9 +37,7 @@ module RuboCop
         end
 
         def on_casgn(node)
-          module_definition?(node) do
-            check_code_length(node)
-          end
+          module_definition?(node) { check_code_length(node) }
         end
 
         private
@@ -50,9 +48,7 @@ module RuboCop
         PATTERN
 
         def message(length, max_length)
-          format('Module has too many lines. [%<length>d/%<max>d]',
-                 length: length,
-                 max: max_length)
+          format('Module has too many lines. [%<length>d/%<max>d]', length: length, max: max_length)
         end
       end
     end

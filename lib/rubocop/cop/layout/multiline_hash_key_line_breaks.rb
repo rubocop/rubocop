@@ -24,8 +24,7 @@ module RuboCop
         include MultilineElementLineBreaks
         extend AutoCorrector
 
-        MSG = 'Each key in a multi-line hash must start on a ' \
-          'separate line.'
+        MSG = 'Each key in a multi-line hash must start on a separate line.'
 
         def on_hash(node)
           # This cop only deals with hashes wrapped by a set of curly

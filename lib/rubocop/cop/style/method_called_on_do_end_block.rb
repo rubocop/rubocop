@@ -40,11 +40,9 @@ module RuboCop
 
           receiver = node.receiver
 
-          return unless receiver&.block_type? &&
-                        receiver.loc.end.is?('end')
+          return unless receiver&.block_type? && receiver.loc.end.is?('end')
 
-          range = range_between(receiver.loc.end.begin_pos,
-                                node.source_range.end_pos)
+          range = range_between(receiver.loc.end.begin_pos, node.source_range.end_pos)
 
           add_offense(range)
         end

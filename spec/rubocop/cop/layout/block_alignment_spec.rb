@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
-  let(:cop_config) do
-    { 'EnforcedStyleAlignWith' => 'either' }
-  end
+  let(:cop_config) { { 'EnforcedStyleAlignWith' => 'either' } }
 
   context 'when the block has no arguments' do
     it 'registers an offense for mismatched block end' do
@@ -254,8 +252,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     RUBY
   end
 
-  it 'registers an offense for mismatched block end with' \
-     ' an instance variable' do
+  it 'registers an offense for mismatched block end with an instance variable' do
     expect_offense(<<~RUBY)
       @variable = test do |ala|
         end
@@ -359,8 +356,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     RUBY
   end
 
-  it 'registers an offense for mismatched end with a method call' \
-     ' with arguments' do
+  it 'registers an offense for mismatched end with a method call with arguments' do
     expect_offense(<<~RUBY)
       @h[:f] = f.each_pair.map do |f, v|
         v = 1
@@ -387,8 +383,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     RUBY
   end
 
-  it 'registers an offense for mismatched end not aligned with the block' \
-     ' that is an argument' do
+  it 'registers an offense for mismatched end not aligned with the block that is an argument' do
     expect_offense(<<~RUBY)
       expect(arr.all? do |o|
         o.valid?
@@ -622,9 +617,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
   end
 
   context 'when configured to align with start_of_line' do
-    let(:cop_config) do
-      { 'EnforcedStyleAlignWith' => 'start_of_line' }
-    end
+    let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line' } }
 
     it 'allows when start_of_line aligned' do
       expect_no_offenses(<<~RUBY)
@@ -654,9 +647,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
   end
 
   context 'when configured to align with do' do
-    let(:cop_config) do
-      { 'EnforcedStyleAlignWith' => 'start_of_block' }
-    end
+    let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_block' } }
 
     it 'allows when do aligned' do
       expect_no_offenses(<<~RUBY)

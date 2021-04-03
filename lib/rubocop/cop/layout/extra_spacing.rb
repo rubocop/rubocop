@@ -34,8 +34,7 @@ module RuboCop
         include RangeHelp
 
         MSG_UNNECESSARY = 'Unnecessary spacing detected.'
-        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s ' \
-                             'assignment.'
+        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s assignment.'
 
         def on_new_investigation
           return if processed_source.blank?
@@ -81,15 +80,12 @@ module RuboCop
         end
 
         def check_other(token1, token2, ast)
-          return false if allow_for_trailing_comments? &&
-                          token2.text.start_with?('#')
+          return false if allow_for_trailing_comments? && token2.text.start_with?('#')
 
           extra_space_range(token1, token2) do |range|
             next if ignored_range?(ast, range.begin_pos)
 
-            add_offense(range, message: MSG_UNNECESSARY) do |corrector|
-              corrector.remove(range)
-            end
+            add_offense(range, message: MSG_UNNECESSARY) { |corrector| corrector.remove(range) }
           end
         end
 

@@ -38,8 +38,7 @@ module RuboCop
           kv_each(node) do |target, method|
             return unless target.receiver.receiver
 
-            msg = format(message, prefer: "each_#{method[0..-2]}",
-                                  current: "#{method}.each")
+            msg = format(message, prefer: "each_#{method[0..-2]}", current: "#{method}.each")
 
             add_offense(kv_range(target), message: msg) do |corrector|
               correct_key_value_each(target, corrector)

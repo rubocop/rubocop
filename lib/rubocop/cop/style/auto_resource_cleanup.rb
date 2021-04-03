@@ -19,9 +19,7 @@ module RuboCop
       class AutoResourceCleanup < Base
         MSG = 'Use the block version of `%<class>s.%<method>s`.'
 
-        TARGET_METHODS = {
-          File: :open
-        }.freeze
+        TARGET_METHODS = { File: :open }.freeze
 
         RESTRICT_ON_SEND = TARGET_METHODS.values.freeze
 
@@ -42,8 +40,7 @@ module RuboCop
 
         def cleanup?(node)
           parent = node.parent
-          node.block_argument? ||
-            (parent && (parent.block_type? || !parent.lvasgn_type?))
+          node.block_argument? || (parent && (parent.block_type? || !parent.lvasgn_type?))
         end
       end
     end

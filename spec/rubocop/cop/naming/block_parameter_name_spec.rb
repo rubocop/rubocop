@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
-  let(:cop_config) do
-    {
-      'MinNameLength' => 2,
-      'AllowNamesEndingInNumbers' => false
-    }
-  end
+  let(:cop_config) { { 'MinNameLength' => 2, 'AllowNamesEndingInNumbers' => false } }
 
   it 'does not register for block without parameters' do
     expect_no_offenses(<<~RUBY)
@@ -97,11 +92,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
   end
 
   context 'with ForbiddenNames' do
-    let(:cop_config) do
-      {
-        'ForbiddenNames' => %w[arg]
-      }
-    end
+    let(:cop_config) { { 'ForbiddenNames' => %w[arg] } }
 
     it 'registers offense for param listed as forbidden' do
       expect_offense(<<~RUBY)
@@ -118,11 +109,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
   end
 
   context 'with AllowNamesEndingInNumbers' do
-    let(:cop_config) do
-      {
-        'AllowNamesEndingInNumbers' => true
-      }
-    end
+    let(:cop_config) { { 'AllowNamesEndingInNumbers' => true } }
 
     it 'accept params that end in numbers' do
       expect_no_offenses(<<~RUBY)

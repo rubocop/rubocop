@@ -30,8 +30,7 @@ module RuboCop
       class RequireParentheses < Base
         include RangeHelp
 
-        MSG = 'Use parentheses in the method call to avoid confusion about ' \
-              'precedence.'
+        MSG = 'Use parentheses in the method call to avoid confusion about precedence.'
 
         def on_send(node)
           return if !node.arguments? || node.parenthesized?
@@ -49,8 +48,7 @@ module RuboCop
         def check_ternary(ternary, node)
           return unless ternary.condition.operator_keyword?
 
-          range = range_between(node.source_range.begin_pos,
-                                ternary.condition.source_range.end_pos)
+          range = range_between(node.source_range.begin_pos, ternary.condition.source_range.end_pos)
 
           add_offense(range)
         end

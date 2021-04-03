@@ -219,8 +219,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
         RUBY
       end
 
-      it 'registers an offense for a multiline method call where the last ' \
-        'method is inverted' do
+      it 'registers an offense for a multiline method call where the last method is inverted' do
         expect_offense(<<~RUBY, method: method)
           foo.%{method} do |e|
           ^^^^^{method}^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.

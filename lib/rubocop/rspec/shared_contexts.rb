@@ -27,9 +27,7 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
       begin
         FileUtils.mkdir_p(working_dir)
 
-        Dir.chdir(working_dir) do
-          example.run
-        end
+        Dir.chdir(working_dir) { example.run }
       ensure
         ENV['HOME'] = original_home
         ENV['XDG_CONFIG_HOME'] = original_xdg_config_home
@@ -41,9 +39,7 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
 end
 
 RSpec.shared_context 'maintain registry', :restore_registry do
-  around(:each) do |example|
-    RuboCop::Cop::Registry.with_temporary_global { example.run }
-  end
+  around(:each) { |example| RuboCop::Cop::Registry.with_temporary_global { example.run } }
 
   def stub_cop_class(name, inherit: RuboCop::Cop::Base, &block)
     klass = Class.new(inherit, &block)
@@ -100,15 +96,12 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   end
 
   let(:config) do
-    hash = { 'AllCops' => all_cops_config,
-             cop_class.cop_name => cur_cop_config }.merge!(other_cops)
+    hash = { 'AllCops' => all_cops_config, cop_class.cop_name => cur_cop_config }.merge!(other_cops)
 
     RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
   end
 
-  let(:cop) do
-    cop_class.new(config, cop_options)
-  end
+  let(:cop) { cop_class.new(config, cop_options) }
 end
 
 RSpec.shared_context 'mock console output' do

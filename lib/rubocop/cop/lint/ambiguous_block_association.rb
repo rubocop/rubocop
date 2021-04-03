@@ -35,8 +35,7 @@ module RuboCop
           return unless node.arguments?
 
           return unless ambiguous_block_association?(node)
-          return if node.parenthesized? ||
-                    node.last_argument.lambda? || allowed_method?(node)
+          return if node.parenthesized? || node.last_argument.lambda? || allowed_method?(node)
 
           message = message(node)
 
@@ -47,8 +46,7 @@ module RuboCop
         private
 
         def ambiguous_block_association?(send_node)
-          send_node.last_argument.block_type? &&
-            !send_node.last_argument.send_node.arguments?
+          send_node.last_argument.block_type? && !send_node.last_argument.send_node.arguments?
         end
 
         def allowed_method?(node)
@@ -58,8 +56,7 @@ module RuboCop
         def message(send_node)
           block_param = send_node.last_argument
 
-          format(MSG, param: block_param.source,
-                      method: block_param.send_node.source)
+          format(MSG, param: block_param.source, method: block_param.send_node.source)
         end
       end
     end

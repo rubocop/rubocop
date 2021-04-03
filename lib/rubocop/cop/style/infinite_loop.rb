@@ -62,9 +62,7 @@ module RuboCop
             referenced_after_loop?(var, range)
           end
 
-          add_offense(node.loc.keyword) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node.loc.keyword) { |corrector| autocorrect(corrector, node) }
         end
 
         def autocorrect(corrector, node)
@@ -107,8 +105,7 @@ module RuboCop
           else
             indentation = body.source_range.source_line[LEADING_SPACE]
 
-            ['loop do', body.source.gsub(/^/, configured_indent),
-             'end'].join("\n#{indentation}")
+            ['loop do', body.source.gsub(/^/, configured_indent), 'end'].join("\n#{indentation}")
           end
         end
 

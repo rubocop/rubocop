@@ -45,10 +45,8 @@ module RuboCop
       class MissingCopEnableDirective < Base
         include RangeHelp
 
-        MSG = 'Re-enable %<cop>s cop with `# rubocop:enable` after ' \
-              'disabling it.'
-        MSG_BOUND = 'Re-enable %<cop>s cop within %<max_range>s lines after ' \
-                    'disabling it.'
+        MSG = 'Re-enable %<cop>s cop with `# rubocop:enable` after disabling it.'
+        MSG_BOUND = 'Re-enable %<cop>s cop within %<max_range>s lines after disabling it.'
 
         # rubocop:disable Metrics/AbcSize
         def on_new_investigation
@@ -59,9 +57,7 @@ module RuboCop
               # the case when max_range is Float::INFINITY
               next if line_range.max - line_range.min < max_range + 2
 
-              range = source_range(processed_source.buffer,
-                                   line_range.min,
-                                   (0..0))
+              range = source_range(processed_source.buffer, line_range.min, (0..0))
 
               add_offense(range, message: message(max_range: max_range, cop: cop))
             end

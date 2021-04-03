@@ -24,9 +24,7 @@ module RuboCop
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?
           # check only for method definitions in class/module body
-          return if node.parent &&
-                    !node.parent.class_type? &&
-                    !class_eval?(node.parent)
+          return if node.parent && !node.parent.class_type? && !class_eval?(node.parent)
 
           message = message(node)
           add_offense(node.loc.selector, message: message) do |corrector|

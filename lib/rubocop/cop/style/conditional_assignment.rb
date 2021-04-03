@@ -103,8 +103,7 @@ module RuboCop
         end
 
         def setter_method?(method_name)
-          method_name.to_s.end_with?(EQUAL) &&
-            !%i[!= == === >= <=].include?(method_name)
+          method_name.to_s.end_with?(EQUAL) && !%i[!= == === >= <=].include?(method_name)
         end
 
         def assignment_rhs_exist?(node)
@@ -214,14 +213,10 @@ module RuboCop
         include IgnoredNode
         extend AutoCorrector
 
-        MSG = 'Use the return of the conditional for variable assignment ' \
-              'and comparison.'
-        ASSIGN_TO_CONDITION_MSG =
-          'Assign variables inside of conditionals'
-        VARIABLE_ASSIGNMENT_TYPES =
-          %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
-        ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES +
-                           %i[and_asgn or_asgn op_asgn masgn].freeze
+        MSG = 'Use the return of the conditional for variable assignment and comparison.'
+        ASSIGN_TO_CONDITION_MSG = 'Assign variables inside of conditionals'
+        VARIABLE_ASSIGNMENT_TYPES = %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
+        ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES + %i[and_asgn or_asgn op_asgn masgn].freeze
         LINE_LENGTH = 'Layout/LineLength'
         INDENTATION_WIDTH = 'Layout/IndentationWidth'
         ENABLED = 'Enabled'
@@ -368,9 +363,7 @@ module RuboCop
           return if allowed_single_line?(branches)
           return if correction_exceeds_line_limit?(node, branches)
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         def autocorrect(corrector, node)
@@ -411,9 +404,7 @@ module RuboCop
 
         def longest_line(node, assignment)
           assignment_regex = /\s*#{Regexp.escape(assignment).gsub('\ ', '\s*')}/
-          lines = node.source.lines.map do |line|
-            line.chomp.sub(assignment_regex, '')
-          end
+          lines = node.source.lines.map { |line| line.chomp.sub(assignment_regex, '') }
           longest_line = lines.max_by(&:length)
           assignment + longest_line
         end
@@ -457,9 +448,7 @@ module RuboCop
           expression = node.loc.expression
           begin_pos = expression.begin_pos - (expression.column - column - 2)
 
-          Parser::Source::Range.new(expression.source_buffer,
-                                    begin_pos,
-                                    expression.begin_pos)
+          Parser::Source::Range.new(expression.source_buffer, begin_pos, expression.begin_pos)
         end
 
         def assignment(node)
@@ -532,9 +521,7 @@ module RuboCop
             _variable, *_operator, if_rhs = *node.if_branch
             _else_variable, *_operator, else_rhs = *node.else_branch
 
-            expr = "#{node.condition.source} ? " \
-                   "#{if_rhs.source} : " \
-                   "#{else_rhs.source}"
+            expr = "#{node.condition.source} ? #{if_rhs.source} : #{else_rhs.source}"
 
             element_assignment?(node.if_branch) ? "(#{expr})" : expr
           end
@@ -596,8 +583,7 @@ module RuboCop
           def move_branch_inside_condition(corrector, branch, condition,
                                            assignment, column)
             branch_assignment = tail(branch)
-            corrector.insert_before(branch_assignment,
-                                    assignment.source)
+            corrector.insert_before(branch_assignment, assignment.source)
 
             remove_whitespace_in_branches(corrector, branch, condition, column)
 

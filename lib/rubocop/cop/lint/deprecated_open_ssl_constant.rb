@@ -41,8 +41,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<constant>s.%<method>s(%<replacement_args>s)`' \
-          ' instead of `%<original>s`.'
+        MSG = 'Use `%<constant>s.%<method>s(%<replacement_args>s)` instead of `%<original>s`.'
 
         NO_ARG_ALGORITHM = %w[BF DES IDEA RC4].freeze
 
@@ -62,9 +61,7 @@ module RuboCop
 
           message = message(node)
 
-          add_offense(node, message: message) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node, message: message) { |corrector| autocorrect(corrector, node) }
         end
 
         private

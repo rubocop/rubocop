@@ -48,10 +48,8 @@ module RuboCop
       class IneffectiveAccessModifier < Base
         MSG = '`%<modifier>s` (on line %<line>d) does not make singleton ' \
               'methods %<modifier>s. Use %<alternative>s instead.'
-        ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a ' \
-                              '`class << self` block'
-        ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` ' \
-                                'block'
+        ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a `class << self` block'
+        ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` block'
 
         # @!method private_class_methods(node)
         def_node_search :private_class_methods, <<~PATTERN
@@ -74,9 +72,7 @@ module RuboCop
         end
 
         def private_class_method_names(node)
-          private_class_methods(node).to_a.flatten
-                                     .select(&:basic_literal?)
-                                     .map(&:value)
+          private_class_methods(node).to_a.flatten.select(&:basic_literal?).map(&:value)
         end
 
         def format_message(modifier)

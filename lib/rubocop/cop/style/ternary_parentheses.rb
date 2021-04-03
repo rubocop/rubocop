@@ -64,8 +64,7 @@ module RuboCop
         NON_COMPLEX_TYPES = [*VARIABLE_TYPES, :const, :defined?, :yield].freeze
 
         MSG = '%<command>s parentheses for ternary conditions.'
-        MSG_COMPLEX = '%<command>s parentheses for ternary expressions with' \
-          ' complex conditions.'
+        MSG_COMPLEX = '%<command>s parentheses for ternary expressions with complex conditions.'
 
         def on_if(node)
           return if only_closing_parenthesis_is_last_line?(node.condition)
@@ -88,8 +87,7 @@ module RuboCop
           condition = node.condition
 
           return nil if parenthesized?(condition) &&
-                        (safe_assignment?(condition) ||
-                        unsafe_autocorrect?(condition))
+                        (safe_assignment?(condition) || unsafe_autocorrect?(condition))
 
           if parenthesized?(condition)
             correct_parenthesized(corrector, condition)
@@ -127,8 +125,7 @@ module RuboCop
         # Anything that is not a variable, constant, or method/.method call
         # will be counted as a complex expression.
         def non_complex_expression?(condition)
-          NON_COMPLEX_TYPES.include?(condition.type) ||
-            non_complex_send?(condition)
+          NON_COMPLEX_TYPES.include?(condition.type) || non_complex_send?(condition)
         end
 
         def non_complex_send?(node)

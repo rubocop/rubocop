@@ -8,9 +8,7 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
   end
 
   context 'with default EnforcedStyleForLeadingUnderscores => disallowed' do
-    let(:cop_config) do
-      { 'EnforcedStyleForLeadingUnderscores' => 'disallowed' }
-    end
+    let(:cop_config) { { 'EnforcedStyleForLeadingUnderscores' => 'disallowed' } }
 
     context 'when or-assignment-based memoization is used' do
       context 'memoized variable does not match method name' do

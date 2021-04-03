@@ -247,8 +247,7 @@ module RuboCop
         def message(variable)
           variable_name = variable.to_s.sub('@', '')
 
-          return UNDERSCORE_REQUIRED if style == :required &&
-                                        !variable_name.start_with?('_')
+          return UNDERSCORE_REQUIRED if style == :required && !variable_name.start_with?('_')
 
           MSG
         end

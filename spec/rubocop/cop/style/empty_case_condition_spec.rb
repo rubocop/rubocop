@@ -289,8 +289,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
 
-    context 'when using `return` in `when` clause and ' \
-            'assigning the return value of `case`' do
+    context 'when using `return` in `when` clause and assigning the return value of `case`' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           v = case
@@ -317,8 +316,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       end
     end
 
-    context 'when using `return` in `else` clause and ' \
-            'assigning the return value of `case`' do
+    context 'when using `return` in `else` clause and assigning the return value of `case`' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           v = case

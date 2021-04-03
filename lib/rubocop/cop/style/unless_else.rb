@@ -23,8 +23,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Do not use `unless` with `else`. Rewrite these with the ' \
-              'positive case first.'
+        MSG = 'Do not use `unless` with `else`. Rewrite these with the positive case first.'
 
         def on_if(node)
           return unless node.unless? && node.else?

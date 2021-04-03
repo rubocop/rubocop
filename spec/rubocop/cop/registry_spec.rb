@@ -26,9 +26,7 @@ RSpec.describe RuboCop::Cop::Registry do
   # specs if this mutation occurs before code that depends on this global cop
   # store. The workaround is to replace the global cop store with a temporary
   # store during these tests
-  around do |test|
-    described_class.with_temporary_global { test.run }
-  end
+  around { |test| described_class.with_temporary_global { test.run } }
 
   it 'can be cloned' do
     klass = ::RuboCop::Cop::Metrics::AbcSize
@@ -66,20 +64,16 @@ RSpec.describe RuboCop::Cop::Registry do
   end
 
   it 'can filter down to one type' do
-    expect(registry.with_department(:Lint))
-      .to eq(described_class.new(cops.first(2)))
+    expect(registry.with_department(:Lint)).to eq(described_class.new(cops.first(2)))
   end
 
   it 'can filter down to all but one type' do
-    expect(registry.without_department(:Lint))
-      .to eq(described_class.new(cops.drop(2)))
+    expect(registry.without_department(:Lint)).to eq(described_class.new(cops.drop(2)))
   end
 
   describe '#contains_cop_matching?' do
     it 'can find cops matching a given name' do
-      result = registry.contains_cop_matching?(
-        ['Test/FirstArrayElementIndentation']
-      )
+      result = registry.contains_cop_matching?(['Test/FirstArrayElementIndentation'])
       expect(result).to be(true)
     end
 
@@ -92,16 +86,12 @@ RSpec.describe RuboCop::Cop::Registry do
     let(:origin) { '/app/.rubocop.yml' }
 
     it 'gives back already properly qualified names' do
-      result = registry.qualified_cop_name(
-        'Layout/FirstArrayElementIndentation',
-        origin
-      )
+      result = registry.qualified_cop_name('Layout/FirstArrayElementIndentation', origin)
       expect(result).to eql('Layout/FirstArrayElementIndentation')
     end
 
     it 'qualifies names without a namespace' do
-      warning =
-        "/app/.rubocop.yml: Warning: no department given for MethodLength.\n"
+      warning = "/app/.rubocop.yml: Warning: no department given for MethodLength.\n"
       qualified = nil
 
       expect do
@@ -174,9 +164,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     context 'with cops having the same inner-most module' do
-      let(:cops) do
-        [RuboCop::Cop::Foo::Bar, RuboCop::Cop::Baz::Foo::Bar]
-      end
+      let(:cops) { [RuboCop::Cop::Foo::Bar, RuboCop::Cop::Baz::Foo::Bar] }
 
       before do
         stub_const('RuboCop::Cop::Foo::Bar', Class.new(RuboCop::Cop::Base))
@@ -216,11 +204,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     context 'when new cops are introduced' do
-      let(:config) do
-        RuboCop::Config.new(
-          'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
-        )
-      end
+      let(:config) { RuboCop::Config.new('Lint/BooleanSymbol' => { 'Enabled' => 'pending' }) }
 
       it 'does not include them' do
         result = registry.enabled(config, [])
@@ -233,9 +217,7 @@ RSpec.describe RuboCop::Cop::Registry do
       end
 
       context 'when specifying `--disable-pending-cops` command-line option' do
-        let(:options) do
-          { disable_pending_cops: true }
-        end
+        let(:options) { { disable_pending_cops: true } }
 
         it 'does not include them' do
           result = registry.enabled(config, [])
@@ -259,9 +241,7 @@ RSpec.describe RuboCop::Cop::Registry do
       end
 
       context 'when specifying `--enable-pending-cops` command-line option' do
-        let(:options) do
-          { enable_pending_cops: true }
-        end
+        let(:options) { { enable_pending_cops: true } }
 
         it 'includes them' do
           result = registry.enabled(config, [])
@@ -276,8 +256,7 @@ RSpec.describe RuboCop::Cop::Registry do
             )
           end
 
-          it 'includes them because command-line option takes ' \
-             'precedence over .rubocop.yml' do
+          it 'includes them because command-line option takes precedence over .rubocop.yml' do
             result = registry.enabled(config, [])
             expect(result).to include(RuboCop::Cop::Lint::BooleanSymbol)
           end

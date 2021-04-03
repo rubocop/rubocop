@@ -3,20 +3,14 @@
 RSpec.describe RuboCop::Formatter::QuietFormatter do
   subject(:formatter) { described_class.new(output) }
 
-  before do
-    Rainbow.enabled = true
-  end
+  before { Rainbow.enabled = true }
 
-  after do
-    Rainbow.enabled = false
-  end
+  after { Rainbow.enabled = false }
 
   let(:output) { StringIO.new }
 
   describe '#report_file' do
-    before do
-      formatter.report_file(file, [offense])
-    end
+    before { formatter.report_file(file, [offense]) }
 
     let(:file) { '/path/to/file' }
 
@@ -58,8 +52,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       let(:status) { :unsupported }
 
       it 'prints message as-is' do
-        expect(output.string)
-          .to include(': This is a message with colored text.')
+        expect(output.string).to include(': This is a message with colored text.')
       end
     end
 
@@ -67,8 +60,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       let(:status) { :uncorrected }
 
       it 'prints message as-is' do
-        expect(output.string)
-          .to include(': [Correctable] This is a message with colored text.')
+        expect(output.string).to include(': [Correctable] This is a message with colored text.')
       end
     end
 
@@ -76,8 +68,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       let(:status) { :corrected }
 
       it 'prints [Corrected] along with message' do
-        expect(output.string)
-          .to include(': [Corrected] This is a message with colored text.')
+        expect(output.string).to include(': [Corrected] This is a message with colored text.')
       end
     end
   end

@@ -20,8 +20,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     expect_no_offenses('a = self.a || b || c')
   end
 
-  it 'does not report an offense when receiver and multiple assigned lvalue ' \
-     'have the same name' do
+  it 'does not report an offense when receiver and multiple assigned lvalue have the same name' do
     expect_no_offenses('a, b = self.a')
   end
 

@@ -28,9 +28,7 @@ module RuboCop
           return if heredoc?(node)
           return unless node.loc.begin && node.loc.end
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         private
@@ -47,8 +45,7 @@ module RuboCop
         end
 
         def heredoc?(node)
-          node.loc.is_a?(Parser::Source::Map::Heredoc) ||
-            (node.parent && heredoc?(node.parent))
+          node.loc.is_a?(Parser::Source::Map::Heredoc) || (node.parent && heredoc?(node.parent))
         end
       end
     end

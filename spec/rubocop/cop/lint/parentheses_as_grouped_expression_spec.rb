@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
-  it 'registers an offense and corrects for method call with space before ' \
-     'the parenthesis' do
+  it 'registers an offense and corrects for method call with space before the parenthesis' do
     expect_offense(<<~RUBY)
       a.func (x)
             ^ `(...)` interpreted as grouped expression.
@@ -103,8 +102,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
   end
 
   context 'when using safe navigation operator' do
-    it 'registers an offense and corrects for method call with space before ' \
-       'the parenthesis' do
+    it 'registers an offense and corrects for method call with space before the parenthesis' do
       expect_offense(<<~RUBY)
         a&.func (x)
                ^ `(...)` interpreted as grouped expression.

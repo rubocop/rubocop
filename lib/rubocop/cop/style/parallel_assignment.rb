@@ -36,9 +36,7 @@ module RuboCop
           return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
                     allowed_masign?(lhs_elements, rhs_elements)
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         private
@@ -72,9 +70,7 @@ module RuboCop
           elements = Array(node).compact
 
           # Account for edge case of `Constant::CONSTANT`
-          !node.array_type? ||
-            return_of_method_call?(node) ||
-            elements.any?(&:splat_type?)
+          !node.array_type? || return_of_method_call?(node) || elements.any?(&:splat_type?)
         end
 
         def return_of_method_call?(node)
@@ -166,9 +162,7 @@ module RuboCop
             if lhs.method?(:[]=)
               # FIXME: Workaround `rubocop:disable` comment for JRuby.
               # rubocop:disable Performance/RedundantEqualityComparisonBlock
-              matching_calls(rhs, lhs.receiver, :[]).any? do |args|
-                args == lhs.arguments
-              end
+              matching_calls(rhs, lhs.receiver, :[]).any? { |args| args == lhs.arguments }
               # rubocop:enable Performance/RedundantEqualityComparisonBlock
             else
               access_method = lhs.method_name.to_s.chop.to_sym

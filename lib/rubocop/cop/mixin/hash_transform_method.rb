@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for Style/HashTransformKeys and
     # Style/HashTransformValues
-    module HashTransformMethod # rubocop:disable Metrics/ModuleLength
+    module HashTransformMethod
       extend NodePattern::Macros
 
       RESTRICT_ON_SEND = %i[[] to_h].freeze
@@ -21,24 +21,18 @@ module RuboCop
 
         return if target_ruby_version < 2.6
 
-        on_bad_to_h(node) do |*match|
-          handle_possible_offense(node, match, 'to_h {...}')
-        end
+        on_bad_to_h(node) { |*match| handle_possible_offense(node, match, 'to_h {...}') }
       end
 
       def on_send(node)
         on_bad_hash_brackets_map(node) do |*match|
           handle_possible_offense(node, match, 'Hash[_.map {...}]')
         end
-        on_bad_map_to_h(node) do |*match|
-          handle_possible_offense(node, match, 'map {...}.to_h')
-        end
+        on_bad_map_to_h(node) { |*match| handle_possible_offense(node, match, 'map {...}.to_h') }
       end
 
       def on_csend(node)
-        on_bad_map_to_h(node) do |*match|
-          handle_possible_offense(node, match, 'map {...}.to_h')
-        end
+        on_bad_map_to_h(node) { |*match| handle_possible_offense(node, match, 'map {...}.to_h') }
       end
 
       private
@@ -115,10 +109,7 @@ module RuboCop
 
         captures = extract_captures(correction.match)
         correction.set_new_arg_name(captures.transformed_argname, corrector)
-        correction.set_new_body_expression(
-          captures.transforming_body_expr,
-          corrector
-        )
+        correction.set_new_body_expression(captures.transforming_body_expr, corrector)
       end
 
       # Internal helper class to hold match data
@@ -180,17 +171,11 @@ module RuboCop
         end
 
         def set_new_arg_name(transformed_argname, corrector)
-          corrector.replace(
-            block_node.arguments.loc.expression,
-            "|#{transformed_argname}|"
-          )
+          corrector.replace(block_node.arguments.loc.expression, "|#{transformed_argname}|")
         end
 
         def set_new_body_expression(transforming_body_expr, corrector)
-          corrector.replace(
-            block_node.body,
-            transforming_body_expr.loc.expression.source
-          )
+          corrector.replace(block_node.body, transforming_body_expr.loc.expression.source)
         end
       end
     end

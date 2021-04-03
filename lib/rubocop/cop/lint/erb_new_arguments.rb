@@ -112,16 +112,13 @@ module RuboCop
           kwargs = build_kwargs(node)
           overridden_kwargs = override_by_legacy_args(kwargs, node)
 
-          good_arguments = [
-            str_arg, overridden_kwargs
-          ].flatten.compact.join(', ')
+          good_arguments = [str_arg, overridden_kwargs].flatten.compact.join(', ')
 
           corrector.replace(arguments_range(node), good_arguments)
         end
 
         def correct_arguments?(arguments)
-          arguments.size == 1 ||
-            arguments.size == 2 && arguments[1].hash_type?
+          arguments.size == 1 || arguments.size == 2 && arguments[1].hash_type?
         end
 
         def build_kwargs(node)
@@ -157,8 +154,7 @@ module RuboCop
         def arguments_range(node)
           arguments = node.arguments
 
-          range_between(arguments.first.source_range.begin_pos,
-                        arguments.last.source_range.end_pos)
+          range_between(arguments.first.source_range.begin_pos, arguments.last.source_range.end_pos)
         end
       end
     end

@@ -66,8 +66,7 @@ module RuboCop
         end
 
         def on_block(node)
-          return unless node.send_node.send_type? &&
-                        node.send_node.enumerator_method?
+          return unless node.send_node.send_type? && node.send_node.enumerator_method?
 
           check(node)
         end
@@ -180,8 +179,7 @@ module RuboCop
           source_buffer = node.source_range.source_buffer
           end_pos = node.loc.end.end_pos
           begin_pos = node.loc.end.begin_pos - node.loc.end.column
-          begin_pos -= 1 if end_followed_by_whitespace_only?(source_buffer,
-                                                             end_pos)
+          begin_pos -= 1 if end_followed_by_whitespace_only?(source_buffer, end_pos)
 
           range_between(begin_pos, end_pos)
         end
@@ -207,9 +205,7 @@ module RuboCop
 
           target_indent = range.source_line =~ /\S/
           delta = actual_indent(lines, buffer) - target_indent
-          lines.each do |lineno|
-            reindent_line(corrector, lineno, delta, buffer)
-          end
+          lines.each { |lineno| reindent_line(corrector, lineno, delta, buffer) }
         end
 
         def actual_indent(lines, buffer)
@@ -230,8 +226,7 @@ module RuboCop
           if adjustment.positive?
             corrector.remove_leading(buffer.line_range(lineno), adjustment)
           elsif adjustment.negative?
-            corrector.insert_before(buffer.line_range(lineno),
-                                    ' ' * -adjustment)
+            corrector.insert_before(buffer.line_range(lineno), ' ' * -adjustment)
           end
         end
       end

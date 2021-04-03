@@ -183,8 +183,7 @@ module RuboCop
         end
 
         def access_modifier?(node)
-          node.bare_access_modifier? ||
-            node.method?(:private_class_method)
+          node.bare_access_modifier? || node.method?(:private_class_method)
         end
 
         def check_scope(node)
@@ -264,8 +263,7 @@ module RuboCop
         end
 
         def start_of_new_scope?(child)
-          child.module_type? || child.class_type? ||
-            child.sclass_type? || eval_call?(child)
+          child.module_type? || child.class_type? || child.sclass_type? || eval_call?(child)
         end
 
         def eval_call?(child)

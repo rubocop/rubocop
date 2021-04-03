@@ -15,8 +15,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         z = "a\\"
             ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RUBY
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'double_quotes')
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'double_quotes')
 
       expect_correction(<<~'RUBY')
         s = 'abc'
@@ -169,8 +168,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
     end
 
-    it 'does not register an offense for words with non-ascii chars and ' \
-       'other control sequences' do
+    it 'does not register an offense for words with non-ascii chars and other control sequences' do
       expect_no_offenses('"España\n"')
     end
   end
@@ -178,14 +176,12 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
   context 'configured with double quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'double_quotes' } }
 
-    it 'registers offense for single quotes when double quotes would ' \
-      'be equivalent' do
+    it 'registers offense for single quotes when double quotes would be equivalent' do
       expect_offense(<<~RUBY)
         s = 'abc'
             ^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
       RUBY
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'single_quotes')
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'single_quotes')
 
       expect_correction(<<~RUBY)
         s = "abc"
@@ -300,8 +296,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { expect_no_offenses('a = "b"') }
-        .to raise_error(RuntimeError)
+      expect { expect_no_offenses('a = "b"') }.to raise_error(RuntimeError)
     end
   end
 

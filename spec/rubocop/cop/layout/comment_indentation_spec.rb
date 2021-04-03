@@ -37,8 +37,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects an incorrectly ' \
-      'indented (1) comment' do
+    it 'registers an offense and corrects an incorrectly indented (1) comment' do
       expect_offense(<<-RUBY.strip_margin('|'))
         | # comment
         | ^^^^^^^^^ Incorrect indentation detected (column 1 instead of 0).
@@ -49,8 +48,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects an incorrectly ' \
-      'indented (2) comment' do
+    it 'registers an offense and corrects an incorrectly indented (2) comment' do
       expect_offense(<<-RUBY.strip_margin('|'))
         |  # comment
         |  ^^^^^^^^^ Incorrect indentation detected (column 2 instead of 0).

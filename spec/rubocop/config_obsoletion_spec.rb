@@ -307,9 +307,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
     end
 
     context 'when the configuration includes any obsolete parameters' do
-      before do
-        allow(configuration).to receive(:loaded_features).and_return(%w[rubocop-rails])
-      end
+      before { allow(configuration).to receive(:loaded_features).and_return(%w[rubocop-rails]) }
 
       let(:hash) do
         {
@@ -426,9 +424,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
     end
 
     context 'when additional obsoletions are defined externally' do
-      after do
-        described_class.files = [described_class::DEFAULT_RULES_FILE]
-      end
+      after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
 
       let(:hash) do
         {
@@ -492,15 +488,9 @@ RSpec.describe RuboCop::ConfigObsoletion do
     end
 
     context 'when extractions are disabled by an external library' do
-      after do
-        described_class.files = [described_class::DEFAULT_RULES_FILE]
-      end
+      after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
 
-      let(:hash) do
-        {
-          'Performance/CollectionLiteralInLoop' => { Enabled: true }
-        }
-      end
+      let(:hash) { { 'Performance/CollectionLiteralInLoop' => { Enabled: true } } }
 
       let(:external_obsoletions) do
         create_file('external/obsoletions.yml', <<~YAML)

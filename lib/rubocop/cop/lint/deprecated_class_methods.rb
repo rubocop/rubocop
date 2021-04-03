@@ -58,8 +58,7 @@ module RuboCop
           DeprecatedClassMethod.new(deprecated: :exists?,
                                     replacement: :exist?,
                                     class_constant: :Dir),
-          DeprecatedClassMethod.new(deprecated: :iterator?,
-                                    replacement: :block_given?)
+          DeprecatedClassMethod.new(deprecated: :iterator?, replacement: :block_given?)
         ].freeze
 
         RESTRICT_ON_SEND = DEPRECATED_METHODS_OBJECT.map(&:deprecated_method).freeze
@@ -96,8 +95,7 @@ module RuboCop
 
         def method_call(class_constant, method)
           if class_constant
-            format('%<constant>s.%<method>s', constant: class_constant,
-                                              method: method)
+            format('%<constant>s.%<method>s', constant: class_constant, method: method)
           else
             format('%<method>s', method: method)
           end

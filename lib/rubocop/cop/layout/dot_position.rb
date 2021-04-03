@@ -35,9 +35,7 @@ module RuboCop
           dot = node.loc.dot
           message = message(dot)
 
-          add_offense(dot, message: message) do |corrector|
-            autocorrect(corrector, dot, node)
-          end
+          add_offense(dot, message: message) { |corrector| autocorrect(corrector, dot, node) }
         end
         alias on_csend on_send
 

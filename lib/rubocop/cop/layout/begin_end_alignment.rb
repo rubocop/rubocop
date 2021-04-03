@@ -52,10 +52,7 @@ module RuboCop
         private
 
         def check_begin_alignment(node)
-          align_with = {
-            begin: node.loc.begin,
-            start_of_line: start_line_range(node)
-          }
+          align_with = { begin: node.loc.begin, start_of_line: start_line_range(node) }
           check_end_kw_alignment(node, align_with)
         end
 

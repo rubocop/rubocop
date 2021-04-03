@@ -87,9 +87,7 @@ module RuboCop
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
 
-          add_offense(value) do |corrector|
-            autocorrect(corrector, value)
-          end
+          add_offense(value) { |corrector| autocorrect(corrector, value) }
         end
 
         def check(value)
@@ -101,9 +99,7 @@ module RuboCop
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
 
-          add_offense(value) do |corrector|
-            autocorrect(corrector, value)
-          end
+          add_offense(value) { |corrector| autocorrect(corrector, value) }
         end
 
         def autocorrect(corrector, node)
@@ -133,8 +129,7 @@ module RuboCop
         end
 
         def frozen_string_literal?(node)
-          FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
-            frozen_string_literals_enabled?
+          FROZEN_STRING_LITERAL_TYPES.include?(node.type) && frozen_string_literals_enabled?
         end
 
         def frozen_regexp_or_range_literals?(node)
@@ -142,8 +137,7 @@ module RuboCop
         end
 
         def requires_parentheses?(node)
-          node.range_type? ||
-            (node.send_type? && node.loc.dot.nil?)
+          node.range_type? || (node.send_type? && node.loc.dot.nil?)
         end
 
         def correct_splat_expansion(corrector, expr, splat_value)

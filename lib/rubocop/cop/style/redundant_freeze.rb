@@ -17,8 +17,7 @@ module RuboCop
         extend AutoCorrector
         include FrozenStringLiteral
 
-        MSG = 'Do not freeze immutable objects, as freezing them has no ' \
-              'effect.'
+        MSG = 'Do not freeze immutable objects, as freezing them has no effect.'
         RESTRICT_ON_SEND = %i[freeze].freeze
 
         def on_send(node)

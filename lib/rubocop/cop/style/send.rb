@@ -14,8 +14,7 @@ module RuboCop
       #   Foo.__send__(:bar)
       #   quuz.public_send(:fred)
       class Send < Base
-        MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
-              '`send`.'
+        MSG = 'Prefer `Object#__send__` or `Object#public_send` to `send`.'
         RESTRICT_ON_SEND = %i[send].freeze
 
         def on_send(node)

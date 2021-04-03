@@ -229,8 +229,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
 
-    it 'accepts an if/else in assignment on next line with end aligned ' \
-       'with if' do
+    it 'accepts an if/else in assignment on next line with end aligned with if' do
       expect_no_offenses(<<~RUBY)
         var =
           if a
@@ -282,8 +281,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
   end
 
   context 'with case' do
-    it 'registers an offense and corrects bad indentation ' \
-      'in a case/when body' do
+    it 'registers an offense and corrects bad indentation in a case/when body' do
       expect_offense(<<~RUBY)
         case a
         when b
@@ -302,8 +300,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects bad indentation ' \
-      'in a case/else body' do
+    it 'registers an offense and corrects bad indentation in a case/else body' do
       expect_offense(<<~RUBY)
         case a
         when b
@@ -739,8 +736,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
     end
 
     context 'even when there are no public methods' do
-      it 'registers an offense and corrects bad indentation ' \
-        'of private methods' do
+      it 'registers an offense and corrects bad indentation of private methods' do
         expect_offense(<<~RUBY)
           module Test
             private

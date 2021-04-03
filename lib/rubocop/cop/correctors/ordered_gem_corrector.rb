@@ -17,9 +17,7 @@ module RuboCop
           current_range = declaration_with_comment(node)
           previous_range = declaration_with_comment(previous_declaration)
 
-          lambda do |corrector|
-            swap_range(corrector, current_range, previous_range)
-          end
+          ->(corrector) do swap_range(corrector, current_range, previous_range) end
         end
 
         private

@@ -38,9 +38,7 @@ module RuboCop
         end
 
         def after_leaving_scope(scope, _variable_table)
-          scope.variables.each_value do |variable|
-            check_for_unused_assignments(variable)
-          end
+          scope.variables.each_value { |variable| check_for_unused_assignments(variable) }
         end
 
         def check_for_unused_assignments(variable)
@@ -64,8 +62,7 @@ module RuboCop
         def message_for_useless_assignment(assignment)
           variable = assignment.variable
 
-          format(MSG, variable: variable.name) +
-            message_specification(assignment, variable).to_s
+          format(MSG, variable: variable.name) + message_specification(assignment, variable).to_s
         end
 
         def message_specification(assignment, variable)
@@ -85,8 +82,7 @@ module RuboCop
 
         def operator_assignment_message(scope, assignment)
           return_value_node = return_value_node_of_scope(scope)
-          return unless assignment.meta_assignment_node
-                                  .equal?(return_value_node)
+          return unless assignment.meta_assignment_node.equal?(return_value_node)
 
           " Use `#{assignment.operator.sub(/=$/, '')}` " \
           "instead of `#{assignment.operator}`."
@@ -94,8 +90,7 @@ module RuboCop
 
         def similar_name_message(variable)
           variable_like_names = collect_variable_like_names(variable.scope)
-          similar_name = NameSimilarity.find_similar_name(variable.name,
-                                                          variable_like_names)
+          similar_name = NameSimilarity.find_similar_name(variable.name, variable_like_names)
           " Did you mean `#{similar_name}`?" if similar_name
         end
 

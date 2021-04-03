@@ -85,9 +85,7 @@ module RuboCop
           elsif (default_dir = pathname_parent_expand_path(node))
             return unless unrecommended_argument?(default_dir)
 
-            add_offense(node, message: PATHNAME_MSG) do |corrector|
-              autocorrect(corrector, node)
-            end
+            add_offense(node, message: PATHNAME_MSG) { |corrector| autocorrect(corrector, node) }
           elsif (default_dir = pathname_new_parent_expand_path(node))
             return unless unrecommended_argument?(default_dir)
 

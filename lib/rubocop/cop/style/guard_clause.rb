@@ -99,12 +99,9 @@ module RuboCop
 
         def register_offense(node, scope_exiting_keyword, conditional_keyword)
           condition, = node.node_parts
-          example = [scope_exiting_keyword,
-                     conditional_keyword,
-                     condition.source].join(' ')
+          example = [scope_exiting_keyword, conditional_keyword, condition.source].join(' ')
           if too_long_for_single_line?(node, example)
-            example = "#{conditional_keyword} #{condition.source}; " \
-                      "#{scope_exiting_keyword}; end"
+            example = "#{conditional_keyword} #{condition.source}; #{scope_exiting_keyword}; end"
           end
 
           add_offense(node.loc.keyword, message: format(MSG, example: example))
@@ -126,8 +123,7 @@ module RuboCop
         end
 
         def accepted_form?(node, ending: false)
-          accepted_if?(node, ending) || node.condition.multiline? ||
-            node.parent&.assignment?
+          accepted_if?(node, ending) || node.condition.multiline? || node.parent&.assignment?
         end
 
         def accepted_if?(node, ending)

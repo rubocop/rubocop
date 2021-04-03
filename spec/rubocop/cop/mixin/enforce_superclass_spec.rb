@@ -9,11 +9,9 @@ RSpec.describe RuboCop::Cop::EnforceSuperclass, :restore_registry do
 
   before do
     stub_cop_class('RuboCop::Cop::RSpec::ApplicationRecord')
-    stub_const("#{cop_class}::MSG",
-               'Models should subclass `ApplicationRecord`')
+    stub_const("#{cop_class}::MSG", 'Models should subclass `ApplicationRecord`')
     stub_const("#{cop_class}::SUPERCLASS", 'ApplicationRecord')
-    stub_const("#{cop_class}::BASE_PATTERN",
-               '(const (const {nil? cbase} :ActiveRecord) :Base)')
+    stub_const("#{cop_class}::BASE_PATTERN", '(const (const {nil? cbase} :ActiveRecord) :Base)')
     RuboCop::Cop::RSpec::ApplicationRecord.include(described_class)
   end
 
@@ -77,10 +75,8 @@ RSpec.describe RuboCop::Cop::EnforceSuperclass, :restore_registry do
   end
 
   context 'when ApplicationRecord subclasses ActiveRecord::Base' do
-    it_behaves_like 'no offense',
-                    'class ApplicationRecord < ActiveRecord::Base; end'
-    it_behaves_like 'no offense',
-                    'class ::ApplicationRecord < ActiveRecord::Base; end'
+    it_behaves_like 'no offense', 'class ApplicationRecord < ActiveRecord::Base; end'
+    it_behaves_like 'no offense', 'class ::ApplicationRecord < ActiveRecord::Base; end'
 
     it_behaves_like 'no offense', <<~RUBY
       ApplicationRecord = Class.new(ActiveRecord::Base) do; end

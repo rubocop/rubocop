@@ -23,8 +23,7 @@ module RuboCop
       attr_reader :for_node, :variable_node, :collection_node
 
       def correction
-        format(CORRECTION, collection: collection_source,
-                           argument: variable_node.source)
+        format(CORRECTION, collection: collection_source, argument: variable_node.source)
       end
 
       def collection_source

@@ -11,11 +11,7 @@ module RuboCop
         end
 
         def <<(callable)
-          suppress_clobbering do
-            @corrector.transaction do
-              callable.call(@corrector)
-            end
-          end
+          suppress_clobbering { @corrector.transaction { callable.call(@corrector) } }
         end
 
         def empty?
@@ -24,9 +20,7 @@ module RuboCop
 
         def concat(corrections)
           if corrections.is_a?(CorrectionsProxy)
-            suppress_clobbering do
-              corrector.merge!(corrections.corrector)
-            end
+            suppress_clobbering { corrector.merge!(corrections.corrector) }
           else
             corrections.each { |correction| self << correction }
           end

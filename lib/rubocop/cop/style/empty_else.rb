@@ -123,17 +123,13 @@ module RuboCop
         def empty_check(node)
           return unless node.else? && !node.else_branch
 
-          add_offense(node.loc.else) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node.loc.else) { |corrector| autocorrect(corrector, node) }
         end
 
         def nil_check(node)
           return unless node.else_branch&.nil_type?
 
-          add_offense(node.loc.else) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node.loc.else) { |corrector| autocorrect(corrector, node) }
         end
 
         def autocorrect(corrector, node)
@@ -154,9 +150,7 @@ module RuboCop
           return node if node.case_type?
           return node unless node.elsif?
 
-          node.each_ancestor(:if, :case, :when).find(-> { node }) do |parent|
-            parent.loc.end
-          end
+          node.each_ancestor(:if, :case, :when).find(-> { node }) { |parent| parent.loc.end }
         end
 
         def autocorrect_forbidden?(type)

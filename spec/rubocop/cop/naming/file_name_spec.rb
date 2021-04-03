@@ -22,9 +22,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
   let(:offenses) { _investigate(cop, processed_source) }
   let(:messages) { offenses.sort.map(&:message) }
 
-  before do
-    allow(processed_source.buffer).to receive(:name).and_return(filename)
-  end
+  before { allow(processed_source.buffer).to receive(:name).and_return(filename) }
 
   context 'with camelCase file names ending in .rb' do
     let(:filename) { '/some/dir/testCase.rb' }

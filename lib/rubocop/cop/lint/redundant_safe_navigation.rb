@@ -53,9 +53,7 @@ module RuboCop
           return if respond_to_nil_specific_method?(node)
 
           range = range_between(node.loc.dot.begin_pos, node.source_range.end_pos)
-          add_offense(range) do |corrector|
-            corrector.replace(node.loc.dot, '.')
-          end
+          add_offense(range) { |corrector| corrector.replace(node.loc.dot, '.') }
         end
 
         private

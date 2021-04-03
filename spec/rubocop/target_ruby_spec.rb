@@ -14,13 +14,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
   context 'when TargetRubyVersion is set' do
     let(:ruby_version) { 2.5 }
 
-    let(:hash) do
-      {
-        'AllCops' => {
-          'TargetRubyVersion' => ruby_version
-        }
-      }
-    end
+    let(:hash) { { 'AllCops' => { 'TargetRubyVersion' => ruby_version } } }
 
     it 'uses TargetRubyVersion' do
       expect(target_ruby.version).to eq ruby_version

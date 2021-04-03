@@ -6,11 +6,9 @@ module RuboCop
       # A Variable represents existence of a local variable.
       # This holds a variable declaration node and some states of the variable.
       class Variable
-        VARIABLE_DECLARATION_TYPES =
-          (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
+        VARIABLE_DECLARATION_TYPES = (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
 
-        attr_reader :name, :declaration_node, :scope,
-                    :assignments, :references, :captured_by_block
+        attr_reader :name, :declaration_node, :scope, :assignments, :references, :captured_by_block
 
         alias captured_by_block? captured_by_block
 

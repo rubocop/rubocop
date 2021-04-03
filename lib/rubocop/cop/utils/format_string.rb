@@ -72,9 +72,7 @@ module RuboCop
           end
 
           def max_digit_dollar_num
-            @source.scan(DIGIT_DOLLAR).map do |(digit_dollar_num)|
-              digit_dollar_num.to_i
-            end.max
+            @source.scan(DIGIT_DOLLAR).map { |(digit_dollar_num)| digit_dollar_num.to_i }.max
           end
 
           def style

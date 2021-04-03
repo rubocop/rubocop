@@ -8,10 +8,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
   include_context 'cli spec behavior'
 
   describe '--auto-gen-config' do
-    before do
-      RuboCop::Formatter::DisabledConfigFormatter
-        .config_to_allow_offenses = {}
-    end
+    before { RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {} }
 
     shared_examples 'LineLength handling' do |ctx, initial_dotfile, exp_dotfile|
       context ctx do
@@ -19,14 +16,11 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         # Style/IfUnlessModifier will register an offense when
         # Layout/LineLength:Max has been set to 99. With a lower
         # LineLength:Max there would be no IfUnlessModifier offense.
-        it "bases other cops' configuration on the code base's current " \
-           'maximum line length' do
+        it "bases other cops' configuration on the code base's current " + 'maximum line length' do
           if initial_dotfile
             initial_config = YAML.safe_load(initial_dotfile.join($RS)) || {}
             inherited_files = Array(initial_config['inherit_from'])
-            (inherited_files - ['.rubocop.yml']).each do |f|
-              create_empty_file(f)
-            end
+            (inherited_files - ['.rubocop.yml']).each { |f| create_empty_file(f) }
 
             create_file('.rubocop.yml', initial_dotfile)
             create_file('.rubocop_todo.yml', [''])
@@ -147,8 +141,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         RUBY
       end
 
-      context 'when .rubocop.yml has Layout/LineLength:Max less than code ' \
-              'base max' do
+      context 'when .rubocop.yml has Layout/LineLength:Max less than code base max' do
         let(:line_length_max) { 90 }
         let(:line_length_enabled) { true }
 
@@ -254,8 +247,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         end
       end
 
-      context 'when .rubocop.yml has Layout/LineLength:Max more than code ' \
-              'base max' do
+      context 'when .rubocop.yml has Layout/LineLength:Max more than code base max' do
         let(:line_length_max) { 150 }
         let(:line_length_enabled) { true }
 
@@ -401,18 +393,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
     context 'when --config is used' do
       it 'can generate a todo list' do
-        create_file('example1.rb', ['$x = 0 ',
-                                    '#' * 90,
-                                    'y ',
-                                    'puts x'])
+        create_file('example1.rb', ['$x = 0 ', '#' * 90, 'y ', 'puts x'])
         create_file('dir/cop_config.yml', <<~YAML)
           Layout/TrailingWhitespace:
             Enabled: false
           Layout/LineLength:
             Max: 95
         YAML
-        expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml]))
-          .to eq(0)
+        expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml])).to eq(0)
         expect(Dir['.*']).to include('.rubocop_todo.yml')
         todo_contents = IO.read('.rubocop_todo.yml').lines[8..-1].join
         expect(todo_contents).to eq(<<~YAML)
@@ -521,10 +509,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
     context 'when working in a subdirectory' do
       it 'can generate a todo list' do
-        create_file('dir/example1.rb', ['$x = 0 ',
-                                        '#' * 90,
-                                        'y ',
-                                        'puts x'])
+        create_file('dir/example1.rb', ['$x = 0 ', '#' * 90, 'y ', 'puts x'])
         create_file('dir/.rubocop.yml', <<~YAML)
           inherit_from: ../.rubocop.yml
         YAML
@@ -534,9 +519,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           Layout/LineLength:
             Max: 95
         YAML
-        Dir.chdir('dir') do
-          expect(cli.run(%w[--auto-gen-config])).to eq(0)
-        end
+        Dir.chdir('dir') { expect(cli.run(%w[--auto-gen-config])).to eq(0) }
         expect($stderr.string).to eq('')
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['dir/.*']).to include('dir/.rubocop_todo.yml')
@@ -574,10 +557,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
       context 'when there is a single entry' do
         it 'can generate a todo list' do
-          create_file('dir/example1.rb', ['$x = 0 ',
-                                          '#' * 90,
-                                          'y ',
-                                          'puts x'])
+          create_file('dir/example1.rb', ['$x = 0 ', '#' * 90, 'y ', 'puts x'])
           create_file('.rubocop.yml', <<~YAML)
             inherit_from: #{remote_config_url}
           YAML
@@ -596,10 +576,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
       context 'when there are multiple entries' do
         it 'can generate a todo list' do
-          create_file('dir/example1.rb', ['$x = 0 ',
-                                          '#' * 90,
-                                          'y ',
-                                          'puts x'])
+          create_file('dir/example1.rb', ['$x = 0 ', '#' * 90, 'y ', 'puts x'])
           create_file('.rubocop.yml', <<~YAML)
             inherit_from:
               - #{remote_config_url}
@@ -824,13 +801,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
     context 'for existing configuration with Exclude' do
       before do
-        create_file('example1.rb', ['# frozen_string_literal: true',
-                                    '',
-                                    'y '])
-        create_file('example2.rb', ['# frozen_string_literal: true',
-                                    '',
-                                    'x = 0 ',
-                                    'puts x'])
+        create_file('example1.rb', ['# frozen_string_literal: true', '', 'y '])
+        create_file('example2.rb', ['# frozen_string_literal: true', '', 'x = 0 ', 'puts x'])
       end
 
       it 'generates Excludes that appear in .rubocop.yml' do
@@ -952,11 +924,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
     end
 
     it 'generates a todo list that removes the reports' do
-      create_file('example.rb', [
-                    '# frozen_string_literal: true',
-                    '',
-                    'y.gsub!(/abc\/xyz/, x)'
-                  ])
+      create_file('example.rb', ['# frozen_string_literal: true', '', 'y.gsub!(/abc\/xyz/, x)'])
       expect(cli.run(%w[--format emacs])).to eq(1)
       expect($stdout.string).to eq(
         "#{abs('example.rb')}:3:9: C: [Correctable] Style/RegexpLiteral: Use `%r` " \
@@ -1098,11 +1066,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       expect(actual.size).to eq(expected.size)
     end
 
-    it 'generates Exclude instead of Max when --auto-gen-only-exclude is' \
-       ' used' do
-      create_file('example1.rb', ['#' * 130,
-                                  '#' * 130,
-                                  'puts 123456'])
+    it 'generates Exclude instead of Max when --auto-gen-only-exclude is used' do
+      create_file('example1.rb', ['#' * 130, '#' * 130, 'puts 123456'])
       create_file('example2.rb', <<~RUBY)
         def function(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
           puts 123456
@@ -1143,16 +1108,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude',
                       '--exclude-limit', '1'])).to eq(0)
 
-      command = '# `rubocop --auto-gen-config --auto-gen-only-exclude ' \
-                '--exclude-limit 1`'
+      command = '# `rubocop --auto-gen-config --auto-gen-only-exclude --exclude-limit 1`'
       expect(IO.readlines('.rubocop_todo.yml')[1].chomp).to eq(command)
     end
 
     it 'does not include a timestamp when --no-auto-gen-timestamp is used' do
       create_file('example1.rb', ['$!'])
       expect(cli.run(['--auto-gen-config', '--no-auto-gen-timestamp'])).to eq(0)
-      expect(IO.readlines('.rubocop_todo.yml')[2])
-        .to match(/# using RuboCop version .*/)
+      expect(IO.readlines('.rubocop_todo.yml')[2]).to match(/# using RuboCop version .*/)
     end
 
     describe 'when different styles appear in different files' do
@@ -1212,9 +1175,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
     end
 
     describe 'console output' do
-      before do
-        create_file('example1.rb', ['# frozen_string_literal: true', '', '$!'])
-      end
+      before { create_file('example1.rb', ['# frozen_string_literal: true', '', '$!']) }
 
       it 'displays report summary but no offenses' do
         expect(cli.run(['--auto-gen-config'])).to eq(0)

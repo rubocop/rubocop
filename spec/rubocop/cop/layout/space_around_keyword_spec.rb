@@ -2,8 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   shared_examples 'missing before' do |highlight, expr, correct|
-    it 'registers an offense for missing space before keyword in ' \
-       "`#{expr}`" do
+    it 'registers an offense for missing space before keyword in ' + "`#{expr}`" do
       h_index = expr.index(highlight)
       expect_offense(<<~RUBY)
         #{expr}
@@ -15,8 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   end
 
   shared_examples 'missing after' do |highlight, expr, correct|
-    it 'registers an offense for missing space after keyword in ' \
-       "`#{expr}` and autocorrects" do
+    it 'registers an offense for missing space after keyword in ' + "`#{expr}` and autocorrects" do
       h_index = expr.index(highlight)
       expect_offense(<<~RUBY)
         #{expr}
@@ -52,55 +50,39 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'begin', 'begin"" end', 'begin "" end'
   it_behaves_like 'missing after', 'break', 'break""', 'break ""'
   it_behaves_like 'accept after', '(', 'break(1)'
-  it_behaves_like 'missing after', 'case', 'case"" when 1; end',
-                  'case "" when 1; end'
+  it_behaves_like 'missing after', 'case', 'case"" when 1; end', 'case "" when 1; end'
 
   it_behaves_like 'missing before', 'do', 'a "b"do end', 'a "b" do end'
   it_behaves_like 'missing after', 'do', 'a do|x| end', 'a do |x| end'
   it_behaves_like 'missing before', 'do', 'while 1do end', 'while 1 do end'
-  it_behaves_like 'missing after', 'do', 'while 1 do"x" end',
-                  'while 1 do "x" end'
+  it_behaves_like 'missing after', 'do', 'while 1 do"x" end', 'while 1 do "x" end'
   it_behaves_like 'missing before', 'do', 'until 1do end', 'until 1 do end'
-  it_behaves_like 'missing after', 'do', 'until 1 do"x" end',
-                  'until 1 do "x" end'
-  it_behaves_like 'missing before', 'do', 'for x in []do end',
-                  'for x in [] do end'
-  it_behaves_like 'missing after', 'do', 'for x in [] do"x" end',
-                  'for x in [] do "x" end'
+  it_behaves_like 'missing after', 'do', 'until 1 do"x" end', 'until 1 do "x" end'
+  it_behaves_like 'missing before', 'do', 'for x in []do end', 'for x in [] do end'
+  it_behaves_like 'missing after', 'do', 'for x in [] do"x" end', 'for x in [] do "x" end'
 
   it_behaves_like 'missing before', 'end', 'begin "a"end', 'begin "a" end'
   it_behaves_like 'missing before', 'end', 'if a; "b"end', 'if a; "b" end'
   it_behaves_like 'missing before', 'end', 'a do "a"end', 'a do "a" end'
-  it_behaves_like 'missing before', 'end', 'while 1 do "x"end',
-                  'while 1 do "x" end'
-  it_behaves_like 'missing before', 'end', 'until 1 do "x"end',
-                  'until 1 do "x" end'
-  it_behaves_like 'missing before', 'end', 'for x in [] do "x"end',
-                  'for x in [] do "x" end'
+  it_behaves_like 'missing before', 'end', 'while 1 do "x"end', 'while 1 do "x" end'
+  it_behaves_like 'missing before', 'end', 'until 1 do "x"end', 'until 1 do "x" end'
+  it_behaves_like 'missing before', 'end', 'for x in [] do "x"end', 'for x in [] do "x" end'
   it_behaves_like 'accept after', '.', 'begin end.inspect'
 
-  it_behaves_like 'missing before', 'else', 'if a; ""else end',
-                  'if a; "" else end'
-  it_behaves_like 'missing after', 'else', 'if a; else"" end',
-                  'if a; else "" end'
-  it_behaves_like 'missing before', 'else', 'begin rescue; ""else end',
-                  'begin rescue; "" else end'
-  it_behaves_like 'missing after', 'else', 'begin rescue; else"" end',
-                  'begin rescue; else "" end'
+  it_behaves_like 'missing before', 'else', 'if a; ""else end', 'if a; "" else end'
+  it_behaves_like 'missing after', 'else', 'if a; else"" end', 'if a; else "" end'
+  it_behaves_like 'missing before', 'else', 'begin rescue; ""else end', 'begin rescue; "" else end'
+  it_behaves_like 'missing after', 'else', 'begin rescue; else"" end', 'begin rescue; else "" end'
   it_behaves_like 'missing before', 'else', 'case a; when b; ""else end',
                   'case a; when b; "" else end'
   it_behaves_like 'missing after', 'else', 'case a; when b; else"" end',
                   'case a; when b; else "" end'
 
-  it_behaves_like 'missing before', 'elsif', 'if a; ""elsif b; end',
-                  'if a; "" elsif b; end'
-  it_behaves_like 'missing after', 'elsif', 'if a; elsif""; end',
-                  'if a; elsif ""; end'
+  it_behaves_like 'missing before', 'elsif', 'if a; ""elsif b; end', 'if a; "" elsif b; end'
+  it_behaves_like 'missing after', 'elsif', 'if a; elsif""; end', 'if a; elsif ""; end'
 
-  it_behaves_like 'missing before', 'ensure', 'begin ""ensure end',
-                  'begin "" ensure end'
-  it_behaves_like 'missing after', 'ensure', 'begin ensure"" end',
-                  'begin ensure "" end'
+  it_behaves_like 'missing before', 'ensure', 'begin ""ensure end', 'begin "" ensure end'
+  it_behaves_like 'missing after', 'ensure', 'begin ensure"" end', 'begin ensure "" end'
 
   it_behaves_like 'missing after', 'if', 'if""; end', 'if ""; end'
   it_behaves_like 'missing after', 'next', 'next""', 'next ""'
@@ -112,8 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
 
   it_behaves_like 'missing before', 'rescue', '""rescue a', '"" rescue a'
   it_behaves_like 'missing after', 'rescue', 'a rescue""', 'a rescue ""'
-  it_behaves_like 'accept after', 'rescue', 'begin; rescue(Error); end',
-                  'begin; rescue(Error); end'
+  it_behaves_like 'accept after', 'rescue', 'begin; rescue(Error); end', 'begin; rescue(Error); end'
   it_behaves_like 'missing after', 'return', 'return""', 'return ""'
   it_behaves_like 'accept after', '(', 'return(1)'
   it_behaves_like 'missing after', 'super', 'super""', 'super ""'
@@ -122,17 +103,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'accept after', '(', 'defined?(1)'
   it_behaves_like 'missing after', 'defined?', 'defined?1', 'defined? 1'
 
-  it_behaves_like 'missing before', 'then', 'if ""then a end',
-                  'if "" then a end'
-  it_behaves_like 'missing after', 'then', 'if a then"" end',
-                  'if a then "" end'
+  it_behaves_like 'missing before', 'then', 'if ""then a end', 'if "" then a end'
+  it_behaves_like 'missing after', 'then', 'if a then"" end', 'if a then "" end'
   it_behaves_like 'missing after', 'unless', 'unless""; end', 'unless ""; end'
   it_behaves_like 'missing before', 'until', '1until ""', '1 until ""'
   it_behaves_like 'missing after', 'until', '1 until""', '1 until ""'
-  it_behaves_like 'missing before', 'when', 'case ""when a; end',
-                  'case "" when a; end'
-  it_behaves_like 'missing after', 'when', 'case a when""; end',
-                  'case a when ""; end'
+  it_behaves_like 'missing before', 'when', 'case ""when a; end', 'case "" when a; end'
+  it_behaves_like 'missing after', 'when', 'case a when""; end', 'case a when ""; end'
   it_behaves_like 'missing before', 'while', '1while ""', '1 while ""'
   it_behaves_like 'missing after', 'while', '1 while""', '1 while ""'
   it_behaves_like 'missing after', 'yield', 'yield""', 'yield ""'

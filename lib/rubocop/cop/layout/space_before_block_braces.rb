@@ -136,8 +136,7 @@ module RuboCop
         end
 
         def conflict_with_block_delimiters?(node)
-          block_delimiters_style == 'line_count_based' &&
-            style == :no_space && node.multiline?
+          block_delimiters_style == 'line_count_based' && style == :no_space && node.multiline?
         end
 
         def block_delimiters_style

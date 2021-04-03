@@ -104,8 +104,7 @@ module RuboCop
         def offense_range(duplicate_branch)
           parent = duplicate_branch.parent
 
-          if parent.respond_to?(:else_branch) &&
-             parent.else_branch.equal?(duplicate_branch)
+          if parent.respond_to?(:else_branch) && parent.else_branch.equal?(duplicate_branch)
             if parent.if_type? && parent.ternary?
               duplicate_branch.source_range
             else

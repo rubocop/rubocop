@@ -64,8 +64,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           end
         end
 
-        context "and one argument is assigned to another, whilst other's " \
-                  'value is not used' do
+        context "and one argument is assigned to another, whilst other's " + 'value is not used' do
           it 'registers an offense' do
             message = "Unused method argument - `a`. If it's necessary, use " \
                         '`_` or `_a` as an argument name to indicate that ' \
@@ -403,8 +402,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'registers an offense for a non-empty method with a single unused ' \
-        'parameter' do
+    it 'registers an offense for a non-empty method with a single unused parameter' do
       message = "Unused method argument - `arg`. If it's necessary, use " \
                   '`_` or `_arg` as an argument name to indicate that it ' \
                   "won't be used. You can also write as `method(*)` if you " \
@@ -432,8 +430,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'registers an offense for a non-empty method with multiple unused ' \
-        'parameters' do
+    it 'registers an offense for a non-empty method with multiple unused parameters' do
       (a_message, b_message, others_message) = %w[a b others].map do |arg|
         "Unused method argument - `#{arg}`. If it's necessary, use `_` or " \
         "`_#{arg}` as an argument name to indicate that it won't be used. " \
@@ -461,8 +458,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
   context 'when IgnoreNotImplementedMethods config parameter is set' do
     let(:cop_config) { { 'IgnoreNotImplementedMethods' => true } }
 
-    it 'accepts a method with a single unused parameter & '\
-       'raises NotImplementedError' do
+    it 'accepts a method with a single unused parameter & raises NotImplementedError' do
       expect_no_offenses(<<~RUBY)
         def method(arg)
           raise NotImplementedError
@@ -470,8 +466,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'accepts a method with a single unused parameter & '\
-       'raises ::NotImplementedError' do
+    it 'accepts a method with a single unused parameter & raises ::NotImplementedError' do
       expect_no_offenses(<<~RUBY)
         def method(arg)
           raise ::NotImplementedError
@@ -479,8 +474,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'accepts a method with a single unused parameter & '\
-       'fails with message' do
+    it 'accepts a method with a single unused parameter & fails with message' do
       expect_no_offenses(<<~RUBY)
         def method(arg)
           fail "TODO"
@@ -488,8 +482,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'accepts a method with a single unused parameter & '\
-       'fails without message' do
+    it 'accepts a method with a single unused parameter & fails without message' do
       expect_no_offenses(<<~RUBY)
         def method(arg)
           fail
@@ -506,8 +499,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'registers an offense for a non-empty method with a single unused ' \
-        'parameter' do
+    it 'registers an offense for a non-empty method with a single unused parameter' do
       message = "Unused method argument - `arg`. If it's necessary, use " \
                   '`_` or `_arg` as an argument name to indicate that it ' \
                   "won't be used. You can also write as `method(*)` if you " \
@@ -536,8 +528,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'registers an offense for a non-empty method with multiple unused ' \
-        'parameters' do
+    it 'registers an offense for a non-empty method with multiple unused parameters' do
       (a_message, b_message, others_message) = %w[a b others].map do |arg|
         "Unused method argument - `#{arg}`. If it's necessary, use `_` or " \
         "`_#{arg}` as an argument name to indicate that it won't be used. " \

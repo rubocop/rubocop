@@ -53,8 +53,7 @@ module RuboCop
         def range_to_remove_for_subsequent_mixin(mixins, node)
           range = node.loc.expression
           prev_mixin = mixins.each_cons(2) { |m, n| break m if n == node }
-          between = prev_mixin.loc.expression.end
-                              .join(range.begin)
+          between = prev_mixin.loc.expression.end.join(range.begin)
           # if separated from previous mixin with only whitespace?
           unless /\S/.match?(between.source)
             range = range.join(between) # then remove that too
@@ -103,12 +102,9 @@ module RuboCop
         end
 
         def sibling_mixins(send_node)
-          siblings = send_node.parent.each_child_node(:send)
-                              .select(&:macro?)
+          siblings = send_node.parent.each_child_node(:send).select(&:macro?)
 
-          siblings.select do |sibling_node|
-            sibling_node.method?(send_node.method_name)
-          end
+          siblings.select { |sibling_node| sibling_node.method?(send_node.method_name) }
         end
 
         def grouped_style?
@@ -129,9 +125,7 @@ module RuboCop
         end
 
         def group_mixins(node, mixins)
-          mixin_names = mixins.reverse.flat_map do |mixin|
-            mixin.arguments.map(&:source)
-          end
+          mixin_names = mixins.reverse.flat_map { |mixin| mixin.arguments.map(&:source) }
 
           "#{node.method_name} #{mixin_names.join(', ')}"
         end

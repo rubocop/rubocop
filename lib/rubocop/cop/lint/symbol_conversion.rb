@@ -114,9 +114,7 @@ module RuboCop
         private
 
         def register_offense(node, correction:, message: format(MSG, correction: correction))
-          add_offense(node, message: message) do |corrector|
-            corrector.replace(node, correction)
-          end
+          add_offense(node, message: message) { |corrector| corrector.replace(node, correction) }
         end
 
         def properly_quoted?(source, value)

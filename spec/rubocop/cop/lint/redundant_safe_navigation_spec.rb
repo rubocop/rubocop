@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
-  let(:cop_config) do
-    { 'AllowedMethods' => %w[respond_to?] }
-  end
+  let(:cop_config) { { 'AllowedMethods' => %w[respond_to?] } }
 
   it 'registers an offense and corrects when `&.` is used inside `if` condition' do
     expect_offense(<<~RUBY)

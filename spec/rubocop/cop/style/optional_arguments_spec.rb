@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::OptionalArguments, :config do
-  it 'registers an offense when an optional argument is followed by a ' \
-     'required argument' do
+  it 'registers an offense when an optional argument is followed by a required argument' do
     expect_offense(<<~RUBY)
       def foo(a = 1, b)
               ^^^^^ Optional arguments should appear at the end of the argument list.
@@ -89,8 +88,7 @@ RSpec.describe RuboCop::Cop::Style::OptionalArguments, :config do
         RUBY
       end
 
-      it 'allows optional arguments to come before a mix of required and ' \
-         'optional named argument' do
+      it 'allows optional arguments to come before a mix of required and optional named argument' do
         expect_no_offenses(<<~RUBY)
           def foo(a = 1, b:, c: 3)
           end

@@ -26,10 +26,8 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        NESTED_MSG = 'Use nested module/class definitions instead of ' \
-                     'compact style.'
-        COMPACT_MSG = 'Use compact module/class definition instead of ' \
-                      'nested style.'
+        NESTED_MSG = 'Use nested module/class definitions instead of compact style.'
+        COMPACT_MSG = 'Use compact module/class definition instead of nested style.'
 
         def on_class(node)
           return if node.parent_class && style != :nested
@@ -90,8 +88,7 @@ module RuboCop
 
         def compact_node(corrector, node)
           replacement = "#{node.body.type} #{compact_identifier_name(node)}"
-          range = range_between(node.loc.keyword.begin_pos,
-                                node.body.loc.name.end_pos)
+          range = range_between(node.loc.keyword.begin_pos, node.body.loc.name.end_pos)
           corrector.replace(range, replacement)
         end
 

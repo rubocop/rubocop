@@ -36,8 +36,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Consider merging nested conditions into '\
-              'outer `%<conditional_type>s` conditions.'
+        MSG = 'Consider merging nested conditions into outer `%<conditional_type>s` conditions.'
 
         def on_if(node)
           return if node.ternary? || node.else? || node.elsif?

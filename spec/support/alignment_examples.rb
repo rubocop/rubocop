@@ -19,8 +19,7 @@ shared_examples_for 'misaligned' do |annotated_source, used_style|
     end
 
     it "auto-corrects mismatched #{name}" do
-      raise if chunk !~
-               /\^\^\^ `end` at (\d), \d is not aligned with `.*` at \d, (\d)./
+      raise if chunk !~ /\^\^\^ `end` at (\d), \d is not aligned with `.*` at \d, (\d)./
 
       line_index = Integer(Regexp.last_match(1)) - 1
       correct_indentation = ' ' * Integer(Regexp.last_match(2))

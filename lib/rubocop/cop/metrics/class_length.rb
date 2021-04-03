@@ -57,9 +57,7 @@ module RuboCop
         private
 
         def message(length, max_length)
-          format('Class has too many lines. [%<length>d/%<max>d]',
-                 length: length,
-                 max: max_length)
+          format('Class has too many lines. [%<length>d/%<max>d]', length: length, max: max_length)
         end
       end
     end

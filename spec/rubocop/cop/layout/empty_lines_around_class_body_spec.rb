@@ -88,8 +88,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       RUBY
     end
 
-    it 'does not register offenses when specifying a superclass ' \
-       'that breaks the line' do
+    it 'does not register offenses when specifying a superclass that breaks the line' do
       expect_no_offenses(<<~RUBY)
         class Foo <
               Bar
@@ -101,8 +100,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       RUBY
     end
 
-    it 'registers an offense for class body not starting or ending with a ' \
-       'blank' do
+    it 'registers an offense for class body not starting or ending with a blank' do
       expect_offense(<<~RUBY)
         class SomeClass
           do_something
@@ -124,8 +122,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
       expect_no_offenses("class SomeClass\nend")
     end
 
-    it 'registers an offense for singleton class body not starting or ending ' \
-       'with a blank' do
+    it 'registers an offense for singleton class body not starting or ending with a blank' do
       expect_offense(<<~RUBY)
         class << self
           do_something
@@ -192,8 +189,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offenses for namespaced class body not starting '\
-          'with a blank' do
+      it 'registers offenses for namespaced class body not starting with a blank' do
         expect_offense(<<~RUBY)
           class Parent
             class Child
@@ -205,8 +201,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offenses for namespaced class body not ending '\
-          'with a blank' do
+      it 'registers offenses for namespaced class body not ending with a blank' do
         expect_offense(<<~RUBY)
           class Parent
             class Child
@@ -299,8 +294,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offenses for namespace body starting '\
-        'and ending without a blank' do
+      it 'registers offenses for namespace body starting and ending without a blank' do
         expect_offense(<<~RUBY)
           class Parent
             class Mom

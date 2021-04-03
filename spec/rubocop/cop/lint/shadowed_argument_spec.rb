@@ -133,8 +133,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       end
 
       context 'and shadowed within a conditional' do
-        it 'registers an offense without specifying where '\
-           'the reassignment took place' do
+        it 'registers an offense without specifying where the reassignment took place' do
           expect_offense(<<~RUBY)
             def do_something(foo)
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -192,8 +191,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the conditional is nested within a conditional' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -227,8 +225,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the conditional is nested within a lambda' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -263,8 +260,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       end
 
       context 'and shadowed within a block' do
-        it 'registers an offense without specifying where '\
-           'the reassignment took place' do
+        it 'registers an offense without specifying where the reassignment took place' do
           expect_offense(<<~RUBY)
             def do_something(foo)
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -318,8 +314,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the block is nested within a block' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -356,8 +351,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the block is nested within a conditional' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               def do_something(foo)
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -394,8 +388,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
     end
 
     context 'when multiple arguments are shadowed' do
-      context 'and one of them shadowed within a lambda while another is ' \
-        'shadowed outside' do
+      context 'and one of them shadowed within a lambda while another is shadowed outside' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             def do_something(foo, bar)
@@ -414,8 +407,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
   end
 
   describe 'block argument shadowing' do
-    context 'when a block local variable is assigned but no argument is' \
-            ' shadowed' do
+    context 'when a block local variable is assigned but no argument is shadowed' do
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
           numbers = [1, 2, 3]
@@ -485,8 +477,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       end
 
       context 'and shadowed within a conditional' do
-        it 'registers an offense without specifying where '\
-           'the reassignment took place' do
+        it 'registers an offense without specifying where the reassignment took place' do
           expect_offense(<<~RUBY)
             do_something do |foo|
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -544,8 +535,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the conditional is nested within a conditional' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -579,8 +569,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the conditional is nested within a lambda' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -615,8 +604,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
       end
 
       context 'and shadowed within a block' do
-        it 'registers an offense without specifying where '\
-           'the reassignment took place' do
+        it 'registers an offense without specifying where the reassignment took place' do
           expect_offense(<<~RUBY)
             do_something do |foo|
                              ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -670,8 +658,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the block is nested within a block' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -708,8 +695,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
 
         context 'and the block is nested within a conditional' do
-          it 'registers an offense without specifying where '\
-             'the reassignment took place' do
+          it 'registers an offense without specifying where the reassignment took place' do
             expect_offense(<<~RUBY)
               do_something do |foo|
                                ^^^ Argument `foo` was shadowed by a local variable before it was used.
@@ -746,8 +732,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
     end
 
     context 'when multiple arguments are shadowed' do
-      context 'and one of them shadowed within a lambda while another is ' \
-        'shadowed outside' do
+      context 'and one of them shadowed within a lambda while another is shadowed outside' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             do_something do |foo, bar|

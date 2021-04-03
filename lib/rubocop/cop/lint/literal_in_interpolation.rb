@@ -34,8 +34,7 @@ module RuboCop
           # interpolation should not be removed if the expanded value
           # contains a space character.
           expanded_value = autocorrected_value(final_node)
-          return if in_array_percent_literal?(begin_node) &&
-                    /\s/.match?(expanded_value)
+          return if in_array_percent_literal?(begin_node) && /\s/.match?(expanded_value)
 
           add_offense(final_node) do |corrector|
             return if final_node.dstr_type? # nested, fixed in next iteration
@@ -56,8 +55,7 @@ module RuboCop
 
         def special_keyword?(node)
           # handle strings like __FILE__
-          (node.str_type? && !node.loc.respond_to?(:begin)) ||
-            node.source_range.is?('__LINE__')
+          (node.str_type? && !node.loc.respond_to?(:begin)) || node.source_range.is?('__LINE__')
         end
 
         def autocorrected_value(node)
@@ -101,8 +99,7 @@ module RuboCop
         # Does node print its own source when converted to a string?
         def prints_as_self?(node)
           node.basic_literal? ||
-            (COMPOSITE.include?(node.type) &&
-              node.children.all? { |child| prints_as_self?(child) })
+            (COMPOSITE.include?(node.type) && node.children.all? { |child| prints_as_self?(child) })
         end
 
         def space_literal?(node)

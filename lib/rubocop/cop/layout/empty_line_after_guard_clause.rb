@@ -55,9 +55,7 @@ module RuboCop
           else
             return if next_line_empty_or_enable_directive_comment?(node.last_line)
 
-            add_offense(offense_location(node)) do |corrector|
-              autocorrect(corrector, node)
-            end
+            add_offense(offense_location(node)) { |corrector| autocorrect(corrector, node) }
           end
         end
 
@@ -154,8 +152,7 @@ module RuboCop
 
         def heredoc_line(node, heredoc_node)
           heredoc_body = heredoc_node.loc.heredoc_body
-          num_of_heredoc_lines =
-            heredoc_body.last_line - heredoc_body.first_line
+          num_of_heredoc_lines = heredoc_body.last_line - heredoc_body.first_line
 
           node.last_line + num_of_heredoc_lines + END_OF_HEREDOC_LINE
         end

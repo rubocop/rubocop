@@ -73,8 +73,7 @@ module RuboCop
         end
 
         def string_literal?(node)
-          node.str_type? ||
-            (node.dstr_type? && node.children.all? { |c| string_literal?(c) })
+          node.str_type? || (node.dstr_type? && node.children.all? { |c| string_literal?(c) })
         end
 
         def string_literals?(node1, node2)

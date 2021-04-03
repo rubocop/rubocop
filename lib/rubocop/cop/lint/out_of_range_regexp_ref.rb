@@ -48,9 +48,7 @@ module RuboCop
         def on_when(node)
           regexp_conditions = node.conditions.select(&:regexp_type?)
 
-          @valid_ref = regexp_conditions.map do |condition|
-            check_regexp(condition)
-          end.compact.max
+          @valid_ref = regexp_conditions.map { |condition| check_regexp(condition) }.compact.max
         end
 
         def on_nth_ref(node)

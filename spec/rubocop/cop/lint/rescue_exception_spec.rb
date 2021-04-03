@@ -111,8 +111,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueException, :config do
     RUBY
   end
 
-  it 'does not crash when the namespace of a rescued class is in a local ' \
-     'variable' do
+  it 'does not crash when the namespace of a rescued class is in a local variable' do
     expect_no_offenses(<<~RUBY)
       adapter = current_adapter
       begin

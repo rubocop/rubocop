@@ -143,20 +143,14 @@ module RuboCop
         map = {}
         callbacks&.select! do |cop|
           restrictions = cop.class.send :restrict_on_send
-          restrictions.each do |name|
-            (map[name] ||= []) << cop
-          end
+          restrictions.each { |name| (map[name] ||= []) << cop }
           restrictions.empty?
         end
         map
       end
 
       def invoke(callback, cops, *args)
-        cops.each do |cop|
-          with_cop_error_handling(cop) do
-            cop.send(callback, *args)
-          end
-        end
+        cops.each { |cop| with_cop_error_handling(cop) { cop.send(callback, *args) } }
       end
 
       # Allow blind rescues here, since we're absorbing and packaging or

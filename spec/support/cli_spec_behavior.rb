@@ -23,11 +23,7 @@ RSpec.shared_context 'cli spec behavior' do
   # helpful because it shows information like expected and actual
   # $stdout messages while not using `aggregate_failures` will only
   # show information about expected and actual exit code
-  around do |example|
-    aggregate_failures(&example)
-  end
+  around { |example| aggregate_failures(&example) }
 
-  after do
-    RuboCop::ResultCache.inhibit_cleanup = false
-  end
+  after { RuboCop::ResultCache.inhibit_cleanup = false }
 end

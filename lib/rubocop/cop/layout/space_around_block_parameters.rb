@@ -77,8 +77,7 @@ module RuboCop
           first = args.first.source_range
           last = args.last.source_range
 
-          check_no_space(opening_pipe.end_pos, first.begin_pos,
-                         'Space before first')
+          check_no_space(opening_pipe.end_pos, first.begin_pos, 'Space before first')
           check_no_space(last_end_pos_inside_pipes(arguments, last),
                          closing_pipe.begin_pos, 'Space after last')
         end
@@ -98,8 +97,7 @@ module RuboCop
 
           check_space(opening_pipe.end_pos, range.begin_pos, range,
                       'before first block parameter', first_arg)
-          check_no_space(opening_pipe.end_pos, range.begin_pos - 1,
-                         'Extra space before first')
+          check_no_space(opening_pipe.end_pos, range.begin_pos - 1, 'Extra space before first')
         end
 
         def check_closing_pipe_space(arguments, closing_pipe)
@@ -108,10 +106,8 @@ module RuboCop
           last         = args.last.source_range
           last_end_pos = last_end_pos_inside_pipes(arguments, last)
 
-          check_space(last_end_pos, closing_pipe.begin_pos, last,
-                      'after last block parameter')
-          check_no_space(last_end_pos + 1, closing_pipe.begin_pos,
-                         'Extra space after last')
+          check_space(last_end_pos, closing_pipe.begin_pos, last, 'after last block parameter')
+          check_no_space(last_end_pos + 1, closing_pipe.begin_pos, 'Extra space after last')
         end
 
         def last_end_pos_inside_pipes(arguments, range)
@@ -123,9 +119,7 @@ module RuboCop
         end
 
         def check_each_arg(args)
-          args.children.each do |arg|
-            check_arg(arg)
-          end
+          args.children.each { |arg| check_arg(arg) }
         end
 
         def check_arg(arg)
@@ -160,9 +154,7 @@ module RuboCop
           return if range.source.include?("\n")
 
           message = "#{msg} block parameter detected."
-          add_offense(range, message: message) do |corrector|
-            corrector.remove(range)
-          end
+          add_offense(range, message: message) { |corrector| corrector.remove(range) }
         end
       end
     end

@@ -20,8 +20,7 @@ module RuboCop
 
           break_line_before(range: range, node: node, corrector: corrector,
                             configured_width: configured_width)
-          move_comment(eol_comment: eol_comment, node: node,
-                       corrector: corrector)
+          move_comment(eol_comment: eol_comment, node: node, corrector: corrector)
           remove_semicolon(node, corrector)
         end
 
@@ -29,8 +28,7 @@ module RuboCop
                               indent_steps: 1)
           corrector.insert_before(
             range,
-            "\n#{' ' * (node.loc.keyword.column +
-                          indent_steps * configured_width)}"
+            "\n#{' ' * (node.loc.keyword.column + indent_steps * configured_width)}"
           )
         end
 
@@ -38,8 +36,7 @@ module RuboCop
           return unless eol_comment
 
           text = eol_comment.loc.expression.source
-          corrector.insert_before(node,
-                                  "#{text}\n#{' ' * node.loc.keyword.column}")
+          corrector.insert_before(node, "#{text}\n#{' ' * node.loc.keyword.column}")
           corrector.remove(eol_comment)
         end
 

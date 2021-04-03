@@ -70,16 +70,14 @@ module RuboCop
         private
 
         def should_check?(token)
-          token.type == :tIDENTIFIER ||
-            (token.type == :tCONSTANT && cop_config['AsciiConstants'])
+          token.type == :tIDENTIFIER || (token.type == :tCONSTANT && cop_config['AsciiConstants'])
         end
 
         def first_offense_range(identifier)
           expression    = identifier.pos
           first_offense = first_non_ascii_chars(identifier.text)
 
-          start_position = expression.begin_pos +
-                           identifier.text.index(first_offense)
+          start_position = expression.begin_pos + identifier.text.index(first_offense)
           end_position   = start_position + first_offense.length
 
           range_between(start_position, end_position)

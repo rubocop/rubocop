@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
-  end
+  let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 }) }
 
   it 'registers an offense when body trails after module definition' do
     expect_offense(<<~RUBY)

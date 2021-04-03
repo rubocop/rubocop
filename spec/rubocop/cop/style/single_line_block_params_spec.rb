@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
-  let(:cop_config) do
-    { 'Methods' =>
-      [{ 'reduce' => %w[a e] },
-       { 'test' => %w[x y] }] }
-  end
+  let(:cop_config) { { 'Methods' => [{ 'reduce' => %w[a e] }, { 'test' => %w[x y] }] } }
 
   it 'finds wrong argument names in calls with different syntax' do
     expect_offense(<<~RUBY)

@@ -11,14 +11,11 @@ module RuboCop
       private
 
       def non_public?(node)
-        non_public_modifier?(node.parent) ||
-          preceding_non_public_modifier?(node)
+        non_public_modifier?(node.parent) || preceding_non_public_modifier?(node)
       end
 
       def preceding_non_public_modifier?(node)
-        stripped_source_upto(node.first_line).any? do |line|
-          NON_PUBLIC_MODIFIERS.include?(line)
-        end
+        stripped_source_upto(node.first_line).any? { |line| NON_PUBLIC_MODIFIERS.include?(line) }
       end
 
       def stripped_source_upto(index)

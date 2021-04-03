@@ -221,9 +221,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
       end
 
       context 'and there are two offenses' do
-        let(:message) do
-          'Replace class var @@class_var with a class instance var.'
-        end
+        let(:message) { 'Replace class var @@class_var with a class instance var.' }
         let(:cop_name) { 'Style/ClassVars' }
         let(:offenses) do
           offense_lines.map do |line|

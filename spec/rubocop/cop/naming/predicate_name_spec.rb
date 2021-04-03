@@ -2,10 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
   context 'with restricted prefixes' do
-    let(:cop_config) do
-      { 'NamePrefix' => %w[has_ is_],
-        'ForbiddenPrefixes' => %w[has_ is_] }
-    end
+    let(:cop_config) { { 'NamePrefix' => %w[has_ is_], 'ForbiddenPrefixes' => %w[has_ is_] } }
 
     it 'registers an offense when method name starts with "is"' do
       expect_offense(<<~RUBY)
@@ -41,9 +38,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
   end
 
   context 'without restricted prefixes' do
-    let(:cop_config) do
-      { 'NamePrefix' => %w[has_ is_], 'ForbiddenPrefixes' => [] }
-    end
+    let(:cop_config) { { 'NamePrefix' => %w[has_ is_], 'ForbiddenPrefixes' => [] } }
 
     it 'registers an offense when method name starts with "is"' do
       expect_offense(<<~RUBY)
@@ -121,9 +116,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
   end
 
   context 'without method definition macros' do
-    let(:cop_config) do
-      { 'NamePrefix' => %w[is_], 'ForbiddenPrefixes' => %w[is_] }
-    end
+    let(:cop_config) { { 'NamePrefix' => %w[is_], 'ForbiddenPrefixes' => %w[is_] } }
 
     it 'registers an offense when using `define_method`' do
       expect_offense(<<~RUBY)

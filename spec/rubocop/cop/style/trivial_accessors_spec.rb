@@ -432,10 +432,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
 
     context 'with AllowPredicates: false' do
-      let(:cop_config) do
-        { 'AllowPredicates' => false,
-          'AllowedMethods' => ['foo?'] }
-      end
+      let(:cop_config) { { 'AllowPredicates' => false, 'AllowedMethods' => ['foo?'] } }
 
       it 'accepts allowed predicate' do
         expect_no_offenses(<<~RUBY)

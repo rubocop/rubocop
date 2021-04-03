@@ -28,22 +28,18 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
   end
 
   describe '#current_scope_level' do
-    before do
-      variable_table.push_scope(s(:def))
-    end
+    before { variable_table.push_scope(s(:def)) }
 
     it 'increases by pushing scope' do
       last_scope_level = variable_table.current_scope_level
       variable_table.push_scope(s(:def))
-      expect(variable_table.current_scope_level)
-        .to eq(last_scope_level + 1)
+      expect(variable_table.current_scope_level).to eq(last_scope_level + 1)
     end
 
     it 'decreases by popping scope' do
       last_scope_level = variable_table.current_scope_level
       variable_table.pop_scope
-      expect(variable_table.current_scope_level)
-        .to eq(last_scope_level - 1)
+      expect(variable_table.current_scope_level).to eq(last_scope_level - 1)
     end
   end
 
@@ -58,10 +54,8 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
     it 'adds variable to current scope with its name as key' do
       node = s(:lvasgn, :foo)
       variable_table.declare_variable(:foo, node)
-      expect(variable_table.current_scope.variables.key?(:foo))
-        .to be(true)
-      expect(variable_table.scope_stack[-2].variables.empty?)
-        .to be(true)
+      expect(variable_table.current_scope.variables.key?(:foo)).to be(true)
+      expect(variable_table.scope_stack[-2].variables.empty?).to be(true)
       variable = variable_table.current_scope.variables[:foo]
       expect(variable.declaration_node).to equal(node)
     end
@@ -83,15 +77,10 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
     end
 
     context 'when current scope is block' do
-      before do
-        variable_table.push_scope(s(:block))
-      end
+      before { variable_table.push_scope(s(:block)) }
 
-      context 'when a variable with the target name exists ' \
-              'in current scope' do
-        before do
-          variable_table.declare_variable(:foo, s(:lvasgn, :foo))
-        end
+      context 'when a variable with the target name exists in current scope' do
+        before { variable_table.declare_variable(:foo, s(:lvasgn, :foo)) }
 
         context 'and does not exist in outer scope' do
           it 'returns the current scope variable' do
@@ -101,25 +90,18 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
         end
 
         context 'and also exists in outer scope' do
-          before do
-            variable_table.declare_variable(:bar, s(:lvasgn, :bar))
-          end
+          before { variable_table.declare_variable(:bar, s(:lvasgn, :bar)) }
 
           it 'returns the current scope variable' do
             found_variable = variable_table.find_variable(:bar)
             expect(found_variable.name).to equal(:bar)
-            expect(
-              variable_table.current_scope.variables.value?(found_variable)
-            ).to be(true)
-            expect(
-              variable_table.scope_stack[-2].variables.value?(found_variable)
-            ).to be(false)
+            expect(variable_table.current_scope.variables.value?(found_variable)).to be(true)
+            expect(variable_table.scope_stack[-2].variables.value?(found_variable)).to be(false)
           end
         end
       end
 
-      context 'when a variable with the target name does not exist ' \
-              'in current scope' do
+      context 'when a variable with the target name does not exist in current scope' do
         context 'but exists in the direct outer scope' do
           it 'returns the direct outer scope variable' do
             found_variable = variable_table.find_variable(:bar)
@@ -161,15 +143,10 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
     end
 
     context 'when current scope is not block' do
-      before do
-        variable_table.push_scope(s(:def))
-      end
+      before { variable_table.push_scope(s(:def)) }
 
-      context 'when a variable with the target name exists ' \
-              'in current scope' do
-        before do
-          variable_table.declare_variable(:foo, s(:lvasgn, :foo))
-        end
+      context 'when a variable with the target name exists in current scope' do
+        before { variable_table.declare_variable(:foo, s(:lvasgn, :foo)) }
 
         context 'and does not exist in outer scope' do
           it 'returns the current scope variable' do
@@ -182,18 +159,13 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
           it 'returns the current scope variable' do
             found_variable = variable_table.find_variable(:foo)
             expect(found_variable.name).to equal(:foo)
-            expect(
-              variable_table.current_scope.variables.value?(found_variable)
-            ).to be(true)
-            expect(
-              variable_table.scope_stack[-2].variables.value?(found_variable)
-            ).to be(false)
+            expect(variable_table.current_scope.variables.value?(found_variable)).to be(true)
+            expect(variable_table.scope_stack[-2].variables.value?(found_variable)).to be(false)
           end
         end
       end
 
-      context 'when a variable with the target name does not exist ' \
-              'in current scope' do
+      context 'when a variable with the target name does not exist in current scope' do
         context 'but exists in the direct outer scope' do
           it 'returns nil' do
             found_variable = variable_table.find_variable(:bar)
@@ -219,13 +191,9 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
   end
 
   describe '#accessible_variables' do
-    let(:accessible_variable_names) do
-      variable_table.accessible_variables.map(&:name)
-    end
+    let(:accessible_variable_names) { variable_table.accessible_variables.map(&:name) }
 
-    before do
-      variable_table.push_scope(s(:class))
-    end
+    before { variable_table.push_scope(s(:class)) }
 
     context 'when there are no variables' do
       it 'returns empty array' do
@@ -245,9 +213,7 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
     end
 
     context 'when the direct outer scope has some variables' do
-      before do
-        variable_table.declare_variable(:foo, s(:lvasgn, :foo))
-      end
+      before { variable_table.declare_variable(:foo, s(:lvasgn, :foo)) }
 
       context 'and the current scope is block' do
         before do
@@ -257,8 +223,7 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
         end
 
         it 'returns the current and direct outer scope variables' do
-          expect(accessible_variable_names)
-            .to contain_exactly(:foo, :bar, :baz)
+          expect(accessible_variable_names).to contain_exactly(:foo, :bar, :baz)
         end
       end
 

@@ -25,8 +25,7 @@ module RuboCop
       #     handle_exception
       #   end
       class RescueException < Base
-        MSG = 'Avoid rescuing the `Exception` class. ' \
-              'Perhaps you meant to rescue `StandardError`?'
+        MSG = 'Avoid rescuing the `Exception` class. Perhaps you meant to rescue `StandardError`?'
 
         def on_resbody(node)
           return unless node.children.first

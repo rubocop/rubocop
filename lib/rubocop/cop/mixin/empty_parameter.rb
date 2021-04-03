@@ -17,9 +17,7 @@ module RuboCop
         empty_arguments?(node) do |args|
           return if args.empty_and_without_delimiters?
 
-          add_offense(args) do |corrector|
-            autocorrect(corrector, args)
-          end
+          add_offense(args) { |corrector| autocorrect(corrector, args) }
         end
       end
     end

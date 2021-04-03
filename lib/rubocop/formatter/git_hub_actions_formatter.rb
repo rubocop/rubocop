@@ -5,11 +5,7 @@ module RuboCop
     # This formatter formats report data as GitHub Workflow commands resulting
     # in GitHub check annotations when run within GitHub Actions.
     class GitHubActionsFormatter < BaseFormatter
-      ESCAPE_MAP = {
-        '%' => '%25',
-        "\n" => '%0A',
-        "\r" => '%0D'
-      }.freeze
+      ESCAPE_MAP = { '%' => '%25', "\n" => '%0A', "\r" => '%0D' }.freeze
 
       def file_finished(file, offenses)
         offenses.each { |offense| report_offense(file, offense) }

@@ -61,8 +61,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           RUBY
         end
 
-        it 'registers offenses when using `foo` and `bar` ' \
-           'in multiple rescues' do
+        it 'registers offenses when using `foo` and `bar` in multiple rescues' do
           expect_offense(<<~RUBY)
             begin
               something
@@ -447,11 +446,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
   end
 
   context 'with the `PreferredName` setup' do
-    let(:cop_config) do
-      {
-        'PreferredName' => 'exception'
-      }
-    end
+    let(:cop_config) { { 'PreferredName' => 'exception' } }
 
     it 'registers an offense when using `e`' do
       expect_offense(<<~RUBY)

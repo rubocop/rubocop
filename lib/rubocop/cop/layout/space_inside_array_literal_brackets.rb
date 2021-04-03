@@ -142,11 +142,9 @@ module RuboCop
           case style
           when :no_space
             start_ok = next_to_comment?(node, left)
-            no_space_offenses(node, left, right, MSG, start_ok: start_ok,
-                                                      end_ok: end_ok)
+            no_space_offenses(node, left, right, MSG, start_ok: start_ok, end_ok: end_ok)
           when :space
-            space_offenses(node, left, right, MSG, start_ok: start_ok,
-                                                   end_ok: end_ok)
+            space_offenses(node, left, right, MSG, start_ok: start_ok, end_ok: end_ok)
           else
             compact_offenses(node, left, right, start_ok, end_ok)
           end
@@ -160,21 +158,18 @@ module RuboCop
           if qualifies_for_compact?(node, left, side: :left)
             compact_offense(node, left, side: :left)
           elsif !multi_dimensional_array?(node, left, side: :left)
-            space_offenses(node, left, nil, MSG, start_ok: start_ok,
-                                                 end_ok: true)
+            space_offenses(node, left, nil, MSG, start_ok: start_ok, end_ok: true)
           end
           if qualifies_for_compact?(node, right)
             compact_offense(node, right)
           elsif !multi_dimensional_array?(node, right)
-            space_offenses(node, nil, right, MSG, start_ok: true,
-                                                  end_ok: end_ok)
+            space_offenses(node, nil, right, MSG, start_ok: true, end_ok: end_ok)
           end
         end
 
         def qualifies_for_compact?(node, token, side: :right)
           if side == :right
-            multi_dimensional_array?(node, token) &&
-              !next_to_bracket?(token)
+            multi_dimensional_array?(node, token) && !next_to_bracket?(token)
           else
             multi_dimensional_array?(node, token, side: :left) &&
               !next_to_bracket?(token, side: :left)

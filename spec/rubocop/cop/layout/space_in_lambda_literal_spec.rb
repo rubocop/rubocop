@@ -32,8 +32,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
       expect_no_offenses('a = ->{ b + c }')
     end
 
-    it 'registers an offense and corrects no space ' \
-      'in the inner nested lambda' do
+    it 'registers an offense and corrects no space in the inner nested lambda' do
       expect_offense(<<~RUBY)
         a = -> (b = ->(c) {}, d) { b + d }
                     ^^^^^ Use a space between `->` and `(` in lambda literals.
@@ -44,8 +43,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects no space ' \
-      'in the outer nested lambda' do
+    it 'registers an offense and corrects no space in the outer nested lambda' do
       expect_offense(<<~RUBY)
         a = ->(b = -> (c) {}, d) { b + d }
             ^^^^^^^^^^^^^^^^^^^^ Use a space between `->` and `(` in lambda literals.
@@ -56,8 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects no space ' \
-      'in both lambdas when nested' do
+    it 'registers an offense and corrects no space in both lambdas when nested' do
       expect_offense(<<~RUBY)
         a = ->(b = ->(c) {}, d) { b + d }
                    ^^^^^ Use a space between `->` and `(` in lambda literals.

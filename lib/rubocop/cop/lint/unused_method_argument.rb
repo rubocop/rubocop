@@ -80,8 +80,7 @@ module RuboCop
 
         def check_argument(variable)
           return unless variable.method_argument?
-          return if variable.keyword_argument? &&
-                    cop_config['AllowUnusedKeywordArguments']
+          return if variable.keyword_argument? && cop_config['AllowUnusedKeywordArguments']
           return if ignored_method?(variable.scope.node.body)
 
           super

@@ -75,9 +75,9 @@ module RuboCop
 
       def alternative_style
         if supported_styles.size != 2
-          raise 'alternative_style can only be used when there are exactly ' \
-               '2 SupportedStyles'
+          raise 'alternative_style can only be used when there are exactly 2 SupportedStyles'
         end
+
         alternative_styles.first
       end
 

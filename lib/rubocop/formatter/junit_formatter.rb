@@ -18,14 +18,10 @@ module RuboCop
       def initialize(output, options = {})
         super
 
-        @document = REXML::Document.new.tap do |document|
-          document << REXML::XMLDecl.new
-        end
+        @document = REXML::Document.new.tap { |document| document << REXML::XMLDecl.new }
         testsuites = REXML::Element.new('testsuites', @document)
         testsuite = REXML::Element.new('testsuite', testsuites)
-        @testsuite = testsuite.tap do |element|
-          element.add_attributes('name' => 'rubocop')
-        end
+        @testsuite = testsuite.tap { |element| element.add_attributes('name' => 'rubocop') }
       end
 
       def file_finished(file, offenses)
@@ -53,9 +49,7 @@ module RuboCop
       end
 
       def offenses_for_cop(all_offenses, cop)
-        all_offenses.select do |offense|
-          offense.cop_name == cop.cop_name
-        end
+        all_offenses.select { |offense| offense.cop_name == cop.cop_name }
       end
 
       def classname_attribute_value(file)
