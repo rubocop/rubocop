@@ -9,7 +9,7 @@ namespace :cut_release do
   end
 
   %w[major minor patch pre].each do |release_type|
-    desc "Cut a new #{release_type} release, create release notes " + 'and update documents.'
+    desc "Cut a new #{release_type} release, create release notes and update documents."
     task release_type => 'changelog:check_clean' do
       run(release_type)
     end

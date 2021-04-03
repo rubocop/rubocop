@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   shared_examples 'missing before' do |highlight, expr, correct|
-    it 'registers an offense for missing space before keyword in ' + "`#{expr}`" do
+    it "registers an offense for missing space before keyword in `#{expr}`" do
       h_index = expr.index(highlight)
       expect_offense(<<~RUBY)
         #{expr}
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   end
 
   shared_examples 'missing after' do |highlight, expr, correct|
-    it 'registers an offense for missing space after keyword in ' + "`#{expr}` and autocorrects" do
+    it "registers an offense for missing space after keyword in `#{expr}` and autocorrects" do
       h_index = expr.index(highlight)
       expect_offense(<<~RUBY)
         #{expr}

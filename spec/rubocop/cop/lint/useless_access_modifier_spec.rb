@@ -708,7 +708,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
         RUBY
       end
 
-      it "doesn't register an offense if the modifier is the same as " + 'outside the meta-class' do
+      it "doesn't register an offense if the modifier is the same as outside the meta-class" do
         expect_no_offenses(<<~RUBY)
           #{keyword} A
             #{modifier}

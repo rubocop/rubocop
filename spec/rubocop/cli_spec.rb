@@ -357,7 +357,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      '',
                      '#' * 130,
                      '# rubocop:disable all',
-                     'a' * 10 + ' # rubocop:disable Layout/LineLength,Metrics/ClassLength',
+                     "#{'a' * 10} # rubocop:disable Layout/LineLength,Metrics/ClassLength",
                      'y(123) # rubocop:disable all',
                      '# rubocop:enable all'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)

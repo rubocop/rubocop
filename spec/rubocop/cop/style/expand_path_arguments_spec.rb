@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
     RUBY
   end
 
-  it 'registers an offense when using ' + "`File.expand_path('../../..', __FILE__)`" do
+  it "registers an offense when using `File.expand_path('../../..', __FILE__)`" do
     expect_offense(<<~RUBY)
       File.expand_path('../../..', __FILE__)
            ^^^^^^^^^^^ Use `expand_path('../..', __dir__)` instead of `expand_path('../../..', __FILE__)`.
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
     RUBY
   end
 
-  it 'registers an offense when using ' + "`File.expand_path('../../lib', __FILE__)`" do
+  it "registers an offense when using `File.expand_path('../../lib', __FILE__)`" do
     expect_offense(<<~RUBY)
       File.expand_path('../../lib', __FILE__)
            ^^^^^^^^^^^ Use `expand_path('../lib', __dir__)` instead of `expand_path('../../lib', __FILE__)`.
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
     RUBY
   end
 
-  it 'registers an offense when using ' + "`File.expand_path('./../..', __FILE__)`" do
+  it "registers an offense when using `File.expand_path('./../..', __FILE__)`" do
     expect_offense(<<~RUBY)
       File.expand_path('./../..', __FILE__)
            ^^^^^^^^^^^ Use `expand_path('..', __dir__)` instead of `expand_path('./../..', __FILE__)`.
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
     RUBY
   end
 
-  it 'registers an offense when using ' + "`::File.expand_path('./../..', __FILE__)`" do
+  it "registers an offense when using `::File.expand_path('./../..', __FILE__)`" do
     expect_offense(<<~RUBY)
       ::File.expand_path('./../..', __FILE__)
              ^^^^^^^^^^^ Use `expand_path('..', __dir__)` instead of `expand_path('./../..', __FILE__)`.
@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Style::ExpandPathArguments, :config do
     RUBY
   end
 
-  it 'does not register an offense when using ' + "`File.expand_path('..', __dir__)`" do
+  it "does not register an offense when using `File.expand_path('..', __dir__)`" do
     expect_no_offenses(<<~RUBY)
       File.expand_path('..', __dir__)
     RUBY

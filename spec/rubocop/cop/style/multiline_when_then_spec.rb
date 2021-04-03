@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
     RUBY
   end
 
-  it "doesn't register an offense when `then` required for a body of `when` " + 'is used' do
+  it "doesn't register an offense when `then` required for a body of `when` is used" do
     expect_no_offenses(<<~RUBY)
       case cond
       when foo then do_something(arg1,
