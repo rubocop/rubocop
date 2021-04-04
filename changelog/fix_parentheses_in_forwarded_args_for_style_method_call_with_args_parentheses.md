@@ -1,1 +1,0 @@
-* [#9637](https://github.com/rubocop/rubocop/issues/9637): Allow parentheses for forwarded args in `Style/MethodCallWithArgsParentheses`'s `omit_parentheses` style to avoid endless range ambiguity. ([@gsamokovarov][])

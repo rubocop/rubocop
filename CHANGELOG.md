@@ -2,6 +2,20 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#9649](https://github.com/rubocop/rubocop/pull/9649): Fix when highlights contain multibyte characters. ([@osyo-manga][])
+* [#9646](https://github.com/rubocop/rubocop/pull/9646): Fix an incorrect auto-correct for `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: conditionals` of `Style/AndOr`. ([@koic][])
+* [#9608](https://github.com/rubocop/rubocop/issues/9608): Fix a false positive for `Layout/EmptyLineAfterGuardClause` when using guard clause is after `rubocop:enable` comment. ([@koic][])
+* [#9637](https://github.com/rubocop/rubocop/issues/9637): Allow parentheses for forwarded args in `Style/MethodCallWithArgsParentheses`'s `omit_parentheses` style to avoid endless range ambiguity. ([@gsamokovarov][])
+* [#9641](https://github.com/rubocop/rubocop/issues/9641): Fix `Layout/MultilineMethodCallIndentation` triggering on method calls that look like operators. ([@dvandersluis][])
+* [#9638](https://github.com/rubocop/rubocop/pull/9638): Fix an error for `Layout/LineLength` when over limit at right hand side of multiple assignment. ([@koic][])
+* [#9639](https://github.com/rubocop/rubocop/pull/9639): Fix `Style/RedundantBegin` removing comments on assignment statement correction. ([@marcotc][])
+* [#9671](https://github.com/rubocop/rubocop/pull/9671): Fix an incorrect auto-correct for `Lint/AmbiguousOperator` with `Style/MethodCallWithArgsParentheses`. ([@koic][])
+* [#9645](https://github.com/rubocop/rubocop/pull/9645): Fix an incorrect auto-correct for `Style/SingleLineMethods` when using single line class method definition. ([@koic][])
+* [#9644](https://github.com/rubocop/rubocop/pull/9644): Fix an error and an incorrect auto-correct for `Style/MultilineMethodSignature` when line break after opening parenthesis. ([@koic][])
+* [#9672](https://github.com/rubocop/rubocop/issues/9672): Fix an incorrect auto-correct for `Style/HashConversion` when using  multi-argument `Hash[]` as a method argument. ([@koic][])
+
 ## 1.12.0 (2021-03-24)
 
 ### New features
@@ -5533,3 +5547,4 @@
 [@caalberts]: https://github.com/caalberts
 [@kachick]: https://github.com/kachick
 [@corroded]: https://github.com/corroded
+[@osyo-manga]: https://github.com/osyo-manga
