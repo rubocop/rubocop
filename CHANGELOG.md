@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.12.1 (2021-04-04)
+
 ### Bug fixes
 
 * [#9649](https://github.com/rubocop/rubocop/pull/9649): Fix when highlights contain multibyte characters. ([@osyo-manga][])
