@@ -348,9 +348,11 @@ module RuboCop
 
     def disable_parallel_when_invalid_combo
       combos = {
-        auto_gen_config: '--auto-gen-config',
-        fail_fast: '-F/--fail-fast.',
-        auto_correct: '--auto-correct.'
+        auto_gen_config: '-P/--parallel uses caching to speed up execution, ' \
+                         'while --auto-gen-config needs a non-cached run, ' \
+                         'so they cannot be combined.',
+        fail_fast: '-P/--parallel cannot be combined with -F/--fail-fast.',
+        auto_correct: '-P/--parallel cannot be combined with --auto-correct.'
       }
 
       invalid_combos = combos.select { |key, _flag| @options.key?(key) }
