@@ -13,8 +13,26 @@ module RuboCop
       #     b
       #   )
       #
+      #   foo(a) do |x|
+      #     puts x
+      #   end
+      #
+      #   puts 'string that fits on ' \
+      #        'a single line'
+      #
+      #   things
+      #     .select { |thing| thing.cond? }
+      #     .join('-')
+      #
       #   # good
       #   foo(a, b)
+      #
+      #   foo(a) { |x| puts x }
+      #
+      #   puts 'string that fits on a single line'
+      #
+      #   things.select { |thing| thing.cond? }.join('-')
+      #
       class RedundantLineBreak < Cop
         include CheckAssignment
 
