@@ -234,6 +234,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using modifier `if` single statement in `begin` block' do
+    expect_offense(<<~RUBY)
+      var ||= begin
+              ^^^^^ Redundant `begin` block detected.
+        foo if condition
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var ||= (foo if condition)
+
+    RUBY
+  end
+
   it 'does not register an offense when using `begin` with multiple statement for or assignment' do
     expect_no_offenses(<<~RUBY)
       var ||= begin

@@ -109,7 +109,10 @@ module RuboCop
         def replace_begin_with_statement(corrector, offense_range, node)
           first_child = node.children.first
 
-          corrector.replace(offense_range, first_child.source)
+          source = first_child.source
+          source = "(#{source})" if first_child.if_type?
+
+          corrector.replace(offense_range, source)
           corrector.remove(range_between(offense_range.end_pos, first_child.source_range.end_pos))
 
           restore_removed_comments(corrector, offense_range, node, first_child)
