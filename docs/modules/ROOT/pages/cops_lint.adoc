@@ -40,7 +40,7 @@ x != y # or x = !y
 | Yes
 | No
 | 0.48
-| -
+| 1.13
 |===
 
 This cop checks for ambiguous block association with method
@@ -70,6 +70,16 @@ foo == bar { |b| b.baz }
 # Lambda arguments require no disambiguation
 foo = ->(bar) { bar.baz }
 ----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoredMethods
+| `[]`
+| Array
+|===
 
 === References
 

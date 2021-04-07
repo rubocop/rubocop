@@ -1387,6 +1387,8 @@ Lint/AmbiguousBlockAssociation:
   StyleGuide: '#syntax'
   Enabled: true
   VersionAdded: '0.48'
+  VersionChanged: '1.13'
+  IgnoredMethods: []
 
 Lint/AmbiguousOperator:
   Description: >-
