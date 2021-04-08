@@ -61,16 +61,38 @@ module RuboCop
         def single_argument(node)
           first_argument = node.first_argument
           if first_argument.hash_type?
-            add_offense(node, message: MSG_LITERAL_HASH_ARG) do |corrector|
-              corrector.replace(node, "{#{first_argument.source}}")
-            end
+            register_offense_for_hash(node, first_argument)
           elsif first_argument.splat_type?
             add_offense(node, message: MSG_SPLAT) unless allowed_splat_argument?
+          elsif use_zip_method_without_argument?(first_argument)
+            register_offense_for_zip_method(node, first_argument)
           else
             add_offense(node, message: MSG_TO_H) do |corrector|
               replacement = first_argument.source
               replacement = "(#{replacement})" if requires_parens?(first_argument)
               corrector.replace(node, "#{replacement}.to_h")
+            end
+          end
+        end
+
+        def use_zip_method_without_argument?(first_argument)
+          return false unless first_argument&.send_type?
+
+          first_argument.method?(:zip) && first_argument.arguments.empty?
+        end
+
+        def register_offense_for_hash(node, hash_argument)
+          add_offense(node, message: MSG_LITERAL_HASH_ARG) do |corrector|
+            corrector.replace(node, "{#{hash_argument.source}}")
+          end
+        end
+
+        def register_offense_for_zip_method(node, zip_method)
+          add_offense(node, message: MSG_TO_H) do |corrector|
+            if zip_method.parenthesized?
+              corrector.insert_before(zip_method.loc.end, '[]')
+            else
+              corrector.insert_after(zip_method, '([])')
             end
           end
         end
