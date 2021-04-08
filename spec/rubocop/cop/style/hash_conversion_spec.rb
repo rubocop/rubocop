@@ -76,6 +76,39 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using argumentless `zip` without parentheses in `Hash[]`' do
+    expect_offense(<<~RUBY)
+      Hash[array.zip]
+      ^^^^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.zip([]).to_h
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using argumentless `zip` with parentheses in `Hash[]`' do
+    expect_offense(<<~RUBY)
+      Hash[array.zip()]
+      ^^^^^^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.zip([]).to_h
+    RUBY
+  end
+
+  it 'registers and corrects an offense when using `zip` with argument in `Hash[]`' do
+    expect_offense(<<~RUBY)
+      Hash[array.zip([1, 2, 3])]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.zip([1, 2, 3]).to_h
+    RUBY
+  end
+
   context 'AllowSplatArgument: true' do
     let(:cop_config) { { 'AllowSplatArgument' => true } }
 
