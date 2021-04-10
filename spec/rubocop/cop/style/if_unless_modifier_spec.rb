@@ -73,6 +73,25 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'when using a method with heredoc argument' do
+        it 'accepts' do
+          expect_offense(<<~RUBY)
+            fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS) if condition
+                                                                                 ^^ Modifier form of `if` makes the line too long.
+              string
+            EOS
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS)
+                string
+              EOS
+            end
+          RUBY
+        end
+      end
+
       describe 'IgnoreCopDirectives' do
         let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }
