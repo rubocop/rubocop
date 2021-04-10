@@ -38,6 +38,7 @@ module RuboCop
         include StatementModifier
         include LineLengthHelp
         include IgnoredPattern
+        include RangeHelp
         extend AutoCorrector
 
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
@@ -66,7 +67,16 @@ module RuboCop
 
         def autocorrect(corrector, node)
           replacement = if node.modifier_form?
-                          to_normal_form(node)
+                          indentation = ' ' * node.source_range.column
+                          last_argument = node.if_branch.last_argument
+
+                          if last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
+                            heredoc = extract_heredoc_from(last_argument)
+                            remove_heredoc(corrector, heredoc)
+                            to_normal_form_with_heredoc(node, indentation, heredoc)
+                          else
+                            to_normal_form(node, indentation)
+                          end
                         else
                           to_modifier_form(node)
                         end
@@ -151,13 +161,37 @@ module RuboCop
           node && (sibling = node.children[index + 1]) && sibling.source_range.first_line == line_no
         end
 
-        def to_normal_form(node)
-          indentation = ' ' * node.source_range.column
+        def to_normal_form(node, indentation)
           <<~RUBY.chomp
             #{node.keyword} #{node.condition.source}
             #{indentation}  #{node.body.source}
             #{indentation}end
           RUBY
+        end
+
+        def to_normal_form_with_heredoc(node, indentation, heredoc)
+          heredoc_body, heredoc_end = heredoc
+
+          <<~RUBY.chomp
+            #{node.keyword} #{node.condition.source}
+            #{indentation}  #{node.body.source}
+            #{indentation}  #{heredoc_body.source.chomp}
+            #{indentation}  #{heredoc_end.source.chomp}
+            #{indentation}end
+          RUBY
+        end
+
+        def extract_heredoc_from(last_argument)
+          heredoc_body = last_argument.loc.heredoc_body
+          heredoc_end = last_argument.loc.heredoc_end
+
+          [heredoc_body, heredoc_end]
+        end
+
+        def remove_heredoc(corrector, heredoc)
+          heredoc.each do |range|
+            corrector.remove(range_by_whole_lines(range, include_final_newline: true))
+          end
         end
       end
     end
