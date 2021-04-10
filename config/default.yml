@@ -1106,6 +1106,7 @@ Layout/RedundantLineBreak:
                  Do not break up an expression into multiple lines when it fits
                  on a single line.
   Enabled: false
+  InspectBlocks: false
   VersionAdded: '<<next>>'
 
 Layout/RescueEnsureAlignment:
