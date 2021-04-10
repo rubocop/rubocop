@@ -6,16 +6,12 @@ module RuboCop
       # This cop checks whether certain expressions, e.g. method calls, that could fit
       # completely on a single line, are broken up into multiple lines unnecessarily.
       #
-      # @example
+      # @example any configuration
       #   # bad
       #   foo(
       #     a,
       #     b
       #   )
-      #
-      #   foo(a) do |x|
-      #     puts x
-      #   end
       #
       #   puts 'string that fits on ' \
       #        'a single line'
@@ -27,11 +23,24 @@ module RuboCop
       #   # good
       #   foo(a, b)
       #
-      #   foo(a) { |x| puts x }
-      #
       #   puts 'string that fits on a single line'
       #
       #   things.select { |thing| thing.cond? }.join('-')
+      #
+      # @example InspectBlocks: false (default)
+      #   # good
+      #   foo(a) do |x|
+      #     puts x
+      #   end
+      #
+      # @example InspectBlocks: true
+      #   # bad
+      #   foo(a) do |x|
+      #     puts x
+      #   end
+      #
+      #   # good
+      #   foo(a) { |x| puts x }
       #
       class RedundantLineBreak < Cop
         include CheckAssignment
@@ -64,7 +73,14 @@ module RuboCop
         private
 
         def offense?(node)
-          !single_line?(node) && !too_long?(node) && suitable_as_single_line?(node)
+          return false if configured_to_not_be_inspected?(node)
+
+          node.multiline? && !too_long?(node) && suitable_as_single_line?(node)
+        end
+
+        def configured_to_not_be_inspected?(node)
+          !cop_config['InspectBlocks'] && (node.block_type? ||
+                                           node.each_child_node(:block).any?(&:multiline?))
         end
 
         def suitable_as_single_line?(node)
@@ -85,10 +101,6 @@ module RuboCop
           processed_source.comments.map(&:loc).map(&:line).any? do |comment_line_number|
             comment_line_number >= node.first_line && comment_line_number <= node.last_line
           end
-        end
-
-        def single_line?(node)
-          node.first_line == node.last_line
         end
 
         def too_long?(node)
