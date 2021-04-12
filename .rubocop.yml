@@ -120,6 +120,12 @@ Performance/CollectionLiteralInLoop:
     - 'Rakefile'
     - 'spec/**/*.rb'
 
+Performance/EndWith:
+  SafeMultiline: false
+
+Performance/StartWith:
+  SafeMultiline: false
+
 RSpec/StubbedMock:
   Enabled: false
 
