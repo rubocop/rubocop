@@ -67,7 +67,7 @@ module RuboCop
           @options.delete(:only)
           @config_store = ConfigStore.new
           # Save the todo configuration of the LineLength cop.
-          IO.read(AUTO_GENERATED_FILE).lines.drop_while { |line| line.start_with?('#') }.join
+          File.read(AUTO_GENERATED_FILE).lines.drop_while { |line| line.start_with?('#') }.join
         end
 
         def run_all_cops(line_length_contents)
@@ -115,9 +115,9 @@ module RuboCop
         end
 
         def existing_configuration(config_file)
-          IO.read(config_file, encoding: Encoding::UTF_8)
-            .sub(/^inherit_from: *[^\n]+/, '')
-            .sub(/^inherit_from: *(\n *- *[^\n]+)+/, '')
+          File.read(config_file, encoding: Encoding::UTF_8)
+              .sub(/^inherit_from: *[^\n]+/, '')
+              .sub(/^inherit_from: *(\n *- *[^\n]+)+/, '')
         end
 
         def write_config_file(file_name, file_string, rubocop_yml_contents)

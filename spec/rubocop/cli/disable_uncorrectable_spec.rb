@@ -34,7 +34,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
         1 file inspected, 3 offenses detected, 3 offenses corrected
       OUTPUT
-      expect(IO.read('example.rb')).to eq(<<~RUBY)
+      expect(File.read('example.rb')).to eq(<<~RUBY)
         # frozen_string_literal: true
 
         puts 1 == 2
@@ -54,7 +54,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
-        expect(IO.read('example.rb')).to eq(<<~RUBY)
+        expect(File.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           ip('1.2.3.4') # rubocop:todo Style/IpAddresses
@@ -85,7 +85,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
           1 file inspected, 4 offenses detected, 4 offenses corrected
         OUTPUT
 
-        expect(IO.read('example.rb')).to eq(<<~RUBY)
+        expect(File.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           def ordinary_method(_some_arg)
@@ -118,7 +118,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
             1 file inspected, 4 offenses detected, 4 offenses corrected
           OUTPUT
-          expect(IO.read('example.rb')).to eq(<<~RUBY)
+          expect(File.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
             ip('1.2.3.4', '5.6.7.8') # rubocop:todo Style/IpAddresses
@@ -170,7 +170,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
             1 file inspected, 8 offenses detected, 8 offenses corrected
           OUTPUT
-          expect(IO.read('example.rb')).to eq(<<~RUBY)
+          expect(File.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
             # Chess engine.
@@ -216,7 +216,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
-        expect(IO.read('example.rb')).to eq(<<~RUBY)
+        expect(File.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           # rubocop:todo Style/IpAddresses
@@ -242,7 +242,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
             end
           RUBY
           expect(exit_code).to eq(0)
-          expect(IO.read('example.rb')).to eq(<<~'RUBY')
+          expect(File.read('example.rb')).to eq(<<~'RUBY')
             # frozen_string_literal: true
 
             def our_function

@@ -107,7 +107,7 @@ module RuboCop
 
     def load
       puts "Loading cache from #{@path}" if debug?
-      @cached_data.from_json(IO.read(@path, encoding: Encoding::UTF_8))
+      @cached_data.from_json(File.read(@path, encoding: Encoding::UTF_8))
     end
 
     def save(offenses)

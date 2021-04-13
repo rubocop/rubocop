@@ -31,7 +31,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct-all'])).to eq(1)
-    expect(IO.read('example.rb')).to eq(source)
+    expect(File.read('example.rb')).to eq(source)
   end
 
   it 'plays nicely with default cops in complex ExtraSpacing scenarios' do
@@ -78,7 +78,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', source)
     expect(cli.run(['--auto-correct-all'])).to eq(1)
 
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       def batch
@@ -122,7 +122,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     expect(cli.run(['--auto-correct-all'])).to eq(1)
 
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       test123456                 = nil
@@ -157,7 +157,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     # 1=>2 is changed to 1 => 2. The rest is unchanged.
     # SpaceAroundOperators leaves it to HashAlignment when the style is table.
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       a = { 1 => 2, a => b }
@@ -189,7 +189,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      '--auto-correct-all',
                      '--only', 'Style/HashSyntax,Style/HashAlignment'
                    ])).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       some_method(:a => 'abc', :b => 'abc',
                   :c => 'abc', :d => 'abc'
               )
@@ -209,7 +209,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      '--auto-correct-all',
                      '--only', 'Style/MethodCallWithArgsParentheses,Style/NestedParenthesizedCalls'
                    ])).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       a(b(1))
     RUBY
   end
@@ -229,7 +229,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(
       cli.run(['--auto-correct', '--only', 'Style/MethodCallWithArgsParentheses,Style/AndOr'])
     ).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       if foo && bar(:arg)
       end
     RUBY
@@ -251,7 +251,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         ['--auto-correct', '--only', 'Style/MethodCallWithArgsParentheses,Lint/AmbiguousOperator']
       )
     ).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       def foo(&block)
         do_something(&block)
       end
@@ -272,7 +272,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      '--auto-correct-all',
                      '--only', 'Style/IfUnlessModifier,Style/SoleNestedConditional'
                    ])).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       def foo
         # NOTE: comment
         if a? && b? && !c?
@@ -327,7 +327,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
          'without producing a double comma' do
         cli.run(['--auto-correct-all'])
 
-        expect(IO.read('example.rb')).to eq(expected_corrected_source)
+        expect(File.read('example.rb')).to eq(expected_corrected_source)
 
         expect($stderr.string).to eq('')
       end
@@ -416,7 +416,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       it 'corrects SpaceInsideArrayLiteralBrackets and SpaceInsideReferenceBrackets' do
         cli.run(['--auto-correct-all'])
 
-        expect(IO.read('example.rb')).to eq(corrected_source)
+        expect(File.read('example.rb')).to eq(corrected_source)
 
         expect($stderr.string).to eq('')
       end
@@ -508,7 +508,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         scroll_down_until_element_exists
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects LineEndConcatenation offenses leaving the ' \
@@ -534,7 +534,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                  "     'b'",
                  'c.to_s',
                  ''].join("\n")
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects Style/InverseMethods and Style/Not offenses' do
@@ -546,7 +546,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     corrected = <<~'RUBY'
       x.reject {|y|  y.z }
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects Style/Next and Style/SafeNavigation offenses' do
@@ -573,7 +573,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         end
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects `Lint/Lambda` and `Lint/UnusedBlockArgument` offenses' do
@@ -592,7 +592,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         puts 'Hello world'
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   describe 'caching' do
@@ -612,7 +612,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
       it "doesn't correct offenses" do
         expect(cli.run(['--auto-correct-all'])).to eq(0)
-        expect(IO.read('example.rb')).to eq(source)
+        expect(File.read('example.rb')).to eq(source)
       end
     end
 
@@ -622,7 +622,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       it 'corrects offenses' do
         allow(cache).to receive(:save)
         expect(cli.run(['--auto-correct-all'])).to eq(0)
-        expect(IO.read('example.rb')).to eq(<<~RUBY)
+        expect(File.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           puts 'Hi'
@@ -686,7 +686,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                     end
         # rubocop:enable Style/HashLikeCase
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb')).to eq(corrected)
+        expect(File.read('example.rb')).to eq(corrected)
       end
     end
   end
@@ -725,7 +725,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects RedundantCopDisableDirective offenses' do
@@ -768,7 +768,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects RedundantBegin offenses and fixes indentation etc' do
@@ -841,7 +841,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       rescue StandardError # comment 2
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects Tab and IndentationConsistency offenses' do
@@ -871,7 +871,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         end
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects IndentationWidth and IndentationConsistency offenses' do
@@ -907,7 +907,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         end
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects IndentationWidth and IndentationConsistency offenses' \
@@ -950,7 +950,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         end
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
@@ -958,7 +958,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', source)
     expect(cli.run(['-D', '--auto-correct-all'])).to eq(0)
     corrected = "# frozen_string_literal: true\n\nfoo.map(&:nil?)\n"
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
     uncorrected = $stdout.string.split($RS).select do |line|
       line.include?('example.rb:') && !line.include?('[Corrected]')
     end
@@ -986,7 +986,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         raise
       end
     RUBY
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
   end
 
   it 'honors Exclude settings in individual cops' do
@@ -1001,7 +1001,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     YAML
     expect(cli.run(['--auto-correct-all'])).to eq(0)
     expect($stdout.string).to include('no offenses detected')
-    expect(IO.read('example.rb')).to eq("#{source}\n")
+    expect(File.read('example.rb')).to eq("#{source}\n")
   end
 
   it 'corrects code with indentation problems' do
@@ -1034,7 +1034,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
     expect(cli.run(['--auto-correct-all'])).to eq(1)
-    expect(IO.read('example.rb'))
+    expect(File.read('example.rb'))
       .to eq(<<~RUBY)
         # frozen_string_literal: true
 
@@ -1080,7 +1080,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
     expect(cli.run(['--auto-correct-all'])).to eq(1)
-    expect(IO.read('example.rb'))
+    expect(File.read('example.rb'))
       .to eq(<<~RUBY)
         # frozen_string_literal: true
 
@@ -1105,7 +1105,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       }
     RUBY
     expect(cli.run(['--auto-correct-all'])).to eq(0)
-    expect(IO.read('example.rb'))
+    expect(File.read('example.rb'))
       .to eq(<<~RUBY)
         # frozen_string_literal: true
 
@@ -1128,7 +1128,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
     expect(cli.run(['--auto-correct-all'])).to eq(1)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       class Test
@@ -1153,7 +1153,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       ].join(',')
     )
     expect(exit_status).to eq(1)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       class Dsl
         private
         A = %w[git path]
@@ -1177,7 +1177,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end end
     RUBY
     expect(cli.run(['--auto-correct-all'])).to eq(1)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       module A
@@ -1206,7 +1206,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       ].join(',')
     )
     expect(exit_status).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # comment
       def func1
         do_something
@@ -1239,7 +1239,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
            'Method should be overridden in child classes'
     RUBY
     expect(cli.run(['--auto-correct-all', '--only', 'SignalException,ArgumentAlignment'])).to eq(0)
-    expect(IO.read('example.rb'))
+    expect(File.read('example.rb'))
       .to eq(<<~RUBY)
         raise NotImplementedError,
               'Method should be overridden in child classes'
@@ -1268,7 +1268,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(cli.run(['--auto-correct-all', '--only',
                     'Layout/TrailingWhitespace,' \
                     'Layout/EmptyLinesAroundClassBody'])).to eq(0)
-    expect(IO.read('example.rb'))
+    expect(File.read('example.rb'))
       .to eq(<<~RUBY)
         # Example class.
         class Klass
@@ -1299,7 +1299,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                       --only Style/MethodDefParentheses,Style/SymbolProc]))
       .to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       def primes(limit)
         1.upto(limit).select(&:even?)
       end
@@ -1336,7 +1336,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         6  Total
 
       RESULT
-    expect(IO.read('example.rb'))
+    expect(File.read('example.rb'))
       .to eq(<<~RUBY)
         f(type: %w[offline offline_payment],
           bar_colors: %w[958c12 953579 ff5800 0085cc])
@@ -1353,7 +1353,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
               "#{abs('example.rb')}:1:22: C: [Corrected] " \
               'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
               ''].join("\n"))
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       I18n.t('description', property_name: property.name)
     RUBY
   end
@@ -1362,7 +1362,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', '{ :b=>1 }')
     expect(cli.run(%w[-D --auto-correct-all --format emacs
                       --only HashSyntax,SpaceAroundOperators])).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       { b: 1 }
     RUBY
     expect($stdout.string)
@@ -1376,7 +1376,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', '{ :b=>1 }')
     expect(cli.run(%w[--auto-correct-all -f emacs --only Style/HashSyntax])).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq("{ b: 1 }\n")
+    expect(File.read('example.rb')).to eq("{ b: 1 }\n")
     expect($stdout.string)
       .to eq("#{abs('example.rb')}:1:3: C: [Corrected] Style/HashSyntax: " \
               "Use the new Ruby 1.9 hash syntax.\n")
@@ -1385,7 +1385,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   it 'can correct TrailingEmptyLines and TrailingWhitespace offenses' do
     create_file('example.rb', ['# frozen_string_literal: true', '', '  ', '', ''])
     expect(cli.run(%w[--auto-correct-all --format emacs])).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
@@ -1402,7 +1402,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     )
     expect(exit_status).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       {}
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
@@ -1425,7 +1425,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         EnforcedColonStyle: separator
     YAML
     expect(cli.run(%w[--auto-correct-all])).to eq(0)
-    expect(IO.read('example.rb'))
+    expect(File.read('example.rb'))
       .to eq(<<~RUBY)
         # frozen_string_literal: true
 
@@ -1464,7 +1464,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     )
     expect(exit_status).to eq(1)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
       C:  1:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
@@ -1492,7 +1492,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     exit_status = cli.run(%w[-a -f simple --only Lint/BooleanSymbol,Lint/PercentStringArray])
     expect(exit_status).to eq(1)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
       W:  1:  7: [Correctable] Lint/BooleanSymbol: Symbol with a boolean name - you probably meant to use false.
@@ -1506,7 +1506,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', 'some_method(a, )')
     Timeout.timeout(10) { expect(cli.run(%w[--auto-correct-all])).to eq(0) }
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       some_method(a)
@@ -1517,7 +1517,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', 'puts [1, ]')
     Timeout.timeout(10) { expect(cli.run(%w[--auto-correct-all])).to eq(0) }
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       puts [1]
@@ -1532,7 +1532,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     YAML
     expect(cli.run(%w[--auto-correct-all])).to eq(1)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       puts \"Hello\", 123_456
@@ -1555,7 +1555,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     YAML
     expect(cli.run(%w[--auto-correct-all])).to eq(1)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       {foo: bar,
@@ -1580,7 +1580,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     expect(cli.run(%w[--auto-correct-all])).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       each do
@@ -1607,7 +1607,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      'Style/BlockDelimiters,Layout/SpaceBeforeBlockBraces'
                    ])).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       foo do
         bar
       end
@@ -1634,7 +1634,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     expect(cli.run(%w[--auto-correct-all])).to eq(1)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       result = foo(
@@ -1669,7 +1669,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      'Style/InverseMethods,Style/NonNilCheck,Style/NilComparison'
                    ])).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       foo != nil
@@ -1689,7 +1689,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         ]
       )
     ).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       do_something(argument)
     RUBY
   end
@@ -1724,7 +1724,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                        'Layout/ArgumentAlignment,Layout/FirstArgumentIndentation'
                      ])).to eq(0)
       expect($stderr.string).to eq('')
-      expect(IO.read('example.rb')).to eq(<<~RUBY)
+      expect(File.read('example.rb')).to eq(<<~RUBY)
         # frozen_string_literal: true
 
         expect(response).to redirect_to(path(
@@ -1763,7 +1763,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     expect(cli.run(['--auto-correct'])).to eq(0)
     expect($stderr.string).to eq('')
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
       def do_even_more_stuff
@@ -1791,7 +1791,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         ]
       )
     ).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       do_something if ENV['VERSION'] && ENV['VERSION'].empty?
     RUBY
   end
@@ -1815,7 +1815,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         ]
       )
     ).to eq(0)
-    expect(IO.read('example.rb')).to eq(<<~RUBY)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
       FactoryBot.define do
         factory :model do
           name { 'value' }

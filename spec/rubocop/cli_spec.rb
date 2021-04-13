@@ -224,7 +224,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         it 'generate a .rubocop.yml file' do
           expect(cli.run(['--init'])).to eq(0)
           expect($stdout.string).to start_with('Writing new .rubocop.yml to')
-          expect(IO.read('.rubocop.yml')).to eq(<<~YAML)
+          expect(File.read('.rubocop.yml')).to eq(<<~YAML)
             # The behavior of RuboCop can be controlled via the .rubocop.yml
             # configuration file. It makes it possible to enable/disable
             # certain cops (checks) and to alter their behavior if they accept
@@ -268,7 +268,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           1  Total
 
         RESULT
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(<<~RUBY)
             # frozen_string_literal: true
             a = 1 # rubocop:disable Lint/UselessAssignment
