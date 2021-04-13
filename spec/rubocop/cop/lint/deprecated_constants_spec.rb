@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
     RUBY
   end
 
-  it 'does not register an offense when not using deprecated consntant' do
+  it 'does not register an offense when not using deprecated constant' do
     expect_no_offenses(<<~RUBY)
       Foo::TRUE
     RUBY

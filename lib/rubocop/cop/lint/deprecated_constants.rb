@@ -42,7 +42,7 @@ module RuboCop
           #        Maybe further investigation of RuboCop AST will lead to an essential solution.
           return unless node.loc
 
-          constant = node.absolute? ? consntant_name(node, node.short_name.to_s) : node.source
+          constant = node.absolute? ? constant_name(node, node.short_name.to_s) : node.source
           return unless (deprecated_constant = deprecated_constants[constant])
 
           alternative = deprecated_constant['Alternative']
@@ -55,10 +55,10 @@ module RuboCop
 
         private
 
-        def consntant_name(node, nested_constant_name)
+        def constant_name(node, nested_constant_name)
           return nested_constant_name unless node.namespace.const_type?
 
-          consntant_name(node.namespace, "#{node.namespace.short_name}::#{nested_constant_name}")
+          constant_name(node.namespace, "#{node.namespace.short_name}::#{nested_constant_name}")
         end
 
         def message(good, bad, deprecated_version)
