@@ -179,8 +179,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports disabling cops on next line' do
-      expect(disabled_lines_of_cop('Style/EmptyMethod'))
-        .to eq([7, 8, 9, 56])
+      expect(disabled_lines_of_cop('Style/EmptyMethod')).to eq([7, 8, 9, 56])
     end
   end
 
