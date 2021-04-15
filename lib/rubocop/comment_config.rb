@@ -153,6 +153,8 @@ module RuboCop
     # so that `Lint/RedundantCopEnableDirective` can register offenses correctly.
     def handle_switch(directive, names, extras)
       directive.cop_names.each do |name|
+        next if directive.disabled_next_line?
+
         if directive.disabled?
           names[name] += 1
         elsif (names[name]).positive?

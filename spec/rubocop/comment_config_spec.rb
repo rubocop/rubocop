@@ -211,9 +211,7 @@ RSpec.describe RuboCop::CommentConfig do
     let(:source) do
       <<~RUBY
         # rubocop:enable Metrics/MethodLength, Security/Eval
-        def some_method
-          puts 'foo'
-        end
+        def some_method; end
       RUBY
     end
 
@@ -224,9 +222,67 @@ RSpec.describe RuboCop::CommentConfig do
       expect(key.text).to eq '# rubocop:enable Metrics/MethodLength, Security/Eval'
     end
 
-    it 'has values as arrays of extra enabled cops' do
-      expect(extra.values.first).to eq ['Metrics/MethodLength', 'Security/Eval']
+    shared_examples 'has extra_enabled_comments' do |ctx, src|
+      context ctx do
+        let(:source) { src }
+
+        it 'has extra_enabled_comments' do
+          expect(extra.values.first).to eq ['Metrics/MethodLength']
+        end
+      end
     end
+
+    include_examples 'has extra_enabled_comments',
+                     'with `rubocop:enable`',
+                     <<~RUBY
+                       # rubocop:enable Metrics/MethodLength
+                       def some_method; end
+                     RUBY
+
+    include_examples 'has extra_enabled_comments',
+                     'with `rubocop:disable-next-line` and `rubocop:enable`',
+                     <<~RUBY
+                       # rubocop:disable-next-line Metrics/MethodLength
+                       def some_method; end
+                       # rubocop:enable Metrics/MethodLength
+                     RUBY
+
+    include_examples 'has extra_enabled_comments',
+                     'with `rubocop:disable` for line and `rubocop:enable`',
+                     <<~RUBY
+                       def some_method; end # rubocop:disable Metrics/MethodLength
+                       # rubocop:enable Metrics/MethodLength
+                     RUBY
+
+    shared_examples 'has no extra_enabled_comments' do |ctx, src|
+      context ctx do
+        let(:source) { src }
+
+        it 'has no extra_enabled_comments' do
+          expect(extra).to eq({})
+        end
+      end
+    end
+
+    include_examples 'has no extra_enabled_comments',
+                     'with `rubocop:disable-next-line`',
+                     <<~RUBY
+                       # rubocop:disable-next-line Metrics/MethodLength
+                       def some_method; end
+                     RUBY
+
+    include_examples 'has no extra_enabled_comments',
+                     'with `rubocop:disable`',
+                     <<~RUBY
+                       # rubocop:disable Metrics/MethodLength
+                       def some_method; end
+                     RUBY
+
+    include_examples 'has no extra_enabled_comments',
+                     'with `rubocop:disable` for line',
+                     <<~RUBY
+                       def some_method; end # rubocop:disable Metrics/MethodLength
+                     RUBY
   end
 
   describe 'comment_only_line?' do
