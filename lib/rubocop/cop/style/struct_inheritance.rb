@@ -49,9 +49,17 @@ module RuboCop
           if parent.block_type?
             corrector.remove(range_with_surrounding_space(range: parent.loc.end, newlines: false))
           elsif (class_node = parent.parent).body.nil?
-            corrector.remove(range_by_whole_lines(class_node.loc.end, include_final_newline: true))
+            corrector.remove(range_for_empty_class_body(class_node, parent))
           else
             corrector.insert_after(parent.loc.expression, ' do')
+          end
+        end
+
+        def range_for_empty_class_body(class_node, struct_new)
+          if class_node.single_line?
+            range_between(struct_new.source_range.end_pos, class_node.source_range.end_pos)
+          else
+            range_by_whole_lines(class_node.loc.end, include_final_newline: true)
           end
         end
       end
