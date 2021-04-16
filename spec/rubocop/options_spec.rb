@@ -235,20 +235,22 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
-      context 'combined with --auto-correct and --fail-fast' do
-        it 'ignores parallel' do
-          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
-          options.parse %w[--parallel --fail-fast --auto-correct]
-          expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
-        end
+    context 'combined with --auto-correct and --fail-fast' do
+      it 'ignores parallel' do
+        msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
+        options.parse %w[--parallel --fail-fast --auto-correct]
+        expect($stdout.string).to include(msg)
+        expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
       end
+    end
+
     describe '--no-parallel' do
       it 'disables parallel from file' do
         results = options.parse %w[--no-parallel]
-        expect(results).to eq([{:parallel=>false}, []])
+        expect(results).to eq([{ parallel: false }, []])
       end
     end
+
     describe '--display-only-failed' do
       it 'fails if given without --format junit' do
         expect { options.parse %w[--display-only-failed] }
