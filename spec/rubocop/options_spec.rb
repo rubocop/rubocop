@@ -226,14 +226,23 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       context 'combined with --fail-fast' do
-        it 'fails with an error message' do
-          msg = '-P/--parallel cannot be combined with -F/--fail-fast.'
-          expect { options.parse %w[--parallel --fail-fast] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
+          options.parse %w[--parallel --fail-fast]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
       end
     end
 
+      context 'combined with --auto-correct and --fail-fast' do
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
+          options.parse %w[--parallel --fail-fast --auto-correct]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+        end
+      end
     describe '--no-parallel' do
       it 'disables parallel from file' do
         results = options.parse %w[--no-parallel]
