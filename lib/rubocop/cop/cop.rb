@@ -93,12 +93,6 @@ module RuboCop
         Registry.qualified_cop_name(name, origin)
       end
 
-      # @deprecated
-      # Open issue if there's a valid use case to include this in Base
-      def parse(source, path = nil)
-        ProcessedSource.new(source, target_ruby_version, path)
-      end
-
       private
 
       def begin_investigation(processed_source)
