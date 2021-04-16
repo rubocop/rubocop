@@ -186,7 +186,7 @@ module RuboCop
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
-      option(opts, '-P', '--parallel')
+      option(opts, '-P', '--[no-]parallel')
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
