@@ -230,6 +230,11 @@ module RuboCop
         !relevant_file?(file)
       end
 
+      # There should be very limited reasons for a Cop to do it's own parsing
+      def parse(source, path = nil)
+        ProcessedSource.new(source, target_ruby_version, path)
+      end
+
       ### Persistence
 
       # Override if your cop should be called repeatedly for multiple investigations
