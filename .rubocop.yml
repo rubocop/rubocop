@@ -49,7 +49,6 @@ Layout/ClassStructure:
 
 Layout/RedundantLineBreak:
   Enabled: true
-  InspectBlocks: true
 
 Layout/TrailingWhitespace:
   AllowInHeredoc: false
