@@ -24,4 +24,13 @@ module FileHelper
   def create_empty_file(file_path)
     create_file(file_path, '')
   end
+
+  def create_link(link_path, target_path)
+    link_path = File.expand_path(link_path)
+
+    dir_path = File.dirname(link_path)
+    FileUtils.makedirs dir_path unless File.exist?(dir_path)
+
+    FileUtils.symlink(target_path, link_path)
+  end
 end
