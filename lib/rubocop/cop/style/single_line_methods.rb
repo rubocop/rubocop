@@ -91,7 +91,9 @@ module RuboCop
         def correct_to_endless(corrector, node)
           self_receiver = node.self_receiver? ? 'self.' : ''
           arguments = node.arguments.any? ? node.arguments.source : '()'
-          replacement = "def #{self_receiver}#{node.method_name}#{arguments} = #{node.body.source}"
+          body_source = method_body_source(node.body)
+          replacement = "def #{self_receiver}#{node.method_name}#{arguments} = #{body_source}"
+
           corrector.replace(node, replacement)
         end
 
@@ -110,6 +112,17 @@ module RuboCop
             eol_comment: processed_source.comment_at_line(node.source_range.line),
             node: node, corrector: corrector
           )
+        end
+
+        def method_body_source(method_body)
+          if method_body.arguments.empty? || method_body.parenthesized?
+            method_body.source
+          else
+            arguments_source = method_body.arguments.map(&:source).join(', ')
+            body_source = "#{method_body.method_name}(#{arguments_source})"
+
+            method_body.receiver ? "#{method_body.receiver.source}.#{body_source}" : body_source
+          end
         end
       end
     end
