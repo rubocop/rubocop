@@ -115,7 +115,7 @@ module RuboCop
         end
 
         def method_body_source(method_body)
-          if method_body.arguments.empty? || method_body.parenthesized?
+          if !method_body.send_type? || method_body.arguments.empty? || method_body.parenthesized?
             method_body.source
           else
             arguments_source = method_body.arguments.map(&:source).join(', ')

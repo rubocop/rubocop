@@ -187,6 +187,12 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to an endless method definition when method body is a literal' do
+        expect_correction(<<~RUBY.strip, source: 'def some_method; 42 end')
+          def some_method() = 42
+        RUBY
+      end
+
       it 'corrects to an endless method definition when single line method call with parentheses' do
         expect_correction(<<~RUBY.strip, source: 'def index() head(:ok) end')
           def index() = head(:ok)
