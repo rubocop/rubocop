@@ -97,7 +97,11 @@ module RuboCop
       base_dir = base_dir.gsub('/{}/', '/\{}/')
       dirs = Dir.glob(File.join(base_dir.gsub('/**/', '/\**/'), '*/'), flags)
                 .reject do |dir|
-                  dir.end_with?('/./', '/../') || File.fnmatch?(exclude_pattern, dir, flags)
+                  next true if dir.end_with?('/./', '/../')
+                  next true if File.fnmatch?(exclude_pattern, dir, flags)
+
+                  File.symlink?(dir.chomp('/')) && File.fnmatch?(exclude_pattern,
+                                                                 "#{File.realpath(dir)}/", flags)
                 end
       dirs.flat_map { |dir| wanted_dir_patterns(dir, exclude_pattern, flags) }.unshift(base_dir)
     end
