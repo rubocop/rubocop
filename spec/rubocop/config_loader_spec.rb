@@ -269,6 +269,9 @@ RSpec.describe RuboCop::ConfigLoader do
             Exclude:
               - vendor/**
               - !ruby/regexp /[A-Z]/
+          Style/StringLiterals:
+            Include:
+              - dir/**/*.rb
         YAML
 
         create_file(file_path, ['inherit_from: ../.rubocop.yml'])
@@ -277,6 +280,10 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'gets an absolute AllCops/Exclude' do
         excludes = configuration_from_file['AllCops']['Exclude']
         expect(excludes).to eq([File.expand_path('vendor/**'), /[A-Z]/])
+      end
+
+      it 'gets an Include that is relative to the subdirectory' do
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['**/*.rb'])
       end
 
       it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
@@ -320,6 +327,9 @@ RSpec.describe RuboCop::ConfigLoader do
           AllCops:
             Exclude:
               - vendor/**
+          Style/StringLiterals:
+            Include:
+              - '**/*.rb'
         YAML
 
         create_file(file_path, ['inherit_from: ../src/.rubocop.yml'])
@@ -328,6 +338,10 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'gets an absolute AllCops/Exclude' do
         excludes = configuration_from_file['AllCops']['Exclude']
         expect(excludes).to eq([File.expand_path('src/vendor/**')])
+      end
+
+      it 'gets an Include that is relative to the subdirectory' do
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['../src/**/*.rb'])
       end
     end
 
