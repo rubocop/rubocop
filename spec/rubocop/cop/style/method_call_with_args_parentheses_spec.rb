@@ -23,10 +23,27 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
               def x() = foo#{trailing_whitespace}
             RUBY
           end
+
+          it 'registers an offense for `defs` when there are parens' do
+            expect_offense(<<~RUBY)
+              def self.x() = foo()
+                                ^^ Omit parentheses for method calls with arguments.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def self.x() = foo#{trailing_whitespace}
+            RUBY
+          end
         else
           it 'does not register an offense when there are parens' do
             expect_no_offenses(<<~RUBY)
               def x() = foo()
+            RUBY
+          end
+
+          it 'does not register an offense for `defs` when there are parens' do
+            expect_no_offenses(<<~RUBY)
+              def self.x() = foo()
             RUBY
           end
         end
@@ -34,6 +51,18 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         it 'does not register an offense when there are no parens' do
           expect_no_offenses(<<~RUBY)
             def x() = foo
+          RUBY
+        end
+
+        it 'does not register an offense when there are arguments' do
+          expect_no_offenses(<<~RUBY)
+            def x() = foo(y)
+          RUBY
+        end
+
+        it 'does not register an offense for `defs` when there are arguments' do
+          expect_no_offenses(<<~RUBY)
+            def self.x() = foo(y)
           RUBY
         end
       end
