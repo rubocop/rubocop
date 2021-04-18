@@ -162,6 +162,24 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
   it_behaves_like 'plausible', "[(1\n),]"
 
+  it_behaves_like 'plausible', <<~RUBY
+    [
+      (
+        1
+      ),
+      2
+    ]
+  RUBY
+
+  it_behaves_like 'plausible', <<~RUBY
+    [
+      x = (
+        1
+      ),
+      y = 2
+    ]
+  RUBY
+
   it 'registers an offense for parens around a literal hash value' do
     expect_offense(<<~RUBY)
       {a: (1)}
