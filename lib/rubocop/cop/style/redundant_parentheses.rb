@@ -158,15 +158,11 @@ module RuboCop
           # { a: (1
           #      ), }
           # ```
-          (hash_element?(node) || array_element?(node)) && only_closing_paren_before_comma?(node)
+          hash_or_array_element?(node) && only_closing_paren_before_comma?(node)
         end
 
-        def hash_element?(node)
-          node.parent&.pair_type?
-        end
-
-        def array_element?(node)
-          node.parent&.array_type?
+        def hash_or_array_element?(node)
+          node.each_ancestor(:array, :hash).any?
         end
 
         def only_closing_paren_before_comma?(node)
