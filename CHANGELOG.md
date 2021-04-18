@@ -7,6 +7,10 @@
 * [#7977](https://github.com/rubocop/rubocop/issues/7977): Add `Layout/RedundantLineBreak` cop. ([@jonas054][])
 * [#9691](https://github.com/rubocop/rubocop/issues/9691): Add configuration parameter `InspectBlocks` to `Layout/RedundantLineBreak`. ([@jonas054][])
 
+### Bug fixes
+
+* [#5576](https://github.com/rubocop/rubocop/issues/5576): Fix problem with inherited `Include` parameters. ([@jonas054][])
+
 ## 1.12.1 (2021-04-04)
 
 ### Bug fixes
