@@ -214,6 +214,17 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
           RUBY
         end
       end
+
+      context 'and the variable is used' do
+        it 'does not register offense' do
+          expect_no_offenses(<<~RUBY)
+            1.times do |index; x|
+              x = 10
+              puts index
+            end
+          RUBY
+        end
+      end
     end
 
     context 'when a lambda block takes arguments' do

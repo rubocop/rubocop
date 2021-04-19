@@ -67,9 +67,15 @@ module RuboCop
         end
 
         def check_argument(variable)
-          return if allowed_block?(variable) || allowed_keyword_argument?(variable)
+          return if allowed_block?(variable) ||
+                    allowed_keyword_argument?(variable) ||
+                    used_block_local?(variable)
 
           super
+        end
+
+        def used_block_local?(variable)
+          variable.explicit_block_local_variable? && !variable.assignments.empty?
         end
 
         def allowed_block?(variable)
