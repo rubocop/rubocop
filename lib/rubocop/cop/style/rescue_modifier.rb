@@ -47,6 +47,10 @@ module RuboCop
 
         MSG = 'Avoid using `rescue` in its modifier form.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_resbody(node)
           return unless rescue_modifier?(node)
 
