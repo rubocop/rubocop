@@ -186,7 +186,7 @@ module RuboCop
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
-      option(opts, '-P', '--parallel')
+      option(opts, '-P', '--[no-]parallel')
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
@@ -498,7 +498,7 @@ module RuboCop
       version:                          'Display version.',
       verbose_version:                  'Display verbose version.',
       parallel:                         ['Use available CPUs to execute inspection in',
-                                         'parallel.'],
+                                         'parallel. Default is false.'],
       stdin:                            ['Pipe source from STDIN, using FILE in offense',
                                          'reports. This is useful for editor integration.'],
       init:                             'Generate a .rubocop.yml file in the current directory.'
