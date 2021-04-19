@@ -84,6 +84,9 @@ module RuboCop
         def register_offense_for_hash(node, hash_argument)
           add_offense(node, message: MSG_LITERAL_HASH_ARG) do |corrector|
             corrector.replace(node, "{#{hash_argument.source}}")
+
+            parent = node.parent
+            add_parentheses(parent, corrector) if parent&.send_type? && !parent.parenthesized?
           end
         end
 
