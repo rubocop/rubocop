@@ -34,6 +34,28 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'reports different offense for hash argument Hash[] as a method argument with parentheses' do
+    expect_offense(<<~RUBY)
+      do_something(Hash[a: b, c: d], 42)
+                   ^^^^^^^^^^^^^^^^ Prefer literal hash to Hash[key: value, ...].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something({a: b, c: d}, 42)
+    RUBY
+  end
+
+  it 'reports different offense for hash argument Hash[] as a method argument without parentheses' do
+    expect_offense(<<~RUBY)
+      do_something Hash[a: b, c: d], 42
+                   ^^^^^^^^^^^^^^^^ Prefer literal hash to Hash[key: value, ...].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something({a: b, c: d}, 42)
+    RUBY
+  end
+
   it 'reports different offense for empty Hash[]' do
     expect_offense(<<~RUBY)
       Hash[]
