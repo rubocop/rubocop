@@ -214,7 +214,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
           end
         end
 
-        context 'when a gem is uncommented and containts only options not specified' do
+        context 'when a gem is uncommented and contains only options not specified' do
           it 'does not register an offense' do
             expect_no_offenses(<<-GEM, 'Gemfile')
               gem 'rubocop', group: development
