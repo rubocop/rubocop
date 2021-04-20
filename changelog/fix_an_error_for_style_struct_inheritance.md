@@ -1,1 +1,0 @@
-* [#9698](https://github.com/rubocop/rubocop/issues/9698): Fix an error for `Style/StructInheritance` when extending instance of `Struct` without `do` ... `end` and class body is empty and single line definition. ([@koic][])

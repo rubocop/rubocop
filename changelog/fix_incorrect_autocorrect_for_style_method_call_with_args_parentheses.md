@@ -1,1 +1,0 @@
-* [#9715](https://github.com/rubocop/rubocop/pull/9715): Fix an incorrect auto-correct for `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/RescueModifier`. ([@koic][])

@@ -6,10 +6,30 @@
 
 * [#7977](https://github.com/rubocop/rubocop/issues/7977): Add `Layout/RedundantLineBreak` cop. ([@jonas054][])
 * [#9691](https://github.com/rubocop/rubocop/issues/9691): Add configuration parameter `InspectBlocks` to `Layout/RedundantLineBreak`. ([@jonas054][])
+* [#9684](https://github.com/rubocop/rubocop/issues/9684): Support `IgnoredMethods` option for `Lint/AmbguousBlockAssociation`. ([@gprado][])
+* [#9358](https://github.com/rubocop/rubocop/pull/9358): Support `restrictive_version_specificiers` option in `Bundler/GemComment` cop. ([@RobinDaugherty][])
 
 ### Bug fixes
 
 * [#5576](https://github.com/rubocop/rubocop/issues/5576): Fix problem with inherited `Include` parameters. ([@jonas054][])
+* [#9690](https://github.com/rubocop/rubocop/pull/9690): Fix an incorrect auto-correct for `Style/IfUnlessModifier` when using a method with heredoc argument. ([@koic][])
+* [#9681](https://github.com/rubocop/rubocop/issues/9681): Fix an incorrect auto-correct for `Style/RedundantBegin` when using modifier `if` single statement in `begin` block. ([@koic][])
+* [#9698](https://github.com/rubocop/rubocop/issues/9698): Fix an error for `Style/StructInheritance` when extending instance of `Struct` without `do` ... `end` and class body is empty and single line definition. ([@koic][])
+* [#9700](https://github.com/rubocop/rubocop/issues/9700): Avoid warning about Ruby version mismatch. ([@marcandre][])
+* [#9636](https://github.com/rubocop/rubocop/issues/9636): Resolve symlinks when excluding directories. ([@ob-stripe][])
+* [#9707](https://github.com/rubocop/rubocop/issues/9707): Fix false positive for `Style/MethodCallWithArgsParentheses` with `omit_parentheses` style on an endless `defs` node. ([@dvandersluis][])
+* [#9689](https://github.com/rubocop/rubocop/issues/9689): Treat parens around array items the same for children and deeper descendants. ([@dvandersluis][])
+* [#9676](https://github.com/rubocop/rubocop/issues/9676): Fix an error for `Style/StringChars` when using `split` without parentheses. ([@koic][])
+* [#9712](https://github.com/rubocop/rubocop/pull/9712): Fix an incorrect auto-correct for `Style/HashConversion` when `Hash[]` as a method argument without parentheses. ([@koic][])
+* [#9704](https://github.com/rubocop/rubocop/pull/9704): Fix an incorrect auto-correct for `Style/SingleLineMethods` when single line method call without parentheses. ([@koic][])
+* [#9683](https://github.com/rubocop/rubocop/issues/9683): Fix an incorrect auto-correct for `Style/HashConversion` when using `zip` method without argument in `Hash[]`. ([@koic][])
+* [#9715](https://github.com/rubocop/rubocop/pull/9715): Fix an incorrect auto-correct for `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/RescueModifier`. ([@koic][])
+
+### Changes
+
+* [#7544](https://github.com/rubocop/rubocop/pull/7544): Add --no-parallel (-P/--parallel can not be combined with --auto-correct). ([@kwerle][])
+* [#9648](https://github.com/rubocop/rubocop/pull/9648): Drop support for Ruby 2.4. ([@koic][])
+* [#9647](https://github.com/rubocop/rubocop/pull/9647): The parallel flag will now be automatically ignored when combined with `--auto-correct`, `--auto-gen-config`, or `-F/--fail-fast`. Previously, an error was raised and execution stopped. ([@rrosenblum][])
 
 ## 1.12.1 (2021-04-04)
 
@@ -5560,3 +5580,5 @@
 [@corroded]: https://github.com/corroded
 [@osyo-manga]: https://github.com/osyo-manga
 [@ob-stripe]: https://github.com/ob-stripe
+[@kwerle]: https://github.com/kwerle
+[@RobinDaugherty]: https://github.com/RobinDaugherty
