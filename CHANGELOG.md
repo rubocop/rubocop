@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.13.0 (2021-04-20)
+
 ### New features
 
 * [#7977](https://github.com/rubocop/rubocop/issues/7977): Add `Layout/RedundantLineBreak` cop. ([@jonas054][])

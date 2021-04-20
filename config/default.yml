@@ -1107,7 +1107,7 @@ Layout/RedundantLineBreak:
                  on a single line.
   Enabled: false
   InspectBlocks: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.13'
 
 Layout/RescueEnsureAlignment:
   Description: 'Align rescues and ensures correctly.'

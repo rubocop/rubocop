@@ -4996,6 +4996,81 @@ end
 
 * https://rubystyle.guide#no-double-indent
 
+== Layout/RedundantLineBreak
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| Yes
+| 1.13
+| -
+|===
+
+This cop checks whether certain expressions, e.g. method calls, that could fit
+completely on a single line, are broken up into multiple lines unnecessarily.
+
+=== Examples
+
+==== any configuration
+
+[source,ruby]
+----
+# bad
+foo(
+  a,
+  b
+)
+
+puts 'string that fits on ' \
+     'a single line'
+
+things
+  .select { |thing| thing.cond? }
+  .join('-')
+
+# good
+foo(a, b)
+
+puts 'string that fits on a single line'
+
+things.select { |thing| thing.cond? }.join('-')
+----
+
+==== InspectBlocks: false (default)
+
+[source,ruby]
+----
+# good
+foo(a) do |x|
+  puts x
+end
+----
+
+==== InspectBlocks: true
+
+[source,ruby]
+----
+# bad
+foo(a) do |x|
+  puts x
+end
+
+# good
+foo(a) { |x| puts x }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| InspectBlocks
+| `false`
+| Boolean
+|===
+
 == Layout/RescueEnsureAlignment
 
 |===
