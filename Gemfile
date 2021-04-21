@@ -8,7 +8,9 @@ gem 'bump', require: false
 gem 'memory_profiler', platform: :mri
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
-gem 'rubocop-performance', '~> 1.11.0'
+# RuboCop Performance upgrade to 1.11 is postponed until
+# https://github.com/rubocop/rubocop/pull/9721 will be resolved.
+gem 'rubocop-performance', '~> 1.10.0'
 gem 'rubocop-rspec', '~> 2.2.0'
 # Workaround for cc-test-reporter with SimpleCov 0.18.
 # Stop upgrading SimpleCov until the following issue will be resolved.
