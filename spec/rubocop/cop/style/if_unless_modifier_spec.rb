@@ -92,6 +92,21 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'when variable assignment is used in the branch body of if modifier' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            variable = foooooooooooooooooooooooooooooooooooooooooooooooooooooooo if condition
+                                                                                 ^^ Modifier form of `if` makes the line too long.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              variable = foooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+            end
+          RUBY
+        end
+      end
+
       describe 'IgnoreCopDirectives' do
         let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }

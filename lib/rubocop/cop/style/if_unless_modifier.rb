@@ -67,15 +67,14 @@ module RuboCop
 
         def autocorrect(corrector, node)
           replacement = if node.modifier_form?
-                          indentation = ' ' * node.source_range.column
-                          last_argument = node.if_branch.last_argument
+                          last_argument = node.if_branch.last_argument if node.if_branch.send_type?
 
                           if last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
                             heredoc = extract_heredoc_from(last_argument)
                             remove_heredoc(corrector, heredoc)
-                            to_normal_form_with_heredoc(node, indentation, heredoc)
+                            to_normal_form_with_heredoc(node, indent(node), heredoc)
                           else
-                            to_normal_form(node, indentation)
+                            to_normal_form(node, indent(node))
                           end
                         else
                           to_modifier_form(node)
