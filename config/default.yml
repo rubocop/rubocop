@@ -130,7 +130,7 @@ AllCops:
   # What MRI version of the Ruby interpreter is the inspected code intended to
   # run on? (If there is more than one, set this to the lowest version.)
   # If a value is specified for TargetRubyVersion then it is used. Acceptable
-  # values are specificed as a float (i.e. 2.5); the teeny version of Ruby
+  # values are specificed as a float (i.e. 3.0); the teeny version of Ruby
   # should not be included. If the project specifies a Ruby version in the
   # .tool-versions or .ruby-version files, Gemfile or gems.rb file, RuboCop will
   # try to determine the desired version of Ruby by inspecting the
@@ -138,7 +138,7 @@ AllCops:
   # or gems.locked file. (Although the Ruby version is specified in the Gemfile
   # or gems.rb file, RuboCop reads the final value from the lock file.) If the
   # Ruby version is still unresolved, RuboCop will use the oldest officially
-  # supported Ruby version (currently Ruby 2.4).
+  # supported Ruby version (currently Ruby 2.5).
   TargetRubyVersion: ~
   # Determines if a notification for extension libraries should be shown when
   # rubocop is run. Keys are the name of the extension, and values are an array
