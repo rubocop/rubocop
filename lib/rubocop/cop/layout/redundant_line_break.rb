@@ -79,8 +79,20 @@ module RuboCop
         end
 
         def configured_to_not_be_inspected?(node)
+          return true if other_cop_takes_precedence?(node)
+
           !cop_config['InspectBlocks'] && (node.block_type? ||
-                                           node.each_child_node(:block).any?(&:multiline?))
+                                           node.each_descendant(:block).any?(&:multiline?))
+        end
+
+        def other_cop_takes_precedence?(node)
+          single_line_block_chain_enabled? && node.each_descendant(:block).any? do |block_node|
+            block_node.parent.send_type? && block_node.parent.loc.dot && !block_node.multiline?
+          end
+        end
+
+        def single_line_block_chain_enabled?
+          @config.for_cop('Layout/SingleLineBlockChain')['Enabled']
         end
 
         def suitable_as_single_line?(node)
