@@ -3,11 +3,50 @@
 RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
   let(:config) do
     RuboCop::Config.new('Layout/LineLength' => { 'Max' => max_line_length },
-                        'Layout/RedundantLineBreak' => { 'InspectBlocks' => inspect_blocks })
+                        'Layout/RedundantLineBreak' => { 'InspectBlocks' => inspect_blocks },
+                        'Layout/SingleLineBlockChain' => {
+                          'Enabled' => single_line_block_chain_enabled
+                        })
   end
   let(:max_line_length) { 31 }
+  let(:single_line_block_chain_enabled) { true }
 
   shared_examples 'common behavior' do
+    context 'when Layout/SingleLineBlockChain is disabled' do
+      let(:single_line_block_chain_enabled) { false }
+      let(:max_line_length) { 90 }
+
+      it 'reports an offense for a method call chained onto a single line block' do
+        expect_offense(<<~RUBY)
+          e.select { |i| i.cond? }
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+            .join
+          a = e.select { |i| i.cond? }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+            .join
+          e.select { |i| i.cond? }
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+           .join + []
+        RUBY
+      end
+    end
+
+    context 'when Layout/SingleLineBlockChain is enabled' do
+      let(:single_line_block_chain_enabled) { true }
+      let(:max_line_length) { 90 }
+
+      it 'accepts a method call chained onto a single line block' do
+        expect_no_offenses(<<~RUBY)
+          e.select { |i| i.cond? }
+           .join
+          a = e.select { |i| i.cond? }
+               .join
+          e.select { |i| i.cond? }
+           .join + []
+        RUBY
+      end
+    end
+
     context 'for an expression that fits on a single line' do
       it 'accepts an assignment containing an if expression' do
         expect_no_offenses(<<~RUBY)
@@ -355,6 +394,51 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
           end
         RUBY
       end
+
+      context 'when Layout/SingleLineBlockChain is enabled' do
+        let(:single_line_block_chain_enabled) { true }
+
+        it 'reports an offense for a multiline block without a chained method call' do
+          expect_offense(<<~RUBY)
+            f do
+            ^^^^ Redundant line break detected.
+            end
+          RUBY
+        end
+      end
+
+      context 'when Layout/SingleLineBlockChain is disabled' do
+        let(:single_line_block_chain_enabled) { false }
+
+        it 'reports an offense for a multiline block without a chained method call' do
+          expect_offense(<<~RUBY)
+            f do
+            ^^^^ Redundant line break detected.
+            end
+          RUBY
+        end
+
+        it 'reports an offense for a method call chained onto a multiline block' do
+          expect_offense(<<~RUBY)
+            e.select do |i|
+            ^^^^^^^^^^^^^^^ Redundant line break detected.
+              i.cond?
+            end.join
+          RUBY
+          expect_offense(<<~RUBY)
+            a = e.select do |i|
+            ^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+              i.cond?
+            end.join
+          RUBY
+          expect_offense(<<~RUBY)
+            e.select do |i|
+            ^^^^^^^^^^^^^^^ Redundant line break detected.
+              i.cond?
+            end.join + []
+          RUBY
+        end
+      end
     end
   end
 
@@ -380,6 +464,42 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             let(:ruby_version) { 2.4 }
           end
         RUBY
+      end
+
+      context 'when Layout/SingleLineBlockChain is enabled' do
+        let(:single_line_block_chain_enabled) { true }
+
+        it 'accepts a multiline block without a chained method call' do
+          expect_no_offenses(<<~RUBY)
+            f do
+            end
+          RUBY
+        end
+      end
+
+      context 'when Layout/SingleLineBlockChain is disabled' do
+        let(:single_line_block_chain_enabled) { false }
+
+        it 'accepts a multiline block without a chained method call' do
+          expect_no_offenses(<<~RUBY)
+            f do
+            end
+          RUBY
+        end
+
+        it 'accepts a method call chained onto a multiline block' do
+          expect_no_offenses(<<~RUBY)
+            e.select do |i|
+              i.cond?
+            end.join
+            a = e.select do |i|
+              i.cond?
+            end.join
+            e.select do |i|
+              i.cond?
+            end.join + []
+          RUBY
+        end
       end
     end
   end

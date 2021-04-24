@@ -1892,6 +1892,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(source_file.read).to eq(corrected)
   end
 
+  it 'corrects Layout/RedundantLineBreak and Layout/SingleLineBlockChain offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/RedundantLineBreak:
+        Enabled: true
+      Layout/SingleLineBlockChain:
+        Enabled: true
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      example.select { |item| item.cond? && other }.join('-')
+    RUBY
+
+    expect(cli.run(['--auto-correct-all'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      example.select { |item| item.cond? && other }
+             .join('-')
+    RUBY
+  end
+
   it 'does not correct Style/IfUnlessModifier offense disabled by a comment directive and ' \
      'does not fire Lint/RedundantCopDisableDirective offense even though that directive ' \
      'would make the modifier form too long' do
