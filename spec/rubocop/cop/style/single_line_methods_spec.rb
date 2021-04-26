@@ -211,6 +211,23 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      RuboCop::AST::Node::COMPARISON_OPERATORS.each do |op|
+        it "corrects to an endless class method definition when using #{op}" do
+          expect_correction(<<~RUBY.strip, source: "def #{op}(other) self #{op} other end")
+            def #{op}(other) = self #{op} other
+          RUBY
+        end
+      end
+
+      # NOTE: Setter method cannot be defined in the endless method definition.
+      it 'corrects to multiline method definition when defining setter method' do
+        expect_correction(<<~RUBY.chop, source: 'def foo=(foo) @foo = foo end')
+          def foo=(foo)#{trailing_whitespace}
+            @foo = foo#{trailing_whitespace}
+          end
+        RUBY
+      end
+
       it 'corrects to a normal method if the method body contains multiple statements' do
         expect_correction(<<~RUBY.strip, source: 'def some_method; foo; bar end')
           def some_method;#{trailing_whitespace}
