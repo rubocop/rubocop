@@ -225,4 +225,29 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when using `return do_something(value) || next` in a loop' do
+    expect_no_offenses(<<~RUBY)
+      [nil, nil, 42].each do |value|
+        return do_something(value) || next
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `return do_something(value) || redo` in a loop' do
+    expect_no_offenses(<<~RUBY)
+      [nil, nil, 42].each do |value|
+        return do_something(value) || redo
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `return do_something(value) || break` in a loop' do
+    expect_offense(<<~RUBY)
+      [nil, nil, 42].each do |value|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
+        return do_something(value) || break
+      end
+    RUBY
+  end
 end
