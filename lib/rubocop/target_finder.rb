@@ -100,10 +100,17 @@ module RuboCop
                   next true if dir.end_with?('/./', '/../')
                   next true if File.fnmatch?(exclude_pattern, dir, flags)
 
-                  File.symlink?(dir.chomp('/')) && File.fnmatch?(exclude_pattern,
-                                                                 "#{File.realpath(dir)}/", flags)
+                  symlink_excluded_or_infinite_loop?(base_dir, dir, exclude_pattern, flags)
                 end
       dirs.flat_map { |dir| wanted_dir_patterns(dir, exclude_pattern, flags) }.unshift(base_dir)
+    end
+
+    def symlink_excluded_or_infinite_loop?(base_dir, current_dir, exclude_pattern, flags)
+      dir_realpath = File.realpath(current_dir)
+      File.symlink?(current_dir.chomp('/')) && (
+        File.fnmatch?(exclude_pattern, "#{dir_realpath}/", flags) ||
+        File.realpath(base_dir).start_with?(dir_realpath)
+      )
     end
 
     def combined_exclude_glob_patterns(base_dir)

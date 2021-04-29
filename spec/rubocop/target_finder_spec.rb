@@ -448,6 +448,12 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
+    it 'prevents infinite loops when traversing symlinks' do
+      create_link('dir1/link/', File.expand_path('dir1'))
+
+      expect(found_basenames).to include('ruby1.rb').once
+    end
+
     it 'resolves symlinks when looking for excluded directories' do
       create_link('link', 'dir1')
 
