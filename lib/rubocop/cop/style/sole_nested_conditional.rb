@@ -80,10 +80,7 @@ module RuboCop
         def autocorrect(corrector, node, if_branch)
           corrector.wrap(node.condition, '(', ')') if node.condition.or_type?
 
-          if node.unless?
-            corrector.replace(node.loc.keyword, 'if')
-            corrector.insert_before(node.condition, '!')
-          end
+          correct_from_unless_to_if(corrector, node) if node.unless?
 
           and_operator = if_branch.unless? ? ' && !' : ' && '
           if if_branch.modifier_form?
@@ -91,6 +88,17 @@ module RuboCop
           else
             correct_for_basic_condition_style(corrector, node, if_branch, and_operator)
             correct_for_comment(corrector, node, if_branch)
+          end
+        end
+
+        def correct_from_unless_to_if(corrector, node)
+          corrector.replace(node.loc.keyword, 'if')
+
+          condition = node.condition
+          if condition.send_type? && condition.comparison_method? && !condition.parenthesized?
+            corrector.wrap(node.condition, '!(', ')')
+          else
+            corrector.insert_before(node.condition, '!')
           end
         end
 
@@ -136,7 +144,8 @@ module RuboCop
         end
 
         def requrie_parentheses?(condition)
-          condition.send_type? && !condition.arguments.empty? && !condition.parenthesized?
+          condition.send_type? && !condition.arguments.empty? && !condition.parenthesized? &&
+            !condition.comparison_method?
         end
 
         def arguments_range(node)

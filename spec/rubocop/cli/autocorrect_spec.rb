@@ -304,6 +304,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/SoleNestedConditional` with `Style/InverseMethods` and `Style/IfUnlessModifier`' do
+    source = <<~RUBY
+      unless foo.to_s == 'foo'
+        if condition
+          return foo
+        end
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run(
+             [
+               '--auto-correct-all',
+               '--only', 'Style/SoleNestedConditional,Style/InverseMethods,Style/IfUnlessModifier'
+             ]
+           )).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      return foo if foo.to_s != 'foo' && condition
+    RUBY
+  end
+
   describe 'trailing comma cops' do
     let(:source) do
       <<~RUBY
