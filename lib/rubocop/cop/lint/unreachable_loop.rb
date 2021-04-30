@@ -87,6 +87,7 @@ module RuboCop
         include IgnoredPattern
 
         MSG = 'This loop will have at most one iteration.'
+        CONTINUE_KEYWORDS = %i[next redo].freeze
 
         def on_while(node)
           check(node)
@@ -116,7 +117,10 @@ module RuboCop
           break_statement = statements.find { |statement| break_statement?(statement) }
           return unless break_statement
 
-          add_offense(node) unless preceded_by_continue_statement?(break_statement)
+          unless preceded_by_continue_statement?(break_statement) ||
+                 conditional_continue_keyword?(break_statement)
+            add_offense(node)
+          end
         end
 
         def statements(node)
@@ -177,8 +181,14 @@ module RuboCop
           break_statement.left_siblings.any? do |sibling|
             next if sibling.loop_keyword? || loop_method?(sibling)
 
-            sibling.each_descendant(:next, :redo).any?
+            sibling.each_descendant(*CONTINUE_KEYWORDS).any?
           end
+        end
+
+        def conditional_continue_keyword?(break_statement)
+          or_node = break_statement.each_descendant(:or).to_a.last
+
+          or_node && CONTINUE_KEYWORDS.include?(or_node.rhs.type)
         end
       end
     end
