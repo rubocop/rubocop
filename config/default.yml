@@ -4651,6 +4651,11 @@ Style/TernaryParentheses:
     - require_parentheses_when_complex
   AllowSafeAssignment: true
 
+Style/TopLevelMethodDefinition:
+  Description: 'This cop looks for top-level method definitions.'
+  Enabled: false
+  VersionAdded: '<<next>>'
+
 Style/TrailingBodyOnClass:
   Description: 'Class body goes below class statement.'
   Enabled: true
