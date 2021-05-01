@@ -50,6 +50,21 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
     RUBY
   end
 
+  it 'registers an offens and corrects a multiline ternary' do
+    expect_offense(<<~RUBY)
+      !x ?
+      ^^^^ Invert the negated condition and swap the ternary branches.
+        do_something :
+        do_something_else # comment
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x ?
+        do_something_else :
+        do_something # comment
+    RUBY
+  end
+
   shared_examples 'negation method' do |method, inverted_method|
     it "registers an offense and corrects when negating condition with `#{method}` for `if-else`" do
       expect_offense(<<~RUBY, method: method)
@@ -129,6 +144,23 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
     RUBY
   end
 
+  it 'does not register an offense when the `else` branch is empty' do
+    expect_no_offenses(<<~RUBY)
+      if !condition.nil?
+        foo = 42
+      else
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when both branches are empty' do
+    expect_no_offenses(<<~RUBY)
+      if !condition.nil?
+      else
+      end
+    RUBY
+  end
+
   it 'moves comments to correct branches during autocorrect' do
     expect_offense(<<~RUBY)
       if !condition.nil?
@@ -183,6 +215,98 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
         # and foo is 1 and bar is 2
         foo = 1
         bar = 2
+      end
+    RUBY
+  end
+
+  it 'works with comments when one branch is a begin and the other is not' do
+    expect_offense(<<~RUBY)
+      if !condition
+      ^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        # comment
+        do_a
+        do_b
+      else
+        do_c
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition
+        do_c
+      else
+        # comment
+        do_a
+        do_b
+      end
+    RUBY
+  end
+
+  it 'works with comments when neither branch is a begin node' do
+    expect_offense(<<~RUBY)
+      if !condition
+      ^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        # comment
+        do_b
+      else
+        do_c
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition
+        do_c
+      else
+        # comment
+        do_b
+      end
+    RUBY
+  end
+
+  it 'works with duplicate nodes' do
+    expect_offense(<<~RUBY)
+      # outer comment
+      do_a
+
+      if !condition
+      ^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        # comment
+        do_a
+      else
+        do_c
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # outer comment
+      do_a
+
+      if condition
+        do_c
+      else
+        # comment
+        do_a
+      end
+    RUBY
+  end
+
+  it 'correctly moves comments at the end of branches' do
+    expect_offense(<<~RUBY)
+      if !condition
+      ^^^^^^^^^^^^^ Invert the negated condition and swap the if-else branches.
+        do_a
+        # comment
+      else
+        do_c
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition
+        do_c
+      else
+        do_a
+        # comment
       end
     RUBY
   end
