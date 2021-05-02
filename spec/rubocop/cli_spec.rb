@@ -1612,7 +1612,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string.strip).to start_with(
           'Error: RuboCop found unknown Ruby version 4.0 in `TargetRubyVersion`'
         )
-        expect($stderr.string.strip).to match(/Supported versions: 2.5, 2.6, 2.7, 3.0/)
+        expect($stderr.string.strip).to match(/Supported versions: 2.5, 2.6, 2.7, 3.0, 3.1/)
       end
     end
 

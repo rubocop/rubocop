@@ -4,7 +4,7 @@ module RuboCop
   # The kind of Ruby that code inspected by RuboCop is written in.
   # @api private
   class TargetRuby
-    KNOWN_RUBIES = [2.5, 2.6, 2.7, 3.0].freeze
+    KNOWN_RUBIES = [2.5, 2.6, 2.7, 3.0, 3.1].freeze
     DEFAULT_VERSION = KNOWN_RUBIES.first
 
     OBSOLETE_RUBIES = {
