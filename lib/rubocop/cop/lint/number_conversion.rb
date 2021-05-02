@@ -97,7 +97,7 @@ module RuboCop
 
         def handle_as_symbol(node)
           to_method_symbol(node) do |receiver, sym_node, to_method|
-            next if receiver.nil?
+            next if receiver.nil? || !node.arguments.one?
 
             message = format(
               MSG,

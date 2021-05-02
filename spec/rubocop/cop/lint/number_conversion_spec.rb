@@ -121,6 +121,12 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
         to_i
       RUBY
     end
+
+    it 'when `:to_f` is one of multiple method arguments' do
+      expect_no_offenses(<<~RUBY)
+        delegate :to_f, to: :description, allow_nil: true
+      RUBY
+    end
   end
 
   context 'to_method in symbol form' do
