@@ -54,6 +54,24 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using nested `if` within `unless foo == bar`' do
+    expect_offense(<<~RUBY)
+      unless foo == bar
+        if baz
+        ^^ Consider merging nested conditions into outer `unless` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    # NOTE: `Style/InverseMethods` cop auto-corrects from `(!foo == bar)` to `foo != bar`.
+    expect_correction(<<~RUBY)
+      if !(foo == bar) && baz
+          do_something
+        end
+    RUBY
+  end
+
   it 'registers an offense and corrects when using nested `unless` within `unless`' do
     expect_offense(<<~RUBY)
       unless foo
