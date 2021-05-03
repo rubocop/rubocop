@@ -49,7 +49,7 @@ module RuboCop
 
         def on_send(node)
           return unless gem_declaration?(node)
-          return if ignored_gem?(node)
+          return if allowed_gem?(node)
 
           if offense?(node)
             add_offense(node)
@@ -61,12 +61,12 @@ module RuboCop
 
         private
 
-        def ignored_gem?(node)
-          ignored_gems.include?(node.first_argument.value)
+        def allowed_gem?(node)
+          allowed_gems.include?(node.first_argument.value)
         end
 
-        def ignored_gems
-          Array(cop_config['IgnoredGems'])
+        def allowed_gems
+          Array(cop_config['AllowedGems'])
         end
 
         def message(range)

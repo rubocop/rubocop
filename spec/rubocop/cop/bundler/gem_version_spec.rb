@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
     let(:cop_config) do
       {
         'EnforcedStyle' => 'required',
-        'IgnoredGems' => ['rspec']
+        'AllowedGems' => ['rspec']
       }
     end
 
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
     let(:cop_config) do
       {
         'EnforcedStyle' => 'forbidden',
-        'IgnoredGems' => ['rspec']
+        'AllowedGems' => ['rspec']
       }
     end
 

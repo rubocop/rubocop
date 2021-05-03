@@ -184,7 +184,7 @@ Bundler/GemVersion:
     - 'forbidden'
   Include:
     - '**/Gemfile'
-  IgnoredGems: []
+  AllowedGems: []
 
 Bundler/InsecureProtocolSource:
   Description: >-
