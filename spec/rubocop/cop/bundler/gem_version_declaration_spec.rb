@@ -34,10 +34,10 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersionDeclaration, :config do
     end
   end
 
-  context 'when EnforcedStyle is set to prohibited' do
+  context 'when EnforcedStyle is set to forbidden' do
     let(:cop_config) do
       {
-        'EnforcedStyle' => 'prohibited',
+        'EnforcedStyle' => 'forbidden',
         'IgnoredGems' => ['rspec']
       }
     end
@@ -45,13 +45,13 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersionDeclaration, :config do
     it 'flags gems with a version declaration' do
       expect_offense(<<~RUBY)
         gem 'rubocop', '~> 1'
-        ^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is prohibited.
+        ^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
         gem 'rubocop', '>=1.10.0'
-        ^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is prohibited.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
         gem 'rubocop', '~> 1.12', require: false
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is prohibited.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
         gem 'rubocop', '>= 1.5.0', '< 1.10.0', git: 'https://github.com/rubocop/rubocop'
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is prohibited.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
       RUBY
     end
 

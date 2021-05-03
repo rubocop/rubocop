@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Bundler
       # Enforce that Gem version declarations are either required
-      # or prohibited.
+      # or forbidden.
       #
       # @example EnforcedStyle: required (default)
       #  # bad
@@ -19,7 +19,7 @@ module RuboCop
       #  # good
       #  gem 'rubocop', '>= 1.5.0', '< 1.10.0'
       #
-      # @example EnforcedStyle: prohibited
+      # @example EnforcedStyle: forbidden
       #  # good
       #  gem 'rubocop'
       #
@@ -36,7 +36,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         REQUIRED_MSG = 'Gem version declaration is required.'
-        PROHIBITED_MSG = 'Gem version declaration is prohibited.'
+        FORBIDDEN_MSG = 'Gem version declaration is forbidden.'
         VERSION_DECLARATION_REGEX = /^[~<>=]*\s?[0-9.]+/.freeze
 
         # @!method gem_declaration?(node)
@@ -74,18 +74,18 @@ module RuboCop
 
           if required_style?
             format(REQUIRED_MSG, gem_declaration: gem_declaration)
-          elsif prohibited_style?
-            format(PROHIBITED_MSG, gem_declaration: gem_declaration)
+          elsif forbidden_style?
+            format(FORBIDDEN_MSG, gem_declaration: gem_declaration)
           end
         end
 
         def offense?(node)
           (required_style? && !includes_version_declaration?(node)) ||
-            (prohibited_style? && includes_version_declaration?(node))
+            (forbidden_style? && includes_version_declaration?(node))
         end
 
-        def prohibited_style?
-          style == :prohibited
+        def forbidden_style?
+          style == :forbidden
         end
 
         def required_style?

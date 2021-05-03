@@ -175,13 +175,13 @@ Bundler/GemComment:
   OnlyFor: []
 
 Bundler/GemVersionDeclaration:
-  Description: 'Requires or prohibits gem version declarations.'
+  Description: 'Requires or forbids gem version declarations.'
   Enabled: false
   VersionAdded: '<<next>>'
   EnforcedStyle: 'required'
   SupportedStyles:
     - 'required'
-    - 'prohibited'
+    - 'forbidden'
   Include:
     - '**/Gemfile'
   IgnoredGems: []
