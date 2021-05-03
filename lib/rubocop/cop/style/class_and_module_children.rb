@@ -132,7 +132,7 @@ module RuboCop
         end
 
         def check_compact_style(node, body)
-          return unless one_child?(body) && !compact_node_name?(node)
+          return unless needs_compacting?(body)
 
           add_offense(node.loc.name, message: COMPACT_MSG) do |corrector|
             autocorrect(corrector, node)
@@ -145,12 +145,12 @@ module RuboCop
           nest_or_compact(corrector, node)
         end
 
-        def one_child?(body)
+        def needs_compacting?(body)
           body && %i[module class].include?(body.type)
         end
 
         def compact_node_name?(node)
-          /::/.match?(node.loc.name.source)
+          /::/.match?(node.identifier.source)
         end
       end
     end
