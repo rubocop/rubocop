@@ -226,6 +226,21 @@ module RuboCop
           end
         end
 
+        # case target
+        # in pattern # in_pattern
+        # else
+        #   else_body
+        # end
+        class CaseMatch < Base
+          define_predicate :target?,     child_index: 0
+          define_predicate :in_pattern?, child_index: 1..-2
+          define_predicate :else_body?,  child_index: -1
+
+          def always_run?
+            target?
+          end
+        end
+
         # for element in collection
         #   loop_body
         # end
