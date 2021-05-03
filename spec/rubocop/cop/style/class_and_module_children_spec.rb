@@ -91,6 +91,44 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'registers an offense for partially nested classes' do
+      expect_offense(<<~RUBY)
+        class Foo::Bar
+              ^^^^^^^^ Use nested module/class definitions instead of compact style.
+          class Baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+          class Bar
+          class Baz
+          end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for partially nested modules' do
+      expect_offense(<<~RUBY)
+        module Foo::Bar
+               ^^^^^^^^ Use nested module/class definitions instead of compact style.
+          module Baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+          module Bar
+          module Baz
+          end
+          end
+        end
+      RUBY
+    end
+
     it 'accepts nested children' do
       expect_no_offenses(<<~RUBY)
         class FooClass
@@ -161,6 +199,54 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
 
       expect_correction(<<~RUBY)
         module FooModule::BarModule
+        end
+      RUBY
+    end
+
+    it 'registers an offense for classes with partially nested children' do
+      expect_offense(<<~RUBY)
+        class Foo::Bar
+              ^^^^^^^^ Use compact module/class definition instead of nested style.
+          class Baz
+          end
+        end
+
+        class Foo
+              ^^^ Use compact module/class definition instead of nested style.
+          class Bar::Baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo::Bar::Baz
+        end
+
+        class Foo::Bar::Baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense for modules with partially nested children' do
+      expect_offense(<<~RUBY)
+        module Foo::Bar
+               ^^^^^^^^ Use compact module/class definition instead of nested style.
+          module Baz
+          end
+        end
+
+        module Foo
+               ^^^ Use compact module/class definition instead of nested style.
+          module Bar::Baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo::Bar::Baz
+        end
+
+        module Foo::Bar::Baz
         end
       RUBY
     end
