@@ -183,7 +183,9 @@ Bundler/GemVersion:
     - 'required'
     - 'forbidden'
   Include:
+    - '**/*.gemfile'
     - '**/Gemfile'
+    - '**/gems.rb'
   AllowedGems: []
 
 Bundler/InsecureProtocolSource:
