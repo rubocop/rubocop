@@ -6,6 +6,11 @@ module RuboCop
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
       #
+      # Methods that can be either procedural or functional and cannot be
+      # categorised from their usage alone is ignored.
+      # `lambda`, `proc`, and `it` are their defaults.
+      # Additional methods can be added to the `IgnoredMethods`.
+      #
       # @example EnforcedStyle: line_count_based (default)
       #   # bad - single line block
       #   items.each do |item| item / 5 end
@@ -130,6 +135,17 @@ module RuboCop
       #   }
       #   def bar(foo)
       #     puts foo
+      #   end
+      #
+      # @example IgnoredMethods: ['lambda', 'proc', 'it' ] (default)
+      #
+      #   # good
+      #   foo = lambda do |x|
+      #     puts "Hello, #{x}"
+      #   end
+      #
+      #   foo = lambda do |x|
+      #     x * 100
       #   end
       #
       class BlockDelimiters < Base
