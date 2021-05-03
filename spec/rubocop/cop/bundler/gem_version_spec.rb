@@ -9,16 +9,16 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
       }
     end
 
-    it 'flags gems without a version declaration' do
+    it 'flags gems that do not specify a version' do
       expect_offense(<<~RUBY)
         gem 'rubocop'
-        ^^^^^^^^^^^^^ Gem version declaration is required.
+        ^^^^^^^^^^^^^ Gem version specification is required.
         gem 'rubocop', require: false
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is required.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is required.
       RUBY
     end
 
-    it 'ignores gems with a declared version' do
+    it 'does not flag gems with a specified version' do
       expect_no_offenses(<<~RUBY)
         gem 'rubocop', '>=1.10.0'
         gem 'rubocop', '~> 1'
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
       RUBY
     end
 
-    it 'ignores gems included in IgnoredGems metadata' do
+    it 'does not flag gems included in AllowedGems metadata' do
       expect_no_offenses(<<~RUBY)
         gem 'rspec'
       RUBY
@@ -42,27 +42,27 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
       }
     end
 
-    it 'flags gems with a version declaration' do
+    it 'flags gems that specify a gem version' do
       expect_offense(<<~RUBY)
         gem 'rubocop', '~> 1'
-        ^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
+        ^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
         gem 'rubocop', '>=1.10.0'
-        ^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
         gem 'rubocop', '~> 1.12', require: false
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
         gem 'rubocop', '>= 1.5.0', '< 1.10.0', git: 'https://github.com/rubocop/rubocop'
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version declaration is forbidden.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
       RUBY
     end
 
-    it 'ignores gems without a declared version' do
+    it 'does not flag gems without a specified version' do
       expect_no_offenses(<<~RUBY)
         gem 'rubocop'
         gem 'rubocop', require: false
       RUBY
     end
 
-    it 'ignores gems included in IgnoredGems metadata' do
+    it 'does not flag gems included in AllowedGems metadata' do
       expect_no_offenses(<<~RUBY)
         gem 'rspec', '~> 3.10'
       RUBY

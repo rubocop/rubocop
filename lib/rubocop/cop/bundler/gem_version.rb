@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Bundler
-      # Enforce that Gem version declarations are either required
+      # Enforce that Gem version specifications are either required
       # or forbidden.
       #
       # @example EnforcedStyle: required (default)
@@ -35,16 +35,16 @@ module RuboCop
       class GemVersion < Base
         include ConfigurableEnforcedStyle
 
-        REQUIRED_MSG = 'Gem version declaration is required.'
-        FORBIDDEN_MSG = 'Gem version declaration is forbidden.'
-        VERSION_DECLARATION_REGEX = /^[~<>=]*\s?[0-9.]+/.freeze
+        REQUIRED_MSG = 'Gem version specification is required.'
+        FORBIDDEN_MSG = 'Gem version specification is forbidden.'
+        VERSION_SPECIFICATION_REGEX = /^[~<>=]*\s?[0-9.]+/.freeze
 
         # @!method gem_declaration?(node)
         def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 
-        # @!method includes_version_declaration?(node)
-        def_node_matcher :includes_version_declaration?, <<~PATTERN
-          (send nil? :gem <(str #version_declaration?) ...>)
+        # @!method includes_version_specification?(node)
+        def_node_matcher :includes_version_specification?, <<~PATTERN
+          (send nil? :gem <(str #version_specification?) ...>)
         PATTERN
 
         def on_send(node)
@@ -70,18 +70,18 @@ module RuboCop
         end
 
         def message(range)
-          gem_declaration = range.source
+          gem_specification = range.source
 
           if required_style?
-            format(REQUIRED_MSG, gem_declaration: gem_declaration)
+            format(REQUIRED_MSG, gem_specification: gem_specification)
           elsif forbidden_style?
-            format(FORBIDDEN_MSG, gem_declaration: gem_declaration)
+            format(FORBIDDEN_MSG, gem_specification: gem_specification)
           end
         end
 
         def offense?(node)
-          (required_style? && !includes_version_declaration?(node)) ||
-            (forbidden_style? && includes_version_declaration?(node))
+          (required_style? && !includes_version_specification?(node)) ||
+            (forbidden_style? && includes_version_specification?(node))
         end
 
         def forbidden_style?
@@ -92,8 +92,8 @@ module RuboCop
           style == :required
         end
 
-        def version_declaration?(expression)
-          expression.match?(VERSION_DECLARATION_REGEX)
+        def version_specification?(expression)
+          expression.match?(VERSION_SPECIFICATION_REGEX)
         end
       end
     end

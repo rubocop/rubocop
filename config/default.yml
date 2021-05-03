@@ -175,7 +175,7 @@ Bundler/GemComment:
   OnlyFor: []
 
 Bundler/GemVersion:
-  Description: 'Requires or forbids gem version declarations.'
+  Description: 'Requires or forbids specifying gem versions.'
   Enabled: false
   VersionAdded: '<<next>>'
   EnforcedStyle: 'required'
