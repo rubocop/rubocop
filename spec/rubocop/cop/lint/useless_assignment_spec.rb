@@ -1416,4 +1416,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
       end
     end
   end
+
+  context 'inside a `case-match` node', :ruby27 do
+    it 'does not register an offense when the variable is used' do
+      expect_no_offenses(<<~RUBY)
+        case '0'
+        in String
+          res = 1
+        else
+          res = 2
+        end
+
+        do_something(res)
+      RUBY
+    end
+  end
 end
