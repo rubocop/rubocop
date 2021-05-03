@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Bundler::GemVersionDeclaration, :config do
+RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
   context 'when EnforcedStyle is set to required (default)' do
     let(:cop_config) do
       {

@@ -174,7 +174,7 @@ Bundler/GemComment:
   IgnoredGems: []
   OnlyFor: []
 
-Bundler/GemVersionDeclaration:
+Bundler/GemVersion:
   Description: 'Requires or forbids gem version declarations.'
   Enabled: false
   VersionAdded: '<<next>>'

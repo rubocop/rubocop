@@ -32,7 +32,7 @@ module RuboCop
       #  # bad
       #  gem 'rubocop', '>= 1.5.0', '< 1.10.0'
       #
-      class GemVersionDeclaration < Base
+      class GemVersion < Base
         include ConfigurableEnforcedStyle
 
         REQUIRED_MSG = 'Gem version declaration is required.'
