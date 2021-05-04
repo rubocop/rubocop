@@ -34,13 +34,11 @@ module RuboCop
       #
       class GemVersion < Base
         include ConfigurableEnforcedStyle
+        include GemDeclaration
 
         REQUIRED_MSG = 'Gem version specification is required.'
         FORBIDDEN_MSG = 'Gem version specification is forbidden.'
         VERSION_SPECIFICATION_REGEX = /^[~<>=]*\s?[0-9.]+/.freeze
-
-        # @!method gem_declaration?(node)
-        def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 
         # @!method includes_version_specification?(node)
         def_node_matcher :includes_version_specification?, <<~PATTERN

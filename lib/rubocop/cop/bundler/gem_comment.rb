@@ -82,6 +82,7 @@ module RuboCop
       #
       class GemComment < Base
         include DefNode
+        include GemDeclaration
 
         MSG = 'Missing gem description comment.'
         CHECKED_OPTIONS_CONFIG = 'OnlyFor'
@@ -89,9 +90,6 @@ module RuboCop
         RESTRICTIVE_VERSION_SPECIFIERS_OPTION = 'restrictive_version_specifiers'
         RESTRICTIVE_VERSION_PATTERN = /<|~>/.freeze
         RESTRICT_ON_SEND = %i[gem].freeze
-
-        # @!method gem_declaration?(node)
-        def_node_matcher :gem_declaration?, '(send nil? :gem str ...)'
 
         def on_send(node)
           return unless gem_declaration?(node)
