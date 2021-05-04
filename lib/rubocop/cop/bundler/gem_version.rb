@@ -38,7 +38,7 @@ module RuboCop
 
         REQUIRED_MSG = 'Gem version specification is required.'
         FORBIDDEN_MSG = 'Gem version specification is forbidden.'
-        VERSION_SPECIFICATION_REGEX = /^[~<>=]*\s?[0-9.]+/.freeze
+        VERSION_SPECIFICATION_REGEX = /^\s*[~<>=]*\s*[0-9.]+/.freeze
 
         # @!method includes_version_specification?(node)
         def_node_matcher :includes_version_specification?, <<~PATTERN
