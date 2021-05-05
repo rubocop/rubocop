@@ -553,6 +553,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects `Style/RedundantBegin` with `Style/MultilineMemoization`' do
+    source = <<~RUBY
+      @memo ||= begin
+                  if condition
+                    do_something
+                  end
+                end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run(['-a', '--only', 'Style/RedundantBegin,Style/MultilineMemoization'])).to eq(0)
+    corrected = <<~RUBY
+      @memo ||= if condition
+                    do_something
+                  end
+      #{trailing_whitespace * 10}
+    RUBY
+    expect(File.read('example.rb')).to eq(corrected)
+  end
+
   it 'corrects LineEndConcatenation offenses leaving the ' \
      'RedundantInterpolation offense unchanged' do
     # If we change string concatenation from plus to backslash, the string

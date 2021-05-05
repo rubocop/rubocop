@@ -110,7 +110,7 @@ module RuboCop
           first_child = node.children.first
 
           source = first_child.source
-          source = "(#{source})" if first_child.if_type?
+          source = "(#{source})" if first_child.if_type? && first_child.modifier_form?
 
           corrector.replace(offense_range, source)
           corrector.remove(range_between(offense_range.end_pos, first_child.source_range.end_pos))
