@@ -7,7 +7,11 @@ module RuboCop
       # Such empty blocks are typically an oversight or we should provide a comment
       # be clearer what we're aiming for.
       #
-      # Empty lambdas are ignored by default.
+      # Empty lambdas and procs are ignored by default.
+      #
+      # NOTE: For backwards compatibility, the configuration that allows/disallows
+      # empty lambdas and procs is called `AllowEmptyLambdas`, even though it also
+      # applies to procs.
       #
       # @example
       #   # bad
@@ -40,6 +44,10 @@ module RuboCop
       #   end
       #   (callable || placeholder).call
       #
+      #   proc { }
+      #
+      #   Proc.new { }
+      #
       # @example AllowEmptyLambdas: false
       #   # bad
       #   allow(subject).to receive(:callable).and_return(-> {})
@@ -48,12 +56,16 @@ module RuboCop
       #   end
       #   (callable || placeholder).call
       #
+      #   proc { }
+      #
+      #   Proc.new { }
+      #
       class EmptyBlock < Base
         MSG = 'Empty block detected.'
 
         def on_block(node)
           return if node.body
-          return if allow_empty_lambdas? && node.lambda?
+          return if allow_empty_lambdas? && lambda_or_proc?(node)
           return if cop_config['AllowComments'] && allow_comment?(node)
 
           add_offense(node)
@@ -75,6 +87,10 @@ module RuboCop
         def comment_disables_cop?(comment)
           regexp_pattern = "# rubocop : (disable|todo) ([^,],)* (all|#{cop_name})"
           Regexp.new(regexp_pattern.gsub(' ', '\s*')).match?(comment)
+        end
+
+        def lambda_or_proc?(node)
+          node.lambda? || node.proc?
         end
       end
     end
