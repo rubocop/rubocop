@@ -5611,4 +5611,3 @@
 [@etiennebarrie]: https://github.com/etiennebarrie
 [@Tonkpils]: https://github.com/Tonkpils
 [@timlkelly]: https://github.com/timlkelly
-[@etiennebarrie]: https://github.com/etiennebarrie
