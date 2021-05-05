@@ -207,6 +207,8 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
   end
 
   describe 'Empty String', :config do
+    let(:other_cops) { { 'Style/FrozenStringLiteral' => { 'Enabled' => false } } }
+
     it 'registers an offense for String.new()' do
       expect_offense(<<~RUBY)
         test = String.new()
@@ -249,13 +251,10 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
     end
 
     context 'when double-quoted string literals are preferred' do
-      let(:config) do
-        RuboCop::Config.new(
-          'Style/StringLiterals' =>
-            {
-              'EnforcedStyle' => 'double_quotes'
-            }
-        )
+      let(:other_cops) do
+        super().merge('Style/StringLiterals' => {
+                        'EnforcedStyle' => 'double_quotes'
+                      })
       end
 
       it 'registers an offense for String.new' do
@@ -287,6 +286,33 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
           # frozen_string_literal: true
           test = String.new
         RUBY
+      end
+    end
+
+    context 'when Style/FrozenStringLiteral is enabled' do
+      let(:other_cops) { { 'Style/FrozenStringLiteral' => { 'Enabled' => true } } }
+
+      context 'and there is no magic comment' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            test = String.new
+          RUBY
+        end
+      end
+
+      context 'and there is a frozen-string-literal: false comment' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            # frozen-string-literal: false
+            test = String.new
+                   ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # frozen-string-literal: false
+            test = ''
+          RUBY
+        end
       end
     end
   end

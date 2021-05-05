@@ -62,7 +62,7 @@ module RuboCop
             ARR_MSG
           elsif offense_hash_node?(node)
             HASH_MSG
-          elsif str_node(node) && !frozen_string_literals_enabled?
+          elsif str_node(node) && !frozen_strings?
             format(STR_MSG, prefer: preferred_string_literal)
           end
         end
@@ -124,6 +124,13 @@ module RuboCop
               '{}'
             end
           end
+        end
+
+        def frozen_strings?
+          return true if frozen_string_literals_enabled?
+
+          frozen_string_cop_enabled = config.for_cop('Style/FrozenStringLiteral')['Enabled']
+          frozen_string_cop_enabled && !frozen_string_literals_disabled?
         end
       end
     end
