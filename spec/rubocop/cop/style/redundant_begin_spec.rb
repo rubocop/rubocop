@@ -248,6 +248,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using multi-line `if` in `begin` block' do
+    expect_offense(<<~RUBY)
+      var ||= begin
+              ^^^^^ Redundant `begin` block detected.
+        if condition
+          foo
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var ||= if condition
+          foo
+        end\n
+    RUBY
+  end
+
   it 'does not register an offense when using `begin` with multiple statement for or assignment' do
     expect_no_offenses(<<~RUBY)
       var ||= begin
