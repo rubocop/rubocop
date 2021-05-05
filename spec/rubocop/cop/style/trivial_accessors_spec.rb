@@ -59,14 +59,20 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   it 'registers an offense on class writer' do
     expect_offense(<<~RUBY)
       class Foo
-        def self.foo(val)
+        def self.foo=(val)
         ^^^ Use `attr_writer` to define trivial writer methods.
           @foo = val
         end
       end
     RUBY
 
-    expect_no_corrections
+    expect_correction(<<~RUBY)
+      class Foo
+        class << self
+          attr_writer :foo
+        end
+      end
+    RUBY
   end
 
   it 'registers an offense on reader with braces' do
@@ -121,25 +127,26 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
   it 'registers an offense on one-liner writer' do
     expect_offense(<<~RUBY)
       class Foo
-        def foo(val); @foo=val; end
+        def foo=(val); @foo=val; end
         ^^^ Use `attr_writer` to define trivial writer methods.
       end
     RUBY
 
-    expect_no_corrections
+    expect_correction(<<~RUBY)
+      class Foo
+        attr_writer :foo
+      end
+    RUBY
   end
 
-  it 'registers an offense on DSL-style trivial writer' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense on DSL-style writer' do
+    expect_no_offenses(<<~RUBY)
       class Foo
         def foo(val)
-        ^^^ Use `attr_writer` to define trivial writer methods.
           @foo = val
         end
       end
     RUBY
-
-    expect_no_corrections
   end
 
   it 'registers an offense on reader with `private`' do
@@ -353,7 +360,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     it 'registers an offense when names mismatch in writer' do
       expect_offense(<<~RUBY)
         class Foo
-          def foo(val)
+          def foo=(val)
           ^^^ Use `attr_writer` to define trivial writer methods.
             @f = val
           end
@@ -446,17 +453,20 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
   end
 
-  context 'with DSL allowed' do
-    let(:cop_config) { { 'AllowDSLWriters' => true } }
+  context 'with DSL denied' do
+    let(:cop_config) { { 'AllowDSLWriters' => false } }
 
-    it 'accepts DSL-style writer' do
-      expect_no_offenses(<<~RUBY)
+    it 'registers an offense on DSL-style writer' do
+      expect_offense(<<~RUBY)
         class Foo
           def foo(val)
+          ^^^ Use `attr_writer` to define trivial writer methods.
             @foo = val
           end
         end
       RUBY
+
+      expect_no_corrections
     end
   end
 

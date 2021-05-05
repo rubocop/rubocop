@@ -4745,7 +4745,7 @@ Style/TrivialAccessors:
   StyleGuide: '#attr_family'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '0.77'
+  VersionChanged: '<<next>>'
   # When set to `false` the cop will suggest the use of accessor methods
   # in situations like:
   #
@@ -4764,7 +4764,7 @@ Style/TrivialAccessors:
   # on_exception :restart
   #
   # Commonly used in DSLs
-  AllowDSLWriters: false
+  AllowDSLWriters: true
   IgnoreClassMethods: false
   AllowedMethods:
     - to_ary
