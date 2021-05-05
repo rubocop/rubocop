@@ -75,6 +75,7 @@ In the following section you find all available cops:
 
 * xref:cops_bundler.adoc#bundlerduplicatedgem[Bundler/DuplicatedGem]
 * xref:cops_bundler.adoc#bundlergemcomment[Bundler/GemComment]
+* xref:cops_bundler.adoc#bundlergemversion[Bundler/GemVersion]
 * xref:cops_bundler.adoc#bundlerinsecureprotocolsource[Bundler/InsecureProtocolSource]
 * xref:cops_bundler.adoc#bundlerorderedgems[Bundler/OrderedGems]
 
@@ -154,6 +155,7 @@ In the following section you find all available cops:
 * xref:cops_layout.adoc#layoutparameteralignment[Layout/ParameterAlignment]
 * xref:cops_layout.adoc#layoutredundantlinebreak[Layout/RedundantLineBreak]
 * xref:cops_layout.adoc#layoutrescueensurealignment[Layout/RescueEnsureAlignment]
+* xref:cops_layout.adoc#layoutsinglelineblockchain[Layout/SingleLineBlockChain]
 * xref:cops_layout.adoc#layoutspaceaftercolon[Layout/SpaceAfterColon]
 * xref:cops_layout.adoc#layoutspaceaftercomma[Layout/SpaceAfterComma]
 * xref:cops_layout.adoc#layoutspaceaftermethodname[Layout/SpaceAfterMethodName]

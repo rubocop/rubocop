@@ -184,6 +184,75 @@ gem 'bar', '< 2.1'
 | Array
 |===
 
+== Bundler/GemVersion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| No
+| 1.14
+| -
+|===
+
+Enforce that Gem version specifications are either required
+or forbidden.
+
+=== Examples
+
+==== EnforcedStyle: required (default)
+
+[source,ruby]
+----
+# bad
+gem 'rubocop'
+
+# good
+gem 'rubocop', '~> 1.12'
+
+# good
+gem 'rubocop', '>= 1.10.0'
+
+# good
+gem 'rubocop', '>= 1.5.0', '< 1.10.0'
+----
+
+==== EnforcedStyle: forbidden
+
+[source,ruby]
+----
+# good
+gem 'rubocop'
+
+# bad
+gem 'rubocop', '~> 1.12'
+
+# bad
+gem 'rubocop', '>= 1.10.0'
+
+# bad
+gem 'rubocop', '>= 1.5.0', '< 1.10.0'
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `required`
+| `required`, `forbidden`
+
+| Include
+| `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`
+| Array
+
+| AllowedGems
+| `[]`
+| Array
+|===
+
 == Bundler/InsecureProtocolSource
 
 |===

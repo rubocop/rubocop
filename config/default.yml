@@ -177,7 +177,7 @@ Bundler/GemComment:
 Bundler/GemVersion:
   Description: 'Requires or forbids specifying gem versions.'
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.14'
   EnforcedStyle: 'required'
   SupportedStyles:
     - 'required'
@@ -1131,7 +1131,7 @@ Layout/RescueEnsureAlignment:
 Layout/SingleLineBlockChain:
   Description: 'Put method call on a separate line if chained to a single line block.'
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.14'
 
 Layout/SpaceAfterColon:
   Description: 'Use spaces after colons.'

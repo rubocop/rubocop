@@ -12112,8 +12112,8 @@ array of 2 or fewer elements.
 | Integer
 
 | WordRegex
-| `(?-mix:\A(?:\p{Word}\|\p{Word}-\p{Word}\|\n\|\t)+\z)`
-|
+| `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)`
+| 
 |===
 
 === References

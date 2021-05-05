@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.14.0 (2021-05-05)
+
 ### New features
 
 * [#7669](https://github.com/rubocop/rubocop/issues/7669): New cop `Bundler/GemVersion` requires or forbids specifying gem versions. ([@timlkelly][])

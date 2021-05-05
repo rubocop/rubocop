@@ -5479,7 +5479,7 @@ exactly(2).times { raise StandardError }
 | Name | Default value | Configurable values
 
 | IgnoredPatterns
-| `(?-mix:(exactly\|at_least\|at_most)\(\d+\)\.times)`
+| `(?-mix:(exactly|at_least|at_most)\(\d+\)\.times)`
 | Array
 |===
 
