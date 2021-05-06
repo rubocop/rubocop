@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Formatter::JUnitFormatter, :config do
       expect(output.string).to start_with(<<~XML)
         <?xml version='1.0'?>
         <testsuites>
-          <testsuite name='rubocop'>
+          <testsuite name='rubocop' tests='2' failures='4'>
       XML
     end
 

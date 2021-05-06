@@ -260,7 +260,7 @@ This formatter is based on the https://github.com/mikian/rubocop-junit-formatter
 $ rubocop --format junit
 <?xml version='1.0'?>
 <testsuites>
-  <testsuite name='rubocop'>
+  <testsuite name='rubocop' tests='2' failures='2'>
     <testcase classname='example' name='Style/FrozenStringLiteralComment'>
       <failure type='Style/FrozenStringLiteralComment' message='Style/FrozenStringLiteralComment: Missing frozen string literal comment.'>
         /tmp/src/example.rb:1:1
