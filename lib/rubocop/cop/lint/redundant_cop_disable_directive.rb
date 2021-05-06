@@ -25,7 +25,7 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      class RedundantCopDisableDirective < Base
+      class RedundantCopDisableDirective < Base # rubocop:todo Metrics/ClassLength
         include RangeHelp
         extend AutoCorrector
 
@@ -41,12 +41,9 @@ module RuboCop
         def on_new_investigation
           return unless offenses_to_check
 
-          cop_disabled_line_ranges = processed_source.disabled_line_ranges
-
           redundant_cops = Hash.new { |h, k| h[k] = Set.new }
 
-          each_redundant_disable(cop_disabled_line_ranges,
-                                 offenses_to_check) do |comment, redundant_cop|
+          each_redundant_disable do |comment, redundant_cop|
             redundant_cops[comment].add(redundant_cop)
           end
 
@@ -55,6 +52,14 @@ module RuboCop
         end
 
         private
+
+        def cop_disabled_line_ranges
+          processed_source.disabled_line_ranges
+        end
+
+        def disabled_ranges
+          cop_disabled_line_ranges[COP_NAME] || [0..0]
+        end
 
         def previous_line_blank?(range)
           processed_source.buffer.source_line(range.line - 1).blank?
@@ -97,32 +102,32 @@ module RuboCop
           range_with_surrounding_space(range: range, side: :right, newlines: false)
         end
 
-        def each_redundant_disable(cop_disabled_line_ranges, offenses,
-                                   &block)
-          disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
-
+        def each_redundant_disable(&block)
           cop_disabled_line_ranges.each do |cop, line_ranges|
-            each_already_disabled(line_ranges, disabled_ranges) { |comment| yield comment, cop }
-
-            each_line_range(line_ranges, disabled_ranges, offenses, cop, &block)
+            each_already_disabled(cop, line_ranges, &block)
+            each_line_range(cop, line_ranges, &block)
           end
         end
 
-        def each_line_range(line_ranges, disabled_ranges, offenses,
-                            cop)
+        def each_line_range(cop, line_ranges)
           line_ranges.each_with_index do |line_range, ix|
-            comment = processed_source.comment_at_line(line_range.begin)
-            next if ignore_offense?(disabled_ranges, line_range)
+            next if ignore_offense?(line_range)
 
-            redundant_cop = find_redundant(comment, offenses, cop, line_range, line_ranges[ix + 1])
+            comment = processed_source.comment_at_line(line_range.begin)
+            redundant_cop = if all_disabled?(comment)
+                              find_redundant_all(line_range, line_ranges[ix + 1])
+                            else
+                              find_redundant(cop, line_range)
+                            end
+
             yield comment, redundant_cop if redundant_cop
           end
         end
 
-        def each_already_disabled(line_ranges, disabled_ranges)
+        def each_already_disabled(cop, line_ranges)
           line_ranges.each_cons(2) do |previous_range, range|
-            next if ignore_offense?(disabled_ranges, range)
-            next if previous_range.end != range.begin
+            next if ignore_offense?(range)
+            next unless followed_ranges?(previous_range, range)
 
             # If a cop is disabled in a range that begins on the same line as
             # the end of the previous range, it means that the cop was
@@ -133,42 +138,45 @@ module RuboCop
             # Comments disabling all cops don't count since it's reasonable
             # to disable a few select cops first and then all cops further
             # down in the code.
-            yield comment if comment && !all_disabled?(comment)
+            yield comment, cop if comment && !all_disabled?(comment)
           end
         end
 
-        # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        def find_redundant(comment, offenses, cop, line_range, next_line_range)
-          if all_disabled?(comment)
-            # If there's a disable all comment followed by a comment
-            # specifically disabling `cop`, we don't report the `all`
-            # comment. If the disable all comment is truly redundant, we will
-            # detect that when examining the comments of another cop, and we
-            # get the full line range for the disable all.
-            if (next_line_range.nil? || line_range.last != next_line_range.first) &&
-               offenses.none? { |o| line_range.cover?(o.line) }
-              'all'
-            end
-          else
-            cop_offenses = offenses.select { |o| o.cop_name == cop }
-            cop if cop_offenses.none? { |o| line_range.cover?(o.line) }
-          end
+        def find_redundant(cop, range)
+          cop_offenses = offenses_to_check.select { |offense| offense.cop_name == cop }
+          cop if range_with_offense?(range, cop_offenses)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def find_redundant_all(range, next_range)
+          # If there's a disable all comment followed by a comment
+          # specifically disabling `cop`, we don't report the `all`
+          # comment. If the disable all comment is truly redundant, we will
+          # detect that when examining the comments of another cop, and we
+          # get the full line range for the disable all.
+          has_no_next_range = next_range.nil? || !followed_ranges?(range, next_range)
+          'all' if has_no_next_range && range_with_offense?(range)
+        end
+
+        def followed_ranges?(range, next_range)
+          range.end == next_range.begin
+        end
+
+        def range_with_offense?(range, offenses = offenses_to_check)
+          offenses.none? { |offense| range.cover?(offense.line) }
+        end
 
         def all_disabled?(comment)
-          /rubocop\s*:\s*(?:disable|todo)\s+all\b/.match?(comment.text)
+          DirectiveComment.new(comment).disabled_all?
         end
 
-        def ignore_offense?(disabled_ranges, line_range)
+        def ignore_offense?(line_range)
           disabled_ranges.any? do |range|
             range.cover?(line_range.min) && range.cover?(line_range.max)
           end
         end
 
         def directive_count(comment)
-          _, cops_string = DirectiveComment.new(comment).match_captures
-          cops_string.split(/,\s*/).size
+          DirectiveComment.new(comment).cop_names.size
         end
 
         def add_offenses(redundant_cops)
@@ -183,12 +191,9 @@ module RuboCop
 
         def add_offense_for_entire_comment(comment, cops)
           location = DirectiveComment.new(comment).range
-          cop_list = cops.sort.map { |c| describe(c) }
+          cop_names = cops.sort.map { |c| describe(c) }.join(', ')
 
-          add_offense(
-            location,
-            message: "Unnecessary disabling of #{cop_list.join(', ')}."
-          ) do |corrector|
+          add_offense(location, message: message(cop_names)) do |corrector|
             range = comment_range_with_surrounding_space(location, comment.loc.expression)
             corrector.remove(range)
           end
@@ -200,10 +205,8 @@ module RuboCop
           ranges = cop_ranges.map { |_, r| r }
 
           cop_ranges.each do |cop, range|
-            add_offense(
-              range,
-              message: "Unnecessary disabling of #{describe(cop)}."
-            ) do |corrector|
+            cop_name = describe(cop)
+            add_offense(range, message: message(cop_name)) do |corrector|
               range = directive_range_in_list(range, ranges)
               corrector.remove(range)
             end
@@ -233,18 +236,15 @@ module RuboCop
         end
 
         def describe(cop)
-          if cop == 'all'
-            'all cops'
-          elsif all_cop_names.include?(cop)
-            "`#{cop}`"
-          else
-            similar = NameSimilarity.find_similar_name(cop, all_cop_names)
-            if similar
-              "`#{cop}` (did you mean `#{similar}`?)"
-            else
-              "`#{cop}` (unknown cop)"
-            end
-          end
+          return 'all cops' if cop == 'all'
+          return "`#{cop}`" if all_cop_names.include?(cop)
+
+          similar = NameSimilarity.find_similar_name(cop, all_cop_names)
+          similar ? "`#{cop}` (did you mean `#{similar}`?)" : "`#{cop}` (unknown cop)"
+        end
+
+        def message(cop_names)
+          "Unnecessary disabling of #{cop_names}."
         end
 
         def all_cop_names
