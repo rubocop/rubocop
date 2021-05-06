@@ -214,4 +214,32 @@ RSpec.describe RuboCop::DirectiveComment do
       end
     end
   end
+
+  describe '#disabled_all?' do
+    subject { directive_comment.disabled_all? }
+
+    context 'when enabled all cops' do
+      let(:text) { 'def foo # rubocop:enable all' }
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when enabled specific cops' do
+      let(:text) { '# rubocop:enable Foo/Bar' }
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when disabled all cops' do
+      let(:text) { '# rubocop:disable all' }
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when disabled specific cops' do
+      let(:text) { '# rubocop:disable Foo/Bar' }
+
+      it { is_expected.to eq false }
+    end
+  end
 end
