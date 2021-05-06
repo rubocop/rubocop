@@ -70,6 +70,11 @@ module RuboCop
       !disabled? && all_cops?
     end
 
+    # Checks if this directive disables all cops
+    def disabled_all?
+      disabled? && all_cops?
+    end
+
     # Checks if all cops specified in this directive
     def all_cops?
       cops == 'all'
