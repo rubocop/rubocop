@@ -3480,6 +3480,7 @@ Style/HashAsLastArrayItem:
 
 Style/HashConversion:
   Description: 'Avoid Hash[] in favor of ary.to_h or literal hashes.'
+  StyleGuide: '#avoid-hash-constructor'
   Enabled: pending
   VersionAdded: '1.10'
   VersionChanged: '1.11'
