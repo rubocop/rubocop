@@ -129,6 +129,23 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'preserves comments' do
+      expect_offense(<<~RUBY)
+        # top comment
+        class Foo::Bar # describe Foo::Bar
+              ^^^^^^^^ Use nested module/class definitions instead of compact style.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # top comment
+        module Foo
+          class Bar # describe Foo::Bar
+          end
+        end
+      RUBY
+    end
+
     it 'accepts nested children' do
       expect_no_offenses(<<~RUBY)
         class FooClass
@@ -264,6 +281,29 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         end
 
         module Foo::Bar::Baz
+        end
+      RUBY
+    end
+
+    it 'preserves comments between classes' do
+      expect_offense(<<~RUBY)
+        # describe Foo
+        # more Foo
+        class Foo
+              ^^^ Use compact module/class definition instead of nested style.
+          # describe Bar
+          # more Bar
+          class Bar
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # describe Foo
+        # more Foo
+        # describe Bar
+        # more Bar
+        class Foo::Bar
         end
       RUBY
     end

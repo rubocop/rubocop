@@ -87,9 +87,18 @@ module RuboCop
         end
 
         def compact_node(corrector, node)
-          replacement = "#{node.body.type} #{compact_identifier_name(node)}"
           range = range_between(node.loc.keyword.begin_pos, node.body.loc.name.end_pos)
-          corrector.replace(range, replacement)
+          corrector.replace(range, compact_replacement(node))
+        end
+
+        def compact_replacement(node)
+          replacement = "#{node.body.type} #{compact_identifier_name(node)}"
+
+          body_comments = processed_source.ast_with_comments[node.body]
+          unless body_comments.empty?
+            replacement = body_comments.map(&:text).push(replacement).join("\n")
+          end
+          replacement
         end
 
         def compact_identifier_name(node)
