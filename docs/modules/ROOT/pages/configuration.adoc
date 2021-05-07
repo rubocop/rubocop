@@ -452,8 +452,12 @@ Most cops are enabled by default. Cops, introduced or significantly updated
 between major versions, are in a special pending status (read more in
 xref:versioning.adoc["Versioning"]). Some cops, configured the above `Enabled: false`
 in https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml],
-are disabled by default. The cop enabling process can be altered by
-setting `DisabledByDefault` or `EnabledByDefault` (but not both) to `true`.
+are disabled by default.
+
+The cop enabling process can be altered by setting `DisabledByDefault` or
+`EnabledByDefault` (but not both) to `true`. These settings override the default for *all*
+cops to disabled or enabled, regardless of the cops' default values (whether enabled,
+disabled or pending).
 
 [source,yaml]
 ----
@@ -462,9 +466,9 @@ AllCops:
 ----
 
 All cops are then disabled by default. Only cops appearing in user
-configuration files are enabled. `Enabled: true` does not have to be
-set for cops in user configuration. They will be enabled anyway. It is also
-possible to enable entire departments by adding for example
+configuration files with `Enabled: true` will be enabled; every other cop will
+be disabled without having to explicitly disable them in configuration. It is
+also possible to enable entire departments by adding for example
 
 [source,yaml]
 ----
@@ -472,8 +476,7 @@ Style:
   Enabled: true
 ----
 
-All cops are then enabled by default. Only cops explicitly disabled
-using `Enabled: false` in user configuration files are disabled.
+All cops in the `Style` department are then enabled.
 
 If a department is disabled, cops in that department can still be individually
 enabled, and that setting overrides the setting for its department in the same
