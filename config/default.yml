@@ -1612,7 +1612,7 @@ Lint/EmptyBlock:
   Description: 'This cop checks for blocks without a body.'
   Enabled: pending
   VersionAdded: '1.1'
-  VersionChanged: '1.3'
+  VersionChanged: '<<next>>'
   AllowComments: true
   AllowEmptyLambdas: true
 
@@ -3998,6 +3998,7 @@ Style/NilLambda:
   Description: 'Prefer `-> {}` to `-> { nil }`.'
   Enabled: pending
   VersionAdded: '1.3'
+  VersionChanged: '<<next>>'
 
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
