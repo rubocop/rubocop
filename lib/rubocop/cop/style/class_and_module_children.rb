@@ -132,6 +132,9 @@ module RuboCop
         end
 
         def check_compact_style(node, body)
+          parent = node.parent
+          return if parent&.class_type? || parent&.module_type?
+
           return unless needs_compacting?(body)
 
           add_offense(node.loc.name, message: COMPACT_MSG) do |corrector|
