@@ -3842,6 +3842,12 @@ Style/MultilineIfThen:
   VersionAdded: '0.9'
   VersionChanged: '0.26'
 
+Style/MultilineInPatternThen:
+  Description: 'Do not use `then` for multi-line `in` statement.'
+  StyleGuide: '#no-then'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/MultilineMemoization:
   Description: 'Wrap multiline memoizations in a `begin` and `end` block.'
   Enabled: true
