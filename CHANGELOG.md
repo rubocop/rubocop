@@ -8,7 +8,7 @@
 
 * [#7669](https://github.com/rubocop/rubocop/issues/7669): New cop `Bundler/GemVersion` requires or forbids specifying gem versions. ([@timlkelly][])
 * [#9758](https://github.com/rubocop/rubocop/pull/9758): Support `TargetRubyVersion 3.1` (experimental). ([@koic][])
-* [#9377](https://github.com/rubocop/rubocop/issues/9377): Add cop `Layout/SingleLineBlockChain`. ([@jonas054][])
+* [#9733](https://github.com/rubocop/rubocop/issues/9733): Add cop `Layout/SingleLineBlockChain`. ([@jonas054][])
 
 ### Bug fixes
 
