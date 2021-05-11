@@ -87,7 +87,7 @@ module RuboCop
       #     @foo
       #   end
       #
-      # @exampole AllowedMethods: ['allowed_method']
+      # @example AllowedMethods: ['allowed_method']
       #   # good
       #   def allowed_method
       #     @foo
