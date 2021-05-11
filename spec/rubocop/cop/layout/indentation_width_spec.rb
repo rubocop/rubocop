@@ -1437,6 +1437,27 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'does not register an offense for good indentation of `do` ... `ensure` ... `end` block' do
+        expect_no_offenses(<<~RUBY)
+          do_something do
+            foo
+          ensure
+            handle_error
+          end
+        RUBY
+      end
+
+      it 'registers an offense for bad indentation of `do` ... `ensure` ... `end` block' do
+        expect_offense(<<~RUBY)
+          do_something do
+              foo
+          ^^^^ Use 2 (not 4) spaces for indentation.
+          ensure
+            handle_error
+          end
+        RUBY
+      end
+
       context 'when using safe navigation operator' do
         it 'registers an offense for bad indentation of a {} body' do
           expect_offense(<<~RUBY)

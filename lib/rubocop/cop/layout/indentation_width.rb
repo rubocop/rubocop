@@ -313,9 +313,12 @@ module RuboCop
             check_rescue?(body_node)
           elsif body_node.ensure_type?
             block_body, = *body_node
-            return unless block_body
 
-            check_rescue?(block_body) if block_body.rescue_type?
+            if block_body&.rescue_type?
+              check_rescue?(block_body)
+            else
+              !block_body.nil?
+            end
           else
             true
           end
