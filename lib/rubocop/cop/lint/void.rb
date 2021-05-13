@@ -104,7 +104,7 @@ module RuboCop
         end
 
         def check_literal(node)
-          return if !node.literal? || node.xstr_type?
+          return if !node.literal? || node.xstr_type? || node.range_type?
 
           add_offense(node, message: format(LIT_MSG, lit: node.source))
         end

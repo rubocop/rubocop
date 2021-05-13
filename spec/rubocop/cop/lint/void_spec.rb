@@ -254,4 +254,22 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       nil
     RUBY
   end
+
+  it 'accepts method with irange block' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        1..100.times.each { puts 1 }
+        do_something
+      end
+    RUBY
+  end
+
+  it 'accepts method with erange block' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        1...100.times.each { puts 1 }
+        do_something
+      end
+    RUBY
+  end
 end
