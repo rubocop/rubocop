@@ -297,7 +297,7 @@ module RuboCop
       validate_auto_gen_config
       validate_auto_correct
       validate_display_only_failed
-      validate_parallel
+      disable_parallel_when_invalid_option_combo
 
       return if incompatible_options.size <= 1
 
@@ -334,33 +334,27 @@ module RuboCop
             format('--disable-uncorrectable can only be used together with --auto-correct.')
     end
 
-    def validate_parallel
+    def disable_parallel_when_invalid_option_combo
       return unless @options.key?(:parallel)
 
-      if @options[:cache] == 'false'
-        raise OptionArgumentError, '-P/--parallel uses caching to speed up ' \
-                                   'execution, so combining with --cache ' \
-                                   'false is not allowed.'
+      invalid_options = [
+        { name: :auto_gen_config, value: true, flag: '--auto-gen-config' },
+        { name: :fail_fast, value: true, flag: '-F/--fail-fast.' },
+        { name: :auto_correct, value: true, flag: '--auto-correct.' },
+        { name: :cache, value: 'false', flag: '--cache false' }
+      ]
+
+      invalid_flags = invalid_options.each_with_object([]) do |option, flags|
+        # `>` rather than `>=` because `@options` will also contain `parallel: true`
+        flags << option[:flag] if @options > { option[:name] => option[:value] }
       end
 
-      disable_parallel_when_invalid_combo
-    end
-
-    def disable_parallel_when_invalid_combo
-      combos = {
-        auto_gen_config: '--auto-gen-config',
-        fail_fast: '-F/--fail-fast.',
-        auto_correct: '--auto-correct.'
-      }
-
-      invalid_combos = combos.select { |key, _flag| @options.key?(key) }
-
-      return if invalid_combos.empty?
+      return if invalid_flags.empty?
 
       @options.delete(:parallel)
 
       puts '-P/--parallel is being ignored because ' \
-           "it is not compatible with #{invalid_combos.values.join(', ')}"
+           "it is not compatible with #{invalid_flags.join(', ')}"
     end
 
     def only_includes_redundant_disable?
