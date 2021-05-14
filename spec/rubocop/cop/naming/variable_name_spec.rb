@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
       RUBY
     end
 
-    it 'works with non-ascii characters' do
+    it 'accepts with non-ascii characters' do
       expect_no_offenses('léo = 1')
     end
 

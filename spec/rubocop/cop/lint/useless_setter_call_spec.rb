@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall, :config do
     RUBY
   end
 
-  it 'handles exception assignments without exploding' do
+  it 'accepts exception assignments without exploding' do
     expect_no_offenses(<<~RUBY)
       def foo(bar)
         begin

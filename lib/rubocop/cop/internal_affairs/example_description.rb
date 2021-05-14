@@ -41,7 +41,7 @@ module RuboCop
 
         EXPECT_NO_OFFENSES_INCORRECT_DESCRIPTIONS = [
           /^(adds|registers|reports|finds) (an? )?offense/,
-          /^flags\b/
+          /^(flags|handles|works)\b/
         ].freeze
 
         EXPECT_OFFENSE_INCORRECT_DESCRIPTIONS = [

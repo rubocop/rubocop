@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
-    it 'handles inline comments' do
+    it 'does not register an offense when using inline comments' do
       expect_no_offenses(<<~RUBY)
         class_eval <<-EOT, __FILE__, __LINE__ + 1
           # def capitalize(*params, &block)
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
-    it 'handles other text' do
+    it 'does not register an offense when using other text' do
       expect_no_offenses(<<~RUBY)
         class_eval <<-EOT, __FILE__, __LINE__ + 1
           # EXAMPLE: def capitalize(*params, &block)
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
-    it 'handles multiple methods' do
+    it 'does not register an offense when using multiple methods' do
       expect_no_offenses(<<~RUBY)
         class_eval <<-EOT, __FILE__, __LINE__ + 1
           # def capitalize(*params, &block)
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
-    it 'handles multiple methods with split comments' do
+    it 'does not register an offense when using multiple methods with split comments' do
       expect_no_offenses(<<~RUBY)
         class_eval <<-EOT, __FILE__, __LINE__ + 1
           # def capitalize(*params, &block)
@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
-    it 'handles inline comments' do
+    it 'does not register an offense when using inline comments' do
       expect_no_offenses(<<~RUBY)
         class_eval(
           # def capitalize(*params, &block)
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
-    it 'handles other text' do
+    it 'does not register an offense when using other text' do
       expect_no_offenses(<<~RUBY)
         class_eval(
           # EXAMPLE: def capitalize(*params, &block)
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
-    it 'handles multiple methods' do
+    it 'does not register an offense when using multiple methods' do
       expect_no_offenses(<<~RUBY)
         class_eval(
           # def capitalize(*params, &block)

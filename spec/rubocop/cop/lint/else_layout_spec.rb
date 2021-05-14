@@ -99,15 +99,15 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
     RUBY
   end
 
-  it 'handles ternary ops' do
+  it 'accepts ternary ops' do
     expect_no_offenses('x ? a : b')
   end
 
-  it 'handles modifier forms' do
+  it 'accepts modifier forms' do
     expect_no_offenses('x if something')
   end
 
-  it 'handles empty braces' do
+  it 'accepts empty braces' do
     expect_no_offenses(<<~RUBY)
       if something
         ()
