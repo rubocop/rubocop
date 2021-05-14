@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition, :config do
     RUBY
   end
 
-  it 'handles ternary ops' do
+  it 'accepts ternary ops' do
     expect_no_offenses('x ? a : b')
   end
 end

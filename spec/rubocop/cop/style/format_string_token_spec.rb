@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     expect_no_corrections
   end
 
-  it 'handles __FILE__' do
+  it 'ignores __FILE__' do
     expect_no_offenses('__FILE__')
   end
 

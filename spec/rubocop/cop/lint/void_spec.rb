@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
-  it 'handles empty block' do
+  it 'accepts empty block' do
     expect_no_offenses(<<~RUBY)
       array.each { |_item| }
     RUBY

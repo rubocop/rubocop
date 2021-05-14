@@ -108,13 +108,13 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef, :config do
     RUBY
   end
 
-  it 'handles `match` with no arguments' do
+  it 'ignores `match` with no arguments' do
     expect_no_offenses(<<~RUBY)
       foo.match
     RUBY
   end
 
-  it 'handles `match` with no receiver' do
+  it 'ignores `match` with no receiver' do
     expect_no_offenses(<<~RUBY)
       match(bar)
     RUBY
