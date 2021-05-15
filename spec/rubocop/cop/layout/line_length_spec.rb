@@ -605,6 +605,34 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         end
       end
 
+      context 'when unparenthesized' do
+        context 'when there is one argument' do
+          it 'does not autocorrect' do
+            expect_offense(<<~RUBY)
+              method_call xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                                                      ^^ Line is too long. [42/40]
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'when there are multiple arguments' do
+          it 'splits the line after the first element' do
+            args = 'x' * 28
+            expect_offense(<<~RUBY, args: args)
+              method_call #{args}, abc
+                          _{args}^^^^^ Line is too long. [45/40]
+            RUBY
+
+            expect_correction(<<~RUBY, loop: false)
+              method_call #{args},#{trailing_whitespace}
+              abc
+            RUBY
+          end
+        end
+      end
+
       context 'when call with hash on same line' do
         it 'adds an offense only to outer and autocorrects it' do
           expect_offense(<<~RUBY)
