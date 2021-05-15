@@ -88,6 +88,31 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when missed indendation kwargs' do
+      expect_offense(<<~RUBY)
+        func1(foo: 'foo',
+          bar: 'bar',
+          ^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+          baz: 'baz')
+          ^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+        func2(do_something,
+          foo: 'foo',
+          ^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+          bar: 'bar',
+          baz: 'baz')
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func1(foo: 'foo',
+              bar: 'bar',
+              baz: 'baz')
+        func2(do_something,
+              foo: 'foo',
+              bar: 'bar',
+              baz: 'baz')
+      RUBY
+    end
+
     it 'registers an offense and corrects splat operator' do
       expect_offense(<<~RUBY)
         func1(*a,
@@ -383,6 +408,31 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
           account:     account,
           open_price:  1.29,
           close_price: 1.30
+      RUBY
+    end
+
+    it 'registers an offense and corrects when missed indendation kwargs' do
+      expect_offense(<<~RUBY)
+        func1(foo: 'foo',
+              bar: 'bar',
+              ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+              baz: 'baz')
+              ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+        func2(do_something,
+              foo: 'foo',
+              ^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+              bar: 'bar',
+              baz: 'baz')
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func1(foo: 'foo',
+          bar: 'bar',
+          baz: 'baz')
+        func2(do_something,
+          foo: 'foo',
+          bar: 'bar',
+          baz: 'baz')
       RUBY
     end
 

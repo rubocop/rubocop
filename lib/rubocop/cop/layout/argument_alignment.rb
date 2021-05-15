@@ -10,33 +10,39 @@ module RuboCop
       #   # good
       #
       #   foo :bar,
-      #       :baz
+      #       :baz,
+      #       key: value
       #
       #   foo(
       #     :bar,
-      #     :baz
+      #     :baz,
+      #     key: value
       #   )
       #
       #   # bad
       #
       #   foo :bar,
-      #     :baz
+      #     :baz,
+      #     key: value
       #
       #   foo(
       #     :bar,
-      #       :baz
+      #       :baz,
+      #       key: value
       #   )
       #
       # @example EnforcedStyle: with_fixed_indentation
       #   # good
       #
       #   foo :bar,
-      #     :baz
+      #     :baz,
+      #     key: value
       #
       #   # bad
       #
       #   foo :bar,
-      #       :baz
+      #       :baz,
+      #       key: value
       class ArgumentAlignment < Base
         include Alignment
         extend AutoCorrector
@@ -47,13 +53,24 @@ module RuboCop
           'following the first line of a multi-line method call.'
 
         def on_send(node)
-          return if node.arguments.size < 2 || node.send_type? && node.method?(:[]=)
+          first_arg = node.first_argument
+          return if !multiple_arguments?(node, first_arg) || node.send_type? && node.method?(:[]=)
 
-          check_alignment(node.arguments, base_column(node, node.arguments))
+          if first_arg.hash_type?
+            check_alignment(first_arg.pairs, base_column(node, first_arg.pairs.first))
+          else
+            check_alignment(node.arguments, base_column(node, first_arg))
+          end
         end
         alias on_csend on_send
 
         private
+
+        def multiple_arguments?(node, first_argument)
+          return true if node.arguments.size >= 2
+
+          first_argument&.hash_type? && first_argument.pairs.count >= 2
+        end
 
         def autocorrect(corrector, node)
           AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
@@ -67,14 +84,14 @@ module RuboCop
           cop_config['EnforcedStyle'] == 'with_fixed_indentation'
         end
 
-        def base_column(node, args)
-          if fixed_indentation?
+        def base_column(node, first_argument)
+          if fixed_indentation? || first_argument.nil?
             lineno = target_method_lineno(node)
             line = node.source_range.source_buffer.source_line(lineno)
             indentation_of_line = /\S.*/.match(line).begin(0)
             indentation_of_line + configured_indentation_width
           else
-            display_column(args.first.source_range)
+            display_column(first_argument.source_range)
           end
         end
 
