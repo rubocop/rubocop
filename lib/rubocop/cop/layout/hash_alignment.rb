@@ -200,14 +200,12 @@ module RuboCop
         alias on_super on_send
         alias on_yield on_send
 
-        def on_hash(node) # rubocop:todo Metrics/CyclomaticComplexity
-          return if ignored_node?(node)
-          return if node.pairs.empty? || node.single_line?
+        def on_hash(node)
+          return if enforce_first_argument_with_fixed_indentation? || ignored_node?(node) ||
+                    node.pairs.empty? || node.single_line?
 
-          return unless alignment_for_hash_rockets
-                        .any? { |a| a.checkable_layout?(node) } &&
-                        alignment_for_colons
-                        .any? { |a| a.checkable_layout?(node) }
+          proc = ->(a) { a.checkable_layout?(node) }
+          return unless alignment_for_hash_rockets.any?(proc) && alignment_for_colons.any?(proc)
 
           check_pairs(node)
         end
@@ -352,6 +350,16 @@ module RuboCop
 
         def good_alignment?(column_deltas)
           column_deltas.values.all?(&:zero?)
+        end
+
+        def enforce_first_argument_with_fixed_indentation?
+          return false unless argument_alignment_config['Enabled']
+
+          argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def argument_alignment_config
+          config.for_cop('Layout/ArgumentAlignment')
         end
       end
     end
