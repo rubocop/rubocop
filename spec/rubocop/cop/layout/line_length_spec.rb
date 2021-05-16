@@ -727,6 +727,53 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
         end
       end
+
+      context 'with a heredoc argument' do
+        it 'does not break up the line' do
+          args = 'x' * 25
+          expect_offense(<<~RUBY, args: args)
+            foo(<<~STRING, #{args}xxx)
+                           _{args}^^^^ Line is too long. [44/40]
+            STRING
+          RUBY
+
+          expect_no_corrections
+        end
+
+        context 'and other arguments before the heredoc' do
+          it 'can break up the line before the heredoc argument' do
+            args = 'x' * 20
+            expect_offense(<<~RUBY, args: args)
+              foo(abc, <<~STRING, #{args}xxx)
+                                  _{args}^^^^ Line is too long. [44/40]
+              STRING
+            RUBY
+
+            expect_correction(<<~RUBY)
+              foo(abc,#{trailing_whitespace}
+              <<~STRING, #{args}xxx)
+              STRING
+            RUBY
+          end
+        end
+
+        context 'and the heredoc is after the line should split' do
+          it 'can break up the line before the heredoc argument' do
+            args = 'x' * 34
+            expect_offense(<<~RUBY, args: args)
+              foo(#{args}, <<~STRING)
+                  _{args}  ^^^^^^^^^^ Line is too long. [50/40]
+              STRING
+            RUBY
+
+            expect_correction(<<~RUBY)
+              foo(#{args},#{trailing_whitespace}
+              <<~STRING)
+              STRING
+            RUBY
+          end
+        end
+      end
     end
 
     context 'array' do

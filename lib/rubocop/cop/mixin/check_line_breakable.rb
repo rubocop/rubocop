@@ -76,9 +76,25 @@ module RuboCop
 
         i = 0
         i += 1 while within_column_limit?(elements[i], max, line)
+        i = shift_elements_for_heredoc_arg(node, elements, i)
+
+        return if i.nil?
         return elements.first if i.zero?
 
         elements[i - 1]
+      end
+
+      # @api private
+      # If a send node contains a heredoc argument, splitting cannot happen
+      # after the heredoc or else it will cause a syntax error.
+      def shift_elements_for_heredoc_arg(node, elements, index)
+        return index unless node.send_type?
+
+        heredoc_index = elements.index { |arg| (arg.str_type? || arg.dstr_type?) && arg.heredoc? }
+        return index unless heredoc_index
+        return nil if heredoc_index.zero?
+
+        heredoc_index >= index ? index : heredoc_index + 1
       end
 
       # @api private
