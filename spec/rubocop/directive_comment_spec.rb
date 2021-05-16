@@ -235,6 +235,51 @@ RSpec.describe RuboCop::DirectiveComment do
     end
   end
 
+  describe '#department_names' do
+    subject { directive_comment.department_names }
+
+    let(:department?) { false }
+    let(:global) { instance_double(RuboCop::Cop::Registry, department?: department?) }
+
+    before { allow(RuboCop::Cop::Registry).to receive(:global).and_return(global) }
+
+    context 'when only cop specified' do
+      let(:comment_cop_names) { 'Foo/Bar' }
+
+      it { is_expected.to eq [] }
+    end
+
+    context 'when all cops mentioned' do
+      let(:comment_cop_names) { 'all' }
+
+      it { is_expected.to eq [] }
+    end
+
+    context 'when only department specified' do
+      let(:comment_cop_names) { 'Foo' }
+      let(:department?) { true }
+
+      it { is_expected.to eq %w[Foo] }
+    end
+
+    context 'when couple departments specified' do
+      let(:comment_cop_names) { 'Foo, Baz' }
+      let(:department?) { true }
+
+      it { is_expected.to eq %w[Foo Baz] }
+    end
+
+    context 'when department and cops specified' do
+      let(:comment_cop_names) { 'Foo, Baz/Cop' }
+
+      before do
+        allow(global).to receive(:department?).with('Foo').and_return(true)
+      end
+
+      it { is_expected.to eq %w[Foo] }
+    end
+  end
+
   describe '#line_number' do
     let(:comment) { instance_double(Parser::Source::Comment, text: text, loc: loc) }
     let(:loc) { instance_double(Parser::Source::Map, expression: expression) }

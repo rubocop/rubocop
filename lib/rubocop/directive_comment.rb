@@ -85,6 +85,12 @@ module RuboCop
       @cop_names ||= all_cops? ? all_cop_names : parsed_cop_names
     end
 
+    # Returns array of specified in this directive department names
+    # when all department disabled
+    def department_names
+      splitted_cops_string.select { |cop| department?(cop) }
+    end
+
     # Returns line number for directive
     def line_number
       comment.loc.expression.line
@@ -92,8 +98,12 @@ module RuboCop
 
     private
 
+    def splitted_cops_string
+      (cops || '').split(/,\s*/)
+    end
+
     def parsed_cop_names
-      (cops || '').split(/,\s*/).map do |name|
+      splitted_cops_string.map do |name|
         department?(name) ? cop_names_for_department(name) : name
       end.flatten
     end
