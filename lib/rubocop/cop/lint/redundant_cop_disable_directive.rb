@@ -30,6 +30,7 @@ module RuboCop
         extend AutoCorrector
 
         COP_NAME = 'Lint/RedundantCopDisableDirective'
+        DEPARTMENT_MARKER = 'DEPARTMENT'
 
         attr_accessor :offenses_to_check
 
@@ -110,20 +111,19 @@ module RuboCop
         end
 
         def each_line_range(cop, line_ranges)
-          line_ranges.each_with_index do |line_range, ix|
+          line_ranges.each_with_index do |line_range, line_range_index|
             next if ignore_offense?(line_range)
 
             comment = processed_source.comment_at_line(line_range.begin)
+            redundant = if all_disabled?(comment)
+                          find_redundant_all(line_range, line_ranges[line_range_index + 1])
+                        elsif department_disabled?(cop, comment)
+                          find_redundant_department(cop, line_range)
+                        else
+                          find_redundant_cop(cop, line_range)
+                        end
 
-            next if department_disabled?(cop, comment)
-
-            redundant_cop = if all_disabled?(comment)
-                              find_redundant_all(line_range, line_ranges[ix + 1])
-                            else
-                              find_redundant(cop, line_range)
-                            end
-
-            yield comment, redundant_cop if redundant_cop
+            yield comment, redundant if redundant
           end
         end
 
@@ -145,7 +145,7 @@ module RuboCop
           end
         end
 
-        def find_redundant(cop, range)
+        def find_redundant_cop(cop, range)
           cop_offenses = offenses_to_check.select { |offense| offense.cop_name == cop }
           cop if range_with_offense?(range, cop_offenses)
         end
@@ -158,6 +158,12 @@ module RuboCop
           # get the full line range for the disable all.
           has_no_next_range = next_range.nil? || !followed_ranges?(range, next_range)
           'all' if has_no_next_range && range_with_offense?(range)
+        end
+
+        def find_redundant_department(cop, range)
+          department = cop.split('/').first
+          offenses = offenses_to_check.select { |offense| offense.cop_name.start_with?(department) }
+          add_department_marker(department) if range_with_offense?(range, offenses)
         end
 
         def followed_ranges?(range, next_range)
@@ -179,14 +185,13 @@ module RuboCop
         end
 
         def department_disabled?(cop, comment)
-          DirectiveComment
-            .new(comment)
-            .department_names
-            .any? { |department| cop.start_with?(department) }
+          DirectiveComment.new(comment).department_names.any? do |department|
+            cop.start_with?(department)
+          end
         end
 
         def directive_count(comment)
-          DirectiveComment.new(comment).cop_names.size
+          DirectiveComment.new(comment).directive_count
         end
 
         def add_offenses(redundant_cops)
@@ -224,6 +229,7 @@ module RuboCop
         end
 
         def cop_range(comment, cop)
+          cop = remove_department_marker(cop)
           matching_range(comment.loc.expression, cop) ||
             matching_range(comment.loc.expression, Badge.parse(cop).cop_name) ||
             raise("Couldn't find #{cop} in comment: #{comment.text}")
@@ -247,6 +253,7 @@ module RuboCop
 
         def describe(cop)
           return 'all cops' if cop == 'all'
+          return "`#{remove_department_marker(cop)}` department" if department_marker?(cop)
           return "`#{cop}`" if all_cop_names.include?(cop)
 
           similar = NameSimilarity.find_similar_name(cop, all_cop_names)
@@ -264,6 +271,18 @@ module RuboCop
         def ends_its_line?(range)
           line = range.source_buffer.source_line(range.last_line)
           (line =~ /\s*\z/) == range.last_column
+        end
+
+        def department_marker?(department)
+          department.start_with?(DEPARTMENT_MARKER)
+        end
+
+        def remove_department_marker(department)
+          department.gsub(DEPARTMENT_MARKER, '')
+        end
+
+        def add_department_marker(department)
+          DEPARTMENT_MARKER + department
         end
       end
     end

@@ -505,6 +505,48 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
     end
 
     context 'with a disabled department' do
+      let(:offenses) do
+        [
+          RuboCop::Cop::Offense.new(:convention,
+                                    OpenStruct.new(line: 2, column: 0),
+                                    'Class has too many lines.',
+                                    'Metrics/ClassLength')
+        ]
+      end
+
+      it 'removes entire comment' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Style
+          ^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Style` department.
+          def bar
+            do_something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def bar
+            do_something
+          end
+        RUBY
+      end
+
+      it 'removes redundant department' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Style, Metrics/ClassLength
+                            ^^^^^ Unnecessary disabling of `Style` department.
+          def bar
+            do_something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics/ClassLength
+          def bar
+            do_something
+          end
+        RUBY
+      end
+
       it 'does not remove correct department' do
         expect_no_offenses(<<~RUBY)
           # rubocop:disable Metrics
