@@ -91,6 +91,10 @@ module RuboCop
       splitted_cops_string.select { |cop| department?(cop) }
     end
 
+    def directive_count
+      splitted_cops_string.count
+    end
+
     # Returns line number for directive
     def line_number
       comment.loc.expression.line

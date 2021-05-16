@@ -334,4 +334,26 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to eq false }
     end
   end
+
+  describe '#directive_count' do
+    subject { directive_comment.directive_count }
+
+    context 'when few cops used' do
+      let(:text) { '# rubocop:enable Foo/Bar, Foo/Baz' }
+
+      it { is_expected.to eq 2 }
+    end
+
+    context 'when few department used' do
+      let(:text) { '# rubocop:enable Foo, Bar, Baz' }
+
+      it { is_expected.to eq 3 }
+    end
+
+    context 'when cops and departments used' do
+      let(:text) { '# rubocop:enable Foo/Bar, Foo/Baz, Bar, Baz' }
+
+      it { is_expected.to eq 4 }
+    end
+  end
 end
