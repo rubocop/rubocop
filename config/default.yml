@@ -1646,6 +1646,11 @@ Lint/EmptyFile:
   AllowComments: true
   VersionAdded: '0.90'
 
+Lint/EmptyInPattern:
+  Description: 'Checks for the presence of `in` pattern branches without a body.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
   Enabled: true
