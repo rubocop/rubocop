@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
-  let(:cop_config) { { 'EnforcedHashRocketStyle' => 'key', 'EnforcedColonStyle' => 'key' } }
+  let(:config) do
+    RuboCop::Config.new(
+      'Layout/HashAlignment' => default_cop_config.merge(cop_config),
+      'Layout/ArgumentAlignment' => argument_alignment_config
+    )
+  end
+
+  let(:default_cop_config) { { 'EnforcedHashRocketStyle' => 'key', 'EnforcedColonStyle' => 'key' } }
+  let(:argument_alignment_config) { { 'EnforcedStyle' => 'with_first_argument' } }
 
   shared_examples 'not on separate lines' do
     it 'accepts single line hash' do
@@ -108,6 +116,27 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_correction(<<~RUBY)
         yield({a: 0,
                b: 1})
+      RUBY
+    end
+  end
+
+  context 'when `EnforcedStyle: with_fixed_indentation` of `ArgumentAlignment`' do
+    let(:argument_alignment_config) { { 'EnforcedStyle' => 'with_fixed_indentation' } }
+
+    it 'register and corrects an offense' do
+      expect_offense(<<~RUBY)
+        THINGS = {
+          oh: :io,
+            hi: 'neat'
+            ^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
+            }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        THINGS = {
+          oh: :io,
+          hi: 'neat'
+            }
       RUBY
     end
   end

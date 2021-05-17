@@ -201,7 +201,7 @@ module RuboCop
         alias on_yield on_send
 
         def on_hash(node)
-          return if enforce_first_argument_with_fixed_indentation? || ignored_node?(node) ||
+          return if autocorrect_incompatible_with_other_cops?(node) || ignored_node?(node) ||
                     node.pairs.empty? || node.single_line?
 
           proc = ->(a) { a.checkable_layout?(node) }
@@ -213,6 +213,10 @@ module RuboCop
         attr_accessor :offences_by, :column_deltas
 
         private
+
+        def autocorrect_incompatible_with_other_cops?(node)
+          enforce_first_argument_with_fixed_indentation? && node.parent&.call_type?
+        end
 
         def reset!
           self.offences_by = {}
