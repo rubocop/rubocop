@@ -1,1 +1,0 @@
-* [#9749](https://github.com/rubocop/rubocop/issues/9749): Fix autocorrection for `Layout/LineLength` to not move the first argument of an unparenthesized `send` node to the next line, which changes behaviour. ([@dvandersluis][])
