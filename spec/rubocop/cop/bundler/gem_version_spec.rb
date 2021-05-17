@@ -15,6 +15,8 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
         ^^^^^^^^^^^^^ Gem version specification is required.
         gem 'rubocop', require: false
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is required.
+        gem 'rubocop', tag: '1.2.0'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is required.
       RUBY
     end
 
@@ -24,6 +26,9 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
         gem 'rubocop', '~> 1'
         gem 'rubocop', '~> 1.12', require: false
         gem 'rubocop', '>= 1.5.0', '< 1.10.0', git: 'https://github.com/rubocop/rubocop'
+        gem 'rubocop', github: 'rubocop/rubocop', tag: 'v1'
+        gem 'rubocop', git: 'https://github.com/rubocop/rubocop', ref: 'b3f37bc7f'
+        gem 'foobar', bitbucket: 'foo/bar', tag: 'v1'
       RUBY
     end
 
@@ -65,6 +70,14 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
     it 'does not flag gems included in AllowedGems metadata' do
       expect_no_offenses(<<~RUBY)
         gem 'rspec', '~> 3.10'
+      RUBY
+    end
+
+    it 'does not flag gems using git source with tag or ref' do
+      expect_no_offenses(<<~RUBY)
+        gem 'rubocop', github: 'rubocop/rubocop', tag: 'v1'
+        gem 'rubocop', git: 'https://github.com/rubocop/rubocop', ref: 'b3f37bc7f'
+        gem 'foobar', bitbucket: 'foo/bar', tag: 'v1'
       RUBY
     end
   end
