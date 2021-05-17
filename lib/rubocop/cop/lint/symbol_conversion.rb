@@ -66,6 +66,7 @@ module RuboCop
       class SymbolConversion < Base
         extend AutoCorrector
         include ConfigurableEnforcedStyle
+        include SymbolHelp
 
         MSG = 'Unnecessary symbol conversion; use `%<correction>s` instead.'
         MSG_CONSISTENCY = 'Symbol hash key should be quoted for consistency; ' \
@@ -136,10 +137,6 @@ module RuboCop
 
         def in_percent_literal_array?(node)
           node.parent&.array_type? && node.parent&.percent_literal?
-        end
-
-        def hash_key?(node)
-          node.parent&.pair_type? && node == node.parent.child_nodes.first
         end
 
         def correct_hash_key(node)

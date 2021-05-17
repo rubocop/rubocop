@@ -22,6 +22,7 @@ module RuboCop
       class StringLiteralsInInterpolation < Base
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
+        include StringHelp
         extend AutoCorrector
 
         def autocorrect(corrector, node)

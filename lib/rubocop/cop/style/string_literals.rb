@@ -29,6 +29,7 @@ module RuboCop
       class StringLiterals < Base
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
+        include StringHelp
         extend AutoCorrector
 
         MSG_INCONSISTENT = 'Inconsistent quote style.'

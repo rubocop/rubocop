@@ -4186,6 +4186,16 @@ Style/Proc:
   VersionAdded: '0.9'
   VersionChanged: '0.18'
 
+Style/QuotedSymbols:
+  Description: 'Use a consistent style for quoted symbols.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: same_as_string_literals
+  SupportedStyles:
+    - same_as_string_literals
+    - single_quotes
+    - double_quotes
+
 Style/RaiseArgs:
   Description: 'Checks the arguments passed to raise/fail.'
   StyleGuide: '#exception-class-messages'
