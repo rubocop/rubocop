@@ -4312,6 +4312,10 @@ Hash[*ary]
 | Boolean
 |===
 
+=== References
+
+* https://rubystyle.guide#avoid-hash-constructor
+
 == Style/HashEachMethods
 
 |===
@@ -7259,11 +7263,11 @@ end
 | Yes
 | Yes
 | 1.3
-| -
+| 1.15
 |===
 
-This cop checks for lambdas that always return nil, which can be replaced
-with an empty lambda instead.
+This cop checks for lambdas and procs that always return nil,
+which can be replaced with an empty lambda or proc instead.
 
 === Examples
 
@@ -7276,6 +7280,12 @@ lambda do
   next nil
 end
 
+proc { nil }
+
+Proc.new do
+  break nil
+end
+
 # good
 -> {}
 
@@ -7283,6 +7293,10 @@ lambda do
 end
 
 -> (x) { nil if x }
+
+proc {}
+
+Proc.new { nil if x }
 ----
 
 == Style/NonNilCheck
@@ -11057,6 +11071,68 @@ foo = (bar = baz) ? a : b
 | Boolean
 |===
 
+== Style/TopLevelMethodDefinition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| No
+| 1.15
+| -
+|===
+
+Newcomers to ruby applications may write top-level methods,
+when ideally they should be organized in appropriate classes or modules.
+This cop looks for definitions of top-level methods and warns about them.
+
+However for ruby scripts it is perfectly fine to use top-level methods.
+Hence this cop is disabled by default.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def some_method
+end
+
+# bad
+def self.some_method
+end
+
+# bad
+define_method(:foo) { puts 1 }
+
+# good
+module Foo
+  def some_method
+  end
+end
+
+# good
+class Foo
+  def self.some_method
+  end
+end
+
+# good
+Struct.new do
+  def some_method
+  end
+end
+
+# good
+class Foo
+  define_method(:foo) { puts 1 }
+end
+----
+
+=== References
+
+* https://rubystyle.guide#top-level-methods
+
 == Style/TrailingBodyOnClass
 
 |===
@@ -11678,7 +11754,7 @@ a, b, _something = foo()
 | Yes
 | Yes
 | 0.9
-| 0.77
+| 1.15
 |===
 
 This cop looks for trivial reader/writer methods, that could
@@ -11710,6 +11786,107 @@ class << self
 end
 ----
 
+==== ExactNameMatch: true (default)
+
+[source,ruby]
+----
+# good
+def name
+  @other_name
+end
+----
+
+==== ExactNameMatch: false
+
+[source,ruby]
+----
+# bad
+def name
+  @other_name
+end
+----
+
+==== AllowPredicates: true (default)
+
+[source,ruby]
+----
+# good
+def foo?
+  @foo
+end
+----
+
+==== AllowPredicates: false
+
+[source,ruby]
+----
+# bad
+def foo?
+  @foo
+end
+
+# good
+attr_reader :foo
+----
+
+==== AllowDSLWriters: true (default)
+
+[source,ruby]
+----
+# good
+def on_exception(action)
+  @on_exception=action
+end
+----
+
+==== AllowDSLWriters: false
+
+[source,ruby]
+----
+# bad
+def on_exception(action)
+  @on_exception=action
+end
+
+# good
+attr_writer :on_exception
+----
+
+==== IgnoreClassMethods: false (default)
+
+[source,ruby]
+----
+# bad
+def self.foo
+  @foo
+end
+
+# good
+class << self
+  attr_reader :foo
+end
+----
+
+==== IgnoreClassMethods: true
+
+[source,ruby]
+----
+# good
+def self.foo
+  @foo
+end
+----
+
+==== AllowedMethods: ['allowed_method']
+
+[source,ruby]
+----
+# good
+def allowed_method
+  @foo
+end
+----
+
 === Configurable attributes
 
 |===
@@ -11724,7 +11901,7 @@ end
 | Boolean
 
 | AllowDSLWriters
-| `false`
+| `true`
 | Boolean
 
 | IgnoreClassMethods

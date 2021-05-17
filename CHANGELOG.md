@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.15.0 (2021-05-17)
+
 ### New features
 
 * [#9734](https://github.com/rubocop/rubocop/pull/9734): Add `Style/TopLevelMethodDefinition` cop. ([@tejasbubane][])

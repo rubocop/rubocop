@@ -1612,7 +1612,7 @@ Lint/EmptyBlock:
   Description: 'This cop checks for blocks without a body.'
   Enabled: pending
   VersionAdded: '1.1'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.15'
   AllowComments: true
   AllowEmptyLambdas: true
 
@@ -3999,7 +3999,7 @@ Style/NilLambda:
   Description: 'Prefer `-> {}` to `-> { nil }`.'
   Enabled: pending
   VersionAdded: '1.3'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.15'
 
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
@@ -4657,7 +4657,7 @@ Style/TopLevelMethodDefinition:
   Description: 'This cop looks for top-level method definitions.'
   StyleGuide: '#top-level-methods'
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.15'
 
 Style/TrailingBodyOnClass:
   Description: 'Class body goes below class statement.'
@@ -4745,7 +4745,7 @@ Style/TrivialAccessors:
   StyleGuide: '#attr_family'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.15'
   # When set to `false` the cop will suggest the use of accessor methods
   # in situations like:
   #

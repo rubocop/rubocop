@@ -544,6 +544,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylesymbolliteral[Style/SymbolLiteral]
 * xref:cops_style.adoc#stylesymbolproc[Style/SymbolProc]
 * xref:cops_style.adoc#styleternaryparentheses[Style/TernaryParentheses]
+* xref:cops_style.adoc#styletoplevelmethoddefinition[Style/TopLevelMethodDefinition]
 * xref:cops_style.adoc#styletrailingbodyonclass[Style/TrailingBodyOnClass]
 * xref:cops_style.adoc#styletrailingbodyonmethoddefinition[Style/TrailingBodyOnMethodDefinition]
 * xref:cops_style.adoc#styletrailingbodyonmodule[Style/TrailingBodyOnModule]
