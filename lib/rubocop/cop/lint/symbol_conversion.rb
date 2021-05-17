@@ -164,20 +164,13 @@ module RuboCop
             next if requires_quotes?(key)
             next if properly_quoted?(key.source, %("#{key.value}"))
 
-            correction = "#{quote_type}#{key.value}#{quote_type}"
+            correction = %("#{key.value}")
             register_offense(
               key,
               correction: correction,
               message: format(MSG_CONSISTENCY, correction: "#{correction}:")
             )
           end
-        end
-
-        def quote_type
-          # Use the `Style/StringLiterals` configuration for quoting symbols
-          return '"' unless config.for_cop('Style/StringLiterals')['Enabled']
-
-          config.for_cop('Style/StringLiterals')['EnforcedStyle'] == 'single_quotes' ? "'" : '"'
         end
       end
     end
