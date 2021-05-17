@@ -54,6 +54,7 @@ module RuboCop
           directive = DirectiveComment.new(comment)
 
           cop_names.each do |name|
+            name = name.split('/').first if department?(directive, name)
             add_offense(
               range_of_offense(comment, name),
               message: format(MSG, cop: all_or_name(name))
@@ -118,6 +119,10 @@ module RuboCop
 
         def all_or_name(name)
           name == 'all' ? 'all cops' : name
+        end
+
+        def department?(directive, name)
+          directive.in_directive_department?(name) && !directive.overridden_by_department?(name)
         end
       end
     end
