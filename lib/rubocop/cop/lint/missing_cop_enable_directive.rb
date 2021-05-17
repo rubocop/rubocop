@@ -45,37 +45,52 @@ module RuboCop
       class MissingCopEnableDirective < Base
         include RangeHelp
 
-        MSG = 'Re-enable %<cop>s cop with `# rubocop:enable` after disabling it.'
-        MSG_BOUND = 'Re-enable %<cop>s cop within %<max_range>s lines after disabling it.'
+        MSG = 'Re-enable %<cop>s %<type>s with `# rubocop:enable` after disabling it.'
+        MSG_BOUND = 'Re-enable %<cop>s %<type>s within %<max_range>s lines after disabling it.'
 
-        # rubocop:disable Metrics/AbcSize
         def on_new_investigation
-          max_range = cop_config['MaximumRangeSize']
-          processed_source.disabled_line_ranges.each do |cop, line_ranges|
-            line_ranges.each do |line_range|
-              # This has to remain a strict inequality to handle
-              # the case when max_range is Float::INFINITY
-              next if line_range.max - line_range.min < max_range + 2
+          each_missing_enable do |cop, line_range|
+            # This has to remain a strict inequality to handle
+            # the case when max_range is Float::INFINITY
+            next if line_range.max - line_range.min < max_range + 2
 
-              range = source_range(processed_source.buffer, line_range.min, (0..0))
+            range = source_range(processed_source.buffer, line_range.min, (0..0))
+            comment = processed_source.comment_at_line(line_range.begin)
 
-              add_offense(range, message: message(max_range: max_range, cop: cop))
-            end
+            add_offense(range, message: message(cop, comment))
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
-        def message(max_range:, cop:)
-          if max_range == Float::INFINITY
-            format(MSG, cop: cop)
-          else
-            format(MSG_BOUND, cop: cop, max_range: max_range)
+        def each_missing_enable
+          processed_source.disabled_line_ranges.each do |cop, line_ranges|
+            line_ranges.each { |line_range| yield cop, line_range }
           end
+        end
+
+        def max_range
+          @max_range ||= cop_config['MaximumRangeSize']
+        end
+
+        def message(cop, comment, type = 'cop')
+          if department_enabled?(cop, comment)
+            type = 'department'
+            cop = cop.split('/').first
+          end
+
+          if max_range == Float::INFINITY
+            format(MSG, cop: cop, type: type)
+          else
+            format(MSG_BOUND, cop: cop, type: type, max_range: max_range)
+          end
+        end
+
+        def department_enabled?(cop, comment)
+          DirectiveComment.new(comment).in_directive_department?(cop)
         end
       end
     end
   end
 end
-# rubocop:enable Lint/RedundantCopDisableDirective, Layout/SpaceAroundOperators
+# rubocop:enable Lint/RedundantCopDisableDirective
