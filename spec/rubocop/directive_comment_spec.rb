@@ -356,4 +356,36 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to eq 4 }
     end
   end
+
+  describe '#in_directive_department?' do
+    subject { directive_comment.in_directive_department?(cop) }
+
+    let(:global) { instance_double(RuboCop::Cop::Registry, department?: department?) }
+
+    before { allow(RuboCop::Cop::Registry).to receive(:global).and_return(global) }
+
+    context 'when cop department disabled' do
+      let(:cop) { 'Foo/Bar' }
+      let(:text) { '# rubocop:enable Foo' }
+      let(:department?) { true }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when another department disabled' do
+      let(:cop) { 'Foo/Bar' }
+      let(:text) { '# rubocop:enable Bar' }
+      let(:department?) { true }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when cop disabled' do
+      let(:cop) { 'Foo/Bar' }
+      let(:text) { '# rubocop:enable Foo/Bar' }
+      let(:department?) { false }
+
+      it { is_expected.to be false }
+    end
+  end
 end

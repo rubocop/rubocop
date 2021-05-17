@@ -91,6 +91,11 @@ module RuboCop
       splitted_cops_string.select { |cop| department?(cop) }
     end
 
+    # Checks if directive departments include cop
+    def in_directive_department?(cop)
+      department_names.any? { |department| cop.start_with?(department) }
+    end
+
     def directive_count
       splitted_cops_string.count
     end

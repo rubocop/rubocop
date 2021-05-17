@@ -185,9 +185,7 @@ module RuboCop
         end
 
         def department_disabled?(cop, comment)
-          DirectiveComment.new(comment).department_names.any? do |department|
-            cop.start_with?(department)
-          end
+          DirectiveComment.new(comment).in_directive_department?(cop)
         end
 
         def directive_count(comment)
