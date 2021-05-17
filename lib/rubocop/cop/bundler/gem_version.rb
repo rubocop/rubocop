@@ -45,6 +45,21 @@ module RuboCop
           (send nil? :gem <(str #version_specification?) ...>)
         PATTERN
 
+        # @!method with_git_ref?(node)
+        def_node_matcher :with_git_ref?, <<~PATTERN
+          (send nil? :gem <(hash <#git? #tag_ref? ...>) ...>)
+        PATTERN
+
+        # @!method tag_ref?(node)
+        def_node_matcher :tag_ref?, <<~PATTERN
+          (pair (sym {:tag :ref}) (str _))
+        PATTERN
+
+        # @!method git?(node)
+        def_node_matcher :git?, <<~PATTERN
+          (pair (sym {:git :github :bitbucket}) (str _))
+        PATTERN
+
         def on_send(node)
           return unless gem_declaration?(node)
           return if allowed_gem?(node)
@@ -78,8 +93,15 @@ module RuboCop
         end
 
         def offense?(node)
-          (required_style? && !includes_version_specification?(node)) ||
-            (forbidden_style? && includes_version_specification?(node))
+          required_offense?(node) || forbidden_offense?(node)
+        end
+
+        def required_offense?(node)
+          required_style? && !includes_version_specification?(node) && !with_git_ref?(node)
+        end
+
+        def forbidden_offense?(node)
+          forbidden_style? && includes_version_specification?(node)
         end
 
         def forbidden_style?
