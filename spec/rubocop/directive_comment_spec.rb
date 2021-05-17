@@ -388,4 +388,43 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to be false }
     end
   end
+
+  describe '#overridden_by_department?' do
+    subject { directive_comment.overridden_by_department?(cop) }
+
+    let(:global) { instance_double(RuboCop::Cop::Registry, department?: false) }
+
+    before do
+      allow(RuboCop::Cop::Registry).to receive(:global).and_return(global)
+      allow(global).to receive(:department?).with('Foo').and_return(true)
+    end
+
+    context "when cop is overridden by it's department" do
+      let(:cop) { 'Foo/Bar' }
+      let(:text) { '# rubocop:enable Foo, Foo/Bar' }
+
+      it { is_expected.to be true }
+    end
+
+    context "when cop is not overridden by it's department" do
+      let(:cop) { 'Foo/Bar' }
+      let(:text) { '# rubocop:enable Bar, Foo/Bar' }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when there are no departments' do
+      let(:cop) { 'Foo/Bar' }
+      let(:text) { '# rubocop:enable Foo/Bar' }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when there are no cops' do
+      let(:cop) { 'Foo/Bar' }
+      let(:text) { '# rubocop:enable Foo' }
+
+      it { is_expected.to be false }
+    end
+  end
 end

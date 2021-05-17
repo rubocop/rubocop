@@ -96,6 +96,11 @@ module RuboCop
       department_names.any? { |department| cop.start_with?(department) }
     end
 
+    # Checks if cop department has already used in directive comment
+    def overridden_by_department?(cop)
+      in_directive_department?(cop) && splitted_cops_string.include?(cop)
+    end
+
     def directive_count
       splitted_cops_string.count
     end
