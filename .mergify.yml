@@ -12,7 +12,8 @@ pull_request_rules:
       - "status-success=windows 2.6"
       - "status-success=windows 2.7"
       - "status-success=windows 3.0"
-      - "status-success=windows mingw"
+      # FIXME: Please uncomment when https://github.com/ruby/psych/issues/494 is resolved.
+      # - "status-success=windows mingw"
       - "status-success=ci/circleci: cc-setup"
       - "status-success=ci/circleci: cc-upload-coverage"
       - "status-success=ci/circleci: documentation-checks"
