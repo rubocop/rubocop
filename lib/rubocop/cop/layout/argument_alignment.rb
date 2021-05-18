@@ -56,8 +56,9 @@ module RuboCop
           first_arg = node.first_argument
           return if !multiple_arguments?(node, first_arg) || node.send_type? && node.method?(:[]=)
 
-          if first_arg.hash_type?
-            check_alignment(first_arg.pairs, base_column(node, first_arg.pairs.first))
+          if first_arg.hash_type? && !first_arg.braces?
+            pairs = first_arg.pairs
+            check_alignment(pairs, base_column(node, pairs.first))
           else
             check_alignment(node.arguments, base_column(node, first_arg))
           end
