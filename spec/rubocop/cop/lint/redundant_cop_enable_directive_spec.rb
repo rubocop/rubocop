@@ -325,5 +325,22 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
         # rubocop:enable Layout
       RUBY
     end
+
+    it 'registers offense and corrects redundant enabling of department of same cop' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength
+        fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+        # rubocop:enable Layout
+                         ^^^^^^ Unnecessary enabling of Layout.
+        some_code
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength
+        fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
+
+        some_code
+      RUBY
+    end
   end
 end
