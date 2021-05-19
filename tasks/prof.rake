@@ -10,6 +10,7 @@ namespace :prof do
     system cmd
   end
 
+  desc 'Run RuboCop on itself only if dump does not exist'
   task :run_if_needed, [:path] do
     Rake::Task[:run].run unless File.exist?(dump_path)
   end

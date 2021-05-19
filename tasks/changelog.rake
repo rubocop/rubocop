@@ -24,6 +24,7 @@ namespace :changelog do
     system cmd
   end
 
+  desc 'Check for no pending changelog entries'
   task :check_clean do
     next unless Changelog.pending?
 
