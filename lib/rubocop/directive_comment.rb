@@ -25,10 +25,11 @@ module RuboCop
       line.split(DIRECTIVE_COMMENT_REGEXP).first
     end
 
-    attr_reader :comment, :mode, :cops
+    attr_reader :comment, :cop_registry, :mode, :cops
 
-    def initialize(comment)
+    def initialize(comment, cop_registry = Cop::Registry.global)
       @comment = comment
+      @cop_registry = cop_registry
       @mode, @cops = match_captures
     end
 
@@ -123,15 +124,15 @@ module RuboCop
     end
 
     def department?(name)
-      Cop::Registry.global.department?(name)
+      cop_registry.department?(name)
     end
 
     def all_cop_names
-      exclude_redundant_directive_cop(Cop::Registry.global.names)
+      exclude_redundant_directive_cop(cop_registry.names)
     end
 
     def cop_names_for_department(department)
-      names = Cop::Registry.global.names_for_department(department)
+      names = cop_registry.names_for_department(department)
       has_redundant_directive_cop = department == REDUNDANT_DIRECTIVE_COP_DEPARTMENT
       has_redundant_directive_cop ? exclude_redundant_directive_cop(names) : names
     end
