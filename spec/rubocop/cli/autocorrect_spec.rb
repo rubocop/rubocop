@@ -2051,4 +2051,33 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'consistently quotes symbol keys in a hash using `Lint/SymbolConversion` ' \
+      'with `EnforcedStyle: consistent` and `Style/QuotedSymbols`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      {
+        a: 1,
+        b: 2,
+        'c-d': 3
+      }
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Lint/SymbolConversion:
+        EnforcedStyle: consistent
+      Style/QuotedSymbols:
+        EnforcedStyle: double_quotes
+    YAML
+
+    status = cli.run(['--auto-correct', '--only', 'Lint/SymbolConversion,Style/QuotedSymbols'])
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      {
+        "a": 1,
+        "b": 2,
+        "c-d": 3
+      }
+    RUBY
+  end
 end

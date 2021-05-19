@@ -170,18 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
   end
 
   context 'EnforcedStyle: consistent' do
-    let(:string_literals_enabled) { true }
-    let(:string_literals_style) { 'single_quotes' }
-
     let(:cop_config) { { 'EnforcedStyle' => 'consistent' } }
-    let(:other_cops) do
-      {
-        'Style/StringLiterals' => {
-          'Enabled' => string_literals_enabled,
-          'EnforcedStyle' => string_literals_style
-        }
-      }
-    end
 
     context 'hash where no keys need to be quoted' do
       it 'does not register an offense' do
@@ -218,9 +207,9 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
         expect_offense(<<~RUBY)
           {
             a: 1,
-            ^ Symbol hash key should be quoted for consistency; use `'a':` instead.
+            ^ Symbol hash key should be quoted for consistency; use `"a":` instead.
             b: 2,
-            ^ Symbol hash key should be quoted for consistency; use `'b':` instead.
+            ^ Symbol hash key should be quoted for consistency; use `"b":` instead.
             'c': 3,
             'd-e': 4
           }
@@ -228,8 +217,8 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
 
         expect_correction(<<~RUBY)
           {
-            'a': 1,
-            'b': 2,
+            "a": 1,
+            "b": 2,
             'c': 3,
             'd-e': 4
           }
@@ -243,14 +232,14 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
           {
             'a=': 1,
             b: 2
-            ^ Symbol hash key should be quoted for consistency; use `'b':` instead.
+            ^ Symbol hash key should be quoted for consistency; use `"b":` instead.
           }
         RUBY
 
         expect_correction(<<~RUBY)
           {
             'a=': 1,
-            'b': 2
+            "b": 2
           }
         RUBY
       end
@@ -277,44 +266,6 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
             'b-c': 2
           }
         RUBY
-      end
-    end
-
-    context 'quote style' do
-      let(:source) do
-        <<~RUBY
-          { a: 1, 'b-c': 2 }
-        RUBY
-      end
-
-      context 'when Style/StringLiterals is not enabled' do
-        let(:string_literals_enabled) { false }
-
-        it 'uses double quotes to correct' do
-          expect_correction(<<~RUBY, source: source)
-            { "a": 1, 'b-c': 2 }
-          RUBY
-        end
-      end
-
-      context 'when Style/StringLiterals uses single_quotes style' do
-        let(:string_literals_style) { 'single_quotes' }
-
-        it 'uses double quotes to correct' do
-          expect_correction(<<~RUBY, source: source)
-            { 'a': 1, 'b-c': 2 }
-          RUBY
-        end
-      end
-
-      context 'when Style/StringLiterals uses double_quotes style' do
-        let(:string_literals_style) { 'double_quotes' }
-
-        it 'uses double quotes to correct' do
-          expect_correction(<<~RUBY, source: source)
-            { "a": 1, 'b-c': 2 }
-          RUBY
-        end
       end
     end
   end
