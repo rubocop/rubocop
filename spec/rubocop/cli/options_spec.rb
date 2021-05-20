@@ -1024,7 +1024,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     shared_examples('prints config') do
       it 'prints the current configuration' do
         out = stdout.lines.to_a
-        printed_config = if Psych::VERSION >= '4.0.0' # RUBY_VERSION >= '3.1.0'
+        printed_config = if defined?(YAML.unsafe_load) # RUBY_VERSION >= '3.1.0'
                            YAML.unsafe_load(out.join)
                          else
                            YAML.load(out.join) # rubocop:disable Security/YAMLLoad
