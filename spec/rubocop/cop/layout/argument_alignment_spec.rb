@@ -594,5 +594,16 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
         end
       end
     end
+
+    it 'does not register an offense when using aligned braced hash as a argument' do
+      expect_no_offenses(<<~RUBY)
+        do_something(
+          {
+            foo: 'bar',
+            baz: 'qux'
+          }
+        )
+      RUBY
+    end
   end
 end
