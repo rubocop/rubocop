@@ -68,39 +68,60 @@ module RuboCop
       #     do_z
       #   end
       class IdenticalConditionalBranches < Base
+        include RangeHelp
+        extend AutoCorrector
+
         MSG = 'Move `%<source>s` out of the conditional.'
 
         def on_if(node)
           return if node.elsif?
 
           branches = expand_elses(node.else_branch).unshift(node.if_branch)
-          check_branches(branches)
+          check_branches(node, branches)
         end
 
         def on_case(node)
           return unless node.else? && node.else_branch
 
           branches = node.when_branches.map(&:body).push(node.else_branch)
-          check_branches(branches)
+          check_branches(node, branches)
         end
 
         private
 
-        def check_branches(branches) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def check_branches(node, branches)
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else` or a branch that contains only comments.
           return if branches.any?(&:nil?)
 
           tails = branches.map { |branch| tail(branch) }
-          check_expressions(tails) if tails.none?(&:nil?)
+          check_expressions(node, tails, :after_condition) if duplicated_expressions?(tails)
+
           heads = branches.map { |branch| head(branch) }
-          check_expressions(heads) if tails.none?(&:nil?)
+          check_expressions(node, heads, :before_condition) if duplicated_expressions?(heads)
         end
 
-        def check_expressions(expressions)
-          return unless expressions.size > 1 && expressions.uniq.one?
+        def duplicated_expressions?(expressions)
+          expressions.size > 1 && expressions.uniq.one?
+        end
 
-          expressions.each { |expression| add_offense(expression) }
+        def check_expressions(node, expressions, insert_position)
+          inserted_expression = false
+
+          expressions.each do |expression|
+            add_offense(expression) do |corrector|
+              range = range_by_whole_lines(expression.source_range, include_final_newline: true)
+              corrector.remove(range)
+              next if inserted_expression
+
+              if insert_position == :after_condition
+                corrector.insert_after(node, "\n#{expression.source}")
+              else
+                corrector.insert_before(node, "#{expression.source}\n")
+              end
+              inserted_expression = true
+            end
+          end
         end
 
         def message(node)

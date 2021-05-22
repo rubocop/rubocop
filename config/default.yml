@@ -3555,6 +3555,7 @@ Style/IdenticalConditionalBranches:
                  out of the conditional.
   Enabled: true
   VersionAdded: '0.36'
+  VersionChanged: <<next>>
 
 Style/IfInsideElse:
   Description: 'Finds if nodes inside else, which can be converted to elsif.'
