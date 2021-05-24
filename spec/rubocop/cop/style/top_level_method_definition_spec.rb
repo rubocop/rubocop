@@ -40,6 +40,16 @@ RSpec.describe RuboCop::Cop::Style::TopLevelMethodDefinition, :config do
     end
   end
 
+  it 'registers an offense when defining a top-level method after a class definition' do
+    expect_offense(<<~RUBY)
+      class Foo
+      end
+
+      def foo; end
+      ^^^^^^^^^^^^ Do not define methods at the top-level.
+    RUBY
+  end
+
   it 'does not register an offense when using module' do
     expect_no_offenses(<<~RUBY)
       module Foo
