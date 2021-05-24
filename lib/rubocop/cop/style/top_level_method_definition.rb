@@ -50,7 +50,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[define_method].freeze
 
         def on_def(node)
-          return unless node.root?
+          return unless top_level_method_definition?(node)
 
           add_offense(node)
         end
@@ -58,12 +58,20 @@ module RuboCop
         alias on_send on_def
 
         def on_block(node)
-          return unless define_method_block?(node) && node.root?
+          return unless define_method_block?(node) && top_level_method_definition?(node)
 
           add_offense(node)
         end
 
         private
+
+        def top_level_method_definition?(node)
+          if node.parent&.begin_type?
+            node.parent.root?
+          else
+            node.root?
+          end
+        end
 
         # @!method define_method_block?(node)
         def_node_matcher :define_method_block?, <<~PATTERN
