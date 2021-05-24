@@ -3,10 +3,10 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks how the ``when``s of a `case` expression
+      # This cop checks how the `when` and `in`s of a `case` expression
       # are indented in relation to its `case` or `end` keyword.
       #
-      # It will register a separate offense for each misaligned `when`.
+      # It will register a separate offense for each misaligned `when` and `in`.
       #
       # @example
       #   # If Layout/EndAlignment is set to keyword style (default)
@@ -22,9 +22,23 @@ module RuboCop
       #       y / 3
       #   end
       #
+      #   case n
+      #     in pattern
+      #       x * 2
+      #     else
+      #       y / 3
+      #   end
+      #
       #   # good for all styles
       #   case n
       #   when 0
+      #     x * 2
+      #   else
+      #     y / 3
+      #   end
+      #
+      #   case n
+      #   in pattern
       #     x * 2
       #   else
       #     y / 3
@@ -43,9 +57,23 @@ module RuboCop
       #     y / 3
       #   end
       #
+      #   a = case n
+      #   in pattern
+      #     x * 2
+      #   else
+      #     y / 3
+      #   end
+      #
       #   # good
       #   a = case n
       #       when 0
+      #         x * 2
+      #       else
+      #         y / 3
+      #   end
+      #
+      #   a = case n
+      #       in pattern
       #         x * 2
       #       else
       #         y / 3
@@ -60,9 +88,23 @@ module RuboCop
       #         y / 3
       #   end
       #
+      #   a = case n
+      #       in pattern
+      #         x * 2
+      #       else
+      #         y / 3
+      #   end
+      #
       #   # good
       #   a = case n
       #   when 0
+      #     x * 2
+      #   else
+      #     y / 3
+      #   end
+      #
+      #   a = case n
+      #   in pattern
       #     x * 2
       #   else
       #     y / 3
@@ -73,24 +115,30 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Indent `when` %<depth>s `%<base>s`.'
+        MSG = 'Indent `%<branch_type>s` %<depth>s `%<base>s`.'
 
         def on_case(case_node)
           return if case_node.single_line?
 
-          case_node.each_when { |when_node| check_when(when_node) }
+          case_node.each_when { |when_node| check_when(when_node, 'when') }
+        end
+
+        def on_case_match(case_match_node)
+          return if case_match_node.single_line?
+
+          case_match_node.each_in_pattern { |in_pattern_node| check_when(in_pattern_node, 'in') }
         end
 
         private
 
-        def check_when(when_node)
+        def check_when(when_node, branch_type)
           when_column = when_node.loc.keyword.column
           base_column = base_column(when_node.parent, style)
 
           if when_column == base_column + indentation_width
             correct_style_detected
           else
-            incorrect_style(when_node)
+            incorrect_style(when_node, branch_type)
           end
         end
 
@@ -102,9 +150,9 @@ module RuboCop
           indent_one_step? ? configured_indentation_width : 0
         end
 
-        def incorrect_style(when_node)
+        def incorrect_style(when_node, branch_type)
           depth = indent_one_step? ? 'one step more than' : 'as deep as'
-          message = format(MSG, depth: depth, base: style)
+          message = format(MSG, branch_type: branch_type, depth: depth, base: style)
 
           add_offense(when_node.loc.keyword, message: message) do |corrector|
             detect_incorrect_style(when_node)
@@ -141,7 +189,7 @@ module RuboCop
         end
 
         def replacement(node)
-          case_node = node.each_ancestor(:case).first
+          case_node = node.each_ancestor(:case, :case_match).first
           base_type = cop_config[style_parameter_name] == 'end' ? :end : :case
 
           column = base_column(case_node, base_type)
