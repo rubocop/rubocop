@@ -42,6 +42,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           end
 
+          context 'when using a directive comment after a non-directive comment' do
+            it 'returns an offense' do
+              expect_offense(<<~RUBY)
+                # not very long comment # rubocop:disable Layout/LineLength
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Layout/LineLength`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                # not very long comment
+              RUBY
+            end
+          end
+
           context 'itself and another cop' do
             context 'disabled on the same range' do
               it 'returns no offense' do

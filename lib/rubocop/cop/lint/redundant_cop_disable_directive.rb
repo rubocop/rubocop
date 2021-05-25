@@ -60,16 +60,19 @@ module RuboCop
           processed_source.buffer.source_line(range.line - 1).blank?
         end
 
-        def comment_range_with_surrounding_space(range)
-          if previous_line_blank?(range) &&
-             processed_source.comment_config.comment_only_line?(range.line)
+        def comment_range_with_surrounding_space(directive_comment_range, line_comment_range)
+          if previous_line_blank?(directive_comment_range) &&
+             processed_source.comment_config.comment_only_line?(directive_comment_range.line) &&
+             directive_comment_range.begin_pos == line_comment_range.begin_pos
             # When the previous line is blank, it should be retained
-            range_with_surrounding_space(range: range, side: :right)
+            range_with_surrounding_space(range: directive_comment_range, side: :right)
           else
             # Eat the entire comment, the preceding space, and the preceding
             # newline if there is one.
-            original_begin = range.begin_pos
-            range = range_with_surrounding_space(range: range, side: :left, newlines: true)
+            original_begin = directive_comment_range.begin_pos
+            range = range_with_surrounding_space(
+              range: directive_comment_range, side: :left, newlines: true
+            )
 
             range_with_surrounding_space(range: range,
                                          side: :right,
@@ -179,14 +182,14 @@ module RuboCop
         end
 
         def add_offense_for_entire_comment(comment, cops)
-          location = comment.loc.expression
+          location = DirectiveComment.new(comment).range
           cop_list = cops.sort.map { |c| describe(c) }
 
           add_offense(
             location,
             message: "Unnecessary disabling of #{cop_list.join(', ')}."
           ) do |corrector|
-            range = comment_range_with_surrounding_space(location)
+            range = comment_range_with_surrounding_space(location, comment.loc.expression)
             corrector.remove(range)
           end
         end

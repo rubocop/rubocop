@@ -41,7 +41,11 @@ module RuboCop
     end
 
     def range
-      comment.location.expression
+      match = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
+      begin_pos = comment.loc.expression.begin_pos
+      Parser::Source::Range.new(
+        comment.loc.expression.source_buffer, begin_pos + match.begin(0), begin_pos + match.end(0)
+      )
     end
 
     # Returns match captures to directive comment pattern
