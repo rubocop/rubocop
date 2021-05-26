@@ -20,12 +20,16 @@ module RuboCop
       class WhenThen < Base
         extend AutoCorrector
 
-        MSG = 'Do not use `when x;`. Use `when x then` instead.'
+        MSG = 'Do not use `when %<expression>s;`. Use `when %<expression>s then` instead.'
 
         def on_when(node)
           return if node.multiline? || node.then? || !node.body
 
-          add_offense(node.loc.begin) { |corrector| corrector.replace(node.loc.begin, ' then') }
+          message = format(MSG, expression: node.conditions.map(&:source).join(', '))
+
+          add_offense(node.loc.begin, message: message) do |corrector|
+            corrector.replace(node.loc.begin, ' then')
+          end
         end
       end
     end
