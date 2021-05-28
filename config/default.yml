@@ -4899,7 +4899,7 @@ Style/VariableInterpolation:
 
 Style/WhenThen:
   Description: 'Use when x then ... for one-line cases.'
-  StyleGuide: '#one-line-cases'
+  StyleGuide: '#no-when-semicolons'
   Enabled: true
   VersionAdded: '0.9'
 
