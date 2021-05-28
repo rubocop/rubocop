@@ -3608,6 +3608,12 @@ Style/ImplicitRuntimeError:
   Enabled: false
   VersionAdded: '0.41'
 
+Style/InPatternThen:
+  Description: 'Checks for `in;` uses in `case` expressions.'
+  StyleGuide: '#no-in-pattern-semicolons'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/InfiniteLoop:
   Description: >-
                  Use Kernel#loop for infinite loops.
