@@ -53,6 +53,10 @@ module RuboCop
           check(node, %i[keyword else].freeze)
         end
 
+        def on_case_match(node)
+          check(node, %i[keyword else].freeze)
+        end
+
         def on_ensure(node)
           check(node, [:keyword].freeze)
         end
@@ -63,6 +67,10 @@ module RuboCop
 
         def on_if(node)
           check(node, %i[keyword else begin end].freeze, 'then')
+        end
+
+        def on_in_pattern(node)
+          check(node, [:keyword].freeze)
         end
 
         def on_kwbegin(node)
