@@ -51,6 +51,9 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'break', 'break""', 'break ""'
   it_behaves_like 'accept after', '(', 'break(1)'
   it_behaves_like 'missing after', 'case', 'case"" when 1; end', 'case "" when 1; end'
+  context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'missing after', 'case', 'case""; in 1; end', 'case ""; in 1; end'
+  end
 
   it_behaves_like 'missing before', 'do', 'a "b"do end', 'a "b" do end'
   it_behaves_like 'missing after', 'do', 'a do|x| end', 'a do |x| end'
@@ -77,6 +80,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
                   'case a; when b; "" else end'
   it_behaves_like 'missing after', 'else', 'case a; when b; else"" end',
                   'case a; when b; else "" end'
+  context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'missing before', 'else', 'case a; in b; ""else end',
+                    'case a; in b; "" else end'
+    it_behaves_like 'missing after', 'else', 'case a; in b; else"" end', 'case a; in b; else "" end'
+  end
 
   it_behaves_like 'missing before', 'elsif', 'if a; ""elsif b; end', 'if a; "" elsif b; end'
   it_behaves_like 'missing after', 'elsif', 'if a; elsif""; end', 'if a; elsif ""; end'
@@ -110,6 +118,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'until', '1 until""', '1 until ""'
   it_behaves_like 'missing before', 'when', 'case ""when a; end', 'case "" when a; end'
   it_behaves_like 'missing after', 'when', 'case a when""; end', 'case a when ""; end'
+  context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    # TODO: `case ""in a; end` is syntax error in Ruby 3.0.1.
+    #       This syntax is confirmed: https://bugs.ruby-lang.org/issues/17925
+    #       The answer will determine whether to enable or discard the test in the future.
+    # it_behaves_like 'missing before', 'in', 'case ""in a; end', 'case "" in a; end'
+    it_behaves_like 'missing after', 'in', 'case a; in""; end', 'case a; in ""; end'
+  end
+
   it_behaves_like 'missing before', 'while', '1while ""', '1 while ""'
   it_behaves_like 'missing after', 'while', '1 while""', '1 while ""'
   it_behaves_like 'missing after', 'yield', 'yield""', 'yield ""'
