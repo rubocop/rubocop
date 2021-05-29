@@ -540,7 +540,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         Hash(foo: 'bar',
                **extra_params
-               ^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
+               ^^^^^^^^^^^^^^ Align keyword splats with the rest of the hash if it spans more than one line.
         )
       RUBY
 
@@ -555,7 +555,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_offense(<<~RUBY)
         {foo: 'bar',
                **extra_params
-               ^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
+               ^^^^^^^^^^^^^^ Align keyword splats with the rest of the hash if it spans more than one line.
         }
       RUBY
 
@@ -1126,5 +1126,145 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
 
   it 'register no offense for yield without args' do
     expect_no_offenses('yield')
+  end
+
+  context 'with `EnforcedColonStyle`: `table`' do
+    let(:cop_config) do
+      {
+        'EnforcedColonStyle' => 'table'
+      }
+    end
+
+    context 'and misaligned keys' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo ab: 1,
+              c: 2
+              ^^^^ Align the keys and values of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo ab: 1,
+              c:  2
+        RUBY
+      end
+    end
+
+    context 'when the only item is a kwsplat' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          foo({**rest})
+        RUBY
+      end
+    end
+
+    context 'and a double splat argument after a hash key' do
+      it 'registers an offense on the misaligned key and corrects' do
+        expect_offense(<<~RUBY)
+          foo ab: 1,
+              c: 2, **rest
+              ^^^^ Align the keys and values of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo ab: 1,
+              c:  2, **rest
+        RUBY
+      end
+    end
+
+    context 'and aligned keys but a double splat argument after' do
+      it 'does not register an offense on the `kwsplat`' do
+        expect_no_offenses(<<~RUBY)
+          foo a: 1,
+              b: 2, **rest
+        RUBY
+      end
+    end
+
+    context 'and a misaligned double splat argument' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo a: 1,
+                **rest
+                ^^^^^^ Align keyword splats with the rest of the hash if it spans more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo a: 1,
+              **rest
+        RUBY
+      end
+    end
+  end
+
+  context 'with `EnforcedHashRocketStyle`: `table`' do
+    let(:cop_config) do
+      {
+        'EnforcedHashRocketStyle' => 'table'
+      }
+    end
+
+    context 'and misaligned keys' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo :ab => 1,
+              :c => 2
+              ^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo :ab => 1,
+              :c  => 2
+        RUBY
+      end
+    end
+
+    context 'when the only item is a kwsplat' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          foo({**rest})
+        RUBY
+      end
+    end
+
+    context 'and a double splat argument after a hash key' do
+      it 'registers an offense on the misaligned key and corrects' do
+        expect_offense(<<~RUBY)
+          foo :ab => 1,
+              :c => 2, **rest
+              ^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo :ab => 1,
+              :c  => 2, **rest
+        RUBY
+      end
+    end
+
+    context 'and aligned keys but a double splat argument after' do
+      it 'does not register an offense on the `kwsplat`' do
+        expect_no_offenses(<<~RUBY)
+          foo :a => 1,
+              :b => 2, **rest
+        RUBY
+      end
+    end
+
+    context 'and a misaligned double splat argument' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo :a => 1,
+                **rest
+                ^^^^^^ Align keyword splats with the rest of the hash if it spans more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo :a => 1,
+              **rest
+        RUBY
+      end
+    end
   end
 end

@@ -185,7 +185,9 @@ module RuboCop
                      SeparatorAlignment => 'Align the separators of a hash ' \
                        'literal if they span more than one line.',
                      TableAlignment => 'Align the keys and values of a hash ' \
-                       'literal if they span more than one line.' }.freeze
+                       'literal if they span more than one line.',
+                     KeywordSplatAlignment => 'Align keyword splats with the ' \
+                       'rest of the hash if it spans more than one line.' }.freeze
 
         def on_send(node)
           return if double_splat?(node)
@@ -247,7 +249,14 @@ module RuboCop
         end
 
         def add_offences
+          kwsplat_offences = offences_by.delete(KeywordSplatAlignment)
+          register_offences_with_format(kwsplat_offences, KeywordSplatAlignment)
+
           format, offences = offences_by.min_by { |_, v| v.length }
+          register_offences_with_format(offences, format)
+        end
+
+        def register_offences_with_format(offences, format)
           (offences || []).each do |offence|
             add_offense(offence, message: MESSAGES[format]) do |corrector|
               delta = column_deltas[alignment_for(offence).first.class][offence]
@@ -275,7 +284,9 @@ module RuboCop
         end
 
         def alignment_for(pair)
-          if pair.hash_rocket?
+          if pair.kwsplat_type?
+            [KeywordSplatAlignment.new]
+          elsif pair.hash_rocket?
             alignment_for_hash_rockets
           else
             alignment_for_colons
