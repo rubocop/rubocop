@@ -772,7 +772,7 @@ Layout/HashAlignment:
   Enabled: true
   AllowMultipleStyles: true
   VersionAdded: '0.49'
-  VersionChanged: '0.77'
+  VersionChanged: '<<next>>'
   # Alignment of entries using hash rocket as separator. Valid values are:
   #
   # key - left alignment of keys

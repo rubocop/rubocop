@@ -43,7 +43,7 @@ module RuboCop
         end
 
         def value_delta(pair)
-          return 0 if pair.kwsplat_type? || pair.value_on_new_line?
+          return 0 if pair.value_on_new_line?
 
           correct_value_column = pair.loc.operator.end.column + 1
           actual_value_column = pair.value.loc.column
@@ -108,8 +108,6 @@ module RuboCop
         end
 
         def value_delta(first_pair, current_pair)
-          return 0 if current_pair.kwsplat_type?
-
           correct_value_column = first_pair.key.loc.column +
                                  current_pair.delimiter(true).length +
                                  max_key_width
@@ -137,6 +135,19 @@ module RuboCop
 
         def value_delta(first_pair, current_pair)
           first_pair.value_delta(current_pair)
+        end
+      end
+
+      # Handles calculation of deltas for `kwsplat` nodes.
+      # This is a special case that just ensures the kwsplat is aligned with the rest of the hash
+      # since a `kwsplat` does not have a key, separator or value.
+      class KeywordSplatAlignment
+        def deltas(first_pair, current_pair)
+          if Util.begins_its_line?(current_pair.source_range)
+            { key: first_pair.key_delta(current_pair) }
+          else
+            {}
+          end
         end
       end
     end
