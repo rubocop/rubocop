@@ -120,6 +120,12 @@ module RuboCop
           check_operator(:special_asgn, node.loc.operator, right.source_range)
         end
 
+        def on_match_pattern(node)
+          return if target_ruby_version < 3.0
+
+          check_operator(:match_pattern, node.loc.operator, node.source_range)
+        end
+
         alias on_or       on_binary
         alias on_and      on_binary
         alias on_lvasgn   on_assignment
