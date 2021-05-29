@@ -133,6 +133,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
     #       The answer will determine whether to enable or discard the test in the future.
     # it_behaves_like 'missing before', 'in', 'case ""in a; end', 'case "" in a; end'
     it_behaves_like 'missing after', 'in', 'case a; in""; end', 'case a; in ""; end'
+
+    it_behaves_like 'missing before', 'in', '""in a', '"" in a'
+    it_behaves_like 'missing after', 'in', 'a in""', 'a in ""'
+  end
+
+  context '>= Ruby 3.0', :ruby30 do
+    it_behaves_like 'accept before', '=>', '""=> a'
+    it_behaves_like 'accept after', '=>', 'a =>""'
   end
 
   it_behaves_like 'missing before', 'while', '1while ""', '1 while ""'

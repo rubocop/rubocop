@@ -81,6 +81,18 @@ module RuboCop
           check(node, %i[begin end].freeze, nil)
         end
 
+        # Handle one-line pattern matching syntax (`in`) with `Parser::Ruby27`.
+        def on_match_pattern(node)
+          return if target_ruby_version >= 3.0
+
+          check(node, [:operator].freeze)
+        end
+
+        # Handle one-line pattern matching syntax (`in`) with `Parser::Ruby30`.
+        def on_match_pattern_p(node)
+          check(node, [:operator].freeze)
+        end
+
         def on_next(node)
           check(node, [:keyword].freeze)
         end

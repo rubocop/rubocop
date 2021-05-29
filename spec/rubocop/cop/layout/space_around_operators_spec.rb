@@ -4,6 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   let(:config) do
     RuboCop::Config
       .new(
+        'AllCops' => { 'TargetRubyVersion' => target_ruby_version },
         'Layout/HashAlignment' => { 'EnforcedHashRocketStyle' => hash_style },
         'Layout/SpaceAroundOperators' => {
           'AllowForAlignment' => allow_for_alignment,
@@ -11,6 +12,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         }
       )
   end
+  let(:target_ruby_version) { 2.5 }
   let(:hash_style) { 'key' }
   let(:allow_for_alignment) { true }
   let(:exponent_operator_style) { nil }
@@ -202,6 +204,32 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
 
   it 'accepts exponent operator without spaces' do
     expect_no_offenses('x = a * b**2')
+  end
+
+  context '>= Ruby 2.7', :ruby27 do
+    let(:target_ruby_version) { 2.7 }
+
+    # NOTE: It is `Layout/SpaceAroundKeyword` cop's role to detect this offense.
+    it 'does not register an offenses for one-line pattern matching syntax (`in`)' do
+      expect_no_offenses(<<~RUBY)
+        ""in foo
+      RUBY
+    end
+  end
+
+  context '>= Ruby 3.0', :ruby30 do
+    let(:target_ruby_version) { 3.0 }
+
+    it 'registers an offenses for one-line pattern matching syntax (`=>`)' do
+      expect_offense(<<~RUBY)
+        ""=>foo
+          ^^ Surrounding space missing for operator `=>`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "" => foo
+      RUBY
+    end
   end
 
   context 'when EnforcedStyleForExponentOperator is space' do
