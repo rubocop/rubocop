@@ -97,6 +97,23 @@ Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
 
+Naming/InclusiveLanguage:
+  Exclude:
+    - lib/rubocop/cop/naming/inclusive_language.rb
+    - spec/rubocop/cop/naming/inclusive_language_spec.rb
+  FlaggedTerms:
+    whitelist:
+      Suggestions:
+        - allowlist
+    blacklist:
+      Suggestions:
+        - denylist
+    master:
+      AllowedRegex:
+        - 'blob/master/'
+        - 'master \(unreleased\)'
+        - !ruby/regexp "/ENV\\['RUBOCOP_VERSION'\\] == 'master'/"
+
 RSpec/FilePath:
   Exclude:
     - spec/rubocop/cop/internal_affairs/redundant_let_rubocop_config_new_spec.rb
