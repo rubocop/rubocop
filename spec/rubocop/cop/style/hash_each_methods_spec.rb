@@ -87,5 +87,29 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         expect_no_offenses('each_value { |v| p v }')
       end
     end
+
+    context "when `AllowedReceivers: ['execute']`" do
+      let(:cop_config) { { 'AllowedReceivers' => ['execute'] } }
+
+      it 'does not register an offense when receiver is `execute` method' do
+        expect_no_offenses(<<~RUBY)
+          execute(sql).values.each { |v| p v }
+        RUBY
+      end
+
+      it 'does not register an offense when receiver is `execute` variable' do
+        expect_no_offenses(<<~RUBY)
+          execute = do_something(argument)
+          execute.values.each { |v| p v }
+        RUBY
+      end
+
+      it 'registers an offense when receiver is not allowed name' do
+        expect_offense(<<~RUBY)
+          do_something(arg).values.each { |v| p v }
+                            ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+        RUBY
+      end
+    end
   end
 end
