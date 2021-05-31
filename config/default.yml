@@ -3497,8 +3497,10 @@ Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
   Enabled: true
-  VersionAdded: '0.80'
   Safe: false
+  VersionAdded: '0.80'
+  VersionChanged: <<next>>
+  AllowedReceivers: []
 
 Style/HashExcept:
   Description: >-
