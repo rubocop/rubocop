@@ -84,6 +84,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
     it_behaves_like 'missing before', 'else', 'case a; in b; ""else end',
                     'case a; in b; "" else end'
     it_behaves_like 'missing after', 'else', 'case a; in b; else"" end', 'case a; in b; else "" end'
+
+    it_behaves_like 'missing before', 'if', 'case a; in "pattern"if "condition"; else "" end',
+                    'case a; in "pattern" if "condition"; else "" end'
+    it_behaves_like 'missing after', 'if', 'case a; in "pattern" if"condition"; else "" end',
+                    'case a; in "pattern" if "condition"; else "" end'
+    it_behaves_like 'missing before', 'unless', 'case a; in "pattern"unless "condition"; else "" end',
+                    'case a; in "pattern" unless "condition"; else "" end'
+    it_behaves_like 'missing after', 'unless', 'case a; in "pattern" unless"condition"; else "" end',
+                    'case a; in "pattern" unless "condition"; else "" end'
   end
 
   it_behaves_like 'missing before', 'elsif', 'if a; ""elsif b; end', 'if a; "" elsif b; end'
