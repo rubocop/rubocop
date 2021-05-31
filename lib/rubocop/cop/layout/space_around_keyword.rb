@@ -69,6 +69,10 @@ module RuboCop
           check(node, %i[keyword else begin end].freeze, 'then')
         end
 
+        def on_if_guard(node)
+          check(node, [:keyword].freeze)
+        end
+
         def on_in_pattern(node)
           check(node, [:keyword].freeze)
         end
@@ -114,6 +118,10 @@ module RuboCop
         end
 
         def on_zsuper(node)
+          check(node, [:keyword].freeze)
+        end
+
+        def on_unless_guard(node)
           check(node, [:keyword].freeze)
         end
 
