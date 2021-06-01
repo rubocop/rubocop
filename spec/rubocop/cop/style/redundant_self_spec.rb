@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   it 'reports an offense a self receiver on an rvalue' do
     expect_offense(<<~RUBY)
       a = self.b
-          ^^^^^^ Redundant `self` detected.
+          ^^^^ Redundant `self` detected.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -222,7 +222,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   it 'reports an offense a self receiver of .call' do
     expect_offense(<<~RUBY)
       self.call
-      ^^^^^^^^^ Redundant `self` detected.
+      ^^^^ Redundant `self` detected.
     RUBY
 
     expect_correction(<<~RUBY)

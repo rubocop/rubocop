@@ -106,7 +106,7 @@ module RuboCop
 
           return if allowed_send_node?(node)
 
-          add_offense(node) do |corrector|
+          add_offense(node.receiver) do |corrector|
             corrector.remove(node.receiver)
             corrector.remove(node.loc.dot)
           end
