@@ -1763,6 +1763,68 @@ This cop enforces that Ruby source files are not empty.
 | Boolean
 |===
 
+== Lint/EmptyInPattern
+
+NOTE: Required Ruby version: 2.7
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 1.16
+| -
+|===
+
+This cop checks for the presence of `in` pattern branches without a body.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+case condition
+in [a]
+  do_something
+in [a, b]
+end
+
+# good
+case condition
+in [a]
+  do_something
+in [a, b]
+  nil
+end
+----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+case condition
+in [a]
+  do_something
+in [a, b]
+  # noop
+end
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+case condition
+in [a]
+  do_something
+in [a, b]
+  # noop
+end
+----
+
 == Lint/EmptyInterpolation
 
 |===
@@ -4826,7 +4888,7 @@ do_something rescue nil
 | Yes
 | Yes
 | 1.9
-| -
+| 1.16
 |===
 
 This cop checks for uses of literal strings converted to

@@ -381,7 +381,7 @@ Layout/CaseIndentation:
   StyleGuide: '#indent-when-to-case'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.16'
   EnforcedStyle: case
   SupportedStyles:
     - case
@@ -772,7 +772,7 @@ Layout/HashAlignment:
   Enabled: true
   AllowMultipleStyles: true
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.16'
   # Alignment of entries using hash rocket as separator. Valid values are:
   #
   # key - left alignment of keys
@@ -1649,7 +1649,7 @@ Lint/EmptyFile:
 Lint/EmptyInPattern:
   Description: 'Checks for the presence of `in` pattern branches without a body.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.16'
 
 Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
@@ -2098,7 +2098,7 @@ Lint/SymbolConversion:
   Description: 'Checks for unnecessary symbol conversions.'
   Enabled: pending
   VersionAdded: '1.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.16'
   EnforcedStyle: strict
   SupportedStyles:
     - strict
@@ -3499,7 +3499,7 @@ Style/HashEachMethods:
   Enabled: true
   Safe: false
   VersionAdded: '0.80'
-  VersionChanged: <<next>>
+  VersionChanged: '1.16'
   AllowedReceivers: []
 
 Style/HashExcept:
@@ -3563,7 +3563,7 @@ Style/IdenticalConditionalBranches:
                  out of the conditional.
   Enabled: true
   VersionAdded: '0.36'
-  VersionChanged: <<next>>
+  VersionChanged: '1.16'
 
 Style/IfInsideElse:
   Description: 'Finds if nodes inside else, which can be converted to elsif.'
@@ -3614,7 +3614,7 @@ Style/InPatternThen:
   Description: 'Checks for `in;` uses in `case` expressions.'
   StyleGuide: '#no-in-pattern-semicolons'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.16'
 
 Style/InfiniteLoop:
   Description: >-
@@ -3848,7 +3848,7 @@ Style/MultilineInPatternThen:
   Description: 'Do not use `then` for multi-line `in` statement.'
   StyleGuide: '#no-then'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.16'
 
 Style/MultilineMemoization:
   Description: 'Wrap multiline memoizations in a `begin` and `end` block.'
@@ -4211,7 +4211,7 @@ Style/Proc:
 Style/QuotedSymbols:
   Description: 'Use a consistent style for quoted symbols.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.16'
   EnforcedStyle: same_as_string_literals
   SupportedStyles:
     - same_as_string_literals

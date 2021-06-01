@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.16.0 (2021-06-01)
+
 ### New features
 
 * [#9841](https://github.com/rubocop/rubocop/pull/9841): Support guard `if` and `unless` syntax keywords of Ruby 2.7's pattern matching for `Layout/SpaceAroundKeyword`. ([@koic][])
