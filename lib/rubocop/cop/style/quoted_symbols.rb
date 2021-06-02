@@ -58,7 +58,7 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
-          str = if hash_key?(node)
+          str = if hash_colon_key?(node)
                   # strip quotes
                   correct_quotes(node.source[1..-2])
                 else
@@ -67,6 +67,11 @@ module RuboCop
                 end
 
           corrector.replace(node, str)
+        end
+
+        def hash_colon_key?(node)
+          # Is the node a hash key with the colon style?
+          hash_key?(node) && node.parent.colon?
         end
 
         def correct_quotes(str)
