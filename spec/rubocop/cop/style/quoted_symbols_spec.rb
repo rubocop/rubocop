@@ -112,6 +112,25 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
         { 'a': value }
       RUBY
     end
+
+    context 'hash with hashrocket style' do
+      it 'accepts properly quoted symbols' do
+        expect_no_offenses(<<~RUBY)
+          { :'a' => value }
+        RUBY
+      end
+
+      it 'corrects wrong quotes' do
+        expect_offense(<<~RUBY)
+          { :"a" => value }
+            ^^^^ Prefer single-quoted symbols when you don't need string interpolation or special symbols.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          { :'a' => value }
+        RUBY
+      end
+    end
   end
 
   shared_examples_for 'enforce double quotes' do
@@ -192,6 +211,25 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
       expect_correction(<<~RUBY)
         :"a"
       RUBY
+    end
+
+    context 'hash with hashrocket style' do
+      it 'accepts properly quoted symbols' do
+        expect_no_offenses(<<~RUBY)
+          { :"a" => value }
+        RUBY
+      end
+
+      it 'corrects wrong quotes' do
+        expect_offense(<<~RUBY)
+          { :'a' => value }
+            ^^^^ Prefer double-quoted symbols unless you need single quotes to avoid extra backslashes for escaping.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          { :"a" => value }
+        RUBY
+      end
     end
   end
 
