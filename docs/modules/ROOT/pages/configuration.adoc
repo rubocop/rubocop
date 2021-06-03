@@ -138,9 +138,16 @@ inherit_from:
   - ../.rubocop.yml
 ----
 
-You can inherit from a repo with a
-link:https://docs.github.com/en/developers/apps/about-apps#personal-access-token[GitHub personal access token]
-that is authorized to access the repo.
+You can inherit from a repo with basic auth that is authorized to access the repo as follow:
+
+[source,yaml]
+----
+inherit_from:
+  - http://<user_name>:<password>@raw.github.com/example/rubocop.yml
+----
+
+A link:https://docs.github.com/en/developers/apps/about-apps#personal-access-token[GitHub personal access token]
+can also be configured as follow:
 
 [source,yaml]
 ----

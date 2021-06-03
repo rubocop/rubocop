@@ -55,7 +55,7 @@ module RuboCop
     def generate_request(uri)
       request = Net::HTTP::Get.new(uri.request_uri)
 
-      request['Authorization'] = "token #{uri.user}" if uri.user
+      request.basic_auth(uri.user, uri.password) if uri.user
       request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822 if cache_path_exists?
 
       yield request
@@ -103,6 +103,7 @@ module RuboCop
     def cloned_url
       uri = @uri.clone
       uri.user = nil if uri.user
+      uri.password = nil if uri.password
       uri
     end
   end
