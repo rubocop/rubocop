@@ -139,6 +139,38 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
             }
       RUBY
     end
+
+    it 'registers and corrects an offense when using misaligned keyword arguments' do
+      expect_offense(<<~RUBY)
+        config.fog_credentials_as_kwargs(
+          provider:              'AWS',
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
+          aws_access_key_id:     ENV['S3_ACCESS_KEY'],
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
+          aws_secret_access_key: ENV['S3_SECRET'],
+          region:                ENV['S3_REGION'],
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align the keys of a hash literal if they span more than one line.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        config.fog_credentials_as_kwargs(
+          provider: 'AWS',
+          aws_access_key_id: ENV['S3_ACCESS_KEY'],
+          aws_secret_access_key: ENV['S3_SECRET'],
+          region: ENV['S3_REGION'],
+        )
+      RUBY
+    end
+
+    it 'does not register an offense using aligned hash literal' do
+      expect_no_offenses(<<~RUBY)
+        {
+          oh: :io,
+          hi: 'neat'
+        }
+      RUBY
+    end
   end
 
   context 'always ignore last argument hash' do
