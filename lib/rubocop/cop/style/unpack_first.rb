@@ -21,7 +21,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of '\
-          '`%<receiver>s.unpack(%<format>s)%<method>s`.'
+              '`%<receiver>s.unpack(%<format>s)%<method>s`.'
         RESTRICT_ON_SEND = %i[first [] slice at].freeze
 
         # @!method unpack_and_first_element?(node)

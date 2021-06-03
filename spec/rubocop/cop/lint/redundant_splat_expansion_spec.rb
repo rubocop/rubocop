@@ -254,7 +254,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
 
   context 'splat expansion inside of an array' do
     it 'registers an offense and corrects the expansion of an array literal' \
-      'inside of an array literal' do
+       'inside of an array literal' do
       expect_offense(<<~RUBY)
         [1, 2, *[3, 4, 5], 6, 7]
                ^^^^^^^^^^ Pass array contents as separate arguments.

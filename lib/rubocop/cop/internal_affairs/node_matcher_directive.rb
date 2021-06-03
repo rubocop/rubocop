@@ -25,7 +25,7 @@ module RuboCop
 
         MSG = 'Preceed `%<method>s` with a `@!method` YARD directive.'
         MSG_WRONG_NAME = '`@!method` YARD directive has invalid method name, ' \
-          'use `%<expected>s` instead of `%<actual>s`.'
+                         'use `%<expected>s` instead of `%<actual>s`.'
         MSG_TOO_MANY = 'Multiple `@!method` YARD directives found for this matcher.'
 
         RESTRICT_ON_SEND = %i[def_node_matcher def_node_search].to_set.freeze

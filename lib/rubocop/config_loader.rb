@@ -229,7 +229,7 @@ module RuboCop
                       line1 = key1.start_line + 1
                       line2 = key2.start_line + 1
                       "#{smart_path}:#{line1}: " \
-                      "`#{value}` is concealed by line #{line2}"
+                        "`#{value}` is concealed by line #{line2}"
                     else
                       "#{smart_path}: `#{value}` is concealed by duplicate"
                     end

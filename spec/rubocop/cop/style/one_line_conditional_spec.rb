@@ -12,11 +12,11 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
   end
   let(:if_offense_message) do
     'Favor the ternary operator (`?:`) or multi-line constructs over single-line ' \
-    '`if/then/else/end` constructs.'
+      '`if/then/else/end` constructs.'
   end
   let(:unless_offense_message) do
     'Favor the ternary operator (`?:`) or multi-line constructs over single-line ' \
-    '`unless/then/else/end` constructs.'
+      '`unless/then/else/end` constructs.'
   end
 
   context 'when AlwaysCorrectToMultiline is false' do

@@ -48,7 +48,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
-             'in method args, relative to %<base_description>s.'
+              'in method args, relative to %<base_description>s.'
 
         def on_def(node)
           return if node.arguments.empty?

@@ -397,7 +397,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
 
     it 'registers an offense and corrects an array missing whitespace ' \
-      'when there is more than one array on a line' do
+       'when there is more than one array on a line' do
       expect_offense(<<~RUBY)
         [ 'qux', 'baz'] - [ 'baz' ]
                       ^ #{use_space_message}

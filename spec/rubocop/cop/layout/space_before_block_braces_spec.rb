@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
     end
 
     it 'registers an offense and corrects multiline block where the left ' \
-      'brace has no outer space' do
+       'brace has no outer space' do
       expect_offense(<<~RUBY)
         foo.map{ |a|
                ^ Space missing to the left of {.

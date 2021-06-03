@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       let(:error_message) do
         'An error occurred while Style/NumericLiterals cop was inspecting ' \
-        '/tmp/example.rb:1:0.'
+          '/tmp/example.rb:1:0.'
       end
 
       it 'records Team#errors' do
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       let(:error_message) do
         'An error occurred while Bundler/OrderedGems cop was inspecting ' \
-        '/tmp/Gemfile.'
+          '/tmp/Gemfile.'
       end
 
       it 'records Team#errors' do

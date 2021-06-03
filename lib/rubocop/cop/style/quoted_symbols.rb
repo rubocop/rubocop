@@ -36,9 +36,9 @@ module RuboCop
         extend AutoCorrector
 
         MSG_SINGLE = "Prefer single-quoted symbols when you don't need string interpolation " \
-          'or special symbols.'
+                     'or special symbols.'
         MSG_DOUBLE = 'Prefer double-quoted symbols unless you need single quotes to ' \
-          'avoid extra backslashes for escaping.'
+                     'avoid extra backslashes for escaping.'
 
         def on_sym(node)
           return unless quoted?(node)

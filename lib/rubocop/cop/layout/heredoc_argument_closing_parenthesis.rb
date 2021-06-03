@@ -55,7 +55,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Put the closing parenthesis for a method call with a ' \
-        'HEREDOC parameter on the same line as the HEREDOC opening.'
+              'HEREDOC parameter on the same line as the HEREDOC opening.'
 
         def self.autocorrect_incompatible_with
           [Style::TrailingCommaInArguments]

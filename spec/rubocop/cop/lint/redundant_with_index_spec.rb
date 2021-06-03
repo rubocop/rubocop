@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
   end
 
   it 'registers an offense when using `ary.each.with_index(1) { |v| v }` ' \
-    'and correct to `ary.each { |v| v }`' do
+     'and correct to `ary.each { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each.with_index(1) { |v| v }
                ^^^^^^^^^^^^^ Remove redundant `with_index`.
@@ -36,8 +36,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
   end
 
   it 'registers an offense when using ' \
-    '`ary.each_with_object([]).with_index { |v| v }` ' \
-    'and corrects to `ary.each_with_object([]) { |v| v }`' do
+     '`ary.each_with_object([]).with_index { |v| v }` ' \
+     'and corrects to `ary.each_with_object([]) { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each_with_object([]).with_index { |v| v }
                                ^^^^^^^^^^ Remove redundant `with_index`.

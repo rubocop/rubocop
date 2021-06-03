@@ -761,8 +761,8 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
   end
 
   context 'when a variable is reassigned with binary operator ' \
-           'assignment while assigning to itself in rhs ' \
-           'then referenced' do
+          'assignment while assigning to itself in rhs ' \
+          'then referenced' do
     it 'registers an offense for the assignment in rhs' do
       expect_offense(<<~RUBY)
         def some_method

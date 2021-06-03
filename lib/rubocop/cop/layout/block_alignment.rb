@@ -210,7 +210,7 @@ module RuboCop
 
         def format_source_line_column(source_line_column)
           "`#{source_line_column[:source]}` at #{source_line_column[:line]}, " \
-          "#{source_line_column[:column]}"
+            "#{source_line_column[:column]}"
         end
 
         def compute_start_col(ancestor_node, node)

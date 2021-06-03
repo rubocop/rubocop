@@ -37,7 +37,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Incorrect indentation detected (column %<column>d ' \
-          'instead of %<correct_comment_indentation>d).'
+              'instead of %<correct_comment_indentation>d).'
 
         def on_new_investigation
           processed_source.comments.each { |comment| check(comment) }

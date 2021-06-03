@@ -181,13 +181,13 @@ module RuboCop
         extend AutoCorrector
 
         MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
-                      'they span more than one line.',
+                                     'they span more than one line.',
                      SeparatorAlignment => 'Align the separators of a hash ' \
-                       'literal if they span more than one line.',
+                                           'literal if they span more than one line.',
                      TableAlignment => 'Align the keys and values of a hash ' \
-                       'literal if they span more than one line.',
+                                       'literal if they span more than one line.',
                      KeywordSplatAlignment => 'Align keyword splats with the ' \
-                       'rest of the hash if it spans more than one line.' }.freeze
+                                              'rest of the hash if it spans more than one line.' }.freeze
 
         def on_send(node)
           return if double_splat?(node)

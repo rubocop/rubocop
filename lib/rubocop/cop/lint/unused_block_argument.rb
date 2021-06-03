@@ -143,7 +143,7 @@ module RuboCop
 
         def message_for_underscore_prefix(variable)
           "If it's necessary, use `_` or `_#{variable.name}` " \
-          "as an argument name to indicate that it won't be used."
+            "as an argument name to indicate that it won't be used."
         end
 
         def define_method_call?(variable)

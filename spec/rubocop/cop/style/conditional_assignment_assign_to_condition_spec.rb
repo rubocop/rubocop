@@ -1717,8 +1717,8 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
       end
 
       it 'registers an offense in if elsif else with some branches only ' \
-          'containing variable assignment and others containing more than ' \
-          'variable assignment' do
+         'containing variable assignment and others containing more than ' \
+         'variable assignment' do
         expect_offense(<<~RUBY)
           if foo
           ^^^^^^ Use the return of the conditional for variable assignment and comparison.

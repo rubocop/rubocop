@@ -640,7 +640,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       end
 
       it 'registers an offense and corrects bad indentation ' \
-        'in def but not for outdented public, protected, and private' do
+         'in def but not for outdented public, protected, and private' do
         expect_offense(<<~RUBY)
           class Test
           public

@@ -39,7 +39,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Gem `%<gem_name>s` requirements already given on line '\
-          '%<line_of_first_occurrence>d of the Gemfile.'
+              '%<line_of_first_occurrence>d of the Gemfile.'
 
         def on_new_investigation
           return if processed_source.blank?

@@ -972,7 +972,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
 
     it 'registers an offense and corrects misaligned hash values, ' \
-      'prefer table when least offenses' do
+       'prefer table when least offenses' do
       expect_offense(<<~RUBY)
         hash = {
           'abcdefg' => 0,

@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
   end
 
   it 'registers an offense and corrects when using ' \
-    'ary.each_with_object do-end block without parentheses' do
+     'ary.each_with_object do-end block without parentheses' do
     expect_offense(<<~RUBY)
       ary.each_with_object [] do |v|
           ^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.

@@ -64,10 +64,10 @@ module RuboCop
         extend AutoCorrector
 
         NEW_LINE_OFFENSE = 'Right hand side of multi-line assignment is on ' \
-          'the same line as the assignment operator `=`.'
+                           'the same line as the assignment operator `=`.'
 
         SAME_LINE_OFFENSE = 'Right hand side of multi-line assignment is not ' \
-          'on the same line as the assignment operator `=`.'
+                            'on the same line as the assignment operator `=`.'
 
         def check_assignment(node, rhs)
           return if node.send_type? && node.loc.operator&.source != '='

@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot, :config do
   end
 
   it 'registers an offense and corrects space after ! with ' \
-    'the negated receiver wrapped in parentheses' do
+     'the negated receiver wrapped in parentheses' do
     expect_offense(<<~RUBY)
       ! (model)
       ^^^^^^^^^ Do not leave space between `!` and its argument.

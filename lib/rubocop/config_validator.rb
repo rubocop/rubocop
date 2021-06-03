@@ -81,11 +81,11 @@ module RuboCop
 
       msg = if last_version
               "RuboCop found unsupported Ruby version #{target_ruby_version} " \
-              "in #{source}. #{target_ruby_version}-compatible " \
-              "analysis was dropped after version #{last_version}."
+                "in #{source}. #{target_ruby_version}-compatible " \
+                "analysis was dropped after version #{last_version}."
             else
               'RuboCop found unknown Ruby version ' \
-              "#{target_ruby_version.inspect} in #{source}."
+                "#{target_ruby_version.inspect} in #{source}."
             end
 
       msg += "\nSupported versions: #{TargetRuby.supported_versions.join(', ')}"
@@ -179,8 +179,8 @@ module RuboCop
           next if validate_support_and_has_list(name, style, valid)
 
           msg = "invalid #{style_name} '#{style}' for #{name} found in " \
-            "#{smart_loaded_path}\n" \
-            "Valid choices are: #{valid.join(', ')}"
+                "#{smart_loaded_path}\n" \
+                "Valid choices are: #{valid.join(', ')}"
           raise ValidationError, msg
         end
       end
