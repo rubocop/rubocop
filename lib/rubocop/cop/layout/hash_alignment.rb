@@ -217,7 +217,8 @@ module RuboCop
         private
 
         def autocorrect_incompatible_with_other_cops?(node)
-          enforce_first_argument_with_fixed_indentation? && !node.braces? && node.parent&.call_type?
+          enforce_first_argument_with_fixed_indentation? &&
+            node.parent&.call_type? && node.parent.loc.line == node.pairs.first.loc.line
         end
 
         def reset!
