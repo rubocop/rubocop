@@ -1440,7 +1440,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq("{ b: 1 }\n")
     expect($stdout.string)
       .to eq("#{abs('example.rb')}:1:3: C: [Corrected] Style/HashSyntax: " \
-              "Use the new Ruby 1.9 hash syntax.\n")
+             "Use the new Ruby 1.9 hash syntax.\n")
   end
 
   it 'can correct TrailingEmptyLines and TrailingWhitespace offenses' do
@@ -2099,7 +2099,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   end
 
   it 'consistently quotes symbol keys in a hash using `Lint/SymbolConversion` ' \
-      'with `EnforcedStyle: consistent` and `Style/QuotedSymbols`' do
+     'with `EnforcedStyle: consistent` and `Style/QuotedSymbols`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
       {

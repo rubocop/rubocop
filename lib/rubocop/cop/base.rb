@@ -261,7 +261,7 @@ module RuboCop
       # @deprecated Make potential errors with previous API more obvious
       def offenses
         raise 'The offenses are not directly available; ' \
-          'they are returned as the result of the investigation'
+              'they are returned as the result of the investigation'
       end
 
       ### Reserved for Commissioner
@@ -441,7 +441,7 @@ module RuboCop
           severity.to_sym
         else
           message = "Warning: Invalid severity '#{severity}'. " \
-            "Valid severities are #{Severity::NAMES.join(', ')}."
+                    "Valid severities are #{Severity::NAMES.join(', ')}."
           warn(Rainbow(message).red)
         end
       end

@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
       end
 
       it 'registers an offense and corrects when `if` condition and `then` ' \
-        'branch are the same and it has no `else` branch' do
+         'branch are the same and it has no `else` branch' do
         expect_offense(<<~RUBY)
           if do_something
           ^^^^^^^^^^^^^^^ This condition is not needed.

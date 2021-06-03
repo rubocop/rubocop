@@ -382,7 +382,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
     end
 
     it 'registers an offense and corrects missing space ' \
-      'before first argument and after last argument' do
+       'before first argument and after last argument' do
       expect_offense(<<~RUBY)
         {}.each { |x, z| puts x }
                       ^ Space after last block parameter missing.

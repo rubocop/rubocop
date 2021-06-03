@@ -349,7 +349,7 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
       let(:message) do
         '.rubocop.yml: Style/For:Exclude overrides the same parameter in ' \
-        '.rubocop_todo.yml'
+          '.rubocop_todo.yml'
       end
 
       before do
@@ -512,7 +512,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'unions the two lists of Excludes from the parent and child configs ' \
-          'for cops that do not override the inherit_mode' do
+         'for cops that do not override the inherit_mode' do
         expect do
           excludes = configuration_from_file['Style/For']['Exclude']
           expect(excludes.sort)
@@ -1107,7 +1107,7 @@ RSpec.describe RuboCop::ConfigLoader do
         end
 
         it 'enables cops that are explicitly in the config file '\
-          'even if they are disabled by default' do
+           'even if they are disabled by default' do
           cop_class = RuboCop::Cop::Style::Copyright
           expect(cop_enabled?(cop_class)).to be true
         end

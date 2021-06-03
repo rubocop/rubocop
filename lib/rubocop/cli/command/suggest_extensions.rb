@@ -19,7 +19,7 @@ module RuboCop
 
           puts
           puts 'Tip: Based on detected gems, the following '\
-            'RuboCop extension libraries might be helpful:'
+               'RuboCop extension libraries might be helpful:'
 
           extensions.sort.each do |extension|
             puts "  * #{extension} (https://github.com/rubocop/#{extension})"
@@ -27,8 +27,8 @@ module RuboCop
 
           puts
           puts 'You can opt out of this message by adding the following to your config '\
-            '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions '\
-            'for more options):'
+               '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions '\
+               'for more options):'
           puts '  AllCops:'
           puts '    SuggestExtensions: false'
 

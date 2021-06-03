@@ -50,7 +50,7 @@ module RuboCop
         ALIGN_PARAMS_MSG = 'Align the arguments of a method call if they span more than one line.'
 
         FIXED_INDENT_MSG = 'Use one level of indentation for arguments ' \
-          'following the first line of a multi-line method call.'
+                           'following the first line of a multi-line method call.'
 
         def on_send(node)
           first_arg = node.first_argument

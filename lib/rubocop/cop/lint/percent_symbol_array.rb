@@ -25,7 +25,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = "Within `%i`/`%I`, ':' and ',' are unnecessary and may be " \
-          'unwanted in the resulting symbols.'
+              'unwanted in the resulting symbols.'
 
         def on_array(node)
           process(node, '%i', '%I')

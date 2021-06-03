@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
   end
 
   it 'registers an offense and corrects using safe navigation in conditions ' \
-    'on the right hand side' do
+     'on the right hand side' do
     expect_offense(<<~RUBY)
       foobar.baz && foo&.bar && foo.qux
                     ^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
   end
 
   it 'registers an offense and corrects using unsafe navigation ' \
-    'and the safe navigation appears in a group' do
+     'and the safe navigation appears in a group' do
     expect_offense(<<~RUBY)
       (foo&.bar && foo.baz) || foo.qux
        ^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.

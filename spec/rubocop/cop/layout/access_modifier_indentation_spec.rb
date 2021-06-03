@@ -536,7 +536,7 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation, :config do
     end
 
     it 'registers an offense and corrects private indented to method depth ' \
-      'in class defined with Class.new' do
+       'in class defined with Class.new' do
       expect_offense(<<~RUBY)
         Test = Class.new do
 
@@ -577,7 +577,7 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation, :config do
     end
 
     it 'registers an offense and corrects private indented to method depth ' \
-      'in module defined with Module.new' do
+       'in module defined with Module.new' do
       expect_offense(<<~RUBY)
         Test = Module.new do
 

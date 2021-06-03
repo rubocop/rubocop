@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
     end
 
     it 'registers an offense and corrects the emacs ruby-mode 1.1 ' \
-      'indentation of an expression in an array' do
+       'indentation of an expression in an array' do
       expect_offense(<<~RUBY)
         [
          a.
@@ -773,7 +773,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
     end
 
     it 'registers an offense and corrects the emacs ruby-mode 1.1 ' \
-      'indentation of an expression in an array' do
+       'indentation of an expression in an array' do
       expect_offense(<<~RUBY)
         [
          a.

@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
     end
 
     it 'auto-correct changes Hash.new to {} and wraps it in parentheses ' \
-      'when it is the only argument to super' do
+       'when it is the only argument to super' do
       expect_offense(<<~RUBY)
         def foo
           super Hash.new
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
     end
 
     it 'auto-correct changes Hash.new to {} and wraps all arguments in ' \
-      'parentheses when it is the first argument to super' do
+       'parentheses when it is the first argument to super' do
       expect_offense(<<~RUBY)
         def foo
           super Hash.new, something

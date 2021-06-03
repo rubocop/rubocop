@@ -70,7 +70,7 @@ module RuboCop
 
         MSG = 'Unnecessary symbol conversion; use `%<correction>s` instead.'
         MSG_CONSISTENCY = 'Symbol hash key should be quoted for consistency; ' \
-          'use `%<correction>s` instead.'
+                          'use `%<correction>s` instead.'
         RESTRICT_ON_SEND = %i[to_sym intern].freeze
 
         def on_send(node)

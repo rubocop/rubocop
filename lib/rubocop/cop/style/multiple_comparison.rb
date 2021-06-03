@@ -44,7 +44,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Avoid comparing a variable with multiple items ' \
-          'in a conditional, use `Array#include?` instead.'
+              'in a conditional, use `Array#include?` instead.'
 
         def on_new_investigation
           @last_comparison = nil

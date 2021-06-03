@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder, :config do
   end
 
   it 'registers an offense and corrects when multiple `kwoptarg`s are interleaved with `kwarg`s' \
-    'and last argument is `kwrestarg` and argument parentheses omitted' do
+     'and last argument is `kwrestarg` and argument parentheses omitted' do
     expect_offense(<<~RUBY)
       def m arg, optional1: 1, required1:, optional2: 2, required2:, **rest
                  ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder, :config do
   end
 
   it 'registers an offense and corrects when multiple `kwoptarg`s are interleaved with `kwarg`s' \
-    'and last argument is `blockarg` and argument parentheses omitted' do
+     'and last argument is `blockarg` and argument parentheses omitted' do
     expect_offense(<<~RUBY)
       def m arg, optional1: 1, required1:, optional2: 2, required2:, **rest, &block
                  ^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.

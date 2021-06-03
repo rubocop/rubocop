@@ -93,18 +93,18 @@ module RuboCop
         extend AutoCorrector
 
         SAME_LINE_MESSAGE = 'Closing method call brace must be on the ' \
-          'same line as the last argument when opening brace is on the same ' \
-          'line as the first argument.'
+                            'same line as the last argument when opening brace is on the same ' \
+                            'line as the first argument.'
 
         NEW_LINE_MESSAGE = 'Closing method call brace must be on the ' \
-          'line after the last argument when opening brace is on a separate ' \
-          'line from the first argument.'
+                           'line after the last argument when opening brace is on a separate ' \
+                           'line from the first argument.'
 
         ALWAYS_NEW_LINE_MESSAGE = 'Closing method call brace must be on ' \
-          'the line after the last argument.'
+                                  'the line after the last argument.'
 
         ALWAYS_SAME_LINE_MESSAGE = 'Closing method call brace must be on ' \
-          'the same line as the last argument.'
+                                   'the same line as the last argument.'
 
         def on_send(node)
           check_brace_layout(node)

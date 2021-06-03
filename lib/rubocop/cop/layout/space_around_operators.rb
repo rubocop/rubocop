@@ -198,7 +198,7 @@ module RuboCop
           elsif excess_leading_space?(type, operator, with_space) ||
                 excess_trailing_space?(right_operand, with_space)
             "Operator `#{operator.source}` should be surrounded " \
-            'by a single space.'
+              'by a single space.'
           end
         end
 

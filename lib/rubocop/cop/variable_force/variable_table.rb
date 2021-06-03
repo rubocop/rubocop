@@ -58,7 +58,7 @@ module RuboCop
 
           unless variable
             raise "Assigning to undeclared local variable \"#{name}\" " \
-                 "at #{node.source_range}, #{node.inspect}"
+                  "at #{node.source_range}, #{node.inspect}"
           end
 
           variable.assign(node)

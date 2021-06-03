@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
   it 'registers an offense and corrects when an `encoding` magic comment ' \
-    'does not precede all other magic comments' do
+     'does not precede all other magic comments' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # encoding: ascii
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
   end
 
   it 'registers an offense and corrects when using `frozen_string_literal` ' \
-    'magic comment is next of shebang' do
+     'magic comment is next of shebang' do
     expect_offense(<<~RUBY)
       #!/usr/bin/env ruby
       # frozen_string_literal: true

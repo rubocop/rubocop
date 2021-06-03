@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers an offense and corrects when a reference bracket with a ' \
-      'leading whitespace is assigned by another reference bracket' do
+       'leading whitespace is assigned by another reference bracket' do
       expect_offense(<<~RUBY)
         a[ "foo"] = b["something"]
           ^ Do not use space inside reference brackets.
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers an offense and correcs when a reference bracket with a ' \
-      'trailing whitespace is assigned by another reference bracket' do
+       'trailing whitespace is assigned by another reference bracket' do
       expect_offense(<<~RUBY)
         a["foo" ] = b["something"]
                ^ Do not use space inside reference brackets.
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers an offense and corrects when a reference bracket is ' \
-      'assigned by another reference bracket with trailing whitespace' do
+       'assigned by another reference bracket with trailing whitespace' do
       expect_offense(<<~RUBY)
         a["foo"] = b["something" ]
                                 ^ Do not use space inside reference brackets.
@@ -310,7 +310,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers an offense and corrects when a reference bracket with no ' \
-      'leading whitespace is assigned by another reference bracket' do
+       'leading whitespace is assigned by another reference bracket' do
       expect_offense(<<~RUBY)
         a["foo" ] = b[ "something" ]
          ^ Use space inside reference brackets.
@@ -322,7 +322,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers an offense and corrects when a reference bracket with no ' \
-      'trailing whitespace is assigned by another reference bracket' do
+       'trailing whitespace is assigned by another reference bracket' do
       expect_offense(<<~RUBY)
         a[ "foo"] = b[ "something" ]
                 ^ Use space inside reference brackets.
@@ -334,7 +334,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'registers an offense and corrects when a reference bracket is ' \
-      'assigned by another reference bracket with no trailing whitespace' do
+       'assigned by another reference bracket with no trailing whitespace' do
       expect_offense(<<~RUBY)
         a[ "foo" ] = b[ "something"]
                                    ^ Use space inside reference brackets.

@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
 
     it 'accepts method call without trailing comma with single element hash' \
-        ' parameters at the end' do
+       ' parameters at the end' do
       expect_no_offenses('some_method(a: 1)')
     end
 
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'registers an offense for trailing comma in a method call with hash' \
-        ' parameters at the end' do
+         ' parameters at the end' do
         expect_offense(<<~RUBY)
           receiver&.some_method(a, b, c: 0, d: 1, )
                                                 ^ Avoid comma after the last parameter of a method call#{extra_info}.
@@ -468,7 +468,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'registers an offense for no trailing comma in a method call with' \
-          'two parameters on the same line' do
+         'two parameters on the same line' do
         expect_offense(<<~RUBY)
           some_method(a, b
                          ^ Put a comma after the last parameter of a multiline method call.

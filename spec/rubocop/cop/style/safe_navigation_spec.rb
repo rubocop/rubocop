@@ -370,7 +370,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       end
 
       it 'registers an offense for a chained method call safeguarded ' \
-          'with an unless nil check for the object' do
+         'with an unless nil check for the object' do
         expect_offense(<<~RUBY, variable: variable)
           %{variable}.one.two(baz) { |e| e.qux } unless %{variable}.nil?
           ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]

@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
     end
 
     it 'registers an offense and corrects emacs ruby-mode 1.1 indentation of ' \
-    'an expression in an array' do
+       'an expression in an array' do
       expect_offense(<<~RUBY)
         [
          a +
@@ -217,7 +217,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
     end
 
     it 'registers an offense and corrects an unindented multiline operation ' \
-      'that is the left operand in another operation' do
+       'that is the left operand in another operation' do
       expect_offense(<<~RUBY)
         a +
         b < 3
@@ -324,7 +324,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
     end
 
     it 'registers an offense and corrects misaligned string operand ' \
-      'when the first operand has backslash continuation' do
+       'when the first operand has backslash continuation' do
       expect_offense(<<~'RUBY')
         def f
           flash[:error] = 'Here is a string ' \

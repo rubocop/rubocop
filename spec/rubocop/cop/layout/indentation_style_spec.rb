@@ -171,7 +171,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
     end
 
     it 'registers and corrects an offense for a line indented with fractional number of'\
-      'indentation groups by rounding down' do
+       'indentation groups by rounding down' do
       expect_offense(<<~RUBY)
            x = 0
         ^^^ Space detected in indentation.

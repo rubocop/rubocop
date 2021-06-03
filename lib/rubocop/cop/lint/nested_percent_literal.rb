@@ -33,7 +33,7 @@ module RuboCop
         include PercentLiteral
 
         MSG = 'Within percent literals, nested percent literals do not ' \
-          'function and may be unwanted in the result.'
+              'function and may be unwanted in the result.'
 
         # The array of regular expressions representing percent literals that,
         # if found within a percent literal expression, will cause a

@@ -32,7 +32,7 @@ module RuboCop
 
         REQUIRES_ESCAPE_OUTSIDE_CHAR_CLASS_CHARS = '.*+?{}()|$'.chars.freeze
         MSG_REDUNDANT_CHARACTER_CLASS = 'Redundant single-element character class, ' \
-        '`%<char_class>s` can be replaced with `%<element>s`.'
+                                        '`%<char_class>s` can be replaced with `%<element>s`.'
 
         def on_regexp(node)
           each_redundant_character_class(node) do |loc|

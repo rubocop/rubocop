@@ -12,9 +12,9 @@ module RuboCop
   # @api private
   class Options
     E_STDIN_NO_PATH = '-s/--stdin requires exactly one path, relative to the ' \
-      'root of the project. RuboCop will use this path to determine which ' \
-      'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
-      'like Naming/FileName can be checked.'
+                      'root of the project. RuboCop will use this path to determine which ' \
+                      'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
+                      'like Naming/FileName can be checked.'
     EXITING_OPTIONS = %i[version verbose_version show_cops].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
@@ -292,7 +292,7 @@ module RuboCop
 
       if display_only_fail_level_offenses_with_autocorrect?
         raise OptionArgumentError, '--autocorrect cannot be used with ' \
-          '--display-only-fail-level-offenses'
+                                   '--display-only-fail-level-offenses'
       end
       validate_auto_gen_config
       validate_auto_correct

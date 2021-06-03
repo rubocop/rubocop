@@ -572,7 +572,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   end
 
   it 'corrects when the expression uses a modifier rescue statement ' \
-      'as the only thing inside of a method' do
+     'as the only thing inside of a method' do
     expect_offense(<<~RUBY)
       def foo
         a, b = 1, 2 rescue foo

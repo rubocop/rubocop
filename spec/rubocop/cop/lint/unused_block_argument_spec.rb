@@ -8,8 +8,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       context 'and an argument is unused' do
         it 'registers an offense' do
           message = "Unused block argument - `value`. If it's " \
-                      'necessary, use `_` or `_value` as an argument ' \
-                      "name to indicate that it won't be used."
+                    'necessary, use `_` or `_value` as an argument ' \
+                    "name to indicate that it won't be used."
 
           expect_offense(<<~RUBY)
             hash.each do |key, value|
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         it 'registers offenses and suggests omitting them' do
           (key_message, value_message) = %w[key value].map do |arg|
             "Unused block argument - `#{arg}`. You can omit all the " \
-             "arguments if you don't care about them."
+              "arguments if you don't care about them."
           end
 
           expect_offense(<<~RUBY)
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       context 'and the argument is unused' do
         it 'registers an offense and suggests omitting that' do
           message = 'Unused block argument - `index`. ' \
-                      "You can omit the argument if you don't care about it."
+                    "You can omit the argument if you don't care about it."
 
           expect_offense(<<~RUBY)
             1.times do |index|
@@ -178,8 +178,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       context 'and the method call is `define_method`' do
         it 'registers an offense' do
           message = 'Unused block argument - `bar`. ' \
-                      "If it's necessary, use `_` or `_bar` as an argument " \
-                      "name to indicate that it won't be used."
+                    "If it's necessary, use `_` or `_bar` as an argument " \
+                    "name to indicate that it won't be used."
 
           expect_offense(<<~RUBY)
             define_method(:foo) do |bar|
@@ -232,11 +232,11 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         it 'registers offenses and suggests using a proc' do
           (foo_message, bar_message) = %w[foo bar].map do |arg|
             "Unused block argument - `#{arg}`. " \
-            "If it's necessary, use `_` or `_#{arg}` as an argument name " \
-            "to indicate that it won't be used. " \
-            'Also consider using a proc without arguments instead of a ' \
-            "lambda if you want it to accept any arguments but don't care " \
-            'about them.'
+              "If it's necessary, use `_` or `_#{arg}` as an argument name " \
+              "to indicate that it won't be used. " \
+              'Also consider using a proc without arguments instead of a ' \
+              "lambda if you want it to accept any arguments but don't care " \
+              'about them.'
           end
 
           expect_offense(<<~RUBY)
@@ -254,8 +254,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       context 'and an argument is unused' do
         it 'registers an offense' do
           message = 'Unused block argument - `foo`. ' \
-                      "If it's necessary, use `_` or `_foo` as an argument " \
-                      "name to indicate that it won't be used."
+                    "If it's necessary, use `_` or `_foo` as an argument " \
+                    "name to indicate that it won't be used."
 
           expect_offense(<<~RUBY)
             -> (foo, bar) { puts bar }
@@ -283,8 +283,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       context 'when the method call is `define_method`' do
         it 'registers an offense' do
           message = 'Unused block argument - `bar`. ' \
-            "If it's necessary, use `_` or `_bar` as an argument name " \
-            "to indicate that it won't be used."
+                    "If it's necessary, use `_` or `_bar` as an argument name " \
+                    "to indicate that it won't be used."
 
           expect_offense(<<~RUBY)
             define_method(:foo) do |bar: 'default'|
@@ -312,7 +312,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       context 'when the method call is not `define_method`' do
         it 'registers an offense' do
           message = 'Unused block argument - `bar`. ' \
-                      "You can omit the argument if you don't care about it."
+                    "You can omit the argument if you don't care about it."
 
           expect_offense(<<~RUBY)
             foo(:foo) do |bar: 'default'|
@@ -480,9 +480,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
       (arg1_message, arg2_message, others_message) = %w[arg1 arg2 others]
                                                      .map do |arg|
         "Unused block argument - `#{arg}`. If it's necessary, use `_` or " \
-        "`_#{arg}` as an argument name to indicate that it won't be used. " \
-        'Also consider using a proc without arguments instead of a lambda ' \
-        "if you want it to accept any arguments but don't care about them."
+          "`_#{arg}` as an argument name to indicate that it won't be used. " \
+          'Also consider using a proc without arguments instead of a lambda ' \
+          "if you want it to accept any arguments but don't care about them."
       end
 
       expect_offense(<<~RUBY)
