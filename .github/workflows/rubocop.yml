@@ -22,9 +22,8 @@ jobs:
         # [ ubuntu, macos, windows ]
         os: [ windows ]
         ruby: [ '2.5', '2.6', '2.7', '3.0', 'head' ]
-        # FIXME: Please uncomment when https://github.com/ruby/psych/issues/494 is resolved.
-        # include:
-        #   - { os: windows, ruby: mingw }
+        include:
+          - { os: windows, ruby: mingw }
         exclude:
           - { os: windows, ruby: head  }
 
