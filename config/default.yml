@@ -1649,6 +1649,7 @@ Lint/EmptyFile:
 Lint/EmptyInPattern:
   Description: 'Checks for the presence of `in` pattern branches without a body.'
   Enabled: pending
+  AllowComments: true
   VersionAdded: '1.16'
 
 Lint/EmptyInterpolation:
