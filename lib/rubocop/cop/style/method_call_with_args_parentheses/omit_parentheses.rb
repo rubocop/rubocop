@@ -116,7 +116,8 @@ module RuboCop
           end
 
           def call_with_braced_block?(node)
-            (node.send_type? || node.super_type?) && node.block_node && node.block_node.braces?
+            (node.send_type? || node.super_type?) &&
+              ((node.parent&.block_type? || node.parent&.numblock_type?) && node.parent&.braces?)
           end
 
           def call_as_argument_or_chain?(node)
