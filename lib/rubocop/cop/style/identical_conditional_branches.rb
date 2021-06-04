@@ -67,6 +67,28 @@ module RuboCop
       #     do_x
       #     do_z
       #   end
+      #
+      #   # bad
+      #   case foo
+      #   in 1
+      #     do_x
+      #   in 2
+      #     do_x
+      #   else
+      #     do_x
+      #   end
+      #
+      #   # good
+      #   case foo
+      #   in 1
+      #     do_x
+      #     do_y
+      #   in 2
+      #     # nothing
+      #   else
+      #     do_x
+      #     do_z
+      #   end
       class IdenticalConditionalBranches < Base
         include RangeHelp
         extend AutoCorrector
@@ -84,6 +106,13 @@ module RuboCop
           return unless node.else? && node.else_branch
 
           branches = node.when_branches.map(&:body).push(node.else_branch)
+          check_branches(node, branches)
+        end
+
+        def on_case_match(node)
+          return unless node.else? && node.else_branch
+
+          branches = node.in_pattern_branches.map(&:body).push(node.else_branch)
           check_branches(node, branches)
         end
 
