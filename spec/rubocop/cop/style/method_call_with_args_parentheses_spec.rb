@@ -404,6 +404,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
+    context 'numbered parameters in 2.7', :ruby27 do
+      it 'accepts parens for braced numeric block calls' do
+        expect_no_offenses(<<~RUBY)
+          numblock.call(:arg) { _1 }
+        RUBY
+      end
+    end
+
     it 'register an offense for parens in method call without args' do
       trailing_whitespace = ' '
 
