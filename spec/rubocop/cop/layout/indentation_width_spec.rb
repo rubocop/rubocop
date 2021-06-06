@@ -866,6 +866,91 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
     end
 
+    context 'with case match', :ruby27 do
+      it 'registers an offense for bad indentation in a case/in body' do
+        expect_offense(<<~RUBY)
+          case a
+          in b
+           c
+          ^ Use 2 (not 1) spaces for indentation.
+          end
+        RUBY
+      end
+
+      it 'registers an offense for bad indentation in a case/else body' do
+        expect_offense(<<~RUBY)
+          case a
+          in b
+            c
+          in d
+            e
+          else
+             f
+          ^^^ Use 2 (not 3) spaces for indentation.
+          end
+        RUBY
+      end
+
+      it 'accepts correctly indented case/in/else' do
+        expect_no_offenses(<<~RUBY)
+          case a
+          in b
+            c
+            c
+          in d
+          else
+            f
+          end
+        RUBY
+      end
+
+      it 'accepts aligned values in `in` clause' do
+        expect_no_offenses(<<~'RUBY')
+          case condition
+          in [42]
+            foo
+          in [43]
+            bar
+          end
+        RUBY
+      end
+
+      it 'accepts case/in/else laid out as a table' do
+        expect_no_offenses(<<~RUBY)
+          case sexp.loc.keyword.source
+          in 'if'     then cond, body, _else = *sexp
+          in 'unless' then cond, _else, body = *sexp
+          else             cond, body = *sexp
+          end
+        RUBY
+      end
+
+      it 'accepts case/in/else with then beginning a line' do
+        expect_no_offenses(<<~RUBY)
+          case sexp.loc.keyword.source
+          in 'if'
+          then cond, body, _else = *sexp
+          end
+        RUBY
+      end
+
+      it 'accepts indented in/else plus indented body' do
+        # "Indent `in` as deep as `case`" is the job of another cop.
+        expect_no_offenses(<<~RUBY)
+          case code_type
+            in 'ruby' | 'sql' | 'plain'
+              code_type
+            in 'erb'
+              'ruby; html-script: true'
+            in "html"
+              'xml'
+            else
+              'plain'
+          end
+        RUBY
+      end
+    end
+
     context 'with while/until' do
       it 'registers an offense for bad indentation of a while body' do
         expect_offense(<<~RUBY)

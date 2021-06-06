@@ -138,6 +138,14 @@ module RuboCop
           check_indentation(case_node.when_branches.last.loc.keyword, case_node.else_branch)
         end
 
+        def on_case_match(case_match)
+          case_match.each_in_pattern do |in_pattern_node|
+            check_indentation(in_pattern_node.loc.keyword, in_pattern_node.body)
+          end
+
+          check_indentation(case_match.in_pattern_branches.last.loc.keyword, case_match.else_branch)
+        end
+
         def on_if(node, base = node)
           return if ignored_node?(node)
           return if node.ternary? || node.modifier_form?
