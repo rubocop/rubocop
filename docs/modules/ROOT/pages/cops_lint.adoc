@@ -1825,6 +1825,16 @@ in [a, b]
 end
 ----
 
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
+
 == Lint/EmptyInterpolation
 
 |===

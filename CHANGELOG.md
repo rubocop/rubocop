@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.16.1 (2021-06-09)
+
 ### Bug fixes
 
 * [#9843](https://github.com/rubocop/rubocop/issues/9843): Fix `Style/RedundantSelf` to allow conditional nodes to use `self` in the condition when a variable named is shadowed inside. ([@dvandersluis][])
