@@ -171,6 +171,12 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         }
       RUBY
     end
+
+    it 'does not register an offense for an empty hash literal' do
+      expect_no_offenses(<<~RUBY)
+        foo({})
+      RUBY
+    end
   end
 
   context 'always ignore last argument hash' do
