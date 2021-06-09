@@ -55,6 +55,7 @@ module RuboCop
     def generate_request(uri)
       request = Net::HTTP::Get.new(uri.request_uri)
 
+      request.basic_auth(uri.user, uri.password) if uri.user
       request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822 if cache_path_exists?
 
       yield request
@@ -70,7 +71,7 @@ module RuboCop
         begin
           response.error!
         rescue StandardError => e
-          message = "#{e.message} while downloading remote config file #{uri}"
+          message = "#{e.message} while downloading remote config file #{cloned_url}"
           raise e, message
         end
       end
@@ -94,9 +95,16 @@ module RuboCop
     end
 
     def cache_name_from_uri
-      uri = @uri.clone
+      uri = cloned_url
       uri.query = nil
       uri.to_s.gsub!(/[^0-9A-Za-z]/, '-')
+    end
+
+    def cloned_url
+      uri = @uri.clone
+      uri.user = nil if uri.user
+      uri.password = nil if uri.password
+      uri
     end
   end
 end
