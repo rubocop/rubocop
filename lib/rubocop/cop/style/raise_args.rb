@@ -23,6 +23,7 @@ module RuboCop
       #   # good
       #   raise StandardError, 'message'
       #   fail 'message'
+      #   raise MyCustomError
       #   raise MyCustomError.new(arg1, arg2, arg3)
       #   raise MyKwArgError.new(key1: val1, key2: val2)
       #
@@ -37,6 +38,7 @@ module RuboCop
       #
       #   # good
       #   raise StandardError.new('message')
+      #   raise MyCustomError
       #   raise MyCustomError.new(arg1, arg2, arg3)
       #   fail 'message'
       class RaiseArgs < Base
