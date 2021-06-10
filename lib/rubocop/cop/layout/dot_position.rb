@@ -24,6 +24,7 @@ module RuboCop
       #     method
       class DotPosition < Base
         include ConfigurableEnforcedStyle
+        include RangeHelp
         extend AutoCorrector
 
         def on_send(node)
@@ -42,7 +43,12 @@ module RuboCop
         private
 
         def autocorrect(corrector, dot, node)
-          corrector.remove(dot)
+          dot_range = if processed_source[dot.line - 1].strip == '.'
+                        range_by_whole_lines(dot, include_final_newline: true)
+                      else
+                        dot
+                      end
+          corrector.remove(dot_range)
           case style
           when :leading
             corrector.insert_before(selector_range(node), dot.source)
