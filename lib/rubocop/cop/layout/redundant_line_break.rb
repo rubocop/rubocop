@@ -42,8 +42,9 @@ module RuboCop
       #   # good
       #   foo(a) { |x| puts x }
       #
-      class RedundantLineBreak < Cop
+      class RedundantLineBreak < Base
         include CheckAssignment
+        extend AutoCorrector
 
         MSG = 'Redundant line break detected.'
 
@@ -55,22 +56,23 @@ module RuboCop
 
           return unless offense?(node) && !part_of_ignored_node?(node)
 
-          add_offense(node)
-          ignore_node(node)
+          register_offense(node)
         end
+
+        private
 
         def check_assignment(node, _rhs)
           return unless offense?(node)
 
-          add_offense(node)
+          register_offense(node)
+        end
+
+        def register_offense(node)
+          add_offense(node) do |corrector|
+            corrector.replace(node.source_range, to_single_line(node.source).strip)
+          end
           ignore_node(node)
         end
-
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.source_range, to_single_line(node.source).strip) }
-        end
-
-        private
 
         def offense?(node)
           return false if configured_to_not_be_inspected?(node)
