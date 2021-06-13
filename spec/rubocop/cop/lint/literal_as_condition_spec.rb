@@ -74,6 +74,25 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       RUBY
     end
 
+    context '>= Ruby 2.7', :ruby27 do
+      it "registers an offense for literal #{lit} in case match" do
+        expect_offense(<<~RUBY, lit: lit)
+          case %{lit}
+               ^{lit} Literal `#{lit}` appeared as a condition.
+          in x then top
+          end
+        RUBY
+      end
+
+      it "accepts literal #{lit} in a when of a case match" do
+        expect_no_offenses(<<~RUBY)
+          case x
+          in #{lit} then top
+          end
+        RUBY
+      end
+    end
+
     it "registers an offense for literal #{lit} in &&" do
       expect_offense(<<~RUBY, lit: lit)
         if x && %{lit}
@@ -172,6 +191,41 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       when [1, 2, 5] then top
       end
     RUBY
+  end
+
+  context '>= Ruby 2.7', :ruby27 do
+    it 'accepts array literal in case match, if it has non-literal elements' do
+      expect_no_offenses(<<~RUBY)
+        case [1, 2, x]
+        in [1, 2, 5] then top
+        end
+      RUBY
+    end
+
+    it 'accepts array literal in case match, if it has nested non-literal element' do
+      expect_no_offenses(<<~RUBY)
+        case [1, 2, [x, 1]]
+        in [1, 2, 5] then top
+        end
+      RUBY
+    end
+
+    it 'registers an offense for case match with a primitive array condition' do
+      expect_offense(<<~RUBY)
+        case [1, 2, [3, 4]]
+             ^^^^^^^^^^^^^^ Literal `[1, 2, [3, 4]]` appeared as a condition.
+        in [1, 2, 5] then top
+        end
+      RUBY
+    end
+
+    it 'accepts dstr literal in case match' do
+      expect_no_offenses(<<~'RUBY')
+        case "#{x}"
+        in [1, 2, 5] then top
+        end
+      RUBY
+    end
   end
 
   it 'accepts `true` literal in `while`' do
