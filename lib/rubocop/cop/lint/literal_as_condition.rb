@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for literals used as the conditions or as
       # operands in and/or expressions serving as the conditions of
-      # if/while/until.
+      # if/while/until/case-when/case-in.
       #
       # @example
       #
@@ -63,6 +63,18 @@ module RuboCop
               message = message(range)
 
               add_offense(range, message: message)
+            end
+          end
+        end
+
+        def on_case_match(case_match_node)
+          if case_match_node.condition
+            check_case(case_match_node)
+          else
+            case_match_node.each_in_pattern do |in_pattern_node|
+              next unless in_pattern_node.condition.literal?
+
+              add_offense(in_pattern_node)
             end
           end
         end
