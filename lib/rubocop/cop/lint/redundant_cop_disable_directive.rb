@@ -114,6 +114,9 @@ module RuboCop
             next if ignore_offense?(line_range)
 
             comment = processed_source.comment_at_line(line_range.begin)
+
+            next if department_disabled?(cop, comment)
+
             redundant_cop = if all_disabled?(comment)
                               find_redundant_all(line_range, line_ranges[ix + 1])
                             else
@@ -173,6 +176,13 @@ module RuboCop
           disabled_ranges.any? do |range|
             range.cover?(line_range.min) && range.cover?(line_range.max)
           end
+        end
+
+        def department_disabled?(cop, comment)
+          DirectiveComment
+            .new(comment)
+            .department_names
+            .any? { |department| cop.start_with?(department) }
         end
 
         def directive_count(comment)

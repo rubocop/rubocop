@@ -503,5 +503,16 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
         end
       end
     end
+
+    context 'with a disabled department' do
+      it 'does not remove correct department' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something
+          end
+        RUBY
+      end
+    end
   end
 end
