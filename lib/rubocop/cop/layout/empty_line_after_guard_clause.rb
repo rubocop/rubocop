@@ -45,8 +45,7 @@ module RuboCop
         def on_if(node)
           return if correct_style?(node)
 
-          if node.modifier_form? && last_argument_is_heredoc?(node)
-            heredoc_node = last_heredoc_argument(node)
+          if node.modifier_form? && (heredoc_node = last_heredoc_argument(node))
             return if next_line_empty_or_enable_directive_comment?(heredoc_line(node, heredoc_node))
 
             add_offense(heredoc_node.loc.heredoc_end) do |corrector|
@@ -62,7 +61,7 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
-          node_range = if node.respond_to?(:heredoc?) && node.heredoc?
+          node_range = if heredoc?(node)
                          range_by_whole_lines(node.loc.heredoc_body)
                        else
                          range_by_whole_lines(node.source_range)
@@ -125,19 +124,8 @@ module RuboCop
           next_sibling.if_type? && contains_guard_clause?(next_sibling)
         end
 
-        def last_argument_is_heredoc?(node)
-          last_children = node.if_branch
-          return false unless last_children&.send_type?
-
-          heredoc?(last_heredoc_argument(node))
-        end
-
         def last_heredoc_argument(node)
-          n = if node.respond_to?(:if_branch)
-                node.if_branch.children.last
-              else
-                node
-              end
+          n = last_heredoc_argument_node(node)
 
           return n if heredoc?(n)
           return unless n.respond_to?(:arguments)
@@ -148,6 +136,16 @@ module RuboCop
           end
 
           return last_heredoc_argument(n.receiver) if n.respond_to?(:receiver)
+        end
+
+        def last_heredoc_argument_node(node)
+          return node unless node.respond_to?(:if_branch)
+
+          if node.if_branch.and_type?
+            node.if_branch.children.first
+          else
+            node.if_branch.children.last
+          end
         end
 
         def heredoc_line(node, heredoc_node)
