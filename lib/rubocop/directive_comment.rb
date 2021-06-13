@@ -6,7 +6,9 @@ module RuboCop
   # cops it contains.
   class DirectiveComment
     # @api private
-    REDUNDANT_COP = 'Lint/RedundantCopDisableDirective'
+    REDUNDANT_DIRECTIVE_COP_DEPARTMENT = 'Lint'
+    # @api private
+    REDUNDANT_DIRECTIVE_COP = "#{REDUNDANT_DIRECTIVE_COP_DEPARTMENT}/RedundantCopDisableDirective"
     # @api private
     COP_NAME_PATTERN = '([A-Z]\w+/)*(?:[A-Z]\w+)'
     # @api private
@@ -86,11 +88,27 @@ module RuboCop
     private
 
     def parsed_cop_names
-      (cops || '').split(/,\s*/)
+      (cops || '').split(/,\s*/).map do |name|
+        department?(name) ? cop_names_for_department(name) : name
+      end.flatten
+    end
+
+    def department?(name)
+      Cop::Registry.global.department?(name)
     end
 
     def all_cop_names
-      Cop::Registry.global.names - [REDUNDANT_COP]
+      exclude_redundant_directive_cop(Cop::Registry.global.names)
+    end
+
+    def cop_names_for_department(department)
+      names = Cop::Registry.global.names_for_department(department)
+      has_redundant_directive_cop = department == REDUNDANT_DIRECTIVE_COP_DEPARTMENT
+      has_redundant_directive_cop ? exclude_redundant_directive_cop(names) : names
+    end
+
+    def exclude_redundant_directive_cop(cops)
+      cops - [REDUNDANT_DIRECTIVE_COP]
     end
   end
 end

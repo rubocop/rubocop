@@ -671,6 +671,15 @@ file by adding a comment such as
 # rubocop:enable Layout/LineLength, Style/StringLiterals
 ----
 
+You can also disable entire departments by giving a department name in the comment.
+
+[source,ruby]
+----
+# rubocop:disable Metrics, Layout/LineLength
+[...]
+# rubocop:enable Metrics, Layout/LineLength
+----
+
 You can also disable _all_ cops with
 
 [source,ruby]

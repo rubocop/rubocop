@@ -165,26 +165,73 @@ RSpec.describe RuboCop::DirectiveComment do
   end
 
   describe '#cop_names' do
-    subject(:cop_names) { directive_comment.cop_names }
+    subject { directive_comment.cop_names }
+
+    let(:all_cop_names) { %w[] }
+    let(:department?) { false }
+    let(:global) do
+      instance_double(RuboCop::Cop::Registry, names: all_cop_names, department?: department?)
+    end
+
+    before { allow(RuboCop::Cop::Registry).to receive(:global).and_return(global) }
+
+    context 'when only cop specified' do
+      let(:comment_cop_names) { 'Foo/Bar' }
+
+      it { is_expected.to eq %w[Foo/Bar] }
+    end
 
     context 'when all cops mentioned' do
       let(:comment_cop_names) { 'all' }
-      let(:global) { instance_double(RuboCop::Cop::Registry, names: names) }
-      let(:names) { %w[all_names Lint/RedundantCopDisableDirective] }
+      let(:all_cop_names) { %w[all_names Lint/RedundantCopDisableDirective] }
 
-      before { allow(RuboCop::Cop::Registry).to receive(:global).and_return(global) }
-
-      it 'returns all cop names except redundant' do
-        expect(cop_names).to eq(%w[all_names])
-      end
+      it { is_expected.to eq %w[all_names] }
     end
 
-    context 'when cop specified' do
-      let(:comment_cop_names) { 'Foo/Bar' }
+    context 'when only department specified' do
+      let(:comment_cop_names) { 'Foo' }
+      let(:department?) { true }
 
-      it 'returns parsed cop names' do
-        expect(cop_names).to eq(%w[Foo/Bar])
+      before do
+        allow(global).to receive(:names_for_department).with('Foo').and_return(%w[Foo/Bar Foo/Baz])
       end
+
+      it { is_expected.to eq %w[Foo/Bar Foo/Baz] }
+    end
+
+    context 'when couple departments specified' do
+      let(:comment_cop_names) { 'Foo, Baz' }
+      let(:department?) { true }
+
+      before do
+        allow(global).to receive(:names_for_department).with('Foo').and_return(%w[Foo/Bar Foo/Baz])
+        allow(global).to receive(:names_for_department).with('Baz').and_return(%w[Baz/Bar])
+      end
+
+      it { is_expected.to eq %w[Foo/Bar Foo/Baz Baz/Bar] }
+    end
+
+    context 'when department and cops specified' do
+      let(:comment_cop_names) { 'Foo, Baz/Cop' }
+
+      before do
+        allow(global).to receive(:department?).with('Foo').and_return(true)
+        allow(global).to receive(:names_for_department).with('Foo').and_return(%w[Foo/Bar Foo/Baz])
+      end
+
+      it { is_expected.to eq %w[Foo/Bar Foo/Baz Baz/Cop] }
+    end
+
+    context 'when redundant directive cop department specified' do
+      let(:comment_cop_names) { 'Lint' }
+      let(:department?) { true }
+
+      before do
+        allow(global).to receive(:names_for_department)
+          .with('Lint').and_return(%w[Lint/One Lint/Two Lint/RedundantCopDisableDirective])
+      end
+
+      it { is_expected.to eq %w[Lint/One Lint/Two] }
     end
   end
 
