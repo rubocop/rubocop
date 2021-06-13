@@ -523,4 +523,41 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
       end
     RUBY
   end
+
+  it 'registers no offenses using heredoc with `and return` before guard condition with empty line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        puts(<<~MSG) and return if bar
+          A multiline
+          message
+        MSG
+
+        baz
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects using heredoc with `and return` before guard condition' do
+    expect_offense(<<~RUBY)
+      def foo
+        puts(<<~MSG) and return if bar
+          A multiline
+          message
+        MSG
+      ^^^^^ Add empty line after guard clause.
+        baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        puts(<<~MSG) and return if bar
+          A multiline
+          message
+        MSG
+
+        baz
+      end
+    RUBY
+  end
 end
