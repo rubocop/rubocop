@@ -21,6 +21,24 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
         # Some other code
       RUBY
     end
+
+    it 'registers an offense when a department is disabled and never re-enabled' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout
+        ^ Re-enable Layout department with `# rubocop:enable` after disabling it.
+        x =   0
+        # Some other code
+      RUBY
+    end
+
+    it 'does not register an offense when the disable department is re-enabled' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Layout
+        x =   0
+        # rubocop:enable Layout
+        # Some other code
+      RUBY
+    end
   end
 
   context 'when the maximum range size is finite' do
@@ -52,6 +70,36 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
         x =   0
         y = 1
         # rubocop:enable Layout/SpaceAroundOperators
+        # Some other code
+      RUBY
+    end
+
+    it 'registers an offense when a department is disabled for too many lines' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout
+        ^ Re-enable Layout department within 2 lines after disabling it.
+        x =   0
+        y = 1
+        # Some other code
+        # rubocop:enable Layout
+      RUBY
+    end
+
+    it 'registers an offense when a department is disabled and never re-enabled' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout
+        ^ Re-enable Layout department within 2 lines after disabling it.
+        x =   0
+        # Some other code
+      RUBY
+    end
+
+    it 'does not register an offense when the disable department is re-enabled within the limit' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Layout
+        x =   0
+        y = 1
+        # rubocop:enable Layout
         # Some other code
       RUBY
     end

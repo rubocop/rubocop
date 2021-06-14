@@ -108,4 +108,13 @@ RSpec.describe RuboCop::Cop::Migration::DepartmentName, :config do
       RUBY
     end
   end
+
+  context 'when only department name has given' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Style
+        alias :ala :bala
+      RUBY
+    end
+  end
 end

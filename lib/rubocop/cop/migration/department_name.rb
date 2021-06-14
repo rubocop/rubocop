@@ -61,7 +61,9 @@ module RuboCop
         end
 
         def valid_content_token?(content_token)
-          /\W+/.match?(content_token) || DISABLING_COPS_CONTENT_TOKEN.match?(content_token)
+          /\W+/.match?(content_token) ||
+            DISABLING_COPS_CONTENT_TOKEN.match?(content_token) ||
+            Registry.global.department?(content_token)
         end
 
         def contain_unexpected_character_for_department_name?(name)
