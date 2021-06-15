@@ -5,10 +5,13 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     supported_styles = { 'SupportedStyles' => %w[slashes percent_r mixed] }
     RuboCop::Config.new('Style/PercentLiteralDelimiters' =>
                           percent_literal_delimiters_config,
+                        'Style/MethodCallWithArgsParentheses' =>
+                          method_call_with_args_parentheses_config,
                         'Style/RegexpLiteral' =>
                           cop_config.merge(supported_styles))
   end
   let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '{}' } } }
+  let(:method_call_with_args_parentheses_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 
   describe 'when regex contains slashes in interpolation' do
     let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
@@ -484,6 +487,110 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
             https?://
             example\.com
           }x
+        RUBY
+      end
+    end
+  end
+
+  context 'when `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` cop' do
+    let(:method_call_with_args_parentheses_config) { { 'EnforcedStyle' => 'require_parentheses' } }
+
+    context 'when using `%r` regexp with `EnforcedStyle: slashes`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
+
+      it 'registers an offense when used as a method argument' do
+        expect_offense(<<~RUBY)
+          do_something %r/regexp/
+                       ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+
+      it 'registers an offense when used as a safe navigation method argument' do
+        expect_offense(<<~RUBY)
+          foo&.do_something %r/regexp/
+                            ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+
+      it 'registers an offense when not used as a method argument' do
+        expect_offense(<<~RUBY)
+          %r/regexp/
+          ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+    end
+
+    context 'when using `%r` regexp with `EnforcedStyle: mixed`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'mixed' } }
+
+      it 'registers an offense when used as a method argument' do
+        expect_offense(<<~RUBY)
+          do_something %r/regexp/
+                       ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+
+      it 'registers an offense when used as a safe navigation method argument' do
+        expect_offense(<<~RUBY)
+          foo&.do_something %r/regexp/
+                            ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+
+      it 'registers an offense when not used as a method argument' do
+        expect_offense(<<~RUBY)
+          %r/regexp/
+          ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+    end
+  end
+
+  context 'when `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` cop' do
+    let(:method_call_with_args_parentheses_config) { { 'EnforcedStyle' => 'omit_parentheses' } }
+
+    context 'when using `%r` regexp with `EnforcedStyle: slashes`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
+
+      it 'does not register an offense when used as a method argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something %r/regexp/
+        RUBY
+      end
+
+      it 'does not register an offense when used as a safe navigation method argument' do
+        expect_no_offenses(<<~RUBY)
+          foo&.do_something %r/regexp/
+        RUBY
+      end
+
+      it 'registers an offense when not used as a method argument' do
+        expect_offense(<<~RUBY)
+          %r/regexp/
+          ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+    end
+
+    context 'when using `%r` regexp with `EnforcedStyle: mixed`' do
+      let(:cop_config) { { 'EnforcedStyle' => 'mixed' } }
+
+      it 'does not register an offense when used as a method argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something %r/regexp/
+        RUBY
+      end
+
+      it 'does not register an offense when used as a safe navigation method argument' do
+        expect_no_offenses(<<~RUBY)
+          foo&.do_something %r/regexp/
+        RUBY
+      end
+
+      it 'registers an offense when not used as a method argument' do
+        expect_offense(<<~RUBY)
+          %r/regexp/
+          ^^^^^^^^^^ Use `//` around regular expression.
         RUBY
       end
     end

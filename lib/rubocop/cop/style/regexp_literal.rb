@@ -117,7 +117,7 @@ module RuboCop
         def allowed_percent_r_literal?(node)
           style == :slashes && contains_disallowed_slash?(node) ||
             style == :percent_r ||
-            allowed_mixed_percent_r?(node)
+            allowed_mixed_percent_r?(node) || omit_parentheses_style?(node)
         end
 
         def allowed_mixed_percent_r?(node)
@@ -147,6 +147,14 @@ module RuboCop
 
         def preferred_delimiters
           config.for_cop('Style/PercentLiteralDelimiters') ['PreferredDelimiters']['%r'].chars
+        end
+
+        def omit_parentheses_style?(node)
+          return false unless node.parent&.call_type?
+
+          enforced_style = config.for_cop('Style/MethodCallWithArgsParentheses')['EnforcedStyle']
+
+          enforced_style == 'omit_parentheses'
         end
 
         def correct_delimiters(node, corrector)
