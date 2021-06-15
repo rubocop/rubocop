@@ -518,6 +518,25 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           ^^^^^^^^^^ Use `//` around regular expression.
         RUBY
       end
+
+      it 'does not register an offense when using a regexp starts with a blank as a method argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something %r/ regexp/
+        RUBY
+      end
+
+      it 'does not register an offense when using a regexp starts with a blank as a safe navigation method argument' do
+        expect_no_offenses(<<~RUBY)
+          foo&.do_something %r/ regexp/
+        RUBY
+      end
+
+      it 'registers an offense when using a regexp starts with a blank' do
+        expect_offense(<<~RUBY)
+          %r/ regexp/
+          ^^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
     end
 
     context 'when using `%r` regexp with `EnforcedStyle: mixed`' do
@@ -541,6 +560,25 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         expect_offense(<<~RUBY)
           %r/regexp/
           ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+      end
+
+      it 'does not register an offense when using a regexp starts with a blank as a method argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something %r/ regexp/
+        RUBY
+      end
+
+      it 'does not register an offense when using a regexp starts with a blank as a safe navigation method argument' do
+        expect_no_offenses(<<~RUBY)
+          foo&.do_something %r/ regexp/
+        RUBY
+      end
+
+      it 'registers an offense when using a regexp starts with a blank' do
+        expect_offense(<<~RUBY)
+          %r/ regexp/
+          ^^^^^^^^^^^ Use `//` around regular expression.
         RUBY
       end
     end
