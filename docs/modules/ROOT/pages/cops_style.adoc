@@ -4735,6 +4735,28 @@ else
   do_x
   do_z
 end
+
+# bad
+case foo
+in 1
+  do_x
+in 2
+  do_x
+else
+  do_x
+end
+
+# good
+case foo
+in 1
+  do_x
+  do_y
+in 2
+  # nothing
+else
+  do_x
+  do_z
+end
 ----
 
 == Style/IfInsideElse
@@ -8418,6 +8440,7 @@ raise StandardError.new('message')
 # good
 raise StandardError, 'message'
 fail 'message'
+raise MyCustomError
 raise MyCustomError.new(arg1, arg2, arg3)
 raise MyKwArgError.new(key1: val1, key2: val2)
 
@@ -8436,6 +8459,7 @@ raise RuntimeError, arg1, arg2, arg3
 
 # good
 raise StandardError.new('message')
+raise MyCustomError
 raise MyCustomError.new(arg1, arg2, arg3)
 fail 'message'
 ----

@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.17.0 (2021-06-15)
+
 ### New features
 
 * [#9626](https://github.com/rubocop/rubocop/pull/9626): Disable all cop department with directive comment. ([@AndreiEres][])
