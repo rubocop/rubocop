@@ -53,9 +53,7 @@ module RuboCop
 
         def on_send(node)
           send_with_mixin_argument?(node) do |method, module_name|
-            message = message(
-              method, module_name.source, bad_location(node).source
-            )
+            message = message(method, module_name.source, bad_location(node).source)
 
             bad_location = bad_location(node)
             add_offense(bad_location, message: message) do |corrector|
@@ -73,10 +71,7 @@ module RuboCop
         end
 
         def message(method, module_name, bad_method)
-          format(
-            MSG,
-            method: method, module_name: module_name, bad_method: bad_method
-          )
+          format(MSG, method: method, module_name: module_name, bad_method: bad_method)
         end
 
         def mixin_method?(node)

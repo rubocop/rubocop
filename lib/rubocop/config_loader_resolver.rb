@@ -37,7 +37,22 @@ module RuboCop
                       inherit_mode: determine_inherit_mode(hash, k))
           end
           hash[k] = v
+          fix_include_paths(base_config.loaded_path, hash, path, k, v) if v.key?('Include')
         end
+      end
+    end
+
+    # When one .rubocop.yml file inherits from another .rubocop.yml file, the Include paths in the
+    # base configuration are relative to the directory where the base configuration file is. For the
+    # derived configuration, we need to make those paths relative to where the derived configuration
+    # file is.
+    def fix_include_paths(base_config_path, hash, path, key, value)
+      return unless File.basename(base_config_path).start_with?('.rubocop')
+
+      base_dir = File.dirname(base_config_path)
+      derived_dir = File.dirname(path)
+      hash[key]['Include'] = value['Include'].map do |include_path|
+        PathUtil.relative_path(File.join(base_dir, include_path), derived_dir)
       end
     end
 
@@ -45,8 +60,7 @@ module RuboCop
       gems = hash.delete('inherit_gem')
       (gems || {}).each_pair do |gem_name, config_path|
         if gem_name == 'rubocop'
-          raise ArgumentError,
-                "can't inherit configuration from the rubocop gem"
+          raise ArgumentError, "can't inherit configuration from the rubocop gem"
         end
 
         hash['inherit_from'] = Array(hash['inherit_from'])
@@ -77,8 +91,7 @@ module RuboCop
       config = handle_disabled_by_default(config, default_configuration) if disabled_by_default
       override_enabled_for_disabled_departments(default_configuration, config)
 
-      opts = { inherit_mode: config['inherit_mode'] || {},
-               unset_nil: unset_nil }
+      opts = { inherit_mode: config['inherit_mode'] || {}, unset_nil: unset_nil }
       Config.new(merge(default_configuration, config, **opts), config_file)
     end
 
@@ -112,8 +125,7 @@ module RuboCop
         next unless key =~ %r{(.*)/.*}
 
         department = Regexp.last_match(1)
-        next unless disabled?(derived_hash, department) ||
-                    disabled?(base_hash, department)
+        next unless disabled?(derived_hash, department) || disabled?(base_hash, department)
 
         # The `override_department` setting for the `Enabled` parameter is an
         # internal setting that's not documented in the manual. It will cause a
@@ -155,13 +167,10 @@ module RuboCop
     end
 
     def warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
-      return unless duplicate_setting?(base_hash, derived_hash,
-                                       key, opts[:inherited_file])
+      return unless duplicate_setting?(base_hash, derived_hash, key, opts[:inherited_file])
 
-      inherit_mode = opts[:inherit_mode]['merge'] ||
-                     opts[:inherit_mode]['override']
-      return if base_hash[key].is_a?(Array) &&
-                inherit_mode && inherit_mode.include?(key)
+      inherit_mode = opts[:inherit_mode]['merge'] || opts[:inherit_mode]['override']
+      return if base_hash[key].is_a?(Array) && inherit_mode && inherit_mode.include?(key)
 
       puts "#{PathUtil.smart_path(opts[:file])}: " \
            "#{opts[:cop_name]}:#{key} overrides " \
@@ -251,8 +260,7 @@ module RuboCop
 
       File.join(gem_path, relative_config_path)
     rescue Gem::LoadError => e
-      raise Gem::LoadError,
-            "Unable to find gem #{gem_name}; is the gem installed? #{e}"
+      raise Gem::LoadError, "Unable to find gem #{gem_name}; is the gem installed? #{e}"
     end
   end
 end

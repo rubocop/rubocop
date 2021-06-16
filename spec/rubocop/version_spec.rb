@@ -9,15 +9,13 @@ RSpec.describe RuboCop::Version do
     let(:env) { instance_double('RuboCop::CLI::Environment', config_store: config_store) }
     let(:config_store) { RuboCop::ConfigStore.new }
 
-    before do
-      RuboCop::ConfigLoader.clear_options
-    end
+    before { RuboCop::ConfigLoader.clear_options }
 
     context 'when no extensions are required' do
       before do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
-            TargetRubyVersion: 2.4
+            TargetRubyVersion: 2.5
         YAML
       end
 

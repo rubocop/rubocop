@@ -72,6 +72,18 @@ module RuboCop
           send_node.loc.dot # Only check method calls with dot operator
         end
 
+        def right_hand_side(send_node)
+          dot = send_node.loc.dot
+          selector = send_node.loc.selector
+          if send_node.dot? && selector && dot.line == selector.line
+            dot.join(selector)
+          elsif selector
+            selector
+          elsif send_node.implicit_call?
+            dot.join(send_node.loc.begin)
+          end
+        end
+
         def offending_range(node, lhs, rhs, given_style)
           return false unless begins_its_line?(rhs)
           return false if not_for_this_cop?(node)
@@ -140,8 +152,7 @@ module RuboCop
         def alignment_base(node, rhs, given_style)
           case given_style
           when :aligned
-            semantic_alignment_base(node, rhs) ||
-              syntactic_alignment_base(node, rhs)
+            semantic_alignment_base(node, rhs) || syntactic_alignment_base(node, rhs)
           when :indented
             nil
           when :indented_relative_to_receiver
@@ -158,15 +169,11 @@ module RuboCop
 
           # a = b
           #     .c
-          part_of_assignment_rhs(lhs, rhs) do |base|
-            return assignment_rhs(base).source_range
-          end
+          part_of_assignment_rhs(lhs, rhs) { |base| return assignment_rhs(base).source_range }
 
           # a + b
           #     .c
-          operation_rhs(lhs) do |base|
-            return base.source_range
-          end
+          operation_rhs(lhs) { |base| return base.source_range }
         end
 
         # a.b
@@ -216,8 +223,7 @@ module RuboCop
         end
 
         def operator_rhs?(node, receiver)
-          node.operator_method? && node.arguments? &&
-            within_node?(receiver, node.first_argument)
+          node.operator_method? && node.arguments? && within_node?(receiver, node.first_argument)
         end
       end
     end

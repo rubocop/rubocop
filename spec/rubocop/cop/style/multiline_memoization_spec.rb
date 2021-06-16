@@ -130,8 +130,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
 
     context 'with a multiline memoization' do
       context 'without braces' do
-        context 'when the expression is wrapped in' \
-                ' `begin` and `end` keywords' do
+        context 'when the expression is wrapped in `begin` and `end` keywords' do
           it 'registers an offense for begin...end block on first line' do
             expect_offense(<<~RUBY)
               foo ||= begin

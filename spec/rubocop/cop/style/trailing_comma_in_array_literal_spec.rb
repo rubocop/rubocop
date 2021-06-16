@@ -46,15 +46,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
-      include_examples 'single line lists',
-                       ', unless each item is on its own line'
+      include_examples 'single line lists', ', unless each item is on its own line'
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
-      include_examples 'single line lists',
-                       ', unless items are split onto multiple lines'
+      include_examples 'single line lists', ', unless items are split onto multiple lines'
     end
   end
 
@@ -271,8 +269,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
         RUBY
       end
 
-      it 'accepts a multiline array with items on a single line and' \
-         'trailing comma' do
+      it 'accepts a multiline array with items on a single line andtrailing comma' do
         expect_no_offenses(<<~RUBY)
           foo = [
             1, 2,

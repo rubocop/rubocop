@@ -36,8 +36,7 @@ module RuboCop
       class TrailingMethodEndStatement < Base
         extend AutoCorrector
 
-        MSG = 'Place the end statement of a multi-line method on ' \
-              'its own line.'
+        MSG = 'Place the end statement of a multi-line method on its own line.'
 
         def on_def(node)
           return if node.endless? || !trailing_end?(node)
@@ -53,9 +52,7 @@ module RuboCop
         private
 
         def trailing_end?(node)
-          node.body &&
-            node.multiline? &&
-            body_and_end_on_same_line?(node)
+          node.body && node.multiline? && body_and_end_on_same_line?(node)
         end
 
         def body_and_end_on_same_line?(node)

@@ -52,17 +52,14 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Block body expression is on the same line as ' \
-              'the block start.'
-        ARG_MSG = 'Block argument expression is not on the same line as the ' \
-                  'block start.'
+        MSG = 'Block body expression is on the same line as the block start.'
+        ARG_MSG = 'Block argument expression is not on the same line as the block start.'
         PIPE_SIZE = '|'.length
 
         def on_block(node)
           return if node.single_line?
 
-          unless args_on_beginning_line?(node) ||
-                 line_break_necessary_in_args?(node)
+          unless args_on_beginning_line?(node) || line_break_necessary_in_args?(node)
             add_offense_for_expression(node, node.arguments, ARG_MSG)
           end
 
@@ -74,8 +71,7 @@ module RuboCop
         private
 
         def args_on_beginning_line?(node)
-          !node.arguments? ||
-            node.loc.begin.line == node.arguments.loc.last_line
+          !node.arguments? || node.loc.begin.line == node.arguments.loc.last_line
         end
 
         def line_break_necessary_in_args?(node)
@@ -101,9 +97,7 @@ module RuboCop
           expression = expr.source_range
           range = range_between(expression.begin_pos, expression.end_pos)
 
-          add_offense(range, message: msg) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(range, message: msg) { |corrector| autocorrect(corrector, node) }
         end
 
         def autocorrect(corrector, node)
@@ -128,8 +122,7 @@ module RuboCop
             newlines: false
           ).end_pos
           range = range_between(node.loc.begin.end.begin_pos, end_pos)
-          corrector.replace(range,
-                            " |#{block_arg_string(node, node.arguments)}|")
+          corrector.replace(range, " |#{block_arg_string(node, node.arguments)}|")
         end
 
         def autocorrect_body(corrector, node, block_body)
@@ -141,8 +134,7 @@ module RuboCop
 
           block_start_col = node.source_range.column
 
-          corrector.insert_before(first_node,
-                                  "\n  #{' ' * block_start_col}")
+          corrector.insert_before(first_node, "\n  #{' ' * block_start_col}")
         end
 
         def block_arg_string(node, args)

@@ -46,8 +46,7 @@ module RuboCop
           end_position += match.offset(0).last
         end
 
-        return nil if begin_position < max_line_length &&
-                      end_position < max_line_length
+        return nil if begin_position < max_line_length && end_position < max_line_length
 
         begin_position...end_position
       end
@@ -73,8 +72,7 @@ module RuboCop
 
       def uri_regexp
         @uri_regexp ||=
-          URI::DEFAULT_PARSER
-          .make_regexp(config.for_cop('Layout/LineLength')['URISchemes'])
+          URI::DEFAULT_PARSER.make_regexp(config.for_cop('Layout/LineLength')['URISchemes'])
       end
 
       def valid_uri?(uri_ish_string)

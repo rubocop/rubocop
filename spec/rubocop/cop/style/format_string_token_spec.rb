@@ -73,9 +73,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       it 'sets the enforced style to annotated after inspecting "%<a>s"' do
         expect_no_offenses('"%<a>s"')
 
-        expect(cop.config_to_allow_offenses).to eq(
-          'EnforcedStyle' => 'annotated'
-        )
+        expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'annotated')
       end
 
       it 'configures the enforced style to template after inspecting "%{a}"' do
@@ -86,9 +84,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
 
         expect_no_corrections
 
-        expect(cop.config_to_allow_offenses).to eq(
-          'EnforcedStyle' => 'template'
-        )
+        expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'template')
       end
 
       it_behaves_like 'maximum allowed unannotated', token
@@ -125,17 +121,13 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
 
         expect_no_corrections
 
-        expect(cop.config_to_allow_offenses).to eq(
-          'EnforcedStyle' => 'annotated'
-        )
+        expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'annotated')
       end
 
       it 'configures the enforced style to template after inspecting "%{a}"' do
         expect_no_offenses('"%{a}"')
 
-        expect(cop.config_to_allow_offenses).to eq(
-          'EnforcedStyle' => 'template'
-        )
+        expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'template')
       end
 
       it_behaves_like 'maximum allowed unannotated', token
@@ -226,7 +218,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     expect_no_corrections
   end
 
-  it 'handles __FILE__' do
+  it 'ignores __FILE__' do
     expect_no_offenses('__FILE__')
   end
 

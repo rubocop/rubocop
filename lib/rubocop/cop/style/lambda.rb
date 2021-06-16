@@ -50,10 +50,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        LITERAL_MESSAGE = 'Use the `-> { ... }` lambda literal syntax for ' \
-                          '%<modifier>s lambdas.'
-        METHOD_MESSAGE = 'Use the `lambda` method for %<modifier>s ' \
-                         'lambdas.'
+        LITERAL_MESSAGE = 'Use the `-> { ... }` lambda literal syntax for %<modifier>s lambdas.'
+        METHOD_MESSAGE = 'Use the `lambda` method for %<modifier>s lambdas.'
 
         OFFENDING_SELECTORS = {
           style: {

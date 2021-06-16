@@ -48,8 +48,7 @@ module RuboCop
 
               next unless STRUCT_METHOD_NAMES.include?(member_name.to_sym)
 
-              message = format(MSG, member_name: member_name.inspect,
-                                    method_name: member_name.to_s)
+              message = format(MSG, member_name: member_name.inspect, method_name: member_name.to_s)
               add_offense(arg, message: message)
             end
           end

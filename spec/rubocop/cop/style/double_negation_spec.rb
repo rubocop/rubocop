@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
-  let(:cop_config) do
-    { 'EnforcedStyle' => enforced_style }
-  end
+  let(:cop_config) { { 'EnforcedStyle' => enforced_style } }
 
   shared_examples 'common' do
     it 'registers an offense and corrects for `!!` when not a return location' do

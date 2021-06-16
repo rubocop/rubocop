@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComma, :config do
-  it 'registers an offense and corrects block argument ' \
-    'with space before comma' do
+  it 'registers an offense and corrects block argument with space before comma' do
     expect_offense(<<~RUBY)
       each { |s , t| }
                ^ Space found before comma.
@@ -24,8 +23,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComma, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects method call arg ' \
-    'with space before comma' do
+  it 'registers an offense and corrects method call arg with space before comma' do
     expect_offense(<<~RUBY)
       a(1 , 2)
          ^ Space found before comma.

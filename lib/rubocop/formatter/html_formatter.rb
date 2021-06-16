@@ -11,8 +11,7 @@ module RuboCop
     # This formatter saves the output as an html file.
     class HTMLFormatter < BaseFormatter
       ELLIPSES = '<span class="extra-code">...</span>'
-      TEMPLATE_PATH =
-        File.expand_path('../../../assets/output.html.erb', __dir__)
+      TEMPLATE_PATH = File.expand_path('../../../assets/output.html.erb', __dir__)
 
       Color = Struct.new(:red, :green, :blue, :alpha) do
         def to_s
@@ -20,9 +19,7 @@ module RuboCop
         end
 
         def fade_out(amount)
-          dup.tap do |color|
-            color.alpha -= amount
-          end
+          dup.tap { |color| color.alpha -= amount }
         end
       end
 
@@ -79,8 +76,7 @@ module RuboCop
           fatal:      Color.new(0xD2, 0x32, 0x2D, 1.0)
         }.freeze
 
-        LOGO_IMAGE_PATH =
-          File.expand_path('../../../assets/logo.png', __dir__)
+        LOGO_IMAGE_PATH = File.expand_path('../../../assets/logo.png', __dir__)
 
         attr_reader :files, :summary
 
@@ -97,9 +93,7 @@ module RuboCop
         # rubocop:enable Lint/UselessMethodDefinition
 
         def decorated_message(offense)
-          offense.message.gsub(/`(.+?)`/) do
-            "<code>#{Regexp.last_match(1)}</code>"
-          end
+          offense.message.gsub(/`(.+?)`/) { "<code>#{Regexp.last_match(1)}</code>" }
         end
 
         def highlighted_source_line(offense)

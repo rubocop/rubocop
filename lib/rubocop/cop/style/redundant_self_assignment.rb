@@ -66,8 +66,8 @@ module RuboCop
         alias on_gvasgn on_lvasgn
 
         def on_send(node)
-          # TODO: replace with #end_with? after supporting only ruby >= 2.7
-          return unless node.method_name.match?(/=$/)
+          # TODO: Remove `Symbol#to_s` after supporting only Ruby >= 2.7.
+          return unless node.method_name.to_s.end_with?('=')
           return unless redundant_assignment?(node)
 
           message = format(MSG, method_name: node.first_argument.method_name)

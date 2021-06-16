@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
   context 'when EnforcedStyleAlignWith is start_of_line' do
-    let(:cop_config) do
-      { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true }
-    end
+    let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true } }
 
     include_examples 'misaligned', <<~RUBY, false
       def test
@@ -83,9 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
   end
 
   context 'when EnforcedStyleAlignWith is def' do
-    let(:cop_config) do
-      { 'EnforcedStyleAlignWith' => 'def', 'AutoCorrect' => true }
-    end
+    let(:cop_config) { { 'EnforcedStyleAlignWith' => 'def', 'AutoCorrect' => true } }
 
     include_examples 'misaligned', <<~RUBY, false
       def test
@@ -100,9 +96,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
     include_examples 'aligned', 'def', 'test',      'end'
     include_examples 'aligned', 'def', 'Test.test', 'end', 'defs'
 
-    include_examples('aligned',
-                     'foo def', 'test',
-                     '    end')
+    include_examples('aligned', 'foo def', 'test', '    end')
 
     include_examples 'misaligned', <<~RUBY, :start_of_line
       foo def test

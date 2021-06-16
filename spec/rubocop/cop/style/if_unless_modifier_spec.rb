@@ -25,9 +25,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     let(:spaces) { ' ' * 59 }
     let(:body) { "puts '#{spaces}'" }
     let(:source) { "#{body} if condition" }
-    let(:long_url) do
-      'https://some.example.com/with/a/rather?long&and=very&complicated=path'
-    end
+    let(:long_url) { 'https://some.example.com/with/a/rather?long&and=very&complicated=path' }
 
     context 'when Layout/LineLength is enabled' do
       it 'corrects it to normal form' do
@@ -75,13 +73,46 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'when using a method with heredoc argument' do
+        it 'accepts' do
+          expect_offense(<<~RUBY)
+            fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS) if condition
+                                                                                 ^^ Modifier form of `if` makes the line too long.
+              string
+            EOS
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS)
+                string
+              EOS
+            end
+          RUBY
+        end
+      end
+
+      context 'when variable assignment is used in the branch body of if modifier' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            variable = foooooooooooooooooooooooooooooooooooooooooooooooooooooooo if condition
+                                                                                 ^^ Modifier form of `if` makes the line too long.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              variable = foooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+            end
+          RUBY
+        end
+      end
+
       describe 'IgnoreCopDirectives' do
         let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }
         let(:body) { "puts '#{spaces}'" }
 
-        context 'and the long line is allowed because IgnoreCopDirectives is ' \
-                'true' do
+        context 'and the long line is allowed because IgnoreCopDirectives is true' do
           it 'accepts' do
             expect("#{body} if condition".length).to eq(77) # That's 79 including indentation.
             expect_no_offenses(<<~RUBY)
@@ -92,8 +123,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
           end
         end
 
-        context 'and the long line is too long because IgnoreCopDirectives ' \
-                'is false' do
+        context 'and the long line is too long because IgnoreCopDirectives is false' do
           let(:ignore_cop_directives) { false }
 
           it 'registers an offense' do
@@ -128,8 +158,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
     end
 
-    context 'when Layout/LineLength is disabled with enable/disable ' \
-            'comments' do
+    context 'when Layout/LineLength is disabled with enable/disable comments' do
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
           def f
@@ -186,8 +215,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  context 'modifier if that does not fit on one line, but is not the only' \
-          ' statement on the line' do
+  context 'modifier if that does not fit on one line, but is not the only statement on the line' do
     let(:spaces) { ' ' * 59 }
 
     # long lines which have multiple statements on the same line can be flagged

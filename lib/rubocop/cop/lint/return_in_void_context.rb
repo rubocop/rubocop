@@ -63,8 +63,7 @@ module RuboCop
         end
 
         def setter_method?(method_name)
-          method_name.to_s.end_with?('=') &&
-            !AST::Node::COMPARISON_OPERATORS.include?(method_name)
+          method_name.to_s.end_with?('=') && !AST::Node::COMPARISON_OPERATORS.include?(method_name)
         end
       end
     end

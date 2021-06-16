@@ -83,8 +83,7 @@ module RuboCop
 
         def register_offense(node, gem_name, line_of_first_occurrence)
           line_range = node.loc.column...node.loc.last_column
-          offense_location =
-            source_range(processed_source.buffer, node.first_line, line_range)
+          offense_location = source_range(processed_source.buffer, node.first_line, line_range)
           message = format(
             MSG,
             gem_name: gem_name,

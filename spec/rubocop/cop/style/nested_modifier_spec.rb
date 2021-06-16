@@ -87,8 +87,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'adds parentheses to method arguments when needed ' \
-     'in auto-correction' do
+  it 'adds parentheses to method arguments when needed in auto-correction' do
     expect_offense(<<~RUBY)
       a unless [1, 2].include? a if a
         ^^^^^^ Avoid using nested modifiers.

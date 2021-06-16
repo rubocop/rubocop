@@ -74,9 +74,7 @@ module RuboCop
           return unless first_else
           return unless first_else.source_range.line == node.loc.else.line
 
-          add_offense(first_else) do |corrector|
-            autocorrect(corrector, node, first_else)
-          end
+          add_offense(first_else) { |corrector| autocorrect(corrector, node, first_else) }
         end
 
         def autocorrect(corrector, node, first_else)

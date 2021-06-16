@@ -27,22 +27,17 @@ module RuboCop
       class FileName < Base
         include RangeHelp
 
-        MSG_SNAKE_CASE = 'The name of this source file (`%<basename>s`) ' \
-                         'should use snake_case.'
-        MSG_NO_DEFINITION = '%<basename>s should define a class or module ' \
-                            'called `%<namespace>s`.'
+        MSG_SNAKE_CASE = 'The name of this source file (`%<basename>s`) should use snake_case.'
+        MSG_NO_DEFINITION = '%<basename>s should define a class or module called `%<namespace>s`.'
         MSG_REGEX = '`%<basename>s` should match `%<regex>s`.'
 
         SNAKE_CASE = /^[\d[[:lower:]]_.?!]+$/.freeze
 
         def on_new_investigation
           file_path = processed_source.file_path
-          return if config.file_to_exclude?(file_path) ||
-                    config.allowed_camel_case_file?(file_path)
+          return if config.file_to_exclude?(file_path) || config.allowed_camel_case_file?(file_path)
 
-          for_bad_filename(file_path) do |range, msg|
-            add_offense(range, message: msg)
-          end
+          for_bad_filename(file_path) { |range, msg| add_offense(range, message: msg) }
         end
 
         private
@@ -62,8 +57,7 @@ module RuboCop
         def perform_class_and_module_naming_checks(file_path, basename)
           return unless expect_matching_definition?
 
-          if check_definition_path_hierarchy? &&
-             !matching_definition?(file_path)
+          if check_definition_path_hierarchy? && !matching_definition?(file_path)
             msg = no_definition_message(basename, file_path)
           elsif !matching_class?(basename)
             msg = no_definition_message(basename, basename)
@@ -136,8 +130,7 @@ module RuboCop
 
             const_namespace, const_name = *const
             next if name != const_name && !match_acronym?(name, const_name)
-            next unless namespace.empty? ||
-                        match_namespace(child, const_namespace, namespace)
+            next unless namespace.empty? || match_namespace(child, const_namespace, namespace)
 
             return node
           end
@@ -181,9 +174,7 @@ module RuboCop
           expected = expected.to_s
           name = name.to_s
 
-          allowed_acronyms.any? do |acronym|
-            expected.gsub(acronym.capitalize, acronym) == name
-          end
+          allowed_acronyms.any? { |acronym| expected.gsub(acronym.capitalize, acronym) == name }
         end
 
         def to_namespace(path)

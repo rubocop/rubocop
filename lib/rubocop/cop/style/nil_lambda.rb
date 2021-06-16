@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for lambdas that always return nil, which can be replaced
-      # with an empty lambda instead.
+      # This cop checks for lambdas and procs that always return nil,
+      # which can be replaced with an empty lambda or proc instead.
       #
       # @example
       #   # bad
@@ -12,6 +12,12 @@ module RuboCop
       #
       #   lambda do
       #     next nil
+      #   end
+      #
+      #   proc { nil }
+      #
+      #   Proc.new do
+      #     break nil
       #   end
       #
       #   # good
@@ -22,11 +28,15 @@ module RuboCop
       #
       #   -> (x) { nil if x }
       #
+      #   proc {}
+      #
+      #   Proc.new { nil if x }
+      #
       class NilLambda < Base
         extend AutoCorrector
         include RangeHelp
 
-        MSG = 'Use an empty lambda instead of always returning nil.'
+        MSG = 'Use an empty %<type>s instead of always returning nil.'
 
         # @!method nil_return?(node)
         def_node_matcher :nil_return?, <<~PATTERN
@@ -34,18 +44,25 @@ module RuboCop
         PATTERN
 
         def on_block(node)
-          return unless node.lambda?
+          return unless node.lambda? || node.proc?
           return unless nil_return?(node.body)
 
-          add_offense(node) do |corrector|
-            range = if node.single_line?
-                      range_with_surrounding_space(range: node.body.loc.expression)
-                    else
-                      range_by_whole_lines(node.body.loc.expression, include_final_newline: true)
-                    end
-
-            corrector.remove(range)
+          message = format(MSG, type: node.lambda? ? 'lambda' : 'proc')
+          add_offense(node, message: message) do |corrector|
+            autocorrect(corrector, node)
           end
+        end
+
+        private
+
+        def autocorrect(corrector, node)
+          range = if node.single_line?
+                    range_with_surrounding_space(range: node.body.loc.expression)
+                  else
+                    range_by_whole_lines(node.body.loc.expression, include_final_newline: true)
+                  end
+
+          corrector.remove(range)
         end
       end
     end

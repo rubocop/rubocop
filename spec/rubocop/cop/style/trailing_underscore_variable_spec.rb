@@ -2,8 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
   shared_examples 'common functionality' do
-    it 'registers an offense when the last variable of parallel assignment ' \
-       'is an underscore' do
+    it 'registers an offense when the last variable of parallel assignment is an underscore' do
       expect_offense(<<~RUBY)
         a, b, _ = foo()
               ^^ Do not use trailing `_`s in parallel assignment. Prefer `a, b, = foo()`.
@@ -49,8 +48,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       RUBY
     end
 
-    it 'registers an offense when underscore is the only variable ' \
-       'in parallel assignment' do
+    it 'registers an offense when underscore is the only variable in parallel assignment' do
       expect_offense(<<~RUBY)
         _, = foo()
         ^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `foo()`.
@@ -86,8 +84,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       expect_no_offenses('*a, b, _ = foo()')
     end
 
-    it 'does not register an offense for an underscore preceded by a ' \
-       'splat variable' do
+    it 'does not register an offense for an underscore preceded by a splat variable' do
       expect_no_offenses('a, *b, _ = foo()')
     end
 
@@ -96,13 +93,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       expect_no_offenses('_, *b, _ = *foo')
     end
 
-    it 'does not register an offense for multiple underscores preceded by a ' \
-       'splat variable' do
+    it 'does not register an offense for multiple underscores preceded by a splat variable' do
       expect_no_offenses('a, *b, _, _ = foo()')
     end
 
-    it 'does not register an offense for multiple named underscores ' \
-       'preceded by a splat variable' do
+    it 'does not register an offense for multiple named underscores preceded by a splat variable' do
       expect_no_offenses('a, *b, _c, _d = foo()')
     end
 
@@ -118,8 +113,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       RUBY
     end
 
-    it 'registers an offense for nested assignments with trailing ' \
-      'underscores' do
+    it 'registers an offense for nested assignments with trailing underscores' do
       expect_offense(<<~RUBY)
         a, (b, _) = foo()
               ^^ Do not use trailing `_`s in parallel assignment. Prefer `a, (b,) = foo()`.
@@ -130,8 +124,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       RUBY
     end
 
-    it 'registers an offense for complex nested assignments with trailing ' \
-      'underscores' do
+    it 'registers an offense for complex nested assignments with trailing underscores' do
       expect_offense(<<~RUBY)
         a, (_, (b, _), *_) = foo()
                   ^^ Do not use trailing `_`s in parallel assignment. Prefer `a, (_, (b,), *_) = foo()`.
@@ -153,13 +146,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       expect_no_offenses('a, *b, _c = foo()')
     end
 
-    it 'does not register an offense for nested assignments without ' \
-      'trailing underscores' do
+    it 'does not register an offense for nested assignments without trailing underscores' do
       expect_no_offenses('a, (_, b) = foo()')
     end
 
-    it 'does not register an offense for complex nested assignments without ' \
-      'trailing underscores' do
+    it 'does not register an offense for complex nested assignments without trailing underscores' do
       expect_no_offenses('a, (_, (b,), c, (d, e),) = foo()')
     end
 
@@ -224,13 +215,11 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
 
     include_examples 'common functionality'
 
-    it 'does not register an offense for named variables ' \
-       'that start with an underscore' do
+    it 'does not register an offense for named variables that start with an underscore' do
       expect_no_offenses('a, b, _c = foo()')
     end
 
-    it 'does not register an offense for a named splat underscore ' \
-       'as the last variable' do
+    it 'does not register an offense for a named splat underscore as the last variable' do
       expect_no_offenses('a, *_b = foo()')
     end
 
@@ -257,8 +246,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
 
     include_examples 'common functionality'
 
-    it 'registers an offense for named variables ' \
-       'that start with an underscore' do
+    it 'registers an offense for named variables that start with an underscore' do
       expect_offense(<<~RUBY)
         a, b, _c = foo()
               ^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, b, = foo()`.
@@ -269,8 +257,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       RUBY
     end
 
-    it 'registers an offense for a named splat underscore ' \
-       'as the last variable' do
+    it 'registers an offense for a named splat underscore as the last variable' do
       expect_offense(<<~RUBY)
         a, *_b = foo()
            ^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
@@ -281,8 +268,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       RUBY
     end
 
-    it 'does not register an offense for a named underscore preceded by a ' \
-       'splat variable' do
+    it 'does not register an offense for a named underscore preceded by a splat variable' do
       expect_no_offenses('a, *b, _c = foo()')
     end
 
@@ -298,8 +284,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       RUBY
     end
 
-    it 'registers an offense for an underscore preceded by ' \
-       'a named splat underscore' do
+    it 'registers an offense for an underscore preceded by a named splat underscore' do
       expect_offense(<<~RUBY)
         a, b, *_c, _ = foo()
               ^^^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, b, = foo()`.

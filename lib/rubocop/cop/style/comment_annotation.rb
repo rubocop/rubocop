@@ -44,8 +44,7 @@ module RuboCop
         MSG = 'Annotation keywords like `%<keyword>s` should be all ' \
               'upper case, followed by a colon, and a space, ' \
               'then a note describing the problem.'
-        MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, ' \
-                       'is missing a note.'
+        MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, is missing a note.'
 
         def on_new_investigation
           processed_source.comments.each_with_index do |comment, index|
@@ -53,8 +52,7 @@ module RuboCop
                         inline_comment?(comment)
 
             margin, first_word, colon, space, note = split_comment(comment)
-            next unless annotation?(comment) &&
-                        !correct_annotation?(first_word, colon, space, note)
+            next unless annotation?(comment) && !correct_annotation?(first_word, colon, space, note)
 
             range = annotation_range(comment, margin, first_word, colon, space)
 
@@ -76,8 +74,7 @@ module RuboCop
         end
 
         def first_comment_line?(comments, index)
-          index.zero? ||
-            comments[index - 1].loc.line < comments[index].loc.line - 1
+          index.zero? || comments[index - 1].loc.line < comments[index].loc.line - 1
         end
 
         def inline_comment?(comment)

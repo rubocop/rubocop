@@ -135,8 +135,15 @@ module RuboCop
             check_indentation(when_node.loc.keyword, when_node.body)
           end
 
-          check_indentation(case_node.when_branches.last.loc.keyword,
-                            case_node.else_branch)
+          check_indentation(case_node.when_branches.last.loc.keyword, case_node.else_branch)
+        end
+
+        def on_case_match(case_match)
+          case_match.each_in_pattern do |in_pattern_node|
+            check_indentation(in_pattern_node.loc.keyword, in_pattern_node.body)
+          end
+
+          check_indentation(case_match.in_pattern_branches.last.loc.keyword, case_match.else_branch)
         end
 
         def on_if(node, base = node)
@@ -314,9 +321,12 @@ module RuboCop
             check_rescue?(body_node)
           elsif body_node.ensure_type?
             block_body, = *body_node
-            return unless block_body
 
-            check_rescue?(block_body) if block_body.rescue_type?
+            if block_body&.rescue_type?
+              check_rescue?(block_body)
+            else
+              !block_body.nil?
+            end
           else
             true
           end

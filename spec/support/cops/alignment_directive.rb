@@ -16,9 +16,7 @@ module RuboCop
           processed_source.ast_with_comments.each do |node, comments|
             next unless comments.find { |c| @column_delta = delta(c) }
 
-            add_offense(node) do |corrector|
-              autocorrect(corrector, node)
-            end
+            add_offense(node) { |corrector| autocorrect(corrector, node) }
           end
         end
 

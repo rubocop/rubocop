@@ -5,9 +5,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
   subject(:scope) { described_class.new(scope_node) }
 
-  let(:ast) do
-    RuboCop::ProcessedSource.new(source, ruby_version).ast
-  end
+  let(:ast) { RuboCop::ProcessedSource.new(source, ruby_version).ast }
 
   let(:scope_node) { ast.each_node(scope_node_type).first }
 
@@ -160,9 +158,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
   end
 
   describe '#include?' do
-    subject do
-      scope.include?(target_node)
-    end
+    subject { scope.include?(target_node) }
 
     let(:source) { <<-RUBY }
       class SomeClass
@@ -179,41 +175,31 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
     let(:scope_node_type) { :defs }
 
     context 'with ancestor node the scope does not include' do
-      let(:target_node) do
-        ast
-      end
+      let(:target_node) { ast }
 
       it { is_expected.to be false }
     end
 
     context 'with node of the scope itself' do
-      let(:target_node) do
-        ast.each_node.find(&:defs_type?)
-      end
+      let(:target_node) { ast.each_node.find(&:defs_type?) }
 
       it { is_expected.to be false }
     end
 
     context 'with child node the scope does not include' do
-      let(:target_node) do
-        ast.each_node.find(&:self_type?)
-      end
+      let(:target_node) { ast.each_node.find(&:self_type?) }
 
       it { is_expected.to be false }
     end
 
     context 'with child node the scope includes' do
-      let(:target_node) do
-        ast.each_node.find(&:send_type?)
-      end
+      let(:target_node) { ast.each_node.find(&:send_type?) }
 
       it { is_expected.to be true }
     end
 
     context 'with descendant node the scope does not include' do
-      let(:target_node) do
-        ast.each_node.find(&:lvasgn_type?)
-      end
+      let(:target_node) { ast.each_node.find(&:lvasgn_type?) }
 
       it { is_expected.to be false }
     end
@@ -224,9 +210,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       it "yields #{description}" do
         yielded_types = []
 
-        scope.each_node do |node|
-          yielded_types << node.type
-        end
+        scope.each_node { |node| yielded_types << node.type }
 
         expect(yielded_types).to eq(expected_types.map(&:to_sym))
       end

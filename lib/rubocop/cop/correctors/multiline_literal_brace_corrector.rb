@@ -41,9 +41,7 @@ module RuboCop
       end
 
       def correct_next_line_brace(corrector)
-        corrector.remove(
-          range_with_surrounding_space(range: node.loc.end, side: :left)
-        )
+        corrector.remove(range_with_surrounding_space(range: node.loc.end, side: :left))
 
         corrector.insert_before(
           last_element_range_with_trailing_comma(node).end,

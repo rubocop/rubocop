@@ -31,9 +31,7 @@ module RuboCop
           if node.body.defs_type?
             check_defs(node.identifier, node.body)
           elsif node.body.begin_type?
-            node.body.each_child_node(:defs) do |def_node|
-              check_defs(node.identifier, def_node)
-            end
+            node.body.each_child_node(:defs) { |def_node| check_defs(node.identifier, def_node) }
           end
         end
         alias on_module on_class

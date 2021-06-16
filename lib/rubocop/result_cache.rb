@@ -39,8 +39,7 @@ module RuboCop
       private
 
       def requires_file_removal?(file_count, config_store)
-        file_count > 1 &&
-          file_count > config_store.for_pwd.for_all_cops['MaxFilesInCache']
+        file_count > 1 && file_count > config_store.for_pwd.for_all_cops['MaxFilesInCache']
       end
 
       def remove_oldest_files(files, dirs, cache_root, verbose)
@@ -108,7 +107,7 @@ module RuboCop
 
     def load
       puts "Loading cache from #{@path}" if debug?
-      @cached_data.from_json(IO.read(@path, encoding: Encoding::UTF_8))
+      @cached_data.from_json(File.read(@path, encoding: Encoding::UTF_8))
     end
 
     def save(offenses)
@@ -117,8 +116,7 @@ module RuboCop
       begin
         FileUtils.mkdir_p(dir)
       rescue Errno::EACCES, Errno::EROFS => e
-        warn "Couldn't create cache directory. Continuing without cache."\
-             "\n  #{e.message}"
+        warn "Couldn't create cache directory. Continuing without cache.\n  #{e.message}"
         return
       end
 
@@ -159,9 +157,7 @@ module RuboCop
     def file_checksum(file, config_store)
       digester = Digest::SHA1.new
       mode = File.stat(file).mode
-      digester.update(
-        "#{file}#{mode}#{config_store.for_file(file).signature}"
-      )
+      digester.update("#{file}#{mode}#{config_store.for_file(file).signature}")
       digester.file(file)
       digester.hexdigest
     rescue Errno::ENOENT
@@ -224,10 +220,7 @@ module RuboCop
     # This context is for anything that's not (1) the RuboCop executable
     # checksum or (2) the inspected file checksum.
     def context_checksum(team, options)
-      Digest::SHA1.hexdigest([
-        team_checksum(team),
-        relevant_options_digest(options)
-      ].join)
+      Digest::SHA1.hexdigest([team_checksum(team), relevant_options_digest(options)].join)
     end
   end
 end

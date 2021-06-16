@@ -27,15 +27,11 @@ module RuboCop
       end
 
       def on_class(node)
-        class_definition(node) do
-          add_offense(node.children[1])
-        end
+        class_definition(node) { add_offense(node.children[1]) }
       end
 
       def on_send(node)
-        class_new_definition(node) do
-          add_offense(node.children.last)
-        end
+        class_new_definition(node) { add_offense(node.children.last) }
       end
     end
   end

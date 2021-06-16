@@ -10,6 +10,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop/rubocop/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop/rubocop/maintainability)
 [![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
+[![Discord](https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true)](https://discord.gg/wJjWvGRDmm)
 
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
@@ -27,6 +28,8 @@ RuboCop is extremely flexible and most aspects of its behavior can be tweaked vi
 [![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
 [![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
 [![Tidelift](https://tidelift.com/badges/package/rubygems/rubocop)](https://tidelift.com/subscription/pkg/rubygems-rubocop?utm_source=rubygems-rubocop&utm_medium=referral&utm_campaign=readme)
+
+Working on RuboCop is often fun, but it also requires a great deal of time and energy.
 
 **Please consider [financially supporting its ongoing development](#funding).**
 
@@ -51,7 +54,7 @@ To prevent an unwanted RuboCop update you might want to use a conservative versi
 in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 1.12', require: false
+gem 'rubocop', '~> 1.17', require: false
 ```
 
 See [our versioning policy](https://docs.rubocop.org/rubocop/versioning.html) for further details.
@@ -73,7 +76,7 @@ You can read a lot more about RuboCop in its [official docs](https://docs.ruboco
 
 RuboCop officially supports the following Ruby implementations:
 
-* MRI 2.4+
+* MRI 2.5+
 * JRuby 9.2+
 
 See the [compatibility documentation](https://docs.rubocop.org/rubocop/compatibility.html) for further details.

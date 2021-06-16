@@ -27,12 +27,6 @@ module RuboCop
       def type(node)
         node.loc.begin.source[0..-2]
       end
-
-      # A range containing only the contents of the percent literal (e.g. in
-      # %i{1 2 3} this will be the range covering '1 2 3' only)
-      def contents_range(node)
-        range_between(node.loc.begin.end_pos, node.loc.end.begin_pos)
-      end
     end
   end
 end

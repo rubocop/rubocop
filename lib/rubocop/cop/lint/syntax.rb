@@ -21,9 +21,7 @@ module RuboCop
           message =
             "#{diagnostic.message}\n(Using Ruby #{ruby_version} parser; " \
             'configure using `TargetRubyVersion` parameter, under `AllCops`)'
-          add_offense(diagnostic.location,
-                      message: message,
-                      severity: diagnostic.level)
+          add_offense(diagnostic.location, message: message, severity: diagnostic.level)
         end
 
         def add_offense_from_error(error)

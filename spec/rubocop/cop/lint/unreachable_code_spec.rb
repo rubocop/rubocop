@@ -45,8 +45,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
       RUBY
     end
 
-    it "registers an offense for `#{t}` in all `if` branches" \
-       'with other expressions' do
+    it "registers an offense for `#{t}` in all `if` brancheswith other expressions" do
       expect_offense(wrap(<<~RUBY))
         if cond
           something

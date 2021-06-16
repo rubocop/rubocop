@@ -46,8 +46,7 @@ RSpec.describe RuboCop::Cop::Lint::UriRegexp, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects using `::URI.regexp` ' \
-    'without argument' do
+  it 'registers an offense and corrects using `::URI.regexp` without argument' do
     expect_offense(<<~RUBY)
       ::URI.regexp
             ^^^^^^ `::URI.regexp` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp`.
@@ -59,8 +58,7 @@ RSpec.describe RuboCop::Cop::Lint::UriRegexp, :config do
   end
 
   context 'array argument' do
-    it 'registers an offense and corrects using `URI.regexp` with '\
-       'literal arrays' do
+    it 'registers an offense and corrects using `URI.regexp` with literal arrays' do
       expect_offense(<<~RUBY)
         URI.regexp(['http', 'https'])
             ^^^^^^ `URI.regexp(['http', 'https'])` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp(['http', 'https'])`.

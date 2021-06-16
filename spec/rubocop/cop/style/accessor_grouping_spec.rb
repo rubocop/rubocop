@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
   context 'when EnforcedStyle is grouped' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'grouped' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'grouped' } }
 
     it 'registers an offense and corrects when using separated accessors' do
       expect_offense(<<~RUBY)
@@ -157,9 +155,7 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
   end
 
   context 'when EnforcedStyle is separated' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'separated' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'separated' } }
 
     it 'registers an offense and corrects when using grouped accessors' do
       expect_offense(<<~RUBY)

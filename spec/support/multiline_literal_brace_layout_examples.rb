@@ -107,8 +107,7 @@ shared_examples_for 'multiline literal brace layout' do
         RUBY
       end
 
-      unless described_class ==
-             RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
+      unless described_class == RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
         context 'with a chained call on the closing brace' do
           let(:suffix) { '.any?' }
 
@@ -274,8 +273,7 @@ shared_examples_for 'multiline literal brace layout' do
         RUBY
       end
 
-      unless described_class ==
-             RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
+      unless described_class == RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
         context 'with a chained call on the closing brace' do
           let(:suffix) { '.any?' }
 

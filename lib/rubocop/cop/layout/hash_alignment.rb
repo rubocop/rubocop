@@ -185,7 +185,9 @@ module RuboCop
                      SeparatorAlignment => 'Align the separators of a hash ' \
                        'literal if they span more than one line.',
                      TableAlignment => 'Align the keys and values of a hash ' \
-                       'literal if they span more than one line.' }.freeze
+                       'literal if they span more than one line.',
+                     KeywordSplatAlignment => 'Align keyword splats with the ' \
+                       'rest of the hash if it spans more than one line.' }.freeze
 
         def on_send(node)
           return if double_splat?(node)
@@ -193,22 +195,19 @@ module RuboCop
 
           last_argument = node.last_argument
 
-          return unless last_argument.hash_type? &&
-                        ignore_hash_argument?(last_argument)
+          return unless last_argument.hash_type? && ignore_hash_argument?(last_argument)
 
           ignore_node(last_argument)
         end
         alias on_super on_send
         alias on_yield on_send
 
-        def on_hash(node) # rubocop:todo Metrics/CyclomaticComplexity
-          return if ignored_node?(node)
-          return if node.pairs.empty? || node.single_line?
+        def on_hash(node)
+          return if autocorrect_incompatible_with_other_cops?(node) || ignored_node?(node) ||
+                    node.pairs.empty? || node.single_line?
 
-          return unless alignment_for_hash_rockets
-                        .any? { |a| a.checkable_layout?(node) } &&
-                        alignment_for_colons
-                        .any? { |a| a.checkable_layout?(node) }
+          proc = ->(a) { a.checkable_layout?(node) }
+          return unless alignment_for_hash_rockets.any?(proc) && alignment_for_colons.any?(proc)
 
           check_pairs(node)
         end
@@ -216,6 +215,12 @@ module RuboCop
         attr_accessor :offences_by, :column_deltas
 
         private
+
+        def autocorrect_incompatible_with_other_cops?(node)
+          enforce_first_argument_with_fixed_indentation? &&
+            node.pairs.any? &&
+            node.parent&.call_type? && node.parent.loc.line == node.pairs.first.loc.line
+        end
 
         def reset!
           self.offences_by = {}
@@ -246,7 +251,14 @@ module RuboCop
         end
 
         def add_offences
+          kwsplat_offences = offences_by.delete(KeywordSplatAlignment)
+          register_offences_with_format(kwsplat_offences, KeywordSplatAlignment)
+
           format, offences = offences_by.min_by { |_, v| v.length }
+          register_offences_with_format(offences, format)
+        end
+
+        def register_offences_with_format(offences, format)
           (offences || []).each do |offence|
             add_offense(offence, message: MESSAGES[format]) do |corrector|
               delta = column_deltas[alignment_for(offence).first.class][offence]
@@ -274,7 +286,9 @@ module RuboCop
         end
 
         def alignment_for(pair)
-          if pair.hash_rocket?
+          if pair.kwsplat_type?
+            [KeywordSplatAlignment.new]
+          elsif pair.hash_rocket?
             alignment_for_hash_rockets
           else
             alignment_for_colons
@@ -282,13 +296,11 @@ module RuboCop
         end
 
         def alignment_for_hash_rockets
-          @alignment_for_hash_rockets ||=
-            new_alignment('EnforcedHashRocketStyle')
+          @alignment_for_hash_rockets ||= new_alignment('EnforcedHashRocketStyle')
         end
 
         def alignment_for_colons
-          @alignment_for_colons ||=
-            new_alignment('EnforcedColonStyle')
+          @alignment_for_colons ||= new_alignment('EnforcedColonStyle')
         end
 
         def correct_node(corrector, node, delta)
@@ -355,6 +367,16 @@ module RuboCop
 
         def good_alignment?(column_deltas)
           column_deltas.values.all?(&:zero?)
+        end
+
+        def enforce_first_argument_with_fixed_indentation?
+          return false unless argument_alignment_config['Enabled']
+
+          argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def argument_alignment_config
+          config.for_cop('Layout/ArgumentAlignment')
         end
       end
     end

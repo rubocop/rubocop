@@ -10,11 +10,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
   let(:indentation_width) { 2 }
 
   context 'aligned with first argument' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_first_argument'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_first_argument' } }
 
     it 'registers an offense and corrects arguments with single indent' do
       expect_offense(<<~RUBY)
@@ -89,6 +85,31 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       expect_no_offenses(<<~RUBY)
         add_offense(index,
                     MSG % kind)
+      RUBY
+    end
+
+    it 'registers an offense and corrects when missed indendation kwargs' do
+      expect_offense(<<~RUBY)
+        func1(foo: 'foo',
+          bar: 'bar',
+          ^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+          baz: 'baz')
+          ^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+        func2(do_something,
+          foo: 'foo',
+          ^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+          bar: 'bar',
+          baz: 'baz')
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func1(foo: 'foo',
+              bar: 'bar',
+              baz: 'baz')
+        func2(do_something,
+              foo: 'foo',
+              bar: 'bar',
+              baz: 'baz')
       RUBY
     end
 
@@ -299,8 +320,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and correct multi-line parameters' \
-      'indented too far' do
+    it 'registers an offense and correct multi-line parametersindented too far' do
       expect_offense(<<~RUBY)
         create :transaction, :closed,
                  account:          account,
@@ -355,11 +375,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
   end
 
   context 'aligned with fixed indentation' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'with_fixed_indentation'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'with_fixed_indentation' } }
 
     it 'autocorrects by outdenting when indented too far' do
       expect_offense(<<~RUBY)
@@ -395,6 +411,31 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when missed indendation kwargs' do
+      expect_offense(<<~RUBY)
+        func1(foo: 'foo',
+              bar: 'bar',
+              ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+              baz: 'baz')
+              ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+        func2(do_something,
+              foo: 'foo',
+              ^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+              bar: 'bar',
+              baz: 'baz')
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func1(foo: 'foo',
+          bar: 'bar',
+          baz: 'baz')
+        func2(do_something,
+          foo: 'foo',
+          bar: 'bar',
+          baz: 'baz')
+      RUBY
+    end
+
     it 'autocorrects when first line is indented' do
       expect_offense(<<-RUBY.strip_margin('|'))
         |  create :transaction, :closed,
@@ -424,8 +465,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
         RUBY
       end
 
-      it 'registers offenses and corrects double indentation ' \
-        'from relevant method' do
+      it 'registers offenses and corrects double indentation from relevant method' do
         expect_offense(<<~RUBY)
           something
             .method_name(
@@ -553,6 +593,17 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
           RUBY
         end
       end
+    end
+
+    it 'does not register an offense when using aligned braced hash as a argument' do
+      expect_no_offenses(<<~RUBY)
+        do_something(
+          {
+            foo: 'bar',
+            baz: 'qux'
+          }
+        )
+      RUBY
     end
   end
 end

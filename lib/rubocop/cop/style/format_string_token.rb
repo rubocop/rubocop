@@ -146,10 +146,7 @@ module RuboCop
             next if seq.percent?
 
             detected_style = seq.style
-            token = contents.begin.adjust(
-              begin_pos: seq.begin_pos,
-              end_pos:   seq.end_pos
-            )
+            token = contents.begin.adjust(begin_pos: seq.begin_pos, end_pos: seq.end_pos)
 
             yield(detected_style, token)
           end

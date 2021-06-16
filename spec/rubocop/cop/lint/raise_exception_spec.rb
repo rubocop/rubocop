@@ -121,8 +121,7 @@ RSpec.describe RuboCop::Cop::Lint::RaiseException, :config do
     expect_no_offenses('fail')
   end
 
-  it 'does not register an offense when raising Exception with explicit ' \
-     'namespace' do
+  it 'does not register an offense when raising Exception with explicit namespace' do
     expect_no_offenses(<<~RUBY)
       raise Foo::Exception
     RUBY

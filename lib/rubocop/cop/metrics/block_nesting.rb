@@ -12,10 +12,7 @@ module RuboCop
       #
       # The maximum level of nesting allowed is configurable.
       class BlockNesting < Base
-        NESTING_BLOCKS = %i[
-          case if while while_post
-          until until_post for resbody
-        ].freeze
+        NESTING_BLOCKS = %i[case if while while_post until until_post for resbody].freeze
 
         exclude_limit 'Max'
 
@@ -34,9 +31,7 @@ module RuboCop
             if current_level > max
               self.max = current_level
               unless part_of_ignored_node?(node)
-                add_offense(node, message: message(max)) do
-                  ignore_node(node)
-                end
+                add_offense(node, message: message(max)) { ignore_node(node) }
               end
             end
           end

@@ -45,8 +45,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
-    it 'registers an offense for complex content including A, B, and C ' \
-       'scores' do
+    it 'registers an offense for complex content including A, B, and C scores' do
       expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<3, 4, 5> 7.07/0]

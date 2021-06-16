@@ -23,10 +23,27 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
               def x() = foo#{trailing_whitespace}
             RUBY
           end
+
+          it 'registers an offense for `defs` when there are parens' do
+            expect_offense(<<~RUBY)
+              def self.x() = foo()
+                                ^^ Omit parentheses for method calls with arguments.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def self.x() = foo#{trailing_whitespace}
+            RUBY
+          end
         else
           it 'does not register an offense when there are parens' do
             expect_no_offenses(<<~RUBY)
               def x() = foo()
+            RUBY
+          end
+
+          it 'does not register an offense for `defs` when there are parens' do
+            expect_no_offenses(<<~RUBY)
+              def self.x() = foo()
             RUBY
           end
         end
@@ -34,6 +51,18 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         it 'does not register an offense when there are no parens' do
           expect_no_offenses(<<~RUBY)
             def x() = foo
+          RUBY
+        end
+
+        it 'does not register an offense when there are arguments' do
+          expect_no_offenses(<<~RUBY)
+            def x() = foo(y)
+          RUBY
+        end
+
+        it 'does not register an offense for `defs` when there are arguments' do
+          expect_no_offenses(<<~RUBY)
+            def self.x() = foo(y)
           RUBY
         end
       end
@@ -312,9 +341,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     context 'when inspecting macro methods' do
-      let(:cop_config) do
-        { 'IgnoreMacros' => 'true' }
-      end
+      let(:cop_config) { { 'IgnoreMacros' => 'true' } }
 
       context 'in a class body' do
         it 'does not register an offense' do
@@ -338,9 +365,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     context 'IgnoredPatterns' do
-      let(:cop_config) do
-        { 'IgnoredPatterns' => %w[^assert ^refute] }
-      end
+      let(:cop_config) { { 'IgnoredPatterns' => %w[^assert ^refute] } }
 
       it 'ignored methods listed in IgnoredPatterns' do
         expect_no_offenses('assert 2 == 2')
@@ -355,11 +380,37 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   context 'when EnforcedStyle is omit_parentheses' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'omit_parentheses' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'omit_parentheses' } }
 
     it_behaves_like 'endless methods', omit: true
+
+    context 'forwarded arguments in 2.7', :ruby27 do
+      it 'accepts parens for forwarded arguments' do
+        expect_no_offenses(<<~RUBY)
+          def delegated_call(...)
+            @proxy.call(...)
+          end
+        RUBY
+      end
+    end
+
+    context 'forwarded arguments in 3.0', :ruby30 do
+      it 'accepts parens for forwarded arguments' do
+        expect_no_offenses(<<~RUBY)
+          def method_missing(name, ...)
+            @proxy.call(name, ...)
+          end
+        RUBY
+      end
+    end
+
+    context 'numbered parameters in 2.7', :ruby27 do
+      it 'accepts parens for braced numeric block calls' do
+        expect_no_offenses(<<~RUBY)
+          numblock.call(:arg) { _1 }
+        RUBY
+      end
+    end
 
     it 'register an offense for parens in method call without args' do
       trailing_whitespace = ' '
@@ -874,12 +925,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
   end
 
   context 'when inspecting macro methods with IncludedMacros' do
-    let(:cop_config) do
-      {
-        'IgnoreMacros' => 'true',
-        'IncludedMacros' => ['bar']
-      }
-    end
+    let(:cop_config) { { 'IgnoreMacros' => 'true', 'IncludedMacros' => ['bar'] } }
 
     it_behaves_like 'endless methods'
 

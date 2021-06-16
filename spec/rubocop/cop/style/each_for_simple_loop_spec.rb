@@ -62,8 +62,7 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop, :config do
       RUBY
     end
 
-    it 'does not register offense for range not starting with zero and ' \
-       'using param' do
+    it 'does not register offense for range not starting with zero and using param' do
       expect_no_offenses(<<~RUBY)
         (3..7).each do |n|
         end
@@ -109,8 +108,7 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop, :config do
       RUBY
     end
 
-    it 'does not register offense for range not starting with zero and ' \
-       'using param' do
+    it 'does not register offense for range not starting with zero and using param' do
       expect_no_offenses(<<~RUBY)
         (3...7).each do |n|
         end

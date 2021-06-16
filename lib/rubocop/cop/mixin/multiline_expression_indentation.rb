@@ -6,12 +6,10 @@ module RuboCop
     # operations.
     module MultilineExpressionIndentation # rubocop:disable Metrics/ModuleLength
       KEYWORD_ANCESTOR_TYPES  = %i[for if while until return].freeze
-      UNALIGNED_RHS_TYPES     = %i[if while until for return
-                                   array kwbegin].freeze
+      UNALIGNED_RHS_TYPES     = %i[if while until for return array kwbegin].freeze
       DEFAULT_MESSAGE_TAIL    = 'an expression'
       ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'
-      KEYWORD_MESSAGE_TAIL    = 'a %<kind>s in %<article>s `%<keyword>s` ' \
-                                'statement'
+      KEYWORD_MESSAGE_TAIL    = 'a %<kind>s in %<article>s `%<keyword>s` statement'
 
       def on_send(node)
         return if !node.receiver || node.method?(:[])
@@ -35,26 +33,6 @@ module RuboCop
         lhs
       end
 
-      def right_hand_side(send_node)
-        if send_node.operator_method? && send_node.arguments?
-          send_node.first_argument.source_range # not used for method calls
-        else
-          regular_method_right_hand_side(send_node)
-        end
-      end
-
-      def regular_method_right_hand_side(send_node)
-        dot = send_node.loc.dot
-        selector = send_node.loc.selector
-        if send_node.dot? && selector && dot.line == selector.line
-          dot.join(selector)
-        elsif selector
-          selector
-        elsif send_node.implicit_call?
-          dot.join(send_node.loc.begin)
-        end
-      end
-
       # The correct indentation of `node` is usually `IndentationWidth`, with
       # one exception: prefix keywords.
       #
@@ -75,8 +53,7 @@ module RuboCop
         kw_node = kw_node_with_special_indentation(node)
         if kw_node && !postfix_conditional?(kw_node)
           # This cop could have its own IndentationWidth configuration
-          configured_indentation_width +
-            @config.for_cop('Layout/IndentationWidth')['Width']
+          configured_indentation_width + @config.for_cop('Layout/IndentationWidth')['Width']
         else
           configured_indentation_width
         end
@@ -111,9 +88,7 @@ module RuboCop
           return keyword_message_tail(ancestor)
         end
 
-        part_of_assignment_rhs(node, rhs) do |_node|
-          return ASSIGNMENT_MESSAGE_TAIL
-        end
+        part_of_assignment_rhs(node, rhs) { |_node| return ASSIGNMENT_MESSAGE_TAIL }
 
         DEFAULT_MESSAGE_TAIL
       end
@@ -123,9 +98,7 @@ module RuboCop
         kind    = keyword == 'for' ? 'collection' : 'condition'
         article = keyword.start_with?('i', 'u') ? 'an' : 'a'
 
-        format(KEYWORD_MESSAGE_TAIL, kind: kind,
-                                     article: article,
-                                     keyword: keyword)
+        format(KEYWORD_MESSAGE_TAIL, kind: kind, article: article, keyword: keyword)
       end
 
       def kw_node_with_special_indentation(node)
@@ -163,9 +136,7 @@ module RuboCop
           next unless kind == :with_or_without_parentheses ||
                       kind == :with_parentheses && parentheses?(a)
 
-          a.arguments.any? do |arg|
-            within_node?(node, arg)
-          end
+          a.arguments.any? { |arg| within_node?(node, arg) }
         end
       end
 
@@ -200,8 +171,7 @@ module RuboCop
 
       # The []= operator and setters (a.b = c) are parsed as :send nodes.
       def valid_method_rhs_candidate?(candidate, node)
-        node.setter_method? &&
-          valid_rhs_candidate?(candidate, node.last_argument)
+        node.setter_method? && valid_rhs_candidate?(candidate, node.last_argument)
       end
 
       def valid_rhs_candidate?(candidate, node)

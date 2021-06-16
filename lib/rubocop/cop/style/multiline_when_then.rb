@@ -35,17 +35,7 @@ module RuboCop
         MSG = 'Do not use `then` for multiline `when` statement.'
 
         def on_when(node)
-          # Without `then`, there's no offense
-          return unless node.then?
-
-          # Single line usage of `then` is not an offense
-          return if !node.children.last.nil? && !node.multiline?
-
-          # Requires `then` for write `when` and its body on the same line.
-          return if require_then?(node)
-
-          # For arrays and hashes there's no offense
-          return if accept_node_type?(node.body)
+          return if !node.then? || require_then?(node)
 
           range = node.loc.begin
           add_offense(range) do |corrector|
@@ -57,6 +47,7 @@ module RuboCop
 
         private
 
+        # Requires `then` for write `when` and its body on the same line.
         def require_then?(when_node)
           unless when_node.conditions.first.first_line == when_node.conditions.last.last_line
             return true

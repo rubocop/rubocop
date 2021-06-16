@@ -59,8 +59,7 @@ module RuboCop
             contains_multiple_levels_of_exceptions?(group)
           end
 
-          return if !rescue_group_rescues_multiple_levels &&
-                    sorted?(rescued_groups)
+          return if !rescue_group_rescues_multiple_levels && sorted?(rescued_groups)
 
           add_offense(offense_range(rescues))
         end
@@ -74,18 +73,14 @@ module RuboCop
         end
 
         def rescued_groups_for(rescues)
-          rescues.map do |group|
-            evaluate_exceptions(group)
-          end
+          rescues.map { |group| evaluate_exceptions(group) }
         end
 
         def contains_multiple_levels_of_exceptions?(group)
           # Always treat `Exception` as the highest level exception.
           return true if group.size > 1 && group.include?(Exception)
 
-          group.combination(2).any? do |a, b|
-            compare_exceptions(a, b)
-          end
+          group.combination(2).any? { |a, b| compare_exceptions(a, b) }
         end
 
         def compare_exceptions(exception, other_exception)
@@ -111,6 +106,9 @@ module RuboCop
 
           if rescued_exceptions.any?
             rescued_exceptions.each_with_object([]) do |exception, converted|
+              # FIXME: Workaround `rubocop:disable` comment for JRuby.
+              #        https://github.com/jruby/jruby/issues/6642
+              # rubocop:disable Style/RedundantBegin
               begin
                 RuboCop::Util.silence_warnings do
                   # Avoid printing deprecation warnings about constants
@@ -119,6 +117,7 @@ module RuboCop
               rescue NameError
                 converted << nil
               end
+              # rubocop:enable Style/RedundantBegin
             end
           else
             # treat an empty `rescue` as `rescue StandardError`

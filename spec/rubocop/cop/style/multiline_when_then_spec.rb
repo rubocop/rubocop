@@ -60,8 +60,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
     RUBY
   end
 
-  it "doesn't register an offense when `then` required for a body of `when` " \
-     'is used' do
+  it "doesn't register an offense when `then` required for a body of `when` is used" do
     expect_no_offenses(<<~RUBY)
       case cond
       when foo then do_something(arg1,
@@ -117,8 +116,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
     RUBY
   end
 
-  it 'autocorrects when the body of `when` branch starts ' \
-     'with `then`' do
+  it 'autocorrects when the body of `when` branch starts with `then`' do
     expect_offense(<<~RUBY)
       case foo
       when bar

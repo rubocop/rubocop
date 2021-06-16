@@ -75,14 +75,7 @@ RSpec.describe RuboCop::Ext::RegexpNode do
         tree = node.parsed_tree
 
         expect(tree.is_a?(Regexp::Expression::Root)).to eq(true)
-        expect(tree.to_s.split("\n")).to eq(
-          [
-            '',
-            '  foo',
-            ' ' * 32,
-            '  baz'
-          ]
-        )
+        expect(tree.to_s.split("\n")).to eq(['', '  foo', ' ' * 32, '  baz'])
       end
     end
 
@@ -105,9 +98,7 @@ RSpec.describe RuboCop::Ext::RegexpNode do
 
         sources = nodes.map { |n| n.loc.expression.source }
 
-        expect(sources).to eq %w{
-          ([a-z]+) [a-z]+ a-z a z \d* \s? (?:foo) foo
-        }
+        expect(sources).to eq %w{([a-z]+) [a-z]+ a-z a z \d* \s? (?:foo) foo}
 
         loc = nodes[1].loc
         delim = loc.begin, loc.body, loc.end, loc.quantifier

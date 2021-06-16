@@ -187,8 +187,7 @@ module RuboCop
       def self.match?(given_names)
         return false unless given_names
 
-        given_names.include?(cop_name) ||
-          given_names.include?(department.to_s)
+        given_names.include?(cop_name) || given_names.include?(department.to_s)
       end
 
       def cop_name
@@ -206,13 +205,11 @@ module RuboCop
       end
 
       def config_to_allow_offenses
-        Formatter::DisabledConfigFormatter
-          .config_to_allow_offenses[cop_name] ||= {}
+        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] ||= {}
       end
 
       def config_to_allow_offenses=(hash)
-        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] =
-          hash
+        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] = hash
       end
 
       def target_ruby_version
@@ -231,6 +228,11 @@ module RuboCop
 
       def excluded_file?(file)
         !relevant_file?(file)
+      end
+
+      # There should be very limited reasons for a Cop to do it's own parsing
+      def parse(source, path = nil)
+        ProcessedSource.new(source, target_ruby_version, path)
       end
 
       ### Persistence

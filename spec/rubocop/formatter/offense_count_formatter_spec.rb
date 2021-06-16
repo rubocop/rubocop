@@ -25,9 +25,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
     end
 
     context 'when any offenses are detected' do
-      let(:offenses) do
-        [instance_double(RuboCop::Cop::Offense, cop_name: 'OffendedCop')]
-      end
+      let(:offenses) { [instance_double(RuboCop::Cop::Offense, cop_name: 'OffendedCop')] }
 
       it 'increments the count for the cop in offense_counts' do
         expect { finish }.to change(formatter, :offense_counts)
@@ -41,9 +39,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
       it 'shows the cop and the offense count' do
         formatter.report_summary(cop_counts)
-        expect(output.string).to include(
-          "\n1  OffendedCop\n--\n1  Total"
-        )
+        expect(output.string).to include("\n1  OffendedCop\n--\n1  Total")
       end
     end
   end

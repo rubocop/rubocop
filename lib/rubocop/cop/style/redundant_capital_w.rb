@@ -18,8 +18,7 @@ module RuboCop
         include PercentLiteral
         extend AutoCorrector
 
-        MSG = 'Do not use `%W` unless interpolation is needed. ' \
-              'If not, use `%w`.'
+        MSG = 'Do not use `%W` unless interpolation is needed. If not, use `%w`.'
 
         def on_array(node)
           process(node, '%W')

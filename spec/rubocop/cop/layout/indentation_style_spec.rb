@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
   let(:config) do
-    supported_styles = {
-      'SupportedStyles' => %w[spaces tabs]
-    }
+    supported_styles = { 'SupportedStyles' => %w[spaces tabs] }
     RuboCop::Config.new(
       'Layout/IndentationWidth' => { 'Width' => 2 },
       'Layout/IndentationStyle' => cop_config.merge(supported_styles)
@@ -92,9 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
     end
 
     context 'custom indentation width' do
-      let(:cop_config) do
-        { 'IndentationWidth' => 3, 'EnforcedStyle' => 'spaces' }
-      end
+      let(:cop_config) { { 'IndentationWidth' => 3, 'EnforcedStyle' => 'spaces' } }
 
       it 'uses the configured number of spaces to replace a tab' do
         expect_offense(<<~RUBY)
@@ -198,9 +194,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
     end
 
     context 'custom indentation width' do
-      let(:cop_config) do
-        { 'IndentationWidth' => 3, 'EnforcedStyle' => 'tabs' }
-      end
+      let(:cop_config) { { 'IndentationWidth' => 3, 'EnforcedStyle' => 'tabs' } }
 
       it 'uses the configured number of spaces to replace with a tab' do
         expect_offense(<<~RUBY)

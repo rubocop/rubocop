@@ -66,6 +66,7 @@ module RuboCop
       class SymbolConversion < Base
         extend AutoCorrector
         include ConfigurableEnforcedStyle
+        include SymbolHelp
 
         MSG = 'Unnecessary symbol conversion; use `%<correction>s` instead.'
         MSG_CONSISTENCY = 'Symbol hash key should be quoted for consistency; ' \
@@ -114,9 +115,7 @@ module RuboCop
         private
 
         def register_offense(node, correction:, message: format(MSG, correction: correction))
-          add_offense(node, message: message) do |corrector|
-            corrector.replace(node, correction)
-          end
+          add_offense(node, message: message) { |corrector| corrector.replace(node, correction) }
         end
 
         def properly_quoted?(source, value)
@@ -140,10 +139,6 @@ module RuboCop
           node.parent&.array_type? && node.parent&.percent_literal?
         end
 
-        def hash_key?(node)
-          node.parent&.pair_type? && node == node.parent.child_nodes.first
-        end
-
         def correct_hash_key(node)
           # Although some operators can be converted to symbols normally
           # (ie. `:==`), these are not accepted as hash keys and will
@@ -152,7 +147,7 @@ module RuboCop
           # will be ignored.
           return unless node.value.to_s.match?(/\A[a-z0-9_]/i)
 
-          correction = node.value.inspect.gsub(/\A:/, '')
+          correction = node.value.inspect.delete_prefix(':')
           return if properly_quoted?(node.source, correction)
 
           register_offense(
@@ -169,20 +164,13 @@ module RuboCop
             next if requires_quotes?(key)
             next if properly_quoted?(key.source, %("#{key.value}"))
 
-            correction = "#{quote_type}#{key.value}#{quote_type}"
+            correction = %("#{key.value}")
             register_offense(
               key,
               correction: correction,
               message: format(MSG_CONSISTENCY, correction: "#{correction}:")
             )
           end
-        end
-
-        def quote_type
-          # Use the `Style/StringLiterals` configuration for quoting symbols
-          return '"' unless config.for_cop('Style/StringLiterals')['Enabled']
-
-          config.for_cop('Style/StringLiterals')['EnforcedStyle'] == 'single_quotes' ? "'" : '"'
         end
       end
     end

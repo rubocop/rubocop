@@ -118,8 +118,7 @@ module RuboCop
 
         @processed_source = parse_processed_source(source, file)
         @offenses = _investigate(cop, @processed_source)
-        actual_annotations =
-          expected_annotations.with_offense_annotations(@offenses)
+        actual_annotations = expected_annotations.with_offense_annotations(@offenses)
 
         expect(actual_annotations).to eq(expected_annotations), ''
         expect(@offenses.map(&:severity).uniq).to eq([severity]) if severity
@@ -152,8 +151,7 @@ module RuboCop
           end
 
           # Prepare for next loop
-          @processed_source = parse_source(corrected_source,
-                                           @processed_source.path)
+          @processed_source = parse_source(corrected_source, @processed_source.path)
           _investigate(cop, @processed_source)
         end
 
@@ -178,8 +176,7 @@ module RuboCop
         offenses = inspect_source(source, file)
 
         expected_annotations = AnnotatedSource.parse(source)
-        actual_annotations =
-          expected_annotations.with_offense_annotations(offenses)
+        actual_annotations = expected_annotations.with_offense_annotations(offenses)
         expect(actual_annotations.to_s).to eq(source)
       end
 
@@ -246,9 +243,7 @@ module RuboCop
         end
 
         def ==(other)
-          other.is_a?(self.class) &&
-            other.lines == lines &&
-            match_annotations?(other)
+          other.is_a?(self.class) && other.lines == lines && match_annotations?(other)
         end
 
         # Dirty hack: expectations with [...] are rewritten when they match

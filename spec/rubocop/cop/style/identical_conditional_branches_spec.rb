@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
   context 'on if..else with identical bodies' do
-    it 'registers an offense' do
+    it 'registers and corrects an offense' do
       expect_offense(<<~RUBY)
         if something
           do_x
@@ -12,11 +12,18 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
           ^^^^ Move `do_x` out of the conditional.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if something
+        else
+        end
+        do_x
+      RUBY
     end
   end
 
   context 'on if..else with identical trailing lines' do
-    it 'registers an offense' do
+    it 'registers and corrects an offense' do
       expect_offense(<<~RUBY)
         if something
           method_call_here(1, 2, 3)
@@ -28,11 +35,20 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
           ^^^^ Move `do_x` out of the conditional.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if something
+          method_call_here(1, 2, 3)
+        else
+          1 + 2 + 3
+        end
+        do_x
+      RUBY
     end
   end
 
   context 'on if..else with identical leading lines' do
-    it 'registers an offense' do
+    it 'registers and corrects an offense' do
       expect_offense(<<~RUBY)
         if something
           do_x
@@ -41,6 +57,15 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
         else
           do_x
           ^^^^ Move `do_x` out of the conditional.
+          1 + 2 + 3
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_x
+        if something
+          method_call_here(1, 2, 3)
+        else
           1 + 2 + 3
         end
       RUBY
@@ -72,7 +97,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
   end
 
   context 'on case with identical bodies' do
-    it 'registers an offense' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         case something
         when :a
@@ -85,6 +110,15 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
           do_x
           ^^^^ Move `do_x` out of the conditional.
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case something
+        when :a
+        when :b
+        else
+        end
+        do_x
       RUBY
     end
   end
@@ -105,7 +139,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
   end
 
   context 'on case with identical trailing lines' do
-    it 'registers an offense' do
+    it 'registers and corrects an offense' do
       expect_offense(<<~RUBY)
         case something
         when :a
@@ -122,11 +156,23 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
           ^^^^ Move `do_x` out of the conditional.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        case something
+        when :a
+          x1
+        when :b
+          x2
+        else
+          x3
+        end
+        do_x
+      RUBY
     end
   end
 
   context 'on case with identical leading lines' do
-    it 'registers an offense' do
+    it 'registers and corrects an offense' do
       expect_offense(<<~RUBY)
         case something
         when :a
@@ -140,6 +186,18 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
         else
           do_x
           ^^^^ Move `do_x` out of the conditional.
+          x3
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_x
+        case something
+        when :a
+          x1
+        when :b
+          x2
+        else
           x3
         end
       RUBY
@@ -172,6 +230,144 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
           do_z
         end
       RUBY
+    end
+  end
+
+  context 'when using pattern matching', :ruby27 do
+    context 'on case-match with identical bodies' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          case something
+          in :a
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          in :b
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          else
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case something
+          in :a
+          in :b
+          else
+          end
+          do_x
+        RUBY
+      end
+    end
+
+    context 'when one of the case-match branches is empty' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in cond1
+          else
+            if cond2
+            else
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'on case-match with identical trailing lines' do
+      it 'registers and corrects an offense' do
+        expect_offense(<<~RUBY)
+          case something
+          in :a
+            x1
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          in :b
+            x2
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          else
+            x3
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case something
+          in :a
+            x1
+          in :b
+            x2
+          else
+            x3
+          end
+          do_x
+        RUBY
+      end
+    end
+
+    context 'on case-match with identical leading lines' do
+      it 'registers and corrects an offense' do
+        expect_offense(<<~RUBY)
+          case something
+          in :a
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+            x1
+          in :b
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+            x2
+          else
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+            x3
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_x
+          case something
+          in :a
+            x1
+          in :b
+            x2
+          else
+            x3
+          end
+        RUBY
+      end
+    end
+
+    context 'on case-match without else' do
+      it "doesn't register an offense" do
+        expect_no_offenses(<<~RUBY)
+          case something
+          in :a
+            do_x
+          in :b
+            do_x
+          end
+        RUBY
+      end
+    end
+
+    context 'on case-match with empty when' do
+      it "doesn't register an offense" do
+        expect_no_offenses(<<~RUBY)
+          case something
+          in :a
+            do_x
+            do_y
+          in :b
+          else
+            do_x
+            do_z
+          end
+        RUBY
+      end
     end
   end
 

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName, :config do
-  it 'registers an offense and corrects def with space ' \
-    'before the parenthesis' do
+  it 'registers an offense and corrects def with space before the parenthesis' do
     expect_offense(<<~RUBY)
       def func (x)
               ^ Do not put a space between a method name and the opening parenthesis.
@@ -32,8 +31,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterMethodName, :config do
     RUBY
   end
 
-  it 'registers offense and corrects assignment def with space ' \
-    'before parenthesis' do
+  it 'registers offense and corrects assignment def with space before parenthesis' do
     expect_offense(<<~RUBY)
       def func= (x)
                ^ Do not put a space between a method name and the opening parenthesis.

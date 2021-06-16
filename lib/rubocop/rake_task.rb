@@ -68,6 +68,9 @@ module RuboCop
           RakeFileUtils.verbose(verbose) do
             yield(*[self, task_args].slice(0, task_block.arity)) if task_block
             options = full_options.unshift('--auto-correct-all')
+            # `parallel` will automatically be removed from the options internally.
+            # This is a nice to have to suppress the warning message
+            # about parallel and auto-correct not being compatible.
             options.delete('--parallel')
             run_cli(verbose, options)
           end

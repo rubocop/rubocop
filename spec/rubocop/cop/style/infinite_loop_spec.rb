@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 })
-  end
+  let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 }) }
 
   %w(1 2.0 [1] {}).each do |lit|
     it "registers an offense for a while loop with #{lit} as condition" do
@@ -70,8 +68,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
     RUBY
   end
 
-  it 'registers an offense for modifier until false if loop {} would not ' \
-     'change semantics' do
+  it 'registers an offense for modifier until false if loop {} would not change semantics' do
     expect_offense(<<~RUBY)
       a = nil
       a = next_value or break until false
@@ -200,9 +197,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
     end
 
     context 'with non-default indentation width' do
-      let(:config) do
-        RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 4 })
-      end
+      let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 4 }) }
 
       it "auto-corrects multi-line modifier #{keyword} and indents correctly" do
         expect_offense(<<~RUBY, keyword: keyword, lit: lit)

@@ -29,6 +29,7 @@ module RuboCop
       #
       class StringConcatenation < Base
         include Util
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Prefer string interpolation to string concatenation.'
@@ -102,10 +103,7 @@ module RuboCop
         end
 
         def uncorrectable?(part)
-          part.multiline? ||
-            part.dstr_type? ||
-            (part.str_type? && part.heredoc?) ||
-            part.each_descendant(:block).any?
+          part.multiline? || (part.str_type? && part.heredoc?) || part.each_descendant(:block).any?
         end
 
         def corrected_ancestor?(node)
@@ -115,12 +113,12 @@ module RuboCop
         def replacement(parts)
           interpolated_parts =
             parts.map do |part|
-              if part.str_type?
-                if single_quoted?(part)
-                  part.value.gsub(/(\\|")/, '\\\\\&')
-                else
-                  part.value.inspect[1..-2]
-                end
+              case part.type
+              when :str
+                value = part.value
+                single_quoted?(part) ? value.gsub(/(\\|")/, '\\\\\&') : value.inspect[1..-2]
+              when :dstr
+                contents_range(part).source
               else
                 "\#{#{part.source}}"
               end

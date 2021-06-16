@@ -52,8 +52,7 @@ module RuboCop
         private
 
         def offense?(node)
-          explicit_style? && node.implicit_call? ||
-            implicit_style? && !node.implicit_call?
+          explicit_style? && node.implicit_call? || implicit_style? && !node.implicit_call?
         end
 
         def message(_node)

@@ -44,8 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         end
       end
 
-      context "and one argument is assigned to another, whilst other's value " \
-                'is not used' do
+      context "and one argument is assigned to another, whilst other's value is not used" do
         it 'registers an offense' do
           message = 'Unused block argument - `key`. ' \
                     "If it's necessary, use `_` or `_key` as an argument " \
@@ -210,6 +209,17 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
           expect_correction(<<~RUBY)
             1.times do |index; _block_local_variable|
+              puts index
+            end
+          RUBY
+        end
+      end
+
+      context 'and the variable is used' do
+        it 'does not register offense' do
+          expect_no_offenses(<<~RUBY)
+            1.times do |index; x|
+              x = 10
               puts index
             end
           RUBY

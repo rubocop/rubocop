@@ -91,6 +91,8 @@ module RuboCop
         end
 
         def on_send(node)
+          return if enforce_first_argument_with_fixed_indentation?
+
           each_argument_node(node, :hash) do |hash_node, left_parenthesis|
             check(hash_node, left_parenthesis)
           end
@@ -117,8 +119,7 @@ module RuboCop
             return if first_pair.first_line == left_brace.line
 
             if separator_style?(first_pair)
-              check_based_on_longest_key(hash_node, left_brace,
-                                         left_parenthesis)
+              check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
             else
               check_first(first_pair, left_brace, left_parenthesis, 0)
             end
@@ -148,9 +149,7 @@ module RuboCop
         end
 
         def check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
-          key_lengths = hash_node.keys.map do |key|
-            key.source_range.length
-          end
+          key_lengths = hash_node.keys.map { |key| key.source_range.length }
           check_first(hash_node.pairs.first, left_brace, left_parenthesis,
                       key_lengths.max - key_lengths.first)
         end
@@ -184,6 +183,16 @@ module RuboCop
             'Indent the right brace the same as the start of the line ' \
             'where the left brace is.'
           end
+        end
+
+        def enforce_first_argument_with_fixed_indentation?
+          return false unless argument_alignment_config['Enabled']
+
+          argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def argument_alignment_config
+          config.for_cop('Layout/ArgumentAlignment')
         end
       end
     end

@@ -216,8 +216,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
       context 'when IgnoredMethods is enabled' do
         it_behaves_like('ignoring an offense on an ignored method', 'foo', key)
 
-        it_behaves_like('ignoring an offense on an ignored method',
-                        'Gem::Specification.new', key)
+        it_behaves_like('ignoring an offense on an ignored method', 'Gem::Specification.new', key)
 
         context 'when receiver contains whitespaces' do
           before { cop_config[key] = ['Foo::Bar.baz'] }

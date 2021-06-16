@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
-  let(:cop_config) do
-    { 'AllowComments' => true }
-  end
+  let(:cop_config) { { 'AllowComments' => true } }
 
   it 'registers an offense for missing `if` body' do
     expect_offense(<<~RUBY)
@@ -58,9 +56,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
   end
 
   context 'when AllowComments is false' do
-    let(:cop_config) do
-      { 'AllowComments' => false }
-    end
+    let(:cop_config) { { 'AllowComments' => false } }
 
     it 'registers an offense for missing `if` body with a comment' do
       expect_offense(<<~RUBY)

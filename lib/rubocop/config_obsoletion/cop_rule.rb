@@ -17,8 +17,7 @@ module RuboCop
       end
 
       def message
-        rule_message + "\n(obsolete configuration found in " \
-                       "#{smart_loaded_path}, please update it)"
+        rule_message + "\n(obsolete configuration found in #{smart_loaded_path}, please update it)"
       end
 
       # Cop rules currently can only be failures, not warnings

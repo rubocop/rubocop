@@ -51,18 +51,14 @@ module RuboCop
         def on_if(node)
           return unless unless_assignment?(node)
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         def on_lvasgn(node)
           return unless (else_branch = ternary_assignment?(node))
           return if else_branch.if_type?
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         alias on_ivasgn on_lvasgn

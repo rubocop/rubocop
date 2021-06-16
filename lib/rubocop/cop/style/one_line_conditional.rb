@@ -139,8 +139,7 @@ module RuboCop
           return false unless node.keyword?
           return true if node.respond_to?(:prefix_not?) && node.prefix_not?
 
-          node.respond_to?(:arguments?) && node.arguments? &&
-            !node.parenthesized_call?
+          node.respond_to?(:arguments?) && node.arguments? && !node.parenthesized_call?
         end
       end
     end

@@ -94,8 +94,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall, :config do
     end
   end
 
-  context 'when a lvar contains an object passed as argument ' \
-          'at the end of the method' do
+  context 'when a lvar contains an object passed as argument at the end of the method' do
     it 'accepts the setter call on the lvar' do
       expect_no_offenses(<<~RUBY)
         def test(some_arg)
@@ -238,7 +237,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall, :config do
     RUBY
   end
 
-  it 'handles exception assignments without exploding' do
+  it 'accepts exception assignments without exploding' do
     expect_no_offenses(<<~RUBY)
       def foo(bar)
         begin

@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Gemspec::OrderedDependencies, :config do
-  let(:cop_config) do
-    {
-      'TreatCommentsAsGroupSeparators' => treat_comments_as_group_separators
-    }
-  end
+  let(:cop_config) { { 'TreatCommentsAsGroupSeparators' => treat_comments_as_group_separators } }
   let(:treat_comments_as_group_separators) { false }
 
   shared_examples 'ordered dependency' do |add_dependency|

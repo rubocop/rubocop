@@ -92,9 +92,7 @@ module RuboCop
           if node.setter_method?
             on_special_asgn(node)
           elsif regular_operator?(node)
-            check_operator(:send,
-                           node.loc.selector,
-                           node.first_argument.source_range)
+            check_operator(:send, node.loc.selector, node.first_argument.source_range)
           end
         end
 
@@ -122,6 +120,12 @@ module RuboCop
           check_operator(:special_asgn, node.loc.operator, right.source_range)
         end
 
+        def on_match_pattern(node)
+          return if target_ruby_version < 3.0
+
+          check_operator(:match_pattern, node.loc.operator, node.source_range)
+        end
+
         alias on_or       on_binary
         alias on_and      on_binary
         alias on_lvasgn   on_assignment
@@ -138,13 +142,11 @@ module RuboCop
         private
 
         def regular_operator?(send_node)
-          !send_node.unary_operation? && !send_node.dot? &&
-            operator_with_regular_syntax?(send_node)
+          !send_node.unary_operation? && !send_node.dot? && operator_with_regular_syntax?(send_node)
         end
 
         def operator_with_regular_syntax?(send_node)
-          send_node.operator_method? &&
-            !IRREGULAR_METHODS.include?(send_node.method_name)
+          send_node.operator_method? && !IRREGULAR_METHODS.include?(send_node.method_name)
         end
 
         def check_operator(type, operator, right_operand)
@@ -225,8 +227,7 @@ module RuboCop
         end
 
         def hash_table_style?
-          align_hash_cop_config &&
-            align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
+          align_hash_cop_config && align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
         end
 
         def space_around_exponent_operator?

@@ -6,6 +6,8 @@ module RuboCop
       # This cop checks for ambiguous block association with method
       # when param passed without parentheses.
       #
+      # This cop can customize ignored methods with `IgnoredMethods`.
+      #
       # @example
       #
       #   # bad
@@ -26,7 +28,14 @@ module RuboCop
       #   # good
       #   # Lambda arguments require no disambiguation
       #   foo = ->(bar) { bar.baz }
+      #
+      # @example IgnoredMethods: [change]
+      #
+      #   # good
+      #   expect { do_something }.to change { object.attribute }
       class AmbiguousBlockAssociation < Base
+        include IgnoredMethods
+
         MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \
               'block will be associated with the `%<method>s` method ' \
               'call.'
@@ -35,8 +44,7 @@ module RuboCop
           return unless node.arguments?
 
           return unless ambiguous_block_association?(node)
-          return if node.parenthesized? ||
-                    node.last_argument.lambda? || allowed_method?(node)
+          return if node.parenthesized? || node.last_argument.lambda? || allowed_method?(node)
 
           message = message(node)
 
@@ -47,19 +55,18 @@ module RuboCop
         private
 
         def ambiguous_block_association?(send_node)
-          send_node.last_argument.block_type? &&
-            !send_node.last_argument.send_node.arguments?
+          send_node.last_argument.block_type? && !send_node.last_argument.send_node.arguments?
         end
 
         def allowed_method?(node)
-          node.assignment? || node.operator_method? || node.method?(:[])
+          node.assignment? || node.operator_method? || node.method?(:[]) ||
+            ignored_method?(node.last_argument.send_node.source)
         end
 
         def message(send_node)
           block_param = send_node.last_argument
 
-          format(MSG, param: block_param.source,
-                      method: block_param.send_node.source)
+          format(MSG, param: block_param.source, method: block_param.send_node.source)
         end
       end
     end

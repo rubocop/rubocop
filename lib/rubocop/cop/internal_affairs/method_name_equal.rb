@@ -16,8 +16,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `method?(%<method_name>s)` instead of ' \
-              '`method_name == %<method_name>s`.'
+        MSG = 'Use `method?(%<method_name>s)` instead of `method_name == %<method_name>s`.'
         RESTRICT_ON_SEND = %i[==].freeze
 
         # @!method method_name?(node)
@@ -43,9 +42,7 @@ module RuboCop
         private
 
         def range(method_name_node, node)
-          range_between(
-            method_name_node.loc.selector.begin_pos, node.source_range.end_pos
-          )
+          range_between(method_name_node.loc.selector.begin_pos, node.source_range.end_pos)
         end
       end
     end

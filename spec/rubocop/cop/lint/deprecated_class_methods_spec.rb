@@ -56,8 +56,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
       expect_no_offenses('Dir.exist?(o)')
     end
 
-    it 'does not register an offense for offensive method `exists?`'\
-       'on other receivers' do
+    it 'does not register an offense for offensive method `exists?`on other receivers' do
       expect_no_offenses('Foo.exists?(o)')
     end
   end
@@ -78,9 +77,56 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
       expect_no_offenses('block_given?')
     end
 
-    it 'does not register an offense for offensive method `iterator?`'\
-       'on other receivers' do
+    it 'does not register an offense for offensive method `iterator?`on other receivers' do
       expect_no_offenses('Foo.iterator?')
+    end
+  end
+
+  context 'prefer `Addrinfo#getnameinfo` over `Socket.gethostbyaddr`' do
+    it 'registers an offense for Socket.gethostbyaddr' do
+      expect_offense(<<~RUBY)
+        Socket.gethostbyaddr([221,186,184,68].pack("CCCC"))
+               ^^^^^^^^^^^^^ `Socket.gethostbyaddr` is deprecated in favor of `Addrinfo#getnameinfo`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense for ::Socket.gethostbyaddr' do
+      expect_offense(<<~RUBY)
+        ::Socket.gethostbyaddr([221,186,184,68].pack("CCCC"))
+                 ^^^^^^^^^^^^^ `Socket.gethostbyaddr` is deprecated in favor of `Addrinfo#getnameinfo`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not register an offense for method `gethostbyaddr` on other receivers' do
+      expect_no_offenses('Foo.gethostbyaddr')
+    end
+  end
+
+  context 'prefer `Addrinfo#getaddrinfo` over `Socket.gethostbyname`' do
+    it 'registers an offense for Socket.gethostbyname' do
+      expect_offense(<<~RUBY)
+        Socket.gethostbyname("hal")
+               ^^^^^^^^^^^^^ `Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense for ::Socket.gethostbyname' do
+      expect_offense(<<~RUBY)
+        ::Socket.gethostbyname("hal")
+                 ^^^^^^^^^^^^^ `Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not register an offense for method `gethostbyname` on other receivers' do
+      expect_no_offenses('Foo.gethostbyname')
     end
   end
 end

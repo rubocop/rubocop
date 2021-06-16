@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'parser/current'
-
 module RuboCop
   module Cop
     module Style
@@ -68,17 +66,10 @@ module RuboCop
         end
 
         def redundant_arg_for_method(method_name)
-          return nil unless cop_config['Methods'].key?(method_name)
+          arg = cop_config['Methods'].fetch(method_name) { return }
 
           @mem ||= {}
-          @mem[method_name] ||=
-            begin
-              arg = cop_config['Methods'].fetch(method_name)
-              buffer = Parser::Source::Buffer.new('(string)', 1)
-              buffer.source = arg.inspect
-              builder = RuboCop::AST::Builder.new
-              Parser::CurrentRuby.new(builder).parse(buffer)
-            end
+          @mem[method_name] ||= parse(arg.inspect).ast
         end
 
         def argument_range(node)

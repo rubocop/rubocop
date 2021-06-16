@@ -31,13 +31,9 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     )
   end
 
-  let(:expected_heading_command) do
-    'rubocop --auto-gen-config'
-  end
+  let(:expected_heading_command) { 'rubocop --auto-gen-config' }
 
-  let(:expected_heading_timestamp) do
-    "on #{Time.now} "
-  end
+  let(:expected_heading_timestamp) { "on #{Time.now} " }
 
   around do |example|
     original_stdout = $stdout
@@ -154,9 +150,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       formatter.finished(filenames)
     end
 
-    let(:filenames) do
-      Array.new(16) { |index| format('test_%02d.rb', index + 1) }
-    end
+    let(:filenames) { Array.new(16) { |index| format('test_%02d.rb', index + 1) } }
 
     let(:expected_rubocop_todo) do
       [heading,
@@ -209,13 +203,9 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
     let(:formatter) { described_class.new(output, exclude_limit: 5) }
 
-    let(:filenames) do
-      Array.new(6) { |index| format('test_%02d.rb', index + 1) }
-    end
+    let(:filenames) { Array.new(6) { |index| format('test_%02d.rb', index + 1) } }
 
-    let(:expected_heading_command) do
-      'rubocop --auto-gen-config --exclude-limit 5'
-    end
+    let(:expected_heading_command) { 'rubocop --auto-gen-config --exclude-limit 5' }
 
     let(:expected_rubocop_todo) do
       [heading,
@@ -252,9 +242,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
   context 'with auto-correct supported cop', :restore_registry do
     before do
-      stub_cop_class('Test::Cop3') do
-        extend RuboCop::Cop::AutoCorrector
-      end
+      stub_cop_class('Test::Cop3') { extend RuboCop::Cop::AutoCorrector }
 
       formatter.started(['test_auto_correct.rb'])
       formatter.file_started('test_auto_correct.rb', {})
@@ -274,12 +262,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
     let(:offenses) do
       [
-        RuboCop::Cop::Offense.new(
-          :convention,
-          location,
-          'message',
-          'Test/Cop3'
-        )
+        RuboCop::Cop::Offense.new(:convention, location, 'message', 'Test/Cop3')
       ]
     end
 

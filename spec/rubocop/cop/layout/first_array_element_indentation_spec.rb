@@ -326,8 +326,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects incorrectly indented multi-line ' \
-        'array with brackets' do
+      it 'registers an offense and corrects incorrectly indented multi-line array with brackets' do
         expect_offense(<<~RUBY)
           func x, [
                  1, 2]
@@ -466,8 +465,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects indentation ' \
-        'that does not match IndentationWidth' do
+      it 'registers an offense and corrects indentation that does not match IndentationWidth' do
         expect_offense(<<~RUBY)
           a = [
                 1

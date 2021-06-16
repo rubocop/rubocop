@@ -46,8 +46,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG_AFTER = 'Keep a blank line after `%<modifier>s`.'
-        MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after ' \
-                               '`%<modifier>s`.'
+        MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after `%<modifier>s`.'
 
         MSG_BEFORE_FOR_ONLY_BEFORE = 'Keep a blank line before `%<modifier>s`.'
         MSG_AFTER_FOR_ONLY_BEFORE = 'Remove a blank line after `%<modifier>s`.'
@@ -73,10 +72,8 @@ module RuboCop
         end
 
         def on_sclass(node)
-          @class_or_module_def_first_line =
-            node.identifier.source_range.first_line
-          @class_or_module_def_last_line =
-            node.source_range.last_line
+          @class_or_module_def_first_line = node.identifier.source_range.first_line
+          @class_or_module_def_last_line = node.source_range.last_line
         end
 
         def on_block(node)
@@ -133,19 +130,14 @@ module RuboCop
         end
 
         def previous_line_ignoring_comments(processed_source, send_line)
-          processed_source[0..send_line - 2].reverse.find do |line|
-            !comment_line?(line)
-          end
+          processed_source[0..send_line - 2].reverse.find { |line| !comment_line?(line) }
         end
 
         def previous_line_empty?(send_line)
-          previous_line = previous_line_ignoring_comments(processed_source,
-                                                          send_line)
+          previous_line = previous_line_ignoring_comments(processed_source, send_line)
           return true unless previous_line
 
-          block_start?(send_line) ||
-            class_def?(send_line) ||
-            previous_line.blank?
+          block_start?(send_line) || class_def?(send_line) || previous_line.blank?
         end
 
         def next_line_empty?(last_send_line)
@@ -155,8 +147,7 @@ module RuboCop
         end
 
         def empty_lines_around?(node)
-          previous_line_empty?(node.first_line) &&
-            next_line_empty?(node.last_line)
+          previous_line_empty?(node.first_line) && next_line_empty?(node.last_line)
         end
 
         def class_def?(line)
@@ -193,8 +184,7 @@ module RuboCop
         def message_for_around_style(node)
           send_line = node.first_line
 
-          if block_start?(send_line) ||
-             class_def?(send_line)
+          if block_start?(send_line) || class_def?(send_line)
             format(MSG_AFTER, modifier: node.loc.selector.source)
           else
             format(MSG_BEFORE_AND_AFTER, modifier: node.loc.selector.source)

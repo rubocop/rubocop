@@ -369,8 +369,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           RUBY
         end
 
-        it 'registers an offense when braces are not aligned in ' \
-           'multiline block' do
+        it 'registers an offense when braces are not aligned in multiline block' do
           expect_offense(<<~RUBY)
             items.map {|item|
               item.do_something

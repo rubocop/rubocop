@@ -40,11 +40,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
   end
 
   context 'when `group` is configured' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'group'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'group' } }
 
     %w[private protected public module_function].each do |access_modifier|
       it "offends when #{access_modifier} is inlined with a method" do
@@ -70,8 +66,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it "does not offend when #{access_modifier} is not inlined and " \
-         'has a comment' do
+      it "does not offend when #{access_modifier} is not inlined and has a comment" do
         expect_no_offenses(<<~RUBY)
           class Test
             #{access_modifier} # hey
@@ -102,11 +97,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
   end
 
   context 'when `inline` is configured' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'inline'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'inline' } }
 
     %w[private protected public module_function].each do |access_modifier|
       it "offends when #{access_modifier} is not inlined" do

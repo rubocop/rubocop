@@ -11,8 +11,7 @@ module RuboCop
 
         MSG = 'Department name is missing.'
 
-        DISABLE_COMMENT_FORMAT =
-          /\A(# *rubocop *: *((dis|en)able|todo) +)(.*)/.freeze
+        DISABLE_COMMENT_FORMAT = /\A(# *rubocop *: *((dis|en)able|todo) +)(.*)/.freeze
 
         # The token that makes up a disable comment.
         # The allowed specification for comments after `# rubocop: disable` is
@@ -63,7 +62,8 @@ module RuboCop
 
         def valid_content_token?(content_token)
           /\W+/.match?(content_token) ||
-            DISABLING_COPS_CONTENT_TOKEN.match?(content_token)
+            DISABLING_COPS_CONTENT_TOKEN.match?(content_token) ||
+            Registry.global.department?(content_token)
         end
 
         def contain_unexpected_character_for_department_name?(name)
@@ -73,9 +73,7 @@ module RuboCop
         def qualified_legacy_cop_name(cop_name)
           legacy_cop_names = RuboCop::ConfigObsoletion.legacy_cop_names
 
-          legacy_cop_names.detect do |legacy_cop_name|
-            legacy_cop_name.split('/')[1] == cop_name
-          end
+          legacy_cop_names.detect { |legacy_cop_name| legacy_cop_name.split('/')[1] == cop_name }
         end
       end
     end

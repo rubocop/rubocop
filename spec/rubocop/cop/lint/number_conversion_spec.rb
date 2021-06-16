@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'when using `#to_i`' do
       expect_offense(<<~RUBY)
         "10".to_i
-        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_i, use stricter Integer("10", 10).
+        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `"10".to_i`, use stricter `Integer("10", 10)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'when using `#to_i` for integer' do
       expect_offense(<<~RUBY)
         10.to_i
-        ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.to_i, use stricter Integer(10, 10).
+        ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.to_i`, use stricter `Integer(10, 10)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'when using `#to_f`' do
       expect_offense(<<~RUBY)
         "10.2".to_f
-        ^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10.2".to_f, use stricter Float("10.2").
+        ^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `"10.2".to_f`, use stricter `Float("10.2")`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'when using `#to_c`' do
       expect_offense(<<~RUBY)
         "10".to_c
-        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using "10".to_c, use stricter Complex("10").
+        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `"10".to_c`, use stricter `Complex("10")`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       expect_offense(<<~RUBY)
         string_value = '10'
         string_value.to_i
-        ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using string_value.to_i, use stricter Integer(string_value, 10).
+        ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `string_value.to_i`, use stricter `Integer(string_value, 10)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       expect_offense(<<~RUBY)
         params = { id: 10 }
         params[:id].to_i
-        ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:id].to_i, use stricter Integer(params[:id], 10).
+        ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `params[:id].to_i`, use stricter `Integer(params[:id], 10)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       expect_offense(<<~RUBY)
         args = [1,2,3]
         args[0].to_i
-        ^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using args[0].to_i, use stricter Integer(args[0], 10).
+        ^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `args[0].to_i`, use stricter `Integer(args[0], 10)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'when `#to_i` called on a variable on a hash' do
       expect_offense(<<~RUBY)
         params[:field].to_i
-        ^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using params[:field].to_i, use stricter Integer(params[:field], 10).
+        ^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `params[:field].to_i`, use stricter `Integer(params[:field], 10)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -121,13 +121,19 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
         to_i
       RUBY
     end
+
+    it 'when `:to_f` is one of multiple method arguments' do
+      expect_no_offenses(<<~RUBY)
+        delegate :to_f, to: :description, allow_nil: true
+      RUBY
+    end
   end
 
   context 'to_method in symbol form' do
     it 'registers offense and autocorrects' do
       expect_offense(<<~RUBY)
         "1,2,3,foo,5,6,7,8".split(',').map(&:to_i)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using &:to_i, use stricter { |i| Integer(i, 10) }.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `&:to_i`, use stricter `{ |i| Integer(i, 10) }`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -138,7 +144,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'registers offense and autocorrects without parentheses' do
       expect_offense(<<~RUBY)
         "1,2,3,foo,5,6,7,8".split(',').map &:to_i
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using &:to_i, use stricter { |i| Integer(i, 10) }.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `&:to_i`, use stricter `{ |i| Integer(i, 10) }`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -149,7 +155,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'registers offense with try' do
       expect_offense(<<~RUBY)
         "foo".try(:to_f)
-        ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using :to_f, use stricter { |i| Float(i) }.
+        ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `:to_f`, use stricter `{ |i| Float(i) }`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -160,7 +166,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'registers offense with send' do
       expect_offense(<<~RUBY)
         "foo".send(:to_c)
-        ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using :to_c, use stricter { |i| Complex(i) }.
+        ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `:to_c`, use stricter `{ |i| Complex(i) }`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -216,7 +222,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       it 'registers an offense for other methods' do
         expect_offense(<<~RUBY)
           10.hours.to_i
-          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.hours.to_i, use stricter Integer(10.hours, 10).
+          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
         RUBY
       end
     end
@@ -233,7 +239,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       it 'registers an offense for other methods' do
         expect_offense(<<~RUBY)
           10.hours.to_i
-          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using 10.hours.to_i, use stricter Integer(10.hours, 10).
+          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
         RUBY
       end
     end

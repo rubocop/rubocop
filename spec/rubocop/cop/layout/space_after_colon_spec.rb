@@ -54,8 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects a keyword optional ' \
-    'argument without a space' do
+  it 'registers an offense and corrects a keyword optional argument without a space' do
     expect_offense(<<~RUBY)
       def m(var:1, other_var: 2)
                ^ Space missing after colon.

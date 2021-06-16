@@ -26,10 +26,8 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        NESTED_MSG = 'Use nested module/class definitions instead of ' \
-                     'compact style.'
-        COMPACT_MSG = 'Use compact module/class definition instead of ' \
-                      'nested style.'
+        NESTED_MSG = 'Use nested module/class definitions instead of compact style.'
+        COMPACT_MSG = 'Use compact module/class definition instead of nested style.'
 
         def on_class(node)
           return if node.parent_class && style != :nested
@@ -89,10 +87,18 @@ module RuboCop
         end
 
         def compact_node(corrector, node)
+          range = range_between(node.loc.keyword.begin_pos, node.body.loc.name.end_pos)
+          corrector.replace(range, compact_replacement(node))
+        end
+
+        def compact_replacement(node)
           replacement = "#{node.body.type} #{compact_identifier_name(node)}"
-          range = range_between(node.loc.keyword.begin_pos,
-                                node.body.loc.name.end_pos)
-          corrector.replace(range, replacement)
+
+          body_comments = processed_source.ast_with_comments[node.body]
+          unless body_comments.empty?
+            replacement = body_comments.map(&:text).push(replacement).join("\n")
+          end
+          replacement
         end
 
         def compact_identifier_name(node)
@@ -135,7 +141,10 @@ module RuboCop
         end
 
         def check_compact_style(node, body)
-          return unless one_child?(body) && !compact_node_name?(node)
+          parent = node.parent
+          return if parent&.class_type? || parent&.module_type?
+
+          return unless needs_compacting?(body)
 
           add_offense(node.loc.name, message: COMPACT_MSG) do |corrector|
             autocorrect(corrector, node)
@@ -148,12 +157,12 @@ module RuboCop
           nest_or_compact(corrector, node)
         end
 
-        def one_child?(body)
+        def needs_compacting?(body)
           body && %i[module class].include?(body.type)
         end
 
         def compact_node_name?(node)
-          /::/.match?(node.loc.name.source)
+          /::/.match?(node.identifier.source)
         end
       end
     end

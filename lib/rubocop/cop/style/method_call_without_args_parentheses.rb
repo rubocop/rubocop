@@ -15,8 +15,7 @@ module RuboCop
         include IgnoredMethods
         extend AutoCorrector
 
-        MSG = 'Do not use parentheses for method calls with ' \
-              'no arguments.'
+        MSG = 'Do not use parentheses for method calls with no arguments.'
 
         def on_send(node)
           return unless !node.arguments? && node.parenthesized?

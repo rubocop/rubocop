@@ -34,6 +34,22 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
       RUBY
     end
 
+    it 'registers an offense for only dot line' do
+      expect_offense(<<~RUBY)
+        foo
+          .bar
+          .
+          ^ Place the . on the next line, together with the method name.
+          baz
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+          .bar
+          .baz
+      RUBY
+    end
+
     it 'accepts leading do in multi-line method call' do
       expect_no_offenses(<<~RUBY)
         something

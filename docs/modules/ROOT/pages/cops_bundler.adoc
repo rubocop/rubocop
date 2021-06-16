@@ -71,15 +71,24 @@ end
 | 0.85
 |===
 
-Add a comment describing each gem in your Gemfile.
+Each gem in the Gemfile should have a comment explaining
+its purpose in the project, or the reason for its version
+or source.
 
-Optionally, the "OnlyFor" configuration
+The optional "OnlyFor" configuration array
 can be used to only register offenses when the gems
 use certain options or have version specifiers.
-Add "version_specifiers" and/or the gem option names
-you want to check.
 
-A useful use-case is to enforce a comment when using
+When "version_specifiers" is included, a comment
+will be enforced if the gem has any version specifier.
+
+When "restrictive_version_specifiers" is included, a comment
+will be enforced if the gem has a version specifier that
+holds back the version of the gem.
+
+For any other value in the array, a comment will be enforced for
+a gem if an option by the same name is present.
+A useful use case is to enforce a comment when using
 options that change the source of a gem:
 
 - `bitbucket`
@@ -89,7 +98,8 @@ options that change the source of a gem:
 - `source`
 
 For a full list of options supported by bundler,
-you can check the https://bundler.io/man/gemfile.5.html[official documentation].
+see https://bundler.io/man/gemfile.5.html
+.
 
 === Examples
 
@@ -116,6 +126,22 @@ gem 'foo'
 gem 'foo', '< 2.1'
 
 # good
+
+# Version 2.1 introduces breaking change baz
+gem 'foo', '< 2.1'
+----
+
+==== OnlyFor: ['restrictive_version_specifiers']
+
+[source,ruby]
+----
+# bad
+
+gem 'foo', '< 2.1'
+
+# good
+
+gem 'foo', '>= 1.0'
 
 # Version 2.1 introduces breaking change baz
 gem 'foo', '< 2.1'
@@ -154,6 +180,75 @@ gem 'bar', '< 2.1'
 | Array
 
 | OnlyFor
+| `[]`
+| Array
+|===
+
+== Bundler/GemVersion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| No
+| 1.14
+| -
+|===
+
+Enforce that Gem version specifications are either required
+or forbidden.
+
+=== Examples
+
+==== EnforcedStyle: required (default)
+
+[source,ruby]
+----
+# bad
+gem 'rubocop'
+
+# good
+gem 'rubocop', '~> 1.12'
+
+# good
+gem 'rubocop', '>= 1.10.0'
+
+# good
+gem 'rubocop', '>= 1.5.0', '< 1.10.0'
+----
+
+==== EnforcedStyle: forbidden
+
+[source,ruby]
+----
+# good
+gem 'rubocop'
+
+# bad
+gem 'rubocop', '~> 1.12'
+
+# bad
+gem 'rubocop', '>= 1.10.0'
+
+# bad
+gem 'rubocop', '>= 1.5.0', '< 1.10.0'
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `required`
+| `required`, `forbidden`
+
+| Include
+| `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`
+| Array
+
+| AllowedGems
 | `[]`
 | Array
 |===

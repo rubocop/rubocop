@@ -1,17 +1,32 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::WhenThen, :config do
-  it 'registers an offense for when x;' do
+  it 'registers an offense for when b;' do
     expect_offense(<<~RUBY)
       case a
       when b; c
-            ^ Do not use `when x;`. Use `when x then` instead.
+            ^ Do not use `when b;`. Use `when b then` instead.
       end
     RUBY
 
     expect_correction(<<~RUBY)
       case a
       when b then c
+      end
+    RUBY
+  end
+
+  it 'registers an offense for when b, c;' do
+    expect_offense(<<~RUBY)
+      case a
+      when b, c; d
+               ^ Do not use `when b, c;`. Use `when b, c then` instead.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case a
+      when b, c then d
       end
     RUBY
   end

@@ -17,10 +17,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
   end
 
   context 'when EnforcedStyle is percent' do
-    let(:cop_config) do
-      { 'MinSize' => 0,
-        'EnforcedStyle' => 'percent' }
-    end
+    let(:cop_config) { { 'MinSize' => 0, 'EnforcedStyle' => 'percent' } }
 
     it 'registers an offense for arrays of symbols' do
       expect_offense(<<~RUBY)
@@ -105,11 +102,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect_no_offenses('[:one, :two, :"space here"]')
     end
 
-    # Bug: https://github.com/rubocop/rubocop/issues/4481
-    it 'does not register an offense in an ambiguous block context' do
-      expect_no_offenses('foo [:bar, :baz] { qux }')
-    end
-
     it 'registers an offense in a non-ambiguous block context' do
       expect_offense(<<~RUBY)
         foo([:bar, :baz]) { qux }
@@ -128,8 +120,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
         %i(a b c d)
       RUBY
 
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent',
-                                                 'MinSize' => 4)
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent', 'MinSize' => 4)
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
@@ -242,10 +233,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
   end
 
   context 'with non-default MinSize' do
-    let(:cop_config) do
-      { 'MinSize' => 2,
-        'EnforcedStyle' => 'percent' }
-    end
+    let(:cop_config) { { 'MinSize' => 2, 'EnforcedStyle' => 'percent' } }
 
     it 'does not autocorrect array of one symbol if MinSize > 1' do
       expect_no_offenses('[:one]')

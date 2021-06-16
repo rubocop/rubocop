@@ -72,8 +72,7 @@ module RuboCop
         end
 
         def embedded_in_percent_array?(node)
-          node.parent&.array_type? &&
-            percent_literal?(node.parent)
+          node.parent&.array_type? && percent_literal?(node.parent)
         end
 
         def autocorrect_variable_interpolation(corrector, embedded_node, node)

@@ -38,13 +38,13 @@ module RuboCop
         include StatementModifier
         include LineLengthHelp
         include IgnoredPattern
+        include RangeHelp
         extend AutoCorrector
 
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
                            'single-line body. Another good alternative is ' \
                            'the usage of control flow `&&`/`||`.'
-        MSG_USE_NORMAL =
-          'Modifier form of `%<keyword>s` makes the line too long.'
+        MSG_USE_NORMAL = 'Modifier form of `%<keyword>s` makes the line too long.'
 
         def self.autocorrect_incompatible_with
           [Style::SoleNestedConditional]
@@ -67,7 +67,15 @@ module RuboCop
 
         def autocorrect(corrector, node)
           replacement = if node.modifier_form?
-                          to_normal_form(node)
+                          last_argument = node.if_branch.last_argument if node.if_branch.send_type?
+
+                          if last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
+                            heredoc = extract_heredoc_from(last_argument)
+                            remove_heredoc(corrector, heredoc)
+                            to_normal_form_with_heredoc(node, indent(node), heredoc)
+                          else
+                            to_normal_form(node, indent(node))
+                          end
                         else
                           to_modifier_form(node)
                         end
@@ -123,8 +131,7 @@ module RuboCop
         end
 
         def line_length_enabled_at_line?(line)
-          processed_source.comment_config
-                          .cop_enabled_at_line?('Layout/LineLength', line)
+          processed_source.comment_config.cop_enabled_at_line?('Layout/LineLength', line)
         end
 
         def named_capture_in_condition?(node)
@@ -132,10 +139,7 @@ module RuboCop
         end
 
         def non_eligible_node?(node)
-          non_simple_if_unless?(node) ||
-            node.chained? ||
-            node.nested_conditional? ||
-            super
+          non_simple_if_unless?(node) || node.chained? || node.nested_conditional? || super
         end
 
         def non_simple_if_unless?(node)
@@ -153,17 +157,40 @@ module RuboCop
             node  = node.parent
           end
 
-          node && (sibling = node.children[index + 1]) &&
-            sibling.source_range.first_line == line_no
+          node && (sibling = node.children[index + 1]) && sibling.source_range.first_line == line_no
         end
 
-        def to_normal_form(node)
-          indentation = ' ' * node.source_range.column
+        def to_normal_form(node, indentation)
           <<~RUBY.chomp
             #{node.keyword} #{node.condition.source}
             #{indentation}  #{node.body.source}
             #{indentation}end
           RUBY
+        end
+
+        def to_normal_form_with_heredoc(node, indentation, heredoc)
+          heredoc_body, heredoc_end = heredoc
+
+          <<~RUBY.chomp
+            #{node.keyword} #{node.condition.source}
+            #{indentation}  #{node.body.source}
+            #{indentation}  #{heredoc_body.source.chomp}
+            #{indentation}  #{heredoc_end.source.chomp}
+            #{indentation}end
+          RUBY
+        end
+
+        def extract_heredoc_from(last_argument)
+          heredoc_body = last_argument.loc.heredoc_body
+          heredoc_end = last_argument.loc.heredoc_end
+
+          [heredoc_body, heredoc_end]
+        end
+
+        def remove_heredoc(corrector, heredoc)
+          heredoc.each do |range|
+            corrector.remove(range_by_whole_lines(range, include_final_newline: true))
+          end
         end
       end
     end

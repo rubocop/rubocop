@@ -90,8 +90,7 @@ module RuboCop
           expect_space    = expect_space?(token1, token2)
 
           if offense?(token1, expect_space)
-            incorrect_style_detected(token1, token2,
-                                     expect_space, is_empty_braces)
+            incorrect_style_detected(token1, token2, expect_space, is_empty_braces)
           else
             correct_style_detected
           end

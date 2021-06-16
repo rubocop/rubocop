@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
-  it 'registers an offense and corrects when using ' \
-    '`ary.each_with_object { |v| v }`' do
+  it 'registers an offense and corrects when using `ary.each_with_object { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each_with_object([]) { |v| v }
           ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
@@ -13,8 +12,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using ' \
-    '`ary.each.with_object([]) { |v| v }`' do
+  it 'registers an offense and corrects when using `ary.each.with_object([]) { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each.with_object([]) { |v| v }
                ^^^^^^^^^^^^^^^ Remove redundant `with_object`.
@@ -25,8 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using ' \
-    'ary.each_with_object([]) do-end block' do
+  it 'registers an offense and corrects when using ary.each_with_object([]) do-end block' do
     expect_offense(<<~RUBY)
       ary.each_with_object([]) do |v|
           ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.

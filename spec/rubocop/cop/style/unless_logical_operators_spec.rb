@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
   context 'EnforcedStyle is `forbid_mixed_logical_operators`' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'forbid_mixed_logical_operators' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'forbid_mixed_logical_operators' } }
 
     it 'registers an offense when using `&&` and `||`' do
       expect_offense(<<~RUBY)
@@ -139,9 +137,7 @@ RSpec.describe RuboCop::Cop::Style::UnlessLogicalOperators, :config do
   end
 
   context 'EnforcedStyle is `forbid_logical_operators`' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'forbid_logical_operators' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'forbid_logical_operators' } }
 
     it 'registers an offense when using only `&&`' do
       expect_offense(<<~RUBY)

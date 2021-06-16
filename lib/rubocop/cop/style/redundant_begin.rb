@@ -36,7 +36,6 @@ module RuboCop
       #   do_something
       #
       #   # bad
-      #   # When using Ruby 2.5 or later.
       #   do_something do
       #     begin
       #       something
@@ -76,8 +75,6 @@ module RuboCop
         alias on_defs on_def
 
         def on_block(node)
-          return if target_ruby_version < 2.5
-
           return if node.send_node.lambda_literal?
           return if node.braces?
           return unless node.body&.kwbegin_type?
@@ -112,8 +109,22 @@ module RuboCop
         def replace_begin_with_statement(corrector, offense_range, node)
           first_child = node.children.first
 
-          corrector.replace(offense_range, first_child.source)
+          source = first_child.source
+          source = "(#{source})" if first_child.if_type? && first_child.modifier_form?
+
+          corrector.replace(offense_range, source)
           corrector.remove(range_between(offense_range.end_pos, first_child.source_range.end_pos))
+
+          restore_removed_comments(corrector, offense_range, node, first_child)
+        end
+
+        # Restore comments that occur between "begin" and "first_child".
+        # These comments will be moved to above the assignment line.
+        def restore_removed_comments(corrector, offense_range, node, first_child)
+          comments_range = range_between(offense_range.end_pos, first_child.source_range.begin_pos)
+          comments = comments_range.source
+
+          corrector.insert_before(node.parent, comments) unless comments.blank?
         end
 
         def empty_begin?(node)

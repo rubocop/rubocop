@@ -27,10 +27,8 @@ module RuboCop
         extend AutoCorrector
 
         MSG_ALIAS = 'Use `alias_method` instead of `alias`.'
-        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` ' \
-                           '%<current>s.'
-        MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of ' \
-                           '`alias %<current>s`.'
+        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` %<current>s.'
+        MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of `alias %<current>s`.'
 
         RESTRICT_ON_SEND = %i[alias_method].freeze
 
@@ -52,9 +50,7 @@ module RuboCop
               autocorrect(corrector, node)
             end
           elsif node.children.none? { |arg| bareword?(arg) }
-            add_offense_for_args(node) do |corrector|
-              autocorrect(corrector, node)
-            end
+            add_offense_for_args(node) { |corrector| autocorrect(corrector, node) }
           end
         end
 
@@ -75,17 +71,14 @@ module RuboCop
         end
 
         def alias_method_possible?(node)
-          scope_type(node) != :instance_eval &&
-            node.children.none?(&:gvar_type?)
+          scope_type(node) != :instance_eval && node.children.none?(&:gvar_type?)
         end
 
         def add_offense_for_args(node, &block)
           existing_args  = node.children.map(&:source).join(' ')
           preferred_args = node.children.map { |a| a.source[1..-1] }.join(' ')
           arg_ranges     = node.children.map(&:source_range)
-          msg            = format(MSG_SYMBOL_ARGS,
-                                  prefer: preferred_args,
-                                  current: existing_args)
+          msg            = format(MSG_SYMBOL_ARGS, prefer: preferred_args, current: existing_args)
           add_offense(arg_ranges.reduce(&:join), message: msg, &block)
         end
 

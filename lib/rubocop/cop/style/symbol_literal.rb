@@ -20,9 +20,7 @@ module RuboCop
         def on_sym(node)
           return unless /\A:["'][A-Za-z_]\w*["']\z/.match?(node.source)
 
-          add_offense(node) do |corrector|
-            corrector.replace(node, node.source.delete(%q('")))
-          end
+          add_offense(node) { |corrector| corrector.replace(node, node.source.delete(%q('"))) }
         end
       end
     end

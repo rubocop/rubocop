@@ -18,8 +18,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use only a single space inside array percent literal.'
-        MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX =
-          /(?:[\S&&[^\\]](?:\\ )*)( {2,})(?=\S)/.freeze
+        MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX = /(?:[\S&&[^\\]](?:\\ )*)( {2,})(?=\S)/.freeze
 
         def on_array(node)
           process(node, '%i', '%I', '%w', '%W')
@@ -36,11 +35,7 @@ module RuboCop
         private
 
         def each_unnecessary_space_match(node, &blk)
-          each_match_range(
-            contents_range(node),
-            MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX,
-            &blk
-          )
+          each_match_range(contents_range(node), MULTIPLE_SPACES_BETWEEN_ITEMS_REGEX, &blk)
         end
       end
     end

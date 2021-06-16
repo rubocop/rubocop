@@ -325,8 +325,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       RUBY
     end
 
-    it "allows loops with #{condition} with else, nested in another " \
-       'condition' do
+    it "allows loops with #{condition} with else, nested in another condition" do
       expect_no_offenses(<<~RUBY)
         [].each do |o|
           if foo
@@ -376,9 +375,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     context 'EnforcedStyle: skip_modifier_ifs' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'skip_modifier_ifs' }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'skip_modifier_ifs' } }
 
       it "allows modifier #{condition}" do
         expect_no_offenses(<<~RUBY)
@@ -390,9 +387,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
     end
 
     context 'EnforcedStyle: always' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'always' }
-      end
+      let(:cop_config) { { 'EnforcedStyle' => 'always' } }
       let(:opposite) { condition == 'if' ? 'unless' : 'if' }
 
       it "registers an offense for modifier #{condition}" do
@@ -591,9 +586,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
   end
 
   context 'MinBodyLength: 3' do
-    let(:cop_config) do
-      { 'MinBodyLength' => 3 }
-    end
+    let(:cop_config) { { 'MinBodyLength' => 3 } }
 
     it 'accepts if whose body has 1 line' do
       expect_no_offenses(<<~RUBY)
@@ -607,9 +600,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
   end
 
   context 'Invalid MinBodyLength' do
-    let(:cop_config) do
-      { 'MinBodyLength' => -2 }
-    end
+    let(:cop_config) { { 'MinBodyLength' => -2 } }
 
     it 'fails with an error' do
       source = <<~RUBY

@@ -194,8 +194,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
-  it 'does not register an offense when assigning the result of ' \
-     'a guard condition with `else`' do
+  it 'does not register an offense when assigning the result of a guard condition with `else`' do
     expect_no_offenses(<<~RUBY)
       def func
         result = if something
@@ -208,9 +207,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   context 'MinBodyLength: 1' do
-    let(:cop_config) do
-      { 'MinBodyLength' => 1 }
-    end
+    let(:cop_config) { { 'MinBodyLength' => 1 } }
 
     it 'reports an offense for if whose body has 1 line' do
       expect_offense(<<~RUBY)
@@ -232,9 +229,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   context 'MinBodyLength: 4' do
-    let(:cop_config) do
-      { 'MinBodyLength' => 4 }
-    end
+    let(:cop_config) { { 'MinBodyLength' => 4 } }
 
     it 'accepts a method whose body has 3 lines' do
       expect_no_offenses(<<~RUBY)
@@ -258,9 +253,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   context 'Invalid MinBodyLength' do
-    let(:cop_config) do
-      { 'MinBodyLength' => -2 }
-    end
+    let(:cop_config) { { 'MinBodyLength' => -2 } }
 
     it 'fails with an error' do
       source = <<~RUBY
@@ -357,8 +350,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   context 'with Metrics/MaxLineLength enabled' do
-    it 'registers an offense with non-modifier example code if too long for ' \
-       'single line' do
+    it 'registers an offense with non-modifier example code if too long for single line' do
       expect_offense(<<~RUBY)
         def test
           if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line

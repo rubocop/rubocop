@@ -88,9 +88,7 @@ module RuboCop
           return if allow_modifiers_on_symbols?(node)
 
           if offense?(node)
-            add_offense(node.loc.selector) do
-              opposite_style_detected
-            end
+            add_offense(node.loc.selector) { opposite_style_detected }
           else
             correct_style_detected
           end

@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
-  let(:cop_config) do
-    {
-      'MinNameLength' => 3,
-      'AllowNamesEndingInNumbers' => false
-    }
-  end
+  let(:cop_config) { { 'MinNameLength' => 3, 'AllowNamesEndingInNumbers' => false } }
 
   context 'when using argument forwarding', :ruby27 do
     it 'does not register an offense' do
@@ -192,11 +187,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
   end
 
   context 'with ForbiddenNames' do
-    let(:cop_config) do
-      {
-        'ForbiddenNames' => %w[arg]
-      }
-    end
+    let(:cop_config) { { 'ForbiddenNames' => %w[arg] } }
 
     it 'registers offense for parameter listed as forbidden' do
       expect_offense(<<~RUBY)
@@ -217,11 +208,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
   end
 
   context 'with AllowNamesEndingInNumbers' do
-    let(:cop_config) do
-      {
-        'AllowNamesEndingInNumbers' => true
-      }
-    end
+    let(:cop_config) { { 'AllowNamesEndingInNumbers' => true } }
 
     it 'accept parameters that end in numbers' do
       expect_no_offenses(<<~RUBY)

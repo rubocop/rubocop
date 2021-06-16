@@ -21,12 +21,10 @@ module RuboCop
       private
 
       def ensure_valid_preferred_delimiters
-        invalid = preferred_delimiters_config.keys -
-                  (PERCENT_LITERAL_TYPES + %w[default])
+        invalid = preferred_delimiters_config.keys - (PERCENT_LITERAL_TYPES + %w[default])
         return if invalid.empty?
 
-        raise ArgumentError,
-              "Invalid preferred delimiter config key: #{invalid.join(', ')}"
+        raise ArgumentError, "Invalid preferred delimiter config key: #{invalid.join(', ')}"
       end
 
       def preferred_delimiters
@@ -36,8 +34,7 @@ module RuboCop
 
             if preferred_delimiters_config.key?('default')
               PERCENT_LITERAL_TYPES.map do |type|
-                [type, preferred_delimiters_config[type] ||
-                  preferred_delimiters_config['default']]
+                [type, preferred_delimiters_config[type] || preferred_delimiters_config['default']]
               end.to_h
             else
               preferred_delimiters_config

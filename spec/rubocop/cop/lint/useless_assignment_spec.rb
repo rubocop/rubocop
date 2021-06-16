@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
-  context 'when a variable is assigned and assigned again in a modifier ' \
-          'condition' do
+  context 'when a variable is assigned and assigned again in a modifier condition' do
     it 'accepts with parentheses' do
       expect_no_offenses(<<~RUBY)
         a = nil
@@ -108,8 +107,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned and unreferenced ' \
-          'in a singleton class' do
+  context 'when a variable is assigned and unreferenced in a singleton class' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         1.times do
@@ -165,8 +163,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned with operator assignment ' \
-          'in top level' do
+  context 'when a variable is assigned with operator assignment in top level' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         foo ||= 1
@@ -175,8 +172,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned multiple times ' \
-          'but unreferenced' do
+  context 'when a variable is assigned multiple times but unreferenced' do
     it 'registers offenses for each assignment' do
       expect_offense(<<~RUBY)
         def some_method
@@ -191,8 +187,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a referenced variable is reassigned ' \
-          'but not re-referenced' do
+  context 'when a referenced variable is reassigned but not re-referenced' do
     it 'registers an offense for the non-re-referenced assignment' do
       expect_offense(<<~RUBY)
         def some_method
@@ -205,8 +200,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when an unreferenced variable is reassigned ' \
-          'and re-referenced' do
+  context 'when an unreferenced variable is reassigned and re-referenced' do
     it 'registers an offense for the unreferenced assignment' do
       expect_offense(<<~RUBY)
         def some_method
@@ -394,8 +388,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned in single branch if ' \
-          'and unreferenced' do
+  context 'when a variable is assigned in single branch if and unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method(flag)
@@ -425,8 +418,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned in single branch if ' \
-          'and referenced after the branching' do
+  context 'when a variable is reassigned in single branch if and referenced after the branching' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method(flag)
@@ -529,8 +521,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned in each branch of if ' \
-          'and referenced after the branching' do
+  context 'when a variable is assigned in each branch of if and referenced after the branching' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method(flag)
@@ -546,8 +537,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned in single branch if ' \
-          'and referenced in the branch' do
+  context 'when a variable is reassigned in single branch if and referenced in the branch' do
     it 'registers an offense for the unreferenced assignment' do
       expect_offense(<<~RUBY)
         def some_method(flag)
@@ -563,8 +553,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned in each branch of if ' \
-          'and referenced in the else branch' do
+  context 'when a variable is assigned in each branch of if and referenced in the else branch' do
     it 'registers an offense for the assignment in the if branch' do
       expect_offense(<<~RUBY)
         def some_method(flag)
@@ -655,8 +644,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when an assignment in a if branch is referenced ' \
-          'in another if branch' do
+  context 'when an assignment in a if branch is referenced in another if branch' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method(flag_a, flag_b)
@@ -698,8 +686,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned on each side of && ' \
-          'and referenced after the &&' do
+  context 'when a variable is assigned on each side of && and referenced after the &&' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method
@@ -737,8 +724,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned ' \
-          'while referencing itself in rhs and referenced' do
+  context 'when a variable is reassigned while referencing itself in rhs and referenced' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method
@@ -750,8 +736,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned ' \
-          'with binary operator assignment and referenced' do
+  context 'when a variable is reassigned with binary operator assignment and referenced' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method
@@ -763,8 +748,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned ' \
-          'with logical operator assignment and referenced' do
+  context 'when a variable is reassigned with logical operator assignment and referenced' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method
@@ -802,8 +786,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned with ||= ' \
-          'at the last expression of the scope' do
+  context 'when a variable is assigned with ||= at the last expression of the scope' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method
@@ -815,8 +798,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned with ||= ' \
-          'before the last expression of the scope' do
+  context 'when a variable is assigned with ||= before the last expression of the scope' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method
@@ -829,8 +811,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned with multiple assignment ' \
-          'and unreferenced' do
+  context 'when a variable is assigned with multiple assignment and unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method
@@ -855,8 +836,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned in loop body ' \
-          'and referenced in post while condition' do
+  context 'when a variable is assigned in loop body and referenced in post while condition' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         begin
@@ -867,8 +847,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned in loop body ' \
-          'and referenced in post until condition' do
+  context 'when a variable is assigned in loop body and referenced in post until condition' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         begin
@@ -879,8 +858,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned ' \
-          'in main body of begin with rescue but unreferenced' do
+  context 'when a variable is assigned in main body of begin with rescue but unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         begin
@@ -967,8 +945,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned multiple times in rescue ' \
-          'and referenced after the begin' do
+  context 'when a variable is reassigned multiple times in rescue and referenced after the begin' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         foo = false
@@ -1026,8 +1003,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned at the end of rescue ' \
-          'and would be referenced with retry' do
+  context 'when a variable is assigned at the end of rescue and would be referenced with retry' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         retried = false
@@ -1101,8 +1077,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a method argument is reassigned ' \
-          'and zero arity super is called' do
+  context 'when a method argument is reassigned and zero arity super is called' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method(foo)
@@ -1113,8 +1088,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a local variable is unreferenced ' \
-          'and zero arity super is called' do
+  context 'when a local variable is unreferenced and zero arity super is called' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method(bar)
@@ -1126,8 +1100,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a method argument is reassigned ' \
-          'but not passed to super' do
+  context 'when a method argument is reassigned but not passed to super' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method(foo, bar)
@@ -1148,8 +1121,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a named capture is unreferenced ' \
-          'in other than top level' do
+  context 'when a named capture is unreferenced in other than top level' do
     it 'registers an offense' do
       expect_offense(<<~'RUBY')
         def some_method
@@ -1172,8 +1144,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is referenced ' \
-          'in rhs of named capture expression' do
+  context 'when a variable is referenced in rhs of named capture expression' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method
@@ -1185,8 +1156,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned in begin ' \
-          'and referenced outside' do
+  context 'when a variable is assigned in begin and referenced outside' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method
@@ -1199,8 +1169,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is shadowed by a block argument ' \
-          'and unreferenced' do
+  context 'when a variable is shadowed by a block argument and unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method
@@ -1317,8 +1286,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned ' \
-          'while being passed to a method taking block' do
+  context 'when a variable is assigned while being passed to a method taking block' do
     context 'and the variable is used' do
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
@@ -1340,8 +1308,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is assigned ' \
-          'and passed to a method followed by method taking block' do
+  context 'when a variable is assigned and passed to a method followed by method taking block' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         pattern = '*.rb'
@@ -1447,6 +1414,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         RUBY
       end
+    end
+  end
+
+  context 'inside a `case-match` node', :ruby27 do
+    it 'does not register an offense when the variable is used' do
+      expect_no_offenses(<<~RUBY)
+        case '0'
+        in String
+          res = 1
+        else
+          res = 2
+        end
+
+        do_something(res)
+      RUBY
     end
   end
 end

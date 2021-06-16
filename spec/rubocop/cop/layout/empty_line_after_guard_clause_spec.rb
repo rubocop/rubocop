@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
-  it 'registers an offense and corrects a guard clause ' \
-    'not followed by empty line' do
+  it 'registers an offense and corrects a guard clause not followed by empty line' do
     expect_offense(<<~RUBY)
       def foo
         return if need_return?
@@ -20,8 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects `next` guard clause not followed by ' \
-     'empty line' do
+  it 'registers an offense and corrects `next` guard clause not followed by empty line' do
     expect_offense(<<~RUBY)
       def foo
         next unless need_next? # comment
@@ -161,8 +159,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using `and return` ' \
-     'before guard condition' do
+  it 'registers an offense and corrects when using `and return` before guard condition' do
     expect_offense(<<~RUBY)
       def foo
         render :foo and return if condition
@@ -180,8 +177,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using `or return` ' \
-     'before guard condition' do
+  it 'registers an offense and corrects when using `or return` before guard condition' do
     expect_offense(<<~RUBY)
       def foo
         render :foo or return if condition
@@ -252,8 +248,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accepts a guard clause followed by empty line when guard clause ' \
-    'including heredoc' do
+  it 'accepts a guard clause followed by empty line when guard clause including heredoc' do
     expect_no_offenses(<<~RUBY)
       def method
         if truthy
@@ -443,8 +438,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accpets a guard clause that is after a multiline heredoc ' \
-     'with chained calls' do
+  it 'accpets a guard clause that is after a multiline heredoc with chained calls' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, <<~END.squish.it.good unless guard
@@ -457,8 +451,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accpets a guard clause that is after a multiline heredoc ' \
-     'nested argument call' do
+  it 'accpets a guard clause that is after a multiline heredoc nested argument call' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, call(<<~END.squish) unless guard
@@ -471,8 +464,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects a guard clause that is ' \
-    'a ternary operator' do
+  it 'registers an offense and corrects a guard clause that is a ternary operator' do
     expect_offense(<<~RUBY)
       def foo
         puts 'some action happens here'
@@ -528,6 +520,43 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
         next if bar?
 
         foobar
+      end
+    RUBY
+  end
+
+  it 'registers no offenses using heredoc with `and return` before guard condition with empty line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        puts(<<~MSG) and return if bar
+          A multiline
+          message
+        MSG
+
+        baz
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects using heredoc with `and return` before guard condition' do
+    expect_offense(<<~RUBY)
+      def foo
+        puts(<<~MSG) and return if bar
+          A multiline
+          message
+        MSG
+      ^^^^^ Add empty line after guard clause.
+        baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        puts(<<~MSG) and return if bar
+          A multiline
+          message
+        MSG
+
+        baz
       end
     RUBY
   end

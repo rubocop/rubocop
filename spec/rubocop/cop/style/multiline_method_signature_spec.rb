@@ -17,6 +17,25 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when line break after opening parenthesis' do
+        expect_offense(<<~RUBY)
+          class Foo
+            def foo(
+            ^^^^^^^^ Avoid multi-line method signatures.
+              arg
+          )
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            def foo(arg)
+            end
+          end
+        RUBY
+      end
+
       context 'when method signature is on a single line' do
         it 'does not register an offense for parameterized method' do
           expect_no_offenses(<<~RUBY)
@@ -153,11 +172,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
     end
 
     context 'when correction would exceed maximum line length' do
-      let(:other_cops) do
-        {
-          'Layout/LineLength' => { 'Max' => 5 }
-        }
-      end
+      let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 5 } } }
 
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
@@ -169,11 +184,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
     end
 
     context 'when correction would not exceed maximum line length' do
-      let(:other_cops) do
-        {
-          'Layout/LineLength' => { 'Max' => 25 }
-        }
-      end
+      let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 25 } } }
 
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)

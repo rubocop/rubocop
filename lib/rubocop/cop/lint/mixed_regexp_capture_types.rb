@@ -21,8 +21,7 @@ module RuboCop
       #   /(FOO)(BAR)/
       #
       class MixedRegexpCaptureTypes < Base
-        MSG = 'Do not mix named captures and numbered captures ' \
-              'in a Regexp literal.'
+        MSG = 'Do not mix named captures and numbered captures in a Regexp literal.'
 
         def on_regexp(node)
           return if node.interpolation?

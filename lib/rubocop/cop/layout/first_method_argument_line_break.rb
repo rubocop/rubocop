@@ -24,8 +24,7 @@ module RuboCop
         include FirstElementLineBreak
         extend AutoCorrector
 
-        MSG = 'Add a line break before the first argument of a ' \
-              'multi-line method argument list.'
+        MSG = 'Add a line break before the first argument of a multi-line method argument list.'
 
         def on_send(node)
           args = node.arguments.dup

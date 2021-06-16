@@ -58,8 +58,8 @@ module RuboCop
         }.freeze
         MSG = 'Replace unsafe number conversion with number '\
               'class parsing, instead of using '\
-              '%<current>s, use stricter '\
-              '%<corrected_method>s.'
+              '`%<current>s`, use stricter '\
+              '`%<corrected_method>s`.'
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 
         # @!method to_method(node)
@@ -97,7 +97,7 @@ module RuboCop
 
         def handle_as_symbol(node)
           to_method_symbol(node) do |receiver, sym_node, to_method|
-            next if receiver.nil?
+            next if receiver.nil? || !node.arguments.one?
 
             message = format(
               MSG,
@@ -113,8 +113,7 @@ module RuboCop
         end
 
         def correct_method(node, receiver)
-          format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name],
-                 number_object: receiver.source)
+          format(CONVERSION_METHOD_CLASS_MAPPING[node.method_name], number_object: receiver.source)
         end
 
         def correct_sym_method(to_method)

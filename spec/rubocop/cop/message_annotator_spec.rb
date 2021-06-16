@@ -4,14 +4,10 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
   let(:options) { {} }
   let(:config) { RuboCop::Config.new({}) }
   let(:cop_name) { 'Cop/Cop' }
-  let(:annotator) do
-    described_class.new(config, cop_name, config[cop_name], options)
-  end
+  let(:annotator) { described_class.new(config, cop_name, config[cop_name], options) }
 
   describe '#annotate' do
-    subject(:annotate) do
-      annotator.annotate('message')
-    end
+    subject(:annotate) { annotator.annotate('message') }
 
     context 'with default options' do
       it 'returns the message' do
@@ -20,11 +16,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
     end
 
     context 'when the output format is JSON' do
-      let(:options) do
-        {
-          format: 'json'
-        }
-      end
+      let(:options) { { format: 'json' } }
 
       it 'returns the message unannotated' do
         expect(annotate).to eq('message')
@@ -49,24 +41,16 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
       end
 
       it 'returns an annotated message' do
-        expect(annotate).to eq(
-          'Cop/Cop: message my cop details (http://example.org/styleguide)'
-        )
+        expect(annotate).to eq('Cop/Cop: message my cop details (http://example.org/styleguide)')
       end
     end
   end
 
   describe 'with style guide url' do
-    subject(:annotate) do
-      annotator.annotate('')
-    end
+    subject(:annotate) { annotator.annotate('') }
 
     let(:cop_name) { 'Cop/Cop' }
-    let(:options) do
-      {
-        display_style_guide: true
-      }
-    end
+    let(:options) { { display_style_guide: true } }
 
     context 'when StyleGuide is not set in the config' do
       let(:config) { RuboCop::Config.new({}) }
@@ -160,9 +144,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
         config['AllCops'] = {
           'StyleGuideBaseURL' => 'https://github.com/rubocop/ruby-style-guide/'
         }
-        config['Cop/Cop'] = {
-          'StyleGuide' => '../rails-style-guide#target_based_url'
-        }
+        config['Cop/Cop'] = { 'StyleGuide' => '../rails-style-guide#target_based_url' }
         expect(annotate).to include('https://github.com/rubocop/rails-style-guide#target_based_url')
       end
 
@@ -193,16 +175,12 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
     end
 
     it 'returns reference url when it is specified' do
-      config['Cop/Cop'] = {
-        'Reference' => 'https://example.com/some_style_guide'
-      }
+      config['Cop/Cop'] = { 'Reference' => 'https://example.com/some_style_guide' }
       expect(urls).to eq(%w[https://example.com/some_style_guide])
     end
 
     it 'returns an empty array if the reference url is blank' do
-      config['Cop/Cop'] = {
-        'Reference' => ''
-      }
+      config['Cop/Cop'] = { 'Reference' => '' }
 
       expect(urls.empty?).to be(true)
     end

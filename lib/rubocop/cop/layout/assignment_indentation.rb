@@ -26,8 +26,7 @@ module RuboCop
         include Alignment
         extend AutoCorrector
 
-        MSG = 'Indent the first line of the right-hand-side of a ' \
-              'multi-line assignment.'
+        MSG = 'Indent the first line of the right-hand-side of a multi-line assignment.'
 
         private
 
@@ -45,8 +44,7 @@ module RuboCop
         end
 
         def leftmost_multiple_assignment(node)
-          return node unless same_line?(node, node.parent) &&
-                             node.parent.assignment?
+          return node unless same_line?(node, node.parent) && node.parent.assignment?
 
           leftmost_multiple_assignment(node.parent)
 

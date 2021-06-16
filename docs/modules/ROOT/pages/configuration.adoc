@@ -138,6 +138,23 @@ inherit_from:
   - ../.rubocop.yml
 ----
 
+You can inherit from a repo with basic auth that is authorized to access the repo as follow:
+
+[source,yaml]
+----
+inherit_from:
+  - http://<user_name>:<password>@raw.github.com/example/rubocop.yml
+----
+
+A link:https://docs.github.com/en/developers/apps/about-apps#personal-access-token[GitHub personal access token]
+can also be configured as follow:
+
+[source,yaml]
+----
+inherit_from:
+  - http://<personal_access_token>@raw.github.com/example/rubocop.yml
+----
+
 === Inheriting configuration from a dependency gem
 
 The optional `inherit_gem` directive is used to include configuration from
@@ -334,7 +351,7 @@ configuration file is. In configuration files that don't begin with `.rubocop`,
 e.g. `our_company_defaults.yml`, paths are relative to the directory where
 `rubocop` is run.
 
-This affects cops that have customisable paths: if the default is `db/migrate/*.rb`,
+This affects cops that have customisable paths: if the default is `db/migrate/\*.rb`,
 and the cop is enabled in `db/migrate/.rubocop.yml`, the path will need to be
 explicitly set as `*.rb`, as the default will look for `db/migrate/db/migrate/*.rb`.
 This is unlikely to be what you wanted.
@@ -452,8 +469,12 @@ Most cops are enabled by default. Cops, introduced or significantly updated
 between major versions, are in a special pending status (read more in
 xref:versioning.adoc["Versioning"]). Some cops, configured the above `Enabled: false`
 in https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml],
-are disabled by default. The cop enabling process can be altered by
-setting `DisabledByDefault` or `EnabledByDefault` (but not both) to `true`.
+are disabled by default.
+
+The cop enabling process can be altered by setting `DisabledByDefault` or
+`EnabledByDefault` (but not both) to `true`. These settings override the default for *all*
+cops to disabled or enabled, regardless of the cops' default values (whether enabled,
+disabled or pending).
 
 [source,yaml]
 ----
@@ -462,9 +483,9 @@ AllCops:
 ----
 
 All cops are then disabled by default. Only cops appearing in user
-configuration files are enabled. `Enabled: true` does not have to be
-set for cops in user configuration. They will be enabled anyway. It is also
-possible to enable entire departments by adding for example
+configuration files with `Enabled: true` will be enabled; every other cop will
+be disabled without having to explicitly disable them in configuration. It is
+also possible to enable entire departments by adding for example
 
 [source,yaml]
 ----
@@ -472,8 +493,7 @@ Style:
   Enabled: true
 ----
 
-All cops are then enabled by default. Only cops explicitly disabled
-using `Enabled: false` in user configuration files are disabled.
+All cops in the `Style` department are then enabled.
 
 If a department is disabled, cops in that department can still be individually
 enabled, and that setting overrides the setting for its department in the same
@@ -649,6 +669,15 @@ file by adding a comment such as
 # rubocop:disable Layout/LineLength, Style/StringLiterals
 [...]
 # rubocop:enable Layout/LineLength, Style/StringLiterals
+----
+
+You can also disable entire departments by giving a department name in the comment.
+
+[source,ruby]
+----
+# rubocop:disable Metrics, Layout/LineLength
+[...]
+# rubocop:enable Metrics, Layout/LineLength
 ----
 
 You can also disable _all_ cops with

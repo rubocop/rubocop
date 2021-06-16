@@ -33,10 +33,8 @@ module RuboCop
         DO = 'do'
         SAFE_NAVIGATION = '&.'
         NAMESPACE_OPERATOR = '::'
-        ACCEPT_LEFT_PAREN =
-          %w[break defined? next not rescue return super yield].freeze
-        ACCEPT_LEFT_SQUARE_BRACKET =
-          %w[super yield].freeze
+        ACCEPT_LEFT_PAREN = %w[break defined? next not rescue return super yield].freeze
+        ACCEPT_LEFT_SQUARE_BRACKET = %w[super yield].freeze
         ACCEPT_NAMESPACE_OPERATOR = 'super'
 
         def on_and(node)
@@ -55,6 +53,10 @@ module RuboCop
           check(node, %i[keyword else].freeze)
         end
 
+        def on_case_match(node)
+          check(node, %i[keyword else].freeze)
+        end
+
         def on_ensure(node)
           check(node, [:keyword].freeze)
         end
@@ -67,8 +69,28 @@ module RuboCop
           check(node, %i[keyword else begin end].freeze, 'then')
         end
 
+        def on_if_guard(node)
+          check(node, [:keyword].freeze)
+        end
+
+        def on_in_pattern(node)
+          check(node, [:keyword].freeze)
+        end
+
         def on_kwbegin(node)
           check(node, %i[begin end].freeze, nil)
+        end
+
+        # Handle one-line pattern matching syntax (`in`) with `Parser::Ruby27`.
+        def on_match_pattern(node)
+          return if target_ruby_version >= 3.0
+
+          check(node, [:operator].freeze)
+        end
+
+        # Handle one-line pattern matching syntax (`in`) with `Parser::Ruby30`.
+        def on_match_pattern_p(node)
+          check(node, [:operator].freeze)
         end
 
         def on_next(node)
@@ -108,6 +130,10 @@ module RuboCop
         end
 
         def on_zsuper(node)
+          check(node, [:keyword].freeze)
+        end
+
+        def on_unless_guard(node)
           check(node, [:keyword].freeze)
         end
 
@@ -194,8 +220,7 @@ module RuboCop
 
           return false if accepted_opening_delimiter?(range, char)
           return false if safe_navigation_call?(range, pos)
-          return false if accept_namespace_operator?(range) &&
-                          namespace_operator?(range, pos)
+          return false if accept_namespace_operator?(range) && namespace_operator?(range, pos)
 
           !/[\s;,#\\)}\].]/.match?(char)
         end

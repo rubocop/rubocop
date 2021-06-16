@@ -27,8 +27,7 @@ module RuboCop
     class VariableForce < Force # rubocop:disable Metrics/ClassLength
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
-      VARIABLE_ASSIGNMENT_TYPES =
-        [VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE].freeze
+      VARIABLE_ASSIGNMENT_TYPES = [VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE].freeze
 
       ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg,
@@ -38,8 +37,7 @@ module RuboCop
       ].freeze
 
       LOGICAL_OPERATOR_ASSIGNMENT_TYPES = %i[or_asgn and_asgn].freeze
-      OPERATOR_ASSIGNMENT_TYPES =
-        (LOGICAL_OPERATOR_ASSIGNMENT_TYPES + [:op_asgn]).freeze
+      OPERATOR_ASSIGNMENT_TYPES = (LOGICAL_OPERATOR_ASSIGNMENT_TYPES + [:op_asgn]).freeze
 
       MULTIPLE_ASSIGNMENT_TYPE = :masgn
 
@@ -182,9 +180,7 @@ module RuboCop
         process_node(rhs_node)
         process_node(regexp_node)
 
-        variable_names.each do |name|
-          variable_table.assign_to_variable(name, node)
-        end
+        variable_names.each { |name| variable_table.assign_to_variable(name, node) }
 
         skip_children!
       end
@@ -304,17 +300,14 @@ module RuboCop
         return unless method_name == :binding
         return if args && !args.children.empty?
 
-        variable_table.accessible_variables.each do |variable|
-          variable.reference!(node)
-        end
+        variable_table.accessible_variables.each { |variable| variable.reference!(node) }
       end
 
       # Mark all assignments which are referenced in the same loop
       # as referenced by ignoring AST order since they would be referenced
       # in next iteration.
       def mark_assignments_as_referenced_in_loop(node)
-        referenced_variable_names_in_loop, assignment_nodes_in_loop =
-          find_variables_in_loop(node)
+        referenced_variable_names_in_loop, assignment_nodes_in_loop = find_variables_in_loop(node)
 
         referenced_variable_names_in_loop.each do |name|
           variable = variable_table.find_variable(name)
@@ -371,9 +364,7 @@ module RuboCop
 
       # Use Node#equal? for accurate check.
       def scanned_node?(node)
-        scanned_nodes.any? do |scanned_node|
-          scanned_node.equal?(node)
-        end
+        scanned_nodes.any? { |scanned_node| scanned_node.equal?(node) }
       end
 
       def scanned_nodes

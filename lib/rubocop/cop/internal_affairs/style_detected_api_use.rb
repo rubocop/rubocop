@@ -58,8 +58,7 @@ module RuboCop
         MSG_FOR_NEGATIVE_WITHOUT_POSITIVE =
           'negative `*_style_detected` methods called without ' \
           'calling `correct_style_detected` method.'
-        MSG_FOR_CONDITIONAL_USE =
-          '`*_style_detected` method called in conditional.'
+        MSG_FOR_CONDITIONAL_USE = '`*_style_detected` method called in conditional.'
         RESTRICT_ON_SEND = %i[
           correct_style_detected opposite_style_detected
           unexpected_style_detected ambiguous_style_detected

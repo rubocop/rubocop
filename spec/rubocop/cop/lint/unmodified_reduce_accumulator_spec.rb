@@ -552,7 +552,7 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
         RUBY
       end
 
-      it 'handles break with no value' do
+      it 'allows break with no value' do
         expect_no_offenses(<<~RUBY)
           foo.#{method}([]) do |acc, el|
             break if something?

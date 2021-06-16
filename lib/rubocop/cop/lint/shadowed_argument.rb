@@ -64,8 +64,7 @@ module RuboCop
       #   end
       #
       class ShadowedArgument < Base
-        MSG = 'Argument `%<argument>s` was shadowed by a local variable ' \
-              'before it was used.'
+        MSG = 'Argument `%<argument>s` was shadowed by a local variable before it was used.'
 
         # @!method uses_var?(node)
         def_node_search :uses_var?, '(lvar %)'
@@ -75,9 +74,7 @@ module RuboCop
         end
 
         def after_leaving_scope(scope, _variable_table)
-          scope.variables.each_value do |variable|
-            check_argument(variable)
-          end
+          scope.variables.each_value { |variable| check_argument(variable) }
         end
 
         private
@@ -128,8 +125,7 @@ module RuboCop
             next false if assignment_node.shorthand_asgn?
 
             node_within_block_or_conditional =
-              node_within_block_or_conditional?(assignment_node.parent,
-                                                argument.scope.node)
+              node_within_block_or_conditional?(assignment_node.parent, argument.scope.node)
 
             unless uses_var?(assignment_node, argument.name)
               # It's impossible to decide whether a branch or block is executed,
@@ -162,10 +158,7 @@ module RuboCop
         # Get argument references without assignments' references
         #
         def argument_references(argument)
-          assignment_references = argument
-                                  .assignments
-                                  .flat_map(&:references)
-                                  .map(&:source_range)
+          assignment_references = argument.assignments.flat_map(&:references).map(&:source_range)
 
           argument.references.reject do |ref|
             next false unless ref.explicit?

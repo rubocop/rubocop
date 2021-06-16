@@ -40,7 +40,7 @@ module RuboCop
             return unless name_node.value.end_with?('.rb')
 
             add_offense(name_node) do |corrector|
-              correction = name_node.value.sub(/\.rb\z/, '')
+              correction = name_node.value.delete_suffix('.rb')
 
               corrector.replace(name_node, "'#{correction}'")
             end

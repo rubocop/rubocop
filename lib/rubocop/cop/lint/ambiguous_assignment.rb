@@ -25,12 +25,7 @@ module RuboCop
 
         SIMPLE_ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn casgn].freeze
 
-        MISTAKES = {
-          '=-' => '-=',
-          '=+' => '+=',
-          '=*' => '*=',
-          '=!' => '!='
-        }.freeze
+        MISTAKES = { '=-' => '-=', '=+' => '+=', '=*' => '*=', '=!' => '!=' }.freeze
 
         def on_asgn(node)
           return unless (rhs = rhs(node))

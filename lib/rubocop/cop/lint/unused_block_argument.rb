@@ -68,19 +68,22 @@ module RuboCop
 
         def check_argument(variable)
           return if allowed_block?(variable) ||
-                    allowed_keyword_argument?(variable)
+                    allowed_keyword_argument?(variable) ||
+                    used_block_local?(variable)
 
           super
         end
 
+        def used_block_local?(variable)
+          variable.explicit_block_local_variable? && !variable.assignments.empty?
+        end
+
         def allowed_block?(variable)
-          !variable.block_argument? ||
-            (ignore_empty_blocks? && empty_block?(variable))
+          !variable.block_argument? || (ignore_empty_blocks? && empty_block?(variable))
         end
 
         def allowed_keyword_argument?(variable)
-          variable.keyword_argument? &&
-            allow_unused_keyword_arguments?
+          variable.keyword_argument? && allow_unused_keyword_arguments?
         end
 
         def message(variable)
@@ -115,8 +118,7 @@ module RuboCop
         end
 
         def message_for_normal_block(variable, all_arguments)
-          if all_arguments.none?(&:referenced?) &&
-             !define_method_call?(variable)
+          if all_arguments.none?(&:referenced?) && !define_method_call?(variable)
             if all_arguments.count > 1
               "You can omit all the arguments if you don't care about them."
             else

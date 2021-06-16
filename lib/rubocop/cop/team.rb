@@ -107,9 +107,7 @@ module RuboCop
           end
         end
 
-        needed.map do |force_class, joining_cops|
-          force_class.new(joining_cops)
-        end
+        needed.map { |force_class, joining_cops| force_class.new(joining_cops) }
       end
 
       def external_dependency_checksum
@@ -247,8 +245,7 @@ module RuboCop
       end
 
       def handle_error(error, location, cop)
-        message = Rainbow("An error occurred while #{cop.name}" \
-                           " cop was inspecting #{location}.").red
+        message = Rainbow("An error occurred while #{cop.name} cop was inspecting #{location}.").red
         @errors << message
         warn message
         if debug?

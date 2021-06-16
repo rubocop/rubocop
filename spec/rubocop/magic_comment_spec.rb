@@ -9,69 +9,42 @@ RSpec.describe RuboCop::MagicComment do
       expect(described_class.parse(comment).encoding).to eql(encoding)
     end
 
-    it "returns #{frozen_string.inspect} for frozen_string_literal " \
-         "when comment is #{comment}" do
-      expect(described_class.parse(comment).frozen_string_literal)
-        .to eql(frozen_string)
+    it "returns #{frozen_string.inspect} for frozen_string_literal when comment is #{comment}" do
+      expect(described_class.parse(comment).frozen_string_literal).to eql(frozen_string)
     end
   end
 
   include_examples 'magic comment', '#'
 
-  include_examples 'magic comment',
-                   '# encoding: utf-8',
-                   encoding: 'utf-8'
+  include_examples 'magic comment', '# encoding: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment',
-                   '# ENCODING: utf-8',
-                   encoding: 'utf-8'
+  include_examples 'magic comment', '# ENCODING: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment',
-                   '# eNcOdInG: utf-8',
-                   encoding: 'utf-8'
+  include_examples 'magic comment', '# eNcOdInG: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment',
-                   '# coding: utf-8',
-                   encoding: 'utf-8'
+  include_examples 'magic comment', '# coding: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment',
-                   '    # coding: utf-8',
-                   encoding: 'utf-8'
+  include_examples 'magic comment', '    # coding: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment',
-                   '# incoding: utf-8'
+  include_examples 'magic comment', '# incoding: utf-8'
 
   include_examples 'magic comment',
                    '# encoding: stateless-iso-2022-jp-kddi',
                    encoding: 'stateless-iso-2022-jp-kddi'
 
-  include_examples 'magic comment',
-                   '# frozen_string_literal: true',
-                   frozen_string_literal: true
+  include_examples 'magic comment', '# frozen_string_literal: true', frozen_string_literal: true
 
-  include_examples 'magic comment',
-                   '    # frozen_string_literal: true',
-                   frozen_string_literal: true
+  include_examples 'magic comment', '    # frozen_string_literal: true', frozen_string_literal: true
 
-  include_examples 'magic comment',
-                   '# frozen_string_literal:true',
-                   frozen_string_literal: true
+  include_examples 'magic comment', '# frozen_string_literal:true', frozen_string_literal: true
 
-  include_examples 'magic comment',
-                   '# frozen_string_literal: false',
-                   frozen_string_literal: false
+  include_examples 'magic comment', '# frozen_string_literal: false', frozen_string_literal: false
 
-  include_examples 'magic comment',
-                   '# frozen-string-literal: true',
-                   frozen_string_literal: true
+  include_examples 'magic comment', '# frozen-string-literal: true', frozen_string_literal: true
 
-  include_examples 'magic comment',
-                   '# FROZEN-STRING-LITERAL: true',
-                   frozen_string_literal: true
+  include_examples 'magic comment', '# FROZEN-STRING-LITERAL: true', frozen_string_literal: true
 
-  include_examples 'magic comment',
-                   '# fRoZeN-sTrInG_lItErAl: true',
-                   frozen_string_literal: true
+  include_examples 'magic comment', '# fRoZeN-sTrInG_lItErAl: true', frozen_string_literal: true
 
   include_examples 'magic comment',
                    '# -*- frozen-string-literal: true -*-',
@@ -126,9 +99,7 @@ RSpec.describe RuboCop::MagicComment do
                    '# vim: filetype=ruby, fileencoding=ascii-8bit',
                    encoding: 'ascii-8bit'
 
-  include_examples 'magic comment',
-                   '# vim: filetype=ruby,fileencoding=ascii-8bit',
-                   encoding: nil
+  include_examples 'magic comment', '# vim: filetype=ruby,fileencoding=ascii-8bit', encoding: nil
 
   include_examples 'magic comment',
                    '# vim: filetype=ruby,  fileencoding=ascii-8bit',
@@ -148,9 +119,7 @@ RSpec.describe RuboCop::MagicComment do
                    '# vim: filetype=python, fileencoding=ascii-8bit',
                    encoding: 'ascii-8bit'
 
-  include_examples 'magic comment',
-                   '# vim:fileencoding=utf-8',
-                   encoding: nil
+  include_examples 'magic comment', '# vim:fileencoding=utf-8', encoding: nil
 
   describe '#valid_shareable_constant_value?' do
     subject { described_class.parse(comment).valid_shareable_constant_value? }

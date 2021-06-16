@@ -41,7 +41,7 @@ module RuboCop
 
         EXPECT_NO_OFFENSES_INCORRECT_DESCRIPTIONS = [
           /^(adds|registers|reports|finds) (an? )?offense/,
-          /^flags\b/
+          /^(flags|handles|works)\b/
         ].freeze
 
         EXPECT_OFFENSE_INCORRECT_DESCRIPTIONS = [
@@ -49,9 +49,7 @@ module RuboCop
           /^(does not|doesn't) add (a|an|any )?offense/
         ].freeze
 
-        EXPECT_NO_CORRECTIONS_INCORRECT_DESCRIPTIONS = [
-          /^(auto[- ]?)?correct/
-        ].freeze
+        EXPECT_NO_CORRECTIONS_INCORRECT_DESCRIPTIONS = [/^(auto[- ]?)?correct/].freeze
 
         EXPECT_CORRECTION_INCORRECT_DESCRIPTIONS = [
           /\b(does not|doesn't) (auto[- ]?)?correct/
@@ -80,9 +78,13 @@ module RuboCop
         private
 
         def check_description(description, regexps, message)
-          return unless regexps.any? { |regexp| regexp.match?(description.value) }
+          return unless regexps.any? { |regexp| regexp.match?(string_contents(description)) }
 
           add_offense(description, message: message)
+        end
+
+        def string_contents(node)
+          node.str_type? ? node.value : node.source
         end
       end
     end

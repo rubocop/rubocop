@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::BeginEndAlignment, :config do
-  let(:cop_config) do
-    { 'EnforcedStyleAlignWith' => 'begin' }
-  end
+  let(:cop_config) { { 'EnforcedStyleAlignWith' => 'begin' } }
 
   include_examples 'aligned', 'begin', '', 'end'
 
@@ -16,9 +14,7 @@ RSpec.describe RuboCop::Cop::Layout::BeginEndAlignment, :config do
   include_examples 'aligned', 'puts 1; begin', '', '        end'
 
   context 'when EnforcedStyleAlignWith is start_of_line' do
-    let(:cop_config) do
-      { 'EnforcedStyleAlignWith' => 'start_of_line' }
-    end
+    let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line' } }
 
     include_examples 'aligned', 'puts 1; begin', '', 'end'
 

@@ -247,8 +247,7 @@ module RuboCop
         def message(variable)
           variable_name = variable.to_s.sub('@', '')
 
-          return UNDERSCORE_REQUIRED if style == :required &&
-                                        !variable_name.start_with?('_')
+          return UNDERSCORE_REQUIRED if style == :required && !variable_name.start_with?('_')
 
           MSG
         end
@@ -260,7 +259,7 @@ module RuboCop
         end
 
         def variable_name_candidates(method_name)
-          no_underscore = method_name.sub(/\A_/, '')
+          no_underscore = method_name.delete_prefix('_')
           with_underscore = "_#{method_name}"
           case style
           when :required

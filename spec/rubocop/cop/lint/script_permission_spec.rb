@@ -63,9 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
   end
 
   context 'with file permission 0755' do
-    before do
-      FileUtils.chmod(0755, file.path)
-    end
+    before { FileUtils.chmod(0755, file.path) }
 
     it 'accepts with shebang line' do
       File.write(file.path, source)

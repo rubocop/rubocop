@@ -18,9 +18,7 @@ module RuboCop
         def call(corrector)
           lambda.call(corrector)
         rescue StandardError => e
-          raise ErrorWithAnalyzedFileLocation.new(
-            cause: e, node: node, cop: cop
-          )
+          raise ErrorWithAnalyzedFileLocation.new(cause: e, node: node, cop: cop)
         end
       end
 
@@ -55,9 +53,7 @@ module RuboCop
         return unless method_defined?(:join_force?)
 
         cop = new
-        Force.all.select do |force_class|
-          cop.join_force?(force_class)
-        end
+        Force.all.select { |force_class| cop.join_force?(force_class) }
       end
 
       # @deprecated
@@ -97,12 +93,6 @@ module RuboCop
         Registry.qualified_cop_name(name, origin)
       end
 
-      # @deprecated
-      # Open issue if there's a valid use case to include this in Base
-      def parse(source, path = nil)
-        ProcessedSource.new(source, target_ruby_version, path)
-      end
-
       private
 
       def begin_investigation(processed_source)
@@ -130,17 +120,13 @@ module RuboCop
 
         return unless lambda
 
-        suppress_clobbering do
-          lambda.call(corrector)
-        end
+        suppress_clobbering { lambda.call(corrector) }
       end
 
       def correction_lambda
         return unless support_autocorrect?
 
-        dedup_on_node(@v0_argument) do
-          autocorrect(@v0_argument)
-        end
+        dedup_on_node(@v0_argument) { autocorrect(@v0_argument) }
       end
 
       def dedup_on_node(node)

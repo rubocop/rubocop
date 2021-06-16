@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/IndentationWidth' => {
-                          'Width' => 2
-                        })
-  end
+  let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 }) }
 
   it 'registers an offense for modifier rescue' do
     expect_offense(<<~RUBY)

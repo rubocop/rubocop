@@ -22,8 +22,7 @@ module RuboCop
     class << self
       include FileFinder
 
-      attr_accessor :debug, :ignore_parent_exclusion,
-                    :disable_pending_cops, :enable_pending_cops
+      attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops
       attr_writer :default_configuration, :project_root
       attr_reader :loaded_features
 
@@ -58,9 +57,7 @@ module RuboCop
 
       def load_yaml_configuration(absolute_path)
         file_contents = read_file(absolute_path)
-        yaml_code = Dir.chdir(File.dirname(absolute_path)) do
-          ERB.new(file_contents).result
-        end
+        yaml_code = Dir.chdir(File.dirname(absolute_path)) { ERB.new(file_contents).result }
         check_duplication(yaml_code, absolute_path)
         hash = yaml_safe_load(yaml_code, absolute_path) || {}
 
@@ -156,9 +153,7 @@ module RuboCop
 
         warn Rainbow(PENDING_BANNER).yellow
 
-        pending_cops.each do |cop|
-          warn_pending_cop cop
-        end
+        pending_cops.each { |cop| warn_pending_cop cop }
 
         warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow
       end
@@ -246,10 +241,9 @@ module RuboCop
       # stderr. Care is taken to use the standard OS exit code for a "file not
       # found" error.
       def read_file(absolute_path)
-        IO.read(absolute_path, encoding: Encoding::UTF_8)
+        File.read(absolute_path, encoding: Encoding::UTF_8)
       rescue Errno::ENOENT
-        raise ConfigNotFoundError,
-              "Configuration file not found: #{absolute_path}"
+        raise ConfigNotFoundError, "Configuration file not found: #{absolute_path}"
       end
 
       def yaml_safe_load(yaml_code, filename)

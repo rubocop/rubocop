@@ -25,16 +25,11 @@ module RuboCop
     end
 
     def extra_enabled_comments
-      extra_enabled_comments_with_names(
-        extras: Hash.new { |h, k| h[k] = [] },
-        names: Hash.new(0)
-      )
+      extra_enabled_comments_with_names(extras: Hash.new { |h, k| h[k] = [] }, names: Hash.new(0))
     end
 
     def comment_only_line?(line_number)
-      non_comment_token_line_numbers.none? do |non_comment_line_number|
-        non_comment_line_number == line_number
-      end
+      non_comment_token_line_numbers.none?(line_number)
     end
 
     private

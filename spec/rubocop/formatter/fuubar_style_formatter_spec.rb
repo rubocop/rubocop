@@ -5,11 +5,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
 
   let(:output) { StringIO.new }
 
-  let(:files) do
-    %w[lib/rubocop.rb spec/spec_helper.rb].map do |path|
-      File.expand_path(path)
-    end
-  end
+  let(:files) { %w[lib/rubocop.rb spec/spec_helper.rb].map { |path| File.expand_path(path) } }
 
   describe '#with_color' do
     around do |example|
@@ -23,9 +19,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
     end
 
     context 'when color is enabled' do
-      before do
-        formatter.rainbow.enabled = true
-      end
+      before { formatter.rainbow.enabled = true }
 
       it 'outputs coloring sequence code at the beginning and the end' do
         formatter.with_color { formatter.output.write 'foo' }
@@ -34,9 +28,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
     end
 
     context 'when color is disabled' do
-      before do
-        formatter.rainbow.enabled = false
-      end
+      before { formatter.rainbow.enabled = false }
 
       it 'outputs nothing' do
         formatter.with_color { formatter.output.write 'foo' }
@@ -46,26 +38,17 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
   end
 
   describe '#progressbar_color' do
-    before do
-      formatter.started(files)
-    end
+    before { formatter.started(files) }
 
     def offense(severity, status = :uncorrected)
       source_buffer = Parser::Source::Buffer.new('test', 1)
-      source = Array.new(9) do |index|
-        "This is line #{index + 1}."
-      end
+      source = Array.new(9) { |index| "This is line #{index + 1}." }
       source_buffer.source = source.join("\n")
       line_length = source[0].length + 1
 
-      source_range = Parser::Source::Range.new(source_buffer,
-                                               line_length + 2,
-                                               line_length + 3)
+      source_range = Parser::Source::Range.new(source_buffer, line_length + 2, line_length + 3)
 
-      RuboCop::Cop::Offense.new(
-        severity, source_range,
-        'message', 'Cop', status
-      )
+      RuboCop::Cop::Offense.new(severity, source_range, 'message', 'Cop', status)
     end
 
     context 'initially' do
@@ -75,9 +58,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
     end
 
     context 'when no offenses are detected in a file' do
-      before do
-        formatter.file_finished(files[0], [])
-      end
+      before { formatter.file_finished(files[0], []) }
 
       it 'is still green' do
         expect(formatter.progressbar_color).to eq(:green)
@@ -85,9 +66,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
     end
 
     context 'when a convention offense is detected in a file' do
-      before do
-        formatter.file_finished(files[0], [offense(:convention)])
-      end
+      before { formatter.file_finished(files[0], [offense(:convention)]) }
 
       it 'is yellow' do
         expect(formatter.progressbar_color).to eq(:yellow)
@@ -95,18 +74,14 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
     end
 
     context 'when an error offense is detected in a file' do
-      before do
-        formatter.file_finished(files[0], [offense(:error)])
-      end
+      before { formatter.file_finished(files[0], [offense(:error)]) }
 
       it 'is red' do
         expect(formatter.progressbar_color).to eq(:red)
       end
 
       context 'and then a convention offense is detected in the next file' do
-        before do
-          formatter.file_finished(files[1], [offense(:convention)])
-        end
+        before { formatter.file_finished(files[1], [offense(:convention)]) }
 
         it 'is still red' do
           expect(formatter.progressbar_color).to eq(:red)
@@ -126,9 +101,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
     end
 
     context 'when a offense is detected in a file and auto-corrected' do
-      before do
-        formatter.file_finished(files[0], [offense(:convention, :corrected)])
-      end
+      before { formatter.file_finished(files[0], [offense(:convention, :corrected)]) }
 
       it 'is green' do
         expect(formatter.progressbar_color).to eq(:green)

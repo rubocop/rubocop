@@ -90,9 +90,7 @@ module RuboCop
             catch(:skip_children) do
               yield node
 
-              node.each_child_node do |child_node|
-                scan(child_node, &block)
-              end
+              node.each_child_node { |child_node| scan(child_node, &block) }
             end
           end
 

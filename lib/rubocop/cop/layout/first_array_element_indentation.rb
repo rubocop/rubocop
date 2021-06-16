@@ -120,8 +120,7 @@ module RuboCop
             check_first(first_elem, left_bracket, left_parenthesis, 0)
           end
 
-          check_right_bracket(array_node.loc.end, left_bracket,
-                              left_parenthesis)
+          check_right_bracket(array_node.loc.end, left_bracket, left_parenthesis)
         end
 
         def check_right_bracket(right_bracket, left_bracket, left_parenthesis)

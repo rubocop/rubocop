@@ -6,9 +6,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
   include_context 'cli spec behavior'
 
   describe '--disable-uncorrectable' do
-    let(:exit_code) do
-      cli.run(%w[--auto-correct-all --format simple --disable-uncorrectable])
-    end
+    let(:exit_code) { cli.run(%w[--auto-correct-all --format simple --disable-uncorrectable]) }
 
     let(:setup_long_line) do
       create_file('.rubocop.yml', <<~YAML)
@@ -36,7 +34,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
         1 file inspected, 3 offenses detected, 3 offenses corrected
       OUTPUT
-      expect(IO.read('example.rb')).to eq(<<~RUBY)
+      expect(File.read('example.rb')).to eq(<<~RUBY)
         # frozen_string_literal: true
 
         puts 1 == 2
@@ -56,7 +54,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
-        expect(IO.read('example.rb')).to eq(<<~RUBY)
+        expect(File.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           ip('1.2.3.4') # rubocop:todo Style/IpAddresses
@@ -87,7 +85,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
           1 file inspected, 4 offenses detected, 4 offenses corrected
         OUTPUT
 
-        expect(IO.read('example.rb')).to eq(<<~RUBY)
+        expect(File.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           def ordinary_method(_some_arg)
@@ -120,7 +118,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
             1 file inspected, 4 offenses detected, 4 offenses corrected
           OUTPUT
-          expect(IO.read('example.rb')).to eq(<<~RUBY)
+          expect(File.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
             ip('1.2.3.4', '5.6.7.8') # rubocop:todo Style/IpAddresses
@@ -128,8 +126,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
         end
       end
 
-      context "but there are more offenses on the line and they don't all " \
-              'fit' do
+      context "but there are more offenses on the line and they don't all fit" do
         it 'adds both one-line and before-and-after disable statements' do
           create_file('example.rb', <<~RUBY)
             # Chess engine.
@@ -173,7 +170,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
             1 file inspected, 8 offenses detected, 8 offenses corrected
           OUTPUT
-          expect(IO.read('example.rb')).to eq(<<~RUBY)
+          expect(File.read('example.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
             # Chess engine.
@@ -219,7 +216,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
 
           1 file inspected, 3 offenses detected, 3 offenses corrected
         OUTPUT
-        expect(IO.read('example.rb')).to eq(<<~RUBY)
+        expect(File.read('example.rb')).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           # rubocop:todo Style/IpAddresses
@@ -245,7 +242,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
             end
           RUBY
           expect(exit_code).to eq(0)
-          expect(IO.read('example.rb')).to eq(<<~'RUBY')
+          expect(File.read('example.rb')).to eq(<<~'RUBY')
             # frozen_string_literal: true
 
             def our_function

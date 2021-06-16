@@ -80,25 +80,15 @@ module RuboCop
           :$* => %i[$ARGV ARGV]
         }
 
-        PERL_VARS =
-          ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }.to_h
+        PERL_VARS = ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }.to_h
 
-        ENGLISH_VARS.merge!(
-          ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h
-        )
-        PERL_VARS.merge!(
-          PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h
-        )
+        ENGLISH_VARS.merge!(ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h)
+        PERL_VARS.merge!(PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h)
         ENGLISH_VARS.each_value(&:freeze).freeze
         PERL_VARS.each_value(&:freeze).freeze
 
         # Anything *not* in this set is provided by the English library.
-        NON_ENGLISH_VARS = Set.new(%i[
-                                     $LOAD_PATH
-                                     $LOADED_FEATURES
-                                     $PROGRAM_NAME
-                                     ARGV
-                                   ]).freeze
+        NON_ENGLISH_VARS = Set.new(%i[$LOAD_PATH $LOADED_FEATURES $PROGRAM_NAME ARGV]).freeze
 
         def on_gvar(node)
           global_var, = *node
@@ -120,9 +110,7 @@ module RuboCop
           if style == :use_english_names
             format_english_message(global_var)
           else
-            format(MSG_REGULAR,
-                   prefer: preferred_names(global_var).first,
-                   global: global_var)
+            format(MSG_REGULAR, prefer: preferred_names(global_var).first, global: global_var)
           end
         end
 

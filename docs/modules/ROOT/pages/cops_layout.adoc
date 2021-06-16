@@ -94,21 +94,25 @@ definition are aligned.
 # good
 
 foo :bar,
-    :baz
+    :baz,
+    key: value
 
 foo(
   :bar,
-  :baz
+  :baz,
+  key: value
 )
 
 # bad
 
 foo :bar,
-  :baz
+  :baz,
+  key: value
 
 foo(
   :bar,
-    :baz
+    :baz,
+    key: value
 )
 ----
 
@@ -119,12 +123,14 @@ foo(
 # good
 
 foo :bar,
-  :baz
+  :baz,
+  key: value
 
 # bad
 
 foo :bar,
-    :baz
+    :baz,
+    key: value
 ----
 
 === Configurable attributes
@@ -474,13 +480,13 @@ blah { |i|
 | Yes
 | Yes
 | 0.49
-| -
+| 1.16
 |===
 
-This cop checks how the ``when``s of a `case` expression
+This cop checks how the `when` and `in`s of a `case` expression
 are indented in relation to its `case` or `end` keyword.
 
-It will register a separate offense for each misaligned `when`.
+It will register a separate offense for each misaligned `when` and `in`.
 
 === Examples
 
@@ -499,9 +505,23 @@ case n
     y / 3
 end
 
+case n
+  in pattern
+    x * 2
+  else
+    y / 3
+end
+
 # good for all styles
 case n
 when 0
+  x * 2
+else
+  y / 3
+end
+
+case n
+in pattern
   x * 2
 else
   y / 3
@@ -524,9 +544,23 @@ else
   y / 3
 end
 
+a = case n
+in pattern
+  x * 2
+else
+  y / 3
+end
+
 # good
 a = case n
     when 0
+      x * 2
+    else
+      y / 3
+end
+
+a = case n
+    in pattern
       x * 2
     else
       y / 3
@@ -545,9 +579,23 @@ a = case n
       y / 3
 end
 
+a = case n
+    in pattern
+      x * 2
+    else
+      y / 3
+end
+
 # good
 a = case n
 when 0
+  x * 2
+else
+  y / 3
+end
+
+a = case n
+in pattern
   x * 2
 else
   y / 3
@@ -3067,7 +3115,7 @@ end
 | Yes
 | Yes
 | 0.49
-| 0.77
+| 1.16
 |===
 
 Check that the keys, separators, and values of a multi-line hash
@@ -4996,6 +5044,81 @@ end
 
 * https://rubystyle.guide#no-double-indent
 
+== Layout/RedundantLineBreak
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| Yes
+| 1.13
+| -
+|===
+
+This cop checks whether certain expressions, e.g. method calls, that could fit
+completely on a single line, are broken up into multiple lines unnecessarily.
+
+=== Examples
+
+==== any configuration
+
+[source,ruby]
+----
+# bad
+foo(
+  a,
+  b
+)
+
+puts 'string that fits on ' \
+     'a single line'
+
+things
+  .select { |thing| thing.cond? }
+  .join('-')
+
+# good
+foo(a, b)
+
+puts 'string that fits on a single line'
+
+things.select { |thing| thing.cond? }.join('-')
+----
+
+==== InspectBlocks: false (default)
+
+[source,ruby]
+----
+# good
+foo(a) do |x|
+  puts x
+end
+----
+
+==== InspectBlocks: true
+
+[source,ruby]
+----
+# bad
+foo(a) do |x|
+  puts x
+end
+
+# good
+foo(a) { |x| puts x }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| InspectBlocks
+| `false`
+| Boolean
+|===
+
 == Layout/RescueEnsureAlignment
 
 |===
@@ -5028,6 +5151,38 @@ begin
 rescue
   puts 'error'
 end
+----
+
+== Layout/SingleLineBlockChain
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| Yes
+| 1.14
+| -
+|===
+
+This cop checks if method calls are chained onto single line blocks. It considers that a
+line break before the dot improves the readability of the code.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+example.select { |item| item.cond? }.join('-')
+
+# good
+example.select { |item| item.cond? }
+       .join('-')
+
+# good (not a concern for this cop)
+example.select do |item|
+  item.cond?
+end.join('-')
 ----
 
 == Layout/SpaceAfterColon

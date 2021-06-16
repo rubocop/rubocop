@@ -27,6 +27,71 @@ module RuboCop
       #   class << self
       #     attr_reader :baz
       #   end
+      #
+      # @example ExactNameMatch: true (default)
+      #   # good
+      #   def name
+      #     @other_name
+      #   end
+      #
+      # @example ExactNameMatch: false
+      #   # bad
+      #   def name
+      #     @other_name
+      #   end
+      #
+      # @example AllowPredicates: true (default)
+      #   # good
+      #   def foo?
+      #     @foo
+      #   end
+      #
+      # @example AllowPredicates: false
+      #   # bad
+      #   def foo?
+      #     @foo
+      #   end
+      #
+      #   # good
+      #   attr_reader :foo
+      #
+      # @example AllowDSLWriters: true (default)
+      #   # good
+      #   def on_exception(action)
+      #     @on_exception=action
+      #   end
+      #
+      # @example AllowDSLWriters: false
+      #   # bad
+      #   def on_exception(action)
+      #     @on_exception=action
+      #   end
+      #
+      #   # good
+      #   attr_writer :on_exception
+      #
+      # @example IgnoreClassMethods: false (default)
+      #   # bad
+      #   def self.foo
+      #     @foo
+      #   end
+      #
+      #   # good
+      #   class << self
+      #     attr_reader :foo
+      #   end
+      #
+      # @example IgnoreClassMethods: true
+      #   # good
+      #   def self.foo
+      #     @foo
+      #   end
+      #
+      # @example AllowedMethods: ['allowed_method']
+      #   # good
+      #   def allowed_method
+      #     @foo
+      #   end
       class TrivialAccessors < Base
         include AllowedMethods
         extend AutoCorrector
@@ -107,8 +172,7 @@ module RuboCop
         end
 
         def trivial_reader?(node)
-          looks_like_trivial_reader?(node) &&
-            !allowed_method_name?(node) && !allowed_reader?(node)
+          looks_like_trivial_reader?(node) && !allowed_method_name?(node) && !allowed_reader?(node)
         end
 
         def looks_like_trivial_reader?(node)
@@ -146,8 +210,7 @@ module RuboCop
         end
 
         def trivial_accessor_kind(node)
-          if trivial_writer?(node) &&
-             !dsl_writer?(node.method_name)
+          if trivial_writer?(node) && !dsl_writer?(node.method_name)
             'writer'
           elsif trivial_reader?(node)
             'reader'

@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::AndOr, :config do
   context 'when style is conditionals' do
-    cop_config = {
-      'EnforcedStyle' => 'conditionals'
-    }
+    cop_config = { 'EnforcedStyle' => 'conditionals' }
 
     let(:cop_config) { cop_config }
 
@@ -147,9 +145,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
   end
 
   context 'when style is always' do
-    cop_config = {
-      'EnforcedStyle' => 'always'
-    }
+    cop_config = { 'EnforcedStyle' => 'always' }
 
     let(:cop_config) { cop_config }
 
@@ -437,8 +433,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
-    context 'with one predicate method without space on right and another ' \
-            'method' do
+    context 'with one predicate method without space on right and another method' do
       it 'autocorrects "or" with || and adds parens' do
         expect_offense(<<~RUBY)
           '1'.is_a?Integer or 1.is_a? Integer

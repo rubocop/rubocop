@@ -16,8 +16,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       end
 
       context 'source without blank lines' do
-        it "registers an offense for #{type} not beginning "\
-           'and ending with a blank line' do
+        it "registers an offense for #{type} not beginning and ending with a blank line" do
           expect_offense(<<~RUBY)
             #{type} SomeObject
               def do_something; end

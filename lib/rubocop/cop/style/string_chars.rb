@@ -17,6 +17,7 @@ module RuboCop
       #   string.chars
       #
       class StringChars < Base
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Use `chars` instead of `%<current>s`.'
@@ -26,7 +27,7 @@ module RuboCop
         def on_send(node)
           return unless node.arguments.one? && BAD_ARGUMENTS.include?(node.first_argument.source)
 
-          range = node.loc.selector.begin.join(node.loc.end)
+          range = range_between(node.loc.selector.begin_pos, node.source_range.end_pos)
 
           add_offense(range, message: format(MSG, current: range.source)) do |corrector|
             corrector.replace(range, 'chars')

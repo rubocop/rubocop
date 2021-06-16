@@ -45,9 +45,7 @@ module RuboCop
     end
 
     def check
-      deprecation_check do |deprecation_message|
-        warn("#{loaded_path} - #{deprecation_message}")
-      end
+      deprecation_check { |deprecation_message| warn("#{loaded_path} - #{deprecation_message}") }
       @validator.validate
       make_excludes_absolute
       self
@@ -67,8 +65,7 @@ module RuboCop
 
     # True if this is a config file that is shipped with RuboCop
     def internal?
-      base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
-                                                    'config'))
+      base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME, 'config'))
       File.expand_path(loaded_path).start_with?(base_config_path)
     end
 
@@ -79,8 +76,7 @@ module RuboCop
 
         self[key]['Exclude'].map! do |exclude_elem|
           if exclude_elem.is_a?(String) && !absolute?(exclude_elem)
-            File.expand_path(File.join(base_dir_for_path_parameters,
-                                       exclude_elem))
+            File.expand_path(File.join(base_dir_for_path_parameters, exclude_elem))
           else
             exclude_elem
           end
@@ -122,17 +118,14 @@ module RuboCop
     # Note: the 'Enabled' attribute is same as that returned by `for_cop`
     def for_badge(badge)
       cop_config = for_cop(badge.to_s)
-      fetch(badge.department.to_s) { return cop_config }
-        .merge(cop_config)
+      fetch(badge.department.to_s) { return cop_config }.merge(cop_config)
     end
 
     # @return [Config] for the given department name.
     # Note: the 'Enabled' attribute will be present only if specified
     # at the department's level
     def for_department(department_name)
-      @for_department ||= Hash.new do |h, dept|
-        h[dept] = self[dept] || {}
-      end
+      @for_department ||= Hash.new { |h, dept| h[dept] = self[dept] || {} }
       @for_department[department_name.to_s]
     end
 
@@ -153,8 +146,7 @@ module RuboCop
 
       # Optimization to quickly decide if the given file is hidden (on the top
       # level) and cannot be matched by any pattern.
-      is_hidden = relative_file_path.start_with?('.') &&
-                  !relative_file_path.start_with?('..')
+      is_hidden = relative_file_path.start_with?('.') && !relative_file_path.start_with?('..')
       return false if is_hidden && !possibly_include_hidden?
 
       absolute_file_path = File.expand_path(file)
@@ -163,8 +155,7 @@ module RuboCop
         if block_given?
           yield pattern, relative_file_path, absolute_file_path
         else
-          match_path?(pattern, relative_file_path) ||
-            match_path?(pattern, absolute_file_path)
+          match_path?(pattern, relative_file_path) || match_path?(pattern, absolute_file_path)
         end
       end
     end
@@ -177,8 +168,7 @@ module RuboCop
 
       file_to_include?(file) do |pattern, relative_path, absolute_path|
         /[A-Z]/.match?(pattern.to_s) &&
-          (match_path?(pattern, relative_path) ||
-           match_path?(pattern, absolute_path))
+          (match_path?(pattern, relative_path) || match_path?(pattern, absolute_path))
       end
     end
 
@@ -194,9 +184,7 @@ module RuboCop
 
     def file_to_exclude?(file)
       file = File.expand_path(file)
-      patterns_to_exclude.any? do |pattern|
-        match_path?(pattern, file)
-      end
+      patterns_to_exclude.any? { |pattern| match_path?(pattern, file) }
     end
 
     def patterns_to_include
@@ -267,8 +255,7 @@ module RuboCop
     private
 
     def target_rails_version_from_bundler_lock_file
-      @target_rails_version_from_bundler_lock_file ||=
-        read_rails_version_from_bundler_lock_file
+      @target_rails_version_from_bundler_lock_file ||= read_rails_version_from_bundler_lock_file
     end
 
     def read_rails_version_from_bundler_lock_file
@@ -288,9 +275,7 @@ module RuboCop
       return true if cop_options['Enabled'] == true
 
       department = department_of(qualified_cop_name)
-      cop_enabled = cop_options.fetch('Enabled') do
-        !for_all_cops['DisabledByDefault']
-      end
+      cop_enabled = cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
       return true if cop_enabled == 'override_department'
       return false if department && department['Enabled'] == false
 

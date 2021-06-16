@@ -23,10 +23,9 @@ module RuboCop
           unless SCOPE_TYPES.include?(node.type)
             # Accept any node type for top level scope
             if node.parent
-              raise ArgumentError,
-                    "Node type must be any of #{SCOPE_TYPES}, " \
-                    "passed #{node.type}"
+              raise ArgumentError, "Node type must be any of #{SCOPE_TYPES}, passed #{node.type}"
             end
+
             @naked_top_level = true
           end
           @node = node
@@ -56,8 +55,7 @@ module RuboCop
         end
 
         def include?(target_node)
-          !belong_to_outer_scope?(target_node) &&
-            !belong_to_inner_scope?(target_node)
+          !belong_to_outer_scope?(target_node) && !belong_to_inner_scope?(target_node)
         end
 
         def each_node(&block)
@@ -100,9 +98,7 @@ module RuboCop
         end
 
         def ancestor_node?(target_node)
-          node.each_ancestor.any? do |ancestor_node|
-            ancestor_node.equal?(target_node)
-          end
+          node.each_ancestor.any? { |ancestor_node| ancestor_node.equal?(target_node) }
         end
       end
     end

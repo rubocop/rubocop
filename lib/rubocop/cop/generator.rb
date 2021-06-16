@@ -124,10 +124,7 @@ module RuboCop
       end
 
       def inject_require(root_file_path: 'lib/rubocop.rb')
-        RequireFileInjector.new(
-          source_path: source_path,
-          root_file_path: root_file_path
-        ).inject
+        RequireFileInjector.new(source_path: source_path, root_file_path: root_file_path).inject
       end
 
       def inject_config(config_file_path: 'config/default.yml',

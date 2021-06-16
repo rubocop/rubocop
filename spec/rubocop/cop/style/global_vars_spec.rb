@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::GlobalVars, :config do
-  cop_config = {
-    'AllowedVariables' => ['$allowed']
-  }
+  cop_config = { 'AllowedVariables' => ['$allowed'] }
 
   let(:cop_config) { cop_config }
 

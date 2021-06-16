@@ -8,9 +8,7 @@ RSpec.describe RuboCop::Cop::VariableForce do
   subject(:force) { described_class.new([]) }
 
   describe '#process_node' do
-    before do
-      force.variable_table.push_scope(s(:def))
-    end
+    before { force.variable_table.push_scope(s(:def)) }
 
     context 'when processing lvar node' do
       let(:node) { s(:lvar, :foo) }
@@ -30,8 +28,7 @@ RSpec.describe RuboCop::Cop::VariableForce do
       end
     end
 
-    context 'when processing a regexp with a line break at ' \
-            'the start of capture parenthesis' do
+    context 'when processing a regexp with a line break at the start of capture parenthesis' do
       let(:node) do
         s(:match_with_lvasgn,
           s(:regexp,

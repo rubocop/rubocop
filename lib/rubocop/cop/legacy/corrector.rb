@@ -13,9 +13,7 @@ module RuboCop
             merge!(corr.send(:corrector))
           else
             # warn "Corrector.new with corrections is deprecated." unless corr.empty? TODO
-            corr.each do |c|
-              corrections << c
-            end
+            corr.each { |c| corrections << c }
           end
         end
 

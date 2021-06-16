@@ -46,9 +46,7 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
   end
 
   context 'when AllowOnConstant is false' do
-    let(:cop_config) do
-      { 'AllowOnConstant' => false }
-    end
+    let(:cop_config) { { 'AllowOnConstant' => false } }
 
     it 'registers an offense and corrects for === when the receiver is a constant' do
       expect_offense(<<~RUBY)
@@ -65,9 +63,7 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
   end
 
   context 'when AllowOnConstant is true' do
-    let(:cop_config) do
-      { 'AllowOnConstant' => true }
-    end
+    let(:cop_config) { { 'AllowOnConstant' => true } }
 
     it 'does not register an offense for === when the receiver is a constant' do
       expect_no_offenses(<<~RUBY)

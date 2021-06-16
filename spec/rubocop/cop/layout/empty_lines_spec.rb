@@ -17,11 +17,11 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines, :config do
     RUBY
   end
 
-  it 'works when there are no tokens' do
+  it 'does not register an offense when there are no tokens' do
     expect_no_offenses('#comment')
   end
 
-  it 'handles comments' do
+  it 'does not register an offense for comments' do
     expect_no_offenses(<<~RUBY)
       test
 

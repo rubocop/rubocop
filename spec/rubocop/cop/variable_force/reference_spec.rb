@@ -10,8 +10,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Reference do
       it 'raises error' do
         node = s(:def)
         scope = RuboCop::Cop::VariableForce::Scope.new(s(:class))
-        expect { described_class.new(node, scope) }
-          .to raise_error(ArgumentError)
+        expect { described_class.new(node, scope) }.to raise_error(ArgumentError)
       end
     end
   end

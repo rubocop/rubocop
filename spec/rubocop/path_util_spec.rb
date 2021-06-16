@@ -13,13 +13,11 @@ RSpec.describe RuboCop::PathUtil do
 
     if RuboCop::Platform.windows?
       it 'works for different drives' do
-        expect(described_class.relative_path('D:/foo/bar', 'C:/foo'))
-          .to eq('D:/foo/bar')
+        expect(described_class.relative_path('D:/foo/bar', 'C:/foo')).to eq('D:/foo/bar')
       end
 
       it 'works for the same drive' do
-        expect(described_class.relative_path('D:/foo/bar', 'D:/foo'))
-          .to eq('bar')
+        expect(described_class.relative_path('D:/foo/bar', 'D:/foo')).to eq('bar')
       end
     end
   end
@@ -34,13 +32,11 @@ RSpec.describe RuboCop::PathUtil do
     end
 
     if RuboCop::Platform.windows?
-      it 'returns a truthy value for a path beginning with an upper case ' \
-         'drive letter' do
+      it 'returns a truthy value for a path beginning with an upper case drive letter' do
         expect(described_class.absolute?('C:/Users/foo')).to be_truthy
       end
 
-      it 'returns a truthy value for a path beginning with a lower case ' \
-         'drive letter' do
+      it 'returns a truthy value for a path beginning with a lower case drive letter' do
         expect(described_class.absolute?('d:/Users/foo')).to be_truthy
       end
     end
@@ -60,13 +56,11 @@ RSpec.describe RuboCop::PathUtil do
     end
 
     it 'does not match dir/** for file in hidden dir' do
-      expect(described_class.match_path?('dir/**', 'dir/.hidden/file'))
-        .to be(false)
+      expect(described_class.match_path?('dir/**', 'dir/.hidden/file')).to be(false)
     end
 
     it 'matches dir/** for hidden file' do
-      expect(described_class.match_path?('dir/**', 'dir/.hidden_file'))
-        .to be(true)
+      expect(described_class.match_path?('dir/**', 'dir/.hidden_file')).to be(true)
     end
 
     it 'does not match file in a subdirectory' do
@@ -75,8 +69,7 @@ RSpec.describe RuboCop::PathUtil do
     end
 
     it 'matches strings to the full path' do
-      expect(described_class.match_path?("#{Dir.pwd}/dir/file",
-                                         "#{Dir.pwd}/dir/file")).to be(true)
+      expect(described_class.match_path?("#{Dir.pwd}/dir/file", "#{Dir.pwd}/dir/file")).to be(true)
       expect(described_class.match_path?(
                "#{Dir.pwd}/dir/file",
                "#{Dir.pwd}/dir/dir/file"
@@ -85,28 +78,22 @@ RSpec.describe RuboCop::PathUtil do
 
     it 'matches glob expressions' do
       expect(described_class.match_path?('dir/*', 'dir/file')).to be(true)
-      expect(described_class.match_path?('dir/**/*',
-                                         'dir/sub/file')).to be(true)
+      expect(described_class.match_path?('dir/**/*', 'dir/sub/file')).to be(true)
       expect(described_class.match_path?('dir/**/*', 'dir/file')).to be(true)
       expect(described_class.match_path?('**/*', 'dir/sub/file')).to be(true)
       expect(described_class.match_path?('**/file', 'file')).to be(true)
 
       expect(described_class.match_path?('sub/*', 'dir/sub/file')).to be(false)
 
-      expect(described_class.match_path?('**/*',
-                                         'dir/.hidden/file')).to be(false)
-      expect(described_class.match_path?('**/*',
-                                         'dir/.hidden_file')).to be(true)
-      expect(described_class.match_path?('**/.*/*', 'dir/.hidden/file'))
-        .to be(true)
-      expect(described_class.match_path?('**/.*',
-                                         'dir/.hidden_file')).to be(true)
+      expect(described_class.match_path?('**/*', 'dir/.hidden/file')).to be(false)
+      expect(described_class.match_path?('**/*', 'dir/.hidden_file')).to be(true)
+      expect(described_class.match_path?('**/.*/*', 'dir/.hidden/file')).to be(true)
+      expect(described_class.match_path?('**/.*', 'dir/.hidden_file')).to be(true)
 
       expect(described_class.match_path?('c{at,ub}s', 'cats')).to be(true)
       expect(described_class.match_path?('c{at,ub}s', 'cubs')).to be(true)
       expect(described_class.match_path?('c{at,ub}s', 'gorillas')).to be(false)
-      expect(described_class.match_path?('**/*.{rb,txt}', 'dir/foo.txt'))
-        .to be(true)
+      expect(described_class.match_path?('**/*.{rb,txt}', 'dir/foo.txt')).to be(true)
     end
 
     it 'matches regexps' do

@@ -18,9 +18,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
     let(:source) { ('aa'..'az').to_a.join($RS) }
 
-    let(:location) do
-      source_range(0...1)
-    end
+    let(:location) { source_range(0...1) }
 
     it 'displays text containing the offending source line' do
       cop.add_offense(
@@ -99,8 +97,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints message as-is' do
         formatter.report_file(file, [offense])
-        expect(output.string)
-          .to include(': This is a message.')
+        expect(output.string).to include(': This is a message.')
       end
     end
 
@@ -109,8 +106,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints message as-is' do
         formatter.report_file(file, [offense])
-        expect(output.string)
-          .to include(': [Correctable] This is a message.')
+        expect(output.string).to include(': [Correctable] This is a message.')
       end
     end
 
@@ -119,8 +115,29 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints [Corrected] along with message' do
         formatter.report_file(file, [offense])
+        expect(output.string).to include(': [Corrected] This is a message.')
+      end
+    end
+
+    context 'when the source contains multibyte characters' do
+      let(:source) do
+        <<~RUBY
+          do_something("あああ", ["いいい"])
+        RUBY
+      end
+
+      it 'displays text containing the offending source line' do
+        location = source_range(source.index('[')..source.index(']'))
+
+        cop.add_offense(nil, location: location, message: 'message 1')
+        formatter.report_file('test', cop.offenses)
+
         expect(output.string)
-          .to include(': [Corrected] This is a message.')
+          .to eq <<~OUTPUT
+            test:1:21: C: message 1
+            do_something("あああ", ["いいい"])
+                                   ^^^^^^^^^^
+        OUTPUT
       end
     end
   end

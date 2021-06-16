@@ -161,9 +161,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
   end
 
   context 'with IgnoredPatterns' do
-    let(:cop_config) do
-      { 'IgnoredPatterns' => [/exactly\(\d+\)\.times/] }
-    end
+    let(:cop_config) { { 'IgnoredPatterns' => [/exactly\(\d+\)\.times/] } }
 
     context 'with a ignored method call' do
       it 'does not register an offense' do
@@ -224,6 +222,31 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
         else
           break
         end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `return do_something(value) || next` in a loop' do
+    expect_no_offenses(<<~RUBY)
+      [nil, nil, 42].each do |value|
+        return do_something(value) || next
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `return do_something(value) || redo` in a loop' do
+    expect_no_offenses(<<~RUBY)
+      [nil, nil, 42].each do |value|
+        return do_something(value) || redo
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `return do_something(value) || break` in a loop' do
+    expect_offense(<<~RUBY)
+      [nil, nil, 42].each do |value|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
+        return do_something(value) || break
       end
     RUBY
   end

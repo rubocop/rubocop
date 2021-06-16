@@ -32,18 +32,14 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
     end
 
     context 'when any offenses are detected' do
-      let(:offenses) do
-        [instance_double(RuboCop::Cop::Offense).as_null_object]
-      end
+      let(:offenses) { [instance_double(RuboCop::Cop::Offense).as_null_object] }
 
       include_examples 'calls #report_file_as_mark'
     end
   end
 
   describe '#report_file_as_mark' do
-    before do
-      formatter.report_file_as_mark(offenses)
-    end
+    before { formatter.report_file_as_mark(offenses) }
 
     def offense_with_severity(severity)
       source_buffer = Parser::Source::Buffer.new('test', 1)
@@ -79,12 +75,7 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
     end
 
     context 'when different severity offenses are detected' do
-      let(:offenses) do
-        [
-          offense_with_severity(:refactor),
-          offense_with_severity(:error)
-        ]
-      end
+      let(:offenses) { [offense_with_severity(:refactor), offense_with_severity(:error)] }
 
       it 'prints highest level mark' do
         expect(output.string).to eq('E')
@@ -93,16 +84,12 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
   end
 
   describe '#finished' do
-    before do
-      formatter.started(files)
-    end
+    before { formatter.started(files) }
 
     context 'when any offenses are detected' do
       before do
         source_buffer = Parser::Source::Buffer.new('test', 1)
-        source = Array.new(9) do |index|
-          "This is line #{index + 1}."
-        end
+        source = Array.new(9) { |index| "This is line #{index + 1}." }
         source_buffer.source = source.join("\n")
         line_length = source[0].length + 1
 

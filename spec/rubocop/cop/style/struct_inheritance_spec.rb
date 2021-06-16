@@ -56,8 +56,18 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
     RUBY
   end
 
-  it 'registers an offense when extending instance of ::Struct with ' \
-     'do ... end' do
+  it 'registers an offense when extending instance of Struct without `do` ... `end` and class body is empty and single line definition' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new(:first_name, :last_name); end
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name)
+    RUBY
+  end
+
+  it 'registers an offense when extending instance of ::Struct with do ... end' do
     expect_offense(<<~RUBY)
       class Person < ::Struct.new(:first_name, :last_name) do end
                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.

@@ -37,9 +37,7 @@ module RuboCop
 
         return unless style == :brackets
 
-        add_offense(node) do |corrector|
-          correct_bracketed(corrector, node)
-        end
+        add_offense(node) { |corrector| correct_bracketed(corrector, node) }
       end
 
       def check_bracketed_array(node, literal_prefix)

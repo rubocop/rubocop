@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon, :config do
-  let(:config) do
-    RuboCop::Config.new('Layout/SpaceInsideBlockBraces' => brace_config)
-  end
+  let(:config) { RuboCop::Config.new('Layout/SpaceInsideBlockBraces' => brace_config) }
   let(:brace_config) { {} }
 
   it 'registers an offense and corrects semicolon without space after it' do
@@ -29,14 +27,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon, :config do
     end
 
     context 'when EnforcedStyle for SpaceInsideBlockBraces is space' do
-      let(:brace_config) do
-        { 'Enabled' => true, 'EnforcedStyle' => 'space' }
-      end
+      let(:brace_config) { { 'Enabled' => true, 'EnforcedStyle' => 'space' } }
 
       it_behaves_like 'common behavior'
 
-      it 'registers an offense and corrects no space between a semicolon ' \
-        'and a closing brace' do
+      it 'registers an offense and corrects no space between a semicolon and a closing brace' do
         expect_offense(<<~RUBY)
           test { ;}
                  ^ Space missing after semicolon.
@@ -49,9 +44,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon, :config do
     end
 
     context 'when EnforcedStyle for SpaceInsideBlockBraces is no_space' do
-      let(:brace_config) do
-        { 'Enabled' => true, 'EnforcedStyle' => 'no_space' }
-      end
+      let(:brace_config) { { 'Enabled' => true, 'EnforcedStyle' => 'no_space' } }
 
       it_behaves_like 'common behavior'
 

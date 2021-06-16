@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
   context 'when configured to enforce numeric predicate methods' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'predicate', 'AutoCorrect' => true }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'predicate', 'AutoCorrect' => true } }
 
     context 'when checking if a number is zero' do
       it 'registers an offense' do
@@ -188,9 +186,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
   end
 
   context 'when configured to enforce numeric comparison methods' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'comparison', 'AutoCorrect' => true }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'comparison', 'AutoCorrect' => true } }
 
     it 'registers an offense for checking if a number is zero' do
       expect_offense(<<~RUBY)
@@ -241,12 +237,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
 
     context 'simple method call' do
       context '`EnforcedStyle` is `predicate`' do
-        let(:cop_config) do
-          {
-            'EnforcedStyle' => 'predicate',
-            'IgnoredMethods' => %w[==]
-          }
-        end
+        let(:cop_config) { { 'EnforcedStyle' => 'predicate', 'IgnoredMethods' => %w[==] } }
 
         it 'allows checking if a number is zero' do
           expect_no_offenses(<<~RUBY)
@@ -258,12 +249,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
       end
 
       context '`EnforcedStyle` is `comparison`' do
-        let(:cop_config) do
-          {
-            'EnforcedStyle' => 'comparison',
-            'IgnoredMethods' => %w[zero?]
-          }
-        end
+        let(:cop_config) { { 'EnforcedStyle' => 'comparison', 'IgnoredMethods' => %w[zero?] } }
 
         it 'allows checking if a number is zero' do
           expect_no_offenses(<<~RUBY)

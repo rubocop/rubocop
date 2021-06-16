@@ -23,6 +23,22 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
     RUBY
   end
 
+  it 'registers an offense for interpolation in single quoted split string' do
+    expect_offense(<<~'RUBY')
+      'x' \
+        'foo #{bar}'
+        ^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+    RUBY
+  end
+
+  it 'registers an offense for interpolation in double + single quoted split string' do
+    expect_offense(<<~'RUBY')
+      "x" \
+        'foo #{bar}'
+        ^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+    RUBY
+  end
+
   it 'does not register an offense for properly interpolation strings' do
     expect_no_offenses(<<~'RUBY')
       hello = "foo #{bar}"

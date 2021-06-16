@@ -137,8 +137,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
-              -P, --parallel                   Use available CPUs to execute inspection in
-                                               parallel.
+              -P, --[no-]parallel              Use available CPUs to execute inspection in
+                                               parallel. Default is false.
               -l, --lint                       Run only lint cops.
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
@@ -156,9 +156,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
         option_sections = $stdout.string.lines.slice_before(/^\s*-/)
 
-        format_section = option_sections.find do |lines|
-          /^\s*-f/.match?(lines.first)
-        end
+        format_section = option_sections.find { |lines| /^\s*-f/.match?(lines.first) }
 
         formatter_keys = format_section.reduce([]) do |keys, line|
           match = line.match(/^ {39}(\[[a-z\]]+)/)
@@ -168,8 +166,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         end.sort
 
         expected_formatter_keys =
-          RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS
-          .keys.sort
+          RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys.sort
 
         expect(formatter_keys).to eq(expected_formatter_keys)
       end
@@ -178,8 +175,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     describe 'incompatible cli options' do
       it 'rejects using -v with -V' do
         msg = 'Incompatible cli options: [:version, :verbose_version]'
-        expect { options.parse %w[-vV] }
-          .to raise_error(RuboCop::OptionArgumentError, msg)
+        expect { options.parse %w[-vV] }.to raise_error(RuboCop::OptionArgumentError, msg)
       end
 
       it 'rejects using -v with --show-cops' do
@@ -195,8 +191,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'mentions all incompatible options when more than two are used' do
-        msg = 'Incompatible cli options: [:version, :verbose_version,' \
-              ' :show_cops]'
+        msg = 'Incompatible cli options: [:version, :verbose_version, :show_cops]'
         expect { options.parse %w[-vV --show-cops] }
           .to raise_error(RuboCop::OptionArgumentError, msg)
       end
@@ -204,38 +199,55 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--parallel' do
       context 'combined with --cache false' do
-        it 'fails with an error message' do
-          msg = ['-P/--parallel uses caching to speed up execution, so ',
-                 'combining with --cache false is not allowed.'].join
-          expect { options.parse %w[--parallel --cache false] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with --cache false'
+          options.parse %w[--parallel --cache false]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
       end
 
       context 'combined with --auto-correct' do
-        it 'fails with an error message' do
-          msg = '-P/--parallel cannot be combined with --auto-correct.'
-          expect { options.parse %w[--parallel --auto-correct] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with --auto-correct'
+          options.parse %w[--parallel --auto-correct]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
       end
 
       context 'combined with --auto-gen-config' do
-        it 'fails with an error message' do
-          msg = '-P/--parallel uses caching to speed up execution, while ' \
-                '--auto-gen-config needs a non-cached run, so they cannot be ' \
-                'combined.'
-          expect { options.parse %w[--parallel --auto-gen-config] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignore parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with --auto-gen-config'
+          options.parse %w[--parallel --auto-gen-config]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
       end
 
       context 'combined with --fail-fast' do
-        it 'fails with an error message' do
-          msg = '-P/--parallel cannot be combined with -F/--fail-fast.'
-          expect { options.parse %w[--parallel --fail-fast] }
-            .to raise_error(RuboCop::OptionArgumentError, msg)
+        it 'ignores parallel' do
+          msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
+          options.parse %w[--parallel --fail-fast]
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
         end
+      end
+    end
+
+    context 'combined with --auto-correct and --fail-fast' do
+      it 'ignores parallel' do
+        msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
+        options.parse %w[--parallel --fail-fast --auto-correct]
+        expect($stdout.string).to include(msg)
+        expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+      end
+    end
+
+    describe '--no-parallel' do
+      it 'disables parallel from file' do
+        results = options.parse %w[--no-parallel]
+        expect(results).to eq([{ parallel: false }, []])
       end
     end
 
@@ -291,13 +303,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--cache' do
       it 'fails if no argument is given' do
-        expect { options.parse %w[--cache] }
-          .to raise_error(OptionParser::MissingArgument)
+        expect { options.parse %w[--cache] }.to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if unrecognized argument is given' do
-        expect { options.parse %w[--cache maybe] }
-          .to raise_error(RuboCop::OptionArgumentError)
+        expect { options.parse %w[--cache maybe] }.to raise_error(RuboCop::OptionArgumentError)
       end
 
       it 'accepts true as argument' do
@@ -311,8 +321,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--cache-root' do
       it 'fails if no argument is given' do
-        expect { options.parse %w[--cache-root] }
-          .to raise_error(OptionParser::MissingArgument)
+        expect { options.parse %w[--cache-root] }.to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if also `--cache false` is given' do
@@ -327,13 +336,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--disable-uncorrectable' do
       it 'accepts together with --auto-correct' do
-        expect { options.parse %w[--auto-correct --disable-uncorrectable] }
-          .not_to raise_error
+        expect { options.parse %w[--auto-correct --disable-uncorrectable] }.not_to raise_error
       end
 
       it 'accepts together with --auto-correct-all' do
-        expect { options.parse %w[--auto-correct-all --disable-uncorrectable] }
-          .not_to raise_error
+        expect { options.parse %w[--auto-correct-all --disable-uncorrectable] }.not_to raise_error
       end
 
       it 'fails if given alone without --auto-correct/-a' do
@@ -349,8 +356,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if given alone without argument' do
-        expect { options.parse %w[--exclude-limit] }
-          .to raise_error(OptionParser::MissingArgument)
+        expect { options.parse %w[--exclude-limit] }.to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if given first without argument' do
@@ -373,8 +379,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--auto-gen-config' do
       it 'accepts other options' do
-        expect { options.parse %w[--auto-gen-config --lint] }
-          .not_to raise_error
+        expect { options.parse %w[--auto-gen-config --lint] }.not_to raise_error
       end
     end
 
@@ -455,8 +460,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if no paths are given' do
-        expect { options.parse %w[-s] }
-          .to raise_error(OptionParser::MissingArgument)
+        expect { options.parse %w[-s] }.to raise_error(OptionParser::MissingArgument)
       end
 
       it 'succeeds with exactly one path' do
@@ -464,15 +468,13 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if more than one path is given' do
-        expect { options.parse %w[--stdin foo bar] }
-          .to raise_error(RuboCop::OptionArgumentError)
+        expect { options.parse %w[--stdin foo bar] }.to raise_error(RuboCop::OptionArgumentError)
       end
     end
 
     describe '--safe-auto-correct' do
       it 'is a deprecated alias' do
-        expect { options.parse %w[--safe-auto-correct] }
-          .to output(/deprecated/).to_stderr
+        expect { options.parse %w[--safe-auto-correct] }.to output(/deprecated/).to_stderr
       end
     end
   end
@@ -490,9 +492,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     let(:command_line_options) { %w[--no-color] }
 
     describe '.rubocop file' do
-      before do
-        create_file('.rubocop', '--color --fail-level C')
-      end
+      before { create_file('.rubocop', '--color --fail-level C') }
 
       it 'has lower precedence then command line options' do
         expect(parsed_options).to eq(color: false, fail_level: :convention)
@@ -506,9 +506,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     end
 
     describe '.rubocop directory' do
-      before do
-        FileUtils.mkdir '.rubocop'
-      end
+      before { FileUtils.mkdir '.rubocop' }
 
       it 'is ignored and command line options are used' do
         expect(parsed_options).to eq(color: false)

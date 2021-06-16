@@ -63,15 +63,12 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless date_time?(node) ||
-                        (to_datetime?(node) && disallow_coercion?)
+          return unless date_time?(node) || (to_datetime?(node) && disallow_coercion?)
           return if historic_date?(node)
 
           message = to_datetime?(node) ? COERCION_MSG : CLASS_MSG
 
-          add_offense(node, message: message) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node, message: message) { |corrector| autocorrect(corrector, node) }
         end
 
         private

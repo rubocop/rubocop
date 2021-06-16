@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::OptionalBooleanParameter, :config do
-  let(:cop_config) do
-    { 'AllowedMethods' => [] }
-  end
+  let(:cop_config) { { 'AllowedMethods' => [] } }
 
   it 'registers an offense when defining method with optional boolean arg' do
     expect_offense(<<~RUBY)
@@ -52,9 +50,7 @@ RSpec.describe RuboCop::Cop::Style::OptionalBooleanParameter, :config do
   end
 
   context 'when AllowedMethods is not empty' do
-    let(:cop_config) do
-      { 'AllowedMethods' => %w[respond_to_missing?] }
-    end
+    let(:cop_config) { { 'AllowedMethods' => %w[respond_to_missing?] } }
 
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

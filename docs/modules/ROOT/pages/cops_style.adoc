@@ -66,7 +66,7 @@ class Foo
 end
 ----
 
-==== AllowModifiersOnSymbols: true
+==== AllowModifiersOnSymbols: true (default)
 
 [source,ruby]
 ----
@@ -3936,9 +3936,6 @@ files to enable frozen string literals. Frozen string literals may be
 default in future Ruby. The comment will be added below a shebang and
 encoding comment.
 
-Note that the cop will ignore files where the comment exists but is set
-to `false` instead of `true`.
-
 === Examples
 
 ==== EnforcedStyle: always (default)
@@ -4315,6 +4312,10 @@ Hash[*ary]
 | Boolean
 |===
 
+=== References
+
+* https://rubystyle.guide#avoid-hash-constructor
+
 == Style/HashEachMethods
 
 |===
@@ -4324,7 +4325,7 @@ Hash[*ary]
 | No
 | Yes (Unsafe)
 | 0.80
-| -
+| 1.16
 |===
 
 This cop checks for uses of `each_key` and `each_value` Hash methods.
@@ -4345,6 +4346,25 @@ hash.values.each { |v| p v }
 hash.each_key { |k| p k }
 hash.each_value { |v| p v }
 ----
+
+==== AllowedReceivers: ['execute']
+
+[source,ruby]
+----
+# good
+execute(sql).keys.each { |v| p v }
+execute(sql).values.each { |v| p v }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedReceivers
+| `[]`
+| Array
+|===
 
 === References
 
@@ -4643,9 +4663,9 @@ Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.36
-| -
+| 1.16
 |===
 
 This cop checks for identical expressions at the beginning or end of
@@ -4710,6 +4730,28 @@ when 1
   do_x
   do_y
 when 2
+  # nothing
+else
+  do_x
+  do_z
+end
+
+# bad
+case foo
+in 1
+  do_x
+in 2
+  do_x
+else
+  do_x
+end
+
+# good
+case foo
+in 1
+  do_x
+  do_y
+in 2
   # nothing
 else
   do_x
@@ -5003,6 +5045,43 @@ raise 'Error message here'
 # good
 raise ArgumentError, 'Error message here'
 ----
+
+== Style/InPatternThen
+
+NOTE: Required Ruby version: 2.7
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.16
+| -
+|===
+
+This cop checks for `in;` uses in `case` expressions.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+case expression
+in pattern_a; foo
+in pattern_b; bar
+end
+
+# good
+case expression
+in pattern_a then foo
+in pattern_b then bar
+end
+----
+
+=== References
+
+* https://rubystyle.guide#no-in-pattern-semicolons
 
 == Style/InfiniteLoop
 
@@ -5439,8 +5518,12 @@ options.
     to `true` allows the presence of parentheses in such a method call
     even with arguments.
 
-NOTE: Parens are required around a method with arguments when inside an
-endless method definition (>= Ruby 3.0).
+NOTE: Parentheses are still allowed in cases where omitting them
+results in ambiguous or syntactically incorrect code. For example,
+parentheses are required around a method with arguments when inside an
+endless method definition introduced in Ruby 3.0.  Parentheses are also
+allowed when forwarding arguments with the triple-dot syntax introduced
+in Ruby 2.7 as omitting them starts an endless range.
 
 === Examples
 
@@ -6404,6 +6487,52 @@ end
 
 * https://rubystyle.guide#no-then
 
+== Style/MultilineInPatternThen
+
+NOTE: Required Ruby version: 2.7
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.16
+| -
+|===
+
+This cop checks uses of the `then` keyword in multi-line `in` statement.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+case expression
+in pattern then
+end
+
+# good
+case expression
+in pattern
+end
+
+# good
+case expression
+in pattern then do_something
+end
+
+# good
+case expression
+in pattern then do_something(arg1,
+                             arg2)
+end
+----
+
+=== References
+
+* https://rubystyle.guide#no-then
+
 == Style/MultilineMemoization
 
 |===
@@ -7258,11 +7387,11 @@ end
 | Yes
 | Yes
 | 1.3
-| -
+| 1.15
 |===
 
-This cop checks for lambdas that always return nil, which can be replaced
-with an empty lambda instead.
+This cop checks for lambdas and procs that always return nil,
+which can be replaced with an empty lambda or proc instead.
 
 === Examples
 
@@ -7275,6 +7404,12 @@ lambda do
   next nil
 end
 
+proc { nil }
+
+Proc.new do
+  break nil
+end
+
 # good
 -> {}
 
@@ -7282,6 +7417,10 @@ lambda do
 end
 
 -> (x) { nil if x }
+
+proc {}
+
+Proc.new { nil if x }
 ----
 
 == Style/NonNilCheck
@@ -8205,6 +8344,65 @@ p = proc { |n| puts n }
 
 * https://rubystyle.guide#proc
 
+== Style/QuotedSymbols
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.16
+| -
+|===
+
+Checks if the quotes used for quoted symbols match the configured defaults.
+By default uses the same configuration as `Style/StringLiterals`.
+
+String interpolation is always kept in double quotes.
+
+Note: `Lint/SymbolConversion` can be used in parallel to ensure that symbols
+are not quoted that don't need to be. This cop is for configuring the quoting
+style to use for symbols that require quotes.
+
+=== Examples
+
+==== EnforcedStyle: same_as_string_literals (default) / single_quotes
+
+[source,ruby]
+----
+# bad
+:"abc-def"
+
+# good
+:'abc-def'
+:"#{str}"
+:"a\'b"
+----
+
+==== EnforcedStyle: double_quotes
+
+[source,ruby]
+----
+# bad
+:'abc-def'
+
+# good
+:"abc-def"
+:"#{str}"
+:"a\'b"
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `same_as_string_literals`
+| `same_as_string_literals`, `single_quotes`, `double_quotes`
+|===
+
 == Style/RaiseArgs
 
 |===
@@ -8242,6 +8440,7 @@ raise StandardError.new('message')
 # good
 raise StandardError, 'message'
 fail 'message'
+raise MyCustomError
 raise MyCustomError.new(arg1, arg2, arg3)
 raise MyKwArgError.new(key1: val1, key2: val2)
 
@@ -8260,6 +8459,7 @@ raise RuntimeError, arg1, arg2, arg3
 
 # good
 raise StandardError.new('message')
+raise MyCustomError
 raise MyCustomError.new(arg1, arg2, arg3)
 fail 'message'
 ----
@@ -8484,7 +8684,6 @@ end
 do_something
 
 # bad
-# When using Ruby 2.5 or later.
 do_something do
   begin
     something
@@ -11057,6 +11256,68 @@ foo = (bar = baz) ? a : b
 | Boolean
 |===
 
+== Style/TopLevelMethodDefinition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| No
+| 1.15
+| -
+|===
+
+Newcomers to ruby applications may write top-level methods,
+when ideally they should be organized in appropriate classes or modules.
+This cop looks for definitions of top-level methods and warns about them.
+
+However for ruby scripts it is perfectly fine to use top-level methods.
+Hence this cop is disabled by default.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def some_method
+end
+
+# bad
+def self.some_method
+end
+
+# bad
+define_method(:foo) { puts 1 }
+
+# good
+module Foo
+  def some_method
+  end
+end
+
+# good
+class Foo
+  def self.some_method
+  end
+end
+
+# good
+Struct.new do
+  def some_method
+  end
+end
+
+# good
+class Foo
+  define_method(:foo) { puts 1 }
+end
+----
+
+=== References
+
+* https://rubystyle.guide#top-level-methods
+
 == Style/TrailingBodyOnClass
 
 |===
@@ -11678,7 +11939,7 @@ a, b, _something = foo()
 | Yes
 | Yes
 | 0.9
-| 0.77
+| 1.15
 |===
 
 This cop looks for trivial reader/writer methods, that could
@@ -11710,6 +11971,107 @@ class << self
 end
 ----
 
+==== ExactNameMatch: true (default)
+
+[source,ruby]
+----
+# good
+def name
+  @other_name
+end
+----
+
+==== ExactNameMatch: false
+
+[source,ruby]
+----
+# bad
+def name
+  @other_name
+end
+----
+
+==== AllowPredicates: true (default)
+
+[source,ruby]
+----
+# good
+def foo?
+  @foo
+end
+----
+
+==== AllowPredicates: false
+
+[source,ruby]
+----
+# bad
+def foo?
+  @foo
+end
+
+# good
+attr_reader :foo
+----
+
+==== AllowDSLWriters: true (default)
+
+[source,ruby]
+----
+# good
+def on_exception(action)
+  @on_exception=action
+end
+----
+
+==== AllowDSLWriters: false
+
+[source,ruby]
+----
+# bad
+def on_exception(action)
+  @on_exception=action
+end
+
+# good
+attr_writer :on_exception
+----
+
+==== IgnoreClassMethods: false (default)
+
+[source,ruby]
+----
+# bad
+def self.foo
+  @foo
+end
+
+# good
+class << self
+  attr_reader :foo
+end
+----
+
+==== IgnoreClassMethods: true
+
+[source,ruby]
+----
+# good
+def self.foo
+  @foo
+end
+----
+
+==== AllowedMethods: ['allowed_method']
+
+[source,ruby]
+----
+# good
+def allowed_method
+  @foo
+end
+----
+
 === Configurable attributes
 
 |===
@@ -11724,7 +12086,7 @@ end
 | Boolean
 
 | AllowDSLWriters
-| `false`
+| `true`
 | Boolean
 
 | IgnoreClassMethods

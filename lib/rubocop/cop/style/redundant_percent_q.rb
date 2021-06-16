@@ -22,8 +22,7 @@ module RuboCop
 
         MSG = 'Use `%<q_type>s` only for strings that contain both ' \
               'single quotes and double quotes%<extra>s.'
-        DYNAMIC_MSG = ', or for dynamic strings that contain ' \
-                      'double quotes'
+        DYNAMIC_MSG = ', or for dynamic strings that contain double quotes'
         SINGLE_QUOTE = "'"
         QUOTE = '"'
         EMPTY = ''

@@ -3,11 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
   context 'octal literals' do
     context 'when config is zero_with_o' do
-      let(:cop_config) do
-        {
-          'EnforcedOctalStyle' => 'zero_with_o'
-        }
-      end
+      let(:cop_config) { { 'EnforcedOctalStyle' => 'zero_with_o' } }
 
       it 'registers an offense for prefixes `0` and `0O`' do
         expect_offense(<<~RUBY)
@@ -32,11 +28,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiteralPrefix, :config do
     end
 
     context 'when config is zero_only' do
-      let(:cop_config) do
-        {
-          'EnforcedOctalStyle' => 'zero_only'
-        }
-      end
+      let(:cop_config) { { 'EnforcedOctalStyle' => 'zero_only' } }
 
       it 'registers an offense for prefix `0O` and `0o`' do
         expect_offense(<<~RUBY)

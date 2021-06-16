@@ -22,26 +22,11 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
   it_behaves_like 'accepts', 'Proc.new { puts "proc" }'
   it_behaves_like 'accepts', 'expect { order.save }.to(change { orders.size })'
   it_behaves_like 'accepts', 'scope :active, -> { where(status: "active") }'
-  it_behaves_like(
-    'accepts',
-    'assert_equal posts.find { |p| p.title == "Foo" }, results.first'
-  )
-  it_behaves_like(
-    'accepts',
-    'assert_equal(posts.find { |p| p.title == "Foo" }, results.first)'
-  )
-  it_behaves_like(
-    'accepts',
-    'assert_equal(results.first, posts.find { |p| p.title == "Foo" })'
-  )
-  it_behaves_like(
-    'accepts',
-    'allow(cop).to receive(:on_int) { raise RuntimeError }'
-  )
-  it_behaves_like(
-    'accepts',
-    'allow(cop).to(receive(:on_int) { raise RuntimeError })'
-  )
+  it_behaves_like('accepts', 'assert_equal posts.find { |p| p.title == "Foo" }, results.first')
+  it_behaves_like('accepts', 'assert_equal(posts.find { |p| p.title == "Foo" }, results.first)')
+  it_behaves_like('accepts', 'assert_equal(results.first, posts.find { |p| p.title == "Foo" })')
+  it_behaves_like('accepts', 'allow(cop).to receive(:on_int) { raise RuntimeError }')
+  it_behaves_like('accepts', 'allow(cop).to(receive(:on_int) { raise RuntimeError })')
 
   context 'without parentheses' do
     context 'without receiver' do
@@ -96,6 +81,23 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { |el| puts el }` to make sure that the block will be associated with the `a` method call.
         RUBY
       end
+    end
+  end
+
+  context 'IgnoredMethods' do
+    let(:cop_config) { { 'IgnoredMethods' => %w[change] } }
+
+    it 'does not register an offense for an ignored method' do
+      expect_no_offenses(<<~RUBY)
+        expect { order.expire }.to change { order.events }
+      RUBY
+    end
+
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        expect { order.expire }.to update { order.events }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `update { order.events }` to make sure that the block will be associated with the `update` method call.
+      RUBY
     end
   end
 end

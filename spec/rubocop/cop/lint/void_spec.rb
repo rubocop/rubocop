@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
-  it 'handles empty block' do
+  it 'accepts empty block' do
     expect_no_offenses(<<~RUBY)
       array.each { |_item| }
     RUBY
@@ -252,6 +252,24 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     expect_no_offenses(<<~RUBY)
       %x(touch x)
       nil
+    RUBY
+  end
+
+  it 'accepts method with irange block' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        1..100.times.each { puts 1 }
+        do_something
+      end
+    RUBY
+  end
+
+  it 'accepts method with erange block' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        1...100.times.each { puts 1 }
+        do_something
+      end
     RUBY
   end
 end

@@ -8,9 +8,7 @@ RSpec.describe RuboCop::Cop::Team do
   let(:options) { {} }
   let(:ruby_version) { RuboCop::TargetRuby.supported_versions.last }
 
-  before do
-    RuboCop::ConfigLoader.default_configuration = nil
-  end
+  before { RuboCop::ConfigLoader.default_configuration = nil }
 
   context 'when incompatible cops are correcting together' do
     include FileHelper
@@ -92,16 +90,9 @@ RSpec.describe RuboCop::Cop::Team do
 
     let(:file_path) { '/tmp/example.rb' }
     let(:source) { RuboCop::ProcessedSource.from_file(file_path, ruby_version) }
-    let(:offenses) do
-      team.inspect_file(source)
-    end
+    let(:offenses) { team.inspect_file(source) }
 
-    before do
-      create_file(file_path, [
-                    '#' * 90,
-                    'puts test;'
-                  ])
-    end
+    before { create_file(file_path, ['#' * 90, 'puts test;']) }
 
     it 'returns offenses' do
       expect(offenses.empty?).to be(false)
@@ -109,9 +100,7 @@ RSpec.describe RuboCop::Cop::Team do
     end
 
     context 'when Parser reports non-fatal warning for the file' do
-      before do
-        create_file(file_path, ['#' * 130, 'puts *test'])
-      end
+      before { create_file(file_path, ['#' * 130, 'puts *test']) }
 
       let(:cop_names) { offenses.map(&:cop_name) }
 
@@ -137,9 +126,7 @@ RSpec.describe RuboCop::Cop::Team do
     context 'when autocorrection is enabled' do
       let(:options) { { auto_correct: true } }
 
-      before do
-        create_file(file_path, 'puts "string"')
-      end
+      before { create_file(file_path, 'puts "string"') }
 
       it 'does autocorrection' do
         source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
@@ -212,11 +199,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       let(:file_path) { '/tmp/Gemfile' }
 
-      let(:buggy_correction) do
-        lambda do |_corrector|
-          raise cause
-        end
-      end
+      let(:buggy_correction) { ->(_corrector) do raise cause end }
       let(:options) { { auto_correct: true } }
 
       let(:cause) { StandardError.new('cause') }
@@ -259,7 +242,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     it 'returns cop instances' do
       expect(cops.empty?).to be(false)
-      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Base) }).to be_truthy
+      expect(cops.all?(RuboCop::Cop::Base)).to be_truthy
     end
 
     context 'when only some cop classes are passed to .new' do
@@ -286,9 +269,7 @@ RSpec.describe RuboCop::Cop::Team do
           accum[cop_name] = { 'Enabled' => false }
         end
       end
-      let(:config) do
-        RuboCop::ConfigLoader.merge_with_default(disabled_config, '')
-      end
+      let(:config) { RuboCop::ConfigLoader.merge_with_default(disabled_config, '') }
       let(:cop_names) { cops.map(&:name) }
 
       it 'does not return instances of the classes' do
@@ -307,15 +288,11 @@ RSpec.describe RuboCop::Cop::Team do
     it 'returns force instances' do
       expect(forces.empty?).to be(false)
 
-      forces.each do |force|
-        expect(force.is_a?(RuboCop::Cop::Force)).to be(true)
-      end
+      forces.each { |force| expect(force.is_a?(RuboCop::Cop::Force)).to be(true) }
     end
 
     context 'when a cop joined a force' do
-      let(:cop_classes) do
-        RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment])
-      end
+      let(:cop_classes) { RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment]) }
 
       it 'returns the force' do
         expect(forces.size).to eq(1)
@@ -339,9 +316,7 @@ RSpec.describe RuboCop::Cop::Team do
     end
 
     context 'when no cops joined force' do
-      let(:cop_classes) do
-        RuboCop::Cop::Registry.new([RuboCop::Cop::Style::For])
-      end
+      let(:cop_classes) { RuboCop::Cop::Registry.new([RuboCop::Cop::Style::For]) }
 
       it 'returns nothing' do
         expect(forces.empty?).to be(true)
@@ -357,9 +332,7 @@ RSpec.describe RuboCop::Cop::Team do
     end
 
     context 'when a cop joins' do
-      let(:cop_classes) do
-        RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment])
-      end
+      let(:cop_classes) { RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::UselessAssignment]) }
 
       it 'returns string' do
         expect(team.external_dependency_checksum.is_a?(String)).to be(true)

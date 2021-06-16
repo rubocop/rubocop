@@ -18,9 +18,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def call
     YARD::Registry.load!
-    departments.each do |department|
-      print_cops_of_department(department)
-    end
+    departments.each { |department| print_cops_of_department(department) }
 
     print_table_of_contents
   ensure
@@ -105,8 +103,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def code_example(ruby_code)
     content = +"[source,ruby]\n----\n"
-    content << ruby_code.text.gsub('@good', '# good')
-                        .gsub('@bad', '# bad').strip
+    content << ruby_code.text.gsub('@good', '# good').gsub('@bad', '# bad').strip
     content << "\n----\n"
     content
   end
@@ -158,10 +155,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength
 
   def to_table(header, content)
-    table = [
-      '|===',
-      "| #{header.join(' | ')}\n\n"
-    ].join("\n")
+    table = ['|===', "| #{header.join(' | ')}\n\n"].join("\n")
     marked_contents = content.map do |plain_content|
       plain_content.map { |c| "| #{c}" }.join("\n")
     end
@@ -195,9 +189,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def references(cop)
     cop_config = config.for_cop(cop)
-    urls = RuboCop::Cop::MessageAnnotator.new(
-      config, cop.name, cop_config, {}
-    ).urls
+    urls = RuboCop::Cop::MessageAnnotator.new(config, cop.name, cop_config, {}).urls
     return '' if urls.empty?
 
     content = h3('References')
@@ -209,9 +201,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def print_cops_of_department(department)
     selected_cops = cops_of_department(department)
     content = +"= #{department}\n"
-    selected_cops.each do |cop|
-      content << print_cop_with_doc(cop)
-    end
+    selected_cops.each { |cop| content << print_cop_with_doc(cop) }
     file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/#{department_to_basename(department)}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
@@ -264,16 +254,12 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
     content << "\n// END_COP_LIST"
 
-    content = original.sub(
-      %r{// START_COP_LIST.+// END_COP_LIST}m, content
-    )
+    content = original.sub(%r{// START_COP_LIST.+// END_COP_LIST}m, content)
     File.write(path, content)
   end
 
   def table_contents
-    departments
-      .map { |department| table_of_content_for_department(department) }
-      .join("\n")
+    departments.map { |department| table_of_content_for_department(department) }.join("\n")
   end
 
   def cop_status(status)

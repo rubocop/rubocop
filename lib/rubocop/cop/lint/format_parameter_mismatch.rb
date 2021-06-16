@@ -140,8 +140,7 @@ module RuboCop
         end
 
         def format_method?(name, node)
-          return false if node.const_receiver? &&
-                          !node.receiver.loc.name.is?(KERNEL)
+          return false if node.const_receiver? && !node.receiver.loc.name.is?(KERNEL)
           return false unless node.method?(name)
 
           node.arguments.size > 1 && node.first_argument.str_type?
@@ -174,11 +173,9 @@ module RuboCop
           receiver = node.receiver
 
           percent = node.method?(:%) &&
-                    (STRING_TYPES.include?(receiver.type) ||
-                     node.first_argument.array_type?)
+                    (STRING_TYPES.include?(receiver.type) || node.first_argument.array_type?)
 
-          return false if percent && STRING_TYPES.include?(receiver.type) &&
-                          heredoc?(node)
+          return false if percent && STRING_TYPES.include?(receiver.type) && heredoc?(node)
 
           percent
         end

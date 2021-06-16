@@ -18,9 +18,7 @@ module RuboCop
 
           def initialize(node)
             @node = node
-            @attrs = node.arguments.map do |attr|
-              [attr.source, attr]
-            end.to_h
+            @attrs = node.arguments.map { |attr| [attr.source, attr] }.to_h
             @bisection = []
           end
 

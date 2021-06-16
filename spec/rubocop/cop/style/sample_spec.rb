@@ -38,14 +38,11 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
   it_behaves_like('offense', 'shuffle.slice(0, 3)', 'sample(3)')
   it_behaves_like('offense', 'shuffle.slice(0..3)', 'sample(4)')
   it_behaves_like('offense', 'shuffle.slice(0...3)', 'sample(3)')
-  it_behaves_like('offense', 'shuffle(random: Random.new).first',
-                  'sample(random: Random.new)')
+  it_behaves_like('offense', 'shuffle(random: Random.new).first', 'sample(random: Random.new)')
   it_behaves_like('offense', 'shuffle(random: Random.new).first(2)',
                   'sample(2, random: Random.new)')
-  it_behaves_like('offense', 'shuffle(random: foo).last(bar)',
-                  'sample(bar, random: foo)')
-  it_behaves_like('offense', 'shuffle(random: Random.new)[0..3]',
-                  'sample(4, random: Random.new)')
+  it_behaves_like('offense', 'shuffle(random: foo).last(bar)', 'sample(bar, random: foo)')
+  it_behaves_like('offense', 'shuffle(random: Random.new)[0..3]', 'sample(4, random: Random.new)')
 
   it_behaves_like('accepts', 'sample')
   it_behaves_like('accepts', 'shuffle')

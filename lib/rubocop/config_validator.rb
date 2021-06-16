@@ -9,8 +9,7 @@ module RuboCop
     extend Forwardable
 
     # @api private
-    COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
-                       AutoCorrect StyleGuide Details].freeze
+    COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details].freeze
     # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
@@ -60,8 +59,7 @@ module RuboCop
     def validate_section_presence(name)
       return unless @config.key?(name) && @config[name].nil?
 
-      raise ValidationError,
-            "empty section #{name} found in #{smart_loaded_path}"
+      raise ValidationError, "empty section #{name} found in #{smart_loaded_path}"
     end
 
     private
@@ -123,8 +121,7 @@ module RuboCop
       syntax_config = @config['Lint/Syntax']
       default_config = ConfigLoader.default_configuration['Lint/Syntax']
 
-      return unless syntax_config &&
-                    default_config.merge(syntax_config) != default_config
+      return unless syntax_config && default_config.merge(syntax_config) != default_config
 
       raise ValidationError,
             "configuration for Syntax cop found in #{smart_loaded_path}\n" \
@@ -133,8 +130,7 @@ module RuboCop
 
     def validate_new_cops_parameter
       new_cop_parameter = @config.for_all_cops['NewCops']
-      return if new_cop_parameter.nil? ||
-                NEW_COPS_VALUES.include?(new_cop_parameter)
+      return if new_cop_parameter.nil? || NEW_COPS_VALUES.include?(new_cop_parameter)
 
       message = "invalid #{new_cop_parameter} for `NewCops` found in" \
                 "#{smart_loaded_path}\n" \
@@ -208,8 +204,7 @@ module RuboCop
     def reject_conflicting_safe_settings
       @config.each do |name, cop_config|
         next unless cop_config.is_a?(Hash)
-        next unless cop_config['Safe'] == false &&
-                    cop_config['SafeAutoCorrect'] == true
+        next unless cop_config['Safe'] == false && cop_config['SafeAutoCorrect'] == true
 
         msg = 'Unsafe cops cannot have a safe auto-correction ' \
               "(section #{name} in #{smart_loaded_path})"

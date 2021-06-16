@@ -36,8 +36,7 @@ module RuboCop
       class DefWithParentheses < Base
         extend AutoCorrector
 
-        MSG = "Omit the parentheses in defs when the method doesn't accept " \
-              'any arguments.'
+        MSG = "Omit the parentheses in defs when the method doesn't accept any arguments."
 
         def on_def(node)
           return if node.single_line?

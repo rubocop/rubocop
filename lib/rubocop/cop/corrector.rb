@@ -36,10 +36,7 @@ module RuboCop
       # @param [Integer] size
       def remove_preceding(node_or_range, size)
         range = to_range(node_or_range)
-        to_remove = range.with(
-          begin_pos: range.begin_pos - size,
-          end_pos:   range.begin_pos
-        )
+        to_remove = range.with(begin_pos: range.begin_pos - size, end_pos: range.begin_pos)
         remove(to_remove)
       end
 

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
-  let(:cop_config) do
-    { 'AllowBorderComment' => true, 'AllowMarginComment' => true }
-  end
+  let(:cop_config) { { 'AllowBorderComment' => true, 'AllowMarginComment' => true } }
 
   it 'registers an offense and corrects using single line empty comment' do
     expect_offense(<<~RUBY)
@@ -53,8 +51,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     RUBY
   end
 
-  it 'does not register an offense when using comment text with ' \
-     'leading and trailing blank lines' do
+  it 'does not register an offense when using comment text with leading and trailing blank lines' do
     expect_no_offenses(<<~RUBY)
       #
       # Description of `Foo` class.
@@ -135,8 +132,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     end
   end
 
-  it 'registers an offense and corrects an empty comment without space ' \
-    'next to code' do
+  it 'registers an offense and corrects an empty comment without space next to code' do
     expect_offense(<<~RUBY)
       def foo#
              ^ Source code comment is empty.
@@ -167,8 +163,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     RUBY
   end
 
-  it 'register offenses and correct multiple aligned empty comments ' \
-    'next to code' do
+  it 'register offenses and correct multiple aligned empty comments next to code' do
     expect_offense(<<~RUBY)
       def foo     #
                   ^ Source code comment is empty.

@@ -13,8 +13,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       RUBY
     end
 
-    it 'registers an offense for trailing comma preceded by whitespace' \
-       ' in a method call' do
+    it 'registers an offense for trailing comma preceded by whitespace in a method call' do
       expect_offense(<<~RUBY)
         some_method(a, b, c , )
                             ^ Avoid comma after the last parameter of a method call#{extra_info}.
@@ -25,8 +24,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       RUBY
     end
 
-    it 'registers an offense for trailing comma in a method call with hash' \
-       ' parameters at the end' do
+    it 'registers an offense for trailing comma in a method call with hash parameters at the end' do
       expect_offense(<<~RUBY)
         some_method(a, b, c: 0, d: 1, )
                                     ^ Avoid comma after the last parameter of a method call#{extra_info}.
@@ -41,8 +39,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       expect_no_offenses('some_method(a, b, c)')
     end
 
-    it 'accepts method call without trailing comma ' \
-       'when a line break before a method call' do
+    it 'accepts method call without trailing comma when a line break before a method call' do
       expect_no_offenses(<<~RUBY)
         obj
           .do_something(:foo, :bar)
@@ -109,15 +106,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
-      include_examples 'single line lists',
-                       ', unless each item is on its own line'
+      include_examples 'single line lists', ', unless each item is on its own line'
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
-      include_examples 'single line lists',
-                       ', unless items are split onto multiple lines'
+      include_examples 'single line lists', ', unless items are split onto multiple lines'
     end
   end
 
@@ -136,8 +131,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
   end
 
-  context 'with a single argument of anonymous function ' \
-          'spanning multiple lines' do
+  context 'with a single argument of anonymous function spanning multiple lines' do
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
@@ -177,8 +171,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts a method call with ' \
-         'hash parameters at the end and no trailing comma' do
+      it 'accepts a method call with hash parameters at the end and no trailing comma' do
         expect_no_offenses(<<~RUBY)
           some_method(a,
                       b,
@@ -315,8 +308,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
       context 'when closing bracket is on same line as last value' do
-        it 'accepts a method call with Hash as last parameter split on ' \
-           'multiple lines' do
+        it 'accepts a method call with Hash as last parameter split on multiple lines' do
           expect_no_offenses(<<~RUBY)
             some_method(a: "b",
                         c: "d")
@@ -353,8 +345,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts trailing comma in a method call with hash' \
-         ' parameters at the end' do
+      it 'accepts trailing comma in a method call with hash parameters at the end' do
         expect_no_offenses(<<~RUBY)
           some_method(
                         a,
@@ -387,8 +378,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts a trailing comma in a method call with single ' \
-         'line hashes' do
+      it 'accepts a trailing comma in a method call with single line hashes' do
         expect_no_offenses(<<~RUBY)
           some_method(
            { a: 0, b: 1 },
@@ -420,16 +410,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'does not break when a safe method call is chained on the ' \
-         'offending simple one' do
+      it 'does not break when a safe method call is chained on the offending simple one' do
         expect_no_offenses(<<~RUBY)
           foo
             &.do_something(:bar, :baz)
         RUBY
       end
 
-      it 'does not break when a safe method call is chained on the ' \
-         'offending more complex one' do
+      it 'does not break when a safe method call is chained on the offending more complex one' do
         expect_no_offenses(<<~RUBY)
           foo.bar(
             baz: 1,
@@ -493,8 +481,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts trailing comma in a method call with hash' \
-         ' parameters at the end' do
+      it 'accepts trailing comma in a method call with hash parameters at the end' do
         expect_no_offenses(<<~RUBY)
           some_method(
                         a,
@@ -505,8 +492,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts a trailing comma in a method call with ' \
-         'a single hash parameter' do
+      it 'accepts a trailing comma in a method call with a single hash parameter' do
         expect_no_offenses(<<~RUBY)
           some_method(
                         a: 0,
@@ -525,8 +511,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts a trailing comma in a method call with single ' \
-         'line hashes' do
+      it 'accepts a trailing comma in a method call with single line hashes' do
         expect_no_offenses(<<~RUBY)
           some_method(
            { a: 0, b: 1 },
@@ -536,8 +521,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       # this is a sad parse error
-      it 'accepts no trailing comma in a method call with a block' \
-         ' parameter at the end' do
+      it 'accepts no trailing comma in a method call with a block parameter at the end' do
         expect_no_offenses(<<~RUBY)
           some_method(
                         a,
@@ -574,8 +558,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts a multiline call with arguments on a single line and' \
-         ' trailing comma' do
+      it 'accepts a multiline call with arguments on a single line and trailing comma' do
         expect_no_offenses(<<~RUBY)
           method(
             1, 2,

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
-  let(:cop_config) do
-    { 'AllowModifier' => false }
-  end
+  let(:cop_config) { { 'AllowModifier' => false } }
 
   it 'registers an offense and corrects when using nested `if` within `if`' do
     expect_offense(<<~RUBY)
@@ -51,6 +49,24 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
 
     expect_correction(<<~RUBY)
       if !foo && bar
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `unless foo == bar`' do
+    expect_offense(<<~RUBY)
+      unless foo == bar
+        if baz
+        ^^ Consider merging nested conditions into outer `unless` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    # NOTE: `Style/InverseMethods` cop auto-corrects from `(!foo == bar)` to `foo != bar`.
+    expect_correction(<<~RUBY)
+      if !(foo == bar) && baz
           do_something
         end
     RUBY
@@ -317,9 +333,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
   end
 
   context 'when disabling `Style/IfUnlessModifier`' do
-    let(:config) do
-      RuboCop::Config.new('Style/IfUnlessModifier' => { 'Enabled' => false })
-    end
+    let(:config) { RuboCop::Config.new('Style/IfUnlessModifier' => { 'Enabled' => false }) }
 
     it 'registers an offense and corrects when using nested conditional and branch contains a comment' do
       expect_offense(<<~RUBY)
@@ -521,9 +535,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
   end
 
   context 'when AllowModifier is true' do
-    let(:cop_config) do
-      { 'AllowModifier' => true }
-    end
+    let(:cop_config) { { 'AllowModifier' => true } }
 
     it 'does not register an offense when using nested modifier conditional' do
       expect_no_offenses(<<~RUBY)

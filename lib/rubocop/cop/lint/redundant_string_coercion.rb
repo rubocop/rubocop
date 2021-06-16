@@ -22,8 +22,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'
-        MSG_SELF = 'Use `self` instead of `Object#to_s` in ' \
-                   'interpolation.'
+        MSG_SELF = 'Use `self` instead of `Object#to_s` in interpolation.'
 
         # @!method to_s_without_args?(node)
         def_node_matcher :to_s_without_args?, '(send _ :to_s)'

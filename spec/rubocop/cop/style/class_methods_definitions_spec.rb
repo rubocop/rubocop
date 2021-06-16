@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
   context 'when EnforcedStyle is def_self' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'def_self' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'def_self' } }
 
     it 'registers an offense and corrects when defining class methods with `class << self`' do
       expect_offense(<<~RUBY)
@@ -274,9 +272,7 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
   end
 
   context 'when EnforcedStyle is self_class' do
-    let(:cop_config) do
-      { 'EnforcedStyle' => 'self_class' }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'self_class' } }
 
     it 'registers an offense when defining class methods with `def self.method`' do
       expect_offense(<<~RUBY)

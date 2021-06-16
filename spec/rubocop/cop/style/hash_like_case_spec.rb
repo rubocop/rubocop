@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::HashLikeCase, :config do
   context 'MinBranchesCount: 2' do
-    let(:cop_config) do
-      { 'MinBranchesCount' => 2 }
-    end
+    let(:cop_config) { { 'MinBranchesCount' => 2 } }
 
     it 'registers an offense when using `case-when` with string conditions and literal bodies of the same type' do
       expect_offense(<<~RUBY)
@@ -89,9 +87,7 @@ RSpec.describe RuboCop::Cop::Style::HashLikeCase, :config do
   end
 
   context 'MinBranchesCount: 3' do
-    let(:cop_config) do
-      { 'MinBranchesCount' => 3 }
-    end
+    let(:cop_config) { { 'MinBranchesCount' => 3 } }
 
     it 'does not register an offense when branches count is less than required' do
       expect_no_offenses(<<~RUBY)

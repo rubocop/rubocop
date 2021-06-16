@@ -31,9 +31,7 @@ module RuboCop
           return if part_of_ignored_node?(node)
           return unless modifier?(node) && modifier?(node.parent)
 
-          add_offense(node.loc.keyword) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node.loc.keyword) { |corrector| autocorrect(corrector, node) }
           ignore_node(node)
         end
 
@@ -66,8 +64,7 @@ module RuboCop
 
         def left_hand_operand(node, operator)
           expr = node.condition.source
-          expr = "(#{expr})" if node.condition.or_type? &&
-                                operator == '&&'
+          expr = "(#{expr})" if node.condition.or_type? && operator == '&&'
           expr
         end
 
@@ -95,8 +92,7 @@ module RuboCop
         end
 
         def requires_parens?(node)
-          node.or_type? ||
-            !(RuboCop::AST::Node::COMPARISON_OPERATORS & node.children).empty?
+          node.or_type? || !(RuboCop::AST::Node::COMPARISON_OPERATORS & node.children).empty?
         end
       end
     end

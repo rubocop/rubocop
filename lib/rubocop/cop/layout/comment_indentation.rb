@@ -100,11 +100,7 @@ module RuboCop
         end
 
         def message(column, correct_comment_indentation)
-          format(
-            MSG,
-            column: column,
-            correct_comment_indentation: correct_comment_indentation
-          )
+          format(MSG, column: column, correct_comment_indentation: correct_comment_indentation)
         end
 
         def own_line_comment?(comment)

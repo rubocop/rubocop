@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   context 'with the DebuggerMethods configuration' do
-    let(:cop_config) do
-      { 'DebuggerMethods' => %w[custom_debugger] }
-    end
+    let(:cop_config) { { 'DebuggerMethods' => %w[custom_debugger] } }
 
     it 'does not register an offense for a byebug call' do
       expect_no_offenses(<<~RUBY)
@@ -20,13 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     end
 
     context 'nested custom configurations' do
-      let(:cop_config) do
-        {
-          'DebuggerMethods' => {
-            'Custom' => %w[custom_debugger]
-          }
-        }
-      end
+      let(:cop_config) { { 'DebuggerMethods' => { 'Custom' => %w[custom_debugger] } } }
 
       it 'registers an offense for a `custom_debugger call' do
         expect_offense(<<~RUBY)

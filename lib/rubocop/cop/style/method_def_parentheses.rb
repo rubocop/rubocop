@@ -93,8 +93,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG_PRESENT = 'Use def without parentheses.'
-        MSG_MISSING = 'Use def with parentheses when there are ' \
-                      'parameters.'
+        MSG_MISSING = 'Use def with parentheses when there are parameters.'
 
         def on_def(node)
           return if node.endless?
@@ -124,18 +123,15 @@ module RuboCop
 
         def correct_definition(def_node, corrector)
           arguments_range = def_node.arguments.source_range
-          args_with_space = range_with_surrounding_space(range: arguments_range,
-                                                         side: :left)
-          leading_space = range_between(args_with_space.begin_pos,
-                                        arguments_range.begin_pos)
+          args_with_space = range_with_surrounding_space(range: arguments_range, side: :left)
+          leading_space = range_between(args_with_space.begin_pos, arguments_range.begin_pos)
           corrector.replace(leading_space, '(')
           corrector.insert_after(arguments_range, ')')
         end
 
         def require_parentheses?(args)
           style == :require_parentheses ||
-            (style == :require_no_parentheses_except_multiline &&
-             args.multiline?)
+            (style == :require_no_parentheses_except_multiline && args.multiline?)
         end
 
         def arguments_without_parentheses?(node)

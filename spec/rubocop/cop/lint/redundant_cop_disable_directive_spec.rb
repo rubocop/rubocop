@@ -42,6 +42,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           end
 
+          context 'when using a directive comment after a non-directive comment' do
+            it 'returns an offense' do
+              expect_offense(<<~RUBY)
+                # not very long comment # rubocop:disable Layout/LineLength
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Layout/LineLength`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                # not very long comment
+              RUBY
+            end
+          end
+
           context 'itself and another cop' do
             context 'disabled on the same range' do
               it 'returns no offense' do
@@ -221,9 +234,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
       end
 
       context 'and there are two offenses' do
-        let(:message) do
-          'Replace class var @@class_var with a class instance var.'
-        end
+        let(:message) { 'Replace class var @@class_var with a class instance var.' }
         let(:cop_name) { 'Style/ClassVars' }
         let(:offenses) do
           offense_lines.map do |line|
@@ -490,6 +501,93 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           RUBY
         end
+      end
+    end
+
+    context 'with a disabled department' do
+      let(:offenses) do
+        [
+          RuboCop::Cop::Offense.new(:convention,
+                                    OpenStruct.new(line: 2, column: 0),
+                                    'Class has too many lines.',
+                                    'Metrics/ClassLength')
+        ]
+      end
+
+      it 'removes entire comment' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Style
+          ^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Style` department.
+          def bar
+            do_something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def bar
+            do_something
+          end
+        RUBY
+      end
+
+      it 'removes redundant department' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Style, Metrics/ClassLength
+                            ^^^^^ Unnecessary disabling of `Style` department.
+          def bar
+            do_something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics/ClassLength
+          def bar
+            do_something
+          end
+        RUBY
+      end
+
+      it 'removes cop duplicated by department' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics, Metrics/ClassLength
+                                     ^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+          def bar
+            do_something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something
+          end
+        RUBY
+      end
+
+      it 'removes cop duplicated by department on previous line' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something # rubocop:disable Metrics/ClassLength
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something
+          end
+        RUBY
+      end
+
+      it 'does not remove correct department' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something
+          end
+        RUBY
       end
     end
   end

@@ -26,8 +26,7 @@ module RuboCop
       class RandomWithOffset < Base
         extend AutoCorrector
 
-        MSG = 'Prefer ranges when generating random numbers instead of ' \
-          'integers with offsets.'
+        MSG = 'Prefer ranges when generating random numbers instead of integers with offsets.'
         RESTRICT_ON_SEND = %i[+ - succ pred next].freeze
 
         # @!method integer_op_rand?(node)
@@ -63,13 +62,9 @@ module RuboCop
 
         def on_send(node)
           return unless node.receiver
-          return unless integer_op_rand?(node) ||
-                        rand_op_integer?(node) ||
-                        rand_modified?(node)
+          return unless integer_op_rand?(node) || rand_op_integer?(node) || rand_modified?(node)
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         private

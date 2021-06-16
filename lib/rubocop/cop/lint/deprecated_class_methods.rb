@@ -12,6 +12,8 @@ module RuboCop
       #   File.exists?(some_path)
       #   Dir.exists?(some_path)
       #   iterator?
+      #   Socket.gethostbyname(host)
+      #   Socket.gethostbyaddr(host)
       #
       # @example
       #
@@ -20,21 +22,23 @@ module RuboCop
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
       #   block_given?
+      #   Addrinfo.getaddrinfo(nodename, service)
+      #   Addrinfo.tcp(host, port).getnameinfo
       class DeprecatedClassMethods < Base
         extend AutoCorrector
 
         # Inner class to DeprecatedClassMethods.
-        # This class exists to add abstraction and clean naming to the
-        # objects that are going to be operated on.
+        # This class exists to add abstraction and clean naming
+        # to the deprecated objects
         class DeprecatedClassMethod
           include RuboCop::AST::Sexp
 
-          attr_reader :class_constant, :deprecated_method, :replacement_method
+          attr_reader :method, :class_constant
 
-          def initialize(deprecated:, replacement:, class_constant: nil)
-            @deprecated_method = deprecated
-            @replacement_method = replacement
+          def initialize(method, class_constant: nil, correctable: true)
+            @method = method
             @class_constant = class_constant
+            @correctable = correctable
           end
 
           def class_nodes
@@ -48,29 +52,80 @@ module RuboCop
                 [nil]
               end
           end
+
+          def correctable?
+            @correctable
+          end
+
+          def to_s
+            [class_constant, method].compact.join(delimeter)
+          end
+
+          private
+
+          def delimeter
+            CLASS_METHOD_DELIMETER
+          end
+        end
+
+        # Inner class to DeprecatedClassMethods.
+        # This class exists to add abstraction and clean naming
+        # to the replacements for deprecated objects
+        class Replacement
+          attr_reader :method, :class_constant
+
+          def initialize(method, class_constant: nil, instance_method: false)
+            @method = method
+            @class_constant = class_constant
+            @instance_method = instance_method
+          end
+
+          def to_s
+            [class_constant, method].compact.join(delimeter)
+          end
+
+          private
+
+          def delimeter
+            instance_method? ? INSTANCE_METHOD_DELIMETER : CLASS_METHOD_DELIMETER
+          end
+
+          def instance_method?
+            @instance_method
+          end
         end
 
         MSG = '`%<current>s` is deprecated in favor of `%<prefer>s`.'
-        DEPRECATED_METHODS_OBJECT = [
-          DeprecatedClassMethod.new(deprecated: :exists?,
-                                    replacement: :exist?,
-                                    class_constant: :File),
-          DeprecatedClassMethod.new(deprecated: :exists?,
-                                    replacement: :exist?,
-                                    class_constant: :Dir),
-          DeprecatedClassMethod.new(deprecated: :iterator?,
-                                    replacement: :block_given?)
-        ].freeze
 
-        RESTRICT_ON_SEND = DEPRECATED_METHODS_OBJECT.map(&:deprecated_method).freeze
+        DEPRECATED_METHODS_OBJECT = {
+          DeprecatedClassMethod.new(:exists?, class_constant: :File) =>
+            Replacement.new(:exist?, class_constant: :File),
+
+          DeprecatedClassMethod.new(:exists?, class_constant: :Dir) =>
+            Replacement.new(:exist?, class_constant: :Dir),
+
+          DeprecatedClassMethod.new(:iterator?) => Replacement.new(:block_given?),
+
+          DeprecatedClassMethod.new(:gethostbyaddr, class_constant: :Socket, correctable: false) =>
+            Replacement.new(:getnameinfo, class_constant: :Addrinfo, instance_method: true),
+
+          DeprecatedClassMethod.new(:gethostbyname, class_constant: :Socket, correctable: false) =>
+            Replacement.new(:getaddrinfo, class_constant: :Addrinfo, instance_method: true)
+        }.freeze
+
+        RESTRICT_ON_SEND = DEPRECATED_METHODS_OBJECT.keys.map(&:method).freeze
+
+        CLASS_METHOD_DELIMETER = '.'
+        INSTANCE_METHOD_DELIMETER = '#'
 
         def on_send(node)
-          check(node) do |data|
-            message = format(MSG, current: deprecated_method(data),
-                                  prefer: replacement_method(data))
+          check(node) do |deprecated|
+            message = format(MSG, current: deprecated, prefer: replacement(deprecated))
 
             add_offense(node.loc.selector, message: message) do |corrector|
-              corrector.replace(node.loc.selector, data.replacement_method.to_s)
+              if deprecated.correctable?
+                corrector.replace(node.loc.selector, replacement(deprecated).method)
+              end
             end
           end
         end
@@ -78,29 +133,16 @@ module RuboCop
         private
 
         def check(node)
-          DEPRECATED_METHODS_OBJECT.each do |data|
-            next unless data.class_nodes.include?(node.receiver)
-            next unless node.method?(data.deprecated_method)
+          DEPRECATED_METHODS_OBJECT.each_key do |deprecated|
+            next unless deprecated.class_nodes.include?(node.receiver)
+            next unless node.method?(deprecated.method)
 
-            yield data
+            yield deprecated
           end
         end
 
-        def deprecated_method(data)
-          method_call(data.class_constant, data.deprecated_method)
-        end
-
-        def replacement_method(data)
-          method_call(data.class_constant, data.replacement_method)
-        end
-
-        def method_call(class_constant, method)
-          if class_constant
-            format('%<constant>s.%<method>s', constant: class_constant,
-                                              method: method)
-          else
-            format('%<method>s', method: method)
-          end
+        def replacement(deprecated)
+          DEPRECATED_METHODS_OBJECT[deprecated]
         end
       end
     end

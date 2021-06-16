@@ -14,9 +14,7 @@ RSpec.describe RuboCop::Cop::Corrector do
     def do_rewrite(corrections = nil, &block)
       corrector = described_class.new(processed_source.buffer)
 
-      Array(corrections || block).each do |c|
-        c.call(corrector)
-      end
+      Array(corrections || block).each { |c| c.call(corrector) }
 
       corrector.rewrite
     end
@@ -27,12 +25,8 @@ RSpec.describe RuboCop::Cop::Corrector do
 
       match { |corrections| (self.result = do_rewrite corrections) == expected }
 
-      failure_message do
-        "expected to rewrite to #{expected.inspect}, but got #{result.inspect}"
-      end
-      failure_message_when_negated do
-        "expected not to rewrite to #{expected.inspect}, but did"
-      end
+      failure_message { "expected to rewrite to #{expected.inspect}, but got #{result.inspect}" }
+      failure_message_when_negated { "expected not to rewrite to #{expected.inspect}, but did" }
     end
 
     it 'allows removal of a range' do
@@ -52,9 +46,7 @@ RSpec.describe RuboCop::Cop::Corrector do
     end
 
     it 'allows insertion before and after a source range' do
-      expect do |corrector|
-        corrector.wrap(operator, '(', ')')
-      end.to rewrite_to 'true (and) false'
+      expect { |corrector| corrector.wrap(operator, '(', ')') }.to rewrite_to 'true (and) false'
     end
 
     it 'allows replacement of a range' do
@@ -62,27 +54,19 @@ RSpec.describe RuboCop::Cop::Corrector do
     end
 
     it 'allows removal of characters preceding range' do
-      expect do |corrector|
-        corrector.remove_preceding(operator, 2)
-      end.to rewrite_to 'truand false'
+      expect { |corrector| corrector.remove_preceding(operator, 2) }.to rewrite_to 'truand false'
     end
 
     it 'allows removal of characters from range beginning' do
-      expect do |corrector|
-        corrector.remove_leading(operator, 2)
-      end.to rewrite_to 'true d false'
+      expect { |corrector| corrector.remove_leading(operator, 2) }.to rewrite_to 'true d false'
     end
 
     it 'allows removal of characters fron range ending' do
-      expect do |corrector|
-        corrector.remove_trailing(operator, 2)
-      end.to rewrite_to 'true a false'
+      expect { |corrector| corrector.remove_trailing(operator, 2) }.to rewrite_to 'true a false'
     end
 
     it 'accepts a node instead of a range' do
-      expect do |corrector|
-        corrector.replace(node.rhs, 'maybe')
-      end.to rewrite_to 'true and maybe'
+      expect { |corrector| corrector.replace(node.rhs, 'maybe') }.to rewrite_to 'true and maybe'
     end
 
     it 'raises a useful error if not given a node or a range' do
@@ -94,12 +78,8 @@ RSpec.describe RuboCop::Cop::Corrector do
 
     context 'when range is from incorrect source' do
       let(:other_source) { parse_source(source) }
-      let(:op_other) do
-        Parser::Source::Range.new(other_source.buffer, 0, 2)
-      end
-      let(:op_string) do
-        Parser::Source::Range.new(processed_source.raw_source, 0, 2)
-      end
+      let(:op_other) { Parser::Source::Range.new(other_source.buffer, 0, 2) }
+      let(:op_string) { Parser::Source::Range.new(processed_source.raw_source, 0, 2) }
 
       {
         remove: nil,

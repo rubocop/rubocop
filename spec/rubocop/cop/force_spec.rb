@@ -3,12 +3,7 @@
 RSpec.describe RuboCop::Cop::Force do
   subject(:force) { described_class.new(cops) }
 
-  let(:cops) do
-    [
-      instance_double(RuboCop::Cop::Cop),
-      instance_double(RuboCop::Cop::Cop)
-    ]
-  end
+  let(:cops) { [instance_double(RuboCop::Cop::Cop), instance_double(RuboCop::Cop::Cop)] }
 
   describe '.force_name' do
     it 'returns the class name without namespace' do

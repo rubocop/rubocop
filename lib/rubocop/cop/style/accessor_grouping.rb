@@ -129,9 +129,7 @@ module RuboCop
         end
 
         def group_accessors(node, accessors)
-          accessor_names = accessors.flat_map do |accessor|
-            accessor.arguments.map(&:source)
-          end
+          accessor_names = accessors.flat_map { |accessor| accessor.arguments.map(&:source) }
 
           "#{node.method_name} #{accessor_names.join(', ')}"
         end

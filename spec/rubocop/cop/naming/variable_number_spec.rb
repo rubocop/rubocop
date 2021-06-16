@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
-  let(:cop_config) do
-    { 'CheckMethodNames' => true, 'CheckSymbols' => true }
-  end
+  let(:cop_config) { { 'CheckMethodNames' => true, 'CheckSymbols' => true } }
 
   shared_examples 'offense' do |style, variable, style_to_allow_offenses|
     it "registers an offense for #{variable} in #{style}" do
@@ -93,8 +91,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       RUBY
     end
 
-    it 'registers an offense for normal case numbering in method camel case
-     parameter' do
+    it 'registers an offense for normal case numbering in method camel case parameter' do
       expect_offense(<<~RUBY)
         def method(funnyArg1); end
                    ^^^^^^^^^ Use snake_case for variable numbers.
@@ -159,8 +156,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       RUBY
     end
 
-    it 'registers an offense for snake case numbering in method camel case
-     parameter' do
+    it 'registers an offense for snake case numbering in method camel case parameter' do
       expect_offense(<<~RUBY)
         def method(funnyArg_1); end
                    ^^^^^^^^^^ Use normalcase for variable numbers.
@@ -232,16 +228,14 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       RUBY
     end
 
-    it 'registers an offense for snake case numbering in method camel case
-     parameter' do
+    it 'registers an offense for snake case numbering in method camel case parameter' do
       expect_offense(<<~RUBY)
         def method(myArg_1); end
                    ^^^^^^^ Use non_integer for variable numbers.
       RUBY
     end
 
-    it 'registers an offense for normal case numbering in method camel case
-     parameter' do
+    it 'registers an offense for normal case numbering in method camel case parameter' do
       expect_offense(<<~RUBY)
         def method(myArg1); end
                    ^^^^^^ Use non_integer for variable numbers.
@@ -264,9 +258,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
   end
 
   context 'when CheckMethodNames is false' do
-    let(:cop_config) do
-      { 'CheckMethodNames' => false, 'EnforcedStyle' => 'normalcase' }
-    end
+    let(:cop_config) { { 'CheckMethodNames' => false, 'EnforcedStyle' => 'normalcase' } }
 
     it 'does not register an offense for snake case numbering in method name' do
       expect_no_offenses('def method_1; end')
@@ -274,9 +266,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
   end
 
   context 'when CheckSymbols is false' do
-    let(:cop_config) do
-      { 'CheckSymbols' => false, 'EnforcedStyle' => 'normalcase' }
-    end
+    let(:cop_config) { { 'CheckSymbols' => false, 'EnforcedStyle' => 'normalcase' } }
 
     it 'does not register an offense for snake case numbering in symbol' do
       expect_no_offenses(':sym_1')

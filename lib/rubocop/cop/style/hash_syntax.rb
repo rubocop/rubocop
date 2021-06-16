@@ -137,7 +137,7 @@ module RuboCop
         end
 
         def acceptable_19_syntax_symbol?(sym_name)
-          sym_name.sub!(/\A:/, '')
+          sym_name.delete_prefix!(':')
 
           if cop_config['PreferHashRocketsForNonAlnumEndingSymbols'] &&
              # Prefer { :production? => false } over { production?: false } and
@@ -174,10 +174,7 @@ module RuboCop
 
           space = argument_without_space?(pair_node.parent) ? ' ' : ''
 
-          corrector.replace(
-            range,
-            range.source.sub(/^:(.*\S)\s*=>\s*$/, "#{space}\\1: ")
-          )
+          corrector.replace(range, range.source.sub(/^:(.*\S)\s*=>\s*$/, "#{space}\\1: "))
 
           hash_node = pair_node.parent
           return unless hash_node.parent&.return_type? && !hash_node.braces?
@@ -194,8 +191,7 @@ module RuboCop
         end
 
         def argument_without_space?(node)
-          node.argument? &&
-            node.loc.expression.begin_pos == node.parent.loc.selector.end_pos
+          node.argument? && node.loc.expression.begin_pos == node.parent.loc.selector.end_pos
         end
 
         def autocorrect_hash_rockets(corrector, pair_node)
@@ -215,8 +211,7 @@ module RuboCop
         end
 
         def force_hash_rockets?(pairs)
-          cop_config['UseHashRocketsWithSymbolValues'] &&
-            pairs.map(&:value).any?(&:sym_type?)
+          cop_config['UseHashRocketsWithSymbolValues'] && pairs.map(&:value).any?(&:sym_type?)
         end
       end
     end

@@ -11,22 +11,16 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   end
 
   describe '.qualified_cop_name' do
-    before do
-      $stderr = StringIO.new
-    end
+    before { $stderr = StringIO.new }
 
-    after do
-      $stderr = STDERR
-    end
+    after { $stderr = STDERR }
 
     it 'adds namespace if the cop name is found in exactly one namespace' do
-      expect(described_class.qualified_cop_name('LineLength', '--only'))
-        .to eq('Layout/LineLength')
+      expect(described_class.qualified_cop_name('LineLength', '--only')).to eq('Layout/LineLength')
     end
 
     it 'returns the given cop name if it is not found in any namespace' do
-      expect(described_class.qualified_cop_name('UnknownCop', '--only'))
-        .to eq('UnknownCop')
+      expect(described_class.qualified_cop_name('UnknownCop', '--only')).to eq('UnknownCop')
     end
 
     it 'returns the given cop name if it already has a namespace' do
@@ -34,8 +28,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
         .to eq('Layout/LineLength')
     end
 
-    it 'returns the cop name in a different namespace if the provided ' \
-       'namespace is incorrect' do
+    it 'returns the cop name in a different namespace if the provided namespace is incorrect' do
       expect(described_class.qualified_cop_name('Style/LineLength', '--only'))
         .to eq('Layout/LineLength')
     end
@@ -49,8 +42,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
     it 'returns the given cop name if it already has a namespace even when ' \
        'the cop exists in multiple namespaces' do
-      qualified_cop_name =
-        described_class.qualified_cop_name('Style/SafeNavigation', '--only')
+      qualified_cop_name = described_class.qualified_cop_name('Style/SafeNavigation', '--only')
 
       expect(qualified_cop_name).to eq('Style/SafeNavigation')
     end
@@ -142,9 +134,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
   describe 'setting of Offense#corrected attribute' do
     context 'when cop does not support autocorrection' do
-      before do
-        allow(cop).to receive(:support_autocorrect?).and_return(false)
-      end
+      before { allow(cop).to receive(:support_autocorrect?).and_return(false) }
 
       it 'is not specified (set to nil)' do
         cop.add_offense(nil, location: location, message: 'message')
@@ -152,9 +142,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       end
 
       context 'when autocorrect is requested' do
-        before do
-          allow(cop).to receive(:autocorrect_requested?).and_return(true)
-        end
+        before { allow(cop).to receive(:autocorrect_requested?).and_return(true) }
 
         it 'is not specified (set to nil)' do
           cop.add_offense(nil, location: location, message: 'message')
@@ -162,9 +150,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
         end
 
         context 'when disable_uncorrectable is enabled' do
-          before do
-            allow(cop).to receive(:disable_uncorrectable?).and_return(true)
-          end
+          before { allow(cop).to receive(:disable_uncorrectable?).and_return(true) }
 
           let(:node) do
             instance_double(RuboCop::AST::Node,
@@ -204,9 +190,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       end
 
       context 'when autocorrection is not needed' do
-        before do
-          allow(cop).to receive(:autocorrect?).and_return(false)
-        end
+        before { allow(cop).to receive(:autocorrect?).and_return(false) }
 
         it 'is set to false' do
           cop.add_offense(nil, location: location, message: 'message')
@@ -271,9 +255,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
       it 'has each cop in exactly one type' do
         sum = 0
-        departments.each do |c|
-          sum += described_class.registry.with_department(c).length
-        end
+        departments.each { |c| sum += described_class.registry.with_department(c).length }
         expect(sum).to be described_class.registry.length
       end
 

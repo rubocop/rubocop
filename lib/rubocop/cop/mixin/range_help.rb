@@ -27,6 +27,12 @@ module RuboCop
         Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
       end
 
+      # A range containing only the contents of a literal with delimiters (e.g. in
+      # `%i{1 2 3}` this will be the range covering `1 2 3` only).
+      def contents_range(node)
+        range_between(node.loc.begin.end_pos, node.loc.end.begin_pos)
+      end
+
       def range_between(start_pos, end_pos)
         Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
       end
@@ -54,15 +60,9 @@ module RuboCop
         go_left, go_right = directions(side)
 
         begin_pos = range.begin_pos
-        if go_left
-          begin_pos =
-            final_pos(src, begin_pos, -1, continuations, newlines, whitespace)
-        end
+        begin_pos = final_pos(src, begin_pos, -1, continuations, newlines, whitespace) if go_left
         end_pos = range.end_pos
-        if go_right
-          end_pos =
-            final_pos(src, end_pos, 1, continuations, newlines, whitespace)
-        end
+        end_pos = final_pos(src, end_pos, 1, continuations, newlines, whitespace) if go_right
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
@@ -73,9 +73,7 @@ module RuboCop
         end_offset = last_line.length - range.last_column
         end_offset += 1 if include_final_newline
 
-        range
-          .adjust(begin_pos: -range.column, end_pos: end_offset)
-          .intersect(buffer.source_range)
+        range.adjust(begin_pos: -range.column, end_pos: end_offset).intersect(buffer.source_range)
       end
 
       def column_offset_between(base_range, range)
@@ -89,8 +87,7 @@ module RuboCop
       # line, in which case 1 is subtracted from the column value. This gives
       # the column as it appears when viewing the file in an editor.
       def effective_column(range)
-        if range.line == 1 &&
-           @processed_source.raw_source.codepoints.first == BYTE_ORDER_MARK
+        if range.line == 1 && @processed_source.raw_source.codepoints.first == BYTE_ORDER_MARK
           range.column - 1
         else
           range.column

@@ -122,8 +122,7 @@ module RuboCop
           range = breakable_block_range(block_node)
           pos = range.begin_pos + 1
 
-          breakable_range_by_line_index[line_index] =
-            range_between(pos, pos + 1)
+          breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
         end
 
         def breakable_block_range(block_node)
@@ -171,11 +170,7 @@ module RuboCop
           end
           return check_uri_line(line, line_index) if allow_uri?
 
-          register_offense(
-            excess_range(nil, line, line_index),
-            line,
-            line_index
-          )
+          register_offense(excess_range(nil, line, line_index), line, line_index)
         end
 
         def ignored_line?(line, line_index)
@@ -242,9 +237,7 @@ module RuboCop
         end
 
         def line_in_heredoc?(line_number)
-          heredocs.any? do |range, _delimiter|
-            range.cover?(line_number)
-          end
+          heredocs.any? { |range, _delimiter| range.cover?(line_number) }
         end
 
         def check_directive_line(line, line_index)
@@ -266,11 +259,7 @@ module RuboCop
           uri_range = find_excessive_uri_range(line)
           return if uri_range && allowed_uri_position?(line, uri_range)
 
-          register_offense(
-            excess_range(uri_range, line, line_index),
-            line,
-            line_index
-          )
+          register_offense(excess_range(uri_range, line, line_index), line, line_index)
         end
       end
     end

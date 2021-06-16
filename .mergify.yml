@@ -8,7 +8,6 @@ pull_request_rules:
       - label=auto-merge
       - "#review-requested=0"
       - "#changes-requested-reviews-by=0"
-      - "status-success=windows 2.4"
       - "status-success=windows 2.5"
       - "status-success=windows 2.6"
       - "status-success=windows 2.7"
@@ -20,9 +19,6 @@ pull_request_rules:
       - "status-success=ci/circleci: jruby-9.2-ascii_spec"
       - "status-success=ci/circleci: jruby-9.2-rubocop"
       - "status-success=ci/circleci: jruby-9.2-spec"
-      - "status-success=ci/circleci: ruby-2.4-ascii_spec"
-      - "status-success=ci/circleci: ruby-2.4-rubocop"
-      - "status-success=ci/circleci: ruby-2.4-spec"
       - "status-success=ci/circleci: ruby-2.5-ascii_spec"
       - "status-success=ci/circleci: ruby-2.5-rubocop"
       - "status-success=ci/circleci: ruby-2.5-spec"

@@ -28,11 +28,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                        .thor
                        .watchr]
 
-  ruby_interpreters = %w[ruby
-                         macruby
-                         rake
-                         jruby
-                         rbx]
+  ruby_interpreters = %w[ruby macruby rake jruby rbx]
 
   ruby_filenames = %w[.irbrc
                       .pryrc
@@ -61,9 +57,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                       Vagrantfile
                       buildfile]
 
-  subject(:target_finder) do
-    described_class.new(config_store, options)
-  end
+  subject(:target_finder) { described_class.new(config_store, options) }
 
   let(:config_store) { RuboCop::ConfigStore.new }
   let(:options) { { force_exclusion: force_exclusion, debug: debug } }
@@ -137,14 +131,11 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         YAML
       end
 
-      let(:args) do
-        ['dir1/ruby1.rb', 'dir1/ruby2.rb', 'dir1/exe*', 'dir2/ruby3.rb']
-      end
+      let(:args) { ['dir1/ruby1.rb', 'dir1/ruby2.rb', 'dir1/exe*', 'dir2/ruby3.rb'] }
 
       context 'normally' do
         it 'does not exclude them' do
-          expect(found_basenames)
-            .to eq(['ruby1.rb', 'ruby2.rb', 'executable', 'ruby3.rb'])
+          expect(found_basenames).to eq(['ruby1.rb', 'ruby2.rb', 'executable', 'ruby3.rb'])
         end
       end
 
@@ -159,9 +150,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
     it 'returns absolute paths' do
       expect(found_files.empty?).to be(false)
-      found_files.each do |file|
-        expect(Pathname.new(file).absolute?).to be(true)
-      end
+      found_files.each { |file| expect(Pathname.new(file).absolute?).to be(true) }
     end
 
     it 'does not find hidden files' do
@@ -216,13 +205,10 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         YAML
       end
 
-      let(:args) do
-        ['dir1/file']
-      end
+      let(:args) { ['dir1/file'] }
 
       it 'includes them' do
-        expect(found_basenames)
-          .to contain_exactly('file')
+        expect(found_basenames).to contain_exactly('file')
       end
     end
   end
@@ -270,8 +256,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       let(:args) { ruby_extensions.map { |ext| "dir2/file#{ext}" } }
 
       it 'picks all the ruby files' do
-        expect(found_basenames)
-          .to eq(ruby_extensions.map { |ext| "file#{ext}" })
+        expect(found_basenames).to eq(ruby_extensions.map { |ext| "file#{ext}" })
       end
 
       context 'when local AllCops/Include lists two patterns' do
@@ -320,13 +305,10 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         YAML
       end
 
-      let(:args) do
-        ['dir1/**/*']
-      end
+      let(:args) { ['dir1/**/*'] }
 
       it 'includes them' do
-        expect(found_basenames)
-          .to contain_exactly('executable', 'file', 'ruby1.rb', 'ruby2.rb')
+        expect(found_basenames).to contain_exactly('executable', 'file', 'ruby1.rb', 'ruby2.rb')
       end
     end
 
@@ -351,8 +333,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     context 'when files with a ruby extension are passed' do
       shared_examples 'picks all the ruby files' do
         it 'picks all the ruby files' do
-          expect(found_basenames)
-            .to eq(ruby_extensions.map { |ext| "file#{ext}" })
+          expect(found_basenames).to eq(ruby_extensions.map { |ext| "file#{ext}" })
         end
       end
 
@@ -398,9 +379,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         YAML
       end
 
-      let(:args) do
-        ['dir1/**/*']
-      end
+      let(:args) { ['dir1/**/*'] }
 
       it 'includes them' do
         expect(found_basenames).to contain_exactly('executable', 'file',
@@ -466,6 +445,39 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         allow(config_store).to receive(:for).and_return(config)
 
         expect(found_basenames).to include('ruby5.rb')
+      end
+    end
+
+    it 'prevents infinite loops when traversing symlinks' do
+      create_link('dir1/link/', File.expand_path('dir1'))
+
+      expect(found_basenames).to include('ruby1.rb').once
+    end
+
+    it 'resolves symlinks when looking for excluded directories' do
+      create_link('link', 'dir1')
+
+      config = instance_double(RuboCop::Config)
+      exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
+      allow(config).to receive(:for_all_cops).and_return(exclude_property)
+      allow(config_store).to receive(:for).and_return(config)
+
+      expect(found_basenames).not_to include('ruby1.rb')
+      expect(found_basenames).to include('ruby3.rb')
+    end
+
+    it 'can exclude symlinks as well as directories' do
+      Dir.mktmpdir do |tmpdir|
+        create_empty_file(File.join(tmpdir, 'ruby5.rb'))
+        create_link('link', tmpdir)
+
+        config = instance_double(RuboCop::Config)
+        exclude_property = { 'Exclude' => [File.expand_path('link/**/*')] }
+        allow(config).to receive(:for_all_cops).and_return(exclude_property)
+        allow(config_store).to receive(:for).and_return(config)
+
+        expect(found_basenames).not_to include('ruby5.rb')
+        expect(found_basenames).to include('ruby3.rb')
       end
     end
   end
@@ -536,9 +548,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
         end
       end
 
-      before do
-        allow_any_instance_of(File).to receive(:readline).and_raise(EOFError)
-      end
+      before { allow_any_instance_of(File).to receive(:readline).and_raise(EOFError) }
 
       context 'and debug mode is enabled' do
         let(:debug) { true }
@@ -560,13 +570,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     context 'w/ --fail-fast option' do
-      let(:options) do
-        {
-          force_exclusion: force_exclusion,
-          debug: debug,
-          fail_fast: true
-        }
-      end
+      let(:options) { { force_exclusion: force_exclusion, debug: debug, fail_fast: true } }
 
       it 'works' do
         rb_file_count = found_files.count { |f| f.end_with?('.rb') }

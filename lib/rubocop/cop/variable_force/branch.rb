@@ -121,8 +121,7 @@ module RuboCop
           def ==(other)
             return false unless other
 
-            control_node.equal?(other.control_node) &&
-              child_node.equal?(other.child_node)
+            control_node.equal?(other.control_node) && child_node.equal?(other.child_node)
           end
 
           alias_method :eql?, :==
@@ -221,6 +220,21 @@ module RuboCop
           define_predicate :target?,      child_index: 0
           define_predicate :when_clause?, child_index: 1..-2
           define_predicate :else_body?,   child_index: -1
+
+          def always_run?
+            target?
+          end
+        end
+
+        # case target
+        # in pattern # in_pattern
+        # else
+        #   else_body
+        # end
+        class CaseMatch < Base
+          define_predicate :target?,     child_index: 0
+          define_predicate :in_pattern?, child_index: 1..-2
+          define_predicate :else_body?,  child_index: -1
 
           def always_run?
             target?

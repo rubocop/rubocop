@@ -75,9 +75,7 @@ module RuboCop
             processed_source.comments.each do |comment|
               next unless empty_comment_only?(comment_text(comment))
 
-              add_offense(comment) do |corrector|
-                autocorrect(corrector, comment)
-              end
+              add_offense(comment) { |corrector| autocorrect(corrector, comment) }
             end
           end
         end
@@ -99,19 +97,16 @@ module RuboCop
         def autocorrect(corrector, node)
           previous_token = previous_token(node)
           range = if previous_token && node.loc.line == previous_token.line
-                    range_with_surrounding_space(range: node.loc.expression,
-                                                 newlines: false)
+                    range_with_surrounding_space(range: node.loc.expression, newlines: false)
                   else
-                    range_by_whole_lines(node.loc.expression,
-                                         include_final_newline: true)
+                    range_by_whole_lines(node.loc.expression, include_final_newline: true)
                   end
 
           corrector.remove(range)
         end
 
         def concat_consecutive_comments(comments)
-          consecutive_comments =
-            comments.chunk_while { |i, j| i.loc.line.succ == j.loc.line }
+          consecutive_comments = comments.chunk_while { |i, j| i.loc.line.succ == j.loc.line }
 
           consecutive_comments.map do |chunk|
             joined_text = chunk.map { |c| comment_text(c) }.join
@@ -142,9 +137,7 @@ module RuboCop
         end
 
         def current_token(comment)
-          processed_source.find_token do |token|
-            token.pos == comment.loc.expression
-          end
+          processed_source.find_token { |token| token.pos == comment.loc.expression }
         end
 
         def previous_token(node)

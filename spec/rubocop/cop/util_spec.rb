@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Util do
-  before do
-    stub_const('TestUtil', Class.new { include RuboCop::Cop::Util })
-  end
+  before { stub_const('TestUtil', Class.new { include RuboCop::Cop::Util }) }
 
   describe '#line_range' do
     let(:source) do

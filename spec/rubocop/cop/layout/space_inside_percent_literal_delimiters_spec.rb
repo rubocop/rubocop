@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters, :config do
-  let(:message) do
-    'Do not use spaces inside percent literal delimiters.'
-  end
+  let(:message) { 'Do not use spaces inside percent literal delimiters.' }
 
   %w[i I w W x].each do |type|
     [%w[{ }], %w[( )], %w([ ]), %w[! !]].each do |(ldelim, rdelim)|
       context "for #{type} type and #{[ldelim, rdelim]} delimiters" do
-        define_method(:code_example) do |content|
-          ['%', type, ldelim, content, rdelim].join
-        end
+        define_method(:code_example) { |content| ['%', type, ldelim, content, rdelim].join }
 
         it 'registers an offense for unnecessary spaces' do
           expect_offense(<<~RUBY)

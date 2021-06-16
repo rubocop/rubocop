@@ -78,12 +78,10 @@ module RuboCop
     end
 
     def validate_options_vs_config
-      if @options[:parallel] &&
-         !@config_store.for_pwd.for_all_cops['UseCache']
-        raise OptionArgumentError, '-P/--parallel uses caching to speed up ' \
-                                   'execution, so combining with AllCops: ' \
-                                   'UseCache: false is not allowed.'
-      end
+      return unless @options[:parallel] && !@config_store.for_pwd.for_all_cops['UseCache']
+
+      raise OptionArgumentError, '-P/--parallel uses caching to speed up execution, so combining ' \
+                                 'with AllCops: UseCache: false is not allowed.'
     end
 
     def act_on_options

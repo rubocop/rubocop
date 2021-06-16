@@ -59,12 +59,7 @@ module RuboCop
 
         MSG = 'Reverse the order of the operands `%<source>s`.'
 
-        REVERSE_COMPARISON = {
-          '<' => '>',
-          '<=' => '>=',
-          '>' => '<',
-          '>=' => '<='
-        }.freeze
+        REVERSE_COMPARISON = { '<' => '>', '<=' => '>=', '>' => '<', '>=' => '<=' }.freeze
 
         EQUALITY_OPERATORS = %i[== !=].freeze
 
@@ -100,8 +95,7 @@ module RuboCop
         end
 
         def yoda_compatible_condition?(node)
-          node.comparison_method? &&
-            !noncommutative_operator?(node)
+          node.comparison_method? && !noncommutative_operator?(node)
         end
 
         def valid_yoda?(node)
@@ -127,9 +121,7 @@ module RuboCop
         end
 
         def actual_code_range(node)
-          range_between(
-            node.loc.expression.begin_pos, node.loc.expression.end_pos
-          )
+          range_between(node.loc.expression.begin_pos, node.loc.expression.end_pos)
         end
 
         def reverse_comparison(operator)

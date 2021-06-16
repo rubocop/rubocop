@@ -18,8 +18,7 @@ module RuboCop
         extend AutoCorrector
 
         # @!method square_brackets?(node)
-        def_node_matcher :square_brackets?,
-                         '(send {(send _recv _msg) str array hash} :[] ...)'
+        def_node_matcher :square_brackets?, '(send {(send _recv _msg) str array hash} :[] ...)'
 
         # @!method range_end?(node)
         def_node_matcher :range_end?, '^^{irange erange}'
@@ -31,8 +30,7 @@ module RuboCop
         def_node_matcher :rescue?, '{^resbody ^^resbody}'
 
         # @!method arg_in_call_with_block?(node)
-        def_node_matcher :arg_in_call_with_block?,
-                         '^^(block (send _ _ equal?(%0) ...) ...)'
+        def_node_matcher :arg_in_call_with_block?, '^^(block (send _ _ equal?(%0) ...) ...)'
 
         def on_begin(node)
           return if !parentheses?(node) || parens_allowed?(node) || ignore_syntax?(node)
@@ -135,8 +133,7 @@ module RuboCop
 
           node = node.children.first while suspect_unary?(node)
 
-          return if node.send_type? &&
-                    !method_call_with_redundant_parentheses?(node)
+          return if node.send_type? && !method_call_with_redundant_parentheses?(node)
 
           offense(begin_node, 'an unary operation')
         end
@@ -161,16 +158,11 @@ module RuboCop
           # { a: (1
           #      ), }
           # ```
-          (hash_element?(node) || array_element?(node)) &&
-            only_closing_paren_before_comma?(node)
+          hash_or_array_element?(node) && only_closing_paren_before_comma?(node)
         end
 
-        def hash_element?(node)
-          node.parent&.pair_type?
-        end
-
-        def array_element?(node)
-          node.parent&.array_type?
+        def hash_or_array_element?(node)
+          node.each_ancestor(:array, :hash).any?
         end
 
         def only_closing_paren_before_comma?(node)
@@ -181,9 +173,7 @@ module RuboCop
         end
 
         def disallowed_literal?(begin_node, node)
-          node.literal? &&
-            !node.range_type? &&
-            !raised_to_power_negative_numeric?(begin_node, node)
+          node.literal? && !node.range_type? && !raised_to_power_negative_numeric?(begin_node, node)
         end
 
         def raised_to_power_negative_numeric?(begin_node, node)
@@ -225,9 +215,7 @@ module RuboCop
         end
 
         def first_argument?(node)
-          first_send_argument?(node) ||
-            first_super_argument?(node) ||
-            first_yield_argument?(node)
+          first_send_argument?(node) || first_super_argument?(node) || first_yield_argument?(node)
         end
 
         # @!method first_send_argument?(node)

@@ -92,9 +92,7 @@ module RuboCop
 
         def on_masgn(node)
           lhs, rhs = *node
-          lhs.children.each do |child|
-            add_lhs_to_local_variables_scopes(rhs, child.to_a.first)
-          end
+          add_masgn_lhs_variables(rhs, lhs)
         end
 
         def on_lvasgn(node)
@@ -108,7 +106,7 @@ module RuboCop
 
           return if allowed_send_node?(node)
 
-          add_offense(node) do |corrector|
+          add_offense(node.receiver) do |corrector|
             corrector.remove(node.receiver)
             corrector.remove(node.loc.dot)
           end
@@ -117,6 +115,22 @@ module RuboCop
         def on_block(node)
           add_scope(node, @local_variables_scopes[node])
         end
+
+        def on_if(node)
+          # Allow conditional nodes to use `self` in the condition if that variable
+          # name is used in an `lvasgn` or `masgn` within the `if`.
+          node.child_nodes.each do |child_node|
+            lhs, _rhs = *child_node
+
+            if child_node.lvasgn_type?
+              add_lhs_to_local_variables_scopes(node.condition, lhs)
+            elsif child_node.masgn_type?
+              add_masgn_lhs_variables(node.condition, lhs)
+            end
+          end
+        end
+        alias on_while on_if
+        alias on_until on_if
 
         private
 
@@ -160,11 +174,15 @@ module RuboCop
 
         def add_lhs_to_local_variables_scopes(rhs, lhs)
           if rhs&.send_type? && !rhs.arguments.empty?
-            rhs.arguments.each do |argument|
-              @local_variables_scopes[argument] << lhs
-            end
+            rhs.arguments.each { |argument| @local_variables_scopes[argument] << lhs }
           else
             @local_variables_scopes[rhs] << lhs
+          end
+        end
+
+        def add_masgn_lhs_variables(rhs, lhs)
+          lhs.children.each do |child|
+            add_lhs_to_local_variables_scopes(rhs, child.to_a.first)
           end
         end
       end

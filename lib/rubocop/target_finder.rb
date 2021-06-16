@@ -61,9 +61,7 @@ module RuboCop
       hidden_files = all_files.select { |file| file.include?(HIDDEN_PATH_SUBSTRING) }.sort
       base_dir_config = @config_store.for(base_dir)
 
-      target_files = all_files.select do |file|
-        to_inspect?(file, hidden_files, base_dir_config)
-      end
+      target_files = all_files.select { |file| to_inspect?(file, hidden_files, base_dir_config) }
 
       target_files.sort_by!(&order)
     end
@@ -99,10 +97,20 @@ module RuboCop
       base_dir = base_dir.gsub('/{}/', '/\{}/')
       dirs = Dir.glob(File.join(base_dir.gsub('/**/', '/\**/'), '*/'), flags)
                 .reject do |dir|
-                  dir.end_with?('/./', '/../') || File.fnmatch?(exclude_pattern, dir, flags)
+                  next true if dir.end_with?('/./', '/../')
+                  next true if File.fnmatch?(exclude_pattern, dir, flags)
+
+                  symlink_excluded_or_infinite_loop?(base_dir, dir, exclude_pattern, flags)
                 end
-      dirs.flat_map { |dir| wanted_dir_patterns(dir, exclude_pattern, flags) }
-          .unshift(base_dir)
+      dirs.flat_map { |dir| wanted_dir_patterns(dir, exclude_pattern, flags) }.unshift(base_dir)
+    end
+
+    def symlink_excluded_or_infinite_loop?(base_dir, current_dir, exclude_pattern, flags)
+      dir_realpath = File.realpath(current_dir)
+      File.symlink?(current_dir.chomp('/')) && (
+        File.fnmatch?(exclude_pattern, "#{dir_realpath}/", flags) ||
+        File.realpath(base_dir).start_with?(dir_realpath)
+      )
     end
 
     def combined_exclude_glob_patterns(base_dir)
@@ -118,9 +126,7 @@ module RuboCop
 
     def ruby_extensions
       @ruby_extensions ||= begin
-        ext_patterns = all_cops_include.select do |pattern|
-          pattern.start_with?('**/*.')
-        end
+        ext_patterns = all_cops_include.select { |pattern| pattern.start_with?('**/*.') }
         ext_patterns.map { |pattern| pattern.sub('**/*', '') }
       end
     end
@@ -131,16 +137,13 @@ module RuboCop
 
     def ruby_filenames
       @ruby_filenames ||= begin
-        file_patterns = all_cops_include.reject do |pattern|
-          pattern.start_with?('**/*.')
-        end
+        file_patterns = all_cops_include.reject { |pattern| pattern.start_with?('**/*.') }
         file_patterns.map { |pattern| pattern.sub('**/', '') }
       end
     end
 
     def all_cops_include
-      @all_cops_include ||=
-        @config_store.for_pwd.for_all_cops['Include'].map(&:to_s)
+      @all_cops_include ||= @config_store.for_pwd.for_all_cops['Include'].map(&:to_s)
     end
 
     def ruby_executable?(file)
@@ -163,8 +166,7 @@ module RuboCop
     end
 
     def ruby_file?(file)
-      stdin? || ruby_extension?(file) || ruby_filename?(file) ||
-        ruby_executable?(file)
+      stdin? || ruby_extension?(file) || ruby_filename?(file) || ruby_executable?(file)
     end
 
     def configured_include?(file)

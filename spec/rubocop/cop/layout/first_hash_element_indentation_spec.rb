@@ -56,8 +56,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects incorrectly indented ' \
-      'first pair with :' do
+    it 'registers an offense and corrects incorrectly indented first pair with :' do
       expect_offense(<<~RUBY)
         a << {
                a: 1,
@@ -95,8 +94,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects incorrectly indented ' \
-      'first pair with =>' do
+    it 'registers an offense and corrects incorrectly indented first pair with =>' do
       expect_offense(<<~RUBY)
         a << {
            'a' => 1,
@@ -412,8 +410,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense for incorrectly indented multi-line hash ' \
-         'with braces' do
+      it 'registers an offense for incorrectly indented multi-line hash with braces' do
         expect_offense(<<~RUBY)
           func x, {
                  a: 1, b: 2 }

@@ -17,6 +17,11 @@ module RuboCop
       #   # good
       #   hash.each_key { |k| p k }
       #   hash.each_value { |v| p v }
+      #
+      # @example AllowedReceivers: ['execute']
+      #   # good
+      #   execute(sql).keys.each { |v| p v }
+      #   execute(sql).values.each { |v| p v }
       class HashEachMethods < Base
         include Lint::UnusedArgument
         extend AutoCorrector
@@ -36,10 +41,11 @@ module RuboCop
 
         def register_kv_offense(node)
           kv_each(node) do |target, method|
-            return unless target.receiver.receiver
+            parent_receiver = target.receiver.receiver
+            return unless parent_receiver
+            return if allowed_receiver?(parent_receiver)
 
-            msg = format(message, prefer: "each_#{method[0..-2]}",
-                                  current: "#{method}.each")
+            msg = format(message, prefer: "each_#{method[0..-2]}", current: "#{method}.each")
 
             add_offense(kv_range(target), message: msg) do |corrector|
               correct_key_value_each(target, corrector)
@@ -80,6 +86,16 @@ module RuboCop
 
         def kv_range(outer_node)
           outer_node.receiver.loc.selector.join(outer_node.loc.selector)
+        end
+
+        def allowed_receiver?(receiver)
+          receiver_name = receiver.send_type? ? receiver.method_name.to_s : receiver.source
+
+          allowed_receivers.include?(receiver_name)
+        end
+
+        def allowed_receivers
+          cop_config.fetch('AllowedReceivers', [])
         end
       end
     end

@@ -14,7 +14,7 @@ AllCops:
     - 'tmp/**/*'
     - '.git/**/*'
     - 'bin/*'
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
   SuggestExtensions: false
 
 Naming/PredicateName:
@@ -46,19 +46,9 @@ Layout/EndOfLine:
 
 Layout/ClassStructure:
   Enabled: true
-  Categories:
-    module_inclusion:
-      - include
-      - prepend
-      - extend
-  ExpectedOrder:
-      - module_inclusion
-      - constants
-      - public_class_methods
-      - initializer
-      - instance_methods
-      - protected_methods
-      - private_methods
+
+Layout/RedundantLineBreak:
+  Enabled: true
 
 Layout/TrailingWhitespace:
   AllowInHeredoc: false
@@ -128,6 +118,12 @@ Performance/CollectionLiteralInLoop:
   Exclude:
     - 'Rakefile'
     - 'spec/**/*.rb'
+
+Performance/EndWith:
+  SafeMultiline: false
+
+Performance/StartWith:
+  SafeMultiline: false
 
 RSpec/StubbedMock:
   Enabled: false

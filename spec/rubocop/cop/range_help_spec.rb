@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::RangeHelp do
-  before do
-    stub_const('TestRangeHelp', Class.new { include RuboCop::Cop::RangeHelp })
-  end
+  before { stub_const('TestRangeHelp', Class.new { include RuboCop::Cop::RangeHelp }) }
 
   describe 'source indicated by #range_with_surrounding_comma' do
     subject do
@@ -15,9 +13,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
 
     let(:source) { 'raise " ,Error, "' }
     let(:processed_source) { parse_source(source) }
-    let(:input_range) do
-      Parser::Source::Range.new(processed_source.buffer, 9, 14)
-    end
+    let(:input_range) { Parser::Source::Range.new(processed_source.buffer, 9, 14) }
 
     context 'when side is :both' do
       let(:side) { :both }
@@ -42,16 +38,13 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     subject do
       obj = TestRangeHelp.new
       obj.instance_exec(processed_source) { |src| @processed_source = src }
-      r = obj.send(:range_with_surrounding_space, range: input_range,
-                                                  side: side)
+      r = obj.send(:range_with_surrounding_space, range: input_range, side: side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 
     let(:source) { 'f {  a(2) }' }
     let(:processed_source) { parse_source(source) }
-    let(:input_range) do
-      Parser::Source::Range.new(processed_source.buffer, 5, 9)
-    end
+    let(:input_range) { Parser::Source::Range.new(processed_source.buffer, 5, 9) }
 
     context 'when side is :both' do
       let(:side) { :both }
@@ -89,16 +82,12 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     # `input_source` defined in contexts
     let(:begin_pos) { source.index(input_source) }
     let(:end_pos) { begin_pos + input_source.length }
-    let(:input_range) do
-      Parser::Source::Range.new(processed_source.buffer, begin_pos, end_pos)
-    end
+    let(:input_range) { Parser::Source::Range.new(processed_source.buffer, begin_pos, end_pos) }
 
     let(:output_range) do
       obj = TestRangeHelp.new
       obj.instance_exec(processed_source) { |src| @processed_source = src }
-      obj.send(:range_by_whole_lines,
-               input_range,
-               include_final_newline: include_final_newline)
+      obj.send(:range_by_whole_lines, input_range, include_final_newline: include_final_newline)
     end
 
     shared_examples 'final newline behavior' do

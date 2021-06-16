@@ -23,22 +23,15 @@ module RuboCop
               'Use double quoted strings if you need interpolation.'
 
         def on_str(node)
-          return unless node
-          return if string_or_regex?(node.parent)
+          return if node.parent&.regexp_type?
           return unless /(?<!\\)#\{.*\}/.match?(node.source)
           return if heredoc?(node)
           return unless node.loc.begin && node.loc.end
 
-          add_offense(node) do |corrector|
-            autocorrect(corrector, node)
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         private
-
-        def string_or_regex?(node)
-          node&.dstr_type? || node&.regexp_type?
-        end
 
         def autocorrect(corrector, node)
           starting_token, ending_token = if node.source.include?('"')
@@ -52,8 +45,7 @@ module RuboCop
         end
 
         def heredoc?(node)
-          node.loc.is_a?(Parser::Source::Map::Heredoc) ||
-            (node.parent && heredoc?(node.parent))
+          node.loc.is_a?(Parser::Source::Map::Heredoc) || (node.parent && heredoc?(node.parent))
         end
       end
     end

@@ -221,8 +221,7 @@ module RuboCop
           name = node.children[1].to_s
 
           # We can no be sure if, e.g. `C`, represents a constant or a class reference
-          name.length > 1 &&
-            name == name.upcase
+          name.length > 1 && name == name.upcase
         end
 
         def class_reference?(node)

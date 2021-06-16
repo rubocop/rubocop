@@ -3,9 +3,7 @@
 RSpec.describe RuboCop::RemoteConfig do
   include FileHelper
 
-  subject(:remote_config) do
-    described_class.new(remote_config_url, base_dir).file
-  end
+  subject(:remote_config) { described_class.new(remote_config_url, base_dir).file }
 
   let(:remote_config_url) { 'http://example.com/rubocop.yml' }
   let(:base_dir) { '.' }
@@ -41,12 +39,111 @@ RSpec.describe RuboCop::RemoteConfig do
       assert_requested :get, remote_config_url
     end
 
+    context 'when remote URL is configured with token auth' do
+      let(:token) { 'personal_access_token' }
+      let(:remote_config_url) { "http://#{token}@example.com/rubocop.yml" }
+      let(:stripped_remote_config_url) { 'http://example.com/rubocop.yml' }
+
+      before do
+        stub_request(:get, stripped_remote_config_url)
+          .with(basic_auth: [token])
+          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+      end
+
+      it 'downloads the file if the file does not exist' do
+        expect(remote_config).to eq(cached_file_path)
+        expect(File.exist?(cached_file_path)).to be_truthy
+      end
+
+      it 'does not download the file if cache lifetime has not been reached' do
+        FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 20)
+
+        expect(remote_config).to eq(cached_file_path)
+        assert_not_requested :get, remote_config_url
+      end
+
+      it 'downloads the file if cache lifetime has been reached' do
+        FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 30)
+
+        expect(remote_config).to eq(cached_file_path)
+        assert_requested :get, stripped_remote_config_url
+      end
+
+      context 'when the remote URL responds with 404' do
+        before do
+          stub_request(:get, stripped_remote_config_url).to_return(status: 404)
+        end
+
+        it 'raises error' do
+          expect do
+            remote_config
+          end.to raise_error(Net::HTTPServerException,
+                             '404 "" while downloading remote config file http://example.com/rubocop.yml')
+        end
+      end
+    end
+
+    context 'when remote URL is configured with basic auth' do
+      let(:username) { 'username' }
+      let(:password) { 'password' }
+      let(:remote_config_url) { "http://#{username}:#{password}@example.com/rubocop.yml" }
+      let(:stripped_remote_config_url) { 'http://example.com/rubocop.yml' }
+
+      before do
+        stub_request(:get, stripped_remote_config_url)
+          .with(basic_auth: [username, password])
+          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+      end
+
+      it 'downloads the file if the file does not exist' do
+        expect(remote_config).to eq(cached_file_path)
+        expect(File.exist?(cached_file_path)).to be_truthy
+      end
+
+      it 'does not download the file if cache lifetime has not been reached' do
+        FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 20)
+
+        expect(remote_config).to eq(cached_file_path)
+        assert_not_requested :get, remote_config_url
+      end
+
+      it 'downloads the file if cache lifetime has been reached' do
+        FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 30)
+
+        expect(remote_config).to eq(cached_file_path)
+        assert_requested :get, stripped_remote_config_url
+      end
+
+      context 'when the remote URL responds with 404' do
+        before do
+          stub_request(:get, stripped_remote_config_url).to_return(status: 404)
+        end
+
+        it 'raises error' do
+          expect do
+            remote_config
+          end.to raise_error(Net::HTTPServerException,
+                             '404 "" while downloading remote config file http://example.com/rubocop.yml')
+        end
+      end
+
+      context 'when the remote URL responds with 500' do
+        before { stub_request(:get, stripped_remote_config_url).to_return(status: 500) }
+
+        it 'raises error' do
+          expect do
+            remote_config
+          end.to raise_error(Net::HTTPFatalError,
+                             '500 "" while downloading remote config file http://example.com/rubocop.yml')
+        end
+      end
+    end
+
     context 'when the remote URL responds with redirect' do
       let(:new_location) { 'http://cdn.example.com/rubocop.yml' }
 
       before do
-        stub_request(:get, remote_config_url)
-          .to_return(headers: { 'Location' => new_location })
+        stub_request(:get, remote_config_url).to_return(headers: { 'Location' => new_location })
 
         stub_request(:get, new_location)
           .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
@@ -59,26 +156,18 @@ RSpec.describe RuboCop::RemoteConfig do
     end
 
     context 'when the remote URL responds with not modified' do
-      before do
-        stub_request(:get, remote_config_url)
-          .to_return(status: 304)
-      end
+      before { stub_request(:get, remote_config_url).to_return(status: 304) }
 
       it 'reuses the existing cached file' do
         FileUtils.touch cached_file_path, mtime: Time.now - ((60 * 60) * 30)
 
-        expect do
-          remote_config
-        end.not_to change(File.stat(cached_file_path), :mtime)
+        expect { remote_config }.not_to change(File.stat(cached_file_path), :mtime)
         assert_requested :get, remote_config_url
       end
     end
 
     context 'when the network is inaccessible' do
-      before do
-        stub_request(:get, remote_config_url)
-          .to_raise(SocketError)
-      end
+      before { stub_request(:get, remote_config_url).to_raise(SocketError) }
 
       it 'reuses the existing cached file' do
         expect(remote_config).to eq(cached_file_path)
@@ -86,10 +175,7 @@ RSpec.describe RuboCop::RemoteConfig do
     end
 
     context 'when the remote URL responds with 500' do
-      before do
-        stub_request(:get, remote_config_url)
-          .to_return(status: 500)
-      end
+      before { stub_request(:get, remote_config_url).to_return(status: 500) }
 
       it 'raises error' do
         expect do

@@ -29,9 +29,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
 
   shared_examples 'allowed identifiers' do |identifier|
     context 'when AllowedIdentifiers is set' do
-      let(:cop_config) do
-        super().merge('AllowedIdentifiers' => [identifier])
-      end
+      let(:cop_config) { super().merge('AllowedIdentifiers' => [identifier]) }
 
       it 'does not register an offense for a local variable name that is allowed' do
         expect_no_offenses(<<~RUBY)
@@ -257,7 +255,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
       RUBY
     end
 
-    it 'works with non-ascii characters' do
+    it 'accepts with non-ascii characters' do
       expect_no_offenses('léo = 1')
     end
 

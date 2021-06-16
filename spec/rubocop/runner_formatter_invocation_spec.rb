@@ -6,9 +6,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
     include_context 'cli spec behavior'
 
-    let(:formatter) do
-      instance_double(RuboCop::Formatter::BaseFormatter).as_null_object
-    end
+    let(:formatter) { instance_double(RuboCop::Formatter::BaseFormatter).as_null_object }
     let(:output) { $stdout.string }
 
     before do
@@ -16,8 +14,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       create_file('5_offenses.rb', ['puts x ', 'test;', 'top;', '#' * 130])
       create_file('no_offense.rb', '# frozen_string_literal: true')
 
-      allow(RuboCop::Formatter::SimpleTextFormatter)
-        .to receive(:new).and_return(formatter)
+      allow(RuboCop::Formatter::SimpleTextFormatter).to receive(:new).and_return(formatter)
       # avoid intermittent failure caused when another test set global
       # options on ConfigLoader
       RuboCop::ConfigLoader.clear_options
@@ -72,9 +69,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       describe 'the passed files paths' do
         it 'is frozen' do
           expect(formatter).to receive(method_name) do |all_files|
-            all_files.each do |path|
-              expect(path.frozen?).to be(true)
-            end
+            all_files.each { |path| expect(path.frozen?).to be(true) }
           end
 
           run
@@ -124,22 +119,18 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
     shared_examples 'sends a file path' do |method_name|
       it 'sends a file path' do
-        expect(formatter).to receive(method_name)
-          .with(File.expand_path('2_offense.rb'), anything)
+        expect(formatter).to receive(method_name).with(File.expand_path('2_offense.rb'), anything)
 
-        expect(formatter).to receive(method_name)
-          .with(File.expand_path('5_offenses.rb'), anything)
+        expect(formatter).to receive(method_name).with(File.expand_path('5_offenses.rb'), anything)
 
-        expect(formatter).to receive(method_name)
-          .with(File.expand_path('no_offense.rb'), anything)
+        expect(formatter).to receive(method_name).with(File.expand_path('no_offense.rb'), anything)
 
         run
       end
 
       describe 'the passed path' do
         it 'is frozen' do
-          expect(formatter)
-            .to receive(method_name).exactly(3).times do |path|
+          expect(formatter).to receive(method_name).exactly(3).times do |path|
             expect(path.frozen?).to be(true)
           end
 
@@ -163,8 +154,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       include_examples 'sends a file path', :file_finished
 
       it 'sends an array of detected offenses for the file' do
-        expect(formatter).to receive(:file_finished)
-          .exactly(3).times do |file, offenses|
+        expect(formatter).to receive(:file_finished).exactly(3).times do |file, offenses|
           case File.basename(file)
           when '2_offense.rb'
             expect(offenses.size).to eq(2)

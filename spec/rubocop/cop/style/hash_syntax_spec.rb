@@ -113,11 +113,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       context 'if PreferHashRocketsForNonAlnumEndingSymbols is true' do
-        let(:cop_config_overrides) do
-          {
-            'PreferHashRocketsForNonAlnumEndingSymbols' => true
-          }
-        end
+        let(:cop_config_overrides) { { 'PreferHashRocketsForNonAlnumEndingSymbols' => true } }
 
         it 'accepts hash rockets when symbols end with ?' do
           expect_no_offenses('x = { :a? => 0 }')
@@ -247,8 +243,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('x = { a: 1, b: 2 }')
       end
 
-      it 'accepts ruby19 syntax when no elements have symbol values ' \
-        'in method calls' do
+      it 'accepts ruby19 syntax when no elements have symbol values in method calls' do
         expect_no_offenses('func(3, a: 0)')
       end
 
@@ -268,8 +263,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'registers an offense when any element has a symbol value ' \
-        'in method calls' do
+      it 'registers an offense when any element has a symbol value in method calls' do
         expect_offense(<<~RUBY)
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
@@ -280,8 +274,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'registers an offense when using hash rockets ' \
-        'and no elements have a symbol value' do
+      it 'registers an offense when using hash rockets and no elements have a symbol value' do
         expect_offense(<<~RUBY)
           x = { :a => 1, :b => 2 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
@@ -314,8 +307,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'auto-corrects to hash rockets ' \
-        'when all elements have symbol value' do
+      it 'auto-corrects to hash rockets when all elements have symbol value' do
         expect_offense(<<~RUBY)
           { a: :b, c: :d }
             ^^ Use hash rockets syntax.
@@ -533,8 +525,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'registers an offense when any element has a symbol value ' \
-        'in method calls' do
+      it 'registers an offense when any element has a symbol value in method calls' do
         expect_offense(<<~RUBY)
           func(3, b: :c)
                   ^^ Use hash rockets syntax.
@@ -545,8 +536,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'auto-corrects to hash rockets ' \
-        'when all elements have symbol value' do
+      it 'auto-corrects to hash rockets when all elements have symbol value' do
         expect_offense(<<~RUBY)
           { a: :b, c: :d }
             ^^ Use hash rockets syntax.
@@ -568,8 +558,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
                          ^^^^^ Use the new Ruby 1.9 hash syntax.
         RUBY
-        expect(cop.config_to_allow_offenses)
-          .to eq('EnforcedStyle' => 'hash_rockets')
+        expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'hash_rockets')
         expect_correction(<<~RUBY)
           x = { a: 0, b: 2 }
         RUBY
@@ -660,11 +649,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
   end
 
   context 'configured to enforce no mixed keys' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'no_mixed_keys'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'no_mixed_keys' } }
 
     it 'accepts new syntax in a hash literal' do
       expect_no_offenses('x = { a: 0, b: 1 }')
@@ -731,8 +716,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       expect_no_offenses('x = { :"\\tab" => 1, :b => 1 }')
     end
 
-    it 'registers an offense when keys have special symbols and '\
-      'mix styles' do
+    it 'registers an offense when keys have special symbols and mix styles' do
       expect_offense(<<~RUBY, tab: "\t")
         x = { :"%{tab}ab" => 1, b: 1 }
                 _{tab}          ^^ Don't mix styles in the same hash.

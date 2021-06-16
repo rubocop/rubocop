@@ -128,8 +128,7 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   context 'safe assignment is not allowed' do
     let(:cop_config) { { 'AllowSafeAssignment' => false } }
 
-    it 'does not accept variable assignment in condition surrounded with ' \
-       'parentheses' do
+    it 'does not accept variable assignment in condition surrounded with parentheses' do
       expect_offense(<<~RUBY)
         if (test = 10)
            ^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.
@@ -142,8 +141,7 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       RUBY
     end
 
-    it 'does not accept element assignment in condition surrounded with ' \
-       'parentheses' do
+    it 'does not accept element assignment in condition surrounded with parentheses' do
       expect_offense(<<~RUBY)
         if (test[0] = 10)
            ^^^^^^^^^^^^^^ Don't use parentheses around the condition of an `if`.

@@ -68,8 +68,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
     end
   end
 
-  context 'when an access modifier is followed by a ' \
-    'class method defined on constant' do
+  context 'when an access modifier is followed by a class method defined on constant' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         class SomeClass
@@ -180,8 +179,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
     end
   end
 
-  context 'when only a constant or local variable is defined after the ' \
-    'modifier' do
+  context 'when only a constant or local variable is defined after the modifier' do
     %w[CONSTANT some_var].each do |binding_name|
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
@@ -710,8 +708,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
         RUBY
       end
 
-      it "doesn't register an offense if the modifier is the same as " \
-        'outside the meta-class' do
+      it "doesn't register an offense if the modifier is the same as outside the meta-class" do
         expect_no_offenses(<<~RUBY)
           #{keyword} A
             #{modifier}
@@ -750,8 +747,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
         RUBY
       end
 
-      it 'registers an offense even if a non-singleton-class method is ' \
-        'defined' do
+      it 'registers an offense even if a non-singleton-class method is defined' do
         expect_offense(<<~RUBY, modifier: modifier)
           #{keyword} A
             def method1
