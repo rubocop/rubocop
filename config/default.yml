@@ -2524,6 +2524,13 @@ Naming/InclusiveLanguage:
   Description: 'Recommend the use of inclusive language instead of problematic terms.'
   Enabled: pending
   VersionAdded: '<<next>>'
+  CheckIdentifiers: true
+  CheckConstants: true
+  CheckVariables: true
+  CheckStrings: true
+  CheckSymbols: true
+  CheckComments: true
+  CheckFilepaths: true
   FlaggedTerms:
     whitelist:
       Regex: !ruby/regexp '/white[-_\s]?list/'
@@ -2537,6 +2544,9 @@ Naming/InclusiveLanguage:
         - block
     master:
       Suggestions: ['main', 'primary', 'leader']
+      AllowedRegex:
+        - 'Master of None'
+        - 'Master Boot Record'
     slave:
       Suggestions: ['replica', 'secondary', 'follower']
 

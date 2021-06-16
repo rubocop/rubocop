@@ -1,17 +1,27 @@
 # frozen_string_literal: true
 
-# TODO
-# - message for file names
-# - detect in file path? or basename
-# - cleanup code
-
 module RuboCop
   module Cop
     module Naming
-      # This cop recommends the use of inclusive language instead of problematic terms.
+      # This cops recommends the use of inclusive language instead of problematic terms.
+      # The cop can check the following locations for offenses:
+      # - identifiers
+      # - constants
+      # - variables
+      # - strings
+      # - symbols
+      # - comments
+      # - file paths
+      # Each of these locations can be individually enabled/disabled via configuration,
+      # for example CheckIdentifiers = true/false.
+      #
+      # Flagged terms are configurable for the cop. For each flagged term an optional
+      # Regex can be specified to identify offenses. Suggestions for replacing a flagged term can
+      # be configured and will be displayed as part of the offense message.
+      # An AllowedRegex can be specified for a flagged term to exempt allowed uses of the term.
       #
       # @example FlaggedTerms: { whitelist: { Suggestions: ['allowlist'] } }
-      #   # Suggest replacing whitelist with allowlist
+      #   # Suggest replacing identifier whitelist with allowlist
       #
       #   # bad
       #   whitelist_users = %w(user1 user1)
@@ -20,15 +30,15 @@ module RuboCop
       #   allowlist_users = %w(user1 user2)
       #
       # @example FlaggedTerms: { master: { Suggestions: ['main', 'primary', 'leader'] } }
-      #   # Suggest replacing master with main, primary, or leader
+      #   # Suggest replacing master in an instance variable name with main, primary, or leader
       #
       #   # bad
-      #   master_node = 'node1.example.com'
+      #   @master_node = 'node1.example.com'
       #
       #   # good
-      #   primary_node = 'node1.example.com'
+      #   @primary_node = 'node1.example.com'
       #
-      # @example FlaggedTerms: { whitelist: { Regexp: !ruby/regexp '/white[-_\s]?list' } }
+      # @example FlaggedTerms: { whitelist: { Regex: !ruby/regexp '/white[-_\s]?list' } }
       #   # Identify problematic terms using a Regexp
       #
       #   # bad
@@ -37,8 +47,8 @@ module RuboCop
       #   # good
       #   allow_list = %w(user1 user2)
       #
-      # @example FlaggedTerms: { master: { Allowed: 'master\'?s degree' } }
-      #   # Specify allowed uses (regexp supported) of the flagged term.
+      # @example FlaggedTerms: { master: { AllowedRegex: 'master\'?s degree' } }
+      #   # Specify allowed uses of the flagged term as a string or regexp.
       #
       #   # bad
       #   # They had a masters
@@ -46,7 +56,7 @@ module RuboCop
       #   # good
       #   # They had a master's degree
       #
-      class InclusiveLanguage < Cop
+      class InclusiveLanguage < Base
         include RangeHelp
 
         EMPTY_ARRAY = [].freeze
@@ -58,31 +68,75 @@ module RuboCop
           @flagged_term_hash = {}
           @flagged_terms_regex = nil
           @allowed_regex = nil
+          @check_token = preprocess_check_config
           preprocess_flagged_terms
         end
 
-        def investigate(processed_source)
-          investigate_lines(processed_source)
-          investigate_filepath(processed_source)
+        def on_new_investigation
+          investigate_filepath if cop_config['CheckFilepaths']
+          investigate_tokens
         end
 
         private
+
+        def investigate_tokens
+          processed_source.each_token do |token|
+            next unless check_token?(token.type)
+
+            word_locations = scan_for_words(token.text)
+            next if word_locations.empty?
+
+            add_offenses_for_token(token, word_locations)
+          end
+        end
+
+        def add_offenses_for_token(token, word_locations)
+          word_locations.each do |word_location|
+            start_position = token.pos.begin_pos + token.pos.source.index(word_location.word)
+            range = range_between(start_position, start_position + word_location.word.length)
+            add_offense(range, message: create_message(word_location.word))
+          end
+        end
+
+        def check_token?(type)
+          !!@check_token[type]
+        end
+
+        def preprocess_check_config # rubocop:disable Metrics/AbcSize
+          {
+            tIDENTIFIER: cop_config['CheckIdentifiers'],
+            tCONSTANT: cop_config['CheckConstants'],
+            tIVAR: cop_config['CheckVariables'],
+            tCVAR: cop_config['CheckVariables'],
+            tGVAR: cop_config['CheckVariables'],
+            tSYMBOL: cop_config['CheckSymbols'],
+            tSTRING: cop_config['CheckStrings'],
+            tSTRING_CONTENT: cop_config['CheckStrings'],
+            tCOMMENT: cop_config['CheckComments']
+          }.freeze
+        end
 
         def preprocess_flagged_terms
           allowed_strings = []
           flagged_term_strings = []
           cop_config['FlaggedTerms'].each do |term, term_definition|
+            next if term_definition.nil?
+
             allowed_strings.concat(process_allowed_regex(term_definition['AllowedRegex']))
             regex_string = ensure_regex_string(term_definition['Regex'] || term)
             flagged_term_strings << regex_string
 
-            @flagged_term_hash[Regexp.new(regex_string, Regexp::IGNORECASE)] =
-              term_definition.merge('Term' => term,
-                                    'SuggestionString' =>
-                                      preprocess_suggestions(term_definition['Suggestions']))
+            add_to_flagged_term_hash(regex_string, term, term_definition)
           end
 
           set_regexes(flagged_term_strings, allowed_strings)
+        end
+
+        def add_to_flagged_term_hash(regex_string, term, term_definition)
+          @flagged_term_hash[Regexp.new(regex_string, Regexp::IGNORECASE)] =
+            term_definition.merge('Term' => term,
+                                  'SuggestionString' =>
+                                    preprocess_suggestions(term_definition['Suggestions']))
         end
 
         def set_regexes(flagged_term_strings, allowed_strings)
@@ -108,21 +162,7 @@ module RuboCop
           Regexp.new(strings.join('|'), Regexp::IGNORECASE)
         end
 
-        def investigate_lines(processed_source)
-          processed_source.lines.each_with_index do |line, line_number|
-            word_locations = scan_for_words(line)
-
-            next if word_locations.empty?
-
-            word_locations.each do |word_location|
-              range = source_range(processed_source.buffer, line_number + 1,
-                                   word_location.position, word_location.word.length)
-              add_offense(range, location: range, message: create_message(word_location.word))
-            end
-          end
-        end
-
-        def investigate_filepath(processed_source)
+        def investigate_filepath
           word_locations = scan_for_words(processed_source.file_path)
 
           case word_locations.length
@@ -136,7 +176,7 @@ module RuboCop
           end
 
           range = source_range(processed_source.buffer, 1, 0)
-          add_offense(range, location: range, message: message)
+          add_offense(range, message: message)
         end
 
         def create_single_word_message_for_file(word)
@@ -158,7 +198,12 @@ module RuboCop
         def mask_input(str)
           return str if @allowed_regex.nil?
 
-          str.gsub(@allowed_regex) { |match| '*' * match.size }
+          safe_str = if str.valid_encoding?
+                       str
+                     else
+                       str.encode('UTF-8', invalid: :replace, undef: :replace)
+                     end
+          safe_str.gsub(@allowed_regex) { |match| '*' * match.size }
         end
 
         def create_message(word)
