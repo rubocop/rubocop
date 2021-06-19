@@ -72,7 +72,9 @@ module RuboCop
 
         # If a `send` node is not parenthesized, don't move the first element, because it
         # can result in changed behavior or a syntax error.
-        elements = elements.drop(1) if node.send_type? && !node.parenthesized?
+        if node.send_type? && !node.parenthesized? && !first_argument_is_heredoc?(node)
+          elements = elements.drop(1)
+        end
 
         i = 0
         i += 1 while within_column_limit?(elements[i], max, line)
@@ -82,6 +84,13 @@ module RuboCop
         return elements.first if i.zero?
 
         elements[i - 1]
+      end
+
+      # @api private
+      def first_argument_is_heredoc?(node)
+        first_argument = node.first_argument
+
+        first_argument.respond_to?(:heredoc?) && first_argument.heredoc?
       end
 
       # @api private

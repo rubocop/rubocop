@@ -768,6 +768,17 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_no_corrections
         end
 
+        it 'does not break up the line when parentheses are omitted' do
+          args = 'x' * 25
+          expect_offense(<<~RUBY, args: args)
+            foo <<~STRING, #{args}xxx
+                           _{args}^^^ Line is too long. [43/40]
+            STRING
+          RUBY
+
+          expect_no_corrections
+        end
+
         context 'and other arguments before the heredoc' do
           it 'can break up the line before the heredoc argument' do
             args = 'x' * 20
