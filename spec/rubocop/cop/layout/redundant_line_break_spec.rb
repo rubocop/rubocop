@@ -316,7 +316,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         it 'accepts an assignment containing a heredoc' do
           expect_no_offenses(<<~RUBY)
             correct = lambda do
-              autocorrect_source(<<~EOT1)
+              expect_no_offenses(<<~EOT1)
                 <<-EOT2
                 foo
                 EOT2
