@@ -13,19 +13,18 @@ shared_examples_for 'misaligned' do |annotated_source, used_style|
     source = chunk.lines.reject { |line| /^ *\^/.match?(line) }.join
     name = source.gsub(/\n(?=[a-z ])/, ' <newline> ').gsub(/\s+/, ' ')
 
-    it "registers an offense for mismatched #{name}" do
+    it "registers an offense for mismatched #{name} and autocorrects" do
       expect_offense(chunk)
       expect(cop.config_to_allow_offenses).to eq(config_to_allow_offenses)
-    end
 
-    it "auto-corrects mismatched #{name}" do
       raise if chunk !~ /\^\^\^ `end` at (\d), \d is not aligned with `.*` at \d, (\d)./
 
       line_index = Integer(Regexp.last_match(1)) - 1
       correct_indentation = ' ' * Integer(Regexp.last_match(2))
-      expect(autocorrect_source(source))
-        .to eq(source.lines[0...line_index].join +
-               "#{correct_indentation}#{source.lines[line_index].strip}\n")
+      expect_correction(
+        source.lines[0...line_index].join +
+        "#{correct_indentation}#{source.lines[line_index].strip}\n"
+      )
     end
   end
 end

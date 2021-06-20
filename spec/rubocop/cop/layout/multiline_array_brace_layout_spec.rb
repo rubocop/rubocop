@@ -33,6 +33,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
   it_behaves_like 'multiline literal brace layout trailing comma' do
     let(:open) { '[' }
     let(:close) { ']' }
+
+    let(:same_line_message) do
+      'The closing array brace must be on the same line as the last array ' \
+        'element when the opening [...]'
+    end
+    let(:always_same_line_message) do
+      'The closing array brace must be on the same line as the last array ' \
+        'element.'
+    end
   end
 
   context 'when comment present before closing brace' do
