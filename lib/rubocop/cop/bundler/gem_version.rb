@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Bundler
-      # Enforce that Gem version specifications are either required
-      # or forbidden.
+      # Enforce that Gem version specifications or a commit reference (branch,
+      # ref, or tag) are either required or forbidden.
       #
       # @example EnforcedStyle: required (default)
       #  # bad
@@ -19,6 +19,15 @@ module RuboCop
       #  # good
       #  gem 'rubocop', '>= 1.5.0', '< 1.10.0'
       #
+      #  # good
+      #  gem 'rubocop', branch: 'feature-branch'
+      #
+      #  # good
+      #  gem 'rubocop', ref: '74b5bfbb2c4b6fd6cdbbc7254bd7084b36e0c85b'
+      #
+      #  # good
+      #  gem 'rubocop', tag: 'v1.17.0'
+      #
       # @example EnforcedStyle: forbidden
       #  # good
       #  gem 'rubocop'
@@ -31,6 +40,15 @@ module RuboCop
       #
       #  # bad
       #  gem 'rubocop', '>= 1.5.0', '< 1.10.0'
+      #
+      #  # bad
+      #  gem 'rubocop', branch: 'feature-branch'
+      #
+      #  # bad
+      #  gem 'rubocop', ref: '74b5bfbb2c4b6fd6cdbbc7254bd7084b36e0c85b'
+      #
+      #  # bad
+      #  gem 'rubocop', tag: 'v1.17.0'
       #
       class GemVersion < Base
         include ConfigurableEnforcedStyle
@@ -45,19 +63,9 @@ module RuboCop
           (send nil? :gem <(str #version_specification?) ...>)
         PATTERN
 
-        # @!method with_git_ref?(node)
-        def_node_matcher :with_git_ref?, <<~PATTERN
-          (send nil? :gem <(hash <#git? #tag_ref? ...>) ...>)
-        PATTERN
-
-        # @!method tag_ref?(node)
-        def_node_matcher :tag_ref?, <<~PATTERN
-          (pair (sym {:tag :ref}) (str _))
-        PATTERN
-
-        # @!method git?(node)
-        def_node_matcher :git?, <<~PATTERN
-          (pair (sym {:git :github :bitbucket}) (str _))
+        # @!method includes_commit_reference?(node)
+        def_node_matcher :includes_commit_reference?, <<~PATTERN
+          (send nil? :gem <(hash <(pair (sym {:branch :ref :tag}) (str _)) ...>) ...>)
         PATTERN
 
         def on_send(node)
@@ -97,11 +105,15 @@ module RuboCop
         end
 
         def required_offense?(node)
-          required_style? && !includes_version_specification?(node) && !with_git_ref?(node)
+          return unless required_style?
+
+          !includes_version_specification?(node) && !includes_commit_reference?(node)
         end
 
         def forbidden_offense?(node)
-          forbidden_style? && includes_version_specification?(node)
+          return unless forbidden_style?
+
+          includes_version_specification?(node) || includes_commit_reference?(node)
         end
 
         def forbidden_style?
