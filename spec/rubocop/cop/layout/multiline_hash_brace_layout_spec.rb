@@ -45,5 +45,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashBraceLayout, :config do
     let(:close) { '}' }
     let(:a) { 'a: 1' }
     let(:b) { 'b: 2' }
+
+    let(:same_line_message) do
+      'Closing hash brace must be on the same line as the last hash element ' \
+        'when opening [...]'
+    end
+    let(:always_same_line_message) do
+      'Closing hash brace must be on the same line as the last hash element.'
+    end
   end
 end
