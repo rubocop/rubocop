@@ -84,6 +84,7 @@ module RuboCop
         def compact_definition(corrector, node)
           compact_node(corrector, node)
           remove_end(corrector, node.body)
+          unindent(corrector, node)
         end
 
         def compact_node(corrector, node)
@@ -112,6 +113,19 @@ module RuboCop
             body.loc.end.end_pos + 1
           )
           corrector.remove(range)
+        end
+
+        def configured_indentation_width
+          config.for_badge(Layout::IndentationWidth.badge).fetch('Width', 2)
+        end
+
+        def unindent(corrector, node)
+          return if node.body.children.last.nil?
+
+          column_delta = configured_indentation_width - leading_spaces(node.body.children.last).size
+          return if column_delta.zero?
+
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
         end
 
         def leading_spaces(node)
