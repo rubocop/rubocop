@@ -278,8 +278,8 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
 
       expect_correction(<<~RUBY)
         module Foo::Bar::Baz::Qux::Quux::Quuz::Corge::Grault::Garply::Waldo::Fred::Plugh
-          class Xyzzy
-          end
+                                class Xyzzy
+                                end
         end
       RUBY
     end
@@ -417,13 +417,13 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
 
       expect_correction(<<~RUBY)
         module FooModule::BarModule
-          def method_example
-          end
+            def method_example
+            end
         end
       RUBY
     end
 
-    pending 'correctly indents heavily nested children' do
+    it 'correctly indents heavily nested children' do
       expect_offense(<<~RUBY)
         module FooModule
                ^^^^^^^^^ Use compact module/class definition instead of nested style.
@@ -442,10 +442,10 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
 
       expect_correction(<<~RUBY)
         module FooModule::BarModule::BazModule::QuxModule
-          CONST = 1
+                CONST = 1
 
-          def method_example
-          end
+                def method_example
+                end
         end
       RUBY
     end
