@@ -10,8 +10,7 @@ shared_examples_for 'multiline literal brace layout trailing comma' do
 
   # same line message for symmetrical style (use [...] to abbreviate).
   let(:same_line_message) do
-    'Closing brace must be on the same line as the last element when ' \
-    'opening [...]'
+    'Closing brace must be on the same line as the last element when opening [...]'
   end
 
   # same line message for same_line style
