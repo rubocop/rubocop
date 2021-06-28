@@ -32,7 +32,7 @@ module RuboCop
 
       # Removes `size` characters prior to the source range.
       #
-      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
+      # @param [Parser::Source::Range, RuboCop::AST::Node] range or node
       # @param [Integer] size
       def remove_preceding(node_or_range, size)
         range = to_range(node_or_range)
@@ -44,7 +44,7 @@ module RuboCop
       # If `size` is greater than the size of `range`, the removed region can
       # overrun the end of `range`.
       #
-      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
+      # @param [Parser::Source::Range, RuboCop::AST::Node] range or node
       # @param [Integer] size
       def remove_leading(node_or_range, size)
         range = to_range(node_or_range)
@@ -56,7 +56,7 @@ module RuboCop
       # If `size` is greater than the size of `range`, the removed region can
       # overrun the beginning of `range`.
       #
-      # @param [Parser::Source::Range, Rubocop::AST::Node] range or node
+      # @param [Parser::Source::Range, RuboCop::AST::Node] range or node
       # @param [Integer] size
       def remove_trailing(node_or_range, size)
         range = to_range(node_or_range)
@@ -90,7 +90,7 @@ module RuboCop
                 else
                   raise TypeError,
                         'Expected a Parser::Source::Range, Comment or ' \
-                        "Rubocop::AST::Node, got #{node_or_range.class}"
+                        "RuboCop::AST::Node, got #{node_or_range.class}"
                 end
         validate_buffer(range.source_buffer)
         range

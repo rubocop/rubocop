@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Corrector do
       expect do
         do_rewrite { |corr| corr.replace(1..3, 'oops') }
       end.to raise_error(TypeError, 'Expected a Parser::Source::Range, '\
-                                    'Comment or Rubocop::AST::Node, got Range')
+                                    'Comment or RuboCop::AST::Node, got Range')
     end
 
     context 'when range is from incorrect source' do
