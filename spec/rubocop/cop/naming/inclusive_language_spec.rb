@@ -136,9 +136,12 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
 
     context 'flagged term with three or more suggestions' do
       let(:cop_config) do
-        { 'FlaggedTerms' => {
-          'master' => { 'Suggestions' => %w[main primary leader] }
-        } }
+        {
+          'CheckStrings' => true,
+          'FlaggedTerms' => {
+            'master' => { 'Suggestions' => %w[main primary leader] }
+          }
+        }
       end
 
       it 'includes all suggestions in the message' do
