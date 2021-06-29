@@ -10692,7 +10692,7 @@ string.chars
 | No
 | Yes (Unsafe)
 | 0.89
-| 1.6
+| 1.18
 |===
 
 This cop checks for places where string concatenation
@@ -10707,21 +10707,56 @@ NOTE: When concatenation between two strings is broken over multiple
 lines, this cop does not register an offense; instead,
 `Style/LineEndConcatenation` will pick up the offense if enabled.
 
+Two modes are supported:
+1. `aggressive` style checks and corrects all occurrences of `+` where
+either the left or right side of `+` is a string literal.
+2. `conservative` style on the other hand, checks and corrects only if
+left side (receiver of `+` method call) is a string literal.
+This is useful when the receiver is some expression that returns string like `Pathname`
+instead of a string literal.
+
 === Examples
+
+==== Mode: aggressive (default)
 
 [source,ruby]
 ----
 # bad
 email_with_name = user.name + ' <' + user.email + '>'
+Pathname.new('/') + 'test'
 
 # good
 email_with_name = "#{user.name} <#{user.email}>"
 email_with_name = format('%s <%s>', user.name, user.email)
+"#{Pathname.new('/')}test"
 
 # accepted, line-end concatenation
 name = 'First' +
   'Last'
 ----
+
+==== Mode: conservative
+
+[source,ruby]
+----
+# bad
+'Hello' + user.name
+
+# good
+"Hello #{user.name}"
+user.name + '!!'
+Pathname.new('/') + 'test'
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Mode
+| `aggressive`
+| String
+|===
 
 === References
 

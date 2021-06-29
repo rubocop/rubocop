@@ -928,7 +928,7 @@ Layout/LineEndStringConcatenationIndentation:
                  Checks the indentation of the next line after a line that
                  ends with a string literal and a backslash.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.18'
   EnforcedStyle: aligned
   SupportedStyles:
     - aligned
@@ -2537,7 +2537,7 @@ Naming/HeredocDelimiterNaming:
 Naming/InclusiveLanguage:
   Description: 'Recommend the use of inclusive language instead of problematic terms.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.18'
   CheckIdentifiers: true
   CheckConstants: true
   CheckVariables: true
@@ -4620,7 +4620,7 @@ Style/StringConcatenation:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
-  VersionChanged: <<next>>
+  VersionChanged: '1.18'
   Mode: aggressive
 
 Style/StringHashKeys:
