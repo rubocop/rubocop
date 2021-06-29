@@ -2541,7 +2541,7 @@ Naming/InclusiveLanguage:
   CheckIdentifiers: true
   CheckConstants: true
   CheckVariables: true
-  CheckStrings: true
+  CheckStrings: false
   CheckSymbols: true
   CheckComments: true
   CheckFilepaths: true
@@ -2556,12 +2556,6 @@ Naming/InclusiveLanguage:
       Suggestions:
         - denylist
         - block
-    master:
-      Suggestions: ['main', 'primary', 'leader']
-      AllowedRegex:
-        - 'Master of None'
-        - 'Master Boot Record'
-        - 'Mastercard'        
     slave:
       Suggestions: ['replica', 'secondary', 'follower']
 
