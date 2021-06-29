@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
+  shared_examples 'pattern matching' do
+    context '>= Ruby 2.7', :ruby27 do
+      it 'does not register an offense' do
+        # Pattern matching is allowed to have no `else` branch because unlike `if` and `case`,
+        # it raises `NoMatchingPatternError` if the pattern doesn't match and without having `else`.
+        expect_no_offenses('case pattern; in a; foo; end')
+      end
+    end
+  end
+
   context 'UnlessElse enabled' do
     let(:config) do
       RuboCop::Config.new('Style/MissingElse' => {
@@ -94,6 +104,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
         end
       end
     end
+
+    include_examples 'pattern matching'
   end
 
   context 'UnlessElse disabled' do
@@ -192,6 +204,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
         end
       end
     end
+
+    include_examples 'pattern matching'
   end
 
   context 'EmptyElse enabled and set to warn on empty' do
@@ -296,6 +310,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
         end
       end
     end
+
+    include_examples 'pattern matching'
   end
 
   context 'EmptyElse enabled and set to warn on nil' do
@@ -400,6 +416,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
         end
       end
     end
+
+    include_examples 'pattern matching'
   end
 
   context 'configured to warn only on empty if' do
@@ -501,6 +519,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
         end
       end
     end
+
+    include_examples 'pattern matching'
   end
 
   context 'configured to warn only on empty case' do
@@ -599,5 +619,7 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
         end
       end
     end
+
+    include_examples 'pattern matching'
   end
 end
