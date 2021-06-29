@@ -2561,6 +2561,7 @@ Naming/InclusiveLanguage:
       AllowedRegex:
         - 'Master of None'
         - 'Master Boot Record'
+        - 'Mastercard'        
     slave:
       Suggestions: ['replica', 'secondary', 'follower']
 
