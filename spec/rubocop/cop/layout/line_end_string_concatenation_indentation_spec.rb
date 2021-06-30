@@ -14,6 +14,15 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
   let(:cop_indent) { nil } # use indentation width from Layout/IndentationWidth
 
   shared_examples 'common' do
+    it 'accepts a multiline string literal' do
+      expect_no_offenses(<<~'RUBY')
+        puts %(
+          foo
+          bar
+        )
+      RUBY
+    end
+
     it 'accepts indented strings in implicit return statement of a block' do
       expect_no_offenses(<<~'RUBY')
         some_method do
