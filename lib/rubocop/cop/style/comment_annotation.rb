@@ -12,7 +12,7 @@ module RuboCop
       # incorrect registering of keywords (eg. `review`) inside a paragraph as an
       # annotation.
       #
-      # @example
+      # @example EnforcedStyle: colon (default)
       #   # bad
       #   # TODO make better
       #
@@ -36,14 +36,37 @@ module RuboCop
       #
       #   # good
       #   # OPTIMIZE: does not work
+      #
+      # @example EnforcedStyle: space
+      #   # bad
+      #   # TODO: make better
+      #
+      #   # good
+      #   # TODO make better
+      #
+      #   # bad
+      #   # fixme does not work
+      #
+      #   # good
+      #   # FIXME does not work
+      #
+      #   # bad
+      #   # Optimize does not work
+      #
+      #   # good
+      #   # OPTIMIZE does not work
       class CommentAnnotation < Base
         include AnnotationComment
+        include ConfigurableEnforcedStyle
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Annotation keywords like `%<keyword>s` should be all ' \
-              'upper case, followed by a colon, and a space, ' \
-              'then a note describing the problem.'
+        MSG_COLON_STYLE = 'Annotation keywords like `%<keyword>s` should be all ' \
+                          'upper case, followed by a colon, and a space, ' \
+                          'then a note describing the problem.'
+        MSG_SPACE_STYLE = 'Annotation keywords like `%<keyword>s` should be all ' \
+                          'upper case, followed by a space, ' \
+                          'then a note describing the problem.'
         MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, is missing a note.'
 
         def on_new_investigation
@@ -63,13 +86,19 @@ module RuboCop
         private
 
         def register_offense(range, note, first_word)
+          message = if style == :colon
+                      MSG_COLON_STYLE
+                    else
+                      MSG_SPACE_STYLE
+                    end
+
           add_offense(
             range,
-            message: format(note ? MSG : MISSING_NOTE, keyword: first_word)
+            message: format(note ? message : MISSING_NOTE, keyword: first_word)
           ) do |corrector|
             next if note.nil?
 
-            corrector.replace(range, "#{first_word.upcase}: ")
+            correct_offense(corrector, range, first_word)
           end
         end
 
@@ -92,7 +121,25 @@ module RuboCop
         end
 
         def correct_annotation?(first_word, colon, space, note)
+          return correct_colon_annotation?(first_word, colon, space, note) if style == :colon
+
+          correct_space_annotation?(first_word, colon, space, note)
+        end
+
+        def correct_colon_annotation?(first_word, colon, space, note)
           keyword?(first_word) && (colon && space && note || !colon && !note)
+        end
+
+        def correct_space_annotation?(first_word, colon, space, note)
+          keyword?(first_word) && (!colon && space && note || !colon && !note)
+        end
+
+        def correct_offense(corrector, range, first_word)
+          if style == :colon
+            corrector.replace(range, "#{first_word.upcase}: ")
+          else
+            corrector.replace(range, "#{first_word.upcase} ")
+          end
         end
       end
     end
