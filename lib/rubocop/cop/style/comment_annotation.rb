@@ -12,7 +12,7 @@ module RuboCop
       # incorrect registering of keywords (eg. `review`) inside a paragraph as an
       # annotation.
       #
-      # @example EnforcedStyle: colon (default)
+      # @example RequireColon: true (default)
       #   # bad
       #   # TODO make better
       #
@@ -37,7 +37,7 @@ module RuboCop
       #   # good
       #   # OPTIMIZE: does not work
       #
-      # @example EnforcedStyle: space
+      # @example RequireColon: false
       #   # bad
       #   # TODO: make better
       #
@@ -57,7 +57,6 @@ module RuboCop
       #   # OPTIMIZE does not work
       class CommentAnnotation < Base
         include AnnotationComment
-        include ConfigurableEnforcedStyle
         include RangeHelp
         extend AutoCorrector
 
@@ -86,11 +85,7 @@ module RuboCop
         private
 
         def register_offense(range, note, first_word)
-          message = if style == :colon
-                      MSG_COLON_STYLE
-                    else
-                      MSG_SPACE_STYLE
-                    end
+          message = requires_colon? ? MSG_COLON_STYLE : MSG_SPACE_STYLE
 
           add_offense(
             range,
@@ -121,7 +116,7 @@ module RuboCop
         end
 
         def correct_annotation?(first_word, colon, space, note)
-          return correct_colon_annotation?(first_word, colon, space, note) if style == :colon
+          return correct_colon_annotation?(first_word, colon, space, note) if requires_colon?
 
           correct_space_annotation?(first_word, colon, space, note)
         end
@@ -135,11 +130,13 @@ module RuboCop
         end
 
         def correct_offense(corrector, range, first_word)
-          if style == :colon
-            corrector.replace(range, "#{first_word.upcase}: ")
-          else
-            corrector.replace(range, "#{first_word.upcase} ")
-          end
+          return corrector.replace(range, "#{first_word.upcase}: ") if requires_colon?
+
+          corrector.replace(range, "#{first_word.upcase} ")
+        end
+
+        def requires_colon?
+          cop_config['RequireColon']
         end
       end
     end

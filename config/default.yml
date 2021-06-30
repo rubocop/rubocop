@@ -3150,10 +3150,7 @@ Style/CommentAnnotation:
     - HACK
     - REVIEW
     - NOTE
-  EnforcedStyle: colon
-  SupportedStyles:
-    - colon
-    - space
+  RequireColon: true
 
 Style/CommentedKeyword:
   Description: 'Do not place comments on the same line as certain keywords.'

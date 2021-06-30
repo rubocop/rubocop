@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
-  context 'with default EnforcedStyle configuration (colon + space)' do
+  context 'with default RequireColon configuration (colon + space)' do
     let(:cop_config) { { 'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW] } }
 
     context 'missing colon' do
@@ -144,11 +144,11 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
   end
 
-  context 'with space EnforcedStyle configuration' do
+  context 'with RequireColon configuration set to false' do
     let(:cop_config) do
       {
         'Keywords' => %w[TODO FIXME OPTIMIZE HACK REVIEW],
-        'EnforcedStyle' => 'space'
+        'RequireColon' => false
       }
     end
 
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     context 'with configured keyword' do
-      let(:cop_config) { { 'Keywords' => %w[ISSUE], 'EnforcedStyle' => 'space' } }
+      let(:cop_config) { { 'Keywords' => %w[ISSUE], 'RequireColon' => false } }
 
       it 'registers an offense for containing a colon after the word' do
         expect_offense(<<~RUBY)
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
       let(:cop_config) do
         {
           'Keywords' => %w[FIXME OPTIMIZE HACK REVIEW],
-          'EnforcedStyle' => 'space'
+          'RequireColon' => false
         }
       end
 
