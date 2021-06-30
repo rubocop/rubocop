@@ -5,6 +5,7 @@ require:
   - rubocop/cop/internal_affairs
   - rubocop-performance
   - rubocop-rspec
+  - rubocop-rake
 
 AllCops:
   NewCops: enable

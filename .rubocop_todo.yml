@@ -68,3 +68,6 @@ RSpec/SubjectStub:
     - 'spec/rubocop/config_spec.rb'
     - 'spec/rubocop/formatter/json_formatter_spec.rb'
     - 'spec/rubocop/formatter/progress_formatter_spec.rb'
+
+Rake/MethodDefinitionInTask:
+  Enabled: false

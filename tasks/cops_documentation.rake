@@ -9,6 +9,7 @@ YARD::Rake::YardocTask.new(:yard_for_generate_documentation) do |task|
   task.options = ['--no-output']
 end
 
+desc 'Update documentation of all cops'
 task update_cops_documentation: :yard_for_generate_documentation do
   deps = %w[Bundler Gemspec Layout Lint Metrics Migration Naming Security Style]
   CopsDocumentationGenerator.new(departments: deps).call
