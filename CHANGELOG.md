@@ -2,6 +2,14 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#9897](https://github.com/rubocop/rubocop/pull/9897): Fix an incorrect auto-correct for `Layout/HashAlignment` when setting `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and using misaligned keyword arguments. ([@koic][])
+
+### Changes
+
+* [#9895](https://github.com/rubocop/rubocop/issues/9895): Set `CheckStrings: false` and Remove `master` from `FlaggedTerms` for `Naming/InclusiveLanguage`. ([@koic][])
+
 ## 1.18.0 (2021-06-29)
 
 ### New features
