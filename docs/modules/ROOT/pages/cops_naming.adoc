@@ -610,7 +610,7 @@ allow_list = %w(user1 user2)
 | Boolean
 
 | CheckStrings
-| `true`
+| `false`
 | Boolean
 
 | CheckSymbols
@@ -626,7 +626,7 @@ allow_list = %w(user1 user2)
 | Boolean
 
 | FlaggedTerms
-| `{"whitelist"=>{"Regex"=>/white[-_\s]?list/, "Suggestions"=>["allowlist", "permit"]}, "blacklist"=>{"Regex"=>/black[-_\s]?list/, "Suggestions"=>["denylist", "block"]}, "master"=>{"Suggestions"=>["main", "primary", "leader"], "AllowedRegex"=>["Master of None", "Master Boot Record"]}, "slave"=>{"Suggestions"=>["replica", "secondary", "follower"]}}`
+| `{"whitelist"=>{"Regex"=>/white[-_\s]?list/, "Suggestions"=>["allowlist", "permit"]}, "blacklist"=>{"Regex"=>/black[-_\s]?list/, "Suggestions"=>["denylist", "block"]}, "slave"=>{"Suggestions"=>["replica", "secondary", "follower"]}}`
 | 
 |===
 
