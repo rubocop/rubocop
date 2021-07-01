@@ -8,7 +8,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
   include_context 'cli spec behavior'
 
   describe '--auto-gen-config' do
-    before { RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {} }
+    before do
+      RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+      RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
+    end
 
     shared_examples 'LineLength handling' do |ctx, initial_dotfile, exp_dotfile|
       context ctx do
@@ -446,11 +449,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # Configuration parameters: EnforcedStyle, IgnoredPatterns.
+          # Configuration parameters: IgnoredPatterns.
           # SupportedStyles: snake_case, camelCase
           Naming/MethodName:
-            Exclude:
-              - 'example1.rb'
+            EnforcedStyle: camelCase
 
           # Offense count: 1
           # Cop supports --auto-correct.
