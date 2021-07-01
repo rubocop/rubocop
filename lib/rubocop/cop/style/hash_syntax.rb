@@ -74,7 +74,7 @@ module RuboCop
             ruby19_no_mixed_keys_check(pairs)
           elsif style == :no_mixed_keys
             no_mixed_keys_check(pairs)
-          elsif node.source.include?('=>')
+          else
             ruby19_check(pairs)
           end
         end

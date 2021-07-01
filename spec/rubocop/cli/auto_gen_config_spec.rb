@@ -1190,6 +1190,33 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       end
     end
 
+    it 'generates EnforcedStyle parameter if it solves all offenses' do
+      create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
+
+      expect(cli.run(['--auto-gen-config'])).to eq(0)
+      expect(File.readlines('.rubocop_todo.yml')[10..-1].join)
+        .to eq(<<~YAML)
+          # Configuration parameters: UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+          Style/HashSyntax:
+            EnforcedStyle: hash_rockets
+        YAML
+    end
+
+    it 'generates Exclude if no EnforcedStyle solves all offenses' do
+      create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)', 'h(b: 2)'])
+
+      expect(cli.run(['--auto-gen-config'])).to eq(0)
+      expect(File.readlines('.rubocop_todo.yml')[10..-1].join)
+        .to eq(<<~YAML)
+          # Configuration parameters: EnforcedStyle, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+          Style/HashSyntax:
+            Exclude:
+              - 'example1.rb'
+        YAML
+    end
+
     it 'can be called when there are no files to inspection' do
       expect(cli.run(['--auto-gen-config'])).to eq(0)
     end
