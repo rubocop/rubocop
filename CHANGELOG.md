@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#9894](https://github.com/rubocop/rubocop/issues/9894): Handle multiline string literals in `Layout/LineEndStringConcatenationIndentation`. ([@jonas054][])
+* [#9890](https://github.com/rubocop/rubocop/issues/9890): Make colon after comment annotation configurable. ([@gregfletch][])
+
 ## 1.18.1 (2021-06-30)
 
 ### Bug fixes
