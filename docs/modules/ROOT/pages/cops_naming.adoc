@@ -501,7 +501,7 @@ EOS
 | Name | Default value | Configurable values
 
 | ForbiddenDelimiters
-| `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))`
+| `(?-mix:(^|\s)(EO[A-Z]\{1\}|END)(\s|$))`
 | Array
 |===
 

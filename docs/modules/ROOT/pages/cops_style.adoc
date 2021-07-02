@@ -2084,7 +2084,7 @@ an offense is reported.
 | Name | Default value | Configurable values
 
 | Notice
-| `^Copyright (\(c\) )?2[0-9]{3} .+`
+| `^Copyright (\(c\) )?2[0-9]\{3\} .+`
 | String
 
 | AutocorrectNotice
@@ -12474,8 +12474,8 @@ array of 2 or fewer elements.
 | Integer
 
 | WordRegex
-| `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)`
-| 
+| `(?-mix:\A(?:\p\{Word\}|\p\{Word\}-\p\{Word\}|\n|\t)+\z)`
+|
 |===
 
 === References
