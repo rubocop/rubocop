@@ -1755,6 +1755,8 @@ annotation.
 
 === Examples
 
+==== RequireColon: true (default)
+
 [source,ruby]
 ----
 # bad
@@ -1782,6 +1784,29 @@ annotation.
 # OPTIMIZE: does not work
 ----
 
+==== RequireColon: false
+
+[source,ruby]
+----
+# bad
+# TODO: make better
+
+# good
+# TODO make better
+
+# bad
+# fixme does not work
+
+# good
+# FIXME does not work
+
+# bad
+# Optimize does not work
+
+# good
+# OPTIMIZE does not work
+----
+
 === Configurable attributes
 
 |===
@@ -1790,6 +1815,10 @@ annotation.
 | Keywords
 | `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW`, `NOTE`
 | Array
+
+| RequireColon
+| `true`
+| Boolean
 |===
 
 === References

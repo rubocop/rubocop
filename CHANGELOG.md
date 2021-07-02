@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.18.2 (2021-07-02)
+
 ### Bug fixes
 
 * [#9894](https://github.com/rubocop/rubocop/issues/9894): Handle multiline string literals in `Layout/LineEndStringConcatenationIndentation`. ([@jonas054][])
