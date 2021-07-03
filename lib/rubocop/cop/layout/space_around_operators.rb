@@ -63,6 +63,10 @@ module RuboCop
           [Style::SelfAssignment]
         end
 
+        def on_sclass(node)
+          check_operator(:sclass, node.loc.operator, node.source_range)
+        end
+
         def on_pair(node)
           return unless node.hash_rocket?
 
