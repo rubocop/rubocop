@@ -36,6 +36,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Avoid single-line method definitions.'
+        NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES = %i[return break next].freeze
 
         def on_def(node)
           return unless node.single_line?
@@ -62,13 +63,10 @@ module RuboCop
 
         def correct_to_endless?(body_node)
           return false if target_ruby_version < 3.0
-
-          endless_method_config = config.for_cop('Style/EndlessMethod')
-
-          return false unless endless_method_config['Enabled']
-          return false if endless_method_config['EnforcedStyle'] == 'disallow'
+          return false if disallow_endless_method_style?
           return false unless body_node
-          return false if body_node.parent.assignment_method?
+          return false if body_node.parent.assignment_method? ||
+                          NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES.include?(body_node.type)
 
           !(body_node.begin_type? || body_node.kwbegin_type?)
         end
@@ -128,6 +126,13 @@ module RuboCop
 
         def require_parentheses?(method_body)
           method_body.send_type? && !method_body.arguments.empty? && !method_body.comparison_method?
+        end
+
+        def disallow_endless_method_style?
+          endless_method_config = config.for_cop('Style/EndlessMethod')
+          return false unless endless_method_config['Enabled']
+
+          endless_method_config['EnforcedStyle'] == 'disallow'
         end
       end
     end

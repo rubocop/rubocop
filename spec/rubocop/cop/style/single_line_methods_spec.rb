@@ -219,6 +219,30 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         end
       end
 
+      it 'does not to an endless class method definition when using `return`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) return bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            return bar(argument);#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'does not to an endless class method definition when using `break`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) break bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            break bar(argument);#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'does not to an endless class method definition when using `next`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) next bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            next bar(argument);#{trailing_whitespace}
+          end
+        RUBY
+      end
+
       # NOTE: Setter method cannot be defined in the endless method definition.
       it 'corrects to multiline method definition when defining setter method' do
         expect_correction(<<~RUBY.chop, source: 'def foo=(foo) @foo = foo end')
