@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      something(1)
+      something(0)
     RUBY
   end
 
@@ -163,8 +163,8 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        do_something(1)
-        do_something_else(1)
+        do_something(0)
+        do_something_else(0)
       RUBY
     end
 
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        do_something(1)
+        do_something(0)
         j = 1
         do_something_else(j)
       RUBY
