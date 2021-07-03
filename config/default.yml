@@ -1226,6 +1226,15 @@ Layout/SpaceAroundOperators:
     - space
     - no_space
 
+Layout/SpaceAroundSingletonClassOperator:
+  Description: 'Use a single space around the singleton class operator.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+
 Layout/SpaceBeforeBlockBraces:
   Description: >-
                  Checks that the left block brace has or doesn't have space
