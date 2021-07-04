@@ -85,14 +85,9 @@ module RuboCop
         private
 
         def strings_concatenated_with_backslash?(dstr_node)
-          !dstr_node.heredoc? &&
-            !single_string_literal?(dstr_node) &&
-            dstr_node.children.length > 1 &&
-            dstr_node.children.all? { |c| c.str_type? || c.dstr_type? }
-        end
-
-        def single_string_literal?(dstr_node)
-          dstr_node.loc.respond_to?(:begin) && dstr_node.loc.begin
+          dstr_node.multiline? &&
+            dstr_node.children.all? { |c| c.str_type? || c.dstr_type? } &&
+            dstr_node.children.none?(&:multiline?)
         end
 
         def always_indented?(dstr_node)
