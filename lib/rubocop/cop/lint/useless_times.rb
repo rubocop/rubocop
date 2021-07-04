@@ -81,7 +81,7 @@ module RuboCop
           return if block_reassigns_arg?(node, block_arg)
 
           source = node.body.source
-          source.gsub!(/\b#{block_arg}\b/, '1') if block_arg
+          source.gsub!(/\b#{block_arg}\b/, '0') if block_arg
 
           corrector.replace(node, fix_indentation(source, node.loc.column...node.body.loc.column))
         end
