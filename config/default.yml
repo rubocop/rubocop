@@ -1809,7 +1809,7 @@ Lint/MissingCopEnableDirective:
 Lint/MissingSuper:
   Description: >-
                   This cop checks for the presence of constructors and lifecycle callbacks
-                  without calls to `super`'.
+                  without calls to `super`.
   Enabled: true
   VersionAdded: '0.89'
   VersionChanged: '1.4'
