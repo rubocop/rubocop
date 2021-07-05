@@ -196,6 +196,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: line_count_based` of `Style/BlockDelimiters` with `Style/CommentedKeyword` and `Layout/BlockEndNewline`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/BlockDelimiters:
+        EnforcedStyle: line_count_based
+    YAML
+    source = <<~RUBY
+      foo {
+      bar } # This comment should be kept.
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct',
+                     '--only', 'Style/BlockDelimiters,Style/CommentedKeyword,Layout/BlockEndNewline'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      # This comment should be kept.
+      foo do
+      bar
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:

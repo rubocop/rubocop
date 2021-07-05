@@ -135,6 +135,7 @@ module RuboCop
       class BlockDelimiters < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods
+        include RangeHelp
         extend AutoCorrector
 
         ALWAYS_BRACES_MESSAGE = 'Prefer `{...}` over `do...end` for blocks.'
@@ -231,6 +232,11 @@ module RuboCop
           corrector.insert_before(e, ' ') unless whitespace_before?(e)
           corrector.insert_after(b, ' ') unless whitespace_after?(b)
           corrector.replace(b, 'do')
+
+          if (comment = processed_source.comment_at_line(e.line))
+            move_comment_before_block(corrector, comment, loc.node, e)
+          end
+
           corrector.replace(e, 'end')
         end
 
@@ -250,6 +256,15 @@ module RuboCop
 
         def whitespace_after?(range, length = 1)
           /\s/.match?(range.source_buffer.source[range.begin_pos + length, 1])
+        end
+
+        def move_comment_before_block(corrector, comment, block_node, closing_brace)
+          range = range_between(closing_brace.end_pos, comment.loc.expression.end_pos)
+
+          corrector.remove(range_with_surrounding_space(range: range, side: :right))
+          corrector.insert_after(closing_brace, "\n")
+
+          corrector.insert_before(block_node, "#{comment.text}\n")
         end
 
         def get_blocks(node, &block)
