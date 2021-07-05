@@ -349,23 +349,30 @@ RSpec.describe RuboCop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
       let(:message) do
         '.rubocop.yml: Style/For:Exclude overrides the same parameter in ' \
-          '.rubocop_todo.yml'
+          '.rubocop_2.yml'
       end
 
       before do
         create_file(file_path, <<~YAML)
-          inherit_from: .rubocop_todo.yml
+          inherit_from:
+            - .rubocop_1.yml
+            - .rubocop_2.yml
 
           Style/For:
             Exclude:
               - spec/requests/group_invite_spec.rb
         YAML
 
-        create_file('.rubocop_todo.yml', <<~YAML)
+        create_file('.rubocop_1.yml', <<~YAML)
+          Style/StringLiterals:
+            Exclude:
+              - 'spec/models/group_spec.rb'
+        YAML
+
+        create_file('.rubocop_2.yml', <<~YAML)
           Style/For:
             Exclude:
               - 'spec/models/expense_spec.rb'
-              - 'spec/models/group_spec.rb'
         YAML
       end
 
@@ -796,9 +803,9 @@ RSpec.describe RuboCop::ConfigLoader do
           expect(configuration_from_file['Metrics/MethodLength']
                    .to_set.superset?(expected.to_set)).to be(true)
         end.to output(Regexp.new(<<~OUTPUT)).to_stdout
-          .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in normal.yml
           .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in special.yml
-          .rubocop.yml: Metrics/MethodLength:Max overrides the same parameter in special.yml
+          .rubocop.yml: Metrics/MethodLength:Enabled overrides the same parameter in normal.yml
+          .rubocop.yml: Metrics/MethodLength:Max overrides the same parameter in normal.yml
         OUTPUT
       end
     end
