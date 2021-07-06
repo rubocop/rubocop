@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.18.3 (2021-07-06)
+
 ### Bug fixes
 
 * [#9891](https://github.com/rubocop/rubocop/issues/9891): Fix `--auto-gen-config` bug for `Style/HashSyntax`. ([@jonas054][])
