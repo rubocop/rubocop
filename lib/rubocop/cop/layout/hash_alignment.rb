@@ -220,7 +220,7 @@ module RuboCop
         def autocorrect_incompatible_with_other_cops?(node)
           enforce_first_argument_with_fixed_indentation? &&
             node.pairs.any? &&
-            node.parent&.call_type? && node.parent.loc.selector.line == node.pairs.first.loc.line
+            node.parent&.call_type? && node.parent.loc.selector&.line == node.pairs.first.loc.line
         end
 
         def reset!

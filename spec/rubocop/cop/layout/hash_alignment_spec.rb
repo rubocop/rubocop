@@ -177,6 +177,12 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         foo({})
       RUBY
     end
+
+    it 'does not register an offense using aligned hash argument for `proc.()`' do
+      expect_no_offenses(<<~RUBY)
+        proc.(key: value)
+      RUBY
+    end
   end
 
   context 'always ignore last argument hash' do
