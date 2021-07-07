@@ -39,6 +39,25 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     )
   end
 
+  context 'when the first line ends with a comment' do
+    it 'reports an offense and swaps the lines' do
+      expect_offense <<-RUBY
+        class GridTask
+          DESC = 'Grid Task' # grid task name OID, subclasses should set this
+          extend Helpers::MakeFromFile
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `module_inclusion` is supposed to appear before `constants`.
+        end
+      RUBY
+
+      expect_correction <<-RUBY
+        class GridTask
+          extend Helpers::MakeFromFile
+          DESC = 'Grid Task' # grid task name OID, subclasses should set this
+        end
+      RUBY
+    end
+  end
+
   context 'with a complete ordered example' do
     it 'does not create offense' do
       expect_no_offenses <<-RUBY
