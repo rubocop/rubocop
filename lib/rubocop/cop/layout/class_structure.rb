@@ -289,10 +289,14 @@ module RuboCop
           (node.first_line - 1).downto(1) do |annotation_line|
             break unless (comment = processed_source.comment_at_line(annotation_line))
 
-            first_comment = comment
+            first_comment = comment if whole_line_comment_at_line?(annotation_line)
           end
 
           start_line_position(first_comment || node)
+        end
+
+        def whole_line_comment_at_line?(line)
+          /\A\s*#/.match?(processed_source.lines[line - 1])
         end
 
         def start_line_position(node)
