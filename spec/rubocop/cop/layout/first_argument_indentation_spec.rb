@@ -134,6 +134,15 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         end
       end
 
+      context 'for a setter call' do
+        it 'accepts an unindented value' do
+          expect_no_offenses(<<~RUBY)
+            foo.baz =
+            bar
+          RUBY
+        end
+      end
+
       context 'for assignment' do
         it 'accepts a correctly indented first argument and does not care ' \
            'about the second argument' do

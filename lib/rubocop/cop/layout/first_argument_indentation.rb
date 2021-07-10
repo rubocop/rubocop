@@ -154,7 +154,7 @@ module RuboCop
 
         def on_send(node)
           return if style != :consistent && enforce_first_argument_with_fixed_indentation?
-          return if !node.arguments? || bare_operator?(node)
+          return if !node.arguments? || bare_operator?(node) || node.setter_method?
 
           indent = base_indentation(node) + configured_indentation_width
 
