@@ -53,6 +53,43 @@ module RuboCop
       #     end
       #   end.freeze
       class MutableConstant < Base
+        # Handles magic comment shareable_constant_value with O(n ^ 2) complexity
+        # n - number of lines in the source
+        # Iterates over all lines before a CONSTANT
+        # until it reaches shareable_constant_value
+        module ShareableConstantValue
+          module_function
+
+          def recent_shareable_value?(node)
+            shareable_constant_comment = magic_comment_in_scope node
+            return false if shareable_constant_comment.nil?
+
+            shareable_constant_value = MagicComment.parse(shareable_constant_comment)
+                                                   .shareable_constant_value
+            shareable_constant_value_enabled? shareable_constant_value
+          end
+
+          # Identifies the most recent magic comment with valid shareable constant values
+          # thats in scope for this node
+          def magic_comment_in_scope(node)
+            processed_source_till_node(node).reverse_each.find do |line|
+              MagicComment.parse(line).valid_shareable_constant_value?
+            end
+          end
+
+          private
+
+          def processed_source_till_node(node)
+            processed_source.lines[0..(node.last_line - 1)]
+          end
+
+          def shareable_constant_value_enabled?(value)
+            %w[literal experimental_everything experimental_copy].include? value
+          end
+        end
+        private_constant :ShareableConstantValue
+
+        include ShareableConstantValue
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -85,18 +122,18 @@ module RuboCop
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
           return if frozen_string_literal?(value)
+          return if shareable_constant_value?(value)
 
           add_offense(value) { |corrector| autocorrect(corrector, value) }
         end
 
         def check(value)
           range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
-
           return unless mutable_literal?(value) ||
                         target_ruby_version <= 2.7 && range_enclosed_in_parentheses
-
           return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
                     frozen_string_literals_enabled?
+          return if shareable_constant_value?(value)
 
           add_offense(value) { |corrector| autocorrect(corrector, value) }
         end
@@ -128,6 +165,12 @@ module RuboCop
 
         def frozen_string_literal?(node)
           FROZEN_STRING_LITERAL_TYPES.include?(node.type) && frozen_string_literals_enabled?
+        end
+
+        def shareable_constant_value?(node)
+          return false if target_ruby_version < 3.0
+
+          recent_shareable_value? node
         end
 
         def frozen_regexp_or_range_literals?(node)
