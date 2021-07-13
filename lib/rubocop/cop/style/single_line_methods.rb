@@ -72,17 +72,15 @@ module RuboCop
         end
 
         def correct_to_multiline(corrector, node)
-          each_part(node.body) do |part|
-            LineBreakCorrector.break_line_before(
-              range: part, node: node, corrector: corrector,
-              configured_width: configured_indentation_width
-            )
+          if (body = node.body) && body.begin_type? && body.parenthesized_call?
+            break_line_before(corrector, node, body)
+          else
+            each_part(body) do |part|
+              break_line_before(corrector, node, part)
+            end
           end
 
-          LineBreakCorrector.break_line_before(
-            range: node.loc.end, node: node, corrector: corrector,
-            indent_steps: 0, configured_width: configured_indentation_width
-          )
+          break_line_before(corrector, node, node.loc.end, indent_steps: 0)
 
           move_comment(node, corrector)
         end
@@ -94,6 +92,13 @@ module RuboCop
           replacement = "def #{self_receiver}#{node.method_name}#{arguments} = #{body_source}"
 
           corrector.replace(node, replacement)
+        end
+
+        def break_line_before(corrector, node, range, indent_steps: 1)
+          LineBreakCorrector.break_line_before(
+            range: range, node: node, corrector: corrector,
+            configured_width: configured_indentation_width, indent_steps: indent_steps
+          )
         end
 
         def each_part(body)

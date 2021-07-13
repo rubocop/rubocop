@@ -32,6 +32,19 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
+  it 'registers an offense for a single-line method and method body is enclosed in parentheses' do
+    expect_offense(<<~RUBY)
+      def foo() (do_something) end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo()#{trailing_whitespace}
+        (do_something)#{trailing_whitespace}
+      end
+    RUBY
+  end
+
   context 'when AllowIfMethodIsEmpty is disabled' do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
 
