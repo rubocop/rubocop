@@ -61,13 +61,12 @@ module RuboCop
 
         def on_casgn(node)
           _scope, _const_name, value = *node
-          on_assignment(value)
-        end
+          if value.nil? # This is only the case for `CONST += ...` or similarg66
+            parent = node.parent
+            return unless parent.or_asgn_type? # We only care about `CONST ||= ...`
 
-        def on_or_asgn(node)
-          lhs, value = *node
-
-          return unless lhs&.casgn_type?
+            value = parent.children.last
+          end
 
           on_assignment(value)
         end
@@ -118,14 +117,13 @@ module RuboCop
         end
 
         def mutable_literal?(value)
-          return false if value.nil?
           return false if frozen_regexp_or_range_literals?(value)
 
           value.mutable_literal?
         end
 
         def immutable_literal?(node)
-          node.nil? || frozen_regexp_or_range_literals?(node) || node.immutable_literal?
+          frozen_regexp_or_range_literals?(node) || node.immutable_literal?
         end
 
         def frozen_string_literal?(node)
