@@ -30,6 +30,15 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
       end
     end
 
+    context 'when file is relative to the current directory' do
+      let(:file) { "#{Dir.pwd}/path/to/file" }
+
+      it 'reports offenses as error with the relative path' do
+        expect(output.string)
+          .to include('::error file=path/to/file,line=1,col=1::This is a message.')
+      end
+    end
+
     context 'when no offenses are detected' do
       let(:offenses) { [] }
 
