@@ -177,7 +177,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
             class Chess
               # rubocop:todo Metrics/MethodLength
               # rubocop:todo Metrics/AbcSize
-              def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity
+              def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
                 legal_moves = all_legal_moves_that_dont_put_me_in_check(who_to_move)
 
                 return nil if legal_moves.empty?

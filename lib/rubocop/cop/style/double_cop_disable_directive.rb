@@ -36,13 +36,7 @@ module RuboCop
             next unless comment.text.scan(/# rubocop:(?:disable|todo)/).size > 1
 
             add_offense(comment) do |corrector|
-              prefix = if comment.text.start_with?('# rubocop:disable')
-                         '# rubocop:disable'
-                       else
-                         '# rubocop:todo'
-                       end
-
-              corrector.replace(comment, comment.text[/#{prefix} \S+/])
+              corrector.replace(comment, comment.text.gsub(%r{ # rubocop:(disable|todo)}, ','))
             end
           end
         end

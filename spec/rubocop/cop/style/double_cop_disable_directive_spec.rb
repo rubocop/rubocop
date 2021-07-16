@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Style::DoubleCopDisableDirective, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      def choose_move(who_to_move) # rubocop:disable Metrics/CyclomaticComplexity
+      def choose_move(who_to_move) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
       end
     RUBY
   end
@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Style::DoubleCopDisableDirective, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity
+      def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
       end
     RUBY
   end
