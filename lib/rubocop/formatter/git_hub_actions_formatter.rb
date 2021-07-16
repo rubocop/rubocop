@@ -33,7 +33,7 @@ module RuboCop
         output.printf(
           "\n::%<severity>s file=%<file>s,line=%<line>d,col=%<column>d::%<message>s\n",
           severity: github_severity(offense),
-          file: file,
+          file: PathUtil.smart_path(file),
           line: offense.line,
           column: offense.real_column,
           message: github_escape(offense.message)
