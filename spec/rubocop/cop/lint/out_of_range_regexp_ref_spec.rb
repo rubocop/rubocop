@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef, :config do
   # RuboCop does not know a value of variables that it will contain in the regexp literal.
   # For example, `/(?<foo>#{var}*)` is interpreted as `/(?<foo>*)`.
   # So it does not offense when variables are used in regexp literals.
-  it 'does not register an offence regexp containing non literal' do
+  it 'does not register an offense regexp containing non literal' do
     expect_no_offenses(<<~'RUBY')
       var = '(\d+)'
       /(?<foo>#{var}*)/ =~ "12"

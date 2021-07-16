@@ -633,7 +633,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect_no_offenses('each { |x| }')
     end
 
-    it 'registers an offence for a multi-line block with do-end' do
+    it 'registers an offense for a multi-line block with do-end' do
       expect_offense(<<~RUBY)
         each do |x|
              ^^ Prefer `{...}` over `do...end` for blocks.

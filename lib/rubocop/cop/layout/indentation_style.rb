@@ -43,7 +43,7 @@ module RuboCop
           str_ranges = string_literal_ranges(processed_source.ast)
 
           processed_source.lines.each.with_index(1) do |line, lineno|
-            next unless (range = find_offence(line, lineno))
+            next unless (range = find_offense(line, lineno))
             next if in_string_literal?(str_ranges, range)
 
             add_offense(range) { |corrector| autocorrect(corrector, range) }
@@ -60,7 +60,7 @@ module RuboCop
           end
         end
 
-        def find_offence(line, lineno)
+        def find_offense(line, lineno)
           match = if style == :spaces
                     line.match(/\A\s*\t+/)
                   else

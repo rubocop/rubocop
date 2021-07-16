@@ -213,7 +213,7 @@ module RuboCop
           check_pairs(node)
         end
 
-        attr_accessor :offences_by, :column_deltas
+        attr_accessor :offenses_by, :column_deltas
 
         private
 
@@ -224,7 +224,7 @@ module RuboCop
         end
 
         def reset!
-          self.offences_by = {}
+          self.offenses_by = {}
           self.column_deltas = Hash.new { |hash, key| hash[key] = {} }
         end
 
@@ -248,33 +248,33 @@ module RuboCop
             end
           end
 
-          add_offences
+          add_offenses
         end
 
-        def add_offences
-          kwsplat_offences = offences_by.delete(KeywordSplatAlignment)
-          register_offences_with_format(kwsplat_offences, KeywordSplatAlignment)
+        def add_offenses
+          kwsplat_offenses = offenses_by.delete(KeywordSplatAlignment)
+          register_offenses_with_format(kwsplat_offenses, KeywordSplatAlignment)
 
-          format, offences = offences_by.min_by { |_, v| v.length }
-          register_offences_with_format(offences, format)
+          format, offenses = offenses_by.min_by { |_, v| v.length }
+          register_offenses_with_format(offenses, format)
         end
 
-        def register_offences_with_format(offences, format)
-          (offences || []).each do |offence|
-            add_offense(offence, message: MESSAGES[format]) do |corrector|
-              delta = column_deltas[alignment_for(offence).first.class][offence]
+        def register_offenses_with_format(offenses, format)
+          (offenses || []).each do |offense|
+            add_offense(offense, message: MESSAGES[format]) do |corrector|
+              delta = column_deltas[alignment_for(offense).first.class][offense]
 
-              correct_node(corrector, offence, delta) unless delta.nil?
+              correct_node(corrector, offense, delta) unless delta.nil?
             end
           end
         end
 
         def check_delta(delta, node:, alignment:)
-          offences_by[alignment.class] ||= []
+          offenses_by[alignment.class] ||= []
           return if good_alignment? delta
 
           column_deltas[alignment.class][node] = delta
-          offences_by[alignment.class].push(node)
+          offenses_by[alignment.class].push(node)
         end
 
         def ignore_hash_argument?(node)

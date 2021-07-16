@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         expect_no_offenses("format('%#{token}', foo)")
       end
 
-      it 'registers offence for dual unannotated' do
+      it 'registers offense for dual unannotated' do
         expect_offense(<<~RUBY)
           format('%#{token} %s', foo, bar)
                   ^^ Prefer [...]

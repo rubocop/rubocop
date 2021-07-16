@@ -99,6 +99,10 @@ Metrics/ModuleLength:
     - 'spec/**/*.rb'
 
 Naming/InclusiveLanguage:
+  FlaggedTerms:
+    offence:
+      Suggestions:
+        - offense
   Exclude:
     - lib/rubocop/cop/naming/inclusive_language.rb
 

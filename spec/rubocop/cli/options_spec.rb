@@ -1806,7 +1806,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       $stdin = STDIN
     end
 
-    it 'prints offence reports to stderr and corrected code to stdout if --auto-correct-all and --stderr are used' do
+    it 'prints offense reports to stderr and corrected code to stdout if --auto-correct-all and --stderr are used' do
       $stdin = StringIO.new('p $/')
       argv   = ['--auto-correct-all',
                 '--only=Style/SpecialGlobalVars',

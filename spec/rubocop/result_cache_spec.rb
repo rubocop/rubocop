@@ -53,7 +53,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
     # Fixes https://github.com/rubocop/rubocop/issues/6274
     context 'when offenses are saved' do
-      context 'an offence with status corrected' do
+      context 'an offense with status corrected' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status corrected_with_todo' do
+      context 'an offense with status corrected_with_todo' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected_with_todo
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status uncorrected' do
+      context 'an offense with status uncorrected' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :uncorrected
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status unsupported' do
+      context 'an offense with status unsupported' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :unsupported
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status new_status' do
+      context 'an offense with status new_status' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :new_status
