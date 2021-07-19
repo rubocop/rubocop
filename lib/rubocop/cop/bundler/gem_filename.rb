@@ -6,7 +6,7 @@ module RuboCop
       # This cop verifies that a project contains Gemfile or gems.rb file and correct
       # associated lock file based on the configuration.
       #
-      # @example RequiresGemfile: true (default)
+      # @example EnforcedStyle: Gemfile (default)
       #   # bad
       #   Project contains gems.rb and gems.locked files
       #
@@ -16,7 +16,7 @@ module RuboCop
       #   # good
       #   Project contains Gemfile and Gemfile.lock
       #
-      # @example RequiresGemfile: false
+      # @example EnforcedStyle: gems.rb
       #   # bad
       #   Project contains Gemfile and Gemfile.lock files
       #
@@ -26,13 +26,15 @@ module RuboCop
       #   # good
       #   Project contains gems.rb and gems.locked files
       class GemFilename < Base
+        include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_GEMFILE_REQUIRED = 'gems.rb file was found but Gemfile is required.'
-        MSG_GEMS_RB_REQUIRED = 'Gemfile was found but gems.rb file is required.'
-        MSG_GEMFILE_MISMATCHED = 'Expected a Gemfile.lock with Gemfile but found gems.locked file.'
-        MSG_GEMS_RB_MISMATCHED = 'Expected a gems.locked file with gems.rb but found Gemfile.lock.'
-        GEMFILE_REQUIRED_CONFIG = 'RequiresGemfile'
+        MSG_GEMFILE_REQUIRED = '`gems.rb` file was found but `Gemfile` is required.'
+        MSG_GEMS_RB_REQUIRED = '`Gemfile` was found but `gems.rb` file is required.'
+        MSG_GEMFILE_MISMATCHED = 'Expected a `Gemfile.lock` with `Gemfile` but found '\
+                                 '`gems.locked` file.'
+        MSG_GEMS_RB_MISMATCHED = 'Expected a `gems.locked` file with `gems.rb` but found '\
+                                 '`Gemfile.lock`.'
         GEMFILE_FILES = %w[Gemfile Gemfile.lock].freeze
         GEMS_RB_FILES = %w[gems.rb gems.locked].freeze
 
@@ -47,7 +49,7 @@ module RuboCop
 
         def register_offense(processed_source, file_path)
           register_gemfile_offense(processed_source, file_path) if gemfile_required?
-          register_gems_rb_offense(processed_source, file_path) unless gemfile_required?
+          register_gems_rb_offense(processed_source, file_path) if gems_rb_required?
         end
 
         def register_gemfile_offense(processed_source, file_path)
@@ -78,11 +80,15 @@ module RuboCop
 
         def expected_gemfile?(file_path)
           (gemfile_required? && GEMFILE_FILES.include?(file_path)) ||
-            (!gemfile_required? && GEMS_RB_FILES.include?(file_path))
+            (gems_rb_required? && GEMS_RB_FILES.include?(file_path))
         end
 
         def gemfile_required?
-          cop_config[GEMFILE_REQUIRED_CONFIG]
+          style == :Gemfile
+        end
+
+        def gems_rb_required?
+          style == :'gems.rb'
         end
       end
     end

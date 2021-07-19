@@ -178,7 +178,10 @@ Bundler/GemFilename:
   Description: 'Enforces the filename for managing gems.'
   Enabled: true
   VersionAdded: '<<next>>'
-  RequiresGemfile: true
+  EnforcedStyle: 'Gemfile'
+  SupportedStyles:
+    - 'Gemfile'
+    - 'gems.rb'
 
 Bundler/GemVersion:
   Description: 'Requires or forbids specifying gem versions.'

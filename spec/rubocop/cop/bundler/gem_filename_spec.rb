@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemFilename, :config do
     end
   end
 
-  context 'with default configuration' do
+  context 'with default configuration (EnforcedStyle => `Gemfile`)' do
     let(:source) { 'print 1' }
     let(:processed_source) { parse_source(source) }
 
@@ -27,14 +27,14 @@ RSpec.describe RuboCop::Cop::Bundler::GemFilename, :config do
     context 'with gems.rb file path' do
       let(:filename) { 'gems.rb' }
 
-      include_examples 'invalid gem file', 'gems.rb file was found but Gemfile is required.'
+      include_examples 'invalid gem file', '`gems.rb` file was found but `Gemfile` is required.'
     end
 
     context 'with gems.locked file path' do
       let(:filename) { 'gems.locked' }
 
       include_examples 'invalid gem file',
-                       'Expected a Gemfile.lock with Gemfile but found gems.locked file.'
+                       'Expected a `Gemfile.lock` with `Gemfile` but found `gems.locked` file.'
     end
 
     context 'with Gemfile file path' do
@@ -50,24 +50,24 @@ RSpec.describe RuboCop::Cop::Bundler::GemFilename, :config do
     end
   end
 
-  context 'with RequiresGemfile set to false' do
+  context 'with EnforcedStyle set to `gems.rb`' do
     let(:source) { 'print 1' }
     let(:processed_source) { parse_source(source) }
-    let(:cop_config) { { 'RequiresGemfile' => false } }
+    let(:cop_config) { { 'EnforcedStyle' => 'gems.rb' } }
 
     before { allow(processed_source.buffer).to receive(:name).and_return(filename) }
 
     context 'with Gemfile file path' do
       let(:filename) { 'Gemfile' }
 
-      include_examples 'invalid gem file', 'Gemfile was found but gems.rb file is required.'
+      include_examples 'invalid gem file', '`Gemfile` was found but `gems.rb` file is required.'
     end
 
     context 'with Gemfile.lock file path' do
       let(:filename) { 'Gemfile.lock' }
 
       include_examples 'invalid gem file',
-                       'Expected a gems.locked file with gems.rb but found Gemfile.lock.'
+                       'Expected a `gems.locked` file with `gems.rb` but found `Gemfile.lock`.'
     end
 
     context 'with gems.rb file path' do
