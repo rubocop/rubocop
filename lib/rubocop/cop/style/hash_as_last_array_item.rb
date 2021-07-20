@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'byebug'
 
 module RuboCop
   module Cop
@@ -76,8 +75,8 @@ module RuboCop
           return if node.children.empty? # Empty hash cannot be "unbraced"
 
           add_offense(node, message: 'Omit the braces around the hash.') do |corrector|
+            remove_last_element_trailing_comma(corrector, node.parent)
             corrector.remove(node.loc.begin)
-            remove_last_element_trailing_comma(corrector, node)
             corrector.remove(node.loc.end)
           end
         end
@@ -91,7 +90,7 @@ module RuboCop
             range: node.children.last.source_range,
             side: :right
           ).end.resize(1)
-          
+
           corrector.remove(range) if range.source == ','
         end
       end
