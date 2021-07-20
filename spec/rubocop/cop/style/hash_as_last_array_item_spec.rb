@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        [1, 2,  one: 1, two: 2 ,]
+        [1, 2,  one: 1, two: 2, ]
       RUBY
     end
 
@@ -82,8 +82,10 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
         [
           1,
           2,
-          one: 1,
-          two: 2,
+          
+            one: 1,
+            two: 2,
+          
         ]
       RUBY
     end
