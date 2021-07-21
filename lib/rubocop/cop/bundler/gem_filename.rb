@@ -42,17 +42,17 @@ module RuboCop
           file_path = processed_source.file_path
           return if expected_gemfile?(file_path)
 
-          register_offense(processed_source, file_path)
+          register_offense(processed_source.buffer, file_path)
         end
 
         private
 
-        def register_offense(processed_source, file_path)
-          register_gemfile_offense(processed_source, file_path) if gemfile_required?
-          register_gems_rb_offense(processed_source, file_path) if gems_rb_required?
+        def register_offense(source_buffer, file_path)
+          register_gemfile_offense(source_buffer, file_path) if gemfile_offense?(file_path)
+          register_gems_rb_offense(source_buffer, file_path) if gems_rb_offense?(file_path)
         end
 
-        def register_gemfile_offense(processed_source, file_path)
+        def register_gemfile_offense(source_buffer, file_path)
           message = case file_path
                     when 'gems.rb'
                       MSG_GEMFILE_REQUIRED
@@ -60,12 +60,10 @@ module RuboCop
                       MSG_GEMFILE_MISMATCHED
                     end
 
-          return if message.nil?
-
-          add_offense(source_range(processed_source.buffer, 1, 0), message: message)
+          add_offense(source_range(source_buffer, 1, 0), message: message)
         end
 
-        def register_gems_rb_offense(processed_source, file_path)
+        def register_gems_rb_offense(source_buffer, file_path)
           message = case file_path
                     when 'Gemfile'
                       MSG_GEMS_RB_REQUIRED
@@ -73,9 +71,15 @@ module RuboCop
                       MSG_GEMS_RB_MISMATCHED
                     end
 
-          return if message.nil?
+          add_offense(source_range(source_buffer, 1, 0), message: message)
+        end
 
-          add_offense(source_range(processed_source.buffer, 1, 0), message: message)
+        def gemfile_offense?(file_path)
+          gemfile_required? && %w[gems.rb gems.locked].include?(file_path)
+        end
+
+        def gems_rb_offense?(file_path)
+          gems_rb_required? && %w[Gemfile Gemfile.lock].include?(file_path)
         end
 
         def expected_gemfile?(file_path)
