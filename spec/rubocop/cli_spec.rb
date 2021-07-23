@@ -197,6 +197,69 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  if RUBY_ENGINE == 'ruby' && !RuboCop::Platform.windows?
+    # NOTE: It has been tested for parallelism with `--debug` option.
+    #       In other words, even if no option is specified, it will be parallelized by default.
+    describe 'when parallel static by default' do
+      context 'when specifying `--debug` option only`' do
+        it 'fails with an error message' do
+          create_file('example1.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts 'hello'
+          RUBY
+          expect(cli.run(['--debug'])).to eq(0)
+          expect($stdout.string).to include('Use parallel by default.')
+        end
+      end
+
+      # NOTE: Cannot be auto-corrected with `parallel`.
+      context 'when specifying `--debug` and `-a` options`' do
+        it 'fails with an error message' do
+          create_file('example1.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts 'hello'
+          RUBY
+          expect(cli.run(['--debug', '-a'])).to eq(0)
+          expect($stdout.string).not_to include('Use parallel by default.')
+        end
+      end
+
+      context 'when setting `UseCache: true`' do
+        it 'fails with an error message' do
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts 'hello'
+          RUBY
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              UseCache: true
+          YAML
+          expect(cli.run(['--debug'])).to eq(0)
+          expect($stdout.string).to include('Use parallel by default.')
+        end
+      end
+
+      context 'when setting `UseCache: false`' do
+        it 'fails with an error message' do
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts 'hello'
+          RUBY
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              UseCache: false
+          YAML
+          expect(cli.run(['--debug'])).to eq(0)
+          expect($stdout.string).not_to include('Use parallel by default.')
+        end
+      end
+    end
+  end
+
   describe 'rubocop:disable comment' do
     it 'can disable all cops in a code section' do
       src = ['# rubocop:disable all',
