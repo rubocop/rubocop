@@ -26,7 +26,7 @@ module RuboCop
         # `when` nodes contain the entire branch including the condition.
         # We only need the contents of the branch, not the condition.
         def expand_when_branches(when_branches)
-          when_branches.map { |branch| branch.children[1] }
+          when_branches.map(&:body)
         end
 
         def tail(branch)
@@ -272,6 +272,16 @@ module RuboCop
           check_node(node, branches)
         end
 
+        def on_case_match(node)
+          return unless style == :assign_to_condition
+          return unless node.else_branch
+
+          in_pattern_branches = expand_when_branches(node.in_pattern_branches)
+          branches = [*in_pattern_branches, node.else_branch]
+
+          check_node(node, branches)
+        end
+
         private
 
         def check_assignment_to_condition(node)
@@ -297,7 +307,7 @@ module RuboCop
         end
 
         # @!method candidate_condition?(node)
-        def_node_matcher :candidate_condition?, '[{if case} !#allowed_ternary?]'
+        def_node_matcher :candidate_condition?, '[{if case case_match} !#allowed_ternary?]'
 
         def allowed_ternary?(assignment)
           assignment.if_type? && assignment.ternary? && !include_ternary?
@@ -319,7 +329,7 @@ module RuboCop
         end
 
         def move_assignment_outside_condition(corrector, node)
-          if node.case_type?
+          if node.case_type? || node.case_match_type?
             CaseCorrector.correct(corrector, self, node)
           elsif node.ternary?
             TernaryCorrector.correct(corrector, node)
@@ -333,7 +343,7 @@ module RuboCop
 
           if ternary_condition?(condition)
             TernaryCorrector.move_assignment_inside_condition(corrector, node)
-          elsif condition.case_type?
+          elsif condition.case_type? || condition.case_match_type?
             CaseCorrector.move_assignment_inside_condition(corrector, node)
           elsif condition.if_type?
             IfCorrector.move_assignment_inside_condition(corrector, node)
@@ -631,7 +641,11 @@ module RuboCop
           end
 
           def extract_branches(case_node)
-            when_branches = expand_when_branches(case_node.when_branches)
+            when_branches = if case_node.case_type?
+                              expand_when_branches(case_node.when_branches)
+                            else
+                              expand_when_branches(case_node.in_pattern_branches)
+                            end
 
             [when_branches, case_node.else_branch]
           end

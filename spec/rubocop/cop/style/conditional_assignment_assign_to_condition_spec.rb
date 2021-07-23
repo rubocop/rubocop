@@ -271,6 +271,30 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
             #{indent}end
           RUBY
         end
+
+        context '>= Ruby 2.7', :ruby27 do
+          it 'corrects comparison methods in case in' do
+            expect_offense(<<~RUBY)
+              case foo
+              ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
+              in bar
+                a #{method} b
+              else
+                a #{method} d
+              end
+            RUBY
+
+            indent = ' ' * "a #{method} ".length if indent_end
+            expect_correction(<<~RUBY)
+              a #{method} case foo
+              in bar
+                b
+              else
+                d
+              #{indent}end
+            RUBY
+          end
+        end
       end
     end
   end

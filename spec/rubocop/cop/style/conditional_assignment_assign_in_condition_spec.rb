@@ -126,6 +126,33 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
+    context '>= Ruby 2.7', :ruby27 do
+      it 'registers an offense for assigning any variable type to case in' do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable} = case foo
+          ^{variable}^^^^^^^^^^^ Assign variables inside of conditionals
+                        in "a"
+                          1
+                        in "b"
+                          2
+                        else
+                          3
+                        end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case foo
+          in "a"
+            #{variable} = 1
+          in "b"
+            #{variable} = 2
+          else
+            #{variable} = 3
+          end
+        RUBY
+      end
+    end
+
     it 'does not crash for rescue assignment' do
       expect_no_offenses(<<~RUBY)
         begin
