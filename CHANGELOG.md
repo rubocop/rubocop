@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.18.4 (2021-07-23)
+
 ### New features
 
 * [#9930](https://github.com/rubocop/rubocop/pull/9930): Support Ruby 2.7's pattern matching for `Lint/DuplicateBranch` cop. ([@koic][])
