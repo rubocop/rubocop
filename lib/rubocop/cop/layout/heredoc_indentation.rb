@@ -143,13 +143,6 @@ module RuboCop
           indent_level(base_line)
         end
 
-        def indent_level(str)
-          indentations = str.lines
-                            .map { |line| line[/^\s*/] }
-                            .reject { |line| line.end_with?("\n") }
-          indentations.empty? ? 0 : indentations.min_by(&:size).size
-        end
-
         # Returns '~', '-' or nil
         def heredoc_indent_type(node)
           node.source[/^<<([~-])/, 1]
