@@ -50,7 +50,7 @@ module RuboCop
 
         def on_new_investigation
           processed_source.comments.each do |comment|
-            next unless (match = line(comment).match(/(?<keyword>\S+).*#/)) && offensive?(comment)
+            next unless offensive?(comment) && (match = line(comment).match(/(?<keyword>\S+).*#/))
 
             register_offense(comment, match[:keyword])
           end
