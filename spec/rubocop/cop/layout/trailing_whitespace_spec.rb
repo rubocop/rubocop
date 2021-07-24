@@ -144,6 +144,49 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       RUBY
     end
 
+    it 'corrects by removing trailing whitespace used for indentation in a heredoc string' do
+      expect_offense(<<~RUBY)
+        x = <<~EXAMPLE
+          no trailing
+         #{trailing_whitespace}
+        ^^ Trailing whitespace detected.
+          no trailing
+        #{trailing_whitespace}
+        ^ Trailing whitespace detected.
+          no trailing
+        EXAMPLE
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<~EXAMPLE
+          no trailing
+
+          no trailing
+
+          no trailing
+        EXAMPLE
+      RUBY
+    end
+
+    it 'corrects a whitespace line in a heredoc string that is longer than the indentation' do
+      expect_offense(<<~RUBY)
+        x = <<~EXAMPLE
+          no trailing
+          #{trailing_whitespace}
+        ^^^ Trailing whitespace detected.
+          no trailing
+        EXAMPLE
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<~EXAMPLE
+          no trailing
+          \#{' '}
+          no trailing
+        EXAMPLE
+      RUBY
+    end
+
     it 'does not correct trailing whitespace in a static heredoc string' do
       expect_offense(<<~RUBY)
         x = <<~'EXAMPLE'
