@@ -2532,7 +2532,7 @@ Naming/HeredocDelimiterNaming:
   Enabled: true
   VersionAdded: '0.50'
   ForbiddenDelimiters:
-    - !ruby/regexp '/(^|\s)(EO[A-Z]{1}|END)(\s|$)/'
+    - !ruby/regexp '/(^|\s)(EO[A-Z]\{1\}|END)(\s|$)/'
 
 Naming/InclusiveLanguage:
   Description: 'Recommend the use of inclusive language instead of problematic terms.'
@@ -3210,7 +3210,7 @@ Style/Copyright:
   Description: 'Include a copyright notice in each file before any code.'
   Enabled: false
   VersionAdded: '0.30'
-  Notice: '^Copyright (\(c\) )?2[0-9]{3} .+'
+  Notice: '^Copyright (\(c\) )?2[0-9]\{3\} .+'
   AutocorrectNotice: ''
 
 Style/DateTime:
@@ -4931,7 +4931,7 @@ Style/WordArray:
   # whose element count is greater than or equal to `MinSize`.
   MinSize: 2
   # The regular expression `WordRegex` decides what is considered a word.
-  WordRegex: !ruby/regexp '/\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/'
+  WordRegex: !ruby/regexp '/\A(?:\p\{Word\}|\p\{Word\}-\p\{Word\}|\n|\t)+\z/'
 
 Style/YodaCondition:
   Description: 'Forbid or enforce yoda conditions.'

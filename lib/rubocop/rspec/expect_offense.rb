@@ -72,8 +72,8 @@ module RuboCop
     #
     #   expect_no_corrections
     #
-    # If your code has variables of different lengths, you can use `%{foo}`,
-    # `^{foo}`, and `_{foo}` to format your template; you can also abbreviate
+    # If your code has variables of different lengths, you can use `%\{foo\}`,
+    # `^\{foo\}`, and `_\{foo\}` to format your template; you can also abbreviate
     # offense messages with `[...]`:
     #
     #   %w[raise fail].each do |keyword|
