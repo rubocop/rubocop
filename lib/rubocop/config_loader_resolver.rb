@@ -108,7 +108,7 @@ module RuboCop
           result.delete(key)
         elsif merge_hashes?(base_hash, derived_hash, key)
           result[key] = merge(base_hash[key], derived_hash[key], **opts)
-        elsif should_union?(base_hash, key, opts[:inherit_mode])
+        elsif should_union?(derived_hash, base_hash, opts[:inherit_mode], key)
           result[key] = base_hash[key] | derived_hash[key]
         elsif opts[:debug]
           warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
@@ -183,11 +183,26 @@ module RuboCop
       local_inherit || hash['inherit_mode'] || {}
     end
 
-    def should_union?(base_hash, key, inherit_mode)
-      base_hash[key].is_a?(Array) &&
-        inherit_mode &&
-        inherit_mode['merge'] &&
-        inherit_mode['merge'].include?(key)
+    def should_union?(derived_hash, base_hash, root_mode, key)
+      return false unless base_hash[key].is_a?(Array)
+
+      derived_mode = derived_hash['inherit_mode']
+      return false if should_override?(derived_mode, key)
+      return true if should_merge?(derived_mode, key)
+
+      base_mode = base_hash['inherit_mode']
+      return false if should_override?(base_mode, key)
+      return true if should_merge?(base_mode, key)
+
+      should_merge?(root_mode, key)
+    end
+
+    def should_merge?(mode, key)
+      mode && mode['merge'] && mode['merge'].include?(key)
+    end
+
+    def should_override?(mode, key)
+      mode && mode['override'] && mode['override'].include?(key)
     end
 
     def merge_hashes?(base_hash, derived_hash, key)
