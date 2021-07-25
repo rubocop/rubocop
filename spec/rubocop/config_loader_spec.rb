@@ -537,6 +537,59 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when inherit_mode is specified for a nested element even ' \
+            'without explicitly specifying `inherit_from`/`inherit_gem`' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', 'rubocop')
+        stub_const('RuboCop::ConfigLoader::DEFAULT_FILE',
+                   File.join('rubocop', 'config', 'default.yml'))
+
+        create_file('rubocop/config/default.yml', <<~YAML)
+          Language:
+            Examples:
+              inherit_mode:
+                merge:
+                  - Regular
+                  - Focused
+              Regular:
+                - it
+              Focused:
+                - fit
+              Skipped:
+                - xit
+              Pending:
+                - pending
+        YAML
+        create_file(file_path, <<~YAML)
+          Language:
+            Examples:
+              inherit_mode:
+                merge:
+                  - Skipped
+                override:
+                  - Focused
+              Regular:
+                - scenario
+              Focused:
+                - fscenario
+              Skipped:
+                - xscenario
+              Pending:
+                - later
+        YAML
+      end
+
+      it 'respects the priority of `inherit_mode`, user-defined first' do
+        examples_configuration = configuration_from_file['Language']['Examples']
+        expect(examples_configuration['Regular']).to contain_exactly('it', 'scenario')
+        expect(examples_configuration['Focused']).to contain_exactly('fscenario')
+        expect(examples_configuration['Skipped']).to contain_exactly('xit', 'xscenario')
+        expect(examples_configuration['Pending']).to contain_exactly('later')
+      end
+    end
+
     context 'when a department is disabled', :restore_registry do
       let(:file_path) { '.rubocop.yml' }
 
