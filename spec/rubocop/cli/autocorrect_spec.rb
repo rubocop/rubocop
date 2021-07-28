@@ -1875,6 +1875,9 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       foo
        .do_something(foo: bar,
                      baz: qux)
+
+      do_something.(foo: bar, baz: qux,
+                    quux: corge)
     RUBY
 
     create_file('.rubocop.yml', <<~YAML)
@@ -1898,6 +1901,9 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       foo
        .do_something(foo: bar,
          baz: qux)
+
+      do_something.(foo: bar, baz: qux,
+        quux: corge)
     RUBY
   end
 
