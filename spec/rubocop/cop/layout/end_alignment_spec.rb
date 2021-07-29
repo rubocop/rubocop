@@ -339,6 +339,31 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         end
       RUBY
     end
+
+    it 'register an offense when using a conditional statement in a method argument and `end` is not aligned' do
+      expect_offense(<<~RUBY)
+        format(
+          case condition
+          when foo
+            bar
+          else
+            baz
+        end, qux
+        ^^^ `end` at 7, 0 is not aligned with `case` at 2, 2.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        format(
+          case condition
+          when foo
+            bar
+          else
+            baz
+          end, qux
+        )
+      RUBY
+    end
   end
 
   context 'correct + opposite' do
