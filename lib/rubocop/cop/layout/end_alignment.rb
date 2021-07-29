@@ -165,7 +165,8 @@ module RuboCop
         end
 
         def alignment_node_for_variable_style(node)
-          return node.parent if node.case_type? && node.argument?
+          return node.parent if node.case_type? && node.argument? &&
+                                node.loc.line == node.parent.loc.line
 
           assignment = assignment_or_operator_method(node)
 
