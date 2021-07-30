@@ -19,6 +19,8 @@ module RuboCop
       # Regex can be specified to identify offenses. Suggestions for replacing a flagged term can
       # be configured and will be displayed as part of the offense message.
       # An AllowedRegex can be specified for a flagged term to exempt allowed uses of the term.
+      # `WholeWord: true` can be set on a flagged term to indicate the cop should only match when
+      # a term matches the whole word (partial matches will not be offenses).
       #
       # @example FlaggedTerms: { whitelist: { Suggestions: ['allowlist'] } }
       #   # Suggest replacing identifier whitelist with allowlist
@@ -56,6 +58,14 @@ module RuboCop
       #   # good
       #   # They had a master's degree
       #
+      # @example FlaggedTerms: { slave: { WholeWord: true } }
+      #   # Specify that only terms that are full matches will be flagged.
+      #
+      #   # bad
+      #   Slave
+      #
+      #   # good (won't be flagged despite containing `slave`)
+      #   TeslaVehicle
       class InclusiveLanguage < Base
         include RangeHelp
 
@@ -123,13 +133,20 @@ module RuboCop
             next if term_definition.nil?
 
             allowed_strings.concat(process_allowed_regex(term_definition['AllowedRegex']))
-            regex_string = ensure_regex_string(term_definition['Regex'] || term)
+            regex_string = ensure_regex_string(extract_regexp(term, term_definition))
             flagged_term_strings << regex_string
 
             add_to_flagged_term_hash(regex_string, term, term_definition)
           end
 
           set_regexes(flagged_term_strings, allowed_strings)
+        end
+
+        def extract_regexp(term, term_definition)
+          return term_definition['Regex'] if term_definition['Regex']
+          return /(?:\b|(?<=[\W_]))#{term}(?:\b|(?=[\W_]))/ if term_definition['WholeWord']
+
+          term
         end
 
         def add_to_flagged_term_hash(regex_string, term, term_definition)
