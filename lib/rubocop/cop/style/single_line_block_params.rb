@@ -109,7 +109,9 @@ module RuboCop
           # we remove any leading underscores before comparing.
           actual_args_no_underscores = actual_args.map { |arg| arg.to_s.sub(/^_+/, '') }
 
-          actual_args_no_underscores == target_args(method_name)
+          # Allow the arguments if the names match but not all are given
+          expected_args = target_args(method_name).first(actual_args_no_underscores.size)
+          actual_args_no_underscores == expected_args
         end
       end
     end

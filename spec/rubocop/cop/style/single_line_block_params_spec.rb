@@ -98,4 +98,43 @@ RSpec.describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
       end
     RUBY
   end
+
+  it 'reports an offense if the names are partially correct' do
+    expect_offense(<<~RUBY)
+      test.reduce(x) { |a, b| foo(a, b) }
+                       ^^^^^^ Name `reduce` block params `|a, e|`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test.reduce(x) { |a, e| foo(a, e) }
+    RUBY
+  end
+
+  it 'reports an offense if the names are in reverse order' do
+    expect_offense(<<~RUBY)
+      test.reduce(x) { |e, a| foo(e, a) }
+                       ^^^^^^ Name `reduce` block params `|a, e|`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test.reduce(x) { |a, e| foo(a, e) }
+    RUBY
+  end
+
+  it 'does not report if the right names are used but not all arguments are given' do
+    expect_no_offenses(<<~RUBY)
+      test.reduce(x) { |a| foo(a) }
+    RUBY
+  end
+
+  it 'reports an offense if the arguments names are wrong and not all arguments are given' do
+    expect_offense(<<~RUBY)
+      test.reduce(x) { |b| foo(b) }
+                       ^^^ Name `reduce` block params `|a|`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test.reduce(x) { |a| foo(a) }
+    RUBY
+  end
 end
