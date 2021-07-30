@@ -191,4 +191,49 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
       end
     RUBY
   end
+
+  it 'does not add extra parens when correcting' do
+    expect_offense(<<~RUBY)
+      def my_method()
+        foo() { yield }
+        ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY, loop: false)
+      def my_method(&block)
+        foo(&block)
+      end
+    RUBY
+  end
+
+  it 'does not add extra parens to `super` when correcting' do
+    expect_offense(<<~RUBY)
+      def my_method
+        super() { yield }
+        ^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY, loop: false)
+      def my_method(&block)
+        super(&block)
+      end
+    RUBY
+  end
+
+  it 'adds to the existing arguments when correcting' do
+    expect_offense(<<~RUBY)
+      def my_method(x)
+        foo(x) { yield }
+        ^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def my_method(x, &block)
+        foo(x, &block)
+      end
+    RUBY
+  end
 end

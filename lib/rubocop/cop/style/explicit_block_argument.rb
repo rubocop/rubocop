@@ -93,16 +93,41 @@ module RuboCop
 
         def add_block_argument(node, corrector)
           if node.arguments?
-            last_arg = node.arguments.last
-            arg_range = range_with_surrounding_comma(last_arg.source_range, :right)
-            replacement = ' &block'
-            replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
-            corrector.insert_after(arg_range, replacement) unless last_arg.blockarg_type?
-          elsif node.call_type? || node.zsuper_type?
-            corrector.insert_after(node, '(&block)')
+            insert_argument(node, corrector)
+          elsif empty_arguments?(node)
+            corrector.replace(node.arguments, '(&block)')
+          elsif call_like?(node)
+            correct_call_node(node, corrector)
           else
             corrector.insert_after(node.loc.name, '(&block)')
           end
+        end
+
+        def empty_arguments?(node)
+          # Is there an arguments node with only parentheses?
+          node.arguments.is_a?(RuboCop::AST::Node) && node.arguments.loc.begin
+        end
+
+        def call_like?(node)
+          node.call_type? || node.zsuper_type? || node.super_type?
+        end
+
+        def insert_argument(node, corrector)
+          last_arg = node.arguments.last
+          arg_range = range_with_surrounding_comma(last_arg.source_range, :right)
+          replacement = ' &block'
+          replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
+          corrector.insert_after(arg_range, replacement) unless last_arg.blockarg_type?
+        end
+
+        def correct_call_node(node, corrector)
+          corrector.insert_after(node, '(&block)')
+          return unless node.parenthesized?
+
+          args_begin = Util.args_begin(node)
+          args_end = Util.args_end(node)
+          range = range_between(args_begin.begin_pos, args_end.end_pos)
+          corrector.remove(range)
         end
 
         def block_body_range(block_node, send_node)
