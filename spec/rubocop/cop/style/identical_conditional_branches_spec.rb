@@ -382,4 +382,16 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
       RUBY
     end
   end
+
+  context 'with a ternary' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        x ? y : y
+                ^ Move `y` out of the conditional.
+            ^ Move `y` out of the conditional.
+      RUBY
+
+      expect_no_corrections
+    end
+  end
 end

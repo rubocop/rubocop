@@ -134,11 +134,13 @@ module RuboCop
           expressions.size > 1 && expressions.uniq.one?
         end
 
-        def check_expressions(node, expressions, insert_position)
+        def check_expressions(node, expressions, insert_position) # rubocop:disable Metrics/MethodLength
           inserted_expression = false
 
           expressions.each do |expression|
             add_offense(expression) do |corrector|
+              next if node.if_type? && node.ternary?
+
               range = range_by_whole_lines(expression.source_range, include_final_newline: true)
               corrector.remove(range)
               next if inserted_expression
