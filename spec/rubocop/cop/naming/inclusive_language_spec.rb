@@ -71,6 +71,35 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
         RUBY
       end
     end
+
+    context 'WholeWord: true' do
+      let(:cop_config) do
+        { 'CheckStrings' => true, 'FlaggedTerms' => { 'slave' => { 'WholeWord' => true } } }
+      end
+
+      it 'only flags when the term is a whole word' do
+        expect_offense(<<~RUBY)
+          # infix allowed
+          TeslaVehicle
+          SLAVersion
+          :teslavehicle
+
+          # prefix allowed
+          DatabaseSlave
+
+          # suffix allowed
+          Slave1
+
+          # not allowed
+          Slave
+          ^^^^^ Consider replacing problematic term 'Slave'.
+          :database_slave
+                    ^^^^^ Consider replacing problematic term 'slave'.
+          'database@slave'
+                    ^^^^^ Consider replacing problematic term 'slave'.
+        RUBY
+      end
+    end
   end
 
   context 'allowed use' do

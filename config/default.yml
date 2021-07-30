@@ -2557,6 +2557,7 @@ Naming/InclusiveLanguage:
         - denylist
         - block
     slave:
+      WholeWord: true
       Suggestions: ['replica', 'secondary', 'follower']
 
 Naming/MemoizedInstanceVariableName:
