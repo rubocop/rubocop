@@ -135,12 +135,20 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
     end
   end
 
-  it 'accepts rdoc syntax' do
-    expect_no_offenses(<<~RUBY)
-      #++
-      #--
-      #:nodoc:
-    RUBY
+  describe 'RDoc syntax' do
+    it 'does not register an offense when using `#++` or `#--`' do
+      expect_no_offenses(<<~RUBY)
+        #++
+        #--
+      RUBY
+    end
+
+    it 'registers an offense when starting `:`' do
+      expect_offense(<<~RUBY)
+        #:nodoc:
+        ^^^^^^^^ Missing space after `#`.
+      RUBY
+    end
   end
 
   it 'accepts sprockets directives' do
