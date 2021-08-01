@@ -50,7 +50,7 @@ module RuboCop
       #   spec.add_dependency 'rubocop'
       #   # For tests
       #   spec.add_dependency 'rspec'
-      class OrderedDependencies < Cop
+      class OrderedDependencies < Cop # rubocop:disable InternalAffairs/InheritDeprecatedCopClass
         include ConfigurableEnforcedStyle
         include OrderedGemNode
 
