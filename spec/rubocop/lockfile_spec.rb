@@ -62,7 +62,9 @@ RSpec.describe RuboCop::Lockfile, :isolated_environment do
 
     it_behaves_like 'error states'
 
-    it 'returns all the dependencies' do
+    # FIXME: Remove `broken_on: windows` when `undefined method `add_dependency_names'
+    #        for nil:NilClass` error of Bundler 2.2.5 on Windows will be resolved.
+    it 'returns all the dependencies', broken_on: :windows do
       expect(names).to contain_exactly('dep', 'rake', 'rspec')
     end
 
@@ -80,7 +82,9 @@ RSpec.describe RuboCop::Lockfile, :isolated_environment do
 
     it_behaves_like 'error states'
 
-    it 'returns all the dependencies' do
+    # FIXME: Remove `broken_on: windows` when `undefined method `add_dependency_names'
+    #        for nil:NilClass` error of Bundler 2.2.5 on Windows will be resolved.
+    it 'returns all the dependencies', broken_on: :windows do
       expect(names).to contain_exactly('dep', 'dep2', 'dep3', 'rake', 'rspec')
     end
 
@@ -94,19 +98,25 @@ RSpec.describe RuboCop::Lockfile, :isolated_environment do
   describe '#includes_gem?' do
     subject { super().includes_gem?(name) }
 
-    context 'for an included dependency' do
+    # FIXME: Remove `broken_on: windows` when `undefined method `add_dependency_names'
+    #        for nil:NilClass` error of Bundler 2.2.5 on Windows will be resolved.
+    context 'for an included dependency', broken_on: :windows do
       let(:name) { 'rake' }
 
       it { is_expected.to eq(true) }
     end
 
-    context 'for an included gem' do
+    # FIXME: Remove `broken_on: windows` when `undefined method `add_dependency_names'
+    #        for nil:NilClass` error of Bundler 2.2.5 on Windows will be resolved.
+    context 'for an included gem', broken_on: :windows do
       let(:name) { 'dep2' }
 
       it { is_expected.to eq(true) }
     end
 
-    context 'for an excluded gem' do
+    # FIXME: Remove `broken_on: windows` when `undefined method `add_dependency_names'
+    #        for nil:NilClass` error of Bundler 2.2.5 on Windows will be resolved.
+    context 'for an excluded gem', broken_on: :windows do
       let(:name) { 'other' }
 
       it { is_expected.to eq(false) }
