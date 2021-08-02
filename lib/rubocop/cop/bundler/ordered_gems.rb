@@ -24,7 +24,7 @@ module RuboCop
       #   gem 'rubocop'
       #   # For tests
       #   gem 'rspec'
-      class OrderedGems < Cop
+      class OrderedGems < Cop # rubocop:disable InternalAffairs/InheritDeprecatedCopClass
         include ConfigurableEnforcedStyle
         include OrderedGemNode
 

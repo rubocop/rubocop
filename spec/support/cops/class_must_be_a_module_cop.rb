@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Test
-      class ClassMustBeAModuleCop < RuboCop::Cop::Cop
+      class ClassMustBeAModuleCop < RuboCop::Cop::Cop # rubocop:disable InternalAffairs/InheritDeprecatedCopClass
         def on_class(node)
           add_offense(node, message: 'Class must be a Module')
         end
