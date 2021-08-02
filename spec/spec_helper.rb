@@ -77,6 +77,4 @@ RSpec.configure do |config|
   if %w[jruby-9.2-ascii_spec jruby-9.2-spec].include? ENV['CIRCLE_STAGE']
     config.filter_run_excluding broken_on: :jruby
   end
-
-  config.filter_run_excluding(broken_on: :windows) if RuboCop::Platform.windows?
 end
