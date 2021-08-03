@@ -902,7 +902,10 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
 
       def func
-        x; y; rescue StandardError; z
+        x
+        y
+      rescue StandardError
+        z
       end
 
       def method
@@ -1285,7 +1288,8 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     exit_status = cli.run(
       %w[--auto-correct-all --format offenses --only] << %w[
         SingleLineMethods Semicolon EmptyLineBetweenDefs
-        DefWithParentheses TrailingWhitespace
+        DefWithParentheses TrailingWhitespace TrailingBodyOnMethodDefinition
+        DefEndAlignment IndentationConsistency
       ].join(',')
     )
     expect(exit_status).to eq(0)
@@ -1302,13 +1306,16 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
 
-      6   Layout/TrailingWhitespace
+      4   Layout/TrailingWhitespace
       3   Style/Semicolon
+      2   Layout/IndentationConsistency
       2   Style/SingleLineMethods
+      1   Layout/DefEndAlignment
       1   Layout/EmptyLineBetweenDefs
       1   Style/DefWithParentheses
+      1   Style/TrailingBodyOnMethodDefinition
       --
-      13  Total
+      15  Total
 
     RESULT
   end
@@ -1529,16 +1536,11 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         log.debug(foo)
       end
     RUBY
-    corrected = <<~RUBY
-      func a do b end
-      Signal.trap('TERM') { system(cmd); exit }
-      def self.some_method(foo, bar: 1)
-        log.debug(foo)
-      end
-    RUBY
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
         TargetRubyVersion: 2.5
+      Style/Semicolon:
+        AutoCorrect: false
     YAML
     create_file('example.rb', src)
     exit_status = cli.run(
@@ -1547,7 +1549,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     )
     expect(exit_status).to eq(1)
     expect($stderr.string).to eq('')
-    expect(File.read('example.rb')).to eq(corrected)
+    expect(File.read('example.rb')).to eq(src)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
       C:  1:  8: Style/BlockDelimiters: Prefer {...} over do...end for single-line blocks.
@@ -2154,6 +2156,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         "b": 2,
         "c-d": 3
       }
+    RUBY
+  end
+
+  it 'avoids adding extra spaces when both `Style/Semicolon` and `Style/SingleLineMethods`' \
+     'both apply' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def foo(a) x(1); y(2); z(3); end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Style/Semicolon:
+        AllowAsExpressionSeparator: false
+    YAML
+
+    status = cli.run(
+      %w[--auto-correct --only] << %w[
+        Semicolon SingleLineMethods TrailingBodyOnMethodDefinition
+        DefEndAlignment TrailingWhitespace IndentationConsistency
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      def foo(a)
+        x(1)
+        y(2)
+        z(3)
+      end
     RUBY
   end
 end
