@@ -362,7 +362,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accpets a guard clause when the next line is `ensure`' do
+  it 'accepts a guard clause when the next line is `ensure`' do
     expect_no_offenses(<<~RUBY)
       def foo
         begin
@@ -374,7 +374,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accpets a guard clause when the next line is `rescue`-`else`' do
+  it 'accepts a guard clause when the next line is `rescue`-`else`' do
     expect_no_offenses(<<~RUBY)
       def foo
         begin
@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accpets a guard clause when the next line is `elsif`' do
+  it 'accepts a guard clause when the next line is `elsif`' do
     expect_no_offenses(<<~RUBY)
       def foo
         if cond
@@ -438,7 +438,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accpets a guard clause that is after a multiline heredoc with chained calls' do
+  it 'accepts a guard clause that is after a multiline heredoc with chained calls' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, <<~END.squish.it.good unless guard
@@ -451,7 +451,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'accpets a guard clause that is after a multiline heredoc nested argument call' do
+  it 'accepts a guard clause that is after a multiline heredoc nested argument call' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, call(<<~END.squish) unless guard
