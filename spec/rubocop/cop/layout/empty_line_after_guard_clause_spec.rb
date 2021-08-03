@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
+  it 'does not register an offense when the clause is not followed by other code' do
+    expect_no_offenses(<<~RUBY)
+      return unless item.positive?
+    RUBY
+  end
+
   it 'registers an offense and corrects a guard clause not followed by empty line' do
     expect_offense(<<~RUBY)
       def foo
@@ -557,6 +563,42 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
         MSG
 
         baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when there are multiple clauses on the same line' do
+    expect_no_offenses(<<~RUBY)
+      def foo(item)
+        return unless item.positive?; item * 2
+      end
+    RUBY
+  end
+
+  it 'registers an offense when the clause ends with a semicolon but the next clause is on the next line' do
+    expect_offense(<<~RUBY)
+      def foo(item)
+        return unless item.positive?;
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        item * 2
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo(item)
+        return unless item.positive?;
+
+        item * 2
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the clause ends with a semicolon but is followed by a newline' do
+    expect_no_offenses(<<~RUBY)
+      def foo(item)
+        return unless item.positive?;
+
+        item * 2
       end
     RUBY
   end
