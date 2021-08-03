@@ -32,6 +32,10 @@ module RuboCop
 
         MSG = 'Do not use semicolons to terminate expressions.'
 
+        def self.autocorrect_incompatible_with
+          [Style::SingleLineMethods]
+        end
+
         def on_new_investigation
           return if processed_source.blank?
 
@@ -50,7 +54,7 @@ module RuboCop
             # potential offense
             next unless expr_on_line.size > 1
 
-            find_semicolon_positions(line) { |pos| register_semicolon(line, pos, false) }
+            find_semicolon_positions(line) { |pos| register_semicolon(line, pos, true) }
           end
         end
 
@@ -60,7 +64,7 @@ module RuboCop
           # Make the obvious check first
           return unless processed_source.raw_source.include?(';')
 
-          each_semicolon { |line, column| register_semicolon(line, column, true) }
+          each_semicolon { |line, column| register_semicolon(line, column, false) }
         end
 
         def each_semicolon
@@ -74,12 +78,15 @@ module RuboCop
           processed_source.tokens.group_by(&:line)
         end
 
-        def register_semicolon(line, column, autocorrect)
+        def register_semicolon(line, column, after_expression)
           range = source_range(processed_source.buffer, line, column)
-          # Don't attempt to autocorrect if semicolon is separating statements
-          # on the same line
+
           add_offense(range) do |corrector|
-            corrector.remove(range) if autocorrect
+            if after_expression
+              corrector.replace(range, "\n")
+            else
+              corrector.remove(range)
+            end
           end
         end
 
