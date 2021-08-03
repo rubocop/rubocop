@@ -96,7 +96,7 @@ module RuboCop
         MSG_MISSING = 'Use def with parentheses when there are parameters.'
 
         def on_def(node)
-          return if node.endless?
+          return if forced_parentheses?(node)
 
           args = node.arguments
 
@@ -127,6 +127,15 @@ module RuboCop
           leading_space = range_between(args_with_space.begin_pos, arguments_range.begin_pos)
           corrector.replace(leading_space, '(')
           corrector.insert_after(arguments_range, ')')
+        end
+
+        def forced_parentheses?(node)
+          # Regardless of style, parentheses are necessary for:
+          # 1. Endless methods
+          # 2. Argument lists containing a `forward-arg` (`...`)
+          # Removing the parens would be a syntax error here.
+
+          node.endless? || node.arguments.any?(&:forward_arg_type?)
         end
 
         def require_parentheses?(args)

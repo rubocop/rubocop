@@ -91,6 +91,14 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def self.test param; end
       RUBY
     end
+
+    it 'requires parens for forwarding', :ruby27 do
+      expect_no_offenses(<<~RUBY)
+        def foo(...)
+          bar(...)
+        end
+      RUBY
+    end
   end
 
   shared_examples 'endless methods' do
@@ -110,6 +118,12 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       it 'accepts parens for method calls inside an endless method' do
         expect_no_offenses(<<~RUBY)
           def foo(x) = bar(x)
+        RUBY
+      end
+
+      it 'accepts parens with `forward-arg`' do
+        expect_no_offenses(<<~RUBY)
+          def foo(...)= bar(...)
         RUBY
       end
     end
