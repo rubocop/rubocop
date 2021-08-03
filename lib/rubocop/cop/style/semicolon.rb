@@ -35,35 +35,22 @@ module RuboCop
         def on_new_investigation
           return if processed_source.blank?
 
-          @processed_source = processed_source
-
           check_for_line_terminator_or_opener
         end
 
-        def on_begin(node) # rubocop:todo Metrics/CyclomaticComplexity
+        def on_begin(node)
           return if cop_config['AllowAsExpressionSeparator']
 
           exprs = node.children
 
           return if exprs.size < 2
 
-          # create a map matching lines to the number of expressions on them
-          exprs_lines = exprs.map(&:first_line)
-          lines = exprs_lines.group_by(&:itself)
-
-          lines.each do |line, expr_on_line|
+          expressions_per_line(exprs).each do |line, expr_on_line|
             # Every line with more than one expression on it is a
             # potential offense
             next unless expr_on_line.size > 1
 
-            # TODO: Find the correct position of the semicolon. We don't know
-            # if the first semicolon on the line is a separator of
-            # expressions. It's just a guess.
-            column = @processed_source[line - 1].index(';')
-
-            next unless column
-
-            convention_on(line, column, false)
+            find_semicolon_positions(line) { |pos| register_semicolon(line, pos, false) }
           end
         end
 
@@ -71,9 +58,9 @@ module RuboCop
 
         def check_for_line_terminator_or_opener
           # Make the obvious check first
-          return unless @processed_source.raw_source.include?(';')
+          return unless processed_source.raw_source.include?(';')
 
-          each_semicolon { |line, column| convention_on(line, column, true) }
+          each_semicolon { |line, column| register_semicolon(line, column, true) }
         end
 
         def each_semicolon
@@ -84,15 +71,29 @@ module RuboCop
         end
 
         def tokens_for_lines
-          @processed_source.tokens.group_by(&:line)
+          processed_source.tokens.group_by(&:line)
         end
 
-        def convention_on(line, column, autocorrect)
-          range = source_range(@processed_source.buffer, line, column)
+        def register_semicolon(line, column, autocorrect)
+          range = source_range(processed_source.buffer, line, column)
           # Don't attempt to autocorrect if semicolon is separating statements
           # on the same line
           add_offense(range) do |corrector|
             corrector.remove(range) if autocorrect
+          end
+        end
+
+        def expressions_per_line(exprs)
+          # create a map matching lines to the number of expressions on them
+          exprs_lines = exprs.map(&:first_line)
+          exprs_lines.group_by(&:itself)
+        end
+
+        def find_semicolon_positions(line)
+          # Scan for all the semicolons on the line
+          semicolons = processed_source[line - 1].enum_for(:scan, ';')
+          semicolons.each do
+            yield Regexp.last_match.begin(0)
           end
         end
       end
