@@ -117,6 +117,8 @@ module RuboCop
           ancestor_node = ancestor_node(node)
 
           return ancestor_node if ancestor_node.nil? || ancestor_node.kwbegin_type?
+          return if ancestor_node.respond_to?(:send_node) &&
+                    aligned_with_line_break_method?(ancestor_node, node)
 
           assignment_node = assignment_node(ancestor_node)
           return assignment_node if same_line?(ancestor_node, assignment_node)
@@ -129,6 +131,24 @@ module RuboCop
 
         def ancestor_node(node)
           node.each_ancestor(*ANCESTOR_TYPES).first
+        end
+
+        def aligned_with_line_break_method?(ancestor_node, node)
+          send_node_loc = ancestor_node.send_node.loc
+          do_keyword_line = ancestor_node.loc.begin.line
+          rescue_keyword_column = node.loc.keyword.column
+          selector = send_node_loc.selector
+
+          if send_node_loc.respond_to?(:dot) && (dot = send_node_loc.dot) &&
+             aligned_with_leading_dot?(do_keyword_line, dot, rescue_keyword_column)
+            return true
+          end
+
+          do_keyword_line == selector.line && rescue_keyword_column == selector.column
+        end
+
+        def aligned_with_leading_dot?(do_keyword_line, dot, rescue_keyword_column)
+          do_keyword_line == dot.line && rescue_keyword_column == dot.column
         end
 
         def assignment_node(node)
