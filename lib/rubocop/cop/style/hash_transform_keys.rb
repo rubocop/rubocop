@@ -27,10 +27,7 @@ module RuboCop
       #   {a: 1, b: 2}.transform_keys { |k| k.to_s }
       class HashTransformKeys < Base
         include HashTransformMethod
-        extend TargetRubyVersion
         extend AutoCorrector
-
-        minimum_target_ruby_version 2.5
 
         # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN

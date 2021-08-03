@@ -310,13 +310,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         RUBY
       end
 
-      context 'target_ruby_version >= 2.5', :ruby25 do
-        it 'accepts key access to hash' do
-          expect_no_offenses(<<~RUBY)
-            hash[key] { 10 / 0 }
-              .fmap { |x| x * 3 }
-          RUBY
-        end
+      it 'accepts key access to hash' do
+        expect_no_offenses(<<~RUBY)
+          hash[key] { 10 / 0 }
+            .fmap { |x| x * 3 }
+        RUBY
       end
 
       it 'accepts 3 aligned methods' do
