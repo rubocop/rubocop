@@ -449,6 +449,28 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
+  it 'accepts aligned rescue with do-end block that line break with leading dot for method calls' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'accepts aligned rescue with do-end block that line break with trailing dot for method calls' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
   it 'accepts aligned rescue do-end block assigned to local variable' do
     expect_no_offenses(<<~RUBY)
       result = [1, 2, 3].map do |el|
