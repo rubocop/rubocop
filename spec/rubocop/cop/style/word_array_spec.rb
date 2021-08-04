@@ -317,6 +317,34 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       _investigate(cop2, parse_source('%w(a b c)'))
       expect(cop2.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent', 'MinSize' => 3)
     end
+
+    it 'registers an offense for a %w() array containing spaces' do
+      expect_offense(<<~'RUBY')
+        %w(one\ two three\ four)
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ['one two', 'three four']
+      RUBY
+    end
+
+    it 'does not register an offense for a %w() array containing non word characters' do
+      expect_no_offenses(<<~RUBY)
+        %w(% %i %I %q %Q %r %s %w %W %x)
+      RUBY
+    end
+
+    it 'corrects properly when there is an extra trailing comma' do
+      expect_offense(<<~RUBY)
+        A = ["one", "two",]
+            ^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        A = %w(one two)
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is array' do
@@ -336,6 +364,10 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
 
     it 'does not register an offense for arrays of strings with hyphens' do
       expect_no_offenses("['foo', 'bar', 'foo-bar']")
+    end
+
+    it 'does not register an offense for arrays of strings with spaces' do
+      expect_no_offenses("['foo bar', 'baz quux']")
     end
 
     it 'registers an offense for a %w() array' do
