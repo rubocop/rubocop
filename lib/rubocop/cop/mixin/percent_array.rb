@@ -18,13 +18,14 @@ module RuboCop
           !parent.parenthesized? && parent&.block_literal?
       end
 
+      # Override to determine values that are invalid in a percent array
+      def invalid_percent_array_contents?(_node)
+        false
+      end
+
       def allowed_bracket_array?(node)
         comments_in_array?(node) || below_array_length?(node) ||
           invalid_percent_array_context?(node)
-      end
-
-      def message(_node)
-        style == :percent ? self.class::PERCENT_MSG : self.class::ARRAY_MSG
       end
 
       def comments_in_array?(node)
@@ -35,9 +36,11 @@ module RuboCop
       def check_percent_array(node)
         array_style_detected(:percent, node.values.size)
 
-        return unless style == :brackets
+        return unless style == :brackets || invalid_percent_array_contents?(node)
 
-        add_offense(node) { |corrector| correct_bracketed(corrector, node) }
+        add_offense(node, message: self.class::ARRAY_MSG) do |corrector|
+          correct_bracketed(corrector, node)
+        end
       end
 
       def check_bracketed_array(node, literal_prefix)
@@ -47,7 +50,7 @@ module RuboCop
 
         return unless style == :percent
 
-        add_offense(node) do |corrector|
+        add_offense(node, message: self.class::PERCENT_MSG) do |corrector|
           percent_literal_corrector = PercentLiteralCorrector.new(@config, @preferred_delimiters)
           percent_literal_corrector.correct(corrector, node, literal_prefix)
         end

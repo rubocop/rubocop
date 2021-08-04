@@ -9,6 +9,9 @@ module RuboCop
       # Alternatively, it can check for uses of the %w() syntax, in projects
       # which do not want to include that syntax.
       #
+      # NOTE: When using the `percent` style, %w() arrays containing a space
+      # will be registered as offenses.
+      #
       # Configuration option: MinSize
       # If set, arrays with fewer elements than this value will not trigger the
       # cop. For example, a `MinSize` of `3` will not enforce a style on an
@@ -21,12 +24,18 @@ module RuboCop
       #   # bad
       #   ['foo', 'bar', 'baz']
       #
+      #   # bad (contains spaces)
+      #   %w[foo\ bar baz\ quux]
+      #
       # @example EnforcedStyle: brackets
       #   # good
       #   ['foo', 'bar', 'baz']
       #
       #   # bad
       #   %w[foo bar baz]
+      #
+      #   # good (contains spaces)
+      #   ['foo bar', 'baz quux']
       class WordArray < Base
         include ArrayMinSize
         include ArraySyntax
@@ -53,11 +62,20 @@ module RuboCop
 
         private
 
-        def complex_content?(strings)
+        def complex_content?(strings, complex_regex: word_regex)
           strings.any? do |s|
+            next unless s.str_content
+
             string = s.str_content.dup.force_encoding(::Encoding::UTF_8)
-            !string.valid_encoding? || !word_regex.match?(string) || / /.match?(string)
+            !string.valid_encoding? ||
+              (complex_regex && !complex_regex.match?(string)) ||
+              / /.match?(string)
           end
+        end
+
+        def invalid_percent_array_contents?(node)
+          # Disallow %w() arrays that contain invalid encoding or spaces
+          complex_content?(node.values, complex_regex: false)
         end
 
         def word_regex

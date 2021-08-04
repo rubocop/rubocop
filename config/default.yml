@@ -4921,7 +4921,7 @@ Style/WordArray:
   StyleGuide: '#percent-w'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '0.36'
+  VersionChanged: '<<next>>'
   EnforcedStyle: percent
   SupportedStyles:
     # percent style: %w(word1 word2)
