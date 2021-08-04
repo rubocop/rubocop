@@ -27,6 +27,12 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
     RUBY
   end
 
+  it 'ignores safe navigation on block methods' do
+    expect_no_offenses(<<~RUBY)
+      foo.bar && foo&.baz { |a| a }
+    RUBY
+  end
+
   it 'registers an offense and corrects using safe navigation on the left of &&' do
     expect_offense(<<~RUBY)
       foo&.bar && foo.baz
@@ -199,5 +205,135 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
     expect_correction(<<~RUBY)
       foo&.bar && foo&.baz || foo&.qux
     RUBY
+  end
+
+  context 'when ShortCircuit is true' do
+    let(:cop_config) { { 'ShortCircuit' => true } }
+
+    it 'registers an offense and corrects using safe navigation on both sides of &&' do
+      expect_offense(<<~RUBY)
+        foo&.bar && foo&.baz
+        ^^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects using safe navigation on the right of &&' do
+      expect_offense(<<~RUBY)
+        foo.bar && foo&.baz
+        ^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+      RUBY
+    end
+
+    it 'registers an offense using safe navigation on the left of ||' do
+      expect_offense(<<~RUBY)
+        foo&.bar || foo.baz
+        ^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+    end
+
+    it 'allows using safe navigation on the left of &&' do
+      expect_no_offenses(<<~RUBY)
+        foo&.bar && foo.baz
+      RUBY
+    end
+
+    it 'registers an offense and corrects using safe navigation on the right of ||' do
+      expect_offense(<<~RUBY)
+        foo.bar || foo&.baz
+        ^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects when there is code before or after the condition' do
+      expect_offense(<<~RUBY)
+        foo = nil
+        foo.bar || foo&.baz
+        ^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+        something
+      RUBY
+    end
+
+    it 'registers an offense but does not correct non dot method calls in or' do
+      expect_offense(<<~RUBY)
+        foo > 5 || foo&.zero?
+        ^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'ignores assignment type calls' do
+      expect_no_offenses(<<~RUBY)
+        (foo += 1) && foo&.even?
+      RUBY
+    end
+
+    it 'ignores direct assignment' do
+      expect_no_offenses(<<~RUBY)
+        foo.even? && foo = 2
+      RUBY
+    end
+
+    it 'registers an offense and corrects assignment' do
+      expect_offense(<<~RUBY)
+        (foo.baz = 1) && foo&.bar
+         ^^^^^^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects using safe navigation inside of separated conditions' do
+      expect_offense(<<~RUBY)
+        foo.bar && foobar.baz && foo&.qux
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects using safe navigation in conditions ' \
+       'on the right hand side' do
+      expect_offense(<<~RUBY)
+        foobar.baz && foo.bar && foo&.qux
+                      ^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+      RUBY
+    end
+
+    it 'registers and corrects multiple offenses' do
+      expect_offense(<<~RUBY)
+        foobar.baz && foo.bar && foo&.qux && foo.foobar
+                      ^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects using unsafe navigation with both && and ||' do
+      expect_offense(<<~RUBY)
+        foo.bar && foo.baz || foo&.qux
+        ^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects using unsafe navigation with grouped conditions' do
+      expect_offense(<<~RUBY)
+        foo.bar && (foo&.baz || foo.qux)
+        ^^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects using unsafe navigation and safe navigation in a group' do
+      expect_offense(<<~RUBY)
+        (foo.bar && foo&.baz) || foo.qux
+         ^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+    end
+
+    it 'registers an offense and corrects when safe navigation is used multiple times' do
+      expect_offense(<<~RUBY)
+        foo.bar && foo&.baz || foo&.qux
+        ^^^^^^^^^^^^^^^^^^^ Only use safe navigation for the first operand of `&&`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure that safe navigation is used consistently inside of `&&` and `||`.
+      RUBY
+    end
   end
 end

@@ -2246,7 +2246,8 @@ Lint/SafeNavigationConsistency:
                  for all method calls on that same object.
   Enabled: true
   VersionAdded: '0.55'
-  VersionChanged: '0.77'
+  VersionChanged: '1.26'
+  ShortCircuit: false
   AllowedMethods:
     - present?
     - blank?
