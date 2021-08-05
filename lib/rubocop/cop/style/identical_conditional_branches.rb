@@ -124,14 +124,21 @@ module RuboCop
           return if branches.any?(&:nil?)
 
           tails = branches.map { |branch| tail(branch) }
-          check_expressions(node, tails, :after_condition) if duplicated_expressions?(tails)
+          check_expressions(node, tails, :after_condition) if duplicated_expressions?(node, tails)
 
           heads = branches.map { |branch| head(branch) }
-          check_expressions(node, heads, :before_condition) if duplicated_expressions?(heads)
+          check_expressions(node, heads, :before_condition) if duplicated_expressions?(node, heads)
         end
 
-        def duplicated_expressions?(expressions)
-          expressions.size > 1 && expressions.uniq.one?
+        def duplicated_expressions?(node, expressions)
+          unique_expressions = expressions.uniq
+          return false unless expressions.size >= 1 && unique_expressions.one?
+
+          unique_expression = unique_expressions.first
+          return true unless unique_expression.assignment?
+
+          lhs = unique_expression.child_nodes.first
+          node.condition.child_nodes.none? { |n| n.source == lhs.source if n.variable? }
         end
 
         def check_expressions(node, expressions, insert_position) # rubocop:disable Metrics/MethodLength

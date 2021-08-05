@@ -96,6 +96,21 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on if..else with identical bodies and assigning to a variable used in `if` condition' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        x = 0
+        if x == 0
+          x += 1
+          foo
+        else
+          x += 1
+          bar
+        end
+      RUBY
+    end
+  end
+
   context 'on case with identical bodies' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
@@ -233,6 +248,22 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on case..when with identical bodies and assigning to a variable used in `case` condition' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        x = 0
+        case x
+        when 1
+          x += 1
+          foo
+        when 42
+          x += 1
+          bar
+        end
+      RUBY
+    end
+  end
+
   context 'when using pattern matching', :ruby27 do
     context 'on case-match with identical bodies' do
       it 'registers an offense and corrects' do
@@ -258,6 +289,22 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
           end
           do_x
         RUBY
+      end
+
+      context 'on case..in with identical bodies and assigning to a variable used in `case` condition' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            x = 0
+            case x
+            in 1
+              x += 1
+              foo
+            in 42
+              x += 1
+              bar
+            end
+          RUBY
+        end
       end
     end
 
