@@ -206,6 +206,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     expect_no_offenses('[1, 2, 3].sort.first(1)')
   end
 
+  # Some gems like mongo provides sort method with an argument
+  it 'does not register an offense when sort has an argument' do
+    expect_no_offenses('mongo_client["users"].find.sort(_id: 1).first')
+  end
+
   it 'does not register an offense for sort!.first' do
     expect_no_offenses('[1, 2, 3].sort!.first')
   end
@@ -239,6 +244,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
 
     it 'does not register an offense when at(-2) is called on sort_by' do
       expect_no_offenses('[1, 2, 3].sort_by(&:foo).at(-2)')
+    end
+
+    it 'does not register an offense when [-1] is called on sort with an argument' do
+      expect_no_offenses('mongo_client["users"].find.sort(_id: 1)[-1]')
     end
   end
 

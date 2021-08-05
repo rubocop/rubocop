@@ -60,8 +60,8 @@ module RuboCop
         # @!method redundant_sort?(node)
         def_node_matcher :redundant_sort?, <<~MATCHER
           {
-            (send $(send _ $:sort ...) ${:last :first})
-            (send $(send _ $:sort ...) ${:[] :at :slice} {(int 0) (int -1)})
+            (send $(send _ $:sort) ${:last :first})
+            (send $(send _ $:sort) ${:[] :at :slice} {(int 0) (int -1)})
 
             (send $(send _ $:sort_by _) ${:last :first})
             (send $(send _ $:sort_by _) ${:[] :at :slice} {(int 0) (int -1)})
