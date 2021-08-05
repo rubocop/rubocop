@@ -64,4 +64,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon, :config do
       end
     end
   end
+
+  context 'heredocs' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        <<~STR ; x = 1
+              ^ Space found before semicolon.
+          text
+        STR
+      RUBY
+
+      expect_correction(<<~RUBY)
+        <<~STR; x = 1
+          text
+        STR
+      RUBY
+    end
+  end
 end
