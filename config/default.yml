@@ -1434,6 +1434,13 @@ Lint/AmbiguousOperator:
   VersionAdded: '0.17'
   VersionChanged: '0.83'
 
+Lint/AmbiguousRange:
+  Description: Checks for ranges with ambiguous boundaries.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  SafeAutoCorrect: false
+  RequireParenthesesForMethodChains: false
+
 Lint/AmbiguousRegexpLiteral:
   Description: >-
                  Checks for ambiguous regexp literals in the first argument of
