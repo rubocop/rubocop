@@ -43,12 +43,12 @@ module RuboCop
         MSG_SPACE = 'No space inside parentheses detected.'
 
         def on_new_investigation
-          @processed_source = processed_source
+          tokens = processed_source.sorted_tokens
 
           if style == :space
-            process_with_space_style(processed_source)
+            process_with_space_style(tokens)
           else
-            each_extraneous_space(processed_source.tokens) do |range|
+            each_extraneous_space(tokens) do |range|
               add_offense(range) do |corrector|
                 corrector.remove(range)
               end
@@ -58,8 +58,8 @@ module RuboCop
 
         private
 
-        def process_with_space_style(processed_source)
-          processed_source.tokens.each_cons(2) do |token1, token2|
+        def process_with_space_style(tokens)
+          tokens.each_cons(2) do |token1, token2|
             each_extraneous_space_in_empty_parens(token1, token2) do |range|
               add_offense(range) do |corrector|
                 corrector.remove(range)

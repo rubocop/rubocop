@@ -21,6 +21,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
       RUBY
     end
 
+    it 'registers an offense for space around heredoc start' do
+      expect_offense(<<~'RUBY')
+        f( <<~HEREDOC )
+                     ^ Space inside parentheses detected.
+          ^ Space inside parentheses detected.
+          This is my text
+        HEREDOC
+      RUBY
+
+      expect_correction(<<~RUBY)
+        f(<<~HEREDOC)
+          This is my text
+        HEREDOC
+      RUBY
+    end
+
     it 'accepts parentheses in block parameter list' do
       expect_no_offenses(<<~RUBY)
         list.inject(Tms.new) { |sum, (label, item)|
@@ -90,6 +106,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
       expect_correction(<<~RUBY)
         list.inject( Tms.new ) { |sum, ( label, item )|
         }
+      RUBY
+    end
+
+    it 'registers an offense for no space around heredoc start' do
+      expect_offense(<<~RUBY)
+        f(<<~HEREDOC)
+                    ^ No space inside parentheses detected.
+          ^ No space inside parentheses detected.
+          This is my text
+        HEREDOC
+      RUBY
+
+      expect_correction(<<~RUBY)
+        f( <<~HEREDOC )
+          This is my text
+        HEREDOC
       RUBY
     end
 
