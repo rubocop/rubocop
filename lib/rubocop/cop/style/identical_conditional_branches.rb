@@ -7,6 +7,22 @@ module RuboCop
       # each branch of a conditional expression. Such expressions should normally
       # be placed outside the conditional expression - before or after it.
       #
+      # This cop is marked unsafe auto-correction as the order of method invocations
+      # must be guaranteed in the following case:
+      #
+      # [source,ruby]
+      # ----
+      # if method_that_modifies_global_state # 1
+      #   method_that_relies_on_global_state # 2
+      #   foo                                # 3
+      # else
+      #   method_that_relies_on_global_state # 2
+      #   bar                                # 3
+      # end
+      # ----
+      #
+      # In such a case, auto-correction may change the invocation order.
+      #
       # NOTE: The cop is poorly named and some people might think that it actually
       # checks for duplicated conditional branches. The name will probably be changed
       # in a future major RuboCop release.

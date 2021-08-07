@@ -3604,8 +3604,9 @@ Style/IdenticalConditionalBranches:
                  line at the end of each branch, which can validly be moved
                  out of the conditional.
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.36'
-  VersionChanged: '1.16'
+  VersionChanged: '<<next>>'
 
 Style/IfInsideElse:
   Description: 'Finds if nodes inside else, which can be converted to elsif.'
