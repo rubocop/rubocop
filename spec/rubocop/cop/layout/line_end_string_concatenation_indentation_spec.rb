@@ -48,29 +48,6 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
       RUBY
     end
 
-    it 'registers an offense for unaligned strings in hash literal values' do
-      expect_offense(<<~'RUBY')
-        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
-          'they span more than one line.',
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align parts of a string concatenated with backslash.
-                     SeparatorAlignment => 'Align the separators of a hash ' \
-                       'literal if they span more than one line.',
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align parts of a string concatenated with backslash.
-                     TableAlignment => 'Align the keys and values of a hash ' \
-                       'literal if they span more than one line.' }.freeze
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align parts of a string concatenated with backslash.
-      RUBY
-
-      expect_correction(<<~'RUBY')
-        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
-                                     'they span more than one line.',
-                     SeparatorAlignment => 'Align the separators of a hash ' \
-                                           'literal if they span more than one line.',
-                     TableAlignment => 'Align the keys and values of a hash ' \
-                                       'literal if they span more than one line.' }.freeze
-      RUBY
-    end
-
     it 'accepts indented strings in implicit return statement of a method definition' do
       expect_no_offenses(<<~'RUBY')
         def some_method
@@ -216,6 +193,29 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
       end
     end
 
+    it 'registers an offense for unaligned strings in hash literal values' do
+      expect_offense(<<~'RUBY')
+        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
+          'they span more than one line.',
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align parts of a string concatenated with backslash.
+                     SeparatorAlignment => 'Align the separators of a hash ' \
+                       'literal if they span more than one line.',
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align parts of a string concatenated with backslash.
+                     TableAlignment => 'Align the keys and values of a hash ' \
+                       'literal if they span more than one line.' }.freeze
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align parts of a string concatenated with backslash.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
+                                     'they span more than one line.',
+                     SeparatorAlignment => 'Align the separators of a hash ' \
+                                           'literal if they span more than one line.',
+                     TableAlignment => 'Align the keys and values of a hash ' \
+                                       'literal if they span more than one line.' }.freeze
+      RUBY
+    end
+
     it 'registers an offense for indented string' do
       expect_offense(<<~'RUBY')
         puts 'a' \
@@ -284,6 +284,29 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
           expect_correction(indented_strings)
         end
       end
+    end
+
+    it 'registers an offense for aligned strings in hash literal values' do
+      expect_offense(<<~'RUBY')
+        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
+                                     'they span more than one line.',
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent the first part of a string concatenated with backslash.
+                     SeparatorAlignment => 'Align the separators of a hash ' \
+                                           'literal if they span more than one line.',
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent the first part of a string concatenated with backslash.
+                     TableAlignment => 'Align the keys and values of a hash ' \
+                                       'literal if they span more than one line.' }.freeze
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent the first part of a string concatenated with backslash.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
+                       'they span more than one line.',
+                     SeparatorAlignment => 'Align the separators of a hash ' \
+                       'literal if they span more than one line.',
+                     TableAlignment => 'Align the keys and values of a hash ' \
+                       'literal if they span more than one line.' }.freeze
+      RUBY
     end
 
     it 'registers an offense for aligned string' do
