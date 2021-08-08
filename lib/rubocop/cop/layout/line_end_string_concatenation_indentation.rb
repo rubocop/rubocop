@@ -11,8 +11,7 @@ module RuboCop
       # concatenated string parts shall be indented regardless of `EnforcedStyle` configuration.
       #
       # If `EnforcedStyle: indented` is set, it's the second line that shall be indented one step
-      # more than the first line. Lines 3 and forward shall be aligned with line 2. Here too there
-      # are exceptions. Values in a hash literal are always aligned.
+      # more than the first line. Lines 3 and forward shall be aligned with line 2.
       #
       # @example
       #   # bad
@@ -34,28 +33,43 @@ module RuboCop
       #       'z'
       #   end
       #
-      #   my_hash = {
-      #     first: 'a message' \
-      #            'in two parts'
-      #   }
-      #
       # @example EnforcedStyle: aligned (default)
       #   # bad
       #   puts 'x' \
       #     'y'
       #
+      #   my_hash = {
+      #     first: 'a message' \
+      #       'in two parts'
+      #   }
+      #
       #   # good
       #   puts 'x' \
       #        'y'
+      #
+      #   my_hash = {
+      #     first: 'a message' \
+      #            'in two parts'
+      #   }
       #
       # @example EnforcedStyle: indented
       #   # bad
       #   result = 'x' \
       #            'y'
       #
+      #   my_hash = {
+      #     first: 'a message' \
+      #            'in two parts'
+      #   }
+      #
       #   # good
       #   result = 'x' \
       #     'y'
+      #
+      #   my_hash = {
+      #     first: 'a message' \
+      #       'in two parts'
+      #   }
       #
       class LineEndStringConcatenationIndentation < Base
         include ConfigurableEnforcedStyle
@@ -70,7 +84,7 @@ module RuboCop
           return unless strings_concatenated_with_backslash?(node)
 
           children = node.children
-          if style == :aligned && !always_indented?(node) || always_aligned?(node)
+          if style == :aligned && !always_indented?(node)
             check_aligned(children, 1)
           else
             check_indented(children)
@@ -94,10 +108,6 @@ module RuboCop
           PARENT_TYPES_FOR_INDENTED.include?(dstr_node.parent&.type)
         end
 
-        def always_aligned?(dstr_node)
-          dstr_node.parent&.pair_type?
-        end
-
         def check_aligned(children, start_index)
           base_column = children[start_index - 1].loc.column
           children[start_index..-1].each do |child|
@@ -108,9 +118,18 @@ module RuboCop
         end
 
         def check_indented(children)
-          base_column = children[0].source_range.source_line =~ /\S/
-          @column_delta = base_column + configured_indentation_width - children[1].loc.column
+          @column_delta = base_column(children[0]) + configured_indentation_width -
+                          children[1].loc.column
           add_offense_and_correction(children[1], MSG_INDENT) if @column_delta != 0
+        end
+
+        def base_column(child)
+          grandparent = child.parent.parent
+          if grandparent&.type == :pair
+            grandparent.loc.column
+          else
+            child.source_range.source_line =~ /\S/
+          end
         end
 
         def add_offense_and_correction(node, message)
