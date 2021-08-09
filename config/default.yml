@@ -3155,8 +3155,9 @@ Style/CommentAnnotation:
 Style/CommentedKeyword:
   Description: 'Do not place comments on the same line as certain keywords.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.51'
-  VersionChanged: '1.7'
+  VersionChanged: '<<next>>'
 
 Style/ConditionalAssignment:
   Description: >-
