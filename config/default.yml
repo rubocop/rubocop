@@ -1824,7 +1824,6 @@ Lint/MultipleComparison:
   Enabled: true
   VersionAdded: '0.47'
   VersionChanged: '1.1'
-  AllowMethodComparison: true
 
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
@@ -3931,6 +3930,7 @@ Style/MultipleComparison:
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '1.1'
+  AllowMethodComparison: true
 
 Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
@@ -4154,6 +4154,7 @@ Style/OptionHash:
     - args
     - params
     - parameters
+  Allowlist: []
 
 Style/OptionalArguments:
   Description: >-
