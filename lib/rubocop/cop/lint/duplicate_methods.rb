@@ -135,11 +135,14 @@ module RuboCop
         def found_instance_method(node, name)
           return unless (scope = node.parent_module_name)
 
-          if scope =~ /\A#<Class:(.*)>\Z/
-            found_method(node, "#{Regexp.last_match(1)}.#{name}")
-          else
-            found_method(node, "#{scope}##{name}")
-          end
+          # Humanize the scope
+          scope = scope.sub(
+            /(?:(?<name>.*)::)#<Class:\k<name>>|#<Class:(?<name>.*)>(?:::)?/,
+            '\k<name>.'
+          )
+          scope << '#' unless scope.end_with?('.')
+
+          found_method(node, "#{scope}#{name}")
         end
 
         def found_method(node, method_name)
