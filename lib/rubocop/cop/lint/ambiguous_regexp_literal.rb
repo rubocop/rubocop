@@ -46,12 +46,11 @@ module RuboCop
           node = processed_source.ast.each_node(:regexp).find do |regexp_node|
             regexp_node.source_range.begin_pos == diagnostic.location.begin_pos
           end
-
           find_offense_node(node.parent, node)
         end
 
         def find_offense_node(node, regexp_receiver)
-          return node unless node.parent
+          return node if first_argument_is_regexp?(node) || !node.parent
 
           if (node.parent.send_type? && node.receiver) ||
              method_chain_to_regexp_receiver?(node, regexp_receiver)
@@ -59,6 +58,10 @@ module RuboCop
           end
 
           node
+        end
+
+        def first_argument_is_regexp?(node)
+          node.send_type? && node.first_argument&.regexp_type?
         end
 
         def method_chain_to_regexp_receiver?(node, regexp_receiver)

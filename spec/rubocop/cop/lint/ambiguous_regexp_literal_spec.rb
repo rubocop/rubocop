@@ -127,6 +127,17 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral, :config do
           end
         RUBY
       end
+
+      it 'registers an offense and corrects when using nested method arguments without parentheses' do
+        expect_offense(<<~RUBY)
+          puts line.grep /pattern/
+                         ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          puts line.grep(/pattern/)
+        RUBY
+      end
     end
 
     context 'with parentheses' do
