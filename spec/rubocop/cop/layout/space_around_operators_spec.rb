@@ -955,4 +955,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
   end
+
+  describe 'when Layout/ExtraSpacing has `ForceEqualSignAlignment` configured to true' do
+    let(:other_cops) do
+      { 'Layout/ExtraSpacing' => { 'Enabled' => true, 'ForceEqualSignAlignment' => true } }
+    end
+
+    it 'allows variables to be aligned' do
+      expect_no_offenses(<<~RUBY)
+        first  = {
+          x: y
+        }.freeze
+        second = true
+      RUBY
+    end
+
+    it 'allows constants to be aligned' do
+      expect_no_offenses(<<~RUBY)
+        FIRST  = {
+          x: y
+        }.freeze
+        SECOND = true
+      RUBY
+    end
+  end
 end

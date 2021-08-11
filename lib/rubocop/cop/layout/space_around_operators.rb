@@ -108,6 +108,14 @@ module RuboCop
           check_operator(:assignment, node.loc.operator, rhs.source_range)
         end
 
+        def on_casgn(node)
+          _, _, right, = *node
+
+          return unless right
+
+          check_operator(:assignment, node.loc.operator, right.source_range)
+        end
+
         def on_binary(node)
           _, rhs, = *node
 
@@ -134,7 +142,6 @@ module RuboCop
         alias on_and      on_binary
         alias on_lvasgn   on_assignment
         alias on_masgn    on_assignment
-        alias on_casgn    on_special_asgn
         alias on_ivasgn   on_assignment
         alias on_cvasgn   on_assignment
         alias on_gvasgn   on_assignment
