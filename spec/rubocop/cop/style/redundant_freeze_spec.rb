@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
     expect_no_offenses('TOP_TEST = Something.new.freeze')
   end
 
-  context 'when the receiver is a frozen string literal' do
+  context 'when the receiver is a string literal' do
     # TODO : It is not yet decided when frozen string will be the default.
     # It has been abandoned in the Ruby 3.0 period, but may default in
     # the long run. So these tests are left with a provisional value of 4.0.
