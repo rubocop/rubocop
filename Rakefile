@@ -22,12 +22,7 @@ require 'rubocop/rake_task'
 Dir['tasks/**/*.rake'].each { |t| load t }
 
 desc 'Run RuboCop over itself'
-RuboCop::RakeTask.new(:internal_investigation).tap do |task|
-  if RUBY_ENGINE == 'ruby' &&
-     !/mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os'])
-    task.options = %w[--parallel]
-  end
-end
+RuboCop::RakeTask.new(:internal_investigation)
 
 task default: %i[documentation_syntax_check spec ascii_spec internal_investigation]
 

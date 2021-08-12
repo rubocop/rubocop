@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
               -P, --[no-]parallel              Use available CPUs to execute inspection in
-                                               parallel. Default is false.
+                                               parallel. Default is true.
               -l, --lint                       Run only lint cops.
               -x, --fix-layout                 Run only layout cops, with auto-correct on.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
