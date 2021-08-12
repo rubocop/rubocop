@@ -700,6 +700,11 @@ of comments...
 Check for uses of braces or do/end around single line or
 multi-line blocks.
 
+Methods that can be either procedural or functional and cannot be
+categorised from their usage alone is ignored.
+`lambda`, `proc`, and `it` are their defaults.
+Additional methods can be added to the `IgnoredMethods`.
+
 === Examples
 
 ==== EnforcedStyle: line_count_based (default)
@@ -844,6 +849,20 @@ sig {
 }
 def bar(foo)
   puts foo
+end
+----
+
+==== IgnoredMethods: ['lambda', 'proc', 'it' ] (default)
+
+[source,ruby]
+----
+# good
+foo = lambda do |x|
+  puts "Hello, #{x}"
+end
+
+foo = lambda do |x|
+  x * 100
 end
 ----
 
@@ -1832,9 +1851,9 @@ annotation.
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.51
-| 1.7
+| 1.19
 |===
 
 This cop checks for comments put on the same line as some keywords.
@@ -1846,6 +1865,7 @@ are allowed.
 
 Auto-correction removes comments from `end` keyword and keeps comments
 for `class`, `module`, `def` and `begin` above the keyword.
+It is marked as unsafe auto-correction as it may remove meaningful comments.
 
 === Examples
 
@@ -4613,8 +4633,6 @@ syntax hashes
 
 == Style/HashTransformKeys
 
-NOTE: Required Ruby version: 2.5
-
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
@@ -4698,14 +4716,30 @@ Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.36
-| 1.16
+| 1.19
 |===
 
 This cop checks for identical expressions at the beginning or end of
 each branch of a conditional expression. Such expressions should normally
 be placed outside the conditional expression - before or after it.
+
+This cop is marked unsafe auto-correction as the order of method invocations
+must be guaranteed in the following case:
+
+[source,ruby]
+----
+if method_that_modifies_global_state # 1
+  method_that_relies_on_global_state # 2
+  foo                                # 3
+else
+  method_that_relies_on_global_state # 2
+  bar                                # 3
+end
+----
+
+In such a case, auto-correction may change the invocation order.
 
 NOTE: The cop is poorly named and some people might think that it actually
 checks for duplicated conditional branches. The name will probably be changed
@@ -6032,6 +6066,9 @@ return foo.minmax
 
 Checks for `if` expressions that do not have an `else` branch.
 
+NOTE: Pattern matching is allowed to have no `else` branch because unlike `if` and `case`,
+it raises `NoMatchingPatternError` if the pattern doesn't match and without having `else`.
+
 Supported styles are: if, case, both.
 
 === Examples
@@ -6807,6 +6844,16 @@ foo if a == b.lightweight || a == b.heavyweight
 # good
 foo if [b.lightweight, b.heavyweight].include?(a)
 ----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowMethodComparison
+| `true`
+| Boolean
+|===
 
 == Style/MutableConstant
 
@@ -7872,6 +7919,10 @@ end
 
 | SuspiciousParamNames
 | `options`, `opts`, `args`, `params`, `parameters`
+| Array
+
+| Allowlist
+| `[]`
 | Array
 |===
 
@@ -9379,6 +9430,37 @@ foo.concat(ary)
 self.foo += ary
 ----
 
+== Style/RedundantSelfAssignmentBranch
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.19
+| -
+|===
+
+This cop checks for places where conditional branch makes redundant self-assignment.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo = condition ? bar : foo
+
+# good
+foo = bar if condition
+
+# bad
+foo = condition ? foo : bar
+
+# good
+foo = bar unless condition
+----
+
 == Style/RedundantSort
 
 |===
@@ -10475,6 +10557,9 @@ end
 |===
 
 This cop looks for uses of Perl-style global variables.
+Correcting to global variables in the 'English' library
+will add a require statement to the top of the file if
+enabled by RequireEnglish config.
 
 === Examples
 
@@ -10483,6 +10568,8 @@ This cop looks for uses of Perl-style global variables.
 [source,ruby]
 ----
 # good
+require 'English' # or this could be in another file.
+
 puts $LOAD_PATH
 puts $LOADED_FEATURES
 puts $PROGRAM_NAME
@@ -10532,6 +10619,10 @@ puts $*
 
 |===
 | Name | Default value | Configurable values
+
+| RequireEnglish
+| `true`
+| Boolean
 
 | EnforcedStyle
 | `use_english_names`
@@ -12380,7 +12471,7 @@ end
 
 === References
 
-* https://rubystyle.guide#one-line-cases
+* https://rubystyle.guide#no-when-semicolons
 
 == Style/WhileUntilDo
 
@@ -12492,7 +12583,7 @@ end
 | Yes
 | Yes
 | 0.9
-| 0.36
+| 1.19
 |===
 
 This cop can check for array literals made up of word-like
@@ -12500,6 +12591,9 @@ strings, that are not using the %w() syntax.
 
 Alternatively, it can check for uses of the %w() syntax, in projects
 which do not want to include that syntax.
+
+NOTE: When using the `percent` style, %w() arrays containing a space
+will be registered as offenses.
 
 Configuration option: MinSize
 If set, arrays with fewer elements than this value will not trigger the
@@ -12517,6 +12611,9 @@ array of 2 or fewer elements.
 
 # bad
 ['foo', 'bar', 'baz']
+
+# bad (contains spaces)
+%w[foo\ bar baz\ quux]
 ----
 
 ==== EnforcedStyle: brackets
@@ -12528,6 +12625,9 @@ array of 2 or fewer elements.
 
 # bad
 %w[foo bar baz]
+
+# good (contains spaces)
+['foo bar', 'baz quux']
 ----
 
 === Configurable attributes

@@ -1437,7 +1437,7 @@ Lint/AmbiguousOperator:
 Lint/AmbiguousRange:
   Description: Checks for ranges with ambiguous boundaries.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.19'
   SafeAutoCorrect: false
   RequireParenthesesForMethodChains: false
 
@@ -3164,7 +3164,7 @@ Style/CommentedKeyword:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.51'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.19'
 
 Style/ConditionalAssignment:
   Description: >-
@@ -3613,7 +3613,7 @@ Style/IdenticalConditionalBranches:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.36'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.19'
 
 Style/IfInsideElse:
   Description: 'Finds if nodes inside else, which can be converted to elsif.'
@@ -4418,7 +4418,7 @@ Style/RedundantSelfAssignment:
 Style/RedundantSelfAssignmentBranch:
   Description: 'Checks for places where conditional branch makes redundant self-assignment.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.19'
 
 Style/RedundantSort:
   Description: >-
@@ -4936,7 +4936,7 @@ Style/WordArray:
   StyleGuide: '#percent-w'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.19'
   EnforcedStyle: percent
   SupportedStyles:
     # percent style: %w(word1 word2)
