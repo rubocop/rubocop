@@ -106,20 +106,40 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
     end
 
-    context 'when the frozen string literal comment is missing' do
-      it_behaves_like 'mutable objects', '"#{a}"'
+    context 'Ruby 3.0 or higher', :ruby30 do
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
     end
 
-    context 'when the frozen string literal comment is true' do
-      let(:prefix) { '# frozen_string_literal: true' }
+    context 'Ruby 2.7 or lower', :ruby27 do
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
 
-      it_behaves_like 'immutable objects', '"#{a}"'
-    end
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
 
-    context 'when the frozen string literal comment is false' do
-      let(:prefix) { '# frozen_string_literal: false' }
+        it_behaves_like 'immutable objects', '"#{a}"'
+      end
 
-      it_behaves_like 'mutable objects', '"#{a}"'
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
     end
   end
 
