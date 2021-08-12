@@ -37,9 +37,7 @@ module RuboCop
           node = strip_parenthesis(node)
 
           return true if node.immutable_literal?
-
-          return true if FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
-                         frozen_string_literals_enabled?
+          return true if frozen_string_literal?(node)
 
           target_ruby_version >= 3.0 && (node.regexp_type? || node.range_type?)
         end

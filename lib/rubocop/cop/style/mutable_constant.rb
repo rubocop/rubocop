@@ -151,8 +151,8 @@ module RuboCop
           range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
           return unless mutable_literal?(value) ||
                         target_ruby_version <= 2.7 && range_enclosed_in_parentheses
-          return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
-                    frozen_string_literals_enabled?
+
+          return if frozen_string_literal?(value)
           return if shareable_constant_value?(value)
 
           add_offense(value) { |corrector| autocorrect(corrector, value) }
@@ -181,10 +181,6 @@ module RuboCop
 
         def immutable_literal?(node)
           frozen_regexp_or_range_literals?(node) || node.immutable_literal?
-        end
-
-        def frozen_string_literal?(node)
-          FROZEN_STRING_LITERAL_TYPES.include?(node.type) && frozen_string_literals_enabled?
         end
 
         def shareable_constant_value?(node)
