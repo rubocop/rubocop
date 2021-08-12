@@ -415,4 +415,51 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       end
     RUBY
   end
+
+  it 'accepts when one-liner `begin` block has multiple statements with modifier condition' do
+    expect_no_offenses(<<~RUBY)
+      begin foo; bar; end unless condition
+    RUBY
+  end
+
+  it 'accepts when multi-line `begin` block has multiple statements with modifier condition' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        foo; bar
+      end unless condition
+    RUBY
+  end
+
+  it 'reports an offense when one-liner `begin` block has single statement with modifier condition' do
+    expect_offense(<<~RUBY)
+      begin foo end unless condition
+      ^^^^^ Redundant `begin` block detected.
+    RUBY
+
+    expect_correction(" foo  unless condition\n")
+  end
+
+  it 'reports an offense when multi-line `begin` block has single statement with modifier condition' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        foo
+      end unless condition
+    RUBY
+
+    expect_correction("\n  foo unless condition\n")
+  end
+
+  it 'reports an offense when multi-line `begin` block has single statement and it is inside condition' do
+    expect_offense(<<~RUBY)
+      unless condition
+        begin
+        ^^^^^ Redundant `begin` block detected.
+          foo
+        end
+      end
+    RUBY
+
+    expect_correction("unless condition\n  \n    foo\n  \nend\n")
+  end
 end

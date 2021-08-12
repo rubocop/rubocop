@@ -84,6 +84,7 @@ module RuboCop
 
         def on_kwbegin(node)
           return if empty_begin?(node) ||
+                    begin_block_has_multiline_statements?(node) ||
                     contain_rescue_or_ensure?(node) ||
                     valid_context_using_only_begin?(node)
 
@@ -102,6 +103,9 @@ module RuboCop
               corrector.remove(offense_range)
             end
 
+            if use_modifier_form_after_multiline_begin_block?(node)
+              correct_modifier_form_after_multiline_begin_block(corrector, node)
+            end
             corrector.remove(node.loc.end)
           end
         end
@@ -127,8 +131,29 @@ module RuboCop
           corrector.insert_before(node.parent, comments) unless comments.blank?
         end
 
+        def use_modifier_form_after_multiline_begin_block?(node)
+          return unless (parent = node.parent)
+
+          node.multiline? && parent.if_type? && parent.modifier_form?
+        end
+
+        def correct_modifier_form_after_multiline_begin_block(corrector, node)
+          condition_range = condition_range(node.parent)
+
+          corrector.insert_after(node.children.first, " #{condition_range.source}")
+          corrector.remove(range_by_whole_lines(condition_range, include_final_newline: true))
+        end
+
+        def condition_range(node)
+          range_between(node.loc.keyword.begin_pos, node.condition.source_range.end_pos)
+        end
+
         def empty_begin?(node)
           node.children.empty?
+        end
+
+        def begin_block_has_multiline_statements?(node)
+          node.children.count >= 2
         end
 
         def contain_rescue_or_ensure?(node)
