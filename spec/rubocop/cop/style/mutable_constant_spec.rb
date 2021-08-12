@@ -80,6 +80,49 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     it_behaves_like 'immutable objects', "::ENV['foo']"
   end
 
+  shared_examples 'string literal' do
+    # TODO : It is not yet decided when frozen string will be the default.
+    # It has been abandoned in the Ruby 3.0 period, but may default in
+    # the long run. So these tests are left with a provisional value of 4.0.
+    if RuboCop::TargetRuby.supported_versions.include?(4.0)
+      context 'when the target ruby version >= 4.0' do
+        let(:ruby_version) { 4.0 }
+
+        context 'when the frozen string literal comment is missing' do
+          it_behaves_like 'immutable objects', '"#{a}"'
+        end
+
+        context 'when the frozen string literal comment is true' do
+          let(:prefix) { '# frozen_string_literal: true' }
+
+          it_behaves_like 'immutable objects', '"#{a}"'
+        end
+
+        context 'when the frozen string literal comment is false' do
+          let(:prefix) { '# frozen_string_literal: false' }
+
+          it_behaves_like 'immutable objects', '"#{a}"'
+        end
+      end
+    end
+
+    context 'when the frozen string literal comment is missing' do
+      it_behaves_like 'mutable objects', '"#{a}"'
+    end
+
+    context 'when the frozen string literal comment is true' do
+      let(:prefix) { '# frozen_string_literal: true' }
+
+      it_behaves_like 'immutable objects', '"#{a}"'
+    end
+
+    context 'when the frozen string literal comment is false' do
+      let(:prefix) { '# frozen_string_literal: false' }
+
+      it_behaves_like 'mutable objects', '"#{a}"'
+    end
+  end
+
   context 'Strict: false' do
     let(:cop_config) { { 'EnforcedStyle' => 'literals' } }
 
@@ -294,48 +337,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
     end
 
-    context 'when the constant is a frozen string literal' do
-      # TODO : It is not yet decided when frozen string will be the default.
-      # It has been abandoned in the Ruby 3.0 period, but may default in
-      # the long run. So these tests are left with a provisional value of 4.0.
-      if RuboCop::TargetRuby.supported_versions.include?(4.0)
-        context 'when the target ruby version >= 4.0' do
-          let(:ruby_version) { 4.0 }
-
-          context 'when the frozen string literal comment is missing' do
-            it_behaves_like 'immutable objects', '"#{a}"'
-          end
-
-          context 'when the frozen string literal comment is true' do
-            let(:prefix) { '# frozen_string_literal: true' }
-
-            it_behaves_like 'immutable objects', '"#{a}"'
-          end
-
-          context 'when the frozen string literal comment is false' do
-            let(:prefix) { '# frozen_string_literal: false' }
-
-            it_behaves_like 'immutable objects', '"#{a}"'
-          end
-        end
-      end
-
-      context 'when the frozen string literal comment is missing' do
-        it_behaves_like 'mutable objects', '"#{a}"'
-      end
-
-      context 'when the frozen string literal comment is true' do
-        let(:prefix) { '# frozen_string_literal: true' }
-
-        it_behaves_like 'immutable objects', '"#{a}"'
-      end
-
-      context 'when the frozen string literal comment is false' do
-        let(:prefix) { '# frozen_string_literal: false' }
-
-        it_behaves_like 'mutable objects', '"#{a}"'
-      end
-    end
+    it_behaves_like 'string literal'
   end
 
   context 'Strict: true' do
@@ -558,20 +560,6 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       RUBY
     end
 
-    context 'when the frozen string literal comment is missing' do
-      it_behaves_like 'mutable objects', '"#{a}"'
-    end
-
-    context 'when the frozen string literal comment is true' do
-      let(:prefix) { '# frozen_string_literal: true' }
-
-      it_behaves_like 'immutable objects', '"#{a}"'
-    end
-
-    context 'when the frozen string literal comment is false' do
-      let(:prefix) { '# frozen_string_literal: false' }
-
-      it_behaves_like 'mutable objects', '"#{a}"'
-    end
+    it_behaves_like 'string literal'
   end
 end
