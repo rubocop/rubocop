@@ -5,6 +5,9 @@ module RuboCop
     module Style
       # This cop checks for places where conditional branch makes redundant self-assignment.
       #
+      # It only detects local variable because it may replace state of instance variable,
+      # class variable, and global variable that have state across methods with `nil`.
+      #
       # @example
       #
       #   # bad
@@ -44,10 +47,6 @@ module RuboCop
             register_offense(expression, else_branch, if_branch, 'if')
           end
         end
-
-        alias on_ivasgn on_lvasgn
-        alias on_cvasgn on_lvasgn
-        alias on_gvasgn on_lvasgn
 
         private
 
