@@ -44,7 +44,7 @@ module RuboCop
         extend AutoCorrector
 
         PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'
-        ARRAY_MSG = 'Use `[]` for an array of words.'
+        ARRAY_MSG = 'Use `%<prefer>s` for an array of words.'
 
         class << self
           attr_accessor :largest_brackets
@@ -82,7 +82,7 @@ module RuboCop
           Regexp.new(cop_config['WordRegex'])
         end
 
-        def correct_bracketed(corrector, node)
+        def build_bracketed_array(node)
           words = node.children.map do |word|
             if word.dstr_type?
               string_literal = to_string_literal(word.source)
@@ -93,7 +93,7 @@ module RuboCop
             end
           end
 
-          corrector.replace(node, "[#{words.join(', ')}]")
+          "[#{words.join(', ')}]"
         end
       end
     end
