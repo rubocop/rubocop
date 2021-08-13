@@ -125,36 +125,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when self-assigning redundant else ternary branch for ivar' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when self-assigning redundant else ternary branch for ivar' do
+    expect_no_offenses(<<~RUBY)
       @foo = condition ? @bar : @foo
-                                ^^^^ Remove the self-assignment branch.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      @foo = @bar if condition
     RUBY
   end
 
-  it 'registers and corrects an offense when self-assigning redundant else ternary branch for cvar' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when self-assigning redundant else ternary branch for cvar' do
+    expect_no_offenses(<<~RUBY)
       @@foo = condition ? @@bar : @@foo
-                                  ^^^^^ Remove the self-assignment branch.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      @@foo = @@bar if condition
     RUBY
   end
 
-  it 'registers and corrects an offense when self-assigning redundant else ternary branch for gvar' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when self-assigning redundant else ternary branch for gvar' do
+    expect_no_offenses(<<~RUBY)
       $foo = condition ? $bar : $foo
-                                ^^^^ Remove the self-assignment branch.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      $foo = $bar if condition
     RUBY
   end
 
