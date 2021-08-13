@@ -38,8 +38,11 @@ module RuboCop
 
         return unless style == :brackets || invalid_percent_array_contents?(node)
 
-        add_offense(node, message: self.class::ARRAY_MSG) do |corrector|
-          correct_bracketed(corrector, node)
+        bracketed_array = build_bracketed_array(node)
+        message = format(self.class::ARRAY_MSG, prefer: bracketed_array)
+
+        add_offense(node, message: message) do |corrector|
+          corrector.replace(node, bracketed_array)
         end
       end
 

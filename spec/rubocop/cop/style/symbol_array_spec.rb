@@ -201,7 +201,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     it 'registers an offense for array starting with %i' do
       expect_offense(<<~RUBY)
         %i(one two three)
-        ^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
+        ^^^^^^^^^^^^^^^^^ Use `[:one, :two, :three]` for an array of symbols.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     it 'autocorrects an array starting with %i' do
       expect_offense(<<~RUBY)
         %i(one @two $three four-five)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[:one, :@two, :$three, :'four-five']` for an array of symbols.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -223,7 +223,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     it 'autocorrects an array has interpolations' do
       expect_offense(<<~'RUBY')
         %I(#{foo} #{foo}bar foo#{bar} foo)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[]` for an array of symbols.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[:"#{foo}", :"#{foo}bar", :"foo#{bar}", :foo]` for an array of symbols.
       RUBY
 
       expect_correction(<<~'RUBY')
