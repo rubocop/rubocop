@@ -62,7 +62,7 @@ module RuboCop
         def end_of_method_definition?(node)
           return false unless (def_node = find_def_node_from_ascendant(node))
 
-          last_child = def_node.child_nodes.last
+          last_child = find_last_child(def_node.body)
 
           last_child.last_line == node.last_line
         end
@@ -72,6 +72,17 @@ module RuboCop
           return parent if parent.def_type? || parent.defs_type?
 
           find_def_node_from_ascendant(node.parent)
+        end
+
+        def find_last_child(node)
+          case node.type
+          when :rescue
+            find_last_child(node.body)
+          when :ensure
+            find_last_child(node.child_nodes.first)
+          else
+            node.child_nodes.last
+          end
         end
       end
     end
