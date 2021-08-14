@@ -8,7 +8,7 @@ module RuboCop
 
       # @api private
       def department_to_basename(department)
-        "cops_#{department.downcase}"
+        "cops_#{department.to_s.downcase.tr('/', '_')}"
       end
 
       # @api private
