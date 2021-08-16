@@ -2192,4 +2192,38 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'properly corrects when `Style/SoleNestedConditional` and one of '\
+     '`Style/NegatedIf` or `Style/NegatedUnless` detect offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      if !foo?
+        if bar?
+          do_something
+        end
+      end
+
+      unless !foo?
+        if bar?
+          do_something
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--auto-correct --only] << %w[
+        NegatedIf NegatedUnless SoleNestedConditional
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      if !foo? && bar?
+          do_something
+        end
+
+      if !!foo? && bar?
+          do_something
+        end
+    RUBY
+  end
 end
