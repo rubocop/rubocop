@@ -326,6 +326,26 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/SoleNestedConditional` with `Style/NegatedIf`' do
+    source = <<~RUBY
+      if !foo.nil?
+        if foo.do_something == bar
+          baz
+        end
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only', 'Style/NegatedIf,Style/SoleNestedConditional'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if !foo.nil? && (foo.do_something == bar)
+          baz
+        end
+    RUBY
+  end
+
   it 'corrects `Style/SoleNestedConditional` with `Style/InverseMethods` and `Style/IfUnlessModifier`' do
     source = <<~RUBY
       unless foo.to_s == 'foo'
