@@ -143,7 +143,7 @@ module RuboCop
       PENDING_BANNER = <<~BANNER
         The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
 
-        Please also note that can also opt-in to new cops by default by adding this to your config:
+        Please also note that you can opt-in to new cops by default by adding this to your config:
           AllCops:
             NewCops: enable
       BANNER
