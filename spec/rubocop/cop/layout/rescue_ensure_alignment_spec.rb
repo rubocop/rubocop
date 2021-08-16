@@ -769,6 +769,37 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
+  context 'when using zsuper with block' do
+    it 'registers and corrects an offense and corrects when incorrect alignment' do
+      expect_offense(<<~RUBY)
+        super do
+          nil
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `super do` at 1, 0.
+          nil
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        super do
+          nil
+        ensure
+          nil
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when correct alignment' do
+      expect_no_offenses(<<~RUBY)
+        super do
+          nil
+        ensure
+          nil
+        end
+      RUBY
+    end
+  end
+
   describe 'excluded file', :config do
     let(:config) do
       RuboCop::Config.new('Layout/RescueEnsureAlignment' =>

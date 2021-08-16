@@ -137,17 +137,18 @@ module RuboCop
           send_node_loc = ancestor_node.send_node.loc
           do_keyword_line = ancestor_node.loc.begin.line
           rescue_keyword_column = node.loc.keyword.column
-          selector = send_node_loc.selector
+          selector = send_node_loc.respond_to?(:selector) ? send_node_loc.selector : send_node_loc
 
-          if send_node_loc.respond_to?(:dot) && (dot = send_node_loc.dot) &&
-             aligned_with_leading_dot?(do_keyword_line, dot, rescue_keyword_column)
+          if aligned_with_leading_dot?(do_keyword_line, send_node_loc, rescue_keyword_column)
             return true
           end
 
           do_keyword_line == selector.line && rescue_keyword_column == selector.column
         end
 
-        def aligned_with_leading_dot?(do_keyword_line, dot, rescue_keyword_column)
+        def aligned_with_leading_dot?(do_keyword_line, send_node_loc, rescue_keyword_column)
+          return false unless send_node_loc.respond_to?(:dot) && (dot = send_node_loc.dot)
+
           do_keyword_line == dot.line && rescue_keyword_column == dot.column
         end
 
