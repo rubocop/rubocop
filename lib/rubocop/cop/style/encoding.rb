@@ -13,38 +13,49 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
+        MSG = 'Unnecessary utf-8 encoding comment.'
         ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/.freeze
         SHEBANG = '#!'
 
         def on_new_investigation
           return if processed_source.buffer.source.empty?
 
-          line_number = encoding_line_number(processed_source)
-          return unless (@message = offense(processed_source, line_number))
+          comments.each do |line_number, comment|
+            next unless offense?(comment)
 
-          range = processed_source.buffer.line_range(line_number + 1)
-          add_offense(range, message: @message) do |corrector|
-            corrector.remove(range_with_surrounding_space(range: range, side: :right))
+            register_offense(line_number, comment)
           end
         end
 
         private
 
-        def offense(processed_source, line_number)
-          line = processed_source[line_number]
+        def comments
+          processed_source.lines.each.with_index.with_object({}) do |(line, line_number), comments|
+            next if line.start_with?(SHEBANG)
 
-          MSG_UNNECESSARY if encoding_omitable?(line)
+            comment = MagicComment.parse(line)
+            return comments unless comment.valid?
+
+            comments[line_number + 1] = comment
+          end
         end
 
-        def encoding_omitable?(line)
-          ENCODING_PATTERN.match?(line)
+        def offense?(comment)
+          comment.encoding_specified? && comment.encoding.casecmp('utf-8').zero?
         end
 
-        def encoding_line_number(processed_source)
-          line_number = 0
-          line_number += 1 if processed_source[line_number].start_with?(SHEBANG)
-          line_number
+        def register_offense(line_number, comment)
+          range = processed_source.buffer.line_range(line_number)
+
+          add_offense(range) do |corrector|
+            text = comment.without(:encoding)
+
+            if text.blank?
+              corrector.remove(range_with_surrounding_space(range: range, side: :right))
+            else
+              corrector.replace(range, text)
+            end
+          end
         end
       end
     end

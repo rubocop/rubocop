@@ -121,6 +121,40 @@ RSpec.describe RuboCop::MagicComment do
 
   include_examples 'magic comment', '# vim:fileencoding=utf-8', encoding: nil
 
+  describe '#valid?' do
+    subject { described_class.parse(comment).valid? }
+
+    context 'with an empty string' do
+      let(:comment) { '' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with a non magic comment' do
+      let(:comment) { '# do something' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with an encoding comment' do
+      let(:comment) { '# encoding: utf-8' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with an frozen string literal comment' do
+      let(:comment) { '# frozen-string-literal: true' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'with an shareable constant value comment' do
+      let(:comment) { '# shareable-constant-value: literal' }
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
   describe '#valid_shareable_constant_value?' do
     subject { described_class.parse(comment).valid_shareable_constant_value? }
 
@@ -158,6 +192,46 @@ RSpec.describe RuboCop::MagicComment do
       let(:comment) { '' }
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#without' do
+    subject { described_class.parse(comment).without(:encoding) }
+
+    context 'simple format' do
+      context 'when the entire comment is a single value' do
+        let(:comment) { '# encoding: utf-8' }
+
+        it { is_expected.to eq('') }
+      end
+
+      context 'when the comment contains a different magic value' do
+        let(:comment) { '# frozen-string-literal: true' }
+
+        it { is_expected.to eq(comment) }
+      end
+    end
+
+    context 'emacs format' do
+      context 'with one token' do
+        let(:comment) { '# -*- coding: ASCII-8BIT -*-' }
+
+        it { is_expected.to eq('') }
+      end
+
+      context 'with multiple tokens' do
+        let(:comment) { '# -*- coding: ASCII-8BIT; frozen_string_literal: true -*-' }
+
+        it { is_expected.to eq('# -*- frozen_string_literal: true -*-') }
+      end
+    end
+
+    context 'vim format' do
+      context 'when the comment has multiple tokens' do
+        let(:comment) { '# vim: filetype=ruby, fileencoding=ascii-8bit' }
+
+        it { is_expected.to eq('# vim: filetype=ruby') }
+      end
     end
   end
 end
