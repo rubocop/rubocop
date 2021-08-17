@@ -38,6 +38,10 @@ module RuboCop
 
         MSG = 'Consider merging nested conditions into outer `%<conditional_type>s` conditions.'
 
+        def self.autocorrect_incompatible_with
+          [Style::NegatedIf, Style::NegatedUnless]
+        end
+
         def on_if(node)
           return if node.ternary? || node.else? || node.elsif?
 
