@@ -34,9 +34,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      foo = if condition
-              bar
-            end
+      foo = bar if condition
     RUBY
   end
 
@@ -51,44 +49,26 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      foo = unless condition
-              bar
-            end
+      foo = bar unless condition
     RUBY
   end
 
-  it 'registers and corrects an offense when self-assigning redundant else branch and multiline if branch' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when self-assigning redundant else branch and multiline if branch' do
+    expect_no_offenses(<<~RUBY)
       foo = if condition
               bar
               baz
             else
               foo
-              ^^^ Remove the self-assignment branch.
-            end
-    RUBY
-
-    expect_correction(<<~RUBY)
-      foo = if condition
-              bar
-              baz
             end
     RUBY
   end
 
-  it 'registers and corrects an offense when self-assigning redundant else branch and multiline else branch' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when self-assigning redundant else branch and multiline else branch' do
+    expect_no_offenses(<<~RUBY)
       foo = if condition
               foo
-              ^^^ Remove the self-assignment branch.
             else
-              bar
-              baz
-            end
-    RUBY
-
-    expect_correction(<<~RUBY)
-      foo = unless condition
               bar
               baz
             end
@@ -105,8 +85,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      foo = if condition
-            end
+      foo = nil if condition
     RUBY
   end
 
@@ -120,8 +99,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      foo = unless condition
-            end
+      foo = nil unless condition
     RUBY
   end
 
@@ -170,20 +148,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when using `elsif` and self-assigning the value of `then` branch' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when using `elsif` and self-assigning the value of `then` branch' do
+    expect_no_offenses(<<~RUBY)
       foo = if condition
         foo
-        ^^^ Remove the self-assignment branch.
       elsif another_condtion
-        bar
-      else
-        baz
-      end
-    RUBY
-
-    expect_correction(<<~RUBY)
-      foo = if another_condtion
         bar
       else
         baz
@@ -191,9 +160,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
   end
 
-  # It may be possible to extend it to register an offense in future.
-  # auto-correction test patterns should be considered and implemented.
-  it 'registers and corrects an offense when using `elsif` and self-assigning the value of `elsif` branch' do
+  it 'does not register an offense when using `elsif` and self-assigning the value of `elsif` branch' do
     expect_no_offenses(<<~RUBY)
       foo = if condition
               bar
@@ -205,9 +172,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
   end
 
-  # It may be possible to extend it to register an offense in future.
-  # auto-correction test patterns should be considered and implemented.
-  it 'registers and corrects an offense when using `elsif` and self-assigning the value of `else` branch' do
+  it 'does not register an offense when using `elsif` and self-assigning the value of `else` branch' do
     expect_no_offenses(<<~RUBY)
       foo = if condition
               bar
