@@ -57,7 +57,6 @@ require_relative 'rubocop/cop/variable_force/reference'
 require_relative 'rubocop/cop/variable_force/scope'
 require_relative 'rubocop/cop/variable_force/variable_table'
 
-require_relative 'rubocop/cop/mixin/annotation_comment'
 require_relative 'rubocop/cop/mixin/array_min_size'
 require_relative 'rubocop/cop/mixin/array_syntax'
 require_relative 'rubocop/cop/mixin/alignment'
@@ -76,6 +75,7 @@ require_relative 'rubocop/cop/mixin/def_node'
 require_relative 'rubocop/cop/mixin/documentation_comment'
 require_relative 'rubocop/cop/mixin/duplication'
 require_relative 'rubocop/cop/mixin/range_help'
+require_relative 'rubocop/cop/mixin/annotation_comment' # relies on range
 require_relative 'rubocop/cop/mixin/empty_lines_around_body' # relies on range
 require_relative 'rubocop/cop/mixin/empty_parameter'
 require_relative 'rubocop/cop/mixin/end_keyword_alignment'

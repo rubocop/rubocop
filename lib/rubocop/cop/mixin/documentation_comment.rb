@@ -5,7 +5,6 @@ module RuboCop
     # Common functionality for checking documentation.
     module DocumentationComment
       extend NodePattern::Macros
-      include Style::AnnotationComment
 
       private
 
@@ -15,7 +14,7 @@ module RuboCop
         return false unless preceding_comment?(node, preceding_lines.last)
 
         preceding_lines.any? do |comment|
-          !annotation?(comment) &&
+          !AnnotationComment.new(comment, annotation_keywords).annotation? &&
             !interpreter_directive_comment?(comment) &&
             !rubocop_directive_comment?(comment)
         end
@@ -43,6 +42,10 @@ module RuboCop
 
       def rubocop_directive_comment?(comment)
         !!DirectiveComment.new(comment).match_captures
+      end
+
+      def annotation_keywords
+        config.for_cop('Style/CommentAnnotation')['Keywords']
       end
     end
   end

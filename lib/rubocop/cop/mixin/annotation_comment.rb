@@ -2,40 +2,58 @@
 
 module RuboCop
   module Cop
-    module Style
-      # Common functionality related to annotation comments.
-      module AnnotationComment
-        private
+    # Representation of an annotation comment in source code (eg. `# TODO: blah blah blah`).
+    class AnnotationComment
+      extend Forwardable
 
-        # @api public
-        def annotation?(comment)
-          _margin, first_word, colon, space, note = split_comment(comment)
-          keyword_appearance?(first_word, colon, space) &&
-            !just_first_word_of_sentence?(first_word, colon, space, note)
-        end
+      attr_reader :comment, :margin, :keyword, :colon, :space, :note
 
-        # @api public
-        def split_comment(comment)
-          match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
-          return false unless match
+      # @param [Parser::Source::Comment] comment
+      # @param [Array<String>] keywords
+      def initialize(comment, keywords)
+        @comment = comment
+        @keywords = keywords
+        @margin, @keyword, @colon, @space, @note = split_comment(comment)
+      end
 
-          match.captures
-        end
+      def annotation?
+        keyword_appearance? && !just_keyword_of_sentence?
+      end
 
-        # @api public
-        def keyword_appearance?(first_word, colon, space)
-          first_word && keyword?(first_word.upcase) && (colon || space)
-        end
+      def correct?(colon:)
+        return false unless keyword?(keyword) && space && note
 
-        # @api private
-        def just_first_word_of_sentence?(first_word, colon, space, note)
-          first_word == first_word.capitalize && !colon && space && note
-        end
+        self.colon.nil? == !colon
+      end
 
-        # @api public
-        def keyword?(word)
-          config.for_cop('Style/CommentAnnotation')['Keywords'].include?(word)
-        end
+      # Returns the range bounds for just the annotation
+      def bounds
+        start = comment.loc.expression.begin_pos + margin.length
+        length = [keyword, colon, space].reduce(0) { |len, elem| len + elem.to_s.length }
+        [start, start + length]
+      end
+
+      private
+
+      attr_reader :keywords
+
+      def split_comment(comment)
+        match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
+        return false unless match
+
+        match.captures
+      end
+
+      def keyword?(word)
+        keywords.include?(word)
+      end
+
+      def keyword_appearance?
+        keyword && keyword?(keyword.upcase) && (colon || space)
+      end
+
+      def just_keyword_of_sentence?
+        keyword == keyword.capitalize && !colon && space && note
       end
     end
   end
