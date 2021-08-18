@@ -33,6 +33,25 @@ module RuboCop
       #   g = ( a + 3 )
       #   y()
       #
+      # @example EnforcedStyle: compact
+      #   # The `compact` style enforces that parentheses have a space at the
+      #   # beginning with the exception that successive right parentheses are allowed.
+      #   # Note: Empty parentheses should not have spaces.
+      #
+      #   # bad
+      #   f(3)
+      #   g = (a + 3)
+      #   y( )
+      #   g( f( x ) )
+      #   g( f( x( 3 ) ), 5 )
+      #
+      #   # good
+      #   f( 3 )
+      #   g = ( a + 3 )
+      #   y()
+      #   g( f( x ))
+      #   g( f( x( 3 )), 5 )
+      #
       class SpaceInsideParens < Base
         include SurroundingSpace
         include RangeHelp
@@ -45,8 +64,11 @@ module RuboCop
         def on_new_investigation
           tokens = processed_source.sorted_tokens
 
-          if style == :space
+          case style
+          when :space
             process_with_space_style(tokens)
+          when :compact
+            process_with_compact_style(tokens)
           else
             each_extraneous_space(tokens) do |range|
               add_offense(range) do |corrector|
@@ -73,6 +95,17 @@ module RuboCop
           end
         end
 
+        def process_with_compact_style(tokens)
+          process_with_space_style(tokens)
+          tokens.each_cons(2) do |token1, token2|
+            each_extaneus_space_between_right_parents(token1, token2) do |range|
+              add_offense(range) do |corrector|
+                corrector.remove(range)
+              end
+            end
+          end
+        end
+
         def each_extraneous_space(tokens)
           tokens.each_cons(2) do |token1, token2|
             next unless parens?(token1, token2)
@@ -86,6 +119,14 @@ module RuboCop
           end
         end
 
+        def each_extaneus_space_between_right_parents(token1, token2)
+          return unless right_parens?(token1, token2)
+
+          return if range_between(token1.end_pos, token2.begin_pos).source != ' '
+
+          yield range_between(token1.end_pos, token2.begin_pos)
+        end
+
         def each_extraneous_space_in_empty_parens(token1, token2)
           return unless token1.left_parens? && token2.right_parens?
 
@@ -96,6 +137,8 @@ module RuboCop
 
         def each_missing_space(token1, token2)
           return if can_be_ignored?(token1, token2)
+
+          return if style == :compact && token1.right_parens? && token2.right_parens?
 
           if token1.left_parens?
             yield range_between(token2.begin_pos, token2.begin_pos + 1)
@@ -110,6 +153,10 @@ module RuboCop
 
         def parens?(token1, token2)
           token1.left_parens? || token2.right_parens?
+        end
+
+        def right_parens?(token1, token2)
+          token1.right_parens? && token2.right_parens?
         end
 
         def can_be_ignored?(token1, token2)
