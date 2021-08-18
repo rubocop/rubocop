@@ -35,11 +35,11 @@ module RuboCop
 
         def on_lvasgn(node)
           variable, expression = *node
-          return unless expression&.if_type?
-          return unless expression.ternary? || expression.else?
+          return unless use_if_and_else_branch?(expression)
 
           if_branch = expression.if_branch
           else_branch = expression.else_branch
+          return if inconvertible_to_modifier?(if_branch, else_branch)
 
           if self_assign?(variable, if_branch)
             register_offense(expression, if_branch, else_branch, 'unless')
@@ -50,35 +50,31 @@ module RuboCop
 
         private
 
+        def use_if_and_else_branch?(expression)
+          return false unless expression&.if_type?
+
+          !expression.ternary? || !expression.else?
+        end
+
+        def inconvertible_to_modifier?(if_branch, else_branch)
+          multiple_statements?(if_branch) || multiple_statements?(else_branch) ||
+            else_branch.respond_to?(:elsif?) && else_branch.elsif?
+        end
+
+        def multiple_statements?(branch)
+          branch && branch.children.compact.count > 1
+        end
+
         def self_assign?(variable, branch)
           variable.to_s == branch&.source
         end
 
         def register_offense(if_node, offense_branch, opposite_branch, keyword)
           add_offense(offense_branch) do |corrector|
-            if if_node.ternary?
-              replacement = "#{opposite_branch.source} #{keyword} #{if_node.condition.source}"
-              corrector.replace(if_node, replacement)
-            else
-              if_node_loc = if_node.loc
+            assignment_value = opposite_branch ? opposite_branch.source : 'nil'
+            replacement = "#{assignment_value} #{keyword} #{if_node.condition.source}"
 
-              range = range_by_whole_lines(offense_branch.source_range, include_final_newline: true)
-              corrector.remove(range)
-              range = range_by_whole_lines(if_node_loc.else, include_final_newline: true)
-              corrector.remove(range)
-
-              autocorrect_if_condition(corrector, if_node, if_node_loc, keyword)
-            end
-          end
-        end
-
-        def autocorrect_if_condition(corrector, if_node, if_node_loc, keyword)
-          else_branch = if_node.else_branch
-
-          if else_branch.respond_to?(:elsif?) && else_branch.elsif?
-            corrector.replace(if_node.condition, else_branch.condition.source)
-          else
-            corrector.replace(if_node_loc.keyword, keyword)
+            corrector.replace(if_node, replacement)
           end
         end
       end
