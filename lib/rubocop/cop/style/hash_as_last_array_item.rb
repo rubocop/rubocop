@@ -29,6 +29,7 @@ module RuboCop
       #   # good
       #   [{ one: 1 }, { two: 2 }]
       class HashAsLastArrayItem < Base
+        include RangeHelp
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
@@ -74,6 +75,7 @@ module RuboCop
           return if node.children.empty? # Empty hash cannot be "unbraced"
 
           add_offense(node, message: 'Omit the braces around the hash.') do |corrector|
+            remove_last_element_trailing_comma(corrector, node.parent)
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end
@@ -81,6 +83,15 @@ module RuboCop
 
         def braces_style?
           style == :braces
+        end
+
+        def remove_last_element_trailing_comma(corrector, node)
+          range = range_with_surrounding_space(
+            range: node.children.last.source_range,
+            side: :right
+          ).end.resize(1)
+
+          corrector.remove(range) if range.source == ','
         end
       end
     end
