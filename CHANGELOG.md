@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.19.1 (2021-08-19)
+
 ### Bug fixes
 
 * [#10017](https://github.com/rubocop/rubocop/pull/10017): Fixan error for `Layout/RescueEnsureAlignment` when using zsuper with block. ([@koic][])
