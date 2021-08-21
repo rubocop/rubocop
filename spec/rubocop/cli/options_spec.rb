@@ -415,7 +415,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               remaining_range = pending_cop_warning.length..-(inspected_output.length + 1)
               pending_cops = output[remaining_range]
 
-              expect(pending_cops).to include("Style/SomeCop: # (new in 0.80)\n  Enabled: true")
+              expect(pending_cops).to include("Style/SomeCop: # new in 0.80\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
@@ -433,7 +433,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               remaining_range = pending_cop_warning.length..-(inspected_output.length + 1)
               pending_cops = output[remaining_range]
 
-              expect(pending_cops).to include("Style/SomeCop: # (new in N/A)\n  Enabled: true")
+              expect(pending_cops).to include("Style/SomeCop: # new in N/A\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
