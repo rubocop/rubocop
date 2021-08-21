@@ -161,7 +161,7 @@ module RuboCop
       def warn_pending_cop(cop)
         version = cop.metadata['VersionAdded'] || 'N/A'
 
-        warn Rainbow("#{cop.name}: # (new in #{version})").yellow
+        warn Rainbow("#{cop.name}: # new in #{version}").yellow
         warn Rainbow('  Enabled: true').yellow
       end
 
