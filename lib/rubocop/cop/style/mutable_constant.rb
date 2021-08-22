@@ -57,6 +57,21 @@ module RuboCop
       #       puts 1
       #     end
       #   end.freeze
+      #
+      # @example
+      #   # Magic comment - shareable_constant_value: literal
+      #
+      #   # bad
+      #   CONST = [1, 2, 3]
+      #
+      #   # good
+      #   # shareable_constant_value: literal
+      #   CONST = [1, 2, 3]
+      #
+      # NOTE: This special directive helps to create constants
+      # that hold only immutable objects, or Ractor-shareable
+      # constants. - ruby docs
+      #
       class MutableConstant < Base
         # Handles magic comment shareable_constant_value with O(n ^ 2) complexity
         # n - number of lines in the source
