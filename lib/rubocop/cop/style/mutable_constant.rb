@@ -14,6 +14,11 @@ module RuboCop
       # positives. Luckily, there is no harm in freezing an already
       # frozen object.
       #
+      # From Ruby 3.0, this cop honours the magic comment
+      # 'shareable_constant_value'. When this magic comment is set to any
+      # acceptable value other than none, it will suppress the offenses
+      # raised by this cop. It enforces frozen state.
+      #
       # NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
       #
       # @example EnforcedStyle: literals (default)
