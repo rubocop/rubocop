@@ -182,6 +182,11 @@ Bundler/GemFilename:
   SupportedStyles:
     - 'Gemfile'
     - 'gems.rb'
+  Include:
+    - '**/Gemfile'
+    - '**/gems.rb'
+    - '**/Gemfile.lock'
+    - '**/gems.locked'
 
 Bundler/GemVersion:
   Description: 'Requires or forbids specifying gem versions.'

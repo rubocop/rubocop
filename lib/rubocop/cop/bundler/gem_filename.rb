@@ -29,62 +29,65 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_GEMFILE_REQUIRED = '`gems.rb` file was found but `Gemfile` is required.'
-        MSG_GEMS_RB_REQUIRED = '`Gemfile` was found but `gems.rb` file is required.'
+        MSG_GEMFILE_REQUIRED = '`gems.rb` file was found but `Gemfile` is required '\
+                               '(file path: %<file_path>s).'
+        MSG_GEMS_RB_REQUIRED = '`Gemfile` was found but `gems.rb` file is required '\
+                               '(file path: %<file_path>s).'
         MSG_GEMFILE_MISMATCHED = 'Expected a `Gemfile.lock` with `Gemfile` but found '\
-                                 '`gems.locked` file.'
+                                 '`gems.locked` file (file path: %<file_path>s).'
         MSG_GEMS_RB_MISMATCHED = 'Expected a `gems.locked` file with `gems.rb` but found '\
-                                 '`Gemfile.lock`.'
+                                 '`Gemfile.lock` (file path: %<file_path>s).'
         GEMFILE_FILES = %w[Gemfile Gemfile.lock].freeze
         GEMS_RB_FILES = %w[gems.rb gems.locked].freeze
 
         def on_new_investigation
           file_path = processed_source.file_path
-          return if expected_gemfile?(file_path)
+          basename = File.basename(file_path)
+          return if expected_gemfile?(basename)
 
-          register_offense(processed_source.buffer, file_path)
+          register_offense(file_path, basename)
         end
 
         private
 
-        def register_offense(source_buffer, file_path)
-          register_gemfile_offense(source_buffer, file_path) if gemfile_offense?(file_path)
-          register_gems_rb_offense(source_buffer, file_path) if gems_rb_offense?(file_path)
+        def register_offense(file_path, basename)
+          register_gemfile_offense(file_path, basename) if gemfile_offense?(basename)
+          register_gems_rb_offense(file_path, basename) if gems_rb_offense?(basename)
         end
 
-        def register_gemfile_offense(source_buffer, file_path)
-          message = case file_path
+        def register_gemfile_offense(file_path, basename)
+          message = case basename
                     when 'gems.rb'
                       MSG_GEMFILE_REQUIRED
                     when 'gems.locked'
                       MSG_GEMFILE_MISMATCHED
                     end
 
-          add_offense(source_range(source_buffer, 1, 0), message: message)
+          add_global_offense(format(message, file_path: file_path))
         end
 
-        def register_gems_rb_offense(source_buffer, file_path)
-          message = case file_path
+        def register_gems_rb_offense(file_path, basename)
+          message = case basename
                     when 'Gemfile'
                       MSG_GEMS_RB_REQUIRED
                     when 'Gemfile.lock'
                       MSG_GEMS_RB_MISMATCHED
                     end
 
-          add_offense(source_range(source_buffer, 1, 0), message: message)
+          add_global_offense(format(message, file_path: file_path))
         end
 
-        def gemfile_offense?(file_path)
-          gemfile_required? && %w[gems.rb gems.locked].include?(file_path)
+        def gemfile_offense?(basename)
+          gemfile_required? && GEMS_RB_FILES.include?(basename)
         end
 
-        def gems_rb_offense?(file_path)
-          gems_rb_required? && %w[Gemfile Gemfile.lock].include?(file_path)
+        def gems_rb_offense?(basename)
+          gems_rb_required? && GEMFILE_FILES.include?(basename)
         end
 
-        def expected_gemfile?(file_path)
-          (gemfile_required? && GEMFILE_FILES.include?(file_path)) ||
-            (gems_rb_required? && GEMS_RB_FILES.include?(file_path))
+        def expected_gemfile?(basename)
+          (gemfile_required? && GEMFILE_FILES.include?(basename)) ||
+            (gems_rb_required? && GEMS_RB_FILES.include?(basename))
         end
 
         def gemfile_required?
