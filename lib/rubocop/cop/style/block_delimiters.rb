@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module RuboCop
   module Cop
     module Style
@@ -275,12 +276,18 @@ module RuboCop
         end
 
         def move_comment_before_block(corrector, comment, block_node, closing_brace)
-          range = range_between(closing_brace.end_pos, comment.loc.expression.end_pos)
-
-          corrector.remove(range_with_surrounding_space(range: range, side: :right))
-          corrector.insert_after(closing_brace, "\n")
+          range = block_node.chained? ? end_of_chain(block_node.parent).source_range : closing_brace
+          comment_range = range_between(range.end_pos, comment.loc.expression.end_pos)
+          corrector.remove(range_with_surrounding_space(range: comment_range, side: :right))
+          corrector.insert_after(range, "\n")
 
           corrector.insert_before(block_node, "#{comment.text}\n")
+        end
+
+        def end_of_chain(node)
+          return node unless node.chained?
+
+          end_of_chain(node.parent)
         end
 
         def get_blocks(node, &block)
@@ -411,3 +418,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
