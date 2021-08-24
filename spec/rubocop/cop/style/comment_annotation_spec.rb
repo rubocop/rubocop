@@ -153,6 +153,19 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
         RUBY
       end
     end
+
+    context 'with multiword keywords' do
+      let(:cop_config) { { 'Keywords' => ['TODO', 'DO SOMETHING', 'TODO LATER'] } }
+
+      it 'registers an offense for each matching keyword' do
+        cop_config['Keywords'].each do |keyword|
+          expect_offense(<<~RUBY, keyword: keyword)
+            # #{keyword} blah blah blah
+              ^{keyword}^ Annotation keywords like `#{keyword}` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+          RUBY
+        end
+      end
+    end
   end
 
   context 'with RequireColon configuration set to false' do
