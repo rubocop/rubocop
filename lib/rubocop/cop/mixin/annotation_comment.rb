@@ -21,7 +21,8 @@ module RuboCop
       end
 
       def correct?(colon:)
-        return false unless keyword?(keyword) && space && note
+        return false unless keyword && space && note
+        return false unless keyword == keyword.upcase
 
         self.colon.nil? == !colon
       end
@@ -38,18 +39,22 @@ module RuboCop
       attr_reader :keywords
 
       def split_comment(comment)
-        match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
+        # Sort keywords by reverse length so that if a keyword is in a phrase
+        # but also on its own, both will match properly.
+        keywords_regex = Regexp.new(
+          Regexp.union(keywords.sort_by { |w| -w.length }).source,
+          Regexp::IGNORECASE
+        )
+        regex = /^(# ?)(\b#{keywords_regex}\b)(\s*:)?(\s+)?(\S+)?/i
+
+        match = comment.text.match(regex)
         return false unless match
 
         match.captures
       end
 
-      def keyword?(word)
-        keywords.include?(word)
-      end
-
       def keyword_appearance?
-        keyword && keyword?(keyword.upcase) && (colon || space)
+        keyword && (colon || space)
       end
 
       def just_keyword_of_sentence?
