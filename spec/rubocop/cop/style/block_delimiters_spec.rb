@@ -368,6 +368,20 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'registers an offense when there is a comment after the closing brace and using method chain' do
+        expect_offense(<<~RUBY)
+          baz.map { |x|
+                  ^ Avoid using `{...}` for multi-line blocks.
+          foo(x) }.qux.quux # comment
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # comment
+          baz.map do |x|
+          foo(x) end.qux.quux
+        RUBY
+      end
+
       it 'registers an offense when there is a comment after the closing brace and block body is empty' do
         expect_offense(<<~RUBY)
           baz.map { |x|
