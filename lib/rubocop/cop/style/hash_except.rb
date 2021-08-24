@@ -49,7 +49,7 @@ module RuboCop
           return unless bad_method?(block) && semantically_except_method?(node, block)
 
           except_key = except_key(block)
-          return unless safe_to_register_offense?(block, except_key)
+          return if except_key.nil? || !safe_to_register_offense?(block, except_key)
 
           range = offense_range(node)
           preferred_method = "except(#{except_key.source})"
@@ -81,10 +81,11 @@ module RuboCop
         end
 
         def except_key(node)
-          key_argument = node.argument_list.first
+          key_argument = node.argument_list.first.source
           lhs, _method_name, rhs = *node.body
+          return if [lhs, rhs].map(&:source).none?(key_argument)
 
-          [lhs, rhs].find { |operand| operand.source != key_argument.source }
+          [lhs, rhs].find { |operand| operand.source != key_argument }
         end
 
         def offense_range(node)
