@@ -218,6 +218,15 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     end
   end
 
+  context 'RubyJard' do
+    it 'registers an offense for a jard call' do
+      expect_offense(<<~RUBY)
+        jard
+        ^^^^ Remove debugger entry point `jard`.
+      RUBY
+    end
+  end
+
   context 'web console' do
     it 'registers an offense for a `binding.console` call' do
       expect_offense(<<~RUBY)
