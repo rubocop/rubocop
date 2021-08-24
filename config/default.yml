@@ -1527,6 +1527,8 @@ Lint/Debugger:
     Rails:
       - debugger
       - Kernel.debugger
+    RubyJard:
+      - jard
     WebConsole:
       - binding.console
 
