@@ -4694,8 +4694,9 @@ Style/StructInheritance:
   Description: 'Checks for inheritance from Struct.new.'
   StyleGuide: '#no-extend-struct-new'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.29'
-  VersionChanged: '0.86'
+  VersionChanged: '<<next>>'
 
 Style/SwapValues:
   Description: 'This cop enforces the use of shorthand-style swapping of 2 variables.'

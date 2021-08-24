@@ -5,6 +5,9 @@ module RuboCop
     module Style
       # This cop checks for inheritance from Struct.new.
       #
+      # It is marked as unsafe auto-correction because it will change the
+      # inheritance tree (e.g. return value of `Module#ancestors`).
+      #
       # @example
       #   # bad
       #   class Person < Struct.new(:first_name, :last_name)
