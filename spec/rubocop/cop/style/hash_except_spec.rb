@@ -96,6 +96,12 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
         {foo: 1, bar: 2, baz: 3}.keep_if { |k, v| k != :bar }
       RUBY
     end
+
+    it 'does not register an offense when comparing with hash value' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.reject { |k, v| v.eql? :bar }
+      RUBY
+    end
   end
 
   context 'Ruby 2.7 or lower', :ruby27 do
