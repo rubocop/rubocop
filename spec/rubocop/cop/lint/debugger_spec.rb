@@ -114,6 +114,36 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     end
   end
 
+  context 'debug.rb' do
+    it 'registers an offense for a `b` binding call' do
+      expect_offense(<<~RUBY)
+        binding.b
+        ^^^^^^^^^ Remove debugger entry point `binding.b`.
+      RUBY
+    end
+
+    it 'registers an offense for a `break` binding call' do
+      expect_offense(<<~RUBY)
+        binding.break
+        ^^^^^^^^^^^^^ Remove debugger entry point `binding.break`.
+      RUBY
+    end
+
+    it 'registers an offense for a `binding.b` with `Kernel` call' do
+      expect_offense(<<~RUBY)
+        Kernel.binding.b
+        ^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.binding.b`.
+      RUBY
+    end
+
+    it 'registers an offense for a `binding.break` with `Kernel` call' do
+      expect_offense(<<~RUBY)
+        Kernel.binding.break
+        ^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.binding.break`.
+      RUBY
+    end
+  end
+
   context 'pry' do
     it 'registers an offense for a pry binding call' do
       expect_offense(<<~RUBY)

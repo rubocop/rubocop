@@ -1519,6 +1519,11 @@ Lint/Debugger:
     Capybara:
       - save_and_open_page
       - save_and_open_screenshot
+    debug.rb:
+      - binding.b
+      - binding.break
+      - Kernel.binding.b
+      - Kernel.binding.break
     Pry:
       - binding.pry
       - binding.remote_pry

@@ -7,8 +7,8 @@ module RuboCop
       # not be kept for production code.
       #
       # The cop can be configured using `DebuggerMethods`. By default, a number of gems
-      # debug entrypoints are configured (`Kernel`, `Byebug`, `Capybara`, `Pry`, `Rails`,
-      # `RubyJard` and `WebConsole`). Additional methods can be added.
+      # debug entrypoints are configured (`Kernel`, `Byebug`, `Capybara`, `debug.rb`,
+      # `Pry`, `Rails`, `RubyJard`, and `WebConsole`). Additional methods can be added.
       #
       # Specific default groups can be disabled if necessary:
       #
