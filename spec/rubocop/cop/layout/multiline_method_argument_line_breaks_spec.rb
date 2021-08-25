@@ -141,4 +141,22 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks, :config 
       RUBY
     end
   end
+
+  context 'when there are multiple arguments on the first line' do
+    it 'registers an offense and corrects starting from the 2nd argument' do
+      expect_offense(<<~RUBY)
+        do_something(foo, bar, baz,
+                               ^^^ Each argument in a multi-line method call must start on a separate line.
+                          ^^^ Each argument in a multi-line method call must start on a separate line.
+          quux)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(foo,#{trailing_whitespace}
+        bar,#{trailing_whitespace}
+        baz,
+          quux)
+      RUBY
+    end
+  end
 end
