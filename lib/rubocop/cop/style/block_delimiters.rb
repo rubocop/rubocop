@@ -192,7 +192,7 @@ module RuboCop
           if node.braces?
             replace_braces_with_do_end(corrector, node.loc)
           else
-            replace_do_end_with_braces(corrector, node.loc)
+            replace_do_end_with_braces(corrector, node)
           end
         end
 
@@ -257,7 +257,8 @@ module RuboCop
           corrector.replace(e, 'end')
         end
 
-        def replace_do_end_with_braces(corrector, loc)
+        def replace_do_end_with_braces(corrector, node)
+          loc = node.loc
           b = loc.begin
           e = loc.end
 
@@ -265,6 +266,8 @@ module RuboCop
 
           corrector.replace(b, '{')
           corrector.replace(e, '}')
+
+          corrector.wrap(node.body, "begin\n", "\nend") if begin_required?(node)
         end
 
         def whitespace_before?(range)
@@ -413,6 +416,12 @@ module RuboCop
 
         def array_or_range?(node)
           node.array_type? || node.range_type?
+        end
+
+        def begin_required?(block_node)
+          # If the block contains `rescue` or `ensure`, it needs to be wrapped in
+          # `begin`...`end` when changing `do-end` to `{}`.
+          block_node.each_child_node(:rescue, :ensure).any? && !block_node.single_line?
         end
       end
     end
