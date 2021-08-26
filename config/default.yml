@@ -1448,6 +1448,13 @@ Lint/AmbiguousOperator:
   VersionAdded: '0.17'
   VersionChanged: '0.83'
 
+Lint/AmbiguousOperatorPrecedence:
+  Description: >-
+                 Checks for expressions containing multiple binary operations with
+                 ambiguous precedence.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/AmbiguousRange:
   Description: Checks for ranges with ambiguous boundaries.
   Enabled: pending
