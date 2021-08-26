@@ -2831,9 +2831,9 @@ Style/ArrayJoin:
 Style/AsciiComments:
   Description: 'Use only ascii symbols in comments.'
   StyleGuide: '#english-comments'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
-  VersionChanged: '0.52'
+  VersionChanged: '<<next>>'
   AllowedChars:
     - ©
 
