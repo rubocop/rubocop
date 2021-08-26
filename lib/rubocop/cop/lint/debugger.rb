@@ -57,8 +57,6 @@ module RuboCop
       class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
 
-        RESTRICT_ON_SEND = [].freeze
-
         # @!method kernel?(node)
         def_node_matcher :kernel?, <<~PATTERN
           (const {nil? cbase} :Kernel)
