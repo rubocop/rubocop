@@ -216,8 +216,7 @@ module RuboCop
     def cached_run?
       @cached_run ||=
         (@options[:cache] == 'true' ||
-         @options[:cache] != 'false' &&
-         @config_store.for_pwd.for_all_cops['UseCache']) &&
+         (@options[:cache] != 'false' && @config_store.for_pwd.for_all_cops['UseCache'])) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
         # need to do that processing and cannot use caching.

@@ -45,7 +45,7 @@ module RuboCop
             else
               # Otherwise, the case node gets 0.8 complexity points and each
               # when gets 0.2.
-              (0.8 + 0.2 * nb_branches).round
+              (0.8 + (0.2 * nb_branches)).round
             end
           when :if
             node.else? && !node.elsif? ? 2 : 1

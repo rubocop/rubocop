@@ -182,7 +182,7 @@ module RuboCop
 
         def assignment_or_operator_method(node)
           node.ancestors.find do |ancestor|
-            ancestor.assignment_or_similar? || ancestor.send_type? && ancestor.operator_method?
+            ancestor.assignment_or_similar? || (ancestor.send_type? && ancestor.operator_method?)
           end
         end
       end

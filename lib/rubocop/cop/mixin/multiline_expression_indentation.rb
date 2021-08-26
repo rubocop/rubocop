@@ -134,7 +134,7 @@ module RuboCop
 
           next if a.setter_method?
           next unless kind == :with_or_without_parentheses ||
-                      kind == :with_parentheses && parentheses?(a)
+                      (kind == :with_parentheses && parentheses?(a))
 
           a.arguments.any? { |arg| within_node?(node, arg) }
         end
@@ -156,7 +156,7 @@ module RuboCop
 
       def disqualified_rhs?(candidate, ancestor)
         UNALIGNED_RHS_TYPES.include?(ancestor.type) ||
-          ancestor.block_type? && part_of_block_body?(candidate, ancestor)
+          (ancestor.block_type? && part_of_block_body?(candidate, ancestor))
       end
 
       def valid_rhs?(candidate, ancestor)

@@ -54,7 +54,7 @@ module RuboCop
 
         def on_send(node)
           first_arg = node.first_argument
-          return if !multiple_arguments?(node, first_arg) || node.send_type? && node.method?(:[]=)
+          return if !multiple_arguments?(node, first_arg) || (node.send_type? && node.method?(:[]=))
 
           if first_arg.hash_type? && !first_arg.braces?
             pairs = first_arg.pairs

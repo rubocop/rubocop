@@ -153,7 +153,7 @@ module RuboCop
 
           def dependency?(lhs, rhs)
             uses_var?(rhs, var_name(lhs)) ||
-              lhs.send_type? && lhs.assignment_method? && accesses?(rhs, lhs)
+              (lhs.send_type? && lhs.assignment_method? && accesses?(rhs, lhs))
           end
 
           # `lhs` is an assignment method call like `obj.attr=` or `ary[idx]=`.

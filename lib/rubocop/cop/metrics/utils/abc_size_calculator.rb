@@ -46,7 +46,7 @@ module RuboCop
             visit_depth_last(@node) { |child| calculate_node(child) }
 
             [
-              Math.sqrt(@assignment**2 + @branch**2 + @condition**2).round(2),
+              Math.sqrt((@assignment**2) + (@branch**2) + (@condition**2)).round(2),
               "<#{@assignment}, #{@branch}, #{@condition}>"
             ]
           end

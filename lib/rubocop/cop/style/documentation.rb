@@ -112,12 +112,12 @@ module RuboCop
 
         def nodoc_self_or_outer_module?(node)
           nodoc_comment?(node) ||
-            compact_namespace?(node) && nodoc_comment?(outer_module(node).first)
+            (compact_namespace?(node) && nodoc_comment?(outer_module(node).first))
         end
 
         def macro_only?(body)
-          body.respond_to?(:macro?) && body.macro? ||
-            body.respond_to?(:children) && body.children&.all? { |child| macro_only?(child) }
+          (body.respond_to?(:macro?) && body.macro?) ||
+            (body.respond_to?(:children) && body.children&.all? { |child| macro_only?(child) })
         end
 
         def namespace?(node)

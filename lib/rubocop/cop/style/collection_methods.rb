@@ -68,7 +68,8 @@ module RuboCop
           return false unless node.arguments.any?
 
           node.last_argument.block_pass_type? ||
-            node.last_argument.sym_type? && methods_accepting_symbol.include?(node.method_name.to_s)
+            (node.last_argument.sym_type? &&
+            methods_accepting_symbol.include?(node.method_name.to_s))
         end
 
         def message(node)

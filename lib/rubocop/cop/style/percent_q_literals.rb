@@ -53,8 +53,8 @@ module RuboCop
         end
 
         def correct_literal_style?(node)
-          style == :lower_case_q && type(node) == '%q' ||
-            style == :upper_case_q && type(node) == '%Q'
+          (style == :lower_case_q && type(node) == '%q') ||
+            (style == :upper_case_q && type(node) == '%Q')
         end
 
         def message(_range)

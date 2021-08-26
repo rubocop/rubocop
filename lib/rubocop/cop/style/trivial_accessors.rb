@@ -192,7 +192,7 @@ module RuboCop
 
         def allowed_method_name?(node)
           allowed_method_names.include?(node.method_name) ||
-            exact_name_match? && !names_match?(node)
+            (exact_name_match? && !names_match?(node))
         end
 
         def allowed_writer?(method_name)

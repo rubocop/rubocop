@@ -118,7 +118,7 @@ module RuboCop
         end
 
         def correct_arguments?(arguments)
-          arguments.size == 1 || arguments.size == 2 && arguments[1].hash_type?
+          arguments.size == 1 || (arguments.size == 2 && arguments[1].hash_type?)
         end
 
         def build_kwargs(node)

@@ -28,7 +28,7 @@ module RuboCop
                               indent_steps: 1)
           corrector.insert_before(
             range,
-            "\n#{' ' * (node.loc.keyword.column + indent_steps * configured_width)}"
+            "\n#{' ' * (node.loc.keyword.column + (indent_steps * configured_width))}"
           )
         end
 

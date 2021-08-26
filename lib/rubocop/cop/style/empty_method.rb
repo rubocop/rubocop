@@ -62,7 +62,7 @@ module RuboCop
         end
 
         def correct_style?(node)
-          compact_style? && compact?(node) || expanded_style? && expanded?(node)
+          (compact_style? && compact?(node)) || (expanded_style? && expanded?(node))
         end
 
         def corrected(node)

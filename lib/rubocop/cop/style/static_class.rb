@@ -60,8 +60,7 @@ module RuboCop
           return false if nodes.empty?
 
           nodes.all? do |node|
-            node_visibility(node) == :public &&
-              node.defs_type? ||
+            (node_visibility(node) == :public && node.defs_type?) ||
               sclass_convertible_to_module?(node) ||
               node.equals_asgn? ||
               extend_call?(node)

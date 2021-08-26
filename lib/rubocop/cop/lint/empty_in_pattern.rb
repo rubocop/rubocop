@@ -51,7 +51,7 @@ module RuboCop
 
         def on_case_match(node)
           node.in_pattern_branches.each do |branch|
-            next if branch.body || cop_config['AllowComments'] && comment_lines?(node)
+            next if branch.body || (cop_config['AllowComments'] && comment_lines?(node))
 
             add_offense(branch)
           end

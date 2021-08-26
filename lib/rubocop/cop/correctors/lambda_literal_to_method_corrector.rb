@@ -87,8 +87,8 @@ module RuboCop
       end
 
       def needs_separating_space?
-        block_begin.begin_pos == arguments_end_pos &&
-          selector_end.end_pos == arguments_begin_pos ||
+        (block_begin.begin_pos == arguments_end_pos &&
+          selector_end.end_pos == arguments_begin_pos) ||
           block_begin.begin_pos == selector_end.end_pos
       end
 

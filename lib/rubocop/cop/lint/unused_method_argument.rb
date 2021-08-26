@@ -87,9 +87,8 @@ module RuboCop
         end
 
         def ignored_method?(body)
-          cop_config['IgnoreEmptyMethods'] && body.nil? ||
-            cop_config['IgnoreNotImplementedMethods'] &&
-              not_implemented?(body)
+          (cop_config['IgnoreEmptyMethods'] && body.nil?) ||
+            (cop_config['IgnoreNotImplementedMethods'] && not_implemented?(body))
         end
 
         def message(variable)

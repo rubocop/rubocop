@@ -107,7 +107,7 @@ module RuboCop
         private
 
         def allowed_slash_literal?(node)
-          style == :slashes && !contains_disallowed_slash?(node) || allowed_mixed_slash?(node)
+          (style == :slashes && !contains_disallowed_slash?(node)) || allowed_mixed_slash?(node)
         end
 
         def allowed_mixed_slash?(node)
@@ -115,13 +115,13 @@ module RuboCop
         end
 
         def allowed_percent_r_literal?(node)
-          style == :slashes && contains_disallowed_slash?(node) ||
+          (style == :slashes && contains_disallowed_slash?(node)) ||
             style == :percent_r ||
             allowed_mixed_percent_r?(node) || allowed_omit_parentheses_with_percent_r_literal?(node)
         end
 
         def allowed_mixed_percent_r?(node)
-          style == :mixed && node.multiline? || contains_disallowed_slash?(node)
+          (style == :mixed && node.multiline?) || contains_disallowed_slash?(node)
         end
 
         def contains_disallowed_slash?(node)

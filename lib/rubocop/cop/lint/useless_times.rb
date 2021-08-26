@@ -65,7 +65,7 @@ module RuboCop
         private
 
         def never_process?(count, node)
-          count < 1 || node.block_type? && node.body.nil?
+          count < 1 || (node.block_type? && node.body.nil?)
         end
 
         def remove_node(corrector, node)

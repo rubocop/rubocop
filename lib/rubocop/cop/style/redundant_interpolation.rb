@@ -56,7 +56,7 @@ module RuboCop
           first_child = node.children.first
 
           variable_interpolation?(first_child) ||
-            first_child.send_type? && !first_child.operator_method?
+            (first_child.send_type? && !first_child.operator_method?)
         end
 
         def interpolation?(node)
