@@ -2,6 +2,25 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#10040](https://github.com/rubocop/rubocop/pull/10040): Make `Lint/Debugger` aware of debug.rb. ([@koic][])
+* [#9580](https://github.com/rubocop/rubocop/issues/9580): Add a new cop that enforces which bundler gem file to use. ([@gregfletch][])
+
+### Bug fixes
+
+* [#10033](https://github.com/rubocop/rubocop/issues/10033): Fix an incorrect auto-correct for `Style/BlockDelimiters` when there is a comment after the closing brace and using method chanin. ([@koic][])
+* [#6630](https://github.com/rubocop/rubocop/issues/6630): Updated `Style/CommentAnnotation` to be able to handle multiword keyword phrases. ([@dvandersluis][])
+* [#7836](https://github.com/rubocop/rubocop/issues/7836): Update `Style/BlockDelimeters` to add `begin`...`end` when converting a block containing `rescue` or `ensure` to braces. ([@dvandersluis][])
+* [#10031](https://github.com/rubocop/rubocop/issues/10031): Fix a false positive for `Style/HashExcept` when comparing with hash value. ([@koic][])
+
+### Changes
+
+* [#10034](https://github.com/rubocop/rubocop/pull/10034): Add `RubyJard` debugger calls to Lint/Debugger/DebuggerMethods. ([@DanielVartanov][])
+* [#10006](https://github.com/rubocop/rubocop/pull/10006): Interpolated string literals are no longer frozen since Ruby 3.0. ([@splattael][])
+* [#9328](https://github.com/rubocop/rubocop/issues/9328): Recognize shareable_constant_value magic comment. ([@thearjunmdas][], [@caalberts][])
+* [#10036](https://github.com/rubocop/rubocop/issues/10036): Mark `Style/StructInheritance` as unsafe auto-correction. ([@koic][])
+
 ## 1.19.1 (2021-08-19)
 
 ### Bug fixes
@@ -5813,3 +5832,5 @@
 [@markburns]: https://github.com/markburns
 [@gregfletch]: https://github.com/gregfletch
 [@thearjunmdas]: https://github.com/thearjunmdas
+[@DanielVartanov]: https://github.com/DanielVartanov
+[@splattael]: https://github.com/splattael
