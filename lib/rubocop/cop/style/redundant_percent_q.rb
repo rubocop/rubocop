@@ -65,9 +65,8 @@ module RuboCop
         end
 
         def allowed_percent_q?(node)
-          node.source.start_with?(PERCENT_Q) && acceptable_q?(node) ||
-            node.source.start_with?(PERCENT_CAPITAL_Q) &&
-              acceptable_capital_q?(node)
+          (node.source.start_with?(PERCENT_Q) && acceptable_q?(node)) ||
+            (node.source.start_with?(PERCENT_CAPITAL_Q) && acceptable_capital_q?(node))
         end
 
         def message(node)

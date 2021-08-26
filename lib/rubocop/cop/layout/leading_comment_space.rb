@@ -77,7 +77,7 @@ module RuboCop
         end
 
         def allowed_on_first_line?(comment)
-          shebang?(comment) || rackup_config_file? && rackup_options?(comment)
+          shebang?(comment) || (rackup_config_file? && rackup_options?(comment))
         end
 
         def shebang?(comment)

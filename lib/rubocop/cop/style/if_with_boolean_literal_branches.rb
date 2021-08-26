@@ -109,12 +109,13 @@ module RuboCop
         end
 
         def opposite_condition?(node)
-          !node.unless? && node.if_branch.false_type? || node.unless? && node.if_branch.true_type?
+          (!node.unless? && node.if_branch.false_type?) ||
+            (node.unless? && node.if_branch.true_type?)
         end
 
         def require_parentheses?(condition)
           condition.and_type? || condition.or_type? ||
-            condition.send_type? && condition.comparison_method?
+            (condition.send_type? && condition.comparison_method?)
         end
       end
     end

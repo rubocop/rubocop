@@ -89,7 +89,7 @@ module RuboCop
           if node.source.lines.first.end_with?("|\n")
             PIPE_SIZE
           else
-            1 + PIPE_SIZE * 2
+            1 + (PIPE_SIZE * 2)
           end
         end
 

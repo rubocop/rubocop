@@ -43,7 +43,7 @@ module RuboCop
 
       # Returns true for lines that shall not be included in the count.
       def irrelevant_line(source_line)
-        source_line.blank? || !count_comments? && comment_line?(source_line)
+        source_line.blank? || (!count_comments? && comment_line?(source_line))
       end
 
       def build_code_length_calculator(node)

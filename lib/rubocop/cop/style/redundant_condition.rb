@@ -120,11 +120,10 @@ module RuboCop
         end
 
         def require_parentheses?(node)
-          node.basic_conditional? &&
-            node.modifier_form? ||
+          (node.basic_conditional? && node.modifier_form?) ||
             node.range_type? ||
             node.rescue_type? ||
-            node.respond_to?(:semantic_operator?) && node.semantic_operator?
+            (node.respond_to?(:semantic_operator?) && node.semantic_operator?)
         end
 
         def without_argument_parentheses_method?(node)

@@ -63,7 +63,7 @@ module RuboCop
 
         def on_send(node)
           return if ignored_node?(node) ||
-                    !include_semantic_changes? && nil_comparison_style == 'comparison'
+                    (!include_semantic_changes? && nil_comparison_style == 'comparison')
           return unless register_offense?(node)
 
           message = message(node)
@@ -87,7 +87,7 @@ module RuboCop
 
         def register_offense?(node)
           not_equal_to_nil?(node) ||
-            include_semantic_changes? && (not_and_nil_check?(node) || unless_and_nil_check?(node))
+            (include_semantic_changes? && (not_and_nil_check?(node) || unless_and_nil_check?(node)))
         end
 
         def autocorrect(corrector, node)

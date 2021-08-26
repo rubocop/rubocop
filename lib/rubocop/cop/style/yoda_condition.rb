@@ -74,7 +74,7 @@ module RuboCop
 
         def on_send(node)
           return unless yoda_compatible_condition?(node)
-          return if equality_only? && non_equality_operator?(node) ||
+          return if (equality_only? && non_equality_operator?(node)) ||
                     file_constant_equal_program_name?(node)
 
           valid_yoda?(node) || add_offense(node) do |corrector|
@@ -102,8 +102,8 @@ module RuboCop
           lhs = node.receiver
           rhs = node.first_argument
 
-          return true if lhs.literal? && rhs.literal? ||
-                         !lhs.literal? && !rhs.literal? ||
+          return true if (lhs.literal? && rhs.literal?) ||
+                         (!lhs.literal? && !rhs.literal?) ||
                          interpolation?(lhs)
 
           enforce_yoda? ? lhs.literal? : rhs.literal?

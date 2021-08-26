@@ -24,7 +24,7 @@ module RuboCop
         def on_float(node)
           value, = *node
 
-          return unless value.infinite? || value.zero? && /[1-9]/.match?(node.source)
+          return unless value.infinite? || (value.zero? && /[1-9]/.match?(node.source))
 
           add_offense(node)
         end

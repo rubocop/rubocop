@@ -93,8 +93,8 @@ module RuboCop
             parent = node.parent&.block_type? ? node.parent.parent : node.parent
             parent &&
               (logical_operator?(parent) ||
-              parent.send_type? &&
-              parent.arguments.any? { |argument| logical_operator?(argument) })
+              (parent.send_type? &&
+              parent.arguments.any? { |argument| logical_operator?(argument) }))
           end
 
           def call_in_optional_arguments?(node)
@@ -122,14 +122,14 @@ module RuboCop
 
           def call_as_argument_or_chain?(node)
             node.parent &&
-              (node.parent.send_type? && !assigned_before?(node.parent, node) ||
+              ((node.parent.send_type? && !assigned_before?(node.parent, node)) ||
               node.parent.csend_type? || node.parent.super_type? || node.parent.yield_type?)
           end
 
           def hash_literal_in_arguments?(node)
             node.arguments.any? do |n|
               hash_literal?(n) ||
-                n.send_type? && node.descendants.any? { |descendant| hash_literal?(descendant) }
+                (n.send_type? && node.descendants.any? { |descendant| hash_literal?(descendant) })
             end
           end
 
@@ -171,8 +171,8 @@ module RuboCop
           end
 
           def unary_literal?(node)
-            node.numeric_type? && node.sign? ||
-              node.parent&.send_type? && node.parent&.unary_operation?
+            (node.numeric_type? && node.sign?) ||
+              (node.parent&.send_type? && node.parent&.unary_operation?)
           end
 
           def assigned_before?(node, target)

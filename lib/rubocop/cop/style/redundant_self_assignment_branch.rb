@@ -58,7 +58,7 @@ module RuboCop
 
         def inconvertible_to_modifier?(if_branch, else_branch)
           multiple_statements?(if_branch) || multiple_statements?(else_branch) ||
-            else_branch.respond_to?(:elsif?) && else_branch.elsif?
+            (else_branch.respond_to?(:elsif?) && else_branch.elsif?)
         end
 
         def multiple_statements?(branch)

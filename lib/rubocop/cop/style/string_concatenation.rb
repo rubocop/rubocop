@@ -93,7 +93,7 @@ module RuboCop
 
         def offensive_for_mode?(receiver_node)
           mode = cop_config['Mode'].to_sym
-          mode == :aggressive || mode == :conservative && receiver_node.str_type?
+          mode == :aggressive || (mode == :conservative && receiver_node.str_type?)
         end
 
         def line_end_concatenation?(node)

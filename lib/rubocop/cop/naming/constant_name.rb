@@ -54,7 +54,7 @@ module RuboCop
         private
 
         def allowed_assignment?(value)
-          value && %i[block const casgn].include?(value.type) ||
+          (value && %i[block const casgn].include?(value.type)) ||
             allowed_method_call_on_rhs?(value) ||
             class_or_struct_return_method?(value) ||
             allowed_conditional_expression_on_rhs?(value)
