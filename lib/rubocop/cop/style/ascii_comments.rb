@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/AsciiComments
-
 module RuboCop
   module Cop
     module Style
@@ -57,4 +55,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Style/AsciiComments
