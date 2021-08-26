@@ -177,7 +177,7 @@ Bundler/GemComment:
 Bundler/GemFilename:
   Description: 'Enforces the filename for managing gems.'
   Enabled: true
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.20'
   EnforcedStyle: 'Gemfile'
   SupportedStyles:
     - 'Gemfile'
@@ -3170,7 +3170,7 @@ Style/CommentAnnotation:
   StyleGuide: '#annotate-keywords'
   Enabled: true
   VersionAdded: '0.10'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.20'
   Keywords:
     - TODO
     - FIXME
@@ -4715,7 +4715,7 @@ Style/StructInheritance:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.29'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.20'
 
 Style/SwapValues:
   Description: 'This cop enforces the use of shorthand-style swapping of 2 variables.'

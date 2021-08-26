@@ -1760,11 +1760,14 @@ folders = %x(find . -type d).split
 | Yes
 | Yes
 | 0.10
-| 1.3
+| 1.20
 |===
 
 This cop checks that comment annotation keywords are written according
 to guidelines.
+
+Annotation keywords can be specified by overriding the cop's `Keywords`
+configuration. Keywords are allowed to be single words or phrases.
 
 NOTE: With a multiline comment block (where each line is only a
 comment), only the first line will be able to register an offense, even
@@ -6878,7 +6881,19 @@ frozen objects so there is a decent chance of getting some false
 positives. Luckily, there is no harm in freezing an already
 frozen object.
 
+From Ruby 3.0, this cop honours the magic comment
+'shareable_constant_value'. When this magic comment is set to any
+acceptable value other than none, it will suppress the offenses
+raised by this cop. It enforces frozen state.
+
 NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
+
+NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated
+string literals when `# frozen-string-literal: true` is used.
+
+NOTE: This special directive helps to create constants
+that hold only immutable objects, or Ractor-shareable
+constants. - ruby docs
 
 === Examples
 
@@ -6924,6 +6939,18 @@ CONST = Struct.new do
     puts 1
   end
 end.freeze
+----
+
+[source,ruby]
+----
+# Magic comment - shareable_constant_value: literal
+
+# bad
+CONST = [1, 2, 3]
+
+# good
+# shareable_constant_value: literal
+CONST = [1, 2, 3]
 ----
 
 === Configurable attributes
@@ -9067,6 +9094,9 @@ This cop check for uses of `Object#freeze` on immutable objects.
 
 NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
 
+NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated
+string literals when `# frozen-string-literal: true` is used.
+
 === Examples
 
 [source,ruby]
@@ -11106,12 +11136,15 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.29
-| 0.86
+| 1.20
 |===
 
 This cop checks for inheritance from Struct.new.
+
+It is marked as unsafe auto-correction because it will change the
+inheritance tree (e.g. return value of `Module#ancestors`).
 
 === Examples
 

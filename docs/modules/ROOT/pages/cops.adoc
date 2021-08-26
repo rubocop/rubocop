@@ -75,6 +75,7 @@ In the following section you find all available cops:
 
 * xref:cops_bundler.adoc#bundlerduplicatedgem[Bundler/DuplicatedGem]
 * xref:cops_bundler.adoc#bundlergemcomment[Bundler/GemComment]
+* xref:cops_bundler.adoc#bundlergemfilename[Bundler/GemFilename]
 * xref:cops_bundler.adoc#bundlergemversion[Bundler/GemVersion]
 * xref:cops_bundler.adoc#bundlerinsecureprotocolsource[Bundler/InsecureProtocolSource]
 * xref:cops_bundler.adoc#bundlerorderedgems[Bundler/OrderedGems]

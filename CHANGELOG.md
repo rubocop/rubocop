@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.20.0 (2021-08-26)
+
 ### New features
 
 * [#10040](https://github.com/rubocop/rubocop/pull/10040): Make `Lint/Debugger` aware of debug.rb. ([@koic][])

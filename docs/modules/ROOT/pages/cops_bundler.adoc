@@ -184,6 +184,65 @@ gem 'bar', '< 2.1'
 | Array
 |===
 
+== Bundler/GemFilename
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Enabled
+| Yes
+| No
+| 1.20
+| -
+|===
+
+This cop verifies that a project contains Gemfile or gems.rb file and correct
+associated lock file based on the configuration.
+
+=== Examples
+
+==== EnforcedStyle: Gemfile (default)
+
+[source,ruby]
+----
+# bad
+Project contains gems.rb and gems.locked files
+
+# bad
+Project contains Gemfile and gems.locked file
+
+# good
+Project contains Gemfile and Gemfile.lock
+----
+
+==== EnforcedStyle: gems.rb
+
+[source,ruby]
+----
+# bad
+Project contains Gemfile and Gemfile.lock files
+
+# bad
+Project contains gems.rb and Gemfile.lock file
+
+# good
+Project contains gems.rb and gems.locked files
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `Gemfile`
+| `Gemfile`, `gems.rb`
+
+| Include
+| `+**/Gemfile+`, `+**/gems.rb+`, `+**/Gemfile.lock+`, `+**/gems.locked+`
+| Array
+|===
+
 == Bundler/GemVersion
 
 |===
