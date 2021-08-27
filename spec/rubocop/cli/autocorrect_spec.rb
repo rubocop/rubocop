@@ -830,7 +830,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       == example.rb ==
       C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
       C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
-      C:  3:  1: Style/Documentation: Missing top-level class documentation comment.
+      C:  3:  1: Style/Documentation: Missing top-level documentation comment for class A.
       W:  4:  3: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
       C:  5:  3: [Corrected] Layout/IndentationWidth: Use 2 (not 6) spaces for indentation.
       W:  5: 22: [Corrected] Lint/RedundantCopEnableDirective: Unnecessary enabling of Metrics/MethodLength.
@@ -1247,7 +1247,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
     e = abs('example.rb')
     expect($stdout.string).to eq(<<~RESULT)
-      #{e}:1:1: C: Style/Documentation: Missing top-level class documentation comment.
+      #{e}:1:1: C: Style/Documentation: Missing top-level documentation comment for `class Dsl`.
       #{e}:2:1: C: [Corrected] Layout/AccessModifierIndentation: Indent access modifiers like `private`.
       #{e}:3:7: C: [Corrected] Style/WordArray: Use `%w` or `%W` for an array of words.
       #{e}:3:21: C: [Corrected] Style/TrailingCommaInArrayLiteral: Avoid comma after the last item of an array.

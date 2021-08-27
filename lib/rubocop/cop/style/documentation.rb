@@ -71,8 +71,9 @@ module RuboCop
       #
       class Documentation < Base
         include DocumentationComment
+        include RangeHelp
 
-        MSG = 'Missing top-level %<type>s documentation comment.'
+        MSG = 'Missing top-level documentation comment for `%<type>s %<identifier>s`.'
 
         # @!method constant_definition?(node)
         def_node_matcher :constant_definition?, '{class module casgn}'
@@ -88,23 +89,25 @@ module RuboCop
         def on_class(node)
           return unless node.body
 
-          check(node, node.body, :class)
+          check(node, node.body)
         end
 
         def on_module(node)
-          check(node, node.body, :module)
+          check(node, node.body)
         end
 
         private
 
-        def check(node, body, type)
+        def check(node, body)
           return if namespace?(body)
           return if documentation_comment?(node)
           return if constant_allowed?(node)
           return if nodoc_self_or_outer_module?(node)
           return if macro_only?(body)
 
-          add_offense(node.loc.keyword, message: format(MSG, type: type))
+          range = range_between(node.loc.expression.begin_pos, node.loc.name.end_pos)
+          message = format(MSG, type: node.type, identifier: identifier(node))
+          add_offense(range, message: message)
         end
 
         def nodoc_self_or_outer_module?(node)
@@ -164,6 +167,18 @@ module RuboCop
 
         def allowed_constants
           @allowed_constants ||= cop_config.fetch('AllowedConstants', []).map(&:intern)
+        end
+
+        def identifier(node)
+          # Get the fully qualified identifier for a class/module
+          nodes = [node, *node.each_ancestor(:class, :module)]
+          nodes.reverse_each.flat_map { |n| qualify_const(n.identifier) }.join('::')
+        end
+
+        def qualify_const(node)
+          return if node.nil?
+
+          [qualify_const(node.namespace), node.short_name].compact
         end
       end
     end
