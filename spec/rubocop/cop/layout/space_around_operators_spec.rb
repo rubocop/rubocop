@@ -858,6 +858,20 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
+    it 'does not register an offenses match operators between `<<` and `+=`' do
+      expect_no_offenses(<<~RUBY)
+        x  << foo
+        yz += bar
+      RUBY
+    end
+
+    it 'does not register an offenses match operators between `+=` and `<<`' do
+      expect_no_offenses(<<~RUBY)
+        x  += foo
+        yz << bar
+      RUBY
+    end
+
     it 'registers an offense and corrects various assignments with too many spaces' do
       expect_offense(<<~RUBY)
         x ||=  0
