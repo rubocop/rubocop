@@ -3,18 +3,18 @@
 module RuboCop
   module Cop
     module Bundler
-      # The symbol argument `:gemcutter`, `:rubygems`, and `:rubyforge`
-      # are deprecated. So please change your source to URL string that
-      # 'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+      # Passing symbol arguments to `source` (e.g. `source :rubygems`) is
+      # deprecated because they default to using HTTP requests. Instead, specify
+      # `'https://rubygems.org'` if possible, or `'http://rubygems.org'` if not.
       #
-      # This autocorrect will replace these symbols with 'https://rubygems.org'.
-      # Because it is secure, HTTPS request is strongly recommended. And in
-      # most use cases HTTPS will be fine.
+      # When autocorrecting, this cop will replace symbol arguments with
+      # `'https://rubygems.org'`.
       #
-      # However, it don't replace all `sources` of `http://` with `https://`.
-      # For example, when specifying an internal gem server using HTTP on the
-      # intranet, a use case where HTTPS cannot be specified was considered.
-      # Consider using HTTP only if you cannot use HTTPS.
+      # This cop will not replace existing sources that use `http://`. This may
+      # be necessary where HTTPS is not available. For example, where using an
+      # internal gem server via an intranet, or where HTTPS is prohibited.
+      # However, you should strongly prefer `https://` where possible, as it is
+      # more secure.
       #
       # @example
       #   # bad
@@ -24,7 +24,8 @@ module RuboCop
       #
       #   # good
       #   source 'https://rubygems.org' # strongly recommended
-      #   source 'http://rubygems.org'
+      #   source 'http://rubygems.org' # use only if HTTPS is unavailable
+      #
       class InsecureProtocolSource < Base
         include RangeHelp
         extend AutoCorrector
