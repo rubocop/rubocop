@@ -5,9 +5,11 @@ module RuboCop
     module Style
       # This cop checks for uses of the case equality operator(===).
       #
+      # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
+      # the case equality operator is a constant.
+      #
       # @example
       #   # bad
-      #   Array === something
       #   (1..100) === 7
       #   /something/ === some_string
       #
@@ -16,18 +18,13 @@ module RuboCop
       #   (1..100).include?(7)
       #   /something/.match?(some_string)
       #
-      # @example AllowOnConstant
-      #   # Style/CaseEquality:
-      #   #   AllowOnConstant: true
-      #
+      # @example AllowOnConstant: false (default)
       #   # bad
-      #   (1..100) === 7
-      #   /something/ === some_string
+      #   Array === something
       #
+      # @example AllowOnConstant: true
       #   # good
       #   Array === something
-      #   (1..100).include?(7)
-      #   /something/.match?(some_string)
       #
       class CaseEquality < Base
         extend AutoCorrector
