@@ -76,21 +76,36 @@ module RuboCop
 
         def on_send(node)
           if (sort_node, sorter, accessor = redundant_sort?(node.parent))
+            return if use_size_method_in_block?(sort_node)
+
             ancestor = node.parent
           elsif (sort_node, sorter, accessor = redundant_sort?(node.parent&.parent))
+            return if use_size_method_in_block?(sort_node)
+
             ancestor = node.parent.parent
           else
             return
           end
 
+          register_offense(ancestor, sort_node, sorter, accessor)
+        end
+
+        private
+
+        def use_size_method_in_block?(sort_node)
+          return true if sort_node.send_type? && sort_node.block_node&.body&.method?(:size)
+          return false unless sort_node.block_argument?
+
+          sort_node.last_argument.children.first.value == :size
+        end
+
+        def register_offense(ancestor, sort_node, sorter, accessor)
           message = message(ancestor, sorter, accessor)
 
           add_offense(offense_range(sort_node, ancestor), message: message) do |corrector|
             autocorrect(corrector, ancestor, sort_node, sorter, accessor)
           end
         end
-
-        private
 
         def autocorrect(corrector, node, sort_node, sorter, accessor)
           # Remove accessor, e.g. `first` or `[-1]`.
