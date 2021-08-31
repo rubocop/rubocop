@@ -231,7 +231,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     expect_no_offenses('[[1, 2], [3, 4]].first.sort')
   end
 
-  # `[2, 1, 3].sort_by.first` is equivalent to `[2, 1, 3].first`, but this
+  # `[3, 1, 2].sort_by(&:size).last` is equivalent to `[3, 1, 2].max_by(&:size)`.
+  it 'does not register an offense when using `sort_by(&:size).last`' do
+    expect_no_offenses('[2, 1, 3].sort_by(&:size).last')
+  end
+
+  # `[3, 1, 2].sort_by { |i| i.size }.last` is equivalent to `[3, 1, 2].max_by { |i| i.size }`.
+  it 'does not register an offense when using `sort_by { |i| i.size }.last`' do
+    expect_no_offenses('[2, 1, 3].sort_by { |i| i.size }.last')
+  end
+
+  # `[2, 1, 3].sort_by(&:size).first` is not equivalent to `[2, 1, 3].first`, but this
   # cop would "correct" it to `[2, 1, 3].min_by`.
   it 'does not register an offense when sort_by is not given a block' do
     expect_no_offenses('[2, 1, 3].sort_by.first')
