@@ -58,14 +58,11 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Reverse the order of the operands `%<source>s`.'
-
         REVERSE_COMPARISON = { '<' => '>', '<=' => '>=', '>' => '<', '>=' => '<=' }.freeze
-
         EQUALITY_OPERATORS = %i[== !=].freeze
-
         NONCOMMUTATIVE_OPERATORS = %i[===].freeze
-
         PROGRAM_NAMES = %i[$0 $PROGRAM_NAME].freeze
+        RESTRICT_ON_SEND = RuboCop::AST::Node::COMPARISON_OPERATORS
 
         # @!method file_constant_equal_program_name?(node)
         def_node_matcher :file_constant_equal_program_name?, <<~PATTERN
