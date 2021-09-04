@@ -2070,6 +2070,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/DotPosition` and `Layout/SingleLineBlockChain` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      example.select { |item| item.cond? }.
+              join('-')
+    RUBY
+
+    expect(cli.run(['-a', '--only', 'Layout/DotPosition,Layout/SingleLineBlockChain'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      example.select { |item| item.cond? }
+              .join('-')
+    RUBY
+  end
+
   it 'does not correct Style/IfUnlessModifier offense disabled by a comment directive and ' \
      'does not fire Lint/RedundantCopDisableDirective offense even though that directive ' \
      'would make the modifier form too long' do

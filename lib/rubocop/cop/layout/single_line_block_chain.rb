@@ -37,15 +37,26 @@ module RuboCop
           return unless receiver&.block_type?
 
           receiver_location = receiver.loc
-          closing_block_delimiter_line_number = receiver_location.end.line
-          return if receiver_location.begin.line < closing_block_delimiter_line_number
+          closing_block_delimiter_line_num = receiver_location.end.line
+          return if receiver_location.begin.line < closing_block_delimiter_line_num
 
           node_location = node.loc
           dot_range = node_location.dot
           return unless dot_range
-          return if dot_range.line > closing_block_delimiter_line_number
+          return unless call_method_after_block?(node, dot_range, closing_block_delimiter_line_num)
 
-          range_between(dot_range.begin_pos, node_location.selector.end_pos)
+          range_between(dot_range.begin_pos, selector_range(node).end_pos)
+        end
+
+        def call_method_after_block?(node, dot_range, closing_block_delimiter_line_num)
+          return false if dot_range.line > closing_block_delimiter_line_num
+
+          dot_range.column < selector_range(node).column
+        end
+
+        def selector_range(node)
+          # l.(1) has no selector, so we use the opening parenthesis instead
+          node.loc.selector || node.loc.begin
         end
       end
     end
