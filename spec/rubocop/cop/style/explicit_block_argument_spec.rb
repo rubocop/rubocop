@@ -41,15 +41,15 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
 
   it 'correctly corrects when method already has an explicit block argument' do
     expect_offense(<<~RUBY)
-      def m(&block)
+      def m(&blk)
         items.something { |i| yield i }
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
       end
     RUBY
 
     expect_correction(<<~RUBY)
-      def m(&block)
-        items.something(&block)
+      def m(&blk)
+        items.something(&blk)
       end
     RUBY
   end

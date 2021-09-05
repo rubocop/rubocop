@@ -67,16 +67,26 @@ module RuboCop
             # so this can cause crashes in haml_lint
             return unless def_node
 
+            block_name = extract_block_name(def_node)
+
             add_offense(block_node) do |corrector|
               corrector.remove(block_body_range(block_node, send_node))
 
-              add_block_argument(send_node, corrector)
-              add_block_argument(def_node, corrector) if @def_nodes.add?(def_node)
+              add_block_argument(send_node, corrector, block_name)
+              add_block_argument(def_node, corrector, block_name) if @def_nodes.add?(def_node)
             end
           end
         end
 
         private
+
+        def extract_block_name(def_node)
+          if def_node.block_argument?
+            def_node.arguments.last.name
+          else
+            'block'
+          end
+        end
 
         def yielding_arguments?(block_args, yield_args)
           yield_args = yield_args.dup.fill(
@@ -91,15 +101,15 @@ module RuboCop
           end
         end
 
-        def add_block_argument(node, corrector)
+        def add_block_argument(node, corrector, block_name)
           if node.arguments?
-            insert_argument(node, corrector)
+            insert_argument(node, corrector, block_name)
           elsif empty_arguments?(node)
-            corrector.replace(node.arguments, '(&block)')
+            corrector.replace(node.arguments, "(&#{block_name})")
           elsif call_like?(node)
-            correct_call_node(node, corrector)
+            correct_call_node(node, corrector, block_name)
           else
-            corrector.insert_after(node.loc.name, '(&block)')
+            corrector.insert_after(node.loc.name, "(&#{block_name})")
           end
         end
 
@@ -112,16 +122,16 @@ module RuboCop
           node.call_type? || node.zsuper_type? || node.super_type?
         end
 
-        def insert_argument(node, corrector)
+        def insert_argument(node, corrector, block_name)
           last_arg = node.arguments.last
           arg_range = range_with_surrounding_comma(last_arg.source_range, :right)
-          replacement = ' &block'
+          replacement = " &#{block_name}"
           replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
           corrector.insert_after(arg_range, replacement) unless last_arg.blockarg_type?
         end
 
-        def correct_call_node(node, corrector)
-          corrector.insert_after(node, '(&block)')
+        def correct_call_node(node, corrector, block_name)
+          corrector.insert_after(node, "(&#{block_name})")
           return unless node.parenthesized?
 
           args_begin = Util.args_begin(node)
