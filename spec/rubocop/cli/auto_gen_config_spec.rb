@@ -53,7 +53,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 2
               # Cop supports --auto-correct.
-              # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 138
@@ -166,7 +166,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 1
               # Cop supports --auto-correct.
-              # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 99
@@ -332,7 +332,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+                '# Configuration parameters: AllowHeredoc, ' \
                 'AllowURI, URISchemes, IgnoreCopDirectives, ' \
                 'IgnoredPatterns.',
                 '# URISchemes: http, https',
@@ -385,7 +385,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+                '# Configuration parameters: AllowHeredoc, ' \
                 'AllowURI, URISchemes, IgnoreCopDirectives, ' \
                 'IgnoredPatterns.',
                 '# URISchemes: http, https',
@@ -692,7 +692,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 2',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
          'IgnoredPatterns.',
          '# URISchemes: http, https',
@@ -784,7 +784,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 3',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
          'IgnoredPatterns.',
          '# URISchemes: http, https',
@@ -1051,7 +1051,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
          'IgnoredPatterns.',
          '# URISchemes: http, https',

@@ -957,7 +957,6 @@ Layout/LineLength:
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '1.4'
-  AutoCorrect: true
   Max: 120
   # To make it possible to copy or click on URIs in the code, we allow lines
   # containing a URI to be longer than Max.
