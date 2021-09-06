@@ -13,17 +13,6 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'when using `#to_i` for integer' do
-      expect_offense(<<~RUBY)
-        10.to_i
-        ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.to_i`, use stricter `Integer(10, 10)`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        Integer(10, 10)
-      RUBY
-    end
-
     it 'when using `#to_f`' do
       expect_offense(<<~RUBY)
         "10.2".to_f
@@ -43,6 +32,27 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
 
       expect_correction(<<~RUBY)
         Complex("10")
+      RUBY
+    end
+
+    it 'when using `#to_i` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_i
+        42.0.to_i
+      RUBY
+    end
+
+    it 'when using `#to_f` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_f
+        42.0.to_f
+      RUBY
+    end
+
+    it 'when using `#to_c` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_c
+        42.0.to_c
       RUBY
     end
 
@@ -160,6 +170,35 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
 
       expect_correction(<<~RUBY)
         "foo".try { |i| Float(i) }
+      RUBY
+    end
+
+    it 'registers an offense when using nested number conversion methods' do
+      expect_offense(<<~RUBY)
+        var.to_i.to_f
+        ^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `var.to_i`, use stricter `Integer(var, 10)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Integer(var, 10).to_f
+      RUBY
+    end
+
+    it 'does not register an offense when using `Integer` constructor' do
+      expect_no_offenses(<<~RUBY)
+        Integer(var, 10).to_f
+      RUBY
+    end
+
+    it 'does not register an offense when using `Float` constructor' do
+      expect_no_offenses(<<~RUBY)
+        Float(var).to_i
+      RUBY
+    end
+
+    it 'does not register an offense when using `Complex` constructor' do
+      expect_no_offenses(<<~RUBY)
+        Complex(var).to_f
       RUBY
     end
 

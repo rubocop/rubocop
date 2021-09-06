@@ -60,6 +60,7 @@ module RuboCop
               'class parsing, instead of using '\
               '`%<current>s`, use stricter '\
               '`%<corrected_method>s`.'
+        CONVERSION_METHODS = %i[Integer Float Complex to_i to_f to_c].freeze
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 
         # @!method to_method(node)
@@ -127,7 +128,8 @@ module RuboCop
         end
 
         def ignore_receiver?(receiver)
-          if receiver.send_type? && ignored_method?(receiver.method_name)
+          if receiver.numeric_type? || (receiver.send_type? &&
+            (conversion_method?(receiver.method_name) || ignored_method?(receiver.method_name)))
             true
           elsif (receiver = top_receiver(receiver))
             receiver.const_type? && ignored_class?(receiver.const_name)
@@ -140,6 +142,10 @@ module RuboCop
           receiver = node
           receiver = receiver.receiver until receiver.receiver.nil?
           receiver
+        end
+
+        def conversion_method?(method_name)
+          CONVERSION_METHODS.include?(method_name)
         end
 
         def ignored_classes
