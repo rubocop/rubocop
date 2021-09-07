@@ -271,7 +271,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
     expect(
-      cli.run(['--auto-correct', '--only', 'Style/MethodCallWithArgsParentheses,Style/AndOr'])
+      cli.run(['--auto-correct-all', '--only', 'Style/MethodCallWithArgsParentheses,Style/AndOr'])
     ).to eq(0)
     expect(File.read('example.rb')).to eq(<<~RUBY)
       if foo && bar(:arg)
