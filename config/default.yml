@@ -2802,8 +2802,9 @@ Style/AndOr:
   Description: 'Use &&/|| instead of and/or.'
   StyleGuide: '#no-and-or-or'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.9'
-  VersionChanged: '0.25'
+  VersionChanged: '<<next>>'
   # Whether `and` and `or` are banned only in conditionals (conditionals)
   # or completely (always).
   EnforcedStyle: conditionals
