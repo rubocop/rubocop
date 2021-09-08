@@ -115,6 +115,23 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         let(:prefix) { '# frozen_string_literal: true' }
 
         it_behaves_like 'mutable objects', '"#{a}"'
+        it_behaves_like 'immutable objects', <<~'RUBY'
+          <<~HERE
+            foo
+            bar
+          HERE
+        RUBY
+        it 'registers an offense when using interpolated heredoc constant' do
+          expect_offense(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = <<~HERE
+                    ^^^^^^^ Freeze mutable objects assigned to constants.
+              foo #{use_interpolation}
+              bar
+            HERE
+          RUBY
+        end
       end
 
       context 'when the frozen string literal comment is false' do
@@ -133,6 +150,22 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         let(:prefix) { '# frozen_string_literal: true' }
 
         it_behaves_like 'immutable objects', '"#{a}"'
+        it_behaves_like 'immutable objects', <<~'RUBY'
+          <<~HERE
+            foo
+            bar
+          HERE
+        RUBY
+        it 'does not register an offense when using interpolated heredoc constant' do
+          expect_no_offenses(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = <<~HERE
+              foo #{use_interpolation}
+              bar
+            HERE
+          RUBY
+        end
       end
 
       context 'when the frozen string literal comment is false' do

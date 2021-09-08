@@ -9,9 +9,8 @@ module RuboCop
       FROZEN_STRING_LITERAL = '# frozen_string_literal:'
       FROZEN_STRING_LITERAL_ENABLED = '# frozen_string_literal: true'
       FROZEN_STRING_LITERAL_TYPES_RUBY27 = %i[str dstr].freeze
-      FROZEN_STRING_LITERAL_TYPES_RUBY30 = %i[str].freeze
 
-      private_constant :FROZEN_STRING_LITERAL_TYPES_RUBY27, :FROZEN_STRING_LITERAL_TYPES_RUBY30
+      private_constant :FROZEN_STRING_LITERAL_TYPES_RUBY27
 
       def frozen_string_literal_comment_exists?
         leading_comment_lines.any? { |line| MagicComment.parse(line).valid_literal_value? }
@@ -20,13 +19,19 @@ module RuboCop
       private
 
       def frozen_string_literal?(node)
-        literal_types = if target_ruby_version >= 3.0
-                          FROZEN_STRING_LITERAL_TYPES_RUBY30
+        frozen_string = if target_ruby_version >= 3.0
+                          node.str_type? || frozen_heredoc?(node)
                         else
-                          FROZEN_STRING_LITERAL_TYPES_RUBY27
+                          FROZEN_STRING_LITERAL_TYPES_RUBY27.include?(node.type)
                         end
 
-        literal_types.include?(node.type) && frozen_string_literals_enabled?
+        frozen_string && frozen_string_literals_enabled?
+      end
+
+      def frozen_heredoc?(node)
+        return false unless node.dstr_type? && node.heredoc?
+
+        node.children.all?(&:str_type?)
       end
 
       def frozen_string_literals_enabled?
