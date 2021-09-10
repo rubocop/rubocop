@@ -9,14 +9,14 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
     it 'registers an offense when using a flagged term' do
       expect_offense(<<~RUBY)
         whitelist = %w(user1 user2)
-        ^^^^^^^^^ Consider replacing problematic term 'whitelist'.
+        ^^^^^^^^^ Consider replacing 'whitelist' with another term.
       RUBY
     end
 
     it 'registers an offense when using a flagged term with mixed case' do
       expect_offense(<<~RUBY)
         class WhiteList
-              ^^^^^^^^^ Consider replacing problematic term 'WhiteList'.
+              ^^^^^^^^^ Consider replacing 'WhiteList' with another term.
         end
       RUBY
     end
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
     it 'registers an offense for a partial word match' do
       expect_offense(<<~RUBY)
         class Nodewhitelist
-                  ^^^^^^^^^ Consider replacing problematic term 'whitelist'.
+                  ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         end
       RUBY
     end
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'ignores flagged terms that are set to nil' do
         expect_offense(<<~RUBY)
           # working on replacing whitelist and blacklist
-                                               ^^^^^^^^^ Consider replacing problematic term 'blacklist'.
+                                               ^^^^^^^^^ Consider replacing 'blacklist' with another term.
         RUBY
       end
     end
@@ -53,8 +53,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers an offense for each word' do
         expect_offense(<<~RUBY)
           master, slave = nodes
-                  ^^^^^ Consider replacing problematic term 'slave' with 'replica', 'secondary', or 'follower'.
-          ^^^^^^ Consider replacing problematic term 'master' with 'main', 'primary', or 'leader'.
+                  ^^^^^ Consider replacing 'slave' with 'replica', 'secondary', or 'follower'.
+          ^^^^^^ Consider replacing 'master' with 'main', 'primary', or 'leader'.
         RUBY
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers an offense for a flagged term matched with a regexp' do
         expect_offense(<<~RUBY)
           # white-list of IPs
-            ^^^^^^^^^^ Consider replacing problematic term 'white-list'.
+            ^^^^^^^^^^ Consider replacing 'white-list' with another term.
         RUBY
       end
     end
@@ -92,11 +92,11 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
 
           # not allowed
           Slave
-          ^^^^^ Consider replacing problematic term 'Slave'.
+          ^^^^^ Consider replacing 'Slave' with another term.
           :database_slave
-                    ^^^^^ Consider replacing problematic term 'slave'.
+                    ^^^^^ Consider replacing 'slave' with another term.
           'database@slave'
-                    ^^^^^ Consider replacing problematic term 'slave'.
+                    ^^^^^ Consider replacing 'slave' with another term.
         RUBY
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers an offense at the correct location' do
         expect_offense(<<~RUBY)
           barx, foo = method_call
-                ^^^ Consider replacing problematic term 'foo'.
+                ^^^ Consider replacing 'foo' with another term.
         RUBY
       end
     end
@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'includes the suggestion in the offense message' do
         expect_offense(<<~RUBY)
           whitelist = %w(user1 user2)
-          ^^^^^^^^^ Consider replacing problematic term 'whitelist' with 'allowlist'.
+          ^^^^^^^^^ Consider replacing 'whitelist' with 'allowlist'.
         RUBY
       end
     end
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'includes both suggestions in the offense message' do
         expect_offense(<<~RUBY)
           whitelist = %w(user1 user2)
-          ^^^^^^^^^ Consider replacing problematic term 'whitelist' with 'allowlist' or 'permit'.
+          ^^^^^^^^^ Consider replacing 'whitelist' with 'allowlist' or 'permit'.
         RUBY
       end
     end
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'includes all suggestions in the message' do
         expect_offense(<<~RUBY)
           default_branch = 'master'
-                            ^^^^^^ Consider replacing problematic term 'master' with 'main', 'primary', or 'leader'.
+                            ^^^^^^ Consider replacing 'master' with 'main', 'primary', or 'leader'.
         RUBY
       end
     end
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           whitelist = %w(user1 user2)
-          ^^^^^^^^^ Consider replacing problematic term 'whitelist'.
+          ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
       end
     end
@@ -220,21 +220,21 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers offenses for instance variables' do
         expect_offense(<<~RUBY)
           @whitelist = %w(user1 user2)
-           ^^^^^^^^^ Consider replacing problematic term 'whitelist'.
+           ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
       end
 
       it 'registers offenses for class variables' do
         expect_offense(<<~RUBY)
           @@whitelist = %w(user1 user2)
-            ^^^^^^^^^ Consider replacing problematic term 'whitelist'.
+            ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
       end
 
       it 'registers offenses for global variables' do
         expect_offense(<<~RUBY)
           $whitelist = %w(user1 user2)
-           ^^^^^^^^^ Consider replacing problematic term 'whitelist'.
+           ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
       end
     end
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers offenses for constants' do
         expect_offense(<<~RUBY)
           WHITELIST = %w(user1 user2)
-          ^^^^^^^^^ Consider replacing problematic term 'WHITELIST'.
+          ^^^^^^^^^ Consider replacing 'WHITELIST' with another term.
         RUBY
       end
     end
@@ -286,7 +286,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
     it 'registers an offense for an interpolated string' do
       expect_offense(<<~RUBY)
         puts "master node \#{node}"
-              ^^^^^^ Consider replacing problematic term 'master'.
+              ^^^^^^ Consider replacing 'master' with another term.
 
       RUBY
     end
@@ -294,9 +294,9 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
     it 'registers an offense for a multiline string' do
       expect_offense(<<~RUBY)
         node_types = "master
-                      ^^^^^^ Consider replacing problematic term 'master'.
+                      ^^^^^^ Consider replacing 'master' with another term.
           slave
-          ^^^^^ Consider replacing problematic term 'slave'.
+          ^^^^^ Consider replacing 'slave' with another term.
           primary
           secondary"
       RUBY
@@ -306,10 +306,10 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       expect_offense(<<~RUBY)
         node_text = <<~TEXT
           master
-          ^^^^^^ Consider replacing problematic term 'master'.
+          ^^^^^^ Consider replacing 'master' with another term.
           primary
           slave
-          ^^^^^ Consider replacing problematic term 'slave'.
+          ^^^^^ Consider replacing 'slave' with another term.
           secondary
         TEXT
       RUBY
@@ -337,7 +337,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           config[:master] = {}
-                  ^^^^^^ Consider replacing problematic term 'master'.
+                  ^^^^^^ Consider replacing 'master' with another term.
         RUBY
       end
     end
@@ -362,9 +362,9 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
     it 'registers an offense in a single line comment' do
       expect_offense(<<~RUBY)
         # is it a foo?
-                  ^^^ Consider replacing problematic term 'foo'.
+                  ^^^ Consider replacing 'foo' with another term.
         bar = baz # it's a foo!
-                           ^^^ Consider replacing problematic term 'foo'.
+                           ^^^ Consider replacing 'foo' with another term.
       RUBY
     end
 
@@ -372,7 +372,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       expect_offense(<<~RUBY)
         =begin
         foo
-        ^^^ Consider replacing problematic term 'foo'.
+        ^^^ Consider replacing 'foo' with another term.
         bar
         =end
       RUBY
@@ -405,8 +405,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
 
       it 'registers an offense' do
         expect(offenses.size).to eq(1)
-        expect(messages)
-          .to eq(["Consider replacing problematic term 'master' with 'main' in file path."])
+        expect(messages).to eq(["Consider replacing 'master' in file path with 'main'."])
       end
     end
 
@@ -419,7 +418,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       it 'registers an offense with all problematic words' do
         expect(offenses.size).to eq(1)
         expect(messages)
-          .to eq(["Consider replacing problematic terms 'master', 'slave' in file path."])
+          .to eq(["Consider replacing 'master', 'slave' in file path with other terms."])
       end
     end
 
@@ -431,7 +430,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
 
       it 'registers an offense for a director' do
         expect(offenses.size).to eq(1)
-        expect(messages).to eq(["Consider replacing problematic term 'master' in file path."])
+        expect(messages).to eq(["Consider replacing 'master' in file path with another term."])
       end
     end
 

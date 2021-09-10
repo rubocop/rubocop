@@ -70,6 +70,8 @@ module RuboCop
         include RangeHelp
 
         EMPTY_ARRAY = [].freeze
+        MSG = "Consider replacing '%<term>s'%<suffix>s."
+        MSG_FOR_FILE_PATH = "Consider replacing '%<term>s' in file path%<suffix>s."
 
         WordLocation = Struct.new(:word, :position)
 
@@ -197,12 +199,11 @@ module RuboCop
         end
 
         def create_single_word_message_for_file(word)
-          create_message(word).sub(/\.$/, ' in file path.')
+          create_message(word, MSG_FOR_FILE_PATH)
         end
 
         def create_multiple_word_message_for_file(words)
-          quoted_words = words.map { |word| "'#{word}'" }
-          "Consider replacing problematic terms #{quoted_words.join(', ')} in file path."
+          format(MSG_FOR_FILE_PATH, term: words.join("', '"), suffix: ' with other terms')
         end
 
         def scan_for_words(input)
@@ -223,9 +224,12 @@ module RuboCop
           safe_str.gsub(@allowed_regex) { |match| '*' * match.size }
         end
 
-        def create_message(word)
+        def create_message(word, message = MSG)
           flagged_term = find_flagged_term(word)
-          "Consider replacing problematic term '#{word}'#{flagged_term['SuggestionString']}."
+          suggestions = flagged_term['SuggestionString']
+          suggestions = ' with another term' if suggestions.blank?
+
+          format(message, term: word, suffix: suggestions)
         end
 
         def find_flagged_term(word)
@@ -233,10 +237,6 @@ module RuboCop
             key.match?(word)
           end
           flagged_term
-        end
-
-        def create_message_for_file(word)
-          create_message(word).sub(/\.$/, ' in file path.')
         end
 
         def preprocess_suggestions(suggestions)

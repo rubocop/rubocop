@@ -2569,8 +2569,9 @@ Naming/HeredocDelimiterNaming:
 
 Naming/InclusiveLanguage:
   Description: 'Recommend the use of inclusive language instead of problematic terms.'
-  Enabled: pending
+  Enabled: false
   VersionAdded: '1.18'
+  VersionChanged: '<<next>>'
   CheckIdentifiers: true
   CheckConstants: true
   CheckVariables: true
