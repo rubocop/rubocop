@@ -133,6 +133,47 @@ do_something(*some_array)
 
 * https://rubystyle.guide#method-invocation-parens
 
+== Lint/AmbiguousOperatorPrecedence
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.21
+| -
+|===
+
+This cop looks for expressions containing multiple binary operators
+where precedence is ambiguous due to lack of parentheses. For example,
+in `1 + 2 * 3`, the multiplication will happen before the addition, but
+lexically it appears that the addition will happen first.
+
+The cop does not consider unary operators (ie. `!a` or `-b`) or comparison
+operators (ie. `a =~ b`) because those are not ambiguous.
+
+NOTE: Ranges are handled by `Lint/AmbiguousRange`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+a + b * c
+a || b && c
+a ** b + c
+
+# good (different precedence)
+a + (b * c)
+a || (b && c)
+(a ** b) + c
+
+# good (same precedence)
+a + b + c
+a * b / c % d
+----
+
 == Lint/AmbiguousRange
 
 |===
@@ -2476,6 +2517,37 @@ array = [
   'Item 1' \
   'Item 2'
 ]
+----
+
+== Lint/IncompatibleIoSelectWithFiberScheduler
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.21
+| -
+|===
+
+This cop checks for `IO.select` that is incompatible with Fiber Scheduler since Ruby 3.0.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+IO.select([io], [], [], timeout)
+
+# good
+io.wait_readable(timeout)
+
+# bad
+IO.select([], [io], [], timeout)
+
+# good
+io.wait_writable(timeout)
 ----
 
 == Lint/IneffectiveAccessModifier

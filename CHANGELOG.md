@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.21.0 (2021-09-13)
+
 ### New features
 
 * [#7849](https://github.com/rubocop/rubocop/issues/7849): Add new `Lint/AmbiguousOperatorPrecedence` cop. ([@dvandersluis][])

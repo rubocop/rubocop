@@ -514,11 +514,11 @@ EOS
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Pending
+| Disabled
 | Yes
 | No
 | 1.18
-| -
+| 1.21
 |===
 
 This cops recommends the use of inclusive language instead of problematic terms.

@@ -4096,10 +4096,6 @@ bar: "0000000000", baz: "0000000000"}
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `true`
-| Boolean
-
 | Max
 | `120`
 | Integer

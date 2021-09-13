@@ -1452,7 +1452,7 @@ Lint/AmbiguousOperatorPrecedence:
                  Checks for expressions containing multiple binary operations with
                  ambiguous precedence.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.21'
 
 Lint/AmbiguousRange:
   Description: Checks for ranges with ambiguous boundaries.
@@ -1780,7 +1780,7 @@ Lint/ImplicitStringConcatenation:
 Lint/IncompatibleIoSelectWithFiberScheduler:
   Description: 'Checks for `IO.select` that is incompatible with Fiber Scheduler.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.21'
 
 Lint/IneffectiveAccessModifier:
   Description: >-
@@ -2576,7 +2576,7 @@ Naming/InclusiveLanguage:
   Description: 'Recommend the use of inclusive language instead of problematic terms.'
   Enabled: false
   VersionAdded: '1.18'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.21'
   CheckIdentifiers: true
   CheckConstants: true
   CheckVariables: true
@@ -2810,7 +2810,7 @@ Style/AndOr:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.21'
   # Whether `and` and `or` are banned only in conditionals (conditionals)
   # or completely (always).
   EnforcedStyle: conditionals
@@ -2846,7 +2846,7 @@ Style/AsciiComments:
   StyleGuide: '#english-comments'
   Enabled: false
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.21'
   AllowedChars:
     - ©
 

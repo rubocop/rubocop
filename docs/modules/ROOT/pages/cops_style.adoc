@@ -230,14 +230,18 @@ alias_method :bar, :foo
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.9
-| 0.25
+| 1.21
 |===
 
 This cop checks for uses of `and` and `or`, and suggests using `&&` and
 `||` instead. It can be configured to check only in conditions or in
 all contexts.
+
+It is marked as unsafe auto-correction because it may change the
+operator precedence between logical operators (`&&` and `||`) and
+semantic operators (`and` and `or`).
 
 === Examples
 
@@ -443,11 +447,11 @@ array literal or the second is a string literal.
 |===
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
-| Enabled
+| Disabled
 | Yes
 | No
 | 0.9
-| 0.52
+| 1.21
 |===
 
 This cop checks for non-ascii (non-English) characters
@@ -914,12 +918,14 @@ end
 
 This cop checks for uses of the case equality operator(===).
 
+If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
+the case equality operator is a constant.
+
 === Examples
 
 [source,ruby]
 ----
 # bad
-Array === something
 (1..100) === 7
 /something/ === some_string
 
@@ -929,21 +935,20 @@ something.is_a?(Array)
 /something/.match?(some_string)
 ----
 
-==== AllowOnConstant
+==== AllowOnConstant: false (default)
 
 [source,ruby]
 ----
-# Style/CaseEquality:
-#   AllowOnConstant: true
-
 # bad
-(1..100) === 7
-/something/ === some_string
+Array === something
+----
 
+==== AllowOnConstant: true
+
+[source,ruby]
+----
 # good
 Array === something
-(1..100).include?(7)
-/something/.match?(some_string)
 ----
 
 === Configurable attributes
