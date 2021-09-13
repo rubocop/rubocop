@@ -345,7 +345,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       it 'highlights only the non-directive part' do
         expect_offense(<<~RUBY)
           #{'a' * 80}bcd # rubocop:enable Style/ClassVars
-          #{' ' * 80}^^^ Line is too long. [116/80]
+          #{' ' * 80}^^^ Line is too long. [83/80]
         RUBY
       end
 
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         it 'highlights only the non-directive part' do
           expect_offense(<<~RUBY)
             #{'a' * 70} # bbbbbbbbbbbbbb # rubocop:enable Style/ClassVars'
-            #{' ' * 70}          ^^^^^^^ Line is too long. [121/80]
+            #{' ' * 70}          ^^^^^^^ Line is too long. [87/80]
           RUBY
         end
       end
@@ -362,7 +362,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         it 'registers an offense for the line' do
           expect_offense(<<-RUBY)
             LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable Layout/LineLength
-            #{' ' * 68}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [153/80]
+            #{' ' * 68}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [117/80]
           RUBY
         end
       end
