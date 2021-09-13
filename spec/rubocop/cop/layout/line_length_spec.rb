@@ -361,7 +361,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       context 'and the source contains non-directive #s as non-comment' do
         it 'registers an offense for the line' do
           expect_offense(<<-RUBY)
-            LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable Layout/LineLength
+            LARGE_DATA_STRING_PATTERN = %r{\A([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})#([A-Za-z0-9\+\/#]*\={0,2})\z} # rubocop:disable Style/ClassVars
             #{' ' * 68}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [117/80]
           RUBY
         end
