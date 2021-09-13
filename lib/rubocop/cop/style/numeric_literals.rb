@@ -58,18 +58,17 @@ module RuboCop
 
           case int
           when /^\d+$/
-            return unless (self.min_digits = int.size + 1)
-
-            register_offense(node)
+            register_offense(node) { self.min_digits = int.size + 1 }
           when /\d{4}/, short_group_regex
-            return unless (self.config_to_allow_offenses = { 'Enabled' => false })
-
-            register_offense(node)
+            register_offense(node) { self.config_to_allow_offenses = { 'Enabled' => false } }
           end
         end
 
-        def register_offense(node)
-          add_offense(node) { |corrector| corrector.replace(node, format_number(node)) }
+        def register_offense(node, &_block)
+          add_offense(node) do |corrector|
+            yield
+            corrector.replace(node, format_number(node))
+          end
         end
 
         def short_group_regex

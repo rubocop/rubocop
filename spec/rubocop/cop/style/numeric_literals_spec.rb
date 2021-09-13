@@ -164,4 +164,59 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
       RUBY
     end
   end
+
+  context 'for --auto-gen-config' do
+    let(:enabled) { cop.config_to_allow_offenses['Enabled'] }
+    let(:min_digits) { cop.config_to_allow_offenses.dig(:exclude_limit, 'MinDigits') }
+
+    context 'when the number is only digits' do
+      it 'detects right value of MinDigits based on the longest number' do
+        expect_offense(<<~RUBY)
+          1234567890
+          ^^^^^^^^^^ [...]
+          12345678901234567890
+          ^^^^^^^^^^^^^^^^^^^^ [...]
+          123456789012
+          ^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect(min_digits).to eq(21)
+        expect(enabled.nil?).to be(true)
+      end
+
+      it 'sets the right value if one is disabled inline' do
+        expect_offense(<<~RUBY)
+          1234567890
+          ^^^^^^^^^^ [...]
+          12345678901234567890  # rubocop:disable Style/NumericLiterals
+          123456789012
+          ^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect(min_digits).to eq(13)
+        expect(enabled.nil?).to be(true)
+      end
+    end
+
+    context 'with separators' do
+      it 'disables the cop' do
+        expect_offense(<<~RUBY)
+          1234_5678_90
+          ^^^^^^^^^^^^ [...]
+        RUBY
+
+        expect(enabled).to eq(false)
+        expect(min_digits.nil?).to be(true)
+      end
+
+      it 'does not disable the cop if the line is disabled' do
+        expect_no_offenses(<<~RUBY)
+          1234_5678_90 # rubocop:disable Style/NumericLiterals
+        RUBY
+
+        expect(enabled.nil?).to be(true)
+        expect(min_digits.nil?).to be(true)
+      end
+    end
+  end
 end
