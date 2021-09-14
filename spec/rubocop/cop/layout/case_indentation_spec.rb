@@ -818,20 +818,17 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
     end
   end
 
-  context 'when `case` is preceded by something else than whitespace' do
+  context 'when `when` is on the same line as `case`' do
     let(:cop_config) { {} }
 
-    it 'registers an offense and auto-corrects' do
+    it 'registers an offense but does not auto-correct' do
       expect_offense(<<~RUBY)
         case test when something
                   ^^^^ Indent `when` as deep as `case`.
         end
       RUBY
 
-      expect_correction(<<~RUBY)
-        case test when something
-        end
-      RUBY
+      expect_no_corrections
     end
   end
 end
