@@ -28,6 +28,12 @@ module RuboCop
       #    end
       #
       # This cop also takes into account `IgnoredMethods` (defaults to `[]`)
+      #
+      # ## Interpreting ABCSize
+      #
+      # - <= 17 satisfactory
+      # - 18..30 unsatisfactory
+      # - > 30 dangerous
       class AbcSize < Base
         include MethodComplexity
 
