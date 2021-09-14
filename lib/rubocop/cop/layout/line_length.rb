@@ -183,8 +183,8 @@ module RuboCop
           line_index.zero? && line.start_with?('#!')
         end
 
-        def register_offense(loc, line, line_index)
-          message = format(MSG, length: line_length(line), max: max)
+        def register_offense(loc, line, line_index, length: line_length(line))
+          message = format(MSG, length: length, max: max)
 
           self.breakable_range = breakable_range_by_line_index[line_index]
 
@@ -241,9 +241,10 @@ module RuboCop
         end
 
         def check_directive_line(line, line_index)
-          return if line_length_without_directive(line) <= max
+          length_without_directive = line_length_without_directive(line)
+          return if length_without_directive <= max
 
-          range = max..(line_length_without_directive(line) - 1)
+          range = max..(length_without_directive - 1)
           register_offense(
             source_range(
               processed_source.buffer,
@@ -251,7 +252,8 @@ module RuboCop
               range
             ),
             line,
-            line_index
+            line_index,
+            length: length_without_directive
           )
         end
 
