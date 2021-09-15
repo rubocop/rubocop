@@ -24,6 +24,11 @@ module RuboCop
               # `SupportedStyle` and unique configuration, there needs to be examples.
               # Examples must have valid Ruby syntax. Do not use upticks.
               #
+              # @safety
+              #   Delete this section if the cop is not unsafe (`Safe: false` or
+              #   `SafeAutoCorrect: false`), or use it to explain how the cop is
+              #   unsafe.
+              #
               # @example EnforcedStyle: bar (default)
               #   # Description of the `bar` style.
               #
