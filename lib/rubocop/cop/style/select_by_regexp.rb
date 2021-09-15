@@ -43,7 +43,10 @@ module RuboCop
 
         # @!method regexp_match?(node)
         def_node_matcher :regexp_match?, <<~PATTERN
-          (block send (args (arg $_)) ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
+          {
+            (block send (args (arg $_)) ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
+            (numblock send $1 ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
+          }
         PATTERN
 
         # @!method calls_lvar?(node, name)
@@ -81,6 +84,8 @@ module RuboCop
 
         def extract_send_node(block_node)
           return unless (block_arg_name, regexp_method_send_node = regexp_match?(block_node))
+
+          block_arg_name = :"_#{block_arg_name}" if block_node.numblock_type?
           return unless calls_lvar?(regexp_method_send_node, block_arg_name)
 
           regexp_method_send_node
