@@ -1,2 +1,3 @@
 --markup markdown
 --hide-void-return
+--tag safety:"Cop Safety Information"
