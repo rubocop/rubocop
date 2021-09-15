@@ -123,6 +123,64 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
           array.#{method} { |x| /regexp/.match?(foo(x)) }
         RUBY
       end
+
+      context 'with `numblock`s', :ruby27 do
+        it 'registers an offense and corrects for `match?`' do
+          expect_offense(<<~RUBY, method: method)
+            array.#{method} { _1.match? /regexp/ }
+            ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array.#{correction}(/regexp/)
+          RUBY
+        end
+
+        it 'registers an offense and corrects for `Regexp#match?`' do
+          expect_offense(<<~RUBY, method: method)
+            array.#{method} { /regexp/.match?(_1) }
+            ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array.#{correction}(/regexp/)
+          RUBY
+        end
+
+        it 'registers an offense and corrects for `blockvar =~ regexp`' do
+          expect_offense(<<~RUBY, method: method)
+            array.#{method} { _1 =~ /regexp/ }
+            ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array.#{correction}(/regexp/)
+          RUBY
+        end
+
+        it 'registers an offense and corrects for `regexp =~ blockvar`' do
+          expect_offense(<<~RUBY, method: method)
+            array.#{method} { /regexp/ =~ _1 }
+            ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array.#{correction}(/regexp/)
+          RUBY
+        end
+
+        it 'does not register an offense if there is more than one numbered param' do
+          expect_no_offenses(<<~RUBY)
+            array.#{method} { _1 =~ _2 }
+          RUBY
+        end
+
+        it 'does not register an offense when the param is a method argument' do
+          expect_no_offenses(<<~RUBY)
+            array.#{method} { /regexp/.match?(foo(_1)) }
+          RUBY
+        end
+      end
     end
   end
 end
