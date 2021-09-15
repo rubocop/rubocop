@@ -1094,9 +1094,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [66/40]
           RUBY
 
-          expect_correction(<<~RUBY)
-            "00000000000000000;0000000000000000000'000000;00000'0000;0000;000"
-          RUBY
+          expect_no_corrections
         end
       end
     end
