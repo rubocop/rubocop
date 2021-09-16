@@ -10,11 +10,16 @@ module RuboCop
       # default in future Ruby. The comment will be added below a shebang and
       # encoding comment.
       #
-      # Note that the cop will ignore files where the comment exists but is set
+      # Note that the cop will accept files where the comment exists but is set
       # to `false` instead of `true`.
       #
       # To require a blank line after this comment, please see
       # `Layout/EmptyLineAfterMagicComment` cop.
+      #
+      # @safety
+      #  This cop's autocorrection is unsafe since any strings mutations will
+      #  change from being accepted to raising `FrozenError`, as all strings
+      #  will become frozen by default, and will need to be manually refactored.
       #
       # @example EnforcedStyle: always (default)
       #   # The `always` style will always add the frozen string literal comment

@@ -6,9 +6,10 @@ module RuboCop
       # This cop checks for places where redundant assignments are made for in place
       # modification methods.
       #
-      # This cop is marked as unsafe, because it can produce false positives for
-      # user defined methods having one of the expected names, but not modifying
-      # its receiver in place.
+      # @safety
+      #   This cop is unsafe, because it can produce false positives for
+      #   user defined methods having one of the expected names, but not modifying
+      #   its receiver in place.
       #
       # @example
       #   # bad

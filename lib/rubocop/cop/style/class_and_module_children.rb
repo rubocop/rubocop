@@ -6,6 +6,15 @@ module RuboCop
       # This cop checks the style of children definitions at classes and
       # modules. Basically there are two different styles:
       #
+      # @safety
+      #   Autocorrection is unsafe.
+      #
+      #   Moving from compact to nested children requires knowledge of whether the
+      #   outer parent is a module or a class. Moving from nested to compact requires
+      #   verification that the outer parent is defined elsewhere. Rubocop does not
+      #   have the knowledge to perform either operation safely and thus requires
+      #   manual oversight.
+      #
       # @example EnforcedStyle: nested (default)
       #   # good
       #   # have each child on its own line

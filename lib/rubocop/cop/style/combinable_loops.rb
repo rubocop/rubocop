@@ -7,8 +7,9 @@ module RuboCop
       # can be combined into a single loop. It is very likely that combining them
       # will make the code more efficient and more concise.
       #
-      # It is marked as unsafe, because the first loop might modify
-      # a state that the second loop depends on; these two aren't combinable.
+      # @safety
+      #   The cop is unsafe, because the first loop might modify state that the
+      #   second loop depends on; these two aren't combinable.
       #
       # @example
       #   # bad

@@ -9,6 +9,10 @@ module RuboCop
       # In such cases `fetch(key, value)` method is faster
       # than `fetch(key) { value }`.
       #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the receiver
+      #   does not have a different implementation of `fetch`.
+      #
       # @example SafeForConstants: false (default)
       #   # bad
       #   hash.fetch(:key) { 5 }

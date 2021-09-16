@@ -7,6 +7,10 @@ module RuboCop
       # potential security issues leading to remote code execution when
       # loading from an untrusted source.
       #
+      # @safety
+      #   The behaviour of the code might change depending on what was
+      #   in the YAML payload, since `YAML.safe_load` is more restrictive.
+      #
       # @example
       #   # bad
       #   YAML.load("--- foo")

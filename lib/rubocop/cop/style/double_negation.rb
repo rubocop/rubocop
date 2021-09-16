@@ -9,6 +9,21 @@ module RuboCop
       # that use boolean as a return value. When using `EnforcedStyle: forbidden`, double negation
       # should be forbidden always.
       #
+      # NOTE: when `something` is a boolean value
+      # `!!something` and `!something.nil?` are not the same thing.
+      # As you're unlikely to write code that can accept values of any type
+      # this is rarely a problem in practice.
+      #
+      # @safety
+      #   Autocorrection is unsafe when the value is `false`, because the result
+      #   of the expression will change.
+      #
+      #   [source,ruby]
+      #   ----
+      #   !!false     #=> false
+      #   !false.nil? #=> true
+      #   ----
+      #
       # @example
       #   # bad
       #   !!something
@@ -27,11 +42,6 @@ module RuboCop
       #   def foo?
       #     !!return_value
       #   end
-      #
-      # Please, note that when something is a boolean value
-      # !!something and !something.nil? are not the same thing.
-      # As you're unlikely to write code that can accept values of any type
-      # this is rarely a problem in practice.
       class DoubleNegation < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

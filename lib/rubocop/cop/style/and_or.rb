@@ -7,9 +7,10 @@ module RuboCop
       # `||` instead. It can be configured to check only in conditions or in
       # all contexts.
       #
-      # It is marked as unsafe auto-correction because it may change the
-      # operator precedence between logical operators (`&&` and `||`) and
-      # semantic operators (`and` and `or`).
+      # @safety
+      #   Auto-correction is unsafe because there is a different operator precedence
+      #   between logical operators (`&&` and `||`) and semantic operators (`and` and `or`),
+      #   and that might change the behaviour.
       #
       # @example EnforcedStyle: always
       #   # bad

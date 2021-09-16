@@ -6,6 +6,19 @@ module RuboCop
       # This cop checks that arrays are sliced with endless ranges instead of
       # `ary[start..-1]` on Ruby 2.6+.
       #
+      # @safety
+      #   This cop is unsafe because `x..-1` and `x..` are only guaranteed to
+      #   be equivalent for `Array#[]`, and the cop cannot determine what class
+      #   the receiver is.
+      #
+      #   For example:
+      #   [source,ruby]
+      #   ----
+      #   sum = proc { |ary| ary.sum }
+      #   sum[-3..-1] # => -6
+      #   sum[-3..] # Hangs forever
+      #   ----
+      #
       # @example
       #   # bad
       #   items[1..-1]

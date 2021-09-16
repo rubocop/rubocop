@@ -9,6 +9,10 @@ module RuboCop
       # will add a require statement to the top of the file if
       # enabled by RequireEnglish config.
       #
+      # @safety
+      #   Autocorrection is marked as unsafe because if `RequireEnglish` is not
+      #   true, replacing perl-style variables with english variables will break.
+      #
       # @example EnforcedStyle: use_english_names (default)
       #   # good
       #   require 'English' # or this could be in another file.

@@ -10,13 +10,24 @@ module RuboCop
       # need to be changed to use safe navigation. We have limited the cop to
       # not register an offense for method chains that exceed 2 methods.
       #
-      # Configuration option: ConvertCodeThatCanStartToReturnNil
-      # The default for this is `false`. When configured to `true`, this will
+      # The default for `ConvertCodeThatCanStartToReturnNil` is `false`.
+      # When configured to `true`, this will
       # check for code in the format `!foo.nil? && foo.bar`. As it is written,
       # the return of this code is limited to `false` and whatever the return
       # of the method is. If this is converted to safe navigation,
       # `foo&.bar` can start returning `nil` as well as what the method
       # returns.
+      #
+      # @safety
+      #   Autocorrection is unsafe because if a value is `false`, the resulting
+      #   code will have different behaviour or raise an error.
+      #
+      #   [source,ruby]
+      #   ----
+      #   x = false
+      #   x && x.foo  # return false
+      #   x&.foo      # raises NoMethodError
+      #   ----
       #
       # @example
       #   # bad

@@ -5,22 +5,29 @@ module RuboCop
     module Style
       # This cop checks for a redundant argument passed to certain methods.
       #
-      # Limitations:
-      #
-      # 1. This cop matches for method names only and hence cannot tell apart
-      #    methods with same name in different classes.
-      # 2. This cop is limited to methods with single parameter.
-      # 3. This cop is unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
-      #    That depends on the nature of the target methods, of course.
+      # NOTE: This cop is limited to methods with single parameter.
       #
       # Method names and their redundant arguments can be configured like this:
       #
+      # [source,yaml]
+      # ----
       # Methods:
       #   join: ''
       #   split: ' '
       #   chomp: "\n"
       #   chomp!: "\n"
       #   foo: 2
+      # ----
+      #
+      # @safety
+      #   This cop is unsafe because of the following limitations:
+      #
+      #   1. This cop matches by method names only and hence cannot tell apart
+      #      methods with same name in different classes.
+      #   2. This cop may be unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
+      #      That depends on the nature of the target methods, of course. For example, the default
+      #      argument to join is `$OUTPUT_FIELD_SEPARATOR` (or `$,`) rather than `''`, and if that
+      #      global is changed, `''` is no longer a redundant argument.
       #
       # @example
       #   # bad

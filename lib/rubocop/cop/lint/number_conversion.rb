@@ -18,6 +18,11 @@ module RuboCop
       # cop by default). Similarly, Rails' duration methods do not work well
       # with `Integer()` and can be ignored with `IgnoredMethods`.
       #
+      # @safety
+      #   Autocorrection is unsafe because it is not guaranteed that the
+      #   replacement `Kernel` methods are able to properly handle the
+      #   input if it is not a standard class.
+      #
       # @example
       #
       #   # bad

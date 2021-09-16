@@ -6,8 +6,10 @@ module RuboCop
       # This cop checks for redundant `if` with boolean literal branches.
       # It checks only conditions to return boolean value (`true` or `false`) for safe detection.
       # The conditions to be checked are comparison methods, predicate methods, and double negative.
-      # However, auto-correction is unsafe because there is no guarantee that all predicate methods
-      # will return boolean value. Those methods can be allowed with `AllowedMethods` config.
+      #
+      # @safety
+      #   Auto-correction is unsafe because there is no guarantee that all predicate methods
+      #   will return a boolean value. Those methods can be allowed with `AllowedMethods` config.
       #
       # @example
       #   # bad
@@ -22,6 +24,17 @@ module RuboCop
       #
       #   # good
       #   foo == bar
+      #
+      # @example
+      #   # bad
+      #   if foo.do_something?
+      #     true
+      #   else
+      #     false
+      #   end
+      #
+      #   # good (but potentially an unsafe correction)
+      #   foo.do_something?
       #
       # @example AllowedMethods: ['nonzero?']
       #   # good

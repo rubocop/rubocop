@@ -13,6 +13,10 @@ module RuboCop
       # `Exception`. Alternatively, make `Exception` a fully qualified class
       # name with an explicit namespace.
       #
+      # @safety
+      #   This cop is unsafe because it will change the exception class being
+      #   raised, which is a change in behaviour.
+      #
       # @example
       #   # bad
       #   raise Exception, 'Error message here'
