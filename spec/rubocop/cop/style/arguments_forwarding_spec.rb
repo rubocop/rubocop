@@ -204,6 +204,14 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when using only kwrest arg' do
+        expect_no_offenses(<<~RUBY)
+          def foo(**kwargs)
+            bar(**kwargs)
+          end
+        RUBY
+      end
     end
 
     context 'AllowOnlyRestArgument: false' do
@@ -215,6 +223,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
                   ^^^^^ Use arguments forwarding.
             bar(*args)
                 ^^^^^ Use arguments forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(...)
+            bar(...)
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using only kwrest arg' do
+        expect_offense(<<~RUBY)
+          def foo(**kwargs)
+                  ^^^^^^^^ Use arguments forwarding.
+            bar(**kwargs)
+                ^^^^^^^^ Use arguments forwarding.
           end
         RUBY
 

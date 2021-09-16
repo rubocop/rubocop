@@ -30,12 +30,20 @@ module RuboCop
       #     bar(*args)
       #   end
       #
+      #   def foo(**kwargs)
+      #     bar(**kwargs)
+      #   end
+      #
       # @example AllowOnlyRestArgument: false
       #   # bad
       #   # The following code can replace the arguments with `...`,
       #   # but it will change the behavior. Because `...` forwards block also.
       #   def foo(*args)
       #     bar(*args)
+      #   end
+      #
+      #   def foo(**kwargs)
+      #     bar(**kwargs)
       #   end
       #
       class ArgumentsForwarding < Base
@@ -49,12 +57,15 @@ module RuboCop
 
         # @!method use_rest_arguments?(node)
         def_node_matcher :use_rest_arguments?, <<~PATTERN
-          (args (restarg $_) $...)
+          (args ({restarg kwrestarg} $_) $...)
         PATTERN
 
         # @!method only_rest_arguments?(node, name)
         def_node_matcher :only_rest_arguments?, <<~PATTERN
-          (send _ _ (splat (lvar %1)))
+          {
+            (send _ _ (splat (lvar %1)))
+            (send _ _ (hash (kwsplat (lvar %1))))
+          }
         PATTERN
 
         # @!method forwarding_method_arguments?(node, rest_name, block_name, kwargs_name)
