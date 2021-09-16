@@ -9,6 +9,11 @@ module RuboCop
       # replaceable in certain situations when dealing with multiple timezones
       # and/or DST.
       #
+      # @safety
+      #   Autocorrection is not safe, because `DateTime` and `Time` do not have
+      #   exactly the same behaviour, although in most cases the autocorrection
+      #   will be fine.
+      #
       # @example
       #
       #   # bad - uses `DateTime` for current time

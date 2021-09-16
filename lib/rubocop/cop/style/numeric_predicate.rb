@@ -16,6 +16,11 @@ module RuboCop
       # populated with objects which can be compared with integers, but are
       # not themselves `Integer` polymorphic.
       #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the receiver
+      #   defines the predicates or can be compared to a number, which may lead
+      #   to a false positive for non-standard classes.
+      #
       # @example EnforcedStyle: predicate (default)
       #   # bad
       #

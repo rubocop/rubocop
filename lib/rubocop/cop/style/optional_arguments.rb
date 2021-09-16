@@ -6,6 +6,10 @@ module RuboCop
       # This cop checks for optional arguments to methods
       # that do not come at the end of the argument list.
       #
+      # @safety
+      #   This cop is unsafe because changing a method signature will
+      #   implicitly change behaviour.
+      #
       # @example
       #   # bad
       #   def foo(a = 1, b, c)

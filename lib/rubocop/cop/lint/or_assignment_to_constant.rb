@@ -9,8 +9,10 @@ module RuboCop
       # should always be the same. If constants are assigned in multiple
       # locations, the result may vary depending on the order of `require`.
       #
-      # Also, if you already have such an implementation, auto-correction may
-      # change the result.
+      # @safety
+      #   This cop is unsafe because code that is already conditionally
+      #   assigning a constant may have its behaviour changed by
+      #   auto-correction.
       #
       # @example
       #

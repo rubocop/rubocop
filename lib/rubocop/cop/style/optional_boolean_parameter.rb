@@ -7,6 +7,10 @@ module RuboCop
       # boolean arguments when defining methods. `respond_to_missing?` method is allowed by default.
       # These are customizable with `AllowedMethods` option.
       #
+      # @safety
+      #   This cop is unsafe because changing a method signature will
+      #   implicitly change behaviour.
+      #
       # @example
       #   # bad
       #   def some_method(bar = false)

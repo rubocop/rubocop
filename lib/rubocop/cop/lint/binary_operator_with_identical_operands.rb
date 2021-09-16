@@ -17,9 +17,16 @@ module RuboCop
       # always be the same (`x - x` will always be 0; `x / x` will always be 1), and
       # thus are legitimate offenses.
       #
-      # This cop is marked as unsafe as it does not consider side effects when calling methods
-      # and thus can generate false positives:
+      # @safety
+      #   This cop is unsafe as it does not consider side effects when calling methods
+      #   and thus can generate false positives, for example:
+      #
+      #   [source,ruby]
+      #   ----
       #   if wr.take_char == '\0' && wr.take_char == '\0'
+      #     # ...
+      #   end
+      #   ----
       #
       # @example
       #   # bad

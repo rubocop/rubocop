@@ -24,6 +24,14 @@ module RuboCop
       # NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated
       # string literals when `# frozen-string-literal: true` is used.
       #
+      # NOTE: From Ruby 3.0, this cop allows explicit freezing of constants when
+      # the `shareable_constant_value` directive is used.
+      #
+      # @safety
+      #   This cop's autocorrection is unsafe since any mutations on objects that
+      #   are made frozen will change from being accepted to raising `FrozenError`,
+      #   and will need to be manually refactored.
+      #
       # @example EnforcedStyle: literals (default)
       #   # bad
       #   CONST = [1, 2, 3]
@@ -70,10 +78,6 @@ module RuboCop
       #   # good
       #   # shareable_constant_value: literal
       #   CONST = [1, 2, 3]
-      #
-      # NOTE: This special directive helps to create constants
-      # that hold only immutable objects, or Ractor-shareable
-      # constants. - ruby docs
       #
       class MutableConstant < Base
         # Handles magic comment shareable_constant_value with O(n ^ 2) complexity

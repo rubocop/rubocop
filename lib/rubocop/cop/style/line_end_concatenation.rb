@@ -6,6 +6,19 @@ module RuboCop
       # This cop checks for string literal concatenation at
       # the end of a line.
       #
+      # @safety
+      #   This cop is unsafe because it canot be guaranteed that the
+      #   receiver is a string, in which case replacing `<<` with `\`
+      #   would result in a syntax error.
+      #
+      #   For example, this would be a false positive:
+      #   [source,ruby]
+      #   ----
+      #   array << 'foo' <<
+      #            'bar' <<
+      #            'baz'
+      #   ----
+      #
       # @example
       #
       #   # bad

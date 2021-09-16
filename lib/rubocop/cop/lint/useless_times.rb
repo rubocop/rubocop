@@ -7,8 +7,9 @@ module RuboCop
       # (when the integer <= 0) or that will only ever yield once
       # (`1.times`).
       #
-      # This cop is marked as unsafe as `times` returns its receiver, which
-      # is *usually* OK, but might change behavior.
+      # @safety
+      #   This cop is unsafe as `times` returns its receiver, which is
+      #   *usually* OK, but might change behavior.
       #
       # @example
       #   # bad

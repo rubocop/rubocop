@@ -10,18 +10,19 @@ module RuboCop
       # explicit by requiring parenthesis around complex range boundaries (anything
       # that is not a basic literal: numerics, strings, symbols, etc.).
       #
-      # NOTE: The cop auto-corrects by wrapping the entire boundary in parentheses, which
-      # makes the outcome more explicit but is possible to not be the intention of the
-      # programmer. For this reason, this cop's auto-correct is marked as unsafe (it
-      # will not change the behaviour of the code, but will not necessarily match the
-      # intent of the program).
-      #
       # This cop can be configured with `RequireParenthesesForMethodChains` in order to
       # specify whether method chains (including `self.foo`) should be wrapped in parens
       # by this cop.
       #
       # NOTE: Regardless of this configuration, if a method receiver is a basic literal
       # value, it will be wrapped in order to prevent the ambiguity of `1..2.to_a`.
+      #
+      # @safety
+      #   The cop auto-corrects by wrapping the entire boundary in parentheses, which
+      #   makes the outcome more explicit but is possible to not be the intention of the
+      #   programmer. For this reason, this cop's auto-correct is unsafe (it will not
+      #   change the behaviour of the code, but will not necessarily match the
+      #   intent of the program).
       #
       # @example
       #   # bad
@@ -55,7 +56,6 @@ module RuboCop
       #
       #   # good
       #   (a.foo)..(b.bar)
-      #
       class AmbiguousRange < Base
         extend AutoCorrector
 

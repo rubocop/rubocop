@@ -3708,7 +3708,7 @@ Style/InPatternThen:
 Style/InfiniteLoop:
   Description: >-
                  Use Kernel#loop for infinite loops.
-                 This cop is unsafe in the body may raise a `StopIteration` exception.
+                 This cop is unsafe if the body may raise a `StopIteration` exception.
   Safe: false
   StyleGuide: '#infinite-loop'
   Enabled: true

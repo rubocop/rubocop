@@ -23,6 +23,10 @@ module RuboCop
       # This is useful when the receiver is some expression that returns string like `Pathname`
       # instead of a string literal.
       #
+      # @safety
+      #   This cop is unsafe in `aggressive` mode, as it cannot be guaranteed that
+      #   the receiver is actually a string, which can result in a false positive.
+      #
       # @example Mode: aggressive (default)
       #   # bad
       #   email_with_name = user.name + ' <' + user.email + '>'
