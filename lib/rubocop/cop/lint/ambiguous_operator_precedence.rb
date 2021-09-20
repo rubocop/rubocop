@@ -87,7 +87,11 @@ module RuboCop
         end
 
         def greater_precedence?(node1, node2)
-          precedence(node2) > precedence(node1)
+          node1_precedence = precedence(node1)
+          node2_precedence = precedence(node2)
+          return false unless node1_precedence && node2_precedence
+
+          node2_precedence > node1_precedence
         end
 
         def operator_name(node)
