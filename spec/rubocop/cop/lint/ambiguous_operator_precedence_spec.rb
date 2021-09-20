@@ -120,4 +120,16 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperatorPrecedence, :config do
       a || (b && (c | d ^ (e & (f << g >> (h + i - (j * k / l % (n ** m)))))))
     RUBY
   end
+
+  it 'allows an operator with `and`' do
+    expect_no_offenses(<<~RUBY)
+      array << i and next
+    RUBY
+  end
+
+  it 'allows an operator with `or`' do
+    expect_no_offenses(<<~RUBY)
+      array << i or return
+    RUBY
+  end
 end
