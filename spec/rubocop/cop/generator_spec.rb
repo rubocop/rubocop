@@ -183,7 +183,8 @@ RSpec.describe RuboCop::Cop::Generator do
     end
 
     before do
-      IO.write(path, <<~YAML)
+      # It is hacked to use `IO.write` to avoid mocking `File.write` for testing.
+      IO.write(path, <<~YAML) # rubocop:disable Security/IoMethods
         Style/Alias:
           Enabled: true
 
