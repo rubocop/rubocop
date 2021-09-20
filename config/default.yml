@@ -4135,6 +4135,15 @@ Style/Not:
   VersionAdded: '0.9'
   VersionChanged: '0.20'
 
+Style/NumberedParameters:
+  Description: 'Restrict the usage of numbered parameters.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: allow_single_line
+  SupportedStyles:
+    - allow_single_line
+    - disallow
+
 Style/NumberedParametersLimit:
   Description: 'Avoid excessive numbered params in a single block.'
   Enabled: pending
