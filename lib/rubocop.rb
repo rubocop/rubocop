@@ -639,6 +639,7 @@ require_relative 'rubocop/cop/style/yoda_condition'
 require_relative 'rubocop/cop/style/zero_length_predicate'
 
 require_relative 'rubocop/cop/security/eval'
+require_relative 'rubocop/cop/security/io_methods'
 require_relative 'rubocop/cop/security/json_load'
 require_relative 'rubocop/cop/security/marshal_load'
 require_relative 'rubocop/cop/security/open'

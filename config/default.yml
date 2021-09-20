@@ -2739,6 +2739,14 @@ Security/Eval:
   Enabled: true
   VersionAdded: '0.47'
 
+Security/IoMethods:
+  Description: >-
+                 Checks for the first argument to `IO.read`, `IO.binread`, `IO.write`, `IO.binwrite`,
+                 `IO.foreach`, and `IO.readlines`.
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Security/JSONLoad:
   Description: >-
                  Prefer usage of `JSON.parse` over `JSON.load` due to potential

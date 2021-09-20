@@ -507,6 +507,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                 Enabled: false
               Naming:
                 Enabled: false
+              Security:
+                Enabled: false
 
               Style/SomeCop:
                 Description: Something
