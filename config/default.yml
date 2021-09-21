@@ -209,6 +209,7 @@ Bundler/InsecureProtocolSource:
                  'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
   Enabled: true
   VersionAdded: '0.50'
+  AllowHttpProtocol: true
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
