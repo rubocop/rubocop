@@ -273,6 +273,13 @@ Gemspec/RubyVersionGlobalsUsage:
   Include:
     - '**/*.gemspec'
 
+Gemspec/TestFilesAssignment:
+  Description: Checks that the `test_files` attribute is not set in a gemspec file.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Include:
+    - '**/*.gemspec'
+
 #################### Layout ###########################
 
 Layout/AccessModifierIndentation:
