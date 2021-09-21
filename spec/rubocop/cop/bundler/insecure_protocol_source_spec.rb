@@ -33,4 +33,35 @@ RSpec.describe RuboCop::Cop::Bundler::InsecureProtocolSource, :config do
       source 'https://rubygems.org'
     RUBY
   end
+
+  it "does not register an offense when using `source 'https://rubygems.org'`" do
+    expect_no_offenses(<<~RUBY)
+      source 'https://rubygems.org'
+    RUBY
+  end
+
+  context 'when `AllowHttpProtocol: true`' do
+    let(:cop_config) { { 'AllowHttpProtocol' => true } }
+
+    it "does not register an offense when using `source 'http://rubygems.org'`" do
+      expect_no_offenses(<<~RUBY)
+        source 'http://rubygems.org'
+      RUBY
+    end
+  end
+
+  context 'when `AllowHttpProtocol: false`' do
+    let(:cop_config) { { 'AllowHttpProtocol' => false } }
+
+    it "registers an offense when using `source 'http://rubygems.org'`" do
+      expect_offense(<<~RUBY)
+        source 'http://rubygems.org'
+               ^^^^^^^^^^^^^^^^^^^^^ Use `https://rubygems.org` instead of `http://rubygems.org`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        source 'https://rubygems.org'
+      RUBY
+    end
+  end
 end
