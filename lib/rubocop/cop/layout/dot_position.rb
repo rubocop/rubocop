@@ -68,7 +68,7 @@ module RuboCop
         end
 
         def proper_dot_position?(node)
-          receiver_line = node.receiver.source_range.end.line
+          receiver_line = receiver_end_line(node.receiver)
           selector_line = selector_range(node).line
 
           # receiver and selector are on the same line
@@ -80,7 +80,10 @@ module RuboCop
           # dot and the selector otherwise, we might break the code while
           # "correcting" it (even if there is just an extra blank line, treat
           # it the same)
-          return true if line_between?(selector_line, dot_line)
+          # Also, in the case of a heredoc, the receiver will end after the dot,
+          # because the heredoc body is on subsequent lines, so use the highest
+          # line to compare to.
+          return true if line_between?(selector_line, [receiver_line, dot_line].max)
 
           correct_dot_position_style?(dot_line, selector_line)
         end
@@ -94,6 +97,28 @@ module RuboCop
           when :leading then dot_line == selector_line
           when :trailing then dot_line != selector_line
           end
+        end
+
+        def receiver_end_line(node)
+          if (line = last_heredoc_line(node))
+            line
+          else
+            node.source_range.end.line
+          end
+        end
+
+        def last_heredoc_line(node)
+          if node.send_type?
+            node.arguments.select { |arg| heredoc?(arg) }
+                .map { |arg| arg.loc.heredoc_end.line }
+                .max
+          elsif heredoc?(node)
+            node.loc.heredoc_end.line
+          end
+        end
+
+        def heredoc?(node)
+          (node.str_type? || node.dstr_type?) && node.heredoc?
         end
 
         def selector_range(node)
