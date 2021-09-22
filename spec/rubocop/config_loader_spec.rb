@@ -1155,6 +1155,85 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits a configuration that specifies TargetRubyVersion' do
+      let(:file_path) { '.rubocop.yml' }
+      let(:target_ruby_version) { configuration_from_file['AllCops']['TargetRubyVersion'] }
+      let(:default_ruby_version) { RuboCop::TargetRuby::DEFAULT_VERSION }
+
+      before do
+        create_file('.rubocop-parent.yml', <<~YAML)
+          AllCops:
+            TargetRubyVersion: #{inherited_version}
+        YAML
+      end
+
+      context 'when the specified version is current' do
+        before do
+          create_file(file_path, <<~YAML)
+            inherit_from: .rubocop-parent.yml
+          YAML
+        end
+
+        let(:inherited_version) { default_ruby_version }
+
+        it 'sets TargetRubyVersion' do
+          expect(target_ruby_version).to eq(inherited_version)
+        end
+      end
+
+      context 'when the specified version is obsolete' do
+        let(:inherited_version) { '2.4' }
+
+        context 'and it is not overridden' do
+          before do
+            create_file(file_path, <<~YAML)
+              inherit_from: .rubocop-parent.yml
+            YAML
+          end
+
+          it 'raises a validation error' do
+            expect { configuration_from_file }.to raise_error(RuboCop::ValidationError) do |error|
+              expect(error.message).to start_with('RuboCop found unsupported Ruby version 2.4')
+            end
+          end
+        end
+
+        context 'and it is overridden' do
+          before do
+            create_file(file_path, <<~YAML)
+              inherit_from: .rubocop-parent.yml
+
+              AllCops:
+                TargetRubyVersion: #{default_ruby_version}
+            YAML
+          end
+
+          it 'uses the given version' do
+            expect(target_ruby_version).to eq(default_ruby_version)
+          end
+        end
+
+        context 'with deeper nesting' do
+          before do
+            create_file('.rubocop-child.yml', <<~YAML)
+              inherit_from: .rubocop-parent.yml
+            YAML
+
+            create_file('.rubocop.yml', <<~YAML)
+              inherit_from: .rubocop-child.yml
+
+              AllCops:
+                TargetRubyVersion: #{default_ruby_version}
+            YAML
+          end
+
+          it 'uses the given version' do
+            expect(target_ruby_version).to eq(default_ruby_version)
+          end
+        end
+      end
+    end
+
     context 'EnabledByDefault / DisabledByDefault' do
       def cop_enabled?(cop_class)
         configuration_from_file.for_cop(cop_class).fetch('Enabled')
