@@ -100,6 +100,10 @@ module RuboCop
           add_lhs_to_local_variables_scopes(rhs, lhs)
         end
 
+        def on_in_pattern(node)
+          add_match_var_scopes(node)
+        end
+
         def on_send(node)
           return unless node.self_receiver? && regular_method_call?(node)
           return if node.parent&.mlhs_type?
@@ -183,6 +187,12 @@ module RuboCop
         def add_masgn_lhs_variables(rhs, lhs)
           lhs.children.each do |child|
             add_lhs_to_local_variables_scopes(rhs, child.to_a.first)
+          end
+        end
+
+        def add_match_var_scopes(in_pattern_node)
+          in_pattern_node.each_descendant(:match_var) do |match_var_node|
+            @local_variables_scopes[in_pattern_node] << match_var_node.children.first
           end
         end
       end

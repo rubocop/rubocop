@@ -292,4 +292,103 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
       end
     RUBY
   end
+
+  context 'with ruby >= 2.7', :ruby27 do
+    context 'with pattern matching' do
+      it 'accepts a self receiver on an `match-var`' do
+        expect_no_offenses(<<~RUBY)
+          case foo
+            in Integer => bar
+              self.bar + bar
+          end
+        RUBY
+      end
+
+      it 'accepts a self receiver on a `hash-pattern`' do
+        expect_no_offenses(<<~RUBY)
+          case pattern
+            in {x: foo}
+              self.foo + foo
+          end
+        RUBY
+      end
+
+      it 'accepts a self receiver on a `array-pattern`' do
+        expect_no_offenses(<<~RUBY)
+          case pattern
+            in [foo, bar]
+              self.foo + foo
+          end
+        RUBY
+      end
+
+      it 'accepts a self receiver with a `match-alt`' do
+        expect_no_offenses(<<~RUBY)
+          case pattern
+            in [foo] | { x: bar }
+              self.foo + self.bar + foo + bar
+          end
+        RUBY
+      end
+
+      it 'accepts a self receiver in a nested pattern`' do
+        expect_no_offenses(<<~RUBY)
+          case pattern
+            in { foo: [bar, baz] }
+              self.bar + self.baz
+          end
+        RUBY
+      end
+
+      it 'accepts a self receiver in a conditional pattern' do
+        expect_no_offenses(<<~RUBY)
+          case pattern
+            in a, b if b == a * 2
+              self.a + b
+          end
+        RUBY
+      end
+
+      it 'accepts a self receiver in a `if-guard`' do
+        expect_no_offenses(<<~RUBY)
+          case pattern
+            in a, b if b == self.a * 2
+              a + b
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using a self receiver with a pin' do
+        expect_offense(<<~RUBY)
+          foo = 17
+          case pattern
+            in ^foo, *bar
+              self.foo + self.bar + foo + bar
+              ^^^^ Redundant `self` detected.
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using self with a different match var' do
+        expect_offense(<<~RUBY)
+          case foo
+            in Integer => bar
+              self.bar + bar
+            in Float => baz
+              self.bar + baz
+              ^^^^ Redundant `self` detected.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case foo
+            in Integer => bar
+              self.bar + bar
+            in Float => baz
+              bar + baz
+          end
+        RUBY
+      end
+    end
+  end
 end
