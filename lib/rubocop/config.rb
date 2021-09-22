@@ -51,6 +51,11 @@ module RuboCop
       self
     end
 
+    def validate_after_resolution
+      @validator.validate_after_resolution
+      self
+    end
+
     def_delegators :@hash, :[], :[]=, :delete, :dig, :each, :key?, :keys, :each_key,
                    :fetch, :map, :merge, :replace, :to_h, :to_hash, :transform_values
     def_delegators :@validator, :validate, :target_ruby_version

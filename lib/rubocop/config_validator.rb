@@ -44,12 +44,20 @@ module RuboCop
       check_obsoletions
 
       alert_about_unrecognized_cops(invalid_cop_names)
-      check_target_ruby
       validate_new_cops_parameter
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
       validate_syntax_cop
       reject_mutually_exclusive_defaults
+    end
+
+    # Validations that should only be run after all config resolving has
+    # taken place:
+    # * The target ruby version is only checked once the entire inheritance
+    # chain has been loaded so that only the final value is validated, and
+    # any obsolete but overridden values are ignored.
+    def validate_after_resolution
+      check_target_ruby
     end
 
     def target_ruby_version

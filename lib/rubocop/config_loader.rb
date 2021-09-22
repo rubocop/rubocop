@@ -101,6 +101,8 @@ module RuboCop
         return default_configuration if config_file == DEFAULT_FILE
 
         config = load_file(config_file, check: check)
+        config.validate_after_resolution if check
+
         if ignore_parent_exclusion?
           print 'Ignoring AllCops/Exclude from parent folders' if debug?
         else
