@@ -111,9 +111,8 @@ module RuboCop
         '[modify] A configuration for the cop is added into ' \
         '%<configuration_file_path>s.'
 
-      def initialize(name, github_user, output: $stdout)
+      def initialize(name, output: $stdout)
         @badge = Badge.parse(name)
-        @github_user = github_user
         @output = output
         return if badge.qualified?
 
@@ -147,17 +146,19 @@ module RuboCop
 
       def todo
         <<~TODO
-          Do 3 steps:
-            1. Add an entry to the "New features" section in CHANGELOG.md,
-               e.g. "Add new `#{badge}` cop. ([@#{github_user}][])"
-            2. Modify the description of #{badge} in config/default.yml
-            3. Implement your new cop in the generated file!
+          Do 4 steps:
+            1. Modify the description of #{badge} in config/default.yml
+            2. Implement your new cop in the generated file!
+            3. Commit your new cop with a message such as
+               e.g. "Add new `#{badge}` cop."
+            4. Run `bundle exec rake changelog:new` to generate a changelog entry
+               for your new cop.
         TODO
       end
 
       private
 
-      attr_reader :badge, :github_user, :output
+      attr_reader :badge, :output
 
       def write_unless_file_exists(path, contents)
         if File.exist?(path)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Generator do
-  subject(:generator) { described_class.new(cop_identifier, 'your_id', output: stdout) }
+  subject(:generator) { described_class.new(cop_identifier, output: stdout) }
 
   let(:stdout) { StringIO.new }
   let(:cop_identifier) { 'Style/FakeCop' }
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Generator do
     end
 
     it 'refuses to overwrite existing files' do
-      new_cop = described_class.new('Layout/IndentationStyle', 'your_id')
+      new_cop = described_class.new('Layout/IndentationStyle')
 
       allow(new_cop).to receive(:exit!)
       expect { new_cop.write_source }
@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Generator do
     end
 
     it 'refuses to overwrite existing files' do
-      new_cop = described_class.new('Layout/IndentationStyle', 'your_id')
+      new_cop = described_class.new('Layout/IndentationStyle')
 
       allow(new_cop).to receive(:exit!)
       expect { new_cop.write_spec }
@@ -153,18 +153,20 @@ RSpec.describe RuboCop::Cop::Generator do
   describe '#todo' do
     it 'provides a checklist for implementing the cop' do
       expect(generator.todo).to eql(<<~TODO)
-        Do 3 steps:
-          1. Add an entry to the "New features" section in CHANGELOG.md,
-             e.g. "Add new `Style/FakeCop` cop. ([@your_id][])"
-          2. Modify the description of Style/FakeCop in config/default.yml
-          3. Implement your new cop in the generated file!
+        Do 4 steps:
+          1. Modify the description of Style/FakeCop in config/default.yml
+          2. Implement your new cop in the generated file!
+          3. Commit your new cop with a message such as
+             e.g. "Add new `Style/FakeCop` cop."
+          4. Run `bundle exec rake changelog:new` to generate a changelog entry
+             for your new cop.
       TODO
     end
   end
 
   describe '.new' do
     it 'does not accept an unqualified cop' do
-      expect { described_class.new('FakeCop', 'your_id') }
+      expect { described_class.new('FakeCop') }
         .to raise_error(ArgumentError)
         .with_message('Specify a cop name with Department/Name style')
     end
