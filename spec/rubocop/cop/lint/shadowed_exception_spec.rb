@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'registers an offense rescuing exceptions that are ancestors of each other ' do
+    it 'registers an offense rescuing exceptions that are ancestors of each other' do
       expect_offense(<<~RUBY)
         def
           something

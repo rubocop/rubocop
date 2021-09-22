@@ -381,13 +381,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   end
 
   context 'when the first argument in a method call begins with a hash literal' do
-    it 'accepts parentheses if the argument list is not parenthesized ' do
+    it 'accepts parentheses if the argument list is not parenthesized' do
       expect_no_offenses('x ({ y: 1 }), z')
       expect_no_offenses('x ({ y: 1 }.merge({ y: 2 })), z')
       expect_no_offenses('x ({ y: 1 }.merge({ y: 2 }).merge({ y: 3 })), z')
     end
 
-    it 'registers an offense if the argument list is parenthesized ' do
+    it 'registers an offense if the argument list is parenthesized' do
       expect_offense(<<~RUBY)
         x(({ y: 1 }), z)
           ^^^^^^^^^^ Don't use parentheses around a literal.

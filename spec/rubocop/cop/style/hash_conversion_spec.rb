@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when using  multi-argument `Hash[]` as a method argument' do
+  it 'registers and corrects an offense when using multi-argument `Hash[]` as a method argument' do
     expect_offense(<<~RUBY)
       do_something Hash[a, b, c, d], arg
                    ^^^^^^^^^^^^^^^^ Prefer literal hash to Hash[arg1, arg2, ...].

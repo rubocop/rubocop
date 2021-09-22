@@ -299,7 +299,7 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
         RUBY
       end
 
-      it 'corrects an inverted method call when using `BasicObject#  !`' do
+      it 'corrects an inverted method call when using `BasicObject#!` with spaces before the method call' do
         expect_offense(<<~RUBY, method: method)
           foo.%{method} { |e| e.bar?.  ! }
           ^^^^^{method}^^^^^^^^^^^^^^^^^^^ Use `#{inverse}` instead of inverting `#{method}`.

@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   it_behaves_like 'mutable objects', "ENV['foo']"
   it_behaves_like 'mutable objects', "::ENV['foo']"
 
-  it 'allows .freeze on  method call' do
+  it 'allows .freeze on method call' do
     expect_no_offenses('TOP_TEST = Something.new.freeze')
   end
 

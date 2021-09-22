@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     expect_no_offenses('puts()')
   end
 
-  it 'ignores calls with a multiline empty brace ' do
+  it 'ignores calls with a multiline empty brace' do
     expect_no_offenses(<<~RUBY)
       puts(
       )

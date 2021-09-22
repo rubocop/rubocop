@@ -704,7 +704,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
               RUBY
             end
 
-            it "registers an offense for assignment using #{assignment} in  case when" do
+            it "registers an offense for assignment using #{assignment} in case when" do
               expect_offense(<<~RUBY)
                 case foo
                 ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.

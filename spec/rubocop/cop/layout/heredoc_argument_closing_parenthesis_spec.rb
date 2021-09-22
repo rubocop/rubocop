@@ -298,7 +298,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
     end
 
     context 'double incorrect case' do
-      it 'detects ' do
+      it 'detects' do
         expect_offense(<<~RUBY)
           foo(<<-SQL, <<-NOSQL
             foo

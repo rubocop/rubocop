@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       end
     end
 
-    it 'auto-corrects Hash.new in block ' do
+    it 'auto-corrects Hash.new in block' do
       expect_offense(<<~RUBY)
         puts { Hash.new }
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.

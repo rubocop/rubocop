@@ -1087,7 +1087,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         end
       end
 
-      context 'semicolons  inside string literal' do
+      context 'semicolons inside string literal' do
         it 'adds offense and autocorrects elsewhere' do
           expect_offense(<<~RUBY)
             "00000000000000000;0000000000000000000'000000;00000'0000;0000;000"

@@ -216,8 +216,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using `||` in the outer condition' \
-     'and nested modifier condition ' do
+  it 'registers an offense and corrects when using `||` in the outer condition and nested modifier condition' do
     expect_offense(<<~RUBY)
       if foo || bar
         do_something if baz || qux
@@ -233,7 +232,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
   end
 
   it 'registers an offense and corrects when using `unless` and `||` and parens in the outer condition' \
-     'and nested modifier condition ' do
+     ' and nested modifier condition' do
     expect_offense(<<~RUBY)
       unless (foo || bar)
         do_something if baz
@@ -249,7 +248,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
   end
 
   it 'registers an offense and corrects when using `unless` and `||` without parens in the outer condition' \
-     'and nested modifier condition ' do
+     ' and nested modifier condition' do
     expect_offense(<<~RUBY)
       unless foo || bar
         do_something if baz

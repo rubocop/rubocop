@@ -48,7 +48,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
   end
 
   context 'assignment to a variable with the same name' do
-    it 'accepts parens in local variable assignment ' do
+    it 'accepts parens in local variable assignment' do
       expect_no_offenses('test = test()')
     end
 

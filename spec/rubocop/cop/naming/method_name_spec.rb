@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
         RUBY
       end
 
-      it 'does not register an offense for camel case method name  matching `IgnoredPatterns`' do
+      it 'does not register an offense for camel case method name matching `IgnoredPatterns`' do
         expect_no_offenses(<<~RUBY)
           def onSelectionBulkChange(arg)
           end
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
         RUBY
       end
 
-      it 'does not register an offense for snake case method name  matching `IgnoredPatterns`' do
+      it 'does not register an offense for snake case method name matching `IgnoredPatterns`' do
         expect_no_offenses(<<~RUBY)
           def on_selection_cleared(arg)
           end

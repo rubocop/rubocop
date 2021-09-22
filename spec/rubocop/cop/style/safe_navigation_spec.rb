@@ -917,8 +917,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
         end
 
-        it 'registers an offense for an object check followed by ' \
-           'a method calls that nil responds to ' do
+        it 'registers an offense for an object check followed by a method calls that nil responds to' do
           expect_offense(<<~RUBY, variable: variable)
             %{variable} && %{variable}.to_i
             ^{variable}^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]

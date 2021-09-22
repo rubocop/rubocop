@@ -200,7 +200,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         end
       end
 
-      context 'when .rubocop.yml has Layout/LineLength disabled ' do
+      context 'when .rubocop.yml has Layout/LineLength disabled' do
         let(:line_length_max) { 90 }
         let(:line_length_enabled) { false }
 

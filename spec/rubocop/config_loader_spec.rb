@@ -1462,7 +1462,7 @@ RSpec.describe RuboCop::ConfigLoader do
       )
     end
 
-    it 'loads configuration properly when it includes non-ascii characters ' do
+    it 'loads configuration properly when it includes non-ascii characters' do
       create_file(configuration_path, <<~YAML)
         # All these cops of mine are ❤
         Style/Encoding:

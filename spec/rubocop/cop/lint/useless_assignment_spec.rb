@@ -569,8 +569,8 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned and unreferenced in a if branch ' \
-          'while the variable is referenced in the paired else branch ' do
+  context 'when a variable is reassigned and unreferenced in a if branch' \
+          ' while the variable is referenced in the paired else branch' do
     it 'registers an offense for the reassignment in the if branch' do
       expect_offense(<<~RUBY)
         def some_method(flag)

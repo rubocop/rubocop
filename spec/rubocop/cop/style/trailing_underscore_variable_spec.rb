@@ -13,8 +13,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       RUBY
     end
 
-    it 'registers an offense when multiple underscores are used '\
-       'as the last variables of parallel assignment ' do
+    it 'registers an offense when multiple underscores are used as the last variables of parallel assignment' do
       expect_offense(<<~RUBY)
         a, _, _ = foo()
            ^^^^^ Do not use trailing `_`s in parallel assignment. Prefer `a, = foo()`.
