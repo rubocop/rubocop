@@ -59,7 +59,6 @@ module RuboCop
             (begin (send {float int} {:+ :- :* :** :/ :% :<<} _))
             (begin (send !{(str _) array} {:+ :- :* :** :/ :%} {float int}))
             (begin (send _ {:== :=== :!= :<= :>= :< :>} _))
-            (send (const {nil? cbase} :ENV) :[] _)
             (send _ {:count :length :size} ...)
             (block (send _ {:count :length :size} ...) ...)
           }
