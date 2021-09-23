@@ -27,7 +27,7 @@ module RuboCop
 
         def on_send(node)
           return unless (required_feature = node.first_argument)
-          return unless remove_ext(processed_source.file_path) == remove_ext(required_feature.value)
+          return unless same_file?(processed_source.file_path, required_feature.value)
 
           add_offense(node) do |corrector|
             corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
@@ -35,6 +35,10 @@ module RuboCop
         end
 
         private
+
+        def same_file?(file_path, required_feature)
+          file_path == required_feature || remove_ext(file_path) == required_feature
+        end
 
         def remove_ext(file_path)
           File.basename(file_path, File.extname(file_path))

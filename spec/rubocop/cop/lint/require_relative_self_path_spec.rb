@@ -36,4 +36,10 @@ RSpec.describe RuboCop::Cop::Lint::RequireRelativeSelfPath, :config do
       require_relative
     RUBY
   end
+
+  it 'does not register an offense when the filename is the same but the extension does not match' do
+    expect_no_offenses(<<~RUBY, 'foo.rb')
+      require_relative 'foo.racc'
+    RUBY
+  end
 end
