@@ -93,10 +93,17 @@ module RuboCop
         private
 
         def use_size_method_in_block?(sort_node)
-          return true if sort_node.send_type? && sort_node.block_node&.body&.method?(:size)
+          return true if block_calls_send?(sort_node)
           return false unless sort_node.block_argument?
 
           sort_node.last_argument.children.first.value == :size
+        end
+
+        def block_calls_send?(node)
+          return false unless node.send_type? && node.block_node
+          return false unless node.block_node.body.send_type?
+
+          node.block_node.body.method?(:size)
         end
 
         def register_offense(ancestor, sort_node, sorter, accessor)

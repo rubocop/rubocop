@@ -231,12 +231,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     expect_no_offenses('[[1, 2], [3, 4]].first.sort')
   end
 
-  # `[3, 1, 2].sort_by(&:size).last` is equivalent to `[3, 1, 2].max_by(&:size)`.
+  # `[2, 1, 3].sort_by(&:size).last` is not equivalent to `[2, 1, 3].max_by(&:size)`.
   it 'does not register an offense when using `sort_by(&:size).last`' do
     expect_no_offenses('[2, 1, 3].sort_by(&:size).last')
   end
 
-  # `[3, 1, 2].sort_by { |i| i.size }.last` is equivalent to `[3, 1, 2].max_by { |i| i.size }`.
+  # `[2, 1, 3].sort_by { |i| i.size }.last` is not equivalent to `[2, 1, 3].max_by { |i| i.size }`.
   it 'does not register an offense when using `sort_by { |i| i.size }.last`' do
     expect_no_offenses('[2, 1, 3].sort_by { |i| i.size }.last')
   end
@@ -245,6 +245,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
   # cop would "correct" it to `[2, 1, 3].min_by`.
   it 'does not register an offense when sort_by is not given a block' do
     expect_no_offenses('[2, 1, 3].sort_by.first')
+  end
+
+  it 'registers an offense with `sort_by { a || b }`' do
+    expect_offense(<<~RUBY)
+      x.sort_by { |y| y.foo || bar }.last
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `max_by` instead of `sort_by...last`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.max_by { |y| y.foo || bar }
+    RUBY
   end
 
   context 'when not taking first or last element' do
