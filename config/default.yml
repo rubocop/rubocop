@@ -4161,7 +4161,6 @@ Style/NumericLiteralPrefix:
     - zero_with_o
     - zero_only
 
-
 Style/NumericLiterals:
   Description: >-
                  Add underscores to large numeric literals to improve their
@@ -4482,6 +4481,8 @@ Style/RedundantSort:
                   `max_by` instead of `sort_by...last`, etc.
   Enabled: true
   VersionAdded: '0.76'
+  VersionChanged: <<next>>
+  Safe: false
 
 Style/RedundantSortBy:
   Description: 'Use `sort` instead of `sort_by { |x| x }`.'

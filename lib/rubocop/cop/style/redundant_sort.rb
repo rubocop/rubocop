@@ -12,6 +12,33 @@ module RuboCop
       # `Enumerable#max_by` can replace `Enumerable#sort_by` calls
       # after which only the first or last element is used.
       #
+      # @safety
+      #   This cop is unsafe, because `sort...last` and `max` may not return the
+      #   same element in all cases.
+      #
+      #   In an enumerable where there are multiple elements where `a <=> b == 0`,
+      #   or where the transformation done by the `sort_by` block has the
+      #   same result, `sort.last` and `max` (or `sort_by.last` and `max_by`)
+      #   will return different elements. `sort.last` will return the last
+      #   element but `max` will return the first element.
+      #
+      #   For example:
+      #
+      #   [source,ruby]
+      #   ----
+      #     class MyString < String; end
+      #     strings = [MyString.new('test'), 'test']
+      #     strings.sort.last.class   #=> String
+      #     strings.max.class         #=> MyString
+      #   ----
+      #
+      #   [source,ruby]
+      #   ----
+      #     words = %w(dog horse mouse)
+      #     words.sort_by { |word| word.length }.last   #=> 'mouse'
+      #     words.max_by { |word| word.length }         #=> 'horse'
+      #   ----
+      #
       # @example
       #   # bad
       #   [2, 1, 3].sort.first
