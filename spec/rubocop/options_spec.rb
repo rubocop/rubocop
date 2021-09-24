@@ -365,8 +365,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if given without --auto-gen-config' do
-        expect { options.parse %w[--exclude-limit 10] }
-          .to raise_error(RuboCop::OptionArgumentError)
+        expect { options.parse %w[--exclude-limit 10] }.to raise_error(RuboCop::OptionArgumentError)
       end
     end
 
