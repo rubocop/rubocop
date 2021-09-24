@@ -44,6 +44,7 @@ module RuboCop
       #   y( )
       #   g( f( x ) )
       #   g( f( x( 3 ) ), 5 )
+      #   g( ( ( 3 + 5 ) * f) ** x, 5 )
       #
       #   # good
       #   f( 3 )
@@ -51,6 +52,7 @@ module RuboCop
       #   y()
       #   g( f( x ))
       #   g( f( x( 3 )), 5 )
+      #   g((( 3 + 5 ) * f ) ** x, 5 )
       #
       class SpaceInsideParens < Base
         include SurroundingSpace
@@ -70,11 +72,7 @@ module RuboCop
           when :compact
             process_with_compact_style(tokens)
           else
-            each_extraneous_space(tokens) do |range|
-              add_offense(range) do |corrector|
-                corrector.remove(range)
-              end
-            end
+            correct_extraneous_space(tokens)
           end
         end
 
@@ -82,31 +80,23 @@ module RuboCop
 
         def process_with_space_style(tokens)
           tokens.each_cons(2) do |token1, token2|
-            each_extraneous_space_in_empty_parens(token1, token2) do |range|
-              add_offense(range) do |corrector|
-                corrector.remove(range)
-              end
-            end
-            each_missing_space(token1, token2) do |range|
-              add_offense(range, message: MSG_SPACE) do |corrector|
-                corrector.insert_before(range, ' ')
-              end
-            end
+            correct_extraneous_space_in_empty_parens(token1, token2)
+            correct_missing_space(token1, token2)
           end
         end
 
         def process_with_compact_style(tokens)
-          process_with_space_style(tokens)
           tokens.each_cons(2) do |token1, token2|
-            each_extaneus_space_between_right_parents(token1, token2) do |range|
-              add_offense(range) do |corrector|
-                corrector.remove(range)
-              end
+            correct_extraneous_space_in_empty_parens(token1, token2)
+            if !left_parens?(token1, token2) && !right_parens?(token1, token2)
+              correct_missing_space(token1, token2)
+            else
+              correct_extaneus_space_between_consecutive_parens(token1, token2)
             end
           end
         end
 
-        def each_extraneous_space(tokens)
+        def correct_extraneous_space(tokens)
           tokens.each_cons(2) do |token1, token2|
             next unless parens?(token1, token2)
 
@@ -115,35 +105,44 @@ module RuboCop
             next if token2.comment?
             next unless same_line?(token1, token2) && token1.space_after?
 
-            yield range_between(token1.end_pos, token2.begin_pos)
+            range = range_between(token1.end_pos, token2.begin_pos)
+            add_offense(range) do |corrector|
+              corrector.remove(range)
+            end
           end
         end
 
-        def each_extaneus_space_between_right_parents(token1, token2)
-          return unless right_parens?(token1, token2)
-
+        def correct_extaneus_space_between_consecutive_parens(token1, token2)
           return if range_between(token1.end_pos, token2.begin_pos).source != ' '
 
-          yield range_between(token1.end_pos, token2.begin_pos)
+          range = range_between(token1.end_pos, token2.begin_pos)
+          add_offense(range) do |corrector|
+            corrector.remove(range)
+          end
         end
 
-        def each_extraneous_space_in_empty_parens(token1, token2)
+        def correct_extraneous_space_in_empty_parens(token1, token2)
           return unless token1.left_parens? && token2.right_parens?
 
           return if range_between(token1.begin_pos, token2.end_pos).source == '()'
 
-          yield range_between(token1.end_pos, token2.begin_pos)
+          range = range_between(token1.end_pos, token2.begin_pos)
+          add_offense(range) do |corrector|
+            corrector.remove(range)
+          end
         end
 
-        def each_missing_space(token1, token2)
+        def correct_missing_space(token1, token2)
           return if can_be_ignored?(token1, token2)
 
-          return if style == :compact && token1.right_parens? && token2.right_parens?
+          range = if token1.left_parens?
+                    range_between(token2.begin_pos, token2.begin_pos + 1)
+                  elsif token2.right_parens?
+                    range_between(token2.begin_pos, token2.end_pos)
+                  end
 
-          if token1.left_parens?
-            yield range_between(token2.begin_pos, token2.begin_pos + 1)
-          elsif token2.right_parens?
-            yield range_between(token2.begin_pos, token2.end_pos)
+          add_offense(range, message: MSG_SPACE) do |corrector|
+            corrector.insert_before(range, ' ')
           end
         end
 
@@ -153,6 +152,10 @@ module RuboCop
 
         def parens?(token1, token2)
           token1.left_parens? || token2.right_parens?
+        end
+
+        def left_parens?(token1, token2)
+          token1.left_parens? && token2.left_parens?
         end
 
         def right_parens?(token1, token2)
