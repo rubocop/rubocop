@@ -35,7 +35,15 @@ module RuboCop
           previous: gem_name(current),
           current: gem_name(previous)
         )
-        add_offense(current, message: message)
+
+        add_offense(current, message: message) do |corrector|
+          OrderedGemCorrector.correct(
+            processed_source,
+            current,
+            previous_declaration(current),
+            treat_comments_as_separators
+          ).call(corrector)
+        end
       end
 
       def gem_name(declaration_node)

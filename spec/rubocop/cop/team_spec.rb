@@ -188,8 +188,7 @@ RSpec.describe RuboCop::Cop::Team do
       include_context 'mock console output'
 
       before do
-        allow_any_instance_of(RuboCop::Cop::Bundler::OrderedGems)
-          .to receive(:autocorrect).and_return(buggy_correction)
+        allow(RuboCop::Cop::OrderedGemCorrector).to receive(:correct).and_return(buggy_correction)
 
         create_file(file_path, <<~RUBY)
           gem 'rubocop'
