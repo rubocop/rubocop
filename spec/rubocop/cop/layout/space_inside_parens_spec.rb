@@ -240,10 +240,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
       RUBY
     end
 
+    it 'accepts two consecutive left parentheses' do
+      expect_no_offenses(<<~RUBY)
+        f(( 3 + 5 ) * x )
+      RUBY
+    end
+
     it 'accepts two consecutive right parentheses' do
       expect_no_offenses(<<~RUBY)
         f( x( 3 ))
         g( f( x( 3 )), 5 )
+      RUBY
+    end
+
+    it 'accepts three consecutive left parentheses' do
+      expect_no_offenses(<<~RUBY)
+        g((( 3 + 5 ) * f ) ** x, 5 )
       RUBY
     end
 
@@ -256,6 +268,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
 
     it 'registers an offense for space between consecutive brackets' do
       expect_offense(<<~RUBY)
+        f( ( 3 + 5 ) * x )
+          ^ Space inside parentheses detected.
+        g( ( ( 3 + 5 ) * f ) ** x, 5 )
+            ^ Space inside parentheses detected.
+          ^ Space inside parentheses detected.
         f( x( 3 ) )
                  ^ Space inside parentheses detected.
         g( f( x( 3 ) ), 5 )
@@ -263,6 +280,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
       RUBY
 
       expect_correction(<<~RUBY)
+        f(( 3 + 5 ) * x )
+        g((( 3 + 5 ) * f ) ** x, 5 )
         f( x( 3 ))
         g( f( x( 3 )), 5 )
       RUBY
@@ -270,6 +289,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
 
     it 'registers multiple offense for a missing and extra space between consecutive brackets' do
       expect_offense(<<~RUBY)
+        g( (( 3 + 5 ) * f) ** x, 5)
+                                  ^ No space inside parentheses detected.
+                         ^ No space inside parentheses detected.
+          ^ Space inside parentheses detected.
         (g( f( x( 3 ) ), 5 ) )
                             ^ Space inside parentheses detected.
                      ^ Space inside parentheses detected.
@@ -277,6 +300,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
       RUBY
 
       expect_correction(<<~RUBY)
+        g((( 3 + 5 ) * f ) ** x, 5 )
         ( g( f( x( 3 )), 5 ))
       RUBY
     end
