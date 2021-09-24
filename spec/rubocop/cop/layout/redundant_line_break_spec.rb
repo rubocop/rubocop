@@ -271,6 +271,19 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             m(7 + 8 + 9)
         RUBY
       end
+
+      it 'properly corrects a method chain on multiple lines' do
+        expect_offense(<<~RUBY)
+          foo
+          ^^^ Redundant line break detected.
+            .bar
+            .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.bar.baz
+        RUBY
+      end
     end
 
     context 'for an expression that does not fit on a single line' do
