@@ -24,15 +24,15 @@ module RuboCop
       #   gem 'rubocop'
       #   # For tests
       #   gem 'rspec'
-      class OrderedGems < Cop # rubocop:disable InternalAffairs/InheritDeprecatedCopClass
-        include ConfigurableEnforcedStyle
+      class OrderedGems < Base
+        extend AutoCorrector
         include OrderedGemNode
 
         MSG = 'Gems should be sorted in an alphabetical order within their '\
               'section of the Gemfile. '\
               'Gem `%<previous>s` should appear before `%<current>s`.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
           gem_declarations(processed_source.ast)
@@ -42,15 +42,6 @@ module RuboCop
 
             register_offense(previous, current)
           end
-        end
-
-        def autocorrect(node)
-          OrderedGemCorrector.correct(
-            processed_source,
-            node,
-            previous_declaration(node),
-            treat_comments_as_separators
-          )
         end
 
         private
