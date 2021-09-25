@@ -25,6 +25,7 @@ module RuboCop
       #   require_relative '../foo.so'
       #
       class RedundantFileExtensionInRequire < Base
+        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Redundant `.rb` file extension detected.'
@@ -39,12 +40,20 @@ module RuboCop
           require_call?(node) do |name_node|
             return unless name_node.value.end_with?('.rb')
 
-            add_offense(name_node) do |corrector|
-              correction = name_node.value.delete_suffix('.rb')
+            extension_range = extension_range(name_node)
 
-              corrector.replace(name_node, "'#{correction}'")
+            add_offense(extension_range) do |corrector|
+              corrector.remove(extension_range)
             end
           end
+        end
+
+        private
+
+        def extension_range(name_node)
+          end_of_path_string = name_node.source_range.end_pos
+
+          range_between(end_of_path_string - 4, end_of_path_string - 1)
         end
       end
     end
