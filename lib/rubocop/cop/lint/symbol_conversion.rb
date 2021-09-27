@@ -143,7 +143,7 @@ module RuboCop
           # Although some operators can be converted to symbols normally
           # (ie. `:==`), these are not accepted as hash keys and will
           # raise a syntax error (eg. `{ ==: ... }`). Therefore, if the
-          # symbol does not start with an alpha-numeric or underscore, it
+          # symbol does not start with an alphanumeric or underscore, it
           # will be ignored.
           return unless node.value.to_s.match?(/\A[a-z0-9_]/i)
 

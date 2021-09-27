@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects when missed indendation kwargs' do
+    it 'registers an offense and corrects when missed indentation kwargs' do
       expect_offense(<<~RUBY)
         func1(foo: 'foo',
           bar: 'bar',
@@ -411,7 +411,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects when missed indendation kwargs' do
+    it 'registers an offense and corrects when missed indentation kwargs' do
       expect_offense(<<~RUBY)
         func1(foo: 'foo',
               bar: 'bar',

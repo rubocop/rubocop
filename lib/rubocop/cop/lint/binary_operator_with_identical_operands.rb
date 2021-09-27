@@ -37,7 +37,7 @@ module RuboCop
       #     do_something
       #   end
       #
-      #   def childs?
+      #   def child?
       #     left_child || left_child
       #   end
       #

@@ -39,7 +39,7 @@ A long-term goal of RuboCop (and its core extensions) is to cover with cops all 
 
 == Philosophy
 
-Early on RuboCop aimed to be an opinionated linter/formater that adhered very closely to the Ruby Style Guide (think `gofmt` and the like).
+Early on RuboCop aimed to be an opinionated linter/formatter that adhered very closely to the Ruby Style Guide (think `gofmt` and the like).
 In those days cops supported just a single style and you couldn't even turn individual cops off. Eventually, we realized
 that in the Ruby community there were some many competing styles and preferences that it was going to be really
 challenging to find one set of defaults that makes everyone happy. Part of this was Ruby's own culture and philosophy,

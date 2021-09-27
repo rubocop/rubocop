@@ -1307,7 +1307,7 @@ RSpec.describe RuboCop::ConfigLoader do
           expect(cop_enabled?(cop_class)).to be true
         end
 
-        it 'respects cops that are disbled in the config' do
+        it 'respects cops that are disabled in the config' do
           cop_class = RuboCop::Cop::Layout::TrailingWhitespace
           expect(cop_enabled?(cop_class)).to be false
         end
@@ -1616,7 +1616,7 @@ RSpec.describe RuboCop::ConfigLoader do
               Enabled: false
           YAML
 
-          expect { load_file }.to output(%r{`Style/Encoding` is concealed by duplicat}).to_stderr
+          expect { load_file }.to output(%r{`Style/Encoding` is concealed by duplicate}).to_stderr
         end
       end
     end

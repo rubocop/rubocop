@@ -47,6 +47,26 @@ $ rubocop -V
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
 
+### Spell Checking
+
+We are running [misspell](https://github.com/client9/misspell) which is mainly written in
+[Golang](https://golang.org/) to check spelling with [GitHub Actions](../.github/workflows/spell_checking.yml).
+Correct commonly misspelled English words quickly with `misspell`. `misspell` is different from most other spell checkers
+because it doesn't use a custom dictionary. You can run `misspell` locally against all files with:
+
+    $ find . -type f | xargs ./misspell -i 'enviromnent' -error
+
+Notable `misspell` help options or flags are:
+
+* `-i` string: ignore the following corrections, comma separated
+* `-w`: Overwrite file with corrections (default is just to display)
+
+We also run [codespell](https://github.com/codespell-project/codespell) with GitHub Actions to check spelling and
+[codespell](https://pypi.org/project/codespell/) runs against a [small custom dictionary](../codespell.txt).
+`codespell` is written in [Python](https://www.python.org/) and you can run it with:
+
+    $ codespell --ignore-words=codespell.txt
+
 ### Creating changelog entries
 
 Changelog entries are just files under the `changelog/` folder that will be merged

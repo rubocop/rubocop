@@ -7,7 +7,7 @@ module RuboCop
       # the end of a line.
       #
       # @safety
-      #   This cop is unsafe because it canot be guaranteed that the
+      #   This cop is unsafe because it cannot be guaranteed that the
       #   receiver is a string, in which case replacing `<<` with `\`
       #   would result in a syntax error.
       #

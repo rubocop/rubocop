@@ -24,7 +24,7 @@ module RuboCop
     # `add_global_offense`. Use the `processed_source` method to
     # get the currently processed source being investigated.
     #
-    # In case of invalid syntax / unparseable content,
+    # In case of invalid syntax / unparsable content,
     # the callback `on_other_file` is called instead of all the other
     # `on_...` callbacks.
     #

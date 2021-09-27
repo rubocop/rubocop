@@ -323,7 +323,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
     RUBY
   end
 
-  it 'does not register an offense when not whe whole condition is negated' do
+  it 'does not register an offense when only part of the condition is negated' do
     expect_no_offenses(<<~RUBY)
       if !x && y
         do_something

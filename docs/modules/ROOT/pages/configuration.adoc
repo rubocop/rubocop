@@ -269,7 +269,7 @@ In this example the `Exclude` would only include `bar.rb`.
 
 Configuration files are pre-processed using the ERB templating mechanism. This
 makes it possible to add dynamic content that will be evaluated when the
-configuation file is read. For example, you could let RuboCop ignore all files
+configuration file is read. For example, you could let RuboCop ignore all files
 ignored by Git.
 
 [source,yaml]

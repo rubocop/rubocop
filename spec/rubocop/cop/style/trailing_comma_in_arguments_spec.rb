@@ -402,7 +402,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'does not break when a method call is chaned on the offending one' do
+      it 'does not break when a method call is chained on the offending one' do
         expect_no_offenses(<<~RUBY)
           foo.bar(
             baz: 1,
