@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::OptionalBooleanParameter, :config do
   it 'registers an offense when defining method with optional boolean arg' do
     expect_offense(<<~RUBY)
       def some_method(bar = false)
-                      ^^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
+                      ^^^^^^^^^^^ Prefer keyword arguments for arguments with a boolean default value; use `bar: false` instead of `bar = false`.
       end
     RUBY
   end
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::OptionalBooleanParameter, :config do
   it 'registers an offense when defining class method with optional boolean arg' do
     expect_offense(<<~RUBY)
       def self.some_method(bar = false)
-                           ^^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
+                           ^^^^^^^^^^^ Prefer keyword arguments for arguments with a boolean default value; use `bar: false` instead of `bar = false`.
       end
     RUBY
   end
@@ -22,8 +22,8 @@ RSpec.describe RuboCop::Cop::Style::OptionalBooleanParameter, :config do
   it 'registers an offense when defining method with multiple optional boolean args' do
     expect_offense(<<~RUBY)
       def some_method(foo = true, bar = 1, baz = false, quux: true)
-                      ^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
-                                           ^^^^^^^^^^^ Use keyword arguments when defining method with boolean argument.
+                      ^^^^^^^^^^ Prefer keyword arguments for arguments with a boolean default value; use `foo: true` instead of `foo = true`.
+                                           ^^^^^^^^^^^ Prefer keyword arguments for arguments with a boolean default value; use `baz: false` instead of `baz = false`.
       end
     RUBY
   end
