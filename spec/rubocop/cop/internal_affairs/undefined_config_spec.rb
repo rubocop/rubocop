@@ -192,6 +192,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UndefinedConfig, :config, :isolate
     RUBY
   end
 
+  # TODO: Remove this test when the `Cop` base class is removed
   it 'works when the base class is `Cop` instead of `Base`' do
     expect_offense(<<~RUBY)
       module RuboCop

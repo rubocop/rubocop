@@ -736,7 +736,7 @@ RSpec.describe RuboCop::ConfigLoader do
             module RuboCop
               module Cop
                 module Custom
-                  class Loop < Cop
+                  class Loop < Base
                   end
                 end
               end
