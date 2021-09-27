@@ -10,4 +10,5 @@ require_relative 'expect_offense'
 RSpec.configure do |config|
   config.include CopHelper
   config.include HostEnvironmentSimulatorHelper
+  config.include RuboCop::RSpec::ExpectOffense
 end
