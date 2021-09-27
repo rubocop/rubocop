@@ -102,37 +102,39 @@ module RuboCop
         MATCHER
 
         def on_send(node)
-          if (sort_node, sorter, accessor = redundant_sort?(node.parent))
-            ancestor = node.parent
-          elsif (sort_node, sorter, accessor = redundant_sort?(node.parent&.parent))
-            ancestor = node.parent.parent
-          else
-            return
-          end
+          ancestor, sort_node, sorter, accessor =
+            find_redundant_sort(node.parent, node.parent&.parent)
+          return unless ancestor
 
           register_offense(ancestor, sort_node, sorter, accessor)
         end
 
         private
 
-        def register_offense(ancestor, sort_node, sorter, accessor)
-          message = message(ancestor, sorter, accessor)
+        def find_redundant_sort(*nodes)
+          nodes.each do |node|
+            if (sort_node, sorter, accessor = redundant_sort?(node))
+              return [node, sort_node, sorter, accessor]
+            end
+          end
 
-          add_offense(offense_range(sort_node, ancestor), message: message) do |corrector|
-            autocorrect(corrector, ancestor, sort_node, sorter, accessor)
+          nil
+        end
+
+        def register_offense(node, sort_node, sorter, accessor)
+          message = message(node, sorter, accessor)
+
+          add_offense(offense_range(sort_node, node), message: message) do |corrector|
+            # Remove accessor, e.g. `first` or `[-1]`.
+            corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
+
+            # Replace "sort" or "sort_by" with the appropriate min/max method.
+            corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
           end
         end
 
-        def autocorrect(corrector, node, sort_node, sorter, accessor)
-          # Remove accessor, e.g. `first` or `[-1]`.
-          corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
-
-          # Replace "sort" or "sort_by" with the appropriate min/max method.
-          corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
-        end
-
-        def offense_range(sort_node, ancestor)
-          range_between(sort_node.loc.selector.begin_pos, ancestor.loc.expression.end_pos)
+        def offense_range(sort_node, node)
+          range_between(sort_node.loc.selector.begin_pos, node.loc.expression.end_pos)
         end
 
         def message(node, sorter, accessor)
