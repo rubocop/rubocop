@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
     it 'registers an offense if the matcher does not have a directive' do
       expect_offense(<<~RUBY, method: method)
         #{method} :foo?, '(str)'
-        ^{method}^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
     it 'registers an offense if the matcher does not have a directive and a method call is used for a pattern argument' do
       expect_offense(<<~RUBY, method: method)
         #{method} :foo?, format(PATTERN, type: 'const')
-        ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -41,17 +41,17 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
       RUBY
     end
 
-    it 'registers an offense if the matcher does not have a directive but has preceeding comments' do
+    it 'registers an offense if the matcher does not have a directive but has preceding comments' do
       expect_offense(<<~RUBY, method: method)
         # foo
         #{method} :foo?, '(str)'
-        ^{method}^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
 
         # foo bar baz
         # foo bar baz
         # foo bar baz
         #{method} :bar?, '(sym)'
-        ^{method}^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
     it 'autocorrects with the right arguments if the pattern includes arguments' do
       expect_offense(<<~RUBY, method: method)
         #{method} :foo?, '(str %1)'
-        ^{method}^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
     it 'autocorrects with the right arguments if the pattern references a non-contiguous argument' do
       expect_offense(<<~RUBY, method: method)
         #{method} :foo?, '(str %4)'
-        ^{method}^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -126,7 +126,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
       expect_offense(<<~RUBY, method: method)
         class MyCop
           #{method} :foo?, '(str)'
-          ^{method}^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+          ^{method}^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
         end
       RUBY
 
@@ -158,9 +158,9 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
     it 'inserts a blank line between multiple pattern matchers' do
       expect_offense(<<~RUBY, method: method)
         #{method} :foo?, '(str)'
-        ^{method}^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
         #{method} :bar?, '(str)'
-        ^{method}^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -175,11 +175,11 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
     it 'inserts a blank line between multiple multi-line pattern matchers' do
       expect_offense(<<~RUBY, method: method)
         #{method} :foo?, <<~PATTERN
-        ^{method}^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
           (str)
         PATTERN
         #{method} :bar?, <<~PATTERN
-        ^{method}^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
           (str)
         PATTERN
       RUBY
@@ -200,12 +200,12 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
     it 'does not insert a blank line if one already exists' do
       expect_offense(<<~RUBY, method: method)
         #{method} :foo?, <<~PATTERN
-        ^{method}^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
           (str)
         PATTERN
 
         #{method} :bar?, <<~PATTERN
-        ^{method}^^^^^^^^^^^^^^^^^^ Preceed `#{method}` with a `@!method` YARD directive.
+        ^{method}^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
           (str)
         PATTERN
       RUBY

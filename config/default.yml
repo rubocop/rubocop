@@ -130,7 +130,7 @@ AllCops:
   # What MRI version of the Ruby interpreter is the inspected code intended to
   # run on? (If there is more than one, set this to the lowest version.)
   # If a value is specified for TargetRubyVersion then it is used. Acceptable
-  # values are specificed as a float (i.e. 3.0); the teeny version of Ruby
+  # values are specified as a float (i.e. 3.0); the teeny version of Ruby
   # should not be included. If the project specifies a Ruby version in the
   # .tool-versions or .ruby-version files, Gemfile or gems.rb file, RuboCop will
   # try to determine the desired version of Ruby by inspecting the

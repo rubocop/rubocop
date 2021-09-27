@@ -428,7 +428,7 @@ if a.x != 0 && a.x != 0
   do_something
 end
 
-def childs?
+def child?
   left_child || left_child
 end
 
@@ -3476,7 +3476,7 @@ It emulates the following warning in Ruby 2.7:
   ruby 2.7.2p137 (2020-10-01 revision 5445e04352) [x86_64-darwin19]
   -e:1: warning: `_1' is reserved for numbered parameter; consider another name
 
-Assiging to numbered parameter (from `_1` to `_9`) cause an error in Ruby 3.0.
+Assigning to numbered parameter (from `_1` to `_9`) cause an error in Ruby 3.0.
 
   % ruby -ve '_1 = :value'
   ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
@@ -4825,7 +4825,7 @@ given by `ruby -cw` prior to Ruby 2.6:
 
 NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
 because `Ractor` should not access outer variables.
-eg. following syle is encouraged:
+eg. following style is encouraged:
 
   worker_id, pipe = env
   Ractor.new(worker_id, pipe) do |worker_id, pipe|
@@ -5292,7 +5292,7 @@ end
 | -
 |===
 
-This cop checks for "triple quotes" (strings delimted by any odd number
+This cop checks for "triple quotes" (strings delimited by any odd number
 of quotes greater than 1).
 
 Ruby allows multiple strings to be implicitly concatenated by just

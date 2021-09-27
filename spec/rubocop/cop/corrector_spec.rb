@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Corrector do
       expect { |corrector| corrector.remove_leading(operator, 2) }.to rewrite_to 'true d false'
     end
 
-    it 'allows removal of characters fron range ending' do
+    it 'allows removal of characters from range ending' do
       expect { |corrector| corrector.remove_trailing(operator, 2) }.to rewrite_to 'true a false'
     end
 

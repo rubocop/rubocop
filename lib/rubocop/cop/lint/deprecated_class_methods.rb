@@ -58,12 +58,12 @@ module RuboCop
           end
 
           def to_s
-            [class_constant, method].compact.join(delimeter)
+            [class_constant, method].compact.join(delimiter)
           end
 
           private
 
-          def delimeter
+          def delimiter
             CLASS_METHOD_DELIMETER
           end
         end
@@ -81,12 +81,12 @@ module RuboCop
           end
 
           def to_s
-            [class_constant, method].compact.join(delimeter)
+            [class_constant, method].compact.join(delimiter)
           end
 
           private
 
-          def delimeter
+          def delimiter
             instance_method? ? INSTANCE_METHOD_DELIMETER : CLASS_METHOD_DELIMETER
           end
 

@@ -97,7 +97,7 @@ module RuboCop
           end
 
           # Identifies the most recent magic comment with valid shareable constant values
-          # thats in scope for this node
+          # that's in scope for this node
           def magic_comment_in_scope(node)
             processed_source_till_node(node).reverse_each.find do |line|
               MagicComment.parse(line).valid_shareable_constant_value?
