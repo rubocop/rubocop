@@ -238,7 +238,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           module RuboCop
             module Cop
               module Style
-                class SomeCop < Cop
+                class SomeCop < Base
                 end
               end
             end
@@ -330,7 +330,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           module RuboCop
             module Cop
               module Style
-                class SomeCop < Cop
+                class SomeCop < Base
                 end
               end
             end
@@ -378,7 +378,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             module RuboCop
               module Cop
                 module Style
-                  class SomeCop < Cop
+                  class SomeCop < Base
                   end
                 end
               end
