@@ -76,12 +76,8 @@ module RuboCop
 
         def on_send(node)
           if (sort_node, sorter, accessor = redundant_sort?(node.parent))
-            return if use_size_method_in_block?(sort_node)
-
             ancestor = node.parent
           elsif (sort_node, sorter, accessor = redundant_sort?(node.parent&.parent))
-            return if use_size_method_in_block?(sort_node)
-
             ancestor = node.parent.parent
           else
             return
@@ -91,20 +87,6 @@ module RuboCop
         end
 
         private
-
-        def use_size_method_in_block?(sort_node)
-          return true if block_calls_send?(sort_node)
-          return false unless sort_node.block_argument?
-
-          sort_node.last_argument.children.first.value == :size
-        end
-
-        def block_calls_send?(node)
-          return false unless node.send_type? && node.block_node
-          return false unless node.block_node.body.send_type?
-
-          node.block_node.body.method?(:size)
-        end
 
         def register_offense(ancestor, sort_node, sorter, accessor)
           message = message(ancestor, sorter, accessor)
