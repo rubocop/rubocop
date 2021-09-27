@@ -35,7 +35,7 @@ module RuboCop
       #
       # @example EnforcedStyle: compact
       #   # The `compact` style enforces that parentheses have a space at the
-      #   # beginning with the exception that successive right parentheses are allowed.
+      #   # beginning with the exception that successive parentheses are allowed.
       #   # Note: Empty parentheses should not have spaces.
       #
       #   # bad
