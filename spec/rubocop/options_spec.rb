@@ -50,8 +50,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --enable-pending-cops        Run with pending cops.
                   --ignore-disable-comments    Run cops even when they are disabled locally
                                                by a `rubocop:disable` directive.
-                  --force-exclusion            Any files excluded by `Exclude` in configuration files
-                                               will be excluded, even if given explictly as arguments.
+                  --force-exclusion            Any files excluded by `Exclude` in configuration
+                                               files will be excluded, even if given explicitly
+                                               as arguments.
                   --only-recognized-file-types Inspect files given on the command line only if
                                                they are listed in `AllCops/Include` parameters
                                                of user configuration or default configuration.
