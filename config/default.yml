@@ -4561,6 +4561,12 @@ Style/Sample:
   Enabled: true
   VersionAdded: '0.30'
 
+Style/SelectByRegexp:
+  Description: 'Prefer grep/grep_v to select/reject with a regexp match.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/SelfAssignment:
   Description: >-
                  Checks for places where self-assignment shorthand should have
