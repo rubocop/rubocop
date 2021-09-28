@@ -129,8 +129,8 @@ module RuboCop
         node1.respond_to?(:loc) && node2.respond_to?(:loc) && node1.loc.line == node2.loc.line
       end
 
-      def indent(node)
-        ' ' * node.loc.column
+      def indent(node, offset: 0)
+        ' ' * (node.loc.column + offset)
       end
 
       def to_supported_styles(enforced_style)

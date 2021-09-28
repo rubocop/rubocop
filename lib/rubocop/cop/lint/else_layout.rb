@@ -49,6 +49,9 @@ module RuboCop
         def on_if(node)
           return if node.ternary?
 
+          # If the if is on a single line, it'll be handled by `Style/OneLineConditional`
+          return if node.single_line?
+
           check(node)
         end
 
@@ -66,10 +69,7 @@ module RuboCop
 
         def check_else(node)
           else_branch = node.else_branch
-
-          return unless else_branch.begin_type?
-
-          first_else = else_branch.children.first
+          first_else = else_branch.begin_type? ? else_branch.children.first : else_branch
 
           return unless first_else
           return unless first_else.source_range.line == node.loc.else.line
@@ -81,8 +81,12 @@ module RuboCop
           corrector.insert_after(node.loc.else, "\n")
 
           blank_range = range_between(node.loc.else.end_pos, first_else.loc.expression.begin_pos)
-          indentation = indent(node.else_branch.children[1])
+          indentation = indent(node, offset: indentation_width)
           corrector.replace(blank_range, indentation)
+        end
+
+        def indentation_width
+          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
       end
     end
