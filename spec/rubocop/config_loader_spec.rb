@@ -1010,8 +1010,7 @@ RSpec.describe RuboCop::ConfigLoader do
           gem_class = Struct.new(:gem_dir)
           %w[gemone gemtwo].each do |gem_name|
             mock_spec = gem_class.new(File.join(gem_root, gem_name))
-            allow(Gem::Specification).to receive(:find_by_name)
-              .with(gem_name).and_return(mock_spec)
+            allow(Gem::Specification).to receive(:find_by_name).with(gem_name).and_return(mock_spec)
           end
           allow(Gem).to receive(:path).and_return([gem_root])
         end

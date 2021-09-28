@@ -2,8 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
   let(:config) do
-    merged = RuboCop::ConfigLoader
-             .default_configuration['Layout/CaseIndentation'].merge(cop_config)
+    merged = RuboCop::ConfigLoader.default_configuration['Layout/CaseIndentation'].merge(cop_config)
     RuboCop::Config.new('Layout/CaseIndentation' => merged,
                         'Layout/IndentationWidth' => { 'Width' => 2 })
   end

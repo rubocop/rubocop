@@ -127,6 +127,7 @@ module RuboCop
             .gsub(/" *\\\n\s*'/, %q(" + ')) # Double quote, backslash, and then single quote
             .gsub(/' *\\\n\s*"/, %q(' + ")) # Single quote, backslash, and then double quote
             .gsub(/(["']) *\\\n\s*\1/, '')  # Double or single quote, backslash, then same quote
+            .gsub(/\n\s*(?=\.\w)/, '')      # Extra space within method chaining
             .gsub(/\s*\\?\n\s*/, ' ')       # Any other line break, with or without backslash
         end
 

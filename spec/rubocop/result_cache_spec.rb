@@ -226,8 +226,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             cache2.save(offenses)
 
             expect(cache2.valid?).to eq(true)
-            expect($stderr.string)
-              .not_to match(/Warning: .* is a symlink, which is not allowed.\n/)
+            expect($stderr.string).not_to match(/Warning: .* is a symlink, which is not allowed.\n/)
           end
         end
       end

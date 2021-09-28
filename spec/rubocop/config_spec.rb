@@ -192,8 +192,7 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /trailing_comma/)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, /trailing_comma/)
       end
     end
 

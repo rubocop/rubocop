@@ -271,6 +271,60 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             m(7 + 8 + 9)
         RUBY
       end
+
+      context 'method chains' do
+        it 'properly corrects a method chain on multiple lines' do
+          expect_offense(<<~RUBY)
+            foo(' .x')
+            ^^^^^^^^^^ Redundant line break detected.
+              .bar
+              .baz
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo(' .x').bar.baz
+          RUBY
+        end
+
+        it 'registers an offense and corrects with a arguments on multiple lines' do
+          expect_offense(<<~RUBY)
+            foo(x,
+            ^^^^^^ Redundant line break detected.
+                y,
+                z)
+              .bar
+              .baz
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo(x, y, z).bar.baz
+          RUBY
+        end
+
+        it 'registers an offense and corrects with a string argument on multiple lines' do
+          expect_offense(<<~RUBY)
+            foo('....' \\
+            ^^^^^^^^^^^^ Redundant line break detected.
+                '....')
+              .bar
+              .baz
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo('........').bar.baz
+          RUBY
+        end
+
+        it 'does not register an offense with a heredoc argument' do
+          expect_no_offenses(<<~RUBY)
+            foo(<<~EOS)
+              xyz
+            EOS
+              .bar
+              .baz
+          RUBY
+        end
+      end
     end
 
     context 'for an expression that does not fit on a single line' do
