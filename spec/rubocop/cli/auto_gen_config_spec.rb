@@ -824,7 +824,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               - 'example1.rb'
               - 'example2.rb'
         YAML
-        actual = File.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+        actual = File.read('.rubocop_todo.yml').lines.grep_v(/^(#.*)?$/)
         expect(actual.join).to eq(expected)
 
         $stdout = StringIO.new
@@ -842,7 +842,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               Exclude:
                 - 'example2.rb'
           YAML
-          actual = File.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+          actual = File.read('.rubocop_todo.yml').lines.grep_v(/^(#.*)?$/)
           expect(actual.join).to eq(expected)
 
           expect(cli.run([])).to eq(0)

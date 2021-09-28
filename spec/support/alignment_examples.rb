@@ -10,7 +10,7 @@ shared_examples_for 'misaligned' do |annotated_source, used_style|
                              end
   annotated_source.split("\n\n").each do |chunk|
     chunk << "\n" unless chunk.end_with?("\n")
-    source = chunk.lines.reject { |line| /^ *\^/.match?(line) }.join
+    source = chunk.lines.grep_v(/^ *\^/).join
     name = source.gsub(/\n(?=[a-z ])/, ' <newline> ').gsub(/\s+/, ' ')
 
     it "registers an offense for mismatched #{name} and autocorrects" do
