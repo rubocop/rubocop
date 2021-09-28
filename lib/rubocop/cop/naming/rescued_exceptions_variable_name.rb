@@ -75,6 +75,9 @@ module RuboCop
           preferred_name = preferred_name(offending_name)
           return if preferred_name.to_sym == offending_name
 
+          # check variable shadowing for exception variable
+          return if shadowed_variable_name?(node)
+
           range = offense_range(node)
           message = message(node)
 
@@ -149,6 +152,10 @@ module RuboCop
           offending_name = variable_name(node)
           preferred_name = preferred_name(offending_name)
           format(MSG, preferred: preferred_name, bad: offending_name)
+        end
+
+        def shadowed_variable_name?(node)
+          node.each_descendant(:lvar).any? { |n| n.children.first.to_s == preferred_name(n) }
         end
       end
     end
