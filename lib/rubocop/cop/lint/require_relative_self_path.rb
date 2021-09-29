@@ -27,6 +27,7 @@ module RuboCop
 
         def on_send(node)
           return unless (required_feature = node.first_argument)
+          return unless required_feature.respond_to?(:value)
           return unless same_file?(processed_source.file_path, required_feature.value)
 
           add_offense(node) do |corrector|

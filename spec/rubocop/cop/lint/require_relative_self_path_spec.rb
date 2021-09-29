@@ -42,4 +42,10 @@ RSpec.describe RuboCop::Cop::Lint::RequireRelativeSelfPath, :config do
       require_relative 'foo.racc'
     RUBY
   end
+
+  it 'does not register an offense when using a variable as an argument of `require_relative`' do
+    expect_no_offenses(<<~RUBY, 'foo.rb')
+      Dir['test/**/test_*.rb'].each { |f| require_relative f }
+    RUBY
+  end
 end
