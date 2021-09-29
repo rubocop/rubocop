@@ -90,6 +90,21 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect_no_offenses('return 1 if any_errors? { o = file }.present?')
   end
 
+  it 'accepts assignment in a block after ||' do
+    expect_no_offenses(<<~RUBY)
+      if x?(bar) || y? { z = baz }
+        foo
+      end
+    RUBY
+  end
+
+  it 'registers an offense for = in condition inside a block' do
+    expect_offense(<<~RUBY)
+      foo { x if y = z }
+                   ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+    RUBY
+  end
+
   it 'accepts ||= in condition' do
     expect_no_offenses('raise StandardError unless foo ||= bar')
   end
