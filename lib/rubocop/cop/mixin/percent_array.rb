@@ -36,7 +36,12 @@ module RuboCop
       def check_percent_array(node)
         array_style_detected(:percent, node.values.size)
 
-        return unless style == :brackets || invalid_percent_array_contents?(node)
+        brackets_required = invalid_percent_array_contents?(node)
+        return unless style == :brackets || brackets_required
+
+        # If in percent style but brackets are required due to
+        # string content, the file should be excluded in auto-gen-config
+        no_acceptable_style! if brackets_required
 
         bracketed_array = build_bracketed_array(node)
         message = format(self.class::ARRAY_MSG, prefer: bracketed_array)
