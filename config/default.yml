@@ -1361,7 +1361,7 @@ Layout/SpaceInsideParens:
   StyleGuide: '#spaces-braces'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.22'
   EnforcedStyle: no_space
   SupportedStyles:
     - space
@@ -1495,7 +1495,7 @@ Lint/BooleanSymbol:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.50'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.22'
 
 Lint/CircularArgumentReference:
   Description: "Default values in optional keyword arguments and optional ordinal arguments should not refer back to the name of the argument."
@@ -2050,7 +2050,7 @@ Lint/RequireParentheses:
 Lint/RequireRelativeSelfPath:
   Description: 'Checks for uses a file requiring itself with `require_relative`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.22'
 
 Lint/RescueException:
   Description: 'Avoid rescuing the Exception class.'
@@ -2745,7 +2745,7 @@ Security/IoMethods:
                  `IO.foreach`, and `IO.readlines`.
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.22'
 
 Security/JSONLoad:
   Description: >-
@@ -4147,7 +4147,7 @@ Style/Not:
 Style/NumberedParameters:
   Description: 'Restrict the usage of numbered parameters.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.22'
   EnforcedStyle: allow_single_line
   SupportedStyles:
     - allow_single_line
@@ -4156,7 +4156,7 @@ Style/NumberedParameters:
 Style/NumberedParametersLimit:
   Description: 'Avoid excessive numbered params in a single block.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.22'
   Max: 1
 
 Style/NumericLiteralPrefix:
@@ -4489,7 +4489,7 @@ Style/RedundantSort:
                   `max_by` instead of `sort_by...last`, etc.
   Enabled: true
   VersionAdded: '0.76'
-  VersionChanged: <<next>>
+  VersionChanged: '1.22'
   Safe: false
 
 Style/RedundantSortBy:
@@ -4575,7 +4575,7 @@ Style/SelectByRegexp:
   Description: 'Prefer grep/grep_v to select/reject with a regexp match.'
   Enabled: pending
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.22'
 
 Style/SelfAssignment:
   Description: >-

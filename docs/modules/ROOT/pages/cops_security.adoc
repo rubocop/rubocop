@@ -3,7 +3,7 @@
 == Security/Eval
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -24,10 +24,50 @@ eval(something)
 binding.eval(something)
 ----
 
+== Security/IoMethods
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.22
+| -
+|===
+
+Checks for the first argument to `IO.read`, `IO.binread`, `IO.write`, `IO.binwrite`,
+`IO.foreach`, and `IO.readlines`.
+
+If argument starts with a pipe character (`'|'`) and the receiver is the `IO` class,
+a subprocess is created in the same way as `Kernel#open`, and its output is returned.
+`Kernel#open` may allow unintentional command injection, which is the reason these
+`IO` methods are a security risk.
+Consider to use `File.read` to disable the behavior of subprocess invocation.
+
+=== Safety
+
+This cop is unsafe because false positive will occur if the variable passed as
+the first argument is a command that is not a file path.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+IO.read(path)
+IO.read('path')
+
+# good
+File.read(path)
+File.read('path')
+IO.read('| command') # Allow intentional command invocation.
+----
+
 == Security/JSONLoad
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -38,6 +78,8 @@ binding.eval(something)
 
 This cop checks for the use of JSON class methods which have potential
 security issues.
+
+=== Safety
 
 Autocorrect is disabled by default because it's potentially dangerous.
 If using a stream, like `JSON.load(open('file'))`, it will need to call
@@ -76,7 +118,7 @@ JSON.parse("{}")
 == Security/MarshalLoad
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -111,7 +153,7 @@ Marshal.load(Marshal.dump({}))
 == Security/Open
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -127,6 +169,11 @@ invocation by prefixing a pipe symbol (e.g., `open("| ls")`).
 So, it may lead to a serious security risk by using variable input to
 the argument of `Kernel#open` and `URI.open`. It would be better to use
 `File.open`, `IO.popen` or `URI.parse#open` explicitly.
+
+=== Safety
+
+This cop could register false positives if `open` is redefined
+in a class and then used without a receiver in that class.
 
 === Examples
 
@@ -145,7 +192,7 @@ URI.parse(something).open
 == Security/YAMLLoad
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -157,6 +204,11 @@ URI.parse(something).open
 This cop checks for the use of YAML class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
+
+=== Safety
+
+The behaviour of the code might change depending on what was
+in the YAML payload, since `YAML.safe_load` is more restrictive.
 
 === Examples
 

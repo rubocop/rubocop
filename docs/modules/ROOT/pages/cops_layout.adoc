@@ -3,7 +3,7 @@
 == Layout/AccessModifierIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -73,7 +73,7 @@ end
 == Layout/ArgumentAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -154,7 +154,7 @@ foo :bar,
 == Layout/ArrayAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -225,7 +225,7 @@ array = [1, 2, 3,
 == Layout/AssignmentIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -270,7 +270,7 @@ value =
 == Layout/BeginEndAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -341,7 +341,7 @@ foo ||= begin
 == Layout/BlockAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -436,7 +436,7 @@ end
 == Layout/BlockEndNewline
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -474,7 +474,7 @@ blah { |i|
 == Layout/CaseIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -627,7 +627,7 @@ end
 == Layout/ClassStructure
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -790,7 +790,7 @@ end
 == Layout/ClosingHeredocIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -847,7 +847,7 @@ foo arg,
 == Layout/ClosingParenthesisIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -926,7 +926,7 @@ some_method(a,
 == Layout/CommentIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -971,7 +971,7 @@ end
 == Layout/ConditionPosition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1011,7 +1011,7 @@ end
 == Layout/DefEndAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1078,7 +1078,7 @@ private def foo
 == Layout/DotPosition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1134,7 +1134,7 @@ something.
 == Layout/ElseAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1177,7 +1177,7 @@ end
 == Layout/EmptyComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1280,7 +1280,7 @@ end
 == Layout/EmptyLineAfterGuardClause
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1328,7 +1328,7 @@ end
 == Layout/EmptyLineAfterMagicComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1366,7 +1366,7 @@ end
 == Layout/EmptyLineAfterMultilineCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -1434,7 +1434,7 @@ end
 == Layout/EmptyLineBetweenDefs
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1577,7 +1577,7 @@ class ErrorC < BaseError; end
 == Layout/EmptyLines
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1611,7 +1611,7 @@ some_method
 == Layout/EmptyLinesAroundAccessModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1683,7 +1683,7 @@ end
 == Layout/EmptyLinesAroundArguments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1734,7 +1734,7 @@ some_method(
 == Layout/EmptyLinesAroundAttributeAccessor
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1837,7 +1837,7 @@ end
 == Layout/EmptyLinesAroundBeginBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1875,7 +1875,7 @@ end
 == Layout/EmptyLinesAroundBlockBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1930,7 +1930,7 @@ end
 == Layout/EmptyLinesAroundClassBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2044,7 +2044,7 @@ end
 == Layout/EmptyLinesAroundExceptionHandlingKeywords
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2119,7 +2119,7 @@ end
 == Layout/EmptyLinesAroundMethodBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2156,7 +2156,7 @@ end
 == Layout/EmptyLinesAroundModuleBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2242,7 +2242,7 @@ end
 == Layout/EndAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2352,7 +2352,7 @@ variable =
 == Layout/EndOfLine
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2426,7 +2426,7 @@ puts 'Hello' # Return character is CR+LF on all platfoms.
 == Layout/ExtraSpacing
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2485,7 +2485,7 @@ some_object.method(arg)    # this is some comment
 == Layout/FirstArgumentIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2671,7 +2671,7 @@ second_param
 == Layout/FirstArrayElementIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2788,7 +2788,7 @@ and_now_for_something = [
 == Layout/FirstArrayElementLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2817,7 +2817,7 @@ multi-line array.
 == Layout/FirstHashElementIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2932,7 +2932,7 @@ and_now_for_something = {
 == Layout/FirstHashElementLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2961,7 +2961,7 @@ multi-line hash.
 == Layout/FirstMethodArgumentLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2994,7 +2994,7 @@ method foo, bar,
 == Layout/FirstMethodParameterLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -3033,7 +3033,7 @@ end
 == Layout/FirstParameterIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3109,7 +3109,7 @@ end
 == Layout/HashAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3353,7 +3353,7 @@ do_something({foo: 1,
 == Layout/HeredocArgumentClosingParenthesis
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -3420,7 +3420,7 @@ opening HEREDOC tag.
 == Layout/HeredocIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3458,7 +3458,7 @@ RUBY
 == Layout/IndentationConsistency
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3611,7 +3611,7 @@ end
 == Layout/IndentationStyle
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3680,7 +3680,7 @@ end
 == Layout/IndentationWidth
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3758,7 +3758,7 @@ end
 == Layout/InitialIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3788,7 +3788,7 @@ end
 == Layout/LeadingCommentSpace
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3879,7 +3879,7 @@ or rackup options.
 == Layout/LeadingEmptyLines
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3919,7 +3919,7 @@ end
 == Layout/LineEndStringConcatenationIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -4025,7 +4025,7 @@ my_hash = {
 == Layout/LineLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4128,7 +4128,7 @@ bar: "0000000000", baz: "0000000000"}
 == Layout/MultilineArrayBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4250,7 +4250,7 @@ line as the last element of the array.
 == Layout/MultilineArrayLineBreaks
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4283,7 +4283,7 @@ starts on a separate line.
 == Layout/MultilineAssignmentLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4381,7 +4381,7 @@ foo =
 == Layout/MultilineBlockLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4443,7 +4443,7 @@ blah { |
 == Layout/MultilineHashBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4564,7 +4564,7 @@ line as the last element of the hash.
 == Layout/MultilineHashKeyLineBreaks
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4597,7 +4597,7 @@ starts on a separate line.
 == Layout/MultilineMethodArgumentLineBreaks
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4632,7 +4632,7 @@ foo(
 == Layout/MultilineMethodCallBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4754,7 +4754,7 @@ foo(a,
 == Layout/MultilineMethodCallIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4838,7 +4838,7 @@ myvariable = Thing
 == Layout/MultilineMethodDefinitionBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4972,7 +4972,7 @@ end
 == Layout/MultilineOperationIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5046,7 +5046,7 @@ end
 == Layout/ParameterAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5152,7 +5152,7 @@ end
 == Layout/RedundantLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5227,7 +5227,7 @@ foo(a) { |x| puts x }
 == Layout/RescueEnsureAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5261,7 +5261,7 @@ end
 == Layout/SingleLineBlockChain
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5293,7 +5293,7 @@ end.join('-')
 == Layout/SpaceAfterColon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5324,7 +5324,7 @@ def f(a:, b: 2); {a: 3}; end
 == Layout/SpaceAfterComma
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5355,7 +5355,7 @@ Checks for comma (,) not followed by some kind of space.
 == Layout/SpaceAfterMethodName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5386,7 +5386,7 @@ def method=(y) end
 == Layout/SpaceAfterNot
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5415,7 +5415,7 @@ This cop checks for space after `!`.
 == Layout/SpaceAfterSemicolon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5444,7 +5444,7 @@ x = 1; y = 2
 == Layout/SpaceAroundBlockParameters
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5498,7 +5498,7 @@ not by this cop.
 == Layout/SpaceAroundEqualsInParameterDefault
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5559,7 +5559,7 @@ end
 == Layout/SpaceAroundKeyword
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5596,7 +5596,7 @@ something = 123 if test
 == Layout/SpaceAroundMethodCallOperator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5643,7 +5643,7 @@ RuboCop::Cop::Cop
 == Layout/SpaceAroundOperators
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5741,7 +5741,7 @@ a ** b
 == Layout/SpaceBeforeBlockBraces
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5824,7 +5824,7 @@ foo.map{ |a|
 == Layout/SpaceBeforeBrackets
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5854,7 +5854,7 @@ collection[index_or_key]
 == Layout/SpaceBeforeComma
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5883,7 +5883,7 @@ each { |a, b| }
 == Layout/SpaceBeforeComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5909,7 +5909,7 @@ same line.
 == Layout/SpaceBeforeFirstArg
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5953,7 +5953,7 @@ something 'hello'
 == Layout/SpaceBeforeSemicolon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5978,7 +5978,7 @@ x = 1; y = 2
 == Layout/SpaceInLambdaLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6027,7 +6027,7 @@ a = -> (x, y) { x + y }
 == Layout/SpaceInsideArrayLiteralBrackets
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6139,7 +6139,7 @@ bar = [ ]
 == Layout/SpaceInsideArrayPercentLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6164,7 +6164,7 @@ Checks for unnecessary additional spaces inside array percent literals
 == Layout/SpaceInsideBlockBraces
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6291,7 +6291,7 @@ some_array.each {   }
 == Layout/SpaceInsideHashLiteralBraces
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6403,13 +6403,13 @@ foo = {     }
 == Layout/SpaceInsideParens
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
 | Yes
 | 0.49
-| 0.55
+| 1.22
 |===
 
 Checks for spaces inside ordinary round parentheses.
@@ -6452,6 +6452,31 @@ g = ( a + 3 )
 y()
 ----
 
+==== EnforcedStyle: compact
+
+[source,ruby]
+----
+# The `compact` style enforces that parentheses have a space at the
+# beginning with the exception that successive parentheses are allowed.
+# Note: Empty parentheses should not have spaces.
+
+# bad
+f(3)
+g = (a + 3)
+y( )
+g( f( x ) )
+g( f( x( 3 ) ), 5 )
+g( ( ( 3 + 5 ) * f) ** x, 5 )
+
+# good
+f( 3 )
+g = ( a + 3 )
+y()
+g( f( x ))
+g( f( x( 3 )), 5 )
+g((( 3 + 5 ) * f ) ** x, 5 )
+----
+
 === Configurable attributes
 
 |===
@@ -6459,7 +6484,7 @@ y()
 
 | EnforcedStyle
 | `no_space`
-| `space`, `no_space`
+| `space`, `compact`, `no_space`
 |===
 
 === References
@@ -6469,7 +6494,7 @@ y()
 == Layout/SpaceInsidePercentLiteralDelimiters
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6498,7 +6523,7 @@ Checks for unnecessary additional spaces inside the delimiters of
 == Layout/SpaceInsideRangeLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6533,7 +6558,7 @@ Checks for spaces inside range literals.
 == Layout/SpaceInsideReferenceBrackets
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6626,7 +6651,7 @@ foo[ ]
 == Layout/SpaceInsideStringInterpolation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6678,7 +6703,7 @@ This cop checks for whitespace within string interpolations.
 == Layout/TrailingEmptyLines
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6748,7 +6773,7 @@ class Foo; end
 == Layout/TrailingWhitespace
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes

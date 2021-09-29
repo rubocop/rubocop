@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.22.0 (2021-09-29)
+
 ### New features
 
 * [#10111](https://github.com/rubocop/rubocop/pull/10111): Add new `Style/NumberedParametersLimit` cop. ([@dvandersluis][])

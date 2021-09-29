@@ -3,7 +3,7 @@
 == Bundler/DuplicatedGem
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -62,7 +62,7 @@ end
 == Bundler/GemComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -187,7 +187,7 @@ gem 'bar', '< 2.1'
 == Bundler/GemFilename
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -246,7 +246,7 @@ Project contains gems.rb and gems.locked files
 == Bundler/GemVersion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -333,7 +333,7 @@ gem 'rubocop', tag: 'v1.17.0'
 == Bundler/InsecureProtocolSource
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -355,6 +355,9 @@ internal gem server via an intranet, or where HTTPS is prohibited.
 However, you should strongly prefer `https://` where possible, as it is
 more secure.
 
+If you don't allow `http://`, please set `false` to `AllowHttpProtocol`.
+This option is `true` by default for safe autocorrection.
+
 === Examples
 
 [source,ruby]
@@ -366,13 +369,32 @@ source :rubyforge
 
 # good
 source 'https://rubygems.org' # strongly recommended
+----
+
+==== AllowHttpProtocol: true (default)
+
+[source,ruby]
+----
+# good
 source 'http://rubygems.org' # use only if HTTPS is unavailable
+----
+
+==== AllowHttpProtocol: false
+
+[source,ruby]
+----
+# bad
+source 'http://rubygems.org'
 ----
 
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
+
+| AllowHttpProtocol
+| `true`
+| Boolean
 
 | Include
 | `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`
@@ -382,7 +404,7 @@ source 'http://rubygems.org' # use only if HTTPS is unavailable
 == Bundler/OrderedGems
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes

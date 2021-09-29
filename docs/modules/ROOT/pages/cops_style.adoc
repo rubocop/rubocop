@@ -3,7 +3,7 @@
 == Style/AccessModifierDeclarations
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -107,7 +107,7 @@ end
 == Style/AccessorGrouping
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -170,7 +170,7 @@ end
 == Style/Alias
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -226,7 +226,7 @@ alias_method :bar, :foo
 == Style/AndOr
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -239,9 +239,11 @@ This cop checks for uses of `and` and `or`, and suggests using `&&` and
 `||` instead. It can be configured to check only in conditions or in
 all contexts.
 
-It is marked as unsafe auto-correction because it may change the
-operator precedence between logical operators (`&&` and `||`) and
-semantic operators (`and` and `or`).
+=== Safety
+
+Auto-correction is unsafe because there is a different operator precedence
+between logical operators (`&&` and `||`) and semantic operators (`and` and `or`),
+and that might change the behaviour.
 
 === Examples
 
@@ -302,7 +304,7 @@ end
 NOTE: Required Ruby version: 2.7
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -344,6 +346,10 @@ end
 def foo(*args)
   bar(*args)
 end
+
+def foo(**kwargs)
+  bar(**kwargs)
+end
 ----
 
 ==== AllowOnlyRestArgument: false
@@ -355,6 +361,10 @@ end
 # but it will change the behavior. Because `...` forwards block also.
 def foo(*args)
   bar(*args)
+end
+
+def foo(**kwargs)
+  bar(**kwargs)
 end
 ----
 
@@ -375,7 +385,7 @@ end
 == Style/ArrayCoercion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | No
@@ -386,9 +396,28 @@ end
 
 This cop enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
 
-This cop is disabled by default because false positive will occur if
-the argument of `Array()` is not an array (e.g. Hash, Set),
-an array will be returned as an incompatibility result.
+The cop is disabled by default due to safety concerns.
+
+=== Safety
+
+This cop is unsafe because a false positive may occur if
+the argument of `Array()` is (or could be) nil or depending
+on how the argument is handled by `Array()` (which can be
+different than just wrapping the argument in an array).
+
+For example:
+
+[source,ruby]
+----
+[nil]             #=> [nil]
+Array(nil)        #=> []
+
+[{a: 'b'}]        #= [{a: 'b'}]
+Array({a: 'b'})   #=> [[:a, 'b']]
+
+[Time.now]        #=> [#<Time ...>]
+Array(Time.now)   #=> [14, 16, 14, 16, 9, 2021, 4, 259, true, "EDT"]
+----
 
 === Examples
 
@@ -412,7 +441,7 @@ Array(paths).each { |path| do_something(path) }
 == Style/ArrayJoin
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -445,7 +474,7 @@ array literal or the second is a string literal.
 == Style/AsciiComments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -486,7 +515,7 @@ in comments. You could set an array of allowed non-ascii chars in
 == Style/Attr
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -517,7 +546,7 @@ attr_reader :one, :two, :three
 == Style/AutoResourceCleanup
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -546,7 +575,7 @@ end
 == Style/BarePercentLiterals
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -602,7 +631,7 @@ This cop checks if usage of %() or %Q() matches configuration.
 == Style/BeginBlock
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -628,7 +657,7 @@ BEGIN { test }
 == Style/BisectedAttrAccessor
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -659,7 +688,7 @@ end
 == Style/BlockComments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -692,7 +721,7 @@ of comments...
 == Style/BlockDelimiters
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -907,7 +936,7 @@ end
 == Style/CaseEquality
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -968,7 +997,7 @@ Array === something
 == Style/CaseLikeIf
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -979,6 +1008,12 @@ Array === something
 
 This cop identifies places where `if-elsif` constructions
 can be replaced with `case-when`.
+
+=== Safety
+
+This cop is unsafe. `case` statements use `===` for equality,
+so if the original conditional used a different equality operator, the
+behaviour may be different.
 
 === Examples
 
@@ -1011,7 +1046,7 @@ end
 == Style/CharacterLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1043,7 +1078,7 @@ Checks for uses of the character literal ?x.
 == Style/ClassAndModuleChildren
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1056,6 +1091,16 @@ This cop checks the style of children definitions at classes and
 modules. Basically there are two different styles:
 
 The compact style is only forced for classes/modules with one child.
+
+=== Safety
+
+Autocorrection is unsafe.
+
+Moving from compact to nested children requires knowledge of whether the
+outer parent is a module or a class. Moving from nested to compact requires
+verification that the outer parent is defined elsewhere. Rubocop does not
+have the knowledge to perform either operation safely and thus requires
+manual oversight.
 
 === Examples
 
@@ -1098,7 +1143,7 @@ end
 == Style/ClassCheck
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1154,7 +1199,7 @@ var.kind_of?(String)
 == Style/ClassEqualityComparison
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1197,7 +1242,7 @@ var.instance_of?(Date)
 == Style/ClassMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1235,7 +1280,7 @@ end
 == Style/ClassMethodsDefinitions
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -1326,7 +1371,7 @@ end
 == Style/ClassVars
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1388,7 +1433,7 @@ end
 == Style/CollectionCompact
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | No
@@ -1400,8 +1445,11 @@ end
 This cop checks for places where custom logic on rejection nils from arrays
 and hashes can be replaced with `{Array,Hash}#{compact,compact!}`.
 
-It is marked as unsafe by default because false positives may occur in the
-nil check of block arguments to the receiver object.
+=== Safety
+
+It is unsafe by default because false positives may occur in the
+`nil` check of block arguments to the receiver object.
+
 For example, `[[1, 2], [3, nil]].reject { |first, second| second.nil? }`
 and `[[1, 2], [3, nil]].compact` are not compatible. This will work fine
 when the receiver is a hash object.
@@ -1428,7 +1476,7 @@ hash.compact!
 == Style/CollectionMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | No
@@ -1440,10 +1488,6 @@ hash.compact!
 This cop enforces the use of consistent method names
 from the Enumerable module.
 
-Unfortunately we cannot actually know if a method is from
-Enumerable or not (static analysis limitation), so this cop
-can yield some false positives.
-
 You can customize the mapping from undesired method to desired method.
 
 e.g. to use `detect` over `find`:
@@ -1452,12 +1496,18 @@ e.g. to use `detect` over `find`:
     PreferredMethods:
       find: detect
 
-The default mapping for `PreferredMethods` behaves as follows.
+=== Safety
+
+This cop is unsafe because it finds methods by name, without actually
+being able to determine if the receiver is an Enumerable or not, so
+this cop may register false positives.
 
 === Examples
 
 [source,ruby]
 ----
+# These examples are based on the default mapping for `PreferredMethods`.
+
 # bad
 items.collect
 items.collect!
@@ -1496,7 +1546,7 @@ items.include?
 == Style/ColonMethodCall
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1530,7 +1580,7 @@ Marshal.dump(obj)
 == Style/ColonMethodDefinition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1566,7 +1616,7 @@ end
 == Style/CombinableLoops
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -1579,8 +1629,10 @@ This cop checks for places where multiple consecutive loops over the same data
 can be combined into a single loop. It is very likely that combining them
 will make the code more efficient and more concise.
 
-It is marked as unsafe, because the first loop might modify
-a state that the second loop depends on; these two aren't combinable.
+=== Safety
+
+The cop is unsafe, because the first loop might modify state that the
+second loop depends on; these two aren't combinable.
 
 === Examples
 
@@ -1634,7 +1686,7 @@ end
 == Style/CommandLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1759,7 +1811,7 @@ folders = %x(find . -type d).split
 == Style/CommentAnnotation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1855,7 +1907,7 @@ annotation.
 == Style/CommentedKeyword
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1873,7 +1925,11 @@ are allowed.
 
 Auto-correction removes comments from `end` keyword and keeps comments
 for `class`, `module`, `def` and `begin` above the keyword.
-It is marked as unsafe auto-correction as it may remove meaningful comments.
+
+=== Safety
+
+Auto-correction is unsafe because it may remove a comment that is
+meaningful.
 
 === Examples
 
@@ -1906,7 +1962,7 @@ end
 == Style/ConditionalAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2040,7 +2096,7 @@ end
 == Style/ConstantVisibility
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2114,7 +2170,7 @@ end
 == Style/Copyright
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2152,7 +2208,7 @@ an offense is reported.
 == Style/DateTime
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2166,6 +2222,12 @@ This cop checks for consistent usage of the `DateTime` class over the
 although highly overlapping, have particularities that make them not
 replaceable in certain situations when dealing with multiple timezones
 and/or DST.
+
+=== Safety
+
+Autocorrection is not safe, because `DateTime` and `Time` do not have
+exactly the same behaviour, although in most cases the autocorrection
+will be fine.
 
 === Examples
 
@@ -2226,7 +2288,7 @@ something.to_time
 == Style/DefWithParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2277,7 +2339,7 @@ end
 == Style/Dir
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2307,7 +2369,7 @@ path = __dir__
 == Style/DisableCopsWithinSourceCodeDirective
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2362,7 +2424,7 @@ end
 == Style/DocumentDynamicEvalDefinition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -2454,7 +2516,7 @@ class_eval("def #{unsafe_method}!(*params); end # def capitalize!(*params); end"
 == Style/Documentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2553,7 +2615,7 @@ module A
 == Style/DocumentationMethod
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2678,7 +2740,7 @@ end
 == Style/DoubleCopDisableDirective
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2712,7 +2774,7 @@ end
 == Style/DoubleNegation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2727,10 +2789,21 @@ When using `EnforcedStyle: allowed_in_returns`, allow double negation in context
 that use boolean as a return value. When using `EnforcedStyle: forbidden`, double negation
 should be forbidden always.
 
-Please, note that when something is a boolean value
-!!something and !something.nil? are not the same thing.
+NOTE: when `something` is a boolean value
+`!!something` and `!something.nil?` are not the same thing.
 As you're unlikely to write code that can accept values of any type
 this is rarely a problem in practice.
+
+=== Safety
+
+Autocorrection is unsafe when the value is `false`, because the result
+of the expression will change.
+
+[source,ruby]
+----
+!!false     #=> false
+!false.nil? #=> true
+----
 
 === Examples
 
@@ -2780,7 +2853,7 @@ end
 == Style/EachForSimpleLoop
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2818,7 +2891,7 @@ This check only applies if the block takes no parameters.
 == Style/EachWithObject
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2848,7 +2921,7 @@ parameter is assigned to within the block.
 == Style/EmptyBlockParameter
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2883,7 +2956,7 @@ a { do_something }
 == Style/EmptyCaseCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2931,7 +3004,7 @@ end
 == Style/EmptyElse
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3054,7 +3127,7 @@ end
 == Style/EmptyLambdaParameter
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3084,7 +3157,7 @@ redundant.
 == Style/EmptyLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3118,7 +3191,7 @@ s = ''
 == Style/EmptyMethod
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3192,7 +3265,7 @@ end
 == Style/Encoding
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3220,7 +3293,7 @@ This cop checks ensures source files have no utf-8 encoding comments.
 == Style/EndBlock
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3251,7 +3324,7 @@ at_exit { puts 'Goodbye!' }
 NOTE: Required Ruby version: 3.0
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -3334,7 +3407,7 @@ def my_method() = x.foo
 == Style/EvalWithLocation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3402,7 +3475,7 @@ eval code
 == Style/EvenOdd
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3434,7 +3507,7 @@ end
 == Style/ExpandPathArguments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3487,7 +3560,7 @@ Pathname.new(__dir__).expand_path
 == Style/ExplicitBlockArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3542,7 +3615,7 @@ end
 == Style/ExponentialNotation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3636,7 +3709,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 == Style/FloatDivision
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -3649,8 +3722,17 @@ This cop checks for division with integers coerced to floats.
 It is recommended to either always use `fdiv` or coerce one side only.
 This cop also provides other options for code consistency.
 
-This cop is marked as unsafe, because if operand variable is a string object
+=== Safety
+
+This cop is unsafe, because if the operand variable is a string object
 then `.to_f` will be removed and an error will occur.
+
+[source,ruby]
+----
+a = '1.2'
+b = '3.4'
+a.to_f / b.to_f # Both `to_f` calls are required here
+----
 
 === Examples
 
@@ -3721,7 +3803,7 @@ a.fdiv(b)
 == Style/For
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3792,7 +3874,7 @@ end
 == Style/FormatString
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3864,7 +3946,7 @@ puts '%10s' % 'hoge'
 == Style/FormatStringToken
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3977,7 +4059,7 @@ redirect('foo/%{bar_id}')
 == Style/FrozenStringLiteralComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3993,11 +4075,17 @@ of files to enable frozen string literals. Frozen string literals may be
 default in future Ruby. The comment will be added below a shebang and
 encoding comment.
 
-Note that the cop will ignore files where the comment exists but is set
+Note that the cop will accept files where the comment exists but is set
 to `false` instead of `true`.
 
 To require a blank line after this comment, please see
 `Layout/EmptyLineAfterMagicComment` cop.
+
+=== Safety
+
+This cop's autocorrection is unsafe since any strings mutations will
+change from being accepted to raising `FrozenError`, as all strings
+will become frozen by default, and will need to be manually refactored.
 
 === Examples
 
@@ -4087,7 +4175,7 @@ end
 == Style/GlobalStdStream
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4100,6 +4188,11 @@ This cop enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/
 `STDOUT/STDERR/STDIN` are constants, and while you can actually
 reassign (possibly to redirect some stream) constants in Ruby, you'll get
 an interpreter warning if you do so.
+
+=== Safety
+
+Autocorrection is unsafe because `STDOUT` and `$stdout` may point to different
+objects, for example.
 
 === Examples
 
@@ -4131,7 +4224,7 @@ end
 == Style/GlobalVars
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4179,7 +4272,7 @@ $stdin.read
 == Style/GuardClause
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4254,7 +4347,7 @@ ok
 == Style/HashAsLastArrayItem
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4316,7 +4409,7 @@ EnforcedStyle.
 == Style/HashConversion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -4382,7 +4475,7 @@ Hash[*ary]
 == Style/HashEachMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -4396,6 +4489,12 @@ This cop checks for uses of `each_key` and `each_value` Hash methods.
 NOTE: If you have an array of two-element arrays, you can put
   parentheses around the block arguments to indicate that you're not
   working with a hash, and suppress RuboCop offenses.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is a `Hash`. The `AllowedReceivers` configuration can mitigate,
+but not fully resolve, this safety issue.
 
 === Examples
 
@@ -4438,7 +4537,7 @@ execute(sql).values.each { |v| p v }
 NOTE: Required Ruby version: 3.0
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -4473,7 +4572,7 @@ And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
 == Style/HashLikeCase
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4538,7 +4637,7 @@ end
 == Style/HashSyntax
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4642,7 +4741,7 @@ syntax hashes
 == Style/HashTransformKeys
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -4656,12 +4755,11 @@ This cop looks for uses of `_.each_with_object({}) {...}`,
 transforming the keys of a hash, and tries to use a simpler & faster
 call to `transform_keys` instead.
 
-This can produce false positives if we are transforming an enumerable
-of key-value-like pairs that isn't actually a hash, e.g.:
-`[[k1, v1], [k2, v2], ...]`
+=== Safety
 
-This cop should only be enabled on Ruby version 2.5 or newer
-(`transform_keys` was added in Ruby 2.5.)
+This cop is unsafe, as it can produce false positives if we are
+transforming an enumerable of key-value-like pairs that isn't actually
+a hash, e.g.: `[[k1, v1], [k2, v2], ...]`
 
 === Examples
 
@@ -4681,7 +4779,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
 == Style/HashTransformValues
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -4695,12 +4793,11 @@ This cop looks for uses of `_.each_with_object({}) {...}`,
 transforming the values of a hash, and tries to use a simpler & faster
 call to `transform_values` instead.
 
-This can produce false positives if we are transforming an enumerable
-of key-value-like pairs that isn't actually a hash, e.g.:
-`[[k1, v1], [k2, v2], ...]`
+=== Safety
 
-This cop should only be enabled on Ruby version 2.4 or newer
-(`transform_values` was added in Ruby 2.4.)
+This cop is unsafe, as it can produce false positives if we are
+transforming an enumerable of key-value-like pairs that isn't actually
+a hash, e.g.: `[[k1, v1], [k2, v2], ...]`
 
 === Examples
 
@@ -4720,7 +4817,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
 == Style/IdenticalConditionalBranches
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4733,8 +4830,14 @@ This cop checks for identical expressions at the beginning or end of
 each branch of a conditional expression. Such expressions should normally
 be placed outside the conditional expression - before or after it.
 
-This cop is marked unsafe auto-correction as the order of method invocations
-must be guaranteed in the following case:
+NOTE: The cop is poorly named and some people might think that it actually
+checks for duplicated conditional branches. The name will probably be changed
+in a future major RuboCop release.
+
+=== Safety
+
+Auto-correction is unsafe because changing the order of method invocations
+may change the behaviour of the code. For example:
 
 [source,ruby]
 ----
@@ -4747,11 +4850,8 @@ else
 end
 ----
 
-In such a case, auto-correction may change the invocation order.
-
-NOTE: The cop is poorly named and some people might think that it actually
-checks for duplicated conditional branches. The name will probably be changed
-in a future major RuboCop release.
+In this example, `method_that_relies_on_global_state` will be moved before
+`method_that_modifies_global_state`, which changes the behaviour of the program.
 
 === Examples
 
@@ -4839,7 +4939,7 @@ end
 == Style/IfInsideElse
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4928,7 +5028,7 @@ end
 == Style/IfUnlessModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4980,7 +5080,7 @@ end
 == Style/IfUnlessModifierOfIfUnless
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5015,7 +5115,7 @@ end
 == Style/IfWithBooleanLiteralBranches
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5027,8 +5127,11 @@ end
 This cop checks for redundant `if` with boolean literal branches.
 It checks only conditions to return boolean value (`true` or `false`) for safe detection.
 The conditions to be checked are comparison methods, predicate methods, and double negative.
-However, auto-correction is unsafe because there is no guarantee that all predicate methods
-will return boolean value. Those methods can be allowed with `AllowedMethods` config.
+
+=== Safety
+
+Auto-correction is unsafe because there is no guarantee that all predicate methods
+will return a boolean value. Those methods can be allowed with `AllowedMethods` config.
 
 === Examples
 
@@ -5046,6 +5149,19 @@ foo == bar ? true : false
 
 # good
 foo == bar
+----
+
+[source,ruby]
+----
+# bad
+if foo.do_something?
+  true
+else
+  false
+end
+
+# good (but potentially an unsafe correction)
+foo.do_something?
 ----
 
 ==== AllowedMethods: ['nonzero?']
@@ -5069,7 +5185,7 @@ num.nonzero? ? true : false
 == Style/IfWithSemicolon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5098,7 +5214,7 @@ result = some_condition ? something : another_thing
 == Style/ImplicitRuntimeError
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5128,7 +5244,7 @@ raise ArgumentError, 'Error message here'
 NOTE: Required Ruby version: 2.7
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5163,7 +5279,7 @@ end
 == Style/InfiniteLoop
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -5174,9 +5290,11 @@ end
 
 Use `Kernel#loop` for infinite loops.
 
-This cop is marked as unsafe as the rule does not necessarily
-apply if the body might raise a `StopIteration` exception; contrary to
-other infinite loops, `Kernel#loop` silently rescues that and returns `nil`.
+=== Safety
+
+This cop is unsafe as the rule should not necessarily apply if the loop
+body might raise a `StopIteration` exception; contrary to other infinite
+loops, `Kernel#loop` silently rescues that and returns `nil`.
 
 === Examples
 
@@ -5200,7 +5318,7 @@ end
 == Style/InlineComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5230,7 +5348,7 @@ end
 == Style/InverseMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -5241,11 +5359,19 @@ end
 
 This cop check for usages of not (`not` or `!`) called on a method
 when an inverse of that method can be used instead.
+
 Methods that can be inverted by a not (`not` or `!`) should be defined
-in `InverseMethods`
+in `InverseMethods`.
+
 Methods that are inverted by inverting the return
 of the block that is passed to the method should be defined in
-`InverseBlocks`
+`InverseBlocks`.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the method
+and its inverse method are both defined on receiver, and also are
+actually inverse of each other.
 
 === Examples
 
@@ -5291,7 +5417,7 @@ end
 == Style/IpAddresses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5334,7 +5460,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 == Style/KeywordParametersOrder
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5382,7 +5508,7 @@ end
 == Style/Lambda
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5466,7 +5592,7 @@ f = ->(x) do
 == Style/LambdaCall
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5518,7 +5644,7 @@ lambda.(x, y)
 == Style/LineEndConcatenation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5529,6 +5655,20 @@ lambda.(x, y)
 
 This cop checks for string literal concatenation at
 the end of a line.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the
+receiver is a string, in which case replacing `<<` with `\`
+would result in a syntax error.
+
+For example, this would be a false positive:
+[source,ruby]
+----
+array << 'foo' <<
+         'bar' <<
+         'baz'
+----
 
 === Examples
 
@@ -5549,7 +5689,7 @@ some_str = 'ala' \
 == Style/MethodCallWithArgsParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5833,7 +5973,7 @@ Array 1
 == Style/MethodCallWithoutArgsParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5872,7 +6012,7 @@ object.some_method
 == Style/MethodCalledOnDoEndBlock
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5911,7 +6051,7 @@ foo.c
 == Style/MethodDefParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6036,7 +6176,7 @@ end
 == Style/MinMax
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6063,7 +6203,7 @@ return foo.minmax
 == Style/MissingElse
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -6193,7 +6333,7 @@ end
 == Style/MissingRespondToMissing
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6231,7 +6371,7 @@ end
 == Style/MixinGrouping
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6295,7 +6435,7 @@ end
 == Style/MixinUsage
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6349,7 +6489,7 @@ end
 == Style/ModuleFunction
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6361,15 +6501,15 @@ end
 This cop checks for use of `extend self` or `module_function` in a
 module.
 
-Supported styles are: module_function, extend_self, forbidden.
+Supported styles are: module_function, extend_self, forbidden. `forbidden`
+style prohibits the usage of both styles.
 
-In case there are private methods, the cop won't be activated.
-Otherwise, it forces to change the flow of the default code.
+NOTE: the cop won't be activated when the module contains any private methods.
 
-The option `forbidden` prohibits the usage of both styles.
+=== Safety
 
-These offenses are not safe to auto-correct since there are different
-implications to each approach.
+Autocorrection is unsafe (and is disabled by default) because `extend self`
+and `module_function` do not behave exactly the same.
 
 === Examples
 
@@ -6466,7 +6606,7 @@ end
 == Style/MultilineBlockChain
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6505,7 +6645,7 @@ end
 == Style/MultilineIfModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6536,7 +6676,7 @@ Checks for uses of if/unless modifiers with multiple-lines bodies.
 == Style/MultilineIfThen
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6572,7 +6712,7 @@ end
 NOTE: Required Ruby version: 2.7
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -6616,7 +6756,7 @@ end
 == Style/MultilineMemoization
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6676,7 +6816,7 @@ foo ||= (
 == Style/MultilineMethodSignature
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -6706,7 +6846,7 @@ end
 == Style/MultilineTernaryOperator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6749,7 +6889,7 @@ end
 == Style/MultilineWhenThen
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6794,7 +6934,7 @@ end
 == Style/MultipleComparison
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6866,7 +7006,7 @@ foo if [b.lightweight, b.heavyweight].include?(a)
 == Style/MutableConstant
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6893,12 +7033,18 @@ raised by this cop. It enforces frozen state.
 
 NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
 
-NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated
-string literals when `# frozen-string-literal: true` is used.
+NOTE: From Ruby 3.0, interpolated strings are not frozen when
+`# frozen-string-literal: true` is used, so this cop enforces explicit
+freezing for such strings.
 
-NOTE: This special directive helps to create constants
-that hold only immutable objects, or Ractor-shareable
-constants. - ruby docs
+NOTE: From Ruby 3.0, this cop allows explicit freezing of constants when
+the `shareable_constant_value` directive is used.
+
+=== Safety
+
+This cop's autocorrection is unsafe since any mutations on objects that
+are made frozen will change from being accepted to raising `FrozenError`,
+and will need to be manually refactored.
 
 === Examples
 
@@ -6971,7 +7117,7 @@ CONST = [1, 2, 3]
 == Style/NegatedIf
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7077,7 +7223,7 @@ end
 == Style/NegatedIfElseCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -7117,7 +7263,7 @@ x ? do_something_else : do_something
 == Style/NegatedUnless
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7213,7 +7359,7 @@ end
 == Style/NegatedWhile
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7253,7 +7399,7 @@ bar while !foo && baz
 == Style/NestedModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7283,7 +7429,7 @@ something if b && a
 == Style/NestedParenthesizedCalls
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7319,7 +7465,7 @@ method1(method2 arg)
 == Style/NestedTernaryOperator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7352,7 +7498,7 @@ end
 == Style/Next
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7436,7 +7582,7 @@ end
 == Style/NilComparison
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7495,7 +7641,7 @@ end
 == Style/NilLambda
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -7540,7 +7686,7 @@ Proc.new { nil if x }
 == Style/NonNilCheck
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7616,7 +7762,7 @@ end
 == Style/Not
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7642,10 +7788,109 @@ x = !something
 
 * https://rubystyle.guide#bang-not-not
 
+== Style/NumberedParameters
+
+NOTE: Required Ruby version: 2.7
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.22
+| -
+|===
+
+This cop checks for numbered parameters.
+
+It can either restrict the use of numbered parameters to
+single-lined blocks, or disallow completely numbered parameters.
+
+=== Examples
+
+==== EnforcedStyle: allow_single_line (default)
+
+[source,ruby]
+----
+# bad
+collection.each do
+  puts _1
+end
+
+# good
+collection.each { puts _1 }
+----
+
+==== EnforcedStyle: disallow
+
+[source,ruby]
+----
+# bad
+collection.each { puts _1 }
+
+# good
+collection.each { |item| puts item }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `allow_single_line`
+| `allow_single_line`, `disallow`
+|===
+
+== Style/NumberedParametersLimit
+
+NOTE: Required Ruby version: 2.7
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.22
+| -
+|===
+
+This cop detects use of an excessive amount of numbered parameters in a
+single block. Having too many numbered parameters can make code too
+cryptic and hard to read.
+
+The cop defaults to registering an offense if there is more than 1 numbered
+parameter but this maximum can be configured by setting `Max`.
+
+=== Examples
+
+==== Max: 1 (default)
+
+[source,ruby]
+----
+# bad
+foo { _1.call(_2, _3, _4) }
+
+# good
+foo { do_something(_1) }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Max
+| `1`
+| Integer
+|===
+
 == Style/NumericLiteralPrefix
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7712,7 +7957,7 @@ num = 01234
 == Style/NumericLiterals
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7775,7 +8020,7 @@ of digits in them.
 == Style/NumericPredicate
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -7796,6 +8041,12 @@ but not `true` and `false`, and thus not always interchangeable with
 The cop ignores comparisons to global variables, since they are often
 populated with objects which can be compared with integers, but are
 not themselves `Integer` polymorphic.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+defines the predicates or can be compared to a number, which may lead
+to a false positive for non-standard classes.
 
 === Examples
 
@@ -7858,7 +8109,7 @@ bar.baz > 0
 == Style/OneLineConditional
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -7916,7 +8167,7 @@ end
 == Style/OptionHash
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -7961,7 +8212,7 @@ end
 == Style/OptionalArguments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -7972,6 +8223,11 @@ end
 
 This cop checks for optional arguments to methods
 that do not come at the end of the argument list.
+
+=== Safety
+
+This cop is unsafe because changing a method signature will
+implicitly change behaviour.
 
 === Examples
 
@@ -7996,7 +8252,7 @@ end
 == Style/OptionalBooleanParameter
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -8008,6 +8264,11 @@ end
 This cop checks for places where keyword arguments can be used instead of
 boolean arguments when defining methods. `respond_to_missing?` method is allowed by default.
 These are customizable with `AllowedMethods` option.
+
+=== Safety
+
+This cop is unsafe because changing a method signature will
+implicitly change behaviour.
 
 === Examples
 
@@ -8057,7 +8318,7 @@ end
 == Style/OrAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8101,7 +8362,7 @@ name ||= 'Bozhidar'
 == Style/ParallelAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8139,7 +8400,7 @@ c = 3
 == Style/ParenthesesAroundCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8239,7 +8500,7 @@ end
 == Style/PercentLiteralDelimiters
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8290,7 +8551,7 @@ default.
 == Style/PercentQLiterals
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8345,7 +8606,7 @@ This cop checks for usage of the %Q() syntax when %q() would do.
 == Style/PerlBackrefs
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8376,7 +8637,7 @@ puts Regexp.last_match(1)
 == Style/PreferredHashMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -8385,10 +8646,16 @@ puts Regexp.last_match(1)
 | 0.70
 |===
 
-This cop (by default) checks for uses of methods Hash#has_key? and
-Hash#has_value? where it enforces Hash#key? and Hash#value?
-It is configurable to enforce the inverse, using `verbose` method
-names also.
+This cop checks for uses of methods `Hash#has_key?` and
+`Hash#has_value?`, and suggests using `Hash#key?` and `Hash#value?` instead.
+
+It is configurable to enforce the verbose method names, by using the
+`EnforcedStyle: verbose` configuration.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is a `Hash` or responds to the replacement methods.
 
 === Examples
 
@@ -8435,7 +8702,7 @@ Hash#has_value?
 == Style/Proc
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8465,7 +8732,7 @@ p = proc { |n| puts n }
 == Style/QuotedSymbols
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -8524,7 +8791,7 @@ style to use for symbols that require quotes.
 == Style/RaiseArgs
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8603,7 +8870,7 @@ fail 'message'
 == Style/RandomWithOffset
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8644,7 +8911,7 @@ rand(1...7)
 == Style/RedundantArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | No
@@ -8655,22 +8922,30 @@ rand(1...7)
 
 This cop checks for a redundant argument passed to certain methods.
 
-Limitations:
-
-1. This cop matches for method names only and hence cannot tell apart
-   methods with same name in different classes.
-2. This cop is limited to methods with single parameter.
-3. This cop is unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
-   That depends on the nature of the target methods, of course.
+NOTE: This cop is limited to methods with single parameter.
 
 Method names and their redundant arguments can be configured like this:
 
+[source,yaml]
+----
 Methods:
   join: ''
   split: ' '
   chomp: "\n"
   chomp!: "\n"
   foo: 2
+----
+
+=== Safety
+
+This cop is unsafe because of the following limitations:
+
+1. This cop matches by method names only and hence cannot tell apart
+   methods with same name in different classes.
+2. This cop may be unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
+   That depends on the nature of the target methods, of course. For example, the default
+   argument to join is `$OUTPUT_FIELD_SEPARATOR` (or `$,`) rather than `''`, and if that
+   global is changed, `''` is no longer a redundant argument.
 
 === Examples
 
@@ -8708,7 +8983,7 @@ A.foo
 == Style/RedundantAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8758,7 +9033,7 @@ end
 == Style/RedundantBegin
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8836,7 +9111,7 @@ end
 == Style/RedundantCapitalW
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8864,7 +9139,7 @@ This cop checks for usage of the %W() syntax when %w() would do.
 == Style/RedundantCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8909,7 +9184,7 @@ end
 == Style/RedundantConditional
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8947,7 +9222,7 @@ x != y
 == Style/RedundantException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -8981,7 +9256,7 @@ raise 'message'
 == Style/RedundantFetchBlock
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -8995,6 +9270,11 @@ can be replaced by `fetch(key, value)`.
 
 In such cases `fetch(key, value)` method is faster
 than `fetch(key) { value }`.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+does not have a different implementation of `fetch`.
 
 === Examples
 
@@ -9045,7 +9325,7 @@ ENV.fetch(:key, VALUE)
 == Style/RedundantFileExtensionInRequire
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9086,7 +9366,7 @@ require_relative '../foo.so'
 == Style/RedundantFreeze
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9116,7 +9396,7 @@ CONST = 1
 == Style/RedundantInterpolation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9144,7 +9424,7 @@ This cop checks for strings that are just an interpolated expression.
 == Style/RedundantParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9169,7 +9449,7 @@ x if y.z.nil?
 == Style/RedundantPercentQ
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9202,7 +9482,7 @@ question = '"What did you say?"'
 == Style/RedundantRegexpCharacterClass
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9242,7 +9522,7 @@ r = /[ab]/
 == Style/RedundantRegexpEscape
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9288,7 +9568,7 @@ This cop checks for redundant escapes inside Regexp literals.
 == Style/RedundantReturn
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9370,7 +9650,7 @@ end
 == Style/RedundantSelf
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9428,7 +9708,7 @@ end
 == Style/RedundantSelfAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -9440,7 +9720,9 @@ end
 This cop checks for places where redundant assignments are made for in place
 modification methods.
 
-This cop is marked as unsafe, because it can produce false positives for
+=== Safety
+
+This cop is unsafe, because it can produce false positives for
 user defined methods having one of the expected names, but not modifying
 its receiver in place.
 
@@ -9468,7 +9750,7 @@ self.foo += ary
 == Style/RedundantSelfAssignmentBranch
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -9502,13 +9784,13 @@ foo = bar unless condition
 == Style/RedundantSort
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
-| Yes
-| Yes
+| No
+| Yes (Unsafe)
 | 0.76
-| -
+| 1.22
 |===
 
 This cop is used to identify instances of sorting and then
@@ -9519,6 +9801,34 @@ element and `Enumerable#max` instead of sorting and taking the
 last element. Similarly, `Enumerable#min_by` and
 `Enumerable#max_by` can replace `Enumerable#sort_by` calls
 after which only the first or last element is used.
+
+=== Safety
+
+This cop is unsafe, because `sort...last` and `max` may not return the
+same element in all cases.
+
+In an enumerable where there are multiple elements where `a <=> b == 0`,
+or where the transformation done by the `sort_by` block has the
+same result, `sort.last` and `max` (or `sort_by.last` and `max_by`)
+will return different elements. `sort.last` will return the last
+element but `max` will return the first element.
+
+For example:
+
+[source,ruby]
+----
+  class MyString < String; end
+  strings = [MyString.new('test'), 'test']
+  strings.sort.last.class   #=> String
+  strings.max.class         #=> MyString
+----
+
+[source,ruby]
+----
+  words = %w(dog horse mouse)
+  words.sort_by { |word| word.length }.last   #=> 'mouse'
+  words.max_by { |word| word.length }         #=> 'horse'
+----
 
 === Examples
 
@@ -9564,7 +9874,7 @@ arr.max_by(&:foo)
 == Style/RedundantSortBy
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9593,7 +9903,7 @@ array.sort
 == Style/RegexpLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9724,7 +10034,7 @@ x =~ /home\//
 == Style/RescueModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9781,7 +10091,7 @@ end
 == Style/RescueStandardError
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9881,7 +10191,7 @@ end
 == Style/ReturnNil
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -9939,7 +10249,7 @@ end
 == Style/SafeNavigation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -9955,13 +10265,25 @@ in the chain need to be checked for safety, and all of the methods will
 need to be changed to use safe navigation. We have limited the cop to
 not register an offense for method chains that exceed 2 methods.
 
-Configuration option: ConvertCodeThatCanStartToReturnNil
-The default for this is `false`. When configured to `true`, this will
+The default for `ConvertCodeThatCanStartToReturnNil` is `false`.
+When configured to `true`, this will
 check for code in the format `!foo.nil? && foo.bar`. As it is written,
 the return of this code is limited to `false` and whatever the return
 of the method is. If this is converted to safe navigation,
 `foo&.bar` can start returning `nil` as well as what the method
 returns.
+
+=== Safety
+
+Autocorrection is unsafe because if a value is `false`, the resulting
+code will have different behaviour or raise an error.
+
+[source,ruby]
+----
+x = false
+x && x.foo  # return false
+x&.foo      # raises NoMethodError
+----
 
 === Examples
 
@@ -10029,7 +10351,7 @@ foo.bar > 2 if foo
 == Style/Sample
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10071,10 +10393,57 @@ This cop is used to identify usages of `shuffle.first`,
 
 * https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code
 
+== Style/SelectByRegexp
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.22
+| -
+|===
+
+This cop looks for places where an subset of an array
+is calculated based on a `Regexp` match, and suggests `grep` or
+`grep_v` instead.
+
+NOTE: `grep` and `grep_v` were optimized when used without a block
+in Ruby 3.0, but may be slower in previous versions.
+See https://bugs.ruby-lang.org/issues/17030
+
+=== Safety
+
+Autocorrection is marked as unsafe because `MatchData` will
+not be created by `grep`, but may have previously been relied
+upon after the `match?` or `=~` call.
+
+=== Examples
+
+[source,ruby]
+----
+# bad (select or find_all)
+array.select { |x| x.match? /regexp/ }
+array.select { |x| /regexp/.match?(x) }
+array.select { |x| x =~ /regexp/ }
+array.select { |x| /regexp/ =~ x }
+
+# bad (reject)
+array.reject { |x| x.match? /regexp/ }
+array.reject { |x| /regexp/.match?(x) }
+array.reject { |x| x =~ /regexp/ }
+array.reject { |x| /regexp/ =~ x }
+
+# good
+array.grep(regexp)
+array.grep_v(regexp)
+----
+
 == Style/SelfAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10103,7 +10472,7 @@ x += 1
 == Style/Semicolon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10165,7 +10534,7 @@ foo = 1; bar = 2
 == Style/Send
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -10196,7 +10565,7 @@ quuz.public_send(:fred)
 == Style/SignalException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10338,7 +10707,7 @@ explicit_receiver.raise
 == Style/SingleArgumentDig
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -10349,6 +10718,12 @@ explicit_receiver.raise
 
 Sometimes using dig method ends up with just a single
 argument. In such cases, dig should be replaced with [].
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is an `Enumerable` or does not have a nonstandard implementation
+of `dig`.
 
 === Examples
 
@@ -10374,7 +10749,7 @@ keys = %i[key1 key2]
 == Style/SingleLineBlockParams
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -10428,7 +10803,7 @@ end
 == Style/SingleLineMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10496,7 +10871,7 @@ def no_op; end
 NOTE: Required Ruby version: 2.6
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -10507,6 +10882,20 @@ NOTE: Required Ruby version: 2.6
 
 This cop checks that arrays are sliced with endless ranges instead of
 `ary[start..-1]` on Ruby 2.6+.
+
+=== Safety
+
+This cop is unsafe because `x..-1` and `x..` are only guaranteed to
+be equivalent for `Array#[]`, and the cop cannot determine what class
+the receiver is.
+
+For example:
+[source,ruby]
+----
+sum = proc { |ary| ary.sum }
+sum[-3..-1] # => -6
+sum[-3..] # Hangs forever
+----
 
 === Examples
 
@@ -10522,7 +10911,7 @@ items[1..]
 == Style/SoleNestedConditional
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10585,7 +10974,7 @@ end
 == Style/SpecialGlobalVars
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10598,6 +10987,11 @@ This cop looks for uses of Perl-style global variables.
 Correcting to global variables in the 'English' library
 will add a require statement to the top of the file if
 enabled by RequireEnglish config.
+
+=== Safety
+
+Autocorrection is marked as unsafe because if `RequireEnglish` is not
+true, replacing perl-style variables with english variables will break.
 
 === Examples
 
@@ -10674,7 +11068,7 @@ puts $*
 == Style/StabbyLambdaParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10727,7 +11121,7 @@ There are two different styles. Defaults to `require_parentheses`.
 == Style/StaticClass
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | No
@@ -10740,7 +11134,9 @@ This cop checks for places where classes with only class methods can be
 replaced with a module. Classes should be used only when it makes sense to create
 instances out of them.
 
-This cop is marked as unsafe, because it is possible that this class is a parent
+=== Safety
+
+This cop is unsafe, because it is possible that this class is a parent
 for some other subclass, monkey-patched with instance methods or
 a dummy instance is instantiated from it somewhere.
 
@@ -10786,7 +11182,7 @@ end
 == Style/StderrPuts
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -10817,7 +11213,7 @@ warn('hello')
 == Style/StringChars
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | No
@@ -10828,8 +11224,11 @@ warn('hello')
 
 Checks for uses of `String#split` with empty string or regexp literal argument.
 
-This cop is marked as unsafe. But probably it's quite unlikely that some other class would
-define a `split` method that takes exactly the same arguments.
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is actually a string. If another class has a `split` method with
+different behaviour, it would be registered as a false positive.
 
 === Examples
 
@@ -10850,7 +11249,7 @@ string.chars
 == Style/StringConcatenation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -10878,6 +11277,11 @@ either the left or right side of `+` is a string literal.
 left side (receiver of `+` method call) is a string literal.
 This is useful when the receiver is some expression that returns string like `Pathname`
 instead of a string literal.
+
+=== Safety
+
+This cop is unsafe in `aggressive` mode, as it cannot be guaranteed that
+the receiver is actually a string, which can result in a false positive.
 
 === Examples
 
@@ -10929,7 +11333,7 @@ Pathname.new('/') + 'test'
 == Style/StringHashKeys
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | No
@@ -10940,6 +11344,11 @@ Pathname.new('/') + 'test'
 
 This cop checks for the use of strings as keys in hashes. The use of
 symbols is preferred instead.
+
+=== Safety
+
+This cop is unsafe because while symbols are preferred for hash keys,
+there are instances when string keys are required.
 
 === Examples
 
@@ -10959,7 +11368,7 @@ symbols is preferred instead.
 == Style/StringLiterals
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11023,7 +11432,7 @@ Checks if uses of quotes match the configured preference.
 == Style/StringLiteralsInInterpolation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11072,7 +11481,7 @@ result = "Tests #{success ? "PASS" : "FAIL"}"
 == Style/StringMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -11110,7 +11519,7 @@ from the String class.
 == Style/Strip
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11137,7 +11546,7 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 == Style/StructInheritance
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11148,8 +11557,10 @@ This cop identifies places where `lstrip.rstrip` can be replaced by
 
 This cop checks for inheritance from Struct.new.
 
-It is marked as unsafe auto-correction because it will change the
-inheritance tree (e.g. return value of `Module#ancestors`).
+=== Safety
+
+Auto-correction is unsafe because it will change the inheritance
+tree (e.g. return value of `Module#ancestors`) of the constant.
 
 === Examples
 
@@ -11177,7 +11588,7 @@ end
 == Style/SwapValues
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -11187,8 +11598,11 @@ end
 |===
 
 This cop enforces the use of shorthand-style swapping of 2 variables.
-Its autocorrection is marked as unsafe, because it can erroneously remove
-the temporary variable which is used later.
+
+=== Safety
+
+Autocorrection is unsafe, because the temporary variable used to
+swap variables will be removed, but may be referred to elsewhere.
 
 === Examples
 
@@ -11210,7 +11624,7 @@ x, y = y, x
 == Style/SymbolArray
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11275,7 +11689,7 @@ array of 2 or fewer elements.
 == Style/SymbolLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11300,7 +11714,7 @@ This cop checks symbol literal syntax.
 == Style/SymbolProc
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -11313,6 +11727,33 @@ Use symbols as procs when possible.
 
 If you prefer a style that allows block for method with arguments,
 please set `true` to `AllowMethodsWithArguments`.
+
+=== Safety
+
+This cop is unsafe because `proc`s and blocks work differently
+when additional arguments are passed in. A block will silently
+ignore additional arguments, but a `proc` will raise
+an `ArgumentError`.
+
+For example:
+
+[source,ruby]
+----
+class Foo
+  def bar
+    :bar
+  end
+end
+
+def call(options = {}, &block)
+  block.call(Foo.new, options)
+end
+
+call { |x| x.bar }
+#=> :bar
+call(&:bar)
+# ArgumentError: wrong number of arguments (given 1, expected 0)
+----
 
 === Examples
 
@@ -11362,7 +11803,7 @@ something.do_something(foo) { |o| o.bar }
 == Style/TernaryParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11461,7 +11902,7 @@ foo = (bar = baz) ? a : b
 == Style/TopLevelMethodDefinition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -11523,7 +11964,7 @@ end
 == Style/TrailingBodyOnClass
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11551,7 +11992,7 @@ end
 == Style/TrailingBodyOnMethodDefinition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11592,7 +12033,7 @@ def endless_method = do_stuff
 == Style/TrailingBodyOnModule
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11620,7 +12061,7 @@ end
 == Style/TrailingCommaInArguments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11742,7 +12183,7 @@ method(
 == Style/TrailingCommaInArrayLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -11861,7 +12302,7 @@ a = [
 == Style/TrailingCommaInBlockArgs
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | No
@@ -11874,6 +12315,26 @@ This cop checks whether trailing commas in block arguments are
 required. Blocks with only one argument and a trailing comma require
 that comma to be present. Blocks with more than one argument never
 require a trailing comma.
+
+=== Safety
+
+This cop is unsafe because a trailing comma can indicate there are
+more parameters that are not used.
+
+For example:
+[source,ruby]
+----
+# with a trailing comma
+{foo: 1, bar: 2, baz: 3}.map {|key,| key }
+#=> [:foo, :bar, :baz]
+
+# without a trailing comma
+{foo: 1, bar: 2, baz: 3}.map {|key| key }
+#=> [[:foo, 1], [:bar, 2], [:baz, 3]]
+----
+
+This can be fixed by replacing the trailing comma with a placeholder
+argument (such as `|key, _value|`).
 
 === Examples
 
@@ -11915,7 +12376,7 @@ end
 == Style/TrailingCommaInHashLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12030,7 +12491,7 @@ a = {
 == Style/TrailingMethodEndStatement
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12076,7 +12537,7 @@ end
 == Style/TrailingUnderscoreVariable
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12135,7 +12596,7 @@ a, b, _something = foo()
 == Style/TrivialAccessors
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12307,7 +12768,7 @@ end
 == Style/UnlessElse
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12344,7 +12805,7 @@ end
 == Style/UnlessLogicalOperators
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -12420,7 +12881,7 @@ return unless a?
 == Style/UnpackFirst
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12449,7 +12910,7 @@ which can be replaced with the shorter method `unpack1`.
 == Style/VariableInterpolation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12482,7 +12943,7 @@ This cop checks for variable interpolation (like "#@ivar").
 == Style/WhenThen
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12517,7 +12978,7 @@ end
 == Style/WhileUntilDo
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12563,7 +13024,7 @@ end
 == Style/WhileUntilModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12618,7 +13079,7 @@ end
 == Style/WordArray
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12696,7 +13157,7 @@ array of 2 or fewer elements.
 == Style/YodaCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -12708,6 +13169,27 @@ array of 2 or fewer elements.
 This cop can either enforce or forbid Yoda conditions,
 i.e. comparison operations where the order of expression is reversed.
 eg. `5 == x`
+
+=== Safety
+
+This cop is unsafe because comparison operators can be defined
+differently on different classes, and are not guaranteed to
+have the same result if reversed.
+
+For example:
+
+[source,ruby]
+----
+class MyKlass
+  def ==(other)
+    true
+  end
+end
+
+obj = MyKlass.new
+obj == 'string'   #=> true
+'string' == obj   #=> false
+----
 
 === Examples
 
@@ -12790,7 +13272,7 @@ bar > 10
 == Style/ZeroLengthPredicate
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -12804,6 +13286,13 @@ by a predicate method, such as receiver.length == 0,
 receiver.length > 0, receiver.length != 0,
 receiver.length < 1 and receiver.size == 0 that can be
 replaced by receiver.empty? and !receiver.empty?.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+has an `empty?` method that is defined in terms of `length`. If there
+is a non-standard class that redefines `length` or `empty?`, the cop
+may register a false positive.
 
 === Examples
 

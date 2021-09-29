@@ -3,7 +3,7 @@
 == Lint/AmbiguousAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -34,7 +34,7 @@ x != y # or x = !y
 == Lint/AmbiguousBlockAssociation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -98,7 +98,7 @@ expect { do_something }.to change { object.attribute }
 == Lint/AmbiguousOperator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -136,7 +136,7 @@ do_something(*some_array)
 == Lint/AmbiguousOperatorPrecedence
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -177,7 +177,7 @@ a * b / c % d
 == Lint/AmbiguousRange
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -193,18 +193,20 @@ using a range with other operators. This cop avoids that by making ranges
 explicit by requiring parenthesis around complex range boundaries (anything
 that is not a basic literal: numerics, strings, symbols, etc.).
 
-NOTE: The cop auto-corrects by wrapping the entire boundary in parentheses, which
-makes the outcome more explicit but is possible to not be the intention of the
-programmer. For this reason, this cop's auto-correct is marked as unsafe (it
-will not change the behaviour of the code, but will not necessarily match the
-intent of the program).
-
 This cop can be configured with `RequireParenthesesForMethodChains` in order to
 specify whether method chains (including `self.foo`) should be wrapped in parens
 by this cop.
 
 NOTE: Regardless of this configuration, if a method receiver is a basic literal
 value, it will be wrapped in order to prevent the ambiguity of `1..2.to_a`.
+
+=== Safety
+
+The cop auto-corrects by wrapping the entire boundary in parentheses, which
+makes the outcome more explicit but is possible to not be the intention of the
+programmer. For this reason, this cop's auto-correct is unsafe (it will not
+change the behaviour of the code, but will not necessarily match the
+intent of the program).
 
 === Examples
 
@@ -264,7 +266,7 @@ a.foo..b.bar
 == Lint/AmbiguousRegexpLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -299,7 +301,7 @@ do_something(/pattern/i)
 == Lint/AssignmentInCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -368,7 +370,7 @@ end
 == Lint/BigDecimalNew
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -395,7 +397,7 @@ BigDecimal(123.456, 3)
 == Lint/BinaryOperatorWithIdenticalOperands
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -406,15 +408,29 @@ BigDecimal(123.456, 3)
 
 This cop checks for places where binary operator has identical operands.
 
-It covers arithmetic operators: `+`, `-`, `*`, `/`, `%`, `**`;
+It covers arithmetic operators: `-`, `/`, `%`;
 comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;
-bitwise operators: `|`, `^`, `&`, `<<`, `>>`;
+bitwise operators: `|`, `^`, `&`;
 boolean operators: `&&`, `||`
 and "spaceship" operator - `<=>`.
 
-This cop is marked as unsafe as it does not consider side effects when calling methods
-and thus can generate false positives:
-  if wr.take_char == '\0' && wr.take_char == '\0'
+Simple arithmetic operations are allowed by this cop: `+`, `*`, `**`, `<<` and `>>`.
+Although these can be rewritten in a different way, it should not be necessary to
+do so. This does not include operations such as `-` or `/` where the result will
+always be the same (`x - x` will always be 0; `x / x` will always be 1), and
+thus are legitimate offenses.
+
+=== Safety
+
+This cop is unsafe as it does not consider side effects when calling methods
+and thus can generate false positives, for example:
+
+[source,ruby]
+----
+if wr.take_char == '\0' && wr.take_char == '\0'
+  # ...
+end
+----
 
 === Examples
 
@@ -440,17 +456,23 @@ x + x
 == Lint/BooleanSymbol
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
-| No
+| Yes
 | Yes (Unsafe)
 | 0.50
-| 0.83
+| 1.22
 |===
 
 This cop checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
+
+=== Safety
+
+Autocorrection is unsafe for this cop because code relying
+on `:true` or `:false` symbols will break when those are
+changed to actual booleans.
 
 === Examples
 
@@ -475,7 +497,7 @@ false
 == Lint/CircularArgumentReference
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -539,7 +561,7 @@ end
 == Lint/ConstantDefinitionInBlock
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -631,7 +653,7 @@ end
 == Lint/ConstantResolution
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -721,7 +743,7 @@ Login
 == Lint/Debugger
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -806,7 +828,7 @@ end
 == Lint/DeprecatedClassMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -844,7 +866,7 @@ Addrinfo.tcp(host, port).getnameinfo
 == Lint/DeprecatedConstants
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -896,7 +918,7 @@ Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible wit
 == Lint/DeprecatedOpenSSLConstant
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -947,7 +969,7 @@ OpenSSL::Digest.digest('SHA256', 'foo')
 == Lint/DisjunctiveAssignmentInConstructor
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -956,7 +978,7 @@ OpenSSL::Digest.digest('SHA256', 'foo')
 | 0.88
 |===
 
-This cop checks constructors for disjunctive assignments that should
+This cop checks constructors for disjunctive assignments (`||=`) that should
 be plain assignments.
 
 So far, this cop is only concerned with disjunctive assignment of
@@ -964,6 +986,30 @@ instance variables.
 
 In ruby, an instance variable is nil until a value is assigned, so the
 disjunction is unnecessary. A plain assignment has the same effect.
+
+=== Safety
+
+This cop is unsafe because it can register a false positive when a
+method is redefined in a subclass that calls super. For example:
+
+[source,ruby]
+----
+class Base
+  def initialize
+    @config ||= 'base'
+  end
+end
+
+class Derived < Base
+  def initialize
+    @config = 'derived'
+    super
+  end
+end
+----
+
+Without the disjunctive assignment, `Derived` will be unable to override
+the value for `@config`.
 
 === Examples
 
@@ -983,7 +1029,7 @@ end
 == Lint/DuplicateBranch
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -1101,7 +1147,7 @@ end
 == Lint/DuplicateCaseCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1142,7 +1188,7 @@ end
 == Lint/DuplicateElsifCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1175,7 +1221,7 @@ end
 == Lint/DuplicateHashKey
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1207,7 +1253,7 @@ hash = { food: 'apple', other_food: 'orange' }
 == Lint/DuplicateMethods
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1272,7 +1318,7 @@ alias bar foo
 == Lint/DuplicateRegexpCharacterClassElement
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -1303,7 +1349,7 @@ r = /[0-9x]/
 == Lint/DuplicateRequire
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1335,7 +1381,7 @@ require_relative 'foo'
 == Lint/DuplicateRescueException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1373,7 +1419,7 @@ end
 == Lint/EachWithObjectArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1408,7 +1454,7 @@ sum = numbers.each_with_object(num) { |e, a| a += e }
 == Lint/ElseLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1462,7 +1508,7 @@ end
 == Lint/EmptyBlock
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -1565,7 +1611,7 @@ Proc.new { }
 == Lint/EmptyClass
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -1665,7 +1711,7 @@ end
 == Lint/EmptyConditionalBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1749,7 +1795,7 @@ end
 == Lint/EmptyEnsure
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1807,7 +1853,7 @@ end
 == Lint/EmptyExpression
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1843,7 +1889,7 @@ end
 == Lint/EmptyFile
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1896,7 +1942,7 @@ This cop enforces that Ruby source files are not empty.
 NOTE: Required Ruby version: 2.7
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -1966,7 +2012,7 @@ end
 == Lint/EmptyInterpolation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1996,7 +2042,7 @@ This cop checks for empty interpolation.
 == Lint/EmptyWhen
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2069,7 +2115,7 @@ end
 == Lint/EnsureReturn
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2133,7 +2179,7 @@ end
 NOTE: Required Ruby version: 2.6
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2204,7 +2250,7 @@ end
 == Lint/FlipFlop
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2244,7 +2290,7 @@ end
 == Lint/FloatComparison
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2289,7 +2335,7 @@ tolerance = 0.0001
 == Lint/FloatOutOfRange
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2321,7 +2367,7 @@ float = 42.9
 == Lint/FormatParameterMismatch
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2371,7 +2417,7 @@ format('Numbered format: %1$s and numbered %2$s', a_value, another)
 == Lint/HashCompareByIdentity
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -2380,10 +2426,20 @@ format('Numbered format: %1$s and numbered %2$s', a_value, another)
 | -
 |===
 
-Prefer using `Hash#compare_by_identity` than using `object_id` for hash keys.
+Prefer using `Hash#compare_by_identity` rather than using `object_id`
+for hash keys.
 
-This cop is marked as unsafe as a hash possibly can contain other keys
-besides `object_id`s.
+This cop looks for hashes being keyed by objects' `object_id`, using
+one of these methods: `key?`, `has_key?`, `fetch`, `[]` and `[]=`.
+
+=== Safety
+
+This cop is unsafe. Although unlikely, the hash could store both object
+ids and other values that need be compared by value, and thus
+could be a false positive.
+
+Furthermore, this cop cannot guarantee that the receiver of one of the
+methods (`key?`, etc.) is actually a hash.
 
 === Examples
 
@@ -2407,7 +2463,7 @@ hash.key?(baz)
 == Lint/HeredocMethodCallPosition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2454,7 +2510,7 @@ the receiver of the call is a HEREDOC.
 == Lint/IdentityComparison
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2486,7 +2542,7 @@ foo.equal?(bar)
 == Lint/ImplicitStringConcatenation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2522,7 +2578,7 @@ array = [
 == Lint/IncompatibleIoSelectWithFiberScheduler
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -2553,7 +2609,7 @@ io.wait_writable(timeout)
 == Lint/IneffectiveAccessModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2613,7 +2669,7 @@ end
 == Lint/InheritException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2676,7 +2732,7 @@ C = Class.new(StandardError)
 == Lint/InterpolationCheck
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -2686,6 +2742,12 @@ C = Class.new(StandardError)
 |===
 
 This cop checks for interpolation in a single quoted string.
+
+=== Safety
+
+This cop is generally safe, but is marked as unsafe because
+it is possible to actually intentionally have text inside
+`#{...}` in a single quoted string.
 
 === Examples
 
@@ -2706,7 +2768,7 @@ foo = "something with #{interpolation} inside"
 == Lint/LambdaWithoutLiteralBlock
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -2743,7 +2805,7 @@ lambda { do_something } # If you use lambda.
 == Lint/LiteralAsCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2785,7 +2847,7 @@ end
 == Lint/LiteralInInterpolation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2815,7 +2877,7 @@ This cop checks for interpolated literals.
 == Lint/Loop
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -2826,7 +2888,9 @@ This cop checks for interpolated literals.
 
 This cop checks for uses of `begin...end while/until something`.
 
-The cop is marked as unsafe because behaviour can change in some cases, including
+=== Safety
+
+The cop is unsafe because behaviour can change in some cases, including
 if a local variable inside the loop body is accessed outside of it, or if the
 loop body raises a `StopIteration` exception (which `Kernel#loop` rescues).
 
@@ -2881,7 +2945,7 @@ end
 == Lint/MissingCopEnableDirective
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2947,7 +3011,7 @@ x += 1
 == Lint/MissingSuper
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3002,7 +3066,7 @@ end
 == Lint/MixedRegexpCaptureTypes
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3031,7 +3095,7 @@ named captures.
 == Lint/MultipleComparison
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3061,7 +3125,7 @@ x < y && y < z
 == Lint/NestedMethodDefinition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3135,7 +3199,7 @@ end
 == Lint/NestedPercentLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3176,7 +3240,7 @@ attributes = {
 == Lint/NextWithoutAccumulator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3212,7 +3276,7 @@ end
 == Lint/NoReturnInBeginEndBlocks
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -3265,7 +3329,7 @@ some_variable = if some_condition_is_met
 == Lint/NonDeterministicRequireOrder
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -3285,7 +3349,12 @@ always sort the list.
 `Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
 So all bad cases are acceptable when Ruby 3.0 or higher are used.
 
-This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+NOTE: This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+
+=== Safety
+
+This cop is unsafe in the case where sorting files changes existing
+expected behaviour.
 
 === Examples
 
@@ -3330,7 +3399,7 @@ Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), sort: false).each(&method(:re
 == Lint/NonLocalExitFromIterator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3380,7 +3449,7 @@ end
 == Lint/NumberConversion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -3403,6 +3472,12 @@ NOTE: Some values cannot be converted properly using one of the `Kernel`
 method (for instance, `Time` and `DateTime` values are allowed by this
 cop by default). Similarly, Rails' duration methods do not work well
 with `Integer()` and can be ignored with `IgnoredMethods`.
+
+=== Safety
+
+Autocorrection is unsafe because it is not guaranteed that the
+replacement `Kernel` methods are able to properly handle the
+input if it is not a standard class.
 
 === Examples
 
@@ -3460,7 +3535,7 @@ Time.now.to_datetime.to_i
 == Lint/NumberedParameterAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -3476,7 +3551,7 @@ It emulates the following warning in Ruby 2.7:
   ruby 2.7.2p137 (2020-10-01 revision 5445e04352) [x86_64-darwin19]
   -e:1: warning: `_1' is reserved for numbered parameter; consider another name
 
-Assigning to numbered parameter (from `_1` to `_9`) cause an error in Ruby 3.0.
+Assigning to a numbered parameter (from `_1` to `_9`) causes an error in Ruby 3.0.
 
   % ruby -ve '_1 = :value'
   ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
@@ -3499,7 +3574,7 @@ non_numbered_parameter_name = :value
 == Lint/OrAssignmentToConstant
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | No
@@ -3514,8 +3589,11 @@ Constants should always be assigned in the same location. And its value
 should always be the same. If constants are assigned in multiple
 locations, the result may vary depending on the order of `require`.
 
-Also, if you already have such an implementation, auto-correction may
-change the result.
+=== Safety
+
+This cop is unsafe because code that is already conditionally
+assigning a constant may have its behaviour changed by
+auto-correction.
 
 === Examples
 
@@ -3531,7 +3609,7 @@ CONST = 1
 == Lint/OrderedMagicComments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3570,7 +3648,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 == Lint/OutOfRangeRegexpRef
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -3581,6 +3659,24 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 
 This cops looks for references of Regexp captures that are out of range
 and thus always returns nil.
+
+=== Safety
+
+This cop is unsafe because it is naive in how it determines what
+references are available based on the last encountered regexp, but
+it cannot handle some cases, such as conditional regexp matches, which
+leads to false positives, such as:
+
+[source,ruby]
+----
+foo ? /(c)(b)/ =~ str : /(b)/ =~ str
+do_something if $2
+# $2 is defined for the first condition but not the second, however
+# the cop will mark this as an offense.
+----
+
+This might be a good indication of code that should be refactored,
+however.
 
 === Examples
 
@@ -3600,7 +3696,7 @@ puts $1 # => foo
 == Lint/ParenthesesAsGroupedExpression
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3632,7 +3728,7 @@ do_something (foo * bar).baz
 == Lint/PercentStringArray
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -3646,6 +3742,17 @@ This cop checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
 It is more likely that the additional characters are unintended (for
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting strings.
+
+=== Safety
+
+The cop is unsafe because the correction changes the values in the array
+and that might have been done purposely.
+
+[source,ruby]
+----
+%w('foo', "bar") #=> ["'foo',", '"bar"']
+%w(foo bar)      #=> ['foo', 'bar']
+----
 
 === Examples
 
@@ -3666,7 +3773,7 @@ rather than meant to be part of the resulting strings.
 == Lint/PercentSymbolArray
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3700,7 +3807,7 @@ rather than meant to be part of the resulting symbols.
 == Lint/RaiseException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -3718,6 +3825,11 @@ for namespaced `Exception` when a namespace is omitted. This option can
 prevent the false positive by specifying a namespace to be omitted for
 `Exception`. Alternatively, make `Exception` a fully qualified class
 name with an explicit namespace.
+
+=== Safety
+
+This cop is unsafe because it will change the exception class being
+raised, which is a change in behaviour.
 
 === Examples
 
@@ -3759,7 +3871,7 @@ end
 == Lint/RandOne
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3793,7 +3905,7 @@ rand(-1.0)
 == Lint/RedundantCopDisableDirective
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3828,7 +3940,7 @@ x += 1
 == Lint/RedundantCopEnableDirective
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3876,7 +3988,7 @@ baz
 NOTE: Required Ruby version: 3.0
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -3910,7 +4022,7 @@ end
 == Lint/RedundantRequireStatement
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3945,7 +4057,7 @@ require 'unloaded_feature'
 == Lint/RedundantSafeNavigation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -3958,12 +4070,14 @@ This cop checks for redundant safe navigation calls.
 `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, and `equal?` methods
 are checked by default. These are customizable with `AllowedMethods` option.
 
-This cop is marked as unsafe, because auto-correction can change the
-return type of the expression. An offending expression that previously
-could return `nil` will be auto-corrected to never return `nil`.
-
 In the example below, the safe navigation operator (`&.`) is unnecessary
 because `NilClass` has methods like `respond_to?` and `is_a?`.
+
+=== Safety
+
+This cop is unsafe, because auto-correction can change the return type of
+the expression. An offending expression that previously could return `nil`
+will be auto-corrected to never return `nil`.
 
 === Examples
 
@@ -4002,7 +4116,7 @@ foo&.respond_to?(:to_a)
 == Lint/RedundantSplatExpansion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4098,7 +4212,7 @@ do_something(*%w[foo bar baz])
 == Lint/RedundantStringCoercion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4133,7 +4247,7 @@ which is redundant.
 == Lint/RedundantWithIndex
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4172,7 +4286,7 @@ end
 == Lint/RedundantWithObject
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4211,7 +4325,7 @@ end
 == Lint/RegexpAsCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4241,7 +4355,7 @@ end
 == Lint/RequireParentheses
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4279,10 +4393,40 @@ if day.is?(:tuesday) && month == :jan
 end
 ----
 
+== Lint/RequireRelativeSelfPath
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.22
+| -
+|===
+
+Checks for uses a file requiring itself with `require_relative`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+
+# foo.rb
+require_relative 'foo'
+require_relative 'bar'
+
+# good
+
+# foo.rb
+require_relative 'bar'
+----
+
 == Lint/RescueException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4324,7 +4468,7 @@ end
 == Lint/RescueType
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4372,7 +4516,7 @@ end
 == Lint/ReturnInVoidContext
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4417,7 +4561,7 @@ end
 == Lint/SafeNavigationChain
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4464,7 +4608,7 @@ x&.foo || bar
 == Lint/SafeNavigationConsistency
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4513,7 +4657,7 @@ foo&.bar && (foobar.baz || foo&.baz)
 == Lint/SafeNavigationWithEmpty
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4545,7 +4689,7 @@ return unless foo && foo.empty?
 == Lint/ScriptPermission
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4588,7 +4732,7 @@ puts 'hello, world'
 == Lint/SelfAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4617,7 +4761,7 @@ Foo = Bar
 == Lint/SendWithMixinArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4663,7 +4807,7 @@ Foo.extend Bar
 == Lint/ShadowedArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4754,7 +4898,7 @@ end
 == Lint/ShadowedException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4809,7 +4953,7 @@ end
 == Lint/ShadowingOuterLocalVariable
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4862,7 +5006,7 @@ end
 == Lint/StructNewOverride
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4896,7 +5040,7 @@ g.count #=> 2
 == Lint/SuppressedException
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5041,7 +5185,7 @@ do_something rescue nil
 == Lint/SymbolConversion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5133,7 +5277,7 @@ all keys to be quoted).
 == Lint/Syntax
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5148,7 +5292,7 @@ into RuboCop's offenses.
 == Lint/ToEnumArguments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5179,7 +5323,7 @@ end
 == Lint/ToJSON
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5220,7 +5364,7 @@ end
 == Lint/TopLevelReturnWithArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5244,7 +5388,7 @@ return 1 # 1 is always ignored.
 == Lint/TrailingCommaInAttributeDeclaration
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5283,7 +5427,7 @@ end
 == Lint/TripleQuotes
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5336,7 +5480,7 @@ STRING
 == Lint/UnderscorePrefixedVariableName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5403,7 +5547,7 @@ end
 == Lint/UnexpectedBlockArity
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | No
@@ -5422,14 +5566,20 @@ be used. Blocks that have no receiver, or take splatted arguments
 Keyword arguments (including `**kwargs`) do not get counted towards
 this, as they are not used by the methods in question.
 
-NOTE: This cop matches for method names only and hence cannot tell apart
-methods with same name in different classes.
-
 Method names and their expected arity can be configured like this:
 
+[source,yaml]
+----
 Methods:
   inject: 2
   reduce: 2
+----
+
+=== Safety
+
+This cop matches for method names only and hence cannot tell apart
+methods with same name in different classes, which may lead to a
+false positive.
 
 === Examples
 
@@ -5459,7 +5609,7 @@ values.sort { |*x| x[0] <=> x[1] }
 == Lint/UnifiedInteger
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5490,7 +5640,7 @@ This cop checks for using Fixnum or Bignum constant.
 == Lint/UnmodifiedReduceAccumulator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5565,7 +5715,7 @@ end
 == Lint/UnreachableCode
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5613,7 +5763,7 @@ end
 == Lint/UnreachableLoop
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5723,7 +5873,7 @@ exactly(2).times { raise StandardError }
 == Lint/UnusedBlockArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5822,7 +5972,7 @@ end
 == Lint/UnusedMethodArgument
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5939,7 +6089,7 @@ end
 == Lint/UriEscapeUnescape
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5982,7 +6132,7 @@ URI.decode_www_form_component(enc_uri)
 == Lint/UriRegexp
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6008,7 +6158,7 @@ URI::DEFAULT_PARSER.make_regexp('http://example.com')
 == Lint/UselessAccessModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6168,7 +6318,7 @@ end
 == Lint/UselessAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6216,7 +6366,7 @@ end
 == Lint/UselessElseWithoutRescue
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6259,7 +6409,7 @@ end
 == Lint/UselessMethodDefinition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -6271,8 +6421,10 @@ end
 This cop checks for useless method definitions, specifically: empty constructors
 and methods just delegating to `super`.
 
-This cop is marked as unsafe as it can trigger false positives for cases when
-an empty constructor just overrides the parent constructor, which is bad anyway.
+=== Safety
+
+This cop is unsafe as it can register false positives for cases when an empty
+constructor just overrides the parent constructor, which is bad anyway.
 
 === Examples
 
@@ -6316,7 +6468,7 @@ end
 == Lint/UselessSetterCall
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -6327,11 +6479,15 @@ end
 
 This cop checks for setter call to local variable as the final
 expression of a function definition.
-Its auto-correction is marked as unsafe because return value will be changed.
 
-NOTE: There are edge cases in which the local variable references a
+=== Safety
+
+There are edge cases in which the local variable references a
 value that is also accessible outside the local scope. This is not
 detected by the cop, and it can yield a false positive.
+
+As well, auto-correction is unsafe because the method's
+return value will be changed.
 
 === Examples
 
@@ -6359,7 +6515,7 @@ end
 == Lint/UselessTimes
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -6372,8 +6528,10 @@ This cop checks for uses of `Integer#times` that will never yield
 (when the integer <= 0) or that will only ever yield once
 (`1.times`).
 
-This cop is marked as unsafe as `times` returns its receiver, which
-is *usually* OK, but might change behavior.
+=== Safety
+
+This cop is unsafe as `times` returns its receiver, which is
+*usually* OK, but might change behavior.
 
 === Examples
 
@@ -6393,7 +6551,7 @@ do_something(1)
 == Lint/Void
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes

@@ -3,7 +3,7 @@
 == Naming/AccessorMethodName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -56,7 +56,7 @@ end
 == Naming/AsciiIdentifiers
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -141,7 +141,7 @@ FOÖ = "foo"
 == Naming/BinaryOperatorParameterName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -171,7 +171,7 @@ def +(other); end
 == Naming/BlockParameterName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -204,7 +204,7 @@ end
 # With `AllowNamesEndingInNumbers` set to false
 foo { |num1, num2| num1 * num2 }
 
-# With `MinParamNameLength` set to number greater than 1
+# With `MinNameLength` set to number greater than 1
 baz { |a, b, c| do_stuff(a, b, c) }
 
 # good
@@ -242,7 +242,7 @@ baz { |age, height, gender| do_stuff(age, height, gender) }
 == Naming/ClassAndModuleCamelCase
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -296,7 +296,7 @@ end
 == Naming/ConstantName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -331,7 +331,7 @@ INCH_IN_CM = 2.54
 == Naming/FileName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -401,7 +401,7 @@ anything/using_snake_case.rake
 == Naming/HeredocDelimiterCase
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -462,7 +462,7 @@ sql
 == Naming/HeredocDelimiterNaming
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -512,7 +512,7 @@ EOS
 == Naming/InclusiveLanguage
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -648,7 +648,7 @@ TeslaVehicle
 == Naming/MemoizedInstanceVariableName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -667,6 +667,8 @@ directive. It can be configured to allow for memoized instance variables
 prefixed with an underscore. Prefixing ivars with an underscore is a
 convention that is used to implicitly indicate that an ivar should not
 be set or referenced outside of the memoization method.
+
+=== Safety
 
 This cop relies on the pattern `@instance_var ||= ...`,
 but this is sometimes used for other purposes than memoization
@@ -825,7 +827,7 @@ end
 == Naming/MethodName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -891,7 +893,7 @@ def fooBar; end
 == Naming/MethodParameterName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -970,7 +972,7 @@ end
 == Naming/PredicateName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1041,7 +1043,7 @@ end
 == Naming/RescuedExceptionsVariableName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1128,7 +1130,7 @@ end
 == Naming/VariableName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1185,7 +1187,7 @@ fooBar = 1
 == Naming/VariableNumber
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes

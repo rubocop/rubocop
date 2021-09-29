@@ -3,7 +3,7 @@
 == Metrics/AbcSize
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -16,6 +16,12 @@ This cop checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
 (method calls), and conditions. See http://c2.com/cgi/wiki?AbcMetric
 and https://en.wikipedia.org/wiki/ABC_Software_Metric.
+
+Interpreting ABC size:
+
+* <= 17 satisfactory
+* 18..30 unsatisfactory
+* > 30 dangerous
 
 You can have repeated "attributes" calls count as a single "branch".
 For this purpose, attributes are any method with no argument; no attempt
@@ -69,7 +75,7 @@ end
 == Metrics/BlockLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -149,7 +155,7 @@ end                 # 5 points
 == Metrics/BlockNesting
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -188,7 +194,7 @@ The maximum level of nesting allowed is configurable.
 == Metrics/ClassLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -251,7 +257,7 @@ end                 # 5 points
 == Metrics/CyclomaticComplexity
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -304,7 +310,7 @@ Blocks that are calls to builtin iteration methods
 == Metrics/MethodLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -380,7 +386,7 @@ end               # 5 points
 == Metrics/ModuleLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -441,7 +447,7 @@ end                 # 5 points
 == Metrics/ParameterLists
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -548,7 +554,7 @@ end
 == Metrics/PerceivedComplexity
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
