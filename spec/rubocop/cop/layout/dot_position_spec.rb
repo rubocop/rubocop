@@ -465,5 +465,15 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
         RUBY
       end
     end
+
+    context 'when there is a heredoc with a following method' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          <<~HEREDOC.squish
+            something
+          HEREDOC
+        RUBY
+      end
+    end
   end
 end
