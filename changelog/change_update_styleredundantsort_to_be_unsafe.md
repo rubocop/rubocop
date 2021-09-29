@@ -1,1 +1,0 @@
-* [#10122](https://github.com/rubocop/rubocop/pull/10122): Update `Style/RedundantSort` to be unsafe, and revert the special case for `size` from [#10061](https://github.com/rubocop/rubocop/pull/10061). ([@dvandersluis][])
