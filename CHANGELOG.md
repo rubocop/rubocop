@@ -9,8 +9,6 @@
 * [#10084](https://github.com/rubocop/rubocop/issues/10084): Add new `Lint/RequireRelativeSelfPath` cop. ([@koic][])
 * [#8327](https://github.com/rubocop/rubocop/issues/8327): Add new cop `Style/SelectByRegexp`. ([@dvandersluis][])
 * [#10100](https://github.com/rubocop/rubocop/pull/10100): Add new Style/NumberedParameters cop. ([@Hugo-Hache][])
-
-[@Hugo-Hache]: https://github.com/Hugo-Hache
 * [#10103](https://github.com/rubocop/rubocop/issues/10103): Add `AllowHttpProtocol` option to `Bundler/InsecureProtocolSource`. ([@koic][])
 * [#10102](https://github.com/rubocop/rubocop/pull/10102): Add new `Security/IoMethods` cop. ([@koic][])
 
