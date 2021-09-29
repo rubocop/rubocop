@@ -20,12 +20,16 @@ module RuboCop
 
       def frozen_string_literal?(node)
         frozen_string = if target_ruby_version >= 3.0
-                          node.str_type? || frozen_heredoc?(node)
+                          uninterpolated_string?(node) || frozen_heredoc?(node)
                         else
                           FROZEN_STRING_LITERAL_TYPES_RUBY27.include?(node.type)
                         end
 
         frozen_string && frozen_string_literals_enabled?
+      end
+
+      def uninterpolated_string?(node)
+        node.str_type? || (node.dstr_type? && node.each_descendant(:begin).none?)
       end
 
       def frozen_heredoc?(node)

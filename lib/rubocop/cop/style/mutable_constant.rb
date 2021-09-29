@@ -21,8 +21,9 @@ module RuboCop
       #
       # NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
       #
-      # NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated
-      # string literals when `# frozen-string-literal: true` is used.
+      # NOTE: From Ruby 3.0, interpolated strings are not frozen when
+      # `# frozen-string-literal: true` is used, so this cop enforces explicit
+      # freezing for such strings.
       #
       # NOTE: From Ruby 3.0, this cop allows explicit freezing of constants when
       # the `shareable_constant_value` directive is used.

@@ -132,6 +132,25 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             HERE
           RUBY
         end
+
+        it 'does not register an offense when using a multiline string' do
+          expect_no_offenses(<<~RUBY)
+            # frozen_string_literal: true
+
+            CONST = 'foo' \
+                    'bar'
+          RUBY
+        end
+
+        it 'registers an offense when using a multiline string with interpolation' do
+          expect_offense(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = "#{foo}" \
+                    ^^^^^^^^^^ Freeze mutable objects assigned to constants.
+                    'bar'
+          RUBY
+        end
       end
 
       context 'when the frozen string literal comment is false' do
@@ -164,6 +183,15 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
               foo #{use_interpolation}
               bar
             HERE
+          RUBY
+        end
+
+        it 'does not register an offense when using a multiline string' do
+          expect_no_offenses(<<~RUBY)
+            # frozen_string_literal: true
+
+            CONST = 'foo' \
+                    'bar'
           RUBY
         end
       end
