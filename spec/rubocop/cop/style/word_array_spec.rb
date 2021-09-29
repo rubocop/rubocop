@@ -327,6 +327,8 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect_correction(<<~RUBY)
         ['one two', 'three four']
       RUBY
+
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'does not register an offense for a %w() array containing non word characters' do

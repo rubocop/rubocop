@@ -144,3 +144,7 @@ InternalAffairs/UndefinedConfig:
   Exclude:
     - 'lib/rubocop/cop/correctors/**/*.rb'
     - 'lib/rubocop/cop/mixin/**/*.rb'
+
+InternalAffairs/StyleDetectedApiUse:
+  Exclude:
+    - 'lib/rubocop/cop/mixin/percent_array.rb'
