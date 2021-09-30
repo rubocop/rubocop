@@ -58,8 +58,11 @@ module RuboCop
           return if node.arguments.count != 1
           return unless redundant_argument?(node)
 
-          add_offense(node, message: format(MSG, arg: node.arguments.first.source)) do |corrector|
-            corrector.remove(argument_range(node))
+          offense_range = argument_range(node)
+          message = format(MSG, arg: node.arguments.first.source)
+
+          add_offense(offense_range, message: message) do |corrector|
+            corrector.remove(offense_range)
           end
         end
 

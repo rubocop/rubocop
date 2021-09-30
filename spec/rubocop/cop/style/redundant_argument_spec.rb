@@ -8,13 +8,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   it 'registers an offense and corrects when method called on variable' do
     expect_offense(<<~'RUBY')
       foo.join('')
-      ^^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
+              ^^^^ Argument '' is redundant because it is implied by default.
       foo.split(' ')
-      ^^^^^^^^^^^^^^ Argument ' ' is redundant because it is implied by default.
+               ^^^^^ Argument ' ' is redundant because it is implied by default.
       foo.chomp("\n")
-      ^^^^^^^^^^^^^^^ Argument "\n" is redundant because it is implied by default.
+               ^^^^^^ Argument "\n" is redundant because it is implied by default.
       foo.chomp!("\n")
-      ^^^^^^^^^^^^^^^^ Argument "\n" is redundant because it is implied by default.
+                ^^^^^^ Argument "\n" is redundant because it is implied by default.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -28,9 +28,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   it 'registers an offense and corrects when method called without parenthesis on variable' do
     expect_offense(<<~RUBY)
       foo.join ''
-      ^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
+              ^^^ Argument '' is redundant because it is implied by default.
       foo.split ' '
-      ^^^^^^^^^^^^^ Argument ' ' is redundant because it is implied by default.
+               ^^^^ Argument ' ' is redundant because it is implied by default.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -42,9 +42,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   it 'registers an offense and corrects when method called on literals' do
     expect_offense(<<~RUBY)
       [1, 2, 3].join('')
-      ^^^^^^^^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
+                    ^^^^ Argument '' is redundant because it is implied by default.
       "first second".split(' ')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^ Argument ' ' is redundant because it is implied by default.
+                          ^^^^^ Argument ' ' is redundant because it is implied by default.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   it 'registers an offense and corrects when method called without parenthesis on literals' do
     expect_offense(<<~RUBY)
       [1, 2, 3].join ''
-      ^^^^^^^^^^^^^^^^^ Argument '' is redundant because it is implied by default.
+                    ^^^ Argument '' is redundant because it is implied by default.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -67,9 +67,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   it 'works with double-quoted strings when configuration is single-quotes' do
     expect_offense(<<~RUBY)
       foo.join("")
-      ^^^^^^^^^^^^ Argument "" is redundant because it is implied by default.
+              ^^^^ Argument "" is redundant because it is implied by default.
       "first second".split(" ")
-      ^^^^^^^^^^^^^^^^^^^^^^^^^ Argument " " is redundant because it is implied by default.
+                          ^^^^^ Argument " " is redundant because it is implied by default.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
     it 'registers an offense and corrects with configured argument' do
       expect_offense(<<~RUBY)
         A.foo(2)
-        ^^^^^^^^ Argument 2 is redundant because it is implied by default.
+             ^^^ Argument 2 is redundant because it is implied by default.
       RUBY
 
       expect_correction(<<~RUBY)
