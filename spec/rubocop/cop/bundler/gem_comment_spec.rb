@@ -166,7 +166,34 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
           end
         end
 
-        context 'when a gem is uncommented and has a version specifier' do
+        context 'when a gem is uncommented and has a non-minimum version specifier with a leading space' do
+          it 'registers an offense' do
+            expect_offense(<<-GEM, 'Gemfile')
+                gem 'rubocop', ' ~> 12.0'
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
+            GEM
+          end
+        end
+
+        context 'when a gem is uncommented and has a version specifier without operator' do
+          it 'registers an offense' do
+            expect_offense(<<-GEM, 'Gemfile')
+                gem 'rubocop', '12.0'
+                ^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
+            GEM
+          end
+        end
+
+        context 'when a gem is uncommented and has a frozen version specifier' do
+          it 'registers an offense' do
+            expect_offense(<<-GEM, 'Gemfile')
+                gem 'rubocop', '= 12.0'
+                ^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
+            GEM
+          end
+        end
+
+        context 'when a gem is uncommented and has a pessimistic version specifier' do
           it 'registers an offense' do
             expect_offense(<<-GEM, 'Gemfile')
                 gem 'rubocop', '~> 12.0'
