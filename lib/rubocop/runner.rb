@@ -60,7 +60,7 @@ module RuboCop
 
     private
 
-    # Warms up the RuboCop cache by forking a suitable number of rubocop
+    # Warms up the RuboCop cache by forking a suitable number of RuboCop
     # instances that each inspects its allotted group of files.
     def warm_cache(target_files)
       puts 'Running parallel inspection' if @options[:debug]

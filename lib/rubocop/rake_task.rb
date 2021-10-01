@@ -33,7 +33,7 @@ module RuboCop
     private
 
     def run_cli(verbose, options)
-      # We lazy-load rubocop so that the task doesn't dramatically impact the
+      # We lazy-load RuboCop so that the task doesn't dramatically impact the
       # load time of your Rakefile.
       require 'rubocop'
 
