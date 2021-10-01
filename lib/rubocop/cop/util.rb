@@ -113,7 +113,8 @@ module RuboCop
         if needs_escaping?(string) && compatible_external_encoding_for?(string)
           string.inspect
         else
-          "'#{string.gsub('\\') { '\\\\' }}'"
+          # In a single-quoted strings, double quotes don't need to be escaped
+          "'#{string.gsub('\"', '"').gsub('\\') { '\\\\' }}'"
         end
       end
 

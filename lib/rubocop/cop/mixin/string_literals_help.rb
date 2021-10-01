@@ -13,7 +13,11 @@ module RuboCop
         if style == :single_quotes
           !double_quotes_required?(src)
         else
-          !/" | \\[^'\\] | \#[@{$]/x.match?(src)
+          # The string needs single quotes if:
+          # 1. It contains a double quote
+          # 2. It contains text that would become an escape sequence with double quotes
+          # 3. It contains text that would become an interpolation with double quotes
+          !/" | (?<!\\)\\[abcefMnrtuUx0-7] | \#[@{$]/x.match?(src)
         end
       end
     end
