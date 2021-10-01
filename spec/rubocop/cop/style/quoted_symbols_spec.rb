@@ -113,6 +113,34 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects for an escaped quote within double quotes' do
+      expect_offense(<<~'RUBY')
+        :"my\"quote"
+        ^^^^^^^^^^^^ Prefer single-quoted symbols when you don't need string interpolation or special symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        :'my"quote'
+      RUBY
+    end
+
+    it 'registers an offense and corrects escape characters properly' do
+      expect_offense(<<~'RUBY')
+        :"foo\\bar"
+        ^^^^^^^^^^^ Prefer single-quoted symbols when you don't need string interpolation or special symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        :'foo\\bar'
+      RUBY
+    end
+
+    it 'accepts single quoted symbol with an escaped quote' do
+      expect_no_offenses(<<~'RUBY')
+        :'o\'clock'
+      RUBY
+    end
+
     context 'hash with hashrocket style' do
       it 'accepts properly quoted symbols' do
         expect_no_offenses(<<~RUBY)
@@ -210,6 +238,34 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
 
       expect_correction(<<~RUBY)
         :"a"
+      RUBY
+    end
+
+    it 'registers an offense and corrects for an escaped quote within single quotes' do
+      expect_offense(<<~'RUBY')
+        :'o\'clock'
+        ^^^^^^^^^^^ Prefer double-quoted symbols unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        :"o'clock"
+      RUBY
+    end
+
+    it 'registers an offense and corrects escape characters properly' do
+      expect_offense(<<~'RUBY')
+        :'foo\\bar'
+        ^^^^^^^^^^^ Prefer double-quoted symbols unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        :"foo\\bar"
+      RUBY
+    end
+
+    it 'accepts double quoted symbol with an escaped quote' do
+      expect_no_offenses(<<~'RUBY')
+        :"my\"quote"
       RUBY
     end
 

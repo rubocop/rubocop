@@ -157,6 +157,17 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
     end
 
+    it 'registers an offense for "\\"' do
+      expect_offense(<<~'RUBY')
+        "\\"
+        ^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        '\\'
+      RUBY
+    end
+
     it 'registers an offense for words with non-ascii chars' do
       expect_offense(<<~RUBY)
         "España"
