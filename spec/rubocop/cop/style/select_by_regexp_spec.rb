@@ -124,6 +124,105 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects without a receiver' do
+        expect_offense(<<~RUBY, method: method)
+          #{method} { |x| x.match?(/regexp/) }
+          ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the receiver is an array' do
+        expect_offense(<<~RUBY, method: method)
+          [].#{method} { |x| x.match?(/regexp/) }
+          ^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+          foo.to_a.#{method} { |x| x.match?(/regexp/) }
+          ^^^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [].#{correction}(/regexp/)
+          foo.to_a.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the receiver is a range' do
+        expect_offense(<<~RUBY, method: method)
+          ('aaa'...'abc').#{method} { |x| x.match?(/ab/) }
+          ^^^^^^^^^^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ('aaa'...'abc').#{correction}(/ab/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the receiver is a set' do
+        expect_offense(<<~RUBY, method: method)
+          Set.new.#{method} { |x| x.match?(/regexp/) }
+          ^^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+          [].to_set.#{method} { |x| x.match?(/regexp/) }
+          ^^^^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Set.new.#{correction}(/regexp/)
+          [].to_set.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is a hash literal' do
+        expect_no_offenses(<<~RUBY)
+          {}.#{method} { |x| x.match? /regexp/ }
+          { foo: :bar }.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is `Hash.new`' do
+        expect_no_offenses(<<~RUBY)
+          Hash.new.#{method} { |x| x.match? /regexp/ }
+          Hash.new(:default).#{method} { |x| x.match? /regexp/ }
+          Hash.new { |hash, key| :default }.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is `Hash[]`' do
+        expect_no_offenses(<<~RUBY)
+          Hash[h].#{method} { |x| x.match? /regexp/ }
+          Hash[:foo, 0, :bar, 1].#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is `to_h`' do
+        expect_no_offenses(<<~RUBY)
+          to_h.#{method} { |x| x.match? /regexp/ }
+          foo.to_h.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is `to_hash`' do
+        expect_no_offenses(<<~RUBY)
+          to_hash.#{method} { |x| x.match? /regexp/ }
+          foo.to_hash.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
+      it 'registers an offense if `to_h` is in the receiver chain but not the actual receiver' do
+        # Although there is a `to_h` in the chain, we cannot be sure
+        # of the type of the ultimate receiver.
+        expect_offense(<<~RUBY, method: method)
+          foo.to_h.bar.#{method} { |x| x.match? /regexp/ }
+          ^^^^^^^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.to_h.bar.#{correction}(/regexp/)
+        RUBY
+      end
+
       context 'with `numblock`s', :ruby27 do
         it 'registers an offense and corrects for `match?`' do
           expect_offense(<<~RUBY, method: method)

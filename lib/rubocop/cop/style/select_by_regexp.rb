@@ -3,9 +3,15 @@
 module RuboCop
   module Cop
     module Style
-      # This cop looks for places where an subset of an array
-      # is calculated based on a `Regexp` match, and suggests `grep` or
-      # `grep_v` instead.
+      # This cop looks for places where an subset of an Enumerable (array,
+      # range, set, etc.; see note below) is calculated based on a `Regexp`
+      # match, and suggests `grep` or `grep_v` instead.
+      #
+      # NOTE: Hashes do not behave as you may expect with `grep`, which
+      # means that `hash.grep` is not equivalent to `hash.select`. Although
+      # RuboCop is limited by static analysis, this cop attempts to avoid
+      # registering an offense when the receiver is a hash (hash literal,
+      # `Hash.new`, `Hash#[]`, or `to_h`/`to_hash`).
       #
       # NOTE: `grep` and `grep_v` were optimized when used without a block
       # in Ruby 3.0, but may be slower in previous versions.
@@ -15,6 +21,10 @@ module RuboCop
       #   Autocorrection is marked as unsafe because `MatchData` will
       #   not be created by `grep`, but may have previously been relied
       #   upon after the `match?` or `=~` call.
+      #
+      #   Additionally, the cop cannot guarantee that the receiver of
+      #   `select` or `reject` is actually an array by static analysis,
+      #   so the correction may not be actually equivalent.
       #
       # @example
       #   # bad (select or find_all)
@@ -49,6 +59,16 @@ module RuboCop
           }
         PATTERN
 
+        # Returns true if a node appears to return a hash
+        # @!method creates_hash?(node)
+        def_node_matcher :creates_hash?, <<~PATTERN
+          {
+            (send (const _ :Hash) {:new :[]} ...)
+            (block (send (const _ :Hash) :new ...) ...)
+            (send _ { :to_h :to_hash } ...)
+          }
+        PATTERN
+
         # @!method calls_lvar?(node, name)
         def_node_matcher :calls_lvar?, <<~PATTERN
           {
@@ -61,6 +81,7 @@ module RuboCop
         def on_send(node)
           return unless (block_node = node.block_node)
           return if block_node.body.begin_type?
+          return if receiver_allowed?(block_node.receiver)
           return unless (regexp_method_send_node = extract_send_node(block_node))
 
           regexp = find_regexp(regexp_method_send_node)
@@ -68,6 +89,12 @@ module RuboCop
         end
 
         private
+
+        def receiver_allowed?(node)
+          return false unless node
+
+          node.hash_type? || creates_hash?(node)
+        end
 
         def register_offense(node, block_node, regexp)
           replacement = REPLACEMENTS[node.method_name.to_sym]
