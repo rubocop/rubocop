@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, '/path/to/foo.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '>= 2.6.0'
-                                       ^^^^^^^^^^ `required_ruby_version` (2.6, declared in foo.gemspec) and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, '/path/to/foo.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '~> 2.6.0'
-                                       ^^^^^^^^^^ `required_ruby_version` (2.6, declared in foo.gemspec) and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, '/path/to/foo.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = ['>= 2.6.0', '< 3.0.0']
-                                       ^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version` (2.6, declared in foo.gemspec) and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, '/path/to/foo.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
-                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version` (2.6, declared in foo.gemspec) and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, '/path/to/bar.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '>= 2.6.0'
-                                       ^^^^^^^^^^ `required_ruby_version` (2.6, declared in bar.gemspec) and `TargetRubyVersion` (2.5, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.5, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, '/path/to/bar.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '~> 2.6.0'
-                                       ^^^^^^^^^^ `required_ruby_version` (2.6, declared in bar.gemspec) and `TargetRubyVersion` (2.5, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.5, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, 'bar.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '>= 2'
-                                       ^^^^^^ `required_ruby_version` (2, declared in bar.gemspec) and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -141,7 +141,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       expect_offense(<<~RUBY, 'bar.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = '~> 2'
-                                       ^^^^^^ `required_ruby_version` (2, declared in bar.gemspec) and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
+                                       ^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
         end
       RUBY
     end
@@ -150,7 +150,25 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
   it 'registers an offense when `required_ruby_version` is not specified' do
     expect_offense(<<~RUBY, '/path/to/foo.gemspec')
       Gem::Specification.new do |spec|
-      ^ `required_ruby_version` should be specified.
+      ^{} `required_ruby_version` should be specified.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when `required_ruby_version` is blank' do
+    expect_offense(<<~RUBY, 'bar.gemspec')
+      Gem::Specification.new do |spec|
+        spec.required_ruby_version = ''
+                                     ^^ `required_ruby_version` and `TargetRubyVersion` (2.5, which may be specified in .rubocop.yml) should be equal.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when `required_ruby_version` is an empty array' do
+    expect_offense(<<~RUBY, 'bar.gemspec')
+      Gem::Specification.new do |spec|
+        spec.required_ruby_version = []
+                                     ^^ `required_ruby_version` and `TargetRubyVersion` (2.5, which may be specified in .rubocop.yml) should be equal.
       end
     RUBY
   end
