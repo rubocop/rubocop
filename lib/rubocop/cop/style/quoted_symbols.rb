@@ -4,7 +4,8 @@ module RuboCop
   module Cop
     module Style
       # Checks if the quotes used for quoted symbols match the configured defaults.
-      # By default uses the same configuration as `Style/StringLiterals`.
+      # By default uses the same configuration as `Style/StringLiterals`; if that
+      # cop is not enabled, the default `EnforcedStyle` is `single_quotes`.
       #
       # String interpolation is always kept in double quotes.
       #
