@@ -136,7 +136,7 @@ module RuboCop
         end
       end
 
-      # Returns the path rubocop inferred as the root of the project. No file
+      # Returns the path RuboCop inferred as the root of the project. No file
       # searches will go past this directory.
       def project_root
         @project_root ||= find_project_root

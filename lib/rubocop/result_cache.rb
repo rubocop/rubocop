@@ -6,7 +6,7 @@ require 'etc'
 require 'zlib'
 
 module RuboCop
-  # Provides functionality for caching rubocop runs.
+  # Provides functionality for caching RuboCop runs.
   # @api private
   class ResultCache
     NON_CHANGING = %i[color format formatters out debug fail_level auto_correct
@@ -170,7 +170,7 @@ module RuboCop
       attr_accessor :source_checksum, :inhibit_cleanup
     end
 
-    # The checksum of the rubocop program running the inspection.
+    # The checksum of the RuboCop program running the inspection.
     def rubocop_checksum
       ResultCache.source_checksum ||=
         begin
