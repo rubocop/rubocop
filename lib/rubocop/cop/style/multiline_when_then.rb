@@ -54,7 +54,7 @@ module RuboCop
           end
           return false unless when_node.body
 
-          when_node.loc.line == when_node.body.loc.line
+          same_line?(when_node, when_node.body)
         end
 
         def accept_node_type?(node)
