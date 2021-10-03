@@ -69,6 +69,7 @@ module RuboCop
       class FormatStringToken < Base
         include ConfigurableEnforcedStyle
         include IgnoredMethods
+        extend AutoCorrector
 
         def on_str(node)
           return if format_string_token?(node) || use_ignored_method?(node)
@@ -77,13 +78,8 @@ module RuboCop
           return if detections.empty?
           return if allowed_unannotated?(detections)
 
-          detections.each do |detected_style, token_range|
-            if detected_style == style
-              correct_style_detected
-            else
-              style_detected(detected_style)
-              add_offense(token_range, message: message(detected_style))
-            end
+          detections.each do |detected_sequence, token_range|
+            check_sequence(detected_sequence, token_range)
           end
         end
 
@@ -103,6 +99,38 @@ module RuboCop
 
         def use_ignored_method?(node)
           (parent = node.parent) && parent.send_type? && ignored_method?(parent.method_name)
+        end
+
+        def check_sequence(detected_sequence, token_range)
+          if detected_sequence.style == style
+            correct_style_detected
+          elsif correctable_sequence?(detected_sequence.type)
+            style_detected(detected_sequence.style)
+            add_offense(token_range, message: message(detected_sequence.style)) do |corrector|
+              autocorrect_sequence(corrector, detected_sequence, token_range)
+            end
+          end
+        end
+
+        def correctable_sequence?(detected_type)
+          detected_type == 's' || style == :annotated || style == :unannotated
+        end
+
+        def autocorrect_sequence(corrector, detected_sequence, token_range)
+          return if style == :unannotated
+
+          name = detected_sequence.name
+          return if name.nil?
+
+          flags = detected_sequence.flags
+          width = detected_sequence.width
+          precision = detected_sequence.precision
+          type = detected_sequence.style == :template ? 's' : detected_sequence.type
+          correction = case style
+                       when :annotated then "%<#{name}>#{flags}#{width}#{precision}#{type}"
+                       when :template then "%#{flags}#{width}#{precision}{#{name}}"
+                       end
+          corrector.replace(token_range, correction)
         end
 
         def unannotated_format?(node, detected_style)
@@ -142,30 +170,33 @@ module RuboCop
         def token_ranges(contents)
           format_string = RuboCop::Cop::Utils::FormatString.new(contents.source)
 
-          format_string.format_sequences.each do |seq|
-            next if seq.percent?
+          format_string.format_sequences.each do |detected_sequence|
+            next if detected_sequence.percent?
 
-            detected_style = seq.style
-            token = contents.begin.adjust(begin_pos: seq.begin_pos, end_pos: seq.end_pos)
+            token = contents.begin.adjust(begin_pos: detected_sequence.begin_pos,
+                                          end_pos: detected_sequence.end_pos)
 
-            yield(detected_style, token)
+            yield(detected_sequence, token)
           end
         end
 
         def collect_detections(node)
           detections = []
-          tokens(node) do |detected_style, token_range|
-            unless unannotated_format?(node, detected_style)
-              detections << [detected_style, token_range]
+          tokens(node) do |detected_sequence, token_range|
+            unless unannotated_format?(node, detected_sequence.style)
+              detections << [detected_sequence, token_range]
             end
           end
           detections
         end
 
         def allowed_unannotated?(detections)
-          return false if detections.size > max_unannotated_placeholders_allowed
+          return false unless detections.all? do |detected_sequence,|
+                                detected_sequence.style == :unannotated
+                              end
+          return true if detections.size <= max_unannotated_placeholders_allowed
 
-          detections.all? { |detected_style,| detected_style == :unannotated }
+          detections.any? { |detected_sequence,| !correctable_sequence?(detected_sequence.type) }
         end
 
         def max_unannotated_placeholders_allowed
