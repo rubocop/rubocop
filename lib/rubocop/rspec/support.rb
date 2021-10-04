@@ -6,6 +6,7 @@ require_relative 'cop_helper'
 require_relative 'host_environment_simulation_helper'
 require_relative 'shared_contexts'
 require_relative 'expect_offense'
+require_relative 'parallel_formatter'
 
 RSpec.configure do |config|
   config.include CopHelper
