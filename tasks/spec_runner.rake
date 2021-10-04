@@ -4,6 +4,14 @@ require 'rspec/core'
 require 'test_queue'
 require 'test_queue/runner/rspec'
 
+# Add `failed_examples` into `TestQueue::Worker` so we can keep
+# track of the output for re-running failed examples from RSpec.
+module TestQueue
+  class Worker
+    attr_accessor :failed_examples
+  end
+end
+
 module RuboCop
   # Helper for running specs with a temporary external encoding.
   # This is a bit risky, since strings defined before the block may have a
@@ -13,7 +21,7 @@ module RuboCop
   class SpecRunner
     attr_reader :rspec_args
 
-    def initialize(rspec_args = %w[spec], parallel: true,
+    def initialize(rspec_args = %w[spec --force-color], parallel: true,
                    external_encoding: 'UTF-8', internal_encoding: nil)
       @rspec_args = rspec_args
       @previous_external_encoding = Encoding.default_external
@@ -59,10 +67,15 @@ module RuboCop
     # `TestQueue::Runner::RSpec`, but modified so that it takes an argument
     # (an array of paths of specs to run) instead of relying on ARGV.
     class ParallelRunner < ::TestQueue::Runner
+      SUMMARY_REGEXP = /(?<=# SUMMARY BEGIN\n).*(?=\n# SUMMARY END)/m.freeze
+      FAILURE_OUTPUT_REGEXP = /(?<=# FAILURES BEGIN\n\n).*(?=# FAILURES END)/m.freeze
+      RERUN_REGEXP = /(?<=# RERUN BEGIN\n).+(?=\n# RERUN END)/m.freeze
+
       def initialize(rspec_args)
         super(Framework.new(rspec_args))
 
         @exit_when_done = false
+        @failure_count = 0
       end
 
       def run_worker(iterator)
@@ -70,9 +83,42 @@ module RuboCop
         rspec.run_each(iterator).to_i
       end
 
+      # Override `TestQueue::Runner#worker_completed` to not output anything
+      # as it adds a lot of noise by default
+      def worker_completed(worker)
+        return if @aborting
+
+        @completed << worker
+      end
+
       def summarize_worker(worker)
-        worker.summary = worker.lines.grep(/\A\d+ examples?, /).first
-        worker.failure_output = worker.output[/^Failures:\n\n(.*)\n^Finished/m, 1]
+        worker.summary = worker.output[SUMMARY_REGEXP]
+        worker.failure_output = update_count(worker.output[FAILURE_OUTPUT_REGEXP])
+        worker.failed_examples = worker.output[RERUN_REGEXP]
+      end
+
+      def summarize_internal
+        ret = super
+
+        unless @failures.blank?
+          puts "==> Failed Examples\n\n"
+          puts @completed.map(&:failed_examples).compact.sort.join("\n")
+          puts
+        end
+
+        ret
+      end
+
+      private
+
+      def update_count(failures)
+        # The ParallelFormatter formatter doesn't try to count failures, but
+        # prefixes each with `*)`, so that they can be updated to count failures
+        # globally once all workers have completed.
+
+        return unless failures
+
+        failures.gsub('*)') { "#{@failure_count += 1})" }
       end
     end
 
@@ -96,7 +142,11 @@ module RuboCop
     class Framework < ::TestQueue::TestFramework::RSpec
       def initialize(rspec_args)
         super()
-        @rspec_args = rspec_args
+        formatter_args = %w[
+          --require ./lib/rubocop/rspec/parallel_formatter.rb
+          --format RuboCop::RSpec::ParallelFormatter
+        ]
+        @rspec_args = rspec_args.concat(formatter_args)
       end
 
       def all_suite_files
