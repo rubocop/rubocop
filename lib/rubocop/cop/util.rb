@@ -127,7 +127,9 @@ module RuboCop
       end
 
       def same_line?(node1, node2)
+        # rubocop:disable InternalAffairs/LocationLineEqualityComparison
         node1.respond_to?(:loc) && node2.respond_to?(:loc) && node1.loc.line == node2.loc.line
+        # rubocop:enable InternalAffairs/LocationLineEqualityComparison
       end
 
       def indent(node, offset: 0)

@@ -54,7 +54,7 @@ module RuboCop
           return true if in_pattern_node.pattern.first_line != in_pattern_node.pattern.last_line
           return false unless in_pattern_node.body
 
-          in_pattern_node.loc.line == in_pattern_node.body.loc.line
+          same_line?(in_pattern_node, in_pattern_node.body)
         end
       end
     end
