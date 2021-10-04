@@ -277,6 +277,8 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         c = '#{x}'
         d = '#@x'
         e = '#$x'
+        f = '\s'
+        g = '\z'
       RUBY
     end
 
