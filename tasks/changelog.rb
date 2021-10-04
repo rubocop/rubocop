@@ -129,7 +129,6 @@ class Changelog
 
   def contributors
     contributors = @entries.values.flat_map do |entry|
-      puts entry
       entry.match(/\. \((?<contributors>.+)\)\n/)[:contributors].split(',')
     end
 
