@@ -257,6 +257,16 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
           RUBY
         end
       end
+
+      context 'with another method on the same line' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            foo(<<~HEREDOC).squish
+              something
+            HEREDOC
+          RUBY
+        end
+      end
     end
 
     context 'when the receiver is a heredoc' do
@@ -445,6 +455,16 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
           RUBY
         end
       end
+
+      context 'with another method on the same line' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            foo(<<~HEREDOC).squish
+              something
+            HEREDOC
+          RUBY
+        end
+      end
     end
 
     context 'when the receiver is a heredoc' do
@@ -467,7 +487,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
     end
 
     context 'when there is a heredoc with a following method' do
-      it 'does not register an offense' do
+      it 'does not register an offense for a heredoc' do
         expect_no_offenses(<<~RUBY)
           <<~HEREDOC.squish
             something

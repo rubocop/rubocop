@@ -68,17 +68,13 @@ module RuboCop
         end
 
         def proper_dot_position?(node)
-          selector_line = selector_range(node).line
+          selector_range = selector_range(node)
 
-          # If the receiver is a HEREDOC and the selector is on the same line
-          # then there is nothing to do
-          return true if heredoc?(node.receiver) && node.receiver.loc.first_line == selector_line
+          return true if same_line?(selector_range, selector_range(node.receiver))
 
+          selector_line = selector_range.line
           receiver_line = receiver_end_line(node.receiver)
           dot_line = node.loc.dot.line
-
-          # receiver and selector are on the same line
-          return true if selector_line == receiver_line
 
           # don't register an offense if there is a line comment between the
           # dot and the selector otherwise, we might break the code while
@@ -124,6 +120,8 @@ module RuboCop
         end
 
         def selector_range(node)
+          return node unless node.call_type?
+
           # l.(1) has no selector, so we use the opening parenthesis instead
           node.loc.selector || node.loc.begin
         end
