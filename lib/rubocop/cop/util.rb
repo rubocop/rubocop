@@ -126,10 +126,18 @@ module RuboCop
         StringInterpreter.interpret(string)
       end
 
+      def line(node_or_range)
+        if node_or_range.respond_to?(:line)
+          node_or_range.line
+        elsif node_or_range.respond_to?(:loc)
+          node_or_range.loc.line
+        end
+      end
+
       def same_line?(node1, node2)
-        # rubocop:disable InternalAffairs/LocationLineEqualityComparison
-        node1.respond_to?(:loc) && node2.respond_to?(:loc) && node1.loc.line == node2.loc.line
-        # rubocop:enable InternalAffairs/LocationLineEqualityComparison
+        line1 = line(node1)
+        line2 = line(node2)
+        line1 && line2 && line1 == line2
       end
 
       def indent(node, offset: 0)

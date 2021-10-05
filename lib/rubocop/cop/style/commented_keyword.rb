@@ -52,9 +52,11 @@ module RuboCop
         ALLOWED_COMMENTS = %w[:nodoc: :yields: rubocop:disable rubocop:todo].freeze
         ALLOWED_COMMENT_REGEXES = ALLOWED_COMMENTS.map { |c| /#\s*#{c}/ }.freeze
 
+        REGEXP = /(?<keyword>\S+).*#/.freeze
+
         def on_new_investigation
           processed_source.comments.each do |comment|
-            next unless offensive?(comment) && (match = line(comment).match(/(?<keyword>\S+).*#/))
+            next unless offensive?(comment) && (match = source_line(comment).match(REGEXP))
 
             register_offense(comment, match[:keyword])
           end
@@ -76,12 +78,12 @@ module RuboCop
         end
 
         def offensive?(comment)
-          line = line(comment)
+          line = source_line(comment)
           KEYWORD_REGEXES.any? { |r| r.match?(line) } &&
             ALLOWED_COMMENT_REGEXES.none? { |r| r.match?(line) }
         end
 
-        def line(comment)
+        def source_line(comment)
           comment.location.expression.source_line
         end
       end
