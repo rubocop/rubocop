@@ -96,7 +96,7 @@ module RuboCop
           return false unless max_line_length
 
           range = node.source_range
-          return false unless range.first_line == range.last_line
+          return false unless range.single_line?
           return false unless line_length_enabled_at_line?(range.first_line)
 
           line = range.source_line

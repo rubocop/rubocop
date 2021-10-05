@@ -29,7 +29,7 @@ module RuboCop
       def report_line(location)
         source_line = location.source_line
 
-        if location.first_line == location.last_line
+        if location.single_line?
           output.puts("# #{source_line}")
         else
           output.puts("# #{source_line} #{yellow(ELLIPSES)}")
