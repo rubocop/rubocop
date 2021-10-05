@@ -73,7 +73,7 @@ module RuboCop
           return if node.send_type? && node.loc.operator&.source != '='
           return unless rhs
           return unless supported_types.include?(rhs.type)
-          return if rhs.first_line == rhs.last_line
+          return if rhs.single_line?
 
           check_by_enforced_style(node, rhs)
         end

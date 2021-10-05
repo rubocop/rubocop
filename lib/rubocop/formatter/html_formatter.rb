@@ -115,7 +115,7 @@ module RuboCop
         end
 
         def possible_ellipses(location)
-          location.first_line == location.last_line ? '' : " #{ELLIPSES}"
+          location.single_line? ? '' : " #{ELLIPSES}"
         end
 
         def escape(string)
