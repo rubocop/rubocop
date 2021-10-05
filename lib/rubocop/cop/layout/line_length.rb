@@ -137,7 +137,7 @@ module RuboCop
           range = semicolon_token.pos
           end_pos = range.end_pos
           next_range = range_between(end_pos, end_pos + 1)
-          return nil unless next_range.line == range.line
+          return nil unless same_line?(next_range, range)
 
           next_char = next_range.source
           return nil if /[\r\n]/.match?(next_char)

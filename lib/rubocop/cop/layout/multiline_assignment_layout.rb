@@ -88,7 +88,7 @@ module RuboCop
         end
 
         def check_new_line_offense(node, rhs)
-          return unless node.loc.operator.line == rhs.first_line
+          return unless same_line?(node.loc.operator, rhs)
 
           add_offense(node, message: NEW_LINE_OFFENSE) do |corrector|
             corrector.insert_after(node.loc.operator, "\n")

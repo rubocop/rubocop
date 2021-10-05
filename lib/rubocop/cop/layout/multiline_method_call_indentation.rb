@@ -75,7 +75,7 @@ module RuboCop
         def right_hand_side(send_node)
           dot = send_node.loc.dot
           selector = send_node.loc.selector
-          if send_node.dot? && selector && dot.line == selector.line
+          if send_node.dot? && selector && same_line?(dot, selector)
             dot.join(selector)
           elsif selector
             selector

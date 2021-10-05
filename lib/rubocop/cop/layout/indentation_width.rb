@@ -341,7 +341,7 @@ module RuboCop
           return true unless body_node
 
           # Don't check if expression is on same line as "then" keyword, etc.
-          return true if body_node.loc.line == base_loc.line
+          return true if same_line?(body_node, base_loc)
 
           return true if starts_with_access_modifier?(body_node)
 

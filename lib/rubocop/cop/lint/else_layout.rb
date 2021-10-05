@@ -72,7 +72,7 @@ module RuboCop
           first_else = else_branch.begin_type? ? else_branch.children.first : else_branch
 
           return unless first_else
-          return unless first_else.source_range.line == node.loc.else.line
+          return unless same_line?(first_else, node.loc.else)
 
           add_offense(first_else) { |corrector| autocorrect(corrector, node, first_else) }
         end

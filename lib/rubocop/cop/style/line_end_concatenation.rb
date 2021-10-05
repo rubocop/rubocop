@@ -59,7 +59,7 @@ module RuboCop
 
           return unless eligible_token_set?(predecessor, operator, successor)
 
-          return if operator.line == successor.line
+          return if same_line?(operator, successor)
 
           next_successor = token_after_last_string(successor, index)
 
