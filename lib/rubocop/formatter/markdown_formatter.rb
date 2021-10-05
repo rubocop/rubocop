@@ -71,7 +71,7 @@ module RuboCop
       end
 
       def possible_ellipses(location)
-        location.first_line == location.last_line ? '' : ' ...'
+        location.single_line? ? '' : ' ...'
       end
     end
   end
