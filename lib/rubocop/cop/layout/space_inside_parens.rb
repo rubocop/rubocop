@@ -146,10 +146,6 @@ module RuboCop
           end
         end
 
-        def same_line?(token1, token2)
-          token1.line == token2.line
-        end
-
         def parens?(token1, token2)
           token1.left_parens? || token2.right_parens?
         end
