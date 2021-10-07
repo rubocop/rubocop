@@ -88,7 +88,7 @@ module RuboCop
         CHECKED_OPTIONS_CONFIG = 'OnlyFor'
         VERSION_SPECIFIERS_OPTION = 'version_specifiers'
         RESTRICTIVE_VERSION_SPECIFIERS_OPTION = 'restrictive_version_specifiers'
-        RESTRICTIVE_VERSION_PATTERN = /<|~>/.freeze
+        RESTRICTIVE_VERSION_PATTERN = /\A\s*(?:<|~>|\d|=)/.freeze
         RESTRICT_ON_SEND = %i[gem].freeze
 
         def on_send(node)
@@ -152,8 +152,8 @@ module RuboCop
         def restrictive_version_specified_gem?(node)
           return unless version_specified_gem?(node)
 
-          node.arguments
-              .any? { |arg| arg&.str_type? && RESTRICTIVE_VERSION_PATTERN.match?(arg.to_s) }
+          node.arguments[1..-1]
+              .any? { |arg| arg&.str_type? && RESTRICTIVE_VERSION_PATTERN.match?(arg.value) }
         end
 
         def contains_checked_options?(node)
