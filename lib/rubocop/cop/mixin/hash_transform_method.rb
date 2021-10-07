@@ -139,9 +139,9 @@ module RuboCop
         end
 
         def self.from_map_to_h(node, match)
-          strip_trailing_chars = 0
-
-          unless node.parent&.block_type?
+          if node.parent&.block_type? && node.parent.send_node == node
+            strip_trailing_chars = 0
+          else
             map_range = node.children.first.source_range
             node_range = node.source_range
             strip_trailing_chars = node_range.end_pos - map_range.end_pos

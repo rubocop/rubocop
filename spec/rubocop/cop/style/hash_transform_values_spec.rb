@@ -117,6 +117,25 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
     RUBY
   end
 
+  it 'flags _.map {...}.to_h when transform_values could be used when wrapped in another block' do
+    expect_offense(<<~RUBY)
+      wrapping do
+        x.map do |k, v|
+        ^^^^^^^^^^^^^^^ Prefer `transform_values` over `map {...}.to_h`.
+          [k, v.to_s]
+        end.to_h
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      wrapping do
+        x.transform_values do |v|
+          v.to_s
+        end
+      end
+    RUBY
+  end
+
   it 'does not flag _.map{...}.to_h when both key & value are transformed' do
     expect_no_offenses('x.map {|k, v| [k.to_sym, foo(v)]}.to_h')
   end
