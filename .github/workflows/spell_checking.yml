@@ -4,7 +4,7 @@ on: [pull_request]
 
 jobs:
   codespell:
-    name: Check spelling all files with codespell
+    name: Check spelling of all files with codespell
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,7 +23,7 @@ jobs:
       - name: Check spelling with codespell
         run: codespell --ignore-words=codespell.txt || exit 1
   misspell:
-    name: Check spelling all files in commit with misspell
+    name: Check spelling of all files in commit with misspell
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
