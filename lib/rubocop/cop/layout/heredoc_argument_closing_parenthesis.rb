@@ -167,7 +167,7 @@ module RuboCop
 
           end_of_outer_send = outermost_send.loc.end
 
-          end_of_outer_send.line == end_of_last_arg_of_outer_send.line &&
+          same_line?(end_of_outer_send, end_of_last_arg_of_outer_send) &&
             end_of_outer_send.column == end_of_last_arg_of_outer_send.column + 1
         end
 

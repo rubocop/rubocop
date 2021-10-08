@@ -20,7 +20,7 @@ module RuboCop
         def on_new_investigation
           processed_source.sorted_tokens.each_cons(2) do |token1, token2|
             next unless token2.comment?
-            next unless token1.line == token2.line
+            next unless same_line?(token1, token2)
             next unless token1.pos.end == token2.pos.begin
 
             range = token2.pos

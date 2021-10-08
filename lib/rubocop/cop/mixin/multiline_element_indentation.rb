@@ -15,7 +15,7 @@ module RuboCop
         node.arguments.each do |arg|
           on_node(type, arg, :send) do |type_node|
             left_brace = type_node.loc.begin
-            if left_brace && left_brace.line == left_parenthesis.line
+            if left_brace && same_line?(left_brace, left_parenthesis)
               yield type_node, left_parenthesis
               ignore_node(type_node)
             end

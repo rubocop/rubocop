@@ -90,7 +90,7 @@ module RuboCop
       # This method depends on the fact that we have guarded
       # against implicit and empty literals.
       def opening_brace_on_same_line?(node)
-        node.loc.begin.line == children(node).first.first_line
+        same_line?(node.loc.begin, children(node).first)
       end
 
       # This method depends on the fact that we have guarded

@@ -74,7 +74,7 @@ module RuboCop
           left_parenthesis = def_node.arguments.loc.begin
           first_elem = def_node.arguments.first
           return unless first_elem
-          return if first_elem.source_range.line == left_parenthesis.line
+          return if same_line?(first_elem, left_parenthesis)
 
           check_first(first_elem, left_parenthesis, nil, 0)
         end

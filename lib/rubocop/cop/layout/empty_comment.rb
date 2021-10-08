@@ -96,7 +96,7 @@ module RuboCop
 
         def autocorrect(corrector, node)
           previous_token = previous_token(node)
-          range = if previous_token && node.loc.line == previous_token.line
+          range = if previous_token && same_line?(node, previous_token)
                     range_with_surrounding_space(range: node.loc.expression, newlines: false)
                   else
                     range_by_whole_lines(node.loc.expression, include_final_newline: true)

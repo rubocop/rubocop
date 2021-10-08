@@ -32,7 +32,7 @@ module RuboCop
       end
 
       def space_missing?(token1, token2)
-        token1.line == token2.line && token2.begin_pos > token1.end_pos
+        same_line?(token1, token2) && token2.begin_pos > token1.end_pos
       end
 
       def space_required_after?(token)

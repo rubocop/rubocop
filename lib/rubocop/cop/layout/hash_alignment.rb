@@ -224,7 +224,7 @@ module RuboCop
 
           parent_loc = node.parent.loc
           selector = parent_loc.selector || parent_loc.expression
-          selector.line == node.pairs.first.loc.line
+          same_line?(selector, node.pairs.first)
         end
 
         def reset!

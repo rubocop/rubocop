@@ -61,7 +61,7 @@ module RuboCop
           alignment_loc = alignment_location(alignment_node)
           kw_loc        = node.loc.keyword
 
-          return if alignment_loc.column == kw_loc.column || alignment_loc.line == kw_loc.line
+          return if alignment_loc.column == kw_loc.column || same_line?(alignment_loc, kw_loc)
 
           add_offense(
             kw_loc, message: format_message(alignment_node, alignment_loc, kw_loc)
