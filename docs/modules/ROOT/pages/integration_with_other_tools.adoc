@@ -1,5 +1,22 @@
 = Integration with Other Tools
 
+== Speeding up integrations
+
+RuboCop integrates with quite a number of other tools, including editors which may attempt
+to do auto-correction for you. In these cases, `rubocop` ends up getting called repeatedly,
+which may result in some slowness, as `rubocop` has to require its entire environment on
+each call.
+
+You can alleviate some of that boot time by using
+https://github.com/fohte/rubocop-daemon[rubocop-daemon]. `rubocop-daemon` is a
+wrapper around `rubocop` that loads everything into a daemonized process so that
+subsequent runs save on that boot time after the first execution. Please see the
+rubocop-daemon documentation for setup instructions and examples of how to use it
+with some editors and other tools.
+
+NOTE: RuboCop's built-in xref:usage/caching.adoc[caching] should also be used to ensure
+that source files that have not been changed are not being re-evaluated unnecessarily.
+
 == Editor integration
 
 === Emacs
