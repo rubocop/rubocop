@@ -150,6 +150,7 @@ AllCops:
     rubocop-minitest: [minitest]
     rubocop-sequel: [sequel]
     rubocop-rake: [rake]
+    rubocop-graphql: [graphql]
 
 #################### Bundler ###############################
 
