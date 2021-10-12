@@ -83,6 +83,7 @@ module RuboCop
           return if block_node.body.begin_type?
           return if receiver_allowed?(block_node.receiver)
           return unless (regexp_method_send_node = extract_send_node(block_node))
+          return if match_predicate_without_receiver?(regexp_method_send_node)
 
           regexp = find_regexp(regexp_method_send_node)
           register_offense(node, block_node, regexp)
@@ -126,6 +127,10 @@ module RuboCop
           elsif node.first_argument.lvar_type?
             node.receiver
           end
+        end
+
+        def match_predicate_without_receiver?(node)
+          node.send_type? && node.method?(:match?) && node.receiver.nil?
         end
       end
     end

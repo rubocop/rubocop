@@ -279,6 +279,12 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
             array.#{method} { /regexp/.match?(foo(_1)) }
           RUBY
         end
+
+        it 'does not register an offense when using `match?` without a receiver' do
+          expect_no_offenses(<<~RUBY)
+            array.#{method} { |item| match?(item) }
+          RUBY
+        end
       end
     end
   end
