@@ -74,7 +74,7 @@ RSpec.configure do |config|
     config.filter_run_excluding broken_on: :ruby_head
   end
 
-  if %w[jruby-9.2-ascii_spec jruby-9.2-spec].include? ENV['CIRCLE_STAGE']
+  if %w[jruby-9.3-ascii_spec jruby-9.3-spec].include? ENV['CIRCLE_STAGE']
     config.filter_run_excluding broken_on: :jruby
   end
 end
