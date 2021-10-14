@@ -74,6 +74,13 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRange, :config do
         RUBY
       end
 
+      it 'does not register an offense for `self`' do
+        expect_no_offenses(<<~RUBY)
+          self#{operator}42
+          42#{operator}self
+        RUBY
+      end
+
       it 'can handle an endless range', :ruby26 do
         expect_offense(<<~RUBY)
           x || 1#{operator}
