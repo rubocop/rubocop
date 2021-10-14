@@ -82,7 +82,7 @@ module RuboCop
         def acceptable?(node)
           node.begin_type? ||
             node.basic_literal? ||
-            node.variable? || node.const_type? ||
+            node.variable? || node.const_type? || node.self_type? ||
             (node.call_type? && acceptable_call?(node))
         end
 
