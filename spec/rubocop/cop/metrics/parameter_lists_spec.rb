@@ -82,4 +82,18 @@ RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when method has allowed amount of args with block arg' do
+    expect_no_offenses(<<~RUBY)
+      def foo(a, b, c, d, &block)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when method has no args' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+      end
+    RUBY
+  end
 end
