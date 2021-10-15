@@ -73,8 +73,17 @@ module RuboCop
 
           return unless first_else
           return unless same_line?(first_else, node.loc.else)
+          return if else_branch_with_no_body?(node)
 
           add_offense(first_else) { |corrector| autocorrect(corrector, node, first_else) }
+        end
+
+        def else_branch_with_no_body?(node)
+          child_lines = node.else_branch.children.collect do |child|
+            child.loc.line if child.is_a?(RuboCop::AST::Node)
+          end.compact
+
+          child_lines.push(node.else_branch.loc.line).all?(node.loc.else.line)
         end
 
         def autocorrect(corrector, node, first_else)
