@@ -65,21 +65,24 @@ module RuboCop
         MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'
 
         def on_def(node)
-          check_body(node.body)
+          check_body(node.body, node.loc.line)
         end
         alias on_defs on_def
 
         def on_kwbegin(node)
           body, = *node
-          check_body(body)
+          check_body(body, node.loc.line)
         end
 
         private
 
-        def check_body(node)
-          locations = keyword_locations(node)
+        def check_body(body, line_of_def_or_kwbegin)
+          locations = keyword_locations(body)
+
           locations.each do |loc|
             line = loc.line
+            next if line == line_of_def_or_kwbegin
+
             keyword = loc.source
             # below the keyword
             check_line(style, line, message('after', keyword), &:empty?)
