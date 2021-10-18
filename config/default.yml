@@ -511,13 +511,13 @@ Layout/EmptyLineBetweenDefs:
   StyleGuide: '#empty-lines-between-methods'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '1.7'
+  VersionChanged: '<<next>>'
   EmptyLineBetweenMethodDefs: true
   EmptyLineBetweenClassDefs: true
   EmptyLineBetweenModuleDefs: true
-  # If `true`, this parameter means that single line method definitions don't
-  # need an empty line between them.
-  AllowAdjacentOneLineDefs: false
+  # `AllowAdjacentOneLineDefs` means that single line method definitions don't
+  # need an empty line between them. `true` by default.
+  AllowAdjacentOneLineDefs: true
   # Can be array to specify minimum and maximum number of empty lines, e.g. [1, 2]
   NumberOfEmptyLines: 1
 

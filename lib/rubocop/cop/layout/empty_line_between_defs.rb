@@ -77,11 +77,32 @@ module RuboCop
       #   def b
       #   end
       #
-      # @example AllowAdjacentOneLineDefs: true
+      # @example AllowAdjacentOneLineDefs: true (default)
       #
       #   # good
       #   class ErrorA < BaseError; end
       #   class ErrorB < BaseError; end
+      #   class ErrorC < BaseError; end
+      #
+      #   # good
+      #   class ErrorA < BaseError; end
+      #
+      #   class ErrorB < BaseError; end
+      #
+      #   class ErrorC < BaseError; end
+      #
+      # @example AllowAdjacentOneLineDefs: false
+      #
+      #   # bad
+      #   class ErrorA < BaseError; end
+      #   class ErrorB < BaseError; end
+      #   class ErrorC < BaseError; end
+      #
+      #   # good
+      #   class ErrorA < BaseError; end
+      #
+      #   class ErrorB < BaseError; end
+      #
       #   class ErrorC < BaseError; end
       #
       class EmptyLineBetweenDefs < Base
