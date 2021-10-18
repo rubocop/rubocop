@@ -1,0 +1,1 @@
+* [#10196](https://github.com/rubocop/rubocop/pull/10196): Fix a false positive for `Lint/SymbolConversion` when using a Hash key with a mixture of multibyte characters starting with an ascii alphabet character. ([@koic][])

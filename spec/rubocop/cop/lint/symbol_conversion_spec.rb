@@ -62,6 +62,18 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
         RUBY
       end
 
+      it 'does not register an offense for a string key that is a multibyte character' do
+        expect_no_offenses(<<~RUBY)
+          { 'あ': 'bar' }
+        RUBY
+      end
+
+      it 'does not register an offense for a string key with a mixture of multibyte characters starting with ascii alphabet' do
+        expect_no_offenses(<<~RUBY)
+          { 'Aあ': 'bar' }
+        RUBY
+      end
+
       it 'does not register an offense for a require quoted symbol that contains `:`' do
         expect_no_offenses(<<~RUBY)
           { 'foo:bar': 'bar' }

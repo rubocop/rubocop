@@ -145,7 +145,7 @@ module RuboCop
           # raise a syntax error (eg. `{ ==: ... }`). Therefore, if the
           # symbol does not start with an alphanumeric or underscore, it
           # will be ignored.
-          return unless node.value.to_s.match?(/\A[a-z0-9_]/i)
+          return unless node.value.to_s.match?(/\A([a-z0-9_!?]+\z)/i)
 
           correction = node.value.inspect.delete_prefix(':')
           return if properly_quoted?(node.source, correction)
