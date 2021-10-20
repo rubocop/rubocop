@@ -258,6 +258,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
     end
+
+    context 'when a directory is named `*`' do
+      before do
+        FileUtils.mkdir('*')
+      end
+
+      after do
+        FileUtils.rmdir('*')
+      end
+
+      it 'does not crash' do
+        expect(cli.run([])).to eq(0)
+      end
+    end
   end
 
   describe 'rubocop:disable comment' do
