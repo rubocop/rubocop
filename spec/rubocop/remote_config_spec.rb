@@ -75,9 +75,11 @@ RSpec.describe RuboCop::RemoteConfig do
         end
 
         it 'raises error' do
+          exception = RUBY_VERSION >= '2.6' ? Net::HTTPClientException : Net::HTTPServerException
+
           expect do
             remote_config
-          end.to raise_error(Net::HTTPServerException,
+          end.to raise_error(exception,
                              '404 "" while downloading remote config file http://example.com/rubocop.yml')
         end
       end
@@ -120,9 +122,11 @@ RSpec.describe RuboCop::RemoteConfig do
         end
 
         it 'raises error' do
+          exception = RUBY_VERSION >= '2.6' ? Net::HTTPClientException : Net::HTTPServerException
+
           expect do
             remote_config
-          end.to raise_error(Net::HTTPServerException,
+          end.to raise_error(exception,
                              '404 "" while downloading remote config file http://example.com/rubocop.yml')
         end
       end
