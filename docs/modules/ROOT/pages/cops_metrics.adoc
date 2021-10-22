@@ -462,6 +462,9 @@ The maximum number of parameters is configurable.
 Keyword arguments can optionally be excluded from the total count,
 as they add less complexity than positional or optional parameters.
 
+NOTE: Explicit block argument `&block` is not counted to prevent
+      erroneous change that is avoided by making block argument implicit.
+
 This cop also checks for the maximum number of optional parameters.
 This can be configured using the `MaxOptionalParameters` config option.
 

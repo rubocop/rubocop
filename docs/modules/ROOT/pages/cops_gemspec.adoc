@@ -190,13 +190,14 @@ spec.add_dependency 'rspec'
 | Yes
 | No
 | 0.52
-| 0.89
+| 1.22
 |===
 
-Checks that `required_ruby_version` of gemspec is specified and
-equal to `TargetRubyVersion` of .rubocop.yml.
-Thereby, RuboCop to perform static analysis working on the version
-required by gemspec.
+Checks that `required_ruby_version` in a gemspec file is set to a valid
+value (non-blank) and matches `TargetRubyVersion` as set in RuboCop's
+configuration for the gem.
+
+This ensures that RuboCop is using the same Ruby version as the gem.
 
 === Examples
 
@@ -217,6 +218,11 @@ end
 # bad
 Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.6.0'
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.required_ruby_version = ''
 end
 
 # good
