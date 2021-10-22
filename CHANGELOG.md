@@ -2,6 +2,24 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#10165](https://github.com/rubocop/rubocop/issues/10165): Fix `Layout/DotPosition` false positives when the selector and receiver are on the same line. ([@dvandersluis][])
+* [#10171](https://github.com/rubocop/rubocop/pull/10171): Fix `Style/HashTransformKeys` and `Style/HashTransformValues` incorrect auto-correction when inside block body. ([@franzliedke][])
+
+[@franzliedke]: https://github.com/franzliedke
+* [#10180](https://github.com/rubocop/rubocop/issues/10180): Fix an error for `Style/SelectByRegexp` when using `match?` without a receiver. ([@koic][])
+* [#10193](https://github.com/rubocop/rubocop/pull/10193): Fix an error for `Layout/EmptyLinesAroundExceptionHandlingKeywords` when `begin` and `rescue` are on the same line. ([@koic][])
+* [#10185](https://github.com/rubocop/rubocop/issues/10185): Fix a false positive for `Lint/AmbiguousRange` when using `self` in a range literal. ([@koic][])
+* [#10200](https://github.com/rubocop/rubocop/issues/10200): Fix an error when inspecting a directory named `*`. ([@koic][])
+* [#10149](https://github.com/rubocop/rubocop/pull/10149): Fix `Bundler/GemComment` where it would not detect an offense in some cases when `OnlyFor` is set to `restrictive_version_specifiers`. ([@Drowze][])
+
+### Changes
+
+* [#10157](https://github.com/rubocop/rubocop/pull/10157): Updated `Gemspec/RequiredRubyVersion` handle being set to blank values. ([@dvandersluis][])
+* [#10176](https://github.com/rubocop/rubocop/pull/10176): Unmark `AutoCorrect: false` from `Security/JSONLoad`. ([@koic][])
+* [#10186](https://github.com/rubocop/rubocop/issues/10186): Explicit block arg is not counted for `Metrics/ParameterLists`. ([@koic][])
+
 ## 1.22.1 (2021-10-04)
 
 ### Bug fixes
@@ -5909,3 +5927,5 @@
 [@itay-grudev]: https://github.com/itay-grudev
 [@lilisako]: https://github.com/lilisako
 [@Hugo-Hache]: https://github.com/Hugo-Hache
+[@franzliedke]: https://github.com/franzliedke
+[@Drowze]: https://github.com/Drowze
