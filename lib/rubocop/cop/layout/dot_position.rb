@@ -70,7 +70,7 @@ module RuboCop
         def proper_dot_position?(node)
           selector_range = selector_range(node)
 
-          return true if same_line?(selector_range, selector_range(node.receiver))
+          return true if same_line?(selector_range, end_range(node.receiver))
 
           selector_line = selector_range.line
           receiver_line = receiver_end_line(node.receiver)
@@ -117,6 +117,10 @@ module RuboCop
 
         def heredoc?(node)
           (node.str_type? || node.dstr_type?) && node.heredoc?
+        end
+
+        def end_range(node)
+          node.source_range.end
         end
 
         def selector_range(node)

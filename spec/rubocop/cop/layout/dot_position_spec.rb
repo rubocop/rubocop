@@ -316,6 +316,14 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
       expect_no_offenses('puts something')
     end
 
+    it 'does not err on method call with multi-line arguments' do
+      expect_no_offenses(<<~RUBY)
+        foo(
+          bar
+        ).baz
+      RUBY
+    end
+
     it 'does not err on method call without a method name' do
       expect_offense(<<~RUBY)
         l
