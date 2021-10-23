@@ -42,11 +42,12 @@ module RuboCop
           #        Maybe further investigation of RuboCop AST will lead to an essential solution.
           return unless node.loc
 
-          constant = node.absolute? ? constant_name(node, node.short_name.to_s) : node.source
+          constant = node.absolute? ? constant_name(node, node.short_name) : node.source
           return unless (deprecated_constant = deprecated_constants[constant])
 
           alternative = deprecated_constant['Alternative']
           version = deprecated_constant['DeprecatedVersion']
+          return if target_ruby_version < version.to_f
 
           add_offense(node, message: message(alternative, node.source, version)) do |corrector|
             corrector.replace(node, alternative)
@@ -56,7 +57,7 @@ module RuboCop
         private
 
         def constant_name(node, nested_constant_name)
-          return nested_constant_name unless node.namespace.const_type?
+          return nested_constant_name.to_s unless node.namespace.const_type?
 
           constant_name(node.namespace, "#{node.namespace.short_name}::#{nested_constant_name}")
         end

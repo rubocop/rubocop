@@ -7,6 +7,9 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
         'NIL' => { 'Alternative' => 'nil', 'DeprecatedVersion' => '2.4' },
         'TRUE' => { 'Alternative' => 'true', 'DeprecatedVersion' => '2.4' },
         'FALSE' => { 'Alternative' => 'false', 'DeprecatedVersion' => '2.4' },
+        'Net::HTTPServerException' => {
+          'Alternative' => 'Net::HTTPClientException', 'DeprecatedVersion' => '2.6'
+        },
         'Random::DEFAULT' => { 'Alternative' => 'Random.new', 'DeprecatedVersion' => '3.0' },
         'Triple::Nested::Constant' => { 'Alternative' => 'Value', 'DeprecatedVersion' => '2.4' },
         'Have::No::Alternative' => { 'DeprecatedVersion' => '2.4' },
@@ -48,15 +51,57 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when using `Random::DEFAULT`' do
-    expect_offense(<<~RUBY)
-      Random::DEFAULT
-      ^^^^^^^^^^^^^^^ Use `Random.new` instead of `Random::DEFAULT`, deprecated since Ruby 3.0.
-    RUBY
+  context 'Ruby <= 2.5', :ruby25 do
+    it 'does not register an offense when using `Net::HTTPServerException`' do
+      expect_no_offenses(<<~RUBY)
+        Net::HTTPServerException
+      RUBY
+    end
+  end
 
-    expect_correction(<<~RUBY)
-      Random.new
-    RUBY
+  context 'Ruby >= 2.6', :ruby26 do
+    it 'registers and corrects an offense when using `Net::HTTPServerException`' do
+      expect_offense(<<~RUBY)
+        Net::HTTPServerException
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Use `Net::HTTPClientException` instead of `Net::HTTPServerException`, deprecated since Ruby 2.6.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Net::HTTPClientException
+      RUBY
+    end
+  end
+
+  context 'Ruby <= 2.7', :ruby27 do
+    it 'does not register an offense when using `Random::DEFAULT`' do
+      expect_no_offenses(<<~RUBY)
+        Random::DEFAULT
+      RUBY
+    end
+  end
+
+  context 'Ruby >= 3.0', :ruby30 do
+    it 'registers and corrects an offense when using `Random::DEFAULT`' do
+      expect_offense(<<~RUBY)
+        Random::DEFAULT
+        ^^^^^^^^^^^^^^^ Use `Random.new` instead of `Random::DEFAULT`, deprecated since Ruby 3.0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Random.new
+      RUBY
+    end
+
+    it 'registers and corrects an offense when using `::Random::DEFAULT`' do
+      expect_offense(<<~RUBY)
+        ::Random::DEFAULT
+        ^^^^^^^^^^^^^^^^^ Use `Random.new` instead of `::Random::DEFAULT`, deprecated since Ruby 3.0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Random.new
+      RUBY
+    end
   end
 
   it 'registers and corrects an offense when using `::NIL`' do
@@ -89,17 +134,6 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
 
     expect_correction(<<~RUBY)
       false
-    RUBY
-  end
-
-  it 'registers and corrects an offense when using `::Random::DEFAULT`' do
-    expect_offense(<<~RUBY)
-      ::Random::DEFAULT
-      ^^^^^^^^^^^^^^^^^ Use `Random.new` instead of `::Random::DEFAULT`, deprecated since Ruby 3.0.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      Random.new
     RUBY
   end
 
