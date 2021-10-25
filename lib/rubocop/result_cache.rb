@@ -52,7 +52,9 @@ module RuboCop
       rescue Errno::ENOENT
         # This can happen if parallel RuboCop invocations try to remove the
         # same files. No problem.
+        # rubocop:disable Lint/UnsafeGlobalVariables
         puts $ERROR_INFO if verbose
+        # rubocop:enable Lint/UnsafeGlobalVariables
       end
 
       def remove_files(files, dirs, remove_count)

@@ -2247,6 +2247,11 @@ Lint/UnreachableLoop:
     # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
 
+Lint/UnsafeGlobalVariables:
+  Description: 'Do not use unsafe global variables.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
