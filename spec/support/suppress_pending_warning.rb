@@ -8,6 +8,7 @@
 module RuboCop
   class ConfigLoader
     class << self
+      remove_method :warn_on_pending_cops
       def warn_on_pending_cops(config)
         # noop
       end
