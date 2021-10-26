@@ -101,11 +101,11 @@ module RuboCop
         def block_end_align_target(node)
           lineage = [node, *node.ancestors]
 
-          target = lineage.each_cons(2) do |current, parent|
-            break current if end_align_target?(current, parent)
+          lineage.each_cons(2) do |current, parent|
+            return current if end_align_target?(current, parent)
           end
 
-          target || lineage.last
+          lineage.last
         end
 
         def end_align_target?(node, parent)
