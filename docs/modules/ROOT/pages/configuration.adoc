@@ -764,3 +764,23 @@ Rails/TimeZone:
 ----
 
 The style guide URL is https://rails.rubystyle.guide#time.
+
+== Setting the documentation URL
+
+You can specify the base URL of the documentation using `DocumentationBaseURL`.
+If specified under `AllCops`, all cops are targeted.
+
+[source,yaml]
+----
+AllCops:
+  DocumentationBaseURL: https://docs.rubocop.org/rubocop
+----
+
+If specified under a specific department, it takes precedence over `AllCops`.
+The following is an example of specifying `Rails` department.
+
+[source,yaml]
+----
+Rails:
+  DocumentationBaseURL: https://docs.rubocop.org/rubocop-rails
+----

@@ -131,6 +131,7 @@ module RuboCop
 
       run_command(:version) if @options[:version] || @options[:verbose_version]
       run_command(:show_cops) if @options[:show_cops]
+      run_command(:show_docs_url) if @options[:show_docs_url]
       raise Finished
     end
 
