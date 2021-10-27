@@ -1568,7 +1568,7 @@ Lint/DeprecatedConstants:
   Description: 'Checks for deprecated constants.'
   Enabled: pending
   VersionAdded: '1.8'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.22'
   # You can configure deprecated constants.
   # If there is an alternative method, you can set alternative value as `Alternative`.
   # And you can set the deprecated version as `DeprecatedVersion`.

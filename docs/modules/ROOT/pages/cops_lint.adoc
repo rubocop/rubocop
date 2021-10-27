@@ -872,7 +872,7 @@ Addrinfo.tcp(host, port).getnameinfo
 | Yes
 | Yes
 | 1.8
-| -
+| 1.22
 |===
 
 This cop checks for deprecated constants.
@@ -911,7 +911,7 @@ Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible wit
 | Name | Default value | Configurable values
 
 | DeprecatedConstants
-| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}}`
+| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}}`
 | 
 |===
 
