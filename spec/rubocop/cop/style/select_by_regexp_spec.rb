@@ -38,6 +38,19 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects for `blockvar =~ lvar`' do
+        expect_offense(<<~RUBY, method: method)
+          lvar = /regexp/
+          array.#{method} { |x| x =~ lvar }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lvar = /regexp/
+          array.#{correction}(lvar)
+        RUBY
+      end
+
       it 'registers an offense and corrects for `regexp =~ blockvar`' do
         expect_offense(<<~RUBY, method: method)
           array.#{method} { |x| /regexp/ =~ x }
@@ -46,6 +59,19 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
 
         expect_correction(<<~RUBY)
           array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `lvar =~ blockvar`' do
+        expect_offense(<<~RUBY, method: method)
+          lvar = /regexp/
+          array.#{method} { |x| lvar =~ x }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lvar = /regexp/
+          array.#{correction}(lvar)
         RUBY
       end
 
