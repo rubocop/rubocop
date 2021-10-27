@@ -1007,9 +1007,9 @@ RSpec.describe RuboCop::ConfigLoader do
 
       context 'and the gem is globally installed' do
         before do
-          gem_class = Struct.new(:gem_dir)
           %w[gemone gemtwo].each do |gem_name|
-            mock_spec = gem_class.new(File.join(gem_root, gem_name))
+            mock_spec = double
+            allow(mock_spec).to receive(:gem_dir).and_return(File.join(gem_root, gem_name))
             allow(Gem::Specification).to receive(:find_by_name).with(gem_name).and_return(mock_spec)
           end
           allow(Gem).to receive(:path).and_return([gem_root])
@@ -1036,15 +1036,19 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       context 'and the gem is bundled' do
+        let(:gem_one) { double }
+        let(:gem_two) { double }
+
         before do
           require 'bundler'
 
-          specs = {
-            'gemone' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemone'))],
-            'gemtwo' => [OpenStruct.new(full_gem_path: File.join(gem_root, 'gemtwo'))]
-          }
+          specs = { 'gemone' => [gem_one], 'gemtwo' => [gem_two] }
 
-          allow(Bundler).to receive(:load).and_return(OpenStruct.new(specs: specs))
+          allow(gem_one).to receive(:full_gem_path).and_return(File.join(gem_root, 'gemone'))
+          allow(gem_two).to receive(:full_gem_path).and_return(File.join(gem_root, 'gemtwo'))
+          result = double
+          allow(result).to receive(:specs).and_return(specs)
+          allow(Bundler).to receive(:load).and_return(result)
         end
 
         it 'returns values from the gem config with local overrides' do
@@ -1082,7 +1086,8 @@ RSpec.describe RuboCop::ConfigLoader do
 
         create_file("#{gem_root}/#{gem_name}/default.yml", ["Layout/LineLength:\n    Max: 48"])
 
-        mock_spec = OpenStruct.new(gem_dir: File.join(gem_root, gem_name))
+        mock_spec = double
+        allow(mock_spec).to receive(:gem_dir).and_return(File.join(gem_root, gem_name))
         allow(Gem::Specification).to receive(:find_by_name).with(gem_name).and_return(mock_spec)
         allow(Gem).to receive(:path).and_return([gem_root])
       end

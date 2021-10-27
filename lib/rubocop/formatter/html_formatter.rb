@@ -23,12 +23,15 @@ module RuboCop
         end
       end
 
+      Summary = Struct.new(:offense_count, :inspected_files, :target_files, keyword_init: true)
+      FileOffenses = Struct.new(:path, :offenses, keyword_init: true)
+
       attr_reader :files, :summary
 
       def initialize(output, options = {})
         super
         @files = []
-        @summary = OpenStruct.new(offense_count: 0)
+        @summary = Summary.new(offense_count: 0)
       end
 
       def started(target_files)
@@ -36,7 +39,7 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
-        files << OpenStruct.new(path: file, offenses: offenses)
+        files << FileOffenses.new(path: file, offenses: offenses)
         summary.offense_count += offenses.count
       end
 

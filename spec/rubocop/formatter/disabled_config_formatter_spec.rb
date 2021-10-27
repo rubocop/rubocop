@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
      RuboCop::Cop::Offense.new(:convention, location, 'message', 'Test/Cop2')]
   end
 
-  let(:location) { OpenStruct.new(line: 1, column: 5) }
+  let(:location) { FakeLocation.new(line: 1, column: 5) }
 
   let(:heading) do
     format(

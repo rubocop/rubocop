@@ -4216,6 +4216,16 @@ Style/OneLineConditional:
   VersionAdded: '0.9'
   VersionChanged: '0.90'
 
+Style/OpenStructUse:
+  Description: >-
+                 Avoid using OpenStruct. As of Ruby 3.0, use is officially discouraged due to performance,
+                 version compatibility, and potential security issues.
+  Reference:
+    - https://docs.ruby-lang.org/en/3.0.0/OpenStruct.html#class-OpenStruct-label-Caveats
+
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: false
