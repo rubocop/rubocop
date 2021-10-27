@@ -85,7 +85,7 @@ module RuboCop
           return unless (regexp_method_send_node = extract_send_node(block_node))
           return if match_predicate_without_receiver?(regexp_method_send_node)
 
-          regexp = find_regexp(regexp_method_send_node)
+          regexp = find_regexp(regexp_method_send_node, block_node)
           register_offense(node, block_node, regexp)
         end
 
@@ -119,10 +119,11 @@ module RuboCop
           regexp_method_send_node
         end
 
-        def find_regexp(node)
+        def find_regexp(node, block)
           return node.child_nodes.first if node.match_with_lvasgn_type?
 
-          if node.receiver.lvar_type?
+          if node.receiver.lvar_type? &&
+             (block.numblock_type? || node.receiver.source == block.arguments.first.source)
             node.first_argument
           elsif node.first_argument.lvar_type?
             node.receiver
