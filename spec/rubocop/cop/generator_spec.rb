@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Generator do
           1. Modify the description of Style/FakeCop in config/default.yml
           2. Implement your new cop in the generated file!
           3. Commit your new cop with a message such as
-             e.g. "Add new `Style/FakeCop` cop."
+             e.g. "Add new `Style/FakeCop` cop"
           4. Run `bundle exec rake changelog:new` to generate a changelog entry
              for your new cop.
       TODO

@@ -150,7 +150,7 @@ module RuboCop
             1. Modify the description of #{badge} in config/default.yml
             2. Implement your new cop in the generated file!
             3. Commit your new cop with a message such as
-               e.g. "Add new `#{badge}` cop."
+               e.g. "Add new `#{badge}` cop"
             4. Run `bundle exec rake changelog:new` to generate a changelog entry
                for your new cop.
         TODO
