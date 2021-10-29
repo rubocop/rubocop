@@ -33,6 +33,14 @@ module RuboCop
 
         SNAKE_CASE = /^[\d[[:lower:]]_.?!]+$/.freeze
 
+        # @!method struct_definition(node)
+        def_node_matcher :struct_definition, <<~PATTERN
+          {
+            (casgn $_ $_        (send (const {nil? cbase} :Struct) :new ...))
+            (casgn $_ $_ (block (send (const {nil? cbase} :Struct) :new ...) ...))
+          }
+        PATTERN
+
         def on_new_investigation
           file_path = processed_source.file_path
           return if config.file_to_exclude?(file_path) || config.allowed_camel_case_file?(file_path)
@@ -126,7 +134,7 @@ module RuboCop
           name = namespace.pop
 
           on_node(%i[class module casgn], node) do |child|
-            next unless (const = child.defined_module)
+            next unless (const = find_definition(child))
 
             const_namespace, const_name = *const
             next if name != const_name && !match_acronym?(name, const_name)
@@ -136,6 +144,15 @@ module RuboCop
           end
 
           nil
+        end
+
+        def find_definition(node)
+          node.defined_module || defined_struct(node)
+        end
+
+        def defined_struct(node)
+          namespace, name = *struct_definition(node)
+          s(:const, namespace, name) if name
         end
 
         def match_namespace(node, namespace, expected)
