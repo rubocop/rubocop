@@ -2501,6 +2501,7 @@ Naming/FileName:
   StyleGuide: '#snake-case-files'
   Enabled: true
   VersionAdded: '0.50'
+  VersionChanged: '<<next>>'
   # Camel case file names listed in `AllCops:Include` and all file names listed
   # in `AllCops:Exclude` are excluded by default. Add extra excludes here.
   Exclude: []

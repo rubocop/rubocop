@@ -251,6 +251,23 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
         end
       RUBY
     end
+
+    context 'on a file which defines a Struct without a block' do
+      include_examples 'matching module or class', <<~RUBY
+        module A
+          B = Struct.new(:foo, :bar)
+        end
+      RUBY
+    end
+
+    context 'on a file which defines a Struct with a block' do
+      include_examples 'matching module or class', <<~RUBY
+        module A
+          B = Struct.new(:foo, :bar) do
+          end
+        end
+      RUBY
+    end
   end
 
   context 'when CheckDefinitionPathHierarchy is false' do
@@ -281,6 +298,23 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
             class PictureCollection
             end
           end
+        RUBY
+      end
+    end
+
+    context 'on a file with a matching struct' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, '/lib/image_collection.rb')
+          ImageCollection = Struct.new
+        RUBY
+      end
+    end
+
+    context 'on a file with a non-matching struct' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY, '/lib/image_collection.rb')
+          PictureCollection = Struct.new
+          ^ `image_collection.rb` should define a class or module called `ImageCollection`.
         RUBY
       end
     end
@@ -324,6 +358,30 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
             module Foo
               class NonMatching
               end
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with a non-matching module containing a matching struct' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, 'lib/foo.rb')
+          begin
+            module NonMatching
+              Foo = Struct.new
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with a matching module containing a non-matching struct' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, 'lib/foo.rb')
+          begin
+            module Foo
+              NonMatching = Struct.new
             end
           end
         RUBY
