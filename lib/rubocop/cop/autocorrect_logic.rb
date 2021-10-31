@@ -42,14 +42,46 @@ module RuboCop
         if heredoc_range
           disable_offense_before_and_after(range_by_lines(heredoc_range))
         else
-          eol_comment = " # rubocop:todo #{cop_name}"
+          STDERR.puts(range.source_line)
+
+          comment = previous_wrap_comment(range)
+
+          if comment
+            cops = comment[15..]
+
+            STDERR.puts cops
+
+            return disable_offense_before_and_after(range_by_lines(range), "# rubocop:todo #{cops}, #{cop_name}", "# rubocop:enable #{cops}, #{cop_name}")
+          end
+
+          previous_eol_comment = previous_eol_comment(range)
+          eol_comment = previous_eol_comment ? ", #{cop_name}" : " # rubocop:todo #{cop_name}"
           needed_line_length = (range.source_line + eol_comment).length
           if needed_line_length <= max_line_length
             disable_offense_at_end_of_line(range_of_first_line(range), eol_comment)
           else
-            disable_offense_before_and_after(range_by_lines(range))
+            cops = previous_eol_comment[15..]
+            # move_previous_eol_comment if previous_eol_comment
+            disable_offense_before_and_after(range_by_lines(range), "# rubocop:todo #{cops}, #{cop_name}", "# rubocop:enable #{cops}, #{cop_name}")
           end
         end
+      end
+
+      def previous_eol_comment(range)
+        range.source_line.split('#').last.yield_self.detect { |comment| comment.match?(/^ rubocop:todo.*$/) }
+      end
+
+      def previous_wrap_comment(offense_range)
+        # The empty offense range is an edge case that can be reached from the Lint/Syntax cop.
+        return nil if offense_range.empty?
+
+        STDERR.puts processed_source.comments
+
+        processed_source.ast_with_comments.values.first.first.text
+      end
+
+      def move_previous_eol_comment
+
       end
 
       def surrounding_heredoc(offense_range)
@@ -90,14 +122,14 @@ module RuboCop
         Corrector.new(range).insert_after(range, eol_comment)
       end
 
-      def disable_offense_before_and_after(range_by_lines)
+      def disable_offense_before_and_after(range_by_lines, disable_comment = "# rubocop:todo #{cop_name}", enable_comment = "# rubocop:enable #{cop_name}")
         range_with_newline = range_by_lines.resize(range_by_lines.size + 1)
         leading_whitespace = range_by_lines.source_line[/^\s*/]
 
         Corrector.new(range_by_lines).wrap(
           range_with_newline,
-          "#{leading_whitespace}# rubocop:todo #{cop_name}\n",
-          "#{leading_whitespace}# rubocop:enable #{cop_name}\n"
+          "#{leading_whitespace}#{disable_comment}\n",
+          "#{leading_whitespace}#{enable_comment}\n"
         )
       end
     end
