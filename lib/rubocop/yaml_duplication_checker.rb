@@ -23,7 +23,7 @@ module RuboCop
       when Psych::Nodes::Mapping
         tree.children.each_slice(2).with_object([]) do |(key, value), keys|
           exist = keys.find { |key2| key2.value == key.value }
-          on_duplicated.call(exist, key) if exist
+          yield(exist, key) if exist
           keys << key
           traverse(value, &on_duplicated)
         end
