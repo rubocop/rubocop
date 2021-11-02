@@ -46,7 +46,7 @@ module RuboCop
 
           message = style == :single_quotes ? MSG_SINGLE : MSG_DOUBLE
 
-          if wrong_quotes?(node)
+          if wrong_quotes?(node) || invalid_double_quotes?(node.source)
             add_offense(node, message: message) do |corrector|
               opposite_style_detected
               autocorrect(corrector, node)
@@ -57,6 +57,16 @@ module RuboCop
         end
 
         private
+
+        def invalid_double_quotes?(source)
+          return false unless style == :double_quotes
+
+          # The string needs single quotes if:
+          # 1. It contains a double quote
+          # 2. It contains text that would become an escape sequence with double quotes
+          # 3. It contains text that would become an interpolation with double quotes
+          !/" | (?<!\\)\\[aAbcdefkMnprsStuUxzZ0-7] | \#[@{$]/x.match?(source)
+        end
 
         def autocorrect(corrector, node)
           str = if hash_colon_key?(node)
