@@ -254,6 +254,14 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       expect_no_offenses('a = %(x)')
     end
 
+    it 'accepts single quoted string with backslash' do
+      expect_no_offenses(<<~'RUBY')
+        '\,'
+        '100\%'
+        '(\)'
+      RUBY
+    end
+
     it 'accepts heredocs' do
       expect_no_offenses(<<~RUBY)
         execute <<-SQL
