@@ -17,6 +17,16 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
     RUBY
   end
 
+  it 'registers an offense for non-empty cbase class' do
+    expect_offense(<<~RUBY)
+      class ::MyClass
+      ^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class MyClass`.
+        def method
+        end
+      end
+    RUBY
+  end
+
   it 'does not consider comment followed by empty line to be class documentation' do
     expect_offense(<<~RUBY)
       # Copyright 2014

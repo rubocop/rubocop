@@ -176,7 +176,7 @@ module RuboCop
         end
 
         def qualify_const(node)
-          return if node.nil?
+          return if node.nil? || node.cbase_type?
 
           [qualify_const(node.namespace), node.short_name].compact
         end
