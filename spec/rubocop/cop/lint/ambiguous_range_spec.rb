@@ -55,10 +55,15 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRange, :config do
         RUBY
       end
 
-      it 'does not register an offense if the range is composed of basic literals' do
+      it 'does not register an offense if the range is composed of literals' do
         expect_no_offenses(<<~RUBY)
           1#{operator}2
           'a'#{operator}'z'
+          "\#{foo}-\#{bar}"#{operator}'123-4567'
+          `date`#{operator}'foobar'
+          :"\#{foo}-\#{bar}"#{operator}:baz
+          /a/#{operator}/b/
+          42#{operator}nil
         RUBY
       end
 
