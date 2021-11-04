@@ -102,7 +102,8 @@ module RuboCop
         end
 
         def use_ignored_method?(node)
-          (parent = node.parent) && parent.send_type? && ignored_method?(parent.method_name)
+          send_parent = node.each_ancestor(:send).first
+          send_parent && ignored_method?(send_parent.method_name)
         end
 
         def unannotated_format?(node, detected_style)

@@ -261,6 +261,19 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           redirect("%{foo}")
         RUBY
       end
+
+      it 'does not register an offense for value in nested structure' do
+        expect_no_offenses(<<~RUBY)
+          redirect("%{foo}", bye: "%{foo}")
+        RUBY
+      end
+
+      it 'registers an offense for different method call within ignored method' do
+        expect_offense(<<~RUBY)
+          redirect("%{foo}", bye: foo("%{foo}"))
+                                       ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+        RUBY
+      end
     end
 
     context 'when `IgnoredMethods: []`' do
