@@ -8,7 +8,7 @@ module RuboCop
       # Ranges have quite low precedence, which leads to unexpected behaviour when
       # using a range with other operators. This cop avoids that by making ranges
       # explicit by requiring parenthesis around complex range boundaries (anything
-      # that is not a basic literal: numerics, strings, symbols, etc.).
+      # that is not a literal: numerics, strings, symbols, etc.).
       #
       # This cop can be configured with `RequireParenthesesForMethodChains` in order to
       # specify whether method chains (including `self.foo`) should be wrapped in parens
@@ -81,7 +81,7 @@ module RuboCop
 
         def acceptable?(node)
           node.begin_type? ||
-            node.basic_literal? ||
+            node.literal? ||
             node.variable? || node.const_type? || node.self_type? ||
             (node.call_type? && acceptable_call?(node))
         end
