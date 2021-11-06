@@ -35,6 +35,17 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'when using `#to_r`' do
+      expect_offense(<<~RUBY)
+        "1/3".to_r
+        ^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `"1/3".to_r`, use stricter `Rational("1/3")`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Rational("1/3")
+      RUBY
+    end
+
     it 'when using `#to_i` for number literals' do
       expect_no_offenses(<<~RUBY)
         42.to_i
@@ -53,6 +64,13 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       expect_no_offenses(<<~RUBY)
         42.to_c
         42.0.to_c
+      RUBY
+    end
+
+    it 'when using `#to_r` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_r
+        42.0.to_r
       RUBY
     end
 
