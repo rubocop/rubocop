@@ -30,6 +30,7 @@ module RuboCop
       #   '10'.to_i
       #   '10.2'.to_f
       #   '10'.to_c
+      #   '1/3'.to_r
       #   ['1', '2', '3'].map(&:to_i)
       #   foo.try(:to_f)
       #   bar.send(:to_c)
@@ -39,6 +40,7 @@ module RuboCop
       #   Integer('10', 10)
       #   Float('10.2')
       #   Complex('10')
+      #   Rational('1/3')
       #   ['1', '2', '3'].map { |i| Integer(i, 10) }
       #   foo.try { |i| Float(i) }
       #   bar.send { |i| Complex(i) }
@@ -59,13 +61,14 @@ module RuboCop
         CONVERSION_METHOD_CLASS_MAPPING = {
           to_i: "#{Integer.name}(%<number_object>s, 10)",
           to_f: "#{Float.name}(%<number_object>s)",
-          to_c: "#{Complex.name}(%<number_object>s)"
+          to_c: "#{Complex.name}(%<number_object>s)",
+          to_r: "#{Rational.name}(%<number_object>s)"
         }.freeze
         MSG = 'Replace unsafe number conversion with number '\
               'class parsing, instead of using '\
               '`%<current>s`, use stricter '\
               '`%<corrected_method>s`.'
-        CONVERSION_METHODS = %i[Integer Float Complex to_i to_f to_c].freeze
+        CONVERSION_METHODS = %i[Integer Float Complex Rational to_i to_f to_c to_r].freeze
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 
         # @!method to_method(node)
