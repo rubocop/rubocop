@@ -93,12 +93,12 @@ Here are a few examples:
 
 * Create one file `changelog/{type}_{some_description}.md`, where `type` is `new` (New feature), `fix` or `change`, and `some_description` is unique to avoid conflicts. Task `changelog:fix` (or `:new` or `:change`) can help you.
 * Mark it up in [Markdown syntax][6].
-* The entry line should start with `* ` (an asterisk and a space).
+* The entry should be a single line, starting with `* ` (an asterisk and a space).
 * If the change has a related GitHub issue (e.g. a bug fix for a reported issue), put a link to the issue as `[#123](https://github.com/rubocop/rubocop/issues/123): `.
 * Describe the brief of the change. The sentence should end with a punctuation.
 * If this is a breaking change, mark it with `**(Breaking)**`.
 * At the end of the entry, add an implicit link to your GitHub user page as `([@username][])`.
-* Alternatively, you may modify the CHANGELOG file directly, but this may result in conflicts later on. Also, if this is your first contribution to RuboCop project, add a link definition for the implicit link to the bottom of the changelog as `[@username]: https://github.com/username`.
+* Alternatively, you may modify the CHANGELOG.md file directly, but this may result in conflicts later on. Also, if this is your first contribution to RuboCop project, add a link definition for the implicit link to the bottom of the changelog as `[@username]: https://github.com/username`.
 
 [1]: https://github.com/rubocop/rubocop/issues
 [2]: https://www.gun.io/blog/how-to-github-fork-branch-and-pull-request
