@@ -33,7 +33,7 @@ module RuboCop
 
     def inherit_from_remote(file, path)
       new_uri = @uri.dup
-      new_uri.path.gsub!(%r{/[^/]*$}, "/#{file}")
+      new_uri.path.gsub!(%r{/[^/]*$}, "/#{file.delete_prefix('./')}")
       RemoteConfig.new(new_uri.to_s, File.dirname(path))
     end
 

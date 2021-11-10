@@ -189,4 +189,17 @@ RSpec.describe RuboCop::RemoteConfig do
       end
     end
   end
+
+  describe '.inherit_from_remote' do
+    context 'when the remote includes file starting with `./`' do
+      let(:includes_file) { './base.yml' }
+
+      it 'returns remote includes URI' do
+        remote_config = described_class.new(remote_config_url, base_dir)
+        includes_config = remote_config.inherit_from_remote(includes_file, remote_config_url)
+
+        expect(includes_config.uri).to eq URI.parse('http://example.com/base.yml')
+      end
+    end
+  end
 end
