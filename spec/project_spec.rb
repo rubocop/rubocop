@@ -242,6 +242,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
             expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
           end
 
+          it 'has a single line' do
+            expect(File.foreach(path).count).to eq(1)
+          end
+
           it 'starts with `new_`, `fix_`, or `change_`' do
             expect(File.basename(path)).to(match(/\A(new|fix|change)_.+/))
           end
