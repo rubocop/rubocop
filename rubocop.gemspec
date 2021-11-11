@@ -27,7 +27,8 @@ Gem::Specification.new do |s|
     'changelog_uri' => 'https://github.com/rubocop/rubocop/blob/master/CHANGELOG.md',
     'source_code_uri' => 'https://github.com/rubocop/rubocop/',
     'documentation_uri' => "https://docs.rubocop.org/rubocop/#{RuboCop::Version.document_version}/",
-    'bug_tracker_uri' => 'https://github.com/rubocop/rubocop/issues'
+    'bug_tracker_uri' => 'https://github.com/rubocop/rubocop/issues',
+    'rubygems_mfa_required' => 'true'
   }
 
   s.add_runtime_dependency('parallel', '~> 1.10')
