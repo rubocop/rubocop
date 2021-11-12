@@ -9,7 +9,7 @@ module RuboCop
       # to go on its own line (expanded style).
       #
       # NOTE: A method definition is not considered empty if it contains
-      #       comments.
+      # comments.
       #
       # @example EnforcedStyle: compact (default)
       #   # bad
