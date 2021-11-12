@@ -259,6 +259,15 @@ Gemspec/OrderedDependencies:
   Include:
     - '**/*.gemspec'
 
+Gemspec/RequireMFA:
+  Description: 'Checks that the gemspec has metadata to require MFA from RubyGems.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Reference:
+    - https://guides.rubygems.org/mfa-requirement-opt-in/
+  Include:
+    - '**/*.gemspec'
+
 Gemspec/RequiredRubyVersion:
   Description: 'Checks that `required_ruby_version` of gemspec is specified and equal to `TargetRubyVersion` of .rubocop.yml.'
   Enabled: true
