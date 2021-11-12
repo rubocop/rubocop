@@ -10,7 +10,7 @@ module RuboCop
       # as they add less complexity than positional or optional parameters.
       #
       # NOTE: Explicit block argument `&block` is not counted to prevent
-      #       erroneous change that is avoided by making block argument implicit.
+      # erroneous change that is avoided by making block argument implicit.
       #
       # @example Max: 3
       #   # good
