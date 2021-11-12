@@ -21,21 +21,13 @@ module RuboCop
       #
       class DateAssignment < Base
         include RangeHelp
+        include GemspecHelp
         extend AutoCorrector
 
         MSG = 'Do not use `date =` in gemspec, it is set automatically when the gem is packaged.'
 
-        # @!method gem_specification(node)
-        def_node_matcher :gem_specification, <<~PATTERN
-          (block
-            (send
-              (const
-                (const {cbase nil?} :Gem) :Specification) :new)
-            ...)
-        PATTERN
-
         def on_block(block_node)
-          return unless gem_specification(block_node)
+          return unless gem_specification?(block_node)
 
           block_parameter = block_node.arguments.first.source
 
