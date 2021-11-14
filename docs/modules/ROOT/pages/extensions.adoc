@@ -92,6 +92,8 @@ Custom cops and config defaults for Chef Infra Cookbooks
 Upstream best practices and coding conventions for downstream (e.g. Debian packages) compatibility.
 * https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet]
 Sorbet-specific analysis
+* https://github.com/DmitryTsepelev/rubocop-graphql[rubocop-graphql] -
+GraphQL-specific analysis
 
 Any extensions missing? Send us a Pull Request!
 
