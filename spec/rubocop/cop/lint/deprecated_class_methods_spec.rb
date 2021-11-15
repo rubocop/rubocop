@@ -82,6 +82,23 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     end
   end
 
+  context 'when using `ENV.freeze`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        ENV.freeze
+            ^^^^^^ `ENV.freeze` is deprecated in favor of `ENV`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ENV
+      RUBY
+    end
+
+    it 'does not register an offense for method calls to `ENV` other than `freeze`' do
+      expect_no_offenses('ENV.values')
+    end
+  end
+
   context 'prefer `Addrinfo#getnameinfo` over `Socket.gethostbyaddr`' do
     it 'registers an offense for Socket.gethostbyaddr' do
       expect_offense(<<~RUBY)
