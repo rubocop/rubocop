@@ -6,18 +6,18 @@ module RuboCop
       # Requires a gemspec to have `rubygems_mfa_required` metadata set.
       #
       # This setting tells RubyGems that MFA is required for accounts to
-      # be able perform any of these privileged operations:
+      # be able perform privileged operations, such as (see
+      # RubyGems' documentation for the full list of privileged operations):
       #
-      # * gem push
-      # * gem yank
-      # * gem owner --add/remove
+      # * `gem push`
+      # * `gem yank`
+      # * `gem owner --add/remove`
       # * adding or removing owners using gem ownership page
       #
       # This helps make your gem more secure, as users can be more
       # confident that gem updates were pushed by maintainers.
       #
       # @example
-      #
       #   # bad
       #   Gem::Specification.new do |spec|
       #     # no `rubygems_mfa_required` metadata specified
