@@ -123,6 +123,10 @@ module RuboCop
           cop_config['CheckDefinitionPathHierarchy']
         end
 
+        def definition_path_hierarchy_roots
+          cop_config['CheckDefinitionPathHierarchyRoots'] || []
+        end
+
         def regex
           cop_config['Regex']
         end
@@ -206,13 +210,13 @@ module RuboCop
           allowed_acronyms.any? { |acronym| expected.gsub(acronym.capitalize, acronym) == name }
         end
 
-        def to_namespace(path)
+        def to_namespace(path) # rubocop:disable Metrics/AbcSize
           components = Pathname(path).each_filename.to_a
           # To convert a pathname to a Ruby namespace, we need a starting point
           # But RC can be run from any working directory, and can check any path
           # We can't assume that the working directory, or any other, is the
           # "starting point" to build a namespace.
-          start = %w[lib spec test src]
+          start = definition_path_hierarchy_roots
           start_index = nil
 
           # To find the closest namespace root take the path components, and

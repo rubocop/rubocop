@@ -8,14 +8,15 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       '/some/.rubocop.yml'
     )
   end
-  let(:cop_config) do
+  let(:cop_config) do # matches default.yml
     {
       'IgnoreExecutableScripts' => true,
       'ExpectMatchingDefinition' => false,
-      'Regex' => nil
+      'Regex' => nil,
+      'CheckDefinitionPathHierarchy' => true,
+      'CheckDefinitionPathHierarchyRoots' => %w[lib spec test src]
     }
   end
-
   let(:includes) { ['**/*.rb'] }
 
   context 'with camelCase file names ending in .rb' do
@@ -93,7 +94,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
 
     context 'when IgnoreExecutableScripts is disabled' do
-      let(:cop_config) { { 'IgnoreExecutableScripts' => false } }
+      let(:cop_config) { super().merge('IgnoreExecutableScripts' => false) }
 
       it 'registers an offense' do
         expect_offense(<<~RUBY, '/some/dir/test-case')
@@ -118,13 +119,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
   end
 
   context 'when ExpectMatchingDefinition is true' do
-    let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
-        'ExpectMatchingDefinition' => true,
-        'CheckDefinitionPathHierarchy' => 'true'
-      }
-    end
+    let(:cop_config) { super().merge('ExpectMatchingDefinition' => true) }
 
     context 'on a file which defines no class or module at all' do
       %w[lib src test spec].each do |dir|
@@ -135,6 +130,17 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
               ^ `test_case.rb` should define a class or module called `File::TestCase`.
             RUBY
           end
+        end
+      end
+
+      context 'under lib when not added to root' do
+        let(:cop_config) { super().merge('CheckDefinitionPathHierarchyRoots' => ['foo']) }
+
+        it 'registers an offense' do
+          expect_offense(<<~RUBY, '/some/other/dir/test_case.rb')
+            print 1
+            ^ `test_case.rb` should define a class or module called `TestCase`.
+          RUBY
         end
       end
 
@@ -272,11 +278,10 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'when CheckDefinitionPathHierarchy is false' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
+      super().merge(
         'ExpectMatchingDefinition' => true,
         'CheckDefinitionPathHierarchy' => false
-      }
+      )
     end
 
     context 'on a file with a matching class' do
@@ -412,11 +417,10 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'with acronym namespace' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
+      super().merge(
         'ExpectMatchingDefinition' => true,
         'AllowedAcronyms' => ['CLI']
-      }
+      )
     end
 
     it 'does not register an offense' do
@@ -433,11 +437,10 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'with acronym class name' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
+      super().merge(
         'ExpectMatchingDefinition' => true,
         'AllowedAcronyms' => ['CLI']
-      }
+      )
     end
 
     it 'does not register an offense' do
@@ -452,11 +455,10 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'with include acronym name' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
+      super().merge(
         'ExpectMatchingDefinition' => true,
         'AllowedAcronyms' => ['HTTP']
-      }
+      )
     end
 
     it 'does not register an offense' do
