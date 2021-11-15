@@ -1,1 +1,0 @@
-* [#10234](https://github.com/rubocop/rubocop/pull/10234): Fix an error for `Style/Documentation` when using a cbase class. ([@koic][])
