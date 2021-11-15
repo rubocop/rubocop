@@ -12,6 +12,7 @@ module RuboCop
       #   File.exists?(some_path)
       #   Dir.exists?(some_path)
       #   iterator?
+      #   ENV.freeze # Calling `Env.freeze` raises `TypeError` since Ruby 2.7.
       #   Socket.gethostbyname(host)
       #   Socket.gethostbyaddr(host)
       #
@@ -22,6 +23,7 @@ module RuboCop
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
       #   block_given?
+      #   ENV # `ENV.freeze` cannot prohibit changes to environment variables.
       #   Addrinfo.getaddrinfo(nodename, service)
       #   Addrinfo.tcp(host, port).getnameinfo
       class DeprecatedClassMethods < Base
@@ -106,6 +108,9 @@ module RuboCop
 
           DeprecatedClassMethod.new(:iterator?) => Replacement.new(:block_given?),
 
+          DeprecatedClassMethod.new(:freeze, class_constant: :ENV) =>
+            Replacement.new(nil, class_constant: :ENV),
+
           DeprecatedClassMethod.new(:gethostbyaddr, class_constant: :Socket, correctable: false) =>
             Replacement.new(:getnameinfo, class_constant: :Addrinfo, instance_method: true),
 
@@ -120,11 +125,18 @@ module RuboCop
 
         def on_send(node)
           check(node) do |deprecated|
-            message = format(MSG, current: deprecated, prefer: replacement(deprecated))
+            prefer = replacement(deprecated)
+            message = format(MSG, current: deprecated, prefer: prefer)
+            current_method = node.loc.selector
 
-            add_offense(node.loc.selector, message: message) do |corrector|
-              if deprecated.correctable?
-                corrector.replace(node.loc.selector, replacement(deprecated).method)
+            add_offense(current_method, message: message) do |corrector|
+              next unless deprecated.correctable?
+
+              if (preferred_method = prefer.method)
+                corrector.replace(current_method, preferred_method)
+              else
+                corrector.remove(node.loc.dot)
+                corrector.remove(current_method)
               end
             end
           end
