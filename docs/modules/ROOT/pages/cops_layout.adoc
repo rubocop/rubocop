@@ -1440,7 +1440,7 @@ end
 | Yes
 | Yes
 | 0.49
-| 1.7
+| 1.23
 |===
 
 This cop checks whether class/module/method definitions are
@@ -1534,13 +1534,37 @@ def b
 end
 ----
 
-==== AllowAdjacentOneLineDefs: true
+==== AllowAdjacentOneLineDefs: true (default)
 
 [source,ruby]
 ----
 # good
 class ErrorA < BaseError; end
 class ErrorB < BaseError; end
+class ErrorC < BaseError; end
+
+# good
+class ErrorA < BaseError; end
+
+class ErrorB < BaseError; end
+
+class ErrorC < BaseError; end
+----
+
+==== AllowAdjacentOneLineDefs: false
+
+[source,ruby]
+----
+# bad
+class ErrorA < BaseError; end
+class ErrorB < BaseError; end
+class ErrorC < BaseError; end
+
+# good
+class ErrorA < BaseError; end
+
+class ErrorB < BaseError; end
+
 class ErrorC < BaseError; end
 ----
 
@@ -1562,7 +1586,7 @@ class ErrorC < BaseError; end
 | Boolean
 
 | AllowAdjacentOneLineDefs
-| `false`
+| `true`
 | Boolean
 
 | NumberOfEmptyLines

@@ -3206,7 +3206,7 @@ line (compact style), but it can be configured to enforce the `end`
 to go on its own line (expanded style).
 
 NOTE: A method definition is not considered empty if it contains
-      comments.
+comments.
 
 === Examples
 
@@ -8163,6 +8163,63 @@ end
 === References
 
 * https://rubystyle.guide#ternary-operator
+
+== Style/OpenStructUse
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.23
+| -
+|===
+
+This cop flags uses of OpenStruct, as it is now officially discouraged
+to be used for performance, version compatibility, and potential security issues.
+
+=== Safety
+
+Note that this cop may flag false positives; for instance, the following legal
+use of a hand-rolled `OpenStruct` type would be considered an offense:
+
+```
+module MyNamespace
+  class OpenStruct # not the OpenStruct we're looking for
+  end
+
+  def new_struct
+    OpenStruct.new # resolves to MyNamespace::OpenStruct
+  end
+end
+```
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+point = OpenStruct.new(x: 0, y: 1)
+
+# good
+Point = Struct.new(:x, :y)
+point = Point.new(0, 1)
+
+# also good
+point = { x: 0, y: 1 }
+
+# bad
+test_double = OpenStruct.new(a: 'b')
+
+# good (assumes test using rspec-mocks)
+test_double = double
+allow(test_double).to receive(:a).and_return('b')
+----
+
+=== References
+
+* https://docs.ruby-lang.org/en/3.0.0/OpenStruct.html#class-OpenStruct-label-Caveats
 
 == Style/OptionHash
 

@@ -262,7 +262,7 @@ Gemspec/OrderedDependencies:
 Gemspec/RequireMFA:
   Description: 'Checks that the gemspec has metadata to require MFA from RubyGems.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.23'
   Reference:
     - https://guides.rubygems.org/mfa-requirement-opt-in/
   Include:
@@ -521,7 +521,7 @@ Layout/EmptyLineBetweenDefs:
   StyleGuide: '#empty-lines-between-methods'
   Enabled: true
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.23'
   EmptyLineBetweenMethodDefs: true
   EmptyLineBetweenClassDefs: true
   EmptyLineBetweenModuleDefs: true
@@ -2321,7 +2321,7 @@ Lint/UselessMethodDefinition:
 Lint/UselessRuby2Keywords:
   Description: 'Finds unnecessary uses of `ruby2_keywords`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.23'
 
 Lint/UselessSetterCall:
   Description: 'Checks for useless setter call to a local variable.'
@@ -2516,7 +2516,7 @@ Naming/FileName:
   StyleGuide: '#snake-case-files'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.23'
   # Camel case file names listed in `AllCops:Include` and all file names listed
   # in `AllCops:Exclude` are excluded by default. Add extra excludes here.
   Exclude: []
@@ -4247,7 +4247,7 @@ Style/OpenStructUse:
     - https://docs.ruby-lang.org/en/3.0.0/OpenStruct.html#class-OpenStruct-label-Caveats
 
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.23'
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
