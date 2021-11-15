@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense and corrects a space between -> and (' do
       expect_offense(<<~RUBY)
         a = -> (b, c) { b + c }
-            ^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
+              ^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense and corrects spaces between -> and (' do
       expect_offense(<<~RUBY)
         a = ->   (b, c) { b + c }
-            ^^^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
+              ^^^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense and corrects a space in the inner nested lambda' do
       expect_offense(<<~RUBY)
         a = ->(b = -> (c) {}, d) { b + d }
-                   ^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
+                     ^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'registers an offense and corrects a space in the outer nested lambda' do
       expect_offense(<<~RUBY)
         a = -> (b = ->(c) {}, d) { b + d }
-            ^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
+              ^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -134,8 +134,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInLambdaLiteral, :config do
     it 'register offenses and correct spaces in both lambdas when nested' do
       expect_offense(<<~RUBY)
         a = -> (b = -> (c) {}, d) { b + d }
-                    ^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
-            ^^^^^^^^^^^^^^^^^^^^^ Do not use spaces between `->` and `(` in lambda literals.
+                      ^ Do not use spaces between `->` and `(` in lambda literals.
+              ^ Do not use spaces between `->` and `(` in lambda literals.
       RUBY
 
       expect_correction(<<~RUBY)
