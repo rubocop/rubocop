@@ -13,6 +13,11 @@ module RuboCop
     # @api private
     module EnforceSuperclass
       def self.included(base)
+        warn Rainbow(
+          '`RuboCop::Cop::EnforceSuperclass` is deprecated and will be removed in RuboCop 2.0. ' \
+          'Please upgrade to RuboCop Rails 2.9 or newer to continue.'
+        ).yellow
+
         # @!method class_definition(node)
         base.def_node_matcher :class_definition, <<~PATTERN
           (class (const _ !:#{base::SUPERCLASS}) #{base::BASE_PATTERN} ...)
