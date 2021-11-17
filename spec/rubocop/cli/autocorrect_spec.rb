@@ -1179,7 +1179,9 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
             def something
               first call
               do_other 'things'
-              more_work if other > 34
+              return unless other > 34
+
+              more_work
             end
           end
         end
