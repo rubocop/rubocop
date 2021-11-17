@@ -1274,7 +1274,7 @@
 ### Changes
 
 * [#7868](https://github.com/rubocop/rubocop/pull/7868): **(Breaking)** Extensive refactoring of internal classes `Team`, `Commissioner`, `Corrector`. `Cop::Cop#corrections` not completely compatible. See Upgrade Notes. ([@marcandre][])
-* [#8156](https://github.com/rubocop/rubocop/issues/8156): **(Breaking)** `rubocop -a / --autocorrect` no longer run unsafe corrections; `rubocop -A / --autocorrect-all` run both safe and unsafe corrections. Options `--safe-autocorrect` is deprecated. ([@marcandre][])
+* [#8156](https://github.com/rubocop/rubocop/issues/8156): **(Breaking)** `rubocop -a / --auto-correct` no longer run unsafe corrections; `rubocop -A / --auto-correct-all` run both safe and unsafe corrections. Options `--safe-autocorrect` is deprecated. ([@marcandre][])
 * [#8207](https://github.com/rubocop/rubocop/pull/8207): **(Breaking)** Order for gems names now disregards underscores and dashes unless `ConsiderPunctuation` setting is set to `true`. ([@marcandre][])
 * [#8211](https://github.com/rubocop/rubocop/pull/8211): `Style/ClassVars` cop now detects `class_variable_set`. ([@biinari][])
 * [#8245](https://github.com/rubocop/rubocop/pull/8245): Detect top-level constants like `::Const` in various cops. ([@biinari][])
