@@ -1577,7 +1577,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             'Use snake_case for method names.',
             'def badName',
             '    ^^^^^^^',
-            'example3.rb:2:3: C: Style/GuardClause: ' \
+            'example3.rb:2:3: C: [Correctable] Style/GuardClause: ' \
             'Use a guard clause (return unless something) instead of ' \
             'wrapping the code inside a conditional expression.',
             '  if something',
@@ -1592,7 +1592,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             '    end',
             '    ^^^',
             '',
-            '3 files inspected, 15 offenses detected, 12 offenses autocorrectable',
+            '3 files inspected, 15 offenses detected, 13 offenses autocorrectable',
             ''
           ].join("\n"))
         end

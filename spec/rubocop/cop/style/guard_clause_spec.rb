@@ -28,6 +28,20 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          return unless something
+            #{body}
+         #{trailing_whitespace}
+        end
+
+        def func
+          return if something
+            #{body}
+         #{trailing_whitespace}
+        end
+      RUBY
     end
 
     it 'reports an offense if method body ends with if / unless without else' do
@@ -46,6 +60,22 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           ^^^^^^ Use a guard clause (`return if something`) instead of wrapping the code inside a conditional expression.
             #{body}
           end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          test
+          return unless something
+            #{body}
+         #{trailing_whitespace}
+        end
+
+        def func
+          test
+          return if something
+            #{body}
+         #{trailing_whitespace}
         end
       RUBY
     end
@@ -115,6 +145,8 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         end
       end
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense when using `|| raise` in `else` branch' do
@@ -128,6 +160,8 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         end
       end
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense when using `and return` in `then` branch' do
@@ -141,6 +175,8 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         end
       end
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense when using `and return` in `else` branch' do
@@ -154,6 +190,8 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         end
       end
     RUBY
+
+    expect_no_corrections
   end
 
   it 'accepts a method which body does not end with if / unless' do
@@ -223,6 +261,20 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           ^^^^^^ Use a guard clause (`return if something`) instead of wrapping the code inside a conditional expression.
             work
           end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          return unless something
+            work
+         #{trailing_whitespace}
+        end
+
+        def func
+          return if something
+            work
+         #{trailing_whitespace}
         end
       RUBY
     end
@@ -336,6 +388,14 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           puts "hello"
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{kw} if something
+         #{trailing_whitespace}
+
+          puts "hello"
+
+      RUBY
     end
 
     it "registers an error with #{kw} in the else branch" do
@@ -346,6 +406,14 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
         else
           #{kw}
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{kw} unless something
+         puts "hello"
+
+         #{trailing_whitespace}
+
       RUBY
     end
 
@@ -403,6 +471,15 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
                "blah blah blah"
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{kw} if something
+         #{trailing_whitespace}
+
+          puts "hello" \\
+               "blah blah blah"
+
+      RUBY
     end
   end
 
@@ -427,9 +504,22 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
               if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
               ^^ Use a guard clause (`unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line; return; end`) instead of wrapping the code inside a conditional expression.
                 if something_else
+                ^^ Use a guard clause (`return unless something_else`) instead of wrapping the code inside a conditional expression.
                   work
                 end
               end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def test
+              unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              return
+            end
+                return unless something_else
+                  work
+               #{trailing_whitespace}
+             #{trailing_whitespace}
             end
           RUBY
         end
@@ -444,6 +534,17 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
                 work
                 more_work
               end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def test
+              unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              return
+            end
+                work
+                more_work
+             #{trailing_whitespace}
             end
           RUBY
         end
@@ -461,6 +562,14 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           ^^ Use a guard clause (`return unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line`) instead of wrapping the code inside a conditional expression.
             work
           end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          return unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+            work
+         #{trailing_whitespace}
         end
       RUBY
     end
@@ -483,6 +592,16 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        module CopTest
+          def test
+            return unless something
+              work
+           #{trailing_whitespace}
+          end
+        end
+      RUBY
     end
 
     it 'registers an offense for singleton methods' do
@@ -493,6 +612,16 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
             ^^ Use a guard clause (`return unless something && something_else`) instead of wrapping the code inside a conditional expression.
               work
             end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module CopTest
+          def self.test
+            return unless something && something_else
+              work
+           #{trailing_whitespace}
           end
         end
       RUBY

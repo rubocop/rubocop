@@ -10,6 +10,9 @@ module RuboCop
       # one of `return`, `break`, `next`, `raise`, or `fail` is used
       # in the body of the conditional expression.
       #
+      # NOTE: Autocorrect works in most cases except with if-else statements
+      #   that contain logical operators such as `foo || raise('exception')`
+      #
       # @example
       #   # bad
       #   def test
@@ -90,6 +93,7 @@ module RuboCop
       #   end
       #
       class GuardClause < Base
+        extend AutoCorrector
         include MinBodyLength
         include StatementModifier
 
@@ -101,6 +105,33 @@ module RuboCop
 
           return unless body
 
+          check_ending_body(body)
+        end
+        alias on_defs on_def
+
+        def on_if(node)
+          return if accepted_form?(node)
+
+          if (guard_clause = node.if_branch&.guard_clause?)
+            kw = node.loc.keyword.source
+            guard = :if
+          elsif (guard_clause = node.else_branch&.guard_clause?)
+            kw = node.inverse_keyword
+            guard = :else
+          else
+            return
+          end
+
+          guard = nil if and_or_guard_clause?(guard_clause)
+
+          register_offense(node, guard_clause_source(guard_clause), kw, guard)
+        end
+
+        private
+
+        def check_ending_body(body)
+          return if body.nil?
+
           if body.if_type?
             check_ending_if(body)
           elsif body.begin_type?
@@ -108,26 +139,6 @@ module RuboCop
             check_ending_if(final_expression) if final_expression&.if_type?
           end
         end
-        alias on_defs on_def
-
-        def on_if(node)
-          return if accepted_form?(node)
-
-          guard_clause_in_if = node.if_branch&.guard_clause?
-          guard_clause_in_else = node.else_branch&.guard_clause?
-          guard_clause = guard_clause_in_if || guard_clause_in_else
-          return unless guard_clause
-
-          kw = if guard_clause_in_if
-                 node.loc.keyword.source
-               else
-                 node.inverse_keyword
-               end
-
-          register_offense(node, guard_clause_source(guard_clause), kw)
-        end
-
-        private
 
         def check_ending_if(node)
           return if accepted_form?(node, ending: true) || !min_body_length?(node)
@@ -135,6 +146,8 @@ module RuboCop
                     consecutive_conditionals?(node.parent, node)
 
           register_offense(node, 'return', node.inverse_keyword)
+
+          check_ending_body(node.if_branch)
         end
 
         def consecutive_conditionals?(parent, node)
@@ -145,26 +158,54 @@ module RuboCop
           end
         end
 
-        def register_offense(node, scope_exiting_keyword, conditional_keyword)
+        def register_offense(node, scope_exiting_keyword, conditional_keyword, guard = nil)
           condition, = node.node_parts
           example = [scope_exiting_keyword, conditional_keyword, condition.source].join(' ')
           if too_long_for_single_line?(node, example)
             return if trivial?(node)
 
             example = "#{conditional_keyword} #{condition.source}; #{scope_exiting_keyword}; end"
+            replacement = <<~RUBY.chomp
+              #{conditional_keyword} #{condition.source}
+                #{scope_exiting_keyword}
+              end
+            RUBY
           end
 
-          add_offense(node.loc.keyword, message: format(MSG, example: example))
+          add_offense(node.loc.keyword, message: format(MSG, example: example)) do |corrector|
+            next if node.else? && guard.nil?
+
+            autocorrect(corrector, node, condition, replacement || example, guard)
+          end
+        end
+
+        def autocorrect(corrector, node, condition, replacement, guard)
+          corrector.replace(node.loc.keyword.join(condition.loc.expression), replacement)
+          corrector.remove(node.loc.end)
+          return unless node.else?
+
+          corrector.remove(node.loc.else)
+          corrector.remove(branch_to_remove(node, guard))
+        end
+
+        def branch_to_remove(node, guard)
+          case guard
+          when :if then node.if_branch
+          when :else then node.else_branch
+          end
         end
 
         def guard_clause_source(guard_clause)
-          parent = guard_clause.parent
-
-          if parent.and_type? || parent.or_type?
+          if and_or_guard_clause?(guard_clause)
             guard_clause.parent.source
           else
             guard_clause.source
           end
+        end
+
+        def and_or_guard_clause?(guard_clause)
+          parent = guard_clause.parent
+          parent.and_type? || parent.or_type?
         end
 
         def too_long_for_single_line?(node, example)
