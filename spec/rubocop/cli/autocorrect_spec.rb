@@ -2241,4 +2241,24 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         end
     RUBY
   end
+
+  it 'corrects properly when both `Style/MapToHash` and `Style/HashTransformKeys`' \
+     'or `Style/HashTransformValues` registers' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      { foo: :bar }.map { |k, v| [k.to_s, v] }.to_h
+      { foo: :bar }.map { |k, v| [k, v.to_s] }.to_h
+    RUBY
+
+    status = cli.run(
+      %w[--auto-correct-all --only] << %w[
+        Style/MapToHash Style/HashTransformKeys Style/HashTransformValues
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      { foo: :bar }.transform_keys { |k| k.to_s }
+      { foo: :bar }.transform_values { |v| v.to_s }
+    RUBY
+  end
 end

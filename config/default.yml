@@ -3837,6 +3837,12 @@ Style/LineEndConcatenation:
   VersionAdded: '0.18'
   VersionChanged: '0.64'
 
+Style/MapToHash:
+  Description: 'Prefer `to_h` with a block over `map.to_h`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Safe: false
+
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
   StyleGuide: '#method-invocation-parens'
