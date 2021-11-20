@@ -46,15 +46,6 @@ module RuboCop
           1
         end
 
-        def block_method(node)
-          case node.type
-          when :block
-            node.method_name
-          when :block_pass
-            node.parent.method_name
-          end
-        end
-
         def count_block?(block)
           KNOWN_ITERATING_METHODS.include? block.method_name
         end
