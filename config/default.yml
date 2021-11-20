@@ -3506,6 +3506,12 @@ Style/FileRead:
   Enabled: pending
   VersionAdded: '<<next>>'
 
+Style/FileWrite:
+  Description: 'Favor `File.(bin)write` convenience methods.'
+  StyleGuide: '#file-write'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/FloatDivision:
   Description: 'For performing float division, coerce one side only.'
   StyleGuide: '#float-division'

@@ -23,9 +23,7 @@ module RuboCop
         next if response.is_a?(Net::HTTPNotModified)
         next if response.is_a?(SocketError)
 
-        File.open cache_path, 'w' do |io|
-          io.write response.body
-        end
+        File.write(cache_path, response.body)
       end
 
       cache_path

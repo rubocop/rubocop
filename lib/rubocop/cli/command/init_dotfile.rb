@@ -31,7 +31,7 @@ module RuboCop
               # See https://docs.rubocop.org/rubocop/configuration
             DESC
 
-            File.open(DOTFILE, 'w') { |f| f.write(description) }
+            File.write(DOTFILE, description)
 
             puts "Writing new #{DOTFILE} to #{path}"
 
