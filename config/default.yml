@@ -3492,6 +3492,12 @@ Style/ExponentialNotation:
     - engineering
     - integral
 
+Style/FileRead:
+  Description: 'Favor `File.(bin)read` convenience methods.'
+  StyleGuide: '#file-read'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/FloatDivision:
   Description: 'For performing float division, coerce one side only.'
   StyleGuide: '#float-division'

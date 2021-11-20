@@ -179,7 +179,7 @@ module RuboCop
             .select { |path| File.file?(path) }
             .sort!
             .each do |path|
-              content = File.open(path, 'rb', &:read)
+              content = File.binread(path)
               digest << Zlib.crc32(content).to_s # mtime not reliable
             end
           digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
