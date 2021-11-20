@@ -124,7 +124,7 @@ module RuboCop
           lines = /\S/.match?(rubocop_yml_contents) ? rubocop_yml_contents.split("\n", -1) : []
           doc_start_index = lines.index { |line| YAML_OPTIONAL_DOC_START.match?(line) } || -1
           lines.insert(doc_start_index + 1, "inherit_from:#{file_string}\n")
-          File.open(file_name, 'w') { |f| f.write lines.join("\n") }
+          File.write(file_name, lines.join("\n"))
         end
       end
     end
