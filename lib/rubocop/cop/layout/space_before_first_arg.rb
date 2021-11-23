@@ -28,6 +28,10 @@ module RuboCop
 
         MSG = 'Put one space between the method name and the first argument.'
 
+        def self.autocorrect_incompatible_with
+          [Style::MethodCallWithArgsParentheses]
+        end
+
         def on_send(node)
           return unless regular_method_call_with_arguments?(node)
 

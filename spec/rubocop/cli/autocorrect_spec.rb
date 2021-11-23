@@ -302,6 +302,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
+     '`Layout/SpaceBeforeFirstArg`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      obj.do_something"message"
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--auto-correct',
+          '--only', 'Style/MethodCallWithArgsParentheses,Layout/SpaceBeforeFirstArg'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      obj.do_something("message")
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifier` with `Style/SoleNestedConditional`' do
     source = <<~RUBY
       def foo
