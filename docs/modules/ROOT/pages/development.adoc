@@ -7,6 +7,9 @@ and testing.
 
 == Create a new cop
 
+NOTE: Clone the repository and run `bundle install` if not done yet.
+The following rake task can only be run inside the rubocop project directory itself.
+
 Use the bundled rake task `new_cop` to generate a cop template:
 
 [source,sh]
