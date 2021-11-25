@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     module Style
       # Checks for uses of the character literal ?x.
+      # ? character literal can be used to express meta and control character.
+      # That's a good use case of ? literal so it doesn't count it as an offense.
       #
       # @example
       #   # bad
