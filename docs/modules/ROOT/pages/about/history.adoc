@@ -10,4 +10,8 @@ to make it easy to apply consistently the guidelines from the community Ruby Sty
 == Notable Milestones
 
 * 21 Apr 2012 - Initial commit by Bozhidar Batsov.
+* 03 May 2012 - RuboCop 0.0.0 is released.
+* 28 May 2013 - RuboCop 0.8 is released. It's the first version fully powered by the powerful `parser` gem.
+* 01 Jul 2013 - RuboCop 0.9 introduces autocorrection and output formatters.
+* 31 May 2018 - At RubyKaigi 2018 Bozhidar announces the transition of the project to a RuboCop GitHub organization. He also outlines the plans for a 1.0 release that guide the next couple of years of development.
 * 21 Oct 2020 - RuboCop 1.0 is released (exactly 7.5 years after the first commit).
