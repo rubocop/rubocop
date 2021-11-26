@@ -1796,7 +1796,9 @@ Lint/ImplicitStringConcatenation:
 Lint/IncompatibleIoSelectWithFiberScheduler:
   Description: 'Checks for `IO.select` that is incompatible with Fiber Scheduler.'
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '1.21'
+  VersionChanged: '<<next>>'
 
 Lint/IneffectiveAccessModifier:
   Description: >-

@@ -20,6 +20,10 @@ module RuboCop
       #   # good
       #   io.wait_writable(timeout)
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because `NoMethodError` occurs
+      #   if `require 'io/wait'` is not called.
+      #
       class IncompatibleIoSelectWithFiberScheduler < Base
         extend AutoCorrector
 
