@@ -79,4 +79,18 @@ RSpec.describe RuboCop::Cop::Badge do
       expect(described_class.parse('Deep/Department/Bar').qualified?).to be(true)
     end
   end
+
+  describe '#camel_case' do
+    it 'converts "lint" to CamelCase' do
+      expect(described_class.camel_case('lint')).to eq('Lint')
+    end
+
+    it 'converts "foo_bar" to CamelCase' do
+      expect(described_class.camel_case('foo_bar')).to eq('FooBar')
+    end
+
+    it 'converts "rspec" to CamelCase' do
+      expect(described_class.camel_case('rspec')).to eq('RSpec')
+    end
+  end
 end
