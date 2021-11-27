@@ -634,6 +634,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
+         '# Configuration parameters: AllowForAlignment.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
@@ -735,6 +736,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
+         '# Configuration parameters: AllowForAlignment.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
@@ -897,6 +899,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
         # Offense count: 1
         # Cop supports --auto-correct.
+        # Configuration parameters: AllowForAlignment.
         Layout/CommentIndentation:
           Exclude:
             - 'example2.rb'
@@ -1001,6 +1004,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'again.',
          '',
          '# Cop supports --auto-correct.',
+         '# Configuration parameters: AllowForAlignment.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
