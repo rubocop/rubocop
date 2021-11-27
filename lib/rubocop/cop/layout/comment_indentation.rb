@@ -32,6 +32,19 @@ module RuboCop
       #     true
       #   end
       #
+      # @example AllowForAlignment: false (default)
+      #   # bad
+      #   a = 1 # A really long comment
+      #         # spanning two lines.
+      #
+      #   # good
+      #   # A really long comment spanning one line.
+      #   a = 1
+      #
+      # @example AllowForAlignment: true
+      #   # good
+      #   a = 1 # A really long comment
+      #         # spanning two lines.
       class CommentIndentation < Base
         include Alignment
         extend AutoCorrector
@@ -40,7 +53,7 @@ module RuboCop
               'instead of %<correct_comment_indentation>d).'
 
         def on_new_investigation
-          processed_source.comments.each { |comment| check(comment) }
+          processed_source.comments.each_with_index { |comment, ix| check(comment, ix) }
         end
 
         private
@@ -76,7 +89,7 @@ module RuboCop
           AlignmentCorrector.correct(corrector, processed_source, comment, @column_delta)
         end
 
-        def check(comment)
+        def check(comment, comment_index)
           return unless own_line_comment?(comment)
 
           next_line = line_after_comment(comment)
@@ -94,9 +107,25 @@ module RuboCop
             return if column == correct_comment_indentation
           end
 
+          return if correctly_aligned_with_preceding_comment?(comment_index, column)
+
           add_offense(comment, message: message(column, correct_comment_indentation)) do |corrector|
             autocorrect(corrector, comment)
           end
+        end
+
+        # Returns true if:
+        # a) the cop is configured to allow extra indentation for alignment, and
+        # b) the currently inspected comment is aligned with the nearest preceding end-of-line
+        #    comment.
+        def correctly_aligned_with_preceding_comment?(comment_index, column)
+          return false unless cop_config['AllowForAlignment']
+
+          processed_source.comments[0...comment_index].reverse_each do |other_comment|
+            return other_comment.loc.column == column unless own_line_comment?(other_comment)
+          end
+
+          false
         end
 
         def message(column, correct_comment_indentation)

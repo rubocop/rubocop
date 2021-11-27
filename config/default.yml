@@ -449,7 +449,11 @@ Layout/ClosingParenthesisIndentation:
 Layout/CommentIndentation:
   Description: 'Indentation of comments.'
   Enabled: true
+  # When true, allows comments to have extra indentation if that aligns them
+  # with a comment on the preceding line.
+  AllowForAlignment: false
   VersionAdded: '0.49'
+  VersionChanged: '<<next>>'
 
 Layout/ConditionPosition:
   Description: >-
