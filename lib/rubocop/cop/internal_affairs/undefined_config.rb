@@ -14,7 +14,9 @@ module RuboCop
 
         # @!method cop_class_def(node)
         def_node_search :cop_class_def, <<~PATTERN
-          (class _ (const _ {:Base :Cop}) ...)
+          (class _
+            (const {nil? (const nil? :Cop) (const (const {cbase nil?} :RuboCop) :Cop)}
+              {:Base :Cop}) ...)
         PATTERN
 
         # @!method cop_config_accessor?(node)
