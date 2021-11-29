@@ -67,6 +67,48 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UndefinedConfig, :config, :isolate
     RUBY
   end
 
+  it 'registers an offense when the cop inherits `Cop::Base`' do
+    expect_offense(<<~RUBY)
+      module Test
+        class Foo < Cop::Base
+          def configured?
+            cop_config['Defined']
+            cop_config['Missing']
+                       ^^^^^^^^^ `Missing` is not defined in the configuration for `Test/Foo` in `config/default.yml`.
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when the cop inherits `RuboCop::Cop::Base`' do
+    expect_offense(<<~RUBY)
+      module Test
+        class Foo < RuboCop::Cop::Base
+          def configured?
+            cop_config['Defined']
+            cop_config['Missing']
+                       ^^^^^^^^^ `Missing` is not defined in the configuration for `Test/Foo` in `config/default.yml`.
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when the cop inherits `::RuboCop::Cop::Base`' do
+    expect_offense(<<~RUBY)
+      module Test
+        class Foo < ::RuboCop::Cop::Base
+          def configured?
+            cop_config['Defined']
+            cop_config['Missing']
+                       ^^^^^^^^^ `Missing` is not defined in the configuration for `Test/Foo` in `config/default.yml`.
+          end
+        end
+      end
+    RUBY
+  end
+
   context 'element lookup' do
     it 'does not register an offense for defined configuration keys' do
       expect_no_offenses(<<~RUBY)
@@ -216,6 +258,18 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UndefinedConfig, :config, :isolate
       class Test
         def configured?
           cop_config['Missing']
+        end
+      end
+    RUBY
+  end
+
+  it 'ignores `cop_config` in non-cop subclasses' do
+    expect_no_offenses(<<~RUBY)
+      module M
+        class C < ApplicationRecord::Base
+          def configured?
+            cop_config['Missing']
+          end
         end
       end
     RUBY
