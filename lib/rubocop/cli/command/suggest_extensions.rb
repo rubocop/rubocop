@@ -22,7 +22,7 @@ module RuboCop
                'RuboCop extension libraries might be helpful:'
 
           extensions.sort.each do |extension|
-            puts "  * #{extension} (https://github.com/rubocop/#{extension})"
+            puts "  * #{extension} (https://rubygems.org/gems/#{extension})"
           end
 
           puts
