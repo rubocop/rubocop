@@ -82,10 +82,20 @@ module RuboCop
         end
 
         def autocorrect_single_variable_interpolation(corrector, embedded_node, node)
-          variable_loc = embedded_node.children.first.loc
-          replacement = "#{variable_loc.expression.source}.to_s"
+          embedded_var = embedded_node.children.first
 
-          corrector.replace(node, replacement)
+          source = if require_parentheses?(embedded_var)
+                     receiver = range_between(
+                       embedded_var.loc.expression.begin_pos, embedded_var.loc.selector.end_pos
+                     )
+                     arguments = embedded_var.arguments.map(&:source).join(', ')
+
+                     "#{receiver.source}(#{arguments})"
+                   else
+                     embedded_var.source
+                   end
+
+          corrector.replace(node, "#{source}.to_s")
         end
 
         def autocorrect_other(corrector, embedded_node, node)
@@ -96,6 +106,10 @@ module RuboCop
           corrector.replace(loc.end, '')
           corrector.replace(embedded_loc.begin, '(')
           corrector.replace(embedded_loc.end, ').to_s')
+        end
+
+        def require_parentheses?(node)
+          node.send_type? && !node.arguments.count.zero? && !node.parenthesized_call?
         end
       end
     end
