@@ -79,6 +79,8 @@ module RuboCop
           when_nodes.each do |when_node|
             conditions = when_node.conditions
 
+            replace_then_with_line_break(corrector, conditions, when_node)
+
             next unless conditions.size > 1
 
             range = range_between(conditions.first.source_range.begin_pos,
@@ -96,6 +98,14 @@ module RuboCop
 
           line_beginning = case_range.adjust(begin_pos: -case_range.column)
           corrector.insert_before(line_beginning, comments)
+        end
+
+        def replace_then_with_line_break(corrector, conditions, when_node)
+          return unless when_node.parent.parent && when_node.then?
+
+          range = range_between(conditions.last.source_range.end_pos, when_node.loc.begin.end_pos)
+
+          corrector.replace(range, "\n")
         end
       end
     end
