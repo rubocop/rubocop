@@ -82,7 +82,9 @@ module RuboCop
         end
 
         def autocorrect(corrector, node, if_branch)
-          corrector.wrap(node.condition, '(', ')') if node.condition.or_type?
+          if node.condition.or_type? || node.condition.assignment?
+            corrector.wrap(node.condition, '(', ')')
+          end
 
           correct_from_unless_to_if(corrector, node) if node.unless?
 
