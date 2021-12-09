@@ -80,7 +80,11 @@ module RuboCop
         end
 
         def without_character_class(loc)
-          loc.source[1..-2]
+          without_character_class = loc.source[1..-2]
+
+          # Adds `\` to prevent auto-correction that changes to an interpolated string when `[#]`.
+          # e.g. From `/[#]{0}/` to `/#{0}/`
+          loc.source == '[#]' ? "\\#{without_character_class}" : without_character_class
         end
 
         def whitespace_in_free_space_mode?(node, elem)

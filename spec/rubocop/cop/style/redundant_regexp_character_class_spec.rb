@@ -278,6 +278,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
     end
   end
 
+  context 'with a character class containing an unescaped-#' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~'RUBY')
+        foo = /[#]{0}/
+               ^^^ Redundant single-element character class, `[#]` can be replaced with `\#`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /\#{0}/
+      RUBY
+    end
+  end
+
   context 'with a character class containing an escaped-b' do
     # See https://github.com/rubocop/rubocop/issues/8193 for details - in short \b != [\b] - the
     # former matches a word boundary, the latter a backspace character.
