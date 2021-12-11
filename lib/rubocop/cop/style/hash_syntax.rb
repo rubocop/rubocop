@@ -19,6 +19,10 @@ module RuboCop
       # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
       # syntax hashes
       #
+      # This cop has `EnforcedShorthandSyntax` option.
+      # It can enforce either the use of the explicit hash value syntax or
+      # the use of Ruby 3.1's hash value shorthand syntax.
+      #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
       #   {:a => 2}
@@ -54,8 +58,26 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}
       #   {:c => 3, 'd' => 4}
+      #
+      # @example EnforcedShorthandSyntax: always (default)
+      #
+      #   # bad
+      #   {foo: foo, bar: bar}
+      #
+      #   # good
+      #   {foo:, bar:}
+      #
+      # @example EnforcedShorthandSyntax: never
+      #
+      #   # bad
+      #   {foo:, bar:}
+      #
+      #   # good
+      #   {foo: foo, bar: bar}
+      #
       class HashSyntax < Base
         include ConfigurableEnforcedStyle
+        include HashShorthandSyntax
         include RangeHelp
         extend AutoCorrector
 

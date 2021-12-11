@@ -17,6 +17,8 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         {
           'EnforcedStyle' => 'ruby19',
           'SupportedStyles' => %w[ruby19 hash_rockets],
+          'EnforcedShorthandSyntax' => 'always',
+          'SupportedShorthandSyntax' => %w[always never],
           'UseHashRocketsWithSymbolValues' => false,
           'PreferHashRocketsForNonAlnumEndingSymbols' => false
         }.merge(cop_config_overrides)
@@ -232,7 +234,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
     context 'configured to use hash rockets when symbol values are found' do
       let(:config) do
-        RuboCop::Config.new('Style/HashSyntax' => {
+        RuboCop::Config.new('AllCops' => {
+                              'TargetRubyVersion' => ruby_version
+                            },
+                            'Style/HashSyntax' => {
                               'EnforcedStyle' => 'ruby19',
                               'SupportedStyles' => %w[ruby19 hash_rockets],
                               'UseHashRocketsWithSymbolValues' => true
@@ -759,6 +764,218 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       expect_correction(<<~RUBY)
         { a: 1, b: 2 }
       RUBY
+    end
+  end
+
+  context 'configured to enforce shorthand syntax style' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => enforced_style,
+        'SupportedStyles' => %w[ruby19 hash_rockets],
+        'EnforcedShorthandSyntax' => 'always'
+      }
+    end
+    let(:enforced_style) { 'ruby19' }
+
+    context 'Ruby >= 3.1', :ruby31 do
+      it 'registers and corrects an offense when hash key and hash value are the same' do
+        expect_offense(<<~RUBY)
+          {foo: foo, bar: bar}
+                ^^^ Omit the hash value.
+                          ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo:, bar:}
+        RUBY
+      end
+
+      it 'registers and corrects an offense when hash key and hash value (lvar) are the same' do
+        expect_offense(<<~RUBY)
+          foo = 'a'
+          bar = 'b'
+
+          {foo: foo, bar: bar}
+                ^^^ Omit the hash value.
+                          ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = 'a'
+          bar = 'b'
+
+          {foo:, bar:}
+        RUBY
+      end
+
+      it 'registers and corrects an offense when hash key and hash value are partially the same' do
+        expect_offense(<<~RUBY)
+          {foo:, bar: bar, baz: qux}
+                      ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo:, bar:, baz: qux}
+        RUBY
+      end
+
+      it 'does not register an offense when hash valuees are omitted' do
+        expect_no_offenses(<<~RUBY)
+          {foo:, bar:}
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are not the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: bar, bar: foo}
+        RUBY
+      end
+
+      it 'does not register an offense when symbol hash key and hash value (lvar) are not the same' do
+        expect_no_offenses(<<~RUBY)
+          foo = 'a'
+          bar = 'b'
+
+          {foo: bar, bar: foo}
+        RUBY
+      end
+
+      it 'registers an offense when hash key and hash value are not the same and method with `[]` is called' do
+        expect_offense(<<~RUBY)
+          {foo: foo}.do_something[key]
+                ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo:}.do_something[key]
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are the same but the value ends `!`' do
+        # Prevents the following syntax error:
+        #
+        # % ruby -cve 'def foo! = puts("hi"); {foo!:}'
+        # ruby 3.1.0dev (2021-12-05T10:23:42Z master 19f037e452) [x86_64-darwin19]
+        # -e:1: identifier foo! is not valid to get
+        expect_no_offenses(<<~RUBY)
+          {foo!: foo!}
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are the same but the value ends `?`' do
+        # Prevents the following syntax error:
+        #
+        # % ruby -cve 'def foo? = puts("hi"); {foo?:}'
+        # ruby 3.1.0dev (2021-12-05T10:23:42Z master 19f037e452) [x86_64-darwin19]
+        # -e:1: identifier foo? is not valid to get
+        expect_no_offenses(<<~RUBY)
+          {foo?: foo?}
+        RUBY
+      end
+
+      it 'does not register an offense when symbol hash key and string hash value are the same' do
+        expect_no_offenses(<<~RUBY)
+          {'foo': 'foo'}
+        RUBY
+      end
+
+      it 'does not register an offense when without parentheses call expr follows' do
+        # Prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_no_offenses(<<~RUBY)
+          foo value: value
+          foo arg
+
+          value = 'a'
+          foo value: value
+          foo arg
+        RUBY
+      end
+
+      it 'registers an offense when with parentheses call expr follows' do
+        expect_offense(<<~RUBY)
+          foo value: value
+                     ^^^^^ Omit the hash value.
+          foo(arg)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo value:
+          foo(arg)
+        RUBY
+      end
+
+      context 'when hash roket syntax' do
+        let(:enforced_style) { 'hash_rockets' }
+
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            {:foo => foo, :bar => bar}
+          RUBY
+        end
+      end
+    end
+
+    context 'Ruby <= 3.0', :ruby30 do
+      it 'does not register an offense when hash key and hash value are the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
+    end
+  end
+
+  context 'configured to enforce explicit hash value syntax style' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'ruby19',
+        'SupportedStyles' => %w[ruby19 hash_rockets],
+        'EnforcedShorthandSyntax' => 'never'
+      }
+    end
+
+    context 'Ruby >= 3.1', :ruby31 do
+      it 'registers and corrects an offense when hash values are omitted' do
+        expect_offense(<<~RUBY)
+          {foo:, bar:}
+           ^^^ Explicit the hash value.
+                 ^^^ Explicit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
+
+      it 'registers and corrects an offense when hash key and hash value are partially the same' do
+        expect_offense(<<~RUBY)
+          {foo:, bar: bar, baz: qux}
+           ^^^ Explicit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: foo, bar: bar, baz: qux}
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are not the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: bar, bar: foo}
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
+    end
+
+    context 'Ruby <= 3.0', :ruby30 do
+      it 'does not register an offense when hash key and hash value are the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
     end
   end
 end
