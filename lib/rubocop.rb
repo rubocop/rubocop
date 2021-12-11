@@ -407,6 +407,7 @@ require_relative 'rubocop/cop/metrics/perceived_complexity'
 
 require_relative 'rubocop/cop/naming/accessor_method_name'
 require_relative 'rubocop/cop/naming/ascii_identifiers'
+require_relative 'rubocop/cop/naming/block_forwarding'
 require_relative 'rubocop/cop/naming/block_parameter_name'
 require_relative 'rubocop/cop/naming/class_and_module_camel_case'
 require_relative 'rubocop/cop/naming/constant_name'

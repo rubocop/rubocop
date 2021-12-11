@@ -2487,6 +2487,15 @@ Naming/BinaryOperatorParameterName:
   VersionAdded: '0.50'
   VersionChanged: '1.2'
 
+Naming/BlockForwarding:
+  Description: 'Use anonymous block forwarding.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: anonymous
+  SupportedStyles:
+    - anonymous
+    - explicit
+
 Naming/BlockParameterName:
   Description: >-
                  Checks for block parameter names that contain capital letters,
