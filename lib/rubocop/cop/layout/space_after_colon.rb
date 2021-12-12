@@ -19,7 +19,7 @@ module RuboCop
         MSG = 'Space missing after colon.'
 
         def on_pair(node)
-          return unless node.colon?
+          return if !node.colon? || node.value_omission?
 
           colon = node.loc.operator
 
