@@ -313,7 +313,7 @@ module RuboCop
           # just give each lambda the same reference and they would all get the
           # last value of each. A local variable fixes the problem.
 
-          if node.value
+          if node.value && node.respond_to?(:value_omission?) && !node.value_omission?
             correct_key_value(corrector, delta, node.key.source_range,
                               node.value.source_range,
                               node.loc.operator)

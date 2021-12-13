@@ -43,7 +43,7 @@ module RuboCop
         end
 
         def value_delta(pair)
-          return 0 if pair.value_on_new_line?
+          return 0 if pair.value_on_new_line? || pair.value_omission?
 
           correct_value_column = pair.loc.operator.end.column + 1
           actual_value_column = pair.value.loc.column
@@ -111,7 +111,8 @@ module RuboCop
           correct_value_column = first_pair.key.loc.column +
                                  current_pair.delimiter(true).length +
                                  max_key_width
-          correct_value_column - current_pair.value.loc.column
+
+          current_pair.value_omission? ? 0 : correct_value_column - current_pair.value.loc.column
         end
       end
 
@@ -134,7 +135,7 @@ module RuboCop
         end
 
         def value_delta(first_pair, current_pair)
-          first_pair.value_delta(current_pair)
+          current_pair.value_omission? ? 0 : first_pair.value_delta(current_pair)
         end
       end
 

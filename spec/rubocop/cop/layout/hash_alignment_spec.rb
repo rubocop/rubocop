@@ -36,6 +36,33 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         end
       RUBY
     end
+
+    context 'when using hash value omission', :ruby31 do
+      it 'accepts single line hash' do
+        expect_no_offenses('func(a:, bb:)')
+      end
+
+      it 'accepts several pairs per line' do
+        expect_no_offenses(<<~RUBY)
+          func(a:, bb:,
+               ccc:, dddd:)
+        RUBY
+      end
+
+      it "accepts pairs that don't start a line" do
+        expect_no_offenses(<<~RUBY)
+          render :json => {a:,
+                           b:}, :status => 404
+          def example
+            a(
+              b:,
+              c: d(
+                e:
+              ), f:)
+          end
+        RUBY
+      end
+    end
   end
 
   context 'always inspect last argument hash' do
@@ -118,6 +145,34 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
                b: 1})
       RUBY
     end
+
+    context 'when using hash value omission', :ruby31 do
+      it 'registers offense and corrects misaligned keys in implicit hash' do
+        expect_offense(<<~RUBY)
+          func(a:,
+            b:)
+            ^^ Align the keys of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          func(a:,
+               b:)
+        RUBY
+      end
+
+      it 'registers offense and corrects misaligned keys in explicit hash' do
+        expect_offense(<<~RUBY)
+          func({a:,
+            b:})
+            ^^ Align the keys of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          func({a:,
+                b:})
+        RUBY
+      end
+    end
   end
 
   context 'when `EnforcedStyle: with_fixed_indentation` of `ArgumentAlignment`' do
@@ -161,6 +216,36 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           region: ENV['S3_REGION'],
         )
       RUBY
+    end
+
+    context 'when using hash value omission', :ruby31 do
+      it 'register and corrects an offense' do
+        expect_offense(<<~RUBY)
+          THINGS = {
+            oh:,
+              hi:
+              ^^^ Align the keys of a hash literal if they span more than one line.
+              }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          THINGS = {
+            oh:,
+            hi:
+              }
+        RUBY
+      end
+
+      it 'does not register and corrects an offense when using aligned keyword arguments' do
+        expect_no_offenses(<<~RUBY)
+          config.fog_credentials_as_kwargs(
+            provider:,
+            aws_access_key_id:,
+            aws_secret_access_key:,
+            region:
+          )
+        RUBY
+      end
     end
 
     it 'does not register an offense using aligned hash literal' do
@@ -316,6 +401,28 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         func({a: 0,
           b: 1})
       RUBY
+    end
+
+    context 'when using hash value omission', :ruby31 do
+      it 'registers an offense and corrects misaligned keys in implicit hash' do
+        expect_offense(<<~RUBY)
+          func(a:,
+            b:)
+            ^^ Align the keys of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          func(a:,
+               b:)
+        RUBY
+      end
+
+      it 'accepts misaligned keys in explicit hash' do
+        expect_no_offenses(<<~RUBY)
+          func({a:,
+            b:})
+        RUBY
+      end
     end
 
     it 'registers an offense and corrects misaligned keys in implicit hash for super' do
@@ -640,6 +747,22 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       expect_no_offenses('h = {}')
     end
 
+    context 'when using hash value omission', :ruby31 do
+      it 'accepts aligned hash keys and values' do
+        expect_no_offenses(<<~RUBY)
+          hash1 = {
+            'a'   => 0,
+            'bbb' => 1
+          }
+          hash2 = {
+            a:   0,
+            bbb: 1,
+            ccc:
+          }
+        RUBY
+      end
+    end
+
     it 'accepts a multiline array of single line hashes' do
       expect_no_offenses(<<~RUBY)
         def self.scenarios_order
@@ -797,6 +920,38 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           'bbb' => 1
         }
       RUBY
+    end
+
+    context 'when using hash value omission', :ruby31 do
+      it 'accepts aligned hash keys' do
+        expect_no_offenses(<<~RUBY)
+          hash1 = {
+              a: 0,
+            bbb: 1,
+            ccc:
+          }
+          hash2 = {
+              'a' => 0,
+            'bbb' => 1
+          }
+        RUBY
+      end
+
+      it 'registers an offense and corrects mixed indentation and spacing' do
+        expect_offense(<<~RUBY)
+          hash1 = { a: 0,
+               bb:,
+               ^^^ Align the separators of a hash literal if they span more than one line.
+                     ccc: 2 }
+                     ^^^^^^ Align the separators of a hash literal if they span more than one line.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          hash1 = { a: 0,
+                   bb:,
+                  ccc: 2 }
+        RUBY
+      end
     end
 
     it 'accepts an empty hash' do
@@ -1191,6 +1346,17 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           foo ab: 1,
               c:  2
         RUBY
+      end
+    end
+
+    context 'when using hash value omission', :ruby31 do
+      context 'and aligned keys' do
+        it 'does not register an offense and corrects' do
+          expect_no_offenses(<<~RUBY)
+            foo ab: 1,
+                c:
+          RUBY
+        end
       end
     end
 
