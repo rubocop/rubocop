@@ -2107,6 +2107,18 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/DotPosition` and `Style/RedundantSelf` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      var = self.
+        do_something
+    RUBY
+
+    expect(cli.run(['-a', '--only', 'Layout/DotPosition,Style/RedundantSelf'])).to eq(0)
+
+    expect(source_file.read).to eq("var = \n  do_something\n")
+  end
+
   it 'does not correct Style/IfUnlessModifier offense disabled by a comment directive and ' \
      'does not fire Lint/RedundantCopDisableDirective offense even though that directive ' \
      'would make the modifier form too long' do
