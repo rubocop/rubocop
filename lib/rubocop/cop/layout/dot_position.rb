@@ -27,6 +27,10 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
+        def self.autocorrect_incompatible_with
+          [Style::RedundantSelf]
+        end
+
         def on_send(node)
           return unless node.dot? || ampersand_dot?(node)
 
