@@ -4238,6 +4238,8 @@ Style/NumericLiterals:
   VersionChanged: '0.48'
   MinDigits: 5
   Strict: false
+  # You can specify allowed numbers. (e.g. port number 3000, 8080, and etc)
+  AllowedNumbers: []
 
 Style/NumericPredicate:
   Description: >-

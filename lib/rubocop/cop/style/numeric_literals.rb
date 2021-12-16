@@ -27,6 +27,11 @@ module RuboCop
       #   # bad
       #   10_000_00 # typical representation of $10,000 in cents
       #
+      # @example AllowedNumbers: [3000]
+      #
+      #   # good
+      #   3000 # You can specify allowed numbers. (e.g. port number)
+      #
       class NumericLiterals < Base
         include IntegerNode
         extend AutoCorrector
@@ -51,9 +56,9 @@ module RuboCop
 
         def check(node)
           int = integer_part(node)
-
           # TODO: handle non-decimal literals as well
           return if int.start_with?('0')
+          return if allowed_numbers.include?(int)
           return unless int.size >= min_digits
 
           case int
@@ -98,6 +103,10 @@ module RuboCop
 
         def min_digits
           cop_config['MinDigits']
+        end
+
+        def allowed_numbers
+          cop_config.fetch('AllowedNumbers', []).map(&:to_s)
         end
       end
     end
