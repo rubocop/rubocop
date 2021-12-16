@@ -1161,6 +1161,80 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--show-docs-url' do
+    let(:stdout) { $stdout.string }
+    let(:cmd) { cli.run(['--show-docs-url'] + arguments) }
+
+    context 'with no args' do
+      let(:arguments) { [] }
+
+      it 'returns base url to documentation' do
+        cmd
+        expect(stdout).to eq(<<~RESULT)
+          https://docs.rubocop.org/rubocop
+
+        RESULT
+      end
+    end
+
+    context 'with one cop given' do
+      let(:arguments) { ['Layout/IndentationStyle'] }
+
+      it 'returns documentation url for given cop' do
+        cmd
+        expect(stdout).to eq(<<~RESULT)
+          https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+
+        RESULT
+      end
+    end
+
+    context 'with two cops given' do
+      let(:arguments) { ['Layout/IndentationStyle,Layout/LineLength'] }
+
+      it 'returns documentation urls for given cops' do
+        cmd
+        expect(stdout).to eq(<<~RESULT)
+          https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+          https://docs.rubocop.org/rubocop/cops_layout.html#layoutlinelength
+
+        RESULT
+      end
+
+      context 'with one of the cops misspelled' do
+        let(:arguments) { ['Layout/IndentationStyle,Lint/X123'] }
+
+        it 'skips the unknown cop' do
+          cmd
+          expect(stdout).to eq(<<~RESULT)
+            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+
+          RESULT
+        end
+      end
+
+      context 'with a DocumentationBaseURL specified' do
+        let(:arguments) { ['Layout/IndentationStyle,Style/AsciiComments'] }
+
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            Style:
+              DocumentationBaseURL: https://docs.rubocop.org/rubocop-style
+          YAML
+        end
+
+        it 'builds the doc url using value supplied' do
+          cmd
+          expect(stdout).to eq(<<~RESULT)
+            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+            https://docs.rubocop.org/rubocop-style/cops_style.html#styleasciicomments
+
+          RESULT
+        end
+      end
+    end
+  end
+
   describe '-f/--format' do
     let(:target_file) { 'example.rb' }
 

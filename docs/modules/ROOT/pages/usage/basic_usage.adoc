@@ -125,7 +125,7 @@ To specify multiple cops for one flag, separate cops with commas and no spaces:
 
 [source,sh]
 ----
-$ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName 
+$ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 ----
 
 
@@ -239,6 +239,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 
 | `--show-cops`
 | Shows available cops and their configuration.
+
+| `--show-docs-url`
+| Shows urls for documentation pages of supplied cops.
 
 | `--stderr`
 | Write all output to stderr except for the autocorrected source. This is especially useful when combined with `--auto-correct` and `--stdin`.

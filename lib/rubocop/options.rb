@@ -15,7 +15,7 @@ module RuboCop
                       'root of the project. RuboCop will use this path to determine which ' \
                       'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
                       'like Naming/FileName can be checked.'
-    EXITING_OPTIONS = %i[version verbose_version show_cops].freeze
+    EXITING_OPTIONS = %i[version verbose_version show_cops show_docs_url].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -187,6 +187,9 @@ module RuboCop
         option(opts, '-L', '--list-target-files')
         option(opts, '--show-cops [COP1,COP2,...]') do |list|
           @options[:show_cops] = list.nil? ? [] : list.split(',')
+        end
+        option(opts, '--show-docs-url [COP1,COP2,...]') do |list|
+          @options[:show_docs_url] = list.nil? ? [] : list.split(',')
         end
       end
     end
@@ -475,6 +478,8 @@ module RuboCop
       show_cops:                        ['Shows the given cops, or all cops by',
                                          'default, and their configurations for the',
                                          'current directory.'],
+      show_docs_url:                    ['Display url to documentation for the given',
+                                         'cops, or base url by default.'],
       fail_fast:                        ['Inspect files in order of modification',
                                          'time and stop after the first file',
                                          'containing offenses.'],

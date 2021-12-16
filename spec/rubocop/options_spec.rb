@@ -147,6 +147,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                                default, and their configurations for the
                                                current directory.
+                  --show-docs-url [COP1,COP2,...]
+                                               Display url to documentation for the given
+                                               cops, or base url by default.
 
           General Options:
                   --init                       Generate a .rubocop.yml file in the current directory.
