@@ -219,4 +219,38 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
       end
     end
   end
+
+  context 'when `3000` is specified for `AllowedNumbers`' do
+    let(:cop_config) { { 'MinDigits' => 4, 'AllowedNumbers' => [3000] } }
+
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        3000
+      RUBY
+    end
+
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        1234
+        ^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+      RUBY
+    end
+  end
+
+  context "when `'3000'` is specified for `AllowedNumbers`" do
+    let(:cop_config) { { 'MinDigits' => 4, 'AllowedNumbers' => ['3000'] } }
+
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        3000
+      RUBY
+    end
+
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        1234
+        ^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+      RUBY
+    end
+  end
 end
