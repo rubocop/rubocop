@@ -120,6 +120,50 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'reports different offense for Hash[a || b]' do
+    expect_offense(<<~RUBY)
+      Hash[a || b]
+      ^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (a || b).to_h
+    RUBY
+  end
+
+  it 'reports different offense for Hash[(a || b)]' do
+    expect_offense(<<~RUBY)
+      Hash[(a || b)]
+      ^^^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (a || b).to_h
+    RUBY
+  end
+
+  it 'reports different offense for Hash[a && b]' do
+    expect_offense(<<~RUBY)
+      Hash[a && b]
+      ^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (a && b).to_h
+    RUBY
+  end
+
+  it 'reports different offense for Hash[(a && b)]' do
+    expect_offense(<<~RUBY)
+      Hash[(a && b)]
+      ^^^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (a && b).to_h
+    RUBY
+  end
+
   it 'registers and corrects an offense when using `zip` with argument in `Hash[]`' do
     expect_offense(<<~RUBY)
       Hash[array.zip([1, 2, 3])]
