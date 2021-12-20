@@ -256,4 +256,38 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
       RUBY
     end
   end
+
+  context 'when using numbered parameter', :ruby27 do
+    context 'when inspecting a class defined with Module.new' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          Foo = Module.new do
+          ^^^ Module has too many lines. [6/5]
+            a(_1)
+            b(_1)
+            c(_1)
+            d(_1)
+            e(_1)
+            f(_1)
+          end
+        RUBY
+      end
+    end
+
+    context 'when inspecting a class defined with ::Module.new' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          Foo = ::Module.new do
+          ^^^ Module has too many lines. [6/5]
+            a(_1)
+            b(_1)
+            c(_1)
+            d(_1)
+            e(_1)
+            f(_1)
+          end
+        RUBY
+      end
+    end
+  end
 end

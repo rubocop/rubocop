@@ -135,7 +135,7 @@ module RuboCop
 
           def extract_body(node)
             case node.type
-            when :class, :module, :block, :def, :defs
+            when :class, :module, :block, :numblock, :def, :defs
               node.body
             when :casgn
               _scope, _name, value = *node

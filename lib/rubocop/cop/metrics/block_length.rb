@@ -50,6 +50,7 @@ module RuboCop
 
           check_code_length(node)
         end
+        alias on_numblock on_block
 
         private
 
