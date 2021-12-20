@@ -16,6 +16,7 @@ module RuboCop
       #
       # @example
       #   # bad
+      #   array.reject(&:nil?)
       #   array.reject { |e| e.nil? }
       #   array.select { |e| !e.nil? }
       #
@@ -23,6 +24,7 @@ module RuboCop
       #   array.compact
       #
       #   # bad
+      #   hash.reject!(&:nil?)
       #   hash.reject! { |k, v| v.nil? }
       #   hash.select! { |k, v| !v.nil? }
       #
@@ -37,11 +39,18 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[reject reject! select select!].freeze
 
+        # @!method reject_method_with_block_pass?(node)
+        def_node_matcher :reject_method_with_block_pass?, <<~PATTERN
+          (send _ {:reject :reject!}
+            (block_pass
+              (sym :nil?)))
+        PATTERN
+
         # @!method reject_method?(node)
         def_node_matcher :reject_method?, <<~PATTERN
           (block
             (send
-              _ ${:reject :reject!})
+              _ {:reject :reject!})
             $(args ...)
             (send
               $(lvar _) :nil?))
@@ -51,7 +60,7 @@ module RuboCop
         def_node_matcher :select_method?, <<~PATTERN
           (block
             (send
-              _ ${:select :select!})
+              _ {:select :select!})
             $(args ...)
             (send
               (send
@@ -59,22 +68,31 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          block_node = node.parent
-          return unless block_node&.block_type?
+          return unless (range = offense_range(node))
 
-          return unless (method_name, args, receiver =
-                           reject_method?(block_node) || select_method?(block_node))
-
-          return unless args.last.source == receiver.source
-
-          range = offense_range(node, block_node)
-          good = good_method_name(method_name)
+          good = good_method_name(node.method_name)
           message = format(MSG, good: good, bad: range.source)
 
           add_offense(range, message: message) { |corrector| corrector.replace(range, good) }
         end
 
         private
+
+        def offense_range(node)
+          if reject_method_with_block_pass?(node)
+            range(node, node)
+          else
+            block_node = node.parent
+
+            return unless block_node&.block_type?
+            unless (args, receiver = reject_method?(block_node) || select_method?(block_node))
+              return
+            end
+            return unless args.last.source == receiver.source
+
+            range(node, block_node)
+          end
+        end
 
         def good_method_name(method_name)
           if method_name.to_s.end_with?('!')
@@ -84,8 +102,8 @@ module RuboCop
           end
         end
 
-        def offense_range(send_node, block_node)
-          range_between(send_node.loc.selector.begin_pos, block_node.loc.end.end_pos)
+        def range(begin_pos_node, end_pos_node)
+          range_between(begin_pos_node.loc.selector.begin_pos, end_pos_node.loc.end.end_pos)
         end
       end
     end
