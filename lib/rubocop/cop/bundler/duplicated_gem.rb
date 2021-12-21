@@ -68,7 +68,7 @@ module RuboCop
         end
 
         def conditional_declaration?(nodes)
-          parent = nodes[0].parent
+          parent = nodes[0].each_ancestor.find { |ancestor| !ancestor.begin_type? }
           return false unless parent&.if_type? || parent&.when_type?
 
           root_conditional_node = parent.if_type? ? parent : parent.parent
