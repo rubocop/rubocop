@@ -92,7 +92,7 @@ module RuboCop
         private
 
         def method_name(node)
-          node.ancestors.find(&:block_type?).send_node.method_name
+          node.ancestors.find(&:block_type?).method_name
         end
       end
     end

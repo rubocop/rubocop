@@ -218,11 +218,7 @@ module RuboCop
         def find_matching_receiver_invocation(method_chain, checked_variable)
           return nil unless method_chain
 
-          receiver = if method_chain.block_type?
-                       method_chain.send_node.receiver
-                     else
-                       method_chain.receiver
-                     end
+          receiver = method_chain.receiver
 
           return receiver if receiver == checked_variable
 
