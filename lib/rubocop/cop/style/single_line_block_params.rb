@@ -39,7 +39,7 @@ module RuboCop
           return unless eligible_method?(node)
           return unless eligible_arguments?(node)
 
-          method_name = node.send_node.method_name
+          method_name = node.method_name
           return if args_match?(method_name, node.arguments)
 
           preferred_block_arguments = build_preferred_arguments_map(node, target_args(method_name))
@@ -81,7 +81,7 @@ module RuboCop
         end
 
         def eligible_method?(node)
-          node.send_node.receiver && method_names.include?(node.send_node.method_name)
+          node.receiver && method_names.include?(node.method_name)
         end
 
         def methods
