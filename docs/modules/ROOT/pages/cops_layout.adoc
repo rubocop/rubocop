@@ -932,7 +932,7 @@ some_method(a,
 | Yes
 | Yes
 | 0.49
-| -
+| 1.24
 |===
 
 This cop checks the indentation of comments.
@@ -967,6 +967,38 @@ if true
   true
 end
 ----
+
+==== AllowForAlignment: false (default)
+
+[source,ruby]
+----
+# bad
+a = 1 # A really long comment
+      # spanning two lines.
+
+# good
+# A really long comment spanning one line.
+a = 1
+----
+
+==== AllowForAlignment: true
+
+[source,ruby]
+----
+# good
+a = 1 # A really long comment
+      # spanning two lines.
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowForAlignment
+| `false`
+| Boolean
+|===
 
 == Layout/ConditionPosition
 

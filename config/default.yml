@@ -455,7 +455,7 @@ Layout/CommentIndentation:
   # with a comment on the preceding line.
   AllowForAlignment: false
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.24'
 
 Layout/ConditionPosition:
   Description: >-
@@ -1804,7 +1804,7 @@ Lint/IncompatibleIoSelectWithFiberScheduler:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.21'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.24'
 
 Lint/IneffectiveAccessModifier:
   Description: >-
@@ -2490,7 +2490,7 @@ Naming/BinaryOperatorParameterName:
 Naming/BlockForwarding:
   Description: 'Use anonymous block forwarding.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.24'
   EnforcedStyle: anonymous
   SupportedStyles:
     - anonymous
@@ -3513,13 +3513,13 @@ Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'
   StyleGuide: '#file-read'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.24'
 
 Style/FileWrite:
   Description: 'Favor `File.(bin)write` convenience methods.'
   StyleGuide: '#file-write'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.24'
 
 Style/FloatDivision:
   Description: 'For performing float division, coerce one side only.'
@@ -3679,7 +3679,7 @@ Style/HashSyntax:
   StyleGuide: '#hash-literals'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.24'
   EnforcedStyle: ruby19
   SupportedStyles:
     # checks for 1.9 syntax (e.g. {a: 1}) for all symbol keys
@@ -3876,7 +3876,7 @@ Style/LineEndConcatenation:
 Style/MapToHash:
   Description: 'Prefer `to_h` with a block over `map.to_h`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.24'
   Safe: false
 
 Style/MethodCallWithArgsParentheses:

@@ -1056,6 +1056,12 @@ end
 |===
 
 Checks for uses of the character literal ?x.
+Starting with Ruby 1.9 character literals are
+essentially one-character strings, so this syntax
+is mostly redundant at this point.
+
+? character literal can be used to express meta and control character.
+That's a good use case of ? literal so it doesn't count it as an offense.
 
 === Examples
 
@@ -1067,8 +1073,9 @@ Checks for uses of the character literal ?x.
 # good
 'x'
 
-# good
+# good - control & meta escapes
 ?\C-\M-d
+"\C-\M-d" # same as above
 ----
 
 === References
@@ -1459,6 +1466,7 @@ when the receiver is a hash object.
 [source,ruby]
 ----
 # bad
+array.reject(&:nil?)
 array.reject { |e| e.nil? }
 array.select { |e| !e.nil? }
 
@@ -1466,6 +1474,7 @@ array.select { |e| !e.nil? }
 array.compact
 
 # bad
+hash.reject!(&:nil?)
 hash.reject! { |k, v| v.nil? }
 hash.select! { |k, v| !v.nil? }
 
@@ -3706,6 +3715,106 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 
 * https://rubystyle.guide#exponential-notation
 
+== Style/FileRead
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.24
+| -
+|===
+
+Favor `File.(bin)read` convenience methods.
+
+=== Examples
+
+[source,ruby]
+----
+## text mode
+# bad
+File.open(filename).read
+File.open(filename, &:read)
+File.open(filename) { |f| f.read }
+File.open(filename) do |f|
+  f.read
+end
+File.open(filename, 'r').read
+File.open(filename, 'r', &:read)
+File.open(filename, 'r') do |f|
+  f.read
+end
+
+# good
+File.read(filename)
+----
+
+[source,ruby]
+----
+## binary mode
+# bad
+File.open(filename, 'rb').read
+File.open(filename, 'rb', &:read)
+File.open(filename, 'rb') do |f|
+  f.read
+end
+
+# good
+File.binread(filename)
+----
+
+=== References
+
+* https://rubystyle.guide#file-read
+
+== Style/FileWrite
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.24
+| -
+|===
+
+Favor `File.(bin)write` convenience methods.
+
+=== Examples
+
+[source,ruby]
+----
+## text mode
+# bad
+File.open(filename, 'w').write(content)
+File.open(filename, 'w') do |f|
+  f.write(content)
+end
+
+# good
+File.write(filename, content)
+----
+
+[source,ruby]
+----
+## binary mode
+# bad
+File.open(filename, 'wb').write(content)
+File.open(filename, 'wb') do |f|
+  f.write(content)
+end
+
+# good
+File.binwrite(filename, content)
+----
+
+=== References
+
+* https://rubystyle.guide#file-write
+
 == Style/FloatDivision
 
 |===
@@ -4643,7 +4752,7 @@ end
 | Yes
 | Yes
 | 0.9
-| 0.43
+| 1.24
 |===
 
 This cop checks hash literal syntax.
@@ -4661,6 +4770,10 @@ all symbols for keys
 * no_mixed_keys - simply checks for hashes with mixed syntaxes
 * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
 syntax hashes
+
+This cop has `EnforcedShorthandSyntax` option.
+It can enforce either the use of the explicit hash value syntax or
+the use of Ruby 3.1's hash value shorthand syntax.
 
 === Examples
 
@@ -4716,6 +4829,28 @@ syntax hashes
 {:c => 3, 'd' => 4}
 ----
 
+==== EnforcedShorthandSyntax: always (default)
+
+[source,ruby]
+----
+# bad
+{foo: foo, bar: bar}
+
+# good
+{foo:, bar:}
+----
+
+==== EnforcedShorthandSyntax: never
+
+[source,ruby]
+----
+# bad
+{foo:, bar:}
+
+# good
+{foo: foo, bar: bar}
+----
+
 === Configurable attributes
 
 |===
@@ -4724,6 +4859,10 @@ syntax hashes
 | EnforcedStyle
 | `ruby19`
 | `ruby19`, `hash_rockets`, `no_mixed_keys`, `ruby19_no_mixed_keys`
+
+| EnforcedShorthandSyntax
+| `always`
+| `always`, `never`
 
 | UseHashRocketsWithSymbolValues
 | `false`
@@ -5684,6 +5823,49 @@ some_str = 'ala' <<
 # good
 some_str = 'ala' \
            'bala'
+----
+
+== Style/MapToHash
+
+NOTE: Required Ruby version: 2.6
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.24
+| -
+|===
+
+This cop looks for uses of `map.to_h` or `collect.to_h` that could be
+written with just `to_h` in Ruby >= 2.6.
+
+NOTE: `Style/HashTransformKeys` and `Style/HashTransformValues` will
+also change this pattern if only hash keys or hash values are being
+transformed.
+
+=== Safety
+
+This cop is unsafe, as it can produce false positives if the receiver
+is not an `Enumerable`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+something.map { |v| [v, v * 2] }.to_h
+
+# good
+something.to_h { |v| [v, v * 2] }
+
+# bad
+{foo: bar}.collect { |k, v| [k.to_s, v.do_something] }.to_h
+
+# good
+{foo: bar}.to_h { |k, v| [k.to_s, v.do_something] }
 ----
 
 == Style/MethodCallWithArgsParentheses
@@ -7999,6 +8181,14 @@ of digits in them.
 10_000_00 # typical representation of $10,000 in cents
 ----
 
+==== AllowedNumbers: [3000]
+
+[source,ruby]
+----
+# good
+3000 # You can specify allowed numbers. (e.g. port number)
+----
+
 === Configurable attributes
 
 |===
@@ -8011,6 +8201,10 @@ of digits in them.
 | Strict
 | `false`
 | Boolean
+
+| AllowedNumbers
+| `[]`
+| Array
 |===
 
 === References
