@@ -49,21 +49,21 @@ jobs:
   # Ruby 2.5
   ruby-2.5-spec:
     docker:
-      - image: circleci/ruby:2.5
+      - image: cimg/ruby:2.5
     environment:
       <<: *common_env
     steps:
       *spec_steps
   ruby-2.5-ascii_spec:
     docker:
-      - image: circleci/ruby:2.5
+      - image: cimg/ruby:2.5
     environment:
       <<: *common_env
     steps:
       *ascii_spec_steps
   ruby-2.5-rubocop:
     docker:
-      - image: circleci/ruby:2.5
+      - image: cimg/ruby:2.5
     environment:
       <<: *common_env
     steps:
@@ -72,21 +72,21 @@ jobs:
   # Ruby 2.6
   ruby-2.6-spec:
     docker:
-      - image: circleci/ruby:2.6
+      - image: cimg/ruby:2.6
     environment:
       <<: *common_env
     steps:
       *spec_steps
   ruby-2.6-ascii_spec:
     docker:
-      - image: circleci/ruby:2.6
+      - image: cimg/ruby:2.6
     environment:
       <<: *common_env
     steps:
       *ascii_spec_steps
   ruby-2.6-rubocop:
     docker:
-      - image: circleci/ruby:2.6
+      - image: cimg/ruby:2.6
     environment:
       <<: *common_env
     steps:
@@ -95,21 +95,21 @@ jobs:
   # Ruby 2.7
   ruby-2.7-spec:
     docker:
-      - image: circleci/ruby:2.7
+      - image: cimg/ruby:2.7
     environment:
       <<: *common_env
     steps:
       *spec_steps
   ruby-2.7-ascii_spec:
     docker:
-      - image: circleci/ruby:2.7
+      - image: cimg/ruby:2.7
     environment:
       <<: *common_env
     steps:
       *ascii_spec_steps
   ruby-2.7-rubocop:
     docker:
-      - image: circleci/ruby:2.7
+      - image: cimg/ruby:2.7
     environment:
       <<: *common_env
     steps:
@@ -118,21 +118,21 @@ jobs:
   # Ruby 3.0
   ruby-3.0-spec:
     docker:
-      - image: circleci/ruby:3.0
+      - image: cimg/ruby:3.0
     environment:
       <<: *common_env
     steps:
       *spec_steps
   ruby-3.0-ascii_spec:
     docker:
-      - image: circleci/ruby:3.0
+      - image: cimg/ruby:3.0
     environment:
       <<: *common_env
     steps:
       *ascii_spec_steps
   ruby-3.0-rubocop:
     docker:
-      - image: circleci/ruby:3.0
+      - image: cimg/ruby:3.0
     environment:
       <<: *common_env
     steps:
@@ -190,7 +190,8 @@ jobs:
   # Job for downloading the Code Climate test reporter
   cc-setup:
     docker:
-      - image: circleci/ruby
+      # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
+      - image: cimg/ruby:3.0
     environment:
       <<: *common_env
     steps:
@@ -208,7 +209,8 @@ jobs:
   # Job for merging code coverage results and sending them to Code Climate
   cc-upload-coverage:
     docker:
-      - image: circleci/ruby
+      # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
+      - image: cimg/ruby:3.0
         environment:
           CC_TEST_REPORTER_ID: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
     environment:
@@ -225,7 +227,8 @@ jobs:
   # Miscellaneous tasks
   documentation-checks:
     docker:
-      - image: circleci/ruby
+      # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
+      - image: cimg/ruby:3.0
     environment:
       <<: *common_env
     steps:
