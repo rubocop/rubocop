@@ -59,7 +59,7 @@ module RuboCop
         def autocorrect(corrector, to_h, map)
           removal_range = range_between(to_h.loc.dot.begin_pos, to_h.loc.selector.end_pos)
 
-          corrector.remove(removal_range)
+          corrector.remove(range_with_surrounding_space(range: removal_range, side: :left))
           corrector.replace(map.loc.selector, 'to_h')
         end
       end

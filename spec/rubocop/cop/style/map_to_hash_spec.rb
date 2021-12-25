@@ -86,6 +86,24 @@ RSpec.describe RuboCop::Cop::Style::MapToHash, :config do
           expect_no_corrections
         end
       end
+
+      context "`map` and `#{method}.to_h` with newlines" do
+        it 'registers an offense and corrects with newline removal' do
+          expect_offense(<<~RUBY, method: method)
+            {foo: bar}
+              .#{method} { |k, v| [k.to_s, v.do_something] }
+               ^{method} Pass a block to `to_h` instead of calling `#{method}.to_h`.
+              .to_h
+              .freeze
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: bar}
+              .to_h { |k, v| [k.to_s, v.do_something] }
+              .freeze
+          RUBY
+        end
+      end
     end
   end
 end
