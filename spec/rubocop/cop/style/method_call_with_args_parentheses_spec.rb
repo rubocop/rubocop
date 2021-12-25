@@ -412,6 +412,40 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
+    context 'hash value omission in 3.1', :ruby31 do
+      it 'registers an offense when last argument is a hash value omission' do
+        expect_offense(<<~RUBY)
+          foo(bar:, baz:)
+             ^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar:, baz:
+        RUBY
+      end
+
+      it 'does not register an offense when without parentheses call expr follows' do
+        expect_no_offenses(<<~RUBY)
+          foo value:
+        RUBY
+      end
+
+      it 'registers an offense when with parentheses call expr follows' do
+        # Require hash value omission be enclosed in parentheses to prevent the following issue:
+        # https://bugs.ruby-lang.org/issues/18396.
+        expect_offense(<<~RUBY)
+          foo(value:)
+          foo(arg)
+             ^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:)
+          foo arg
+        RUBY
+      end
+    end
+
     it 'register an offense for parens in method call without args' do
       trailing_whitespace = ' '
 
