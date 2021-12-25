@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           msg = '-P/--parallel is being ignored because it is not compatible with --cache false'
           options.parse %w[--parallel --cache false]
           expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+          expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
         end
       end
 
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           msg = '-P/--parallel is being ignored because it is not compatible with --auto-correct'
           options.parse %w[--parallel --auto-correct]
           expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+          expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
         end
       end
 
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           msg = '-P/--parallel is being ignored because it is not compatible with --auto-gen-config'
           options.parse %w[--parallel --auto-gen-config]
           expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+          expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
         end
       end
 
@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
           options.parse %w[--parallel --fail-fast]
           expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+          expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
         end
       end
     end
@@ -256,7 +256,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
         options.parse %w[--parallel --fail-fast --auto-correct]
         expect($stdout.string).to include(msg)
-        expect(options.instance_variable_get('@options').keys).not_to include(:parallel)
+        expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
       end
     end
 

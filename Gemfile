@@ -8,7 +8,7 @@ gem 'bump', require: false
 gem 'memory_profiler', platform: :mri
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
-gem 'rubocop-performance', '~> 1.12.0'
+gem 'rubocop-performance', '~> 1.13.0'
 gem 'rubocop-rake', '~> 0.6.0'
 gem 'rubocop-rspec', '~> 2.5.0'
 # Workaround for cc-test-reporter with SimpleCov 0.18.
