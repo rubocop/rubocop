@@ -13,9 +13,11 @@ module RuboCop
 
           private
 
+          # rubocop:disable Metrics/PerceivedComplexity
           def omit_parentheses(node)
             return unless node.parenthesized?
             return if inside_endless_method_def?(node)
+            return if require_parentheses_for_hash_value_omission?(node)
             return if syntax_like_method_call?(node)
             return if super_call_without_arguments?(node)
             return if allowed_camel_case_method_call?(node)
@@ -26,6 +28,7 @@ module RuboCop
               auto_correct(corrector, node)
             end
           end
+          # rubocop:enable Metrics/PerceivedComplexity
 
           def auto_correct(corrector, node)
             if parentheses_at_the_end_of_multiline_call?(node)
@@ -43,6 +46,16 @@ module RuboCop
           def inside_endless_method_def?(node)
             # parens are required around arguments inside an endless method
             node.each_ancestor(:def, :defs).any?(&:endless?) && node.arguments.any?
+          end
+
+          # Require hash value omission be enclosed in parentheses to prevent the following issue:
+          # https://bugs.ruby-lang.org/issues/18396.
+          def require_parentheses_for_hash_value_omission?(node)
+            return unless (last_argument = node.last_argument)
+
+            return false unless (right_sibling = node.right_sibling)
+
+            last_argument.hash_type? && last_argument.pairs.last&.value_omission? && right_sibling
           end
 
           def syntax_like_method_call?(node)
