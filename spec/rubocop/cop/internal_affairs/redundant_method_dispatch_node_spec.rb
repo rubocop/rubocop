@@ -40,4 +40,10 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantMethodDispatchNode, :conf
       node.send_node.arguments?
     RUBY
   end
+
+  it 'does not register an offense when using `send_node.method_name`' do
+    expect_no_offenses(<<~RUBY)
+      send_node.method_name
+    RUBY
+  end
 end

@@ -33,8 +33,9 @@ module RuboCop
 
         def on_send(node)
           return unless (dispatch_node = dispatch_method(node))
+          return unless (dot = dispatch_node.loc.dot)
 
-          range = range_between(dispatch_node.loc.dot.begin_pos, dispatch_node.loc.selector.end_pos)
+          range = range_between(dot.begin_pos, dispatch_node.loc.selector.end_pos)
 
           add_offense(range) do |corrector|
             corrector.remove(range)
