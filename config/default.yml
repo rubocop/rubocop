@@ -2489,6 +2489,7 @@ Naming/BinaryOperatorParameterName:
 
 Naming/BlockForwarding:
   Description: 'Use anonymous block forwarding.'
+  StyleGuide: '#block-forwarding'
   Enabled: pending
   VersionAdded: '1.24'
   EnforcedStyle: anonymous
