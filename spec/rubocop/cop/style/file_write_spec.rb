@@ -63,5 +63,24 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
         File.#{write_method}(filename, content)
       RUBY
     end
+
+    it "registers an offense for and corrects the `File.open` with multiline write block (mode '#{mode}') with heredoc" do
+      write_method = mode.end_with?('b') ? :binwrite : :write
+
+      expect_offense(<<~RUBY)
+        File.open(filename, '#{mode}') do |f|
+        ^^^^^^^^^^^^^^^^^^^^^#{'^' * mode.length}^^^^^^^^^ Use `File.#{write_method}`.
+          f.write(<<~EOS)
+            content
+          EOS
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        File.#{write_method}(filename, <<~EOS)
+            content
+          EOS
+      RUBY
+    end
   end
 end
