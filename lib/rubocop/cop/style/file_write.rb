@@ -64,7 +64,7 @@ module RuboCop
 
             add_offense(write_node, message: message) do |corrector|
               range = range_between(node.loc.selector.begin_pos, write_node.loc.expression.end_pos)
-              replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
+              replacement = replacement(mode, filename, content, write_node)
 
               corrector.replace(range, replacement)
             end
@@ -91,6 +91,32 @@ module RuboCop
 
         def write_method(mode)
           mode.end_with?('b') ? :binwrite : :write
+        end
+
+        def replacement(mode, filename, content, write_node)
+          replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
+
+          if heredoc?(write_node)
+            first_argument = write_node.body.first_argument
+
+            <<~REPLACEMENT.chomp
+              #{replacement}
+              #{heredoc_range(first_argument).source}
+            REPLACEMENT
+          else
+            replacement
+          end
+        end
+
+        def heredoc?(write_node)
+          write_node.block_type? && (first_argument = write_node.body.first_argument) &&
+            first_argument.respond_to?(:heredoc?) && first_argument.heredoc?
+        end
+
+        def heredoc_range(first_argument)
+          range_between(
+            first_argument.loc.heredoc_body.begin_pos, first_argument.loc.heredoc_end.end_pos
+          )
         end
       end
     end
