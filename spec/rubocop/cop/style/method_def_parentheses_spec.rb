@@ -99,6 +99,14 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         end
       RUBY
     end
+
+    it 'requires parens for anonymous block forwarding', :ruby31 do
+      expect_no_offenses(<<~RUBY)
+        def foo(&)
+          bar(&)
+        end
+      RUBY
+    end
   end
 
   shared_examples 'endless methods' do

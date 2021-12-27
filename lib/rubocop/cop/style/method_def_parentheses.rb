@@ -6,8 +6,13 @@ module RuboCop
       # This cop checks for parentheses around the arguments in method
       # definitions. Both instance and class/singleton methods are checked.
       #
-      # This cop does not consider endless methods, since parentheses are
-      # always required for them.
+      # Regardless of style, parentheses are necessary for:
+      #
+      # 1. Endless methods
+      # 2. Argument lists containing a `forward-arg` (`...`)
+      # 3. Argument lists containing an anonymous block forwarding (`&`)
+      #
+      # Removing the parens would be a syntax error here.
       #
       # @example EnforcedStyle: require_parentheses (default)
       #   # The `require_parentheses` style requires method definitions
@@ -133,9 +138,9 @@ module RuboCop
           # Regardless of style, parentheses are necessary for:
           # 1. Endless methods
           # 2. Argument lists containing a `forward-arg` (`...`)
+          # 3. Argument lists containing an anonymous block forwarding (`&`)
           # Removing the parens would be a syntax error here.
-
-          node.endless? || node.arguments.any?(&:forward_arg_type?)
+          node.endless? || node.arguments.any?(&:forward_arg_type?) || anonymous_block_arg?(node)
         end
 
         def require_parentheses?(args)
@@ -162,6 +167,12 @@ module RuboCop
             correct_arguments(args, corrector)
             unexpected_style_detected 'require_parentheses'
           end
+        end
+
+        def anonymous_block_arg?(node)
+          return false unless (last_argument = node.arguments.last)
+
+          last_argument.blockarg_type? && last_argument.name.nil?
         end
       end
     end
