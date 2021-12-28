@@ -58,6 +58,13 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
         each_slice(3) { |slice| do_something(slice) }
       RUBY
     end
+
+    it 'does not register an offense for when the same method with different arguments and safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        foo(:bar)&.each { |item| do_something(item) }
+        foo(:baz)&.each { |item| do_something(item) }
+      RUBY
+    end
   end
 
   context 'when for loop' do
