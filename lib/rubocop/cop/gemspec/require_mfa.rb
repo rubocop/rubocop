@@ -117,7 +117,7 @@ module RuboCop
 
             correct_metadata(corrector, metadata)
           else
-            correct_missing_metadata(corrector, node, block_var)
+            insert_mfa_required(corrector, node, block_var)
           end
         end
 
@@ -129,11 +129,9 @@ module RuboCop
           end
         end
 
-        def correct_missing_metadata(corrector, node, block_var)
+        def insert_mfa_required(corrector, node, block_var)
           corrector.insert_before(node.loc.end, <<~RUBY)
-            #{block_var}.metadata = {
-              'rubygems_mfa_required' => 'true'
-            }
+            #{block_var}.metadata['rubygems_mfa_required'] = 'true'
           RUBY
         end
 

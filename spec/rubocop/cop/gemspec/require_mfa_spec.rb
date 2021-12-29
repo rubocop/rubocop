@@ -17,9 +17,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequireMFA, :config do
 
       expect_correction(<<~RUBY)
         Gem::Specification.new do |spec|
-        spec.metadata = {
-          'rubygems_mfa_required' => 'true'
-        }
+        spec.metadata['rubygems_mfa_required'] = 'true'
         end
       RUBY
     end
@@ -113,6 +111,13 @@ RSpec.describe RuboCop::Cop::Gemspec::RequireMFA, :config do
           Gem::Specification.new do |spec|
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `metadata['rubygems_mfa_required']` must be set to `'true'`.
             spec.metadata['foo'] = 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Gem::Specification.new do |spec|
+            spec.metadata['foo'] = 'bar'
+          spec.metadata['rubygems_mfa_required'] = 'true'
           end
         RUBY
       end
