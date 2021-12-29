@@ -41,7 +41,11 @@ module RuboCop
           end
 
           node.operator_method? || node.setter_method? || chained_calls?(node) ||
-            operator_keyword?(node) || node.first_argument.hash_type?
+            valid_first_argument?(node.first_argument)
+        end
+
+        def valid_first_argument?(first_arg)
+          first_arg.operator_keyword? || first_arg.hash_type? || ternary_expression?(first_arg)
         end
 
         def first_argument_starts_with_left_parenthesis?(node)
@@ -53,9 +57,8 @@ module RuboCop
           first_argument.send_type? && (node.children.last&.children&.count || 0) > 1
         end
 
-        def operator_keyword?(node)
-          first_argument = node.first_argument
-          first_argument.operator_keyword?
+        def ternary_expression?(node)
+          node.if_type? && node.ternary?
         end
 
         def spaces_before_left_parenthesis(node)
