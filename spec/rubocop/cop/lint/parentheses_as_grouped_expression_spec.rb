@@ -55,6 +55,12 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
+  it 'does not register an offense for ternary operator' do
+    expect_no_offenses(<<~RUBY)
+      foo (cond) ? 1 : 2
+    RUBY
+  end
+
   it 'accepts a method call without arguments' do
     expect_no_offenses('func')
   end

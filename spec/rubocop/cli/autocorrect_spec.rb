@@ -1801,6 +1801,23 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/TernaryParentheses` offenses and accepts `Lint/ParenthesesAsGroupedExpression`' do
+    create_file('example.rb', <<~RUBY)
+      json.asdf (foo || bar) ? 1 : 2
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--auto-correct',
+          '--only', 'Lint/ParenthesesAsGroupedExpression,Style/TernaryParentheses'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      json.asdf foo || bar ? 1 : 2
+    RUBY
+  end
+
   %i[
     consistent_relative_to_receiver
     special_for_inner_method_call
