@@ -27,7 +27,7 @@ module RuboCop
 
         # @!method each_with_object?(node)
         def_node_matcher :each_with_object?, <<~PATTERN
-          ({send csend} _ :each_with_object $_)
+          (call _ :each_with_object $_)
         PATTERN
 
         def on_send(node)

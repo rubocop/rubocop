@@ -30,13 +30,13 @@ module RuboCop
         # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block
-            ({send csend} !#array_receiver? :each_with_object (hash))
+            (call !#array_receiver? :each_with_object (hash))
             (args
               (mlhs
                 (arg _key)
                 (arg $_))
               (arg _memo))
-            ({send csend} (lvar _memo) :[]= $(lvar _key) $!`_memo))
+            (call (lvar _memo) :[]= $(lvar _key) $!`_memo))
         PATTERN
 
         # @!method on_bad_hash_brackets_map(node)
@@ -45,7 +45,7 @@ module RuboCop
             (const _ :Hash)
             :[]
             (block
-              ({send csend} !#array_receiver? {:map :collect})
+              (call !#array_receiver? {:map :collect})
               (args
                 (arg _key)
                 (arg $_))
@@ -54,9 +54,9 @@ module RuboCop
 
         # @!method on_bad_map_to_h(node)
         def_node_matcher :on_bad_map_to_h, <<~PATTERN
-          ({send csend}
+          (call
             (block
-              ({send csend} !#array_receiver? {:map :collect})
+              (call !#array_receiver? {:map :collect})
               (args
                 (arg _key)
                 (arg $_))
@@ -67,7 +67,7 @@ module RuboCop
         # @!method on_bad_to_h(node)
         def_node_matcher :on_bad_to_h, <<~PATTERN
           (block
-            ({send csend} !#array_receiver? :to_h)
+            (call !#array_receiver? :to_h)
             (args
               (arg _key)
               (arg $_))
