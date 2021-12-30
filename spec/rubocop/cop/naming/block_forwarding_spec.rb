@@ -86,6 +86,25 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
         RUBY
       end
 
+      it 'registers and corrects an offense when using explicit block forwarding without method definition parentheses' do
+        expect_offense(<<~RUBY)
+          def foo arg, &block
+                       ^^^^^^ Use anonymous block forwarding.
+            bar &block
+                ^^^^^^ Use anonymous block forwarding.
+            baz qux, &block
+                     ^^^^^^ Use anonymous block forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(arg, &)
+            bar(&)
+            baz(qux, &)
+          end
+        RUBY
+      end
+
       it 'does not register an offense when using anonymous block forwarding' do
         expect_no_offenses(<<~RUBY)
           def foo(&)

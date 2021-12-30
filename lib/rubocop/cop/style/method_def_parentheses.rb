@@ -126,14 +126,6 @@ module RuboCop
           corrector.remove(arg_node.loc.end)
         end
 
-        def correct_definition(def_node, corrector)
-          arguments_range = def_node.arguments.source_range
-          args_with_space = range_with_surrounding_space(range: arguments_range, side: :left)
-          leading_space = range_between(args_with_space.begin_pos, arguments_range.begin_pos)
-          corrector.replace(leading_space, '(')
-          corrector.insert_after(arguments_range, ')')
-        end
-
         def forced_parentheses?(node)
           # Regardless of style, parentheses are necessary for:
           # 1. Endless methods
@@ -156,7 +148,8 @@ module RuboCop
           location = node.arguments.source_range
 
           add_offense(location, message: MSG_MISSING) do |corrector|
-            correct_definition(node, corrector)
+            add_parentheses(node.arguments, corrector)
+
             unexpected_style_detected 'require_no_parentheses'
           end
         end
