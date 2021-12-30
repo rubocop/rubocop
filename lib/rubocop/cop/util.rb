@@ -30,8 +30,15 @@ module RuboCop
         node.loc.respond_to?(:end) && node.loc.end && node.loc.end.is?(')')
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def add_parentheses(node, corrector)
-        if !node.respond_to?(:arguments)
+        if node.args_type?
+          arguments_range = node.source_range
+          args_with_space = range_with_surrounding_space(range: arguments_range, side: :left)
+          leading_space = range_between(args_with_space.begin_pos, arguments_range.begin_pos)
+          corrector.replace(leading_space, '(')
+          corrector.insert_after(arguments_range, ')')
+        elsif !node.respond_to?(:arguments)
           corrector.wrap(node, '(', ')')
         elsif node.arguments.empty?
           corrector.insert_after(node, '()')
@@ -43,6 +50,7 @@ module RuboCop
           corrector.insert_after(args_end(node), ')')
         end
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def args_begin(node)
         loc = node.loc

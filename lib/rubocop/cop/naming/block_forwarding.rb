@@ -36,6 +36,7 @@ module RuboCop
       #
       class BlockForwarding < Base
         include ConfigurableEnforcedStyle
+        include RangeHelp
         extend AutoCorrector
         extend TargetRubyVersion
 
@@ -94,6 +95,10 @@ module RuboCop
         def register_offense(block_argument)
           add_offense(block_argument, message: format(MSG, style: style)) do |corrector|
             corrector.replace(block_argument, '&')
+
+            arguments = block_argument.parent
+
+            add_parentheses(arguments, corrector) unless arguments.parenthesized_call?
           end
         end
       end
