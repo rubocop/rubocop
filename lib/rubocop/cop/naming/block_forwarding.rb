@@ -53,7 +53,8 @@ module RuboCop
           register_offense(last_argument)
 
           node.each_descendant(:block_pass) do |block_pass_node|
-            next if block_pass_node.children.first&.sym_type?
+            next if block_pass_node.children.first&.sym_type? ||
+                    last_argument.source != block_pass_node.source
 
             register_offense(block_pass_node)
           end
