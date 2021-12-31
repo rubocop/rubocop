@@ -105,6 +105,22 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
         RUBY
       end
 
+      it 'registers and corrects an only explicit block forwarding when using multiple proc arguments' do
+        expect_offense(<<~RUBY)
+          def foo(bar, &block)
+                       ^^^^^^ Use anonymous block forwarding.
+            delegator.foo(&bar).each(&block)
+                                     ^^^^^^ Use anonymous block forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(bar, &)
+            delegator.foo(&bar).each(&)
+          end
+        RUBY
+      end
+
       it 'does not register an offense when using anonymous block forwarding' do
         expect_no_offenses(<<~RUBY)
           def foo(&)
