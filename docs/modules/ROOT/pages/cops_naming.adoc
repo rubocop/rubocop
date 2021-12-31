@@ -231,6 +231,10 @@ end
 | `anonymous`, `explicit`
 |===
 
+=== References
+
+* https://rubystyle.guide#block-forwarding
+
 == Naming/BlockParameterName
 
 |===

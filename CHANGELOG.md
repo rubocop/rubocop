@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.24.1 (2021-12-31)
+
 ### Bug fixes
 
 * [#10313](https://github.com/rubocop/rubocop/issues/10313): Fix autocorrect `Style/MapToHash` with multiline code. ([@tejasbubane][])

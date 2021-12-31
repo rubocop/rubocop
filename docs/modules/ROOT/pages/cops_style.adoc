@@ -5920,9 +5920,11 @@ options.
 NOTE: Parentheses are still allowed in cases where omitting them
 results in ambiguous or syntactically incorrect code. For example,
 parentheses are required around a method with arguments when inside an
-endless method definition introduced in Ruby 3.0.  Parentheses are also
+endless method definition introduced in Ruby 3.0. Parentheses are also
 allowed when forwarding arguments with the triple-dot syntax introduced
 in Ruby 2.7 as omitting them starts an endless range.
+And Ruby 3.1's hash omission syntax has a case that requires parentheses
+because the issue https://bugs.ruby-lang.org/issues/18396.
 
 === Examples
 
@@ -6245,8 +6247,13 @@ foo.c
 This cop checks for parentheses around the arguments in method
 definitions. Both instance and class/singleton methods are checked.
 
-This cop does not consider endless methods, since parentheses are
-always required for them.
+Regardless of style, parentheses are necessary for:
+
+1. Endless methods
+2. Argument lists containing a `forward-arg` (`...`)
+3. Argument lists containing an anonymous block forwarding (`&`)
+
+Removing the parens would be a syntax error here.
 
 === Examples
 
