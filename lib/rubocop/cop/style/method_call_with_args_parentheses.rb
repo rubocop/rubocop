@@ -47,7 +47,7 @@ module RuboCop
       # allowed when forwarding arguments with the triple-dot syntax introduced
       # in Ruby 2.7 as omitting them starts an endless range.
       # And Ruby 3.1's hash omission syntax has a case that requires parentheses
-      # because the issue https://bugs.ruby-lang.org/issues/18396.
+      # because of the following issue: https://bugs.ruby-lang.org/issues/18396.
       #
       # @example EnforcedStyle: require_parentheses (default)
       #
