@@ -1,1 +1,0 @@
-* [#10329](https://github.com/rubocop/rubocop/issues/10329): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` and an incorrect autocorrect for the cop with `Style/TernaryParentheses` when using ternary expression as a first argument. ([@koic][])

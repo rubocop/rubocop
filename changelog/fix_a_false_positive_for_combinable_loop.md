@@ -1,1 +1,0 @@
-* [#10319](https://github.com/rubocop/rubocop/issues/10319): Require rubocop-ast 1.15.1 to fix a false positive for `Style/CombinableLoop` when the same method with different arguments and safe navigation. ([@koic][])
