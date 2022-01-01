@@ -403,6 +403,32 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       end
     end
 
+    # In Ruby 2.7, `match-pattern` node represents one line pattern matching.
+    #
+    # % ruby-parse --27 -e 'foo in bar'
+    # (match-pattern (send nil :foo) (match-var :bar))
+    #
+    context 'with one line pattern matching', :ruby27 do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          (foo in bar) ? a : b
+        RUBY
+      end
+    end
+
+    # In Ruby 3.0, `match-pattern-p` node represents one line pattern matching.
+    #
+    # % ruby-parse --30 -e 'foo in bar'
+    # (match-pattern-p (send nil :foo) (match-var :bar))
+    #
+    context 'with one line pattern matching', :ruby30 do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          (foo in bar) ? a : b
+        RUBY
+      end
+    end
+
     context 'with an assignment condition' do
       it 'accepts safe assignment' do
         expect_no_offenses('foo = (bar = find_bar) ? a : b')
