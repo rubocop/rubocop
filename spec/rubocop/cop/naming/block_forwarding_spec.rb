@@ -203,10 +203,13 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
   end
 
   context 'when `EnforcedStyle: explicit' do
-    let(:cop_config) { { 'EnforcedStyle' => 'explicit' } }
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'explicit', 'BlockForwardingName' => block_forwarding_name }
+    end
+    let(:block_forwarding_name) { 'block' }
 
     context 'Ruby >= 3.1', :ruby31 do
-      it 'registers an offense when using anonymous block forwarding' do
+      it 'registers and corrects an offense when using anonymous block forwarding' do
         expect_offense(<<~RUBY)
           def foo(&)
                   ^ Use explicit block forwarding.
@@ -216,9 +219,16 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
                      ^ Use explicit block forwarding.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(&block)
+            bar(&block)
+            baz(qux, &block)
+          end
+        RUBY
       end
 
-      it 'registers an offense when using anonymous block forwarding in singleton method' do
+      it 'registers and corrects an offense when using anonymous block forwarding in singleton method' do
         expect_offense(<<~RUBY)
           def self.foo(&)
                        ^ Use explicit block forwarding.
@@ -228,30 +238,54 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
                           ^ Use explicit block forwarding.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo(&block)
+            self.bar(&block)
+            self.baz(qux, &block)
+          end
+        RUBY
       end
 
-      it 'registers an offense when using symbol proc argument in method body' do
+      it 'registers and corrects an offense when using symbol proc argument in method body' do
         expect_offense(<<~RUBY)
           def foo(&)
                   ^ Use explicit block forwarding.
             bar(&:do_something)
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(&block)
+            bar(&:do_something)
+          end
+        RUBY
       end
 
-      it 'registers an offense when using `yield` in method body' do
+      it 'registers and corrects an offense when using `yield` in method body' do
         expect_offense(<<~RUBY)
           def foo(&)
                   ^ Use explicit block forwarding.
             yield
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(&block)
+            yield
+          end
+        RUBY
       end
 
-      it 'registers and corrects an offense when using anonymous block forwarding without method body' do
+      it 'registers and corrects and corrects an offense when using anonymous block forwarding without method body' do
         expect_offense(<<~RUBY)
           def foo(&)
                   ^ Use explicit block forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(&block)
           end
         RUBY
       end
@@ -276,6 +310,45 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
           def foo(arg1, arg2)
           end
         RUBY
+      end
+
+      context 'when `BlockForwardingName: block` is already in use' do
+        it 'registers and no corrects an offense when using anonymous block forwarding' do
+          expect_offense(<<~RUBY)
+            def foo(block, &)
+                           ^ Use explicit block forwarding.
+              bar(block, &)
+                         ^ Use explicit block forwarding.
+              baz(block, qux, &)
+                              ^ Use explicit block forwarding.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'when `BlockForwardingName: proc' do
+        let(:block_forwarding_name) { 'proc' }
+
+        it 'registers and corrects an offense when using anonymous block forwarding' do
+          expect_offense(<<~RUBY)
+            def foo(&)
+                    ^ Use explicit block forwarding.
+              bar(&)
+                  ^ Use explicit block forwarding.
+              baz(qux, &)
+                       ^ Use explicit block forwarding.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo(&proc)
+              bar(&proc)
+              baz(qux, &proc)
+            end
+          RUBY
+        end
       end
     end
   end

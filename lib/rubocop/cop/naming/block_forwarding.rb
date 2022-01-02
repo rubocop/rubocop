@@ -9,6 +9,9 @@ module RuboCop
       # by `do_something(&)`.
       #
       # It also supports the opposite style by alternative `explicit` option.
+      # You can specify the block variable name for auto-correction with `BlockForwardingName`.
+      # The default variable name is `block`. If the name is already in use, it will not be
+      # auto-corrected.
       #
       # @example EnforcedStyle: anonymous (default)
       #
@@ -50,13 +53,13 @@ module RuboCop
           last_argument = node.arguments.last
           return if expected_block_forwarding_style?(node, last_argument)
 
-          register_offense(last_argument)
+          register_offense(last_argument, node)
 
           node.each_descendant(:block_pass) do |block_pass_node|
             next if block_pass_node.children.first&.sym_type? ||
                     last_argument.source != block_pass_node.source
 
-            register_offense(block_pass_node)
+            register_offense(block_pass_node, node)
           end
         end
         alias on_defs on_def
@@ -67,7 +70,7 @@ module RuboCop
           if style == :anonymous
             !explicit_block_argument?(last_argument) ||
               use_kwarg_in_method_definition?(node) ||
-              use_block_argument_as_local_variable?(node, last_argument)
+              use_block_argument_as_local_variable?(node, last_argument.source[1..-1])
           else
             !anonymous_block_argument?(last_argument)
           end
@@ -85,22 +88,32 @@ module RuboCop
           node.blockarg_type? && !node.name.nil?
         end
 
+        def register_offense(block_argument, node)
+          add_offense(block_argument, message: format(MSG, style: style)) do |corrector|
+            if style == :anonymous
+              corrector.replace(block_argument, '&')
+
+              arguments = block_argument.parent
+
+              add_parentheses(arguments, corrector) unless arguments.parenthesized_call?
+            else
+              unless use_block_argument_as_local_variable?(node, block_forwarding_name)
+                corrector.replace(block_argument, "&#{block_forwarding_name}")
+              end
+            end
+          end
+        end
+
         def use_block_argument_as_local_variable?(node, last_argument)
           return if node.body.nil?
 
           node.body.each_descendant(:lvar).any? do |lvar|
-            !lvar.parent.block_pass_type? && lvar.source == last_argument.source[1..-1]
+            !lvar.parent.block_pass_type? && lvar.source == last_argument
           end
         end
 
-        def register_offense(block_argument)
-          add_offense(block_argument, message: format(MSG, style: style)) do |corrector|
-            corrector.replace(block_argument, '&')
-
-            arguments = block_argument.parent
-
-            add_parentheses(arguments, corrector) unless arguments.parenthesized_call?
-          end
+        def block_forwarding_name
+          cop_config.fetch('BlockForwardingName', 'block')
         end
       end
     end
