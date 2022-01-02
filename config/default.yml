@@ -2496,6 +2496,7 @@ Naming/BlockForwarding:
   SupportedStyles:
     - anonymous
     - explicit
+  BlockForwardingName: block
 
 Naming/BlockParameterName:
   Description: >-
