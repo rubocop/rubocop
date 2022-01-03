@@ -67,7 +67,10 @@ module RuboCop
         MSG_COMPLEX = '%<command>s parentheses for ternary expressions with complex conditions.'
 
         def on_if(node)
-          return if only_closing_parenthesis_is_last_line?(node.condition)
+          condition = node.condition
+
+          return if only_closing_parenthesis_is_last_line?(condition)
+          return if condition_as_parenthesized_one_line_pattern_matching?(condition)
           return unless node.ternary? && !infinite_loop? && offense?(node)
 
           message = message(node)
@@ -77,11 +80,22 @@ module RuboCop
           end
         end
 
+        private
+
         def only_closing_parenthesis_is_last_line?(condition)
           condition.source.split("\n").last == ')'
         end
 
-        private
+        def condition_as_parenthesized_one_line_pattern_matching?(condition)
+          return false unless condition.parenthesized_call?
+          return false unless (first_child = condition.children.first)
+
+          if target_ruby_version >= 3.0
+            first_child.match_pattern_p_type?
+          else
+            first_child.match_pattern_type? # For Ruby 2.7's one line pattern matching AST.
+          end
+        end
 
         def autocorrect(corrector, node)
           condition = node.condition
