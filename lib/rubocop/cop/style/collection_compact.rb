@@ -41,7 +41,7 @@ module RuboCop
 
         # @!method reject_method_with_block_pass?(node)
         def_node_matcher :reject_method_with_block_pass?, <<~PATTERN
-          (send _ {:reject :reject!}
+          (send !nil? {:reject :reject!}
             (block_pass
               (sym :nil?)))
         PATTERN
@@ -50,7 +50,7 @@ module RuboCop
         def_node_matcher :reject_method?, <<~PATTERN
           (block
             (send
-              _ {:reject :reject!})
+              !nil? {:reject :reject!})
             $(args ...)
             (send
               $(lvar _) :nil?))
@@ -60,7 +60,7 @@ module RuboCop
         def_node_matcher :select_method?, <<~PATTERN
           (block
             (send
-              _ {:select :select!})
+              !nil? {:select :select!})
             $(args ...)
             (send
               (send
