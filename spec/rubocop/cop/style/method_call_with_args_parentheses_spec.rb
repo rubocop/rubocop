@@ -444,6 +444,21 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
           foo arg
         RUBY
       end
+
+      it 'registers an offense using assignment with parentheses call expr follows' do
+        # Require hash value omission be enclosed in parentheses to prevent the following issue:
+        # https://bugs.ruby-lang.org/issues/18396.
+        expect_offense(<<~RUBY)
+          var = foo(value:)
+          foo(arg)
+             ^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = foo(value:)
+          foo arg
+        RUBY
+      end
     end
 
     it 'register an offense for parens in method call without args' do
