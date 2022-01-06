@@ -33,11 +33,12 @@ module RuboCop
         # @!method io_select(node)
         def_node_matcher :io_select, <<~PATTERN
           (send
-            (const {nil? cbase} :IO) :select $_ $_ {(array) nil} $...)
+            (const {nil? cbase} :IO) :select $...)
         PATTERN
 
         def on_send(node)
-          return unless (read, write, timeout = io_select(node))
+          read, write, _excepts, timeout = *io_select(node)
+          return unless read
           return unless scheduler_compatible?(read, write) || scheduler_compatible?(write, read)
 
           preferred = preferred_method(read, write, timeout)
@@ -51,13 +52,13 @@ module RuboCop
         private
 
         def scheduler_compatible?(io1, io2)
-          return false unless io1.array_type? && io1.values.size == 1
+          return false unless io1&.array_type? && io1.values.size == 1
 
-          io2.array_type? ? io2.values.empty? : io2.nil_type?
+          io2&.array_type? ? io2.values.empty? : (io2.nil? || io2.nil_type?)
         end
 
         def preferred_method(read, write, timeout)
-          timeout_argument = timeout.empty? ? '' : "(#{timeout[0].source})"
+          timeout_argument = timeout.nil? ? '' : "(#{timeout.source})"
 
           if read.array_type? && read.values[0]
             "#{read.values[0].source}.wait_readable#{timeout_argument}"
