@@ -2058,6 +2058,12 @@ Lint/RedundantWithObject:
   Enabled: true
   VersionAdded: '0.51'
 
+Lint/RefinementImportMethods:
+  Description: 'Use `Refinement#import_methods` when using `include` or `prepend` in `refine` block.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Lint/RegexpAsCondition:
   Description: >-
                  Do not use regexp literal as a condition.
