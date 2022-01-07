@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Lint::IncompatibleIoSelectWithFiberScheduler, :conf
     RUBY
   end
 
+  it 'registers and corrects an offense when using `IO.select` with single read argument and specify the first argument only' do
+    expect_offense(<<~RUBY)
+      IO.select([io])
+      ^^^^^^^^^^^^^^^ Use `io.wait_readable` instead of `IO.select([io])`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      io.wait_readable
+    RUBY
+  end
+
   it 'registers and corrects an offense when using `IO.select` with single read and timeout arguments' do
     expect_offense(<<~RUBY)
       IO.select([io], [], [], timeout)
@@ -117,6 +128,12 @@ RSpec.describe RuboCop::Cop::Lint::IncompatibleIoSelectWithFiberScheduler, :conf
     RUBY
   end
 
+  it 'registers and corrects an offense when using `IO.select` with multiple read argument and specify the first argument only' do
+    expect_no_offenses(<<~RUBY)
+      IO.select([foo, bar])
+    RUBY
+  end
+
   it 'does not register an offense when using `IO.select` with multiple write arguments' do
     expect_no_offenses(<<~RUBY)
       IO.select([], [foo, bar], [])
@@ -126,6 +143,12 @@ RSpec.describe RuboCop::Cop::Lint::IncompatibleIoSelectWithFiberScheduler, :conf
   it 'does not register an offense when using `IO.select` with read and write arguments' do
     expect_no_offenses(<<~RUBY)
       IO.select([rp], [wp], [])
+    RUBY
+  end
+
+  it 'does not register an offense when using `Enumerable#select`' do
+    expect_no_offenses(<<~RUBY)
+      collection.select { |item| item.do_something? }
     RUBY
   end
 end
