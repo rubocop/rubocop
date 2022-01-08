@@ -8,7 +8,7 @@ module RuboCop
       EXPLICIT_HASH_VALUE_MSG = 'Explicit the hash value.'
 
       def on_pair(node)
-        return if target_ruby_version <= 3.0
+        return if target_ruby_version <= 3.0 || enforced_shorthand_syntax == 'either'
 
         hash_key_source = node.key.source
 

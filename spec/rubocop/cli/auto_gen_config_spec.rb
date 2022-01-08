@@ -1204,7 +1204,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         .to eq(<<~YAML)
           # Configuration parameters: EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
           # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
-          # SupportedShorthandSyntax: always, never
+          # SupportedShorthandSyntax: always, never, either
           Style/HashSyntax:
             EnforcedStyle: hash_rockets
         YAML
@@ -1218,7 +1218,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         .to eq(<<~YAML)
           # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
           # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
-          # SupportedShorthandSyntax: always, never
+          # SupportedShorthandSyntax: always, never, either
           Style/HashSyntax:
             Exclude:
               - 'example1.rb'
