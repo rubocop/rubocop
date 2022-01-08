@@ -978,4 +978,48 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
     end
   end
+
+  context 'configured to accept both shorthand and explicit use of hash literal value' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'ruby19',
+        'SupportedStyles' => %w[ruby19 hash_rockets],
+        'EnforcedShorthandSyntax' => 'either'
+      }
+    end
+
+    context 'Ruby >= 3.1', :ruby31 do
+      it 'does not register an offense when hash values are omitted' do
+        expect_no_offenses(<<~RUBY)
+          {foo:, bar:}
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are partially the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo:, bar: bar, baz: qux}
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are not the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: bar, bar: foo}
+        RUBY
+      end
+
+      it 'does not register an offense when hash key and hash value are the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
+    end
+
+    context 'Ruby <= 3.0', :ruby30 do
+      it 'does not register an offense when hash key and hash value are the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
+    end
+  end
 end
