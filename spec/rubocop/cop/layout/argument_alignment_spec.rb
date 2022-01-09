@@ -381,9 +381,11 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       expect_offense(<<~RUBY)
         create :transaction, :closed,
                account:     account,
-               ^^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+               ^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
                open_price:  1.29,
+               ^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
                close_price: 1.30
+               ^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -398,9 +400,11 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       expect_offense(<<~RUBY)
         create :transaction, :closed,
         account:     account,
-        ^^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+        ^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
         open_price:  1.29,
+        ^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
         close_price: 1.30
+        ^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -420,9 +424,11 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
               ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
         func2(do_something,
               foo: 'foo',
-              ^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+              ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
               bar: 'bar',
+              ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
               baz: 'baz')
+              ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -436,13 +442,31 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
+    it 'corrects indentation for kwargs starting on same line as other args' do
+      expect_offense(<<~RUBY)
+        func(do_something, foo: 'foo',
+                           bar: 'bar',
+                           ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+                           baz: 'baz')
+                           ^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        func(do_something, foo: 'foo',
+          bar: 'bar',
+          baz: 'baz')
+      RUBY
+    end
+
     it 'autocorrects when first line is indented' do
       expect_offense(<<-RUBY.strip_margin('|'))
         |  create :transaction, :closed,
         |  account:     account,
-        |  ^^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+        |  ^^^^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
         |  open_price:  1.29,
+        |  ^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
         |  close_price: 1.30
+        |  ^^^^^^^^^^^^^^^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
       RUBY
 
       expect_correction(<<-RUBY.strip_margin('|'))
