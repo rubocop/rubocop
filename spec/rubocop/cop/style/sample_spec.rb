@@ -24,6 +24,10 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
   it_behaves_like('offense', 'shuffle.last', 'sample')
   it_behaves_like('offense', 'shuffle[0]', 'sample')
   it_behaves_like('offense', 'shuffle[-1]', 'sample')
+  context 'Ruby >= 2.7', :ruby27 do
+    it_behaves_like('offense', 'shuffle[...3]', 'sample(3)')
+  end
+
   it_behaves_like('offense', 'shuffle[0, 3]', 'sample(3)')
   it_behaves_like('offense', 'shuffle[0..3]', 'sample(4)')
   it_behaves_like('offense', 'shuffle[0...3]', 'sample(3)')
@@ -46,28 +50,33 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
 
   it_behaves_like('accepts', 'sample')
   it_behaves_like('accepts', 'shuffle')
-  it_behaves_like('accepts', 'shuffle.at(2)')          # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle.at(2)')           # nil if coll.size < 3
   it_behaves_like('accepts', 'shuffle.at(foo)')
-  it_behaves_like('accepts', 'shuffle.slice(2)')       # nil if coll.size < 3
-  it_behaves_like('accepts', 'shuffle.slice(3, 3)')    # nil if coll.size < 3
-  it_behaves_like('accepts', 'shuffle.slice(2..3)')    # empty if coll.size < 3
+  it_behaves_like('accepts', 'shuffle.slice(2)')        # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle.slice(3, 3)')     # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle.slice(2..3)')     # empty if coll.size < 3
   it_behaves_like('accepts',
-                  'shuffle.slice(2..-3)')   # can't compute range size
+                  'shuffle.slice(2..-3)')               # can't compute range size
   it_behaves_like('accepts',
-                  'shuffle.slice(foo..3)')  # can't compute range size
-  it_behaves_like('accepts', 'shuffle.slice(-4..-3)')  # nil if coll.size < 3
-  it_behaves_like('accepts', 'shuffle.slice(foo)')     # foo could be a Range
-  it_behaves_like('accepts', 'shuffle.slice(foo, 3)')  # nil if coll.size < foo
+                  'shuffle.slice(foo..3)')              # can't compute range size
+  it_behaves_like('accepts', 'shuffle.slice(-4..-3)')   # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle.slice(foo)')      # foo could be a Range
+  it_behaves_like('accepts', 'shuffle.slice(foo, 3)')   # nil if coll.size < foo
   it_behaves_like('accepts', 'shuffle.slice(foo..bar)')
   it_behaves_like('accepts', 'shuffle.slice(foo, bar)')
-  it_behaves_like('accepts', 'shuffle[2]')           # nil if coll.size < 3
-  it_behaves_like('accepts', 'shuffle[3, 3]')        # nil if coll.size < 3
-  it_behaves_like('accepts', 'shuffle[2..3]')        # empty if coll.size < 3
-  it_behaves_like('accepts', 'shuffle[2..-3]')       # can't compute range size
-  it_behaves_like('accepts', 'shuffle[foo..3]')      # can't compute range size
-  it_behaves_like('accepts', 'shuffle[-4..-3]')      # nil if coll.size < 3
-  it_behaves_like('accepts', 'shuffle[foo]')         # foo could be a Range
-  it_behaves_like('accepts', 'shuffle[foo, 3]')      # nil if coll.size < foo
+  it_behaves_like('accepts', 'shuffle[2]')              # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[3, 3]')           # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[2..3]')           # empty if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[2..-3]')          # can't compute range size
+  it_behaves_like('accepts', 'shuffle[foo..3]')         # can't compute range size
+  context 'Ruby >= 2.6', :ruby26 do
+    it_behaves_like('accepts', 'shuffle[3..]')          # can't compute range size
+    it_behaves_like('accepts', 'shuffle[3...]')         # can't compute range size
+  end
+
+  it_behaves_like('accepts', 'shuffle[-4..-3]')         # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[foo]')            # foo could be a Range
+  it_behaves_like('accepts', 'shuffle[foo, 3]')         # nil if coll.size < foo
   it_behaves_like('accepts', 'shuffle[foo..bar]')
   it_behaves_like('accepts', 'shuffle[foo, bar]')
   it_behaves_like('accepts', 'shuffle(random: Random.new)')
