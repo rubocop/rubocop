@@ -819,7 +819,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'does not register an offense when hash valuees are omitted' do
+      it 'does not register an offense when hash values are omitted' do
         expect_no_offenses(<<~RUBY)
           {foo:, bar:}
         RUBY
@@ -891,7 +891,39 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'registers an offense when with parentheses call expr follows' do
+      it 'does not register an offense when one line condition follows' do
+        expect_no_offenses(<<~RUBY)
+          foo value: value if bar
+        RUBY
+      end
+
+      it 'does not register an offense when call expr with argument and a block follows' do
+        expect_no_offenses(<<~RUBY)
+          foo value: value
+          foo arg do
+            value
+          end
+        RUBY
+      end
+
+      it 'registers and corrects an offense when call expr without arguments and with a block follows' do
+        expect_offense(<<~RUBY)
+          foo value: value
+                     ^^^^^ Omit the hash value.
+          bar do
+            value
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo value:
+          bar do
+            value
+          end
+        RUBY
+      end
+
+      it 'registers and corrects an offense when with parentheses call expr follows' do
         expect_offense(<<~RUBY)
           foo value: value
                      ^^^^^ Omit the hash value.
