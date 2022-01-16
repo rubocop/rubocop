@@ -46,10 +46,22 @@ module RuboCop
 
       def without_parentheses_call_expr_follows?(node)
         return false unless (ancestor = node.parent.parent)
-        return false unless (right_sibling = ancestor.right_sibling)
 
-        ancestor.respond_to?(:parenthesized?) && !ancestor.parenthesized? &&
-          right_sibling.respond_to?(:parenthesized?) && !right_sibling.parenthesized?
+        right_sibling = ancestor.right_sibling
+
+        return true if right_sibling.nil? && without_parentheses?(ancestor)
+        return false unless right_sibling
+        return true if node_with_block_and_arguments?(right_sibling)
+
+        without_parentheses?(ancestor) && without_parentheses?(right_sibling)
+      end
+
+      def without_parentheses?(node)
+        node.respond_to?(:parenthesized?) && !node.parenthesized?
+      end
+
+      def node_with_block_and_arguments?(node)
+        node.respond_to?(:block_type?) && node.block_type? && node.children&.first&.arguments?
       end
     end
   end
