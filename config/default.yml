@@ -3717,6 +3717,11 @@ Style/HashTransformValues:
   VersionChanged: '0.90'
   Safe: false
 
+Style/HashValues:
+  Description: 'Prefer `{ foo:, bar: }` over `{ foo: foo, bar: bar }`'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/IdenticalConditionalBranches:
   Description: >-
                  Checks that conditional statements do not have an identical
