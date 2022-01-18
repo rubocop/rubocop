@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.25.0 (2022-01-18)
+
 ### New features
 
 * [#10351](https://github.com/rubocop/rubocop/pull/10351): Support `EnforcedShorthandSyntax: either` option for `Style/HashSyntax`. ([@koic][])
