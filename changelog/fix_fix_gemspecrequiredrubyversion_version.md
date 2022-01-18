@@ -1,1 +1,0 @@
-* [#10354](https://github.com/rubocop/rubocop/pull/10354): Fix Gemspec/RequiredRubyVersion version matcher when Gem::Requirement.new is used and initialised with multiple requirements. ([@nickpellant][])
