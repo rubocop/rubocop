@@ -36,7 +36,7 @@ module RuboCop
       end
 
       def require_hash_value?(hash_key_source, node)
-        return true if without_parentheses_call_expr_follows?(node)
+        return true if require_hash_value_for_around_hash_literal(node)
 
         hash_value = node.value
         return true unless hash_value.send_type? || hash_value.lvar_type?
@@ -44,24 +44,30 @@ module RuboCop
         hash_key_source != hash_value.source || hash_key_source.end_with?('!', '?')
       end
 
-      def without_parentheses_call_expr_follows?(node)
+      def require_hash_value_for_around_hash_literal(node)
         return false unless (ancestor = node.parent.parent)
 
-        right_sibling = ancestor.right_sibling
-
-        return true if right_sibling.nil? && without_parentheses?(ancestor)
-        return false unless right_sibling
-        return true if node_with_block_and_arguments?(right_sibling)
-
-        without_parentheses?(ancestor) && without_parentheses?(right_sibling)
+        !use_element_of_hash_literal_as_receiver?(ancestor, node.parent) &&
+          (use_modifier_form_without_parenthesized_method_call?(ancestor) ||
+           without_parentheses_call_expr_follows?(ancestor))
       end
 
-      def without_parentheses?(node)
-        node.respond_to?(:parenthesized?) && !node.parenthesized?
+      def use_element_of_hash_literal_as_receiver?(ancestor, parent)
+        # `{value:}.do_something` is a valid syntax.
+        ancestor.send_type? && ancestor.receiver == parent
       end
 
-      def node_with_block_and_arguments?(node)
-        node.respond_to?(:block_type?) && node.block_type? && node.children&.first&.arguments?
+      def use_modifier_form_without_parenthesized_method_call?(ancestor)
+        return false if ancestor.respond_to?(:parenthesized?) && ancestor.parenthesized?
+        return false unless (parent = ancestor.parent)
+
+        parent.respond_to?(:modifier_form?) && parent.modifier_form?
+      end
+
+      def without_parentheses_call_expr_follows?(ancestor)
+        return false unless (right_sibling = ancestor.right_sibling)
+
+        ancestor.respond_to?(:parenthesized?) && !ancestor.parenthesized? && right_sibling
       end
     end
   end
