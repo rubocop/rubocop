@@ -819,6 +819,39 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers and corrects an offense when `Hash[foo: foo]`' do
+        expect_offense(<<~RUBY)
+          Hash[foo: foo]
+                    ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Hash[foo:]
+        RUBY
+      end
+
+      it 'registers and corrects an offense when hash key and hash value are the same and it in the method body' do
+        expect_offense(<<~RUBY)
+          def do_something
+            {
+              foo: foo,
+                   ^^^ Omit the hash value.
+              bar: bar
+                   ^^^ Omit the hash value.
+            }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def do_something
+            {
+              foo:,
+              bar:
+            }
+          end
+        RUBY
+      end
+
       it 'does not register an offense when hash values are omitted' do
         expect_no_offenses(<<~RUBY)
           {foo:, bar:}
@@ -891,9 +924,37 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'does not register an offense when one line condition follows' do
+      it 'registers an offense when one line `if` condition follows (with parentheses)' do
+        expect_offense(<<~RUBY)
+          foo(value: value) if bar
+                     ^^^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:) if bar
+        RUBY
+      end
+
+      it 'does not register an offense when one line `if` condition follows (without parentheses)' do
         expect_no_offenses(<<~RUBY)
           foo value: value if bar
+        RUBY
+      end
+
+      it 'registers an offense when one line `until` condition follows (with parentheses)' do
+        expect_offense(<<~RUBY)
+          foo(value: value) until bar
+                     ^^^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:) until bar
+        RUBY
+      end
+
+      it 'does not register an offense when one line `until` condition follows (without parentheses)' do
+        expect_no_offenses(<<~RUBY)
+          foo value: value until bar
         RUBY
       end
 
@@ -906,33 +967,30 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'registers and corrects an offense when call expr without arguments and with a block follows' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when call expr without arguments and with a block follows' do
+        # Prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_no_offenses(<<~RUBY)
           foo value: value
-                     ^^^^^ Omit the hash value.
-          bar do
-            value
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          foo value:
           bar do
             value
           end
         RUBY
       end
 
-      it 'registers and corrects an offense when with parentheses call expr follows' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when with parentheses call expr follows' do
+        # Prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_no_offenses(<<~RUBY)
           foo value: value
-                     ^^^^^ Omit the hash value.
           foo(arg)
         RUBY
+      end
 
-        expect_correction(<<~RUBY)
-          foo value:
-          foo(arg)
+      it 'does not register an offense when hash key and hash value are partially the same' do
+        expect_no_offenses(<<~RUBY)
+          def do_something
+            do_something foo: foo
+            do_something(arg)
+          end
         RUBY
       end
 
