@@ -65,7 +65,9 @@ module RuboCop
       end
 
       def without_parentheses_call_expr_follows?(ancestor)
-        return false unless (right_sibling = ancestor.right_sibling)
+        right_sibling = ancestor.right_sibling
+        right_sibling ||= ancestor.each_ancestor.find(&:assignment?)&.right_sibling
+        return false unless right_sibling
 
         ancestor.respond_to?(:parenthesized?) && !ancestor.parenthesized? && right_sibling
       end

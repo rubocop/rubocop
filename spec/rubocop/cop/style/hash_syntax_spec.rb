@@ -985,6 +985,14 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'does not register an offense when with parentheses call expr follows assignment expr' do
+        # Prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_no_offenses(<<~RUBY)
+          var = foo value: value
+          foo(arg)
+        RUBY
+      end
+
       it 'does not register an offense when hash key and hash value are partially the same' do
         expect_no_offenses(<<~RUBY)
           def do_something
