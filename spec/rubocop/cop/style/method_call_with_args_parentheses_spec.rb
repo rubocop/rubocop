@@ -424,6 +424,23 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         RUBY
       end
 
+      it 'does not register an offense when hash value omission with parentheses and using modifier form' do
+        expect_no_offenses(<<~RUBY)
+          do_something(value:) if condition
+        RUBY
+      end
+
+      it 'registers and corrects an offense when explicit hash value with parentheses and using modifier form' do
+        expect_offense(<<~RUBY)
+          do_something(value: value) if condition
+                      ^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something value: value if condition
+        RUBY
+      end
+
       it 'does not register an offense when without parentheses call expr follows' do
         expect_no_offenses(<<~RUBY)
           foo value:
