@@ -48,15 +48,21 @@ module RuboCop
             node.each_ancestor(:def, :defs).any?(&:endless?) && node.arguments.any?
           end
 
-          # Require hash value omission be enclosed in parentheses to prevent the following issue:
-          # https://bugs.ruby-lang.org/issues/18396.
           def require_parentheses_for_hash_value_omission?(node)
             return false unless (last_argument = node.last_argument)
+            return false if !last_argument.hash_type? || !last_argument.pairs.last&.value_omission?
 
-            next_line = node.parent&.assignment? ? node.parent.right_sibling : node.right_sibling
-            return false unless next_line
+            modifier_form?(node) || exist_next_line_expression?(node)
+          end
 
-            last_argument.hash_type? && last_argument.pairs.last&.value_omission? && next_line
+          def modifier_form?(node)
+            node.parent.respond_to?(:modifier_form?) && node.parent.modifier_form?
+          end
+
+          # Require hash value omission be enclosed in parentheses to prevent the following issue:
+          # https://bugs.ruby-lang.org/issues/18396.
+          def exist_next_line_expression?(node)
+            node.parent&.assignment? ? node.parent.right_sibling : node.right_sibling
           end
 
           def syntax_like_method_call?(node)
