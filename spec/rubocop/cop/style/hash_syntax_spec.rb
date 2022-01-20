@@ -830,6 +830,19 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers and corrects an offense when `Hash[foo: foo]` and an expression follows' do
+        expect_offense(<<~RUBY)
+          Hash[foo: foo]
+                    ^^^ Omit the hash value.
+          do_something
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Hash[foo:]
+          do_something
+        RUBY
+      end
+
       it 'registers and corrects an offense when hash key and hash value are the same and it in the method body' do
         expect_offense(<<~RUBY)
           def do_something
@@ -849,6 +862,31 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
               bar:
             }
           end
+        RUBY
+      end
+
+      it 'registers and corrects an offense when hash key and hash value are the same and it in the method body' \
+         'and an expression follows' do
+        expect_offense(<<~RUBY)
+          def do_something
+            {
+              foo: foo,
+                   ^^^ Omit the hash value.
+              bar: bar
+                   ^^^ Omit the hash value.
+            }
+          end
+          do_something
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def do_something
+            {
+              foo:,
+              bar:
+            }
+          end
+          do_something
         RUBY
       end
 
@@ -881,6 +919,15 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
         expect_correction(<<~RUBY)
           {foo:}.do_something[key]
+        RUBY
+      end
+
+      it 'does not register an offense when hash pattern matching' do
+        expect_no_offenses(<<~RUBY)
+          case pattern
+          in {foo: 42}
+          in {foo: foo}
+          end
         RUBY
       end
 
