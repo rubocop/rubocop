@@ -222,9 +222,14 @@ module RuboCop
                               node.pairs.any? &&
                               node.parent&.call_type?
 
+          left_sibling = argument_before_hash(node)
           parent_loc = node.parent.loc
-          selector = parent_loc.selector || parent_loc.expression
+          selector = left_sibling || parent_loc.selector || parent_loc.expression
           same_line?(selector, node.pairs.first)
+        end
+
+        def argument_before_hash(hash_node)
+          hash_node.left_sibling.respond_to?(:loc) ? hash_node.left_sibling : nil
         end
 
         def reset!
