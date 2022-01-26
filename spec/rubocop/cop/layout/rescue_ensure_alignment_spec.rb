@@ -449,6 +449,16 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
+  it 'accepts aligned rescue in do-end block with `.()` call' do
+    expect_no_offenses(<<~RUBY)
+      foo.() do |el|
+        el.to_s
+      rescue StandardError => _exception
+        next
+      end
+    RUBY
+  end
+
   it 'accepts aligned rescue with do-end block that line break with leading dot for method calls' do
     expect_no_offenses(<<~RUBY)
       [1, 2, 3]
