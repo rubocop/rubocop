@@ -35,7 +35,9 @@ RSpec.describe RuboCop::Cop::Badge do
       end
     end
 
+    include_examples 'cop identifier parsing', 'bar', %w[Bar]
     include_examples 'cop identifier parsing', 'Bar', %w[Bar]
+    include_examples 'cop identifier parsing', 'snake_case/example', %w[SnakeCase Example]
     include_examples 'cop identifier parsing', 'Foo/Bar', %w[Foo Bar]
     include_examples 'cop identifier parsing', 'Foo/Bar/Baz', %w[Foo Bar Baz]
     include_examples 'cop identifier parsing', 'Foo/Bar/Baz/Qux', %w[Foo Bar Baz Qux]
