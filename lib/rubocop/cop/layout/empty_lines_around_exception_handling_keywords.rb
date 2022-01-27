@@ -81,7 +81,7 @@ module RuboCop
 
           locations.each do |loc|
             line = loc.line
-            next if line == line_of_def_or_kwbegin
+            next if line == line_of_def_or_kwbegin || last_rescue_and_end_on_same_line(body)
 
             keyword = loc.source
             # below the keyword
@@ -89,6 +89,10 @@ module RuboCop
             # above the keyword
             check_line(style, line - 2, message('before', keyword), &:empty?)
           end
+        end
+
+        def last_rescue_and_end_on_same_line(body)
+          body.rescue_type? && body.resbody_branches.last.loc.line == body.parent.loc.end.line
         end
 
         def message(location, keyword)
