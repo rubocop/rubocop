@@ -472,6 +472,41 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       end
     end
 
+    context 'when cop is not safe to auto-correct' do
+      it 'can generate a todo list, with the appropriate flag' do
+        create_file('example1.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          users = (user.name + ' ' + user.email) * 5
+          puts users
+        RUBY
+        create_file('.rubocop.yml', <<~YAML)
+          # The following cop supports auto-correction but is not safe
+          Style/StringConcatenation:
+            Enabled: true
+        YAML
+        expect(cli.run(%w[--auto-gen-config])).to eq(0)
+        expect($stderr.string).to eq('')
+        expect(Dir['.*']).to include('.rubocop_todo.yml')
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        expect(todo_contents).to eq(<<~YAML)
+          # Offense count: 1
+          # Cop supports --auto-correct-all.
+          # Configuration parameters: Mode.
+          Style/StringConcatenation:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(File.read('.rubocop.yml')).to eq(<<~YAML)
+          inherit_from: .rubocop_todo.yml
+
+          # The following cop supports auto-correction but is not safe
+          Style/StringConcatenation:
+            Enabled: true
+        YAML
+      end
+    end
+
     context 'when existing config file has a YAML document start header' do
       it 'inserts `inherit_from` key after hearder' do
         create_file('example1.rb', <<~RUBY)
