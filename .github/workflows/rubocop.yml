@@ -19,13 +19,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # [ ubuntu, macos, windows ]
-        os: [ windows ]
-        ruby: [ '2.5', '2.6', '2.7', '3.0', '3.1', 'head' ]
+        # [ubuntu, macos, windows]
+        os: [windows]
+        ruby: ['2.5', '2.6', '2.7', '3.0', '3.1', 'head']
         include:
-          - { os: windows, ruby: mingw }
+          - os: windows
+            ruby: mingw
         exclude:
-          - { os: windows, ruby: head  }
+          - os: windows
+            ruby: head
 
     steps:
       - name: windows misc
@@ -42,10 +44,10 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
 
       - name: install dependencies
-        run:  bundle install --jobs 3 --retry 3
+        run: bundle install --jobs 3 --retry 3
       - name: spec
-        run:  bundle exec rake spec
+        run: bundle exec rake spec
       - name: ascii_spec
-        run:  bundle exec rake ascii_spec
+        run: bundle exec rake ascii_spec
       - name: internal_investigation
-        run:  bundle exec rake internal_investigation
+        run: bundle exec rake internal_investigation
