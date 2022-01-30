@@ -4,4 +4,4 @@ title: RuboCop
 # as patch versions should not appear in the docs.
 version: ~
 nav:
-- modules/ROOT/nav.adoc
+  - modules/ROOT/nav.adoc
