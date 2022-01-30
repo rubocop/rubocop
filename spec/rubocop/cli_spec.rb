@@ -1281,6 +1281,139 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         RESULT
     end
 
+    context 'with a custom cop' do
+      before do
+        create_file('dept_config.yml', <<~YAML)
+          Dept:
+            Enabled: true
+          Dept/Subdept:
+            Enabled: true
+          Dept/Subdept/#{cop_name}:
+            Enabled: true
+        YAML
+        create_file('dept.rb', "require_relative 'lib/dept/subdept/cop'")
+        create_file('lib/dept/subdept/cop.rb', <<~RUBY)
+          module RuboCop
+            module Cop
+              module Dept
+                module Subdept
+                  class #{cop_name} < Base
+                    def on_str(node)
+                      add_offense(node, message: "I don't like strings.")
+                    end
+                  end
+                end
+              end
+            end
+          end
+        RUBY
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          puts 'hello'
+        RUBY
+        RuboCop::ConfigLoader.default_configuration["Dept/Subdept/#{cop_name}"] = {
+          'Enabled' => true
+        }
+      end
+
+      around { |example| RuboCop::Cop::Registry.with_temporary_global { example.run } }
+
+      after { RuboCop::ConfigLoader.default_configuration.delete("Dept/Subdept/#{cop_name}") }
+
+      context 'with its top level department disabed' do
+        let(:cop_name) { 'CopA' }
+
+        it 'disables the cop' do
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from: dept_config.yml
+            Dept:
+              Enabled: false
+          YAML
+          expect(cli.run(%w[--require ./dept example.rb])).to eq(0)
+        end
+      end
+
+      context 'with its top level department disabed and its immediate department enabled' do
+        let(:cop_name) { 'CopB' }
+
+        it 'enables the cop and gets severity from the immediate department' do
+          create_file('.parent_rubocop.yml', <<~YAML)
+            inherit_from: dept_config.yml
+            Dept:
+              Enabled: false
+              Severity: error
+          YAML
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from: .parent_rubocop.yml
+            Dept/Subdept:
+              Enabled: true
+              Severity: warning
+          YAML
+          expect(cli.run(%w[--require ./dept --format simple example.rb])).to eq(1)
+          expect($stdout.string.strip).to eq(<<~OUTPUT.strip)
+            == example.rb ==
+            W:  3:  6: Dept/Subdept/CopB: I don't like strings.
+
+            1 file inspected, 1 offense detected
+          OUTPUT
+        end
+      end
+
+      context 'with its top level department disabed and its immediate department enabled and ' \
+              'the cop explicitly disabled' do
+        let(:cop_name) { 'CopE' }
+
+        it 'disables the cop' do
+          create_file('.rubocop.yml', <<~YAML)
+            Dept:
+              Enabled: false
+            Dept/Subdept:
+              Enabled: true
+            Dept/Subdept/CopE:
+              Enabled: false
+          YAML
+          expect(cli.run(%w[--require ./dept example.rb])).to eq(0)
+        end
+      end
+
+      context 'with its top level department enabed and its immediate department disabled' do
+        let(:cop_name) { 'CopC' }
+
+        it 'disables the cop' do
+          create_file('.parent_rubocop.yml', <<~YAML)
+            inherit_from: dept_config.yml
+          YAML
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from: .parent_rubocop.yml
+            Dept/Subdept:
+              Enabled: false
+          YAML
+          expect(cli.run(%w[--require ./dept example.rb])).to eq(0)
+        end
+      end
+
+      context 'with its top level department disabed and the cop explicitly enabled' do
+        let(:cop_name) { 'CopD' }
+
+        it 'disables the cop' do
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from: dept_config.yml
+            Dept:
+              Enabled: false
+            Dept/Subdept/CopD:
+              Enabled: true
+          YAML
+          expect(cli.run(%w[--require ./dept --format offenses example.rb])).to eq(1)
+          expect($stdout.string.strip).to eq(<<~OUTPUT.strip)
+            1  Dept/Subdept/CopD
+            --
+            1  Total
+          OUTPUT
+        end
+      end
+    end
+
     it 'can use an alternative max line length from a config file' do
       create_file('example_src/example1.rb', <<~RUBY)
         # frozen_string_literal: true

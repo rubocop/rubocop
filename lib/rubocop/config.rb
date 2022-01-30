@@ -279,10 +279,12 @@ module RuboCop
       # If the cop is explicitly enabled, the other checks can be skipped.
       return true if cop_options['Enabled'] == true
 
-      department = department_of(qualified_cop_name)
       cop_enabled = cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
       return true if cop_enabled == 'override_department'
-      return false if department && department['Enabled'] == false
+
+      department_enabled = department_of(qualified_cop_name)&.dig('Enabled')
+      return false if department_enabled == false
+      return department_enabled == 'override_department' if cop_enabled == 'disabled_by_department'
 
       cop_enabled
     end

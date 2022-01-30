@@ -19,7 +19,7 @@ module RuboCop
 
     # @api private
     CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect].to_set.freeze
-    CONFIG_CHECK_DEPARTMENTS = %w[pending override_department].freeze
+    CONFIG_CHECK_DEPARTMENTS = %w[pending override_department disabled_by_department].freeze
     private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops
@@ -105,12 +105,14 @@ module RuboCop
       unknown_cops = []
       invalid_cop_names.each do |name|
         # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Registry.global.contains_cop_matching?([name])
+        next if registry.contains_cop_matching?([name])
 
         # Special case for inherit_mode, which is a directive that we keep in
         # the configuration (even though it's not a cop), because it's easier
         # to do so than to pass the value around to various methods.
         next if name == 'inherit_mode'
+
+        next if departments.any? { |department| department.start_with?("#{name}/") }
 
         message = <<~MESSAGE.rstrip
           unrecognized cop or department #{name} found in #{smart_loaded_path}
@@ -123,19 +125,16 @@ module RuboCop
     end
 
     def suggestion(name)
-      registry = Cop::Registry.global
-      departments = registry.departments.map(&:to_s)
       suggestions = NameSimilarity.find_similar_names(name, departments + registry.map(&:cop_name))
-      if suggestions.any?
-        "Did you mean `#{suggestions.join('`, `')}`?"
-      else
-        # Department names can contain slashes, e.g. Chef/Correctness, but there's no support for
-        # the concept of higher level departments in RuboCop. It's a flat structure. So if the user
-        # tries to configure a "top level department", we hint that it's the bottom level
-        # departments that should be configured.
-        suggestions = departments.select { |department| department.start_with?("#{name}/") }
-        "#{name} is not a department. Use `#{suggestions.join('`, `')}`." if suggestions.any?
-      end
+      "Did you mean `#{suggestions.join('`, `')}`?" if suggestions.any?
+    end
+
+    def departments
+      registry.departments.map(&:to_s)
+    end
+
+    def registry
+      Cop::Registry.global
     end
 
     def validate_syntax_cop

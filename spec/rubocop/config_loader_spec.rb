@@ -657,15 +657,6 @@ RSpec.describe RuboCop::ConfigLoader do
             configuration_from_file.for_cop(cop)['Enabled']
           end
 
-          if custom_dept_to_disable == 'Foo'
-            message = <<~'OUTPUT'.chomp
-              unrecognized cop or department Foo found in parent_rubocop.yml
-              Foo is not a department. Use `Foo/Bar`.
-            OUTPUT
-            expect { enabled?('Foo/Bar/Baz') }.to raise_error(RuboCop::ValidationError, message)
-            next
-          end
-
           # Department disabled in parent config, cop enabled in child.
           expect(enabled?('Metrics/MethodLength')).to be(true)
 
@@ -690,11 +681,13 @@ RSpec.describe RuboCop::ConfigLoader do
           # Department disabled in grandparent, cop enabled in child config.
           expect(enabled?('Lint/RaiseException')).to be(true)
 
-          # Cop enabled in grandparent, nested department disabled in parent.
+          # Cop enabled in grandparent, nested department (either Foo or Foo/Bar) disabled in
+          # parent.
           expect(enabled?('Foo/Bar/Baz')).to be(false)
 
           # Cop with similar prefix to disabled nested department.
-          expect(enabled?('Foo/BarBaz')).to eq(!disabled_by_default)
+          expect(enabled?('Foo/BarBaz')).to eq(!disabled_by_default &&
+                                               custom_dept_to_disable != 'Foo')
 
           # Cop enabled in default config, department disabled in grandparent.
           expect(enabled?('Lint/StructNewOverride')).to be(false)

@@ -127,10 +127,9 @@ module RuboCop
         department = Regexp.last_match(1)
         next unless disabled?(derived_hash, department) || disabled?(base_hash, department)
 
-        # The `override_department` setting for the `Enabled` parameter is an
-        # internal setting that's not documented in the manual. It will cause a
-        # cop to be enabled later, when logic surrounding enabled/disabled it
-        # run, even though its department is disabled.
+        # The 'override_department' setting for the `Enabled` parameter is an internal setting
+        # that's not documented in the manual. It will cause a cop to be enabled later, when logic
+        # surrounding enabled/disabled is run, even though its department is disabled.
         derived_hash[key]['Enabled'] = 'override_department' if derived_hash[key]['Enabled']
       end
     end
@@ -147,7 +146,8 @@ module RuboCop
       cops_to_disable.each do |cop_name|
         next unless base_hash.dig(cop_name, 'Enabled') == true
 
-        derived_hash.replace(merge({ cop_name => { 'Enabled' => false } }, derived_hash))
+        derived_hash.replace(merge({ cop_name => { 'Enabled' => 'disabled_by_department' } },
+                                   derived_hash))
       end
     end
 
