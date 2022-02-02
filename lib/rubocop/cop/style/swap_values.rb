@@ -58,6 +58,8 @@ module RuboCop
         end
 
         def simple_assignment?(node)
+          return false unless node.respond_to?(:type)
+
           SIMPLE_ASSIGNMENT_TYPES.include?(node.type)
         end
 
