@@ -97,7 +97,7 @@ module RuboCop
           offense_range = node.loc.begin
 
           add_offense(offense_range) do |corrector|
-            if any_ancestor_assignment_node?(node)
+            if node.parent&.assignment?
               replace_begin_with_statement(corrector, offense_range, node)
             else
               corrector.remove(offense_range)
@@ -170,11 +170,7 @@ module RuboCop
         end
 
         def valid_begin_assignment?(node)
-          any_ancestor_assignment_node?(node) && !node.children.one?
-        end
-
-        def any_ancestor_assignment_node?(node)
-          node.each_ancestor.any?(&:assignment?)
+          node.parent&.assignment? && !node.children.one?
         end
       end
     end
