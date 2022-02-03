@@ -11,6 +11,14 @@ RSpec.describe RuboCop::Cop::Style::OptionalBooleanParameter, :config do
     RUBY
   end
 
+  it 'registers an offense when defining method with optional boolean arg that has no space' do
+    expect_offense(<<~RUBY)
+      def some_method(bar=false)
+                      ^^^^^^^^^ Prefer keyword arguments for arguments with a boolean default value; use `bar: false` instead of `bar=false`.
+      end
+    RUBY
+  end
+
   it 'registers an offense when defining class method with optional boolean arg' do
     expect_offense(<<~RUBY)
       def self.some_method(bar = false)
