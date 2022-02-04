@@ -54,8 +54,9 @@ module RuboCop
         private
 
         def format_message(argument)
-          source = argument.source
-          format(MSG, original: source, replacement: source.sub(/\s+=/, ':'))
+          replacement = "#{argument.name}: #{argument.default_value.source}"
+
+          format(MSG, original: argument.source, replacement: replacement)
         end
       end
     end
