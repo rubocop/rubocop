@@ -41,7 +41,7 @@ module RuboCop
       end
 
       def require_hash_value?(hash_key_source, node)
-        return true if require_hash_value_for_around_hash_literal?(node)
+        return true if !node.key.sym_type? || require_hash_value_for_around_hash_literal?(node)
 
         hash_value = node.value
         return true unless hash_value.send_type? || hash_value.lvar_type?
