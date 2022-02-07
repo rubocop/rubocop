@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     it 'registers an offense for x.()' do
       expect_offense(<<~RUBY)
         x.(a, b)
-        ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
+        ^^^^^^^^ Prefer the use of `x.call(a, b)` over `x.(a, b)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       expect_offense(<<~RUBY)
         x.call(a, b)
         x.(a, b)
-        ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
+        ^^^^^^^^ Prefer the use of `x.call(a, b)` over `x.(a, b)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -32,9 +32,9 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       expect_offense(<<~RUBY)
         x.call(a, b)
         x.(a, b)
-        ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
+        ^^^^^^^^ Prefer the use of `x.call(a, b)` over `x.(a, b)`.
         x.(a, b)
-        ^^^^^^^^ Prefer the use of `lambda.call(...)` over `lambda.(...)`.
+        ^^^^^^^^ Prefer the use of `x.call(a, b)` over `x.(a, b)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     it 'registers an offense for x.call()' do
       expect_offense(<<~RUBY)
         x.call(a, b)
-        ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+        ^^^^^^^^^^^^ Prefer the use of `x.(a, b)` over `x.call(a, b)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     it 'registers an offense for opposite + correct' do
       expect_offense(<<~RUBY)
         x.call(a, b)
-        ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+        ^^^^^^^^^^^^ Prefer the use of `x.(a, b)` over `x.call(a, b)`.
         x.(a, b)
       RUBY
 
@@ -75,10 +75,10 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     it 'registers an offense for correct + multiple opposite styles' do
       expect_offense(<<~RUBY)
         x.call(a, b)
-        ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+        ^^^^^^^^^^^^ Prefer the use of `x.(a, b)` over `x.call(a, b)`.
         x.(a, b)
         x.call(a, b)
-        ^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+        ^^^^^^^^^^^^ Prefer the use of `x.(a, b)` over `x.call(a, b)`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     it 'auto-corrects x.call to x.()' do
       expect_offense(<<~RUBY)
         a.call
-        ^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+        ^^^^^^ Prefer the use of `a.()` over `a.call`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
     it 'auto-corrects x.call asdf, x123 to x.(asdf, x123)' do
       expect_offense(<<~RUBY)
         a.call asdf, x123
-        ^^^^^^^^^^^^^^^^^ Prefer the use of `lambda.(...)` over `lambda.call(...)`.
+        ^^^^^^^^^^^^^^^^^ Prefer the use of `a.(asdf, x123)` over `a.call asdf, x123`.
       RUBY
 
       expect_correction(<<~RUBY)
