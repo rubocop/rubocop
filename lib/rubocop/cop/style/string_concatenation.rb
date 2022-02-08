@@ -134,7 +134,13 @@ module RuboCop
         end
 
         def uncorrectable?(part)
-          part.multiline? || (part.str_type? && part.heredoc?) || part.each_descendant(:block).any?
+          part.multiline? || heredoc?(part) || part.each_descendant(:block).any?
+        end
+
+        def heredoc?(node)
+          return false unless node.str_type? || node.dstr_type?
+
+          node.heredoc?
         end
 
         def corrected_ancestor?(node)
