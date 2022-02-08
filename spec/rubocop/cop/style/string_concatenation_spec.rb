@@ -143,6 +143,18 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
 
       expect_no_corrections
     end
+
+    it 'registers an offense but does not correct when string concatenation with multiline heredoc text' do
+      expect_offense(<<~RUBY)
+        "foo" + <<~TEXT
+        ^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+          bar
+          baz
+        TEXT
+      RUBY
+
+      expect_no_corrections
+    end
   end
 
   context 'double quotes inside string' do
