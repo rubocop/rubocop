@@ -1,0 +1,1 @@
+* [#10406](https://github.com/rubocop/rubocop/pull/10406): Fix a false positive for `Lint/InheritException` when inheriting a standard lib exception class that is not a subclass of `StandardError`. ([@koic][])
