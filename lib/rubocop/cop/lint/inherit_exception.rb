@@ -3,10 +3,9 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop looks for error classes inheriting from `Exception`
-      # and its standard library subclasses, excluding subclasses of
-      # `StandardError`. It is configurable to suggest using either
-      # `StandardError` (default) or `RuntimeError` instead.
+      # This cop looks for error classes inheriting from `Exception`.
+      # It is configurable to suggest using either `StandardError` (default) or
+      # `RuntimeError` instead.
       #
       # @safety
       #   This cop's autocorrection is unsafe because `rescue` that omit
@@ -42,24 +41,11 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Inherit from `%<prefer>s` instead of `%<current>s`.'
+        MSG = 'Inherit from `%<prefer>s` instead of `Exception`.'
         PREFERRED_BASE_CLASS = {
           runtime_error: 'RuntimeError',
           standard_error: 'StandardError'
         }.freeze
-        ILLEGAL_CLASSES = %w[
-          Exception
-          SystemStackError
-          NoMemoryError
-          SecurityError
-          NotImplementedError
-          LoadError
-          SyntaxError
-          ScriptError
-          Interrupt
-          SignalException
-          SystemExit
-        ].freeze
 
         RESTRICT_ON_SEND = %i[new].freeze
 
@@ -71,7 +57,7 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          return unless node.parent_class && illegal_class_name?(node.parent_class)
+          return unless node.parent_class && exception_class?(node.parent_class)
 
           message = message(node.parent_class)
 
@@ -82,7 +68,7 @@ module RuboCop
 
         def on_send(node)
           constant = class_new_call?(node)
-          return unless constant && illegal_class_name?(constant)
+          return unless constant && exception_class?(constant)
 
           message = message(constant)
 
@@ -97,8 +83,8 @@ module RuboCop
           format(MSG, prefer: preferred_base_class, current: node.const_name)
         end
 
-        def illegal_class_name?(class_node)
-          ILLEGAL_CLASSES.include?(class_node.const_name)
+        def exception_class?(class_node)
+          class_node.const_name == 'Exception'
         end
 
         def preferred_base_class
