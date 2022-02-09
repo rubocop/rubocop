@@ -1816,7 +1816,9 @@ Lint/IneffectiveAccessModifier:
 Lint/InheritException:
   Description: 'Avoid inheriting from the `Exception` class.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.41'
+  VersionChanged: '<<next>>'
   # The default base class in favour of `Exception`.
   EnforcedStyle: runtime_error
   SupportedStyles:

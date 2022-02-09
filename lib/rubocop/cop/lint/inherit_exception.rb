@@ -8,6 +8,11 @@ module RuboCop
       # `StandardError`. It is configurable to suggest using either
       # `RuntimeError` (default) or `StandardError` instead.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because `rescue` that omit
+      #   exception class handle `StandardError` and its subclasses,
+      #   but not `Exception` and its subclasses.
+      #
       # @example EnforcedStyle: runtime_error (default)
       #   # bad
       #
