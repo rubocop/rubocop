@@ -1820,10 +1820,10 @@ Lint/InheritException:
   VersionAdded: '0.41'
   VersionChanged: '<<next>>'
   # The default base class in favour of `Exception`.
-  EnforcedStyle: runtime_error
+  EnforcedStyle: standard_error
   SupportedStyles:
-    - runtime_error
     - standard_error
+    - runtime_error
 
 Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs.'
