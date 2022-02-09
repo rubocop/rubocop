@@ -6,27 +6,14 @@ module RuboCop
       # This cop looks for error classes inheriting from `Exception`
       # and its standard library subclasses, excluding subclasses of
       # `StandardError`. It is configurable to suggest using either
-      # `RuntimeError` (default) or `StandardError` instead.
+      # `StandardError` (default) or `RuntimeError` instead.
       #
       # @safety
       #   This cop's autocorrection is unsafe because `rescue` that omit
       #   exception class handle `StandardError` and its subclasses,
       #   but not `Exception` and its subclasses.
       #
-      # @example EnforcedStyle: runtime_error (default)
-      #   # bad
-      #
-      #   class C < Exception; end
-      #
-      #   C = Class.new(Exception)
-      #
-      #   # good
-      #
-      #   class C < RuntimeError; end
-      #
-      #   C = Class.new(RuntimeError)
-      #
-      # @example EnforcedStyle: standard_error
+      # @example EnforcedStyle: standard_error (default)
       #   # bad
       #
       #   class C < Exception; end
@@ -38,6 +25,19 @@ module RuboCop
       #   class C < StandardError; end
       #
       #   C = Class.new(StandardError)
+      #
+      # @example EnforcedStyle: runtime_error
+      #   # bad
+      #
+      #   class C < Exception; end
+      #
+      #   C = Class.new(Exception)
+      #
+      #   # good
+      #
+      #   class C < RuntimeError; end
+      #
+      #   C = Class.new(RuntimeError)
       class InheritException < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
