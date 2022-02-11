@@ -260,6 +260,18 @@ jobs:
       - run:
           name: Check documentation syntax
           command: bundle exec rake documentation_syntax_check
+  yaml-alphabetisation-check:
+    docker:
+      # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
+      - image: cimg/ruby:3.1
+    environment:
+      <<: *common_env
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: Check yaml alphabetisation
+          command: bundle exec yalphabetize
 
 workflows:
   version: 2
