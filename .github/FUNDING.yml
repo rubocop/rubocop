@@ -1,7 +1,5 @@
-# These are supported funding model platforms
-
-github: [bbatsov, koic]
-patreon: bbatsov
-open_collective: rubocop
-tidelift: "rubygems/rubocop"
 custom: https://www.paypal.me/bbatsov
+github: [bbatsov, koic]
+open_collective: rubocop
+patreon: bbatsov
+tidelift: "rubygems/rubocop"

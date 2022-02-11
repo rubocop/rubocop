@@ -1,150 +1,114 @@
-# This is the configuration used to check the rubocop source code.
-
-inherit_from: .rubocop_todo.yml
-require:
-  - rubocop/cop/internal_affairs
-  - rubocop-performance
-  - rubocop-rspec
-  - rubocop-rake
-
 AllCops:
-  NewCops: enable
   Exclude:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
     - '.git/**/*'
     - 'bin/*'
-  TargetRubyVersion: 2.5
+  NewCops: enable
   SuggestExtensions: false
-
-Naming/PredicateName:
-  # Method define macros for dynamically generated method.
-  MethodDefinitionMacros:
-    - define_method
-    - define_singleton_method
-    - def_node_matcher
-    - def_node_search
-
-Style/AccessorGrouping:
+  TargetRubyVersion: 2.5
+InternalAffairs/ExampleDescription:
+  Include:
+    - 'spec/rubocop/cop/**/*.rb'
+InternalAffairs/StyleDetectedApiUse:
   Exclude:
-    - lib/rubocop/formatter/base_formatter.rb
-    - lib/rubocop/cop/offense.rb
-
-Style/FormatStringToken:
-  # Because we parse a lot of source codes from strings. Percent arrays
-  # look like unannotated format string tokens to this cop.
+    - 'lib/rubocop/cop/mixin/percent_array.rb'
+InternalAffairs/UndefinedConfig:
   Exclude:
-    - spec/**/*
-
-Style/IpAddresses:
-  # The test for this cop includes strings that would cause offenses
-  Exclude:
-    - spec/rubocop/cop/style/ip_addresses_spec.rb
-
-Layout/EndOfLine:
-  EnforcedStyle: lf
-
+    - 'lib/rubocop/cop/correctors/**/*.rb'
+    - 'lib/rubocop/cop/mixin/**/*.rb'
+  Include:
+    - 'lib/rubocop/cop/**/*.rb'
 Layout/ClassStructure:
   Enabled: true
-
-Layout/RedundantLineBreak:
-  Enabled: true
-
-Layout/TrailingWhitespace:
-  AllowInHeredoc: false
-
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - 'spec/**/*.rb'
-
+Layout/EndOfLine:
+  EnforcedStyle: lf
 Layout/HashAlignment:
-  EnforcedHashRocketStyle:
-    - key
-    - table
   EnforcedColonStyle:
     - key
     - table
-
+  EnforcedHashRocketStyle:
+    - key
+    - table
 Layout/LineLength:
-  Max: 100
   IgnoredPatterns:
     - !ruby/regexp /\A +(it|describe|context|shared_examples|include_examples|it_behaves_like) ["']/
-
+  Max: 100
+Layout/RedundantLineBreak:
+  Enabled: true
+Layout/TrailingWhitespace:
+  AllowInHeredoc: false
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*.rb'
 Lint/InterpolationCheck:
   Exclude:
     - 'spec/**/*.rb'
-
 Lint/UselessAccessModifier:
   MethodCreatingMethods:
     - 'def_matcher'
     - 'def_node_matcher'
-
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
     - '**/*.rake'
     - 'spec/**/*.rb'
     - '**/*.gemspec'
-
 Metrics/ClassLength:
   Exclude:
     - lib/rubocop/config_obsoletion.rb
-
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
-
 Naming/InclusiveLanguage:
+  Exclude:
+    - lib/rubocop/cop/naming/inclusive_language.rb
   FlaggedTerms:
     offence:
       Suggestions:
         - offense
-  Exclude:
-    - lib/rubocop/cop/naming/inclusive_language.rb
-
-RSpec/FilePath:
-  Exclude:
-    - spec/rubocop/cop/internal_affairs/redundant_let_rubocop_config_new_spec.rb
-    - spec/rubocop/formatter/junit_formatter_spec.rb
-
-RSpec/PredicateMatcher:
-  EnforcedStyle: explicit
-
-RSpec/MessageSpies:
-  EnforcedStyle: receive
-
-RSpec/NestedGroups:
-  Max: 7
-
-RSpec/MultipleMemoizedHelpers:
-  Enabled: false
-
+Naming/PredicateName:
+  MethodDefinitionMacros:
+    - define_method
+    - define_singleton_method
+    - def_node_matcher
+    - def_node_search
 Performance/CollectionLiteralInLoop:
   Exclude:
     - 'Rakefile'
     - 'spec/**/*.rb'
-
 Performance/EndWith:
   SafeMultiline: false
-
 Performance/StartWith:
   SafeMultiline: false
-
+RSpec/FilePath:
+  Exclude:
+    - spec/rubocop/cop/internal_affairs/redundant_let_rubocop_config_new_spec.rb
+    - spec/rubocop/formatter/junit_formatter_spec.rb
+RSpec/MessageSpies:
+  EnforcedStyle: receive
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+RSpec/NestedGroups:
+  Max: 7
+RSpec/PredicateMatcher:
+  EnforcedStyle: explicit
 RSpec/StubbedMock:
   Enabled: false
-
-InternalAffairs/ExampleDescription:
-  Include:
-    - 'spec/rubocop/cop/**/*.rb'
-
-InternalAffairs/UndefinedConfig:
-  Include:
-    - 'lib/rubocop/cop/**/*.rb'
+Style/AccessorGrouping:
   Exclude:
-    - 'lib/rubocop/cop/correctors/**/*.rb'
-    - 'lib/rubocop/cop/mixin/**/*.rb'
-
-InternalAffairs/StyleDetectedApiUse:
+    - lib/rubocop/formatter/base_formatter.rb
+    - lib/rubocop/cop/offense.rb
+Style/FormatStringToken:
   Exclude:
-    - 'lib/rubocop/cop/mixin/percent_array.rb'
+    - spec/**/*
+Style/IpAddresses:
+  Exclude:
+    - spec/rubocop/cop/style/ip_addresses_spec.rb
+inherit_from: .rubocop_todo.yml
+require:
+  - rubocop/cop/internal_affairs
+  - rubocop-performance
+  - rubocop-rspec
+  - rubocop-rake

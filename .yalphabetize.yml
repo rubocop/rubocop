@@ -1,0 +1,5 @@
+exclude:
+  - .circleci/config.yml
+  - .github/workflows/
+  - .mergify.yml
+  - docs/antora.yml
