@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::AsciiComments, :config do
     expect_no_offenses('# AZaz1@$%~,;*_`|')
   end
 
-  context 'when certain non-ascii chars are allowed', :config do
+  context 'when certain non-ascii chars are allowed' do
     let(:cop_config) { { 'AllowedChars' => ['∂'] } }
 
     it 'accepts comment with allowed non-ascii chars' do
