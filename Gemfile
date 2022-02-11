@@ -17,6 +17,7 @@ gem 'rubocop-rspec', '~> 2.8.0'
 gem 'simplecov', '~> 0.10', '< 0.18'
 gem 'stackprof', platform: :mri
 gem 'test-queue'
+gem 'yalphabetize'
 gem 'yard', '~> 0.9'
 
 group :test do
