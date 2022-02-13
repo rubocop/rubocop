@@ -14,7 +14,7 @@ module RuboCop
       ignore_disable_comments lint only only_guide_cops require safe
     ].freeze
 
-    class Finished < RuntimeError; end
+    class Finished < StandardError; end
 
     attr_reader :options, :config_store
 
