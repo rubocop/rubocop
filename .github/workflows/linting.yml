@@ -1,0 +1,15 @@
+name: Linting
+on:
+  - pull_request
+jobs:
+  yamllint:
+    name: Yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Yamllint
+        uses: karancode/yamllint-github-action@master
+        with:
+          yamllint_comment: true
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}

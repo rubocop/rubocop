@@ -38,6 +38,14 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       RUBY
     end
 
+    it 'recognizes a Gem::Requirement with multiple requirements and does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        Gem::Specification.new do |spec|
+          spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0", "<= 2.8")
+        end
+      RUBY
+    end
+
     describe 'false negatives' do
       it 'does not register an offense when `required_ruby_version` ' \
          'is assigned as a variable (string literal)' do

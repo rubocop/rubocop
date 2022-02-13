@@ -121,15 +121,29 @@ module RuboCop
         output_buffer.puts "# Offense count: #{offense_count}" if show_offense_counts?
 
         cop_class = Cop::Registry.global.find_by_cop_name(cop_name)
-        output_buffer.puts '# Cop supports --auto-correct.' if cop_class&.support_autocorrect?
-
         default_cfg = default_config(cop_name)
+
+        if supports_safe_auto_correct?(cop_class, default_cfg)
+          output_buffer.puts '# Cop supports --auto-correct.'
+        elsif supports_unsafe_autocorrect?(cop_class, default_cfg)
+          output_buffer.puts '# Cop supports --auto-correct-all.'
+        end
+
         return unless default_cfg
 
         params = cop_config_params(default_cfg, cfg)
         return if params.empty?
 
         output_cop_param_comments(output_buffer, params, default_cfg)
+      end
+
+      def supports_safe_auto_correct?(cop_class, default_cfg)
+        cop_class&.support_autocorrect? &&
+          (default_cfg.nil? || default_cfg['Safe'] || default_cfg['Safe'].nil?)
+      end
+
+      def supports_unsafe_autocorrect?(cop_class, default_cfg)
+        cop_class&.support_autocorrect? && !default_cfg.nil? && default_cfg['Safe'] == false
       end
 
       def cop_config_params(default_cfg, cfg)

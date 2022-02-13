@@ -30,7 +30,11 @@ module RuboCop
 
         def on_new_investigation
           processed_source.diagnostics.each do |diagnostic|
-            next unless diagnostic.reason == :ambiguous_literal
+            if target_ruby_version >= 3.0
+              next unless diagnostic.reason == :ambiguous_regexp
+            else
+              next unless diagnostic.reason == :ambiguous_literal
+            end
 
             offense_node = find_offense_node_by(diagnostic)
 

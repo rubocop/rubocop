@@ -143,7 +143,7 @@ module RuboCop
             return true
           end
 
-          do_keyword_line == selector.line && rescue_keyword_column == selector.column
+          do_keyword_line == selector&.line && rescue_keyword_column == selector.column
         end
 
         def aligned_with_leading_dot?(do_keyword_line, send_node_loc, rescue_keyword_column)

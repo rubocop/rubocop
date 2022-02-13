@@ -23,6 +23,12 @@ module RuboCop
       # It can enforce either the use of the explicit hash value syntax or
       # the use of Ruby 3.1's hash value shorthand syntax.
       #
+      # The supported styles are:
+      #
+      # * always - forces use of the 3.1 syntax (e.g. {foo:})
+      # * never - forces use of explicit hash literal value
+      # * either - accepts both shorthand and explicit use of hash literal value
+      #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
       #   {:a => 2}
@@ -74,6 +80,14 @@ module RuboCop
       #
       #   # good
       #   {foo: foo, bar: bar}
+      #
+      # @example EnforcedShorthandSyntax: either
+      #
+      #   # good
+      #   {foo: foo, bar: bar}
+      #
+      #   # good
+      #   {foo:, bar:}
       #
       class HashSyntax < Base
         include ConfigurableEnforcedStyle

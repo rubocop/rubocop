@@ -2,6 +2,44 @@
 
 ## master (unreleased)
 
+## 1.25.1 (2022-02-03)
+
+### Bug fixes
+
+* [#10359](https://github.com/rubocop/rubocop/issues/10359): Fix a false positive and negative for `Style/HashSyntax` when using hash value omission. ([@koic][])
+* [#10387](https://github.com/rubocop/rubocop/issues/10387): Fix an error for `Style/RedundantBegin` when assigning nested `begin` blocks. ([@koic][])
+* [#10366](https://github.com/rubocop/rubocop/issues/10366): Fix a false positive for `Style/MethodCallWithArgsParentheses` when setting `EnforcedStyle: omit_parentheses` and using hash value omission with modifier from. ([@koic][])
+* [#10376](https://github.com/rubocop/rubocop/issues/10376): Fix an error for `Layout/RescueEnsureAlignment` when using `.()` call with block. ([@koic][])
+* [#10364](https://github.com/rubocop/rubocop/issues/10364): Fix an infinite loop error for `Layout/HashAlignment` when `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArgumentAlignment`. ([@koic][])
+* [#10371](https://github.com/rubocop/rubocop/pull/10371): Fix a false negative for `Style/HashSyntax` when `Hash[foo: foo]` or `{foo: foo}` is followed by a next expression. ([@koic][])
+* [#10394](https://github.com/rubocop/rubocop/issues/10394): Fix an error for `Style/SwapValues` when assigning receiver object at `def`. ([@koic][])
+* [#10379](https://github.com/rubocop/rubocop/issues/10379): Fix an error for `Layout/EmptyLinesAroundExceptionHandlingKeywords` when `rescue` and `end` are on the same line. ([@koic][])
+
+## 1.25.0 (2022-01-18)
+
+### New features
+
+* [#10351](https://github.com/rubocop/rubocop/pull/10351): Support `EnforcedShorthandSyntax: either` option for `Style/HashSyntax`. ([@koic][])
+* [#10339](https://github.com/rubocop/rubocop/issues/10339): Support auto-correction for `EnforcedStyle: explicit` of `Naming/BlockForwarding`. ([@koic][])
+
+### Bug fixes
+
+* [#10344](https://github.com/rubocop/rubocop/pull/10344): Fix a false positive for `Style/CollectionCompact` when without receiver for bad methods. ([@koic][])
+* [#10353](https://github.com/rubocop/rubocop/pull/10353): Use `:ambiguous_regexp` to detect ambiguous Regexp in Ruby 3. ([@danieldiekmeier][], [@joergschiller][])
+* [#10336](https://github.com/rubocop/rubocop/issues/10336): Fix a false positive for `Style/TernaryParentheses` when using `in` keyword pattern matching as a ternary condition. ([@koic][])
+* [#10317](https://github.com/rubocop/rubocop/issues/10317): Fix a false positive for `Style/MethodCallWithArgsParentheses` when using hash value omission. ([@koic][])
+* [#8032](https://github.com/rubocop/rubocop/issues/8032): Improve ArgumentAlignment detection and correction for keyword arguments. ([@mvz][])
+* [#10331](https://github.com/rubocop/rubocop/pull/10331): Fix cop generator for nested departments. ([@fatkodima][])
+* [#10357](https://github.com/rubocop/rubocop/pull/10357): Fix a false positive for `Style/HashSyntax` when omitting the value. ([@berkos][])
+* [#10335](https://github.com/rubocop/rubocop/issues/10335): Fix a false positive for `Naming/BlockForwarding` when using multiple proc arguments. ([@koic][])
+* [#10350](https://github.com/rubocop/rubocop/pull/10350): Fix a false negative for `Lint/IncompatibleIoSelectWithFiberScheduler` when using `IO.select` with the first argument only. ([@koic][])
+* [#10358](https://github.com/rubocop/rubocop/pull/10358): Fix Style/Sample crash on beginless and endless range shuffle indexes. ([@gsamokovarov][])
+* [#10354](https://github.com/rubocop/rubocop/pull/10354): Fix Gemspec/RequiredRubyVersion version matcher when Gem::Requirement.new is used and initialised with multiple requirements. ([@nickpellant][])
+
+### Changes
+
+* [#10343](https://github.com/rubocop/rubocop/pull/10343): Require Parser 3.1.0.0 or higher. ([@koic][])
+
 ## 1.24.1 (2021-12-31)
 
 ### Bug fixes
@@ -6021,3 +6059,7 @@
 [@grosser]: https://github.com/grosser
 [@mttkay]: https://github.com/mttkay
 [@leoarnold]: https://github.com/leoarnold
+[@danieldiekmeier]: https://github.com/danieldiekmeier
+[@joergschiller]: https://github.com/joergschiller
+[@berkos]: https://github.com/berkos
+[@nickpellant]: https://github.com/nickpellant

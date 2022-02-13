@@ -53,23 +53,50 @@ module RuboCop
                            'following the first line of a multi-line method call.'
 
         def on_send(node)
-          first_arg = node.first_argument
-          return if !multiple_arguments?(node, first_arg) || (node.send_type? && node.method?(:[]=))
+          return if !multiple_arguments?(node) || (node.send_type? && node.method?(:[]=))
 
-          if first_arg.hash_type? && !first_arg.braces?
-            pairs = first_arg.pairs
-            check_alignment(pairs, base_column(node, pairs.first))
-          else
-            check_alignment(node.arguments, base_column(node, first_arg))
-          end
+          items = flattened_arguments(node)
+
+          check_alignment(items, base_column(node, items.first))
         end
+
         alias on_csend on_send
 
         private
 
-        def multiple_arguments?(node, first_argument)
+        def flattened_arguments(node)
+          if fixed_indentation?
+            arguments_with_last_arg_pairs(node)
+          else
+            arguments_or_first_arg_pairs(node)
+          end
+        end
+
+        def arguments_with_last_arg_pairs(node)
+          items = node.arguments[0..-2]
+          last_arg = node.arguments.last
+
+          if last_arg.hash_type? && !last_arg.braces?
+            items += last_arg.pairs
+          else
+            items << last_arg
+          end
+          items
+        end
+
+        def arguments_or_first_arg_pairs(node)
+          first_arg = node.first_argument
+          if first_arg.hash_type? && !first_arg.braces?
+            first_arg.pairs
+          else
+            node.arguments
+          end
+        end
+
+        def multiple_arguments?(node)
           return true if node.arguments.size >= 2
 
+          first_argument = node.first_argument
           first_argument&.hash_type? && first_argument.pairs.count >= 2
         end
 

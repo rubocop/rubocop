@@ -91,11 +91,12 @@ module RuboCop
           second.int_type? ? second.to_a.first : :unknown
         end
 
-        def range_size(range_node) # rubocop:todo Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def range_size(range_node)
           vals = range_node.to_a
-          return :unknown unless vals.all?(&:int_type?)
+          return :unknown unless vals.all? { |val| val.nil? || val.int_type? }
 
-          low, high = vals.map { |val| val.children[0] }
+          low, high = vals.map { |val| val.nil? ? 0 : val.children[0] }
           return :unknown unless low.zero? && high >= 0
 
           case range_node.type
@@ -105,6 +106,7 @@ module RuboCop
             (low..high).size
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def source_range(shuffle_node, node)
           Parser::Source::Range.new(shuffle_node.source_range.source_buffer,

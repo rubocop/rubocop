@@ -36,7 +36,7 @@ module RuboCop
       #   # good (but potentially an unsafe correction)
       #   foo.do_something?
       #
-      # @example AllowedMethods: ['nonzero?']
+      # @example AllowedMethods: ['nonzero?'] (default)
       #   # good
       #   num.nonzero? ? true : false
       #

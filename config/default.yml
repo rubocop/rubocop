@@ -430,13 +430,13 @@ Layout/ClassStructure:
       - prepend
       - extend
   ExpectedOrder:
-      - module_inclusion
-      - constants
-      - public_class_methods
-      - initializer
-      - public_methods
-      - protected_methods
-      - private_methods
+    - module_inclusion
+    - constants
+    - public_class_methods
+    - initializer
+    - public_methods
+    - protected_methods
+    - private_methods
 
 Layout/ClosingHeredocIndentation:
   Description: 'Checks the indentation of here document closings.'
@@ -1816,12 +1816,14 @@ Lint/IneffectiveAccessModifier:
 Lint/InheritException:
   Description: 'Avoid inheriting from the `Exception` class.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.41'
+  VersionChanged: '<<next>>'
   # The default base class in favour of `Exception`.
-  EnforcedStyle: runtime_error
+  EnforcedStyle: standard_error
   SupportedStyles:
-    - runtime_error
     - standard_error
+    - runtime_error
 
 Lint/InterpolationCheck:
   Description: 'Raise warning for interpolation in single q strs.'
@@ -1900,7 +1902,7 @@ Lint/NestedPercentLiteral:
   VersionAdded: '0.52'
 
 Lint/NextWithoutAccumulator:
-  Description:  >-
+  Description: >-
                   Do not omit the accumulator when calling `next`
                   in a `reduce`/`inject` block.
   Enabled: true
@@ -2496,6 +2498,7 @@ Naming/BlockForwarding:
   SupportedStyles:
     - anonymous
     - explicit
+  BlockForwardingName: block
 
 Naming/BlockParameterName:
   Description: >-
@@ -3152,7 +3155,7 @@ Style/ClassMethodsDefinitions:
   StyleGuide: '#def-self-class-methods'
   Enabled: false
   VersionAdded: '0.89'
-  EnforcedStyle:  def_self
+  EnforcedStyle: def_self
   SupportedStyles:
     - def_self
     - self_class
@@ -3698,6 +3701,8 @@ Style/HashSyntax:
     - always
     # forces use of explicit hash literal value.
     - never
+    # accepts both shorthand and explicit use of hash literal value.
+    - either
   # Force hashes that have a symbol value to use hash rockets
   UseHashRocketsWithSymbolValues: false
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
@@ -3817,8 +3822,8 @@ Style/InverseMethods:
     :>: :<=
     # `ActiveSupport` defines some common inverse methods. They are listed below,
     # and not enabled by default.
-    #:present?: :blank?,
-    #:include?: :exclude?
+    # :present?: :blank?,
+    # :include?: :exclude?
   # `InverseBlocks` are methods that are inverted by inverting the return
   # of the block that is passed to the method
   InverseBlocks:

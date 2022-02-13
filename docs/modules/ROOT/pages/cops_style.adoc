@@ -4775,6 +4775,12 @@ This cop has `EnforcedShorthandSyntax` option.
 It can enforce either the use of the explicit hash value syntax or
 the use of Ruby 3.1's hash value shorthand syntax.
 
+The supported styles are:
+
+* always - forces use of the 3.1 syntax (e.g. {foo:})
+* never - forces use of explicit hash literal value
+* either - accepts both shorthand and explicit use of hash literal value
+
 === Examples
 
 ==== EnforcedStyle: ruby19 (default)
@@ -4851,6 +4857,17 @@ the use of Ruby 3.1's hash value shorthand syntax.
 {foo: foo, bar: bar}
 ----
 
+==== EnforcedShorthandSyntax: either
+
+[source,ruby]
+----
+# good
+{foo: foo, bar: bar}
+
+# good
+{foo:, bar:}
+----
+
 === Configurable attributes
 
 |===
@@ -4862,7 +4879,7 @@ the use of Ruby 3.1's hash value shorthand syntax.
 
 | EnforcedShorthandSyntax
 | `always`
-| `always`, `never`
+| `always`, `never`, `either`
 
 | UseHashRocketsWithSymbolValues
 | `false`
@@ -5303,7 +5320,7 @@ end
 foo.do_something?
 ----
 
-==== AllowedMethods: ['nonzero?']
+==== AllowedMethods: ['nonzero?'] (default)
 
 [source,ruby]
 ----
@@ -5924,7 +5941,7 @@ endless method definition introduced in Ruby 3.0. Parentheses are also
 allowed when forwarding arguments with the triple-dot syntax introduced
 in Ruby 2.7 as omitting them starts an endless range.
 And Ruby 3.1's hash omission syntax has a case that requires parentheses
-because the issue https://bugs.ruby-lang.org/issues/18396.
+because of the following issue: https://bugs.ruby-lang.org/issues/18396.
 
 === Examples
 

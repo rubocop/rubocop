@@ -68,8 +68,11 @@ module RuboCop
 
         # @!method defined_ruby_version(node)
         def_node_matcher :defined_ruby_version, <<~PATTERN
-          {$(str _) $(array (str _) (str _))
-            (send (const (const nil? :Gem) :Requirement) :new $(str _))}
+          {
+            $(str _)
+            $(array (str _) (str _))
+            (send (const (const nil? :Gem) :Requirement) :new $str+)
+          }
         PATTERN
 
         def on_new_investigation
@@ -97,7 +100,11 @@ module RuboCop
         def extract_ruby_version(required_ruby_version)
           return unless required_ruby_version
 
-          if required_ruby_version.array_type?
+          if required_ruby_version.is_a?(Array)
+            required_ruby_version = required_ruby_version.detect do |v|
+              /[>=]/.match?(v.str_content)
+            end
+          elsif required_ruby_version.array_type?
             required_ruby_version = required_ruby_version.children.detect do |v|
               /[>=]/.match?(v.str_content)
             end

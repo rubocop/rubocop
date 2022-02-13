@@ -40,7 +40,7 @@ namespace :cut_release do
   def update_docs(old_version, new_version)
     update_file('docs/antora.yml') do |antora_metadata|
       antora_metadata.sub(
-        "version: 'master'",
+        'version: ~',
         "version: '#{version_sans_patch(new_version)}'"
       )
     end

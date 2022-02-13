@@ -182,7 +182,8 @@ module RuboCop
       end
 
       def generate(template)
-        format(template, department: badge.department, cop_name: badge.cop_name)
+        format(template, department: badge.department.to_s.gsub('/', '::'),
+                         cop_name: badge.cop_name)
       end
 
       def spec_path
@@ -209,8 +210,8 @@ module RuboCop
         return 'rspec' if camel_case_string == 'RSpec'
 
         camel_case_string
-          .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
-          .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
+          .gsub(%r{([^A-Z/])([A-Z]+)}, '\1_\2')
+          .gsub(%r{([A-Z])([A-Z][^A-Z\d/]+)}, '\1_\2')
           .downcase
       end
     end

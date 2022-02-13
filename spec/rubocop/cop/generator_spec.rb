@@ -310,8 +310,30 @@ RSpec.describe RuboCop::Cop::Generator do
       expect(generator.__send__(:snake_case, 'FooBar')).to eq('foo_bar')
     end
 
+    it 'converts "FooBar/Baz" to snake_case' do
+      expect(generator.__send__(:snake_case, 'FooBar/Baz')).to eq('foo_bar/baz')
+    end
+
     it 'converts "RSpec" to snake_case' do
       expect(generator.__send__(:snake_case, 'RSpec')).to eq('rspec')
+    end
+  end
+
+  context 'nested departments' do
+    let(:cop_identifier) { 'Plugin/Style/FakeCop' }
+
+    include_context 'cli spec behavior'
+
+    it 'generates source and spec files correctly namespaced within departments' do
+      expect(File).to receive(:write).with('lib/rubocop/cop/plugin/style/fake_cop.rb',
+                                           an_instance_of(String))
+      generator.write_source
+      expect(stdout.string).to eq("[create] lib/rubocop/cop/plugin/style/fake_cop.rb\n")
+
+      expect(File).to receive(:write).with('spec/rubocop/cop/plugin/style/fake_cop_spec.rb',
+                                           an_instance_of(String))
+      generator.write_spec
+      expect(stdout.string).to include("[create] spec/rubocop/cop/plugin/style/fake_cop_spec.rb\n")
     end
   end
 

@@ -462,4 +462,40 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
     expect_correction("unless condition\n  \n    foo\n  \nend\n")
   end
+
+  it 'reports an offense when assigning nested `begin` blocks' do
+    expect_offense(<<~RUBY)
+      var = do_something do
+        begin
+        ^^^^^ Redundant `begin` block detected.
+          do_something do
+            begin
+            ^^^^^ Redundant `begin` block detected.
+              foo
+            ensure
+              bar
+            end
+          end
+        ensure
+          baz
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = do_something do
+       #{trailing_whitespace}
+          do_something do
+           #{trailing_whitespace}
+              foo
+            ensure
+              bar
+           #{trailing_whitespace}
+          end
+        ensure
+          baz
+       #{trailing_whitespace}
+      end
+    RUBY
+  end
 end

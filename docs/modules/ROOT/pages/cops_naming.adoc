@@ -188,6 +188,9 @@ This cop identifies places where `do_something(&block)` can be replaced
 by `do_something(&)`.
 
 It also supports the opposite style by alternative `explicit` option.
+You can specify the block variable name for auto-correction with `BlockForwardingName`.
+The default variable name is `block`. If the name is already in use, it will not be
+auto-corrected.
 
 === Examples
 
@@ -229,6 +232,10 @@ end
 | EnforcedStyle
 | `anonymous`
 | `anonymous`, `explicit`
+
+| BlockForwardingName
+| `block`
+| String
 |===
 
 === References
@@ -1011,7 +1018,7 @@ def foo(num1, num2)
   num1 * num2
 end
 
-# With `MinArgNameLength` set to number greater than 1
+# With `MinNameLength` set to number greater than 1
 def baz(a, b, c)
   do_stuff(a, b, c)
 end
