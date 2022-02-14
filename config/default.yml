@@ -4125,6 +4125,11 @@ Style/NegatedWhile:
   Enabled: true
   VersionAdded: '0.20'
 
+Style/NestedFileDirname:
+  Description: 'Checks for nested `File.dirname`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/NestedModifier:
   Description: 'Avoid using nested modifiers.'
   StyleGuide: '#no-nested-modifiers'
