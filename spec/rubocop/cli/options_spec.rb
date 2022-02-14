@@ -1121,11 +1121,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           ['# Supports --auto-correct',
            'Layout/IndentationStyle:',
            '  Description: Consistent indentation either with tabs only or spaces only.',
-           /^  StyleGuide: ('|")#spaces-indentation('|")$/,
            '  Enabled: true',
+           '  EnforcedStyle: spaces',
+           '  IndentationWidth:',
+           /^  StyleGuide: ('|")#spaces-indentation('|")$/,
+           '  SupportedStyles:',
+           '  - spaces',
+           '  - tabs',
            /^  VersionAdded: '[0-9.]+'$/,
-           /^  VersionChanged: '[0-9.]+'$/,
-           '  IndentationWidth:'].join("\n")
+           /^  VersionChanged: '[0-9.]+'\n\n\z/].join("\n")
         )
       end
 
@@ -1146,8 +1150,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           ['# Supports --auto-correct',
            'Layout/IndentationStyle:',
            '  Description: Consistent indentation either with tabs only or spaces only.',
+           '  Enabled: true',
+           '  EnforcedStyle: spaces',
+           '  IndentationWidth:',
            /^  StyleGuide: ('|")#spaces-indentation('|")$/,
-           '  Enabled: true'].join("\n")
+           '  SupportedStyles:',
+           '  - spaces',
+           '  - tabs',
+           /^  VersionAdded: '[0-9.]+'$/,
+           /^  VersionChanged: '[0-9.]+'\n\n\z/].join("\n")
         )
       end
     end

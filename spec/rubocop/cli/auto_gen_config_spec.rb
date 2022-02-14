@@ -53,7 +53,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 2
               # Cop supports --auto-correct.
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 138
@@ -166,7 +166,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 1
               # Cop supports --auto-correct.
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 99
@@ -332,9 +332,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: AllowHeredoc, ' \
-                'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-                'IgnoredPatterns.',
+                '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 125'])
@@ -379,15 +377,13 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: Strict, AllowedNumbers.',
+                '# Configuration parameters: AllowedNumbers, Strict.',
                 'Style/NumericLiterals:',
                 '  MinDigits: 7',
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: AllowHeredoc, ' \
-                'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-                'IgnoredPatterns.',
+                '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 121',
@@ -684,7 +680,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
+         '# Configuration parameters: EnforcedStyle, IndentationWidth.',
          '# SupportedStyles: spaces, tabs',
          'Layout/IndentationStyle:',
          '  Exclude:',
@@ -728,9 +724,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 2',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowHeredoc, ' \
-         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'IgnoredPatterns.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -786,7 +780,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
+         '# Configuration parameters: EnforcedStyle, IndentationWidth.',
          '# SupportedStyles: spaces, tabs',
          'Layout/IndentationStyle:',
          '  Exclude:',
@@ -821,9 +815,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 3',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowHeredoc, ' \
-         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'IgnoredPatterns.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -949,7 +941,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
         # Offense count: 1
         # Cop supports --auto-correct.
-        # Configuration parameters: IndentationWidth, EnforcedStyle.
+        # Configuration parameters: EnforcedStyle, IndentationWidth.
         # SupportedStyles: spaces, tabs
         Layout/IndentationStyle:
           Exclude:
@@ -983,7 +975,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 1',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: EnforcedStyle, AllowInnerSlashes.',
+         '# Configuration parameters: AllowInnerSlashes, EnforcedStyle.',
          '# SupportedStyles: slashes, percent_r, mixed',
          'Style/RegexpLiteral:',
          '  Exclude:',
@@ -1052,7 +1044,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example2.rb'",
          '',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: IndentationWidth, EnforcedStyle.',
+         '# Configuration parameters: EnforcedStyle, IndentationWidth.',
          '# SupportedStyles: spaces, tabs',
          'Layout/IndentationStyle:',
          '  Exclude:',
@@ -1090,9 +1082,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowHeredoc, ' \
-         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'IgnoredPatterns.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -1179,7 +1169,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
             # Offense count: 2
             # Cop supports --auto-correct.
-            # Configuration parameters: RequireEnglish, EnforcedStyle.
+            # Configuration parameters: EnforcedStyle, RequireEnglish.
             # SupportedStyles: use_perl_names, use_english_names
             Style/SpecialGlobalVars:
               Enabled: false
@@ -1204,7 +1194,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
             # Offense count: 3
             # Cop supports --auto-correct.
-            # Configuration parameters: RequireEnglish, EnforcedStyle.
+            # Configuration parameters: EnforcedStyle, RequireEnglish.
             # SupportedStyles: use_perl_names, use_english_names
             Style/SpecialGlobalVars:
               Exclude:
@@ -1237,9 +1227,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       expect(cli.run(['--auto-gen-config'])).to eq(0)
       expect(File.readlines('.rubocop_todo.yml')[10..-1].join)
         .to eq(<<~YAML)
-          # Configuration parameters: EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
-          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+          # Configuration parameters: EnforcedShorthandSyntax, PreferHashRocketsForNonAlnumEndingSymbols, UseHashRocketsWithSymbolValues.
           # SupportedShorthandSyntax: always, never, either
+          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
           Style/HashSyntax:
             EnforcedStyle: hash_rockets
         YAML
@@ -1251,9 +1241,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       expect(cli.run(['--auto-gen-config'])).to eq(0)
       expect(File.readlines('.rubocop_todo.yml')[10..-1].join)
         .to eq(<<~YAML)
-          # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
-          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+          # Configuration parameters: EnforcedShorthandSyntax, EnforcedStyle, PreferHashRocketsForNonAlnumEndingSymbols, UseHashRocketsWithSymbolValues.
           # SupportedShorthandSyntax: always, never, either
+          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
           Style/HashSyntax:
             Exclude:
               - 'example1.rb'

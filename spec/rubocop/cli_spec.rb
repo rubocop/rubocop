@@ -1495,13 +1495,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         |
         |Supported parameters are:
         |
-        |  - Enabled
-        |  - Max
         |  - AllowHeredoc
         |  - AllowURI
-        |  - URISchemes
+        |  - Enabled
         |  - IgnoreCopDirectives
         |  - IgnoredPatterns
+        |  - Max
+        |  - URISchemes
       RESULT
     end
 

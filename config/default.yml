@@ -3288,10 +3288,6 @@ Style/HashTransformValues:
   Safe: false
   VersionAdded: '0.80'
   VersionChanged: '0.90'
-Style/HashValues:
-  Description: 'Prefer `{ foo:, bar: }` over `{ foo: foo, bar: bar }`'
-  Enabled: pending
-  VersionAdded: '<<next>>'
 Style/IdenticalConditionalBranches:
   Description: >-
     Checks that conditional statements do not have an identical line at the end of each branch, which can validly be moved out of the conditional.
