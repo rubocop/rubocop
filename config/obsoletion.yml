@@ -1,8 +1,13 @@
+# Configuration of obsolete/deprecated cops used by `ConfigObsoletion`
+
+# Enforced styles that have been removed or replaced
 changed_enforced_styles:
   - alternative: indented_internal_methods
     cops: Layout/IndentationConsistency
     parameters: EnforcedStyle
     value: rails
+# Cop parameters that have been changed
+# Can be treated as a warning instead of a failure with `severity: warning`
 changed_parameters:
   - cops:
       - Layout/SpaceAroundOperators
@@ -86,9 +91,11 @@ changed_parameters:
     parameters: DebuggerReceivers
     reason: "`DebuggerReceivers` is no longer necessary, method receivers should be specified in `DebuggerMethods` instead."
     severity: warning
+# Cops that were extracted into a different gem
 extracted:
   Performance/*: rubocop-performance
   Rails/*: rubocop-rails
+# Cops that were removed
 removed:
   Layout/SpaceAfterControlKeyword:
     alternatives: Layout/SpaceAroundKeyword
@@ -121,6 +128,7 @@ removed:
     alternatives:
       - Style/TrailingCommaInArrayLiteral
       - Style/TrailingCommaInHashLiteral
+# Cops that were renamed
 renamed:
   Layout/AlignArguments: Layout/ArgumentAlignment
   Layout/AlignArray: Layout/ArrayAlignment
@@ -172,6 +180,7 @@ renamed:
   Style/UnneededSort: Style/RedundantSort
   Style/VariableName: Naming/VariableName
   Style/VariableNumber: Naming/VariableNumber
+# Cops split into multiple other cops
 split:
   Style/MethodMissing:
     alternatives:

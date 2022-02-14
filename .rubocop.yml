@@ -1,3 +1,5 @@
+# This is the configuration used to check the rubocop source code.
+
 AllCops:
   Exclude:
     - 'vendor/**/*'
@@ -69,6 +71,7 @@ Naming/InclusiveLanguage:
       Suggestions:
         - offense
 Naming/PredicateName:
+  # Method define macros for dynamically generated method.
   MethodDefinitionMacros:
     - define_method
     - define_singleton_method
@@ -101,9 +104,12 @@ Style/AccessorGrouping:
     - lib/rubocop/formatter/base_formatter.rb
     - lib/rubocop/cop/offense.rb
 Style/FormatStringToken:
+  # Because we parse a lot of source codes from strings. Percent arrays
+  # look like unannotated format string tokens to this cop.
   Exclude:
     - spec/**/*
 Style/IpAddresses:
+  # The test for this cop includes strings that would cause offenses
   Exclude:
     - spec/rubocop/cop/style/ip_addresses_spec.rb
 inherit_from: .rubocop_todo.yml

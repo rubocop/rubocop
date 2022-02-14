@@ -1,10 +1,43 @@
+# Common configuration.
+
 AllCops:
+  # It is possible for a malicious user to know the location of RuboCop's cache
+  # directory by looking at CacheRootDirectory, and create a symlink in its
+  # place that could cause RuboCop to overwrite unintended files, or read
+  # malicious input. If you are certain that your cache location is secure from
+  # this kind of attack, and wish to use a symlinked cache location, set this
+  # value to "true".
   AllowSymlinksInCacheRootDirectory: false
+  # The cache will be stored in "rubocop_cache" under this directory. If
+  # CacheRootDirectory is ~ (nil), which it is by default, the root will be
+  # taken from the environment variable `$XDG_CACHE_HOME` if it is set, or if
+  # `$XDG_CACHE_HOME` is not set, it will be `$HOME/.cache/`.
+  # The CacheRootDirectory can be overwritten by passing the `--cache-root` command
+  # line option or by setting `$RUBOCOP_CACHE_ROOT` environment variable.
   CacheRootDirectory: ~
+  # Default formatter will be used if no `-f/--format` option is given.
   DefaultFormatter: progress
+  # All cops except the ones configured `Enabled: false` in this file are enabled by default.
+  # Change this behavior by overriding either `DisabledByDefault` or `EnabledByDefault`.
+  # When `DisabledByDefault` is `true`, all cops in the default configuration
+  # are disabled, and only cops in user configuration are enabled. This makes
+  # cops opt-in instead of opt-out. Note that when `DisabledByDefault` is `true`,
+  # cops in user configuration will be enabled even if they don't set the
+  # Enabled parameter.
+  # When `EnabledByDefault` is `true`, all cops, even those configured `Enabled: false`
+  # in this file are enabled by default. Cops can still be disabled in user configuration.
+  # Note that it is invalid to set both EnabledByDefault and DisabledByDefault
+  # to true in the same configuration.
   DisabledByDefault: false
+  # Cop names are displayed in offense messages by default. Change behavior
+  # by overriding DisplayCopNames, or by giving the `--no-display-cop-names`
+  # option.
   DisplayCopNames: true
+  # Style guide URLs are not displayed in offense messages by default. Change
+  # behavior by overriding `DisplayStyleGuide`, or by giving the
+  # `-S/--display-style-guide` option.
   DisplayStyleGuide: false
+  # Documentation URLs will be constructed using the base URL.
   DocumentationBaseURL: https://docs.rubocop.org/rubocop
   EnabledByDefault: false
   Exclude:
@@ -12,7 +45,11 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - '.git/**/*'
+  # Extra details are not displayed in offense messages by default. Change
+  # behavior by overriding ExtraDetails, or by giving the
+  # `-E/--extra-details` option.
   ExtraDetails: false
+  # Include common Ruby source files.
   Include:
     - '**/*.rb'
     - '**/*.arb'
@@ -65,7 +102,16 @@ AllCops:
     - '**/Thorfile'
     - '**/Vagabondfile'
     - '**/Vagrantfile'
+  # Threshold for how many files can be stored in the result cache before some
+  # of the files are automatically removed.
   MaxFilesInCache: 20000
+  # New cops introduced between major versions are set to a special pending status
+  # and are not enabled by default with warning message.
+  # Change this behavior by overriding either `NewCops: enable` or `NewCops: disable`.
+  # When `NewCops` is `enable`, pending cops are enabled in bulk. Can be overridden by
+  # the `--enable-pending-cops` command-line option.
+  # When `NewCops` is `disable`, pending cops are disabled in bulk. Can be overridden by
+  # the `--disable-pending-cops` command-line option.
   NewCops: pending
   RubyInterpreters:
     - ruby
@@ -73,8 +119,17 @@ AllCops:
     - rake
     - jruby
     - rbx
+  # When specifying style guide URLs, any paths and/or fragments will be
+  # evaluated relative to the base URL.
   StyleGuideBaseURL: https://rubystyle.guide
+  # Additional cops that do not reference a style guide rule may be enabled by
+  # default. Change behavior by overriding `StyleGuideCopsOnly`, or by giving
+  # the `--only-guide-cops` option.
   StyleGuideCopsOnly: false
+  # Determines if a notification for extension libraries should be shown when
+  # rubocop is run. Keys are the name of the extension, and values are an array
+  # of gems in the Gemfile that the extension is suggested for, if not already
+  # included.
   SuggestExtensions:
     rubocop-graphql: [graphql]
     rubocop-minitest: [minitest]
@@ -82,8 +137,25 @@ AllCops:
     rubocop-rake: [rake]
     rubocop-rspec: [rspec, rspec-rails]
     rubocop-sequel: [sequel]
+  # What MRI version of the Ruby interpreter is the inspected code intended to
+  # run on? (If there is more than one, set this to the lowest version.)
+  # If a value is specified for TargetRubyVersion then it is used. Acceptable
+  # values are specified as a float (i.e. 3.0); the teeny version of Ruby
+  # should not be included. If the project specifies a Ruby version in the
+  # .tool-versions or .ruby-version files, Gemfile or gems.rb file, RuboCop will
+  # try to determine the desired version of Ruby by inspecting the
+  # .tool-versions file first, then .ruby-version, followed by the Gemfile.lock
+  # or gems.locked file. (Although the Ruby version is specified in the Gemfile
+  # or gems.rb file, RuboCop reads the final value from the lock file.) If the
+  # Ruby version is still unresolved, RuboCop will use the oldest officially
+  # supported Ruby version (currently Ruby 2.5).
   TargetRubyVersion: ~
+  # Enables the result cache if `true`. Can be overridden by the `--cache` command
+  # line option.
   UseCache: true
+
+#################### Bundler ###############################
+
 Bundler/DuplicatedGem:
   Description: 'Checks for duplicate gem entries in Gemfile.'
   Enabled: true
@@ -140,6 +212,8 @@ Bundler/InsecureProtocolSource:
     - '**/gems.rb'
   VersionAdded: '0.50'
 Bundler/OrderedGems:
+  # By default, "-" and "_" are ignored for order purposes.
+  # This can be overridden by setting this parameter to true.
   ConsiderPunctuation: false
   Description: >-
     Gems within groups in the Gemfile should be alphabetically sorted.
@@ -151,6 +225,9 @@ Bundler/OrderedGems:
   TreatCommentsAsGroupSeparators: true
   VersionAdded: '0.46'
   VersionChanged: '0.47'
+
+#################### Gemspec ###############################
+
 Gemspec/DateAssignment:
   Description: 'Checks that `date =` is not used in gemspec file, it is set automatically when the gem is packaged.'
   Enabled: pending
@@ -164,6 +241,8 @@ Gemspec/DuplicatedAssignment:
     - '**/*.gemspec'
   VersionAdded: '0.52'
 Gemspec/OrderedDependencies:
+  # By default, "-" and "_" are ignored for order purposes.
+  # This can be overridden by setting this parameter to true.
   ConsiderPunctuation: false
   Description: >-
     Dependencies in the gemspec should be alphabetically sorted.
@@ -194,10 +273,15 @@ Gemspec/RubyVersionGlobalsUsage:
     - '**/*.gemspec'
   StyleGuide: '#no-ruby-version-in-the-gemspec'
   VersionAdded: '0.72'
+
+#################### Layout ###########################
+
 Layout/AccessModifierIndentation:
   Description: Check indentation of private/protected visibility modifiers.
   Enabled: true
   EnforcedStyle: indent
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   StyleGuide: '#indent-public-private-protected'
   SupportedStyles:
@@ -208,7 +292,22 @@ Layout/ArgumentAlignment:
   Description: >-
     Align the arguments of a method call if they span more than one line.
   Enabled: true
+  # Alignment of arguments in multi-line method calls.
+  #
+  # The `with_first_argument` style aligns the following lines along the same
+  # column as the first parameter.
+  #
+  #     method_call(a,
+  #                 b)
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with the method call.
+  #
+  #     method_call(a,
+  #       b)
   EnforcedStyle: with_first_argument
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   StyleGuide: '#no-double-indent'
   SupportedStyles:
@@ -220,7 +319,22 @@ Layout/ArrayAlignment:
   Description: >-
     Align the elements of an array literal if they span more than one line.
   Enabled: true
+  # Alignment of elements of a multi-line array.
+  #
+  # The `with_first_parameter` style aligns the following lines along the same
+  # column as the first element.
+  #
+  #     array = [1, 2, 3,
+  #              4, 5, 6]
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with start of array.
+  #
+  #     array = [1, 2, 3,
+  #       4, 5, 6]
   EnforcedStyle: with_first_element
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   StyleGuide: '#no-double-indent'
   SupportedStyles:
@@ -232,12 +346,17 @@ Layout/AssignmentIndentation:
   Description: >-
     Checks the indentation of the first line of the right-hand-side of a multi-line assignment.
   Enabled: true
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   VersionAdded: '0.49'
   VersionChanged: '0.77'
 Layout/BeginEndAlignment:
   Description: 'Align ends corresponding to begins correctly.'
   Enabled: true
+  # The value `start_of_line` means that `end` should be aligned the start of the line
+  # where the `begin` keyword is.
+  # The value `begin` means that `end` should be aligned with the `begin` keyword.
   EnforcedStyleAlignWith: start_of_line
   Severity: warning
   SupportedStylesAlignWith:
@@ -247,6 +366,11 @@ Layout/BeginEndAlignment:
 Layout/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
+  # The value `start_of_block` means that the `end` should be aligned with line
+  # where the `do` keyword appears.
+  # The value `start_of_line` means it should be aligned with the whole
+  # expression's starting line.
+  # The value `either` means both are allowed.
   EnforcedStyleAlignWith: either
   SupportedStylesAlignWith:
     - either
@@ -262,6 +386,9 @@ Layout/CaseIndentation:
   Enabled: true
   EnforcedStyle: case
   IndentOneStep: false
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
+  # This only matters if `IndentOneStep` is `true`.
   IndentationWidth: ~
   StyleGuide: '#indent-when-to-case'
   SupportedStyles:
@@ -296,6 +423,8 @@ Layout/ClosingParenthesisIndentation:
   Enabled: true
   VersionAdded: '0.49'
 Layout/CommentIndentation:
+  # When true, allows comments to have extra indentation if that aligns them
+  # with a comment on the preceding line.
   AllowForAlignment: false
   Description: 'Indentation of comments.'
   Enabled: true
@@ -311,6 +440,10 @@ Layout/ConditionPosition:
 Layout/DefEndAlignment:
   Description: 'Align ends corresponding to defs correctly.'
   Enabled: true
+  # The value `def` means that `end` should be aligned with the def keyword.
+  # The value `start_of_line` means that `end` should be aligned with method
+  # calls like `private`, `public`, etc, if present in front of the `def`
+  # keyword on the same line.
   EnforcedStyleAlignWith: start_of_line
   Severity: warning
   SupportedStylesAlignWith:
@@ -348,17 +481,21 @@ Layout/EmptyLineAfterMagicComment:
   VersionAdded: '0.49'
 Layout/EmptyLineAfterMultilineCondition:
   Description: 'Enforces empty line after multiline condition.'
+  # This is disabled, because this style is not very common in practice.
   Enabled: false
   Reference:
     - https://github.com/airbnb/ruby#multiline-if-newline
   VersionAdded: '0.90'
 Layout/EmptyLineBetweenDefs:
+  # `AllowAdjacentOneLineDefs` means that single line method definitions don't
+  # need an empty line between them. `true` by default.
   AllowAdjacentOneLineDefs: true
   Description: 'Use empty lines between class/module/method defs.'
   EmptyLineBetweenClassDefs: true
   EmptyLineBetweenMethodDefs: true
   EmptyLineBetweenModuleDefs: true
   Enabled: true
+  # Can be array to specify minimum and maximum number of empty lines, e.g. [1, 2]
   NumberOfEmptyLines: 1
   StyleGuide: '#empty-lines-between-methods'
   VersionAdded: '0.49'
@@ -373,6 +510,7 @@ Layout/EmptyLinesAroundAccessModifier:
   Enabled: true
   EnforcedStyle: around
   Reference:
+    # A reference to `EnforcedStyle: only_before`.
     - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
   StyleGuide: '#empty-lines-around-access-modifier'
   SupportedStyles:
@@ -447,6 +585,13 @@ Layout/EmptyLinesAroundModuleBody:
 Layout/EndAlignment:
   Description: 'Align ends correctly.'
   Enabled: true
+  # The value `keyword` means that `end` should be aligned with the matching
+  # keyword (`if`, `while`, etc.).
+  # The value `variable` means that in assignments, `end` should be aligned
+  # with the start of the variable on the left hand side of `=`. In all other
+  # situations, `end` should still be aligned with the keyword.
+  # The value `start_of_line` means that `end` should be aligned with the start
+  # of the line which the matching keyword appears on.
   EnforcedStyleAlignWith: keyword
   Severity: warning
   SupportedStylesAlignWith:
@@ -457,6 +602,9 @@ Layout/EndAlignment:
 Layout/EndOfLine:
   Description: 'Use Unix-style line endings.'
   Enabled: true
+  # The `native` style means that CR+LF (Carriage Return + Line Feed) is
+  # enforced on Windows, and LF is enforced on other platforms. The other styles
+  # mean LF and CR+LF, respectively.
   EnforcedStyle: native
   StyleGuide: '#crlf'
   SupportedStyles:
@@ -465,21 +613,40 @@ Layout/EndOfLine:
     - crlf
   VersionAdded: '0.49'
 Layout/ExtraSpacing:
+  # When true, allows things like 'obj.meth(arg)  # comment',
+  # rather than insisting on 'obj.meth(arg) # comment'.
+  # If done for alignment, either this OR AllowForAlignment will allow it.
   AllowBeforeTrailingComments: false
+  # When true, allows most uses of extra spacing if the intent is to align
+  # things with the previous or next line, not counting empty lines or comment
+  # lines.
   AllowForAlignment: true
   Description: 'Do not use unnecessary spacing.'
   Enabled: true
+  # When true, forces the alignment of `=` in assignments on consecutive lines.
   ForceEqualSignAlignment: false
   VersionAdded: '0.49'
 Layout/FirstArgumentIndentation:
   Description: 'Checks the indentation of the first argument in a method call.'
   Enabled: true
   EnforcedStyle: special_for_inner_method_call_in_parentheses
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   SupportedStyles:
+    # The first parameter should always be indented one step more than the
+    # preceding line.
     - consistent
+    # The first parameter should always be indented one level relative to the
+    # parent that is receiving the parameter
     - consistent_relative_to_receiver
+    # The first parameter should normally be indented one step more than the
+    # preceding line, but if it's a parameter for a method call that is itself
+    # a parameter in a method call, then the inner parameter should be indented
+    # relative to the inner method.
     - special_for_inner_method_call
+    # Same as `special_for_inner_method_call` except that the special rule only
+    # applies if the outer method call encloses its arguments in parentheses.
     - special_for_inner_method_call_in_parentheses
   VersionAdded: '0.68'
   VersionChanged: '0.77'
@@ -487,7 +654,20 @@ Layout/FirstArrayElementIndentation:
   Description: >-
     Checks the indentation of the first element in an array literal.
   Enabled: true
+  # The value `special_inside_parentheses` means that array literals with
+  # brackets that have their opening bracket on the same line as a surrounding
+  # opening round parenthesis, shall have their first element indented relative
+  # to the first position inside the parenthesis.
+  #
+  # The value `consistent` means that the indentation of the first element shall
+  # always be relative to the first position of the line where the opening
+  # bracket is.
+  #
+  # The value `align_brackets` means that the indentation of the first element
+  # shall always be relative to the position of the opening bracket.
   EnforcedStyle: special_inside_parentheses
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   SupportedStyles:
     - special_inside_parentheses
@@ -503,7 +683,20 @@ Layout/FirstArrayElementLineBreak:
 Layout/FirstHashElementIndentation:
   Description: 'Checks the indentation of the first key in a hash literal.'
   Enabled: true
+  # The value `special_inside_parentheses` means that hash literals with braces
+  # that have their opening brace on the same line as a surrounding opening
+  # round parenthesis, shall have their first key indented relative to the
+  # first position inside the parenthesis.
+  #
+  # The value `consistent` means that the indentation of the first key shall
+  # always be relative to the first position of the line where the opening
+  # brace is.
+  #
+  # The value `align_braces` means that the indentation of the first key shall
+  # always be relative to the position of the opening brace.
   EnforcedStyle: special_inside_parentheses
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   SupportedStyles:
     - special_inside_parentheses
@@ -531,6 +724,8 @@ Layout/FirstParameterIndentation:
     Checks the indentation of the first parameter in a method definition.
   Enabled: true
   EnforcedStyle: consistent
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   SupportedStyles:
     - consistent
@@ -542,8 +737,61 @@ Layout/HashAlignment:
   Description: >-
     Align the elements of a hash literal if they span more than one line.
   Enabled: true
+  # Alignment of entries using colon as separator. Valid values are:
+  #
+  # key - left alignment of keys
+  #   a: 0
+  #   bb: 1
+  # separator - alignment of colons, keys are right aligned
+  #    a: 0
+  #   bb: 1
+  # table - left alignment of keys and values
+  #   a:  0
+  #   bb: 1
   EnforcedColonStyle: key
+  # Alignment of entries using hash rocket as separator. Valid values are:
+  #
+  # key - left alignment of keys
+  #   'a' => 2
+  #   'bb' => 3
+  # separator - alignment of hash rockets, keys are right aligned
+  #    'a' => 2
+  #   'bb' => 3
+  # table - left alignment of keys, hash rockets, and values
+  #   'a'  => 2
+  #   'bb' => 3
   EnforcedHashRocketStyle: key
+  # Select whether hashes that are the last argument in a method call should be
+  # inspected? Valid values are:
+  #
+  # always_inspect - Inspect both implicit and explicit hashes.
+  #   Registers an offense for:
+  #     function(a: 1,
+  #       b: 2)
+  #   Registers an offense for:
+  #     function({a: 1,
+  #       b: 2})
+  # always_ignore - Ignore both implicit and explicit hashes.
+  #   Accepts:
+  #     function(a: 1,
+  #       b: 2)
+  #   Accepts:
+  #     function({a: 1,
+  #       b: 2})
+  # ignore_implicit - Ignore only implicit hashes.
+  #   Accepts:
+  #     function(a: 1,
+  #       b: 2)
+  #   Registers an offense for:
+  #     function({a: 1,
+  #       b: 2})
+  # ignore_explicit - Ignore only explicit hashes.
+  #   Accepts:
+  #     function({a: 1,
+  #       b: 2})
+  #   Registers an offense for:
+  #     function(a: 1,
+  #       b: 2)
   EnforcedLastArgumentHashStyle: always_inspect
   SupportedColonStyles:
     - key
@@ -575,8 +823,15 @@ Layout/HeredocIndentation:
 Layout/IndentationConsistency:
   Description: 'Keep indentation straight.'
   Enabled: true
+  # The difference between `indented` and `normal` is that the `indented_internal_methods`
+  # style prescribes that in classes and modules the `protected` and `private`
+  # modifier keywords shall be indented the same as public methods and that
+  # protected and private members shall be indented one step more than the
+  # modifiers. Other than that, both styles mean that entities on the same
+  # logical depth shall have the same indentation.
   EnforcedStyle: normal
   Reference:
+    # A reference to `EnforcedStyle: indented_internal_methods`.
     - https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
   StyleGuide: '#spaces-indentation'
   SupportedStyles:
@@ -587,6 +842,10 @@ Layout/IndentationStyle:
   Description: 'Consistent indentation either with tabs only or spaces only.'
   Enabled: true
   EnforcedStyle: spaces
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
+  # It is used during auto-correction to determine how many spaces should
+  # replace each tab.
   IndentationWidth: ~
   StyleGuide: '#spaces-indentation'
   SupportedStyles:
@@ -600,6 +859,7 @@ Layout/IndentationWidth:
   IgnoredPatterns: []
   StyleGuide: '#spaces-indentation'
   VersionAdded: '0.49'
+  # Number of spaces for each indentation level.
   Width: 2
 Layout/InitialIndentation:
   Description: >-
@@ -624,6 +884,8 @@ Layout/LineEndStringConcatenationIndentation:
     Checks the indentation of the next line after a line that ends with a string literal and a backslash.
   Enabled: pending
   EnforcedStyle: aligned
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   SupportedStyles:
     - aligned
@@ -631,10 +893,17 @@ Layout/LineEndStringConcatenationIndentation:
   VersionAdded: '1.18'
 Layout/LineLength:
   AllowHeredoc: true
+  # To make it possible to copy or click on URIs in the code, we allow lines
+  # containing a URI to be longer than Max.
   AllowURI: true
   Description: 'Checks that line length does not exceed the configured limit.'
   Enabled: true
+  # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
+  # directives like '# rubocop: enable ...' when calculating a line's length.
   IgnoreCopDirectives: true
+  # The IgnoredPatterns option is a list of !ruby/regexp and/or string
+  # elements. Strings will be converted to Regexp objects. A line that matches
+  # any regular expression listed in this option will be ignored by LineLength.
   IgnoredPatterns: []
   Max: 120
   StyleGuide: '#max-line-length'
@@ -649,6 +918,9 @@ Layout/MultilineArrayBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
   SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last element
     - symmetrical
     - new_line
     - same_line
@@ -664,9 +936,14 @@ Layout/MultilineAssignmentLayout:
   EnforcedStyle: new_line
   StyleGuide: '#indent-conditional-assignment'
   SupportedStyles:
+    # Ensures that the assignment operator and the rhs are on the same line for
+    # the set of supported types.
     - same_line
+    # Ensures that the assignment operator and the rhs are on separate lines
+    # for the set of supported types.
     - new_line
   SupportedTypes:
+    # The types of assignments which are subject to this rule.
     - block
     - case
     - class
@@ -684,6 +961,9 @@ Layout/MultilineHashBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
   SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on same line as last element
     - symmetrical
     - new_line
     - same_line
@@ -704,6 +984,9 @@ Layout/MultilineMethodCallBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
   SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last argument
     - symmetrical
     - new_line
     - same_line
@@ -713,6 +996,8 @@ Layout/MultilineMethodCallIndentation:
     Checks indentation of method calls with the dot operator that span more than one line.
   Enabled: true
   EnforcedStyle: aligned
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   SupportedStyles:
     - aligned
@@ -725,6 +1010,9 @@ Layout/MultilineMethodDefinitionBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
   SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last parameter
     - symmetrical
     - new_line
     - same_line
@@ -734,6 +1022,8 @@ Layout/MultilineOperationIndentation:
     Checks indentation of binary operations that span more than one line.
   Enabled: true
   EnforcedStyle: aligned
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   SupportedStyles:
     - aligned
@@ -743,7 +1033,22 @@ Layout/ParameterAlignment:
   Description: >-
     Align the parameters of a method definition if they span more than one line.
   Enabled: true
+  # Alignment of parameters in multi-line method calls.
+  #
+  # The `with_first_parameter` style aligns the following lines along the same
+  # column as the first parameter.
+  #
+  #     def method_foo(a,
+  #                    b)
+  #
+  # The `with_fixed_indentation` style aligns the following lines with one
+  # level of indentation relative to the start of the line with the method call.
+  #
+  #     def method_foo(a,
+  #       b)
   EnforcedStyle: with_first_parameter
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
   IndentationWidth: ~
   StyleGuide: '#no-double-indent'
   SupportedStyles:
@@ -818,6 +1123,9 @@ Layout/SpaceAroundMethodCallOperator:
   Enabled: true
   VersionAdded: '0.82'
 Layout/SpaceAroundOperators:
+  # When `true`, allows most uses of extra spacing if the intent is to align
+  # with an operator on the previous or next line, not counting empty lines
+  # or comment lines.
   AllowForAlignment: true
   Description: 'Use a single space around operators.'
   Enabled: true
@@ -856,6 +1164,9 @@ Layout/SpaceBeforeComment:
   Enabled: true
   VersionAdded: '0.49'
 Layout/SpaceBeforeFirstArg:
+  # When `true`, allows most uses of extra spacing if the intent is to align
+  # things with the previous or next line, not counting empty lines or comment
+  # lines.
   AllowForAlignment: true
   Description: >-
     Checks that exactly one space is used between a method name and the first argument for method calls without parentheses.
@@ -881,6 +1192,8 @@ Layout/SpaceInsideArrayLiteralBrackets:
   SupportedStyles:
     - space
     - no_space
+    # 'compact' normally requires a space inside the brackets, with the exception
+    # that successive left brackets or right brackets are collapsed together
     - compact
   SupportedStylesForEmptyBrackets:
     - space
@@ -896,6 +1209,7 @@ Layout/SpaceInsideBlockBraces:
   Enabled: true
   EnforcedStyle: space
   EnforcedStyleForEmptyBraces: no_space
+  # Space between `{` and `|`. Overrides `EnforcedStyle` if there is a conflict.
   SpaceBeforeBlockParameters: true
   SupportedStyles:
     - space
@@ -913,6 +1227,8 @@ Layout/SpaceInsideHashLiteralBraces:
   SupportedStyles:
     - space
     - no_space
+    # 'compact' normally requires a space inside hash braces, with the exception
+    # that successive left braces or right braces are collapsed together
     - compact
   SupportedStylesForEmptyBraces:
     - space
@@ -977,6 +1293,10 @@ Layout/TrailingWhitespace:
   StyleGuide: '#no-trailing-whitespace'
   VersionAdded: '0.49'
   VersionChanged: '1.0'
+
+#################### Lint ##################################
+### Warnings
+
 Lint/AmbiguousAssignment:
   Description: 'Checks for mistyped shorthand assignments.'
   Enabled: pending
@@ -1040,6 +1360,8 @@ Lint/CircularArgumentReference:
   Enabled: true
   VersionAdded: '0.33'
 Lint/ConstantDefinitionInBlock:
+  # `enums` for Typed Enums via T::Enum in Sorbet.
+  # https://sorbet.org/docs/tenum
   AllowedMethods:
     - enums
   Description: 'Do not define constants within a block.'
@@ -1050,11 +1372,15 @@ Lint/ConstantDefinitionInBlock:
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
+  # Restrict this cop from only looking at certain names
   Ignore: []
+  # Restrict this cop to only looking at certain names
   Only: []
   VersionAdded: '0.86'
 Lint/Debugger:
   DebuggerMethods:
+    # Groups are available so that a specific group can be disabled in
+    # a user's configuration, but are otherwise not significant.
     Byebug:
       - byebug
       - remote_byebug
@@ -1082,7 +1408,7 @@ Lint/Debugger:
       - binding.break
       - Kernel.binding.b
       - Kernel.binding.break
-  DebuggerReceivers: []
+  DebuggerReceivers: [] # deprecated
   Description: 'Check for debugger calls.'
   Enabled: true
   VersionAdded: '0.14'
@@ -1092,6 +1418,16 @@ Lint/DeprecatedClassMethods:
   Enabled: true
   VersionAdded: '0.19'
 Lint/DeprecatedConstants:
+  # You can configure deprecated constants.
+  # If there is an alternative method, you can set alternative value as `Alternative`.
+  # And you can set the deprecated version as `DeprecatedVersion`.
+  # These options can be omitted if they are not needed.
+  #
+  # DeprecatedConstants:
+  #   'DEPRECATED_CONSTANT':
+  #     Alternative: 'alternative_value'
+  #     DeprecatedVersion: 'deprecated_version'
+  #
   DeprecatedConstants:
     'FALSE':
       Alternative: 'false'
@@ -1279,6 +1615,7 @@ Lint/IneffectiveAccessModifier:
 Lint/InheritException:
   Description: 'Avoid inheriting from the `Exception` class.'
   Enabled: true
+  # The default base class in favour of `Exception`.
   EnforcedStyle: standard_error
   SafeAutoCorrect: false
   SupportedStyles:
@@ -1316,6 +1653,13 @@ Lint/Loop:
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
+  # Maximum number of consecutive lines the cop can be disabled for.
+  # 0 allows only single-line disables
+  # 1 would mean the maximum allowed is the following:
+  #   # rubocop:disable SomeCop
+  #   a = 1
+  #   # rubocop:enable SomeCop
+  # .inf for any size
   MaximumRangeSize: .inf
   VersionAdded: '0.52'
 Lint/MissingSuper:
@@ -1638,6 +1982,8 @@ Lint/UnreachableLoop:
   Description: 'This cop checks for loops that will have at most one iteration.'
   Enabled: true
   IgnoredPatterns:
+    # RSpec uses `times` in its message expectations
+    # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
   VersionAdded: '0.89'
   VersionChanged: '1.7'
@@ -1710,12 +2056,17 @@ Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true
   VersionAdded: '0.9'
+
+#################### Metrics ###############################
+
 Metrics/AbcSize:
   CountRepeatedAttributes: true
   Description: >-
     A calculated magnitude based on number of assignments, branches, and conditions.
   Enabled: true
   IgnoredMethods: []
+  # The ABC size is a calculated magnitude, so this number can be an Integer or
+  # a Float.
   Max: 17
   Reference:
     - http://c2.com/cgi/wiki?AbcMetric
@@ -1724,12 +2075,14 @@ Metrics/AbcSize:
   VersionChanged: '1.5'
 Metrics/BlockLength:
   CountAsOne: []
-  CountComments: false
+  CountComments: false # count full line comments?
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   Exclude:
     - '**/*.gemspec'
-  ExcludedMethods: []
+  ExcludedMethods: [] # deprecated, retained for backwards compatibility
+  # By default, exclude the `#refine` method, as it tends to have larger
+  # associated blocks.
   IgnoredMethods:
     - refine
   Max: 25
@@ -1745,12 +2098,13 @@ Metrics/BlockNesting:
   VersionChanged: '0.47'
 Metrics/ClassLength:
   CountAsOne: []
-  CountComments: false
+  CountComments: false # count full line comments?
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
   Max: 100
   VersionAdded: '0.25'
   VersionChanged: '0.87'
+# Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Description: >-
     A complexity metric that is strongly correlated to the number of test cases needed to validate a method.
@@ -1761,10 +2115,10 @@ Metrics/CyclomaticComplexity:
   VersionChanged: '0.81'
 Metrics/MethodLength:
   CountAsOne: []
-  CountComments: false
+  CountComments: false # count full line comments?
   Description: 'Avoid methods longer than 10 lines of code.'
   Enabled: true
-  ExcludedMethods: []
+  ExcludedMethods: [] # deprecated, retained for backwards compatibility
   IgnoredMethods: []
   Max: 10
   StyleGuide: '#short-methods'
@@ -1772,7 +2126,7 @@ Metrics/MethodLength:
   VersionChanged: '1.5'
 Metrics/ModuleLength:
   CountAsOne: []
-  CountComments: false
+  CountComments: false # count full line comments?
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: true
   Max: 100
@@ -1795,11 +2149,17 @@ Metrics/PerceivedComplexity:
   Max: 8
   VersionAdded: '0.25'
   VersionChanged: '0.81'
+
+################## Migration #############################
+
 Migration/DepartmentName:
   Description: >-
     Check that cop names in rubocop:disable (etc) comments are given with department name.
   Enabled: true
   VersionAdded: '0.75'
+
+#################### Naming ##############################
+
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
   Enabled: true
@@ -1830,15 +2190,20 @@ Naming/BlockForwarding:
   VersionAdded: '1.24'
 Naming/BlockParameterName:
   AllowNamesEndingInNumbers: true
+  # Allowed names that will not register an offense
   AllowedNames: []
   Description: >-
     Checks for block parameter names that contain capital letters, end in numbers, or do not meet a minimal length.
   Enabled: true
+  # Forbidden names that will register an offense
   ForbiddenNames: []
+  # Parameter names may be equal to or greater than this value
   MinNameLength: 1
   VersionAdded: '0.53'
   VersionChanged: '0.77'
 Naming/ClassAndModuleCamelCase:
+  # Allowed class/module names can be specified here.
+  # These can be full or part of the name.
   AllowedNames:
     - module_parent
   Description: 'Use CamelCase for classes and modules.'
@@ -1893,7 +2258,12 @@ Naming/FileName:
     - XMPP
     - XSRF
     - XSS
+  # When `false`, changes the behavior of ExpectMatchingDefinition to match only
+  # whether each source file's class or module name matches the file name --
+  # not whether the nested module hierarchy matches the subdirectory path.
   CheckDefinitionPathHierarchy: true
+  # paths that are considered root directories, for example "lib" in most ruby projects
+  # or "app/models" in rails projects
   CheckDefinitionPathHierarchyRoots:
     - lib
     - spec
@@ -1901,9 +2271,22 @@ Naming/FileName:
     - src
   Description: 'Use snake_case for source file names.'
   Enabled: true
+  # Camel case file names listed in `AllCops:Include` and all file names listed
+  # in `AllCops:Exclude` are excluded by default. Add extra excludes here.
   Exclude: []
+  # When `true`, requires that each source file should define a class or module
+  # with a name which matches the file name (converted to ... case).
+  # It further expects it to be nested inside modules which match the names
+  # of subdirectories in its path.
   ExpectMatchingDefinition: false
+  # With `IgnoreExecutableScripts` set to `true`, this cop does not
+  # report offending filenames for executable scripts (i.e. source
+  # files with a shebang in the first line).
   IgnoreExecutableScripts: true
+  # If non-`nil`, expect all source file names to match the following regex.
+  # Only the file name itself is matched, not the entire file path.
+  # Use anchors as necessary if you want to match the entire name rather than
+  # just a part of it.
   Regex: ~
   StyleGuide: '#snake-case-files'
   VersionAdded: '0.50'
@@ -1967,6 +2350,11 @@ Naming/MethodName:
   Description: 'Use the configured style when naming methods.'
   Enabled: true
   EnforcedStyle: snake_case
+  # Method names matching patterns are always allowed.
+  #
+  #   IgnoredPatterns:
+  #     - '\A\s*onSelectionBulkChange\s*'
+  #     - '\A\s*onSelectionCleared\s*'
   IgnoredPatterns: []
   StyleGuide: '#snake-case-symbols-methods-vars'
   SupportedStyles:
@@ -1975,6 +2363,7 @@ Naming/MethodName:
   VersionAdded: '0.50'
 Naming/MethodParameterName:
   AllowNamesEndingInNumbers: true
+  # Allowed names that will not register an offense
   AllowedNames:
     - at
     - by
@@ -1991,24 +2380,33 @@ Naming/MethodParameterName:
   Description: >-
     Checks for method parameter names that contain capital letters, end in numbers, or do not meet a minimal length.
   Enabled: true
+  # Forbidden names that will register an offense
   ForbiddenNames: []
+  # Parameter names may be equal to or greater than this value
   MinNameLength: 3
   VersionAdded: '0.53'
   VersionChanged: '0.77'
 Naming/PredicateName:
+  # Predicate names which, despite having a forbidden prefix, or no `?`,
+  # should still be accepted
   AllowedMethods:
     - is_a?
   Description: 'Check the names of predicate methods.'
   Enabled: true
+  # Exclude Rspec specs because there is a strong convention to write spec
+  # helpers in the form of `have_something` or `be_something`.
   Exclude:
     - 'spec/**/*'
+  # Predicate name prefixes that should be removed.
   ForbiddenPrefixes:
     - is_
     - has_
     - have_
+  # Method definition macros for dynamically generated methods.
   MethodDefinitionMacros:
     - define_method
     - define_singleton_method
+  # Predicate name prefixes.
   NamePrefix:
     - is_
     - has_
@@ -2035,12 +2433,12 @@ Naming/VariableName:
   VersionChanged: '1.8'
 Naming/VariableNumber:
   AllowedIdentifiers:
-    - capture3
-    - iso8601
-    - rfc1123_date
-    - rfc822
-    - rfc2822
-    - rfc3339
+    - capture3     # Open3.capture3
+    - iso8601      # Time#iso8601
+    - rfc1123_date # CGI.rfc1123_date
+    - rfc822       # Time#rfc822
+    - rfc2822      # Time#rfc2822
+    - rfc3339      # DateTime.rfc3339
   CheckMethodNames: true
   CheckSymbols: true
   Description: 'Use the configured style when numbering symbols, methods and variables.'
@@ -2053,6 +2451,9 @@ Naming/VariableNumber:
     - non_integer
   VersionAdded: '0.50'
   VersionChanged: '1.4'
+
+#################### Security ##############################
+
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
   Enabled: true
@@ -2068,6 +2469,8 @@ Security/JSONLoad:
     Prefer usage of `JSON.parse` over `JSON.load` due to potential security issues. See reference for more information.
   Enabled: true
   Reference: 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load'
+  # Autocorrect here will change to a method that may cause crashes depending
+  # on the value of the argument.
   SafeAutoCorrect: false
   VersionAdded: '0.43'
   VersionChanged: '1.22'
@@ -2090,6 +2493,9 @@ Security/YAMLLoad:
   Reference: 'https://ruby-doc.org/stdlib-2.7.0/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security'
   SafeAutoCorrect: false
   VersionAdded: '0.47'
+
+#################### Style ###############################
+
 Style/AccessModifierDeclarations:
   AllowModifiersOnSymbols: true
   Description: 'Checks style of how access modifiers are used.'
@@ -2105,6 +2511,8 @@ Style/AccessorGrouping:
   Enabled: true
   EnforcedStyle: grouped
   SupportedStyles:
+    # separated: each accessor goes in a separate statement.
+    # grouped: accessors are grouped into a single statement.
     - separated
     - grouped
   VersionAdded: '0.87'
@@ -2121,6 +2529,8 @@ Style/Alias:
 Style/AndOr:
   Description: 'Use &&/|| instead of and/or.'
   Enabled: true
+  # Whether `and` and `or` are banned only in conditionals (conditionals)
+  # or completely (always).
   EnforcedStyle: conditionals
   SafeAutoCorrect: false
   StyleGuide: '#no-and-or-or'
@@ -2192,22 +2602,77 @@ Style/BlockComments:
   VersionAdded: '0.9'
   VersionChanged: '0.23'
 Style/BlockDelimiters:
+  # The AllowBracesOnProceduralOneLiners option is ignored unless the
+  # EnforcedStyle is set to `semantic`. If so:
+  #
+  # If AllowBracesOnProceduralOneLiners is unspecified, or set to any
+  # falsey value, then semantic purity is maintained, so one-line
+  # procedural blocks must use do-end, not braces.
+  #
+  #   # bad
+  #   collection.each { |element| puts element }
+  #
+  #   # good
+  #   collection.each do |element| puts element end
+  #
+  # If AllowBracesOnProceduralOneLiners is set to any truthy value,
+  # then one-line procedural blocks may use either style.
+  #
+  #   # good
+  #   collection.each { |element| puts element }
+  #
+  #   # also good
+  #   collection.each do |element| puts element end
   AllowBracesOnProceduralOneLiners: false
+  # The BracesRequiredMethods overrides all other configurations except
+  # IgnoredMethods. It can be used to enforce that all blocks for specific
+  # methods use braces. For example, you can use this to enforce Sorbet
+  # signatures use braces even when the rest of your codebase enforces
+  # the `line_count_based` style.
   BracesRequiredMethods: []
   Description: >-
     Avoid using {...} for multi-line blocks (multiline chaining is always ugly). Prefer {...} over do...end for single-line blocks.
   Enabled: true
   EnforcedStyle: line_count_based
   FunctionalMethods:
+    # Methods that are known to be functional in nature but look procedural from
+    # their usage, e.g.
+    #
+    #   let(:foo) { Foo.new }
+    #
+    # Here, the return value of `Foo.new` is used to define a `foo` helper but
+    # doesn't appear to be used from the return value of `let`.
     - let
     - let!
     - subject
     - watch
   IgnoredMethods:
+    # Methods that can be either procedural or functional and cannot be
+    # categorised from their usage alone, e.g.
+    #
+    #   foo = lambda do |x|
+    #     puts "Hello, #{x}"
+    #   end
+    #
+    #   foo = lambda do |x|
+    #     x * 100
+    #   end
+    #
+    # Here, it is impossible to tell from the return value of `lambda` whether
+    # the inner block's return value is significant.
     - lambda
     - proc
     - it
   ProceduralMethods:
+    # Methods that are known to be procedural in nature but look functional from
+    # their usage, e.g.
+    #
+    #   time = Benchmark.realtime do
+    #     foo.bar
+    #   end
+    #
+    # Here, the return value of the block is discarded but the return value of
+    # `Benchmark.realtime` is used.
     - benchmark
     - bm
     - bmbm
@@ -2220,13 +2685,38 @@ Style/BlockDelimiters:
     - with_object
   StyleGuide: '#single-line-blocks'
   SupportedStyles:
+    # The `line_count_based` style enforces braces around single line blocks and
+    # do..end around multi-line blocks.
     - line_count_based
+    # The `semantic` style enforces braces around functional blocks, where the
+    # primary purpose of the block is to return a value and do..end for
+    # multi-line procedural blocks, where the primary purpose of the block is
+    # its side-effects. Single-line procedural blocks may only use do-end,
+    # unless AllowBracesOnProceduralOneLiners has a truthy value (see below).
+    #
+    # This looks at the usage of a block's method to determine its type (e.g. is
+    # the result of a `map` assigned to a variable or passed to another
+    # method) but exceptions are permitted in the `ProceduralMethods`,
+    # `FunctionalMethods` and `IgnoredMethods` sections below.
     - semantic
+    # The `braces_for_chaining` style enforces braces around single line blocks
+    # and do..end around multi-line blocks, except for multi-line blocks whose
+    # return value is being chained with another method (in which case braces
+    # are enforced).
     - braces_for_chaining
+    # The `always_braces` style always enforces braces.
     - always_braces
   VersionAdded: '0.30'
   VersionChanged: '0.35'
 Style/CaseEquality:
+  # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
+  # the case equality operator is a constant.
+  #
+  #   # bad
+  #   /string/ === "string"
+  #
+  #   # good
+  #   String === "string"
   AllowOnConstant: false
   Description: 'Avoid explicit use of the case equality operator(===).'
   Enabled: true
@@ -2247,7 +2737,26 @@ Style/CharacterLiteral:
 Style/ClassAndModuleChildren:
   Description: 'Checks style of children classes and modules.'
   Enabled: true
+  #
+  # Basically there are two different styles:
+  #
+  # `nested` - have each child on a separate line
+  #   class Foo
+  #     class Bar
+  #     end
+  #   end
+  #
+  # `compact` - combine definitions as much as possible
+  #   class Foo::Bar
+  #   end
+  #
+  # The compact style is only forced, for classes or modules with one child.
   EnforcedStyle: nested
+  # Moving from compact to nested children requires knowledge of whether the
+  # outer parent is a module or a class. Moving from nested to compact requires
+  # verification that the outer parent is defined elsewhere. Rubocop does not
+  # have the knowledge to perform either operation safely and thus requires
+  # manual oversight.
   SafeAutoCorrect: false
   StyleGuide: '#namespace-definition'
   SupportedStyles:
@@ -2298,12 +2807,21 @@ Style/CollectionCompact:
   Safe: false
   VersionAdded: '1.2'
   VersionChanged: '1.3'
+  # Align with the style guide.
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
   Enabled: false
+  # Methods in this array accept a final symbol as an implicit block
+  # eg. `inject(:+)`
   MethodsAcceptingSymbol:
     - inject
     - reduce
+  # Mapping from undesired method to desired method
+  # e.g. to use `detect` over `find`:
+  #
+  # Style/CollectionMethods:
+  #   PreferredMethods:
+  #     find: detect
   PreferredMethods:
     collect: 'map'
     collect!: 'map!'
@@ -2332,16 +2850,22 @@ Style/CombinableLoops:
   Safe: false
   VersionAdded: '0.90'
 Style/CommandLiteral:
+  # If `false`, the cop will always recommend using `%x` if one or more backticks
+  # are found in the command string.
   AllowInnerBackticks: false
   Description: 'Use `` or %x around command literals.'
   Enabled: true
   EnforcedStyle: backticks
   StyleGuide: '#percent-x'
+  # backticks: Always use backticks.
+  # percent_x: Always use `%x`.
+  # mixed: Use backticks on single-line commands, and `%x` on multi-line commands.
   SupportedStyles:
     - backticks
     - percent_x
     - mixed
   VersionAdded: '0.30'
+# Checks formatting of special comments
 Style/CommentAnnotation:
   Description: >-
     Checks formatting of special comments (TODO, FIXME, OPTIMIZE, HACK, REVIEW, NOTE).
@@ -2367,6 +2891,12 @@ Style/ConditionalAssignment:
   Description: >-
     Use the return value of `if` and `case` statements for assignment to a variable and variable comparison instead of assigning that variable inside of each branch.
   Enabled: true
+  # When configured to `assign_to_condition`, `SingleLineConditionsOnly`
+  # will only register an offense when all branches of a condition are
+  # a single line.
+  # When configured to `assign_inside_condition`, `SingleLineConditionsOnly`
+  # will only register an offense for assignment to a condition that has
+  # at least one multiline branch.
   EnforcedStyle: assign_to_condition
   IncludeTernaryExpressions: true
   SingleLineConditionsOnly: true
@@ -2382,6 +2912,23 @@ Style/ConstantVisibility:
   IgnoreModules: false
   VersionAdded: '0.66'
   VersionChanged: '1.10'
+  # Checks that you have put a copyright in a comment before any code.
+  #
+  # You can override the default Notice in your .rubocop.yml file.
+  #
+  # In order to use autocorrect, you must supply a value for the
+  # `AutocorrectNotice` key that matches the regexp Notice. A blank
+  # `AutocorrectNotice` will cause an error during autocorrect.
+  #
+  # Autocorrect will add a copyright notice in a comment at the top
+  # of the file immediately after any shebang or encoding comments.
+  #
+  # Example rubocop.yml:
+  #
+  # Style/Copyright:
+  #   Enabled: true
+  #   Notice: 'Copyright (\(c\) )?2015 Yahoo! Inc'
+  #   AutocorrectNotice: '# Copyright (c) 2015 Yahoo! Inc.'
 Style/Copyright:
   AutocorrectNotice: ''
   Description: 'Include a copyright notice in each file before any code.'
@@ -2474,6 +3021,9 @@ Style/EmptyElse:
   Description: 'Avoid empty else-clauses.'
   Enabled: true
   EnforcedStyle: both
+  # empty - warn only on empty `else`
+  # nil - warn on `else` with nil in it
+  # both - warn on empty `else` and `else` with `nil` in it
   SupportedStyles:
     - empty
     - nil
@@ -2602,9 +3152,15 @@ Style/FormatStringToken:
   Enabled: true
   EnforcedStyle: annotated
   IgnoredMethods: []
+  # `MaxUnannotatedPlaceholdersAllowed` defines the number of `unannotated`
+  # style token in a format string to be allowed when enforced style is not
+  # `unannotated`.
   MaxUnannotatedPlaceholdersAllowed: 1
   SupportedStyles:
+    # Prefer tokens which contain a sprintf like type annotation like
+    # `%<name>s`, `%<age>d`, `%<score>f`
     - annotated
+    # Prefer simple looking "template" style tokens like `%{name}`, `%{age}`
     - template
     - unannotated
   VersionAdded: '0.49'
@@ -2616,8 +3172,16 @@ Style/FrozenStringLiteralComment:
   EnforcedStyle: always
   SafeAutoCorrect: false
   SupportedStyles:
+    # `always` will always add the frozen string literal comment to a file
+    # regardless of the Ruby version or if `freeze` or `<<` are called on a
+    # string literal. It is possible that this will create errors.
     - always
+    # `always_true` will add the frozen string literal comment to a file,
+    # similarly to the `always` style, but will also change any disabled
+    # comments (e.g. `# frozen_string_literal: false`) to be enabled.
     - always_true
+    # `never` will enforce that the frozen string literal comment does not
+    # exist in a file.
     - never
   VersionAdded: '0.36'
   VersionChanged: '0.79'
@@ -2628,6 +3192,7 @@ Style/GlobalStdStream:
   StyleGuide: '#global-stdout'
   VersionAdded: '0.89'
 Style/GlobalVars:
+  # Built-in global variables are allowed by default.
   AllowedVariables: []
   Description: 'Do not introduce global variables.'
   Enabled: true
@@ -2637,6 +3202,8 @@ Style/GlobalVars:
 Style/GuardClause:
   Description: 'Check for conditionals that can be replaced with guard clauses.'
   Enabled: true
+  # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
+  # needs to have to trigger this cop
   MinBodyLength: 1
   StyleGuide: '#no-nested-conditionals'
   VersionAdded: '0.20'
@@ -2675,25 +3242,37 @@ Style/HashLikeCase:
   Description: >-
     Checks for places where `case-when` represents a simple 1:1 mapping and can be replaced with a hash lookup.
   Enabled: true
+  # `MinBranchesCount` defines the number of branches `case` needs to have
+  # to trigger this cop
   MinBranchesCount: 3
   VersionAdded: '0.88'
 Style/HashSyntax:
   Description: >-
     Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax { :a => 1, :b => 2 }.
   Enabled: true
+  # Force hashes that have a hash value omission
   EnforcedShorthandSyntax: always
   EnforcedStyle: ruby19
+  # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
   PreferHashRocketsForNonAlnumEndingSymbols: false
   StyleGuide: '#hash-literals'
   SupportedShorthandSyntax:
+    # forces use of the 3.1 syntax (e.g. {foo:}) when the hash key and value are the same.
     - always
+    # forces use of explicit hash literal value.
     - never
+    # accepts both shorthand and explicit use of hash literal value.
     - either
   SupportedStyles:
+    # checks for 1.9 syntax (e.g. {a: 1}) for all symbol keys
     - ruby19
+    # checks for hash rocket syntax for all hashes
     - hash_rockets
+    # forbids mixed key syntaxes (e.g. {a: 1, :b => 2})
     - no_mixed_keys
+    # enforces both ruby19 and no_mixed_keys styles
     - ruby19_no_mixed_keys
+  # Force hashes that have a symbol value to use hash rockets
   UseHashRocketsWithSymbolValues: false
   VersionAdded: '0.9'
   VersionChanged: '1.24'
@@ -2778,9 +3357,14 @@ Style/InverseMethods:
   Description: >-
     Use the inverse method instead of `!.method` if an inverse method is defined.
   Enabled: true
+  # `InverseBlocks` are methods that are inverted by inverting the return
+  # of the block that is passed to the method
   InverseBlocks:
     :select: :reject
     :select!: :reject!
+  # `InverseMethods` are methods that can be inverted by a not (`not` or `!`)
+  # The relationship of inverse methods only needs to be defined in one direction.
+  # Keys and values both need to be defined as symbols.
   InverseMethods:
     :<: :>=
     :==: :!=
@@ -2788,10 +3372,16 @@ Style/InverseMethods:
     :>: :<=
     :any?: :none?
     :even?: :odd?
+    # `ActiveSupport` defines some common inverse methods. They are listed below,
+    # and not enabled by default.
+    # :present?: :blank?,
+    # :include?: :exclude?
   Safe: false
   VersionAdded: '0.48'
 Style/IpAddresses:
+  # Allow addresses to be permitted
   AllowedAddresses:
+    # :: is a valid IPv6 address, but could potentially be legitimately in code
     - "::"
   Description: "Don't include literal IP addresses in code."
   Enabled: false
@@ -2894,6 +3484,9 @@ Style/MissingElse:
   Enabled: false
   EnforcedStyle: both
   SupportedStyles:
+    # if - warn when an if expression is missing an else branch
+    # case - warn when a case expression is missing an else branch
+    # both - warn when an if or case expression is missing an else branch
     - if
     - case
     - both
@@ -2911,6 +3504,8 @@ Style/MixinGrouping:
   EnforcedStyle: separated
   StyleGuide: '#mixin-grouping'
   SupportedStyles:
+    # separated: each mixed in module goes in a separate statement.
+    # grouped: mixed in modules are grouped into a single statement.
     - separated
     - grouped
   VersionAdded: '0.48'
@@ -2992,6 +3587,12 @@ Style/MutableConstant:
   EnforcedStyle: literals
   SafeAutoCorrect: false
   SupportedStyles:
+    # literals: freeze literals assigned to constants
+    # strict: freeze all constants
+    # Strict mode is considered an experimental feature. It has not been updated
+    # with an exhaustive list of all methods that will produce frozen objects so
+    # there is a decent chance of getting some false positives. Luckily, there is
+    # no harm in freezing an already frozen object.
     - literals
     - strict
   VersionAdded: '0.34'
@@ -3003,6 +3604,9 @@ Style/NegatedIf:
   EnforcedStyle: both
   StyleGuide: '#unless-for-negatives'
   SupportedStyles:
+    # both: prefix and postfix negated `if` should both use `unless`
+    # prefix: only use `unless` for negated `if` statements positioned before the body of the statement
+    # postfix: only use `unless` for negated `if` statements positioned after the body of the statement
     - both
     - prefix
     - postfix
@@ -3019,6 +3623,9 @@ Style/NegatedUnless:
   EnforcedStyle: both
   StyleGuide: '#if-for-negatives'
   SupportedStyles:
+    # both: prefix and postfix negated `unless` should both use `if`
+    # prefix: only use `if` for negated `unless` statements positioned before the body of the statement
+    # postfix: only use `if` for negated `unless` statements positioned after the body of the statement
     - both
     - prefix
     - postfix
@@ -3066,7 +3673,12 @@ Style/NestedTernaryOperator:
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   Enabled: true
+  # With `always` all conditions at the end of an iteration needs to be
+  # replaced by next - with `skip_modifier_ifs` the modifier if like this one
+  # are ignored: [1, 2].each { |a| return 'yes' if a == 1 }
   EnforcedStyle: skip_modifier_ifs
+  # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
+  # needs to have to trigger this cop
   MinBodyLength: 3
   StyleGuide: '#no-nested-conditionals'
   SupportedStyles:
@@ -3092,6 +3704,12 @@ Style/NilLambda:
 Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
   Enabled: true
+  # With `IncludeSemanticChanges` set to `true`, this cop reports offenses for
+  # `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which is
+  # **usually** OK, but might change behavior.
+  #
+  # With `IncludeSemanticChanges` set to `false`, this cop does not report
+  # offenses for `!x.nil?` and does no changes that might change behavior.
   IncludeSemanticChanges: false
   StyleGuide: '#no-non-nil-checks'
   VersionAdded: '0.20'
@@ -3125,6 +3743,7 @@ Style/NumericLiteralPrefix:
     - zero_only
   VersionAdded: '0.41'
 Style/NumericLiterals:
+  # You can specify allowed numbers. (e.g. port number 3000, 8080, and etc)
   AllowedNumbers: []
   Description: >-
     Add underscores to large numeric literals to improve their readability.
@@ -3139,10 +3758,15 @@ Style/NumericPredicate:
     Checks for the use of predicate- or comparison methods for numeric comparisons.
   Enabled: true
   EnforcedStyle: predicate
+  # Exclude RSpec specs because assertions like `expect(1).to be > 0` cause
+  # false positives.
   Exclude:
     - 'spec/**/*'
   IgnoredMethods: []
   Safe: false
+  # This will change to a new method call which isn't guaranteed to be on the
+  # object. Switching these methods has to be done with knowledge of the types
+  # of the variables which rubocop doesn't have.
   SafeAutoCorrect: false
   StyleGuide: '#predicate-methods'
   SupportedStyles:
@@ -3169,6 +3793,7 @@ Style/OptionHash:
   Allowlist: []
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: false
+  # A list of parameter names that will be flagged by this cop.
   SuspiciousParamNames:
     - options
     - opts
@@ -3216,6 +3841,9 @@ Style/ParenthesesAroundCondition:
 Style/PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently.'
   Enabled: true
+  # Specify the default preferred delimiter for all types with the 'default' key
+  # Override individual delimiters (even with default specified) by specifying
+  # an individual key
   PreferredDelimiters:
     '%I': '[]'
     '%W': '[]'
@@ -3231,8 +3859,8 @@ Style/PercentQLiterals:
   Enabled: true
   EnforcedStyle: lower_case_q
   SupportedStyles:
-    - lower_case_q
-    - upper_case_q
+    - lower_case_q # Use `%q` when possible, `%Q` when necessary
+    - upper_case_q # Always use `%Q`
   VersionAdded: '0.25'
 Style/PerlBackrefs:
   Description: 'Avoid Perl-style regex back references.'
@@ -3272,8 +3900,8 @@ Style/RaiseArgs:
   EnforcedStyle: exploded
   StyleGuide: '#exception-class-messages'
   SupportedStyles:
-    - compact
-    - exploded
+    - compact # raise Exception.new(msg)
+    - exploded # raise Exception, msg
   VersionAdded: '0.14'
   VersionChanged: '1.2'
 Style/RandomWithOffset:
@@ -3286,9 +3914,13 @@ Style/RedundantArgument:
   Description: 'Check for a redundant argument passed to certain methods.'
   Enabled: pending
   Methods:
+    # String#chomp
     chomp: "\n"
+    # String#chomp!
     chomp!: "\n"
+    # Array#join
     join: ''
+    # String#split
     split: ' '
   Safe: false
   VersionAdded: '1.4'
@@ -3327,6 +3959,9 @@ Style/RedundantFetchBlock:
   Enabled: true
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code'
   Safe: false
+  # If enabled, this cop will autocorrect usages of
+  # `fetch` being called with block returning a constant.
+  # This can be dangerous since constants will not be defined at that moment.
   SafeForConstants: false
   VersionAdded: '0.86'
 Style/RedundantFileExtensionInRequire:
@@ -3362,6 +3997,7 @@ Style/RedundantRegexpEscape:
   Enabled: true
   VersionAdded: '0.85'
 Style/RedundantReturn:
+  # When `true` allows code like `return x, y`.
   AllowMultipleReturnValues: false
   Description: "Don't use return where it's not required."
   Enabled: true
@@ -3395,12 +4031,17 @@ Style/RedundantSortBy:
   Enabled: true
   VersionAdded: '0.36'
 Style/RegexpLiteral:
+  # If `false`, the cop will always recommend using `%r` if one or more slashes
+  # are found in the regexp string.
   AllowInnerSlashes: false
   Description: 'Use / or %r around regular expressions.'
   Enabled: true
   EnforcedStyle: slashes
   StyleGuide: '#percent-r'
   SupportedStyles:
+    # slashes: Always use slashes.
+    # percent_r: Always use `%r`.
+    # mixed: Use slashes on single-line regexes, and `%r` on multi-line regexes.
     - slashes
     - percent_r
     - mixed
@@ -3417,6 +4058,8 @@ Style/RescueStandardError:
   Enabled: true
   EnforcedStyle: explicit
   SupportedStyles:
+    # implicit: Do not include the error class, `rescue`
+    # explicit: Require an error class `rescue StandardError`
     - implicit
     - explicit
   VersionAdded: '0.52'
@@ -3435,6 +4078,8 @@ Style/SafeNavigation:
     - presence
     - try
     - try!
+  # Safe navigation may cause a statement to start returning `nil` in addition
+  # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
   Description: >-
     This cop transforms usages of a method call safeguarded by a check for the existence of the object to safe navigation (`&.`). Auto-correction is unsafe as it assumes the object will be `nil` or truthy, but never `false`.
@@ -3461,6 +4106,7 @@ Style/SelfAssignment:
   VersionAdded: '0.19'
   VersionChanged: '0.29'
 Style/Semicolon:
+  # Allow `;` to separate several expressions on the same line.
   AllowAsExpressionSeparator: false
   Description: "Don't use semicolons to terminate expressions."
   Enabled: true
@@ -3573,6 +4219,8 @@ Style/StringHashKeys:
   VersionAdded: '0.52'
   VersionChanged: '0.75'
 Style/StringLiterals:
+  # If `true`, strings which span multiple lines using `\` for continuation must
+  # use the same type of quotes on each line.
   ConsistentQuotesInMultiline: false
   Description: 'Checks if uses of quotes match the configured preference.'
   Enabled: true
@@ -3595,6 +4243,12 @@ Style/StringLiteralsInInterpolation:
 Style/StringMethods:
   Description: 'Checks if configured preferred methods are used over non-preferred.'
   Enabled: false
+  # Mapping from undesired method to desired_method
+  # e.g. to use `to_sym` over `intern`:
+  #
+  # StringMethods:
+  #   PreferredMethods:
+  #     intern: to_sym
   PreferredMethods:
     intern: to_sym
   VersionAdded: '0.34'
@@ -3635,6 +4289,8 @@ Style/SymbolProc:
   AllowMethodsWithArguments: false
   Description: 'Use symbols as procs instead of blocks when possible.'
   Enabled: true
+  # A list of method names to be ignored by the check.
+  # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
   IgnoredMethods:
     - respond_to
     - define_method
@@ -3672,6 +4328,10 @@ Style/TrailingBodyOnModule:
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
   Enabled: true
+  # If `comma`, the cop requires a comma after the last argument, but only for
+  # parenthesized method calls where each argument is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last argument,
+  # for all parenthesized method calls with arguments.
   EnforcedStyleForMultiline: no_comma
   StyleGuide: '#no-trailing-params-comma'
   SupportedStylesForMultiline:
@@ -3682,6 +4342,10 @@ Style/TrailingCommaInArguments:
 Style/TrailingCommaInArrayLiteral:
   Description: 'Checks for trailing comma in array literals.'
   Enabled: true
+  # If `comma`, the cop requires a comma after the last item in an array,
+  # but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty, multiline array literals.
   EnforcedStyleForMultiline: no_comma
   StyleGuide: '#no-trailing-array-commas'
   SupportedStylesForMultiline:
@@ -3697,6 +4361,10 @@ Style/TrailingCommaInBlockArgs:
 Style/TrailingCommaInHashLiteral:
   Description: 'Checks for trailing comma in hash literals.'
   Enabled: true
+  # If `comma`, the cop requires a comma after the last item in a hash,
+  # but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty, multiline hash literals.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma
@@ -3714,7 +4382,17 @@ Style/TrailingUnderscoreVariable:
   Enabled: true
   VersionAdded: '0.31'
   VersionChanged: '0.35'
+# `TrivialAccessors` requires exact name matches and doesn't allow
+# predicated methods by default.
 Style/TrivialAccessors:
+  # Allows trivial writers that don't end in an equal sign. e.g.
+  #
+  # def on_exception(action)
+  #   @on_exception=action
+  # end
+  # on_exception :restart
+  #
+  # Commonly used in DSLs
   AllowDSLWriters: true
   AllowPredicates: true
   AllowedMethods:
@@ -3737,6 +4415,14 @@ Style/TrivialAccessors:
     - to_sym
   Description: 'Prefer attr_* methods to trivial readers/writers.'
   Enabled: true
+  # When set to `false` the cop will suggest the use of accessor methods
+  # in situations like:
+  #
+  # def name
+  #   @other_name
+  # end
+  #
+  # This way you can uncover "hidden" attributes in your code.
   ExactNameMatch: true
   IgnoreClassMethods: false
   StyleGuide: '#attr_family'
@@ -3790,13 +4476,19 @@ Style/WordArray:
   Description: 'Use %w or %W for arrays of words.'
   Enabled: true
   EnforcedStyle: percent
+  # The `MinSize` option causes the `WordArray` rule to be ignored for arrays
+  # smaller than a certain size. The rule is only applied to arrays
+  # whose element count is greater than or equal to `MinSize`.
   MinSize: 2
   StyleGuide: '#percent-w'
   SupportedStyles:
+    # percent style: %w(word1 word2)
     - percent
+    # bracket style: ['word1', 'word2']
     - brackets
   VersionAdded: '0.9'
   VersionChanged: '1.19'
+  # The regular expression `WordRegex` decides what is considered a word.
   WordRegex: !ruby/regexp '/\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/'
 Style/YodaCondition:
   Description: 'Forbid or enforce yoda conditions.'
@@ -3805,9 +4497,13 @@ Style/YodaCondition:
   Reference: 'https://en.wikipedia.org/wiki/Yoda_conditions'
   Safe: false
   SupportedStyles:
+    # check all comparison operators
     - forbid_for_all_comparison_operators
+    # check only equality operators: `!=` and `==`
     - forbid_for_equality_operators_only
+    # enforce yoda for all comparison operators
     - require_for_all_comparison_operators
+    # enforce yoda only for equality operators: `!=` and `==`
     - require_for_equality_operators_only
   VersionAdded: '0.49'
   VersionChanged: '0.75'
