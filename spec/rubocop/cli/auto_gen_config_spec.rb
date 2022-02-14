@@ -332,7 +332,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
+                '# Configuration parameters: AllowHeredoc, AllowURI, '\
+                'IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 125'])
@@ -383,7 +384,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '',
                 '# Offense count: 1',
                 '# Cop supports --auto-correct.',
-                '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
+                '# Configuration parameters: AllowHeredoc, AllowURI, '\
+                'IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 121',
@@ -724,7 +726,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 2',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, '\
+         'IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -815,7 +818,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 3',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, '\
+         'IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -1082,7 +1086,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Cop supports --auto-correct.',
-         '# Configuration parameters: AllowHeredoc, AllowURI, IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
+         '# Configuration parameters: AllowHeredoc, AllowURI, '\
+         'IgnoreCopDirectives, IgnoredPatterns, URISchemes.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
