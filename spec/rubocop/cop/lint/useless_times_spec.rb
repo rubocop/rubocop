@@ -59,6 +59,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects with 1.times with method chain' do
+    expect_offense(<<~RUBY)
+      1.times.reverse_each do
+      ^^^^^^^ Useless call to `1.times` detected.
+        foo
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'registers an offense and corrects when 1.times with empty block argument' do
     expect_offense(<<~RUBY)
       def foo

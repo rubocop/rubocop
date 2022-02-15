@@ -51,19 +51,23 @@ module RuboCop
           node = node.block_node if node.block_literal?
 
           add_offense(node, message: format(MSG, count: count)) do |corrector|
-            next unless own_line?(node)
+            next if !own_line?(node) || node.parent&.send_type?
 
-            if never_process?(count, node)
-              remove_node(corrector, node)
-            elsif !proc_name.empty?
-              autocorrect_block_pass(corrector, node, proc_name)
-            else
-              autocorrect_block(corrector, node)
-            end
+            autocorrect(corrector, count, node, proc_name)
           end
         end
 
         private
+
+        def autocorrect(corrector, count, node, proc_name)
+          if never_process?(count, node)
+            remove_node(corrector, node)
+          elsif !proc_name.empty?
+            autocorrect_block_pass(corrector, node, proc_name)
+          else
+            autocorrect_block(corrector, node)
+          end
+        end
 
         def never_process?(count, node)
           count < 1 || (node.block_type? && node.body.nil?)
