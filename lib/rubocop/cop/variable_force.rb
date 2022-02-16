@@ -190,7 +190,7 @@ module RuboCop
           child.children.first
         end.join || ''
 
-        regexp = Regexp.new(regexp_string)
+        regexp = Regexp.new(regexp_string) # FIXME: Need to be handle `Regexp.new(/\x82/n)`.
 
         regexp.named_captures.keys
       end
