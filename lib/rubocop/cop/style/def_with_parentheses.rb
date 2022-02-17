@@ -11,27 +11,33 @@ module RuboCop
       #
       #   # bad
       #   def foo()
-      #     # does a thing
+      #     do_something
       #   end
       #
       #   # good
       #   def foo
-      #     # does a thing
+      #     do_something
       #   end
       #
-      #   # also good
-      #   def foo() does_a_thing end
+      #   # bad
+      #   def foo() = do_something
+      #
+      #   # good
+      #   def foo = do_something
+      #
+      #   # good (without parentheses it's a syntax error)
+      #   def foo() do_something end
       #
       # @example
       #
       #   # bad
       #   def Baz.foo()
-      #     # does a thing
+      #     do_something
       #   end
       #
       #   # good
       #   def Baz.foo
-      #     # does a thing
+      #     do_something
       #   end
       class DefWithParentheses < Base
         extend AutoCorrector
@@ -39,7 +45,7 @@ module RuboCop
         MSG = "Omit the parentheses in defs when the method doesn't accept any arguments."
 
         def on_def(node)
-          return if node.single_line?
+          return if node.single_line? && !node.endless?
           return unless !node.arguments? && (node_arguments = node.arguments.source_range)
 
           add_offense(node_arguments) do |corrector|
