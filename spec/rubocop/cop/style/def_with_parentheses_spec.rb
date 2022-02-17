@@ -29,6 +29,19 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses, :config do
     RUBY
   end
 
+  context 'Ruby >= 3.0', :ruby30 do
+    it 'reports an offense for endless method definition with empty parens' do
+      expect_offense(<<~RUBY)
+        def foo() = do_something
+               ^^ Omit the parentheses in defs when the method doesn't accept any arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo = do_something
+      RUBY
+    end
+  end
+
   it 'accepts def with arg and parens' do
     expect_no_offenses(<<~RUBY)
       def func(a)
