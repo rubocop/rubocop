@@ -116,7 +116,7 @@ module RuboCop
         def wrong_quotes?(node)
           return super if hash_key?(node)
 
-          super(node.source[1..-1])
+          super(node.source[1..])
         end
       end
     end

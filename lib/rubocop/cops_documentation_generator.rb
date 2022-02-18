@@ -246,7 +246,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def table_of_content_for_department(department)
-    type_title = department[0].upcase + department[1..-1]
+    type_title = department[0].upcase + department[1..]
     filename = "#{department_to_basename(department)}.adoc"
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
     cops_of_department(department).each do |cop|

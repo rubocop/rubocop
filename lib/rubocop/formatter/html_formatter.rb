@@ -53,14 +53,7 @@ module RuboCop
         context = ERBContext.new(files, summary)
 
         template = File.read(TEMPLATE_PATH, encoding: Encoding::UTF_8)
-
-        # The following condition is workaround for until Ruby 2.6 is released.
-        # https://github.com/ruby/ruby/commit/cc777d09f44fa909a336ba14f3aa802ffe16e010
-        erb = if RUBY_VERSION >= '2.6'
-                ERB.new(template, trim_mode: '-')
-              else
-                ERB.new(template, nil, '-')
-              end
+        erb = ERB.new(template, trim_mode: '-')
         html = erb.result(context.binding)
 
         output.write html
@@ -119,7 +112,7 @@ module RuboCop
 
         def source_after_highlight(offense)
           source_line = offense.location.source_line
-          escape(source_line[offense.highlighted_area.end_pos..-1])
+          escape(source_line[offense.highlighted_area.end_pos..])
         end
 
         def possible_ellipses(location)

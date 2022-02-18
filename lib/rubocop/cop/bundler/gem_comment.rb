@@ -152,7 +152,7 @@ module RuboCop
         def restrictive_version_specified_gem?(node)
           return unless version_specified_gem?(node)
 
-          node.arguments[1..-1]
+          node.arguments[1..]
               .any? { |arg| arg&.str_type? && RESTRICTIVE_VERSION_PATTERN.match?(arg.value) }
         end
 

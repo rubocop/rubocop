@@ -139,7 +139,7 @@ module RuboCop
 
         def line_after_comment(comment)
           lines = processed_source.lines
-          lines[comment.loc.line..-1].find { |line| !line.blank? }
+          lines[comment.loc.line..].find { |line| !line.blank? }
         end
 
         def correct_indentation(next_line)

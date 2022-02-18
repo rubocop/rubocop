@@ -69,7 +69,7 @@ module RuboCop
                             else
                               0
                             end
-          without_receiver = node.source[receiver_length..-1]
+          without_receiver = node.source[receiver_length..]
 
           # Escape question mark if any.
           method_regexp = Regexp.escape(node.method_name)

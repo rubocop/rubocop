@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-if RUBY_VERSION < '2.6'
-  puts 'Changelog utilities available only for Ruby 2.6+'
-  exit(1)
-end
-
 # Changelog utility
 class Changelog
   ENTRIES_PATH = 'changelog/'

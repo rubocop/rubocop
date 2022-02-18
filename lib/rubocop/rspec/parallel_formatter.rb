@@ -65,7 +65,7 @@ module RuboCop
       # removed!
       def output_rerun_commands(summary)
         output.puts '# RERUN BEGIN'
-        output.puts summary.colorized_rerun_commands.lines[3..-1].join
+        output.puts summary.colorized_rerun_commands.lines[3..].join
         output.puts '# RERUN END'
       end
 

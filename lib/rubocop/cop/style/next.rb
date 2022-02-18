@@ -185,7 +185,7 @@ module RuboCop
         end
 
         def end_followed_by_whitespace_only?(source_buffer, end_pos)
-          /\A\s*$/.match?(source_buffer.source[end_pos..-1])
+          /\A\s*$/.match?(source_buffer.source[end_pos..])
         end
 
         def reindentable_lines(node)

@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         def foo
-          bar = baz if qux else quux
+          bar = baz if qux rescue quux
         end
       RUBY
     end

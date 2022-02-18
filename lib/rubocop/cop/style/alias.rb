@@ -76,7 +76,7 @@ module RuboCop
 
         def add_offense_for_args(node, &block)
           existing_args  = node.children.map(&:source).join(' ')
-          preferred_args = node.children.map { |a| a.source[1..-1] }.join(' ')
+          preferred_args = node.children.map { |a| a.source[1..] }.join(' ')
           arg_ranges     = node.children.map(&:source_range)
           msg            = format(MSG_SYMBOL_ARGS, prefer: preferred_args, current: existing_args)
           add_offense(arg_ranges.reduce(&:join), message: msg, &block)
@@ -134,8 +134,8 @@ module RuboCop
         end
 
         def correct_alias_with_symbol_args(corrector, node)
-          corrector.replace(node.new_identifier, node.new_identifier.source[1..-1])
-          corrector.replace(node.old_identifier, node.old_identifier.source[1..-1])
+          corrector.replace(node.new_identifier, node.new_identifier.source[1..])
+          corrector.replace(node.old_identifier, node.old_identifier.source[1..])
         end
 
         # @!method identifier(node)

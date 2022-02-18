@@ -29,7 +29,7 @@ module RuboCop
       # @param [Array] collection an array to return consecutive duplicates for
       # @return [Array] the consecutive duplicates
       def consecutive_duplicates(collection)
-        grouped_duplicates(collection).flat_map { |items| items[1..-1] }
+        grouped_duplicates(collection).flat_map { |items| items[1..] }
       end
 
       # Returns a hash of grouped duplicates. The key will be the first

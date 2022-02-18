@@ -70,7 +70,7 @@ module RuboCop
           if style == :anonymous
             !explicit_block_argument?(last_argument) ||
               use_kwarg_in_method_definition?(node) ||
-              use_block_argument_as_local_variable?(node, last_argument.source[1..-1])
+              use_block_argument_as_local_variable?(node, last_argument.source[1..])
           else
             !anonymous_block_argument?(last_argument)
           end

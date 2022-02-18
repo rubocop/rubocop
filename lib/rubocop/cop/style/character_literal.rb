@@ -33,7 +33,7 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          string = node.source[1..-1]
+          string = node.source[1..]
 
           # special character like \n
           # or ' which needs to use "" or be escaped.

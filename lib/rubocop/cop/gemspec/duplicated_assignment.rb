@@ -51,7 +51,7 @@ module RuboCop
           return if processed_source.blank?
 
           duplicated_assignment_method_nodes.each do |nodes|
-            nodes[1..-1].each do |node|
+            nodes[1..].each do |node|
               register_offense(node, node.method_name, nodes.first.first_line)
             end
           end

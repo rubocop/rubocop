@@ -1611,35 +1611,17 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
-    context '< Ruby 2.5', if: RUBY_VERSION < '2.5' do
-      context 'when the file has duplicated keys' do
-        it 'outputs a warning' do
-          create_file(configuration_path, <<~YAML)
-            Style/Encoding:
-              Enabled: true
+    context 'when the file has duplicated keys' do
+      it 'outputs a warning' do
+        create_file(configuration_path, <<~YAML)
+          Style/Encoding:
+            Enabled: true
 
-            Style/Encoding:
-              Enabled: false
-          YAML
+          Style/Encoding:
+            Enabled: false
+        YAML
 
-          expect { load_file }.to output(%r{`Style/Encoding` is concealed by duplicate}).to_stderr
-        end
-      end
-    end
-
-    context '>= Ruby 2.5', if: RUBY_VERSION >= '2.5' do
-      context 'when the file has duplicated keys' do
-        it 'outputs a warning' do
-          create_file(configuration_path, <<~YAML)
-            Style/Encoding:
-              Enabled: true
-
-            Style/Encoding:
-              Enabled: false
-          YAML
-
-          expect { load_file }.to output(%r{`Style/Encoding` is concealed by line 4}).to_stderr
-        end
+        expect { load_file }.to output(%r{`Style/Encoding` is concealed by line 4}).to_stderr
       end
     end
 

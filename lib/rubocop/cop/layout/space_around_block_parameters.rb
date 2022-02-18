@@ -113,7 +113,7 @@ module RuboCop
         def last_end_pos_inside_pipes(arguments, range)
           pos = range.end_pos
           num = pos - arguments.source_range.begin_pos
-          trailing_comma_index = arguments.source[num..-1].index(',')
+          trailing_comma_index = arguments.source[num..].index(',')
 
           trailing_comma_index ? pos + trailing_comma_index + 1 : pos
         end

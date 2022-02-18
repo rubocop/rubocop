@@ -159,7 +159,7 @@ module RuboCop
       def autocorrect_range(item)
         expr = item.source_range
         ix = expr.source.rindex("\n") || 0
-        ix += expr.source[ix..-1] =~ /\S/
+        ix += expr.source[ix..] =~ /\S/
 
         range_between(expr.begin_pos + ix, expr.end_pos)
       end

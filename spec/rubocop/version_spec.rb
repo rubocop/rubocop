@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Version do
       before do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
-            TargetRubyVersion: 2.5
+            TargetRubyVersion: 2.6
         YAML
       end
 
