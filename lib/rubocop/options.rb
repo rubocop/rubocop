@@ -239,7 +239,7 @@ module RuboCop
     # e.g. [..., '--auto-correct', ...] to :auto_correct.
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
-      long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
+      long_opt[2..].sub('[no-]', '').sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
 
     def require_feature(file)

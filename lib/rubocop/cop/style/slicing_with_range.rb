@@ -27,9 +27,6 @@ module RuboCop
       #   items[1..]
       class SlicingWithRange < Base
         extend AutoCorrector
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.6
 
         MSG = 'Prefer ary[n..] over ary[n..-1].'
         RESTRICT_ON_SEND = %i[[]].freeze

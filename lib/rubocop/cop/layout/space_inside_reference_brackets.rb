@@ -118,7 +118,7 @@ module RuboCop
           i = tokens.index(opening_bracket)
           inner_left_brackets_needing_closure = 0
 
-          tokens[i..-1].each do |token|
+          tokens[i..].each do |token|
             inner_left_brackets_needing_closure += 1 if token.left_bracket?
             inner_left_brackets_needing_closure -= 1 if token.right_bracket?
             return token if inner_left_brackets_needing_closure.zero? && token.right_bracket?

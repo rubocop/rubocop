@@ -42,18 +42,18 @@ module RuboCop
 
       def interpret_unicode(escape)
         if escape[2] == '{'
-          escape[3..-1].split(/\s+/).map(&:hex).pack('U*')
+          escape[3..].split(/\s+/).map(&:hex).pack('U*')
         else
-          [escape[2..-1].hex].pack('U')
+          [escape[2..].hex].pack('U')
         end
       end
 
       def interpret_hex(escape)
-        [escape[2..-1].hex].pack('C')
+        [escape[2..].hex].pack('C')
       end
 
       def interpret_octal(escape)
-        [escape[1..-1].to_i(8)].pack('C')
+        [escape[1..].to_i(8)].pack('C')
       end
     end
   end

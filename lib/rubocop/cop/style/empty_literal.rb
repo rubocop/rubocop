@@ -119,7 +119,7 @@ module RuboCop
               # because the braces are interpreted as a block. We will have
               # to rewrite the arguments to wrap them in parenthesis.
               args = node.parent.arguments
-              "(#{args[1..-1].map(&:source).unshift('{}').join(', ')})"
+              "(#{args[1..].map(&:source).unshift('{}').join(', ')})"
             else
               '{}'
             end

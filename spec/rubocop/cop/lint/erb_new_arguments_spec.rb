@@ -1,111 +1,101 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::ErbNewArguments, :config do
-  context '<= Ruby 2.5', :ruby25 do
-    it 'does not register an offense when using `ERB.new` with non-keyword arguments' do
-      expect_no_offenses(<<~RUBY)
-        ERB.new(str, nil, '-', '@output_buffer')
-      RUBY
-    end
+  it 'registers an offense when using `ERB.new` with non-keyword 2nd argument' do
+    expect_offense(<<~RUBY)
+      ERB.new(str, nil)
+                   ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ERB.new(str)
+    RUBY
   end
 
-  context '>= Ruby 2.6', :ruby26 do
-    it 'registers an offense when using `ERB.new` with non-keyword 2nd argument' do
-      expect_offense(<<~RUBY)
-        ERB.new(str, nil)
-                     ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
-      RUBY
+  it 'registers an offense when using `ERB.new` with non-keyword 2nd and 3rd arguments' do
+    expect_offense(<<~RUBY)
+      ERB.new(str, nil, '-')
+                        ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
+                   ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
+    RUBY
 
-      expect_correction(<<~RUBY)
-        ERB.new(str)
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      ERB.new(str, trim_mode: '-')
+    RUBY
+  end
 
-    it 'registers an offense when using `ERB.new` with non-keyword 2nd and 3rd arguments' do
-      expect_offense(<<~RUBY)
-        ERB.new(str, nil, '-')
-                          ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
-                     ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
-      RUBY
+  it 'registers an offense when using `ERB.new` with non-keyword 2nd, 3rd and 4th arguments' do
+    expect_offense(<<~RUBY)
+      ERB.new(str, nil, '-', '@output_buffer')
+                             ^^^^^^^^^^^^^^^^ Passing eoutvar with the 4th argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, eoutvar: '@output_buffer')` instead.
+                        ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
+                   ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
+    RUBY
 
-      expect_correction(<<~RUBY)
-        ERB.new(str, trim_mode: '-')
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
+    RUBY
+  end
 
-    it 'registers an offense when using `ERB.new` with non-keyword 2nd, 3rd and 4th arguments' do
-      expect_offense(<<~RUBY)
-        ERB.new(str, nil, '-', '@output_buffer')
+  it 'registers an offense when using `ERB.new` ' \
+     'with non-keyword 2nd, 3rd and 4th arguments and' \
+     'keyword 5th argument' do
+    expect_offense(<<~RUBY)
+      ERB.new(str, nil, '-', '@output_buffer', trim_mode: '-', eoutvar: '@output_buffer')
+                             ^^^^^^^^^^^^^^^^ Passing eoutvar with the 4th argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, eoutvar: '@output_buffer')` instead.
+                        ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
+                   ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
+    RUBY
+  end
+
+  it 'registers an offense when using `ERB.new` ' \
+     'with non-keyword 2nd and 3rd arguments and' \
+     'keyword 4th argument' do
+    expect_offense(<<~RUBY)
+      ERB.new(str, nil, '-', trim_mode: '-', eoutvar: '@output_buffer')
+                        ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
+                   ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
+    RUBY
+  end
+
+  it 'registers an offense when using `::ERB.new` with non-keyword 2nd, 3rd and 4th arguments' do
+    expect_offense(<<~RUBY)
+      ::ERB.new(str, nil, '-', '@output_buffer')
                                ^^^^^^^^^^^^^^^^ Passing eoutvar with the 4th argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, eoutvar: '@output_buffer')` instead.
                           ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
                      ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
-      RUBY
+    RUBY
 
-      expect_correction(<<~RUBY)
-        ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      ::ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
+    RUBY
+  end
 
-    it 'registers an offense when using `ERB.new` ' \
-       'with non-keyword 2nd, 3rd and 4th arguments and' \
-       'keyword 5th argument' do
-      expect_offense(<<~RUBY)
-        ERB.new(str, nil, '-', '@output_buffer', trim_mode: '-', eoutvar: '@output_buffer')
-                               ^^^^^^^^^^^^^^^^ Passing eoutvar with the 4th argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, eoutvar: '@output_buffer')` instead.
-                          ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
-                     ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
-      RUBY
+  it 'does not register an offense when using `ERB.new` with keyword arguments' do
+    expect_no_offenses(<<~RUBY)
+      ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
+    RUBY
+  end
 
-      expect_correction(<<~RUBY)
-        ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
-      RUBY
-    end
+  it 'does not register an offense when using `ERB.new` without optional arguments' do
+    expect_no_offenses(<<~RUBY)
+      ERB.new(str)
+    RUBY
+  end
 
-    it 'registers an offense when using `ERB.new` ' \
-       'with non-keyword 2nd and 3rd arguments and' \
-       'keyword 4th argument' do
-      expect_offense(<<~RUBY)
-        ERB.new(str, nil, '-', trim_mode: '-', eoutvar: '@output_buffer')
-                          ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
-                     ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
-      RUBY
-    end
-
-    it 'registers an offense when using `::ERB.new` with non-keyword 2nd, 3rd and 4th arguments' do
-      expect_offense(<<~RUBY)
-        ::ERB.new(str, nil, '-', '@output_buffer')
-                                 ^^^^^^^^^^^^^^^^ Passing eoutvar with the 4th argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, eoutvar: '@output_buffer')` instead.
-                            ^^^ Passing trim_mode with the 3rd argument of `ERB.new` is deprecated. Use keyword argument like `ERB.new(str, trim_mode: '-')` instead.
-                       ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        ::ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
-      RUBY
-    end
-
-    it 'does not register an offense when using `ERB.new` with keyword arguments' do
+  context 'when using `ActionView::Template::Handlers::ERB.new`' do
+    it 'does not register an offense when using `ERB.new` without arguments' do
       expect_no_offenses(<<~RUBY)
-        ERB.new(str, trim_mode: '-', eoutvar: '@output_buffer')
+        ERB.new
       RUBY
-    end
-
-    it 'does not register an offense when using `ERB.new` without optional arguments' do
-      expect_no_offenses(<<~RUBY)
-        ERB.new(str)
-      RUBY
-    end
-
-    context 'when using `ActionView::Template::Handlers::ERB.new`' do
-      it 'does not register an offense when using `ERB.new` without arguments' do
-        expect_no_offenses(<<~RUBY)
-          ERB.new
-        RUBY
-      end
     end
   end
 end

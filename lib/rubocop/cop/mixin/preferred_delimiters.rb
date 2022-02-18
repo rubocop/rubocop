@@ -33,9 +33,9 @@ module RuboCop
             ensure_valid_preferred_delimiters
 
             if preferred_delimiters_config.key?('default')
-              PERCENT_LITERAL_TYPES.map do |type|
+              PERCENT_LITERAL_TYPES.to_h do |type|
                 [type, preferred_delimiters_config[type] || preferred_delimiters_config['default']]
-              end.to_h
+              end
             else
               preferred_delimiters_config
             end

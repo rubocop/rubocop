@@ -69,7 +69,7 @@ module RuboCop
 
           keep_first_when_comment(case_range, corrector)
 
-          when_nodes[1..-1].each do |when_node|
+          when_nodes[1..].each do |when_node|
             corrector.replace(when_node.loc.keyword, 'elsif')
           end
         end

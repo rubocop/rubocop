@@ -95,7 +95,7 @@ module RuboCop
           # Cleanup indentation in a multiline block
           source_lines = source.split("\n")
 
-          source_lines[1..-1].each do |line|
+          source_lines[1..].each do |line|
             next if line.empty?
 
             line[range] = ''

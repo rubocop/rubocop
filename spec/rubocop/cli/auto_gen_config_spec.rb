@@ -313,7 +313,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       YAML
       create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
       expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[8..-1].map(&:chomp))
+      expect(File.readlines('.rubocop_todo.yml')[8..].map(&:chomp))
         .to eq(['# Offense count: 1',
                 '# This cop supports safe auto-correction (--auto-correct).',
                 '# Configuration parameters: AllowForAlignment, ' \
@@ -355,7 +355,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
       create_file('.rubocop_todo.yml', [''])
       expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[8..-1].join)
+      expect(File.readlines('.rubocop_todo.yml')[8..].join)
         .to eq(['# Offense count: 1',
                 '# This cop supports safe auto-correction (--auto-correct).',
                 '# Configuration parameters: AllowInHeredoc.',
@@ -405,7 +405,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         YAML
         expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml])).to eq(0)
         expect(Dir['.*']).to include('.rubocop_todo.yml')
-        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # This cop supports safe auto-correction (--auto-correct).
@@ -446,7 +446,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect($stderr.string).to eq('')
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['.*']).to include('.rubocop_todo.yml')
-        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # Configuration parameters: AllowedPatterns, IgnoredPatterns.
@@ -488,7 +488,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect(cli.run(%w[--auto-gen-config])).to eq(0)
         expect($stderr.string).to eq('')
         expect(Dir['.*']).to include('.rubocop_todo.yml')
-        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # This cop supports unsafe auto-correction (--auto-correct-all).
@@ -522,7 +522,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect(cli.run(%w[--auto-gen-config])).to eq(0)
         expect($stderr.string).to eq('')
         expect(Dir['.*']).to include('.rubocop_todo.yml')
-        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # This cop supports safe auto-correction (--auto-correct).
@@ -560,7 +560,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect($stderr.string).to eq('')
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['dir/.*']).to include('dir/.rubocop_todo.yml')
-        todo_contents = File.read('dir/.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('dir/.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # This cop supports safe auto-correction (--auto-correct).
@@ -1168,7 +1168,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
       it 'disables cop if --exclude-limit is exceeded' do
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(0)
-        expect(File.readlines('.rubocop_todo.yml')[8..-1].join)
+        expect(File.readlines('.rubocop_todo.yml')[8..].join)
           .to eq(<<~YAML)
             # Offense count: 3
             # This cop supports safe auto-correction (--auto-correct).
@@ -1189,7 +1189,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       it 'generates Exclude list if --exclude-limit is not exceeded' do
         create_file('example4.rb', ['$!'])
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '10'])).to eq(0)
-        expect(File.readlines('.rubocop_todo.yml')[8..-1].join)
+        expect(File.readlines('.rubocop_todo.yml')[8..].join)
           .to eq(<<~YAML)
             # Offense count: 4
             # This cop supports safe auto-correction (--auto-correct).
@@ -1235,7 +1235,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
 
       expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[10..-1].join)
+      expect(File.readlines('.rubocop_todo.yml')[10..].join)
         .to eq(<<~YAML)
           # Configuration parameters: EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
           # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
@@ -1249,7 +1249,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)', 'h(b: 2)'])
 
       expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[10..-1].join)
+      expect(File.readlines('.rubocop_todo.yml')[10..].join)
         .to eq(<<~YAML)
           # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
           # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys

@@ -248,54 +248,44 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
     RUBY
   end
 
-  context 'when using Ruby 2.6 or newer', :ruby26 do
-    it 'flags _.to_h{...} when transform_keys could be used' do
-      expect_offense(<<~RUBY)
-        x.to_h {|k, v| [k.to_sym, v]}
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `to_h {...}`.
-      RUBY
+  it 'flags _.to_h{...} when transform_keys could be used' do
+    expect_offense(<<~RUBY)
+      x.to_h {|k, v| [k.to_sym, v]}
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_keys` over `to_h {...}`.
+    RUBY
 
-      expect_correction(<<~RUBY)
-        x.transform_keys {|k| k.to_sym}
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when both key & value are transformed' do
-      expect_no_offenses(<<~RUBY)
-        x.to_h { |k, v| [k.to_sym, foo(v)] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is an array literal' do
-      expect_no_offenses(<<~RUBY)
-        [1, 2, 3].to_h { |k, v| [k.to_sym, v] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is `each_with_index`' do
-      expect_no_offenses(<<~RUBY)
-        [1, 2, 3].each_with_index.to_h { |k, v| [k.to_sym, v] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is `with_index`' do
-      expect_no_offenses(<<~RUBY)
-        [1, 2, 3].each.with_index.to_h { |k, v| [k.to_sym, v] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is `zip`' do
-      expect_no_offenses(<<~RUBY)
-        %i[a b c].zip([1, 2, 3]).to_h { |k, v| [k.to_sym, v] }
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      x.transform_keys {|k| k.to_sym}
+    RUBY
   end
 
-  context 'below Ruby 2.6', :ruby25 do
-    it 'does not flag _.to_h{...}' do
-      expect_no_offenses(<<~RUBY)
-        x.to_h {|k, v| [k.to_sym, v]}
-      RUBY
-    end
+  it 'does not flag `_.to_h{...}` when both key & value are transformed' do
+    expect_no_offenses(<<~RUBY)
+      x.to_h { |k, v| [k.to_sym, foo(v)] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is an array literal' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].to_h { |k, v| [k.to_sym, v] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is `each_with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each_with_index.to_h { |k, v| [k.to_sym, v] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is `with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each.with_index.to_h { |k, v| [k.to_sym, v] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is `zip`' do
+    expect_no_offenses(<<~RUBY)
+      %i[a b c].zip([1, 2, 3]).to_h { |k, v| [k.to_sym, v] }
+    RUBY
   end
 end

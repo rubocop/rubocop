@@ -15,7 +15,7 @@ module RuboCop
       def self.for(class_name)
         parts = class_name.split('::')
         name_deep_enough = parts.length >= 4
-        new(name_deep_enough ? parts[2..-1] : parts.last(2))
+        new(name_deep_enough ? parts[2..] : parts.last(2))
       end
 
       def self.parse(identifier)

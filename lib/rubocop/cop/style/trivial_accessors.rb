@@ -206,7 +206,7 @@ module RuboCop
         def names_match?(node)
           ivar_name, = *node.body
 
-          node.method_name.to_s.sub(/[=?]$/, '') == ivar_name[1..-1]
+          node.method_name.to_s.sub(/[=?]$/, '') == ivar_name[1..]
         end
 
         def trivial_accessor_kind(node)

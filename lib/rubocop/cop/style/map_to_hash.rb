@@ -29,10 +29,7 @@ module RuboCop
       #
       class MapToHash < Base
         extend AutoCorrector
-        extend TargetRubyVersion
         include RangeHelp
-
-        minimum_target_ruby_version 2.6
 
         MSG = 'Pass a block to `to_h` instead of calling `%<method>s.to_h`.'
         RESTRICT_ON_SEND = %i[to_h].freeze

@@ -119,7 +119,7 @@ module RuboCop
           arguments = node.arguments.reverse
           mixins = ["#{node.method_name} #{arguments.first.source}"]
 
-          arguments[1..-1].inject(mixins) do |replacement, arg|
+          arguments[1..].inject(mixins) do |replacement, arg|
             replacement << "#{indent(node)}#{node.method_name} #{arg.source}"
           end.join("\n")
         end

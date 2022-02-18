@@ -233,7 +233,7 @@ module RuboCop
           if start_index.nil?
             [to_module_name(components.last)]
           else
-            components[start_index..-1].map { |c| to_module_name(c) }
+            components[start_index..].map { |c| to_module_name(c) }
           end
         end
 

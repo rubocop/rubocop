@@ -110,7 +110,7 @@ module RuboCop
 
         def check_aligned(children, start_index)
           base_column = children[start_index - 1].loc.column
-          children[start_index..-1].each do |child|
+          children[start_index..].each do |child|
             @column_delta = base_column - child.loc.column
             add_offense_and_correction(child, MSG_ALIGN) if @column_delta != 0
             base_column = child.loc.column

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-return unless RUBY_VERSION >= '2.6'
-
 require_relative '../../tasks/changelog'
 
 RSpec.describe Changelog do
