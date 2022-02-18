@@ -40,11 +40,10 @@ module RuboCop
 
         def on_def(node)
           return if node.single_line?
-          return unless !node.arguments? && (node_arguments_loc_begin = node.arguments.loc.begin)
+          return unless !node.arguments? && (node_arguments = node.arguments.source_range)
 
-          add_offense(node_arguments_loc_begin) do |corrector|
-            corrector.remove(node_arguments_loc_begin)
-            corrector.remove(node.arguments.loc.end)
+          add_offense(node_arguments) do |corrector|
+            corrector.remove(node_arguments)
           end
         end
         alias on_defs on_def
