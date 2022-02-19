@@ -38,6 +38,10 @@ module RuboCop
       #     end
       #   end
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because the scope of
+      #   variables is different between `each` and `for`.
+      #
       class For < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
