@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
   context 'TargetRubyVersion <= 2.6', :ruby26 do
-    it 'does not registers an offense when using restarg with block arg' do
+    it 'does not register an offense when using restarg with block arg' do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           bar(*args, &block)

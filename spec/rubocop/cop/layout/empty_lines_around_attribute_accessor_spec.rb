@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
-  it 'does not registers an offense and corrects when using `if` ... `else` branches' do
+  it 'does not register an offense and corrects when using `if` ... `else` branches' do
     expect_no_offenses(<<~RUBY)
       if condition
         attr_reader :foo

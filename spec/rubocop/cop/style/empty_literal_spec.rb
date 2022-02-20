@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'does not registers an offense Array.new with block' do
+    it 'does not register an offense Array.new with block' do
       expect_no_offenses('test = Array.new { 1 }')
     end
 

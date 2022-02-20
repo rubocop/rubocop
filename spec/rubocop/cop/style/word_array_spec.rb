@@ -561,7 +561,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         'EnforcedStyle' => 'percent' }
     end
 
-    it 'does not autocorrects arrays of one symbol if MinSize > 1' do
+    it 'does not autocorrect arrays of one symbol if MinSize > 1' do
       expect_no_offenses('["one"]')
     end
   end
