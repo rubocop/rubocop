@@ -98,7 +98,6 @@ Here are a few examples:
 * Describe the brief of the change. The sentence should end with a punctuation.
 * If this is a breaking change, mark it with `**(Breaking)**`.
 * At the end of the entry, add an implicit link to your GitHub user page as `([@username][])`.
-* Alternatively, you may modify the CHANGELOG.md file directly, but this may result in conflicts later on.
 
 [1]: https://github.com/rubocop/rubocop/issues
 [2]: https://www.gun.io/blog/how-to-github-fork-branch-and-pull-request
