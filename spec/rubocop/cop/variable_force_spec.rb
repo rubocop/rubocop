@@ -21,7 +21,17 @@ RSpec.describe RuboCop::Cop::VariableForce do
     end
 
     context 'when processing an empty regex' do
-      let(:node) { s(:match_with_lvasgn, s(:regexp, s(:regopt)), s(:str)) }
+      let(:node) { parse_source('// =~ ""').ast }
+
+      it 'does not raise an error' do
+        expect { force.process_node(node) }.not_to raise_error
+      end
+    end
+
+    # FIXME: Remove `broken_on: jruby` when JRuby incompatible is resolved:
+    # https://github.com/jruby/jruby/issues/7113
+    context 'when processing a regex with regopt', broken_on: :jruby do
+      let(:node) { parse_source('/\x82/n =~ "a"').ast }
 
       it 'does not raise an error' do
         expect { force.process_node(node) }.not_to raise_error
@@ -30,13 +40,11 @@ RSpec.describe RuboCop::Cop::VariableForce do
 
     context 'when processing a regexp with a line break at the start of capture parenthesis' do
       let(:node) do
-        s(:match_with_lvasgn,
-          s(:regexp,
-            s(:str, "(\n"),
-            s(:str, "  pattern\n"),
-            s(:str, ')'),
-            s(:regopt)),
-          s(:send, nil?, :string))
+        parse_source(<<~REGEXP).ast
+          /(
+           pattern
+          )/ =~ string
+        REGEXP
       end
 
       it 'does not raise an error' do
