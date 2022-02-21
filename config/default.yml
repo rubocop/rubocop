@@ -3544,8 +3544,9 @@ Style/For:
   Description: 'Checks use of for or each in multiline loops.'
   StyleGuide: '#no-for-loops'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.13'
-  VersionChanged: '0.59'
+  VersionChanged: '<<next>>'
   EnforcedStyle: each
   SupportedStyles:
     - each
