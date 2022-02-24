@@ -65,13 +65,13 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -P, --[no-]parallel              Use available CPUs to execute inspection in
                                                parallel. Default is true.
                   --fail-level SEVERITY        Minimum severity for exit with error code.
-                                               [A] autocorrect
-                                               [I] info
-                                               [R] refactor
-                                               [C] convention
-                                               [W] warning
-                                               [E] error
-                                               [F] fatal
+                                                 [A] autocorrect
+                                                 [I] info
+                                                 [R] refactor
+                                                 [C] convention
+                                                 [W] warning
+                                                 [E] error
+                                                 [F] fatal
 
           Caching:
               -C, --cache FLAG                 Use result caching (FLAG=true) or don't
