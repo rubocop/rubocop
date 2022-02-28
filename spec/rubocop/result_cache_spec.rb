@@ -45,7 +45,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it 'is valid and can be loaded' do
         cache.save(offenses)
         cache2 = described_class.new(file, team, options2, config_store, cache_root)
-        expect(cache2.valid?).to eq(true)
+        expect(cache2.valid?).to be(true)
         saved_offenses = cache2.load
         expect(saved_offenses).to eq(offenses)
       end
@@ -129,7 +129,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache.save(offenses)
           create_file('example.rb', ['x = 2'])
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(false)
+          expect(cache2.valid?).to be(false)
         end
       end
 
@@ -139,7 +139,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             cache.save(offenses)
             FileUtils.chmod('+x', file)
             cache2 = described_class.new(file, team, options, config_store, cache_root)
-            expect(cache2.valid?).to eq(false)
+            expect(cache2.valid?).to be(false)
           end
         end
       end
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             end
           end
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(false)
+          expect(cache2.valid?).to be(false)
         end
       end
 
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache.save(offenses)
           allow(team).to(receive(:external_dependency_checksum).and_return('bar'))
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(false)
+          expect(cache2.valid?).to be(false)
         end
       end
 
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache.save(offenses)
           allow(team).to(receive(:external_dependency_checksum).and_return('foo'))
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(true)
+          expect(cache2.valid?).to be(true)
         end
       end
 
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             cache2.save(offenses)
             # The cache file has not been created because there was a symlink in
             # its path.
-            expect(cache2.valid?).to eq(false)
+            expect(cache2.valid?).to be(false)
             expect($stderr.string).to match(/Warning: .* is a symlink, which is not allowed.\n/)
           end
         end
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           it 'permits caching and prints no warning' do
             cache2.save(offenses)
 
-            expect(cache2.valid?).to eq(true)
+            expect(cache2.valid?).to be(true)
             expect($stderr.string).not_to match(/Warning: .* is a symlink, which is not allowed.\n/)
           end
         end
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         cache2 = described_class.new(file, team,
                                      { only: ['Layout/LineLength'] },
                                      config_store, cache_root)
-        expect(cache2.valid?).to eq(false)
+        expect(cache2.valid?).to be(false)
       end
     end
 
@@ -261,7 +261,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         cache.save(offenses)
         cache2 = described_class.new(file, team, { display_cop_names: true },
                                      config_store, cache_root)
-        expect(cache2.valid?).to eq(false)
+        expect(cache2.valid?).to be(false)
       end
     end
 

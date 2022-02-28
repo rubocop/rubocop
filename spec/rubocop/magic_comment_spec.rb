@@ -162,31 +162,31 @@ RSpec.describe RuboCop::MagicComment do
     context 'with an empty string' do
       let(:comment) { '' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with a non magic comment' do
       let(:comment) { '# do something' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'with an encoding comment' do
       let(:comment) { '# encoding: utf-8' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with an frozen string literal comment' do
       let(:comment) { '# frozen-string-literal: true' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'with an shareable constant value comment' do
       let(:comment) { '# shareable-constant-value: literal' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -196,37 +196,37 @@ RSpec.describe RuboCop::MagicComment do
     context 'when given comment specified as `none`' do
       let(:comment) { '# shareable_constant_value: none' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given comment specified as `literal`' do
       let(:comment) { '# shareable_constant_value: literal' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given comment specified as `experimental_everything`' do
       let(:comment) { '# shareable_constant_value: experimental_everything' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given comment specified as `experimental_copy`' do
       let(:comment) { '# shareable_constant_value: experimental_copy' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given comment specified as unknown value' do
       let(:comment) { '# shareable_constant_value: unknown' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when given comment is not specified' do
       let(:comment) { '' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 

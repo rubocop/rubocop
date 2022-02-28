@@ -115,7 +115,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     it 'does not include `Safe: true`' do
       cop_names.each do |name|
         safe = config.dig(name, 'Safe')
-        expect(safe).not_to eq(true), "`#{name}` has unnecessary `Safe: true` config."
+        expect(safe).not_to be(true), "`#{name}` has unnecessary `Safe: true` config."
       end
     end
   end
@@ -165,7 +165,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'has a reference' do
-          issues.each { |issue| expect(issue[:ref].blank?).to eq(false) }
+          issues.each { |issue| expect(issue[:ref].blank?).to be(false) }
         end
 
         it 'has a valid issue number prefixed with #' do

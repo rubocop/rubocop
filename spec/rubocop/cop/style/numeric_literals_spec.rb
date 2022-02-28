@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
           ^^^^^^^^^^^^ [...]
         RUBY
 
-        expect(enabled).to eq(false)
+        expect(enabled).to be(false)
         expect(min_digits.nil?).to be(true)
       end
 

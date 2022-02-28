@@ -1850,7 +1850,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       it 'does not show the suggestion' do
         expect { cli.run(['example.rb']) }.not_to suggest_extensions
-        expect($stderr.string.blank?).to eq(true)
+        expect($stderr.string.blank?).to be(true)
       end
     end
 

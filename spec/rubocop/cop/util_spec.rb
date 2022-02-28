@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Util do
     let(:node3) { nodes[2] }
 
     it 'returns true when two nodes are on the same line' do
-      expect(described_class.same_line?(node1, node2)).to eq(true)
+      expect(described_class.same_line?(node1, node2)).to be(true)
     end
 
     it 'returns false when two nodes are not on the same line' do
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Util do
     end
 
     it 'can use ranges' do
-      expect(described_class.same_line?(node1.loc.expression, node2)).to eq(true)
+      expect(described_class.same_line?(node1.loc.expression, node2)).to be(true)
     end
 
     it 'returns false if an argument is not a node or range' do

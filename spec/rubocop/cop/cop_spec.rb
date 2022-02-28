@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     describe 'for a custom cop class', :restore_registry do
       let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to true' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to eq(true)
+          expect(cop.offenses.first.corrected?).to be(true)
         end
       end
 
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to false' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to eq(false)
+          expect(cop.offenses.first.corrected?).to be(false)
         end
       end
 
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to false' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to eq(false)
+          expect(cop.offenses.first.corrected?).to be(false)
         end
       end
     end

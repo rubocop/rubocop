@@ -77,14 +77,14 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
     context 'when no files inspected' do
       it 'handles pluralization correctly' do
         formatter.report_summary(0, 0, 0, 0)
-        expect(output.string.empty?).to eq(true)
+        expect(output.string.empty?).to be(true)
       end
     end
 
     context 'when a file inspected and no offenses detected' do
       it 'handles pluralization correctly' do
         formatter.report_summary(1, 0, 0, 0)
-        expect(output.string.empty?).to eq(true)
+        expect(output.string.empty?).to be(true)
       end
     end
 

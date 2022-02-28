@@ -12,25 +12,25 @@ RSpec.describe RuboCop::Cop::AnnotationComment do
     context 'when given a keyword followed by a colon' do
       let(:text) { 'TODO: note' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when given a keyword followed by a space' do
       let(:text) { 'TODO note' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the keyword is not capitalized properly' do
       let(:text) { 'todo: note' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when the keyword is multiple words' do
       let(:text) { 'FOR LATER: note' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when annotated with a non keyword' do
