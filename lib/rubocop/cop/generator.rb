@@ -68,6 +68,7 @@ module RuboCop
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'
 
+                # @!method bad_method?(node)
                 def_node_matcher :bad_method?, <<~PATTERN
                   (send nil? :bad_method ...)
                 PATTERN
