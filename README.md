@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rubocop/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
+  <img src="https://raw.githubusercontent.com/rubocop/rubocop/master/logo/rubo-logo-horizontal.png#gh-light-mode-only" alt="RuboCop Logo"/>
+  <img src="https://user-images.githubusercontent.com/62648036/156576549-8bfa5081-4faa-451d-848c-19332c8a5d78.png)" alt="RuboCop Dark Logo"/>
 </p>
 
 ----------
