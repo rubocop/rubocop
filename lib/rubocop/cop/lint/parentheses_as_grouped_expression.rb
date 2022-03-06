@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = '`(...)` interpreted as grouped expression.'
+        MSG = '`%<argument>s` interpreted as grouped expression.'
 
         def on_send(node)
           return if valid_context?(node)
@@ -28,8 +28,9 @@ module RuboCop
           return unless space_length.positive?
 
           range = space_range(node.first_argument.source_range, space_length)
+          message = format(MSG, argument: node.first_argument.source)
 
-          add_offense(range) { |corrector| corrector.remove(range) }
+          add_offense(range, message: message) { |corrector| corrector.remove(range) }
         end
         alias on_csend on_send
 

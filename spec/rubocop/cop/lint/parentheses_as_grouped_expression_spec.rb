@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
   it 'registers an offense and corrects for method call with space before the parenthesis' do
     expect_offense(<<~RUBY)
       a.func (x)
-            ^ `(...)` interpreted as grouped expression.
+            ^ `(x)` interpreted as grouped expression.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
      'before the parenthesis' do
     expect_offense(<<~RUBY)
       is? (x)
-         ^ `(...)` interpreted as grouped expression.
+         ^ `(x)` interpreted as grouped expression.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     it 'registers an offense and corrects for method call with space before the parenthesis' do
       expect_offense(<<~RUBY)
         a&.func (x)
-               ^ `(...)` interpreted as grouped expression.
+               ^ `(x)` interpreted as grouped expression.
       RUBY
 
       expect_correction(<<~RUBY)
