@@ -191,8 +191,8 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def wrap_backtick(value)
     if value.is_a?(String)
-      # Use `+` to prevent text like `**/*.gemspec` from being bold.
-      value.start_with?('*') ? "`+#{value}+`" : "`#{value}`"
+      # Use `+` to prevent text like `**/*.gemspec`, `spec/**/*` from being bold.
+      value.include?('*') ? "`+#{value}+`" : "`#{value}`"
     else
       "`#{value}`"
     end
