@@ -262,7 +262,7 @@ Gemspec/OrderedDependencies:
     - '**/*.gemspec'
 
 Gemspec/RequireMFA:
-  Description: 'Checks that the gemspec has metadata to require MFA from RubyGems.'
+  Description: 'Checks that the gemspec has metadata to require Multi-Factor Authentication from RubyGems.'
   Enabled: pending
   VersionAdded: '1.23'
   Reference:
