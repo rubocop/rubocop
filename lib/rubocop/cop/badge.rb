@@ -19,7 +19,13 @@ module RuboCop
       end
 
       def self.parse(identifier)
-        new(identifier.split('/'))
+        new(identifier.split('/').map { |i| camel_case(i) })
+      end
+
+      def self.camel_case(name_part)
+        return 'RSpec' if name_part == 'rspec'
+
+        name_part.gsub(/^\w|_\w/) { |match| match[-1, 1].upcase }
       end
 
       def initialize(class_name_parts)
