@@ -2680,36 +2680,24 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.41
-| -
+| 1.26
 |===
 
-This cop looks for error classes inheriting from `Exception`
-and its standard library subclasses, excluding subclasses of
-`StandardError`. It is configurable to suggest using either
-`RuntimeError` (default) or `StandardError` instead.
+This cop looks for error classes inheriting from `Exception`.
+It is configurable to suggest using either `StandardError` (default) or
+`RuntimeError` instead.
+
+=== Safety
+
+This cop's autocorrection is unsafe because `rescue` that omit
+exception class handle `StandardError` and its subclasses,
+but not `Exception` and its subclasses.
 
 === Examples
 
-==== EnforcedStyle: runtime_error (default)
-
-[source,ruby]
-----
-# bad
-
-class C < Exception; end
-
-C = Class.new(Exception)
-
-# good
-
-class C < RuntimeError; end
-
-C = Class.new(RuntimeError)
-----
-
-==== EnforcedStyle: standard_error
+==== EnforcedStyle: standard_error (default)
 
 [source,ruby]
 ----
@@ -2726,14 +2714,31 @@ class C < StandardError; end
 C = Class.new(StandardError)
 ----
 
+==== EnforcedStyle: runtime_error
+
+[source,ruby]
+----
+# bad
+
+class C < Exception; end
+
+C = Class.new(Exception)
+
+# good
+
+class C < RuntimeError; end
+
+C = Class.new(RuntimeError)
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
 
 | EnforcedStyle
-| `runtime_error`
-| `runtime_error`, `standard_error`
+| `standard_error`
+| `standard_error`, `runtime_error`
 |===
 
 == Lint/InterpolationCheck
@@ -4000,16 +4005,14 @@ NOTE: Required Ruby version: 3.0
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
-| No
 | Yes
+| Yes (Unsafe)
 | 1.8
-| -
+| 1.26
 |===
 
 Sort globbed results by default in Ruby 3.0.
 This cop checks for redundant `sort` method to `Dir.glob` and `Dir[]`.
-
-=== Safety
 
 This cop is unsafe, in case of having a file and a directory with
 identical names, since directory will be loaded before the file, which

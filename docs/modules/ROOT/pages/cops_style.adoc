@@ -2316,28 +2316,34 @@ class/singleton methods are checked.
 ----
 # bad
 def foo()
-  # does a thing
+  do_something
 end
 
 # good
 def foo
-  # does a thing
+  do_something
 end
 
-# also good
-def foo() does_a_thing end
+# bad
+def foo() = do_something
+
+# good
+def foo = do_something
+
+# good (without parentheses it's a syntax error)
+def foo() do_something end
 ----
 
 [source,ruby]
 ----
 # bad
 def Baz.foo()
-  # does a thing
+  do_something
 end
 
 # good
 def Baz.foo
-  # does a thing
+  do_something
 end
 ----
 
@@ -2617,7 +2623,7 @@ module A
 | Array
 
 | Exclude
-| `spec/**/*`, `test/**/*`
+| `+spec/**/*+`, `+test/**/*+`
 | Array
 |===
 
@@ -2738,7 +2744,7 @@ end
 | Name | Default value | Configurable values
 
 | Exclude
-| `spec/**/*`, `test/**/*`
+| `+spec/**/*+`, `+test/**/*+`
 | Array
 
 | RequireForNonPublicMethods
@@ -3916,15 +3922,20 @@ a.fdiv(b)
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.13
-| 0.59
+| 1.26
 |===
 
 This cop looks for uses of the `for` keyword or `each` method. The
 preferred alternative is set in the EnforcedStyle configuration
 parameter. An `each` call with a block on a single line is always
 allowed.
+
+=== Safety
+
+This cop's autocorrection is unsafe because the scope of
+variables is different between `each` and `for`.
 
 === Examples
 
@@ -5609,7 +5620,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | Array
 
 | Exclude
-| `**/*.gemfile`, `**/Gemfile`, `**/gems.rb`, `**/*.gemspec`
+| `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`, `+**/*.gemspec+`
 | Array
 |===
 
@@ -7602,6 +7613,34 @@ bar while !foo && baz
 
 * https://rubystyle.guide#until-for-negatives
 
+== Style/NestedFileDirname
+
+NOTE: Required Ruby version: 3.1
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.26
+| -
+|===
+
+This cop checks for nested `File.dirname`.
+It replaces nested `File.dirname` with the level argument introduced in Ruby 3.1.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+File.dirname(File.dirname(path))
+
+# good
+File.dirname(path, 2)
+----
+
 == Style/NestedModifier
 
 |===
@@ -8316,7 +8355,7 @@ bar.baz > 0
 | Array
 
 | Exclude
-| `spec/**/*`
+| `+spec/**/*+`
 | Array
 |===
 

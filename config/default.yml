@@ -1818,7 +1818,7 @@ Lint/InheritException:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.41'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.26'
   # The default base class in favour of `Exception`.
   EnforcedStyle: standard_error
   SupportedStyles:
@@ -2013,7 +2013,7 @@ Lint/RedundantDirGlobSort:
   Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
   Enabled: pending
   VersionAdded: '1.8'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.26'
   SafeAutoCorrect: false
 
 Lint/RedundantRequireStatement:
@@ -3548,7 +3548,7 @@ Style/For:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.13'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.26'
   EnforcedStyle: each
   SupportedStyles:
     - each
@@ -4130,7 +4130,7 @@ Style/NegatedWhile:
 Style/NestedFileDirname:
   Description: 'Checks for nested `File.dirname`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.26'
 
 Style/NestedModifier:
   Description: 'Avoid using nested modifiers.'

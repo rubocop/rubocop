@@ -484,6 +484,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylenegatedifelsecondition[Style/NegatedIfElseCondition]
 * xref:cops_style.adoc#stylenegatedunless[Style/NegatedUnless]
 * xref:cops_style.adoc#stylenegatedwhile[Style/NegatedWhile]
+* xref:cops_style.adoc#stylenestedfiledirname[Style/NestedFileDirname]
 * xref:cops_style.adoc#stylenestedmodifier[Style/NestedModifier]
 * xref:cops_style.adoc#stylenestedparenthesizedcalls[Style/NestedParenthesizedCalls]
 * xref:cops_style.adoc#stylenestedternaryoperator[Style/NestedTernaryOperator]

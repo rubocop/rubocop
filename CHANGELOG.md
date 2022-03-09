@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.26.0 (2022-03-09)
+
 ### New features
 
 * [#10419](https://github.com/rubocop/rubocop/pull/10419): Add new `Style/NestedFileDirname` cop. ([@koic][])

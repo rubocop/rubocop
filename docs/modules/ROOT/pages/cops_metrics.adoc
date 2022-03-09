@@ -148,7 +148,7 @@ end                 # 5 points
 | Array
 
 | Exclude
-| `**/*.gemspec`
+| `+**/*.gemspec+`
 | Array
 |===
 
