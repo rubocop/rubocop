@@ -2013,6 +2013,8 @@ Lint/RedundantDirGlobSort:
   Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
   Enabled: pending
   VersionAdded: '1.8'
+  VersionChanged: '<<next>>'
+  SafeAutoCorrect: false
 
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
