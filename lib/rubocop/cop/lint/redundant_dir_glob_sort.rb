@@ -6,6 +6,11 @@ module RuboCop
       # Sort globbed results by default in Ruby 3.0.
       # This cop checks for redundant `sort` method to `Dir.glob` and `Dir[]`.
       #
+      # @safety
+      # This cop is unsafe, in case of having a file and a directory with
+      # identical names, since directory will be loaded before the file, which
+      # will break `exe/files.rb` that rely on `exe.rb` file.
+      #
       # @example
       #
       #   # bad
