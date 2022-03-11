@@ -15,6 +15,11 @@ module RuboCop
       #     end
       #   end
       #
+      #   # bad
+      #   if condition_b
+      #     do_something
+      #   end if condition_a
+      #
       #   # good
       #   if condition_a && condition_b
       #     do_something
@@ -26,12 +31,21 @@ module RuboCop
       #     do_something if condition_b
       #   end
       #
+      #   # bad
+      #   if condition_b
+      #     do_something
+      #   end if condition_a
+      #
       # @example AllowModifier: true
       #   # good
       #   if condition_a
       #     do_something if condition_b
       #   end
       #
+      #   # good
+      #   if condition_b
+      #     do_something
+      #   end if condition_a
       class SoleNestedConditional < Base
         include RangeHelp
         extend AutoCorrector
@@ -47,7 +61,7 @@ module RuboCop
 
           if_branch = node.if_branch
           return if use_variable_assignment_in_condition?(node.condition, if_branch)
-          return unless offending_branch?(if_branch)
+          return unless offending_branch?(node, if_branch)
 
           message = format(MSG, conditional_type: node.keyword)
           add_offense(if_branch.loc.keyword, message: message) do |corrector|
@@ -72,13 +86,13 @@ module RuboCop
           end
         end
 
-        def offending_branch?(branch)
+        def offending_branch?(node, branch)
           return false unless branch
 
           branch.if_type? &&
             !branch.else? &&
             !branch.ternary? &&
-            !(branch.modifier_form? && allow_modifier?)
+            !((node.modifier_form? || branch.modifier_form?) && allow_modifier?)
         end
 
         def autocorrect(corrector, node, if_branch)
@@ -86,6 +100,14 @@ module RuboCop
             corrector.wrap(node.condition, '(', ')')
           end
 
+          if outer_condition_modify_form?(node, if_branch)
+            autocorrect_outer_condition_modify_form(corrector, node, if_branch)
+          else
+            autocorrect_outer_condition_basic(corrector, node, if_branch)
+          end
+        end
+
+        def autocorrect_outer_condition_basic(corrector, node, if_branch)
           correct_from_unless_to_if(corrector, node) if node.unless?
 
           and_operator = if_branch.unless? ? ' && !' : ' && '
@@ -97,11 +119,17 @@ module RuboCop
           end
         end
 
-        def correct_from_unless_to_if(corrector, node)
+        def autocorrect_outer_condition_modify_form(corrector, node, if_branch)
+          correct_from_unless_to_if(corrector, if_branch, is_modify_form: true) if if_branch.unless?
+          correct_for_outer_condition_modify_form_style(corrector, node, if_branch)
+        end
+
+        def correct_from_unless_to_if(corrector, node, is_modify_form: false)
           corrector.replace(node.loc.keyword, 'if')
 
           condition = node.condition
-          if condition.send_type? && condition.comparison_method? && !condition.parenthesized?
+          if (condition.send_type? && condition.comparison_method? && !condition.parenthesized?) ||
+             (is_modify_form && wrap_condition?(condition))
             corrector.wrap(node.condition, '!(', ')')
           else
             corrector.insert_before(node.condition, '!')
@@ -113,7 +141,7 @@ module RuboCop
           correct_outer_condition(corrector, outer_condition)
 
           condition = if_branch.condition
-          corrector.insert_after(outer_condition, replacement_condition(and_operator, condition))
+          corrector.insert_after(outer_condition, "#{and_operator}#{replace_condition(condition)}")
 
           range = range_between(if_branch.loc.keyword.begin_pos, condition.source_range.end_pos)
           corrector.remove(range_with_surrounding_space(range: range, newlines: false))
@@ -127,6 +155,16 @@ module RuboCop
           corrector.replace(range, and_operator)
           corrector.remove(range_by_whole_lines(node.loc.end, include_final_newline: true))
           corrector.wrap(if_branch.condition, '(', ')') if wrap_condition?(if_branch.condition)
+        end
+
+        def correct_for_outer_condition_modify_form_style(corrector, node, if_branch)
+          condition = if_branch.condition
+          corrector.insert_before(condition,
+                                  "#{'!' if node.unless?}#{replace_condition(node.condition)} && ")
+
+          corrector.remove(node.condition.loc.expression)
+          corrector.remove(range_with_surrounding_space(range: node.loc.keyword, newlines: false))
+          corrector.replace(if_branch.loc.keyword, 'if')
         end
 
         def correct_for_comment(corrector, node, if_branch)
@@ -165,16 +203,16 @@ module RuboCop
             (node.send_type? && node.arguments.any? && !node.parenthesized?)
         end
 
-        def replacement_condition(and_operator, condition)
-          if wrap_condition?(condition)
-            "#{and_operator}(#{condition.source})"
-          else
-            "#{and_operator}#{condition.source}"
-          end
+        def replace_condition(condition)
+          wrap_condition?(condition) ? "(#{condition.source})" : condition.source
         end
 
         def allow_modifier?
           cop_config['AllowModifier']
+        end
+
+        def outer_condition_modify_form?(node, if_branch)
+          node.condition.loc.expression.begin_pos > if_branch.condition.loc.expression.begin_pos
         end
       end
     end
