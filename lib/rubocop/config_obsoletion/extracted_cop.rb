@@ -33,7 +33,9 @@ module RuboCop
         return old_name unless old_name.end_with?('*')
 
         # Handle whole departments (expressed as `Department/*`)
-        config.keys.grep(Regexp.new("^#{department}"))
+        config.keys.select do |key|
+          key == department || key.start_with?("#{department}/")
+        end
       end
 
       def feature_loaded?
