@@ -39,12 +39,7 @@ module RuboCop
           pos + indentation_difference(line)
         end
 
-        # Extend the end position until the start of the next word, if any.
-        # This allows for URIs that are wrapped in quotes or parens to be handled properly
-        # while not allowing additional words to be added after the URL.
-        if (match = line[end_position..line_length(line)]&.match(/^\S+(?=\s|$)/))
-          end_position += match.offset(0).last
-        end
+        end_position = extend_uri_end_position(line, end_position)
 
         return nil if begin_position < max_line_length && end_position < max_line_length
 
@@ -63,6 +58,22 @@ module RuboCop
         return 0 unless tab_indentation_width
 
         (line.index(/[^\t]/) || 0) * (tab_indentation_width - 1)
+      end
+
+      def extend_uri_end_position(line, end_position)
+        # Extend the end position YARD comments with linked URLs of the form {<uri> <title>}
+        if line&.match(/{(\s|\S)*}$/)
+          match = line[end_position..line_length(line)]&.match(/(\s|\S)*}/)
+          end_position += match.offset(0).last
+        end
+
+        # Extend the end position until the start of the next word, if any.
+        # This allows for URIs that are wrapped in quotes or parens to be handled properly
+        # while not allowing additional words to be added after the URL.
+        if (match = line[end_position..line_length(line)]&.match(/^\S+(?=\s|$)/))
+          end_position += match.offset(0).last
+        end
+        end_position
       end
 
       def tab_indentation_width
