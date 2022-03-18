@@ -100,6 +100,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           RUBY
         end
       end
+
+      context 'and the URL is wrapped in braces' do
+        it 'accepts the line' do
+          expect_no_offenses(<<-RUBY)
+            # See: {https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c}
+          RUBY
+        end
+      end
+
+      context 'and the URL is wrapped in braces with title' do
+        it 'accepts the line' do
+          expect_no_offenses(<<-RUBY)
+            # See: {https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c Optional Title}
+          RUBY
+        end
+      end
     end
 
     context 'and the excessive characters include a complete URL' do
@@ -127,6 +143,16 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # See: "https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c" and
                                                                                                      ^^^^ Line is too long. [105/80]
           #   "http://google.com/"
+        RUBY
+      end
+    end
+
+    context 'and the excessive characters include part of a URL in braces and another word' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # See: {https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c} and
+                                                                                                     ^^^^ Line is too long. [105/80]
+          #   http://google.com/
         RUBY
       end
     end
