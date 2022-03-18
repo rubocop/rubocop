@@ -29,7 +29,9 @@ module RuboCop
       #   b c { block }.            <-- b is indented relative to a
       #   d                         <-- d is indented relative to a
       def left_hand_side(lhs)
-        lhs = lhs.parent while lhs.parent&.send_type? && lhs.parent.loc.dot
+        while lhs.parent&.send_type? && lhs.parent.loc.dot && !lhs.parent.assignment_method?
+          lhs = lhs.parent
+        end
         lhs
       end
 
