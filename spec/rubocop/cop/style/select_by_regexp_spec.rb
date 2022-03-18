@@ -249,6 +249,13 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
         RUBY
       end
 
+      it 'does not register an offense when the receiver is `ENV`' do
+        expect_no_offenses(<<~RUBY)
+          ENV.#{method} { |x| x.match? /regexp/ }
+          ::ENV.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
       context 'with `numblock`s', :ruby27 do
         it 'registers an offense and corrects for `match?`' do
           expect_offense(<<~RUBY, method: method)
