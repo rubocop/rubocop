@@ -985,6 +985,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
               .to_s
         RUBY
       end
+
+      it "accepts indentation of assignment to obj.#{lhs} with newline after =" do
+        expect_no_offenses(<<~RUBY)
+          obj.#{lhs} =
+            int_part
+              .abs
+              .to_s
+        RUBY
+      end
     end
 
     include_examples 'assignment', 'a'
