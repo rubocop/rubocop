@@ -20,6 +20,36 @@ RSpec.describe RuboCop::Cop::Style::UnlessElse, :config do
         end
       RUBY
     end
+
+    context 'and nested unless with else' do
+      it 'registers offenses for both but corrects only the outer unless/else' do
+        expect_offense(<<~RUBY)
+          unless abc
+          ^^^^^^^^^^ Do not use `unless` with `else`. Rewrite these with the positive case first.
+            a
+          else
+            unless cde
+            ^^^^^^^^^^ Do not use `unless` with `else`. Rewrite these with the positive case first.
+              b
+            else
+              c
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if abc
+            unless cde
+              b
+            else
+              c
+            end
+          else
+            a
+          end
+        RUBY
+      end
+    end
   end
 
   context 'unless with nested if-else' do
