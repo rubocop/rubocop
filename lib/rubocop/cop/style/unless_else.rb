@@ -32,10 +32,14 @@ module RuboCop
             body_range = range_between_condition_and_else(node, node.condition)
             else_range = range_between_else_and_end(node)
 
+            next if part_of_ignored_node?(node)
+
             corrector.replace(node.loc.keyword, 'if')
             corrector.replace(body_range, else_range.source)
             corrector.replace(else_range, body_range.source)
           end
+
+          ignore_node(node)
         end
 
         def range_between_condition_and_else(node, condition)
