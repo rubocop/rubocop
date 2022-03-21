@@ -105,10 +105,9 @@ module RuboCop
         end
 
         def convertible_block?(node)
-          return false unless node.parent&.block_type?
-
-          send_node = node.parent&.send_node
-          send_node.parenthesized? || !send_node.arguments?
+          parent = node.parent
+          parent&.block_type? && node == parent.send_node &&
+            (node.parenthesized? || !node.arguments?)
         end
 
         def comment_within?(node)
