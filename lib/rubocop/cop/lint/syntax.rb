@@ -9,8 +9,7 @@ module RuboCop
         def on_other_file
           add_offense_from_error(processed_source.parser_error) if processed_source.parser_error
           processed_source.diagnostics.each do |diagnostic|
-            add_offense_from_diagnostic(diagnostic,
-                                        processed_source.ruby_version)
+            add_offense_from_diagnostic(diagnostic, processed_source.ruby_version)
           end
           super
         end

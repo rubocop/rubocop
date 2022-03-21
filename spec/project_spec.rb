@@ -199,10 +199,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
       describe 'body' do
         let(:bodies) do
           entries.map do |entry|
-            entry
-              .gsub(/`[^`]+`/, '``')
-              .sub(/^\*\s*(?:\[.+?\):\s*)?/, '')
-              .sub(/\s*\([^)]+\)$/, '')
+            entry.gsub(/`[^`]+`/, '``').sub(/^\*\s*(?:\[.+?\):\s*)?/, '').sub(/\s*\([^)]+\)$/, '')
           end
         end
 

@@ -246,9 +246,7 @@ RSpec.describe RuboCop::Cop::Team do
 
     context 'when only some cop classes are passed to .new' do
       let(:cop_classes) do
-        RuboCop::Cop::Registry.new(
-          [RuboCop::Cop::Lint::Void, RuboCop::Cop::Layout::LineLength]
-        )
+        RuboCop::Cop::Registry.new([RuboCop::Cop::Lint::Void, RuboCop::Cop::Layout::LineLength])
       end
 
       it 'returns only instances of the classes' do

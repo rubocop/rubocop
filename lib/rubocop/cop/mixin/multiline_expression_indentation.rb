@@ -196,8 +196,7 @@ module RuboCop
 
       def not_for_this_cop?(node)
         node.ancestors.any? do |ancestor|
-          grouped_expression?(ancestor) ||
-            inside_arg_list_parentheses?(node, ancestor)
+          grouped_expression?(ancestor) || inside_arg_list_parentheses?(node, ancestor)
         end
       end
 

@@ -173,9 +173,7 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
     ['X =', '$x =', '@x =', 'x =', 'x +=', 'x ||='].each do |lhs_and_operator|
       context "for assignment with #{lhs_and_operator}" do
         let(:aligned_strings) do
-          [%(#{lhs_and_operator} "a" \\),
-           "#{' ' * lhs_and_operator.length} 'b'",
-           ''].join("\n")
+          [%(#{lhs_and_operator} "a" \\), "#{' ' * lhs_and_operator.length} 'b'", ''].join("\n")
         end
 
         it 'accepts aligned strings' do
@@ -263,9 +261,7 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
     ['X =', '$x =', '@x =', 'x =', 'x +=', 'x ||='].each do |lhs_and_operator|
       context "for assignment with #{lhs_and_operator}" do
         let(:indented_strings) do
-          [%(#{lhs_and_operator} "a" \\),
-           "  'b'",
-           ''].join("\n")
+          [%(#{lhs_and_operator} "a" \\), "  'b'", ''].join("\n")
         end
 
         it 'accepts indented strings' do

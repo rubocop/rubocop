@@ -52,8 +52,7 @@ module RuboCop
         output.puts
 
         per_cop_counts.each do |cop_name, count|
-          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}" \
-                      "#{cop_name}\n"
+          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}#{cop_name}\n"
         end
         output.puts '--'
         output.puts "#{total_count}  Total"

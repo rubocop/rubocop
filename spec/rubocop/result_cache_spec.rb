@@ -7,11 +7,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
   let(:registry) { RuboCop::Cop::Registry.global }
   let(:team) do
-    RuboCop::Cop::Team.mobilize(
-      registry,
-      RuboCop::ConfigLoader.default_configuration,
-      options
-    )
+    RuboCop::Cop::Team.mobilize(registry, RuboCop::ConfigLoader.default_configuration, options)
   end
 
   let(:file) { 'example.rb' }
@@ -283,8 +279,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           "unused var \xF0",
           (+'unused var あ').force_encoding(::Encoding::ASCII_8BIT)
         ].map do |message|
-          RuboCop::Cop::Offense.new(:warning, location, message,
-                                    'Lint/UselessAssignment')
+          RuboCop::Cop::Offense.new(:warning, location, message, 'Lint/UselessAssignment')
         end
       end
 

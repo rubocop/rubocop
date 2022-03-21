@@ -42,10 +42,7 @@ module RuboCop
           return if node.endless? || !trailing_end?(node)
 
           add_offense(node.loc.end) do |corrector|
-            corrector.insert_before(
-              node.loc.end,
-              "\n#{' ' * node.loc.keyword.column}"
-            )
+            corrector.insert_before(node.loc.end, "\n#{' ' * node.loc.keyword.column}")
           end
         end
 

@@ -103,11 +103,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
 
   context 'when checking for methods with no side effects' do
     let(:config) do
-      RuboCop::Config.new(
-        'Lint/Void' => {
-          'CheckForMethodsWithNoSideEffects' => true
-        }
-      )
+      RuboCop::Config.new('Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => true })
     end
 
     it 'registers an offense if not on last line' do
@@ -129,11 +125,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
 
   context 'when not checking for methods with no side effects' do
     let(:config) do
-      RuboCop::Config.new(
-        'Lint/Void' => {
-          'CheckForMethodsWithNoSideEffects' => false
-        }
-      )
+      RuboCop::Config.new('Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => false })
     end
 
     it 'does not register an offense for void nonmutating methods' do

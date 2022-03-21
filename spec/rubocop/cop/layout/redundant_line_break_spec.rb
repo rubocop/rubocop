@@ -123,39 +123,39 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
 
         it 'registers an offense for a method without parentheses on multiple lines' do
           expect_offense(<<~RUBY)
-                      def resolve_inheritance_from_gems(hash)
-                        gems = hash.delete('inherit_gem')
-                        (gems || {}).each_pair do |gem_name, config_path|
-                          if gem_name == 'rubocop'
-                            raise ArgumentError,
-                            ^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
-                                  "can't inherit configuration from the rubocop gem"
-                          end
+            def resolve_inheritance_from_gems(hash)
+              gems = hash.delete('inherit_gem')
+              (gems || {}).each_pair do |gem_name, config_path|
+                if gem_name == 'rubocop'
+                  raise ArgumentError,
+                  ^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+                        "can't inherit configuration from the rubocop gem"
+                end
 
-                          hash['inherit_from'] = Array(hash['inherit_from'])
-                          Array(config_path).reverse_each do |path|
-                            # Put gem configuration first so local configuration overrides it.
-                            hash['inherit_from'].unshift gem_config_path(gem_name, path)
-                          end
-                        end
-                      end
+                hash['inherit_from'] = Array(hash['inherit_from'])
+                Array(config_path).reverse_each do |path|
+                  # Put gem configuration first so local configuration overrides it.
+                  hash['inherit_from'].unshift gem_config_path(gem_name, path)
+                end
+              end
+            end
           RUBY
 
           expect_correction(<<~RUBY)
-                      def resolve_inheritance_from_gems(hash)
-                        gems = hash.delete('inherit_gem')
-                        (gems || {}).each_pair do |gem_name, config_path|
-                          if gem_name == 'rubocop'
-                            raise ArgumentError, "can't inherit configuration from the rubocop gem"
-                          end
+            def resolve_inheritance_from_gems(hash)
+              gems = hash.delete('inherit_gem')
+              (gems || {}).each_pair do |gem_name, config_path|
+                if gem_name == 'rubocop'
+                  raise ArgumentError, "can't inherit configuration from the rubocop gem"
+                end
 
-                          hash['inherit_from'] = Array(hash['inherit_from'])
-                          Array(config_path).reverse_each do |path|
-                            # Put gem configuration first so local configuration overrides it.
-                            hash['inherit_from'].unshift gem_config_path(gem_name, path)
-                          end
-                        end
-                      end
+                hash['inherit_from'] = Array(hash['inherit_from'])
+                Array(config_path).reverse_each do |path|
+                  # Put gem configuration first so local configuration overrides it.
+                  hash['inherit_from'].unshift gem_config_path(gem_name, path)
+                end
+              end
+            end
           RUBY
         end
       end

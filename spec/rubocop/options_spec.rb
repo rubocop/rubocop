@@ -288,22 +288,19 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     describe '--fail-level' do
       it 'accepts full severity names' do
         %w[info refactor convention warning error fatal].each do |severity|
-          expect { options.parse(['--fail-level', severity]) }
-            .not_to raise_error
+          expect { options.parse(['--fail-level', severity]) }.not_to raise_error
         end
       end
 
       it 'accepts severity initial letters' do
         %w[I R C W E F].each do |severity|
-          expect { options.parse(['--fail-level', severity]) }
-            .not_to raise_error
+          expect { options.parse(['--fail-level', severity]) }.not_to raise_error
         end
       end
 
       it 'accepts the "fake" severities A/autocorrect' do
         %w[autocorrect A].each do |severity|
-          expect { options.parse(['--fail-level', severity]) }
-            .not_to raise_error
+          expect { options.parse(['--fail-level', severity]) }.not_to raise_error
         end
       end
     end

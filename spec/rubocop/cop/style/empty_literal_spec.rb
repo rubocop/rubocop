@@ -252,9 +252,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
 
     context 'when double-quoted string literals are preferred' do
       let(:other_cops) do
-        super().merge('Style/StringLiterals' => {
-                        'EnforcedStyle' => 'double_quotes'
-                      })
+        super().merge('Style/StringLiterals' => { 'EnforcedStyle' => 'double_quotes' })
       end
 
       it 'registers an offense for String.new' do
