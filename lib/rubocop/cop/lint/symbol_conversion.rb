@@ -147,13 +147,14 @@ module RuboCop
           # will be ignored.
           return unless node.value.to_s.match?(/\A[a-z0-9_]/i)
 
-          correction = node.value.inspect.delete_prefix(':')
+          correction = node.value.inspect
+          correction = correction.delete_prefix(':') if node.parent.colon?
           return if properly_quoted?(node.source, correction)
 
           register_offense(
             node,
             correction: correction,
-            message: format(MSG, correction: "#{correction}:")
+            message: format(MSG, correction: node.parent.colon? ? "#{correction}:" : correction)
           )
         end
 
