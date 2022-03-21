@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
                             ^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
                                   "can't inherit configuration from the rubocop gem"
                           end
-            #{'      '}
+
                           hash['inherit_from'] = Array(hash['inherit_from'])
                           Array(config_path).reverse_each do |path|
                             # Put gem configuration first so local configuration overrides it.
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
                           if gem_name == 'rubocop'
                             raise ArgumentError, "can't inherit configuration from the rubocop gem"
                           end
-            #{'      '}
+
                           hash['inherit_from'] = Array(hash['inherit_from'])
                           Array(config_path).reverse_each do |path|
                             # Put gem configuration first so local configuration overrides it.
@@ -170,6 +170,23 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
 
         expect_correction(<<~RUBY)
           my_method(1, 2, "x")
+        RUBY
+      end
+
+      it 'registers an offense for a method call on multiple lines inside a block' do
+        expect_offense(<<~RUBY)
+          some_array.map do |something|
+            my_method(
+            ^^^^^^^^^^ Redundant line break detected.
+              something,
+            )
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          some_array.map do |something|
+            my_method( something, )
+          end
         RUBY
       end
 
