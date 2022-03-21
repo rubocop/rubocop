@@ -185,8 +185,7 @@ module RuboCop
 
         def check_members_for_indented_internal_methods_style(members)
           each_member(members) do |member, previous_modifier|
-            check_indentation(previous_modifier, member,
-                              indentation_consistency_style)
+            check_indentation(previous_modifier, member, indentation_consistency_style)
           end
         end
 

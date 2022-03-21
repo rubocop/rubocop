@@ -102,8 +102,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
 
     before do
-      allow(processed_source.comment_config).to receive(:cop_enabled_at_line?)
-        .and_return(false)
+      allow(processed_source.comment_config).to receive(:cop_enabled_at_line?).and_return(false)
     end
 
     context 'ignore_disable_comments is false' do

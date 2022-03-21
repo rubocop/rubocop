@@ -1260,8 +1260,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           context 'and offenses come from the cache' do
             context 'and a message has binary encoding' do
               let(:message_from_cache) do
-                (+'Cyclomatic complexity for 文 is too high. [8/6]')
-                  .force_encoding('ASCII-8BIT')
+                (+'Cyclomatic complexity for 文 is too high. [8/6]').force_encoding('ASCII-8BIT')
               end
               let(:data_from_cache) do
                 [

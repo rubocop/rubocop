@@ -47,8 +47,7 @@ module RuboCop
           branch_bodies = [*case_node.when_branches.map(&:body), case_node.else_branch].compact
 
           return if branch_bodies.any? do |body|
-            body.return_type? ||
-            body.each_descendant.any?(&:return_type?)
+            body.return_type? || body.each_descendant.any?(&:return_type?)
           end
 
           add_offense(case_node.loc.keyword) { |corrector| autocorrect(corrector, case_node) }

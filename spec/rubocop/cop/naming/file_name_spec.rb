@@ -278,10 +278,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'when CheckDefinitionPathHierarchy is false' do
     let(:cop_config) do
-      super().merge(
-        'ExpectMatchingDefinition' => true,
-        'CheckDefinitionPathHierarchy' => false
-      )
+      super().merge('ExpectMatchingDefinition' => true, 'CheckDefinitionPathHierarchy' => false)
     end
 
     context 'on a file with a matching class' do
@@ -417,10 +414,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'with acronym namespace' do
     let(:cop_config) do
-      super().merge(
-        'ExpectMatchingDefinition' => true,
-        'AllowedAcronyms' => ['CLI']
-      )
+      super().merge('ExpectMatchingDefinition' => true, 'AllowedAcronyms' => ['CLI'])
     end
 
     it 'does not register an offense' do
@@ -437,10 +431,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'with acronym class name' do
     let(:cop_config) do
-      super().merge(
-        'ExpectMatchingDefinition' => true,
-        'AllowedAcronyms' => ['CLI']
-      )
+      super().merge('ExpectMatchingDefinition' => true, 'AllowedAcronyms' => ['CLI'])
     end
 
     it 'does not register an offense' do
@@ -455,10 +446,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
 
   context 'with include acronym name' do
     let(:cop_config) do
-      super().merge(
-        'ExpectMatchingDefinition' => true,
-        'AllowedAcronyms' => ['HTTP']
-      )
+      super().merge('ExpectMatchingDefinition' => true, 'AllowedAcronyms' => ['HTTP'])
     end
 
     it 'does not register an offense' do

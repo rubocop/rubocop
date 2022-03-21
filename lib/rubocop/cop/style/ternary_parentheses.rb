@@ -184,8 +184,7 @@ module RuboCop
 
         def unsafe_autocorrect?(condition)
           condition.children.any? do |child|
-            unparenthesized_method_call?(child) ||
-              below_ternary_precedence?(child)
+            unparenthesized_method_call?(child) || below_ternary_precedence?(child)
           end
         end
 

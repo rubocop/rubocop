@@ -60,9 +60,7 @@ RSpec.describe RuboCop::Cop::Offense do
 
   describe '#severity_level' do
     subject(:severity_level) do
-      described_class.new(severity, location, 'message', 'CopName')
-                     .severity
-                     .level
+      described_class.new(severity, location, 'message', 'CopName').severity.level
     end
 
     context 'when severity is :info' do
@@ -137,8 +135,7 @@ RSpec.describe RuboCop::Cop::Offense do
 
   context 'offenses that span multiple lines' do
     subject(:offense) do
-      described_class
-        .new(:convention, location, 'message', 'CopName', :corrected)
+      described_class.new(:convention, location, 'message', 'CopName', :corrected)
     end
 
     let(:location) do
@@ -160,8 +157,7 @@ RSpec.describe RuboCop::Cop::Offense do
 
   context 'offenses that span part of a line' do
     subject(:offense) do
-      described_class
-        .new(:convention, location, 'message', 'CopName', :corrected)
+      described_class.new(:convention, location, 'message', 'CopName', :corrected)
     end
 
     let(:location) do

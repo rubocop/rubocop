@@ -11,8 +11,7 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     Parser::Source::Range.new(source_buffer, 2, 10)
   end
   let(:offense) do
-    RuboCop::Cop::Offense.new(:convention, location,
-                              'This is message', 'CopName', :corrected)
+    RuboCop::Cop::Offense.new(:convention, location, 'This is message', 'CopName', :corrected)
   end
 
   describe '#started' do

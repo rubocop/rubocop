@@ -46,11 +46,7 @@ module RuboCop
 
           duplicated_gem_nodes.each do |nodes|
             nodes[1..-1].each do |node|
-              register_offense(
-                node,
-                node.first_argument.to_a.first,
-                nodes.first.first_line
-              )
+              register_offense(node, node.first_argument.to_a.first, nodes.first.first_line)
             end
           end
         end

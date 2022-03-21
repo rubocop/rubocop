@@ -101,8 +101,7 @@ module RuboCop
             children = node.masgn_type? ? node.children[0].children : node.children
 
             will_be_miscounted = children.count do |child|
-              child.respond_to?(:setter_method?) &&
-                !child.setter_method?
+              child.respond_to?(:setter_method?) && !child.setter_method?
             end
             @assignment += will_be_miscounted
 

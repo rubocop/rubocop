@@ -40,8 +40,7 @@ module RuboCop
         output.puts
 
         per_file_counts.each do |file_name, count|
-          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}" \
-                      "#{file_name}\n"
+          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}#{file_name}\n"
         end
         output.puts '--'
         output.puts "#{total_count}  Total"

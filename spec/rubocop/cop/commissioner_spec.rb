@@ -35,8 +35,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
     let(:processed_source) { parse_source(source, 'file.rb') }
     let(:cop_offenses) { [] }
     let(:cop_report) do
-      RuboCop::Cop::Base::InvestigationReport
-        .new(nil, processed_source, cop_offenses, nil)
+      RuboCop::Cop::Base::InvestigationReport.new(nil, processed_source, cop_offenses, nil)
     end
 
     around { |example| RuboCop::Cop::Registry.with_temporary_global { example.run } }
