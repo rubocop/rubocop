@@ -1,1 +1,0 @@
-* [#10456](https://github.com/rubocop/rubocop/issues/10456): Fix a false positive for `Layout/MultilineMethodCallIndentation` when using `EnforcedStyle: indented` with indented assignment method. ([@koic][])

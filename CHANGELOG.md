@@ -2,6 +2,15 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#10375](https://github.com/rubocop/rubocop/pull/10375): Fix error for auto-correction of `unless`/`else` nested inside each other. ([@jonas054][])
+* [#10457](https://github.com/rubocop/rubocop/pull/10457): Make `Style/SelectByRegexp` aware of `ENV` const. ([@koic][])
+* [#10462](https://github.com/rubocop/rubocop/issues/10462): Fix an incorrect autocorrect for `Lint/SymbolConversion` when using a quoted symbol key with hash rocket. ([@koic][])
+* [#10456](https://github.com/rubocop/rubocop/issues/10456): Fix a false positive for `Layout/MultilineMethodCallIndentation` when using `EnforcedStyle: indented` with indented assignment method. ([@koic][])
+* [#10459](https://github.com/rubocop/rubocop/pull/10459): Fix a false positive for `Layout/LineLength` when long URIs in yardoc comments to have titles. ([@ydah][])
+* [#10447](https://github.com/rubocop/rubocop/pull/10447): Fix an error for `Style/SoleNestedConditional` raises exception when inspecting `if ... end if ...`. ([@ydah][])
+
 ## 1.26.0 (2022-03-09)
 
 ### New features
@@ -6091,3 +6100,5 @@
 [@nickpellant]: https://github.com/nickpellant
 [@friendlyantz]: https://github.com/friendlyantz
 [@issyl0]: https://github.com/issyl0
+[@ydah]: https://github.com/ydah
+[@ydah]: https://github.com/ydah
