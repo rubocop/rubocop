@@ -4524,6 +4524,11 @@ Style/RedundantFreeze:
   VersionAdded: '0.34'
   VersionChanged: '0.66'
 
+Style/RedundantInitialize:
+  Description: 'Checks for redundant `initialize` methods.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
   Enabled: true
