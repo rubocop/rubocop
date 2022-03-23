@@ -189,6 +189,15 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when assigning the block arg' do
+        expect_no_offenses(<<~RUBY)
+          def example(&block)
+            block ||= -> { :foo }
+            bar(&block)
+          end
+        RUBY
+      end
     end
 
     context 'Ruby < 3.0', :ruby30 do
@@ -308,6 +317,15 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
       it 'does not register an offense when defining without block argument method' do
         expect_no_offenses(<<~RUBY)
           def foo(arg1, arg2)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when assigning the block arg' do
+        expect_no_offenses(<<~RUBY)
+          def example(&block)
+            block ||= -> { :foo }
+            bar(&block)
           end
         RUBY
       end
