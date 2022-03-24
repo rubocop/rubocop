@@ -5,6 +5,17 @@ module RuboCop
     module Style
       # Favor `File.(bin)write` convenience methods.
       #
+      # NOTE: There are different method signatures between `File.write` (class method)
+      # and `File#write` (instance method). The following case will be allowed because
+      # static analysis does not know the contents of the splat argument:
+      #
+      # [source,ruby]
+      # ----
+      # File.open(filename, 'w') do |f|
+      #   f.write(*objects)
+      # end
+      # ----
+      #
       # @example
       #   ## text mode
       #   # bad
@@ -85,6 +96,7 @@ module RuboCop
           content = send_write?(node) || block_write?(node) do |block_arg, lvar, write_arg|
             write_arg if block_arg == lvar
           end
+          return false if content&.splat_type?
 
           yield(content) if content
         end
