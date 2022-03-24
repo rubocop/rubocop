@@ -9,6 +9,14 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
     RUBY
   end
 
+  it 'does not register an offense when a splat argument is passed to `f.write`' do
+    expect_no_offenses(<<~RUBY)
+      File.open(filename, 'w') do |f|
+        f.write(*objects)
+      end
+    RUBY
+  end
+
   described_class::TRUNCATING_WRITE_MODES.each do |mode|
     it "registers an offense for and corrects `File.open(filename, '#{mode}').write(content)`" do
       write_method = mode.end_with?('b') ? :binwrite : :write
