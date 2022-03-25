@@ -217,7 +217,7 @@ module RuboCop
       alias eql? ==
 
       def hash
-        COMPARISON_ATTRIBUTES.reduce(0) { |hash, attribute| hash ^ public_send(attribute).hash }
+        COMPARISON_ATTRIBUTES.map { |attribute| public_send(attribute) }.hash
       end
 
       # @api public
