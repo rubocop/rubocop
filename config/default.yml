@@ -2784,6 +2784,11 @@ Naming/VariableNumber:
 
 #################### Security ##############################
 
+Security/CompoundHash:
+  Description: 'When overwriting Object#hash to combine values, prefer delegating to Array#hash over writing a custom implementation.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
   Enabled: true
