@@ -122,6 +122,24 @@ RSpec.describe RuboCop::Cop::Lint::IncompatibleIoSelectWithFiberScheduler, :conf
     RUBY
   end
 
+  it 'registers an offense when using `IO.select` with read argument and using return value but does not autocorrect' do
+    expect_offense(<<~RUBY)
+      rs, _ = IO.select([rp], [])
+              ^^^^^^^^^^^^^^^^^^^ Use `rp.wait_readable` instead of `IO.select([rp], [])`.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense when using `IO.select` with write argument and using return value but does not autocorrect' do
+    expect_offense(<<~RUBY)
+      _, ws = IO.select([], [wp])
+              ^^^^^^^^^^^^^^^^^^^ Use `wp.wait_writable` instead of `IO.select([], [wp])`.
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense when using `IO.select` with multiple read arguments' do
     expect_no_offenses(<<~RUBY)
       IO.select([foo, bar], [], [])

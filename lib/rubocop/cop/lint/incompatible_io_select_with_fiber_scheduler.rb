@@ -6,6 +6,15 @@ module RuboCop
       #
       # This cop checks for `IO.select` that is incompatible with Fiber Scheduler since Ruby 3.0.
       #
+      # NOTE: When the method is successful the return value of `IO.select` is `[[IO]]`,
+      # and the return value of `io.wait_readable` and `io.wait_writable` are `self`.
+      # They are not auto-corrected when assigning a return value because these types are different.
+      # It's up to user how to handle the return value.
+      #
+      # @safety
+      #   This cop's autocorrection is unsafe because `NoMethodError` occurs
+      #   if `require 'io/wait'` is not called.
+      #
       # @example
       #
       #   # bad
@@ -19,10 +28,6 @@ module RuboCop
       #
       #   # good
       #   io.wait_writable(timeout)
-      #
-      # @safety
-      #   This cop's autocorrection is unsafe because `NoMethodError` occurs
-      #   if `require 'io/wait'` is not called.
       #
       class IncompatibleIoSelectWithFiberScheduler < Base
         extend AutoCorrector
@@ -45,6 +50,8 @@ module RuboCop
           message = format(MSG, preferred: preferred, current: node.source)
 
           add_offense(node, message: message) do |corrector|
+            next if node.parent&.assignment?
+
             corrector.replace(node, preferred)
           end
         end
