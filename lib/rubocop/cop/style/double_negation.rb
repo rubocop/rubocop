@@ -72,9 +72,14 @@ module RuboCop
         def end_of_method_definition?(node)
           return false unless (def_node = find_def_node_from_ascendant(node))
 
+          conditional_node = find_conditional_node_from_ascendant(node)
           last_child = find_last_child(def_node.body)
 
-          last_child.last_line == node.last_line
+          if conditional_node
+            double_negative_condition_return_value?(node, last_child, conditional_node)
+          else
+            last_child.last_line == node.last_line
+          end
         end
 
         def find_def_node_from_ascendant(node)
@@ -82,6 +87,13 @@ module RuboCop
           return parent if parent.def_type? || parent.defs_type?
 
           find_def_node_from_ascendant(node.parent)
+        end
+
+        def find_conditional_node_from_ascendant(node)
+          return unless (parent = node.parent)
+          return parent if parent.conditional?
+
+          find_conditional_node_from_ascendant(parent)
         end
 
         def find_last_child(node)
@@ -92,6 +104,25 @@ module RuboCop
             find_last_child(node.child_nodes.first)
           else
             node.child_nodes.last
+          end
+        end
+
+        def double_negative_condition_return_value?(node, last_child, conditional_node)
+          parent = find_parent_not_enumerable(node)
+          if parent.begin_type?
+            node.loc.line == parent.loc.last_line
+          else
+            last_child.last_line <= conditional_node.last_line
+          end
+        end
+
+        def find_parent_not_enumerable(node)
+          return unless (parent = node.parent)
+
+          if parent.pair_type? || parent.hash_type? || parent.array_type?
+            find_parent_not_enumerable(parent)
+          else
+            parent
           end
         end
       end
