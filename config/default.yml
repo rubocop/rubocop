@@ -1166,6 +1166,7 @@ Layout/RedundantLineBreak:
                  on a single line.
   Enabled: false
   InspectBlocks: false
+  InspectBlocksOnAllLevels: true
   VersionAdded: '1.13'
 
 Layout/RescueEnsureAlignment:

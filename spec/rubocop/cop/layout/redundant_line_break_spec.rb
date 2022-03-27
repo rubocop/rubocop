@@ -3,13 +3,17 @@
 RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
   let(:config) do
     RuboCop::Config.new('Layout/LineLength' => { 'Max' => max_line_length },
-                        'Layout/RedundantLineBreak' => { 'InspectBlocks' => inspect_blocks },
+                        'Layout/RedundantLineBreak' => {
+                          'InspectBlocks' => inspect_blocks,
+                          'InspectBlocksOnAllLevels' => inspect_blocks_on_all_levels
+                        },
                         'Layout/SingleLineBlockChain' => {
                           'Enabled' => single_line_block_chain_enabled
                         })
   end
   let(:max_line_length) { 31 }
   let(:single_line_block_chain_enabled) { true }
+  let(:inspect_blocks_on_all_levels) { true }
 
   shared_examples 'common behavior' do
     context 'when Layout/SingleLineBlockChain is disabled' do
@@ -447,6 +451,48 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
 
     context 'for a block' do
       let(:max_line_length) { 82 }
+
+      context 'when InspectBlocksOnAllLevels is true' do
+        it 'registers one offense for two levels of blocks and corrects both levels' do
+          expect_offense(<<~RUBY)
+            respond_to do |f|
+            ^^^^^^^^^^^^^^^^^ Redundant line break detected.
+              f.json do
+                render(json: feedbacks)
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            respond_to do |f| f.json do render(json: feedbacks) end end
+          RUBY
+        end
+      end
+
+      context 'when InspectBlocksOnAllLevels is false' do
+        let(:inspect_blocks_on_all_levels) { false }
+
+        it 'registers an offense for the innermost of three levels of blocks' do
+          expect_offense(<<~RUBY)
+            foo do
+              respond_to do |f|
+                f.json do
+                ^^^^^^^^^ Redundant line break detected.
+                  render(json: feedbacks)
+                end
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo do
+              respond_to do |f|
+                f.json do render(json: feedbacks) end
+              end
+            end
+          RUBY
+        end
+      end
 
       it 'registers an offense when the method call has parentheses' do
         expect_offense(<<~RUBY)

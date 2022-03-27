@@ -33,14 +33,29 @@ module RuboCop
       #     puts x
       #   end
       #
-      # @example InspectBlocks: true
+      # @example InspectBlocks: true (not default), InspectBlocksOnAllLevels: true (default)
       #   # bad
       #   foo(a) do |x|
-      #     puts x
+      #     bar do |y|
+      #       puts [x, y]
+      #     end
       #   end
       #
       #   # good
-      #   foo(a) { |x| puts x }
+      #   foo(a) { |x| bar { |y| puts [x, y] } }
+      #
+      # @example InspectBlocks: true, InspectBlocksOnAllLevels: false
+      #   # bad
+      #   foo(a) do |x|
+      #     bar do |y|
+      #       puts [x, y]
+      #     end
+      #   end
+      #
+      #   # good
+      #   foo(a) do |x|
+      #     bar { |y| puts [x, y] }
+      #   end
       #
       class RedundantLineBreak < Base
         include CheckAssignment
@@ -49,17 +64,25 @@ module RuboCop
         MSG = 'Redundant line break detected.'
 
         def on_send(node)
-          # Include "the whole expression".
+          inspect_whole_expression(node) unless part_of_block_to_skip?(node)
+        end
+
+        private
+
+        def inspect_whole_expression(node)
           node = node.parent while convertible_block?(node) ||
                                    node.parent.is_a?(RuboCop::AST::BinaryOperatorNode) ||
                                    node.parent&.send_type?
 
-          return unless offense?(node) && !part_of_ignored_node?(node)
-
-          register_offense(node)
+          register_offense(node) if offense?(node) && !part_of_ignored_node?(node)
         end
 
-        private
+        def part_of_block_to_skip?(node)
+          parent = node.parent
+          return false unless parent&.block_type?
+
+          !cop_config['InspectBlocksOnAllLevels'] && parent.children.compact.any?(&:block_type?)
+        end
 
         def check_assignment(node, _rhs)
           return unless offense?(node)
