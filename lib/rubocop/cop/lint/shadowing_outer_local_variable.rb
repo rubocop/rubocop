@@ -57,9 +57,19 @@ module RuboCop
 
           outer_local_variable = variable_table.find_variable(variable.name)
           return unless outer_local_variable
+          return if same_conditions_node_different_branch?(variable, outer_local_variable)
 
           message = format(MSG, variable: variable.name)
           add_offense(variable.declaration_node, message: message)
+        end
+
+        def same_conditions_node_different_branch?(variable, outer_local_variable)
+          variable_node = variable.scope.node.parent
+          return false unless variable_node.conditional?
+
+          outer_local_variable_node = outer_local_variable.scope.node
+
+          outer_local_variable_node.conditional? && variable_node == outer_local_variable_node
         end
       end
     end
