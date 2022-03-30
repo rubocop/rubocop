@@ -2327,8 +2327,8 @@ Lint/UselessMethodDefinition:
   Description: 'Checks for useless method definitions.'
   Enabled: true
   VersionAdded: '0.90'
+  VersionChanged: '0.91'
   Safe: false
-  AllowComments: true
 
 Lint/UselessRuby2Keywords:
   Description: 'Finds unnecessary uses of `ruby2_keywords`.'
