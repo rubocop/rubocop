@@ -39,6 +39,29 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     RUBY
   end
 
+  it 'registers an offense for missing `elsif` body that is not the one with a comment' do
+    expect_offense(<<~RUBY)
+      if condition
+        do_something
+      elsif other_condition
+      ^^^^^^^^^^^^^^^^^^^^^ Avoid `elsif` branches without a body.
+      else
+        # noop
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for missing `elsif` body with an inline comment' do
+    expect_no_offenses(<<~RUBY)
+      if condition
+        do_something
+      elsif other_condition # no op, but avoid going into the else
+      else
+        do_other_things
+      end
+    RUBY
+  end
+
   it 'registers an offense for missing `unless` body' do
     expect_offense(<<~RUBY)
       unless condition

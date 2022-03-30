@@ -44,6 +44,7 @@ module RuboCop
       #
       class EmptyInPattern < Base
         extend TargetRubyVersion
+        include CommentsHelp
 
         MSG = 'Avoid `in` branches without a body.'
 
@@ -51,7 +52,8 @@ module RuboCop
 
         def on_case_match(node)
           node.in_pattern_branches.each do |branch|
-            next if branch.body || (cop_config['AllowComments'] && comment_lines?(node))
+            next if branch.body
+            next if cop_config['AllowComments'] && contains_comments?(branch)
 
             add_offense(branch)
           end
