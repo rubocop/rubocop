@@ -65,9 +65,8 @@ module RuboCop
 
       def use_modifier_form_without_parenthesized_method_call?(ancestor)
         return false if ancestor.respond_to?(:parenthesized?) && ancestor.parenthesized?
-        return false unless (parent = ancestor.parent)
 
-        parent.respond_to?(:modifier_form?) && parent.modifier_form?
+        ancestor.ancestors.any? { |node| node.respond_to?(:modifier_form?) && node.modifier_form? }
       end
 
       def without_parentheses_call_expr_follows?(ancestor)
