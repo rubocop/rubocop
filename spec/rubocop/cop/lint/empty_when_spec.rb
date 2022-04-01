@@ -172,6 +172,29 @@ RSpec.describe RuboCop::Cop::Lint::EmptyWhen, :config do
         end
       RUBY
     end
+
+    it 'registers an offense for missing when body without a comment' do
+      expect_offense(<<~RUBY)
+        case condition
+        when foo
+          42 # magic number
+        when bar
+        ^^^^^^^^ Avoid `when` branches without a body.
+        when baz # more comments mixed
+          21 # another magic number
+        end
+      RUBY
+    end
+
+    it 'accepts an empty when ... then body with a comment' do
+      expect_no_offenses(<<~RUBY)
+        case condition
+        when foo
+          do_something
+        when bar then # do nothing
+        end
+      RUBY
+    end
   end
 
   context 'when `AllowComments: false`' do

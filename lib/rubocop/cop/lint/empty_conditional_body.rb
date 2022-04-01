@@ -53,11 +53,13 @@ module RuboCop
       #   end
       #
       class EmptyConditionalBody < Base
+        include CommentsHelp
+
         MSG = 'Avoid `%<keyword>s` branches without a body.'
 
         def on_if(node)
           return if node.body
-          return if cop_config['AllowComments'] && comment_lines?(node)
+          return if cop_config['AllowComments'] && contains_comments?(node)
 
           add_offense(node, message: format(MSG, keyword: node.keyword))
         end
