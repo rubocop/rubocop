@@ -44,7 +44,8 @@ module RuboCop
         if extra_space?(left_token, :left) && !start_ok
           space_offense(node, left_token, :right, message, NO_SPACE_COMMAND)
         end
-        return if !extra_space?(right_token, :right) || end_ok
+        return if (!extra_space?(right_token, :right) || end_ok) ||
+                  (autocorrect_with_disable_uncorrectable? && !start_ok)
 
         space_offense(node, right_token, :left, message, NO_SPACE_COMMAND)
       end
@@ -58,7 +59,8 @@ module RuboCop
         unless extra_space?(left_token, :left) || start_ok
           space_offense(node, left_token, :none, message, SPACE_COMMAND)
         end
-        return if extra_space?(right_token, :right) || end_ok
+        return if (extra_space?(right_token, :right) || end_ok) ||
+                  (autocorrect_with_disable_uncorrectable? && !start_ok)
 
         space_offense(node, right_token, :none, message, SPACE_COMMAND)
       end
