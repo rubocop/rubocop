@@ -4447,6 +4447,19 @@ Style/RandomWithOffset:
   Enabled: true
   VersionAdded: '0.52'
 
+Style/ReadingEnvVarWithoutDefaultValue:
+  Description: >-
+                 This cop detects code that does not return default values nor
+                 raise errors when reading unset environment variables.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  ExcludedEnvVars:
+    - HOME
+    - RUBOCOP_CACHE_ROOT
+    - XDG_CACHE_HOME
+    - XDG_CONFIG_HOME
+    - CIRCLE_STAGE
+
 Style/RedundantArgument:
   Description: 'Check for a redundant argument passed to certain methods.'
   Enabled: pending
