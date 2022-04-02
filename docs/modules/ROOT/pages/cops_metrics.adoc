@@ -363,7 +363,7 @@ end               # 5 points
 | Boolean
 
 | Max
-| `10`
+| `16`
 | Integer
 
 | CountAsOne
