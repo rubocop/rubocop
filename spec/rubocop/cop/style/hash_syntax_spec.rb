@@ -1001,6 +1001,12 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'does not register an offense when `return` with one line `if` condition follows (without parentheses)' do
+        expect_no_offenses(<<~RUBY)
+          return foo value: value if bar
+        RUBY
+      end
+
       it 'registers an offense when one line `until` condition follows (with parentheses)' do
         expect_offense(<<~RUBY)
           foo(value: value) until bar
