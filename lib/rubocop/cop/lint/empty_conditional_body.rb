@@ -4,6 +4,12 @@ module RuboCop
   module Cop
     module Lint
       # This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.
+      #
+      # @safety
+      #   This cop's autocorrection is unsafe because
+      #   it's possible that the condition itself results
+      #   in some side-effect.
+      #
       # @example
       #   # bad
       #   if condition
