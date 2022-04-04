@@ -9,14 +9,15 @@ module RuboCop
       # @example
       #   # bad
       #   ENV['X']
+      #   ENV['X'] || z
       #   y || ENV['X']
       #
       #   # good
       #   ENV.fetch('X', nil)
+      #   ENV.fetch('X', nil) || z
       #   y || ENV.fetch('X', nil)
       #
       #   # also good
-      #   ENV['X'] || z
       #   !ENV['X']
       #   ENV['X'].some_method # (e.g. `.nil?`)
       #
@@ -47,6 +48,7 @@ module RuboCop
           expression.str_type? && cop_config['ExcludedEnvVars'].include?(expression.value)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def offensive?(node)
           only_node_of_expression?(node) ||
             method_argument?(node) ||
@@ -54,8 +56,10 @@ module RuboCop
             hash_key?(node) ||
             compared?(node) ||
             case?(node) ||
+            left_operand_of_or?(node) ||
             last_child_of_parent_node?(node)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def case?(node)
           node.parent&.case_type? || node.parent&.when_type?
@@ -87,6 +91,12 @@ module RuboCop
           return false unless node.parent&.send_type?
 
           node.parent.comparison_method?
+        end
+
+        def left_operand_of_or?(node)
+          return false unless node.parent&.or_type?
+
+          node.parent.children.first == node
         end
 
         def last_child_of_parent_node?(node)

@@ -49,6 +49,7 @@ Style/ReadingEnvVarWithoutDefaultValue:
     - XDG_CACHE_HOME
     - XDG_CONFIG_HOME
     - CIRCLE_STAGE
+    - CI
 
 Layout/EndOfLine:
   EnforcedStyle: lf
