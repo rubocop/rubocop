@@ -56,7 +56,7 @@ module RuboCop
             hash_key?(node) ||
             compared?(node) ||
             case?(node) ||
-            left_operand_of_or?(node) ||
+            operand_of_or?(node) ||
             last_child_of_parent_node?(node)
         end
         # rubocop:enable Metrics/CyclomaticComplexity
@@ -93,10 +93,10 @@ module RuboCop
           node.parent.comparison_method?
         end
 
-        def left_operand_of_or?(node)
+        def operand_of_or?(node)
           return false unless node.parent&.or_type?
 
-          node.parent.children.first == node
+          node.parent.children.include?(node)
         end
 
         def last_child_of_parent_node?(node)

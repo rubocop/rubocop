@@ -54,23 +54,17 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     end
   end
 
-  context 'when the node is the left operand of a logical operator' do
+  context 'when the node is an operand of `||`' do
     it 'registers no offenses with `||`' do
       expect_offense(<<~RUBY)
-        ENV['X'] || z
+        ENV['X'] || y
         ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
-    end
 
-    it 'registers no offenses with `&&`' do
-      expect_no_offenses(<<~RUBY)
-        ENV['X'] && z
+      expect_correction(<<~RUBY)
+        ENV.fetch('X', nil) || y
       RUBY
-    end
-  end
 
-  context 'when the node is the right operand of a logical operator' do
-    it 'registers an offense' do
       expect_offense(<<~RUBY)
         y || ENV['X']
              ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
@@ -81,12 +75,12 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
       RUBY
 
       expect_offense(<<~RUBY)
-        y && ENV['X']
+        z || ENV['X'] || y
              ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
-        y && ENV.fetch('X', nil)
+        z || ENV.fetch('X', nil) || y
       RUBY
     end
   end
