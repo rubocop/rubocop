@@ -42,6 +42,14 @@ Style/IpAddresses:
   Exclude:
     - spec/rubocop/cop/style/ip_addresses_spec.rb
 
+Style/ReadingEnvVarWithoutDefaultValue:
+  ExcludedEnvVars:
+    - HOME
+    - RUBOCOP_CACHE_ROOT
+    - XDG_CACHE_HOME
+    - XDG_CONFIG_HOME
+    - CIRCLE_STAGE
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 

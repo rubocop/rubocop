@@ -4453,12 +4453,8 @@ Style/ReadingEnvVarWithoutDefaultValue:
                  raise errors when reading unset environment variables.
   Enabled: pending
   VersionAdded: '<<next>>'
-  ExcludedEnvVars:
-    - HOME
-    - RUBOCOP_CACHE_ROOT
-    - XDG_CACHE_HOME
-    - XDG_CONFIG_HOME
-    - CIRCLE_STAGE
+  # Environment Variables to be excluded for the inspection.
+  ExcludedEnvVars: []
 
 Style/RedundantArgument:
   Description: 'Check for a redundant argument passed to certain methods.'
