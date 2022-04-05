@@ -64,7 +64,7 @@ module RuboCop
 
         # @!method not_implemented?(node)
         def_node_matcher :not_implemented?, <<~PATTERN
-          {(send nil? :raise (const {nil? cbase} :NotImplementedError))
+          {(send nil? :raise (const {nil? cbase} :NotImplementedError) ...)
            (send nil? :fail ...)}
         PATTERN
 
