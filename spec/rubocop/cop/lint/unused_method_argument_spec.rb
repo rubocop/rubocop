@@ -466,6 +466,14 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
+    it 'accepts a method with a single unused parameter & raises NotImplementedError, message' do
+      expect_no_offenses(<<~RUBY)
+        def method(arg)
+          raise NotImplementedError, message
+        end
+      RUBY
+    end
+
     it 'accepts a method with a single unused parameter & raises ::NotImplementedError' do
       expect_no_offenses(<<~RUBY)
         def method(arg)
