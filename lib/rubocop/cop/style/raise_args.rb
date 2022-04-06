@@ -107,8 +107,7 @@ module RuboCop
 
           first_arg = node.first_argument
 
-          return unless first_arg.send_type? && first_arg.method?(:new)
-          return if acceptable_exploded_args?(first_arg.arguments)
+          return if !use_new_method?(first_arg) || acceptable_exploded_args?(first_arg.arguments)
 
           return if allowed_non_exploded_type?(first_arg)
 
@@ -118,6 +117,10 @@ module RuboCop
             corrector.replace(node, replacement)
             opposite_style_detected
           end
+        end
+
+        def use_new_method?(first_arg)
+          first_arg.send_type? && first_arg.receiver && first_arg.method?(:new)
         end
 
         def acceptable_exploded_args?(args)
