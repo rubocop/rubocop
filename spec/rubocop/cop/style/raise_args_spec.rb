@@ -320,5 +320,9 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     it 'accepts a raise with msg argument' do
       expect_no_offenses('raise msg')
     end
+
+    it 'accepts a raise with `new` method without receiver' do
+      expect_no_offenses('raise new')
+    end
   end
 end
