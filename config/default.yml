@@ -4656,7 +4656,7 @@ Style/SafeNavigation:
                   be `nil` or truthy, but never `false`.
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '0.77'
+  VersionChanged: <<next>>
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
@@ -4667,6 +4667,8 @@ Style/SafeNavigation:
     - try
     - try!
   SafeAutoCorrect: false
+  # Maximum length of method chains for register an offense.
+  MaxChainLength: 2
 
 Style/Sample:
   Description: >-
