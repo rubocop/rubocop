@@ -871,6 +871,48 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
             RUBY
           end
 
+          context 'MaxChainLength: 1' do
+            let(:cop_config) { { 'MaxChainLength' => 1 } }
+
+            it 'registers an offense for an object check followed by 1 chained method calls' do
+              expect_offense(<<~RUBY, variable: variable)
+                %{variable} && %{variable}.one
+                ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                #{variable}&.one
+              RUBY
+            end
+
+            it 'allows an object check followed by 2 chained method calls' do
+              expect_no_offenses(<<~RUBY)
+                #{variable} && #{variable}.one.two
+              RUBY
+            end
+          end
+
+          context 'MaxChainLength: 3' do
+            let(:cop_config) { { 'MaxChainLength' => 3 } }
+
+            it 'registers an offense for an object check followed by 3 chained method calls' do
+              expect_offense(<<~RUBY, variable: variable)
+                %{variable} && %{variable}.one.two.three
+                ^{variable}^^^^^{variable}^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                #{variable}&.one&.two&.three
+              RUBY
+            end
+
+            it 'allows an object check followed by 4 chained method calls' do
+              expect_no_offenses(<<~RUBY)
+                #{variable} && #{variable}.one.two.three.fore
+              RUBY
+            end
+          end
+
           context 'with Lint/SafeNavigationChain disabled' do
             let(:config) do
               RuboCop::Config.new('Lint/SafeNavigationChain' => {
