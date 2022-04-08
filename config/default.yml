@@ -3634,10 +3634,11 @@ Style/GuardClause:
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
   VersionAdded: '0.20'
-  VersionChanged: '0.22'
+  VersionChanged: <<next>>
   # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
   # needs to have to trigger this cop
   MinBodyLength: 1
+  AllowConsecutiveConditionals: false
 
 Style/HashAsLastArrayItem:
   Description: >-

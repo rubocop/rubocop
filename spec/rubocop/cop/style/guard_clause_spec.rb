@@ -269,6 +269,63 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
   end
 
+  context 'AllowConsecutiveConditionals: false' do
+    let(:cop_config) { { 'AllowConsecutiveConditionals' => false } }
+
+    it 'reports an offense when not allowed same depth multiple if statement and' \
+       'preceding expression is a conditional at the same depth' do
+      expect_offense(<<~RUBY)
+        def func
+          if foo?
+            work
+          end
+
+          if bar?
+          ^^ Use a guard clause (`return unless bar?`) instead of wrapping the code inside a conditional expression.
+            work
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'AllowConsecutiveConditionals: true' do
+    let(:cop_config) { { 'AllowConsecutiveConditionals' => true } }
+
+    it 'does not register an offense when allowed same depth multiple if statement and' \
+       'preceding expression is not a conditional at the same depth' do
+      expect_no_offenses(<<~RUBY)
+        def func
+          if foo?
+            work
+          end
+
+          if bar?
+            work
+          end
+        end
+      RUBY
+    end
+
+    it 'reports an offense when allowed same depth multiple if statement and' \
+       'preceding expression is not a conditional at the same depth' do
+      expect_offense(<<~RUBY)
+        def func
+          if foo?
+            work
+          end
+
+          do_something
+
+          if bar?
+          ^^ Use a guard clause (`return unless bar?`) instead of wrapping the code inside a conditional expression.
+            work
+          end
+        end
+      RUBY
+    end
+  end
+
   shared_examples 'on if nodes which exit current scope' do |kw|
     it "registers an error with #{kw} in the if branch" do
       expect_offense(<<~RUBY)
