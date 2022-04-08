@@ -2062,7 +2062,7 @@ Lint/RefinementImportMethods:
   Description: 'Use `Refinement#import_methods` when using `include` or `prepend` in `refine` block.'
   Enabled: pending
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.27'
 
 Lint/RegexpAsCondition:
   Description: >-
@@ -4533,7 +4533,7 @@ Style/RedundantFreeze:
 Style/RedundantInitialize:
   Description: 'Checks for redundant `initialize` methods.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.27'
 
 Style/RedundantInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
@@ -4656,7 +4656,7 @@ Style/SafeNavigation:
                   be `nil` or truthy, but never `false`.
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: <<next>>
+  VersionChanged: '1.27'
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false

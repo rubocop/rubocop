@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.27.0 (2022-04-08)
+
 ### New features
 
 * [#10500](https://github.com/rubocop/rubocop/pull/10500): Add new `Lint/RefinementImportMethods` cop. ([@koic][])
