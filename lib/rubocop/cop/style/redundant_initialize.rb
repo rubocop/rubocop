@@ -96,6 +96,8 @@ module RuboCop
       #
       class RedundantInitialize < Base
         include CommentsHelp
+        include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Remove unnecessary `initialize` method.'
         MSG_EMPTY = 'Remove unnecessary empty `initialize` method.'
@@ -109,19 +111,25 @@ module RuboCop
           return if acceptable?(node)
 
           if node.body.nil?
-            add_offense(node, message: MSG_EMPTY)
+            register_offense(node, MSG_EMPTY)
           else
             return if node.body.begin_type?
 
             if (args, super_node = initialize_forwards?(node))
               return unless same_args?(super_node, args)
 
-              add_offense(node)
+              register_offense(node, MSG)
             end
           end
         end
 
         private
+
+        def register_offense(node, message)
+          add_offense(node, message: message) do |corrector|
+            corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
+          end
+        end
 
         def acceptable?(node)
           !node.method?(:initialize) || forwards?(node) || allow_comments?(node)

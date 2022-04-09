@@ -18,12 +18,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
     RUBY
   end
 
-  it 'registers an offense for an empty `initialize` method' do
+  it 'registers and corrects an offense for an empty `initialize` method' do
     expect_offense(<<~RUBY)
       def initialize
       ^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
       end
     RUBY
+
+    expect_correction('')
   end
 
   it 'does not register an offense for an `initialize` method with only a comment' do
@@ -34,31 +36,37 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
     RUBY
   end
 
-  it 'registers an offense for an `initialize` method that only calls `super`' do
+  it 'registers and corrects an offense for an `initialize` method that only calls `super`' do
     expect_offense(<<~RUBY)
       def initialize
       ^^^^^^^^^^^^^^ Remove unnecessary `initialize` method.
         super
       end
     RUBY
+
+    expect_correction('')
   end
 
-  it 'registers an offense for an `initialize` method with arguments that only calls `super`' do
+  it 'registers and corrects an offense for an `initialize` method with arguments that only calls `super`' do
     expect_offense(<<~RUBY)
       def initialize(a, b)
       ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `initialize` method.
         super
       end
     RUBY
+
+    expect_correction('')
   end
 
-  it 'registers an offense for an `initialize` method with arguments that only calls `super` with explicit args' do
+  it 'registers and corrects an offense for an `initialize` method with arguments that only calls `super` with explicit args' do
     expect_offense(<<~RUBY)
       def initialize(a, b)
       ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `initialize` method.
         super(a, b)
       end
     RUBY
+
+    expect_correction('')
   end
 
   it 'does not register an offense for an `initialize` method that calls another method' do
@@ -103,13 +111,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
     RUBY
   end
 
-  it 'registers an offense for an `initialize` method with no arguments that calls `super` with no arguments' do
+  it 'registers and corrects an offense for an `initialize` method with no arguments that calls `super` with no arguments' do
     expect_offense(<<~RUBY)
       def initialize()
       ^^^^^^^^^^^^^^^^ Remove unnecessary `initialize` method.
         super()
       end
     RUBY
+
+    expect_correction('')
   end
 
   it 'does not register an offense for an `initialize` method with a default argument that calls `super`' do
@@ -176,13 +186,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
   context 'when `AllowComments: false`' do
     let(:cop_config) { { 'AllowComments' => false } }
 
-    it 'registers an offense for an `initialize` method with only a comment' do
+    it 'registers and corrects an offense for an `initialize` method with only a comment' do
       expect_offense(<<~RUBY)
         def initialize
         ^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
           # initializer
         end
       RUBY
+
+      expect_correction('')
     end
   end
 end
