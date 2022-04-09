@@ -291,6 +291,48 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
       RUBY
     end
 
+    # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    context 'Ruby >= 2.7', :ruby27 do
+      # rubocop:enable RSpec/RepeatedExampleGroupDescription
+      it 'registers an offense and corrects for `!!` when not return location' \
+         'and using `case`, `in`, and `else`' do
+        expect_offense(<<~RUBY)
+          def foo?
+            case pattern
+            in foo
+              !!foo
+              ^ Avoid the use of double negation (`!!`).
+              do_something
+            in bar
+              !!bar
+              ^ Avoid the use of double negation (`!!`).
+              do_something
+            else
+              !!baz
+              ^ Avoid the use of double negation (`!!`).
+              do_something
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo?
+            case pattern
+            in foo
+              !foo.nil?
+              do_something
+            in bar
+              !bar.nil?
+              do_something
+            else
+              !baz.nil?
+              do_something
+            end
+          end
+        RUBY
+      end
+    end
+
     it 'does not register an offense for `!!` when return location' do
       expect_no_offenses(<<~RUBY)
         def foo?
@@ -543,6 +585,39 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
           end
         end
       RUBY
+    end
+
+    # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    context 'Ruby >= 2.7', :ruby27 do
+      # rubocop:enable RSpec/RepeatedExampleGroupDescription
+      it 'does not register an offense for `!!` when return location and using `case`, `in`, and `else`' do
+        expect_no_offenses(<<~RUBY)
+          def foo?
+            case condition
+            in foo
+              !!foo
+            in bar
+              !!bar
+            else
+              !!baz
+            end
+          end
+
+          def bar?
+            case condition
+            in foo
+              do_something
+              !!foo
+            in bar
+              do_something
+              !!bar
+            else
+              do_something
+              !!baz
+            end
+          end
+        RUBY
+      end
     end
   end
 
