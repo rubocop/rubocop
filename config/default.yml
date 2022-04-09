@@ -4451,6 +4451,8 @@ Style/ReadingEnvVarWithoutDefaultValue:
   Description: >-
                  This cop detects code that does not return default values nor
                  raise errors when reading unset environment variables.
+  Reference:
+    - https://rubystyle.guide/#hash-fetch-defaults
   Enabled: pending
   VersionAdded: '<<next>>'
   # Environment Variables to be excluded for the inspection.
