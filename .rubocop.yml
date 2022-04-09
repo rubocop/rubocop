@@ -43,7 +43,7 @@ Style/IpAddresses:
     - spec/rubocop/cop/style/ip_addresses_spec.rb
 
 Style/ReadingEnvVarWithoutDefaultValue:
-  ExcludedEnvVars:
+  AllowedVars:
     - HOME
     - RUBOCOP_CACHE_ROOT
     - XDG_CACHE_HOME

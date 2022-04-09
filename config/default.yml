@@ -4454,7 +4454,7 @@ Style/ReadingEnvVarWithoutDefaultValue:
   Enabled: pending
   VersionAdded: '<<next>>'
   # Environment Variables to be excluded for the inspection.
-  ExcludedEnvVars: []
+  AllowedVars: []
 
 Style/RedundantArgument:
   Description: 'Check for a redundant argument passed to certain methods.'

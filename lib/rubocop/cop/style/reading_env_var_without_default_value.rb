@@ -45,7 +45,7 @@ module RuboCop
         private
 
         def excluded_env_var?(expression)
-          expression.str_type? && cop_config['ExcludedEnvVars'].include?(expression.value)
+          expression.str_type? && cop_config['AllowedVars'].include?(expression.value)
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity

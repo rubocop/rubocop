@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
   end
 
   context 'when the env val is excluded from the inspection by the config' do
-    let(:cop_config) { { 'ExcludedEnvVars' => ['X'] } }
+    let(:cop_config) { { 'AllowedVars' => ['X'] } }
 
     it 'registers no offenses' do
       expect_no_offenses(<<~RUBY)
