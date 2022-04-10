@@ -1180,7 +1180,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             # Offense count: 2
             # This cop supports safe auto-correction (--auto-correct).
             # Configuration parameters: RequireEnglish, EnforcedStyle.
-            # SupportedStyles: use_perl_names, use_english_names
+            # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
             Style/SpecialGlobalVars:
               Enabled: false
           YAML
@@ -1205,7 +1205,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             # Offense count: 3
             # This cop supports safe auto-correction (--auto-correct).
             # Configuration parameters: RequireEnglish, EnforcedStyle.
-            # SupportedStyles: use_perl_names, use_english_names
+            # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
             Style/SpecialGlobalVars:
               Exclude:
                 - 'example1.rb'
