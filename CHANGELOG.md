@@ -549,7 +549,7 @@
 
 ### Changes
 
-* [#7544](https://github.com/rubocop/rubocop/pull/7544): Add --no-parallel (-P/--parallel can not be combined with --auto-correct). ([@kwerle][])
+* [#7544](https://github.com/rubocop/rubocop/pull/7544): Add --no-parallel (-P/--parallel cannot be combined with --auto-correct). ([@kwerle][])
 * [#9648](https://github.com/rubocop/rubocop/pull/9648): Drop support for Ruby 2.4. ([@koic][])
 * [#9647](https://github.com/rubocop/rubocop/pull/9647): The parallel flag will now be automatically ignored when combined with `--auto-correct`, `--auto-gen-config`, or `-F/--fail-fast`. Previously, an error was raised and execution stopped. ([@rrosenblum][])
 

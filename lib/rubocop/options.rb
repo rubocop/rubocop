@@ -405,7 +405,7 @@ module RuboCop
     def validate_cache_enabled_for_cache_root
       return unless @options[:cache] == 'false'
 
-      raise OptionArgumentError, '--cache-root can not be used with --cache false'
+      raise OptionArgumentError, '--cache-root cannot be used with --cache false'
     end
   end
 

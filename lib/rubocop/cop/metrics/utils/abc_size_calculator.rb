@@ -96,7 +96,7 @@ module RuboCop
           end
 
           def compound_assignment(node)
-            # Methods setter can not be detected for multiple assignments
+            # Methods setter cannot be detected for multiple assignments
             # and shorthand assigns, so we'll count them here instead
             children = node.masgn_type? ? node.children[0].children : node.children
 
