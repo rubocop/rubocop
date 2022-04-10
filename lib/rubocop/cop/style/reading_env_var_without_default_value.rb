@@ -3,19 +3,21 @@
 module RuboCop
   module Cop
     module Style
-      # This cop detects code that does not return default values nor
-      # raise errors when reading unset environment variables.
+      # This cop suggests `ENV.fetch` for the replacement of `ENV[]`.
+      # `ENV[]` silently fails and returns `nil` when the environment variable is unset,
+      # which may cause unexpected behaviors when the developer forgets to set it.
+      # On the other hand, `ENV.fetch` raises KeyError or returns the explicitly specified default value.
       #
       # @example
       #   # bad
       #   ENV['X']
       #   ENV['X'] || z
-      #   y || ENV['X']
+      #   x = ENV['X']
       #
       #   # good
-      #   ENV.fetch('X', nil)
+      #   ENV.fetch('X')
       #   ENV.fetch('X', nil) || z
-      #   y || ENV.fetch('X', nil)
+      #   x = ENV.fetch('X')
       #
       #   # also good
       #   !ENV['X']
@@ -24,7 +26,7 @@ module RuboCop
       class ReadingEnvVarWithoutDefaultValue < Base
         extend AutoCorrector
 
-        MSG = 'Use `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
+        MSG = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
 
         # @!method reading_env_without_default_val?(node)
         def_node_matcher :reading_env_without_default_val?, <<~PATTERN

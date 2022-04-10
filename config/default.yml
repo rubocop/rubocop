@@ -4449,13 +4449,12 @@ Style/RandomWithOffset:
 
 Style/ReadingEnvVarWithoutDefaultValue:
   Description: >-
-                 This cop detects code that does not return default values nor
-                 raise errors when reading unset environment variables.
+                 This cop suggests `ENV.fetch` for the replacement of `ENV[]`.
   Reference:
     - https://rubystyle.guide/#hash-fetch-defaults
   Enabled: pending
   VersionAdded: '<<next>>'
-  # Environment Variables to be excluded for the inspection.
+  # Environment variables to be excluded from the inspection.
   AllowedVars: []
 
 Style/RedundantArgument:

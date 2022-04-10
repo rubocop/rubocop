@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ENV['X']
-        ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
 
       expect_offense(<<~RUBY)
         ENV['X' + 'Y']
-        ^^^^^^^^^^^^^^ Use `ENV.fetch('X' + 'Y', nil)` instead of `ENV['X' + 'Y']`.
+        ^^^^^^^^^^^^^^ Use `ENV.fetch('X' + 'Y')` or `ENV.fetch('X' + 'Y', nil)` instead of `ENV['X' + 'Y']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ENV['X'] == 1
-        ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers no offenses with `||`' do
       expect_offense(<<~RUBY)
         ENV['X'] || y
-        ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
 
       expect_offense(<<~RUBY)
         y || ENV['X']
-             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
 
       expect_offense(<<~RUBY)
         z || ENV['X'] || y
-             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         some_method(ENV['X'])
-                    ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+                    ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -100,12 +100,12 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
         some_method(
           ENV['A'].some_method,
           ENV['B'] || ENV['C'],
-                      ^^^^^^^^ Use `ENV.fetch('C', nil)` instead of `ENV['C']`.
-          ^^^^^^^^ Use `ENV.fetch('B', nil)` instead of `ENV['B']`.
+                      ^^^^^^^^ Use `ENV.fetch('C')` or `ENV.fetch('C', nil)` instead of `ENV['C']`.
+          ^^^^^^^^ Use `ENV.fetch('B')` or `ENV.fetch('B', nil)` instead of `ENV['B']`.
           ENV['X'],
-          ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
           ENV['Y']
-          ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         )
       RUBY
 
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers an offense when using single assignment' do
       expect_offense(<<~RUBY)
         x = ENV['X']
-            ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+            ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -135,9 +135,9 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers an offense when using multiple assignment' do
       expect_offense(<<~RUBY)
         x, y = ENV['X'],
-               ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+               ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
                ENV['Y']
-               ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+               ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -152,9 +152,9 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
       expect_offense(<<~RUBY)
         [
           ENV['X'],
-          ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
           ENV['Y']
-          ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         ]
       RUBY
 
@@ -172,9 +172,9 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
       expect_offense(<<~RUBY)
         {
           ENV['X'] => :x,
-          ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
           ENV['Y'] => :y
-          ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         }
       RUBY
 
@@ -192,9 +192,9 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
       expect_offense(<<~RUBY)
         {
           x: ENV['X'],
-             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
           y: ENV['Y']
-             ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+             ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         }
       RUBY
 
@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         "\#{ENV['X']}"
-           ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+           ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -258,9 +258,9 @@ RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
     it 'registers an offense with `case`' do
       expect_offense(<<~RUBY)
         case ENV['X']
-             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
         when ENV['Y']
-             ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+             ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
           puts x
         end
       RUBY
