@@ -126,14 +126,17 @@ module RuboCop
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def handle_exiting_options
       return unless Options::EXITING_OPTIONS.any? { |o| @options.key? o }
 
       run_command(:version) if @options[:version] || @options[:verbose_version]
       run_command(:show_cops) if @options[:show_cops]
       run_command(:show_docs_url) if @options[:show_docs_url]
+      run_command(:json_schema) if @options[:json_schema]
       raise Finished
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def apply_default_formatter
       # This must be done after the options have already been processed,

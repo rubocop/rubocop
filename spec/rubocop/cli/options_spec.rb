@@ -1235,6 +1235,70 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--json-schema' do
+    let(:stdout) { $stdout.string }
+    let(:cmd) { cli.run(['--json-schema']) }
+    let(:parsed_schema) do
+      cmd
+      JSON.parse(stdout)
+    end
+    let(:properties) { parsed_schema['properties'] }
+
+    it 'runs without errors' do
+      # run directly rather than through CLI command so we get errors
+      env = RuboCop::CLI::Environment.new(nil, nil, nil)
+      cmd = RuboCop::CLI::Command::JSONSchema.new(env)
+      expect { cmd.run }.not_to raise_error
+    end
+
+    it 'generates valid json' do
+      expect { parsed_schema }.not_to raise_error
+    end
+
+    it 'has a top-level properties key' do
+      expect(parsed_schema.key?('properties')).to be(true)
+    end
+
+    it 'knows about top-level options' do
+      expect(properties.key?('require')).to be(true)
+      expect(properties.key?('inherit_from')).to be(true)
+      expect(properties.key?('AllCops')).to be(true)
+    end
+
+    # without resolving json pointers it's a bit tricky to test specific
+    # attributes. skip it for now to avoid bloating this file
+    it 'knows about departments' do
+      expect(properties.key?('Layout')).to be(true)
+    end
+
+    it 'knows about cops' do
+      expect(properties.key?('Layout/MultilineAssignmentLayout')).to be(true)
+    end
+
+    it 'knows about lots of cops' do
+      cop_props = properties.keys.select { |k| k.include?('/') }
+      expect(cop_props.length).to be > 100
+    end
+
+    it 'knows about departments in other cities' do
+      expect(properties.key?('InternalAffairs')).to be true
+    end
+
+    it 'knows about cops in other cities' do
+      expect(properties.key?('InternalAffairs/UndefinedConfig')).to be(true)
+    end
+
+    it 'uses global rather than local settings as defaults' do
+      cop_props = properties.dig('Layout/ClassStructure', 'allOf', 1, 'properties')
+      expect(cop_props['Enabled']['default']).to be(false)
+    end
+
+    it 'does not use project-relative paths' do
+      cop_props = properties.dig('Style/IpAddresses', 'allOf', 1, 'properties')
+      expect(cop_props['Exclude']['default'].nil?).to be(true)
+    end
+  end
+
   describe '-f/--format' do
     let(:target_file) { 'example.rb' }
 
