@@ -11494,6 +11494,35 @@ puts $=
 puts $*
 ----
 
+==== EnforcedStyle: use_builtin_english_names
+
+[source,ruby]
+----
+# good
+puts $LOAD_PATH
+puts $LOADED_FEATURES
+puts $PROGRAM_NAME
+puts ARGV
+puts $:
+puts $"
+puts $0
+puts $!
+puts $@
+puts $;
+puts $,
+puts $/
+puts $\
+puts $.
+puts $_
+puts $>
+puts $<
+puts $$
+puts $?
+puts $~
+puts $=
+puts $*
+----
+
 === Configurable attributes
 
 |===

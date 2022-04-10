@@ -296,4 +296,68 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       RUBY
     end
   end
+
+  context 'when style is use_builtin_english_names' do
+    let(:cop_config) { { 'EnforcedStyle' => 'use_builtin_english_names' } }
+
+    it 'does not register an offenses for builtin names' do
+      expect_no_offenses(<<~RUBY)
+        puts $LOAD_PATH
+        puts $LOADED_FEATURES
+        puts $PROGRAM_NAME
+      RUBY
+    end
+
+    it 'auto-corrects non-preffered builtin names' do
+      expect_offense(<<~RUBY)
+        puts $:
+             ^^ Prefer `$LOAD_PATH` over `$:`.
+        puts $"
+             ^^ Prefer `$LOADED_FEATURES` over `$"`.
+        puts $0
+             ^^ Prefer `$PROGRAM_NAME` over `$0`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts $LOAD_PATH
+        puts $LOADED_FEATURES
+        puts $PROGRAM_NAME
+      RUBY
+    end
+
+    it 'does not register an offense for Perl names' do
+      expect_no_offenses(<<~RUBY)
+        puts $?
+        puts $*
+      RUBY
+    end
+
+    it 'does not register an offense for backrefs like $1' do
+      expect_no_offenses('puts $1')
+    end
+
+    it 'generates correct auto-config when Perl variable names are used' do
+      expect_offense(<<~RUBY)
+        $0
+        ^^ Prefer `$PROGRAM_NAME` over `$0`.
+      RUBY
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'use_perl_names')
+
+      expect_correction(<<~RUBY)
+        $PROGRAM_NAME
+      RUBY
+    end
+
+    it 'generates correct auto-config when mixed styles are used' do
+      expect_offense(<<~RUBY)
+        $0; $PROGRAM_NAME
+        ^^ Prefer `$PROGRAM_NAME` over `$0`.
+      RUBY
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+      expect_correction(<<~RUBY)
+        $PROGRAM_NAME; $PROGRAM_NAME
+      RUBY
+    end
+  end
 end

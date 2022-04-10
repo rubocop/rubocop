@@ -4780,6 +4780,7 @@ Style/SpecialGlobalVars:
   SupportedStyles:
     - use_perl_names
     - use_english_names
+    - use_builtin_english_names
 
 Style/StabbyLambdaParentheses:
   Description: 'Check for the usage of parentheses around stabby lambda arguments.'
