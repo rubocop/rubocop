@@ -42,7 +42,7 @@ Style/IpAddresses:
   Exclude:
     - spec/rubocop/cop/style/ip_addresses_spec.rb
 
-Style/ReadingEnvVarWithoutDefaultValue:
+Style/FetchEnvVar:
   AllowedVars:
     - HOME
     - RUBOCOP_CACHE_ROOT

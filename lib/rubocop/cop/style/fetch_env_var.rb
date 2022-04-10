@@ -6,7 +6,8 @@ module RuboCop
       # This cop suggests `ENV.fetch` for the replacement of `ENV[]`.
       # `ENV[]` silently fails and returns `nil` when the environment variable is unset,
       # which may cause unexpected behaviors when the developer forgets to set it.
-      # On the other hand, `ENV.fetch` raises KeyError or returns the explicitly specified default value.
+      # On the other hand, `ENV.fetch` raises KeyError or returns the explicitly
+      # specified default value.
       #
       # @example
       #   # bad
@@ -23,19 +24,19 @@ module RuboCop
       #   !ENV['X']
       #   ENV['X'].some_method # (e.g. `.nil?`)
       #
-      class ReadingEnvVarWithoutDefaultValue < Base
+      class FetchEnvVar < Base
         extend AutoCorrector
 
         MSG = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
 
-        # @!method reading_env_without_default_val?(node)
-        def_node_matcher :reading_env_without_default_val?, <<~PATTERN
+        # @!method env_with_bracket?(node)
+        def_node_matcher :env_with_bracket?, <<~PATTERN
           (send (const nil? :ENV) :[] $_)
         PATTERN
 
         def on_send(node)
-          reading_env_without_default_val?(node) do |expression|
-            break if excluded_env_var?(expression)
+          env_with_bracket?(node) do |expression|
+            break if allowed_var?(expression)
             break unless offensive?(node)
 
             add_offense(node, message: format(MSG, key: expression.source)) do |corrector|
@@ -46,7 +47,7 @@ module RuboCop
 
         private
 
-        def excluded_env_var?(expression)
+        def allowed_var?(expression)
           expression.str_type? && cop_config['AllowedVars'].include?(expression.value)
         end
 

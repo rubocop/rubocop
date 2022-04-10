@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ReadingEnvVarWithoutDefaultValue, :config do
+RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
   let(:cop_config) { { 'ExceptedEnvVars' => [] } }
 
   context 'when it is evaluated with no default values' do

@@ -3515,6 +3515,16 @@ Style/ExponentialNotation:
     - engineering
     - integral
 
+Style/FetchEnvVar:
+  Description: >-
+                 This cop suggests `ENV.fetch` for the replacement of `ENV[]`.
+  Reference:
+    - https://rubystyle.guide/#hash-fetch-defaults
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  # Environment variables to be excluded from the inspection.
+  AllowedVars: []
+
 Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'
   StyleGuide: '#file-read'
@@ -4446,16 +4456,6 @@ Style/RandomWithOffset:
   StyleGuide: '#random-numbers'
   Enabled: true
   VersionAdded: '0.52'
-
-Style/ReadingEnvVarWithoutDefaultValue:
-  Description: >-
-                 This cop suggests `ENV.fetch` for the replacement of `ENV[]`.
-  Reference:
-    - https://rubystyle.guide/#hash-fetch-defaults
-  Enabled: pending
-  VersionAdded: '<<next>>'
-  # Environment variables to be excluded from the inspection.
-  AllowedVars: []
 
 Style/RedundantArgument:
   Description: 'Check for a redundant argument passed to certain methods.'
