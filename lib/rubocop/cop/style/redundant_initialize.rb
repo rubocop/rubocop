@@ -18,6 +18,10 @@ module RuboCop
       # to purposely create an empty `initialize` method to override a superclass's
       # initializer.
       #
+      # @safety
+      #   This cop is unsafe because if subclass overrides `initialize` method with
+      #   a different arity than superclass.
+      #
       # @example
       #   # bad
       #   def initialize
