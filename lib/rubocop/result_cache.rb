@@ -66,14 +66,14 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = ENV['RUBOCOP_CACHE_ROOT']
+      root = ENV.fetch('RUBOCOP_CACHE_ROOT', nil)
       root ||= config_store.for_pwd.for_all_cops['CacheRootDirectory']
       root ||= if ENV.key?('XDG_CACHE_HOME')
                  # Include user ID in the path to make sure the user has write
                  # access.
-                 File.join(ENV['XDG_CACHE_HOME'], Process.uid.to_s)
+                 File.join(ENV.fetch('XDG_CACHE_HOME'), Process.uid.to_s)
                else
-                 File.join(ENV['HOME'], '.cache')
+                 File.join(ENV.fetch('HOME'), '.cache')
                end
       File.join(root, 'rubocop_cache')
     end

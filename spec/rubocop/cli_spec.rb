@@ -1837,8 +1837,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       # Ensure that these specs works in CI, since the feature is generally
       # disabled in when ENV['CI'] is set.
-      allow(ENV).to receive(:[]).and_call_original
-      allow(ENV).to receive(:[]).with('CI').and_return(false)
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with('CI', nil).and_return(false)
 
       # Mock the lockfile to be parsed by bundler
       allow(Bundler).to receive(:default_lockfile)
@@ -2024,7 +2024,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
 
     context 'when in CI mode' do
-      before { allow(ENV).to receive(:[]).with('CI').and_return(true) }
+      before { allow(ENV).to receive(:fetch).with('CI', nil).and_return(true) }
 
       it 'does not show the suggestion' do
         expect { cli.run(['example.rb']) }.not_to suggest_extensions
