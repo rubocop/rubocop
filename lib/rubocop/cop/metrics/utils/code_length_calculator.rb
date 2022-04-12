@@ -31,7 +31,7 @@ module RuboCop
               descendant_length = code_length(descendant)
               length = length - descendant_length + 1
               # Subtract 2 length of opening and closing brace if method argument omits hash braces.
-              length -= 2 if descendant.hash_type? && !descendant.braces?
+              length -= 2 if descendant.hash_type? && !descendant.braces? && descendant.multiline?
             end
 
             length
