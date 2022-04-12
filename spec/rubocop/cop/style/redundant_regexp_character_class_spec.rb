@@ -239,6 +239,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
     end
   end
 
+  context 'with a character class containing multiple unicode code-points' do
+    it 'does not register an offense and corrects' do
+      expect_no_offenses(<<~'RUBY')
+        foo = /[\u{0061 0062}]/
+      RUBY
+    end
+  end
+
   context 'with a character class containing a single unicode character property' do
     it 'registers an offense and corrects' do
       expect_offense(<<~'RUBY')

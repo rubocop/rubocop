@@ -1,0 +1,1 @@
+* [#10530](https://github.com/rubocop/rubocop/issues/10530): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using regexp character class with a character class containing multiple unicode code-points. ([@koic][])

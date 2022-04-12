@@ -63,6 +63,7 @@ module RuboCop
             next if expr.type != :set || expr.expressions.size != 1
             next if expr.negative?
             next if %i[set posixclass nonposixclass].include?(expr.expressions.first.type)
+            next if multiple_codepoins?(expr.expressions.first)
 
             yield expr
           end
@@ -77,6 +78,10 @@ module RuboCop
             requires_escape_outside_char_class?(class_elem)
 
           !non_redundant
+        end
+
+        def multiple_codepoins?(expression)
+          expression.respond_to?(:codepoints) && expression.codepoints.count >= 2
         end
 
         def without_character_class(loc)
