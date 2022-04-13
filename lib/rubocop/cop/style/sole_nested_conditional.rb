@@ -110,9 +110,12 @@ module RuboCop
         def autocorrect_outer_condition_basic(corrector, node, if_branch)
           correct_from_unless_to_if(corrector, node) if node.unless?
 
+          outer_condition = node.condition
+          correct_outer_condition(corrector, outer_condition)
+
           and_operator = if_branch.unless? ? ' && !' : ' && '
           if if_branch.modifier_form?
-            correct_for_guard_condition_style(corrector, node, if_branch, and_operator)
+            correct_for_guard_condition_style(corrector, outer_condition, if_branch, and_operator)
           else
             correct_for_basic_condition_style(corrector, node, if_branch, and_operator)
             correct_for_comment(corrector, node, if_branch)
@@ -136,10 +139,7 @@ module RuboCop
           end
         end
 
-        def correct_for_guard_condition_style(corrector, node, if_branch, and_operator)
-          outer_condition = node.condition
-          correct_outer_condition(corrector, outer_condition)
-
+        def correct_for_guard_condition_style(corrector, outer_condition, if_branch, and_operator)
           condition = if_branch.condition
           corrector.insert_after(outer_condition, "#{and_operator}#{replace_condition(condition)}")
 
@@ -177,7 +177,7 @@ module RuboCop
         end
 
         def correct_outer_condition(corrector, condition)
-          return unless requrie_parentheses?(condition)
+          return unless require_parentheses?(condition)
 
           end_pos = condition.loc.selector.end_pos
           begin_pos = condition.first_argument.source_range.begin_pos
@@ -187,7 +187,7 @@ module RuboCop
           corrector.insert_after(condition.last_argument.source_range, ')')
         end
 
-        def requrie_parentheses?(condition)
+        def require_parentheses?(condition)
           condition.send_type? && !condition.arguments.empty? && !condition.parenthesized? &&
             !condition.comparison_method?
         end

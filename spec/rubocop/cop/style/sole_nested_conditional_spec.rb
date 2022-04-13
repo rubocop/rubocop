@@ -348,6 +348,24 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects for multiple nested conditionals with using method call outer condition by omitting parentheses' do
+    expect_offense(<<~RUBY)
+      if foo.is_a? Foo
+        if bar && baz
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something if quux
+                       ^^ Consider merging nested conditions into outer `if` conditions.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo.is_a?(Foo) && (bar && baz) && quux
+          do_something
+        end
+    RUBY
+  end
+
   context 'when disabling `Style/IfUnlessModifier`' do
     let(:config) { RuboCop::Config.new('Style/IfUnlessModifier' => { 'Enabled' => false }) }
 
