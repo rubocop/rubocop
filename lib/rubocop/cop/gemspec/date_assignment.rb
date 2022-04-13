@@ -10,13 +10,13 @@ module RuboCop
       #
       #   # bad
       #   Gem::Specification.new do |spec|
-      #     s.name = 'your_cool_gem_name'
+      #     spec.name = 'your_cool_gem_name'
       #     spec.date = Time.now.strftime('%Y-%m-%d')
       #   end
       #
       #   # good
       #   Gem::Specification.new do |spec|
-      #     s.name = 'your_cool_gem_name'
+      #     spec.name = 'your_cool_gem_name'
       #   end
       #
       class DateAssignment < Base

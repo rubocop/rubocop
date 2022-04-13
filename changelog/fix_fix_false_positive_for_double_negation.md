@@ -1,1 +1,0 @@
-* [#10474](https://github.com/rubocop/rubocop/issues/10474): Fix a false positive for `Style/DoubleNegation` with `EnforcedStyle: allowed_in_returns` when inside returned conditional clauses. ([@ydah][])

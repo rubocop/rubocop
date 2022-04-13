@@ -2591,6 +2591,11 @@ array = [
 
 This cop checks for `IO.select` that is incompatible with Fiber Scheduler since Ruby 3.0.
 
+NOTE: When the method is successful the return value of `IO.select` is `[[IO]]`,
+and the return value of `io.wait_readable` and `io.wait_writable` are `self`.
+They are not auto-corrected when assigning a return value because these types are different.
+It's up to user how to handle the return value.
+
 === Safety
 
 This cop's autocorrection is unsafe because `NoMethodError` occurs
@@ -4339,6 +4344,52 @@ end
 # good
 ary.each do |v|
   v
+end
+----
+
+== Lint/RefinementImportMethods
+
+NOTE: Required Ruby version: 3.1
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.27
+| -
+|===
+
+This cop checks if `include` or `prepend` is called in `refine` block.
+These methods are deprecated and should be replaced with `Refinement#import_methods`.
+
+It emulates deprecation warnings in Ruby 3.1.
+
+=== Safety
+
+This cop's autocorrection is unsafe because `include M` will affect the included class
+if any changes are made to module `M`.
+On the other hand, `import_methods M` uses a snapshot of method definitions,
+thus it will not be affected if module `M` changes.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+refine Foo do
+  include Bar
+end
+
+# bad
+refine Foo do
+  prepend Bar
+end
+
+# good
+refine Foo do
+  import_methods Bar
 end
 ----
 
@@ -6435,7 +6486,7 @@ end
 | No
 | Yes (Unsafe)
 | 0.90
-| -
+| 0.91
 |===
 
 This cop checks for useless method definitions, specifically: empty constructors
@@ -6474,16 +6525,6 @@ def method(*args)
   super(:extra_arg, *args)
 end
 ----
-
-=== Configurable attributes
-
-|===
-| Name | Default value | Configurable values
-
-| AllowComments
-| `true`
-| Boolean
-|===
 
 == Lint/UselessRuby2Keywords
 

@@ -8,6 +8,10 @@ module RuboCop
         autocorrect_requested? && correctable? && autocorrect_enabled?
       end
 
+      def autocorrect_with_disable_uncorrectable?
+        autocorrect_requested? && disable_uncorrectable? && autocorrect_enabled?
+      end
+
       def autocorrect_requested?
         @options.fetch(:auto_correct, false)
       end

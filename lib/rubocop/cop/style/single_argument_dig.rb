@@ -50,9 +50,13 @@ module RuboCop
 
           message = format(MSG, receiver: receiver, argument: argument, original: node.source)
           add_offense(node, message: message) do |corrector|
+            next if part_of_ignored_node?(node)
+
             correct_access = "#{receiver}[#{argument}]"
             corrector.replace(node, correct_access)
           end
+
+          ignore_node(node)
         end
       end
     end

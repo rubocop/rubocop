@@ -1,1 +1,0 @@
-* [#10464](https://github.com/rubocop/rubocop/issues/10464): Fix an incorrect autocorrect for `Lint/IncompatibleIoSelectWithFiberScheduler` when using `IO.select` with read (or write) argument and using return value. ([@koic][])

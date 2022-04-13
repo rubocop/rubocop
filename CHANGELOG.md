@@ -2,6 +2,33 @@
 
 ## master (unreleased)
 
+## 1.27.0 (2022-04-08)
+
+### New features
+
+* [#10500](https://github.com/rubocop/rubocop/pull/10500): Add new `Lint/RefinementImportMethods` cop. ([@koic][])
+* [#10438](https://github.com/rubocop/rubocop/issues/10438): Add new `Style/RedundantInitialize` cop to check for unnecessary `initialize` methods. ([@dvandersluis][])
+
+### Bug fixes
+
+* [#10464](https://github.com/rubocop/rubocop/issues/10464): Fix an incorrect autocorrect for `Lint/IncompatibleIoSelectWithFiberScheduler` when using `IO.select` with read (or write) argument and using return value. ([@koic][])
+* [#10506](https://github.com/rubocop/rubocop/issues/10506): Fix an error for `Style/RaiseArgs` when `raise` with `new` method without receiver. ([@koic][])
+* [#10479](https://github.com/rubocop/rubocop/issues/10479): Fix a false positive for `Lint/ShadowingOuterLocalVariable` conditional statement and block variable. ([@ydah][])
+* [#10189](https://github.com/rubocop/rubocop/issues/10189): Fix `--display-style-guide` so it works together with `--format offenses`. ([@jonas054][])
+* [#10465](https://github.com/rubocop/rubocop/issues/10465): Fix false positive for `Naming/BlockForwarding` when the block argument is assigned. ([@dvandersluis][])
+* [#10491](https://github.com/rubocop/rubocop/pull/10491): Improve the handling of comments in `Lint/EmptyConditionalBody`, `Lint/EmptyInPattern` and `Lint/EmptyWhen` when `AllowComments` is set to `true`. ([@Darhazer][])
+* [#10504](https://github.com/rubocop/rubocop/issues/10504): Fix a false positive for `Lint/UnusedMethodArgument` when using `raise NotImplementedError` with optional arguments. ([@koic][])
+* [#10494](https://github.com/rubocop/rubocop/issues/10494): Fix a false positive for `Style/HashSyntax` when `return` with one line `if` condition follows (without parentheses). ([@koic][])
+* [#10311](https://github.com/rubocop/rubocop/issues/10311): Fix false negative inside `do`..`end` for `Layout/RedundantLineBreak`. ([@jonas054][])
+* [#10468](https://github.com/rubocop/rubocop/issues/10468): Fix a false positive for `Style/FileWrite` when a splat argument is passed to `f.write`. ([@koic][])
+* [#10474](https://github.com/rubocop/rubocop/issues/10474): Fix a false positive for `Style/DoubleNegation` with `EnforcedStyle: allowed_in_returns` when inside returned conditional clauses. ([@ydah][])
+* [#10388](https://github.com/rubocop/rubocop/issues/10388): Fix an incorrectly adds a disable statement for `Layout/SpaceInsideArrayLiteralBrackets` with `--disable-uncorrectable`. ([@ydah][])
+* [#10489](https://github.com/rubocop/rubocop/issues/10489): Fix a false positive for `Lint/LambdaWithoutLiteralBlock` when using lambda with a symbol proc. ([@koic][])
+
+### Changes
+
+* [#10191](https://github.com/rubocop/rubocop/issues/10191): Add `MaxChainLength` option to `Style/SafeNavigation` and the option is 2 by default. ([@ydah][])
+
 ## 1.26.1 (2022-03-22)
 
 ### Bug fixes
@@ -522,7 +549,7 @@
 
 ### Changes
 
-* [#7544](https://github.com/rubocop/rubocop/pull/7544): Add --no-parallel (-P/--parallel can not be combined with --auto-correct). ([@kwerle][])
+* [#7544](https://github.com/rubocop/rubocop/pull/7544): Add --no-parallel (-P/--parallel cannot be combined with --auto-correct). ([@kwerle][])
 * [#9648](https://github.com/rubocop/rubocop/pull/9648): Drop support for Ruby 2.4. ([@koic][])
 * [#9647](https://github.com/rubocop/rubocop/pull/9647): The parallel flag will now be automatically ignored when combined with `--auto-correct`, `--auto-gen-config`, or `-F/--fail-fast`. Previously, an error was raised and execution stopped. ([@rrosenblum][])
 

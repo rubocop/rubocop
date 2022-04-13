@@ -3789,6 +3789,17 @@ File.binread(filename)
 
 Favor `File.(bin)write` convenience methods.
 
+NOTE: There are different method signatures between `File.write` (class method)
+and `File#write` (instance method). The following case will be allowed because
+static analysis does not know the contents of the splat argument:
+
+[source,ruby]
+----
+File.open(filename, 'w') do |f|
+  f.write(*objects)
+end
+----
+
 === Examples
 
 [source,ruby]
@@ -9708,6 +9719,95 @@ CONST = 1.freeze
 CONST = 1
 ----
 
+== Style/RedundantInitialize
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.27
+| -
+|===
+
+Checks for `initialize` methods that are redundant.
+
+An initializer is redundant if it does not do anything, or if it only
+calls `super` with the same arguments given to it. If the initializer takes
+an argument that accepts multiple values (`restarg`, `kwrestarg`, etc.) it
+will not register an offense, because it allows the initializer to take a different
+number of arguments as its superclass potentially does.
+
+NOTE: If an initializer argument has a default value, RuboCop assumes it
+to *not* be redundant.
+
+NOTE: Empty initializers are registered as offenses, but it is possible
+to purposely create an empty `initialize` method to override a superclass's
+initializer.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def initialize
+end
+
+# bad
+def initialize
+  super
+end
+
+# bad
+def initialize(a, b)
+  super
+end
+
+# bad
+def initialize(a, b)
+  super(a, b)
+end
+
+# good
+def initialize
+  do_something
+end
+
+# good
+def initialize
+  do_something
+  super
+end
+
+# good (different number of parameters)
+def initialize(a, b)
+  super(a)
+end
+
+# good (default value)
+def initialize(a, b = 5)
+  super
+end
+
+# good (default value)
+def initialize(a, b: 5)
+  super
+end
+
+# good (changes the parameter requirements)
+def initialize(*)
+end
+
+# good (changes the parameter requirements)
+def initialize(**)
+end
+
+# good (changes the parameter requirements)
+def initialize(...)
+end
+----
+
 == Style/RedundantInterpolation
 
 |===
@@ -10570,15 +10670,14 @@ end
 | Yes
 | Yes (Unsafe)
 | 0.43
-| 0.77
+| 1.27
 |===
 
 This cop transforms usages of a method call safeguarded by a non `nil`
 check for the variable whose method is being called to
 safe navigation (`&.`). If there is a method chain, all of the methods
 in the chain need to be checked for safety, and all of the methods will
-need to be changed to use safe navigation. We have limited the cop to
-not register an offense for method chains that exceed 2 methods.
+need to be changed to use safe navigation.
 
 The default for `ConvertCodeThatCanStartToReturnNil` is `false`.
 When configured to `true`, this will
@@ -10587,6 +10686,10 @@ the return of this code is limited to `false` and whatever the return
 of the method is. If this is converted to safe navigation,
 `foo&.bar` can start returning `nil` as well as what the method
 returns.
+
+The default for `MaxChainLength` is `2`
+We have limited the cop to not register an offense for method chains
+that exceed this option is set.
 
 === Safety
 
@@ -10661,6 +10764,10 @@ foo.bar > 2 if foo
 | AllowedMethods
 | `present?`, `blank?`, `presence`, `try`, `try!`
 | Array
+
+| MaxChainLength
+| `2`
+| Integer
 |===
 
 == Style/Sample

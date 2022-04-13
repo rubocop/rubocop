@@ -7,8 +7,7 @@ module RuboCop
       # check for the variable whose method is being called to
       # safe navigation (`&.`). If there is a method chain, all of the methods
       # in the chain need to be checked for safety, and all of the methods will
-      # need to be changed to use safe navigation. We have limited the cop to
-      # not register an offense for method chains that exceed 2 methods.
+      # need to be changed to use safe navigation.
       #
       # The default for `ConvertCodeThatCanStartToReturnNil` is `false`.
       # When configured to `true`, this will
@@ -17,6 +16,10 @@ module RuboCop
       # of the method is. If this is converted to safe navigation,
       # `foo&.bar` can start returning `nil` as well as what the method
       # returns.
+      #
+      # The default for `MaxChainLength` is `2`
+      # We have limited the cop to not register an offense for method chains
+      # that exceed this option is set.
       #
       # @safety
       #   Autocorrection is unsafe because if a value is `false`, the resulting
@@ -116,9 +119,7 @@ module RuboCop
           checked_variable, receiver, method_chain, method = extract_parts(node)
           return unless receiver == checked_variable
           return if use_var_only_in_unless_modifier?(node, checked_variable)
-          # method is already a method call so this is actually checking for a
-          # chain greater than 2
-          return if chain_size(method_chain, method) > 1
+          return if chain_length(method_chain, method) > max_chain_length
           return if unsafe_method_used?(method_chain, method)
           return if method_chain.method?(:empty?)
 
@@ -225,8 +226,8 @@ module RuboCop
           find_matching_receiver_invocation(receiver, checked_variable)
         end
 
-        def chain_size(method_chain, method)
-          method.each_ancestor(:send).inject(0) do |total, ancestor|
+        def chain_length(method_chain, method)
+          method.each_ancestor(:send).inject(1) do |total, ancestor|
             break total + 1 if ancestor == method_chain
 
             total + 1
@@ -280,6 +281,10 @@ module RuboCop
 
             break if ancestor == method_chain
           end
+        end
+
+        def max_chain_length
+          cop_config.fetch('MaxChainLength', 2)
         end
       end
     end

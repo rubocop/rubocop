@@ -54,6 +54,20 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
       end
     end
 
+    context 'when using multiple `dig` in a method chain' do
+      it 'registers and corrects an offense' do
+        expect_offense(<<~RUBY)
+          data.dig(var1)[0].dig(var2)
+          ^^^^^^^^^^^^^^ Use `data[var1]` instead of `data.dig(var1)`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `data.dig(var1)[0][var2]` instead of `data.dig(var1)[0].dig(var2)`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          data.dig(var1)[0][var2]
+        RUBY
+      end
+    end
+
     context 'when using dig with splat operator' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)

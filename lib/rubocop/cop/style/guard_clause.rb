@@ -47,6 +47,37 @@ module RuboCop
       #   # good
       #   foo || raise('exception') if something
       #   ok
+      #
+      # @example AllowConsecutiveConditionals: false (default)
+      #   # bad
+      #   if foo?
+      #     work
+      #   end
+      #
+      #   if bar?  # <- reports an offense
+      #     work
+      #   end
+      #
+      # @example AllowConsecutiveConditionals: true
+      #   # good
+      #   if foo?
+      #     work
+      #   end
+      #
+      #   if bar?
+      #     work
+      #   end
+      #
+      #   # bad
+      #   if foo?
+      #     work
+      #   end
+      #
+      #   do_someting
+      #
+      #   if bar?  # <- reports an offense
+      #     work
+      #   end
       class GuardClause < Base
         include MinBodyLength
         include StatementModifier
@@ -89,8 +120,18 @@ module RuboCop
 
         def check_ending_if(node)
           return if accepted_form?(node, ending: true) || !min_body_length?(node)
+          return if allowed_consecutive_conditionals? &&
+                    consecutive_conditionals?(node.parent, node)
 
           register_offense(node, 'return', opposite_keyword(node))
+        end
+
+        def consecutive_conditionals?(parent, node)
+          parent.each_child_node.inject(false) do |if_type, child|
+            break if_type if node == child
+
+            child.if_type?
+          end
         end
 
         def opposite_keyword(node)
@@ -134,6 +175,10 @@ module RuboCop
           else
             !node.else? || node.elsif?
           end
+        end
+
+        def allowed_consecutive_conditionals?
+          cop_config.fetch('AllowConsecutiveConditionals', false)
         end
       end
     end

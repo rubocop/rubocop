@@ -73,7 +73,15 @@ module RuboCop
                  # access.
                  File.join(ENV.fetch('XDG_CACHE_HOME'), Process.uid.to_s)
                else
-                 File.join(ENV.fetch('HOME'), '.cache')
+                 # On FreeBSD, the /home path is a symbolic link to /usr/home
+                 # and the $HOME environment variable returns the /home path.
+                 #
+                 # As $HOME is a built-in environment variable, FreeBSD users
+                 # always get a warning message.
+                 #
+                 # To avoid raising warn log messages on FreeBSD, we retrieve
+                 # the real path of the home folder.
+                 File.join(File.realpath(ENV['HOME']), '.cache')
                end
       File.join(root, 'rubocop_cache')
     end

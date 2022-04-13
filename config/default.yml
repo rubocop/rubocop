@@ -2058,6 +2058,12 @@ Lint/RedundantWithObject:
   Enabled: true
   VersionAdded: '0.51'
 
+Lint/RefinementImportMethods:
+  Description: 'Use `Refinement#import_methods` when using `include` or `prepend` in `refine` block.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '1.27'
+
 Lint/RegexpAsCondition:
   Description: >-
                  Do not use regexp literal as a condition.
@@ -2783,6 +2789,11 @@ Naming/VariableNumber:
     - rfc3339      # DateTime.rfc3339
 
 #################### Security ##############################
+
+Security/CompoundHash:
+  Description: 'When overwriting Object#hash to combine values, prefer delegating to Array#hash over writing a custom implementation.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
@@ -3638,10 +3649,11 @@ Style/GuardClause:
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
   VersionAdded: '0.20'
-  VersionChanged: '0.22'
+  VersionChanged: <<next>>
   # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
   # needs to have to trigger this cop
   MinBodyLength: 1
+  AllowConsecutiveConditionals: false
 
 Style/HashAsLastArrayItem:
   Description: >-
@@ -4537,7 +4549,7 @@ Style/RedundantFreeze:
 Style/RedundantInitialize:
   Description: 'Checks for redundant `initialize` methods.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.27'
 
 Style/RedundantInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
@@ -4660,7 +4672,7 @@ Style/SafeNavigation:
                   be `nil` or truthy, but never `false`.
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '0.77'
+  VersionChanged: '1.27'
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
@@ -4671,6 +4683,8 @@ Style/SafeNavigation:
     - try
     - try!
   SafeAutoCorrect: false
+  # Maximum length of method chains for register an offense.
+  MaxChainLength: 2
 
 Style/Sample:
   Description: >-

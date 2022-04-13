@@ -47,4 +47,10 @@ RSpec.describe RuboCop::Cop::Lint::LambdaWithoutLiteralBlock, :config do
       lambda.call
     RUBY
   end
+
+  it 'does not register an offense when using lambda with a symbol proc' do
+    expect_no_offenses(<<~RUBY)
+      lambda(&:do_something)
+    RUBY
+  end
 end
