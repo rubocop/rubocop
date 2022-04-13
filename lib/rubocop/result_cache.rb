@@ -81,7 +81,7 @@ module RuboCop
                  #
                  # To avoid raising warn log messages on FreeBSD, we retrieve
                  # the real path of the home folder.
-                 File.join(File.realpath(ENV['HOME']), '.cache')
+                 File.join(File.realpath(ENV.fetch('HOME')), '.cache')
                end
       File.join(root, 'rubocop_cache')
     end

@@ -97,6 +97,15 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       RUBY
 
       expect_offense(<<~RUBY)
+        x.some_method(ENV['X'])
+                      ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.some_method(ENV.fetch('X', nil))
+      RUBY
+
+      expect_offense(<<~RUBY)
         some_method(
           ENV['A'].some_method,
           ENV['B'] || ENV['C'],

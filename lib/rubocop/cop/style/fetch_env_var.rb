@@ -57,15 +57,16 @@ module RuboCop
           node.parent.if_type? || (node.parent.send_type? && node.parent.prefix_bang?)
         end
 
+        # Check if the node is a receiver and receives a message with dot syntax.
         def message_chained_with_dot?(node)
           return false if node.root?
 
-          node.parent.send_type? && node.parent.dot?
+          node.parent.send_type? && node.parent.children.first == node && node.parent.dot?
         end
 
         # Allow if used as a flag (e.g., `if ENV['X']` or `!ENV['X']`) because
         # it simply checks whether the variable is set.
-        # Also allow if receiving a message with a dot syntax, e.g. `ENV['X'].nil?`.
+        # Also allow if receiving a message with dot syntax, e.g. `ENV['X'].nil?`.
         def allowable_use?(node)
           used_as_flag?(node) || message_chained_with_dot?(node)
         end
