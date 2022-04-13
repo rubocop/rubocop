@@ -5,8 +5,8 @@ require 'tmpdir'
 RSpec.shared_context 'isolated environment', :isolated_environment do
   around do |example|
     Dir.mktmpdir do |tmpdir|
-      original_home = ENV['HOME']
-      original_xdg_config_home = ENV['XDG_CONFIG_HOME']
+      original_home = ENV.fetch('HOME', nil)
+      original_xdg_config_home = ENV.fetch('XDG_CONFIG_HOME', nil)
 
       # Make sure to expand all symlinks in the path first. Otherwise we may
       # get mismatched pathnames when loading config files later on.

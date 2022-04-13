@@ -376,7 +376,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
         it 'contains the given path and UID' do
           cacheroot = described_class.cache_root(config_store)
-          expect(cacheroot).to eq(File.join(ENV['XDG_CACHE_HOME'], puid, 'rubocop_cache'))
+          expect(cacheroot).to eq(File.join(ENV.fetch('XDG_CACHE_HOME'), puid, 'rubocop_cache'))
         end
       end
     end

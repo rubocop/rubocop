@@ -66,12 +66,12 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = ENV['RUBOCOP_CACHE_ROOT']
+      root = ENV.fetch('RUBOCOP_CACHE_ROOT', nil)
       root ||= config_store.for_pwd.for_all_cops['CacheRootDirectory']
       root ||= if ENV.key?('XDG_CACHE_HOME')
                  # Include user ID in the path to make sure the user has write
                  # access.
-                 File.join(ENV['XDG_CACHE_HOME'], Process.uid.to_s)
+                 File.join(ENV.fetch('XDG_CACHE_HOME'), Process.uid.to_s)
                else
                  # On FreeBSD, the /home path is a symbolic link to /usr/home
                  # and the $HOME environment variable returns the /home path.
@@ -81,7 +81,7 @@ module RuboCop
                  #
                  # To avoid raising warn log messages on FreeBSD, we retrieve
                  # the real path of the home folder.
-                 File.join(File.realpath(ENV['HOME']), '.cache')
+                 File.join(File.realpath(ENV.fetch('HOME')), '.cache')
                end
       File.join(root, 'rubocop_cache')
     end
