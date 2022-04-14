@@ -95,6 +95,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                  [h]tml
                                                  [j]son
                                                  [ju]nit
+                                                 [m]arkdown
                                                  [o]ffenses
                                                  [pa]cman
                                                  [p]rogress (default)
