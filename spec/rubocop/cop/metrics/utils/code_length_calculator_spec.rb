@@ -97,6 +97,17 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         expect(length).to eq(2)
       end
 
+      it 'counts single line correctly if asked folding' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(foo: :bar, baz: :quux)
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
       it 'folds hashes as method kwargs if asked' do
         source = parse_source(<<~RUBY)
           def test
