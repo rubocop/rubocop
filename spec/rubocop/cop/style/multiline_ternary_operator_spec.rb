@@ -51,15 +51,56 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'register an offense and does not auto-correct when returning a multiline ternary operator expression' do
+  it 'register an offense and corrects when returning a multiline ternary operator expression with `return`' do
     expect_offense(<<~RUBY)
       return cond ?
-             ^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+             ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
              foo :
              bar
     RUBY
 
-    expect_no_corrections
+    expect_correction(<<~RUBY)
+      return cond ? foo : bar
+    RUBY
+  end
+
+  it 'register an offense and corrects when returning a multiline ternary operator expression with `break`' do
+    expect_offense(<<~RUBY)
+      break cond ?
+            ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+            foo :
+            bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      break cond ? foo : bar
+    RUBY
+  end
+
+  it 'register an offense and corrects when returning a multiline ternary operator expression with `next`' do
+    expect_offense(<<~RUBY)
+      next cond ?
+           ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+           foo :
+           bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      next cond ? foo : bar
+    RUBY
+  end
+
+  it 'register an offense and corrects when returning a multiline ternary operator expression with method call' do
+    expect_offense(<<~RUBY)
+      do_something cond ?
+                   ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+                   foo :
+                   bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something cond ? foo : bar
+    RUBY
   end
 
   it 'accepts a single line ternary operator expression' do
