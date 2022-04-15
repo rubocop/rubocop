@@ -33,6 +33,14 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     end
   end
 
+  shared_examples 'accepts_array' do |style, variables|
+    it "accepts #{variables} in #{style}" do
+      lines = variables.map { |v| "#{v} = 1" }
+
+      expect_no_offenses(lines.join("\n"), first_variable: variables.first)
+    end
+  end
+
   shared_examples 'accepts integer symbols' do
     it 'accepts integer symbol' do
       expect_no_offenses(':"42"')
@@ -54,6 +62,8 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'offense', 'snake_case', '_unused1', :normalcase
     it_behaves_like 'offense', 'snake_case', 'aB1', :normalcase
     it_behaves_like 'offense_array', 'snake_case', %w[a1 a_2]
+    it_behaves_like 'offense', 'snake_case', 'v1', :normalcase
+    it_behaves_like 'offense', 'snake_case', '_v1', :normalcase
 
     it_behaves_like 'accepts', 'snake_case', 'local_1'
     it_behaves_like 'accepts', 'snake_case', 'local_12'
@@ -102,6 +112,99 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       expect_offense(<<~RUBY)
         def method1; end
             ^^^^^^^ Use snake_case for method name numbers.
+      RUBY
+    end
+  end
+
+  context 'when configured for snake_case and MaxAllowedLettersBeforeNumber is set to 1' do
+    let(:cop_config) { { 'EnforcedStyle' => 'snake_case', 'MaxAllowedLettersBeforeNumber' => 1 } }
+
+    it_behaves_like 'offense', 'snake_case', 'local1', :normalcase
+    it_behaves_like 'offense', 'snake_case', '@local1', :normalcase
+    it_behaves_like 'offense', 'snake_case', '@@local1', :normalcase
+    it_behaves_like 'offense', 'snake_case', 'camelCase1', :normalcase
+    it_behaves_like 'offense', 'snake_case', '@camelCase1', :normalcase
+    it_behaves_like 'offense', 'snake_case', '_unused1', :normalcase
+    it_behaves_like 'offense', 'snake_case', 'aB1', :normalcase
+
+    it_behaves_like 'accepts', 'snake_case', 'local_1'
+    it_behaves_like 'accepts', 'snake_case', 'local_12'
+    it_behaves_like 'accepts', 'snake_case', 'local_123'
+    it_behaves_like 'accepts', 'snake_case', 'local_'
+    it_behaves_like 'accepts', 'snake_case', 'aB_1'
+    it_behaves_like 'accepts', 'snake_case', 'a_1_b'
+    it_behaves_like 'accepts', 'snake_case', 'a_1_b_1'
+    it_behaves_like 'accepts', 'snake_case', '_'
+    it_behaves_like 'accepts', 'snake_case', '_foo'
+    it_behaves_like 'accepts', 'snake_case', '@foo'
+    it_behaves_like 'accepts', 'snake_case', '@__foo__'
+    it_behaves_like 'accepts', 'snake_case', 'emparejó'
+    it_behaves_like 'accepts', 'snake_case', '_1'
+    it_behaves_like 'accepts_array', 'snake_case', %w[a1 a_2]
+    it_behaves_like 'accepts', 'snake_case', 'v1'
+    it_behaves_like 'accepts', 'snake_case', '_v1'
+
+    it_behaves_like 'accepts integer symbols'
+
+    it 'registers an offense for normal case numbering in symbol' do
+      expect_offense(<<~RUBY)
+        :sym1
+        ^^^^^ Use snake_case for symbol numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for normal case numbering in symbol with only 1 letter before the numbering' do
+      expect_no_offenses(<<~RUBY)
+        :s1
+      RUBY
+    end
+
+    it 'does not register an offense for snake case numbering in symbol' do
+      expect_no_offenses(<<~RUBY)
+        :sym_1
+      RUBY
+    end
+
+    it 'registers an offense for normal case numbering in method parameter' do
+      expect_offense(<<~RUBY)
+        def method(arg1); end
+                   ^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for normal case numbering in method parameter with only 1 letter before the numbering' do
+      expect_no_offenses(<<~RUBY)
+        def method(a1); end
+      RUBY
+    end
+
+    it 'registers an offense for normal case numbering in method camel case parameter' do
+      expect_offense(<<~RUBY)
+        def method(funnyArg1); end
+                   ^^^^^^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
+
+    it 'registers an offense for normal case numbering in method name' do
+      expect_offense(<<~RUBY)
+        def method1; end
+            ^^^^^^^ Use snake_case for method name numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for normal case numbering in method name with only 1 letter before the numbering' do
+      expect_no_offenses(<<~RUBY)
+        def m1; end
+      RUBY
+    end
+  end
+
+  context 'when configured for snake_case and MaxAllowedLettersBeforeNumber is set to 8' do
+    let(:cop_config) { { 'EnforcedStyle' => 'snake_case', 'MaxAllowedLettersBeforeNumber' => 8 } }
+
+    it 'does not register an offense for normal case numbering in method camel case parameter with only 8 letters before the numbering' do
+      expect_no_offenses(<<~RUBY)
+        def method(funnyArg1); end
       RUBY
     end
   end

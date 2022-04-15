@@ -102,6 +102,19 @@ module RuboCop
 
         MSG = 'Use %<style>s for %<identifier_type>s numbers.'
 
+        def max_allowed_letters_before_number
+          cop_config.fetch('MaxAllowedLettersBeforeNumber', 0)
+        end
+
+        def valid_name?(node, name, given_style = style)
+          return true if super
+
+          return false unless given_style == :snake_case
+          return false unless max_allowed_letters_before_number.to_i.positive?
+
+          name.match?(/(?:_|\b)\D{0,#{max_allowed_letters_before_number}}\d+\z/)
+        end
+
         def on_arg(node)
           @node = node
           name, = *node
