@@ -170,6 +170,25 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
           RUBY
         end
 
+        it 'adds require English for twice `$*` in nested code' do
+          expect_offense(<<~RUBY)
+            # frozen_string_literal: true
+
+            puts $*[0]
+                 ^^ Prefer `$ARGV` from the stdlib 'English' module (don't forget to require it) or `ARGV` over `$*`.
+            puts $*[1]
+                 ^^ Prefer `$ARGV` from the stdlib 'English' module (don't forget to require it) or `ARGV` over `$*`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # frozen_string_literal: true
+
+            require 'English'
+            puts $ARGV[0]
+            puts $ARGV[1]
+          RUBY
+        end
+
         it 'does not add for replacement outside of English lib' do
           expect_offense(<<~RUBY)
             puts $0

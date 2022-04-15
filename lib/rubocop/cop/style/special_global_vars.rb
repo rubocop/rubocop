@@ -145,6 +145,11 @@ module RuboCop
 
         LIBRARY_NAME = 'English'
 
+        def on_new_investigation
+          super
+          @required_english = false
+        end
+
         def on_gvar(node)
           global_var, = *node
 
@@ -172,7 +177,11 @@ module RuboCop
         def autocorrect(corrector, node, global_var)
           node = node.parent while node.parent&.begin_type? && node.parent.children.one?
 
-          ensure_required(corrector, node, LIBRARY_NAME) if should_require_english?(global_var)
+          if should_require_english?(global_var)
+            ensure_required(corrector, node, LIBRARY_NAME)
+
+            @required_english = true
+          end
 
           corrector.replace(node, replacement(node, global_var))
         end
@@ -243,6 +252,7 @@ module RuboCop
         def should_require_english?(global_var)
           style == :use_english_names &&
             add_require_english? &&
+            !@required_english &&
             !NON_ENGLISH_VARS.include?(preferred_names(global_var).first)
         end
       end
