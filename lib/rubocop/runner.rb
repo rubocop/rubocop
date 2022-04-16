@@ -207,9 +207,7 @@ module RuboCop
     end
 
     def file_finished(file, offenses)
-      if @options[:display_only_fail_level_offenses]
-        offenses = offenses.select { |o| considered_failure?(o) }
-      end
+      offenses = offenses_to_report(offenses)
       formatter_set.file_finished(file, offenses)
     end
 
@@ -378,6 +376,34 @@ module RuboCop
       return true if @options[:fail_level] == :autocorrect
 
       !offense.corrected? && offense.severity >= minimum_severity_to_fail
+    end
+
+    def offenses_to_report(offenses)
+      if @options[:display_only_fail_level_offenses]
+        offenses.select { |o| considered_failure?(o) }
+      elsif @options[:display_only_safe_correctable]
+        offenses.select { |o| supports_safe_auto_correct?(o) }
+      elsif @options[:display_only_correctable]
+        offenses.select(&:correctable?)
+      else
+        offenses
+      end
+    end
+
+    def supports_safe_auto_correct?(offense)
+      cop_class = Cop::Registry.global.find_by_cop_name(offense.cop_name)
+      default_cfg = default_config(offense.cop_name)
+
+      offense.correctable? &&
+        cop_class&.support_autocorrect? && mark_as_safe_by_config?(default_cfg)
+    end
+
+    def mark_as_safe_by_config?(config)
+      config.nil? || (config.fetch('Safe', true) && config.fetch('SafeAutoCorrect', true))
+    end
+
+    def default_config(cop_name)
+      RuboCop::ConfigLoader.default_configuration[cop_name]
     end
 
     def minimum_severity_to_fail

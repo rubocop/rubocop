@@ -120,6 +120,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --display-only-fail-level-offenses
                                                Only output offense messages at
                                                the specified --fail-level or above
+                  --display-only-correctable   Only output correctable offense messages.
+                  --display-only-safe-correctable
+                                               Only output safe-correctable offense messages
+                                               when combined with --display-only-correctable.
 
           Auto-correction:
               -a, --auto-correct               Auto-correct offenses (only when it's safe).
@@ -282,6 +286,20 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'works if given with --format junit' do
         expect { options.parse %w[--format junit --display-only-failed] }
           .not_to raise_error(RuboCop::OptionArgumentError)
+      end
+    end
+
+    describe '--display-only-correctable' do
+      it 'fails if given with --display-only-failed' do
+        expect { options.parse %w[--display-only-correctable --display-only-failed] }
+          .to raise_error(RuboCop::OptionArgumentError)
+      end
+
+      it 'fails if given with --auto-correct' do
+        %w[--auto-correct -a --auto-correct-all -A].each do |o|
+          expect { options.parse ['--display-only-correctable', o] }
+            .to raise_error(RuboCop::OptionArgumentError)
+        end
       end
     end
 
