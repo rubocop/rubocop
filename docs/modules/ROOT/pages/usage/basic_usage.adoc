@@ -163,7 +163,13 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Displays cop names in offense messages. Default is true.
 
 | `--display-only-fail-level-offenses`
-| Only output offense messages at the specified `--fail-level` or above
+| Only output offense messages at the specified `--fail-level` or above.
+
+| `--display-only-correctable`
+| Only output correctable offense messages.
+
+| `--display-only-safe-correctable`
+| Only output safe correctable offense messages.
 
 | `--enable-pending-cops`
 | Run with pending cops.

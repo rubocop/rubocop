@@ -90,6 +90,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Exclude:
     - lib/rubocop/config_obsoletion.rb
+    - lib/rubocop/options.rb
 
 Metrics/ModuleLength:
   Exclude:

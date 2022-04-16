@@ -123,6 +123,8 @@ module RuboCop
         option(opts, '--display-time')
         option(opts, '--display-only-failed')
         option(opts, '--display-only-fail-level-offenses')
+        option(opts, '--display-only-correctable')
+        option(opts, '--display-only-safe-correctable')
       end
     end
 
@@ -310,9 +312,12 @@ module RuboCop
         raise OptionArgumentError, '--autocorrect cannot be used with ' \
                                    '--display-only-fail-level-offenses'
       end
+
       validate_auto_gen_config
       validate_auto_correct
       validate_display_only_failed
+      validate_display_only_failed_and_display_only_correctable
+      validate_display_only_correctable_and_auto_correct
       disable_parallel_when_invalid_option_combo
 
       return if incompatible_options.size <= 1
@@ -340,6 +345,24 @@ module RuboCop
 
       raise OptionArgumentError,
             format('--display-only-failed can only be used together with --format junit.')
+    end
+
+    def validate_display_only_correctable_and_auto_correct
+      return if !@options.key?(:safe_auto_correct) && !@options.key?(:auto_correct)
+      return if !@options.key?(:display_only_correctable) &&
+                !@options.key?(:display_only_safe_correctable)
+
+      raise OptionArgumentError,
+            '--auto-correct cannot be used with --display-only-[safe-]correctable.'
+    end
+
+    def validate_display_only_failed_and_display_only_correctable
+      return unless @options.key?(:display_only_failed)
+      return if !@options.key?(:display_only_correctable) &&
+                !@options.key?(:display_only_safe_correctable)
+
+      raise OptionArgumentError,
+            format('--display-only-failed cannot be used together with other display options.')
     end
 
     def validate_auto_correct
@@ -481,6 +504,9 @@ module RuboCop
       display_only_fail_level_offenses:
                                         ['Only output offense messages at',
                                          'the specified --fail-level or above'],
+      display_only_correctable:         ['Only output correctable offense messages.'],
+      display_only_safe_correctable:    ['Only output safe-correctable offense messages',
+                                         'when combined with --display-only-correctable.'],
       show_cops:                        ['Shows the given cops, or all cops by',
                                          'default, and their configurations for the',
                                          'current directory.'],
