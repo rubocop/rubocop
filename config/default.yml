@@ -1661,7 +1661,9 @@ Lint/DuplicateRegexpCharacterClassElement:
 Lint/DuplicateRequire:
   Description: 'Check for duplicate `require`s and `require_relative`s.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.90'
+  VersionChanged: '<<next>>'
 
 Lint/DuplicateRescueException:
   Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
