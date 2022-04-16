@@ -30,8 +30,8 @@ module RuboCop
 
               descendant_length = code_length(descendant)
               length = length - descendant_length + 1
-              # Subtract 2 length of opening and closing brace if method argument omits hash braces.
-              length -= 2 if descendant.hash_type? && !descendant.braces? && descendant.multiline?
+              # Subtract length of opening and closing brace if method argument omits hash braces.
+              length -= omit_length(descendant) if descendant.hash_type? && !descendant.braces?
             end
 
             length
@@ -152,6 +152,20 @@ module RuboCop
 
           def count_comments?
             @count_comments
+          end
+
+          def omit_length(descendant)
+            parent = descendant.parent
+            return 0 if another_args?(parent)
+
+            [
+              parent.loc.begin.end_pos != descendant.loc.expression.begin_pos,
+              parent.loc.end.begin_pos != descendant.loc.expression.end_pos
+            ].count(true)
+          end
+
+          def another_args?(node)
+            node.call_type? && node.arguments.count > 1
           end
         end
       end
