@@ -143,10 +143,10 @@ module RuboCop
 
       if cache&.valid?
         offenses = cache.load
-        # If we're running --auto-correct and the cache says there are
+        # If we're running --autocorrect and the cache says there are
         # offenses, we need to actually inspect the file. If the cache shows no
         # offenses, we're good.
-        real_run_needed = @options[:auto_correct] && offenses.any?
+        real_run_needed = @options[:autocorrect] && offenses.any?
       else
         real_run_needed = true
       end
@@ -240,7 +240,7 @@ module RuboCop
       # error message.
       offenses_by_iteration = []
 
-      # When running with --auto-correct, we need to inspect the file (which
+      # When running with --autocorrect, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.

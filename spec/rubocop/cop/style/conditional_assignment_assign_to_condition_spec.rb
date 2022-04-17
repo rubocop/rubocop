@@ -1229,7 +1229,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
     RUBY
   end
 
-  describe 'auto-correct' do
+  describe 'autocorrect' do
     it 'corrects =~ in ternary operations' do
       expect_offense(<<~'RUBY')
         foo? ? bar =~ /a/ : bar =~ /b/
@@ -1947,7 +1947,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
       RUBY
     end
 
-    context 'auto-correct' do
+    context 'autocorrect' do
       it 'corrects multiple assignment in if else' do
         expect_offense(<<~RUBY)
           if foo
@@ -2148,7 +2148,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :co
   end
 
   context 'EndAlignment configured to start_of_line' do
-    context 'auto-correct' do
+    context 'autocorrect' do
       it 'uses proper end alignment in if' do
         expect_offense(<<~RUBY)
           if foo

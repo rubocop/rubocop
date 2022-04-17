@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
   describe '#run with cops autocorrecting each-other' do
     let(:source_file_path) { create_file('example.rb', source) }
 
-    let(:options) { { auto_correct: true, formatters: [['progress', formatter_output_path]] } }
+    let(:options) { { autocorrect: true, formatters: [['progress', formatter_output_path]] } }
 
     context 'with two conflicting cops' do
       subject(:runner) do
@@ -354,7 +354,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
               def foo()
                      ^^
 
-              1 file inspected, 3 offenses detected, 3 offenses auto-correctable
+              1 file inspected, 3 offenses detected, 3 offenses autocorrectable
             RESULT
           end
         end
@@ -398,7 +398,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
               def foo()
                      ^^
 
-              1 file inspected, 4 offenses detected, 4 offenses auto-correctable
+              1 file inspected, 4 offenses detected, 4 offenses autocorrectable
             RESULT
           end
         end

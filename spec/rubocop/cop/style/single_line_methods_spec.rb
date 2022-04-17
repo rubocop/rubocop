@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with semicolon after method name' do
+  it 'autocorrects def with semicolon after method name' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method; body end # Cmnt
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -110,7 +110,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects defs with parentheses after method name' do
+  it 'autocorrects defs with parentheses after method name' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def self.some_method() body end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with argument in parentheses' do
+  it 'autocorrects def with argument in parentheses' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method(arg) body end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with argument and no parentheses' do
+  it 'autocorrects def with argument and no parentheses' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method arg; body end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with semicolon before end' do
+  it 'autocorrects def with semicolon before end' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method; b1; b2; end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.

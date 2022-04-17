@@ -3,7 +3,7 @@
 == Speeding up integrations
 
 RuboCop integrates with quite a number of other tools, including editors which may attempt
-to do auto-correction for you. In these cases, `rubocop` ends up getting called repeatedly,
+to do autocorrection for you. In these cases, `rubocop` ends up getting called repeatedly,
 which may result in some slowness, as `rubocop` has to require its entire environment on
 each call.
 
@@ -158,7 +158,7 @@ If you run `rake -T`, the following two RuboCop tasks should show up:
 [source,sh]
 ----
 $ rake rubocop                                  # Run RuboCop
-$ rake rubocop:auto_correct                     # Auto-correct RuboCop offenses
+$ rake rubocop:auto_correct                     # Autocorrect RuboCop offenses
 ----
 
 The above will use default values

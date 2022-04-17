@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it_behaves_like('literal interpolation in words literal', '%W')
   it_behaves_like('literal interpolation in words literal', '%I')
 
-  it 'handles nested interpolations when auto-correction' do
+  it 'handles nested interpolations when autocorrecting' do
     expect_offense(<<~'RUBY')
       "this is #{"#{1}"} silly"
                     ^ Literal interpolation detected.
@@ -242,7 +242,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it_behaves_like('non-special string literal interpolation', %('foo'))
   it_behaves_like('non-special string literal interpolation', %("foo"))
 
-  it 'handles double quotes in single quotes when auto-correction' do
+  it 'handles double quotes in single quotes when autocorrecting' do
     expect_offense(<<~'RUBY')
       "this is #{'"'} silly"
                  ^^^ Literal interpolation detected.
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
-  it 'handles backslach in single quotes when auto-correction' do
+  it 'handles backslash in single quotes when autocorrecting' do
     expect_offense(<<~'RUBY')
       x = "ABC".gsub(/(A)(B)(C)/, "D#{'\2'}F")
                                       ^^^^ Literal interpolation detected.
@@ -270,7 +270,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
-  it 'handles backslach in double quotes when auto-correction' do
+  it 'handles backslash in double quotes when autocorrecting' do
     expect_offense(<<~'RUBY')
       "this is #{"\n"} silly"
                  ^^^^ Literal interpolation detected.

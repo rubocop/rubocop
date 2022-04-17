@@ -153,9 +153,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('func(3, a: 0)')
       end
 
-      it 'auto-corrects even if it interferes with SpaceAroundOperators' do
+      it 'autocorrects even if it interferes with SpaceAroundOperators' do
         # Clobbering caused by two cops changing in the same range is dealt with
-        # by the auto-correct loop, so there's no reason to avoid a change.
+        # by the autocorrect loop, so there's no reason to avoid a change.
         expect_offense(<<~RUBY)
           { :a=>1, :b=>2 }
             ^^^^ Use the new Ruby 1.9 hash syntax.
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
 
       # Bug: https://github.com/rubocop/rubocop/issues/5019
-      it 'auto-corrects a missing space when hash is used as argument' do
+      it 'autocorrects a missing space when hash is used as argument' do
         expect_offense(<<~RUBY)
           foo:bar => 1
              ^^^^^^^ Use the new Ruby 1.9 hash syntax.
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                             })
       end
 
-      it 'auto-corrects even if there is no space around =>' do
+      it 'autocorrects even if there is no space around =>' do
         expect_offense(<<~RUBY)
           { :a=>1, :b=>2 }
             ^^^^ Use the new Ruby 1.9 hash syntax.
@@ -312,7 +312,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'auto-corrects to hash rockets when all elements have symbol value' do
+      it 'autocorrects to hash rockets when all elements have symbol value' do
         expect_offense(<<~RUBY)
           { a: :b, c: :d }
             ^^ Use hash rockets syntax.
@@ -541,7 +541,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'auto-corrects to hash rockets when all elements have symbol value' do
+      it 'autocorrects to hash rockets when all elements have symbol value' do
         expect_offense(<<~RUBY)
           { a: :b, c: :d }
             ^^ Use hash rockets syntax.
@@ -755,7 +755,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       expect_no_offenses('{ a: 1, b: 2 }')
     end
 
-    it 'auto-corrects mixed key hashes' do
+    it 'autocorrects mixed key hashes' do
       expect_offense(<<~RUBY)
         { a: 1, :b => 2 }
                 ^^^^^ Don't mix styles in the same hash.

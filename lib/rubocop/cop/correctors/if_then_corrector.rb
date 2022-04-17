@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This class auto-corrects `if...then` structures to a multiline `if` statement
+    # This class autocorrects `if...then` structures to a multiline `if` statement
     class IfThenCorrector
       DEFAULT_INDENTATION_WIDTH = 2
 

@@ -158,7 +158,7 @@ module RuboCop
         Registry.global.dismiss(self)
       end
 
-      # Returns if class supports auto_correct.
+      # Returns if class supports autocorrect.
       # It is recommended to extend AutoCorrector instead of overriding
       def self.support_autocorrect?
         false

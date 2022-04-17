@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       end
     end
 
-    it 'auto-corrects a misaligned end' do
+    it 'autocorrects a misaligned end' do
       expect_offense(<<~RUBY)
         [1, 2, 3, 4].each do |num|
           if !opts.nil?

@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for multi-line ternary op expressions.
       #
       # NOTE: `return if ... else ... end` is syntax error. If `return` is used before
-      # multiline ternary operator expression, it will be auto-corrected to single-line
+      # multiline ternary operator expression, it will be autocorrected to single-line
       # ternary operator. The same is true for `break`, `next`, and method call.
       #
       # @example

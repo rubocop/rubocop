@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This auto-corrects string literals
+    # This autocorrects string literals
     class StringLiteralCorrector
       extend Util
 

@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
   shared_examples 'offenses' do |rescues|
     context 'begin rescue' do
       context "rescuing from #{rescues}" do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
       end
 
       context "rescuing from #{rescues} before another exception" do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
       end
 
       context "rescuing from #{rescues} after another exception" do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
 
     context 'begin rescue ensure' do
       context "rescuing from #{rescues}" do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY, rescues: rescues)
             begin
               foo
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
 
     context 'def rescue' do
       context "rescuing from #{rescues}" do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY, rescues: rescues)
             def foobar
               foo
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
 
     context 'def rescue ensure' do
       context "rescuing from #{rescues}" do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY, rescues: rescues)
             def foobar
               foo

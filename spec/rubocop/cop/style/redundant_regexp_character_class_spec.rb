@@ -308,7 +308,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
   end
 
   context 'with a character class containing a character requiring escape outside' do
-    # Not implemented for now, since we would have to escape on auto-correct, and the cop message
+    # Not implemented for now, since we would have to escape on autocorrect, and the cop message
     # would need to be dynamic to not be misleading.
     it 'does not register an offense' do
       expect_no_offenses('foo = /[+]/')

@@ -8,7 +8,7 @@ module RuboCop
       # all contexts.
       #
       # @safety
-      #   Auto-correction is unsafe because there is a different operator precedence
+      #   Autocorrection is unsafe because there is a different operator precedence
       #   between logical operators (`&&` and `||`) and semantic operators (`and` and `or`),
       #   and that might change the behavior.
       #
@@ -111,7 +111,7 @@ module RuboCop
         end
 
         # ! is a special case:
-        # 'x and !obj.method arg' can be auto-corrected if we
+        # 'x and !obj.method arg' can be autocorrected if we
         # recurse down a level and add parens to 'obj.method arg'
         # however, 'not x' also parses as (send x :!)
         def correct_not(node, receiver, corrector)

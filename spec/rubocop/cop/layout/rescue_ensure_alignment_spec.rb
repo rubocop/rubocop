@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             end
           RUBY
 
-          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` autocorrection.
           expect_correction(<<~RUBY)
             x ||= begin
               1
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
                   end
           RUBY
 
-          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` autocorrection.
           expect_correction(<<~RUBY)
             x ||= begin
                     1
@@ -167,7 +167,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             end
           RUBY
 
-          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` autocorrection.
           expect_correction(<<~RUBY)
             x ||= begin
               1

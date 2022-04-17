@@ -330,7 +330,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'auto-corrects nested parens correctly' do
+  it 'autocorrects nested parens correctly' do
     expect_offense(<<~RUBY)
       def f
         X.map do |

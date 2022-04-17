@@ -241,7 +241,7 @@ all contexts.
 
 === Safety
 
-Auto-correction is unsafe because there is a different operator precedence
+Autocorrection is unsafe because there is a different operator precedence
 between logical operators (`&&` and `||`) and semantic operators (`and` and `or`),
 and that might change the behavior.
 
@@ -1932,12 +1932,12 @@ Note that some comments
 (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
 are allowed.
 
-Auto-correction removes comments from `end` keyword and keeps comments
+Autocorrection removes comments from `end` keyword and keeps comments
 for `class`, `module`, `def` and `begin` above the keyword.
 
 === Safety
 
-Auto-correction is unsafe because it may remove a comment that is
+Autocorrection is unsafe because it may remove a comment that is
 meaningful.
 
 === Examples
@@ -5180,7 +5180,7 @@ in a future major RuboCop release.
 
 === Safety
 
-Auto-correction is unsafe because changing the order of method invocations
+Autocorrection is unsafe because changing the order of method invocations
 may change the behavior of the code. For example:
 
 [source,ruby]
@@ -5474,7 +5474,7 @@ The conditions to be checked are comparison methods, predicate methods, and doub
 
 === Safety
 
-Auto-correction is unsafe because there is no guarantee that all predicate methods
+Autocorrection is unsafe because there is no guarantee that all predicate methods
 will return a boolean value. Those methods can be allowed with `AllowedMethods` config.
 
 === Examples
@@ -7254,7 +7254,7 @@ end
 This cop checks for multi-line ternary op expressions.
 
 NOTE: `return if ... else ... end` is syntax error. If `return` is used before
-multiline ternary operator expression, it will be auto-corrected to single-line
+multiline ternary operator expression, it will be autocorrected to single-line
 ternary operator. The same is true for `break`, `next`, and method call.
 
 === Examples
@@ -8617,7 +8617,7 @@ obj.yield_self { |x| x.do_something }
 Checks for uses of if/then/else/end constructs on a single line.
 AlwaysCorrectToMultiline config option can be set to true to auto-convert all offenses to
 multi-line constructs. When AlwaysCorrectToMultiline is false (default case) the
-auto-correct will first try converting them to ternary operators.
+autocorrect will first try converting them to ternary operators.
 
 === Examples
 
@@ -11513,7 +11513,7 @@ It will accept single-line methods with no body.
 Endless methods added in Ruby 3.0 are also accepted by this cop.
 
 If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow_single_line` or
-`allow_always`, single-line methods will be auto-corrected to endless
+`allow_always`, single-line methods will be autocorrected to endless
 methods if there is only one statement in the body.
 
 === Examples
@@ -12300,7 +12300,7 @@ This cop checks for inheritance from Struct.new.
 
 === Safety
 
-Auto-correction is unsafe because it will change the inheritance
+Autocorrection is unsafe because it will change the inheritance
 tree (e.g. return value of `Module#ancestors`) of the constant.
 
 === Examples

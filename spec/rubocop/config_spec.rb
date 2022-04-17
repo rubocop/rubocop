@@ -371,7 +371,7 @@ RSpec.describe RuboCop::Config do
 
     describe 'conflicting Safe settings' do
       context 'when the configuration includes an unsafe cop that is ' \
-              'explicitly declared to have a safe auto-correction' do
+              'explicitly declared to have a safe autocorrection' do
         before do
           create_file(configuration_path, <<~YAML)
             Style/PreferredHashMethods:
@@ -384,13 +384,13 @@ RSpec.describe RuboCop::Config do
           expect { configuration.validate }
             .to raise_error(
               RuboCop::ValidationError,
-              /Unsafe cops cannot have a safe auto-correction/
+              /Unsafe cops cannot have a safe autocorrection/
             )
         end
       end
 
       context 'when the configuration includes an unsafe cop without ' \
-              'a declaration of its auto-correction' do
+              'a declaration of its autocorrection' do
         before do
           create_file(configuration_path, <<~YAML)
             Style/PreferredHashMethods:

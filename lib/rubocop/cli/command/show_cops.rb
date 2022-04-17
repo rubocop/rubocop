@@ -47,7 +47,7 @@ module RuboCop
 
         def print_cop_details(cops)
           cops.each do |cop|
-            puts '# Supports --auto-correct' if cop.support_autocorrect?
+            puts '# Supports --autocorrect' if cop.support_autocorrect?
             puts "#{cop.cop_name}:"
             puts config_lines(cop)
             puts

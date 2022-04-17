@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       expect_no_offenses('test = Array.new(3)')
     end
 
-    it 'auto-corrects Array.new in block in block' do
+    it 'autocorrects Array.new in block in block' do
       expect_offense(<<~RUBY)
         puts { Array.new }
                ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       end
     end
 
-    it 'auto-corrects Hash.new in block' do
+    it 'autocorrects Hash.new in block' do
       expect_offense(<<~RUBY)
         puts { Hash.new }
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-corrects Hash.new to {} in various contexts' do
+    it 'autocorrects Hash.new to {} in various contexts' do
       expect_offense(<<~RUBY)
         test = Hash.new
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct Hash.new to {} as the only parameter to a method' do
+    it 'autocorrects Hash.new to {} as the only parameter to a method' do
       expect_offense(<<~RUBY)
         yadayada.map { a }.reduce Hash.new
                                   ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct Hash.new to {} as the first parameter to a method' do
+    it 'autocorrects Hash.new to {} as the first parameter to a method' do
       expect_offense(<<~RUBY)
         yadayada.map { a }.reduce Hash.new, :merge
                                   ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct changes Hash.new to {} and wraps it in parentheses ' \
+    it 'autocorrects Hash.new to {} and wraps it in parentheses ' \
        'when it is the only argument to super' do
       expect_offense(<<~RUBY)
         def foo
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct changes Hash.new to {} and wraps all arguments in ' \
+    it 'autocorrects Hash.new to {} and wraps all arguments in ' \
        'parentheses when it is the first argument to super' do
       expect_offense(<<~RUBY)
         def foo

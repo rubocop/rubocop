@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This auto-corrects gem dependency order
+    # This autocorrects gem dependency order
     class OrderedGemCorrector
       class << self
         include OrderedGemNode

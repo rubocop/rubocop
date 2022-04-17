@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
   end
 
   context 'initializer is private and comes after attribute macro' do
-    it 'registers offense and auto-corrects' do
+    it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
         class A
           private

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This auto-corrects percent literals
+    # This autocorrects percent literals
     class PercentLiteralCorrector
       include Util
 

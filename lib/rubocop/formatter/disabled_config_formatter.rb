@@ -124,9 +124,9 @@ module RuboCop
         default_cfg = default_config(cop_name)
 
         if supports_safe_auto_correct?(cop_class, default_cfg)
-          output_buffer.puts '# This cop supports safe auto-correction (--auto-correct).'
+          output_buffer.puts '# This cop supports safe autocorrection (--autocorrect).'
         elsif supports_unsafe_autocorrect?(cop_class, default_cfg)
-          output_buffer.puts '# This cop supports unsafe auto-correction (--auto-correct-all).'
+          output_buffer.puts '# This cop supports unsafe autocorrection (--autocorrect-all).'
         end
 
         return unless default_cfg

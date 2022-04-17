@@ -3,9 +3,9 @@
 RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
   let(:missing_else_config) { {} }
 
-  shared_examples 'auto-correct' do |keyword|
+  shared_examples 'autocorrect' do |keyword|
     context 'MissingElse is disabled' do
-      it 'does auto-correction' do
+      it 'does autocorrection' do
         expect_offense(source)
 
         expect_correction(corrected_source)
@@ -20,13 +20,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
         end
 
         if ['both', keyword].include? missing_else_style
-          it 'does not auto-correct' do
+          it 'does not autocorrect' do
             expect_offense(source)
 
             expect_no_corrections
           end
         else
-          it 'does auto-correction' do
+          it 'does autocorrection' do
             expect_offense(source)
 
             expect_correction(corrected_source)
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             if a; foo end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
 
         context 'not using semicolons' do
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
       end
 
@@ -113,11 +113,11 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           end
         RUBY
 
-        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'autocorrect', 'if'
       end
 
       context 'with an empty comment' do
-        it 'does not auto-correct' do
+        it 'does not autocorrect' do
           expect_offense(<<~RUBY)
             if cond
               something
@@ -142,7 +142,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           unless cond; foo end
         RUBY
 
-        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'autocorrect', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           case v; when a; foo end
         RUBY
 
-        it_behaves_like 'auto-correct', 'case'
+        it_behaves_like 'autocorrect', 'case'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
 
         context 'when the result is assigned to a variable' do
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
                      end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
       end
 
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             if a; foo elsif b; bar end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
 
         context 'with multiple elsifs' do
@@ -283,7 +283,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             if a; foo elsif b; bar; elsif c; bar end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
       end
 
@@ -316,7 +316,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           unless cond; foo end
         RUBY
 
-        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'autocorrect', 'if'
       end
 
       context 'with an else-clause with side-effects' do
@@ -349,7 +349,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             case v; when a; foo; when b; bar; end
           RUBY
 
-          it_behaves_like 'auto-correct', 'case'
+          it_behaves_like 'autocorrect', 'case'
         end
 
         context 'when the result is assigned to a variable' do
@@ -374,7 +374,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
                      end
           RUBY
 
-          it_behaves_like 'auto-correct', 'case'
+          it_behaves_like 'autocorrect', 'case'
         end
       end
 
@@ -411,7 +411,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           if a; foo end
         RUBY
 
-        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'autocorrect', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -424,7 +424,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             if a; foo elsif b; bar end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
 
         context 'with multiple elsifs' do
@@ -436,7 +436,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             if a; foo elsif b; bar; elsif c; bar end
           RUBY
 
-          it_behaves_like 'auto-correct', 'if'
+          it_behaves_like 'autocorrect', 'if'
         end
       end
 
@@ -463,7 +463,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           unless cond; foo end
         RUBY
 
-        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'autocorrect', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -475,7 +475,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           unless cond; foo end
         RUBY
 
-        it_behaves_like 'auto-correct', 'if'
+        it_behaves_like 'autocorrect', 'if'
       end
 
       context 'with an else-clause with side-effects' do
@@ -501,7 +501,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           case v; when a; foo end
         RUBY
 
-        it_behaves_like 'auto-correct', 'case'
+        it_behaves_like 'autocorrect', 'case'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -513,7 +513,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           case v; when a; foo; when b; bar; end
         RUBY
 
-        it_behaves_like 'auto-correct', 'case'
+        it_behaves_like 'autocorrect', 'case'
       end
 
       context 'with an else-clause with side-effects' do
@@ -568,6 +568,6 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
       end
     RUBY
 
-    it_behaves_like 'auto-correct', 'case'
+    it_behaves_like 'autocorrect', 'case'
   end
 end

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This class does condition auto-correction
+    # This class does condition autocorrection
     class ConditionCorrector
       class << self
         def correct_negative_condition(corrector, node)

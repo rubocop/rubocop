@@ -269,12 +269,12 @@ module RuboCop
         end
 
         def offense(body_node, indentation, style)
-          # This cop only auto-corrects the first statement in a def body, for
+          # This cop only autocorrects the first statement in a def body, for
           # example.
           body_node = body_node.children.first if body_node.begin_type? && !parentheses?(body_node)
 
           # Since autocorrect changes a number of lines, and not only the line
-          # where the reported offending range is, we avoid auto-correction if
+          # where the reported offending range is, we avoid autocorrection if
           # this cop has already found other offenses is the same
           # range. Otherwise, two corrections can interfere with each other,
           # resulting in corrupted code.
@@ -302,7 +302,7 @@ module RuboCop
         end
 
         # Returns true if the given node is within another node that has
-        # already been marked for auto-correction by this cop.
+        # already been marked for autocorrection by this cop.
         def other_offense_in_same_range?(node)
           expr = node.source_range
           @offense_ranges ||= []

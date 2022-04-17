@@ -89,7 +89,7 @@ module RuboCop
           # See: https://github.com/rubocop/rubocop/issues/8673
           return if INTEGRATION_FORMATTERS.include?(@options[:format])
 
-          return unless @options[:stdin] && @options[:auto_correct]
+          return unless @options[:stdin] && @options[:autocorrect]
 
           (@options[:stderr] ? $stderr : $stdout).puts '=' * 20
           print @options[:stdin]

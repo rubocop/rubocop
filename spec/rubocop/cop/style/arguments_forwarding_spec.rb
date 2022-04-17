@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
 
       # A method definition that uses forwarding arguments without parentheses
       # is a syntax error. e.g. `def do_something ...`
-      # Therefore it enforces parentheses with auto-correction.
+      # Therefore it enforces parentheses with autocorrection.
       expect_correction(<<~RUBY)
         def foo(...)
           bar(...)

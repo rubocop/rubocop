@@ -10,11 +10,11 @@ module RuboCop
       # (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
       # are allowed.
       #
-      # Auto-correction removes comments from `end` keyword and keeps comments
+      # Autocorrection removes comments from `end` keyword and keeps comments
       # for `class`, `module`, `def` and `begin` above the keyword.
       #
       # @safety
-      #   Auto-correction is unsafe because it may remove a comment that is
+      #   Autocorrection is unsafe because it may remove a comment that is
       #   meaningful.
       #
       # @example

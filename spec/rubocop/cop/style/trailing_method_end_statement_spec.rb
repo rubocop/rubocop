@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
     RUBY
   end
 
-  it 'auto-corrects all trailing ends for larger example' do
+  it 'autocorrects all trailing ends for larger example' do
     expect_offense(<<~RUBY)
       class Foo
         def some_method

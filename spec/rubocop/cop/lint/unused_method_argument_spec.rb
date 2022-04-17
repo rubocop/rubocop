@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
       context 'and all the arguments are unused' do
         it 'registers offenses and suggests the use of `*` and ' \
-           'auto-corrects to add underscore-prefix to all arguments' do
+           'autocorrects to add underscore-prefix to all arguments' do
           (foo_message, bar_message) = %w[foo bar].map do |arg|
             "Unused method argument - `#{arg}`. " \
               "If it's necessary, use `_` or `_#{arg}` " \

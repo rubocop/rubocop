@@ -38,7 +38,7 @@ module RuboCop
     #       'Avoid chaining a method call on a do...end block.'
     #     )
     #
-    # Auto-correction can be tested using `expect_correction` after
+    # Autocorrection can be tested using `expect_correction` after
     # `expect_offense`.
     #
     # @example `expect_offense` and `expect_correction`
@@ -58,7 +58,7 @@ module RuboCop
     # that there were no offenses. The `expect_offense` method has
     # to do more work by parsing out lines that contain carets.
     #
-    # If the code produces an offense that could not be auto-corrected, you can
+    # If the code produces an offense that could not be autocorrected, you can
     # use `expect_no_corrections` after `expect_offense`.
     #
     # @example `expect_offense` and `expect_no_corrections`
@@ -205,7 +205,7 @@ module RuboCop
       def set_formatter_options
         RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
         RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-        cop.instance_variable_get(:@options)[:auto_correct] = true
+        cop.instance_variable_get(:@options)[:autocorrect] = true
       end
 
       # Parsed representation of code annotated with the `^^^ Message` style

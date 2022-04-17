@@ -61,7 +61,9 @@ module RuboCop
                             correction_count,
                             correctable_count,
                             rainbow,
-                            safe_auto_correct: @options[:safe_auto_correct])
+                            # :safe_autocorrect is a derived option based on several command-line
+                            # arguments - see Rubocop::Options#add_autocorrection_options
+                            safe_auto_correct: @options[:safe_autocorrect])
 
         output.puts
         output.puts report.summary
@@ -162,7 +164,7 @@ module RuboCop
             "#{colorize(text, :yellow)} can be corrected with `rubocop -A`"
           else
             text = pluralize(@correctable_count, 'offense')
-            "#{colorize(text, :yellow)} auto-correctable"
+            "#{colorize(text, :yellow)} autocorrectable"
           end
         end
       end

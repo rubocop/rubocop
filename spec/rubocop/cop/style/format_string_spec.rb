@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
-    it 'registers an offense for variable argument but does not auto-correct' do
+    it 'registers an offense for variable argument but does not autocorrect' do
       expect_offense(<<~RUBY)
         puts "%f" % a
                   ^ Favor `sprintf` over `String#%`.
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       expect_no_corrections
     end
 
-    it 'registers an offense for variable argument and assignment but does not auto-correct' do
+    it 'registers an offense for variable argument and assignment but does not autocorrect' do
       expect_offense(<<~RUBY)
         a = something()
         puts "%d" % a
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
-    it 'registers an offense for variable argument but does not auto-correct' do
+    it 'registers an offense for variable argument but does not autocorrect' do
       expect_offense(<<~RUBY)
         puts "%f" % a
                   ^ Favor `format` over `String#%`.
@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
-    it 'does not auto-correct String#% with variable argument and assignment' do
+    it 'does not autocorrect String#% with variable argument and assignment' do
       expect_offense(<<~RUBY)
         a = something()
         puts "%d" % a

@@ -13,11 +13,11 @@ RSpec.describe RuboCop::Cop::Team do
   context 'when incompatible cops are correcting together' do
     include FileHelper
 
-    let(:options) { { formatters: [], auto_correct: true } }
+    let(:options) { { formatters: [], autocorrect: true } }
     let(:runner) { RuboCop::Runner.new(options, RuboCop::ConfigStore.new) }
     let(:file_path) { 'example.rb' }
 
-    it 'auto corrects without SyntaxError', :isolated_environment do
+    it 'autocorrects without SyntaxError', :isolated_environment do
       source = <<~'RUBY'
         foo.map{ |a| a.nil? }
 
@@ -62,8 +62,8 @@ RSpec.describe RuboCop::Cop::Team do
       it { is_expected.to be_falsey }
     end
 
-    context 'when { auto_correct: true } is passed to .new' do
-      let(:options) { { auto_correct: true } }
+    context 'when { autocorrect: true } is passed to .new' do
+      let(:options) { { autocorrect: true } }
 
       it { is_expected.to be_truthy }
     end
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Team do
     end
 
     context 'when autocorrection is enabled' do
-      let(:options) { { auto_correct: true } }
+      let(:options) { { autocorrect: true } }
 
       before { create_file(file_path, 'puts "string"') }
 
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Team do
     end
 
     context 'when autocorrection is enabled and file encoding is mismatch' do
-      let(:options) { { auto_correct: true } }
+      let(:options) { { autocorrect: true } }
 
       before do
         create_file(file_path, <<~RUBY)
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Team do
       let(:file_path) { '/tmp/Gemfile' }
 
       let(:buggy_correction) { ->(_corrector) do raise cause end }
-      let(:options) { { auto_correct: true } }
+      let(:options) { { autocorrect: true } }
 
       let(:cause) { StandardError.new('cause') }
 
