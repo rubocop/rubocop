@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'auto-corrects unwanted comma after modified heredoc parameter' do
+      it 'autocorrects unwanted comma after modified heredoc parameter' do
         expect_offense(<<~'RUBY')
           some_method(
             <<-LOREM.delete("\n"),
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           RUBY
         end
 
-        it 'auto-corrects unwanted comma inside string interpolation' do
+        it 'autocorrects unwanted comma inside string interpolation' do
           expect_offense(<<~'RUBY')
             some_method(
               bar: <<-BAR,
@@ -533,7 +533,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'auto-corrects missing comma after a heredoc' do
+      it 'autocorrects missing comma after a heredoc' do
         expect_offense(<<~RUBY)
           route(1, <<-HELP.chomp
                    ^^^^^^^^^^^^^ Put a comma after the last parameter of a multiline method call.

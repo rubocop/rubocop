@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
       RUBY
     end
 
-    it 'auto-corrects array within array with too much indentation' do
+    it 'autocorrects array within array with too much indentation' do
       expect_offense(<<~RUBY)
         [:l1,
           [:l2,
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
       RUBY
     end
 
-    it 'auto-corrects array within array with too little indentation' do
+    it 'autocorrects array within array with too little indentation' do
       expect_offense(<<~RUBY)
         [:l1,
         [:l2,
@@ -142,7 +142,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
       RUBY
     end
 
-    it 'auto-corrects array if the first element being on a new row' do
+    it 'autocorrects array if the first element being on a new row' do
       expect_offense(<<~RUBY)
         array = [
           a,
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
       RUBY
     end
 
-    it 'auto-corrects array within array with too much indentation' do
+    it 'autocorrects array within array with too much indentation' do
       expect_offense(<<~RUBY)
         [:l1,
            [:l2,
@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
       RUBY
     end
 
-    it 'auto-corrects array within array with too little indentation' do
+    it 'autocorrects array within array with too little indentation' do
       expect_offense(<<~RUBY)
         [:l1,
          [:l2,
@@ -304,7 +304,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
       RUBY
     end
 
-    it 'auto-corrects array if the first element being on a new row' do
+    it 'autocorrects array if the first element being on a new row' do
       expect_offense(<<~RUBY)
         array = [
           a,

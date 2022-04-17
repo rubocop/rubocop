@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_r' } }
     let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '[]' } } }
 
-    it 'respects the configuration when auto-correcting' do
+    it 'respects the configuration when autocorrecting' do
       expect_offense(<<~RUBY)
         /a/
         ^^^ Use `%r` around regular expression.
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_r' } }
     let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '//' } } }
 
-    it 'respects the configuration when auto-correcting' do
+    it 'respects the configuration when autocorrecting' do
       expect_offense(<<~'RUBY')
         /\//
         ^^^^ Use `%r` around regular expression.
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
       context 'when configured to allow inner slashes' do
         before { cop_config['AllowInnerSlashes'] = true }
 
-        it 'remains slashes after auto-correction' do
+        it 'remains slashes after autocorrection' do
           expect_offense(<<~'RUBY')
             foo = %r/\//
                   ^^^^^^ Use `//` around regular expression.

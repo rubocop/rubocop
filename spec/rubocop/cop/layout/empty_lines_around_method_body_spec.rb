@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody, :config do
   # The cop only registers an offense if the extra line is completely empty. If
   # there is trailing whitespace, then that must be dealt with first. Having
   # two cops registering offense for the line with only spaces would cause
-  # havoc in auto-correction.
+  # havoc in autocorrection.
   it 'accepts method body starting with a line with spaces' do
     expect_no_offenses(['def some_method', '  ', '  do_something', 'end'].join("\n"))
   end

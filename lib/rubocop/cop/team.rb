@@ -68,7 +68,7 @@ module RuboCop
 
         # The autocorrection process may have to be repeated multiple times
         # until there are no corrections left to perform
-        # To speed things up, run auto-correcting cops by themselves, and only
+        # To speed things up, run autocorrecting cops by themselves, and only
         # run the other cops when no corrections are left
         on_duty = roundup_relevant_cops(processed_source.file_path)
 

@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
     expect_no_offenses('!test')
   end
 
-  it 'auto-corrects "not" with !' do
+  it 'autocorrects "not" with !' do
     expect_offense(<<~RUBY)
       x = 10 if not y
                 ^^^ Use `!` instead of `not`.
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
     RUBY
   end
 
-  it 'auto-corrects "not" followed by parens with !' do
+  it 'autocorrects "not" followed by parens with !' do
     expect_offense(<<~RUBY)
       not(test)
       ^^^ Use `!` instead of `not`.

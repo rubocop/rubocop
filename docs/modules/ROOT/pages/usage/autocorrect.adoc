@@ -1,6 +1,7 @@
-= Auto-correct
+= Autocorrect
+:page-aliases: auto_correct.adoc
 
-In auto-correct mode, RuboCop will try to automatically fix offenses:
+In autocorrect mode, RuboCop will try to automatically fix offenses:
 
 [source,sh]
 ----
@@ -9,17 +10,17 @@ $ rubocop -A
 $ rubocop --auto-correct-all
 ----
 
-There are a couple of things to keep in mind about auto-correct:
+There are a couple of things to keep in mind about autocorrect:
 
 - For some offenses, it is not possible to implement automatic correction.
 - Some automatic corrections that _are_ possible have not been implemented yet.
 - Some automatic corrections might change (slightly) the semantics of the code,
 meaning they'd produce code that's mostly equivalent to the original code, but
-not 100% equivalent. We call such auto-correct behaviour "unsafe".
+not 100% equivalent. We call such autocorrect behaviour "unsafe".
 
-TIP: You should always run your test suite after using the auto-correct functionality.
+TIP: You should always run your test suite after using the autocorrect functionality.
 
-== Safe auto-correct
+== Safe autocorrect
 
 [source,sh]
 ----
@@ -30,19 +31,19 @@ $ rubocop --auto-correct
 
 In RuboCop 0.60, we began to annotate cops as `Safe` or not safe. The definition of
 safety is that the cop doesn't generate false positives. On top of that there's `SafeAutoCorrect`
-that might be set to `false` in cases where only the auto-correct performed by a cop
+that might be set to `false` in cases where only the autocorrect performed by a cop
 is unsafe, but that the offense detection logic is safe. To sum it up:
 
 * Safe (`true/false`) - indicates whether the cop can yield false positives (by
 design) or not.
-* SafeAutoCorrect (`true/false`) - indicates whether the auto-correct a cop
-does is safe (equivalent) by design. If a cop is unsafe its auto-correct automatically
+* SafeAutoCorrect (`true/false`) - indicates whether the autocorrect a cop
+does is safe (equivalent) by design. If a cop is unsafe its autocorrect automatically
 becomes unsafe as well.
 
-If a cop or its auto-correct is annotated as "not safe", it will be omitted when using `--auto-correct`.
+If a cop or its autocorrect is annotated as "not safe", it will be omitted when using `--auto-correct`.
 
 NOTE: Currently there might still be cops that aren't marked as unsafe or
-with unsafe auto-correct.  Eventually, the safety of each cop will be specified
+with unsafe autocorrect.  Eventually, the safety of each cop will be specified
 in the default configuration.
 
 === Example of Unsafe Cop
@@ -69,7 +70,7 @@ and there might not be an alternative. This cop is marked as `Safe: false`.
 str = 'hello' # => Missing magic comment `# frozen_string_literal: true`
 str << 'world'
 
-# auto-corrects to:
+# autocorrects to:
 # frozen_string_literal: true
 
 str = 'hello'
@@ -83,10 +84,10 @@ str << 'world' # => ok
 ----
 
 This diagnostic is valid since the magic comment is indeed missing (thus `Safe: true`),
-but the auto-correction is not; some string literals need to be prefixed with `+` to avoid
+but the autocorrection is not; some string literals need to be prefixed with `+` to avoid
 having them frozen.
 
-To run all auto-corrections (safe and unsafe):
+To run all autocorrections (safe and unsafe):
 
 [source,sh]
 ----

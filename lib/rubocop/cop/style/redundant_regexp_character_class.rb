@@ -87,7 +87,7 @@ module RuboCop
         def without_character_class(loc)
           without_character_class = loc.source[1..-2]
 
-          # Adds `\` to prevent auto-correction that changes to an interpolated string when `[#]`.
+          # Adds `\` to prevent autocorrection that changes to an interpolated string when `[#]`.
           # e.g. From `/[#]{0}/` to `/#{0}/`
           loc.source == '[#]' ? "\\#{without_character_class}" : without_character_class
         end

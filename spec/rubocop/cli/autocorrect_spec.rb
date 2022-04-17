@@ -1341,7 +1341,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RESULT
   end
 
-  # In this example, the auto-correction (changing "fail" to "raise")
+  # In this example, the autocorrection (changing "fail" to "raise")
   # creates a new problem (alignment of parameters), which is also
   # corrected automatically.
   it 'can correct a problems and the problem it creates' do
@@ -1372,7 +1372,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RESULT
   end
 
-  # Thanks to repeated auto-correction, we can get rid of the trailing
+  # Thanks to repeated autocorrection, we can get rid of the trailing
   # spaces, and then the extra empty line.
   it 'can correct two problems in the same place' do
     create_file('example.rb', ['# Example class.', 'class Klass', '  ', '  def f; end', 'end'])

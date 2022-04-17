@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     context 'upper case keyword with colon but no note' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~RUBY)
           # HACK:
             ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     context 'upper case keyword with space but no note' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~RUBY)
           # HACK#{trailing_whitespace}
             ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     context 'upper case keyword with colon but no note' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~RUBY)
           # HACK:
             ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
 
     context 'upper case keyword with space but no note' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~RUBY)
           # HACK#{trailing_whitespace}
             ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.

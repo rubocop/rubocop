@@ -86,9 +86,9 @@ module RuboCop
           return if node.keywords?
 
           # Do not register an offense for multi-line empty braces. That means
-          # preventing auto-correction to single-line empty braces. It will
-          # conflict with auto-correction by `Layout/SpaceInsideBlockBraces` cop
-          # if auto-corrected to a single-line empty braces.
+          # preventing autocorrection to single-line empty braces. It will
+          # conflict with autocorrection by `Layout/SpaceInsideBlockBraces` cop
+          # if autocorrected to a single-line empty braces.
           # See: https://github.com/rubocop/rubocop/issues/7363
           return if node.body.nil? && node.multiline?
 

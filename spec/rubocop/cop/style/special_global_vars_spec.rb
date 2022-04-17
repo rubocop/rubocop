@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
         expect_no_offenses('puts $1')
       end
 
-      it 'auto-corrects $/ to $INPUT_RECORD_SEPARATOR' do
+      it 'autocorrects $/ to $INPUT_RECORD_SEPARATOR' do
         expect_offense(<<~RUBY)
           $/
           ^^ Prefer `$INPUT_RECORD_SEPARATOR` or `$RS` from the stdlib 'English' module (don't forget to require it) over `$/`.
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
         RUBY
       end
 
-      it 'auto-corrects #$: to #{$LOAD_PATH}' do
+      it 'autocorrects #$: to #{$LOAD_PATH}' do
         expect_offense(<<~'RUBY')
           "#$:"
             ^^ Prefer `$LOAD_PATH` over `$:`.
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
         RUBY
       end
 
-      it 'auto-corrects #{$!} to #{$ERROR_INFO}' do
+      it 'autocorrects #{$!} to #{$ERROR_INFO}' do
         expect_offense(<<~'RUBY')
           "#{$!}"
              ^^ Prefer `$ERROR_INFO` from the stdlib 'English' module (don't forget to require it) over `$!`.
@@ -274,7 +274,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       expect_no_offenses('puts $1')
     end
 
-    it 'auto-corrects $INPUT_RECORD_SEPARATOR to $/' do
+    it 'autocorrects $INPUT_RECORD_SEPARATOR to $/' do
       expect_offense(<<~RUBY)
         $INPUT_RECORD_SEPARATOR
         ^^^^^^^^^^^^^^^^^^^^^^^ Prefer `$/` over `$INPUT_RECORD_SEPARATOR`.
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       RUBY
     end
 
-    it 'auto-corrects #{$LOAD_PATH} to #$:' do
+    it 'autocorrects #{$LOAD_PATH} to #$:' do
       expect_offense(<<~'RUBY')
         "#{$LOAD_PATH}"
            ^^^^^^^^^^ Prefer `$:` over `$LOAD_PATH`.
@@ -308,7 +308,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       RUBY
     end
 
-    it 'auto-corrects non-preffered builtin names' do
+    it 'autocorrects non-preffered builtin names' do
       expect_offense(<<~RUBY)
         puts $:
              ^^ Prefer `$LOAD_PATH` over `$:`.

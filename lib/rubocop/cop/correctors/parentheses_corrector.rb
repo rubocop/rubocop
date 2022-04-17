@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This auto-corrects parentheses
+    # This autocorrects parentheses
     class ParenthesesCorrector
       class << self
         def correct(corrector, node)

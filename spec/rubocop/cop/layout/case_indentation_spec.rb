@@ -820,7 +820,7 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
   context 'when `when` is on the same line as `case`' do
     let(:cop_config) { {} }
 
-    it 'registers an offense but does not auto-correct' do
+    it 'registers an offense but does not autocorrect' do
       expect_offense(<<~RUBY)
         case test when something
                   ^^^^ Indent `when` as deep as `case`.

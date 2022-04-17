@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypePredicate, :config do
   context 'comparison node type check' do
-    it 'registers an offense and auto-corrects' do
+    it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
         node.type == :send
         ^^^^^^^^^^^^^^^^^^ Use `#send_type?` to check node type.

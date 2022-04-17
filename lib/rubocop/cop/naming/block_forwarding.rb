@@ -9,9 +9,9 @@ module RuboCop
       # by `do_something(&)`.
       #
       # It also supports the opposite style by alternative `explicit` option.
-      # You can specify the block variable name for auto-correction with `BlockForwardingName`.
+      # You can specify the block variable name for autocorrection with `BlockForwardingName`.
       # The default variable name is `block`. If the name is already in use, it will not be
-      # auto-corrected.
+      # autocorrected.
       #
       # @example EnforcedStyle: anonymous (default)
       #

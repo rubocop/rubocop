@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This class does empty line auto-correction
+    # This class does empty line autocorrection
     class EmptyLineCorrector
       class << self
         def correct(corrector, node)

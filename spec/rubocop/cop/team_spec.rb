@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Team do
     let(:runner) { RuboCop::Runner.new(options, RuboCop::ConfigStore.new) }
     let(:file_path) { 'example.rb' }
 
-    it 'auto corrects without SyntaxError', :isolated_environment do
+    it 'autocorrects without SyntaxError', :isolated_environment do
       source = <<~'RUBY'
         foo.map{ |a| a.nil? }
 

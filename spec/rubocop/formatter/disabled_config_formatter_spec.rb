@@ -240,23 +240,23 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
-  context 'with auto-correct supported cop', :restore_registry do
+  context 'with autocorrect supported cop', :restore_registry do
     before do
       stub_cop_class('Test::Cop3') { extend RuboCop::Cop::AutoCorrector }
 
-      formatter.started(['test_auto_correct.rb'])
-      formatter.file_started('test_auto_correct.rb', {})
-      formatter.file_finished('test_auto_correct.rb', offenses)
-      formatter.finished(['test_auto_correct.rb'])
+      formatter.started(['test_autocorrect.rb'])
+      formatter.file_started('test_autocorrect.rb', {})
+      formatter.file_finished('test_autocorrect.rb', offenses)
+      formatter.finished(['test_autocorrect.rb'])
     end
 
     let(:expected_rubocop_todo) do
       [heading,
        '# Offense count: 1',
-       '# This cop supports safe auto-correction (--auto-correct).',
+       '# This cop supports safe autocorrection (--auto-correct).',
        'Test/Cop3:',
        '  Exclude:',
-       "    - 'test_auto_correct.rb'",
+       "    - 'test_autocorrect.rb'",
        ''].join("\n")
     end
 

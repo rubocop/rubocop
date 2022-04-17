@@ -394,7 +394,7 @@ module RuboCop
         end
 
         # If `Layout/LineLength` is enabled, we do not want to introduce an
-        # offense by auto-correcting this cop. Find the max configured line
+        # offense by autocorrecting this cop. Find the max configured line
         # length. Find the longest line of condition. Remove the assignment
         # from lines that contain the offending assignment because after
         # correcting, this will not be on the line anymore. Check if the length

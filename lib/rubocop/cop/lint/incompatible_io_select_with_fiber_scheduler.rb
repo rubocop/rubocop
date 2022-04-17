@@ -8,7 +8,7 @@ module RuboCop
       #
       # NOTE: When the method is successful the return value of `IO.select` is `[[IO]]`,
       # and the return value of `io.wait_readable` and `io.wait_writable` are `self`.
-      # They are not auto-corrected when assigning a return value because these types are different.
+      # They are not autocorrected when assigning a return value because these types are different.
       # It's up to user how to handle the return value.
       #
       # @safety

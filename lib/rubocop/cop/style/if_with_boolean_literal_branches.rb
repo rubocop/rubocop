@@ -8,7 +8,7 @@ module RuboCop
       # The conditions to be checked are comparison methods, predicate methods, and double negative.
       #
       # @safety
-      #   Auto-correction is unsafe because there is no guarantee that all predicate methods
+      #   Autocorrection is unsafe because there is no guarantee that all predicate methods
       #   will return a boolean value. Those methods can be allowed with `AllowedMethods` config.
       #
       # @example

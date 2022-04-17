@@ -202,9 +202,9 @@ value, it will be wrapped in order to prevent the ambiguity of `1..2.to_a`.
 
 === Safety
 
-The cop auto-corrects by wrapping the entire boundary in parentheses, which
+The cop autocorrects by wrapping the entire boundary in parentheses, which
 makes the outcome more explicit but is possible to not be the intention of the
-programmer. For this reason, this cop's auto-correct is unsafe (it will not
+programmer. For this reason, this cop's autocorrect is unsafe (it will not
 change the behaviour of the code, but will not necessarily match the
 intent of the program).
 
@@ -1469,7 +1469,7 @@ This cop checks for odd `else` block layout - like
 having an expression on the same line as the `else` keyword,
 which is usually a mistake.
 
-Its auto-correction tweaks layout to keep the syntax. So, this auto-correction
+Its autocorrection tweaks layout to keep the syntax. So, this autocorrection
 is compatible correction for bad case syntax, but if your code makes a mistake
 with `elsif` and `else`, you will have to correct it manually.
 
@@ -1490,7 +1490,7 @@ end
 ----
 # good
 
-# This code is compatible with the bad case. It will be auto-corrected like this.
+# This code is compatible with the bad case. It will be autocorrected like this.
 if something
   # ...
 else
@@ -2593,7 +2593,7 @@ This cop checks for `IO.select` that is incompatible with Fiber Scheduler since 
 
 NOTE: When the method is successful the return value of `IO.select` is `[[IO]]`,
 and the return value of `io.wait_readable` and `io.wait_writable` are `self`.
-They are not auto-corrected when assigning a return value because these types are different.
+They are not autocorrected when assigning a return value because these types are different.
 It's up to user how to handle the return value.
 
 === Safety
@@ -2803,7 +2803,7 @@ It emulates the following warning in Ruby 3.0:
   lambda instead
 
 This way, proc object is never converted to lambda.
-Auto-correction replaces with compatible proc argument.
+Autocorrection replaces with compatible proc argument.
 
 === Examples
 
@@ -3612,7 +3612,7 @@ locations, the result may vary depending on the order of `require`.
 
 This cop is unsafe because code that is already conditionally
 assigning a constant may have its behaviour changed by
-auto-correction.
+autocorrection.
 
 === Examples
 
@@ -4100,9 +4100,9 @@ because `NilClass` has methods like `respond_to?` and `is_a?`.
 
 === Safety
 
-This cop is unsafe, because auto-correction can change the return type of
+This cop is unsafe, because autocorrection can change the return type of
 the expression. An offending expression that previously could return `nil`
-will be auto-corrected to never return `nil`.
+will be autocorrected to never return `nil`.
 
 === Examples
 
@@ -6623,7 +6623,7 @@ There are edge cases in which the local variable references a
 value that is also accessible outside the local scope. This is not
 detected by the cop, and it can yield a false positive.
 
-As well, auto-correction is unsafe because the method's
+As well, autocorrection is unsafe because the method's
 return value will be changed.
 
 === Examples

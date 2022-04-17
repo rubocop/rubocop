@@ -553,7 +553,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     end
   end
 
-  shared_examples 'single line condition auto-correct' do
+  shared_examples 'single line condition autocorrect' do
     it 'corrects assignment to an if else condition' do
       expect_offense(<<~RUBY)
         bar = if foo
@@ -848,7 +848,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       end
     end
 
-    it_behaves_like('single line condition auto-correct')
+    it_behaves_like('single line condition autocorrect')
 
     it 'corrects assignment to a namespaced constant' do
       expect_offense(<<~RUBY)
@@ -965,7 +965,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     it_behaves_like('multiline all assignment types offense', '&&=')
     it_behaves_like('multiline all assignment types offense', '<<')
 
-    it_behaves_like('single line condition auto-correct')
+    it_behaves_like('single line condition autocorrect')
 
     it 'corrects assignment to a multiline if else condition' do
       expect_offense(<<~RUBY)

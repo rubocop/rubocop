@@ -160,7 +160,7 @@ _Current:_ pass a range (or node as a shortcut for `node.loc.expression`), no `l
 
 Both de-dup on `range` and won't process the duplicated offenses at all.
 
-_Legacy:_ if offenses on same `node` but different `range`: considered as multiple offenses but a single auto-correct call.
+_Legacy:_ if offenses on same `node` but different `range`: considered as multiple offenses but a single autocorrect call.
 
 _Current:_ not applicable and not needed with autocorrection's API.
 
@@ -174,7 +174,7 @@ _Current:_ yields before offense is added to `#offenses`.
 
 Even the legacy mode yields a corrector, but if a developer uses it an error will be raised asking her to inherit from `Cop::Base` instead.
 
-=== Auto Correction
+=== Autocorrection
 
 ==== `#autocorrect`
 
@@ -190,7 +190,7 @@ _Current:_ No special API. Cases where no corrections are made are automatically
 
 ==== Correction timing
 
-_Legacy:_ the lambda was called only later in the process, and only under specific conditions (if the auto-correct setting is turned on, etc.)
+_Legacy:_ the lambda was called only later in the process, and only under specific conditions (if the autocorrect setting is turned on, etc.)
 
 _Current:_ correction is built immediately (assuming the cop isn't disabled for the line) and applied later in the process.
 

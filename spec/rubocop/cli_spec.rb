@@ -78,7 +78,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  1: Layout/EndOfLine: Carriage return character detected.
           C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
 
-          1 file inspected, 2 offenses detected, 1 offense auto-correctable
+          1 file inspected, 2 offenses detected, 1 offense autocorrectable
       RESULT
       expect($stderr.string).to eq(<<~RESULT)
         #{abs('.rubocop.yml')}: Warning: no department given for EndOfLine.
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example.rb ==
         C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-        1 file inspected, 1 offense detected, 1 offense auto-correctable
+        1 file inspected, 1 offense detected, 1 offense autocorrectable
     RESULT
   end
 
@@ -213,7 +213,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      # NOTE: Cannot be auto-corrected with `parallel`.
+      # NOTE: Cannot be autocorrected with `parallel`.
       context 'when specifying `--debug` and `-a` options`' do
         it 'fails with an error message' do
           create_file('example1.rb', <<~RUBY)
@@ -797,7 +797,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               C:  9:  3: [Correctable] Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
               C: 15:  3: [Correctable] Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
 
-              1 file inspected, 2 offenses detected, 2 offenses auto-correctable
+              1 file inspected, 2 offenses detected, 2 offenses autocorrectable
           RESULT
         end
       end
@@ -882,7 +882,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               == example.rb ==
               C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-              1 file inspected, 1 offense detected, 1 offense auto-correctable
+              1 file inspected, 1 offense detected, 1 offense autocorrectable
             RESULT
         end
       end
@@ -920,7 +920,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example1.rb ==
         C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-        2 files inspected, 2 offenses detected, 2 offenses auto-correctable
+        2 files inspected, 2 offenses detected, 2 offenses autocorrectable
       RESULT
     end
 
@@ -946,7 +946,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example1.rb ==
         C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-        2 files inspected, 2 offenses detected, 2 offenses auto-correctable
+        2 files inspected, 2 offenses detected, 2 offenses autocorrectable
       RESULT
     end
 
@@ -1092,7 +1092,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == special.dsl ==
         C:  3:  9: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
 
-        1 file inspected, 1 offense detected, 1 offense auto-correctable
+        1 file inspected, 1 offense detected, 1 offense autocorrectable
       RESULT
     end
 
@@ -1129,7 +1129,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example1.rb ==
           C:  3:  7: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-          1 file inspected, 1 offense detected, 1 offense auto-correctable
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
         RESULT
     end
 
@@ -1149,7 +1149,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             == example1.rb ==
             C:  3:  7: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-            1 file inspected, 1 offense detected, 1 offense auto-correctable
+            1 file inspected, 1 offense detected, 1 offense autocorrectable
           RESULT
       end
     end
@@ -1203,7 +1203,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         C:  4:  6: [Correctable] Style/PercentLiteralDelimiters: %q-literals should be delimited by ( and ).
         C:  4:  6: [Correctable] Style/RedundantPercentQ: Use %q only for strings that contain both single quotes and double quotes.
 
-        1 file inspected, 3 offenses detected, 3 offenses auto-correctable
+        1 file inspected, 3 offenses detected, 3 offenses autocorrectable
       RESULT
     end
 
@@ -1233,7 +1233,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  5: [Correctable] Style/CollectionMethods: Prefer find_all over select.
           C:  1: 26: [Correctable] Style/CollectionMethods: Prefer map over collect.
 
-          1 file inspected, 2 offenses detected, 2 offenses auto-correctable
+          1 file inspected, 2 offenses detected, 2 offenses autocorrectable
         RESULT
     end
 
@@ -1257,7 +1257,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         == example1.rb ==
         C:  3:  1: [Correctable] Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
 
-        1 file inspected, 1 offense detected, 1 offense auto-correctable
+        1 file inspected, 1 offense detected, 1 offense autocorrectable
       RESULT
       expect(result).to eq(1)
     end
@@ -1277,7 +1277,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example_src/example1.rb ==
           C:  3:  7: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-          1 file inspected, 1 offense detected, 1 offense auto-correctable
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
         RESULT
     end
 
@@ -1571,7 +1571,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  3: 46: [Correctable] Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
           E:  3:121: Layout/LineLength: Line is too long. [130/120]
 
-          1 file inspected, 4 offenses detected, 1 offense auto-correctable
+          1 file inspected, 4 offenses detected, 1 offense autocorrectable
         RESULT
         expect($stderr.string).to eq('')
       end
@@ -1668,7 +1668,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
       end
 
-      it 'does not suggest `1 offense auto-correctable` for `Style/StringLiterals`' do
+      it 'does not suggest `1 offense autocorrectable` for `Style/StringLiterals`' do
         create_file('example.rb', <<~RUBY)
           # frozen_string_literal: true
 
@@ -2122,7 +2122,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
           I:  1: 31: Layout/LineLength: Line is too long. [47/30]
 
-          1 file inspected, 2 offenses detected, 1 offense auto-correctable
+          1 file inspected, 2 offenses detected, 1 offense autocorrectable
         RESULT
       end
     end

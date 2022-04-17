@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This auto-corrects unused arguments.
+    # This autocorrects unused arguments.
     class UnusedArgCorrector
       extend RangeHelp
 

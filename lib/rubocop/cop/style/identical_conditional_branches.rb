@@ -12,7 +12,7 @@ module RuboCop
       # in a future major RuboCop release.
       #
       # @safety
-      #   Auto-correction is unsafe because changing the order of method invocations
+      #   Autocorrection is unsafe because changing the order of method invocations
       #   may change the behaviour of the code. For example:
       #
       #   [source,ruby]

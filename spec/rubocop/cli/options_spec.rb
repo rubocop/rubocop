@@ -275,7 +275,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                   'usage when having a single-line body. Another good ' \
                   'alternative is the usage of control flow &&/||.',
                   '',
-                  '1 file inspected, 1 offense detected, 1 offense auto-correctable',
+                  '1 file inspected, 1 offense detected, 1 offense autocorrectable',
                   ''].join("\n"))
       end
 
@@ -536,7 +536,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                     'usage when having a single-line body. Another good ' \
                     'alternative is the usage of control flow &&/||.',
                     '',
-                    '1 file inspected, 1 offense detected, 1 offense auto-correctable',
+                    '1 file inspected, 1 offense detected, 1 offense autocorrectable',
                     ''].join("\n"))
         end
       end
@@ -562,7 +562,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             == example.rb ==
             C:  1:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
-            1 file inspected, 1 offense detected, 1 offense auto-correctable
+            1 file inspected, 1 offense detected, 1 offense autocorrectable
           RESULT
       end
     end
@@ -582,7 +582,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           C:  1:  5: [Correctable] Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
           C:  2:  1: [Correctable] Layout/IndentationStyle: Tab detected in indentation.
 
-          1 file inspected, 3 offenses detected, 3 offenses auto-correctable
+          1 file inspected, 3 offenses detected, 3 offenses autocorrectable
         RESULT
       end
 
@@ -603,7 +603,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               C:  2:  1: [Correctable] Layout/IndentationStyle: Tab detected in indentation.
               W:  2:  2: Lint/UselessAssignment: Useless assignment to variable - y.
 
-              1 file inspected, 3 offenses detected, 2 offenses auto-correctable
+              1 file inspected, 3 offenses detected, 2 offenses autocorrectable
             RESULT
         end
       end
@@ -1250,7 +1250,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
               C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
-              1 file inspected, 2 offenses detected, 1 offense auto-correctable
+              1 file inspected, 2 offenses detected, 1 offense autocorrectable
             RESULT
         end
       end
@@ -1394,7 +1394,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             '    end',
             '    ^^^',
             '',
-            '3 files inspected, 15 offenses detected, 12 offenses auto-correctable',
+            '3 files inspected, 15 offenses detected, 12 offenses autocorrectable',
             ''
           ].join("\n"))
         end
@@ -1504,7 +1504,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
-        1 file inspected, 2 offenses detected, 1 offense auto-correctable
+        1 file inspected, 2 offenses detected, 1 offense autocorrectable
       RESULT
 
       expect(File.read('emacs_output.txt'))
@@ -1619,7 +1619,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
 
     context 'with --auto-correct-all' do
-      def expect_auto_corrected
+      def expect_autocorrected
         expect_offense_detected
         expect($stdout.string.lines.to_a.last)
           .to eq('1 file inspected, 1 offense detected, ' \
@@ -1631,7 +1631,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                         '--fail-level', 'autocorrect',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
-        expect_auto_corrected
+        expect_autocorrected
       end
 
       it 'fails when option is A and all offenses are autocorrected' do
@@ -1639,14 +1639,14 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                         '--fail-level', 'A',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(1)
-        expect_auto_corrected
+        expect_autocorrected
       end
 
       it 'succeeds when option is not given and all offenses are autocorrected' do
         expect(cli.run(['--auto-correct-all', '--format', 'simple',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(0)
-        expect_auto_corrected
+        expect_autocorrected
       end
 
       it 'succeeds when option is refactor and all offenses are autocorrected' do
@@ -1654,7 +1654,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                         '--fail-level', 'refactor',
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq(0)
-        expect_auto_corrected
+        expect_autocorrected
       end
     end
   end
@@ -1708,7 +1708,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       end
     end
 
-    context 'no offense corrected, 1 offense auto-correctable' do
+    context 'no offense corrected, 1 offense autocorrectable' do
       it 'succeeds when there is only a disabled offense' do
         create_file(target_file, <<~RUBY)
           a = 'Hello'.freeze
@@ -1724,7 +1724,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       end
     end
 
-    context 'a offense corrected, a offense auto-correctable' do
+    context 'a offense corrected, a offense autocorrectable' do
       it 'succeeds when there is only a disabled offense' do
         create_file(target_file, <<~RUBY)
           a = "Hello".freeze
@@ -1834,7 +1834,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         == fake.rb ==
         C:  1:  3: [Correctable] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
 
-        1 file inspected, 1 offense detected, 1 offense auto-correctable
+        1 file inspected, 1 offense detected, 1 offense autocorrectable
       RESULT
     ensure
       $stdin = STDIN

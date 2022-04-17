@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     RUBY
   end
 
-  it 'auto-corrects correctly when there are no arguments in parentheses' do
+  it 'autocorrects correctly when there are no arguments in parentheses' do
     expect_offense(<<~RUBY)
       coll.map(   ) { |s| s.upcase }
                     ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
@@ -204,7 +204,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
   end
 
-  it 'auto-corrects correctly when args have a trailing comma' do
+  it 'autocorrects correctly when args have a trailing comma' do
     expect_offense(<<~RUBY)
       mail(
         to: 'foo',

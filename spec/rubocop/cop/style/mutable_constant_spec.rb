@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     context 'when assigning an array without brackets' do
-      it 'adds brackets when auto-correcting' do
+      it 'adds brackets when autocorrecting' do
         expect_offense(<<~RUBY)
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.
@@ -363,7 +363,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
 
       context 'when assigning a range (irange) without parenthesis' do
-        it 'adds parenthesis when auto-correcting' do
+        it 'adds parenthesis when autocorrecting' do
           expect_offense(<<~RUBY)
             XXX = 1..99
                   ^^^^^ Freeze mutable objects assigned to constants.
@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
 
       context 'when assigning a range (erange) without parenthesis' do
-        it 'adds parenthesis when auto-correcting' do
+        it 'adds parenthesis when autocorrecting' do
           expect_offense(<<~RUBY)
             XXX = 1...99
                   ^^^^^^ Freeze mutable objects assigned to constants.
@@ -603,7 +603,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     context 'when assigning an array without brackets' do
-      it 'adds brackets when auto-correcting' do
+      it 'adds brackets when autocorrecting' do
         expect_offense(<<~RUBY)
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.

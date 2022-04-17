@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('!test')
     end
 
-    it 'auto-corrects fully parenthesized args by removing space' do
+    it 'autocorrects fully parenthesized args by removing space' do
       expect_offense(<<~RUBY)
         top.eq (1 + 2)
         ^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects parenthesized args for local methods by removing space' do
+    it 'autocorrects parenthesized args for local methods by removing space' do
       expect_offense(<<~RUBY)
         def foo
           eq (1 + 2)
@@ -222,7 +222,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects call with multiple args by adding braces' do
+    it 'autocorrects call with multiple args by adding braces' do
       expect_offense(<<~RUBY)
         def foo
           eq 1, (2 + 3)
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects partially parenthesized args by adding needed braces' do
+    it 'autocorrects partially parenthesized args by adding needed braces' do
       expect_offense(<<~RUBY)
         top.eq (1 + 2) + 3
         ^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls with multiple args by adding needed braces' do
+    it 'autocorrects calls with multiple args by adding needed braces' do
       expect_offense(<<~RUBY)
         top.eq (1 + 2), 3
         ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where arg is method call' do
+    it 'autocorrects calls where arg is method call' do
       expect_offense(<<~RUBY)
         def my_method
           foo bar.baz(abc, xyz)
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where multiple args are method calls' do
+    it 'autocorrects calls where multiple args are method calls' do
       expect_offense(<<~RUBY)
         def my_method
           foo bar.baz(abc, xyz), foo(baz)
@@ -292,7 +292,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where the argument node is a constant' do
+    it 'autocorrects calls where the argument node is a constant' do
       expect_offense(<<~RUBY)
         def my_method
           raise NotImplementedError
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where the argument node is a number' do
+    it 'autocorrects calls where the argument node is a number' do
       expect_offense(<<~RUBY)
         def my_method
           sleep 1
@@ -839,7 +839,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects single-line calls' do
+    it 'autocorrects single-line calls' do
       expect_offense(<<~RUBY)
         top.test(1, 2, foo: bar(3))
                 ^^^^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
@@ -850,7 +850,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects multi-line calls with trailing whitespace' do
+    it 'autocorrects multi-line calls with trailing whitespace' do
       trailing_whitespace = ' '
 
       expect_offense(<<~RUBY)
@@ -867,7 +867,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects complex multi-line calls' do
+    it 'autocorrects complex multi-line calls' do
       expect_offense(<<~RUBY)
         foo(arg,
            ^^^^^ Omit parentheses for method calls with arguments.

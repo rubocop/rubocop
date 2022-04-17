@@ -162,7 +162,7 @@ module RuboCop
             "#{colorize(text, :yellow)} can be corrected with `rubocop -A`"
           else
             text = pluralize(@correctable_count, 'offense')
-            "#{colorize(text, :yellow)} auto-correctable"
+            "#{colorize(text, :yellow)} autocorrectable"
           end
         end
       end

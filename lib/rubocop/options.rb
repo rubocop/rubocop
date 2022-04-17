@@ -127,7 +127,7 @@ module RuboCop
     end
 
     def add_autocorrection_options(opts)
-      section(opts, 'Auto-correction') do
+      section(opts, 'Autocorrection') do
         option(opts, '-a', '--auto-correct') { @options[:safe_auto_correct] = true }
         option(opts, '--safe-auto-correct') do
           warn '--safe-auto-correct is deprecated; use --auto-correct'
@@ -509,10 +509,10 @@ module RuboCop
                                          'autocorrected source. This is especially useful',
                                          'when combined with --auto-correct and --stdin.'],
       list_target_files:                'List all files RuboCop will inspect.',
-      auto_correct:                     'Auto-correct offenses (only when it\'s safe).',
+      auto_correct:                     'Autocorrect offenses (only when it\'s safe).',
       safe_auto_correct:                '(same, deprecated)',
-      auto_correct_all:                 'Auto-correct offenses (safe and unsafe)',
-      fix_layout:                       'Run only layout cops, with auto-correct on.',
+      auto_correct_all:                 'Autocorrect offenses (safe and unsafe)',
+      fix_layout:                       'Run only layout cops, with autocorrect on.',
       color:                            'Force color output on or off.',
       version:                          'Display version.',
       verbose_version:                  'Display verbose version.',

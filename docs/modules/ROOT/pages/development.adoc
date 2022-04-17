@@ -2,7 +2,7 @@
 
 This section of the documentation will teach you how to develop new cops.  We'll
 start with generating a cop template and then we'll address the various aspects
-of its implementation (interacting with the AST, auto-correct, configuration)
+of its implementation (interacting with the AST, autocorrect, configuration)
 and testing.
 
 == Create a new cop
@@ -299,9 +299,9 @@ offense messages with `[...]`:
 end
 ----
 
-=== Auto-correct
+=== Autocorrect
 
-The auto-correct can help humans automatically fix offenses that have been detected.
+The autocorrect can help humans automatically fix offenses that have been detected.
 It's necessary to `extend AutoCorrector`.
 The method `add_offense` yields a corrector object that is a thin wrapper on
 https://www.rubydoc.info/gems/parser/Parser/Source/TreeRewriter[parser's TreeRewriter]

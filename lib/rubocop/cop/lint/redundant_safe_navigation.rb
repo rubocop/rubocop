@@ -11,9 +11,9 @@ module RuboCop
       # because `NilClass` has methods like `respond_to?` and `is_a?`.
       #
       # @safety
-      #   This cop is unsafe, because auto-correction can change the return type of
+      #   This cop is unsafe, because autocorrection can change the return type of
       #   the expression. An offending expression that previously could return `nil`
-      #   will be auto-corrected to never return `nil`.
+      #   will be autocorrected to never return `nil`.
       #
       # @example
       #   # bad

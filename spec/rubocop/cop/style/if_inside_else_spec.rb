@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         if b
         ^^ Convert `if` nested inside `else` to `elsif`.
           foo
-        else # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+        else # This is expected to be autocorrected by `Layout/IndentationWidth`.
           bar
         end
       end
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         blah
       elsif b
         foo
-        else # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+        else # This is expected to be autocorrected by `Layout/IndentationWidth`.
           bar
       end
     RUBY
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         if b
         ^^ Convert `if` nested inside `else` to `elsif`.
           foo
-        elsif c # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+        elsif c # This is expected to be autocorrected by `Layout/IndentationWidth`.
             bar
         elsif d
           baz
@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
         blah
       elsif b
         foo
-        elsif c # This is expected to be auto-corrected by `Layout/IndentationWidth`.
+        elsif c # This is expected to be autocorrected by `Layout/IndentationWidth`.
             bar
         elsif d
           baz

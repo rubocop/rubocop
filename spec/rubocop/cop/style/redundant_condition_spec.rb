@@ -142,7 +142,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'auto-corrects when using `<<` method higher precedence than `||` operator' do
+      it 'autocorrects when using `<<` method higher precedence than `||` operator' do
         expect_offense(<<~RUBY)
           ary << if foo
                  ^^^^^^ Use double pipes `||` instead.

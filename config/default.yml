@@ -916,7 +916,7 @@ Layout/IndentationStyle:
   VersionChanged: '0.82'
   # By default the indentation width from `Layout/IndentationWidth` is used,
   # but it can be overridden by setting this parameter.
-  # It is used during auto-correction to determine how many spaces should
+  # It is used during autocorrection to determine how many spaces should
   # replace each tab.
   IndentationWidth: ~
   EnforcedStyle: spaces
@@ -4672,7 +4672,7 @@ Style/SafeNavigation:
                   This cop transforms usages of a method call safeguarded by
                   a check for the existence of the object to
                   safe navigation (`&.`).
-                  Auto-correction is unsafe as it assumes the object will
+                  Autocorrection is unsafe as it assumes the object will
                   be `nil` or truthy, but never `false`.
   Enabled: true
   VersionAdded: '0.43'

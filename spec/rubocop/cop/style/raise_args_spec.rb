@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when used in a ternary expression' do
-      it 'registers an offense and auto-corrects' do
+      it 'registers an offense and autocorrects' do
         expect_offense(<<~RUBY)
           foo ? raise(Ex, 'error') : bar
                 ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when used in a logical and expression' do
-      it 'registers an offense and auto-corrects' do
+      it 'registers an offense and autocorrects' do
         expect_offense(<<~RUBY)
           bar && raise(Ex, 'error')
                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when used in a logical or expression' do
-      it 'registers an offense and auto-corrects' do
+      it 'registers an offense and autocorrects' do
         expect_offense(<<~RUBY)
           bar || raise(Ex, 'error')
                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       context 'when used in a ternary expression' do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY)
             foo ? raise(Ex.new('error')) : bar
                   ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       context 'when used in a logical and expression' do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY)
             bar && raise(Ex.new('error'))
                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
@@ -191,7 +191,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       context 'when used in a logical or expression' do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY)
             bar || raise(Ex.new('error'))
                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when an exception object is assigned to a local variable' do
-      it 'auto-corrects to exploded style' do
+      it 'autocorrects to exploded style' do
         expect_offense(<<~RUBY)
           def do_something
             klass = RuntimeError

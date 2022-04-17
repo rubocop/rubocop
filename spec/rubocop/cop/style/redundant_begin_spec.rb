@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it "doesn't modify spacing when auto-correcting" do
+  it "doesn't modify spacing when autocorrecting" do
     expect_offense(<<~RUBY)
       def method
         begin
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'auto-corrects when there are trailing comments' do
+  it 'autocorrects when there are trailing comments' do
     expect_offense(<<~RUBY)
       def method
         begin # comment 1

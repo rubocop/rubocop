@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingEmptyLines, :config do
     RUBY
   end
 
-  context 'auto-correct' do
+  context 'autocorrect' do
     context 'in collaboration' do
       let(:config) do
         RuboCop::Config.new('Layout/SpaceAroundEqualsInParameterDefault' => {

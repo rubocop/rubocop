@@ -94,7 +94,7 @@ module RuboCop
 
             # Inverse method offenses inside of the block of an inverse method
             # offense, such as `y.reject { |key, _value| !(key =~ /c\d/) }`,
-            # can cause auto-correction to apply improper corrections.
+            # can cause autocorrection to apply improper corrections.
             ignore_node(block)
             add_offense(node, message: message(method, inverse_blocks[method])) do |corrector|
               correct_inverse_block(corrector, node)

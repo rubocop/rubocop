@@ -12,7 +12,7 @@ module RuboCop
       #   lambda instead
       #
       # This way, proc object is never converted to lambda.
-      # Auto-correction replaces with compatible proc argument.
+      # Autocorrection replaces with compatible proc argument.
       #
       # @example
       #

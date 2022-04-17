@@ -15,7 +15,7 @@ RuboCop packs a lot of features on top of what you'd normally expect from a
 linter:
 
 * Works with every major Ruby implementation
-* Auto-correction of many of the code offenses it detects
+* Autocorrection of many of the code offenses it detects
 * Robust code formatting capabilities
 * Multiple result formatters for both interactive use and for feeding data into other tools
 * Ability to have different configuration for different parts of your codebase

@@ -124,7 +124,7 @@ RSpec.describe RuboCop::RakeTask do
       expect($stderr.string.strip).to eq 'RuboCop failed!'
     end
 
-    context 'auto_correct' do
+    context 'autocorrect' do
       it 'runs with --auto-correct-all' do
         described_class.new
 

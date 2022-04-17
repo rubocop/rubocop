@@ -339,7 +339,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       it { is_expected.to be(false) }
     end
 
-    context 'when auto-correction of the cop is declared unsafe' do
+    context 'when autocorrection of the cop is declared unsafe' do
       let(:cop_config) { { 'SafeAutoCorrect' => false } }
 
       it { is_expected.to be(false) }

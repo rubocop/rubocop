@@ -11,7 +11,7 @@ module RuboCop
       #   value that is also accessible outside the local scope. This is not
       #   detected by the cop, and it can yield a false positive.
       #
-      #   As well, auto-correction is unsafe because the method's
+      #   As well, autocorrection is unsafe because the method's
       #   return value will be changed.
       #
       # @example

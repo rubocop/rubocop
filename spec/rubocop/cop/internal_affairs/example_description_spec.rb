@@ -66,8 +66,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
   context 'with `expect_correction`' do
     it 'registers an offense when given an improper description' do
       expect_offense(<<~RUBY)
-        it 'does not auto-correct' do
-           ^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_correction`.
+        it 'does not autocorrect' do
+           ^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_correction`.
           expect_correction('code', source: 'new code')
         end
       RUBY
@@ -76,8 +76,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
     context 'in conjunction with expect_offense' do
       it 'registers an offense when given an improper description' do
         expect_offense(<<~RUBY)
-          it 'registers an offense but does not auto-correct' do
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_correction`.
+          it 'registers an offense but does not autocorrect' do
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_correction`.
             expect_offense('code')
             expect_correction('code')
           end
@@ -87,8 +87,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
       context 'when the description is invalid for both methods' do
         it 'registers an offense for the first method encountered' do
           expect_offense(<<~RUBY)
-            it 'does not register an offense and does not auto-correct' do
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_offense`.
+            it 'does not register an offense and does not autocorrect' do
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_offense`.
               expect_offense('code')
               expect_correction('code')
             end
@@ -111,8 +111,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
     context 'in conjunction with expect_offense' do
       it 'registers an offense when given an improper description' do
         expect_offense(<<~RUBY)
-          it 'auto-corrects' do
-             ^^^^^^^^^^^^^^^ Description does not match use of `expect_no_corrections`.
+          it 'autocorrects' do
+             ^^^^^^^^^^^^^^ Description does not match use of `expect_no_corrections`.
             expect_offense('code')
             expect_no_corrections
           end

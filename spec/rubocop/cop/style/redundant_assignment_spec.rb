@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
   end
 
   context 'when inside begin-end body' do
-    it 'registers an offense and auto-corrects' do
+    it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
         def func
           some_preceding_statements
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
   end
 
   context 'when rescue blocks present' do
-    it 'does register an offense and auto-corrects when inside function or rescue block' do
+    it 'does register an offense and autocorrects when inside function or rescue block' do
       expect_offense(<<~RUBY)
         def func
           1
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
   end
 
   context 'when inside an if-branch' do
-    it 'registers an offense and auto-corrects' do
+    it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
         def func
           some_preceding_statements
@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
   end
 
   context 'when inside a when-branch' do
-    it 'registers an offense and auto-corrects' do
+    it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
         def func
           some_preceding_statements

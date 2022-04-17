@@ -3,7 +3,7 @@
 * xref:compatibility.adoc[Compatibility]
 * Usage
 ** xref:usage/basic_usage.adoc[Basic Usage]
-** xref:usage/auto_correct.adoc[Auto-correct]
+** xref:usage/autocorrect.adoc[Autocorrect]
 ** xref:usage/caching.adoc[Caching]
 * xref:configuration.adoc[Configuration]
 * xref:cops.adoc[Cops]

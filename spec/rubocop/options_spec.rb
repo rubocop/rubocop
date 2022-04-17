@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
           Basic Options:
               -l, --lint                       Run only lint cops.
-              -x, --fix-layout                 Run only layout cops, with auto-correct on.
+              -x, --fix-layout                 Run only layout cops, with autocorrect on.
                   --safe                       Run only safe cops.
                   --except [COP1,COP2,...]     Exclude the given cop(s).
                   --only [COP1,COP2,...]       Run only the given cop(s).
@@ -121,10 +121,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                Only output offense messages at
                                                the specified --fail-level or above
 
-          Auto-correction:
-              -a, --auto-correct               Auto-correct offenses (only when it's safe).
+          Autocorrection:
+              -a, --auto-correct               Autocorrect offenses (only when it's safe).
                   --safe-auto-correct          (same, deprecated)
-              -A, --auto-correct-all           Auto-correct offenses (safe and unsafe)
+              -A, --auto-correct-all           Autocorrect offenses (safe and unsafe)
                   --disable-uncorrectable      Used with --auto-correct to annotate any
                                                offenses that do not support autocorrect
                                                with `rubocop:todo` comments.
