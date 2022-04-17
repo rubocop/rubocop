@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
       end
     RUBY
 
-    # NOTE: `Style/InverseMethods` cop auto-corrects from `(!foo == bar)` to `foo != bar`.
+    # NOTE: `Style/InverseMethods` cop autocorrects from `(!foo == bar)` to `foo != bar`.
     expect_correction(<<~RUBY)
       if !(foo == bar) && baz
           do_something

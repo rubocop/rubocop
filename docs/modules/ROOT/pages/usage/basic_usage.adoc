@@ -63,19 +63,19 @@ test.rb:4:5: W: Layout/EndAlignment: end at 4, 4 is not aligned with if at 2, 2.
 1 file inspected, 5 offenses detected
 ----
 
-=== Auto-correcting offenses
+=== Autocorrecting offenses
 
-You can also run RuboCop in an auto-correct mode, where it will try to
+You can also run RuboCop in an autocorrect mode, where it will try to
 automatically fix the problems it found in your code:
 
 [source,sh]
 ----
 $ rubocop -a
 # or
-$ rubocop --auto-correct
+$ rubocop --autocorrect
 ----
 
-TIP: See xref:usage/auto_correct.adoc[Auto-correct] for more details.
+TIP: See xref:usage/autocorrect.adoc[Autocorrect] for more details.
 
 === Changing what RuboCop considers to be offenses
 
@@ -101,7 +101,7 @@ $ rubocop --lint
 
 == RuboCop as a formatter
 
-There's a handy shortcut to run auto-correction only on code layout (a.k.a. formatting) offenses:
+There's a handy shortcut to run autocorrection only on code layout (a.k.a. formatting) offenses:
 
 [source,sh]
 ----
@@ -132,11 +132,17 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 |===
 | Command flag | Description
 
-| `-a/--auto-correct`
-| Auto-correct offenses (only when it's safe). See xref:usage/auto_correct.adoc[Auto-correct].
+| `-a/--autocorrect`
+| Autocorrect offenses (only when it's safe). See xref:usage/autocorrect.adoc[Autocorrect].
 
-| `-A/--auto-correct-all`
-| Auto-correct offenses (safe and unsafe). See xref:usage/auto_correct.adoc[Auto-correct].
+| `--auto-correct`
+| Deprecated alias of `-a/--autocorrect`.
+
+| `-A/--autocorrect-all`
+| Autocorrect offenses (safe and unsafe). See xref:usage/autocorrect.adoc[Autocorrect].
+
+| `--auto-correct-all`
+| Deprecated alias of `-A/--autocorrect-all`.
 
 | `--auto-gen-config`
 | Generate a configuration file acting as a TODO list.
@@ -157,7 +163,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Run without pending cops.
 
 | `--disable-uncorrectable`
-| Used with --auto-correct to annotate any offenses that do not support autocorrect with `rubocop:todo` comments.
+| Used with --autocorrect to annotate any offenses that do not support autocorrect with `rubocop:todo` comments.
 
 | `-D/--[no-]display-cop-names`
 | Displays cop names in offense messages. Default is true.
@@ -190,7 +196,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Inspect files in order of modification time and stops after first file with offenses.
 
 | `--fail-level`
-| Minimum xref:configuration.adoc#severity[severity] for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
+| Minimum xref:configuration.adoc#severity[severity] for exit with error code. Full severity name or upper case initial can be given. Normally, autocorrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 
 | `--force-exclusion`
 | Force excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments.
@@ -241,7 +247,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Run only safe cops.
 
 | `--safe-auto-correct`
-| Omit cops annotated as "not safe". See xref:usage/auto_correct.adoc[Auto-correct].
+| Deprecated alias of `-a/--autocorrect`.
 
 | `--show-cops`
 | Shows available cops and their configuration.
@@ -250,13 +256,13 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Shows urls for documentation pages of supplied cops.
 
 | `--stderr`
-| Write all output to stderr except for the autocorrected source. This is especially useful when combined with `--auto-correct` and `--stdin`.
+| Write all output to stderr except for the autocorrected source. This is especially useful when combined with `--autocorrect` and `--stdin`.
 
 | `-s/--stdin`
 | Pipe source from STDIN. This is useful for editor integration. Takes one argument, a path, relative to the root of the project. RuboCop will use this path to determine which cops are enabled (via eg. Include/Exclude), and so that certain cops like Naming/FileName can be checked.
 
 | `-x/--fix-layout`
-| Auto-correct only code layout (formatting) offenses.
+| Autocorrect only code layout (formatting) offenses.
 
 | `-v/--version`
 | Displays the current version and exits.
@@ -277,9 +283,9 @@ Thus, the options have the following order of precedence (from highest to lowest
 RuboCop exits with the following status codes:
 
 * `0` if no offenses are found or if the severity of all offenses are less than
-`--fail-level`. (By default, if you use `--auto-correct`, offenses which are
-auto-corrected do not cause RuboCop to fail.)
+`--fail-level`. (By default, if you use `--autocorrect`, offenses which are
+autocorrected do not cause RuboCop to fail.)
 * `1` if one or more offenses equal or greater to `--fail-level` are found. (By
-default, this is any offense which is not auto-corrected.)
+default, this is any offense which is not autocorrected.)
 * `2` if RuboCop terminates abnormally due to invalid configuration, invalid CLI
 options, or an internal error.

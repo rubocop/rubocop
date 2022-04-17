@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
         RUBY
       end
 
-      it 'auto-corrects unwanted comma where HEREDOC has commas' do
+      it 'autocorrects unwanted comma where HEREDOC has commas' do
         expect_offense(<<~RUBY)
           [
             <<-TEXT, 123,

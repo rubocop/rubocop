@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
-    context 'auto-correct' do
+    context 'autocorrect' do
       context 'with range' do
         let(:expected_each_with_range) do
           <<~RUBY

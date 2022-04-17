@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
     RUBY
   end
 
-  # The "central auto-correction engine" can't handle intermediate states where
+  # The "central autocorrection engine" can't handle intermediate states where
   # the code has syntax errors, so it's important to fix the trailing
   # whitespace in this cop.
   it 'autocorrects a + with trailing whitespace to \\' do

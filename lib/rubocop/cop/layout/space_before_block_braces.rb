@@ -57,9 +57,9 @@ module RuboCop
           return if node.keywords?
 
           # Do not register an offense for multi-line braces when specifying
-          # `EnforcedStyle: no_space`. It will conflict with auto-correction
+          # `EnforcedStyle: no_space`. It will conflict with autocorrection
           # by `EnforcedStyle: line_count_based` of `Style/BlockDelimiters` cop.
-          # That means preventing auto-correction to incorrect auto-corrected
+          # That means preventing autocorrection to incorrect autocorrected
           # code.
           # See: https://github.com/rubocop/rubocop/issues/7534
           return if conflict_with_block_delimiters?(node)

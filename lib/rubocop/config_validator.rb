@@ -227,7 +227,7 @@ module RuboCop
         next unless cop_config.is_a?(Hash)
         next unless cop_config['Safe'] == false && cop_config['SafeAutoCorrect'] == true
 
-        msg = 'Unsafe cops cannot have a safe auto-correction ' \
+        msg = 'Unsafe cops cannot have a safe autocorrection ' \
               "(section #{name} in #{smart_loaded_path})"
         raise ValidationError, msg
       end

@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments, :config do
     expect_no_offenses('# comment')
   end
 
-  it 'auto-corrects a block comment into a regular comment' do
+  it 'autocorrects a block comment into a regular comment' do
     expect_offense(<<~RUBY)
       =begin
       ^^^^^^ Do not use block comments.
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments, :config do
     RUBY
   end
 
-  it 'auto-corrects an empty block comment by removing it' do
+  it 'autocorrects an empty block comment by removing it' do
     expect_offense(<<~RUBY)
       =begin
       ^^^^^^ Do not use block comments.
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::BlockComments, :config do
     RUBY
   end
 
-  it 'auto-corrects a block comment into a regular comment (without trailingnewline)' do
+  it 'autocorrects a block comment into a regular comment (without trailingnewline)' do
     expect_offense(<<~RUBY)
       =begin
       ^^^^^^ Do not use block comments.

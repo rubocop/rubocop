@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This class auto-corrects lambda literal to method notation.
+    # This class autocorrects lambda literal to method notation.
     class LambdaLiteralToMethodCorrector
       def initialize(block_node)
         @block_node = block_node

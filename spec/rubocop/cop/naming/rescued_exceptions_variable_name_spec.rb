@@ -313,7 +313,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     end
 
     context 'with variable being referenced' do
-      it 'renames the variable references when auto-correcting' do
+      it 'renames the variable references when autocorrecting' do
         expect_offense(<<~RUBY)
           begin
             get something

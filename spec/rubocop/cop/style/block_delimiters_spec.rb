@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     context 'with a procedural multi-line block' do
-      it 'auto-corrects { and } to do and end' do
+      it 'autocorrects { and } to do and end' do
         expect_offense(<<~RUBY)
           each { |x|
                ^ Prefer `do...end` over `{...}` for procedural blocks.
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
-      it 'auto-corrects { and } to do and end with appropriate spacing' do
+      it 'autocorrects { and } to do and end with appropriate spacing' do
         expect_offense(<<~RUBY)
           each {|x|
                ^ Prefer `do...end` over `{...}` for procedural blocks.
@@ -256,7 +256,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'auto-corrects do-end to {} if it is a functional block' do
+    it 'autocorrects do-end to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         foo = map do |x|
                   ^^ Prefer `{...}` over `do...end` for functional blocks.
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'auto-corrects do-end to {} with appropriate spacing' do
+    it 'autocorrects do-end to {} with appropriate spacing' do
       expect_offense(<<~RUBY)
         foo = map do|x|
                   ^^ Prefer `{...}` over `do...end` for functional blocks.
@@ -286,7 +286,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'auto-corrects do-end to {} if it is a functional block and does not change the meaning' do
+    it 'autocorrects do-end to {} if it is a functional block and does not change the meaning' do
       expect_offense(<<~RUBY)
         puts (map do |x|
                   ^^ Prefer `{...}` over `do...end` for functional blocks.
@@ -301,7 +301,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'auto-corrects do-end with `rescue` to {} if it is a functional block' do
+    it 'autocorrects do-end with `rescue` to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         x = map do |a|
                 ^^ Prefer `{...}` over `do...end` for functional blocks.
@@ -322,7 +322,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'auto-corrects do-end with `ensure` to {} if it is a functional block' do
+    it 'autocorrects do-end with `ensure` to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         x = map do |a|
                 ^^ Prefer `{...}` over `do...end` for functional blocks.
@@ -351,7 +351,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     include_examples 'syntactic styles'
 
-    it 'auto-corrects do and end for single line blocks to { and }' do
+    it 'autocorrects do-end for single line blocks to { and }' do
       expect_offense(<<~RUBY)
         block do |x| end
               ^^ Prefer `{...}` over `do...end` for single-line blocks.
@@ -362,7 +362,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'does not auto-correct do-end if {} would change the meaning' do
+    it 'does not autocorrect do-end if {} would change the meaning' do
       expect_offense(<<~RUBY)
         s.subspec 'Subspec' do |sp| end
                             ^^ Prefer `{...}` over `do...end` for single-line blocks.
@@ -371,7 +371,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect_no_corrections
     end
 
-    it 'does not auto-correct {} if do-end would change the meaning' do
+    it 'does not autocorrect {} if do-end would change the meaning' do
       expect_no_offenses(<<~RUBY)
         foo :bar, :baz, qux: lambda { |a|
           bar a
@@ -517,7 +517,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
-      it 'auto-corrects { and } to do and end' do
+      it 'autocorrects { and } to do and end' do
         expect_offense(<<~RUBY)
           each{ |x|
               ^ Avoid using `{...}` for multi-line blocks.
@@ -534,7 +534,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
-      it 'auto-corrects adjacent curly braces correctly' do
+      it 'autocorrects adjacent curly braces correctly' do
         expect_offense(<<~RUBY)
           (0..3).each { |a| a.times {
                                     ^ Avoid using `{...}` for multi-line blocks.
@@ -550,7 +550,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
-      it 'does not auto-correct {} if do-end would introduce a syntax error' do
+      it 'does not autocorrect {} if do-end would introduce a syntax error' do
         expect_no_offenses(<<~RUBY)
           my_method :arg1, arg2: proc {
             something
@@ -560,7 +560,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     end
 
     context 'with a single line do-end block with an inline `rescue`' do
-      it 'auto-corrects properly' do
+      it 'autocorrects properly' do
         expect_offense(<<~RUBY)
           map do |x| x.y? rescue z end
               ^^ Prefer `{...}` over `do...end` for single-line blocks.
@@ -695,7 +695,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
     end
 
-    it 'auto-corrects do-end with `rescue` to {} if it is a functional block' do
+    it 'autocorrects do-end with `rescue` to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         map do |a|
             ^^ Prefer `{...}` over `do...end` for multi-line chained blocks.
@@ -716,7 +716,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'auto-corrects do-end with `ensure` to {} if it is a functional block' do
+    it 'autocorrects do-end with `ensure` to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         map do |a|
             ^^ Prefer `{...}` over `do...end` for multi-line chained blocks.
@@ -766,7 +766,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'does not auto-correct do-end if {} would change the meaning' do
+    it 'does not autocorrect do-end if {} would change the meaning' do
       expect_offense(<<~RUBY)
         s.subspec 'Subspec' do |sp| end
                             ^^ Prefer `{...}` over `do...end` for blocks.
@@ -844,7 +844,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
     end
 
-    it 'auto-corrects do-end with `rescue` to {} if it is a functional block' do
+    it 'autocorrects do-end with `rescue` to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         map do |a|
             ^^ Prefer `{...}` over `do...end` for blocks.
@@ -865,7 +865,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'auto-corrects do-end with `ensure` to {} if it is a functional block' do
+    it 'autocorrects do-end with `ensure` to {} if it is a functional block' do
       expect_offense(<<~RUBY)
         map do |a|
             ^^ Prefer `{...}` over `do...end` for blocks.
@@ -946,7 +946,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
-      it 'auto-corrects { and } to do and end' do
+      it 'autocorrects { and } to do and end' do
         expect_offense(<<~RUBY)
           each{ |x|
               ^ Avoid using `{...}` for multi-line blocks.

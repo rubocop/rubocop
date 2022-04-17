@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for inheritance from Struct.new.
       #
       # @safety
-      #   Auto-correction is unsafe because it will change the inheritance
+      #   Autocorrection is unsafe because it will change the inheritance
       #   tree (e.g. return value of `Module#ancestors`) of the constant.
       #
       # @example

@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         RUBY
       end
 
-      it "auto-corrects \"#{operator}\" with #{prefer} in method calls" do
+      it "autocorrects \"#{operator}\" with #{prefer} in method calls" do
         expect_offense(<<~RUBY, operator: operator)
           method a %{operator} b
                    ^{operator} Use `#{prefer}` instead of `#{operator}`.
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         RUBY
       end
 
-      it "auto-corrects \"#{operator}\" with #{prefer} in method calls (2)" do
+      it "autocorrects \"#{operator}\" with #{prefer} in method calls (2)" do
         expect_offense(<<~RUBY, operator: operator)
           method a,b %{operator} b
                      ^{operator} Use `#{prefer}` instead of `#{operator}`.
@@ -288,7 +288,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         RUBY
       end
 
-      it "auto-corrects \"#{operator}\" with #{prefer} in method calls (3)" do
+      it "autocorrects \"#{operator}\" with #{prefer} in method calls (3)" do
         expect_offense(<<~RUBY, operator: operator)
           obj.method a %{operator} b
                        ^{operator} Use `#{prefer}` instead of `#{operator}`.
@@ -299,7 +299,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         RUBY
       end
 
-      it "auto-corrects \"#{operator}\" with #{prefer} in method calls (4)" do
+      it "autocorrects \"#{operator}\" with #{prefer} in method calls (4)" do
         expect_offense(<<~RUBY, operator: operator)
           obj.method a,b %{operator} b
                          ^{operator} Use `#{prefer}` instead of `#{operator}`.
@@ -310,7 +310,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         RUBY
       end
 
-      it "auto-corrects \"#{operator}\" with #{prefer} and doesn't add extra parentheses" do
+      it "autocorrects \"#{operator}\" with #{prefer} and doesn't add extra parentheses" do
         expect_offense(<<~RUBY, operator: operator)
           method(a, b) %{operator} b
                        ^{operator} Use `#{prefer}` instead of `#{operator}`.
@@ -321,7 +321,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         RUBY
       end
 
-      it "auto-corrects \"#{operator}\" with #{prefer} and adds parentheses to expr" do
+      it "autocorrects \"#{operator}\" with #{prefer} and adds parentheses to expr" do
         expect_offense(<<~RUBY, operator: operator)
           b %{operator} method a,b
             ^{operator} Use `#{prefer}` instead of `#{operator}`.

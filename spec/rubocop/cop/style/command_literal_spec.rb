@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_x' } }
     let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%x' => '[]' } } }
 
-    it 'respects the configuration when auto-correcting' do
+    it 'respects the configuration when autocorrecting' do
       expect_offense(<<~RUBY)
         `ls`
         ^^^^ Use `%x` around command string.
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       { 'PreferredDelimiters' => { 'default' => '()' } }
     end
 
-    it 'respects the configuration when auto-correcting' do
+    it 'respects the configuration when autocorrecting' do
       expect_offense(<<~'RUBY')
         `ls`
         ^^^^ Use `%x` around command string.
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       { 'PreferredDelimiters' => { '%x' => '[]', 'default' => '()' } }
     end
 
-    it 'ignores the default when auto-correcting' do
+    it 'ignores the default when autocorrecting' do
       expect_offense(<<~'RUBY')
         `ls`
         ^^^^ Use `%x` around command string.
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line ` string with backticks' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~'RUBY')
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a multi-line ` string with backticks' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~'RUBY')
           foo = `
                 ^ Use `%x` around command string.
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       describe 'when configured to allow inner backticks' do
         before { cop_config['AllowInnerBackticks'] = true }
 
-        it 'registers an offense without auto-correction' do
+        it 'registers an offense without autocorrection' do
           expect_offense(<<~RUBY)
             foo = %x(echo `ls`)
                   ^^^^^^^^^^^^^ Use backticks around command string.
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       describe 'when configured to allow inner backticks' do
         before { cop_config['AllowInnerBackticks'] = true }
 
-        it 'registers an offense without auto-correction' do
+        it 'registers an offense without autocorrection' do
           expect_offense(<<~RUBY)
             foo = %x(
                   ^^^ Use backticks around command string.
@@ -247,7 +247,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line ` string with backticks' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~'RUBY')
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a multi-line ` string with backticks' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~'RUBY')
           foo = `
                 ^ Use `%x` around command string.
@@ -335,7 +335,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line ` string with backticks' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~'RUBY')
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
@@ -373,7 +373,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a multi-line ` string with backticks' do
-      it 'registers an offense without auto-correction' do
+      it 'registers an offense without autocorrection' do
         expect_offense(<<~'RUBY')
           foo = `
                 ^ Use `%x` around command string.
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
       describe 'when configured to allow inner backticks' do
         before { cop_config['AllowInnerBackticks'] = true }
 
-        it 'registers an offense without auto-correction' do
+        it 'registers an offense without autocorrection' do
           expect_offense(<<~RUBY)
             foo = %x(echo `ls`)
                   ^^^^^^^^^^^^^ Use backticks around command string.

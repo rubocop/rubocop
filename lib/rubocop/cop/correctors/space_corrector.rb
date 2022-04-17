@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This auto-corrects whitespace
+    # This autocorrects whitespace
     class SpaceCorrector
       extend SurroundingSpace
 

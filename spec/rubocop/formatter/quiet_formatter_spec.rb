@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
         formatter.report_summary(1, 1, 0, 1)
         expect(output.string).to eq(<<~OUTPUT)
 
-          1 file inspected, 1 offense detected, 1 offense auto-correctable
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
         OUTPUT
       end
     end
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
         formatter.report_summary(2, 2, 0, 2)
         expect(output.string).to eq(<<~OUTPUT)
 
-          2 files inspected, 2 offenses detected, 2 offenses auto-correctable
+          2 files inspected, 2 offenses detected, 2 offenses autocorrectable
         OUTPUT
       end
     end
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
         formatter.report_summary(1, 1, 2, 2)
         expect(output.string).to eq(<<~OUTPUT)
 
-          1 file inspected, 1 offense detected, 2 offenses corrected, 2 offenses auto-correctable
+          1 file inspected, 1 offense detected, 2 offenses corrected, 2 offenses autocorrectable
         OUTPUT
       end
     end

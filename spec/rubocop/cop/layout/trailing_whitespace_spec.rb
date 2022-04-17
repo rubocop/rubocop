@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
     expect_no_offenses('x = 0')
   end
 
-  it 'auto-corrects unwanted space' do
+  it 'autocorrects unwanted space' do
     expect_offense(<<~RUBY)
       x = 0#{trailing_whitespace}
            ^ Trailing whitespace detected.

@@ -124,13 +124,13 @@ RSpec.describe RuboCop::RakeTask do
       expect($stderr.string.strip).to eq 'RuboCop failed!'
     end
 
-    context 'auto_correct' do
-      it 'runs with --auto-correct-all' do
+    context 'autocorrect' do
+      it 'runs with --autocorrect-all' do
         described_class.new
 
         cli = instance_double(RuboCop::CLI, run: 0)
         allow(RuboCop::CLI).to receive(:new).and_return(cli)
-        options = ['--auto-correct-all']
+        options = ['--autocorrect-all']
 
         expect(cli).to receive(:run).with(options)
 
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::RakeTask do
 
         cli = instance_double(RuboCop::CLI, run: 0)
         allow(RuboCop::CLI).to receive(:new).and_return(cli)
-        options = ['--auto-correct-all', '--format', 'files', '-D', 'lib/**/*.rb']
+        options = ['--autocorrect-all', '--format', 'files', '-D', 'lib/**/*.rb']
 
         expect(cli).to receive(:run).with(options)
 

@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
   end
 
-  context 'auto-correct' do
+  context 'autocorrect' do
     it 'fixes a string array in a scope' do
       expect_offense(<<~RUBY)
         module Foo

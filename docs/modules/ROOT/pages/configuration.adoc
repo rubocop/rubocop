@@ -557,7 +557,7 @@ These details will only be seen when RuboCop is run with the `--extra-details` f
 
 === AutoCorrect
 
-Cops that support the `--auto-correct` option can have that support
+Cops that support the `--autocorrect` option can have that support
 disabled. For example:
 
 [source,yaml]
@@ -716,7 +716,7 @@ adding an "inner comment" on the comment line.
 # coding: utf-8 # rubocop:disable Style/Encoding
 ----
 
-Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
+Running `rubocop --autocorrect --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.
 

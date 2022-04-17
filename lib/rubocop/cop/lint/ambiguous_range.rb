@@ -18,9 +18,9 @@ module RuboCop
       # value, it will be wrapped in order to prevent the ambiguity of `1..2.to_a`.
       #
       # @safety
-      #   The cop auto-corrects by wrapping the entire boundary in parentheses, which
+      #   The cop autocorrects by wrapping the entire boundary in parentheses, which
       #   makes the outcome more explicit but is possible to not be the intention of the
-      #   programmer. For this reason, this cop's auto-correct is unsafe (it will not
+      #   programmer. For this reason, this cop's autocorrect is unsafe (it will not
       #   change the behavior of the code, but will not necessarily match the
       #   intent of the program).
       #

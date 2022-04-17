@@ -6,7 +6,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
   include_context 'cli spec behavior'
 
   describe '--disable-uncorrectable' do
-    let(:exit_code) { cli.run(%w[--auto-correct-all --format simple --disable-uncorrectable]) }
+    let(:exit_code) { cli.run(%w[--autocorrect-all --format simple --disable-uncorrectable]) }
 
     let(:setup_long_line) do
       create_file('.rubocop.yml', <<~YAML)

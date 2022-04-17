@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This class auto-corrects `for` iteration to `#each` enumeration.
+    # This class autocorrects `for` iteration to `#each` enumeration.
     class ForToEachCorrector
       extend NodePattern::Macros
 

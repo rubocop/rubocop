@@ -11,8 +11,7 @@ module RuboCop
       #
       # @safety
       #   This cop is unsafe because code that is already conditionally
-      #   assigning a constant may have its behavior changed by
-      #   auto-correction.
+      #   assigning a constant may have its behavior changed by autocorrection.
       #
       # @example
       #

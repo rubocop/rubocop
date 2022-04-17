@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       expect_no_offenses('call(a, b)')
     end
 
-    it 'auto-corrects x.call to x.()' do
+    it 'autocorrects x.call to x.()' do
       expect_offense(<<~RUBY)
         a.call
         ^^^^^^ Prefer the use of `a.()` over `a.call`.
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       RUBY
     end
 
-    it 'auto-corrects x.call asdf, x123 to x.(asdf, x123)' do
+    it 'autocorrects x.call asdf, x123 to x.(asdf, x123)' do
       expect_offense(<<~RUBY)
         a.call asdf, x123
         ^^^^^^^^^^^^^^^^^ Prefer the use of `a.(asdf, x123)` over `a.call asdf, x123`.

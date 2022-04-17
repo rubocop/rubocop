@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Layout::AssignmentIndentation, :config do
       RUBY
     end
 
-    it 'auto-corrects indentation' do
+    it 'autocorrects indentation' do
       expect_offense(<<~RUBY)
         a =
           if b ; end

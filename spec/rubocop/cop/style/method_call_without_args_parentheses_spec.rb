@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
 
   # These will be offenses for the EmptyLiteral cop. The autocorrect loop will
   # handle that.
-  it 'auto-corrects calls that could be empty literals' do
+  it 'autocorrects calls that could be empty literals' do
     expect_offense(<<~RUBY)
       Hash.new()
               ^^ Do not use parentheses for method calls with no arguments.
