@@ -2321,4 +2321,44 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       { foo: :bar }.transform_values { |v| v.to_s }
     RUBY
   end
+
+  it 'does not crash when using `Layout/CaseIndentation` and `Layout/ElseAlignment`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      case thing
+      when 3 then 1
+      when 2 then 2
+      else 3 end
+
+      case thing
+      when 3 then 1
+      when 2 then 2 end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/BeginEndAlignment:
+        EnforcedStyleAlignWith: start_of_line
+        AutoCorrect: true
+
+      Layout/CaseIndentation:
+        EnforcedStyle: end
+    YAML
+
+    status = cli.run(
+      %w[--auto-correct-all -d --only] << %w[
+        Layout/CaseIndentation Layout/ElseAlignment
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      case thing
+      when 3 then 1
+      when 2 then 2
+      else 3 end
+
+      case thing
+      when 3 then 1
+      when 2 then 2 end
+    RUBY
+  end
 end
