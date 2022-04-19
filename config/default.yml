@@ -4552,6 +4552,7 @@ Style/RedundantInitialize:
   Description: 'Checks for redundant `initialize` methods.'
   Enabled: pending
   Safe: false
+  AllowComments: true
   VersionAdded: '1.27'
   VersionChanged: '<<next>>'
 

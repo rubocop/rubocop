@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
+  let(:cop_config) { { 'AllowComments' => true } }
+
   it 'does not register an offense for an empty method not named `initialize`' do
     expect_no_offenses(<<~RUBY)
       def do_something
@@ -24,10 +26,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
     RUBY
   end
 
-  it 'registers an offense for an `initialize` method with only a comment' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for an `initialize` method with only a comment' do
+    expect_no_offenses(<<~RUBY)
       def initialize
-      ^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
         # initializer
       end
     RUBY
@@ -170,5 +171,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
       def initialize(...)
       end
     RUBY
+  end
+
+  context 'when `AllowComments: false`' do
+    let(:cop_config) { { 'AllowComments' => false } }
+
+    it 'registers an offense for an `initialize` method with only a comment' do
+      expect_offense(<<~RUBY)
+        def initialize
+        ^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
+          # initializer
+        end
+      RUBY
+    end
   end
 end
