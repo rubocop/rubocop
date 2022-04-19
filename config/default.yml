@@ -4309,6 +4309,19 @@ Style/NumericPredicate:
   Exclude:
     - 'spec/**/*'
 
+Style/ObjectThen:
+  Description: 'Enforces the use of consistent method names `Object#yield_self` or `Object#then`.'
+  StyleGuide: '#object-yield-self-vs-object-then'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  # Use `Object#yield_self` or `Object#then`?
+  # Prefer `Object#yield_self` to `Object#then` (yield_self)
+  # Prefer `Object#then` to `Object#yield_self` (then)
+  EnforcedStyle: 'then'
+  SupportedStyles:
+    - then
+    - yield_self
+
 Style/OneLineConditional:
   Description: >-
                  Favor the ternary operator (?:) or multi-line constructs over
