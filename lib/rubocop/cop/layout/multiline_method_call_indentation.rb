@@ -201,13 +201,30 @@ module RuboCop
         def semantic_alignment_node(node)
           return if argument_in_method_call(node, :with_parentheses)
 
+          dot_right_above = get_dot_right_above(node)
+          return dot_right_above if dot_right_above
+
+          node = first_call_has_a_dot(node)
+          return if node.loc.dot.line != node.first_line
+
+          node
+        end
+
+        def get_dot_right_above(node)
+          node.each_ancestor.find do |a|
+            dot = a.loc.respond_to?(:dot) && a.loc.dot
+            next unless dot
+
+            dot.line == node.loc.dot.line - 1 && dot.column == node.loc.dot.column
+          end
+        end
+
+        def first_call_has_a_dot(node)
           # descend to root of method chain
           node = node.receiver while node.receiver
           # ascend to first call which has a dot
           node = node.parent
           node = node.parent until node.loc.respond_to?(:dot) && node.loc.dot
-
-          return if node.loc.dot.line != node.first_line
 
           node
         end
