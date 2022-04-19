@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::ConfigObsoletion::RenamedCop do
   subject(:rule) { described_class.new(config, old_name, new_name) }
 
-  let(:config) { instance_double('RuboCop::Config', loaded_path: '.rubocop.yml').as_null_object }
+  let(:config) { instance_double(RuboCop::Config, loaded_path: '.rubocop.yml').as_null_object }
   let(:old_name) { 'Style/MyCop' }
 
   describe '#message' do

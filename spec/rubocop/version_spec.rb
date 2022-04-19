@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Version do
   describe '.extension_versions', :isolated_environment, :restore_registry do
     subject(:extension_versions) { described_class.extension_versions(env) }
 
-    let(:env) { instance_double('RuboCop::CLI::Environment', config_store: config_store) }
+    let(:env) { instance_double(RuboCop::CLI::Environment, config_store: config_store) }
     let(:config_store) { RuboCop::ConfigStore.new }
 
     before { RuboCop::ConfigLoader.clear_options }

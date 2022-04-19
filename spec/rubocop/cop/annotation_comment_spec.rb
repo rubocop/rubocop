@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::AnnotationComment do
   subject(:annotation) { described_class.new(comment, keywords) }
 
   let(:keywords) { ['TODO', 'FOR LATER', 'FIXME'] }
-  let(:comment) { instance_double('Parser::Source::Comment', text: "# #{text}") }
+  let(:comment) { instance_double(Parser::Source::Comment, text: "# #{text}") }
 
   describe '#annotation?' do
     subject { annotation.annotation? }
