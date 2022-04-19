@@ -357,6 +357,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           end
         RUBY
       end
+
+      it 'accepts nested method calls' do
+        expect_no_offenses(<<~RUBY)
+          expect { post :action, params: params, format: :json }.to change { Foo.bar }.by(0)
+                                                                .and change { Baz.quux }.by(0)
+                                                                .and raise_error(StandardError)
+        RUBY
+      end
     end
 
     it 'accepts correctly aligned methods in operands' do
