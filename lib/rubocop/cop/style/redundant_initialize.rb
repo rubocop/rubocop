@@ -80,7 +80,23 @@ module RuboCop
       #   def initialize(...)
       #   end
       #
+      # @example AllowComments: true (default)
+      #
+      #   # good
+      #   def initialize
+      #     # Overriding to negate superclass `initialize` method.
+      #   end
+      #
+      # @example AllowComments: false
+      #
+      #   # bad
+      #   def initialize
+      #     # Overriding to negate superclass `initialize` method.
+      #   end
+      #
       class RedundantInitialize < Base
+        include CommentsHelp
+
         MSG = 'Remove unnecessary `initialize` method.'
         MSG_EMPTY = 'Remove unnecessary empty `initialize` method.'
 
@@ -90,8 +106,7 @@ module RuboCop
         PATTERN
 
         def on_def(node)
-          return unless node.method?(:initialize)
-          return if forwards?(node)
+          return if acceptable?(node)
 
           if node.body.nil?
             add_offense(node, message: MSG_EMPTY)
@@ -108,8 +123,16 @@ module RuboCop
 
         private
 
+        def acceptable?(node)
+          !node.method?(:initialize) || forwards?(node) || allow_comments?(node)
+        end
+
         def forwards?(node)
           node.arguments.each_child_node(:restarg, :kwrestarg, :forward_args, :forward_arg).any?
+        end
+
+        def allow_comments?(node)
+          cop_config['AllowComments'] && contains_comments?(node)
         end
 
         def same_args?(super_node, args)
