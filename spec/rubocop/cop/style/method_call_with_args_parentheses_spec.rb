@@ -364,10 +364,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
-    context 'IgnoredPatterns' do
-      let(:cop_config) { { 'IgnoredPatterns' => %w[^assert ^refute] } }
+    context 'AllowedPatterns' do
+      let(:cop_config) { { 'AllowedPatterns' => %w[^assert ^refute] } }
 
-      it 'ignored methods listed in IgnoredPatterns' do
+      it 'ignored methods listed in AllowedPatterns' do
         expect_no_offenses('assert 2 == 2')
         expect_no_offenses('assert_equal 2, 2')
         expect_no_offenses('assert_match /^yes/i, result')

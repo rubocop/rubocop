@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       let(:cop_config) do
         {
           'Width' => 4,
-          'IgnoredPatterns' => ['^\s*module', '^\s*(els)?if.*[A-Z][a-z]+']
+          'AllowedPatterns' => ['^\s*module', '^\s*(els)?if.*[A-Z][a-z]+']
         }
       end
 

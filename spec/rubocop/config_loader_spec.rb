@@ -807,6 +807,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => true,
+              'AllowedPatterns' => [],
               'IgnoredPatterns' => []
             },
             'Metrics/MethodLength' => {
@@ -910,6 +911,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => true,
+              'AllowedPatterns' => [],
               'IgnoredPatterns' => []
             }
           )

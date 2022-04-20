@@ -931,7 +931,8 @@ Layout/IndentationWidth:
   VersionAdded: '0.49'
   # Number of spaces for each indentation level.
   Width: 2
-  IgnoredPatterns: []
+  AllowedPatterns: []
+  IgnoredPatterns: [] # deprecated
 
 Layout/InitialIndentation:
   Description: >-
@@ -985,10 +986,11 @@ Layout/LineLength:
   # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
   # directives like '# rubocop: enable ...' when calculating a line's length.
   IgnoreCopDirectives: true
-  # The IgnoredPatterns option is a list of !ruby/regexp and/or string
+  # The AllowedPatterns option is a list of !ruby/regexp and/or string
   # elements. Strings will be converted to Regexp objects. A line that matches
   # any regular expression listed in this option will be ignored by LineLength.
-  IgnoredPatterns: []
+  AllowedPatterns: []
+  IgnoredPatterns: [] # deprecated
 
 Layout/MultilineArrayBraceLayout:
   Description: >-
@@ -2272,10 +2274,11 @@ Lint/UnreachableLoop:
   Enabled: true
   VersionAdded: '0.89'
   VersionChanged: '1.7'
-  IgnoredPatterns:
+  AllowedPatterns:
     # RSpec uses `times` in its message expectations
     # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
+  IgnoredPatterns: [] # deprecated
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
@@ -2688,11 +2691,12 @@ Naming/MethodName:
     - camelCase
   # Method names matching patterns are always allowed.
   #
-  #   IgnoredPatterns:
+  #   AllowedPatterns:
   #     - '\A\s*onSelectionBulkChange\s*'
   #     - '\A\s*onSelectionCleared\s*'
   #
-  IgnoredPatterns: []
+  AllowedPatterns: []
+  IgnoredPatterns: [] # deprecated
 
 Naming/MethodParameterName:
   Description: >-
@@ -3920,7 +3924,8 @@ Style/MethodCallWithArgsParentheses:
   VersionChanged: '1.7'
   IgnoreMacros: true
   IgnoredMethods: []
-  IgnoredPatterns: []
+  AllowedPatterns: []
+  IgnoredPatterns: [] # deprecated
   IncludedMacros: []
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false

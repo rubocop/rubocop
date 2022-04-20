@@ -160,8 +160,8 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
     end
   end
 
-  context 'with IgnoredPatterns' do
-    let(:cop_config) { { 'IgnoredPatterns' => [/exactly\(\d+\)\.times/] } }
+  context 'with AllowedPatterns' do
+    let(:cop_config) { { 'AllowedPatterns' => [/exactly\(\d+\)\.times/] } }
 
     context 'with a ignored method call' do
       it 'does not register an offense' do

@@ -24,7 +24,7 @@ module RuboCop
       #     end
       #   end
       #
-      # @example IgnoredPatterns: ['^\s*module']
+      # @example AllowedPatterns: ['^\s*module']
       #   # bad
       #   module A
       #   class B
@@ -46,7 +46,7 @@ module RuboCop
         include EndKeywordAlignment
         include Alignment
         include CheckAssignment
-        include IgnoredPattern
+        include AllowedPattern
         include RangeHelp
         extend AutoCorrector
 
