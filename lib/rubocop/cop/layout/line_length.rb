@@ -60,7 +60,7 @@ module RuboCop
       #   }
       class LineLength < Base
         include CheckLineBreakable
-        include IgnoredPattern
+        include AllowedPattern
         include RangeHelp
         include LineLengthHelp
         extend AutoCorrector
@@ -163,7 +163,7 @@ module RuboCop
 
         def check_line(line, line_index)
           return if line_length(line) <= max
-          return if ignored_line?(line, line_index)
+          return if allowed_line?(line, line_index)
 
           if ignore_cop_directives? && directive_on_source_line?(line_index)
             return check_directive_line(line, line_index)
@@ -173,8 +173,8 @@ module RuboCop
           register_offense(excess_range(nil, line, line_index), line, line_index)
         end
 
-        def ignored_line?(line, line_index)
-          matches_ignored_pattern?(line) ||
+        def allowed_line?(line, line_index)
+          matches_allowed_pattern?(line) ||
             shebang?(line, line_index) ||
             (heredocs && line_in_permitted_heredoc?(line_index.succ))
         end

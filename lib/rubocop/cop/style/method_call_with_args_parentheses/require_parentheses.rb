@@ -13,7 +13,7 @@ module RuboCop
 
           def require_parentheses(node)
             return if ignored_method?(node.method_name)
-            return if matches_ignored_pattern?(node.method_name)
+            return if matches_allowed_pattern?(node.method_name)
             return if eligible_for_parentheses_omission?(node)
             return unless node.arguments? && !node.parenthesized?
 

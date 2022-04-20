@@ -11,7 +11,7 @@ module RuboCop
       #
       # NOTE: Block methods that are used with `Enumerable`s are considered to be loops.
       #
-      # `IgnoredPatterns` can be used to match against the block receiver in order to allow
+      # `AllowedPatterns` can be used to match against the block receiver in order to allow
       # code that would otherwise be registered as an offense (eg. `times` used not in an
       # `Enumerable` context).
       #
@@ -79,12 +79,12 @@ module RuboCop
       #   # bad
       #   2.times { raise ArgumentError }
       #
-      # @example IgnoredPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
+      # @example AllowedPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
       #
       #   # good
       #   exactly(2).times { raise StandardError }
       class UnreachableLoop < Base
-        include IgnoredPattern
+        include AllowedPattern
 
         MSG = 'This loop will have at most one iteration.'
         CONTINUE_KEYWORDS = %i[next redo].freeze
@@ -107,7 +107,7 @@ module RuboCop
           return false unless node.block_type?
 
           send_node = node.send_node
-          return false if matches_ignored_pattern?(send_node.source)
+          return false if matches_allowed_pattern?(send_node.source)
 
           send_node.enumerable_method? || send_node.enumerator_method? || send_node.method?(:loop)
         end

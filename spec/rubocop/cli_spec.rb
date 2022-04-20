@@ -1501,6 +1501,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         |  - AllowURI
         |  - URISchemes
         |  - IgnoreCopDirectives
+        |  - AllowedPatterns
         |  - IgnoredPatterns
       RESULT
     end

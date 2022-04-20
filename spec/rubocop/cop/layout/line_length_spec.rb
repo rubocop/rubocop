@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
-  let(:cop_config) { { 'Max' => 80, 'IgnoredPatterns' => nil } }
+  let(:cop_config) { { 'Max' => 80, 'AllowedPatterns' => nil } }
 
   let(:config) do
     RuboCop::Config.new(
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   end
 
   context 'when line is indented with tabs' do
-    let(:cop_config) { { 'Max' => 10, 'IgnoredPatterns' => nil } }
+    let(:cop_config) { { 'Max' => 10, 'AllowedPatterns' => nil } }
 
     it 'accepts a short line' do
       expect_no_offenses("\t\t\t123")
@@ -223,8 +223,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     end
   end
 
-  context 'when IgnoredPatterns option is set' do
-    let(:cop_config) { { 'Max' => 18, 'IgnoredPatterns' => ['^\s*test\s', /^\s*def\s+test_/] } }
+  context 'when AllowedPatterns option is set' do
+    let(:cop_config) { { 'Max' => 18, 'AllowedPatterns' => ['^\s*test\s', /^\s*def\s+test_/] } }
 
     it 'only registers an offense for lines not matching the pattern' do
       expect_offense(<<~RUBY)
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     end
 
     context 'and only certain heredoc delimiters are permitted' do
-      let(:cop_config) { { 'Max' => 80, 'AllowHeredoc' => %w[SQL OK], 'IgnoredPatterns' => [] } }
+      let(:cop_config) { { 'Max' => 80, 'AllowHeredoc' => %w[SQL OK], 'AllowedPatterns' => [] } }
 
       it 'rejects long lines in heredocs with not permitted delimiters' do
         expect_offense(<<-RUBY)
@@ -468,7 +468,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   end
 
   context 'autocorrection' do
-    let(:cop_config) { { 'Max' => 40, 'IgnoredPatterns' => nil, 'AutoCorrect' => true } }
+    let(:cop_config) { { 'Max' => 40, 'AllowedPatterns' => nil, 'AutoCorrect' => true } }
 
     context 'hash' do
       context 'when under limit' do

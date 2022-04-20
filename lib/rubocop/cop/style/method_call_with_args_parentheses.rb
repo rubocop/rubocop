@@ -8,7 +8,7 @@ module RuboCop
       #
       # In the default style (require_parentheses), macro methods are ignored.
       # Additional methods can be added to the `IgnoredMethods`
-      # or `IgnoredPatterns` list. These options are
+      # or `AllowedPatterns` list. These options are
       # valid only in the default style. Macros can be included by
       # either setting `IgnoreMacros` to false or adding specific macros to
       # the `IncludedMacros` list.
@@ -16,7 +16,7 @@ module RuboCop
       # Precedence of options is all follows:
       #
       # 1. `IgnoredMethods`
-      # 2. `IgnoredPatterns`
+      # 2. `AllowedPatterns`
       # 3. `IncludedMacros`
       #
       # eg. If a method is listed in both
@@ -68,7 +68,7 @@ module RuboCop
       #   # okay with `puts` listed in `IgnoredMethods`
       #   puts 'test'
       #
-      #   # okay with `^assert` listed in `IgnoredPatterns`
+      #   # okay with `^assert` listed in `AllowedPatterns`
       #   assert_equal 'test', x
       #
       # @example EnforcedStyle: omit_parentheses
@@ -198,7 +198,7 @@ module RuboCop
 
         include ConfigurableEnforcedStyle
         include IgnoredMethods
-        include IgnoredPattern
+        include AllowedPattern
         include RequireParentheses
         include OmitParentheses
         extend AutoCorrector
