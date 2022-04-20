@@ -85,7 +85,7 @@ module RuboCop
         end
 
         def whitespace_is_indentation?(range, level)
-          range.source[/ +/].length <= level
+          range.source[/[ \t]+/].length <= level
         end
 
         def whitespace_only?(range)
