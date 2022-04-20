@@ -33,6 +33,15 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
     RUBY
   end
 
+  it 'registers an offense for a tab in a heredoc' do
+    expect_offense(<<~RUBY)
+      <<~X
+      \t
+      ^ Trailing whitespace detected.
+      X
+    RUBY
+  end
+
   it 'registers offenses before __END__ but not after' do
     expect_offense(<<~RUBY)
       x = 0\t
