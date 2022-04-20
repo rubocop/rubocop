@@ -191,6 +191,56 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
   end
 
+  context 'AllowComments: true' do
+    let(:cop_config) { { 'AllowComments' => true } }
+
+    it 'registers an offense for a block with parameterless method call on param' \
+       'and not contains a comment' do
+      expect_offense(<<~RUBY)
+        # comment a
+        something do |e|
+                  ^^^^^^ Pass `&:upcase` as an argument to `something` instead of a block.
+          e.upcase
+        end # comment b
+        # comment c
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # comment a
+        something(&:upcase) # comment b
+        # comment c
+      RUBY
+    end
+
+    it 'accepts block with parameterless method call on param and contains a comment' do
+      expect_no_offenses(<<~RUBY)
+        something do |e| # comment
+          e.upcase
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
+        something do |e|
+          # comment
+          e.upcase
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
+        something do |e|
+          e.upcase # comment
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
+        something do |e|
+          e.upcase
+          # comment
+        end
+      RUBY
+    end
+  end
+
   context 'when `super` has no arguments' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

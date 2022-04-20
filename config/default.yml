@@ -4938,13 +4938,14 @@ Style/SymbolProc:
   Enabled: true
   Safe: false
   VersionAdded: '0.26'
-  VersionChanged: '1.5'
+  VersionChanged: <<next>>
   AllowMethodsWithArguments: false
   # A list of method names to be ignored by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
   IgnoredMethods:
     - respond_to
     - define_method
+  AllowComments: false
 
 Style/TernaryParentheses:
   Description: 'Checks for use of parentheses around ternary conditions.'
