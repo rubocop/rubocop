@@ -52,7 +52,24 @@ module RuboCop
       # @example AllowMethodsWithArguments: true
       #   # good
       #   something.do_something(foo) { |o| o.bar }
+      #
+      # @example AllowComments: false (default)
+      #   # bad
+      #   something.do_something do |s| # some comment
+      #     # some comment
+      #     s.upcase # some comment
+      #     # some comment
+      #   end
+      #
+      # @example AllowComments: true
+      #   # good  - if there are comment in either position
+      #   something.do_something do |s| # some comment
+      #     # some comment
+      #     s.upcase # some comment
+      #     # some comment
+      #   end
       class SymbolProc < Base
+        include CommentsHelp
         include RangeHelp
         include IgnoredMethods
         extend AutoCorrector
@@ -78,6 +95,7 @@ module RuboCop
           [Layout::SpaceBeforeBlockBraces]
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_block(node)
           symbol_proc?(node) do |dispatch_node, arguments_node, method_name|
             # TODO: Rails-specific handling that we should probably make
@@ -88,10 +106,12 @@ module RuboCop
             return if ignored_method?(dispatch_node.method_name)
             return if allow_if_method_has_argument?(node)
             return if node.block_type? && destructuring_block_argument?(arguments_node)
+            return if allow_comments? && contains_comments?(node)
 
             register_offense(node, method_name, dispatch_node.method_name)
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         alias on_numblock on_block
 
         def destructuring_block_argument?(argument_node)
@@ -147,6 +167,10 @@ module RuboCop
 
         def allow_if_method_has_argument?(node)
           !!cop_config.fetch('AllowMethodsWithArguments', false) && !node.arguments.count.zero?
+        end
+
+        def allow_comments?
+          cop_config.fetch('AllowComments', false)
         end
       end
     end
