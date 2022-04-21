@@ -3770,7 +3770,7 @@ class A
 end
 ----
 
-==== IgnoredPatterns: ['^\s*module']
+==== AllowedPatterns: ['^\s*module']
 
 [source,ruby]
 ----
@@ -3801,6 +3801,10 @@ end
 | Width
 | `2`
 | Integer
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredPatterns
 | `[]`
@@ -4171,6 +4175,10 @@ bar: "0000000000", baz: "0000000000"}
 | IgnoreCopDirectives
 | `true`
 | Boolean
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredPatterns
 | `[]`

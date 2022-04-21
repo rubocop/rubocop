@@ -357,6 +357,7 @@ In the following section you find all available cops:
 
 === Department xref:cops_security.adoc[Security]
 
+* xref:cops_security.adoc#securitycompoundhash[Security/CompoundHash]
 * xref:cops_security.adoc#securityeval[Security/Eval]
 * xref:cops_security.adoc#securityiomethods[Security/IoMethods]
 * xref:cops_security.adoc#securityjsonload[Security/JSONLoad]
@@ -426,6 +427,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleexpandpatharguments[Style/ExpandPathArguments]
 * xref:cops_style.adoc#styleexplicitblockargument[Style/ExplicitBlockArgument]
 * xref:cops_style.adoc#styleexponentialnotation[Style/ExponentialNotation]
+* xref:cops_style.adoc#stylefetchenvvar[Style/FetchEnvVar]
 * xref:cops_style.adoc#stylefileread[Style/FileRead]
 * xref:cops_style.adoc#stylefilewrite[Style/FileWrite]
 * xref:cops_style.adoc#stylefloatdivision[Style/FloatDivision]
@@ -499,6 +501,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylenumericliteralprefix[Style/NumericLiteralPrefix]
 * xref:cops_style.adoc#stylenumericliterals[Style/NumericLiterals]
 * xref:cops_style.adoc#stylenumericpredicate[Style/NumericPredicate]
+* xref:cops_style.adoc#styleobjectthen[Style/ObjectThen]
 * xref:cops_style.adoc#styleonelineconditional[Style/OneLineConditional]
 * xref:cops_style.adoc#styleopenstructuse[Style/OpenStructUse]
 * xref:cops_style.adoc#styleoptionhash[Style/OptionHash]

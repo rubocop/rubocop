@@ -1355,12 +1355,17 @@ r = /[0-9x]/
 
 | Enabled
 | Yes
-| No
+| Yes (Unsafe)
 | 0.90
-| -
+| 1.28
 |===
 
 This cop checks for duplicate `require`s and `require_relative`s.
+
+=== Safety
+
+This cop's autocorrection is unsafe because it may break the dependency order
+of `require`.
 
 === Examples
 
@@ -5851,7 +5856,7 @@ the code should be refactored to use `if` conditionals.
 
 NOTE: Block methods that are used with `Enumerable`s are considered to be loops.
 
-`IgnoredPatterns` can be used to match against the block receiver in order to allow
+`AllowedPatterns` can be used to match against the block receiver in order to allow
 code that would otherwise be registered as an offense (eg. `times` used not in an
 `Enumerable` context).
 
@@ -5923,7 +5928,7 @@ end
 2.times { raise ArgumentError }
 ----
 
-==== IgnoredPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
+==== AllowedPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
 
 [source,ruby]
 ----
@@ -5936,8 +5941,12 @@ exactly(2).times { raise StandardError }
 |===
 | Name | Default value | Configurable values
 
-| IgnoredPatterns
+| AllowedPatterns
 | `(?-mix:(exactly|at_least|at_most)\(\d+\)\.times)`
+| Array
+
+| IgnoredPatterns
+| `[]`
 | Array
 |===
 

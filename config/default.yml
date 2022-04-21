@@ -1665,7 +1665,7 @@ Lint/DuplicateRequire:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.90'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.28'
 
 Lint/DuplicateRescueException:
   Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
@@ -2799,7 +2799,7 @@ Naming/VariableNumber:
 Security/CompoundHash:
   Description: 'When overwriting Object#hash to combine values, prefer delegating to Array#hash over writing a custom implementation.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.28'
 
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
@@ -3538,7 +3538,7 @@ Style/FetchEnvVar:
   Reference:
     - https://rubystyle.guide/#hash-fetch-defaults
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.28'
   # Environment variables to be excluded from the inspection.
   AllowedVars: []
 
@@ -3655,7 +3655,7 @@ Style/GuardClause:
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
   VersionAdded: '0.20'
-  VersionChanged: <<next>>
+  VersionChanged: '1.28'
   # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
   # needs to have to trigger this cop
   MinBodyLength: 1
@@ -4320,7 +4320,7 @@ Style/ObjectThen:
   Description: 'Enforces the use of consistent method names `Object#yield_self` or `Object#then`.'
   StyleGuide: '#object-yield-self-vs-object-then'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.28'
   # Use `Object#yield_self` or `Object#then`?
   # Prefer `Object#yield_self` to `Object#then` (yield_self)
   # Prefer `Object#then` to `Object#yield_self` (then)
@@ -4572,7 +4572,7 @@ Style/RedundantInitialize:
   Safe: false
   AllowComments: true
   VersionAdded: '1.27'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.28'
 
 Style/RedundantInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
@@ -4943,7 +4943,7 @@ Style/SymbolProc:
   Enabled: true
   Safe: false
   VersionAdded: '0.26'
-  VersionChanged: <<next>>
+  VersionChanged: '1.28'
   AllowMethodsWithArguments: false
   # A list of method names to be ignored by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.

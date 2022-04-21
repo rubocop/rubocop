@@ -3721,6 +3721,57 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 
 * https://rubystyle.guide#exponential-notation
 
+== Style/FetchEnvVar
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.28
+| -
+|===
+
+This cop suggests `ENV.fetch` for the replacement of `ENV[]`.
+`ENV[]` silently fails and returns `nil` when the environment variable is unset,
+which may cause unexpected behaviors when the developer forgets to set it.
+On the other hand, `ENV.fetch` raises KeyError or returns the explicitly
+specified default value.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+ENV['X']
+ENV['X'] || z
+x = ENV['X']
+
+# good
+ENV.fetch('X')
+ENV.fetch('X', nil) || z
+x = ENV.fetch('X')
+
+# also good
+!ENV['X']
+ENV['X'].some_method # (e.g. `.nil?`)
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedVars
+| `[]`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide/#hash-fetch-defaults
+
 == Style/FileRead
 
 |===
@@ -4409,7 +4460,7 @@ $stdin.read
 | Yes
 | No
 | 0.20
-| 0.22
+| 1.28
 |===
 
 Use a guard clause instead of wrapping the code inside a conditional
@@ -4461,6 +4512,45 @@ foo || raise('exception') if something
 ok
 ----
 
+==== AllowConsecutiveConditionals: false (default)
+
+[source,ruby]
+----
+# bad
+if foo?
+  work
+end
+
+if bar?  # <- reports an offense
+  work
+end
+----
+
+==== AllowConsecutiveConditionals: true
+
+[source,ruby]
+----
+# good
+if foo?
+  work
+end
+
+if bar?
+  work
+end
+
+# bad
+if foo?
+  work
+end
+
+do_someting
+
+if bar?  # <- reports an offense
+  work
+end
+----
+
 === Configurable attributes
 
 |===
@@ -4469,6 +4559,10 @@ ok
 | MinBodyLength
 | `1`
 | Integer
+
+| AllowConsecutiveConditionals
+| `false`
+| Boolean
 |===
 
 === References
@@ -5924,7 +6018,7 @@ method calls containing parameters.
 
 In the default style (require_parentheses), macro methods are ignored.
 Additional methods can be added to the `IgnoredMethods`
-or `IgnoredPatterns` list. These options are
+or `AllowedPatterns` list. These options are
 valid only in the default style. Macros can be included by
 either setting `IgnoreMacros` to false or adding specific macros to
 the `IncludedMacros` list.
@@ -5932,7 +6026,7 @@ the `IncludedMacros` list.
 Precedence of options is all follows:
 
 1. `IgnoredMethods`
-2. `IgnoredPatterns`
+2. `AllowedPatterns`
 3. `IncludedMacros`
 
 eg. If a method is listed in both
@@ -5988,7 +6082,7 @@ foo.bar = baz
 # okay with `puts` listed in `IgnoredMethods`
 puts 'test'
 
-# okay with `^assert` listed in `IgnoredPatterns`
+# okay with `^assert` listed in `AllowedPatterns`
 assert_equal 'test', x
 ----
 
@@ -6157,6 +6251,10 @@ Array 1
 | Boolean
 
 | IgnoredMethods
+| `[]`
+| Array
+
+| AllowedPatterns
 | `[]`
 | Array
 
@@ -7086,7 +7184,8 @@ end
 This cop checks for multi-line ternary op expressions.
 
 NOTE: `return if ... else ... end` is syntax error. If `return` is used before
-multiline ternary operator expression, it cannot be auto-corrected.
+multiline ternary operator expression, it will be auto-corrected to single-line
+ternary operator. The same is true for `break`, `next`, and method call.
 
 === Examples
 
@@ -7101,6 +7200,10 @@ a = cond ?
     b :
     c
 
+return cond ?
+       b :
+       c
+
 # good
 a = cond ? b : c
 a = if cond
@@ -7108,6 +7211,8 @@ a = if cond
 else
   c
 end
+
+return cond ? b : c
 ----
 
 === References
@@ -8373,6 +8478,59 @@ bar.baz > 0
 === References
 
 * https://rubystyle.guide#predicate-methods
+
+== Style/ObjectThen
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.28
+| -
+|===
+
+This cop enforces the use of consistent method names
+`Object#yield_self` or `Object#then`.
+
+=== Examples
+
+==== EnforcedStyle: then (default)
+
+[source,ruby]
+----
+# bad
+obj.yield_self { |x| x.do_something }
+
+# good
+obj.then { |x| x.do_something }
+----
+
+==== EnforcedStyle: yield_self
+
+[source,ruby]
+----
+# bad
+obj.then { |x| x.do_something }
+
+# good
+obj.yield_self { |x| x.do_something }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `then`
+| `then`, `yield_self`
+|===
+
+=== References
+
+* https://rubystyle.guide#object-yield-self-vs-object-then
 
 == Style/OneLineConditional
 
@@ -9725,10 +9883,10 @@ CONST = 1
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
-| Yes
 | No
+| Yes (Unsafe)
 | 1.27
-| -
+| 1.28
 |===
 
 Checks for `initialize` methods that are redundant.
@@ -9745,6 +9903,11 @@ to *not* be redundant.
 NOTE: Empty initializers are registered as offenses, but it is possible
 to purposely create an empty `initialize` method to override a superclass's
 initializer.
+
+=== Safety
+
+This cop is unsafe because if subclass overrides `initialize` method with
+a different arity than superclass.
 
 === Examples
 
@@ -9807,6 +9970,36 @@ end
 def initialize(...)
 end
 ----
+
+==== AllowComments: true (default)
+
+[source,ruby]
+----
+# good
+def initialize
+  # Overriding to negate superclass `initialize` method.
+end
+----
+
+==== AllowComments: false
+
+[source,ruby]
+----
+# bad
+def initialize
+  # Overriding to negate superclass `initialize` method.
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowComments
+| `true`
+| Boolean
+|===
 
 == Style/RedundantInterpolation
 
@@ -11435,6 +11628,32 @@ Correcting to global variables in the 'English' library
 will add a require statement to the top of the file if
 enabled by RequireEnglish config.
 
+Like `use_perl_names` but allows builtin global vars.
+
+  # good
+  puts $LOAD_PATH
+  puts $LOADED_FEATURES
+  puts $PROGRAM_NAME
+  puts ARGV
+  puts $:
+  puts $"
+  puts $0
+  puts $!
+  puts $@
+  puts $;
+  puts $,
+  puts $/
+  puts $\
+  puts $.
+  puts $_
+  puts $>
+  puts $<
+  puts $$
+  puts $?
+  puts $~
+  puts $=
+  puts $*
+
 === Safety
 
 Autocorrection is marked as unsafe because if `RequireEnglish` is not
@@ -11498,29 +11717,7 @@ puts $*
 
 [source,ruby]
 ----
-# good
-puts $LOAD_PATH
-puts $LOADED_FEATURES
-puts $PROGRAM_NAME
-puts ARGV
-puts $:
-puts $"
-puts $0
-puts $!
-puts $@
-puts $;
-puts $,
-puts $/
-puts $\
-puts $.
-puts $_
-puts $>
-puts $<
-puts $$
-puts $?
-puts $~
-puts $=
-puts $*
+
 ----
 
 === Configurable attributes
@@ -11534,7 +11731,7 @@ puts $*
 
 | EnforcedStyle
 | `use_english_names`
-| `use_perl_names`, `use_english_names`
+| `use_perl_names`, `use_english_names`, `use_builtin_english_names`
 |===
 
 === References
@@ -12196,7 +12393,7 @@ This cop checks symbol literal syntax.
 | No
 | Yes (Unsafe)
 | 0.26
-| 1.5
+| 1.28
 |===
 
 Use symbols as procs when possible.
@@ -12262,6 +12459,30 @@ something.do_something(foo, &:bar)
 something.do_something(foo) { |o| o.bar }
 ----
 
+==== AllowComments: false (default)
+
+[source,ruby]
+----
+# bad
+something.do_something do |s| # some comment
+  # some comment
+  s.upcase # some comment
+  # some comment
+end
+----
+
+==== AllowComments: true
+
+[source,ruby]
+----
+# good  - if there are comment in either position
+something.do_something do |s| # some comment
+  # some comment
+  s.upcase # some comment
+  # some comment
+end
+----
+
 === Configurable attributes
 
 |===
@@ -12274,6 +12495,10 @@ something.do_something(foo) { |o| o.bar }
 | IgnoredMethods
 | `respond_to`, `define_method`
 | Array
+
+| AllowComments
+| `false`
+| Boolean
 |===
 
 == Style/TernaryParentheses
