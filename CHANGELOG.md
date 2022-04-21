@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.28.1 (2022-04-21)
+
 ### Bug fixes
 
 * [#10559](https://github.com/rubocop/rubocop/issues/10559): Fix crash on CodeLengthCalculator if method call is not parenthesized. ([@nobuyo][])
