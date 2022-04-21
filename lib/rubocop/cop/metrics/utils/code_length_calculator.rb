@@ -156,7 +156,7 @@ module RuboCop
 
           def omit_length(descendant)
             parent = descendant.parent
-            return 0 if another_args?(parent)
+            return 0 if another_args?(parent) || pos_missing?(parent)
 
             [
               parent.loc.begin.end_pos != descendant.loc.expression.begin_pos,
@@ -166,6 +166,11 @@ module RuboCop
 
           def another_args?(node)
             node.call_type? && node.arguments.count > 1
+          end
+
+          def pos_missing?(node)
+            loc = node.loc
+            !(loc.begin && loc.end)
           end
         end
       end
