@@ -85,6 +85,14 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     end
   end
 
+  context 'when the node is a receiver of `||=`' do
+    it 'does not register an offense with `||`' do
+      expect_no_offenses(<<~RUBY)
+        ENV['X'] ||= y
+      RUBY
+    end
+  end
+
   context 'when it is an argument of a method' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
