@@ -6167,8 +6167,4 @@
 [@ydah]: https://github.com/ydah
 [@chrisseaton]: https://github.com/chrisseaton
 [@nobuyo]: https://github.com/nobuyo
-[@nobuyo]: https://github.com/nobuyo
-[@nobuyo]: https://github.com/nobuyo
 [@johnny-miyake]: https://github.com/johnny-miyake
-[@nobuyo]: https://github.com/nobuyo
-[@nobuyo]: https://github.com/nobuyo
