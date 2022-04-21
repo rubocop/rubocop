@@ -50,4 +50,17 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayLineBreaks, :config do
       RUBY
     end
   end
+
+  context 'when AllowPercentArray: true' do
+    let(:cop_config) { { 'AllowPercentArray' => true } }
+
+    it 'does not add any offenses' do
+      expect_no_offenses(<<~RUBY)
+        %w[
+          1 2
+          3
+        ]
+      RUBY
+    end
+  end
 end

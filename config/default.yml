@@ -1014,6 +1014,8 @@ Layout/MultilineArrayLineBreaks:
                  starts on a separate line.
   Enabled: false
   VersionAdded: '0.67'
+  VersionChanged: <<next>>
+  AllowPercentArray: false
 
 Layout/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
