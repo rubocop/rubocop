@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#10559](https://github.com/rubocop/rubocop/issues/10559): Fix crash on CodeLengthCalculator if method call is not parenthesized. ([@nobuyo][])
+* [#10557](https://github.com/rubocop/rubocop/issues/10557): Fix a false positive for `Style/FetchEnvVar` when `ENV['key']` is a receiver of `||=`. ([@koic][])
+
 ## 1.28.0 (2022-04-21)
 
 ### New features
