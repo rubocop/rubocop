@@ -157,11 +157,16 @@ module RuboCop
           def omit_length(descendant)
             parent = descendant.parent
             return 0 if another_args?(parent)
+            return 0 unless parenthesized?(parent)
 
             [
               parent.loc.begin.end_pos != descendant.loc.expression.begin_pos,
               parent.loc.end.begin_pos != descendant.loc.expression.end_pos
             ].count(true)
+          end
+
+          def parenthesized?(node)
+            node.call_type? && node.parenthesized?
           end
 
           def another_args?(node)
