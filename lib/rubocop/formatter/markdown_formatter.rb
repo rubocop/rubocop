@@ -53,19 +53,19 @@ module RuboCop
         filename = relative_path(file.path)
         n_offenses = pluralize(file.offenses.count, 'offense')
 
-        output.write "### #{filename} - #{n_offenses}\n"
+        output.write "### #{filename} - (#{n_offenses})\n"
       end
 
       def write_context(offense)
         output.write(
-          "  **Line # #{offense.location.line} - #{offense.severity}:** #{offense.message}\n\n"
+          "  * **Line # #{offense.location.line} - #{offense.severity}:** #{offense.message}\n\n"
         )
       end
 
       def write_code(offense)
         code = offense.location.source_line + possible_ellipses(offense.location)
 
-        output.write "```rb\n#{code}\n```\n\n" unless code.blank?
+        output.write "    ```rb\n    #{code}\n    ```\n\n" unless code.blank?
       end
 
       def possible_ellipses(location)
