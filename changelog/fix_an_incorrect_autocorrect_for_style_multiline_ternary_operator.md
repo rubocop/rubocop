@@ -1,1 +1,0 @@
-* [#10537](https://github.com/rubocop/rubocop/pull/10537): Fix an incorrect auto-correct for `Style/MultilineTernaryOperator` when returning a multiline ternary operator expression with `break`, `next`, or method call. ([@koic][])

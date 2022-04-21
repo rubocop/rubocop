@@ -1,1 +1,0 @@
-* [#10529](https://github.com/rubocop/rubocop/issues/10529): Fix autocorrect for `Style/SoleNestedConditional` causes logical error when using a outer condition of method call by omitting parentheses for method arguments. ([@nobuyo][])
