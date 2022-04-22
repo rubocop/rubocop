@@ -44,7 +44,8 @@ module RuboCop
           return unless node.arguments?
 
           return unless ambiguous_block_association?(node)
-          return if node.parenthesized? || node.last_argument.lambda? || allowed_method?(node)
+          return if node.parenthesized? || node.last_argument.lambda? || node.last_argument.proc? ||
+                    allowed_method?(node)
 
           message = message(node)
 
