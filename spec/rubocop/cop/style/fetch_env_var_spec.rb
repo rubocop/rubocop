@@ -62,37 +62,6 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     end
   end
 
-  context 'when the node is an operand of `||`' do
-    it 'registers no offenses with `||`' do
-      expect_offense(<<~RUBY)
-        ENV['X'] || y
-        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        ENV.fetch('X', nil) || y
-      RUBY
-
-      expect_offense(<<~RUBY)
-        y || ENV['X']
-             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        y || ENV.fetch('X', nil)
-      RUBY
-
-      expect_offense(<<~RUBY)
-        z || ENV['X'] || y
-             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        z || ENV.fetch('X', nil) || y
-      RUBY
-    end
-  end
-
   context 'when the node is a receiver of `||=`' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
@@ -154,7 +123,6 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
           ENV['A'].some_method,
           ENV['B'] || ENV['C'],
                       ^^^^^^^^ Use `ENV.fetch('C')` or `ENV.fetch('C', nil)` instead of `ENV['C']`.
-          ^^^^^^^^ Use `ENV.fetch('B')` or `ENV.fetch('B', nil)` instead of `ENV['B']`.
           ENV['X'],
           ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
           ENV['Y']
@@ -165,7 +133,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       expect_correction(<<~RUBY)
         some_method(
           ENV['A'].some_method,
-          ENV.fetch('B', nil) || ENV.fetch('C', nil),
+          ENV.fetch('B') { ENV.fetch('C', nil) },
           ENV.fetch('X', nil),
           ENV.fetch('Y', nil)
         )
@@ -334,6 +302,383 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       expect_no_offenses(<<~RUBY)
         ENV['X']
       RUBY
+    end
+  end
+
+  context 'when the node is an operand of `||`' do
+    context 'and node is the right end of `||` chains' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          y || ENV['X']
+               ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          y || ENV.fetch('X', nil)
+        RUBY
+      end
+    end
+
+    context 'and followed by a basic literal' do
+      context 'when the node is the left end of `||` chains' do
+        context 'with BasicLiteralSecondArg style' do
+          let(:cop_config) { { 'BasicLiteralRhs' => 'SecondArgOfFetch' } }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              ENV['X'] || 'y'
+              ^^^^^^^^ Use `ENV.fetch('X', 'y')` instead of `ENV['X'] || 'y'`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ENV.fetch('X', 'y')
+            RUBY
+          end
+        end
+
+        context 'with AlwaysUseBlock style' do
+          let(:cop_config) { { 'BasicLiteralRhs' => 'BlockContent' } }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              ENV['X'] || 'y'
+              ^^^^^^^^ Use `ENV.fetch('X') { 'y' }` instead of `ENV['X'] || 'y'`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ENV.fetch('X') { 'y' }
+            RUBY
+          end
+        end
+      end
+
+      context 'when the node is between `||`s' do
+        context 'with BasicLiteralSecondArg style' do
+          let(:cop_config) { { 'BasicLiteralRhs' => 'SecondArgOfFetch' } }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              z || ENV['X'] || 'y'
+                   ^^^^^^^^ Use `ENV.fetch('X', 'y')` instead of `ENV['X'] || 'y'`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              z || ENV.fetch('X', 'y')
+            RUBY
+          end
+        end
+
+        context 'with AlwaysUseBlock style' do
+          let(:cop_config) { { 'BasicLiteralRhs' => 'BlockContent' } }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              z || ENV['X'] || 'y'
+                   ^^^^^^^^ Use `ENV.fetch('X') { 'y' }` instead of `ENV['X'] || 'y'`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              z || ENV.fetch('X') { 'y' }
+            RUBY
+          end
+        end
+      end
+    end
+
+    context 'and followed by a composite literal' do
+      context 'when the node is the left end of `||` chains' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            ENV['X'] || { a: 1, b: 2 }
+            ^^^^^^^^ Use `ENV.fetch('X') { { a: 1, b: 2 } }` instead of `ENV['X'] || { a: 1, b: 2 }`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            ENV.fetch('X') { { a: 1, b: 2 } }
+          RUBY
+        end
+      end
+
+      context 'when the node is between `||`s' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            z || ENV['X'] || { a: 1, b: 2 }
+                 ^^^^^^^^ Use `ENV.fetch('X') { { a: 1, b: 2 } }` instead of `ENV['X'] || { a: 1, b: 2 }`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            z || ENV.fetch('X') { { a: 1, b: 2 } }
+          RUBY
+        end
+      end
+    end
+
+    context 'and followed by a variable or a no receiver method' do
+      context 'when the node is the left end of `||` chains' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            ENV['X'] || y
+            ^^^^^^^^ Use `ENV.fetch('X') { y }` instead of `ENV['X'] || y`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            ENV.fetch('X') { y }
+          RUBY
+        end
+      end
+
+      context 'when the node is between `||`s' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            z || ENV['X'] || y
+                 ^^^^^^^^ Use `ENV.fetch('X') { y }` instead of `ENV['X'] || y`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            z || ENV.fetch('X') { y }
+          RUBY
+        end
+      end
+    end
+
+    context 'and followed by a method with its receiver' do
+      context 'when the node is the left end of `||` chains' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            ENV['X'] || y.foo
+            ^^^^^^^^ Use `ENV.fetch('X') { y.foo }` instead of `ENV['X'] || y.foo`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            ENV.fetch('X') { y.foo }
+          RUBY
+        end
+      end
+
+      context 'when the node is between `||`s' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            z || ENV['X'] || y.foo
+                 ^^^^^^^^ Use `ENV.fetch('X') { y.foo }` instead of `ENV['X'] || y.foo`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            z || ENV.fetch('X') { y.foo }
+          RUBY
+        end
+      end
+    end
+
+    context 'and followed by another `ENV[]`' do
+      context 'when the node is the left end of `||` chains' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            ENV['X'] || ENV['Y']
+                        ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            ENV.fetch('X') { ENV.fetch('Y', nil) }
+          RUBY
+        end
+      end
+
+      context 'when the node is between `||`s' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            a || ENV['X'] || ENV['Y']
+                             ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a || ENV.fetch('X') { ENV.fetch('Y', nil) }
+          RUBY
+        end
+      end
+    end
+
+    context 'and followed by `return`' do
+      context 'when the node is the left end of `||` chains' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            ENV['X'] || return
+            ^^^^^^^^ Use `ENV.fetch('X') { return }` instead of `ENV['X'] || return`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            ENV.fetch('X') { return }
+          RUBY
+        end
+      end
+
+      context 'when the node is between `||`s' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            a || ENV['X'] || return
+                 ^^^^^^^^ Use `ENV.fetch('X') { return }` instead of `ENV['X'] || return`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a || ENV.fetch('X') { return }
+          RUBY
+        end
+      end
+    end
+
+    context 'and followed by a block control' do
+      context 'on the right next' do
+        context 'when the node is the left end of `||` chains' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              ENV['X'] || next
+              ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ENV.fetch('X', nil) || next
+            RUBY
+          end
+        end
+
+        context 'when the node is between `||`s' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              z || ENV['X'] || next
+                   ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              z || ENV.fetch('X', nil) || next
+            RUBY
+          end
+        end
+      end
+
+      context 'beyond something' do
+        context 'when the node is the left end of `||` chains' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              ENV['X'] || y || next
+              ^^^^^^^^ Use `ENV.fetch('X') { y }` instead of `ENV['X'] || y`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ENV.fetch('X') { y } || next
+            RUBY
+          end
+        end
+
+        context 'when the node is between `||`s' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              z || ENV['X'] || y || next
+                   ^^^^^^^^ Use `ENV.fetch('X') { y }` instead of `ENV['X'] || y`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              z || ENV.fetch('X') { y } || next
+            RUBY
+          end
+        end
+      end
+    end
+
+    context 'and followed by multiple `ENV[]`s' do
+      context 'when the `ENV`s are separated by non-ENV nodes' do
+        context 'when the node is the left end of `||` chains' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              ENV['X'] || y || ENV['Z'] || a || ENV['B']
+                                                ^^^^^^^^ Use `ENV.fetch('B')` or `ENV.fetch('B', nil)` instead of `ENV['B']`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ENV.fetch('X') { y } || ENV.fetch('Z') { a } || ENV.fetch('B', nil)
+            RUBY
+          end
+        end
+
+        context 'when the node is between `||`s' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              z || ENV['X'] || y || ENV['Z'] || a || ENV['B']
+                                                     ^^^^^^^^ Use `ENV.fetch('B')` or `ENV.fetch('B', nil)` instead of `ENV['B']`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              z || ENV.fetch('X') { y } || ENV.fetch('Z') { a } || ENV.fetch('B', nil)
+            RUBY
+          end
+        end
+      end
+
+      context 'when two `ENV[]`s are next to each other' do
+        context 'when the node is the left end of `||` chains' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              ENV['X'] || ENV['Y'] || a
+                          ^^^^^^^^ Use `ENV.fetch('Y') { a }` instead of `ENV['Y'] || a`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ENV.fetch('X') { ENV.fetch('Y') { a } }
+            RUBY
+          end
+        end
+
+        context 'when the node is between `||`s' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              z || ENV['X'] || ENV['Y'] || a
+                               ^^^^^^^^ Use `ENV.fetch('Y') { a }` instead of `ENV['Y'] || a`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              z || ENV.fetch('X') { ENV.fetch('Y') { a } }
+            RUBY
+          end
+        end
+      end
+    end
+
+    context 'and followed by a mutiline expression' do
+      context 'when the node is the left end of `||` chains' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            ENV['X'] || y.map do |a|
+            ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
+              a * 2
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            ENV.fetch('X') do
+              y.map do |a|
+                a * 2
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when the node is between `||`s' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            z || ENV['X'] || y.map do |a|
+                 ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
+              a * 2
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            z || ENV.fetch('X') do
+              y.map do |a|
+                a * 2
+              end
+            end
+          RUBY
+        end
+      end
     end
   end
 end

@@ -3538,6 +3538,9 @@ Style/FetchEnvVar:
   VersionAdded: '1.28'
   # Environment variables to be excluded from the inspection.
   AllowedVars: []
+  # - `SecondArgOfFetch` puts the RHS to the second argument of `ENV.fetch`. (default)
+  # - `BlockContent` puts the RHS into a block.
+  BasicLiteralRhs: 'SecondArgOfFetch'
 
 Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'

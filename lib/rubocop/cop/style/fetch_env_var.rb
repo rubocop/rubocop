@@ -9,16 +9,36 @@ module RuboCop
       # On the other hand, `ENV.fetch` raises KeyError or returns the explicitly
       # specified default value.
       #
+      # When an `ENV[]` is the LHS of `||`, the autocorrect makes the RHS
+      # the default value of `ENV.fetch`.
+      # In addition, when the RHS is a basic literal object (e.g., `'string'`, `true`, `1`),
+      # the autocorrect corrects the code according to the `BasicLiteralRhs` option.
+      # Available values
+      # - `SecondArgOfFetch` puts the RHS to the second argument of `ENV.fetch`. (default)
+      # - `BlockContent` puts the RHS into a block.
+      #
       # @example
       #   # bad
       #   ENV['X']
-      #   ENV['X'] || z
+      #   ENV['X'] || 'string literal'
+      #   ENV['X'] || some_method
       #   x = ENV['X']
+      #
+      #   ENV['X'] || y.map do |a|
+      #     puts a * 2
+      #   end
       #
       #   # good
       #   ENV.fetch('X')
-      #   ENV.fetch('X', nil) || z
+      #   ENV.fetch('X', 'string literal')
+      #   ENV.fetch('X') { some_method }
       #   x = ENV.fetch('X')
+      #
+      #   ENV.fetch('X') do
+      #     y.map do |a|
+      #       puts a * 2
+      #     end
+      #   end
       #
       #   # also good
       #   !ENV['X']
@@ -27,11 +47,26 @@ module RuboCop
       class FetchEnvVar < Base
         extend AutoCorrector
 
-        MSG = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
+        # rubocop:disable Layout/LineLength
+        MSG_DEFAULT_NIL = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
+        MSG_DEFAULT_RHS_SINGLE_ARG_STYLE = 'Use `ENV.fetch(%<key>s, %<default>s)` instead of `ENV[%<key>s] || %<default>s`.'
+        MSG_DEFAULT_RHS_SINGLE_BLOCK_STYLE = 'Use `ENV.fetch(%<key>s) { %<default>s }` instead of `ENV[%<key>s] || %<default>s`.'
+        MSG_DEFAULT_RHS_MULTI = 'Use `ENV.fetch(%<key>s)` with a block containing `%<default>s ...`'
+        # rubocop:enable Layout/LineLength
 
         # @!method env_with_bracket?(node)
         def_node_matcher :env_with_bracket?, <<~PATTERN
           (send (const nil? :ENV) :[] $_)
+        PATTERN
+
+        # @!method operand_of_or?(node)
+        def_node_matcher :operand_of_or?, <<~PATTERN
+          (^or ...)
+        PATTERN
+
+        # @!method block_control?(node)
+        def_node_matcher :block_control?, <<~PATTERN
+          ({next | break | retry | redo})
         PATTERN
 
         def on_send(node)
@@ -39,8 +74,16 @@ module RuboCop
             break if allowed_var?(expression)
             break if allowable_use?(node)
 
-            add_offense(node, message: format(MSG, key: expression.source)) do |corrector|
-              corrector.replace(node, "ENV.fetch(#{expression.source}, nil)")
+            if operand_of_or?(node)
+              target_node, target_expr = rightmost_offense_in_or_chains(node)
+
+              if right_end_of_or_chains?(target_node) || rhs_cannot_be_default_value?(target_node)
+                default_nil(target_node, target_expr)
+              else
+                default_rhs(target_node, target_expr)
+              end
+            else
+              default_nil(node, expression)
             end
           end
         end
@@ -86,6 +129,150 @@ module RuboCop
 
           lhs, _method, _rhs = *parent
           node == lhs
+        end
+
+        def left_end_of_or_chains?(node)
+          return false unless operand_of_or?(node)
+
+          node.parent.lhs == node
+        end
+
+        def right_end_of_or_chains?(node)
+          !(left_end_of_or_chains?(node) || node.parent&.parent&.or_type?)
+        end
+
+        # Returns the node and expression of the rightmost `ENV[]` in `||` chains.
+        # e.g.,
+        # `ENV['X'] || y || z || ENV['A'] || b`
+        #                        ^^^^^^^^ Matches this one
+        def rightmost_offense_in_or_chains(node)
+          rmst_node = rmst_expr = nil
+          or_nodes = [node.parent]
+
+          while (grand_parent = or_nodes.last&.parent)&.or_type?
+            or_nodes << grand_parent
+          end
+
+          # Finds the rightmost `ENV[]` in `||` chains and yields it.
+          or_nodes.reverse.find do |or_node|
+            env_with_bracket?(or_node.rhs) do |expression|
+              rmst_node = or_node.rhs
+              rmst_expr = expression
+            end
+          end
+          return [rmst_node, rmst_expr] if rmst_node
+
+          # Yields the node given to this method if no `ENV[]` is found in the above process.
+          expression = env_with_bracket?(node)
+          [node, expression]
+        end
+
+        def rhs_cannot_be_default_value?(node)
+          rhs_is_block_control?(node)
+        end
+
+        def rhs_is_block_control?(node)
+          rhs = left_end_of_or_chains?(node) ? node.parent.rhs : node.parent.parent.rhs
+          block_control?(rhs)
+        end
+
+        def new_code_default_nil(expression)
+          "ENV.fetch(#{expression.source}, nil)"
+        end
+
+        def new_code_default_rhs_single_line(node, expression)
+          parent = node.parent
+          if cop_config['BasicLiteralRhs'] == 'SecondArgOfFetch' && parent.rhs.basic_literal?
+            "ENV.fetch(#{expression.source}, #{parent.rhs.source})"
+          else
+            "ENV.fetch(#{expression.source}) { #{parent.rhs.source} }"
+          end
+        end
+
+        def new_code_default_rhs_multiline(node, expression)
+          default = node.parent.rhs.source.split("\n").map do |line|
+            "#{indent(node.parent, offset: indentation_width)}#{line}"
+          end.join("\n")
+          <<~NEW_CODE.chomp
+            ENV.fetch(#{expression.source}) do
+            #{default}
+            end
+          NEW_CODE
+        end
+
+        def new_code_default_rhs(node, expression)
+          if node.parent.rhs.single_line?
+            new_code_default_rhs_single_line(node, expression)
+          else
+            new_code_default_rhs_multiline(node, expression)
+          end
+        end
+
+        def default_rhs(node, expression)
+          if left_end_of_or_chains?(node)
+            default_rhs_in_same_or(node, expression)
+          else
+            default_rhs_in_outer_or(node, expression)
+          end
+        end
+
+        # Adds an offense and sets `nil` to the default value of `ENV.fetch`.
+        # `ENV['X']` --> `ENV.fetch('X', nil)`
+        def default_nil(node, expression)
+          message = format(MSG_DEFAULT_NIL, key: expression.source)
+
+          add_offense(node, message: message) do |corrector|
+            corrector.replace(node, new_code_default_nil(expression))
+          end
+        end
+
+        # Adds an offense and makes the RHS the default value of `ENV.fetch`.
+        # `ENV['X'] || y` --> `ENV.fetch('X') { y }`
+        def default_rhs_in_same_or(node, expression)
+          template = message_template_for(node.parent.rhs)
+          message = format(template,
+                           key: expression.source,
+                           default: first_line_of(node.parent.rhs.source))
+
+          add_offense(node, message: message) do |corrector|
+            corrector.replace(node.parent, new_code_default_rhs(node, expression))
+          end
+        end
+
+        # Adds an offense and makes the RHS the default value of `ENV.fetch`.
+        # `z || ENV['X'] || y` --> `z || ENV.fetch('X') { y }`
+        def default_rhs_in_outer_or(node, expression)
+          parent = node.parent
+          grand_parent = parent.parent
+
+          template = message_template_for(grand_parent.rhs)
+          message = format(template,
+                           key: expression.source,
+                           default: first_line_of(grand_parent.rhs.source))
+
+          add_offense(node, message: message) do |corrector|
+            lhs_code = parent.lhs.source
+            rhs_code = new_code_default_rhs(parent, expression)
+            corrector.replace(grand_parent, "#{lhs_code} || #{rhs_code}")
+          end
+        end
+
+        def message_template_for(rhs)
+          if rhs.multiline?
+            MSG_DEFAULT_RHS_MULTI
+          elsif cop_config['BasicLiteralRhs'] == 'SecondArgOfFetch' && rhs.basic_literal?
+            MSG_DEFAULT_RHS_SINGLE_ARG_STYLE
+          else
+            MSG_DEFAULT_RHS_SINGLE_BLOCK_STYLE
+          end
+        end
+
+        def indentation_width
+          config.for_cop('Layout/IndentationWidth')['Width'] || 2
+        end
+
+        def first_line_of(source)
+          source.split("\n").first
         end
       end
     end
