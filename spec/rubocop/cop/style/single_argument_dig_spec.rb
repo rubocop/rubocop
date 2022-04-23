@@ -32,6 +32,18 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
     end
   end
 
+  context '>= Ruby 2.7', :ruby27 do
+    context 'when using dig with arguments forwarding' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo(...)
+            { key: 'value' }.dig(...)
+          end
+        RUBY
+      end
+    end
+  end
+
   describe 'dig over a variable as caller' do
     context 'with single argument' do
       it 'registers an offense and corrects unsuitable use of dig' do
