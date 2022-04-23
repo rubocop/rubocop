@@ -288,9 +288,14 @@ module RuboCop
         end
 
         def end_of_chain(node)
+          return end_of_chain(node.block_node) if with_block?(node)
           return node unless node.chained?
 
           end_of_chain(node.parent)
+        end
+
+        def with_block?(node)
+          node.respond_to?(:block_node) && node.block_node
         end
 
         def get_blocks(node, &block)
