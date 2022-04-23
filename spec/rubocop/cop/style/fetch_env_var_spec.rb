@@ -86,9 +86,37 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
   end
 
   context 'when the node is a receiver of `||=`' do
-    it 'does not register an offense with `||`' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         ENV['X'] ||= y
+        x ||= ENV['X'] ||= y
+      RUBY
+    end
+  end
+
+  context 'when the node is a receiver of `&&=`' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        ENV['X'] &&= y
+        x &&= ENV['X'] ||= y
+      RUBY
+    end
+  end
+
+  context 'when the node is a assigned by `||=`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        y ||= ENV['X']
+              ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+      RUBY
+    end
+  end
+
+  context 'when the node is a assigned by `&&=`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        y &&= ENV['X']
+              ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
     end
   end
