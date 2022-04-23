@@ -44,6 +44,7 @@ module RuboCop
 
           expression = single_argument_dig?(node)
           return unless expression
+          return if expression.forwarded_args_type?
 
           receiver = node.receiver.source
           argument = expression.source
