@@ -22,6 +22,8 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
   it_behaves_like 'accepts', 'Proc.new { puts "proc" }'
   it_behaves_like 'accepts', 'expect { order.save }.to(change { orders.size })'
   it_behaves_like 'accepts', 'scope :active, -> { where(status: "active") }'
+  it_behaves_like 'accepts', 'scope :active, proc { where(status: "active") }'
+  it_behaves_like 'accepts', 'scope :active, Proc.new { where(status: "active") }'
   it_behaves_like('accepts', 'assert_equal posts.find { |p| p.title == "Foo" }, results.first')
   it_behaves_like('accepts', 'assert_equal(posts.find { |p| p.title == "Foo" }, results.first)')
   it_behaves_like('accepts', 'assert_equal(results.first, posts.find { |p| p.title == "Foo" })')
