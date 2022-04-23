@@ -69,9 +69,20 @@ module RuboCop
         # - Used as a flag (e.g., `if ENV['X']` or `!ENV['X']`) because
         #   it simply checks whether the variable is set.
         # - Receiving a message with dot syntax, e.g. `ENV['X'].nil?`.
-        # - `ENV['key']` is a receiver of `||=`, e.g. `ENV['X'] ||= y`.
+        # - `ENV['key']` assigned by logical AND/OR assignment.
         def allowable_use?(node)
-          used_as_flag?(node) || message_chained_with_dot?(node) || node.parent&.or_asgn_type?
+          used_as_flag?(node) || message_chained_with_dot?(node) || assigned?(node)
+        end
+
+        # The following are allowed cases:
+        #
+        # - `ENV['key']` is a receiver of `||=`, e.g. `ENV['X'] ||= y`.
+        # - `ENV['key']` is a receiver of `&&=`, e.g. `ENV['X'] &&= y`.
+        def assigned?(node)
+          return false unless (parent = node.parent)&.assignment?
+
+          lhs, _method, _rhs = *parent
+          node == lhs
         end
       end
     end
