@@ -37,11 +37,18 @@ module RuboCop
             receiver_end_pos = node.receiver.source_range.end_pos
             selector_begin_pos = node.loc.selector.begin_pos
             return if receiver_end_pos >= selector_begin_pos
+            return if dot_before_brackets?(node, receiver_end_pos, selector_begin_pos)
 
             range_between(receiver_end_pos, selector_begin_pos)
           elsif node.method?(:[]=)
             offense_range_for_assignment(node, begin_pos)
           end
+        end
+
+        def dot_before_brackets?(node, receiver_end_pos, selector_begin_pos)
+          return false unless node.loc.respond_to?(:dot) && (dot = node.loc.dot)
+
+          dot.begin_pos == receiver_end_pos && dot.end_pos == selector_begin_pos
         end
 
         def offense_range_for_assignment(node, begin_pos)

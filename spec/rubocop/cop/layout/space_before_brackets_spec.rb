@@ -90,6 +90,24 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
         [index_or_key]
       RUBY
     end
+
+    it 'does not register an offense when call desugared `Hash#[]` to lvar receiver' do
+      expect_no_offenses(<<~RUBY)
+        collection.[](index_or_key)
+      RUBY
+    end
+
+    it 'does not register an offense when call desugared `Hash#[]` to ivar receiver' do
+      expect_no_offenses(<<~RUBY)
+        @collection.[](index_or_key)
+      RUBY
+    end
+
+    it 'does not register an offense when call desugared `Hash#[]` to cvar receiver' do
+      expect_no_offenses(<<~RUBY)
+        @@collection.[](index_or_key)
+      RUBY
+    end
   end
 
   context 'when assigning' do
