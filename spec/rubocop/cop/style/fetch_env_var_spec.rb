@@ -41,6 +41,14 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     end
   end
 
+  context 'when it receives a message with safe navigation' do
+    it 'registers no offenses' do
+      expect_no_offenses(<<~RUBY)
+        ENV['X']&.some_method
+      RUBY
+    end
+  end
+
   context 'when it is compared with other object' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

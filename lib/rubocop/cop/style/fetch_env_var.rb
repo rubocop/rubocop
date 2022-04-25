@@ -61,7 +61,10 @@ module RuboCop
         def message_chained_with_dot?(node)
           return false if node.root?
 
-          node.parent.send_type? && node.parent.children.first == node && node.parent.dot?
+          parent = node.parent
+          return false if !parent.call_type? || parent.children.first != node
+
+          parent.dot? || parent.safe_navigation?
         end
 
         # The following are allowed cases:
