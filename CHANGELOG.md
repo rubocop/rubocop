@@ -2,6 +2,14 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#10566](https://github.com/rubocop/rubocop/issues/10566): Fix a false positive for `Lint/AmbiguousBlockAssociation` when using proc is used as a last argument. ([@koic][])
+* [#10573](https://github.com/rubocop/rubocop/issues/10573): Fix a false positive for `Layout/SpaceBeforeBrackets` when there is a dot before brackets. ([@nobuyo][])
+* [#10563](https://github.com/rubocop/rubocop/issues/10563): Fix `Style/BlockDelimiters` unexpectedly deletes block on moving comment if methods with block are chained. ([@nobuyo][])
+* [#10574](https://github.com/rubocop/rubocop/issues/10574): Fix a false positive for `Style/SingleArgumentDig` when using dig with arguments forwarding. ([@ydah][])
+* [#10565](https://github.com/rubocop/rubocop/pull/10565): Fix a false positive and a true negative for `Style/FetchEnvVar`. ([@koic][])
+
 ## 1.28.1 (2022-04-21)
 
 ### Bug fixes
