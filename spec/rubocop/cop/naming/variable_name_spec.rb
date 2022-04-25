@@ -68,6 +68,47 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     end
   end
 
+  shared_examples 'allowed patterns' do |pattern, identifier|
+    context 'when AllowedPatterns is set' do
+      let(:cop_config) { super().merge('AllowedPatterns' => [pattern]) }
+
+      it 'does not register an offense for a local variable name that matches the allowed pattern' do
+        expect_no_offenses(<<~RUBY)
+          #{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a instance variable name that matches the allowed pattern' do
+        expect_no_offenses(<<~RUBY)
+          @#{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a class variable name that matches the allowed pattern' do
+        expect_no_offenses(<<~RUBY)
+          @@#{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a global variable name that matches the allowed pattern' do
+        expect_no_offenses(<<~RUBY)
+          $#{identifier} = :foo
+        RUBY
+      end
+
+      it 'does not register an offense for a method name that matches the allowed pattern' do
+        expect_no_offenses(<<~RUBY)
+          def #{identifier}
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a symbol that matches the allowed pattern' do
+        expect_no_offenses(":#{identifier}")
+      end
+    end
+  end
+
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
@@ -164,6 +205,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
 
     include_examples 'always accepted'
     include_examples 'allowed identifiers', 'firstArg'
+    include_examples 'allowed patterns', 'st[A-Z]', 'firstArg'
   end
 
   context 'when configured for camelCase' do
@@ -261,5 +303,6 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
 
     include_examples 'always accepted'
     include_examples 'allowed identifiers', 'first_arg'
+    include_examples 'allowed patterns', 'st_[a-z]', 'first_arg'
   end
 end

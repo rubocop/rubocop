@@ -96,11 +96,20 @@ module RuboCop
       #   # good
       #   expect(Open3).to receive(:capture3)
       #
+      # @example AllowedPatterns: ['_v\d+\z']
+      #   # good
+      #   :some_sym_v1
+      #
       class VariableNumber < Base
         include AllowedIdentifiers
         include ConfigurableNumbering
+        include AllowedPattern
 
         MSG = 'Use %<style>s for %<identifier_type>s numbers.'
+
+        def valid_name?(node, name, given_style = style)
+          super || matches_allowed_pattern?(name)
+        end
 
         def on_arg(node)
           @node = node
@@ -112,6 +121,7 @@ module RuboCop
         alias on_lvasgn on_arg
         alias on_ivasgn on_arg
         alias on_cvasgn on_arg
+        alias on_gvasgn on_arg
 
         def on_def(node)
           @node = node
