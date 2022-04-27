@@ -5,7 +5,8 @@ module RuboCop
   #
   # @abstract parent of three different magic comment handlers
   class MagicComment
-    # @see https://git.io/vMC1C IRB's pattern for matching magic comment tokens
+    # IRB's pattern for matching magic comment tokens.
+    # @see https://github.com/ruby/ruby/blob/b4a55c1/lib/irb/magic-file.rb#L5
     TOKEN = /[[:alnum:]\-_]+/.freeze
     KEYWORDS = {
       encoding: '(?:en)?coding',
@@ -170,7 +171,7 @@ module RuboCop
     #   comment.encoding # => 'ascii-8bit'
     #
     # @see https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html
-    # @see https://git.io/vMCXh Emacs handling in Ruby's parse.y
+    # @see https://github.com/ruby/ruby/blob/3f306dc/parse.y#L6873-L6892 Emacs handling in parse.y
     class EmacsComment < EditorComment
       REGEXP    = /-\*-(.+)-\*-/.freeze
       FORMAT    = '# -*- %s -*-'
@@ -259,7 +260,7 @@ module RuboCop
       # is the only text in the comment.
       #
       # Case-insensitive and dashes/underscores are acceptable.
-      # @see https://git.io/vM7Mg
+      # @see https://github.com/ruby/ruby/blob/78b95b4/parse.y#L7134-L7138
       def extract_frozen_string_literal
         extract(/\A\s*#\s*#{KEYWORDS[:frozen_string_literal]}:\s*(#{TOKEN})\s*\z/io)
       end
