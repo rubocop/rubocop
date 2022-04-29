@@ -11,11 +11,6 @@ module RuboCop
       #
       # When an `ENV[]` is the LHS of `||`, the autocorrect makes the RHS
       # the default value of `ENV.fetch`.
-      # In addition, when the RHS is a basic literal object (e.g., `'string'`, `true`, `1`),
-      # the autocorrect corrects the code according to the `BasicLiteralRhs` option.
-      # Available values
-      # - `SecondArgOfFetch` puts the RHS to the second argument of `ENV.fetch`. (default)
-      # - `BlockContent` puts the RHS into a block.
       #
       # @example
       #   # bad
@@ -49,9 +44,9 @@ module RuboCop
 
         # rubocop:disable Layout/LineLength
         MSG_DEFAULT_NIL = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
-        MSG_DEFAULT_RHS_SINGLE_ARG_STYLE = 'Use `ENV.fetch(%<key>s, %<default>s)` instead of `ENV[%<key>s] || %<default>s`.'
-        MSG_DEFAULT_RHS_SINGLE_BLOCK_STYLE = 'Use `ENV.fetch(%<key>s) { %<default>s }` instead of `ENV[%<key>s] || %<default>s`.'
-        MSG_DEFAULT_RHS_MULTI = 'Use `ENV.fetch(%<key>s)` with a block containing `%<default>s ...`'
+        MSG_DEFAULT_RHS_SECOND_ARG_OF_FETCH = 'Use `ENV.fetch(%<key>s, %<default>s)` instead of `ENV[%<key>s] || %<default>s`.'
+        MSG_DEFAULT_RHS_SINGLE_LINE_BLOCK = 'Use `ENV.fetch(%<key>s) { %<default>s }` instead of `ENV[%<key>s] || %<default>s`.'
+        MSG_DEFAULT_RHS_MULTILINE_BLOCK = 'Use `ENV.fetch(%<key>s)` with a block containing `%<default>s ...`'
         # rubocop:enable Layout/LineLength
 
         # @!method env_with_bracket?(node)
@@ -182,7 +177,7 @@ module RuboCop
 
         def new_code_default_rhs_single_line(node, expression)
           parent = node.parent
-          if cop_config['BasicLiteralRhs'] == 'SecondArgOfFetch' && parent.rhs.basic_literal?
+          if parent.rhs.basic_literal?
             "ENV.fetch(#{expression.source}, #{parent.rhs.source})"
           else
             "ENV.fetch(#{expression.source}) { #{parent.rhs.source} }"
@@ -259,11 +254,11 @@ module RuboCop
 
         def message_template_for(rhs)
           if rhs.multiline?
-            MSG_DEFAULT_RHS_MULTI
-          elsif cop_config['BasicLiteralRhs'] == 'SecondArgOfFetch' && rhs.basic_literal?
-            MSG_DEFAULT_RHS_SINGLE_ARG_STYLE
+            MSG_DEFAULT_RHS_MULTILINE_BLOCK
+          elsif rhs.basic_literal?
+            MSG_DEFAULT_RHS_SECOND_ARG_OF_FETCH
           else
-            MSG_DEFAULT_RHS_SINGLE_BLOCK_STYLE
+            MSG_DEFAULT_RHS_SINGLE_LINE_BLOCK
           end
         end
 

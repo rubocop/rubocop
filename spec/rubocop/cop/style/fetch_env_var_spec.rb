@@ -321,66 +321,28 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
 
     context 'and followed by a basic literal' do
       context 'when the node is the left end of `||` chains' do
-        context 'with BasicLiteralSecondArg style' do
-          let(:cop_config) { { 'BasicLiteralRhs' => 'SecondArgOfFetch' } }
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            ENV['X'] || 'y'
+            ^^^^^^^^ Use `ENV.fetch('X', 'y')` instead of `ENV['X'] || 'y'`.
+          RUBY
 
-          it 'registers an offense' do
-            expect_offense(<<~RUBY)
-              ENV['X'] || 'y'
-              ^^^^^^^^ Use `ENV.fetch('X', 'y')` instead of `ENV['X'] || 'y'`.
-            RUBY
-
-            expect_correction(<<~RUBY)
-              ENV.fetch('X', 'y')
-            RUBY
-          end
-        end
-
-        context 'with AlwaysUseBlock style' do
-          let(:cop_config) { { 'BasicLiteralRhs' => 'BlockContent' } }
-
-          it 'registers an offense' do
-            expect_offense(<<~RUBY)
-              ENV['X'] || 'y'
-              ^^^^^^^^ Use `ENV.fetch('X') { 'y' }` instead of `ENV['X'] || 'y'`.
-            RUBY
-
-            expect_correction(<<~RUBY)
-              ENV.fetch('X') { 'y' }
-            RUBY
-          end
+          expect_correction(<<~RUBY)
+            ENV.fetch('X', 'y')
+          RUBY
         end
       end
 
       context 'when the node is between `||`s' do
-        context 'with BasicLiteralSecondArg style' do
-          let(:cop_config) { { 'BasicLiteralRhs' => 'SecondArgOfFetch' } }
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            z || ENV['X'] || 'y'
+                 ^^^^^^^^ Use `ENV.fetch('X', 'y')` instead of `ENV['X'] || 'y'`.
+          RUBY
 
-          it 'registers an offense' do
-            expect_offense(<<~RUBY)
-              z || ENV['X'] || 'y'
-                   ^^^^^^^^ Use `ENV.fetch('X', 'y')` instead of `ENV['X'] || 'y'`.
-            RUBY
-
-            expect_correction(<<~RUBY)
-              z || ENV.fetch('X', 'y')
-            RUBY
-          end
-        end
-
-        context 'with AlwaysUseBlock style' do
-          let(:cop_config) { { 'BasicLiteralRhs' => 'BlockContent' } }
-
-          it 'registers an offense' do
-            expect_offense(<<~RUBY)
-              z || ENV['X'] || 'y'
-                   ^^^^^^^^ Use `ENV.fetch('X') { 'y' }` instead of `ENV['X'] || 'y'`.
-            RUBY
-
-            expect_correction(<<~RUBY)
-              z || ENV.fetch('X') { 'y' }
-            RUBY
-          end
+          expect_correction(<<~RUBY)
+            z || ENV.fetch('X', 'y')
+          RUBY
         end
       end
     end
