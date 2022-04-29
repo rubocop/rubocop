@@ -80,7 +80,7 @@ module RuboCop
           return node.source if message_nodes.size > 1
 
           argument = message_nodes.first.source
-          exception_class = exception_node.const_name || exception_node.receiver.source
+          exception_class = exception_node.receiver&.source || exception_node.source
 
           if node.parent && requires_parens?(node.parent)
             "#{node.method_name}(#{exception_class}.new(#{argument}))"
