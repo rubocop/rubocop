@@ -53,8 +53,9 @@ module RuboCop
 
         def used_as_flag?(node)
           return false if node.root?
+          return true if node.parent.if_type?
 
-          node.parent.if_type? || (node.parent.send_type? && node.parent.prefix_bang?)
+          node.parent.send_type? && (node.parent.prefix_bang? || node.parent.comparison_method?)
         end
 
         # Check if the node is a receiver and receives a message with dot syntax.

@@ -49,15 +49,18 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     end
   end
 
-  context 'when it is compared with other object' do
-    it 'registers an offense' do
-      expect_offense(<<~RUBY)
+  context 'when it is compared `==` with other object' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
         ENV['X'] == 1
-        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
+    end
+  end
 
-      expect_correction(<<~RUBY)
-        ENV.fetch('X', nil) == 1
+  context 'when it is compared `!=` with other object' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        ENV['X'] != 1
       RUBY
     end
   end
