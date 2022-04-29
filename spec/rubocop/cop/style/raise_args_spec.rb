@@ -17,6 +17,19 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'with a raise with 2 args and exception object is assigned to a local variable' do
+      it 'reports an offense' do
+        expect_offense(<<~RUBY)
+          raise error_class, msg
+          ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise error_class.new(msg)
+        RUBY
+      end
+    end
+
     context 'with a raise with exception instantiation and message arguments' do
       it 'reports an offense' do
         expect_offense(<<~RUBY)
@@ -315,6 +328,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
 
     it 'accepts a raise with 2 args' do
       expect_no_offenses('raise RuntimeError, msg')
+    end
+
+    it 'accepts a raise when exception object is assigned to a local variable' do
+      expect_no_offenses('raise error_class, msg')
     end
 
     it 'accepts a raise with msg argument' do
