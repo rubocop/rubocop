@@ -607,16 +607,24 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       context 'when the node is the left end of `||` chains' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
-            ENV['X'] || y.map do |a|
-            ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
-              a * 2
+            def foo
+              ENV['X'] || y.map do |a|
+              ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
+                3.times do |i|
+                  i * 2
+                end
+              end
             end
           RUBY
 
           expect_correction(<<~RUBY)
-            ENV.fetch('X') do
-              y.map do |a|
-                a * 2
+            def foo
+              ENV.fetch('X') do
+                y.map do |a|
+                  3.times do |i|
+                    i * 2
+                  end
+                end
               end
             end
           RUBY
@@ -626,16 +634,20 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       context 'when the node is between `||`s' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
-            z || ENV['X'] || y.map do |a|
-                 ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
-              a * 2
+            def foo
+              z || ENV['X'] || y.map do |a|
+                   ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
+                a * 2
+              end
             end
           RUBY
 
           expect_correction(<<~RUBY)
-            z || ENV.fetch('X') do
-              y.map do |a|
-                a * 2
+            def foo
+              z || ENV.fetch('X') do
+                y.map do |a|
+                  a * 2
+                end
               end
             end
           RUBY

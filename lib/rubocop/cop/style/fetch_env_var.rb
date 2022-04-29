@@ -185,13 +185,14 @@ module RuboCop
         end
 
         def new_code_default_rhs_multiline(node, expression)
+          env_indent = indent(node.parent)
           default = node.parent.rhs.source.split("\n").map do |line|
-            "#{indent(node.parent, offset: indentation_width)}#{line}"
+            "#{env_indent}#{line}"
           end.join("\n")
           <<~NEW_CODE.chomp
             ENV.fetch(#{expression.source}) do
-            #{default}
-            end
+            #{configured_indentation}#{default}
+            #{env_indent}end
           NEW_CODE
         end
 
@@ -262,8 +263,8 @@ module RuboCop
           end
         end
 
-        def indentation_width
-          config.for_cop('Layout/IndentationWidth')['Width'] || 2
+        def configured_indentation
+          ' ' * (config.for_cop('Layout/IndentationWidth')['Width'] || 2)
         end
 
         def first_line_of(source)
