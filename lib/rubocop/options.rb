@@ -309,7 +309,7 @@ module RuboCop
       end
 
       if display_only_fail_level_offenses_with_autocorrect?
-        raise OptionArgumentError, '--autocorrect cannot be used with ' \
+        raise OptionArgumentError, '--auto-correct cannot be used with ' \
                                    '--display-only-fail-level-offenses'
       end
 
@@ -402,7 +402,8 @@ module RuboCop
     end
 
     def display_only_fail_level_offenses_with_autocorrect?
-      @options[:display_only_fail_level_offenses] && @options[:autocorrect]
+      @options[:display_only_fail_level_offenses] &&
+        (@options.key?(:auto_correct) || @options.key?(:safe_auto_correct))
     end
 
     def except_syntax?
