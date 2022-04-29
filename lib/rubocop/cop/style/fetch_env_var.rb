@@ -71,10 +71,10 @@ module RuboCop
 
         def on_send(node)
           env_with_bracket?(node) do |expression|
-            break unless offensive?(node, expression)
+            break unless offensive?(node)
 
             if operand_of_or?(node)
-              target_node = lookahead_target_node_in_or_chains(node)
+              target_node = lookahead_target_node(node)
               target_expr = env_with_bracket?(target_node)
 
               if default_to_rhs?(target_node)
@@ -90,8 +90,9 @@ module RuboCop
 
         private
 
-        def allowed_var?(expression)
-          expression.str_type? && cop_config['AllowedVars'].include?(expression.value)
+        def allowed_var?(node)
+          env_key_node = node.children.last
+          env_key_node.str_type? && cop_config['AllowedVars'].include?(env_key_node.value)
         end
 
         def used_as_flag?(node)
@@ -100,8 +101,8 @@ module RuboCop
           node.parent.if_type? || (node.parent.send_type? && node.parent.prefix_bang?)
         end
 
-        def offensive?(node, expression)
-          !(allowed_var?(expression) || allowable_use?(node))
+        def offensive?(node)
+          !(allowed_var?(node) || allowable_use?(node))
         end
 
         def default_to_rhs?(node)
@@ -185,7 +186,7 @@ module RuboCop
         #   end
         # end
         # ```
-        def lookahead_target_node_in_or_chains(base_node)
+        def lookahead_target_node(base_node)
           return base_node unless operand_of_or?(base_node)
 
           candidate_node = rightmost_offense_in_or_chains(base_node)
@@ -194,8 +195,12 @@ module RuboCop
           counterpart_rhs = conterpart_rhs_of(candidate_node)
           return candidate_node if no_env_with_bracket_in_descendants?(counterpart_rhs)
 
-          new_base_node = counterpart_rhs.each_descendant.find { |d| env_with_bracket?(d) }
-          lookahead_target_node_in_or_chains(new_base_node)
+          new_base_node = counterpart_rhs.each_descendant.find do |d|
+            env_with_bracket?(d) && offensive?(d)
+          end
+          return candidate_node unless new_base_node
+
+          lookahead_target_node(new_base_node)
         end
 
         def rhs_can_be_default_value?(node)

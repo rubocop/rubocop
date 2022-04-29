@@ -686,6 +686,41 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
         end
       end
 
+      context 'when the block on the right side of `||` contains an `ENV` that is used as a flag' do
+        it 'registers no offenses' do
+          expect_offense(<<~RUBY)
+            def foo
+              ENV['X'] || y.map do |a|
+              ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
+                a.map do |b|
+                  if ENV['Z']
+                    b
+                  else
+                    1
+                  end
+                end
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo
+              ENV.fetch('X') do
+                y.map do |a|
+                  a.map do |b|
+                    if ENV['Z']
+                      b
+                    else
+                      1
+                    end
+                  end
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
       context 'when the node is between `||`s' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
