@@ -601,6 +601,34 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
           end
         end
       end
+
+      context 'when the right side of `||` is an expression containing another `ENV[]`' do
+        context 'when the node is the left end of `||` chains' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              ENV['X'] || ENV['Y'] + z || a
+                          ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              ENV.fetch('X') { ENV.fetch('Y', nil) + z } || a
+            RUBY
+          end
+        end
+
+        context 'when the node is between `||`s' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              z || ENV['X'] || ENV['Y'] || a
+                               ^^^^^^^^ Use `ENV.fetch('Y') { a }` instead of `ENV['Y'] || a`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              z || ENV.fetch('X') { ENV.fetch('Y') { a } }
+            RUBY
+          end
+        end
+      end
     end
 
     context 'and followed by a mutiline expression' do
@@ -610,8 +638,8 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
             def foo
               ENV['X'] || y.map do |a|
               ^^^^^^^^ Use `ENV.fetch('X')` with a block containing `y.map do |a| ...`
-                3.times do |i|
-                  i * 2
+                a.map do |b|
+                  b * 2
                 end
               end
             end
@@ -621,8 +649,35 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
             def foo
               ENV.fetch('X') do
                 y.map do |a|
-                  3.times do |i|
-                    i * 2
+                  a.map do |b|
+                    b * 2
+                  end
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when the block on the right side of `||` contains another `ENV`' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def foo
+              ENV['X'] || y.map do |a|
+                a.map do |b|
+                  ENV['Z'] + b
+                  ^^^^^^^^ Use `ENV.fetch('Z')` or `ENV.fetch('Z', nil)` instead of `ENV['Z']`.
+                end
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo
+              ENV.fetch('X') do
+                y.map do |a|
+                  a.map do |b|
+                    ENV.fetch('Z', nil) + b
                   end
                 end
               end

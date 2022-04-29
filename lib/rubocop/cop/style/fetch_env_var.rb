@@ -64,18 +64,23 @@ module RuboCop
           ({next | break | retry | redo})
         PATTERN
 
+        # @!method env_with_bracket_in_descendants?(node)
+        def_node_matcher :env_with_bracket_in_descendants?, <<~PATTERN
+          `(send (const nil? :ENV) :[] $_)
+        PATTERN
+
         def on_send(node)
           env_with_bracket?(node) do |expression|
-            break if allowed_var?(expression)
-            break if allowable_use?(node)
+            break unless offensive?(node, expression)
 
             if operand_of_or?(node)
-              target_node, target_expr = rightmost_offense_in_or_chains(node)
+              target_node = lookahead_target_node_in_or_chains(node)
+              target_expr = env_with_bracket?(target_node)
 
-              if right_end_of_or_chains?(target_node) || rhs_cannot_be_default_value?(target_node)
-                default_nil(target_node, target_expr)
-              else
+              if default_to_rhs?(target_node)
                 default_rhs(target_node, target_expr)
+              else
+                default_nil(target_node, target_expr)
               end
             else
               default_nil(node, expression)
@@ -93,6 +98,14 @@ module RuboCop
           return false if node.root?
 
           node.parent.if_type? || (node.parent.send_type? && node.parent.prefix_bang?)
+        end
+
+        def offensive?(node, expression)
+          !(allowed_var?(expression) || allowable_use?(node))
+        end
+
+        def default_to_rhs?(node)
+          operand_of_or?(node) && !right_end_of_or_chains?(node) && rhs_can_be_default_value?(node)
         end
 
         # Check if the node is a receiver and receives a message with dot syntax.
@@ -140,35 +153,57 @@ module RuboCop
         # e.g.,
         # `ENV['X'] || y || z || ENV['A'] || b`
         #                        ^^^^^^^^ Matches this one
-        def rightmost_offense_in_or_chains(node)
-          rmst_node = rmst_expr = nil
-          or_nodes = [node.parent]
+        def rightmost_offense_in_or_chains(base_node)
+          or_nodes = [base_node.parent]
 
           while (grand_parent = or_nodes.last&.parent)&.or_type?
             or_nodes << grand_parent
           end
 
-          # Finds the rightmost `ENV[]` in `||` chains and yields it.
-          or_nodes.reverse.find do |or_node|
-            env_with_bracket?(or_node.rhs) do |expression|
-              rmst_node = or_node.rhs
-              rmst_expr = expression
-            end
+          # Finds the rightmost `ENV[]` in `||` chains.
+          or_node = or_nodes.reverse.find do |n|
+            env_with_bracket?(n.rhs)
           end
-          return [rmst_node, rmst_expr] if rmst_node
 
-          # Yields the node given to this method if no `ENV[]` is found in the above process.
-          expression = env_with_bracket?(node)
-          [node, expression]
+          or_node ? or_node.rhs : base_node
         end
 
-        def rhs_cannot_be_default_value?(node)
-          rhs_is_block_control?(node)
+        def no_env_with_bracket_in_descendants?(node)
+          !env_with_bracket_in_descendants?(node)
+        end
+
+        def conterpart_rhs_of(node)
+          left_end_of_or_chains?(node) ? node.parent.rhs : node.parent.parent.rhs
+        end
+
+        # Looks ahead to the `ENV[]` that must be corrected first, avoiding a cross correction.
+        # ```
+        # ENV['X'] || y.map do |a|
+        #   a.map do |b|
+        #     ENV['Z'] + b
+        #     ^^^^^^^^ This must be corrected first.
+        #   end
+        # end
+        # ```
+        def lookahead_target_node_in_or_chains(base_node)
+          return base_node unless operand_of_or?(base_node)
+
+          candidate_node = rightmost_offense_in_or_chains(base_node)
+          return candidate_node if right_end_of_or_chains?(candidate_node)
+
+          counterpart_rhs = conterpart_rhs_of(candidate_node)
+          return candidate_node if no_env_with_bracket_in_descendants?(counterpart_rhs)
+
+          new_base_node = counterpart_rhs.each_descendant.find { |d| env_with_bracket?(d) }
+          lookahead_target_node_in_or_chains(new_base_node)
+        end
+
+        def rhs_can_be_default_value?(node)
+          !rhs_is_block_control?(node)
         end
 
         def rhs_is_block_control?(node)
-          rhs = left_end_of_or_chains?(node) ? node.parent.rhs : node.parent.parent.rhs
-          block_control?(rhs)
+          block_control?(conterpart_rhs_of(node))
         end
 
         def new_code_default_nil(expression)
