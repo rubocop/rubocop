@@ -73,13 +73,12 @@ module RuboCop
         end
 
         def offense?(node)
-          condition, if_branch, else_branch = *node
+          _condition, _if_branch, else_branch = *node
 
           return false if use_if_branch?(else_branch) || use_hash_key_assignment?(else_branch)
 
-          condition == if_branch && !node.elsif? && (
-            node.ternary? || !else_branch.instance_of?(AST::Node) || else_branch.single_line?
-          )
+          synonymous_condition_and_branch?(node) && !node.elsif? &&
+            (node.ternary? || !else_branch.instance_of?(AST::Node) || else_branch.single_line?)
         end
 
         def use_if_branch?(else_branch)
@@ -90,11 +89,46 @@ module RuboCop
           else_branch&.send_type? && else_branch&.method?(:[]=)
         end
 
+        def synonymous_condition_and_branch?(node)
+          condition, if_branch, _else_branch = *node
+          # e.g.
+          #   if var
+          #     var
+          #   else
+          #     'foo'
+          #   end
+          return true if condition == if_branch
+
+          # e.g.
+          #   if foo
+          #     @value = foo
+          #   else
+          #     @value = another_value?
+          #   end
+          branches_have_assignment?(node) && condition == if_branch.expression
+        end
+
+        def branches_have_assignment?(node)
+          _condition, if_branch, else_branch = *node
+
+          return false unless if_branch && else_branch
+
+          asgn_type?(if_branch) && (if_branch_variable_name = if_branch.name) &&
+            asgn_type?(else_branch) && (else_branch_variable_name = else_branch.name) &&
+            if_branch_variable_name == else_branch_variable_name
+        end
+
+        def asgn_type?(node)
+          node.lvasgn_type? || node.ivasgn_type? || node.cvasgn_type? || node.gvasgn_type?
+        end
+
         def else_source(else_branch)
           if require_parentheses?(else_branch)
             "(#{else_branch.source})"
           elsif without_argument_parentheses_method?(else_branch)
             "#{else_branch.method_name}(#{else_branch.arguments.map(&:source).join(', ')})"
+          elsif branches_have_assignment?(else_branch.parent)
+            else_branch.expression.source
           else
             else_branch.source
           end
