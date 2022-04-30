@@ -51,6 +51,63 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when condition is multiline' do
+    expect_offense(<<~RUBY)
+      a =
+        b ==
+        ^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+          c ? d : e
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a =
+        if b ==
+          c
+        d
+      else
+        e
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when condition is multiline and using hash key assignment' do
+    expect_offense(<<~RUBY)
+      a[:a] =
+        b ==
+        ^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+          c ? d : e
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a[:a] =
+        if b ==
+          c
+        d
+      else
+        e
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when condition is multiline and using assignment method' do
+    expect_offense(<<~RUBY)
+      a.foo =
+        b ==
+        ^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+          c ? d : e
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a.foo =
+        if b ==
+          c
+        d
+      else
+        e
+      end
+    RUBY
+  end
+
   it 'register an offense and corrects when returning a multiline ternary operator expression with `return`' do
     expect_offense(<<~RUBY)
       return cond ?
