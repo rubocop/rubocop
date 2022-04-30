@@ -37,9 +37,25 @@ module RuboCop
       #     !!return_value
       #   end
       #
+      #   define_method :foo? do
+      #     !!return_value
+      #   end
+      #
+      #   define_singleton_method :foo? do
+      #     !!return_value
+      #   end
+      #
       # @example EnforcedStyle: forbidden
       #   # bad
       #   def foo?
+      #     !!return_value
+      #   end
+      #
+      #   define_method :foo? do
+      #     !!return_value
+      #   end
+      #
+      #   define_singleton_method :foo? do
       #     !!return_value
       #   end
       class DoubleNegation < Base
@@ -73,20 +89,30 @@ module RuboCop
           return false unless (def_node = find_def_node_from_ascendant(node))
 
           conditional_node = find_conditional_node_from_ascendant(node)
-          last_child = find_last_child(def_node.body)
+          last_child = find_last_child(def_node.send_type? ? def_node : def_node.body)
 
           if conditional_node
             double_negative_condition_return_value?(node, last_child, conditional_node)
           else
-            last_child.last_line == node.last_line
+            last_child.last_line <= node.last_line
           end
         end
 
         def find_def_node_from_ascendant(node)
           return unless (parent = node.parent)
           return parent if parent.def_type? || parent.defs_type?
+          return node.parent.child_nodes.first if define_mehod?(parent)
 
           find_def_node_from_ascendant(node.parent)
+        end
+
+        def define_mehod?(node)
+          return false unless node.block_type?
+
+          child = node.child_nodes.first
+          return false unless child.send_type?
+
+          child.method?(:define_method) || child.method?(:define_singleton_method)
         end
 
         def find_conditional_node_from_ascendant(node)
