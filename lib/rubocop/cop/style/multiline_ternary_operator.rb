@@ -73,7 +73,11 @@ module RuboCop
         end
 
         def enforce_single_line_ternary_operator?(node)
-          SINGLE_LINE_TYPES.include?(node.parent.type)
+          SINGLE_LINE_TYPES.include?(node.parent.type) && !use_assignment_method?(node.parent)
+        end
+
+        def use_assignment_method?(node)
+          node.send_type? && node.assignment_method?
         end
       end
     end
