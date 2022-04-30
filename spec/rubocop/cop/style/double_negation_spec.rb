@@ -352,6 +352,24 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
       RUBY
     end
 
+    it 'does not register an offense for `!!` when return location by `define_method`' do
+      expect_no_offenses(<<~RUBY)
+        define_method :foo? do
+          bar
+          !!qux
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for `!!` when return location by `define_singleton_method`' do
+      expect_no_offenses(<<~RUBY)
+        define_singleton_method :foo? do
+          bar
+          !!qux
+        end
+      RUBY
+    end
+
     it 'does not register an offense for `!!` when return location and using `rescue`' do
       expect_no_offenses(<<~RUBY)
         def foo?
