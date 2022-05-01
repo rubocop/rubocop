@@ -262,6 +262,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when the branches contains assignment method' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            test.bar = foo
+          else
+            test.bar = 'baz'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          test.bar = foo || 'baz'
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains method call' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar foo
+          else
+            bar 1..2
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar foo || (1..2)
+        RUBY
+      end
+
       it 'does not register offenses when using `nil?` and the branches contains assignment' do
         expect_no_offenses(<<~RUBY)
           if foo.nil?
@@ -278,6 +308,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
             @foo = foo
           else
             @baz = 'quux'
+          end
+        RUBY
+      end
+
+      it 'does not register offenses when using `nil?` and the branches contains method which has multiple arguments' do
+        expect_no_offenses(<<~RUBY)
+          if foo.nil?
+            test.bar foo, bar
+          else
+            test.bar = 'baz', 'quux'
           end
         RUBY
       end

@@ -105,7 +105,15 @@ module RuboCop
           #   else
           #     @value = another_value?
           #   end
-          branches_have_assignment?(node) && condition == if_branch.expression
+          return true if branches_have_assignment?(node) && condition == if_branch.expression
+
+          # e.g.
+          #   if foo
+          #     test.value = foo
+          #   else
+          #     test.value = another_value?
+          #   end
+          branches_have_method?(node) && condition == if_branch.first_argument
         end
 
         def branches_have_assignment?(node)
@@ -122,15 +130,43 @@ module RuboCop
           node.lvasgn_type? || node.ivasgn_type? || node.cvasgn_type? || node.gvasgn_type?
         end
 
+        def branches_have_method?(node)
+          _condition, if_branch, else_branch = *node
+
+          return false unless if_branch && else_branch
+
+          if_branch.send_type? && if_branch.arguments.count == 1 &&
+            else_branch.send_type? && else_branch.arguments.count == 1 &&
+            if_branch.method?(else_branch.method_name)
+        end
+
         def else_source(else_branch)
-          if require_parentheses?(else_branch)
+          if branches_have_method?(else_branch.parent)
+            else_source_if_has_method(else_branch)
+          elsif require_parentheses?(else_branch)
             "(#{else_branch.source})"
           elsif without_argument_parentheses_method?(else_branch)
             "#{else_branch.method_name}(#{else_branch.arguments.map(&:source).join(', ')})"
           elsif branches_have_assignment?(else_branch.parent)
-            else_branch.expression.source
+            else_source_if_has_assignment(else_branch)
           else
             else_branch.source
+          end
+        end
+
+        def else_source_if_has_method(else_branch)
+          if require_parentheses?(else_branch.first_argument)
+            "(#{else_branch.first_argument.source})"
+          else
+            else_branch.first_argument.source
+          end
+        end
+
+        def else_source_if_has_assignment(else_branch)
+          if require_parentheses?(else_branch.expression)
+            "(#{else_branch.expression.source})"
+          else
+            else_branch.expression.source
           end
         end
 
@@ -161,8 +197,8 @@ module RuboCop
         end
 
         def without_argument_parentheses_method?(node)
-          node.send_type? &&
-            !node.arguments.empty? && !node.parenthesized? && !node.operator_method?
+          node.send_type? && !node.arguments.empty? &&
+            !node.parenthesized? && !node.operator_method? && !node.assignment_method?
         end
       end
     end
