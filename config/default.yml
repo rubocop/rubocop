@@ -3504,6 +3504,12 @@ Style/EndlessMethod:
     - allow_always
     - disallow
 
+Style/EnvHome:
+  Description: "Checks for consistent usage of `ENV['HOME']`."
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/EvalWithLocation:
   Description: 'Pass `__FILE__` and `__LINE__` to `eval` method, as they are used by backtraces.'
   Enabled: true
