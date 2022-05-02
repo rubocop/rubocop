@@ -25,9 +25,6 @@ in your `Gemfile`:
 gem 'rubocop', '~> 1.28', require: false
 ----
 
-NOTE: You can check out our progress on the road to version 1.0 https://github.com/rubocop/rubocop/milestone/4[here].
-You can also help us get there faster! :-)
-
 .A Modular RuboCop
 ****
 Originally RuboCop bundled cops focused on performance and Ruby on Rails, but those were
