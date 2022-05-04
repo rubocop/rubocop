@@ -40,30 +40,18 @@ module RuboCop
           context_node = non_void_context(return_node)
 
           return unless context_node&.def_type?
+          return unless context_node&.void_context?
 
-          method_name = method_name(context_node)
-
-          return unless method_name && void_context_method?(method_name)
-
-          add_offense(return_node.loc.keyword, message: format(message, method: method_name))
+          add_offense(
+            return_node.loc.keyword,
+            message: format(message, method: context_node.method_name)
+          )
         end
 
         private
 
         def non_void_context(return_node)
           return_node.each_ancestor(:block, :def, :defs).first
-        end
-
-        def method_name(context_node)
-          context_node.children.first
-        end
-
-        def void_context_method?(method_name)
-          method_name == :initialize || setter_method?(method_name)
-        end
-
-        def setter_method?(method_name)
-          method_name.to_s.end_with?('=') && !AST::Node::COMPARISON_OPERATORS.include?(method_name)
         end
       end
     end
