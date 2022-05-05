@@ -58,7 +58,7 @@ module RuboCop
               method_suffix: range.source
             )
 
-            add_offense(node, message: message)
+            add_offense(range, message: message)
           end
         end
         alias on_csend on_send

@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
   it 'registers an offense if there is potentially usage of `assignment_method?`' do
     expect_offense(<<~RUBY)
       node.method_name.to_s.end_with?('=')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `assignment_method?` instead of `method_name.to_s.end_with?('=')`.
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `assignment_method?` instead of `method_name.to_s.end_with?('=')`.
     RUBY
   end
 
@@ -20,21 +20,21 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
   it 'registers offense if there is potentially usage of `predicate_method?`' do
     expect_offense(<<~RUBY)
       node.method_name.to_s.end_with?('?')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name.to_s.end_with?('?')`.
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name.to_s.end_with?('?')`.
     RUBY
   end
 
   it 'registers offense if there is potentially usage of `bang_method?`' do
     expect_offense(<<~RUBY)
       node.method_name.to_s.end_with?('!')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name.to_s.end_with?('!')`.
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name.to_s.end_with?('!')`.
     RUBY
   end
 
   it 'registers offense if there is potentially usage of `bang_method?` with safe navigation operator' do
     expect_offense(<<~RUBY)
       node.method_name&.to_s&.end_with?('!')
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name&.to_s&.end_with?('!')`.
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name&.to_s&.end_with?('!')`.
     RUBY
   end
 
@@ -48,42 +48,42 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
     it 'registers an offense if method_name is symbol' do
       expect_offense(<<~RUBY)
         node.method_name.end_with?('=')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `assignment_method?` instead of `method_name.end_with?('=')`.
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `assignment_method?` instead of `method_name.end_with?('=')`.
       RUBY
     end
 
     it 'registers an offense if method_name is symbol with safe navigation operator' do
       expect_offense(<<~RUBY)
         node&.method_name&.end_with?('=')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `assignment_method?` instead of `method_name&.end_with?('=')`.
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `assignment_method?` instead of `method_name&.end_with?('=')`.
       RUBY
     end
 
     it 'registers offense if argument for Symbol#end_with? is \'?\'' do
       expect_offense(<<~RUBY)
         node.method_name.end_with?('?')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name.end_with?('?')`.
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name.end_with?('?')`.
       RUBY
     end
 
     it 'registers offense if argument for Symbol#end_with? is \'?\' with safe navigation operator' do
       expect_offense(<<~RUBY)
         node.method_name&.end_with?('?')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name&.end_with?('?')`.
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name&.end_with?('?')`.
       RUBY
     end
 
     it 'registers offense if argument for Symbol#end_with? is \'!\'' do
       expect_offense(<<~RUBY)
         node.method_name.end_with?('!')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name.end_with?('!')`.
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name.end_with?('!')`.
       RUBY
     end
 
     it 'registers offense if argument for Symbol#end_with? is \'!\' with safe navigation operator' do
       expect_offense(<<~RUBY)
         node.method_name&.end_with?('!')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name&.end_with?('!')`.
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name&.end_with?('!')`.
       RUBY
     end
 
