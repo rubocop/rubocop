@@ -70,7 +70,7 @@ module RuboCop
         def on_send(node)
           return unless (range = offense_range(node))
 
-          good = good_method_name(node.method_name)
+          good = good_method_name(node)
           message = format(MSG, good: good, bad: range.source)
 
           add_offense(range, message: message) { |corrector| corrector.replace(range, good) }
@@ -94,8 +94,8 @@ module RuboCop
           end
         end
 
-        def good_method_name(method_name)
-          if method_name.to_s.end_with?('!')
+        def good_method_name(node)
+          if node.bang_method?
             'compact!'
           else
             'compact'

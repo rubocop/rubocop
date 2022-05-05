@@ -44,7 +44,7 @@ module RuboCop
         # @!method assignment_method_declarations(node)
         def_node_search :assignment_method_declarations, <<~PATTERN
           (send
-            (lvar #match_block_variable_name?) #assignment_method? ...)
+            (lvar #match_block_variable_name?) _ ...)
         PATTERN
 
         def on_new_investigation
@@ -65,12 +65,9 @@ module RuboCop
           end
         end
 
-        def assignment_method?(method_name)
-          method_name.to_s.end_with?('=')
-        end
-
         def duplicated_assignment_method_nodes
           assignment_method_declarations(processed_source.ast)
+            .select(&:assignment_method?)
             .group_by(&:method_name)
             .values
             .select { |nodes| nodes.size > 1 }
