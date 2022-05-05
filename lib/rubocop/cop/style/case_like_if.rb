@@ -9,7 +9,7 @@ module RuboCop
       # @safety
       #   This cop is unsafe. `case` statements use `===` for equality,
       #   so if the original conditional used a different equality operator, the
-      #   behaviour may be different.
+      #   behavior may be different.
       #
       # @example
       #   # bad

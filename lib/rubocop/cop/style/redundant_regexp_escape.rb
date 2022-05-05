@@ -59,7 +59,7 @@ module RuboCop
         def allowed_escape?(node, char, within_character_class)
           # Strictly speaking a few single-letter metachars are currently
           # unnecessary to "escape", e.g. i, E, F, but enumerating them is
-          # rather difficult, and their behaviour could change over time with
+          # rather difficult, and their behavior could change over time with
           # different versions of Ruby so that e.g. /\i/ != /i/
           return true if /[[:alnum:]]/.match?(char)
           return true if ALLOWED_ALWAYS_ESCAPES.include?(char) || delimiter?(node, char)

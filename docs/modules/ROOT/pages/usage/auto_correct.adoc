@@ -15,7 +15,7 @@ There are a couple of things to keep in mind about auto-correct:
 - Some automatic corrections that _are_ possible have not been implemented yet.
 - Some automatic corrections might change (slightly) the semantics of the code,
 meaning they'd produce code that's mostly equivalent to the original code, but
-not 100% equivalent. We call such auto-correct behaviour "unsafe".
+not 100% equivalent. We call such auto-correct behavior "unsafe".
 
 TIP: You should always run your test suite after using the auto-correct functionality.
 

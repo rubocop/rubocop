@@ -15,7 +15,7 @@ module RuboCop
       #
       # @safety
       #   This cop is unsafe because it will change the exception class being
-      #   raised, which is a change in behaviour.
+      #   raised, which is a change in behavior.
       #
       # @example
       #   # bad

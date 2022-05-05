@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for ambiguous ranges.
       #
-      # Ranges have quite low precedence, which leads to unexpected behaviour when
+      # Ranges have quite low precedence, which leads to unexpected behavior when
       # using a range with other operators. This cop avoids that by making ranges
       # explicit by requiring parenthesis around complex range boundaries (anything
       # that is not a literal: numerics, strings, symbols, etc.).
@@ -21,7 +21,7 @@ module RuboCop
       #   The cop auto-corrects by wrapping the entire boundary in parentheses, which
       #   makes the outcome more explicit but is possible to not be the intention of the
       #   programmer. For this reason, this cop's auto-correct is unsafe (it will not
-      #   change the behaviour of the code, but will not necessarily match the
+      #   change the behavior of the code, but will not necessarily match the
       #   intent of the program).
       #
       # @example

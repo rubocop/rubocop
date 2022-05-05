@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for uses of `begin...end while/until something`.
       #
       # @safety
-      #   The cop is unsafe because behaviour can change in some cases, including
+      #   The cop is unsafe because behavior can change in some cases, including
       #   if a local variable inside the loop body is accessed outside of it, or if the
       #   loop body raises a `StopIteration` exception (which `Kernel#loop` rescues).
       #

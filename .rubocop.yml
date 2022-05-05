@@ -98,6 +98,9 @@ Metrics/ModuleLength:
 
 Naming/InclusiveLanguage:
   FlaggedTerms:
+    behaviour:
+      Suggestions:
+        - behavior
     offence:
       Suggestions:
         - offense

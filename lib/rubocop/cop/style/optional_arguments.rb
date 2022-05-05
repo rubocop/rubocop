@@ -8,7 +8,7 @@ module RuboCop
       #
       # @safety
       #   This cop is unsafe because changing a method signature will
-      #   implicitly change behaviour.
+      #   implicitly change behavior.
       #
       # @example
       #   # bad
