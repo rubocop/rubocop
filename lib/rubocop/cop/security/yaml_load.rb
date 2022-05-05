@@ -10,7 +10,7 @@ module RuboCop
       # NOTE: Ruby 3.1+ (Psych 4) uses `Psych.load` as `Psych.safe_load` by default.
       #
       # @safety
-      #   The behaviour of the code might change depending on what was
+      #   The behavior of the code might change depending on what was
       #   in the YAML payload, since `YAML.safe_load` is more restrictive.
       #
       # @example

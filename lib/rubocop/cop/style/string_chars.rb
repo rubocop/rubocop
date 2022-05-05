@@ -8,7 +8,7 @@ module RuboCop
       # @safety
       #   This cop is unsafe because it cannot be guaranteed that the receiver
       #   is actually a string. If another class has a `split` method with
-      #   different behaviour, it would be registered as a false positive.
+      #   different behavior, it would be registered as a false positive.
       #
       # @example
       #   # bad

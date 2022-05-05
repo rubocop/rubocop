@@ -99,7 +99,7 @@ module RuboCop
         end
 
         def backslash_b?(elem)
-          # \b's behaviour is different inside and outside of a character class, matching word
+          # \b's behavior is different inside and outside of a character class, matching word
           # boundaries outside but backspace (0x08) when inside.
           elem == '\b'
         end

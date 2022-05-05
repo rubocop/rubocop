@@ -18,7 +18,7 @@ module RuboCop
       #
       # @safety
       #   This cop is unsafe in the case where sorting files changes existing
-      #   expected behaviour.
+      #   expected behavior.
       #
       # @example
       #
