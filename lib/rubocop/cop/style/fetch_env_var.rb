@@ -97,7 +97,9 @@ module RuboCop
 
         def used_as_flag?(node)
           return false if node.root?
-          return true if node.parent.if_type?
+
+          if_node = node.ancestors.find(&:if_type?)
+          return true if if_node&.condition == node
 
           node.parent.send_type? && (node.parent.prefix_bang? || node.parent.comparison_method?)
         end
