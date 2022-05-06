@@ -243,7 +243,7 @@ all contexts.
 
 Auto-correction is unsafe because there is a different operator precedence
 between logical operators (`&&` and `||`) and semantic operators (`and` and `or`),
-and that might change the behaviour.
+and that might change the behavior.
 
 === Examples
 
@@ -1013,7 +1013,7 @@ can be replaced with `case-when`.
 
 This cop is unsafe. `case` statements use `===` for equality,
 so if the original conditional used a different equality operator, the
-behaviour may be different.
+behavior may be different.
 
 === Examples
 
@@ -2235,7 +2235,7 @@ and/or DST.
 === Safety
 
 Autocorrection is not safe, because `DateTime` and `Time` do not have
-exactly the same behaviour, although in most cases the autocorrection
+exactly the same behavior, although in most cases the autocorrection
 will be fine.
 
 === Examples
@@ -2839,6 +2839,14 @@ of the expression will change.
 def foo?
   !!return_value
 end
+
+define_method :foo? do
+  !!return_value
+end
+
+define_singleton_method :foo? do
+  !!return_value
+end
 ----
 
 ==== EnforcedStyle: forbidden
@@ -2847,6 +2855,14 @@ end
 ----
 # bad
 def foo?
+  !!return_value
+end
+
+define_method :foo? do
+  !!return_value
+end
+
+define_singleton_method :foo? do
   !!return_value
 end
 ----
@@ -3419,6 +3435,47 @@ def my_method() = x.foo
 
 * https://rubystyle.guide#endless-methods
 
+== Style/EnvHome
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.29
+| -
+|===
+
+This cop checks for consistent usage of `ENV['HOME']`. If `nil` is used as
+the second argument of `ENV.fetch`, it is treated as a bad case like `ENV[]`.
+
+=== Safety
+
+The cop is unsafe because the result when `nil` is assigned to `ENV['HOME']` changes:
+
+[source,ruby]
+----
+ENV['HOME'] = nil
+ENV['HOME'] # => nil
+Dir.home    # => '/home/foo'
+----
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+ENV['HOME']
+ENV.fetch('HOME', nil)
+
+# good
+Dir.home
+
+# good
+ENV.fetch('HOME', default)
+----
+
 == Style/EvalWithLocation
 
 |===
@@ -3739,19 +3796,34 @@ which may cause unexpected behaviors when the developer forgets to set it.
 On the other hand, `ENV.fetch` raises KeyError or returns the explicitly
 specified default value.
 
+When an `ENV[]` is the LHS of `||`, the autocorrect makes the RHS
+the default value of `ENV.fetch`.
+
 === Examples
 
 [source,ruby]
 ----
 # bad
 ENV['X']
-ENV['X'] || z
+ENV['X'] || 'string literal'
+ENV['X'] || some_method
 x = ENV['X']
+
+ENV['X'] || y.map do |a|
+  puts a * 2
+end
 
 # good
 ENV.fetch('X')
-ENV.fetch('X', nil) || z
+ENV.fetch('X', 'string literal')
+ENV.fetch('X') { some_method }
 x = ENV.fetch('X')
+
+ENV.fetch('X') do
+  y.map do |a|
+    puts a * 2
+  end
+end
 
 # also good
 !ENV['X']
@@ -5109,7 +5181,7 @@ in a future major RuboCop release.
 === Safety
 
 Auto-correction is unsafe because changing the order of method invocations
-may change the behaviour of the code. For example:
+may change the behavior of the code. For example:
 
 [source,ruby]
 ----
@@ -5123,7 +5195,7 @@ end
 ----
 
 In this example, `method_that_relies_on_global_state` will be moved before
-`method_that_modifies_global_state`, which changes the behaviour of the program.
+`method_that_modifies_global_state`, which changes the behavior of the program.
 
 === Examples
 
@@ -5959,8 +6031,6 @@ some_str = 'ala' \
 ----
 
 == Style/MapToHash
-
-NOTE: Required Ruby version: 2.6
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -8710,7 +8780,7 @@ that do not come at the end of the argument list.
 === Safety
 
 This cop is unsafe because changing a method signature will
-implicitly change behaviour.
+implicitly change behavior.
 
 === Examples
 
@@ -8751,7 +8821,7 @@ These are customizable with `AllowedMethods` option.
 === Safety
 
 This cop is unsafe because changing a method signature will
-implicitly change behaviour.
+implicitly change behavior.
 
 === Examples
 
@@ -10887,7 +10957,7 @@ that exceed this option is set.
 === Safety
 
 Autocorrection is unsafe because if a value is `false`, the resulting
-code will have different behaviour or raise an error.
+code will have different behavior or raise an error.
 
 [source,ruby]
 ----
@@ -11493,8 +11563,6 @@ def no_op; end
 
 == Style/SlicingWithRange
 
-NOTE: Required Ruby version: 2.6
-
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
@@ -11901,7 +11969,7 @@ Checks for uses of `String#split` with empty string or regexp literal argument.
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 is actually a string. If another class has a `split` method with
-different behaviour, it would be registered as a false positive.
+different behavior, it would be registered as a false positive.
 
 === Examples
 

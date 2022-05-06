@@ -188,7 +188,7 @@ a * b / c % d
 
 This cop checks for ambiguous ranges.
 
-Ranges have quite low precedence, which leads to unexpected behaviour when
+Ranges have quite low precedence, which leads to unexpected behavior when
 using a range with other operators. This cop avoids that by making ranges
 explicit by requiring parenthesis around complex range boundaries (anything
 that is not a literal: numerics, strings, symbols, etc.).
@@ -205,7 +205,7 @@ value, it will be wrapped in order to prevent the ambiguity of `1..2.to_a`.
 The cop auto-corrects by wrapping the entire boundary in parentheses, which
 makes the outcome more explicit but is possible to not be the intention of the
 programmer. For this reason, this cop's auto-correct is unsafe (it will not
-change the behaviour of the code, but will not necessarily match the
+change the behavior of the code, but will not necessarily match the
 intent of the program).
 
 === Examples
@@ -2183,8 +2183,6 @@ end
 
 == Lint/ErbNewArguments
 
-NOTE: Required Ruby version: 2.6
-
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
@@ -2912,7 +2910,7 @@ This cop checks for uses of `begin...end while/until something`.
 
 === Safety
 
-The cop is unsafe because behaviour can change in some cases, including
+The cop is unsafe because behavior can change in some cases, including
 if a local variable inside the loop body is accessed outside of it, or if the
 loop body raises a `StopIteration` exception (which `Kernel#loop` rescues).
 
@@ -3376,7 +3374,7 @@ NOTE: This cop will be deprecated and removed when supporting only Ruby 3.0 and 
 === Safety
 
 This cop is unsafe in the case where sorting files changes existing
-expected behaviour.
+expected behavior.
 
 === Examples
 
@@ -3616,7 +3614,7 @@ locations, the result may vary depending on the order of `require`.
 === Safety
 
 This cop is unsafe because code that is already conditionally
-assigning a constant may have its behaviour changed by
+assigning a constant may have its behavior changed by
 auto-correction.
 
 === Examples
@@ -3853,7 +3851,7 @@ name with an explicit namespace.
 === Safety
 
 This cop is unsafe because it will change the exception class being
-raised, which is a change in behaviour.
+raised, which is a change in behavior.
 
 === Examples
 
@@ -6442,49 +6440,6 @@ end
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
-
-== Lint/UselessElseWithoutRescue
-
-|===
-| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
-
-| Enabled
-| Yes
-| No
-| 0.17
-| -
-|===
-
-This cop checks for useless `else` in `begin..end` without `rescue`.
-
-NOTE: This syntax is no longer valid on Ruby 2.6 or higher and
-this cop is going to be removed at some point the future.
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-
-begin
-  do_something
-else
-  do_something_else # This will never be run.
-end
-----
-
-[source,ruby]
-----
-# good
-
-begin
-  do_something
-rescue
-  handle_errors
-else
-  do_something_else
-end
-----
 
 == Lint/UselessMethodDefinition
 

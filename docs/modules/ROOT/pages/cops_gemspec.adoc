@@ -41,6 +41,91 @@ end
 | Array
 |===
 
+== Gemspec/DependencyVersion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| Yes
+| No
+| 1.29
+| -
+|===
+
+Enforce that gem dependency version specifications or a commit reference (branch,
+ref, or tag) are either required or forbidden.
+
+=== Examples
+
+==== EnforcedStyle: required (default)
+
+[source,ruby]
+----
+# bad
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser'
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+----
+
+==== EnforcedStyle: forbidden
+
+[source,ruby]
+----
+# bad
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser'
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `required`
+| `required`, `forbidden`
+
+| Include
+| `+**/*.gemspec+`
+| Array
+
+| AllowedGems
+| `[]`
+| Array
+|===
+
 == Gemspec/DuplicatedAssignment
 
 |===
@@ -368,7 +453,7 @@ to execute `rake release` and not user's ruby version.
 ----
 # bad
 Gem::Specification.new do |spec|
-  if RUBY_VERSION >= '2.5'
+  if RUBY_VERSION >= '3.0'
     spec.add_runtime_dependency 'gem_a'
   else
     spec.add_runtime_dependency 'gem_b'

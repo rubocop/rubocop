@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.29.0 (2022-05-06)
+
 ### New features
 
 * [#10570](https://github.com/rubocop/rubocop/issues/10570): Add new `Gemspec/DependencyVersion` cop. ([@nobuyo][])

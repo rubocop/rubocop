@@ -83,6 +83,7 @@ In the following section you find all available cops:
 === Department xref:cops_gemspec.adoc[Gemspec]
 
 * xref:cops_gemspec.adoc#gemspecdateassignment[Gemspec/DateAssignment]
+* xref:cops_gemspec.adoc#gemspecdependencyversion[Gemspec/DependencyVersion]
 * xref:cops_gemspec.adoc#gemspecduplicatedassignment[Gemspec/DuplicatedAssignment]
 * xref:cops_gemspec.adoc#gemspecordereddependencies[Gemspec/OrderedDependencies]
 * xref:cops_gemspec.adoc#gemspecrequiremfa[Gemspec/RequireMFA]
@@ -311,7 +312,6 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#linturiregexp[Lint/UriRegexp]
 * xref:cops_lint.adoc#lintuselessaccessmodifier[Lint/UselessAccessModifier]
 * xref:cops_lint.adoc#lintuselessassignment[Lint/UselessAssignment]
-* xref:cops_lint.adoc#lintuselesselsewithoutrescue[Lint/UselessElseWithoutRescue]
 * xref:cops_lint.adoc#lintuselessmethoddefinition[Lint/UselessMethodDefinition]
 * xref:cops_lint.adoc#lintuselessruby2keywords[Lint/UselessRuby2Keywords]
 * xref:cops_lint.adoc#lintuselesssettercall[Lint/UselessSetterCall]
@@ -422,6 +422,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleencoding[Style/Encoding]
 * xref:cops_style.adoc#styleendblock[Style/EndBlock]
 * xref:cops_style.adoc#styleendlessmethod[Style/EndlessMethod]
+* xref:cops_style.adoc#styleenvhome[Style/EnvHome]
 * xref:cops_style.adoc#styleevalwithlocation[Style/EvalWithLocation]
 * xref:cops_style.adoc#styleevenodd[Style/EvenOdd]
 * xref:cops_style.adoc#styleexpandpatharguments[Style/ExpandPathArguments]

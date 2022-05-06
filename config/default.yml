@@ -245,7 +245,7 @@ Gemspec/DateAssignment:
 Gemspec/DependencyVersion:
   Description: 'Requires or forbids specifying gem dependency versions.'
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.29'
   EnforcedStyle: 'required'
   SupportedStyles:
     - 'required'
@@ -3508,7 +3508,7 @@ Style/EnvHome:
   Description: "Checks for consistent usage of `ENV['HOME']`."
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.29'
 
 Style/EvalWithLocation:
   Description: 'Pass `__FILE__` and `__LINE__` to `eval` method, as they are used by backtraces.'

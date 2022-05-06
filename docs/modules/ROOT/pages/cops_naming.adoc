@@ -1260,6 +1260,14 @@ foo_bar = 1
 fooBar = 1
 ----
 
+==== AllowedPatterns: ['_v\d+\z']
+
+[source,ruby]
+----
+# good
+:release_v1
+----
+
 === Configurable attributes
 
 |===
@@ -1270,6 +1278,10 @@ fooBar = 1
 | `snake_case`, `camelCase`
 
 | AllowedIdentifiers
+| `[]`
+| Array
+
+| AllowedPatterns
 | `[]`
 | Array
 |===
@@ -1417,6 +1429,14 @@ def some_method_1; end
 expect(Open3).to receive(:capture3)
 ----
 
+==== AllowedPatterns: ['_v\d+\z']
+
+[source,ruby]
+----
+# good
+:some_sym_v1
+----
+
 === Configurable attributes
 
 |===
@@ -1436,6 +1456,10 @@ expect(Open3).to receive(:capture3)
 
 | AllowedIdentifiers
 | `capture3`, `iso8601`, `rfc1123_date`, `rfc822`, `rfc2822`, `rfc3339`
+| Array
+
+| AllowedPatterns
+| `[]`
 | Array
 |===
 
