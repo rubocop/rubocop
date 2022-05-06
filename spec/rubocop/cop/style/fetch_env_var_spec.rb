@@ -296,6 +296,23 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
         end
       RUBY
     end
+
+    it 'registers no offenses when using the same `ENV` var as `if` condition in the body' do
+      expect_no_offenses(<<~RUBY)
+        if ENV['X']
+          puts ENV['X']
+        end
+      RUBY
+    end
+
+    it 'registers no offenses when using an `ENV` var that is different from `if` condition in the body' do
+      expect_offense(<<~RUBY)
+        if ENV['X']
+          puts ENV['Y']
+               ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+        end
+      RUBY
+    end
   end
 
   context 'when the env val is excluded from the inspection by the config' do
