@@ -292,6 +292,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when the branches contains method call with braced hash' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar foo
+          else
+            bar({ baz => quux })
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar foo || { baz => quux }
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains method call with non-braced hash' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar foo
+          else
+            bar baz => quux
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar foo || { baz => quux }
+        RUBY
+      end
+
       it 'does not register offenses when using `nil?` and the branches contains assignment' do
         expect_no_offenses(<<~RUBY)
           if foo.nil?

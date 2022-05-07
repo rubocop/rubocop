@@ -157,6 +157,8 @@ module RuboCop
         def else_source_if_has_method(else_branch)
           if require_parentheses?(else_branch.first_argument)
             "(#{else_branch.first_argument.source})"
+          elsif require_braces?(else_branch.first_argument)
+            "{ #{else_branch.first_argument.source} }"
           else
             else_branch.first_argument.source
           end
@@ -165,6 +167,8 @@ module RuboCop
         def else_source_if_has_assignment(else_branch)
           if require_parentheses?(else_branch.expression)
             "(#{else_branch.expression.source})"
+          elsif require_braces?(else_branch.expression)
+            "{ #{else_branch.expression.source} }"
           else
             else_branch.expression.source
           end
@@ -194,6 +198,10 @@ module RuboCop
             node.range_type? ||
             node.rescue_type? ||
             (node.respond_to?(:semantic_operator?) && node.semantic_operator?)
+        end
+
+        def require_braces?(node)
+          node.hash_type? && !node.braces?
         end
 
         def without_argument_parentheses_method?(node)
