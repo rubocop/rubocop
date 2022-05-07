@@ -23,7 +23,7 @@
 
 ### Changes
 
-* [#10577](https://github.com/rubocop/rubocop/pull/10577): **(Breaking)** Drop support for Ruby 2.5 and JRuby 9.2 (CRuby 2.5 compatible). ([@koic][])
+* [#10577](https://github.com/rubocop/rubocop/pull/10577): **(Compatibility)** Drop support for Ruby 2.5 and JRuby 9.2 (CRuby 2.5 compatible). ([@koic][])
 * [#10585](https://github.com/rubocop/rubocop/pull/10585): Enhance the autocorrect for `Style/FetchEnvVar`. ([@johnny-miyake][])
 * [#10577](https://github.com/rubocop/rubocop/pull/10577): **(Breaking)** Retire `Lint/UselessElseWithoutRescue` cop. ([@koic][])
 
@@ -627,7 +627,7 @@
 ### Changes
 
 * [#7544](https://github.com/rubocop/rubocop/pull/7544): Add --no-parallel (-P/--parallel cannot be combined with --auto-correct). ([@kwerle][])
-* [#9648](https://github.com/rubocop/rubocop/pull/9648): Drop support for Ruby 2.4. ([@koic][])
+* [#9648](https://github.com/rubocop/rubocop/pull/9648): **(Compatibility)** Drop support for Ruby 2.4. ([@koic][])
 * [#9647](https://github.com/rubocop/rubocop/pull/9647): The parallel flag will now be automatically ignored when combined with `--auto-correct`, `--auto-gen-config`, or `-F/--fail-fast`. Previously, an error was raised and execution stopped. ([@rrosenblum][])
 
 ## 1.12.1 (2021-04-04)
@@ -1673,7 +1673,7 @@
 ### Changes
 
 * [#7867](https://github.com/rubocop/rubocop/pull/7867): **(Breaking)** Renamed `Layout/Tab` cop to `Layout/IndentationStyle`. ([@DracoAter][])
-* [#7869](https://github.com/rubocop/rubocop/pull/7869): **(Breaking)** Drop support for Ruby 2.3. ([@koic][])
+* [#7869](https://github.com/rubocop/rubocop/pull/7869): **(Compatibility)** Drop support for Ruby 2.3. ([@koic][])
 
 ## 0.81.0 (2020-04-01)
 
