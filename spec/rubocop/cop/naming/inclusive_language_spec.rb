@@ -315,6 +315,12 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       RUBY
     end
 
+    it 'does not register offenses and not raise `ArgumentError` for invalid byte sequence in UTF-8' do
+      expect_no_offenses(<<-RUBY)
+        %W("a\\255\\255")
+      RUBY
+    end
+
     context 'when CheckStrings config is false' do
       let(:check_strings) { false }
 

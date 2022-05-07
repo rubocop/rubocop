@@ -214,13 +214,14 @@ module RuboCop
         end
 
         def mask_input(str)
-          return str if @allowed_regex.nil?
-
           safe_str = if str.valid_encoding?
                        str
                      else
                        str.encode('UTF-8', invalid: :replace, undef: :replace)
                      end
+
+          return safe_str if @allowed_regex.nil?
+
           safe_str.gsub(@allowed_regex) { |match| '*' * match.size }
         end
 
