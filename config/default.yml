@@ -3932,6 +3932,11 @@ Style/LineEndConcatenation:
   VersionAdded: '0.18'
   VersionChanged: '0.64'
 
+Style/MapCompactWithConditionalBlock:
+  Description: 'Prefer `select` or `reject` over `map { ... }.compact`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/MapToHash:
   Description: 'Prefer `to_h` with a block over `map.to_h`.'
   Enabled: pending
