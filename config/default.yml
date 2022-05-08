@@ -895,7 +895,7 @@ Layout/HeredocArgumentClosingParenthesis:
   VersionAdded: '0.68'
 
 Layout/HeredocIndentation:
-  Description: 'This cop checks the indentation of the here document bodies.'
+  Description: 'Checks the indentation of the here document bodies.'
   StyleGuide: '#squiggly-heredocs'
   Enabled: true
   VersionAdded: '0.49'
@@ -1514,7 +1514,7 @@ Lint/BigDecimalNew:
   VersionAdded: '0.53'
 
 Lint/BinaryOperatorWithIdenticalOperands:
-  Description: 'This cop checks for places where binary operator has identical operands.'
+  Description: 'Checks for places where binary operator has identical operands.'
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
@@ -1696,7 +1696,7 @@ Lint/ElseLayout:
   VersionChanged: '1.2'
 
 Lint/EmptyBlock:
-  Description: 'This cop checks for blocks without a body.'
+  Description: 'Checks for blocks without a body.'
   Enabled: pending
   VersionAdded: '1.1'
   VersionChanged: '1.15'
@@ -1710,7 +1710,7 @@ Lint/EmptyClass:
   AllowComments: false
 
 Lint/EmptyConditionalBody:
-  Description: 'This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.'
+  Description: 'Checks for the presence of `if`, `elsif` and `unless` branches without a body.'
   Enabled: true
   AllowComments: true
   VersionAdded: '0.89'
@@ -1889,7 +1889,7 @@ Lint/MissingCopEnableDirective:
 
 Lint/MissingSuper:
   Description: >-
-                  This cop checks for the presence of constructors and lifecycle callbacks
+                  Checks for the presence of constructors and lifecycle callbacks
                   without calls to `super`.
   Enabled: true
   VersionAdded: '0.89'
@@ -2218,7 +2218,7 @@ Lint/Syntax:
   VersionAdded: '0.9'
 
 Lint/ToEnumArguments:
-  Description: 'This cop ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
+  Description: 'Ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
   Enabled: pending
   VersionAdded: '1.1'
 
@@ -2228,12 +2228,12 @@ Lint/ToJSON:
   VersionAdded: '0.66'
 
 Lint/TopLevelReturnWithArgument:
-  Description: 'This cop detects top level return statements with argument.'
+  Description: 'Detects top level return statements with argument.'
   Enabled: true
   VersionAdded: '0.89'
 
 Lint/TrailingCommaInAttributeDeclaration:
-  Description: 'This cop checks for trailing commas in attribute declarations.'
+  Description: 'Checks for trailing commas in attribute declarations.'
   Enabled: true
   VersionAdded: '0.90'
 
@@ -2282,7 +2282,7 @@ Lint/UnreachableCode:
   VersionAdded: '0.9'
 
 Lint/UnreachableLoop:
-  Description: 'This cop checks for loops that will have at most one iteration.'
+  Description: 'Checks for loops that will have at most one iteration.'
   Enabled: true
   VersionAdded: '0.89'
   VersionChanged: '1.7'
@@ -3109,7 +3109,7 @@ Style/CaseEquality:
   AllowOnConstant: false
 
 Style/CaseLikeIf:
-  Description: 'This cop identifies places where `if-elsif` constructions can be replaced with `case-when`.'
+  Description: 'Identifies places where `if-elsif` constructions can be replaced with `case-when`.'
   StyleGuide: '#case-vs-if-else'
   Enabled: true
   Safe: false
@@ -3549,7 +3549,7 @@ Style/ExponentialNotation:
 
 Style/FetchEnvVar:
   Description: >-
-                 This cop suggests `ENV.fetch` for the replacement of `ENV[]`.
+                 Suggests `ENV.fetch` for the replacement of `ENV[]`.
   Reference:
     - https://rubystyle.guide/#hash-fetch-defaults
   Enabled: pending
@@ -4146,7 +4146,7 @@ Style/NegatedIf:
 
 Style/NegatedIfElseCondition:
   Description: >-
-                This cop checks for uses of `if-else` and ternary operators with a negated condition
+                Checks for uses of `if-else` and ternary operators with a negated condition
                 which can be simplified by inverting condition and swapping branches.
   Enabled: pending
   VersionAdded: '1.2'
@@ -4703,7 +4703,7 @@ Style/ReturnNil:
 
 Style/SafeNavigation:
   Description: >-
-                  This cop transforms usages of a method call safeguarded by
+                  Transforms usages of a method call safeguarded by
                   a check for the existence of the object to
                   safe navigation (`&.`).
                   Auto-correction is unsafe as it assumes the object will
@@ -4930,7 +4930,7 @@ Style/StructInheritance:
   VersionChanged: '1.20'
 
 Style/SwapValues:
-  Description: 'This cop enforces the use of shorthand-style swapping of 2 variables.'
+  Description: 'Enforces the use of shorthand-style swapping of 2 variables.'
   StyleGuide: '#values-swapping'
   Enabled: pending
   VersionAdded: '1.1'
@@ -4980,7 +4980,7 @@ Style/TernaryParentheses:
   AllowSafeAssignment: true
 
 Style/TopLevelMethodDefinition:
-  Description: 'This cop looks for top-level method definitions.'
+  Description: 'Looks for top-level method definitions.'
   StyleGuide: '#top-level-methods'
   Enabled: false
   VersionAdded: '1.15'

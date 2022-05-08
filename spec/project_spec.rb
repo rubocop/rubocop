@@ -42,6 +42,13 @@ RSpec.describe 'RuboCop Project', type: :feature do
         expect(description.nil?).to(be(false),
                                     "`Description` configuration is required for `#{name}`.")
         expect(description).not_to include("\n")
+
+        start_with_subject = description.match(/\AThis cop (?<verb>.+?) .*/)
+        suggestion = start_with_subject[:verb]&.capitalize if start_with_subject
+        suggestion ||= 'a verb'
+        expect(start_with_subject).to(be_nil,
+                                      "`Description` for `#{name}` should be started "\
+                                      "with `#{suggestion}` instead of `This cop ...`.")
       end
     end
 
