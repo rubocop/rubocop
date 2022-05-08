@@ -322,6 +322,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when the branches contains parenthesized method call' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar(foo)
+          else
+            bar(1..2)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar(foo || (1..2))
+        RUBY
+      end
+
       it 'does not register offenses when using `nil?` and the branches contains assignment' do
         expect_no_offenses(<<~RUBY)
           if foo.nil?
@@ -348,6 +363,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
             test.bar foo, bar
           else
             test.bar = 'baz', 'quux'
+          end
+        RUBY
+      end
+
+      it 'does not register offenses when the branches contains hash key access' do
+        expect_no_offenses(<<~RUBY)
+          if foo
+            bar[foo]
+          else
+            bar[1]
           end
         RUBY
       end
@@ -423,6 +448,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
 
         expect_correction(<<~RUBY)
           time_period = updated_during || (2.days.ago...Time.now)
+        RUBY
+      end
+
+      it 'registers an offense and corrects with ternary expression and the branches contains parenthesized method call' do
+        expect_offense(<<~RUBY)
+          foo ? bar(foo) : bar(quux)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar(foo || quux)
+        RUBY
+      end
+
+      it 'registers an offense and corrects with ternary expression and the branches contains chained parenthesized method call' do
+        expect_offense(<<~RUBY)
+          foo ? foo(foo).bar(foo) : foo(foo).bar(quux)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(foo).bar(foo || quux)
         RUBY
       end
 

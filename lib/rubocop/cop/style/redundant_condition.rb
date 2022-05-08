@@ -44,9 +44,9 @@ module RuboCop
           message = message(node)
 
           add_offense(range_of_offense(node), message: message) do |corrector|
-            if node.ternary?
+            if node.ternary? && !branches_have_method?(node)
               correct_ternary(corrector, node)
-            elsif node.modifier_form? || !node.else_branch
+            elsif redudant_condition?(node)
               corrector.replace(node, node.if_branch.source)
             else
               corrected = make_ternary_form(node)
@@ -59,7 +59,7 @@ module RuboCop
         private
 
         def message(node)
-          if node.modifier_form? || !node.else_branch
+          if redudant_condition?(node)
             REDUNDANT_CONDITION
           else
             MSG
@@ -68,6 +68,7 @@ module RuboCop
 
         def range_of_offense(node)
           return node.loc.expression unless node.ternary?
+          return node.loc.expression if node.ternary? && branches_have_method?(node)
 
           range_between(node.loc.question.begin_pos, node.loc.colon.end_pos)
         end
@@ -81,12 +82,20 @@ module RuboCop
             (node.ternary? || !else_branch.instance_of?(AST::Node) || else_branch.single_line?)
         end
 
+        def redudant_condition?(node)
+          node.modifier_form? || !node.else_branch
+        end
+
         def use_if_branch?(else_branch)
           else_branch&.if_type?
         end
 
         def use_hash_key_assignment?(else_branch)
           else_branch&.send_type? && else_branch&.method?(:[]=)
+        end
+
+        def use_hash_key_access?(node)
+          node.send_type? && node.method?(:[])
         end
 
         def synonymous_condition_and_branch?(node)
@@ -113,7 +122,8 @@ module RuboCop
           #   else
           #     test.value = another_value?
           #   end
-          branches_have_method?(node) && condition == if_branch.first_argument
+          branches_have_method?(node) && condition == if_branch.first_argument &&
+            !use_hash_key_access?(if_branch)
         end
 
         def branches_have_assignment?(node)
@@ -138,6 +148,14 @@ module RuboCop
           if_branch.send_type? && if_branch.arguments.count == 1 &&
             else_branch.send_type? && else_branch.arguments.count == 1 &&
             if_branch.method?(else_branch.method_name)
+        end
+
+        def if_source(if_branch)
+          if branches_have_method?(if_branch.parent) && if_branch.parenthesized?
+            if_branch.source.delete_suffix(')')
+          else
+            if_branch.source
+          end
         end
 
         def else_source(else_branch)
@@ -176,7 +194,8 @@ module RuboCop
 
         def make_ternary_form(node)
           _condition, if_branch, else_branch = *node
-          ternary_form = [if_branch.source, else_source(else_branch)].join(' || ')
+          ternary_form = [if_source(if_branch), else_source(else_branch)].join(' || ')
+          ternary_form += ')' if branches_have_method?(node) && if_branch.parenthesized?
 
           if node.parent&.send_type?
             "(#{ternary_form})"
