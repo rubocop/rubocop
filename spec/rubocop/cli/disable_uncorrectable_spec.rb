@@ -261,7 +261,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
       end
     end
 
-    context 'when exist offence for Layout/SpaceInsideArrayLiteralBrackets' do
+    context 'when exist offense for Layout/SpaceInsideArrayLiteralBrackets' do
       context 'when `EnforcedStyle: no_space`' do
         it 'does not disable anything for cops that support autocorrect' do
           create_file('example.rb', <<~RUBY)

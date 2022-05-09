@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Security::CompoundHash, :config do
     RUBY
   end
 
-  it 'registers an offence when using bitshift and OR' do
+  it 'registers an offense when using bitshift and OR' do
     expect_offense(<<~RUBY)
       def hash
         ([@addr, @mask_addr, @zone_id].hash << 1) | (ipv4? ? 0 : 1)

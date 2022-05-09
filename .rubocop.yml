@@ -97,6 +97,8 @@ Metrics/ModuleLength:
     - 'spec/**/*.rb'
 
 Naming/InclusiveLanguage:
+  Enabled: true
+  CheckStrings: true
   FlaggedTerms:
     behaviour:
       Suggestions:
@@ -106,6 +108,7 @@ Naming/InclusiveLanguage:
         - offense
   Exclude:
     - lib/rubocop/cop/naming/inclusive_language.rb
+    - spec/rubocop/cop/naming/inclusive_language_spec.rb
 
 RSpec/FilePath:
   Exclude:
