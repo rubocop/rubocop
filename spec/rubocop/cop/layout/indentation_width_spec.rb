@@ -1195,9 +1195,33 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'leaves body unchanged if the first body line is on the same line with class keyword' do
+        # The class body will be corrected by IndentationConsistency.
+        expect_no_offenses(<<~RUBY)
+          class Test foo
+              def func1
+              end
+                def func2
+                end
+          end
+        RUBY
+      end
+
       it 'accepts an empty class body' do
         expect_no_offenses(<<~RUBY)
           class Test
+          end
+        RUBY
+      end
+
+      it 'leaves body unchanged if the first body line is on the same line with an opening of singleton class' do
+        # The class body will be corrected by IndentationConsistency.
+        expect_no_offenses(<<~RUBY)
+          class << self; foo
+              def func1
+              end
+                def func2
+                end
           end
         RUBY
       end
@@ -1370,6 +1394,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
             end
           RUBY
         end
+      end
+
+      it 'leaves body unchanged if the first body line is on the same line with module keyword' do
+        # The module body will be corrected by IndentationConsistency.
+        expect_no_offenses(<<~RUBY)
+          module Test foo
+              def func1
+              end
+                def func2
+                end
+          end
+        RUBY
       end
 
       context 'when consistency style is indented_internal_methods' do
