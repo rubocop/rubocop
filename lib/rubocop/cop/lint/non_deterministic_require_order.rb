@@ -143,19 +143,19 @@ module RuboCop
 
         # @!method method_require?(node)
         def_node_matcher :method_require?, <<~PATTERN
-          (block-pass (send nil? :method (sym :require)))
+          (block-pass (send nil? :method (sym {:require :require_relative})))
         PATTERN
 
         # @!method unsorted_dir_glob_pass?(node)
         def_node_matcher :unsorted_dir_glob_pass?, <<~PATTERN
           (send (const {nil? cbase} :Dir) :glob ...
-            (block-pass (send nil? :method (sym :require))))
+            (block-pass (send nil? :method (sym {:require :require_relative}))))
         PATTERN
 
         # @!method unsorted_dir_each_pass?(node)
         def_node_matcher :unsorted_dir_each_pass?, <<~PATTERN
           (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each
-            (block-pass (send nil? :method (sym :require))))
+            (block-pass (send nil? :method (sym {:require :require_relative}))))
         PATTERN
 
         # @!method loop_variable(node)
@@ -165,7 +165,7 @@ module RuboCop
 
         # @!method var_is_required?(node, name)
         def_node_search :var_is_required?, <<~PATTERN
-          (send nil? :require (lvar %1))
+          (send nil? {:require :require_relative} (lvar %1))
         PATTERN
       end
     end
