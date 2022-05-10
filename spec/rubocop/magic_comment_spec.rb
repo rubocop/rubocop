@@ -5,6 +5,7 @@ RSpec.describe RuboCop::MagicComment do
     encoding = expectations[:encoding]
     frozen_string = expectations[:frozen_string_literal]
     shareable_constant_value = expectations[:shareable_constant_value]
+    typed = expectations[:typed]
 
     it "returns #{encoding.inspect} for encoding when comment is #{comment}" do
       expect(described_class.parse(comment).encoding).to eql(encoding)
@@ -18,6 +19,10 @@ RSpec.describe RuboCop::MagicComment do
        "when comment is #{comment}" do
       expect(described_class.parse(comment)
                             .shareable_constant_value).to eql(shareable_constant_value)
+    end
+
+    it "returns #{typed.inspect} for typed when comment is #{comment}" do
+      expect(described_class.parse(comment).typed).to eql(typed)
     end
   end
 
@@ -68,6 +73,22 @@ RSpec.describe RuboCop::MagicComment do
   include_examples 'magic comment', '# xyz shareable_constant_value: literal'
 
   include_examples 'magic comment', '# xyz shareable_constant_value: literal xyz'
+
+  include_examples 'magic comment', '# typed: ignore', typed: 'ignore'
+
+  include_examples 'magic comment', '# typed: false', typed: 'false'
+
+  include_examples 'magic comment', '# typed: true', typed: 'true'
+
+  include_examples 'magic comment', '# typed: strict', typed: 'strict'
+
+  include_examples 'magic comment', '# typed: strong', typed: 'strong'
+
+  include_examples 'magic comment', '#typed:strict', typed: 'strict'
+
+  include_examples 'magic comment', '#    typed:strict', typed: 'strict'
+
+  include_examples 'magic comment', '# @typed'
 
   include_examples(
     'magic comment',
@@ -125,9 +146,8 @@ RSpec.describe RuboCop::MagicComment do
 
   include_examples(
     'magic comment',
-    '# -*- coding: ASCII-8BIT; frozen_string_literal: true -*-',
-    encoding: 'ascii-8bit',
-    frozen_string_literal: true
+    '# -*- coding: ASCII-8BIT; typed: strict -*-',
+    encoding: 'ascii-8bit'
   )
 
   include_examples 'magic comment',
@@ -142,6 +162,10 @@ RSpec.describe RuboCop::MagicComment do
 
   include_examples 'magic comment',
                    '#vim: filetype=ruby, fileencoding=ascii-8bit',
+                   encoding: 'ascii-8bit'
+
+  include_examples 'magic comment',
+                   '#vim: filetype=ruby, fileencoding=ascii-8bit, typed=strict',
                    encoding: 'ascii-8bit'
 
   include_examples(

@@ -15,6 +15,20 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     RUBY
   end
 
+  it 'registers an offense when code that immediately follows typed comment' do
+    expect_offense(<<~RUBY)
+      # typed: true
+      class Foo; end
+      ^ Add an empty line after magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # typed: true
+
+      class Foo; end
+    RUBY
+  end
+
   it 'registers an offense for documentation immediately following comment' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
@@ -66,6 +80,22 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
 
     expect_no_offenses(<<~RUBY)
       # shareable_constant_value: experimental_everything
+      # frozen_string_literal: true
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'accepts magic comment with typed' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+      # typed: true
+
+      class Foo; end
+    RUBY
+
+    expect_no_offenses(<<~RUBY)
+      # typed: true
       # frozen_string_literal: true
 
       class Foo; end
