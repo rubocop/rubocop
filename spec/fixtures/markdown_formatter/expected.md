@@ -1,6 +1,6 @@
 # RuboCop Inspection Report
 
-3 files inspected, 22 offenses detected:
+4 files inspected, 22 offenses detected:
 
 ### app/controllers/application_controller.rb - (1 offense)
   * **Line # 1 - convention:** Style/FrozenStringLiteralComment: Missing frozen string literal comment.
