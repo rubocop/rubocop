@@ -11,7 +11,8 @@ module RuboCop
     KEYWORDS = {
       encoding: '(?:en)?coding',
       frozen_string_literal: 'frozen[_-]string[_-]literal',
-      shareable_constant_value: 'shareable[_-]constant[_-]value'
+      shareable_constant_value: 'shareable[_-]constant[_-]value',
+      typed: 'typed'
     }.freeze
 
     # Detect magic comment format and pass it to the appropriate wrapper.
@@ -33,7 +34,10 @@ module RuboCop
     end
 
     def any?
-      frozen_string_literal_specified? || encoding_specified? || shareable_constant_value_specified?
+      frozen_string_literal_specified? ||
+        encoding_specified? ||
+        shareable_constant_value_specified? ||
+        typed_specified?
     end
 
     def valid?
@@ -99,6 +103,17 @@ module RuboCop
 
     def encoding_specified?
       specified?(encoding)
+    end
+
+    # Was the Sorbet `typed` sigil specified?
+    #
+    # @return [Boolean]
+    def typed_specified?
+      specified?(extract_typed)
+    end
+
+    def typed
+      extract_typed
     end
 
     private
@@ -187,6 +202,9 @@ module RuboCop
       def extract_shareable_constant_value
         match(KEYWORDS[:shareable_constant_value])
       end
+
+      # Emacs comments cannot specify Sorbet typechecking behavior.
+      def extract_typed; end
     end
 
     # Wrapper for Vim style magic comments.
@@ -222,6 +240,9 @@ module RuboCop
 
       # Vim comments cannot specify shareable constant values behavior.
       def shareable_constant_value; end
+
+      # Vim comments cannot specify Sorbet typechecking behavior.
+      def extract_typed; end
     end
 
     # Wrapper for regular magic comments not bound to an editor.
@@ -267,6 +288,10 @@ module RuboCop
 
       def extract_shareable_constant_value
         extract(/\A\s*#\s*#{KEYWORDS[:shareable_constant_value]}:\s*(#{TOKEN})\s*\z/io)
+      end
+
+      def extract_typed
+        extract(/\A\s*#\s*#{KEYWORDS[:typed]}:\s*(#{TOKEN})\s*\z/io)
       end
     end
   end
