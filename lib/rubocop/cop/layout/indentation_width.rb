@@ -91,7 +91,10 @@ module RuboCop
         end
 
         def on_class(node)
-          check_members(node.loc.keyword, [node.body])
+          base = node.loc.keyword
+          return if same_line?(base, node.body)
+
+          check_members(base, [node.body])
         end
         alias on_sclass on_class
         alias on_module on_class
