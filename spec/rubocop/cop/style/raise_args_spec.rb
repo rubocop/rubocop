@@ -145,6 +145,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     it 'accepts a raise with an exception argument' do
       expect_no_offenses('raise Ex.new(msg)')
     end
+
+    it 'accepts exception constructor with keyword arguments and message argument' do
+      expect_no_offenses('raise MyKwArgError.new(a: 1, b: 2), message')
+    end
   end
 
   context 'when enforced style is exploded' do
