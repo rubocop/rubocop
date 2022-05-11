@@ -8,14 +8,26 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass, :config do
       class Foo; body
                  ^^^^ Place the first line of class body on its own line.
       end
+      class Foo body
+                ^^^^ Place the first line of class body on its own line.
+      end
       class Bar; def bar; end
                  ^^^^^^^^^^^^ Place the first line of class body on its own line.
+      end
+      class Bar def bar; end
+                ^^^^^^^^^^^^ Place the first line of class body on its own line.
       end
     RUBY
 
     expect_correction(<<~RUBY)
       class Foo#{trailing_whitespace}
         body
+      end
+      class Foo#{trailing_whitespace}
+        body
+      end
+      class Bar#{trailing_whitespace}
+        def bar; end
       end
       class Bar#{trailing_whitespace}
         def bar; end
