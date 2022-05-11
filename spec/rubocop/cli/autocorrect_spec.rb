@@ -2361,4 +2361,46 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       when 2 then 2 end
     RUBY
   end
+
+  it 'breaks line at the beginning of trailing class/module body without removing a semicolon in the body'\
+     'when using `Style/TrailingBodyOnClass` and `Style/TrailingBodyOnModule`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Foo def bar; end
+      end
+      class Foo bar
+        a; b
+      end
+
+      module Foo def bar; end
+      end
+      module Foo bar
+        a; b
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect --only] << %w[
+        Style/TrailingBodyOnClass Style/TrailingBodyOnModule
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      class Foo#{trailing_whitespace}
+        def bar; end
+      end
+      class Foo#{trailing_whitespace}
+        bar
+        a; b
+      end
+
+      module Foo#{trailing_whitespace}
+        def bar; end
+      end
+      module Foo#{trailing_whitespace}
+        bar
+        a; b
+      end
+    RUBY
+  end
 end

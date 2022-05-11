@@ -11,6 +11,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
       module Bar extend self
                  ^^^^^^^^^^^ Place the first line of module body on its own line.
       end
+      module Bar; def bar; end
+                  ^^^^^^^^^^^^ Place the first line of module body on its own line.
+      end
+      module Bar def bar; end
+                 ^^^^^^^^^^^^ Place the first line of module body on its own line.
+      end
     RUBY
 
     expect_correction(<<~RUBY)
@@ -19,6 +25,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
       end
       module Bar#{trailing_whitespace}
         extend self
+      end
+      module Bar#{trailing_whitespace}
+        def bar; end
+      end
+      module Bar#{trailing_whitespace}
+        def bar; end
       end
     RUBY
   end
