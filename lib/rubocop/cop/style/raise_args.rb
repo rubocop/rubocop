@@ -91,6 +91,9 @@ module RuboCop
 
         def check_compact(node)
           if node.arguments.size > 1
+            exception = node.first_argument
+            return if exception.send_type? && exception.first_argument&.hash_type?
+
             add_offense(node, message: format(COMPACT_MSG, method: node.method_name)) do |corrector|
               replacement = correction_exploded_to_compact(node)
 
