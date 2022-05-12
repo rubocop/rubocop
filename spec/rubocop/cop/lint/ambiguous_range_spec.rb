@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRange, :config do
         RUBY
       end
 
-      it 'can handle an endless range' do
+      it 'can handle an endless range', :ruby26 do
         expect_offense(<<~RUBY)
           x || 1#{operator}
           ^^^^^^ Wrap complex range boundaries with parentheses to avoid ambiguity.

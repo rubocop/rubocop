@@ -150,7 +150,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stderr.string).to eq ''
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
-              'token $end (Using Ruby 2.6 parser; configure using ' \
+              'token $end (Using Ruby 2.5 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
@@ -1693,7 +1693,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string.strip).to start_with(
           'Error: RuboCop found unknown Ruby version 4.0 in `TargetRubyVersion`'
         )
-        expect($stderr.string.strip).to match(/Supported versions: 2.6, 2.7, 3.0, 3.1, 3.2/)
+        expect($stderr.string.strip).to match(/Supported versions: 2.5, 2.6, 2.7, 3.0, 3.1, 3.2/)
       end
     end
 
@@ -1714,7 +1714,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           /2\.0-compatible analysis was dropped after version 0\.50/
         )
 
-        expect($stderr.string.strip).to match(/Supported versions: 2.6/)
+        expect($stderr.string.strip).to match(/Supported versions: 2.5/)
       end
     end
   end

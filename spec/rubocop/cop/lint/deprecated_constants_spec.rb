@@ -51,15 +51,25 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when using `Net::HTTPServerException`' do
-    expect_offense(<<~RUBY)
-      Net::HTTPServerException
-      ^^^^^^^^^^^^^^^^^^^^^^^^ Use `Net::HTTPClientException` instead of `Net::HTTPServerException`, deprecated since Ruby 2.6.
-    RUBY
+  context 'Ruby <= 2.5', :ruby25 do
+    it 'does not register an offense when using `Net::HTTPServerException`' do
+      expect_no_offenses(<<~RUBY)
+        Net::HTTPServerException
+      RUBY
+    end
+  end
 
-    expect_correction(<<~RUBY)
-      Net::HTTPClientException
-    RUBY
+  context 'Ruby >= 2.6', :ruby26 do
+    it 'registers and corrects an offense when using `Net::HTTPServerException`' do
+      expect_offense(<<~RUBY)
+        Net::HTTPServerException
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Use `Net::HTTPClientException` instead of `Net::HTTPServerException`, deprecated since Ruby 2.6.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Net::HTTPClientException
+      RUBY
+    end
   end
 
   context 'Ruby <= 2.7', :ruby27 do
