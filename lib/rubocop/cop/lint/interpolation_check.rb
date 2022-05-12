@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for interpolation in a single quoted string.
+      # Checks for interpolation in a single quoted string.
       #
       # @safety
       #   This cop is generally safe, but is marked as unsafe because

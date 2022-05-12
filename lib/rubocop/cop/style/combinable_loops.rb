@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where multiple consecutive loops over the same data
+      # Checks for places where multiple consecutive loops over the same data
       # can be combined into a single loop. It is very likely that combining them
       # will make the code more efficient and more concise.
       #

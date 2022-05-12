@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for missing top-level documentation of classes and
+      # Checks for missing top-level documentation of classes and
       # modules. Classes with no body are exempt from the check and so are
       # namespace modules - modules that have nothing in their bodies except
       # classes, other modules, constant definitions or constant visibility

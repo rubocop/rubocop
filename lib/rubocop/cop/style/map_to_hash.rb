@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop looks for uses of `map.to_h` or `collect.to_h` that could be
+      # Looks for uses of `map.to_h` or `collect.to_h` that could be
       # written with just `to_h` in Ruby >= 2.6.
       #
       # NOTE: `Style/HashTransformKeys` and `Style/HashTransformValues` will

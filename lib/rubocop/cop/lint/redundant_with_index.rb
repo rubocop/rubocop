@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for redundant `with_index`.
+      # Checks for redundant `with_index`.
       #
       # @example
       #   # bad

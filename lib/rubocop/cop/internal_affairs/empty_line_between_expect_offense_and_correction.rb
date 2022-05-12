@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # This cop checks whether `expect_offense` and correction expectation methods
+      # Checks whether `expect_offense` and correction expectation methods
       # (i.e. `expect_correction` and `expect_no_corrections`) are separated by empty line.
       #
       # @example

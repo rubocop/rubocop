@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for rescuing `StandardError`. There are two supported
+      # Checks for rescuing `StandardError`. There are two supported
       # styles `implicit` and `explicit`. This cop will not register an offense
       # if any error other than `StandardError` is specified.
       #

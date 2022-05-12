@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for the presence of `when` branches without a body.
+      # Checks for the presence of `when` branches without a body.
       #
       # @example
       #

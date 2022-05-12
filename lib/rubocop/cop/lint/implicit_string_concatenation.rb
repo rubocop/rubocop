@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for implicit string concatenation of string literals
+      # Checks for implicit string concatenation of string literals
       # which are on the same line.
       #
       # @example

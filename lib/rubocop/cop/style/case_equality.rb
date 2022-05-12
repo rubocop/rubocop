@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of the case equality operator(===).
+      # Checks for uses of the case equality operator(===).
       #
       # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is a constant.

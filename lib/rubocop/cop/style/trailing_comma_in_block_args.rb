@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks whether trailing commas in block arguments are
+      # Checks whether trailing commas in block arguments are
       # required. Blocks with only one argument and a trailing comma require
       # that comma to be present. Blocks with more than one argument never
       # require a trailing comma.

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sure that certain binary operator methods have their
+      # Makes sure that certain binary operator methods have their
       # sole  parameter named `other`.
       #
       # @example

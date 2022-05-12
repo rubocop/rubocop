@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks the args passed to `fail` and `raise`. For exploded
+      # Checks the args passed to `fail` and `raise`. For exploded
       # style (default), it recommends passing the exception class and message
       # to `raise`, rather than construct an instance of the error. It will
       # still allow passing just a message, or the construction of an error

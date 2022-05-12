@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # This cop checks potentially usage of method identifier predicates
+      # Checks potentially usage of method identifier predicates
       # defined in rubocop-ast instead of `method_name.end_with?`.
       #
       # @example

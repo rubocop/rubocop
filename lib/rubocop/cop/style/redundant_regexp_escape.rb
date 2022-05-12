@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant escapes inside Regexp literals.
+      # Checks for redundant escapes inside Regexp literals.
       #
       # @example
       #   # bad

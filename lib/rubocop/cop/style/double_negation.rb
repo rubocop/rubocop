@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
+      # Checks for uses of double negation (`!!`) to convert something to a boolean value.
       #
       # When using `EnforcedStyle: allowed_in_returns`, allow double negation in contexts
       # that use boolean as a return value. When using `EnforcedStyle: forbidden`, double negation

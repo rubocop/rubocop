@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant assignment before returning.
+      # Checks for redundant assignment before returning.
       #
       # @example
       #   # bad

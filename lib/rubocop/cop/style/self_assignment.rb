@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use the shorthand for self-assignment.
+      # Enforces the use the shorthand for self-assignment.
       #
       # @example
       #

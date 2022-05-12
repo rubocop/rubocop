@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for the presence of precise comparison of floating point numbers.
+      # Checks for the presence of precise comparison of floating point numbers.
       #
       # Floating point values are inherently inaccurate, and comparing them for exact equality
       # is almost never the desired semantics. Comparison via the `==/!=` operators checks

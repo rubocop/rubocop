@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of the keyword `not` instead of `!`.
+      # Checks for uses of the keyword `not` instead of `!`.
       #
       # @example
       #

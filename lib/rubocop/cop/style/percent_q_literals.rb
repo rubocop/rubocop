@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for usage of the %Q() syntax when %q() would do.
+      # Checks for usage of the %Q() syntax when %q() would do.
       #
       # @example EnforcedStyle: lower_case_q (default)
       #   # The `lower_case_q` style prefers `%q` unless

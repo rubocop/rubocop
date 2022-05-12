@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
+      # Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
       #
       # @example EnforcedStyle: is_a? (default)
       #   # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces using `` or %x around command literals.
+      # Enforces using `` or %x around command literals.
       #
       # @example EnforcedStyle: backticks (default)
       #   # bad

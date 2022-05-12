@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for redundant `with_object`.
+      # Checks for redundant `with_object`.
       #
       # @example
       #   # bad

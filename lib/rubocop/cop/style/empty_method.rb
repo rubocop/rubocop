@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for the formatting of empty method definitions.
+      # Checks for the formatting of empty method definitions.
       # By default it enforces empty method definitions to go on a single
       # line (compact style), but it can be configured to enforce the `end`
       # to go on its own line (expanded style).

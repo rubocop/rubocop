@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for unwanted parentheses in parameterless method calls.
+      # Checks for unwanted parentheses in parameterless method calls.
       #
       # @example
       #   # bad

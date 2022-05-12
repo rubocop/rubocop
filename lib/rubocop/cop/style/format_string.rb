@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of a single string formatting utility.
+      # Enforces the use of a single string formatting utility.
       # Valid options include Kernel#format, Kernel#sprintf and String#%.
       #
       # The detection of String#% cannot be implemented in a reliable

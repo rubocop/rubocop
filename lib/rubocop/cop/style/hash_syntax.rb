@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks hash literal syntax.
+      # Checks hash literal syntax.
       #
       # It can enforce either the use of the class hash rocket syntax or
       # the use of the newer Ruby 1.9 syntax (when applicable).

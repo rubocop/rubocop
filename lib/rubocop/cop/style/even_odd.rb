@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where `Integer#even?` or `Integer#odd?`
+      # Checks for places where `Integer#even?` or `Integer#odd?`
       # can be used.
       #
       # @example

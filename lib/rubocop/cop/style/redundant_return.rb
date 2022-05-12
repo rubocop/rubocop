@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant `return` expressions.
+      # Checks for redundant `return` expressions.
       #
       # @example
       #   # These bad cases should be extended to handle methods whose body is

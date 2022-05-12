@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop is designed to help you transition from mutable string literals
+      # Helps you transition from mutable string literals
       # to frozen string literals.
       # It will add the `# frozen_string_literal: true` magic comment to the top
       # of files to enable frozen string literals. Frozen string literals may be

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks unexpected overrides of the `Struct` built-in methods
+      # Checks unexpected overrides of the `Struct` built-in methods
       # via `Struct.new`.
       #
       # @example

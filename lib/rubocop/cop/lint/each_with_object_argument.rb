@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks if each_with_object is called with an immutable
+      # Checks if each_with_object is called with an immutable
       # argument. Since the argument is the object that the given block shall
       # make calls on to build something based on the enumerable that
       # each_with_object iterates over, an immutable argument makes no sense.

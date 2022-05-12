@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the first line of the
+      # Checks the indentation of the first line of the
       # right-hand-side of a multi-line assignment.
       #
       # @example

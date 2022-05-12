@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for non-local exits from iterators without a return
+      # Checks for non-local exits from iterators without a return
       # value. It registers an offense under these conditions:
       #
       # * No value is returned,

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for duplicated instance (or singleton) method
+      # Checks for duplicated instance (or singleton) method
       # definitions.
       #
       # @example

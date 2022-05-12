@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for inheritance from Struct.new.
+      # Checks for inheritance from Struct.new.
       #
       # @safety
       #   Autocorrection is unsafe because it will change the inheritance

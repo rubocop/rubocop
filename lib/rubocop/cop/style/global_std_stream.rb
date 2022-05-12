@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.
+      # Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.
       # `STDOUT/STDERR/STDIN` are constants, and while you can actually
       # reassign (possibly to redirect some stream) constants in Ruby, you'll get
       # an interpreter warning if you do so.

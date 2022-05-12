@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for debug calls (such as `debugger` or `binding.pry`) that should
+      # Checks for debug calls (such as `debugger` or `binding.pry`) that should
       # not be kept for production code.
       #
       # The cop can be configured using `DebuggerMethods`. By default, a number of gems

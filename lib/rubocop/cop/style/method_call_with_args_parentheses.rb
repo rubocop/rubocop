@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the presence (default) or absence of parentheses in
+      # Enforces the presence (default) or absence of parentheses in
       # method calls containing parameters.
       #
       # In the default style (require_parentheses), macro methods are ignored.

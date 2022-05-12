@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of explicit block argument to avoid writing
+      # Enforces the use of explicit block argument to avoid writing
       # block literal that just passes its arguments to another block.
       #
       # NOTE: This cop only registers an offense if the block args match the

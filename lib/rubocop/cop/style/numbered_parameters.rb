@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for numbered parameters.
+      # Checks for numbered parameters.
       #
       # It can either restrict the use of numbered parameters to
       # single-lined blocks, or disallow completely numbered parameters.

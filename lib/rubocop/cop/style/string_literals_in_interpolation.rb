@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks that quotes inside the string interpolation
+      # Checks that quotes inside the string interpolation
       # match the configured preference.
       #
       # @example EnforcedStyle: single_quotes (default)

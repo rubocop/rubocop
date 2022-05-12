@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for uses of `begin...end while/until something`.
+      # Checks for uses of `begin...end while/until something`.
       #
       # @safety
       #   The cop is unsafe because behavior can change in some cases, including

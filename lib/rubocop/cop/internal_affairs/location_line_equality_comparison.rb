@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # This cop enforces the use of `same_line?` instead of location line comparison for equality.
+      # Enforces the use of `same_line?` instead of location line comparison for equality.
       #
       # @example
       #   # bad

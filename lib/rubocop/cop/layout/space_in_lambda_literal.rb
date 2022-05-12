@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for spaces between `->` and opening parameter
+      # Checks for spaces between `->` and opening parameter
       # parenthesis (`(`) in lambda literals.
       #
       # @example EnforcedStyle: require_no_space (default)

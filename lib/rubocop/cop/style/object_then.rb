@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of consistent method names
+      # Enforces the use of consistent method names
       # `Object#yield_self` or `Object#then`.
       #
       # @example EnforcedStyle: then (default)

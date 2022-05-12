@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop can check for array literals made up of symbols that are not
+      # Checks for array literals made up of symbols that are not
       # using the %i() syntax.
       #
       # Alternatively, it checks for symbol arrays using the %i() syntax on

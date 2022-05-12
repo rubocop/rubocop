@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where keyword arguments can be used instead of
+      # Checks for places where keyword arguments can be used instead of
       # boolean arguments when defining methods. `respond_to_missing?` method is allowed by default.
       # These are customizable with `AllowedMethods` option.
       #

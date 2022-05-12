@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for interpolated literals.
+      # Checks for interpolated literals.
       #
       # @example
       #

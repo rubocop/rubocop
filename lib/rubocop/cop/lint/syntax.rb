@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop repacks Parser's diagnostics/errors
+      # Repacks Parser's diagnostics/errors
       # into RuboCop's offenses.
       class Syntax < Base
         def on_other_file

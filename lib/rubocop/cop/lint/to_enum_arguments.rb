@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop ensures that `to_enum`/`enum_for`, called for the current method,
+      # Ensures that `to_enum`/`enum_for`, called for the current method,
       # has correct arguments.
       #
       # @example

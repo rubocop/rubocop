@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks that there are no repeated exceptions
+      # Checks that there are no repeated exceptions
       # used in 'rescue' expressions.
       #
       # @example

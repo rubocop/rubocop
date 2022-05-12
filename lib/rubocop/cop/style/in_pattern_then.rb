@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for `in;` uses in `case` expressions.
+      # Checks for `in;` uses in `case` expressions.
       #
       # @example
       #   # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for trailing commas in attribute declarations, such as
+      # Checks for trailing commas in attribute declarations, such as
       # `#attr_reader`. Leaving a trailing comma will nullify the next method
       # definition by overriding it with a getter method.
       #

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for a block that is known to need more positional
+      # Checks for a block that is known to need more positional
       # block arguments than are given (by default this is configured for
       # `Enumerable` methods needing 2 arguments). Optional arguments are allowed,
       # although they don't generally make sense as the default value will

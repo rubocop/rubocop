@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for unneeded usages of splat expansion
+      # Checks for unneeded usages of splat expansion
       #
       # @example
       #

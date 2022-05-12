@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the consistent usage of `%`-literal delimiters.
+      # Enforces the consistent usage of `%`-literal delimiters.
       #
       # Specify the 'default' key to set all preferred delimiters at once. You
       # can continue to specify individual preferred delimiters to override the

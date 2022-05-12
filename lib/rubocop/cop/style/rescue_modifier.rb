@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of rescue in its modifier form.
+      # Checks for uses of rescue in its modifier form.
       #
       # The cop to check `rescue` in its modifier form is added for following
       # reasons:

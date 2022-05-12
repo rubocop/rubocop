@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for usage of comparison operators (`==`,
+      # Checks for usage of comparison operators (`==`,
       # `>`, `<`) to test numbers as zero, positive, or negative.
       # These can be replaced by their respective predicate methods.
       # The cop can also be configured to do the reverse.

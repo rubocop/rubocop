@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks if empty lines exist around the arguments
+      # Checks if empty lines exist around the arguments
       # of a method invocation.
       #
       # @example

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for `raise` or `fail` statements which are
+      # Checks for `raise` or `fail` statements which are
       # raising `Exception` class.
       #
       # You can specify a module name that will be an implicit namespace

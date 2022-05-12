@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of shorthand-style swapping of 2 variables.
+      # Enforces the use of shorthand-style swapping of 2 variables.
       #
       # @safety
       #   Autocorrection is unsafe, because the temporary variable used to

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of Proc.new where Kernel#proc
+      # Checks for uses of Proc.new where Kernel#proc
       # would be more appropriate.
       #
       # @example

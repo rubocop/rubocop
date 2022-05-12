@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for unparenthesized method calls in the argument list
+      # Checks for unparenthesized method calls in the argument list
       # of a parenthesized method call.
       #
       # @example

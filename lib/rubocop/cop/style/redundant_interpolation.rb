@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for strings that are just an interpolated expression.
+      # Checks for strings that are just an interpolated expression.
       #
       # @example
       #

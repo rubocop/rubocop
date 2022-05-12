@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop looks for expressions containing multiple binary operators
+      # Looks for expressions containing multiple binary operators
       # where precedence is ambiguous due to lack of parentheses. For example,
       # in `1 + 2 * 3`, the multiplication will happen before the addition, but
       # lexically it appears that the addition will happen first.

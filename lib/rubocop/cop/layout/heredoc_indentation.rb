@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the here document bodies. The bodies
+      # Checks the indentation of the here document bodies. The bodies
       # are indented one step.
       #
       # Note: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),

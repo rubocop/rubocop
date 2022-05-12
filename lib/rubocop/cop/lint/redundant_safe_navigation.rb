@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for redundant safe navigation calls.
+      # Checks for redundant safe navigation calls.
       # `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, and `equal?` methods
       # are checked by default. These are customizable with `AllowedMethods` option.
       #

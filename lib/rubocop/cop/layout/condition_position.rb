@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for conditions that are not on the same line as
+      # Checks for conditions that are not on the same line as
       # if/while/until.
       #
       # @example

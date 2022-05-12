@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks that comment annotation keywords are written according
+      # Checks that comment annotation keywords are written according
       # to guidelines.
       #
       # Annotation keywords can be specified by overriding the cop's `Keywords`
