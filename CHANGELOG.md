@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.29.1 (2022-05-12)
+
 ### Bug fixes
 
 * [#10625](https://github.com/rubocop/rubocop/issues/10625): Restore the specification to `TargetRubyVersion: 2.5`. ([@koic][])

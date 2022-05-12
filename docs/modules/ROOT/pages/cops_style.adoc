@@ -6032,6 +6032,8 @@ some_str = 'ala' \
 
 == Style/MapToHash
 
+NOTE: Required Ruby version: 2.6
+
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
@@ -11562,6 +11564,8 @@ def no_op; end
 * https://rubystyle.guide#no-single-line-methods
 
 == Style/SlicingWithRange
+
+NOTE: Required Ruby version: 2.6
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed

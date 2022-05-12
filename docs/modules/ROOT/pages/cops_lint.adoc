@@ -2183,6 +2183,8 @@ end
 
 == Lint/ErbNewArguments
 
+NOTE: Required Ruby version: 2.6
+
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
