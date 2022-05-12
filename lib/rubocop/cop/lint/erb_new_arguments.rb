@@ -62,6 +62,9 @@ module RuboCop
       class ErbNewArguments < Base
         include RangeHelp
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.6
 
         MESSAGES = [
           'Passing safe_level with the 2nd argument of `ERB.new` is ' \

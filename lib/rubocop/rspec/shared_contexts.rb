@@ -116,6 +116,10 @@ RSpec.shared_context 'mock console output' do
   end
 end
 
+RSpec.shared_context 'ruby 2.5', :ruby25 do
+  let(:ruby_version) { 2.5 }
+end
+
 RSpec.shared_context 'ruby 2.6', :ruby26 do
   let(:ruby_version) { 2.6 }
 end

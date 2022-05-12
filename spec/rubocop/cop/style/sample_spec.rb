@@ -69,8 +69,10 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
   it_behaves_like('accepts', 'shuffle[2..3]')           # empty if coll.size < 3
   it_behaves_like('accepts', 'shuffle[2..-3]')          # can't compute range size
   it_behaves_like('accepts', 'shuffle[foo..3]')         # can't compute range size
-  it_behaves_like('accepts', 'shuffle[3..]')            # can't compute range size
-  it_behaves_like('accepts', 'shuffle[3...]')           # can't compute range size
+  context 'Ruby >= 2.6', :ruby26 do
+    it_behaves_like('accepts', 'shuffle[3..]')          # can't compute range size
+    it_behaves_like('accepts', 'shuffle[3...]')         # can't compute range size
+  end
 
   it_behaves_like('accepts', 'shuffle[-4..-3]')         # nil if coll.size < 3
   it_behaves_like('accepts', 'shuffle[foo]')            # foo could be a Range
