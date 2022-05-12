@@ -1060,6 +1060,35 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects IndentationWidth and IndentationConsistency offenses' \
+     'without correcting `Style/TrailingBodyOnClass`' do
+    source = <<~'RUBY'
+      class Test foo
+          def func1
+          end
+            def func2
+            end
+      end
+    RUBY
+    create_file('example.rb', source)
+
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only',
+                     ['Layout/IndentationConsistency', 'Layout/IndentationWidth'].join(',')
+                   ])).to eq(0)
+
+    corrected = <<~'RUBY'
+      class Test foo
+                 def func1
+                 end
+                 def func2
+                 end
+      end
+    RUBY
+    expect(File.read('example.rb')).to eq(corrected)
+  end
+
   it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
     source = ['foo.map{ |a| a.nil? }']
     create_file('example.rb', source)
