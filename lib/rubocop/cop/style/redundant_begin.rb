@@ -36,6 +36,7 @@ module RuboCop
       #   do_something
       #
       #   # bad
+      #   # When using Ruby 2.5 or later.
       #   do_something do
       #     begin
       #       something
@@ -75,6 +76,7 @@ module RuboCop
         alias on_defs on_def
 
         def on_block(node)
+          return if target_ruby_version < 2.5
           return if node.send_node.lambda_literal?
           return if node.braces?
           return unless node.body&.kwbegin_type?
