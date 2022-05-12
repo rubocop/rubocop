@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for method signatures that span multiple lines.
+      # Checks for method signatures that span multiple lines.
       #
       # @example
       #

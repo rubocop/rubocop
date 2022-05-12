@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces consistency between 'return nil' and 'return'.
+      # Enforces consistency between 'return nil' and 'return'.
       #
       # Supported styles are: return, return_nil.
       #

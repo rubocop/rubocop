@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for case statements with an empty condition.
+      # Checks for case statements with an empty condition.
       #
       # @example
       #

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop checks for memoized methods whose instance variable name
+      # Checks for memoized methods whose instance variable name
       # does not match the method name. Applies to both regular methods
       # (defined with `def`) and dynamic methods (defined with
       # `define_method` or `define_singleton_method`).

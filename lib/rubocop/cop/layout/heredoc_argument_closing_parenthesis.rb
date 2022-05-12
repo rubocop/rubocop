@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for the placement of the closing parenthesis
+      # Checks for the placement of the closing parenthesis
       # in a method call that passes a HEREDOC string as an argument.
       # It should be placed at the end of the line containing the
       # opening HEREDOC tag.

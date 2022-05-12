@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for odd `else` block layout - like
+      # Checks for odd `else` block layout - like
       # having an expression on the same line as the `else` keyword,
       # which is usually a mistake.
       #

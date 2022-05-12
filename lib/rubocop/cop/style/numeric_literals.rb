@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for big numeric literals without _ between groups
+      # Checks for big numeric literals without _ between groups
       # of digits in them.
       #
       # @example

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for string literal concatenation at
+      # Checks for string literal concatenation at
       # the end of a line.
       #
       # @safety

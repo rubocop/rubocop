@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop enforces that Ruby source files are not empty.
+      # Enforces that Ruby source files are not empty.
       #
       # @example
       #   # bad

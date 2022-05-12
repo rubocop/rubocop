@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Security
-      # This cop checks for implementations of the `hash` method which combine
+      # Checks for implementations of the `hash` method which combine
       # values using custom logic instead of delegating to `Array#hash`.
       #
       # Manually combining hashes is error prone and hard to follow, especially

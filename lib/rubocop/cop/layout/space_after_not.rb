@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for space after `!`.
+      # Checks for space after `!`.
       #
       # @example
       #   # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant `begin` blocks.
+      # Checks for redundant `begin` blocks.
       #
       # Currently it checks for code like this:
       #

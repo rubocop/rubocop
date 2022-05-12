@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks expressions wrapping styles for multiline memoization.
+      # Checks expressions wrapping styles for multiline memoization.
       #
       # @example EnforcedStyle: keyword (default)
       #   # bad

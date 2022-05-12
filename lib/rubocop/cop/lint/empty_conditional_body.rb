@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.
+      # Checks for the presence of `if`, `elsif` and `unless` branches without a body.
       # @example
       #   # bad
       #   if condition

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for ambiguous ranges.
+      # Checks for ambiguous ranges.
       #
       # Ranges have quite low precedence, which leads to unexpected behavior when
       # using a range with other operators. This cop avoids that by making ranges

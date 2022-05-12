@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop identifies places where `if-elsif` constructions
+      # Identifies places where `if-elsif` constructions
       # can be replaced with `case-when`.
       #
       # @safety

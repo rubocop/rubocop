@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether the end keyword of `begin` is aligned properly.
+      # Checks whether the end keyword of `begin` is aligned properly.
       #
       # Two modes are supported through the `EnforcedStyleAlignWith` configuration
       # parameter. If it's set to `start_of_line` (which is the default), the

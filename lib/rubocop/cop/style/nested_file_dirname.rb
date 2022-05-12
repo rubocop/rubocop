@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for nested `File.dirname`.
+      # Checks for nested `File.dirname`.
       # It replaces nested `File.dirname` with the level argument introduced in Ruby 3.1.
       #
       # @example

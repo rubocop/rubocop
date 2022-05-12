@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for chaining of a block after another block that spans
+      # Checks for chaining of a block after another block that spans
       # multiple lines.
       #
       # @example

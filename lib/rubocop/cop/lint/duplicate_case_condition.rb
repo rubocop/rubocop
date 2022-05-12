@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks that there are no repeated conditions
+      # Checks that there are no repeated conditions
       # used in case 'when' expressions.
       #
       # @example

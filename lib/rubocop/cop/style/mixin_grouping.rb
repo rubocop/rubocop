@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for grouping of mixins in `class` and `module` bodies.
+      # Checks for grouping of mixins in `class` and `module` bodies.
       # By default it enforces mixins to be placed in separate declarations,
       # but it can be configured to enforce grouping them in one declaration.
       #

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sure that predicates are named properly.
+      # Makes sure that predicates are named properly.
       #
       # @example
       #   # bad

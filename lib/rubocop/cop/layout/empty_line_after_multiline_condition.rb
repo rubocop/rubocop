@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop enforces empty line after multiline condition.
+      # Enforces empty line after multiline condition.
       #
       # @example
       #   # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop warns the usage of unsafe number conversions. Unsafe
+      # Warns the usage of unsafe number conversions. Unsafe
       # number conversion can cause unexpected error if auto type conversion
       # fails. Cop prefer parsing with number class instead.
       #

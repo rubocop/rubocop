@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for grouping of accessors in `class` and `module` bodies.
+      # Checks for grouping of accessors in `class` and `module` bodies.
       # By default it enforces accessors to be placed in grouped declarations,
       # but it can be configured to enforce separating them in multiple declarations.
       #

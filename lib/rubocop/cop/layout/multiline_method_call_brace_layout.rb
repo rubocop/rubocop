@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks that the closing brace in a method call is either
+      # Checks that the closing brace in a method call is either
       # on the same line as the last method argument, or a new line.
       #
       # When using the `symmetrical` (default) style:

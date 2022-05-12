@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for shadowed arguments.
+      # Checks for shadowed arguments.
       #
       # This cop has `IgnoreImplicitReferences` configuration option.
       # It means argument shadowing is used in order to pass parameters

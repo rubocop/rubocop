@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for trailing code after the class definition.
+      # Checks for trailing code after the class definition.
       #
       # @example
       #   # bad

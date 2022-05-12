@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for comparison of something with nil using `==` and
+      # Checks for comparison of something with nil using `==` and
       # `nil?`.
       #
       # Supported styles are: predicate, comparison.

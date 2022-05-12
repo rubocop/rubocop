@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for string conversion in string interpolation,
+      # Checks for string conversion in string interpolation,
       # which is redundant.
       #
       # @example

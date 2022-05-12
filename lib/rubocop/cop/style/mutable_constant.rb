@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks whether some constant value isn't a
+      # Checks whether some constant value isn't a
       # mutable literal (e.g. array or hash).
       #
       # Strict mode can be used to freeze all constants, rather than

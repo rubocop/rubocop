@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks to make sure `#to_json` includes an optional argument.
+      # Checks to make sure `#to_json` includes an optional argument.
       # When overriding `#to_json`, callers may invoke JSON
       # generation via `JSON.generate(your_obj)`.  Since `JSON#generate` allows
       # for an optional argument, your method should too.

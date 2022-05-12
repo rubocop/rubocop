@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks ensures source files have no utf-8 encoding comments.
+      # Checks ensures source files have no utf-8 encoding comments.
       # @example
       #   # bad
       #   # encoding: UTF-8

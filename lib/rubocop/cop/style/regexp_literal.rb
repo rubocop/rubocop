@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces using // or %r around regular expressions.
+      # Enforces using // or %r around regular expressions.
       #
       # @example EnforcedStyle: slashes (default)
       #   # bad

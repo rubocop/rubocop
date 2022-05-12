@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for the use of the send method.
+      # Checks for the use of the send method.
       #
       # @example
       #   # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks uses of the `then` keyword in multi-line `in` statement.
+      # Checks uses of the `then` keyword in multi-line `in` statement.
       #
       # @example
       #   # bad

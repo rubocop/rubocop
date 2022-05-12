@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for comments put on the same line as some keywords.
+      # Checks for comments put on the same line as some keywords.
       # These keywords are: `class`, `module`, `def`, `begin`, `end`.
       #
       # Note that some comments

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sure that all variables use the configured style,
+      # Makes sure that all variables use the configured style,
       # snake_case or camelCase, for their names.
       #
       # @example EnforcedStyle: snake_case (default)

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for using Fixnum or Bignum constant.
+      # Checks for using Fixnum or Bignum constant.
       #
       # @example
       #

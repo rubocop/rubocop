@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for a line break before the first element in a
+      # Checks for a line break before the first element in a
       # multi-line array.
       #
       # @example

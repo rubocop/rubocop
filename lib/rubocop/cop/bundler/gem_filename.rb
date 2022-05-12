@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Bundler
-      # This cop verifies that a project contains Gemfile or gems.rb file and correct
+      # Verifies that a project contains Gemfile or gems.rb file and correct
       # associated lock file based on the configuration.
       #
       # @example EnforcedStyle: Gemfile (default)

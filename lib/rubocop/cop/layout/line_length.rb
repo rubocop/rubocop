@@ -5,7 +5,7 @@ require 'uri'
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the length of lines in the source code.
+      # Checks the length of lines in the source code.
       # The maximum length is configurable.
       # The tab size is configured in the `IndentationWidth`
       # of the `Layout/IndentationStyle` cop.

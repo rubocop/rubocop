@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where `attr_reader` and `attr_writer`
+      # Checks for places where `attr_reader` and `attr_writer`
       # for the same method can be combined into single `attr_accessor`.
       #
       # @example

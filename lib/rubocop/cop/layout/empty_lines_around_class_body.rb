@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks if empty lines around the bodies of classes match
+      # Checks if empty lines around the bodies of classes match
       # the configuration.
       #
       # @example EnforcedStyle: empty_lines

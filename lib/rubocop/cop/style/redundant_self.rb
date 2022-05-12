@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant uses of `self`.
+      # Checks for redundant uses of `self`.
       #
       # The usage of `self` is only needed when:
       #

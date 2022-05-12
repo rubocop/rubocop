@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for nested method definitions.
+      # Checks for nested method definitions.
       #
       # @example
       #

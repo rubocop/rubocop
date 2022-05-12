@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether the multiline do end blocks have a newline
+      # Checks whether the multiline do end blocks have a newline
       # after the start of the block. Additionally, it checks whether the block
       # arguments, if any, are on the same line as the start of the
       # block. Putting block arguments on separate lines, because the whole

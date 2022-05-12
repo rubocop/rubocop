@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for unused block arguments.
+      # Checks for unused block arguments.
       #
       # @example
       #   # bad

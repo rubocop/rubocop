@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for END blocks.
+      # Checks for END blocks.
       #
       # @example
       #   # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for parentheses for empty lambda parameters. Parentheses
+      # Checks for parentheses for empty lambda parameters. Parentheses
       # for empty lambda parameters do not cause syntax errors, but they are
       # redundant.
       #

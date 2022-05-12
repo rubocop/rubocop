@@ -9,7 +9,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop detects instances of rubocop:enable comments that can be
+      # Detects instances of rubocop:enable comments that can be
       # removed.
       #
       # When comment enables all cops at once `rubocop:enable all`

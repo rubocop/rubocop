@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop transforms usages of a method call safeguarded by a non `nil`
+      # Transforms usages of a method call safeguarded by a non `nil`
       # check for the variable whose method is being called to
       # safe navigation (`&.`). If there is a method chain, all of the methods
       # in the chain need to be checked for safety, and all of the methods will

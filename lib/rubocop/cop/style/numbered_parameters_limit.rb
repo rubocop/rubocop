@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop detects use of an excessive amount of numbered parameters in a
+      # Detects use of an excessive amount of numbered parameters in a
       # single block. Having too many numbered parameters can make code too
       # cryptic and hard to read.
       #

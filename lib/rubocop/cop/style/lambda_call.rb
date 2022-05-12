@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for use of the lambda.(args) syntax.
+      # Checks for use of the lambda.(args) syntax.
       #
       # @example EnforcedStyle: call (default)
       #  # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for unnecessary conditional expressions.
+      # Checks for unnecessary conditional expressions.
       #
       # @example
       #   # bad

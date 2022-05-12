@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sure that accessor methods are named properly. Applies
+      # Makes sure that accessor methods are named properly. Applies
       # to both instance and class methods.
       #
       # NOTE: Offenses are only registered for methods with the expected

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the method name part in method calls
+      # Checks the indentation of the method name part in method calls
       # that span more than one line.
       #
       # @example EnforcedStyle: aligned (default)

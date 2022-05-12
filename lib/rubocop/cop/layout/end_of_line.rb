@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for Windows-style line endings in the source code.
+      # Checks for Windows-style line endings in the source code.
       #
       # @example EnforcedStyle: native (default)
       #   # The `native` style means that CR+LF (Carriage Return + Line Feed) is

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for redundant access modifiers, including those with no
+      # Checks for redundant access modifiers, including those with no
       # code, those which are repeated, and leading `public` modifiers in a
       # class or module body. Conditionally-defined methods are considered as
       # always being defined, and thus access modifiers guarding such methods

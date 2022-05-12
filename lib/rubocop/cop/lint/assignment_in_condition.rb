@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for assignments in the conditions of
+      # Checks for assignments in the conditions of
       # if/while/until.
       #
       # `AllowSafeAssignment` option for safe assignment.

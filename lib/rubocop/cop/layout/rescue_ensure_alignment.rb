@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether the rescue and ensure keywords are aligned
+      # Checks whether the rescue and ensure keywords are aligned
       # properly.
       #
       # @example

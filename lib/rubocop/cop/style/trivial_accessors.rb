@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop looks for trivial reader/writer methods, that could
+      # Looks for trivial reader/writer methods, that could
       # have been created with the attr_* family of functions automatically.
       #
       # @example

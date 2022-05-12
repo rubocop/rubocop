@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop looks for trailing whitespace in the source code.
+      # Looks for trailing whitespace in the source code.
       #
       # @example
       #   # The line in this example contains spaces after the 0.

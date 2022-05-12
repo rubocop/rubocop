@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for nested percent literals.
+      # Checks for nested percent literals.
       #
       # @example
       #

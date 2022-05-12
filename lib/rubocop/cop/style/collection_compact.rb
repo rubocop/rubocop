@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where custom logic on rejection nils from arrays
+      # Checks for places where custom logic on rejection nils from arrays
       # and hashes can be replaced with `{Array,Hash}#{compact,compact!}`.
       #
       # @safety

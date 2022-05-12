@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the first argument in a method call.
+      # Checks the indentation of the first argument in a method call.
       # Arguments after the first one are checked by `Layout/ArgumentAlignment`,
       # not by this cop.
       #

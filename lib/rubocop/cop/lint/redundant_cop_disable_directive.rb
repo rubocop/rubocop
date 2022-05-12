@@ -6,7 +6,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop detects instances of rubocop:disable comments that can be
+      # Detects instances of rubocop:disable comments that can be
       # removed without causing any offenses to be reported. It's implemented
       # as a cop in that it inherits from the Cop base class and calls
       # add_offense. The unusual part of its implementation is that it doesn't

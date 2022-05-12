@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for places where binary operator has identical operands.
+      # Checks for places where binary operator has identical operands.
       #
       # It covers arithmetic operators: `-`, `/`, `%`;
       # comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;

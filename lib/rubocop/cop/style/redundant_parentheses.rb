@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant parentheses.
+      # Checks for redundant parentheses.
       #
       # @example
       #

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for parentheses around the arguments in method
+      # Checks for parentheses around the arguments in method
       # definitions. Both instance and class/singleton methods are checked.
       #
       # Regardless of style, parentheses are necessary for:

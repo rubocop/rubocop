@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Security
-      # This cop checks for the use of YAML class methods which have
+      # Checks for the use of YAML class methods which have
       # potential security issues leading to remote code execution when
       # loading from an untrusted source.
       #

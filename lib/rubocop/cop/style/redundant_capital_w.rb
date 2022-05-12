@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for usage of the %W() syntax when %w() would do.
+      # Checks for usage of the %W() syntax when %w() would do.
       #
       # @example
       #   # bad

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of Module#attr.
+      # Checks for uses of Module#attr.
       #
       # @example
       #   # bad - creates a single attribute accessor (deprecated in Ruby 1.9)

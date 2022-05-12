@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop (by default) checks for uses of the lambda literal syntax for
+      # (by default) checks for uses of the lambda literal syntax for
       # single line lambdas, and the method call syntax for multiline lambdas.
       # It is configurable to enforce one of the styles for both single line
       # and multiline lambdas as well.

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for options hashes and discourages them if the
+      # Checks for options hashes and discourages them if the
       # current Ruby version supports keyword arguments.
       #
       # @example

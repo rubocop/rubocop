@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # This cop checks for redundant `subject(:cop) { described_class.new }`.
+      # Checks for redundant `subject(:cop) { described_class.new }`.
       #
       # @example
       #   # bad

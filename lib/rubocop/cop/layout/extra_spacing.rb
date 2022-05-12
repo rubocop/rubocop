@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for extra/unnecessary whitespace.
+      # Checks for extra/unnecessary whitespace.
       #
       # @example
       #

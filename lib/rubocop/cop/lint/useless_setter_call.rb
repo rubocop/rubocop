@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for setter call to local variable as the final
+      # Checks for setter call to local variable as the final
       # expression of a function definition.
       #
       # @safety

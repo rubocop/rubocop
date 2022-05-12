@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks that arrays are sliced with endless ranges instead of
+      # Checks that arrays are sliced with endless ranges instead of
       # `ary[start..-1]` on Ruby 2.6+.
       #
       # @safety

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for use of `extend self` or `module_function` in a
+      # Checks for use of `extend self` or `module_function` in a
       # module.
       #
       # Supported styles are: module_function, extend_self, forbidden. `forbidden`

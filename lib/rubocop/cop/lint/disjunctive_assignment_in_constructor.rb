@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks constructors for disjunctive assignments (`||=`) that should
+      # Checks constructors for disjunctive assignments (`||=`) that should
       # be plain assignments.
       #
       # So far, this cop is only concerned with disjunctive assignment of

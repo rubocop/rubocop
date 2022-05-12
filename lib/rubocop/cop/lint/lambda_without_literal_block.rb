@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks uses of lambda without a literal block.
+      # Checks uses of lambda without a literal block.
       # It emulates the following warning in Ruby 3.0:
       #
       #   % ruby -vwe 'lambda(&proc {})'

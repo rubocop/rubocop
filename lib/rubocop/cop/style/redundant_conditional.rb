@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant returning of true/false in conditionals.
+      # Checks for redundant returning of true/false in conditionals.
       #
       # @example
       #   # bad
