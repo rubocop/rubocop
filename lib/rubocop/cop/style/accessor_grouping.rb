@@ -122,14 +122,14 @@ module RuboCop
         def preferred_accessors(node)
           if grouped_style?
             accessors = sibling_accessors(node)
-            group_accessors(node, accessors) if node == accessors.first
+            group_accessors(node, accessors) if node.loc == accessors.first.loc
           else
             separate_accessors(node)
           end
         end
 
         def group_accessors(node, accessors)
-          accessor_names = accessors.flat_map { |accessor| accessor.arguments.map(&:source) }
+          accessor_names = accessors.flat_map { |accessor| accessor.arguments.map(&:source) }.uniq
 
           "#{node.method_name} #{accessor_names.join(', ')}"
         end
