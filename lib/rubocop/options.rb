@@ -93,6 +93,7 @@ module RuboCop
         option(opts, '--force-exclusion')
         option(opts, '--only-recognized-file-types')
         option(opts, '--ignore-parent-exclusion')
+        option(opts, '--ignore-unrecognized-cops')
         option(opts, '--force-default-config')
         option(opts, '-s', '--stdin FILE')
         option(opts, '-P', '--[no-]parallel')
@@ -496,6 +497,7 @@ module RuboCop
                                          'by a `rubocop:disable` directive.'],
       ignore_parent_exclusion:          ['Prevent from inheriting `AllCops/Exclude` from',
                                          'parent folders.'],
+      ignore_unrecognized_cops:         ['Ignore unrecognized cops or departments in the config.'],
       force_default_config:             ['Use default configuration even if configuration',
                                          'files are present in the directory tree.'],
       format:                           ['Choose an output formatter. This option',

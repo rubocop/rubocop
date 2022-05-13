@@ -58,6 +58,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                of user configuration or default configuration.
                   --ignore-parent-exclusion    Prevent from inheriting `AllCops/Exclude` from
                                                parent folders.
+                  --ignore-unrecognized-cops   Ignore unrecognized cops or departments in the config.
                   --force-default-config       Use default configuration even if configuration
                                                files are present in the directory tree.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
