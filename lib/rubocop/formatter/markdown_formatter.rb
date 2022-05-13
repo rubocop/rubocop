@@ -41,6 +41,8 @@ module RuboCop
 
       def write_file_messages
         files.each do |file|
+          next if file.offenses.empty?
+
           write_heading(file)
           file.offenses.each do |offense|
             write_context(offense)
