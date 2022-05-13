@@ -150,7 +150,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stderr.string).to eq ''
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
-              'token $end (Using Ruby 2.5 parser; configure using ' \
+              'token $end (Using Ruby 2.6 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
