@@ -376,6 +376,31 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
           end
         RUBY
       end
+
+      it 'registers an offense and correct when the branches are the same with the same receivers' do
+        expect_offense(<<~RUBY)
+          if x
+          ^^^^ Use double pipes `||` instead.
+            X.find(x)
+          else
+            X.find(y)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          X.find(x || y)
+        RUBY
+      end
+
+      it 'does not register an offense when the branches are the same with different receivers' do
+        expect_no_offenses(<<~RUBY)
+          if x
+            X.find(x)
+          else
+            Y.find(y)
+          end
+        RUBY
+      end
     end
   end
 
