@@ -46,7 +46,7 @@ module RuboCop
           add_offense(range_of_offense(node), message: message) do |corrector|
             if node.ternary? && !branches_have_method?(node)
               correct_ternary(corrector, node)
-            elsif redudant_condition?(node)
+            elsif redundant_condition?(node)
               corrector.replace(node, node.if_branch.source)
             else
               corrected = make_ternary_form(node)
@@ -59,7 +59,7 @@ module RuboCop
         private
 
         def message(node)
-          if redudant_condition?(node)
+          if redundant_condition?(node)
             REDUNDANT_CONDITION
           else
             MSG
@@ -82,7 +82,7 @@ module RuboCop
             (node.ternary? || !else_branch.instance_of?(AST::Node) || else_branch.single_line?)
         end
 
-        def redudant_condition?(node)
+        def redundant_condition?(node)
           node.modifier_form? || !node.else_branch
         end
 
@@ -147,7 +147,11 @@ module RuboCop
 
           if_branch.send_type? && if_branch.arguments.count == 1 &&
             else_branch.send_type? && else_branch.arguments.count == 1 &&
-            if_branch.method?(else_branch.method_name)
+            same_method?(if_branch, else_branch)
+        end
+
+        def same_method?(if_branch, else_branch)
+          if_branch.method?(else_branch.method_name) && if_branch.receiver == else_branch.receiver
         end
 
         def if_source(if_branch)
