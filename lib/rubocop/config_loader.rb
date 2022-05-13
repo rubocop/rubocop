@@ -22,7 +22,8 @@ module RuboCop
     class << self
       include FileFinder
 
-      attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops
+      attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops,
+                    :ignore_unrecognized_cops
       attr_writer :default_configuration, :project_root
       attr_reader :loaded_features
 

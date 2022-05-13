@@ -1479,6 +1479,36 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         OUTPUT
     end
 
+    it 'runs without errors for an unrecognized cop name in .rubocop.yml and `--ignore-unrecognized-cops` option is given' do
+      create_file('example/example1.rb', '# frozen_string_literal: true')
+
+      create_file('example/.rubocop.yml', <<~YAML)
+        Layout/LyneLenth:
+          Enabled: true
+          Max: 100
+        Linth:
+          Enabled: false
+        Lint/LiteralInCondition:
+          Enabled: true
+        Style/AlignHash:
+          Enabled: true
+      YAML
+
+      expect(cli.run(%w[--format simple example --ignore-unrecognized-cops])).to eq(0)
+      expect($stderr.string)
+        .to eq(<<~OUTPUT)
+          The following cops or departments are not recognized and will be ignored:
+          unrecognized cop or department Layout/LyneLenth found in example/.rubocop.yml
+          Did you mean `Layout/LineLength`?
+          unrecognized cop or department Linth found in example/.rubocop.yml
+          Did you mean `Lint`?
+          unrecognized cop or department Lint/LiteralInCondition found in example/.rubocop.yml
+          Did you mean `Lint/LiteralAsCondition`?
+          unrecognized cop or department Style/AlignHash found in example/.rubocop.yml
+          Did you mean `Style/Alias`, `Style/OptionHash`?
+        OUTPUT
+    end
+
     it 'prints a warning for an unrecognized configuration parameter' do
       create_file('example/example1.rb', '#' * 90)
 

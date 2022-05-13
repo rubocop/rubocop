@@ -102,6 +102,18 @@ module RuboCop
     end
 
     def alert_about_unrecognized_cops(invalid_cop_names)
+      unknown_cops = list_unknown_cops(invalid_cop_names)
+
+      if ConfigLoader.ignore_unrecognized_cops
+        warn Rainbow('The following cops or departments are not '\
+                     'recognized and will be ignored:').yellow
+        warn unknown_cops.join("\n")
+      elsif unknown_cops.any?
+        raise ValidationError, unknown_cops.join("\n")
+      end
+    end
+
+    def list_unknown_cops(invalid_cop_names)
       unknown_cops = []
       invalid_cop_names.each do |name|
         # There could be a custom cop with this name. If so, don't warn
@@ -119,7 +131,8 @@ module RuboCop
 
         unknown_cops << message
       end
-      raise ValidationError, unknown_cops.join("\n") if unknown_cops.any?
+
+      unknown_cops
     end
 
     def suggestion(name)

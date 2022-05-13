@@ -36,6 +36,30 @@ RSpec.describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration includes any unrecognized cop name and given `--ignore-unrecognized-cops` option' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          LyneLenth:
+            Enabled: true
+            Max: 100
+        YAML
+        RuboCop::ConfigLoader.ignore_unrecognized_cops = true
+        $stderr = StringIO.new
+      end
+
+      after do
+        RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
+        $stderr = STDERR
+      end
+
+      it 'raises an validation error' do
+        configuration
+        expect($stderr.string)
+          .to match('The following cops or departments are not recognized and will be ignored:\n'\
+                    'unrecognized cop or department LyneLenth found in .rubocop.yml')
+      end
+    end
+
     context 'when the configuration includes an empty section' do
       before { create_file(configuration_path, ['Layout/LineLength:']) }
 

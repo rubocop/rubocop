@@ -210,6 +210,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--ignore-parent-exclusion`
 | Ignores all Exclude: settings from all .rubocop.yml files present in parent folders. This is useful when you are importing submodules when you want to test them without being affected by the parent module's rubocop settings.
 
+| `--ignore-unrecognized-cops`
+| Ignore unrecognized cops or departments in the config.
+
 | `--init`
 | Generate a .rubocop.yml file in the current directory.
 
