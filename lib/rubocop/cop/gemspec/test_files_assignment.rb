@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Gemspec
-      # This cop checks that the `test_files` attribute is not set in a gemspec file.
+      # Checks that the `test_files` attribute is not set in a gemspec file.
       # Removing it allows the user to receive smaller packed gems.
       #
       # @example
