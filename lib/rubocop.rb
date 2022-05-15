@@ -162,12 +162,12 @@ require_relative 'rubocop/cop/bundler/ordered_gems'
 
 require_relative 'rubocop/cop/gemspec/date_assignment'
 require_relative 'rubocop/cop/gemspec/dependency_version'
+require_relative 'rubocop/cop/gemspec/deprecated_attribute_assignment'
 require_relative 'rubocop/cop/gemspec/duplicated_assignment'
 require_relative 'rubocop/cop/gemspec/ordered_dependencies'
 require_relative 'rubocop/cop/gemspec/require_mfa'
 require_relative 'rubocop/cop/gemspec/required_ruby_version'
 require_relative 'rubocop/cop/gemspec/ruby_version_globals_usage'
-require_relative 'rubocop/cop/gemspec/test_files_assignment'
 
 require_relative 'rubocop/cop/layout/access_modifier_indentation'
 require_relative 'rubocop/cop/layout/argument_alignment'
