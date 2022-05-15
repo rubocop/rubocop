@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Gemspec::TestFilesAssignment, :config do
+RSpec.describe RuboCop::Cop::Gemspec::DeprecatedAttributeAssignment, :config do
   it 'registers and corrects an offense when using `s.test_files =`' do
     expect_offense(<<~RUBY)
       Gem::Specification.new do |s|

@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Gemspec
-      # Checks that the `test_files` attribute is not set in a gemspec file.
-      # Removing it allows the user to receive smaller packed gems.
+      # Checks that deprecated attribute attributes are not set in a gemspec file.
+      # Removing `test_files` allows the user to receive smaller packed gems.
       #
       # @example
       #
@@ -25,7 +25,7 @@ module RuboCop
       #     spec.name = 'your_cool_gem_name'
       #   end
       #
-      class TestFilesAssignment < Base
+      class DeprecatedAttributeAssignment < Base
         include RangeHelp
         extend AutoCorrector
 

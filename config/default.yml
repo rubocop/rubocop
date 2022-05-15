@@ -254,6 +254,13 @@ Gemspec/DependencyVersion:
     - '**/*.gemspec'
   AllowedGems: []
 
+Gemspec/DeprecatedAttributeAssignment:
+  Description: Checks that deprecated attribute assignments are not set in a gemspec file.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Include:
+    - '**/*.gemspec'
+
 Gemspec/DuplicatedAssignment:
   Description: 'An attribute assignment method calls should be listed only once in a gemspec.'
   Enabled: true
@@ -295,13 +302,6 @@ Gemspec/RubyVersionGlobalsUsage:
   StyleGuide: '#no-ruby-version-in-the-gemspec'
   Enabled: true
   VersionAdded: '0.72'
-  Include:
-    - '**/*.gemspec'
-
-Gemspec/TestFilesAssignment:
-  Description: Checks that the `test_files` attribute is not set in a gemspec file.
-  Enabled: pending
-  VersionAdded: '<<next>>'
   Include:
     - '**/*.gemspec'
 
