@@ -33,6 +33,8 @@ module RuboCop
           return unless klass
 
           add_offense(node, message: format(MSG, klass: klass)) do |corrector|
+            next if target_ruby_version <= 2.3
+
             corrector.replace(node.loc.name, 'Integer')
           end
         end
