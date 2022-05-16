@@ -154,16 +154,18 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
     end
 
-    context 'when a required keyword argument is unused' do
-      it 'registers an offense but does not suggest underscore-prefix' do
-        expect_offense(<<~RUBY)
-          def self.some_method(foo, bar:)
-                                    ^^^ Unused method argument - `bar`.
-            puts foo
-          end
-        RUBY
+    context 'when a required keyword argument is unused', ruby: 2.1 do
+      context 'when a required keyword argument is unused' do
+        it 'registers an offense but does not suggest underscore-prefix' do
+          expect_offense(<<~RUBY)
+            def self.some_method(foo, bar:)
+                                      ^^^ Unused method argument - `bar`.
+              puts foo
+            end
+          RUBY
 
-        expect_no_corrections
+          expect_no_corrections
+        end
       end
     end
 

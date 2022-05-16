@@ -24,6 +24,9 @@ module RuboCop
       class RedundantRequireStatement < Base
         include RangeHelp
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.2
 
         MSG = 'Remove unnecessary `require` statement.'
         RESTRICT_ON_SEND = %i[require].freeze

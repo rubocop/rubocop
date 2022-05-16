@@ -68,6 +68,12 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('{}')
       end
 
+      context 'ruby < 2.2', :ruby21 do
+        it 'accepts hash rockets when symbol keys have string in them' do
+          expect_no_offenses('x = { :"string" => 0 }')
+        end
+      end
+
       it 'registers an offense when symbol keys have strings in them' do
         expect_offense(<<~RUBY)
           x = { :"string" => 0 }
@@ -472,6 +478,44 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      context 'ruby < 2.2', :ruby21 do
+        it 'accepts hash rockets when keys have whitespaces in them' do
+          expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
+        end
+
+        it 'registers an offense when keys have whitespaces and mix styles' do
+          expect_offense(<<~RUBY)
+            x = { :"t o" => 0, b: 1 }
+                               ^^ Don't mix styles in the same hash.
+          RUBY
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys have special symbols in them' do
+          expect_no_offenses('x = { :"\\tab" => 1, :b => 1 }')
+        end
+
+        it 'registers an offense when keys have special symbols and mix styles' do
+          expect_offense(<<~RUBY)
+            x = { :"\tab" => 1, b: 1 }
+                               ^^ Don't mix styles in the same hash.
+          RUBY
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys start with a digit' do
+          expect_no_offenses('x = { :"1" => 1, :b => 1 }')
+        end
+
+        it 'registers an offense when keys start with a digit and mix styles' do
+          expect_offense(<<~RUBY)
+            x = { :"1" => 1, b: 1 }
+                             ^^ Don't mix styles in the same hash.
+          RUBY
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+      end
+
       it 'registers an offense when keys have whitespaces in them' do
         expect_offense(<<~RUBY)
           x = { :"t o" => 0 }
@@ -612,6 +656,44 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_correction(<<~RUBY)
           x = { :a => 0, "b" => 1 }
         RUBY
+      end
+
+      context 'ruby < 2.2', :ruby21 do
+        it 'accepts hash rockets when keys have whitespaces in them' do
+          expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
+        end
+
+        it 'registers an offense when keys have whitespaces and mix styles' do
+          expect_offense(<<~RUBY)
+            x = { :"t o" => 0, b: 1 }
+                               ^^ Don't mix styles in the same hash.
+          RUBY
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys have special symbols in them' do
+          expect_no_offenses('x = { :"\\tab" => 1, :b => 1 }')
+        end
+
+        it 'registers an offense when keys have special symbols and mix styles' do
+          expect_offense(<<~RUBY)
+            x = { :"\tab" => 1, b: 1 }
+                               ^^ Don't mix styles in the same hash.
+          RUBY
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys start with a digit' do
+          expect_no_offenses('x = { :"1" => 1, :b => 1 }')
+        end
+
+        it 'registers an offense when keys start with a digit and mix styles' do
+          expect_offense(<<~RUBY)
+            x = { :"1" => 1, b: 1 }
+                             ^^ Don't mix styles in the same hash.
+          RUBY
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
       end
 
       it 'registers an offense when keys have whitespaces in them' do
