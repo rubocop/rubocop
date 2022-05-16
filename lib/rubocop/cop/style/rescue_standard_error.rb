@@ -98,7 +98,7 @@ module RuboCop
               offense_for_implicit_enforced_style(node, error)
             end
           when :explicit
-            rescue_without_error_class?(node) { offense_for_exlicit_enforced_style(node) }
+            rescue_without_error_class?(node) { offense_for_explicit_enforced_style(node) }
           end
         end
 
@@ -115,7 +115,7 @@ module RuboCop
           end
         end
 
-        def offense_for_exlicit_enforced_style(node)
+        def offense_for_explicit_enforced_style(node)
           add_offense(node.loc.keyword, message: MSG_EXPLICIT) do |corrector|
             corrector.insert_after(node.loc.keyword, ' StandardError')
           end
