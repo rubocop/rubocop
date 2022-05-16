@@ -1042,4 +1042,22 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       RUBY
     end
   end
+
+  context 'target_ruby_version < 2.3', :ruby22 do
+    it 'accepts freezing a string' do
+      expect_no_offenses('"x".freeze')
+    end
+
+    it 'accepts calling << on a string' do
+      expect_no_offenses('"x" << "y"')
+    end
+
+    it 'accepts freezing a string with interpolation' do
+      expect_no_offenses('"#{foo}bar".freeze')
+    end
+
+    it 'accepts calling << on a string with interpolation' do
+      expect_no_offenses('"#{foo}bar" << "baz"')
+    end
+  end
 end

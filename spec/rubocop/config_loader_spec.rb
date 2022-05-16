@@ -1188,7 +1188,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       context 'when the specified version is obsolete' do
-        let(:inherited_version) { '2.2' }
+        let(:inherited_version) { '2.1' }
 
         context 'and it is not overridden' do
           before do
@@ -1199,7 +1199,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
           it 'raises a validation error' do
             expect { configuration_from_file }.to raise_error(RuboCop::ValidationError) do |error|
-              expect(error.message).to start_with('RuboCop found unsupported Ruby version 2.2')
+              expect(error.message).to start_with('RuboCop found unsupported Ruby version 2.1')
             end
           end
         end
