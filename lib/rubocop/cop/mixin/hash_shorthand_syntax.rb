@@ -17,6 +17,7 @@ module RuboCop
 
           message = OMIT_HASH_VALUE_MSG
           replacement = "#{hash_key_source}:"
+          self.config_to_allow_offenses = { 'Enabled' => false }
         else
           return unless node.value_omission?
 
@@ -24,12 +25,16 @@ module RuboCop
           replacement = "#{hash_key_source}: #{hash_key_source}"
         end
 
+        register_offense(node, message, replacement)
+      end
+
+      private
+
+      def register_offense(node, message, replacement)
         add_offense(node.value, message: message) do |corrector|
           corrector.replace(node, replacement)
         end
       end
-
-      private
 
       def ignore_hash_shorthand_syntax?(pair_node)
         target_ruby_version <= 3.0 || enforced_shorthand_syntax == 'either' ||

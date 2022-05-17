@@ -1260,6 +1260,28 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         YAML
     end
 
+    context 'when hash value omission enabled', :ruby31 do
+      it 'generates Exclude if it solves all offenses' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            NewCops: enable
+            TargetRubyVersion: 3.1
+        YAML
+        create_file('example1.rb', ['# frozen_string_literal: true', '', '{ a: a }'])
+
+        expect(cli.run(['--auto-gen-config'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+            # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+            # SupportedShorthandSyntax: always, never, either
+            Style/HashSyntax:
+              Exclude:
+                - 'example1.rb'
+          YAML
+      end
+    end
+
     it 'can be called when there are no files to inspection' do
       expect(cli.run(['--auto-gen-config'])).to eq(0)
     end
