@@ -1724,7 +1724,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           'Error: RuboCop found unknown Ruby version 4.0 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2/
+          /Supported versions: 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2/
         )
       end
     end
@@ -1733,20 +1733,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
-            TargetRubyVersion: 2.0
+            TargetRubyVersion: 1.9
         YAML
 
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to start_with(
-          'Error: RuboCop found unsupported Ruby version 2.0 in '\
+          'Error: RuboCop found unsupported Ruby version 1.9 in '\
           '`TargetRubyVersion`'
         )
 
         expect($stderr.string.strip).to match(
-          /2\.0-compatible analysis was dropped after version 0\.50/
+          /1\.9-compatible analysis was dropped after version 0\.41/
         )
 
-        expect($stderr.string.strip).to match(/Supported versions: 2.1/)
+        expect($stderr.string.strip).to match(/Supported versions: 2.0/)
       end
     end
   end
