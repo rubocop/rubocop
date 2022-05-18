@@ -280,6 +280,22 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `unless` and `&&` without parens in the outer condition' \
+     ' and nested modifier condition' do
+    expect_offense(<<~RUBY)
+      unless foo && bar && baz
+        do_something unless qux
+                     ^^^^^^ Consider merging nested conditions into outer `unless` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if !foo && !bar && !baz && !qux
+        do_something
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `unless` and method arguments without parentheses ' \
      'in the outer condition and nested modifier condition' do
     expect_offense(<<~RUBY)

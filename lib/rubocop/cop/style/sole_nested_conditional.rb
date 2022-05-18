@@ -130,13 +130,7 @@ module RuboCop
         def correct_from_unless_to_if(corrector, node, is_modify_form: false)
           corrector.replace(node.loc.keyword, 'if')
 
-          condition = node.condition
-          if (condition.send_type? && condition.comparison_method? && !condition.parenthesized?) ||
-             (is_modify_form && wrap_condition?(condition))
-            corrector.wrap(node.condition, '!(', ')')
-          else
-            corrector.insert_before(node.condition, '!')
-          end
+          insert_bang(corrector, node, is_modify_form)
         end
 
         def correct_for_guard_condition_style(corrector, outer_condition, if_branch, and_operator)
@@ -185,6 +179,31 @@ module RuboCop
 
           corrector.replace(range_between(end_pos, begin_pos), '(')
           corrector.insert_after(condition.last_argument.source_range, ')')
+        end
+
+        def insert_bang(corrector, node, is_modify_form)
+          condition = node.condition
+
+          if (condition.send_type? && condition.comparison_method? && !condition.parenthesized?) ||
+             (is_modify_form && wrap_condition?(condition))
+            corrector.wrap(node.condition, '!(', ')')
+          elsif condition.and_type?
+            insert_bang_for_and(corrector, node)
+          else
+            corrector.insert_before(condition, '!')
+          end
+        end
+
+        def insert_bang_for_and(corrector, node)
+          lhs, rhs = *node
+
+          if lhs.and_type?
+            insert_bang_for_and(corrector, lhs)
+            corrector.insert_before(rhs, '!') if rhs
+          else
+            corrector.insert_before(lhs, '!')
+            corrector.insert_before(rhs, '!')
+          end
         end
 
         def require_parentheses?(condition)
