@@ -77,11 +77,11 @@ Minitest-specific analysis
 Rake-specific analysis
 * https://github.com/rubocop/rubocop-sequel[rubocop-sequel] -
 Code style checking for Sequel gem
+* https://github.com/rubocop/rubocop-thread_safety[rubocop-thread_safety] -
+Thread-safety analysis
 
 ==== Third-party Extensions
 
-* https://github.com/covermymeds/rubocop-thread_safety[rubocop-thread_safety] -
-Thread-safety analysis
 * https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
 Dynamic analysis for missing `require` statements
 * https://github.com/puppetlabs/rubocop-i18n[rubocop-i18n] -
