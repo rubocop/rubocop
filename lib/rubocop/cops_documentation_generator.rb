@@ -14,6 +14,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     @departments = departments.map(&:to_sym).sort!
     @cops = RuboCop::Cop::Registry.global
     @config = RuboCop::ConfigLoader.default_configuration
+    @docs_path = "#{Dir.pwd}/docs/modules/ROOT/pages/"
   end
 
   def call
@@ -27,7 +28,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   private
 
-  attr_reader :departments, :cops, :config
+  attr_reader :departments, :cops, :config, :docs_path
 
   def cops_of_department(department)
     cops.with_department(department).sort!
@@ -252,7 +253,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content = +"= #{department}\n"
     selected_cops.each { |cop| content << print_cop_with_doc(cop) }
     content << footer_for_department(department)
-    file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/#{department_to_basename(department)}.adoc"
+    file_name = "#{docs_path}/#{department_to_basename(department)}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
       file.write("#{content.strip}\n")
@@ -298,7 +299,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def print_table_of_contents
-    path = "#{Dir.pwd}/docs/modules/ROOT/pages/cops.adoc"
+    path = "#{docs_path}/cops.adoc"
     original = File.read(path)
     content = +"// START_COP_LIST\n\n"
 
