@@ -68,6 +68,11 @@ module RuboCop
 
         MSG = 'Redundant `begin` block detected.'
 
+        # @!method offensive_kwbegins(node)
+        def_node_search :offensive_kwbegins, <<~PATTERN
+          [(kwbegin ...) !#allowable_kwbegin?]
+        PATTERN
+
         def on_def(node)
           return unless node.body&.kwbegin_type?
 
@@ -85,15 +90,19 @@ module RuboCop
         end
 
         def on_kwbegin(node)
-          return if empty_begin?(node) ||
-                    begin_block_has_multiline_statements?(node) ||
-                    contain_rescue_or_ensure?(node) ||
-                    valid_context_using_only_begin?(node)
+          return unless (target_node = offensive_kwbegins(node).to_a.last)
 
-          register_offense(node)
+          register_offense(target_node)
         end
 
         private
+
+        def allowable_kwbegin?(node)
+          empty_begin?(node) ||
+            begin_block_has_multiline_statements?(node) ||
+            contain_rescue_or_ensure?(node) ||
+            valid_context_using_only_begin?(node)
+        end
 
         def register_offense(node)
           offense_range = node.loc.begin
