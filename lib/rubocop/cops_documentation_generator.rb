@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'fileutils'
+
 # Class for generating documentation of all cops departments
 # @api private
 class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
@@ -15,6 +17,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     @cops = RuboCop::Cop::Registry.global
     @config = RuboCop::ConfigLoader.default_configuration
     @docs_path = "#{Dir.pwd}/docs/modules/ROOT/pages/"
+    FileUtils.mkdir_p(@docs_path)
   end
 
   def call
@@ -300,6 +303,9 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def print_table_of_contents
     path = "#{docs_path}/cops.adoc"
+
+    File.write(path, table_contents) and return unless File.exist?(path)
+
     original = File.read(path)
     content = +"// START_COP_LIST\n\n"
 
