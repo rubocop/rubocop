@@ -64,26 +64,26 @@ module RuboCop
           ({next | break | retry | redo})
         PATTERN
 
-        # @!method env_with_bracket_in_descendants?(node)
-        def_node_matcher :env_with_bracket_in_descendants?, <<~PATTERN
-          `(send (const nil? :ENV) :[] $_)
+        # @!method offensive_nodes(node)
+        def_node_search :offensive_nodes, <<~PATTERN
+          [#env_with_bracket? #offensive?]
         PATTERN
 
         def on_send(node)
-          env_with_bracket?(node) do |expression|
+          env_with_bracket?(node) do |name_node|
             break unless offensive?(node)
 
             if operand_of_or?(node)
-              target_node = lookahead_target_node(node)
-              target_expr = env_with_bracket?(target_node)
+              target_node = offensive_nodes(or_chain_root(node)).to_a.last
+              name_node = env_with_bracket?(target_node)
 
               if default_to_rhs?(target_node)
-                default_rhs(target_node, target_expr)
+                default_rhs(target_node, name_node)
               else
-                default_nil(target_node, target_expr)
+                default_nil(target_node, name_node)
               end
             else
-              default_nil(node, expression)
+              default_nil(node, name_node)
             end
           end
         end
@@ -106,6 +106,13 @@ module RuboCop
 
         def offensive?(node)
           !(allowed_var?(node) || allowable_use?(node))
+        end
+
+        def or_chain_root(node)
+          while operand_of_or?(ancestor_or ||= node.parent)
+            ancestor_or = ancestor_or.parent
+          end
+          ancestor_or
         end
 
         def default_to_rhs?(node)
@@ -153,57 +160,8 @@ module RuboCop
           !(left_end_of_or_chains?(node) || node.parent&.parent&.or_type?)
         end
 
-        # Returns the node and expression of the rightmost `ENV[]` in `||` chains.
-        # e.g.,
-        # `ENV['X'] || y || z || ENV['A'] || b`
-        #                        ^^^^^^^^ Matches this one
-        def rightmost_offense_in_or_chains(base_node)
-          or_nodes = [base_node.parent]
-
-          while (grand_parent = or_nodes.last&.parent)&.or_type?
-            or_nodes << grand_parent
-          end
-
-          # Finds the rightmost `ENV[]` in `||` chains.
-          or_node = or_nodes.reverse.find do |n|
-            env_with_bracket?(n.rhs)
-          end
-
-          or_node ? or_node.rhs : base_node
-        end
-
-        def no_env_with_bracket_in_descendants?(node)
-          !env_with_bracket_in_descendants?(node)
-        end
-
         def conterpart_rhs_of(node)
           left_end_of_or_chains?(node) ? node.parent.rhs : node.parent.parent.rhs
-        end
-
-        # Looks ahead to the `ENV[]` that must be corrected first, avoiding a cross correction.
-        # ```
-        # ENV['X'] || y.map do |a|
-        #   a.map do |b|
-        #     ENV['Z'] + b
-        #     ^^^^^^^^ This must be corrected first.
-        #   end
-        # end
-        # ```
-        def lookahead_target_node(base_node)
-          return base_node unless operand_of_or?(base_node)
-
-          candidate_node = rightmost_offense_in_or_chains(base_node)
-          return candidate_node if right_end_of_or_chains?(candidate_node)
-
-          counterpart_rhs = conterpart_rhs_of(candidate_node)
-          return candidate_node if no_env_with_bracket_in_descendants?(counterpart_rhs)
-
-          new_base_node = counterpart_rhs.each_descendant.find do |d|
-            env_with_bracket?(d) && offensive?(d)
-          end
-          return candidate_node unless new_base_node
-
-          lookahead_target_node(new_base_node)
         end
 
         def rhs_can_be_default_value?(node)
@@ -214,84 +172,84 @@ module RuboCop
           block_control?(conterpart_rhs_of(node))
         end
 
-        def new_code_default_nil(expression)
-          "ENV.fetch(#{expression.source}, nil)"
+        def new_code_default_nil(name_node)
+          "ENV.fetch(#{name_node.source}, nil)"
         end
 
-        def new_code_default_rhs_single_line(node, expression)
+        def new_code_default_rhs_single_line(node, name_node)
           parent = node.parent
           if parent.rhs.basic_literal?
-            "ENV.fetch(#{expression.source}, #{parent.rhs.source})"
+            "ENV.fetch(#{name_node.source}, #{parent.rhs.source})"
           else
-            "ENV.fetch(#{expression.source}) { #{parent.rhs.source} }"
+            "ENV.fetch(#{name_node.source}) { #{parent.rhs.source} }"
           end
         end
 
-        def new_code_default_rhs_multiline(node, expression)
+        def new_code_default_rhs_multiline(node, name_node)
           env_indent = indent(node.parent)
           default = node.parent.rhs.source.split("\n").map do |line|
             "#{env_indent}#{line}"
           end.join("\n")
           <<~NEW_CODE.chomp
-            ENV.fetch(#{expression.source}) do
+            ENV.fetch(#{name_node.source}) do
             #{configured_indentation}#{default}
             #{env_indent}end
           NEW_CODE
         end
 
-        def new_code_default_rhs(node, expression)
+        def new_code_default_rhs(node, name_node)
           if node.parent.rhs.single_line?
-            new_code_default_rhs_single_line(node, expression)
+            new_code_default_rhs_single_line(node, name_node)
           else
-            new_code_default_rhs_multiline(node, expression)
+            new_code_default_rhs_multiline(node, name_node)
           end
         end
 
-        def default_rhs(node, expression)
+        def default_rhs(node, name_node)
           if left_end_of_or_chains?(node)
-            default_rhs_in_same_or(node, expression)
+            default_rhs_in_same_or(node, name_node)
           else
-            default_rhs_in_outer_or(node, expression)
+            default_rhs_in_outer_or(node, name_node)
           end
         end
 
         # Adds an offense and sets `nil` to the default value of `ENV.fetch`.
         # `ENV['X']` --> `ENV.fetch('X', nil)`
-        def default_nil(node, expression)
-          message = format(MSG_DEFAULT_NIL, key: expression.source)
+        def default_nil(node, name_node)
+          message = format(MSG_DEFAULT_NIL, key: name_node.source)
 
           add_offense(node, message: message) do |corrector|
-            corrector.replace(node, new_code_default_nil(expression))
+            corrector.replace(node, new_code_default_nil(name_node))
           end
         end
 
         # Adds an offense and makes the RHS the default value of `ENV.fetch`.
         # `ENV['X'] || y` --> `ENV.fetch('X') { y }`
-        def default_rhs_in_same_or(node, expression)
+        def default_rhs_in_same_or(node, name_node)
           template = message_template_for(node.parent.rhs)
           message = format(template,
-                           key: expression.source,
+                           key: name_node.source,
                            default: first_line_of(node.parent.rhs.source))
 
           add_offense(node, message: message) do |corrector|
-            corrector.replace(node.parent, new_code_default_rhs(node, expression))
+            corrector.replace(node.parent, new_code_default_rhs(node, name_node))
           end
         end
 
         # Adds an offense and makes the RHS the default value of `ENV.fetch`.
         # `z || ENV['X'] || y` --> `z || ENV.fetch('X') { y }`
-        def default_rhs_in_outer_or(node, expression)
+        def default_rhs_in_outer_or(node, name_node)
           parent = node.parent
           grand_parent = parent.parent
 
           template = message_template_for(grand_parent.rhs)
           message = format(template,
-                           key: expression.source,
+                           key: name_node.source,
                            default: first_line_of(grand_parent.rhs.source))
 
           add_offense(node, message: message) do |corrector|
             lhs_code = parent.lhs.source
-            rhs_code = new_code_default_rhs(parent, expression)
+            rhs_code = new_code_default_rhs(parent, name_node)
             corrector.replace(grand_parent, "#{lhs_code} || #{rhs_code}")
           end
         end
