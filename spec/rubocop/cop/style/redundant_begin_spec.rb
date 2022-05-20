@@ -481,6 +481,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
 
   it 'reports an offense when assigning nested `begin` blocks' do
     expect_offense(<<~RUBY)
+      @foo ||= begin
+        @bar ||= begin
+                 ^^^^^ Redundant `begin` block detected.
+          baz
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      @foo ||= @bar ||= baz
+      #{trailing_whitespace * 2}
+
+    RUBY
+  end
+
+  it 'reports an offense when assigning nested blocks which contain `begin` blocks' do
+    expect_offense(<<~RUBY)
       var = do_something do
         begin
         ^^^^^ Redundant `begin` block detected.
