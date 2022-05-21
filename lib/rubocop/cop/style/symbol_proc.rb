@@ -104,7 +104,7 @@ module RuboCop
             return if proc_node?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)
             return if ignored_method?(dispatch_node.method_name)
-            return if allow_if_method_has_argument?(node)
+            return if allow_if_method_has_argument?(node.send_node)
             return if node.block_type? && destructuring_block_argument?(arguments_node)
             return if allow_comments? && contains_comments?(node)
 
@@ -165,8 +165,8 @@ module RuboCop
           end
         end
 
-        def allow_if_method_has_argument?(node)
-          !!cop_config.fetch('AllowMethodsWithArguments', false) && !node.arguments.count.zero?
+        def allow_if_method_has_argument?(send_node)
+          !!cop_config.fetch('AllowMethodsWithArguments', false) && !send_node.arguments.count.zero?
         end
 
         def allow_comments?
