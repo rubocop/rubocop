@@ -422,13 +422,15 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               - 'example1.rb'
         YAML
         expect(File.read('dir/cop_config.yml')).to eq(<<~YAML)
-          inherit_from: .rubocop_todo.yml
+          inherit_from: ../.rubocop_todo.yml
 
           Layout/TrailingWhitespace:
             Enabled: false
           Layout/LineLength:
             Max: 95
         YAML
+        # Checks that the command can be run again with config modified by itself.
+        expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml])).to eq(0)
       end
 
       it 'can generate a todo list if default .rubocop.yml exists' do
