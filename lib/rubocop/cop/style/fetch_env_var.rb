@@ -75,12 +75,12 @@ module RuboCop
 
             if operand_of_or?(node)
               target_node = offensive_nodes(or_chain_root(node)).to_a.last
-              name_node = env_with_bracket?(target_node)
+              target_name_node = env_with_bracket?(target_node)
 
               if default_to_rhs?(target_node)
-                default_rhs(target_node, name_node)
+                default_rhs(target_node, target_name_node)
               else
-                default_nil(target_node, name_node)
+                default_nil(target_node, target_name_node)
               end
             else
               default_nil(node, name_node)
