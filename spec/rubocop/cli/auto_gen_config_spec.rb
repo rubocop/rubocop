@@ -430,6 +430,49 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             Max: 95
         YAML
       end
+
+      it 'can generate a todo list if default .rubocop.yml exists' do
+        create_file('example1.rb', ['def foo', '  # bar', '  end'])
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            DisabledByDefault: true
+
+          Layout/DefEndAlignment:
+            Enabled: true
+        YAML
+        create_empty_file('cop_config.yml')
+
+        expect(cli.run(%w[--auto-gen-config --config cop_config.yml])).to eq(0)
+        expect(Dir['.*']).to include('.rubocop_todo.yml')
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
+        expect(todo_contents).to eq(<<~YAML)
+          # Offense count: 1
+          # This cop supports safe autocorrection (--autocorrect).
+          # Configuration parameters: AllowForAlignment.
+          Layout/CommentIndentation:
+            Exclude:
+              - 'example1.rb'
+
+          # Offense count: 1
+          # This cop supports safe autocorrection (--autocorrect).
+          # Configuration parameters: EnforcedStyleAlignWith, Severity.
+          # SupportedStylesAlignWith: start_of_line, def
+          Layout/DefEndAlignment:
+            Exclude:
+              - 'example1.rb'
+
+          # Offense count: 1
+          # This cop supports safe autocorrection (--autocorrect).
+          # Configuration parameters: EnforcedStyle.
+          # SupportedStyles: always, always_true, never
+          Style/FrozenStringLiteralComment:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(File.read('cop_config.yml')).to eq(<<~YAML)
+          inherit_from: .rubocop_todo.yml
+        YAML
+      end
     end
 
     context 'when working with a cop who do not support autocorrection' do

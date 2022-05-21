@@ -66,6 +66,7 @@ module RuboCop
           execute_runner
           @options.delete(:only)
           @config_store = ConfigStore.new
+          @config_store.options_config = @options[:config] if @options[:config]
           # Save the todo configuration of the LineLength cop.
           File.read(AUTO_GENERATED_FILE).lines.drop_while { |line| line.start_with?('#') }.join
         end
