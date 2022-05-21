@@ -95,23 +95,24 @@ module RuboCop
         end
 
         def add_inheritance_from_auto_generated_file(config_file)
-          file_string = " #{AUTO_GENERATED_FILE}"
+          file_string = " #{relative_path_to_todo_from_options_config}"
 
           config_file ||= ConfigLoader::DOTFILE
 
           if File.exist?(config_file)
             files = Array(ConfigLoader.load_yaml_configuration(config_file)['inherit_from'])
 
-            return if files.include?(AUTO_GENERATED_FILE)
+            return if files.include?(relative_path_to_todo_from_options_config)
 
-            files.unshift(AUTO_GENERATED_FILE)
+            files.unshift(relative_path_to_todo_from_options_config)
             file_string = "\n  - #{files.join("\n  - ")}" if files.size > 1
             rubocop_yml_contents = existing_configuration(config_file)
           end
 
           write_config_file(config_file, file_string, rubocop_yml_contents)
 
-          puts "Added inheritance from `#{AUTO_GENERATED_FILE}` in `#{ConfigLoader::DOTFILE}`."
+          puts "Added inheritance from `#{relative_path_to_todo_from_options_config}` "\
+               "in `#{ConfigLoader::DOTFILE}`."
         end
 
         def existing_configuration(config_file)
@@ -125,6 +126,19 @@ module RuboCop
           doc_start_index = lines.index { |line| YAML_OPTIONAL_DOC_START.match?(line) } || -1
           lines.insert(doc_start_index + 1, "inherit_from:#{file_string}\n")
           File.write(file_name, lines.join("\n"))
+        end
+
+        def relative_path_to_todo_from_options_config
+          return AUTO_GENERATED_FILE if !@options[:config] || options_config_in_root?
+
+          base = Pathname.new('.')
+          config_dir = Pathname.new(File.dirname(@options[:config]))
+
+          "#{base.relative_path_from(config_dir)}/#{AUTO_GENERATED_FILE}"
+        end
+
+        def options_config_in_root?
+          File.dirname(@options[:config]) == '.'
         end
       end
     end
