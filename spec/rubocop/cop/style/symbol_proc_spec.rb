@@ -159,6 +159,15 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
         RUBY
       end
     end
+
+    context 'when method has no arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          coll.map { |e| e.upcase }
+                   ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
+        RUBY
+      end
+    end
   end
 
   context 'when `AllowMethodsWithArguments: false`' do
