@@ -82,7 +82,7 @@ module RuboCop
               predicate(node)
             end
 
-          return unless numeric && operator
+          return unless numeric && operator && replacement_supported?(operator)
 
           [numeric, replacement(numeric, operator)]
         end
@@ -105,6 +105,14 @@ module RuboCop
 
         def require_parentheses?(node)
           node.send_type? && node.binary_operation? && !node.parenthesized?
+        end
+
+        def replacement_supported?(operator)
+          if %i[> <].include?(operator)
+            target_ruby_version >= 2.3
+          else
+            true
+          end
         end
 
         def invert

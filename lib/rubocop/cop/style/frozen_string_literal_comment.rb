@@ -8,7 +8,7 @@ module RuboCop
       # It will add the `# frozen_string_literal: true` magic comment to the top
       # of files to enable frozen string literals. Frozen string literals may be
       # default in future Ruby. The comment will be added below a shebang and
-      # encoding comment.
+      # encoding comment. The frozen string literal comment is only valid in Ruby 2.3+.
       #
       # Note that the cop will accept files where the comment exists but is set
       # to `false` instead of `true`.
@@ -86,6 +86,9 @@ module RuboCop
         include FrozenStringLiteral
         include RangeHelp
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.3
 
         MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: true`.'
         MSG_MISSING = 'Missing frozen string literal comment.'

@@ -89,97 +89,113 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
     end
 
     context 'when checking if a number is positive' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          number > 0
-          ^^^^^^^^^^ Use `number.positive?` instead of `number > 0`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          number.positive?
-        RUBY
-      end
-
-      it 'registers an offense in yoda condition' do
-        expect_offense(<<~RUBY)
-          0 < number
-          ^^^^^^^^^^ Use `number.positive?` instead of `0 < number`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          number.positive?
-        RUBY
-      end
-
-      context 'with a complex expression' do
+      context 'when target ruby version is 2.3 or higher', :ruby23 do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
-            foo - 1 > 0
-            ^^^^^^^^^^^ Use `(foo - 1).positive?` instead of `foo - 1 > 0`.
+            number > 0
+            ^^^^^^^^^^ Use `number.positive?` instead of `number > 0`.
           RUBY
 
           expect_correction(<<~RUBY)
-            (foo - 1).positive?
+            number.positive?
           RUBY
         end
 
         it 'registers an offense in yoda condition' do
           expect_offense(<<~RUBY)
-            0 < foo - 1
-            ^^^^^^^^^^^ Use `(foo - 1).positive?` instead of `0 < foo - 1`.
+            0 < number
+            ^^^^^^^^^^ Use `number.positive?` instead of `0 < number`.
           RUBY
 
           expect_correction(<<~RUBY)
-            (foo - 1).positive?
+            number.positive?
           RUBY
+        end
+
+        context 'with a complex expression' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              foo - 1 > 0
+              ^^^^^^^^^^^ Use `(foo - 1).positive?` instead of `foo - 1 > 0`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              (foo - 1).positive?
+            RUBY
+          end
+
+          it 'registers an offense in yoda condition' do
+            expect_offense(<<~RUBY)
+              0 < foo - 1
+              ^^^^^^^^^^^ Use `(foo - 1).positive?` instead of `0 < foo - 1`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              (foo - 1).positive?
+            RUBY
+          end
+        end
+      end
+
+      context 'when target ruby version is 2.2 or lower', :ruby22 do
+        it 'does not register an offense' do
+          expect_no_offenses('number > 0')
         end
       end
     end
 
     context 'when checking if a number is negative' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          number < 0
-          ^^^^^^^^^^ Use `number.negative?` instead of `number < 0`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          number.negative?
-        RUBY
-      end
-
-      it 'registers an offense in yoda condition' do
-        expect_offense(<<~RUBY)
-          0 > number
-          ^^^^^^^^^^ Use `number.negative?` instead of `0 > number`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          number.negative?
-        RUBY
-      end
-
-      context 'with a complex expression' do
+      context 'when target ruby version is 2.3 or higher', :ruby23 do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
-            foo - 1 < 0
-            ^^^^^^^^^^^ Use `(foo - 1).negative?` instead of `foo - 1 < 0`.
+            number < 0
+            ^^^^^^^^^^ Use `number.negative?` instead of `number < 0`.
           RUBY
 
           expect_correction(<<~RUBY)
-            (foo - 1).negative?
+            number.negative?
           RUBY
         end
 
         it 'registers an offense in yoda condition' do
           expect_offense(<<~RUBY)
-            0 > foo - 1
-            ^^^^^^^^^^^ Use `(foo - 1).negative?` instead of `0 > foo - 1`.
+            0 > number
+            ^^^^^^^^^^ Use `number.negative?` instead of `0 > number`.
           RUBY
 
           expect_correction(<<~RUBY)
-            (foo - 1).negative?
+            number.negative?
           RUBY
+        end
+
+        context 'with a complex expression' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              foo - 1 < 0
+              ^^^^^^^^^^^ Use `(foo - 1).negative?` instead of `foo - 1 < 0`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              (foo - 1).negative?
+            RUBY
+          end
+
+          it 'registers an offense in yoda condition' do
+            expect_offense(<<~RUBY)
+              0 > foo - 1
+              ^^^^^^^^^^^ Use `(foo - 1).negative?` instead of `0 > foo - 1`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              (foo - 1).negative?
+            RUBY
+          end
+        end
+      end
+
+      context 'when target ruby version is 2.2 or lower', :ruby22 do
+        it 'does not register an offense' do
+          expect_no_offenses('number < 0')
         end
       end
     end
@@ -285,26 +301,46 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
       end
 
       context 'not ignored method' do
-        it 'registers an offense for checking if a number is positive' do
-          expect_offense(<<~RUBY)
-            exclude(number > 0)
-                    ^^^^^^^^^^ Use `number.positive?` instead of `number > 0`.
-          RUBY
+        context 'when checking if a number is positive' do
+          context 'when target ruby version is 2.3 or higher', :ruby23 do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                exclude(number > 0)
+                        ^^^^^^^^^^ Use `number.positive?` instead of `number > 0`.
+              RUBY
 
-          expect_correction(<<~RUBY)
-            exclude(number.positive?)
-          RUBY
+              expect_correction(<<~RUBY)
+                exclude(number.positive?)
+              RUBY
+            end
+          end
+
+          context 'when target ruby version is 2.2 or lower', :ruby22 do
+            it 'does not register an offense' do
+              expect_no_offenses('exclude { number > 0 }')
+            end
+          end
         end
 
-        it 'registers an offense for checking if a number is negative' do
-          expect_offense(<<~RUBY)
-            exclude(number < 0)
-                    ^^^^^^^^^^ Use `number.negative?` instead of `number < 0`.
-          RUBY
+        context 'when checking if a number is negative' do
+          context 'when target ruby version is 2.3 or higher', :ruby23 do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                exclude(number < 0)
+                        ^^^^^^^^^^ Use `number.negative?` instead of `number < 0`.
+              RUBY
 
-          expect_correction(<<~RUBY)
-            exclude(number.negative?)
-          RUBY
+              expect_correction(<<~RUBY)
+                exclude(number.negative?)
+              RUBY
+            end
+          end
+
+          context 'when target ruby version is 2.2 or lower', :ruby22 do
+            it 'does not register an offense' do
+              expect_no_offenses('exclude { number > 0 }')
+            end
+          end
         end
       end
     end
