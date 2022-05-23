@@ -4599,7 +4599,9 @@ Style/RedundantInitialize:
 Style/RedundantInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.76'
+  VersionChanged: '<<next>>'
 
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."
