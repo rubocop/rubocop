@@ -35,7 +35,9 @@ module RuboCop
       end
 
       def requires_parentheses?
-        collection_node.range_type?
+        return true if collection_node.send_type? && collection_node.operator_method?
+
+        collection_node.range_type? || collection_node.or_type? || collection_node.and_type?
       end
 
       def end_position
