@@ -305,14 +305,125 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       RUBY
     end
 
-    it 'registers no offenses when using an `ENV` var that is different from `if` condition in the body' do
+    it 'registers no offenses when using the same `ENV` var as `if` condition in the body with other conditions' do
+      expect_no_offenses(<<~RUBY)
+        if foo? || ENV["X"]
+          puts ENV.fetch("X")
+        end
+        if ENV["Y"] || bar?
+          puts ENV.fetch("Y")
+        end
+        if foo? && ENV["X"]
+          puts ENV.fetch("X")
+        end
+        if ENV["Y"] && bar?
+          puts ENV.fetch("Y")
+        end
+      RUBY
+    end
+
+    it 'registers no offenses when using the same `ENV` var as `if` condition in the body with operator' do
+      expect_no_offenses(<<~RUBY)
+        if ENV['X'] == foo
+          puts ENV['X']
+        end
+        if ENV['X'] != foo
+          puts ENV['X']
+        end
+      RUBY
+    end
+
+    it 'registers no offenses when using the same `ENV` var as `if` condition in the body with predicate method' do
+      expect_no_offenses(<<~RUBY)
+        if ENV["X"].present?
+          puts ENV["X"]
+        end
+        if ENV["X"].in?(%w[A B C])
+          puts ENV["X"]
+        end
+        if %w[A B C].include?(ENV["X"])
+          puts ENV["X"]
+        end
+        if ENV.key?("X")
+          puts ENV["X"]
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using an `ENV` var that is different from `if` condition in the body' do
       expect_offense(<<~RUBY)
         if ENV['X']
           puts ENV['Y']
                ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if ENV['X']
+          puts ENV.fetch('Y', nil)
+        end
+      RUBY
     end
+  end
+
+  it 'registers an offense when using `ENV && x` that is different from `if` condition in the body' do
+    expect_offense(<<~RUBY)
+      if ENV && x
+        ENV[x]
+        ^^^^^^ Use `ENV.fetch(x)` or `ENV.fetch(x, nil)` instead of `ENV[x]`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ENV && x
+        ENV.fetch(x, nil)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `ENV || x` that is different from `if` condition in the body' do
+    expect_offense(<<~RUBY)
+      if ENV || x
+        ENV[x]
+        ^^^^^^ Use `ENV.fetch(x)` or `ENV.fetch(x, nil)` instead of `ENV[x]`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ENV || x
+        ENV.fetch(x, nil)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using an `ENV` at `if` condition in the body' do
+    expect_offense(<<~RUBY)
+      if a == b
+        ENV['X']
+        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a == b
+        ENV.fetch('X', nil)
+      end
+    RUBY
+  end
+
+  it 'registers an offense with using an `ENV` at multiple `if` condition in the body' do
+    expect_offense(<<~RUBY)
+      if a || b && c
+        puts ENV['X']
+             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a || b && c
+        puts ENV.fetch('X', nil)
+      end
+    RUBY
   end
 
   context 'when the env val is excluded from the inspection by the config' do
