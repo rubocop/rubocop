@@ -97,11 +97,26 @@ module RuboCop
 
         def used_as_flag?(node)
           return false if node.root?
-
-          if_node = node.ancestors.find(&:if_type?)
-          return true if if_node&.condition == node
+          return true if used_if_condition_in_body(node)
 
           node.parent.send_type? && (node.parent.prefix_bang? || node.parent.comparison_method?)
+        end
+
+        def used_if_condition_in_body(node)
+          if_node = node.ancestors.find(&:if_type?)
+
+          return false unless (condition = if_node&.condition)
+          return true if condition.send_type? && (condition.child_nodes == node.child_nodes)
+
+          used_in_condition?(node, condition)
+        end
+
+        def used_in_condition?(node, condition)
+          if condition.send_type? && (!condition.comparison_method? && !condition.predicate_method?)
+            return false
+          end
+
+          condition.child_nodes.any?(node)
         end
 
         def offensive?(node)
