@@ -53,7 +53,8 @@ module RuboCop
                            'following the first line of a multi-line method call.'
 
         def on_send(node)
-          return if !multiple_arguments?(node) || (node.send_type? && node.method?(:[]=))
+          return if !multiple_arguments?(node) || (node.send_type? && node.method?(:[]=)) ||
+                    autocorrect_incompatible_with_other_cops?
 
           items = flattened_arguments(node)
 
@@ -63,6 +64,10 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def autocorrect_incompatible_with_other_cops?
+          with_first_argument_style? && enforce_hash_argument_with_separator?
+        end
 
         def flattened_arguments(node)
           if fixed_indentation?
@@ -112,6 +117,10 @@ module RuboCop
           cop_config['EnforcedStyle'] == 'with_fixed_indentation'
         end
 
+        def with_first_argument_style?
+          cop_config['EnforcedStyle'] == 'with_first_argument'
+        end
+
         def base_column(node, first_argument)
           if fixed_indentation? || first_argument.nil?
             lineno = target_method_lineno(node)
@@ -130,6 +139,18 @@ module RuboCop
             # l.(1) has no selector, so we use the opening parenthesis instead
             node.loc.begin.line
           end
+        end
+
+        def enforce_hash_argument_with_separator?
+          return false unless hash_argument_config['Enabled']
+
+          RuboCop::Cop::Layout::HashAlignment::SEPARATOR_ALIGNMENT_STYLES.any? do |style|
+            hash_argument_config[style] == 'separator'
+          end
+        end
+
+        def hash_argument_config
+          config.for_cop('Layout/HashAlignment')
         end
       end
     end
