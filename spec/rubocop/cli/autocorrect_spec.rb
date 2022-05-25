@@ -1986,6 +1986,62 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects when specifying `EnforcedStyle: with_first_argument` of `Layout/ArgumentAlignment` and ' \
+     '`EnforcedColonStyle: separator` of `Layout/HashAlignment`' do
+    create_file('example.rb', <<~RUBY)
+      attr_reader_with_default componentList: ['all'],
+                         componentFileFilter: { 'all' => nil },
+                             componentOption: { 'all' => { run_postinstall: true } },
+                             descriptionList: {}
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ArgumentAlignment:
+        EnforcedStyle: with_first_argument
+      Layout/HashAlignment:
+        EnforcedColonStyle: separator
+    YAML
+
+    expect(
+      cli.run(['--autocorrect', '--only', 'Layout/ArgumentAlignment,Layout/HashAlignment'])
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      attr_reader_with_default componentList: ['all'],
+                         componentFileFilter: { 'all' => nil },
+                             componentOption: { 'all' => { run_postinstall: true } },
+                             descriptionList: {}
+    RUBY
+  end
+
+  it 'corrects when specifying `EnforcedStyle: with_first_argument` of `Layout/ArgumentAlignment` and ' \
+     '`EnforcedHashRocketStyle: separator` of `Layout/HashAlignment`' do
+    create_file('example.rb', <<~RUBY)
+      attr_reader_with_default :componentList => ['all'],
+                         :componentFileFilter => { 'all' => nil },
+                             :componentOption => { 'all' => { run_postinstall: true } },
+                             :descriptionList => {}
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ArgumentAlignment:
+        EnforcedStyle: with_first_argument
+      Layout/HashAlignment:
+        EnforcedHashRocketStyle: separator
+    YAML
+
+    expect(
+      cli.run(['--autocorrect', '--only', 'Layout/ArgumentAlignment,Layout/HashAlignment'])
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      attr_reader_with_default :componentList => ['all'],
+                         :componentFileFilter => { 'all' => nil },
+                             :componentOption => { 'all' => { run_postinstall: true } },
+                             :descriptionList => {}
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`Layout/HashAlignment` and `Layout/FirstHashElementIndentation`' do
     create_file('example.rb', <<~RUBY)

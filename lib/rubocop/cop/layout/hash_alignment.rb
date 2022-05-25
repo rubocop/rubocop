@@ -190,6 +190,8 @@ module RuboCop
                                    'more than one line.'
         }.freeze
 
+        SEPARATOR_ALIGNMENT_STYLES = %w[EnforcedColonStyle EnforcedHashRocketStyle].freeze
+
         def on_send(node)
           return if double_splat?(node)
           return unless node.arguments?
