@@ -73,7 +73,7 @@ module RuboCop
       #     work
       #   end
       #
-      #   do_someting
+      #   do_something
       #
       #   if bar?  # <- reports an offense
       #     work
