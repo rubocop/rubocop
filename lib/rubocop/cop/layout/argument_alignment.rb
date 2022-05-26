@@ -145,7 +145,7 @@ module RuboCop
           return false unless hash_argument_config['Enabled']
 
           RuboCop::Cop::Layout::HashAlignment::SEPARATOR_ALIGNMENT_STYLES.any? do |style|
-            hash_argument_config[style] == 'separator'
+            hash_argument_config[style]&.include?('separator')
           end
         end
 
