@@ -84,6 +84,7 @@ In the following section you find all available cops:
 
 * xref:cops_gemspec.adoc#gemspecdateassignment[Gemspec/DateAssignment]
 * xref:cops_gemspec.adoc#gemspecdependencyversion[Gemspec/DependencyVersion]
+* xref:cops_gemspec.adoc#gemspecdeprecatedattributeassignment[Gemspec/DeprecatedAttributeAssignment]
 * xref:cops_gemspec.adoc#gemspecduplicatedassignment[Gemspec/DuplicatedAssignment]
 * xref:cops_gemspec.adoc#gemspecordereddependencies[Gemspec/OrderedDependencies]
 * xref:cops_gemspec.adoc#gemspecrequiremfa[Gemspec/RequireMFA]
@@ -463,6 +464,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylelambda[Style/Lambda]
 * xref:cops_style.adoc#stylelambdacall[Style/LambdaCall]
 * xref:cops_style.adoc#stylelineendconcatenation[Style/LineEndConcatenation]
+* xref:cops_style.adoc#stylemapcompactwithconditionalblock[Style/MapCompactWithConditionalBlock]
 * xref:cops_style.adoc#stylemaptohash[Style/MapToHash]
 * xref:cops_style.adoc#stylemethodcallwithargsparentheses[Style/MethodCallWithArgsParentheses]
 * xref:cops_style.adoc#stylemethodcallwithoutargsparentheses[Style/MethodCallWithoutArgsParentheses]

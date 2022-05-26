@@ -257,7 +257,7 @@ Gemspec/DependencyVersion:
 Gemspec/DeprecatedAttributeAssignment:
   Description: Checks that deprecated attribute assignments are not set in a gemspec file.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.30'
   Include:
     - '**/*.gemspec'
 
@@ -3935,7 +3935,7 @@ Style/LineEndConcatenation:
 Style/MapCompactWithConditionalBlock:
   Description: 'Prefer `select` or `reject` over `map { ... }.compact`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.30'
 
 Style/MapToHash:
   Description: 'Prefer `to_h` with a block over `map.to_h`.'
@@ -4606,7 +4606,7 @@ Style/RedundantInterpolation:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.76'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.30'
 
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."

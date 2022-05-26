@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.30.0 (2022-05-26)
+
 ### New features
 
 * [#10065](https://github.com/rubocop/rubocop/issues/10065): Add new `Gemspec/DeprecatedAttributeAssignment` cop. ([@koic][])

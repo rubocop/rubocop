@@ -12,7 +12,7 @@
 | -
 |===
 
-This cop makes sure that accessor methods are named properly. Applies
+Makes sure that accessor methods are named properly. Applies
 to both instance and class methods.
 
 NOTE: Offenses are only registered for methods with the expected
@@ -65,7 +65,7 @@ end
 | 0.87
 |===
 
-This cop checks for non-ascii characters in identifier and constant names.
+Checks for non-ascii characters in identifier and constant names.
 Identifiers are always checked and whether constants are checked
 can be controlled using AsciiConstants config.
 
@@ -150,7 +150,7 @@ FOÖ = "foo"
 | 1.2
 |===
 
-This cop makes sure that certain binary operator methods have their
+Makes sure that certain binary operator methods have their
 sole  parameter named `other`.
 
 === Examples
@@ -254,7 +254,7 @@ end
 | 0.77
 |===
 
-This cop checks block parameter names for how descriptive they
+Checks block parameter names for how descriptive they
 are. It is highly configurable.
 
 The `MinNameLength` config option takes an integer. It represents
@@ -325,7 +325,7 @@ baz { |age, height, gender| do_stuff(age, height, gender) }
 | 0.85
 |===
 
-This cop checks for class and module names with
+Checks for class and module names with
 an underscore in them.
 
 `AllowedNames` config takes an array of permitted names.
@@ -379,7 +379,7 @@ end
 | -
 |===
 
-This cop checks whether constant names are written using
+Checks whether constant names are written using
 SCREAMING_SNAKE_CASE.
 
 To avoid false positives, it ignores cases in which we cannot know
@@ -414,7 +414,7 @@ INCH_IN_CM = 2.54
 | 1.23
 |===
 
-This cop makes sure that Ruby source files have snake_case
+Makes sure that Ruby source files have snake_case
 names. Ruby scripts (i.e. source files with a shebang in the
 first line) are ignored.
 
@@ -500,7 +500,7 @@ anything/using_snake_case.rake
 | 1.2
 |===
 
-This cop checks that your heredocs are using the configured case.
+Checks that your heredocs are using the configured case.
 By default it is configured to enforce uppercase heredocs.
 
 === Examples
@@ -561,7 +561,7 @@ sql
 | -
 |===
 
-This cop checks that your heredocs are using meaningful delimiters.
+Checks that your heredocs are using meaningful delimiters.
 By default it disallows `END` and `EO*`, and can be configured through
 forbidden listing additional delimiters.
 
@@ -747,7 +747,7 @@ TeslaVehicle
 | 1.2
 |===
 
-This cop checks for memoized methods whose instance variable name
+Checks for memoized methods whose instance variable name
 does not match the method name. Applies to both regular methods
 (defined with `def`) and dynamic methods (defined with
 `define_method` or `define_singleton_method`).
@@ -926,7 +926,7 @@ end
 | -
 |===
 
-This cop makes sure that all methods use the configured style,
+Makes sure that all methods use the configured style,
 snake_case or camelCase, for their names.
 
 This cop has `AllowedPatterns` configuration option.
@@ -996,7 +996,7 @@ def fooBar; end
 | 0.77
 |===
 
-This cop checks method parameter names for how descriptive they
+Checks method parameter names for how descriptive they
 are. It is highly configurable.
 
 The `MinNameLength` config option takes an integer. It represents
@@ -1075,7 +1075,7 @@ end
 | 0.77
 |===
 
-This cop makes sure that predicates are named properly.
+Makes sure that predicates are named properly.
 
 === Examples
 
@@ -1146,7 +1146,7 @@ end
 | 0.68
 |===
 
-This cop makes sure that rescued exceptions variables are named as
+Makes sure that rescued exceptions variables are named as
 expected.
 
 The `PreferredName` config option takes a `String`. It represents
@@ -1233,7 +1233,7 @@ end
 | 1.8
 |===
 
-This cop makes sure that all variables use the configured style,
+Makes sure that all variables use the configured style,
 snake_case or camelCase, for their names.
 
 === Examples
@@ -1302,7 +1302,7 @@ fooBar = 1
 | 1.4
 |===
 
-This cop makes sure that all numbered variables use the
+Makes sure that all numbered variables use the
 configured style, snake_case, normalcase, or non_integer,
 for their numbering.
 

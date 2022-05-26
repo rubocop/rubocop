@@ -234,7 +234,7 @@ array = [1, 2, 3,
 | 0.77
 |===
 
-This cop checks the indentation of the first line of the
+Checks the indentation of the first line of the
 right-hand-side of a multi-line assignment.
 
 The indentation of the remaining lines can be corrected with
@@ -279,7 +279,7 @@ value =
 | -
 |===
 
-This cop checks whether the end keyword of `begin` is aligned properly.
+Checks whether the end keyword of `begin` is aligned properly.
 
 Two modes are supported through the `EnforcedStyleAlignWith` configuration
 parameter. If it's set to `start_of_line` (which is the default), the
@@ -350,7 +350,7 @@ foo ||= begin
 | -
 |===
 
-This cop checks whether the end keywords are aligned properly for do
+Checks whether the end keywords are aligned properly for do
 end blocks.
 
 Three modes are supported through the `EnforcedStyleAlignWith`
@@ -445,7 +445,7 @@ end
 | -
 |===
 
-This cop checks whether the end statement of a do..end block
+Checks whether the end statement of a do..end block
 is on its own line.
 
 === Examples
@@ -483,7 +483,7 @@ blah { |i|
 | 1.16
 |===
 
-This cop checks how the `when` and ``in``s of a `case` expression
+Checks how the `when` and ``in``s of a `case` expression
 are indented in relation to its `case` or `end` keyword.
 
 It will register a separate offense for each misaligned `when` and `in`.
@@ -856,7 +856,7 @@ foo arg,
 | -
 |===
 
-This cop checks the indentation of hanging closing parentheses in
+Checks the indentation of hanging closing parentheses in
 method calls, method definitions, and grouped expressions. A hanging
 closing parenthesis means `)` preceded by a line break.
 
@@ -935,7 +935,7 @@ some_method(a,
 | 1.24
 |===
 
-This cop checks the indentation of comments.
+Checks the indentation of comments.
 
 === Examples
 
@@ -1012,7 +1012,7 @@ a = 1 # A really long comment
 | 0.83
 |===
 
-This cop checks for conditions that are not on the same line as
+Checks for conditions that are not on the same line as
 if/while/until.
 
 === Examples
@@ -1052,7 +1052,7 @@ end
 | -
 |===
 
-This cop checks whether the end keywords of method definitions are
+Checks whether the end keywords of method definitions are
 aligned properly.
 
 Two modes are supported through the EnforcedStyleAlignWith configuration
@@ -1119,7 +1119,7 @@ private def foo
 | -
 |===
 
-This cop checks the . position in multi-line method calls.
+Checks the . position in multi-line method calls.
 
 === Examples
 
@@ -1175,7 +1175,7 @@ something.
 | -
 |===
 
-This cop checks the alignment of else keywords. Normally they should
+Checks the alignment of else keywords. Normally they should
 be aligned with an if/unless/while/until/begin/def/rescue keyword, but there
 are special cases when they should follow the same rules as the
 alignment of end.
@@ -1218,7 +1218,7 @@ end
 | -
 |===
 
-This cop checks empty comment.
+Checks empty comment.
 
 === Examples
 
@@ -1321,7 +1321,7 @@ end
 | 0.59
 |===
 
-This cop enforces empty line after guard clause
+Enforces empty line after guard clause
 
 === Examples
 
@@ -1407,7 +1407,7 @@ end
 | -
 |===
 
-This cop enforces empty line after multiline condition.
+Enforces empty line after multiline condition.
 
 === Examples
 
@@ -1475,7 +1475,7 @@ end
 | 1.23
 |===
 
-This cop checks whether class/module/method definitions are
+Checks whether class/module/method definitions are
 separated by one or more empty lines.
 
 `NumberOfEmptyLines` can be an integer (default is 1) or
@@ -1642,7 +1642,7 @@ class ErrorC < BaseError; end
 | -
 |===
 
-This cop checks for two or more consecutive blank lines.
+Checks for two or more consecutive blank lines.
 
 === Examples
 
@@ -1748,7 +1748,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the arguments
+Checks if empty lines exist around the arguments
 of a method invocation.
 
 === Examples
@@ -1902,7 +1902,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the bodies of begin-end
+Checks if empty lines exist around the bodies of begin-end
 blocks.
 
 === Examples
@@ -1940,7 +1940,7 @@ end
 | -
 |===
 
-This cop checks if empty lines around the bodies of blocks match
+Checks if empty lines around the bodies of blocks match
 the configuration.
 
 === Examples
@@ -1995,7 +1995,7 @@ end
 | 0.53
 |===
 
-This cop checks if empty lines around the bodies of classes match
+Checks if empty lines around the bodies of classes match
 the configuration.
 
 === Examples
@@ -2109,7 +2109,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the bodies of `begin`
+Checks if empty lines exist around the bodies of `begin`
 sections. This cop doesn't check empty lines at `begin` body
 beginning/end and around method definition body.
 `Style/EmptyLinesAroundBeginBody` or `Style/EmptyLinesAroundMethodBody`
@@ -2184,7 +2184,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the bodies of methods.
+Checks if empty lines exist around the bodies of methods.
 
 === Examples
 
@@ -2221,7 +2221,7 @@ end
 | -
 |===
 
-This cop checks if empty lines around the bodies of modules match
+Checks if empty lines around the bodies of modules match
 the configuration.
 
 === Examples
@@ -2307,7 +2307,7 @@ end
 | -
 |===
 
-This cop checks whether the end keywords are aligned properly.
+Checks whether the end keywords are aligned properly.
 
 Three modes are supported through the `EnforcedStyleAlignWith`
 configuration parameter:
@@ -2417,7 +2417,7 @@ variable =
 | -
 |===
 
-This cop checks for Windows-style line endings in the source code.
+Checks for Windows-style line endings in the source code.
 
 === Examples
 
@@ -2491,7 +2491,7 @@ puts 'Hello' # Return character is CR+LF on all platfoms.
 | -
 |===
 
-This cop checks for extra/unnecessary whitespace.
+Checks for extra/unnecessary whitespace.
 
 === Examples
 
@@ -2550,7 +2550,7 @@ some_object.method(arg)    # this is some comment
 | 0.77
 |===
 
-This cop checks the indentation of the first argument in a method call.
+Checks the indentation of the first argument in a method call.
 Arguments after the first one are checked by `Layout/ArgumentAlignment`,
 not by this cop.
 
@@ -2736,7 +2736,7 @@ second_param
 | 0.77
 |===
 
-This cop checks the indentation of the first element in an array literal
+Checks the indentation of the first element in an array literal
 where the opening bracket and the first element are on separate lines.
 The other elements' indentations are handled by the ArrayAlignment cop.
 
@@ -2853,7 +2853,7 @@ and_now_for_something = [
 | -
 |===
 
-This cop checks for a line break before the first element in a
+Checks for a line break before the first element in a
 multi-line array.
 
 === Examples
@@ -2882,7 +2882,7 @@ multi-line array.
 | 0.77
 |===
 
-This cop checks the indentation of the first key in a hash literal
+Checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
 other keys' indentations are handled by the HashAlignment cop.
 
@@ -2997,7 +2997,7 @@ and_now_for_something = {
 | -
 |===
 
-This cop checks for a line break before the first element in a
+Checks for a line break before the first element in a
 multi-line hash.
 
 === Examples
@@ -3026,7 +3026,7 @@ multi-line hash.
 | -
 |===
 
-This cop checks for a line break before the first argument in a
+Checks for a line break before the first argument in a
 multi-line method call.
 
 === Examples
@@ -3059,7 +3059,7 @@ method foo, bar,
 | -
 |===
 
-This cop checks for a line break before the first parameter in a
+Checks for a line break before the first parameter in a
 multi-line method parameter definition.
 
 === Examples
@@ -3098,7 +3098,7 @@ end
 | 0.77
 |===
 
-This cop checks the indentation of the first parameter in a method
+Checks the indentation of the first parameter in a method
 definition. Parameters after the first one are checked by
 Layout/ParameterAlignment, not by this cop.
 
@@ -3418,7 +3418,7 @@ do_something({foo: 1,
 | -
 |===
 
-This cop checks for the placement of the closing parenthesis
+Checks for the placement of the closing parenthesis
 in a method call that passes a HEREDOC string as an argument.
 It should be placed at the end of the line containing the
 opening HEREDOC tag.
@@ -3485,7 +3485,7 @@ opening HEREDOC tag.
 | 0.85
 |===
 
-This cop checks the indentation of the here document bodies. The bodies
+Checks the indentation of the here document bodies. The bodies
 are indented one step.
 
 Note: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),
@@ -3523,7 +3523,7 @@ RUBY
 | -
 |===
 
-This cop checks for inconsistent indentation.
+Checks for inconsistent indentation.
 
 The difference between `indented_internal_methods` and `normal` is
 that the `indented_internal_methods` style prescribes that in
@@ -3676,7 +3676,7 @@ end
 | 0.82
 |===
 
-This cop checks that the indentation method is consistent.
+Checks that the indentation method is consistent.
 Either tabs only or spaces only are used for indentation.
 
 === Examples
@@ -3745,7 +3745,7 @@ end
 | -
 |===
 
-This cop checks for indentation that doesn't use the specified number
+Checks for indentation that doesn't use the specified number
 of spaces.
 
 See also the IndentationConsistency cop which is the companion to this
@@ -3827,7 +3827,7 @@ end
 | -
 |===
 
-This cop checks for indentation of the first non-blank non-comment
+Checks for indentation of the first non-blank non-comment
 line in a file.
 
 === Examples
@@ -3857,7 +3857,7 @@ end
 | 0.73
 |===
 
-This cop checks whether comments have a leading space after the
+Checks whether comments have a leading space after the
 `#` denoting the start of the comment. The leading space is not
 required for some RDoc special syntax, like `#++`, `#--`,
 `#:nodoc`, `=begin`- and `=end` comments, "shebang" directives,
@@ -3948,7 +3948,7 @@ or rackup options.
 | 0.77
 |===
 
-This cop checks for unnecessary leading blank lines at the beginning
+Checks for unnecessary leading blank lines at the beginning
 of a file.
 
 === Examples
@@ -3988,7 +3988,7 @@ end
 | -
 |===
 
-This cop checks the indentation of the next line after a line that ends with a string
+Checks the indentation of the next line after a line that ends with a string
 literal and a backslash.
 
 If `EnforcedStyle: aligned` is set, the concatenated string parts shall be aligned with the
@@ -4094,7 +4094,7 @@ my_hash = {
 | 1.4
 |===
 
-This cop checks the length of lines in the source code.
+Checks the length of lines in the source code.
 The maximum length is configurable.
 The tab size is configured in the `IndentationWidth`
 of the `Layout/IndentationStyle` cop.
@@ -4201,7 +4201,7 @@ bar: "0000000000", baz: "0000000000"}
 | -
 |===
 
-This cop checks that the closing brace in an array literal is either
+Checks that the closing brace in an array literal is either
 on the same line as the last array element or on a new line.
 
 When using the `symmetrical` (default) style:
@@ -4323,7 +4323,7 @@ line as the last element of the array.
 | -
 |===
 
-This cop ensures that each item in a multi-line array
+Ensures that each item in a multi-line array
 starts on a separate line.
 
 === Examples
@@ -4356,7 +4356,7 @@ starts on a separate line.
 | -
 |===
 
-This cop checks whether the multiline assignments have a newline
+Checks whether the multiline assignments have a newline
 after the assignment operator.
 
 === Examples
@@ -4454,7 +4454,7 @@ foo =
 | -
 |===
 
-This cop checks whether the multiline do end blocks have a newline
+Checks whether the multiline do end blocks have a newline
 after the start of the block. Additionally, it checks whether the block
 arguments, if any, are on the same line as the start of the
 block. Putting block arguments on separate lines, because the whole
@@ -4516,7 +4516,7 @@ blah { |
 | -
 |===
 
-This cop checks that the closing brace in a hash literal is either
+Checks that the closing brace in a hash literal is either
 on the same line as the last hash element, or a new line.
 
 When using the `symmetrical` (default) style:
@@ -4637,7 +4637,7 @@ line as the last element of the hash.
 | -
 |===
 
-This cop ensures that each key in a multi-line hash
+Ensures that each key in a multi-line hash
 starts on a separate line.
 
 === Examples
@@ -4670,7 +4670,7 @@ starts on a separate line.
 | -
 |===
 
-This cop ensures that each argument in a multi-line method call
+Ensures that each argument in a multi-line method call
 starts on a separate line.
 
 NOTE: this cop does not move the first argument, if you want that to
@@ -4705,7 +4705,7 @@ foo(
 | -
 |===
 
-This cop checks that the closing brace in a method call is either
+Checks that the closing brace in a method call is either
 on the same line as the last method argument, or a new line.
 
 When using the `symmetrical` (default) style:
@@ -4827,7 +4827,7 @@ foo(a,
 | -
 |===
 
-This cop checks the indentation of the method name part in method calls
+Checks the indentation of the method name part in method calls
 that span more than one line.
 
 === Examples
@@ -4911,7 +4911,7 @@ myvariable = Thing
 | -
 |===
 
-This cop checks that the closing brace in a method definition is either
+Checks that the closing brace in a method definition is either
 on the same line as the last method parameter, or a new line.
 
 When using the `symmetrical` (default) style:
@@ -5045,7 +5045,7 @@ end
 | -
 |===
 
-This cop checks the indentation of the right hand side operand in binary operations that
+Checks the indentation of the right hand side operand in binary operations that
 span more than one line.
 
 The `aligned` style checks that operators are aligned if they are part of an `if` or `while`
@@ -5224,7 +5224,7 @@ end
 | -
 |===
 
-This cop checks whether certain expressions, e.g. method calls, that could fit
+Checks whether certain expressions, e.g. method calls, that could fit
 completely on a single line, are broken up into multiple lines unnecessarily.
 
 === Examples
@@ -5299,7 +5299,7 @@ foo(a) { |x| puts x }
 | -
 |===
 
-This cop checks whether the rescue and ensure keywords are aligned
+Checks whether the rescue and ensure keywords are aligned
 properly.
 
 === Examples
@@ -5333,7 +5333,7 @@ end
 | -
 |===
 
-This cop checks if method calls are chained onto single line blocks. It considers that a
+Checks if method calls are chained onto single line blocks. It considers that a
 line break before the dot improves the readability of the code.
 
 === Examples
@@ -5458,7 +5458,7 @@ def method=(y) end
 | -
 |===
 
-This cop checks for space after `!`.
+Checks for space after `!`.
 
 === Examples
 
@@ -5955,7 +5955,7 @@ each { |a, b| }
 | -
 |===
 
-This cop checks for missing space between a token and a comment on the
+Checks for missing space between a token and a comment on the
 same line.
 
 === Examples
@@ -6050,7 +6050,7 @@ x = 1; y = 2
 | -
 |===
 
-This cop checks for spaces between `->` and opening parameter
+Checks for spaces between `->` and opening parameter
 parenthesis (`(`) in lambda literals.
 
 === Examples
@@ -6723,7 +6723,7 @@ foo[ ]
 | -
 |===
 
-This cop checks for whitespace within string interpolations.
+Checks for whitespace within string interpolations.
 
 === Examples
 
@@ -6775,7 +6775,7 @@ This cop checks for whitespace within string interpolations.
 | 0.77
 |===
 
-This cop looks for trailing blank lines and a final newline in the
+Looks for trailing blank lines and a final newline in the
 source code.
 
 === Examples
@@ -6845,7 +6845,7 @@ class Foo; end
 | 1.0
 |===
 
-This cop looks for trailing whitespace in the source code.
+Looks for trailing whitespace in the source code.
 
 === Examples
 

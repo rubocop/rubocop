@@ -12,7 +12,7 @@
 | -
 |===
 
-This cop checks for implementations of the `hash` method which combine
+Checks for implementations of the `hash` method which combine
 values using custom logic instead of delegating to `Array#hash`.
 
 Manually combining hashes is error prone and hard to follow, especially
@@ -52,7 +52,7 @@ end
 | -
 |===
 
-This cop checks for the use of `Kernel#eval` and `Binding#eval`.
+Checks for the use of `Kernel#eval` and `Binding#eval`.
 
 === Examples
 
@@ -116,7 +116,7 @@ IO.read('| command') # Allow intentional command invocation.
 | 1.22
 |===
 
-This cop checks for the use of JSON class methods which have potential
+Checks for the use of JSON class methods which have potential
 security issues.
 
 === Safety
@@ -157,7 +157,7 @@ JSON.parse("{}")
 | -
 |===
 
-This cop checks for the use of Marshal class methods which have
+Checks for the use of Marshal class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
 
@@ -192,7 +192,7 @@ Marshal.load(Marshal.dump({}))
 | 1.0
 |===
 
-This cop checks for the use of `Kernel#open` and `URI.open` with dynamic
+Checks for the use of `Kernel#open` and `URI.open` with dynamic
 data.
 
 `Kernel#open` and `URI.open` enable not only file access but also process
@@ -241,7 +241,7 @@ URI.open("http://example.com")
 | -
 |===
 
-This cop checks for the use of YAML class methods which have
+Checks for the use of YAML class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
 
