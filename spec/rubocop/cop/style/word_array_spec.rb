@@ -459,6 +459,40 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ["あ"]   # Valid as UTF-8
       RUBY
     end
+
+    it 'preserves line breaks when autocorrecting a multiline array' do
+      expect_offense(<<~RUBY)
+        %w(
+        ^^^ Use `['foo',\\n'bar',\\n'baz']` for an array of words.
+        foo
+        bar
+        baz
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [
+        'foo',
+        'bar',
+        'baz'
+        ]
+      RUBY
+    end
+
+    it 'preserves whitespace when autocorrecting an array using partial newlines' do
+      expect_offense(<<~RUBY)
+        %w(foo bar baz
+        ^^^^^^^^^^^^^^ Use `['foo', 'bar', 'baz',\\n'boz', 'buz',\\n'biz']` for an array of words.
+        boz buz
+        biz)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ['foo', 'bar', 'baz',
+        'boz', 'buz',
+        'biz']
+      RUBY
+    end
   end
 
   context 'with a custom WordRegex configuration' do
