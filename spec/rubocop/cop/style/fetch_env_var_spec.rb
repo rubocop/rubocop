@@ -364,6 +364,29 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
         end
       RUBY
     end
+
+    it 'registers no offenses when using the same `ENV` var as `if` condition in the body with assignment method' do
+      expect_no_offenses(<<~RUBY)
+        if ENV['X'] = x
+          puts ENV['X']
+        end
+      RUBY
+    end
+
+    it 'registers an offense with using an `ENV` var as `if` condition in the body with assignment method' do
+      expect_offense(<<~RUBY)
+        if ENV['X'] = x
+          puts ENV['Y']
+               ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if ENV['X'] = x
+          puts ENV.fetch('Y', nil)
+        end
+      RUBY
+    end
   end
 
   it 'registers an offense when using `ENV && x` that is different from `if` condition in the body' do

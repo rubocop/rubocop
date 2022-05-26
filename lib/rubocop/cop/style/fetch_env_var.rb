@@ -112,11 +112,18 @@ module RuboCop
         end
 
         def used_in_condition?(node, condition)
-          if condition.send_type? && (!condition.comparison_method? && !condition.predicate_method?)
-            return false
+          if condition.send_type?
+            return true if condition.assignment_method? && partial_matched?(node, condition)
+            return false if !condition.comparison_method? && !condition.predicate_method?
           end
 
           condition.child_nodes.any?(node)
+        end
+
+        # Avoid offending in the following cases:
+        # `ENV['key'] if ENV['key'] = x`
+        def partial_matched?(node, condition)
+          node.child_nodes == node.child_nodes & condition.child_nodes
         end
 
         def offensive?(node)
