@@ -1,1 +1,0 @@
-* [#10659](https://github.com/rubocop/rubocop/issues/10659): Fix automatically appended path for `inherit_from` by `auto-gen-config` is incorrect if specified config file in a subdirectory as an option. ([@nobuyo][])

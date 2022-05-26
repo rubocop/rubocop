@@ -1,1 +1,0 @@
-* [#10396](https://github.com/rubocop/rubocop/issues/10396): Fix autocorrect for `Layout/IndentationWidth` to leave module/class body unchanged to avoid infinite autocorrect loop with `Layout/IndentationConsistency` when body trails after class/module definition. ([@johnny-miyake][])

@@ -1,1 +1,0 @@
-* [#10646](https://github.com/rubocop/rubocop/issues/10646): Fix an incorrect autocorrect for `Style/SoleNestedConditional` when using `unless` and `&&` without parens in the outer condition and nested modifier condition. ([@koic][])
