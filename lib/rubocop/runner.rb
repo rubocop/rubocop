@@ -382,7 +382,7 @@ module RuboCop
       if @options[:display_only_fail_level_offenses]
         offenses.select { |o| considered_failure?(o) }
       elsif @options[:display_only_safe_correctable]
-        offenses.select { |o| supports_safe_auto_correct?(o) }
+        offenses.select { |o| supports_safe_autocorrect?(o) }
       elsif @options[:display_only_correctable]
         offenses.select(&:correctable?)
       else
@@ -390,7 +390,7 @@ module RuboCop
       end
     end
 
-    def supports_safe_auto_correct?(offense)
+    def supports_safe_autocorrect?(offense)
       cop_class = Cop::Registry.global.find_by_cop_name(offense.cop_name)
       default_cfg = default_config(offense.cop_name)
 

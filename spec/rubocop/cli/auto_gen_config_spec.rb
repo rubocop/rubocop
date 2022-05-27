@@ -172,7 +172,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 Max: 99
 
               # Offense count: 1
-              # This cop supports safe autocorrection (--autocorrect).
+              # This cop supports unsafe autocorrection (--autocorrect-all).
               # Configuration parameters: EnforcedStyle.
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
@@ -220,7 +220,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             .to eq(<<~YAML)
 
               # Offense count: 1
-              # This cop supports safe autocorrection (--autocorrect).
+              # This cop supports unsafe autocorrection (--autocorrect-all).
               # Configuration parameters: EnforcedStyle.
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
@@ -269,7 +269,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             .to eq(<<~YAML)
 
               # Offense count: 1
-              # This cop supports safe autocorrection (--autocorrect).
+              # This cop supports unsafe autocorrection (--autocorrect-all).
               # Configuration parameters: EnforcedStyle.
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
@@ -370,7 +370,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 1',
-                '# This cop supports safe autocorrection (--autocorrect).',
+                '# This cop supports unsafe autocorrection (--autocorrect-all).',
                 '# Configuration parameters: EnforcedStyle.',
                 '# SupportedStyles: always, always_true, never',
                 'Style/FrozenStringLiteralComment:',
@@ -408,7 +408,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # This cop supports safe autocorrection (--autocorrect).
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -464,7 +464,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               - 'example1.rb'
 
           # Offense count: 1
-          # This cop supports safe autocorrection (--autocorrect).
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -500,7 +500,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             EnforcedStyle: camelCase
 
           # Offense count: 1
-          # This cop supports safe autocorrection (--autocorrect).
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -570,7 +570,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # This cop supports safe autocorrection (--autocorrect).
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -608,7 +608,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         todo_contents = File.read('dir/.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # This cop supports safe autocorrection (--autocorrect).
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -1216,14 +1216,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect(File.readlines('.rubocop_todo.yml')[8..].join)
           .to eq(<<~YAML)
             # Offense count: 3
-            # This cop supports safe autocorrection (--autocorrect).
+            # This cop supports unsafe autocorrection (--autocorrect-all).
             # Configuration parameters: EnforcedStyle.
             # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
               Enabled: false
 
             # Offense count: 2
-            # This cop supports safe autocorrection (--autocorrect).
+            # This cop supports unsafe autocorrection (--autocorrect-all).
             # Configuration parameters: RequireEnglish, EnforcedStyle.
             # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
             Style/SpecialGlobalVars:
@@ -1237,7 +1237,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect(File.readlines('.rubocop_todo.yml')[8..].join)
           .to eq(<<~YAML)
             # Offense count: 4
-            # This cop supports safe autocorrection (--autocorrect).
+            # This cop supports unsafe autocorrection (--autocorrect-all).
             # Configuration parameters: EnforcedStyle.
             # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
@@ -1248,7 +1248,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 - 'example4.rb'
 
             # Offense count: 3
-            # This cop supports safe autocorrection (--autocorrect).
+            # This cop supports unsafe autocorrection (--autocorrect-all).
             # Configuration parameters: RequireEnglish, EnforcedStyle.
             # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
             Style/SpecialGlobalVars:
