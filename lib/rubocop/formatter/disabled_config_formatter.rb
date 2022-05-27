@@ -123,7 +123,7 @@ module RuboCop
         cop_class = Cop::Registry.global.find_by_cop_name(cop_name)
         default_cfg = default_config(cop_name)
 
-        if supports_safe_auto_correct?(cop_class, default_cfg)
+        if supports_safe_autocorrect?(cop_class, default_cfg)
           output_buffer.puts '# This cop supports safe autocorrection (--autocorrect).'
         elsif supports_unsafe_autocorrect?(cop_class, default_cfg)
           output_buffer.puts '# This cop supports unsafe autocorrection (--autocorrect-all).'
@@ -137,13 +137,12 @@ module RuboCop
         output_cop_param_comments(output_buffer, params, default_cfg)
       end
 
-      def supports_safe_auto_correct?(cop_class, default_cfg)
-        cop_class&.support_autocorrect? &&
-          (default_cfg.nil? || default_cfg['Safe'] || default_cfg['Safe'].nil?)
+      def supports_safe_autocorrect?(cop_class, default_cfg)
+        cop_class&.support_autocorrect? && (default_cfg.nil? || safe_autocorrect?(default_cfg))
       end
 
       def supports_unsafe_autocorrect?(cop_class, default_cfg)
-        cop_class&.support_autocorrect? && !default_cfg.nil? && default_cfg['Safe'] == false
+        cop_class&.support_autocorrect? && !safe_autocorrect?(default_cfg)
       end
 
       def cop_config_params(default_cfg, cfg)
@@ -241,6 +240,10 @@ module RuboCop
       rescue TypeError
         regexp = exclude_path
         output_buffer.puts "    - !ruby/regexp /#{regexp.source}/"
+      end
+
+      def safe_autocorrect?(config)
+        config.fetch('Safe', true) && config.fetch('SafeAutoCorrect', true)
       end
     end
   end
