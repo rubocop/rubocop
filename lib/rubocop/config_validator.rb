@@ -104,13 +104,17 @@ module RuboCop
     def alert_about_unrecognized_cops(invalid_cop_names)
       unknown_cops = list_unknown_cops(invalid_cop_names)
 
+      return if unknown_cops.empty?
+
       if ConfigLoader.ignore_unrecognized_cops
         warn Rainbow('The following cops or departments are not '\
                      'recognized and will be ignored:').yellow
         warn unknown_cops.join("\n")
-      elsif unknown_cops.any?
-        raise ValidationError, unknown_cops.join("\n")
+
+        return
       end
+
+      raise ValidationError, unknown_cops.join("\n")
     end
 
     def list_unknown_cops(invalid_cop_names)
