@@ -37,26 +37,49 @@ RSpec.describe RuboCop::Config do
     end
 
     context 'when the configuration includes any unrecognized cop name and given `--ignore-unrecognized-cops` option' do
-      before do
-        create_file(configuration_path, <<~YAML)
-          LyneLenth:
-            Enabled: true
-            Max: 100
-        YAML
-        RuboCop::ConfigLoader.ignore_unrecognized_cops = true
-        $stderr = StringIO.new
+      context 'there is unrecognized cop' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            LyneLenth:
+              Enabled: true
+              Max: 100
+          YAML
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = true
+          $stderr = StringIO.new
+        end
+
+        after do
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
+          $stderr = STDERR
+        end
+
+        it 'prints a warning about the cop' do
+          configuration
+          expect($stderr.string)
+            .to match('The following cops or departments are not recognized and will be ignored:\n'\
+                      'unrecognized cop or department LyneLenth found in .rubocop.yml')
+        end
       end
 
-      after do
-        RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
-        $stderr = STDERR
-      end
+      context 'there are no unrecognized cops' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            Layout/LineLength:
+              Enabled: true
+          YAML
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = true
+          $stderr = StringIO.new
+        end
 
-      it 'raises an validation error' do
-        configuration
-        expect($stderr.string)
-          .to match('The following cops or departments are not recognized and will be ignored:\n'\
-                    'unrecognized cop or department LyneLenth found in .rubocop.yml')
+        after do
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
+          $stderr = STDERR
+        end
+
+        it 'does not print any warnings' do
+          configuration
+          expect($stderr.string).to eq('')
+        end
       end
     end
 
