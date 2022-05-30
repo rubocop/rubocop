@@ -7,12 +7,12 @@ module RuboCop
     module FirstElementLineBreak
       private
 
-      def check_method_line_break(node, children)
+      def check_method_line_break(node, children, ignore_last: false)
         return if children.empty?
 
         return unless method_uses_parens?(node, children.first)
 
-        check_children_line_break(node, children)
+        check_children_line_break(node, children, ignore_last: ignore_last)
       end
 
       def method_uses_parens?(node, limit)
@@ -20,7 +20,7 @@ module RuboCop
         /\s*\(\s*$/.match?(source)
       end
 
-      def check_children_line_break(node, children, start = node)
+      def check_children_line_break(node, children, start = node, ignore_last: false)
         return if children.empty?
 
         line = start.first_line
@@ -28,8 +28,8 @@ module RuboCop
         min = first_by_line(children)
         return if line != min.first_line
 
-        max = last_by_line(children)
-        return if line == max.last_line
+        max_line = last_line(children, ignore_last: ignore_last)
+        return if line == max_line
 
         add_offense(min) { |corrector| EmptyLineCorrector.insert_before(corrector, min) }
       end
@@ -38,8 +38,12 @@ module RuboCop
         nodes.min_by(&:first_line)
       end
 
-      def last_by_line(nodes)
-        nodes.max_by(&:last_line)
+      def last_line(nodes, ignore_last:)
+        if ignore_last
+          nodes.map(&:first_line)
+        else
+          nodes.map(&:last_line)
+        end.max
       end
     end
   end

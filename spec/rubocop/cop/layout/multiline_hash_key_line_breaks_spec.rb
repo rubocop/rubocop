@@ -97,5 +97,48 @@ RSpec.describe RuboCop::Cop::Layout::MultilineHashKeyLineBreaks, :config do
         bar: "2"}
       RUBY
     end
+
+    context 'ignore last element' do
+      let(:cop_config) { { 'AllowMultilineFinalElement' => true } }
+
+      it 'ignores last value that is a multiline hash' do
+        expect_no_offenses(<<~RUBY)
+          {foo: 1, bar: {
+            a: 1
+          }}
+        RUBY
+      end
+
+      it 'registers and corrects values that are multiline hashes and not the last value' do
+        expect_offense(<<~RUBY)
+          {foo: 1, bar: {
+                   ^^^^^^ Each key in a multi-line hash must start on a separate line.
+            a: 1,
+          }, baz: 3}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: 1,#{trailing_whitespace}
+          bar: {
+            a: 1,
+          },#{trailing_whitespace}
+          baz: 3}
+        RUBY
+      end
+
+      it 'registers and corrects last value that is on a new line' do
+        expect_offense(<<~RUBY)
+          {foo: 1, bar: 2,
+                   ^^^^^^ Each key in a multi-line hash must start on a separate line.
+            baz: 3}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: 1,#{trailing_whitespace}
+          bar: 2,
+            baz: 3}
+        RUBY
+      end
+    end
   end
 end
