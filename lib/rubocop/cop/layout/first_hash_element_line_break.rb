@@ -25,7 +25,15 @@ module RuboCop
         def on_hash(node)
           # node.loc.begin tells us whether the hash opens with a {
           # If it doesn't, Style/FirstMethodArgumentLineBreak will handle it
-          check_children_line_break(node, node.children) if node.loc.begin
+          return unless node.loc.begin
+
+          check_children_line_break(node, node.children, ignore_last: ignore_last_element?)
+        end
+
+        private
+
+        def ignore_last_element?
+          !!cop_config['LastElementCanBeMultiline']
         end
       end
     end

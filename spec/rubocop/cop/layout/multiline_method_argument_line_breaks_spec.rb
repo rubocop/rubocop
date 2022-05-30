@@ -159,4 +159,54 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks, :config 
       RUBY
     end
   end
+
+
+  context 'ignore last element' do
+    let(:cop_config) { { 'LastElementCanBeMultiline' => true } }
+
+    it 'ignores last argument that is a multiline hash' do
+      expect_no_offenses(<<~RUBY)
+        foo(1, 2, 3, {
+          a: 1,
+        })
+      RUBY
+    end
+
+    it 'registers and corrects arguments that are multiline hashes and not the last argument' do
+      expect_offense(<<~RUBY)
+      foo(1, 2, 3, {
+                   ^ Each argument in a multi-line method call must start on a separate line.
+                ^ Each argument in a multi-line method call must start on a separate line.
+             ^ Each argument in a multi-line method call must start on a separate line.
+        a: 1,
+      }, 4)
+      RUBY
+
+      expect_correction(<<~RUBY)
+      foo(1,#{trailing_whitespace}
+      2,#{trailing_whitespace}
+      3,#{trailing_whitespace}
+      {
+        a: 1,
+      },#{trailing_whitespace}
+      4)
+      RUBY
+    end
+
+    it 'registers and corrects last argument that starts on a new line' do
+      expect_offense(<<~RUBY)
+      foo(1, 2, 3,
+                ^ Each argument in a multi-line method call must start on a separate line.
+             ^ Each argument in a multi-line method call must start on a separate line.
+      4)
+      RUBY
+
+      expect_correction(<<~RUBY)
+      foo(1,#{trailing_whitespace}
+      2,#{trailing_whitespace}
+      3,
+      4)
+      RUBY
+    end
+  end
 end

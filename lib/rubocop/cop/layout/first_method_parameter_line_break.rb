@@ -33,9 +33,15 @@ module RuboCop
         MSG = 'Add a line break before the first parameter of a multi-line method parameter list.'
 
         def on_def(node)
-          check_method_line_break(node, node.arguments)
+          check_method_line_break(node, node.arguments, ignore_last: ignore_last_element?)
         end
         alias on_defs on_def
+
+        private
+
+        def ignore_last_element?
+          !!cop_config['LastElementCanBeMultiline']
+        end
       end
     end
   end

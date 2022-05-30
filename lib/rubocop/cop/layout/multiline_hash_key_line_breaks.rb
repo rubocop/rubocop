@@ -32,13 +32,17 @@ module RuboCop
           # Style/MultilineMethodArgumentLineBreaks handles those.
           return unless starts_with_curly_brace?(node)
 
-          check_line_breaks(node, node.children) if node.loc.begin
+          check_line_breaks(node, node.children, ignore_last: ignore_last_element?) if node.loc.begin
         end
 
         private
 
         def starts_with_curly_brace?(node)
           node.loc.begin
+        end
+
+        def ignore_last_element?
+          !!cop_config['LastElementCanBeMultiline']
         end
       end
     end

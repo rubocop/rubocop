@@ -753,6 +753,7 @@ Layout/FirstArrayElementLineBreak:
                  multi-line array.
   Enabled: false
   VersionAdded: '0.49'
+  LastElementCanBeMultiline: false
 
 Layout/FirstHashElementIndentation:
   Description: 'Checks the indentation of the first key in a hash literal.'
@@ -785,6 +786,7 @@ Layout/FirstHashElementLineBreak:
                  multi-line hash.
   Enabled: false
   VersionAdded: '0.49'
+  LastElementCanBeMultiline: false
 
 Layout/FirstMethodArgumentLineBreak:
   Description: >-
@@ -792,6 +794,7 @@ Layout/FirstMethodArgumentLineBreak:
                  multi-line method call.
   Enabled: false
   VersionAdded: '0.49'
+  LastElementCanBeMultiline: false
 
 Layout/FirstMethodParameterLineBreak:
   Description: >-
@@ -799,6 +802,7 @@ Layout/FirstMethodParameterLineBreak:
                  multi-line method parameter definition.
   Enabled: false
   VersionAdded: '0.49'
+  LastElementCanBeMultiline: false
 
 Layout/FirstParameterIndentation:
   Description: >-
@@ -1033,6 +1037,7 @@ Layout/MultilineArrayLineBreaks:
                  starts on a separate line.
   Enabled: false
   VersionAdded: '0.67'
+  LastElementCanBeMultiline: false
 
 Layout/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
@@ -1083,6 +1088,7 @@ Layout/MultilineHashKeyLineBreaks:
                  starts on a separate line.
   Enabled: false
   VersionAdded: '0.67'
+  LastElementCanBeMultiline: false
 
 Layout/MultilineMethodArgumentLineBreaks:
   Description: >-
@@ -1090,6 +1096,7 @@ Layout/MultilineMethodArgumentLineBreaks:
                  starts on a separate line.
   Enabled: false
   VersionAdded: '0.67'
+  LastElementCanBeMultiline: false
 
 Layout/MultilineMethodCallBraceLayout:
   Description: >-
