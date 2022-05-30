@@ -2,6 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
+  let(:target_ruby_version) { 2.3 }
 
   it 'allows calls to methods not safeguarded by respond_to' do
     expect_no_offenses('foo.bar')
@@ -915,10 +916,11 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
           context 'with Lint/SafeNavigationChain disabled' do
             let(:config) do
-              RuboCop::Config.new('Lint/SafeNavigationChain' => {
-                                    'Enabled' => false
-                                  },
-                                  'Style/SafeNavigation' => cop_config)
+              RuboCop::Config.new(
+                'AllCops' => { 'TargetRubyVersion' => target_ruby_version },
+                'Lint/SafeNavigationChain' => { 'Enabled' => false },
+                'Style/SafeNavigation' => cop_config
+              )
             end
 
             it 'allows an object check followed by chained method calls' do
@@ -1145,6 +1147,12 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     it 'allows enumerable accessor method calls safeguarded by a respond_to check' do
       expect_no_offenses('foo[0] if foo.respond_to?(:[])')
+    end
+  end
+
+  context 'when Ruby <= 2.2', :ruby22 do
+    it 'does not register an offense when a method call that nil responds to safe guarded by an object check' do
+      expect_no_offenses('foo.bar if foo')
     end
   end
 end
