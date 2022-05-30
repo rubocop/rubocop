@@ -6,17 +6,49 @@ module RuboCop
       # Checks for a line break before the first element in a
       # multi-line array.
       #
-      # @example
+      # @example AllowMultilineFinalElement: false (default)
       #
       #     # bad
       #     [ :a,
       #       :b]
+      #
+      #     # bad
+      #     [ :a, {
+      #       :b => :c
+      #     }]
+      #
+      #     # good
+      #     [:a, :b]
       #
       #     # good
       #     [
       #       :a,
       #       :b]
       #
+      #     # good
+      #     [
+      #       :a, {
+      #       :b => :c
+      #     }]
+      #
+      # @example AllowMultilineFinalElement: true
+      #
+      #     # bad
+      #     [ :a,
+      #       :b]
+      #
+      #     # good
+      #     [ :a, {
+      #       :b => :c
+      #     }]
+      #
+      #     # good
+      #     [
+      #       :a,
+      #       :b]
+      #
+      #     # good
+      #     [:a, :b]
       class FirstArrayElementLineBreak < Base
         include FirstElementLineBreak
         extend AutoCorrector
@@ -26,7 +58,7 @@ module RuboCop
         def on_array(node)
           return if !node.loc.begin && !assignment_on_same_line?(node)
 
-          check_children_line_break(node, node.children)
+          check_children_line_break(node, node.children, ignore_last: ignore_last_element?)
         end
 
         private
@@ -34,6 +66,10 @@ module RuboCop
         def assignment_on_same_line?(node)
           source = node.source_range.source_line[0...node.loc.column]
           /\s*=\s*$/.match?(source)
+        end
+
+        def ignore_last_element?
+          !!cop_config['AllowMultilineFinalElement']
         end
       end
     end

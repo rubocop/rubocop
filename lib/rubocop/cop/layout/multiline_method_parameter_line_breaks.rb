@@ -9,7 +9,42 @@ module RuboCop
       # NOTE: This cop does not move the first argument, if you want that to
       # be on a separate line, see `Layout/FirstMethodParameterLineBreak`.
       #
-      # @example
+      # @example AllowMultilineFinalElement: false (default)
+      #
+      #   # bad
+      #   def foo(a, b,
+      #     c
+      #   )
+      #   end
+      #
+      #   # bad
+      #   def foo(a, b = {
+      #     foo: "bar",
+      #   })
+      #   end
+      #
+      #   # good
+      #   def foo(
+      #     a,
+      #     b,
+      #     c
+      #   )
+      #   end
+      #
+      #   # good
+      #   def foo(
+      #     a,
+      #     b = {
+      #       foo: "bar",
+      #     }
+      #   )
+      #   end
+      #
+      #   # good
+      #   def foo(a, b, c)
+      #   end
+      #
+      # @example AllowMultilineFinalElement: true
       #
       #   # bad
       #   def foo(a, b,
@@ -18,10 +53,25 @@ module RuboCop
       #   end
       #
       #   # good
+      #   def foo(a, b = {
+      #     foo: "bar",
+      #   })
+      #   end
+      #
+      #   # good
       #   def foo(
       #     a,
       #     b,
       #     c
+      #   )
+      #   end
+      #
+      #   # good
+      #   def foo(
+      #     a,
+      #     b = {
+      #       foo: "bar",
+      #     }
       #   )
       #   end
       #
@@ -37,7 +87,13 @@ module RuboCop
         def on_def(node)
           return if node.arguments.empty?
 
-          check_line_breaks(node, node.arguments)
+          check_line_breaks(node, node.arguments, ignore_last: ignore_last_element?)
+        end
+
+        private
+
+        def ignore_last_element?
+          !!cop_config['AllowMultilineFinalElement']
         end
       end
     end

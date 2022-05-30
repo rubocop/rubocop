@@ -103,4 +103,54 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak, :config do
         :b]
     RUBY
   end
+
+  context 'last element can be multiline' do
+    let(:cop_config) { { 'AllowMultilineFinalElement' => true } }
+
+    it 'ignores last argument that is a multine Hash' do
+      expect_no_offenses(<<~RUBY)
+        [a, b, {
+          c: d
+        }]
+      RUBY
+    end
+
+    it 'ignores single value that is a multiline hash' do
+      expect_no_offenses(<<~RUBY)
+        [{
+          a: b
+        }]
+      RUBY
+    end
+
+    it 'registers and corrects values that are multiline hashes and not the last value' do
+      expect_offense(<<~RUBY)
+        [a, {
+         ^ Add a line break before the first element of a multi-line array.
+          b: c
+        }, d]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [
+        a, {
+          b: c
+        }, d]
+      RUBY
+    end
+
+    it 'registers and corrects last value that starts on another line' do
+      expect_offense(<<~RUBY)
+        [a, b,
+         ^ Add a line break before the first element of a multi-line array.
+        c]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [
+        a, b,
+        c]
+      RUBY
+    end
+  end
 end

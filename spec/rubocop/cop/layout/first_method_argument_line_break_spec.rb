@@ -91,4 +91,54 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak, :config do
   it 'ignores methods without arguments' do
     expect_no_offenses('foo')
   end
+
+  context 'last element can be multiline' do
+    let(:cop_config) { { 'AllowMultilineFinalElement' => true } }
+
+    it 'ignores last argument that is a multine Hash' do
+      expect_no_offenses(<<~RUBY)
+        foo(bar, {
+          a: b
+        })
+      RUBY
+    end
+
+    it 'ignores single argument that is a multiline hash' do
+      expect_no_offenses(<<~RUBY)
+        foo({
+          a: b
+        })
+      RUBY
+    end
+
+    it 'registers and corrects values that are multiline hashes and not the last value' do
+      expect_offense(<<~RUBY)
+        foo(bar, {
+            ^^^ Add a line break before the first argument of a multi-line method argument list.
+          a: b
+        }, baz)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(
+        bar, {
+          a: b
+        }, baz)
+      RUBY
+    end
+
+    it 'registers and corrects last argument that starts on another line' do
+      expect_offense(<<~RUBY)
+        foo(bar,
+            ^^^ Add a line break before the first argument of a multi-line method argument list.
+        baz)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo(
+        bar,
+        baz)
+      RUBY
+    end
+  end
 end
