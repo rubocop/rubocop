@@ -1312,27 +1312,6 @@ Both are enabled by default.
 
 === Examples
 
-==== EnforcedStyle: snake_case
-
-[source,ruby]
-----
-# bad
-:some_sym1
-variable1 = 1
-
-def some_method1; end
-
-def some_method_1(arg1); end
-
-# good
-:some_sym_1
-variable_1 = 1
-
-def some_method_1; end
-
-def some_method_1(arg_1); end
-----
-
 ==== EnforcedStyle: normalcase (default)
 
 [source,ruby]
@@ -1352,6 +1331,27 @@ variable1 = 1
 def some_method1; end
 
 def some_method1(arg1); end
+----
+
+==== EnforcedStyle: snake_case
+
+[source,ruby]
+----
+# bad
+:some_sym1
+variable1 = 1
+
+def some_method1; end
+
+def some_method_1(arg1); end
+
+# good
+:some_sym_1
+variable_1 = 1
+
+def some_method_1; end
+
+def some_method_1(arg_1); end
 ----
 
 ==== EnforcedStyle: non_integer

@@ -7,21 +7,21 @@ module RuboCop
       # styles `implicit` and `explicit`. This cop will not register an offense
       # if any error other than `StandardError` is specified.
       #
-      # @example EnforcedStyle: implicit
-      #   # `implicit` will enforce using `rescue` instead of
-      #   # `rescue StandardError`.
+      # @example EnforcedStyle: explicit (default)
+      #   # `explicit` will enforce using `rescue StandardError`
+      #   # instead of `rescue`.
       #
       #   # bad
       #   begin
       #     foo
-      #   rescue StandardError
+      #   rescue
       #     bar
       #   end
       #
       #   # good
       #   begin
       #     foo
-      #   rescue
+      #   rescue StandardError
       #     bar
       #   end
       #
@@ -39,21 +39,21 @@ module RuboCop
       #     bar
       #   end
       #
-      # @example EnforcedStyle: explicit (default)
-      #   # `explicit` will enforce using `rescue StandardError`
-      #   # instead of `rescue`.
+      # @example EnforcedStyle: implicit
+      #   # `implicit` will enforce using `rescue` instead of
+      #   # `rescue StandardError`.
       #
       #   # bad
       #   begin
       #     foo
-      #   rescue
+      #   rescue StandardError
       #     bar
       #   end
       #
       #   # good
       #   begin
       #     foo
-      #   rescue StandardError
+      #   rescue
       #     bar
       #   end
       #

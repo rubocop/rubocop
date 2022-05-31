@@ -1945,6 +1945,17 @@ the configuration.
 
 === Examples
 
+==== EnforcedStyle: no_empty_lines (default)
+
+[source,ruby]
+----
+# good
+
+foo do |bar|
+  # ...
+end
+----
+
 ==== EnforcedStyle: empty_lines
 
 [source,ruby]
@@ -1955,17 +1966,6 @@ foo do |bar|
 
   # ...
 
-end
-----
-
-==== EnforcedStyle: no_empty_lines (default)
-
-[source,ruby]
-----
-# good
-
-foo do |bar|
-  # ...
 end
 ----
 
@@ -1999,6 +1999,19 @@ Checks if empty lines around the bodies of classes match
 the configuration.
 
 === Examples
+
+==== EnforcedStyle: no_empty_lines (default)
+
+[source,ruby]
+----
+# good
+
+class Foo
+  def bar
+    # ...
+  end
+end
+----
 
 ==== EnforcedStyle: empty_lines
 
@@ -2067,19 +2080,6 @@ class Foo
     # ...
   end
 
-end
-----
-
-==== EnforcedStyle: no_empty_lines (default)
-
-[source,ruby]
-----
-# good
-
-class Foo
-  def bar
-    # ...
-  end
 end
 ----
 
@@ -2226,6 +2226,19 @@ the configuration.
 
 === Examples
 
+==== EnforcedStyle: no_empty_lines (default)
+
+[source,ruby]
+----
+# good
+
+module Foo
+  def bar
+    # ...
+  end
+end
+----
+
 ==== EnforcedStyle: empty_lines
 
 [source,ruby]
@@ -2265,19 +2278,6 @@ module Foo
 
   def bar; end
 
-end
-----
-
-==== EnforcedStyle: no_empty_lines (default)
-
-[source,ruby]
-----
-# good
-
-module Foo
-  def bar
-    # ...
-  end
 end
 ----
 
@@ -2587,6 +2587,37 @@ nested_first_param),
 second_param
 ----
 
+==== EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
+
+[source,ruby]
+----
+# Same as `special_for_inner_method_call` except that the special rule
+# only applies if the outer method call encloses its arguments in
+# parentheses.
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+  nested_first_param),
+second_param
+----
+
 ==== EnforcedStyle: consistent
 
 [source,ruby]
@@ -2676,37 +2707,6 @@ second_param)
 
 some_method nested_call(
               nested_first_param),
-second_param
-----
-
-==== EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
-
-[source,ruby]
-----
-# Same as `special_for_inner_method_call` except that the special rule
-# only applies if the outer method call encloses its arguments in
-# parentheses.
-
-# good
-some_method(
-  first_param,
-second_param)
-
-foo = some_method(
-  first_param,
-second_param)
-
-foo = some_method(nested_call(
-                    nested_first_param),
-second_param)
-
-foo = some_method(
-  nested_call(
-    nested_first_param),
-second_param)
-
-some_method nested_call(
-  nested_first_param),
 second_param
 ----
 
@@ -6104,20 +6104,6 @@ surrounding space depending on configuration.
 
 === Examples
 
-==== EnforcedStyle: space
-
-[source,ruby]
-----
-# The `space` style enforces that array literals have
-# surrounding space.
-
-# bad
-array = [a, b, c, d]
-
-# good
-array = [ a, b, c, d ]
-----
-
 ==== EnforcedStyle: no_space (default)
 
 [source,ruby]
@@ -6130,6 +6116,20 @@ array = [ a, b, c, d ]
 
 # good
 array = [a, b, c, d]
+----
+
+==== EnforcedStyle: space
+
+[source,ruby]
+----
+# The `space` style enforces that array literals have
+# surrounding space.
+
+# bad
+array = [a, b, c, d]
+
+# good
+array = [ a, b, c, d ]
 ----
 
 ==== EnforcedStyle: compact
@@ -6780,6 +6780,25 @@ source code.
 
 === Examples
 
+==== EnforcedStyle: final_newline (default)
+
+[source,ruby]
+----
+# `final_newline` looks for one newline at the end of files.
+
+# bad
+class Foo; end
+
+# EOF
+
+# bad
+class Foo; end # EOF
+
+# good
+class Foo; end
+# EOF
+----
+
 ==== EnforcedStyle: final_blank_line
 
 [source,ruby]
@@ -6797,25 +6816,6 @@ class Foo; end # EOF
 # good
 class Foo; end
 
-# EOF
-----
-
-==== EnforcedStyle: final_newline (default)
-
-[source,ruby]
-----
-# `final_newline` looks for one newline at the end of files.
-
-# bad
-class Foo; end
-
-# EOF
-
-# bad
-class Foo; end # EOF
-
-# good
-class Foo; end
 # EOF
 ----
 
