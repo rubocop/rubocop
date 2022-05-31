@@ -11,23 +11,6 @@ module RuboCop
       # can be used to specify whether method names and symbols should be checked.
       # Both are enabled by default.
       #
-      # @example EnforcedStyle: snake_case
-      #   # bad
-      #   :some_sym1
-      #   variable1 = 1
-      #
-      #   def some_method1; end
-      #
-      #   def some_method_1(arg1); end
-      #
-      #   # good
-      #   :some_sym_1
-      #   variable_1 = 1
-      #
-      #   def some_method_1; end
-      #
-      #   def some_method_1(arg_1); end
-      #
       # @example EnforcedStyle: normalcase (default)
       #   # bad
       #   :some_sym_1
@@ -44,6 +27,23 @@ module RuboCop
       #   def some_method1; end
       #
       #   def some_method1(arg1); end
+      #
+      # @example EnforcedStyle: snake_case
+      #   # bad
+      #   :some_sym1
+      #   variable1 = 1
+      #
+      #   def some_method1; end
+      #
+      #   def some_method_1(arg1); end
+      #
+      #   # good
+      #   :some_sym_1
+      #   variable_1 = 1
+      #
+      #   def some_method_1; end
+      #
+      #   def some_method_1(arg_1); end
       #
       # @example EnforcedStyle: non_integer
       #   # bad

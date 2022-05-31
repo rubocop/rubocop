@@ -6,6 +6,34 @@ module RuboCop
       # Checks for empty else-clauses, possibly including comments and/or an
       # explicit `nil` depending on the EnforcedStyle.
       #
+      # @example EnforcedStyle: both (default)
+      #   # warn on empty else and else with nil in it
+      #
+      #   # bad
+      #   if condition
+      #     statement
+      #   else
+      #     nil
+      #   end
+      #
+      #   # bad
+      #   if condition
+      #     statement
+      #   else
+      #   end
+      #
+      #   # good
+      #   if condition
+      #     statement
+      #   else
+      #     statement
+      #   end
+      #
+      #   # good
+      #   if condition
+      #     statement
+      #   end
+      #
       # @example EnforcedStyle: empty
       #   # warn only on empty else
       #
@@ -45,34 +73,6 @@ module RuboCop
       #   end
       #
       #   # good
-      #   if condition
-      #     statement
-      #   else
-      #   end
-      #
-      #   # good
-      #   if condition
-      #     statement
-      #   else
-      #     statement
-      #   end
-      #
-      #   # good
-      #   if condition
-      #     statement
-      #   end
-      #
-      # @example EnforcedStyle: both (default)
-      #   # warn on empty else and else with nil in it
-      #
-      #   # bad
-      #   if condition
-      #     statement
-      #   else
-      #     nil
-      #   end
-      #
-      #   # bad
       #   if condition
       #     statement
       #   else

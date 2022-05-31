@@ -6,6 +6,13 @@ module RuboCop
       # Checks if empty lines around the bodies of blocks match
       # the configuration.
       #
+      # @example EnforcedStyle: no_empty_lines (default)
+      #   # good
+      #
+      #   foo do |bar|
+      #     # ...
+      #   end
+      #
       # @example EnforcedStyle: empty_lines
       #   # good
       #
@@ -13,13 +20,6 @@ module RuboCop
       #
       #     # ...
       #
-      #   end
-      #
-      # @example EnforcedStyle: no_empty_lines (default)
-      #   # good
-      #
-      #   foo do |bar|
-      #     # ...
       #   end
       class EmptyLinesAroundBlockBody < Base
         include EmptyLinesAroundBody

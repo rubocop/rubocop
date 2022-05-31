@@ -6,6 +6,15 @@ module RuboCop
       # Checks if empty lines around the bodies of modules match
       # the configuration.
       #
+      # @example EnforcedStyle: no_empty_lines (default)
+      #   # good
+      #
+      #   module Foo
+      #     def bar
+      #       # ...
+      #     end
+      #   end
+      #
       # @example EnforcedStyle: empty_lines
       #   # good
       #
@@ -34,15 +43,6 @@ module RuboCop
       #
       #     def bar; end
       #
-      #   end
-      #
-      # @example EnforcedStyle: no_empty_lines (default)
-      #   # good
-      #
-      #   module Foo
-      #     def bar
-      #       # ...
-      #     end
       #   end
       class EmptyLinesAroundModuleBody < Base
         include EmptyLinesAroundBody

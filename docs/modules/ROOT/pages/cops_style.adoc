@@ -247,25 +247,6 @@ and that might change the behavior.
 
 === Examples
 
-==== EnforcedStyle: always
-
-[source,ruby]
-----
-# bad
-foo.save and return
-
-# bad
-if foo and bar
-end
-
-# good
-foo.save && return
-
-# good
-if foo && bar
-end
-----
-
 ==== EnforcedStyle: conditionals (default)
 
 [source,ruby]
@@ -279,6 +260,25 @@ foo.save && return
 
 # good
 foo.save and return
+
+# good
+if foo && bar
+end
+----
+
+==== EnforcedStyle: always
+
+[source,ruby]
+----
+# bad
+foo.save and return
+
+# bad
+if foo and bar
+end
+
+# good
+foo.save && return
 
 # good
 if foo && bar
@@ -3051,6 +3051,38 @@ explicit `nil` depending on the EnforcedStyle.
 
 === Examples
 
+==== EnforcedStyle: both (default)
+
+[source,ruby]
+----
+# warn on empty else and else with nil in it
+
+# bad
+if condition
+  statement
+else
+  nil
+end
+
+# bad
+if condition
+  statement
+else
+end
+
+# good
+if condition
+  statement
+else
+  statement
+end
+
+# good
+if condition
+  statement
+end
+----
+
 ==== EnforcedStyle: empty
 
 [source,ruby]
@@ -3097,38 +3129,6 @@ else
 end
 
 # good
-if condition
-  statement
-else
-end
-
-# good
-if condition
-  statement
-else
-  statement
-end
-
-# good
-if condition
-  statement
-end
-----
-
-==== EnforcedStyle: both (default)
-
-[source,ruby]
-----
-# warn on empty else and else with nil in it
-
-# bad
-if condition
-  statement
-else
-  nil
-end
-
-# bad
 if condition
   statement
 else
@@ -6678,6 +6678,39 @@ Supported styles are: if, case, both.
 
 === Examples
 
+==== EnforcedStyle: both (default)
+
+[source,ruby]
+----
+# warn when an `if` or `case` expression is missing an `else` branch.
+
+# bad
+if condition
+  statement
+end
+
+# bad
+case var
+when condition
+  statement
+end
+
+# good
+if condition
+  statement
+else
+  # the content of `else` branch will be determined by Style/EmptyElse
+end
+
+# good
+case var
+when condition
+  statement
+else
+  # the content of `else` branch will be determined by Style/EmptyElse
+end
+----
+
 ==== EnforcedStyle: if
 
 [source,ruby]
@@ -6738,39 +6771,6 @@ end
 
 # good
 if condition
-  statement
-else
-  # the content of `else` branch will be determined by Style/EmptyElse
-end
-----
-
-==== EnforcedStyle: both (default)
-
-[source,ruby]
-----
-# warn when an `if` or `case` expression is missing an `else` branch.
-
-# bad
-if condition
-  statement
-end
-
-# bad
-case var
-when condition
-  statement
-end
-
-# good
-if condition
-  statement
-else
-  # the content of `else` branch will be determined by Style/EmptyElse
-end
-
-# good
-case var
-when condition
   statement
 else
   # the content of `else` branch will be determined by Style/EmptyElse
@@ -10868,42 +10868,6 @@ if any error other than `StandardError` is specified.
 
 === Examples
 
-==== EnforcedStyle: implicit
-
-[source,ruby]
-----
-# `implicit` will enforce using `rescue` instead of
-# `rescue StandardError`.
-
-# bad
-begin
-  foo
-rescue StandardError
-  bar
-end
-
-# good
-begin
-  foo
-rescue
-  bar
-end
-
-# good
-begin
-  foo
-rescue OtherError
-  bar
-end
-
-# good
-begin
-  foo
-rescue StandardError, SecurityError
-  bar
-end
-----
-
 ==== EnforcedStyle: explicit (default)
 
 [source,ruby]
@@ -10922,6 +10886,42 @@ end
 begin
   foo
 rescue StandardError
+  bar
+end
+
+# good
+begin
+  foo
+rescue OtherError
+  bar
+end
+
+# good
+begin
+  foo
+rescue StandardError, SecurityError
+  bar
+end
+----
+
+==== EnforcedStyle: implicit
+
+[source,ruby]
+----
+# `implicit` will enforce using `rescue` instead of
+# `rescue StandardError`.
+
+# bad
+begin
+  foo
+rescue StandardError
+  bar
+end
+
+# good
+begin
+  foo
+rescue
   bar
 end
 
@@ -11009,6 +11009,8 @@ end
 |===
 
 == Style/SafeNavigation
+
+NOTE: Required Ruby version: 2.3
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed

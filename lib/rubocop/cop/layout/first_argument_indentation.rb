@@ -37,6 +37,33 @@ module RuboCop
       #   nested_first_param),
       #   second_param
       #
+      # @example EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
+      #   # Same as `special_for_inner_method_call` except that the special rule
+      #   # only applies if the outer method call encloses its arguments in
+      #   # parentheses.
+      #
+      #   # good
+      #   some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(nested_call(
+      #                       nested_first_param),
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     nested_call(
+      #       nested_first_param),
+      #   second_param)
+      #
+      #   some_method nested_call(
+      #     nested_first_param),
+      #   second_param
+      #
       # @example EnforcedStyle: consistent
       #   # The first argument should always be indented one step more than the
       #   # preceding line.
@@ -115,33 +142,6 @@ module RuboCop
       #
       #   some_method nested_call(
       #                 nested_first_param),
-      #   second_param
-      #
-      # @example EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
-      #   # Same as `special_for_inner_method_call` except that the special rule
-      #   # only applies if the outer method call encloses its arguments in
-      #   # parentheses.
-      #
-      #   # good
-      #   some_method(
-      #     first_param,
-      #   second_param)
-      #
-      #   foo = some_method(
-      #     first_param,
-      #   second_param)
-      #
-      #   foo = some_method(nested_call(
-      #                       nested_first_param),
-      #   second_param)
-      #
-      #   foo = some_method(
-      #     nested_call(
-      #       nested_first_param),
-      #   second_param)
-      #
-      #   some_method nested_call(
-      #     nested_first_param),
       #   second_param
       #
       class FirstArgumentIndentation < Base
