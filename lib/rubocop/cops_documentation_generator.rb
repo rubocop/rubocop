@@ -34,15 +34,32 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def cops_body(cop, description, examples_objects, safety_objects, pars) # rubocop:disable Metrics/AbcSize
+    check_examples_to_have_the_default_enforced_style!(examples_objects, cop)
+
     content = h2(cop.cop_name)
     content << required_ruby_version(cop)
     content << properties(cop)
     content << "#{description}\n"
     content << safety_object(safety_objects) if safety_objects.any? { |s| !s.text.blank? }
-    content << examples(examples_objects) if examples_objects.count.positive?
+    content << examples(examples_objects) if examples_objects.any?
     content << configurations(pars)
     content << references(cop)
     content
+  end
+
+  def check_examples_to_have_the_default_enforced_style!(examples_object, cop)
+    return if examples_object.none?
+
+    examples_describing_enforced_style = examples_object.map(&:name).grep(/EnforcedStyle:/)
+    return if examples_describing_enforced_style.none?
+
+    if examples_describing_enforced_style.index { |name| name.match?('default') }.nonzero?
+      raise "Put the example with the default EnforcedStyle on top for #{cop.cop_name}"
+    end
+
+    return if examples_describing_enforced_style.any? { |name| name.match?('default') }
+
+    raise "Specify the default EnforcedStyle for #{cop.cop_name}"
   end
 
   def examples(examples_object)
