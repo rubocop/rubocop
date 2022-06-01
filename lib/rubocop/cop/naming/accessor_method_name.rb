@@ -63,7 +63,9 @@ module RuboCop
         end
 
         def bad_writer_name?(node)
-          node.method_name.to_s.start_with?('set_') && node.arguments.one?
+          node.method_name.to_s.start_with?('set_') &&
+            node.arguments.one? &&
+            node.first_argument.arg_type?
         end
       end
     end
