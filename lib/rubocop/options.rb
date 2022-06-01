@@ -226,7 +226,7 @@ module RuboCop
     end
 
     def handle_deprecated_option(old_option, new_option)
-      warn "#{old_option} is deprecated; use #{new_option}"
+      warn rainbow.wrap("#{old_option} is deprecated; use #{new_option} instead.").yellow
       @options[long_opt_symbol([new_option])] = @options.delete(long_opt_symbol([old_option]))
     end
 
