@@ -76,7 +76,7 @@ module RuboCop
 
           topmost_plus_node = find_topmost_plus_node(node)
           parts = collect_parts(topmost_plus_node)
-          return unless parts[0..-2].any? { |receiver_node| offensive_for_mode?(receiver_node) }
+          return if mode == :conservative && !parts.first.str_type?
 
           register_offense(topmost_plus_node, parts)
         end
@@ -93,11 +93,6 @@ module RuboCop
               @corrected_nodes.add(topmost_plus_node)
             end
           end
-        end
-
-        def offensive_for_mode?(receiver_node)
-          mode = cop_config['Mode'].to_sym
-          mode == :aggressive || (mode == :conservative && receiver_node.str_type?)
         end
 
         def line_end_concatenation?(node)
@@ -172,6 +167,10 @@ module RuboCop
 
         def single_quoted?(str_node)
           str_node.source.start_with?("'")
+        end
+
+        def mode
+          cop_config['Mode'].to_sym
         end
       end
     end
