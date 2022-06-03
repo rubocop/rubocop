@@ -597,6 +597,32 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
     end
 
+    context 'method definition' do
+      context 'when under limit' do
+        it 'does not add any offenses' do
+          expect_no_offenses(<<~RUBY)
+            def foo(foo: 1, bar: "2"); end
+          RUBY
+        end
+      end
+
+      context 'when over limit' do
+        it 'adds an offense and autocorrects it' do
+          expect_offense(<<~RUBY)
+            def foo(abc: "100000", def: "100000", ghi: "100000", jkl: "100000", mno: "100000")
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [82/40]
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo(abc: "100000", def: "100000",#{trailing_whitespace}
+            ghi: "100000", jkl: "100000", mno: "100000")
+            end
+          RUBY
+        end
+      end
+    end
+
     context 'method call' do
       context 'when under limit' do
         it 'does not add any offenses' do
