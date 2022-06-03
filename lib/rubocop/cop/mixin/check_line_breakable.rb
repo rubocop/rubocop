@@ -46,6 +46,8 @@ module RuboCop
         if node.send_type?
           args = process_args(node.arguments)
           return extract_breakable_node_from_elements(node, args, max)
+        elsif node.def_type?
+          return extract_breakable_node_from_elements(node, node.arguments, max)
         elsif node.array_type? || node.hash_type?
           return extract_breakable_node_from_elements(node, node.children, max)
         end
@@ -216,6 +218,8 @@ module RuboCop
 
       # @api private
       def already_on_multiple_lines?(node)
+        return node.first_line != node.arguments.last.last_line if node.def_type?
+
         node.first_line != node.last_line
       end
     end
