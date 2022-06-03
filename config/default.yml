@@ -1158,6 +1158,13 @@ Layout/MultilineMethodDefinitionBraceLayout:
     - new_line
     - same_line
 
+Layout/MultilineMethodParameterLineBreaks:
+  Description: >-
+                 Checks that each parameter in a multi-line method definition
+                 starts on a separate line.
+  Enabled: false
+  VersionAdded: '<<next>>'
+
 Layout/MultilineOperationIndentation:
   Description: >-
                  Checks indentation of binary operations that span more than
