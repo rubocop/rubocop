@@ -224,6 +224,7 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
         expect_no_offenses(<<~RUBY)
           user.name + "!!"
           user.name + "<"
+          user.name + "<" + "user.email" + ">"
         RUBY
       end
     end
@@ -235,14 +236,11 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
           ^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
           "Hello " + user.name + "!!"
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
-          user.name + "<" + "user.email" + ">"
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
         RUBY
 
         expect_correction(<<~RUBY)
           "Hello \#{user.name}"
           "Hello \#{user.name}!!"
-          "\#{user.name}<user.email>"
         RUBY
       end
     end
