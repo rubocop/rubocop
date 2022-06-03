@@ -37,6 +37,7 @@ module RuboCop
       # * MultilineHashBraceLayout
       # * MultilineHashKeyLineBreaks
       # * MultilineMethodArgumentLineBreaks
+      # * MultilineMethodParameterLineBreaks
       # * ParameterAlignment
       #
       # Together, these cops will pretty print hashes, arrays,

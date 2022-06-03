@@ -6,7 +6,7 @@ module RuboCop
       # Ensures that each argument in a multi-line method call
       # starts on a separate line.
       #
-      # NOTE: this cop does not move the first argument, if you want that to
+      # NOTE: This cop does not move the first argument, if you want that to
       # be on a separate line, see `Layout/FirstMethodArgumentLineBreak`.
       #
       # @example
@@ -22,6 +22,9 @@ module RuboCop
       #     b,
       #     c
       #   )
+      #
+      #   # good
+      #   foo(a, b, c)
       class MultilineMethodArgumentLineBreaks < Base
         include MultilineElementLineBreaks
         extend AutoCorrector
