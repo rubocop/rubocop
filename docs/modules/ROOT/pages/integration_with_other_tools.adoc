@@ -7,7 +7,7 @@ to do autocorrection for you. In these cases, `rubocop` ends up getting called r
 which may result in some slowness, as `rubocop` has to require its entire environment on
 each call.
 
-You can alleviate some of that boot time by using
+You can alleviate some of that boot time by using xref:server.adoc["Server"] or
 https://github.com/fohte/rubocop-daemon[rubocop-daemon]. `rubocop-daemon` is a
 wrapper around `rubocop` that loads everything into a daemonized process so that
 subsequent runs save on that boot time after the first execution. Please see the

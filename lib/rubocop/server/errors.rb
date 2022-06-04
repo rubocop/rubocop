@@ -10,11 +10,14 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
-    class GemfileNotFound < StandardError; end
+  module Server
+    # @api private
     class InvalidTokenError < StandardError; end
+
+    # @api private
     class ServerStopRequest < StandardError; end
-    class UnknownClientCommandError < StandardError; end
+
+    # @api private
     class UnknownServerCommandError < StandardError; end
   end
 end

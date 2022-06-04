@@ -10,9 +10,13 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
     module ServerCommand
+      # Abstract base class for server command.
+      # @api private
       class Base
+        # Common functionality for working with subclasses of this class.
+        # @api private
         module Runner
           def run
             validate_token!
@@ -23,6 +27,7 @@ module RuboCop
         end
 
         def self.inherited(child)
+          super
           child.prepend Runner
         end
 

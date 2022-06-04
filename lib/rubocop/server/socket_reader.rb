@@ -10,14 +10,15 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
+    # This class sends the request read from the socket to server.
+    # @api private
     class SocketReader
       Request = Struct.new(:header, :body)
       Header = Struct.new(:token, :cwd, :command, :args)
 
-      def initialize(socket, verbose)
+      def initialize(socket)
         @socket = socket
-        @verbose = verbose
       end
 
       def read!
@@ -26,7 +27,7 @@ module RuboCop
         Helper.redirect(
           stdin: StringIO.new(request.body),
           stdout: @socket,
-          stderr: @socket,
+          stderr: @socket
         ) do
           create_command_instance(request).run
         end
@@ -36,10 +37,6 @@ module RuboCop
 
       def parse_request(content)
         raw_header, *body = content.lines
-        if @verbose
-          puts raw_header.to_s
-          puts "STDIN: #{body.size} lines" if body.any?
-        end
 
         Request.new(parse_header(raw_header), body.join)
       end
@@ -52,11 +49,7 @@ module RuboCop
       def create_command_instance(request)
         klass = find_command_class(request.header.command)
 
-        klass.new(
-          request.header.args,
-          token: request.header.token,
-          cwd: request.header.cwd,
-        )
+        klass.new(request.header.args, token: request.header.token, cwd: request.header.cwd)
       end
 
       def find_command_class(command)

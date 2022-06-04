@@ -10,7 +10,9 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
+    # This module has a helper memthod for `RuboCop::Server::SocketReader`.
+    # @api private
     module Helper
       def self.redirect(stdin: $stdin, stdout: $stdout, stderr: $stderr, &_block)
         old_stdin = $stdin.dup

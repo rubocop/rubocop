@@ -10,23 +10,20 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
     module ClientCommand
+      # This class is a client command to stop server process.
+      # @api private
       class Stop < Base
         def run
           return unless check_running_server
 
-          parser.parse(@argv)
-          send_request(command: 'stop')
-          Daemon.wait_for_running_status!(false)
-        end
-
-        private
-
-        def parser
-          @parser ||= CLI.new_parser do |p|
-            p.banner = 'usage: rubocop-daemon stop'
+          pid = fork do
+            send_request(command: 'stop')
+            Server.wait_for_running_status!(false)
           end
+
+          Process.waitpid(pid)
         end
       end
     end

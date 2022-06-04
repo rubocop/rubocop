@@ -10,13 +10,12 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
+    # @api private
     module ServerCommand
-      class Stop < Base
-        def run
-          raise ServerStopRequest
-        end
-      end
+      autoload :Base, 'rubocop/server/server_command/base'
+      autoload :Exec, 'rubocop/server/server_command/exec'
+      autoload :Stop, 'rubocop/server/server_command/stop'
     end
   end
 end

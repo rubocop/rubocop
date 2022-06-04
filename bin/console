@@ -4,6 +4,7 @@
 require 'bundler/setup'
 require 'irb'
 require 'rubocop'
+require 'rubocop/server'
 
 ARGV.clear
 

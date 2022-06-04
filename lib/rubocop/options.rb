@@ -63,6 +63,7 @@ module RuboCop
 
         add_check_options(opts)
         add_cache_options(opts)
+        add_server_options(opts)
         add_output_options(opts)
         add_autocorrection_options(opts)
         add_config_generation_options(opts)
@@ -198,6 +199,16 @@ module RuboCop
       section(opts, 'Caching') do
         option(opts, '-C', '--cache FLAG')
         option(opts, '--cache-root DIR') { @validator.validate_cache_enabled_for_cache_root }
+      end
+    end
+
+    def add_server_options(opts)
+      section(opts, 'Server Options') do
+        option(opts, '--[no-]server')
+        option(opts, '--restart-server')
+        option(opts, '--start-server')
+        option(opts, '--stop-server')
+        option(opts, '--server-status')
       end
     end
 
@@ -569,7 +580,17 @@ module RuboCop
                                          'parallel. Default is true.'],
       stdin:                            ['Pipe source from STDIN, using FILE in offense',
                                          'reports. This is useful for editor integration.'],
-      init:                             'Generate a .rubocop.yml file in the current directory.'
+      init:                             'Generate a .rubocop.yml file in the current directory.',
+      server:                           ['If server process has not started yet, start the',
+                                         'server process and execute inspection with server.',
+                                         'Default is false.',
+                                         'You can specify server host and port with',
+                                         'the $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT',
+                                         'environment variables.'],
+      restart_server:                   'Restart server process.',
+      start_server:                     'Start server process.',
+      stop_server:                      'Stop server process.',
+      server_status:                    'Show server status.'
     }.freeze
   end
 end
