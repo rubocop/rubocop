@@ -83,6 +83,18 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                parameter AllCops: CacheRootDirectory and
                                                the $RUBOCOP_CACHE_ROOT environment variable.
 
+          Server Options:
+                  --[no-]server                If server process has not started yet, start the
+                                               server process and execute inspection with server.
+                                               Default is false.
+                                               You can specify server host and port with
+                                               the $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT
+                                               environment variables.
+                  --restart-server             Restart server process.
+                  --start-server               Start server process.
+                  --stop-server                Stop server process.
+                  --server-status              Show server status.
+
           Output Options:
               -f, --format FORMATTER           Choose an output formatter. This option
                                                can be specified multiple times to enable

@@ -10,8 +10,10 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
     module ServerCommand
+      # This class is a server command to execute `rubocop` command using `RuboCop::CLI.new#run`.
+      # @api private
       class Exec < Base
         def run
           Cache.status_path.delete if Cache.status_path.file?
@@ -19,7 +21,7 @@ module RuboCop
           # We must pass the --color option to preserve this behavior.
           @args.unshift('--color') unless %w[--color --no-color].any? { |f| @args.include?(f) }
           status = RuboCop::CLI.new.run(@args)
-          # This status file is read by `rubocop-daemon exec` and `rubocop-daemon-wrapper`,
+          # This status file is read by `rubocop --server` (`RuboCop::Server::Clientcommand::Exec`).
           # so that they use the correct exit code.
           # Status is 1 when there are any issues, and 0 otherwise.
           Cache.write_status_file(status)

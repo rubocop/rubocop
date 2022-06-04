@@ -12,14 +12,18 @@ require 'pathname'
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
+    # Caches the states of server process.
+    # @api private
     class Cache
+      GEMFILE_NAMES = %w[Gemfile gems.rb].freeze
+
       class << self
         # Searches for Gemfile or gems.rb in the current dir or any parent dirs
         def project_dir
           current_dir = Dir.pwd
           while current_dir != '/'
-            return current_dir if %w[Gemfile gems.rb].any? do |gemfile|
+            return current_dir if GEMFILE_NAMES.any? do |gemfile|
               File.exist?(File.join(current_dir, gemfile))
             end
 
@@ -30,11 +34,11 @@ module RuboCop
         end
 
         def project_dir_cache_key
-          @project_dir_cache_key ||= project_dir[1..-1].tr('/', '+')
+          @project_dir_cache_key ||= project_dir[1..].tr('/', '+')
         end
 
         def dir
-          cache_path = File.expand_path('~/.cache/rubocop-daemon')
+          cache_path = File.expand_path('~/.cache/rubocop_cache/server')
           Pathname.new(File.join(cache_path, project_dir_cache_key)).tap do |d|
             d.mkpath unless d.exist?
           end

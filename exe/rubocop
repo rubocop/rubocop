@@ -3,13 +3,21 @@
 
 $LOAD_PATH.unshift("#{__dir__}/../lib")
 
-require 'rubocop'
-require 'benchmark'
+require 'rubocop/server'
+server_cli = RuboCop::Server::CLI.new
+exit_status = server_cli.run
+exit exit_status if server_cli.exit?
 
-cli = RuboCop::CLI.new
-result = 0
+if RuboCop::Server.running?
+  exit_status = RuboCop::Server::ClientCommand::Exec.new.run
+else
+  require 'rubocop'
+  require 'benchmark'
 
-time = Benchmark.realtime { result = cli.run }
+  cli = RuboCop::CLI.new
 
-puts "Finished in #{time} seconds" if cli.options[:debug] || cli.options[:display_time]
-exit result
+  time = Benchmark.realtime { exit_status = cli.run }
+
+  puts "Finished in #{time} seconds" if cli.options[:debug] || cli.options[:display_time]
+end
+exit exit_status

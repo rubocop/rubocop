@@ -13,15 +13,14 @@ require 'socket'
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
+  module Server
     module ClientCommand
+      # Abstract base class for server client command.
+      # @api private
       class Base
-        def initialize(argv)
-          @argv = argv.dup
-          @options = {}
+        def run
+          raise NotImplementedError
         end
-
-        def run; end
 
         private
 
@@ -30,13 +29,13 @@ module RuboCop
             socket.puts [Cache.token_path.read, Dir.pwd, command, *args].shelljoin
             socket.write body
             socket.close_write
-            STDOUT.write socket.read(4096) until socket.eof?
+            $stdout.write socket.read(4096) until socket.eof?
           end
         end
 
         def check_running_server
-          Daemon.running?.tap do |running|
-            warn 'rubocop-daemon: server is not running.' unless running
+          Server.running?.tap do |running|
+            warn 'RuboCop server is not running.' unless running
           end
         end
 

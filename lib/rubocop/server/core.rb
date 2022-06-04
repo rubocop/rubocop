@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'socket'
-require 'shellwords'
 require 'securerandom'
 
 #
@@ -14,41 +13,54 @@ require 'securerandom'
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
-  module Daemon
-    class Server
-      attr_reader :verbose
-
+  module Server
+    # The core of server process. It starts TCP server and perform socket communication.
+    # @api private
+    class Core
       def self.token
         @token ||= SecureRandom.hex(4)
-      end
-
-      def initialize(verbose)
-        @verbose = verbose
       end
 
       def token
         self.class.token
       end
 
-      def start(port)
+      def start(host, port)
+        $PROGRAM_NAME = "rubocop --server #{Cache.project_dir}"
+
         require 'rubocop'
-        start_server(port)
-        Cache.write_port_and_token_files(port: @server.addr[1], token: token)
-        Process.daemon(true) unless verbose
-        Cache.write_pid_file do
-          read_socket(@server.accept) until @server.closed?
-        end
+        start_server(host, port)
+
+        demonize if server_mode?
       end
 
       private
 
-      def start_server(port)
-        @server = TCPServer.open('127.0.0.1', port)
-        puts "Server listen on port #{@server.addr[1]}" if verbose
+      def demonize
+        Cache.write_port_and_token_files(port: @server.addr[1], token: token)
+
+        pid = fork do
+          Process.daemon(true)
+          Cache.write_pid_file do
+            read_socket(@server.accept) until @server.closed?
+          end
+        end
+
+        Process.waitpid(pid)
+      end
+
+      def server_mode?
+        true
+      end
+
+      def start_server(host, port)
+        @server = TCPServer.open(host, port)
+
+        puts "RuboCop server starting on #{@server.addr[3]}:#{@server.addr[1]}."
       end
 
       def read_socket(socket)
-        SocketReader.new(socket, verbose).read!
+        SocketReader.new(socket).read!
       rescue InvalidTokenError
         socket.puts 'token is not valid.'
       rescue ServerStopRequest
@@ -56,7 +68,7 @@ module RuboCop
       rescue UnknownServerCommandError => e
         socket.puts e.message
       rescue Errno::EPIPE => e
-        p e if verbose
+        warn e.inspect
       rescue StandardError => e
         socket.puts e.full_message
       ensure

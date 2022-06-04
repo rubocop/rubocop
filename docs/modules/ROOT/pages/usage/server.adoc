@@ -1,0 +1,84 @@
+= Server Mode
+
+You can reduce the RuboCop boot time by using the `--server` option.
+
+The server option speeds up the launch of the `rubocop` command by serverizing
+the process that loaded the RuboCop runtime production files (i.e. `require 'rubocop'`).
+
+NOTE: The feature cannot be used on JRuby and Windows that do not support fork.
+
+== Run with Server
+
+There are two ways to enable server.
+
+- `rubocop --server` ... If server process has not started yet,
+start server process and execute inspection with server.
+- `rubocop --start-server` ... Just start server process.
+
+When server is started, it outputs the host and port.
+
+```console
+% rubocop --start-server
+RuboCop server starting on 127.0.0.1:55772.
+```
+
+NOTE: The `rubocop` command is executed using server process if server is started.
+Whenever server process is not running, it will load the RuboCop runtime files and execute.
+(same behavior as 1.30 and lower)
+
+If server is already running, just display the PID. The new server will not start.
+
+```console
+% rubocop --start-server
+RuboCop server (16060) is already running.
+```
+
+A started server process name is `rubocop --server` with project directory path.
+
+```console
+% ps aux | grep 'rubocop --server'
+user             16060   0.0  0.0  5078568   2264   ??  S     7:54AM   0:00.00 rubocop --server /Users/user/src/github.com/rubocop/rubocop
+user             16337   0.0  0.0  5331560   2396   ??  S    23:51PM   0:00.00 rubocop --server /Users/user/src/github.com/rubocop/rubocop-rails
+```
+
+== Restart Server
+
+The started server does not reload the configuration file.
+You will need to restart server when you upgrade RuboCop or change
+the RuboCop configuration.
+
+```console
+% rubocop --restart-server
+RuboCop server starting on 127.0.0.1:55822.
+```
+
+This may be supported so that no reboot is required in future.
+
+== Command Line Options
+
+These are options for server operations.
+
+* `--server` ... If server process has not started yet, start the
+server process and execute inspection with server. You can specify
+the server host and port with the $RUBOCOP_SERVER_HOST and
+the $RUBOCOP_SERVER_PORT environment variables.
+* `--no-server` ... If server process has been started, stop the
+server process and execute inspection with server.
+* `--restart-server` ... Restart server process.
+* `--start-server` ... Start server process.
+* `--stop-server` ... Stop server process.
+* `--server-status` ... Show server status.
+
+== Environment Variables
+
+You can change the startup host and port of server process with
+environment variables.
+
+* `$RUBOCOP_SERVER_HOST`
+* `$RUBOCOP_SERVER_PORT`
+
+The following is an example:
+
+```console
+% RUBOCOP_SERVER_PORT=98989 rubocop --start-server
+```
