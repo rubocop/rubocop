@@ -1,1 +1,0 @@
-* [#10671](https://github.com/rubocop/rubocop/issues/10671): Fix an incorrect autocorrect for `EnforcedStyle: with_first_argument` of `Layout/ArgumentAlignment` and `EnforcedColonStyle: separator` of `Layout/HashAlignment`. ([@koic][])
