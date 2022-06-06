@@ -31,7 +31,7 @@ namespace :prof do
   desc 'Check a particular method by walking through the callstack'
   task :walk, [:method] => :run_if_needed do |_task, args|
     method = args.fetch(:method) do
-      warn 'usage: bundle exec rake walk[Class#method]'
+      warn "usage: bundle exec rake 'walk[Class#method]'"
       exit!
     end
     cmd = "stackprof #{dump_path} --walk --method '#{method}'"
