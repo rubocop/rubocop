@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.30.1 (2022-06-06)
+
 ### Bug fixes
 
 * [#10685](https://github.com/rubocop/rubocop/issues/10685): Fix a false positive for `Style/StringConcatenation` when `Mode: conservative` and first operand is not string literal. ([@koic][])
