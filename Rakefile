@@ -95,9 +95,13 @@ task documentation_syntax_check: :yard_for_generate_documentation do
       buffer = Parser::Source::Buffer.new('<code>', 1)
       buffer.source = example.text
 
-      # Ruby 2.7 raises a syntax error in
-      # `Lint/CircularArgumentReference` cop's example.
-      parser = if cop == RuboCop::Cop::Lint::CircularArgumentReference
+      # Ruby 2.6 or higher does not support a syntax used in
+      # `Lint/UselessElseWithoutRescue` cop's example.
+      parser = if cop == RuboCop::Cop::Lint::UselessElseWithoutRescue
+                 Parser::Ruby25.new(RuboCop::AST::Builder.new)
+               # Ruby 2.7 raises a syntax error in
+               # `Lint/CircularArgumentReference` cop's example.
+               elsif cop == RuboCop::Cop::Lint::CircularArgumentReference
                  Parser::Ruby26.new(RuboCop::AST::Builder.new)
                # Ruby 3.0 raises a syntax error in
                # `Lint/NumberedParameterAssignment` cop's example.

@@ -2348,6 +2348,12 @@ Lint/UselessAssignment:
   Enabled: true
   VersionAdded: '0.11'
 
+Lint/UselessElseWithoutRescue:
+  Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
+  Enabled: true
+  VersionAdded: '0.17'
+  VersionChanged: '<<next>>'
+
 Lint/UselessMethodDefinition:
   Description: 'Checks for useless method definitions.'
   Enabled: true
