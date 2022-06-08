@@ -104,5 +104,38 @@ RSpec.describe RuboCop::Version do
         end.not_to raise_error
       end
     end
+
+    context 'with all known mappings' do
+      let(:config) { instance_double(RuboCop::Config) }
+
+      let(:known_features) do
+        %w[
+          rubocop-performance
+          rubocop-rspec
+          rubocop-graphql
+          rubocop-md
+          rubocop-thread_safety
+        ]
+      end
+
+      before do
+        allow(config).to receive(:loaded_features).and_return(known_features)
+        allow(config_store).to receive(:for_dir).and_return(config)
+
+        stub_const('RuboCop::GraphQL::Version::STRING', '1.0.0')
+        stub_const('RuboCop::Markdown::Version::STRING', '1.0.0')
+        stub_const('RuboCop::ThreadSafety::Version::STRING', '1.0.0')
+      end
+
+      it 'returns the extensions' do
+        expect(extension_versions).to contain_exactly(
+          /- rubocop-performance \d+\.\d+\.\d+/,
+          /- rubocop-rspec \d+\.\d+\.\d+/,
+          /- rubocop-graphql \d+\.\d+\.\d+/,
+          /- rubocop-md \d+\.\d+\.\d+/,
+          /- rubocop-thread_safety \d+\.\d+\.\d+/
+        )
+      end
+    end
   end
 end

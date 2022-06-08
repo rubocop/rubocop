@@ -9,7 +9,9 @@ module RuboCop
           'rubocop-ast %<rubocop_ast_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s %<ruby_platform>s)'
 
-    CANONICAL_FEATURE_NAMES = { 'Rspec' => 'RSpec' }.freeze
+    CANONICAL_FEATURE_NAMES = { 'Rspec' => 'RSpec', 'Graphql' => 'GraphQL', 'Md' => 'Markdown',
+                                'Thread_safety' => 'ThreadSafety' }.freeze
+    EXTENSION_PATH_NAMES = { 'rubocop-md' => 'markdown' }.freeze
 
     # @api private
     def self.version(debug: false, env: nil)
@@ -43,16 +45,21 @@ module RuboCop
       features.map do |loaded_feature|
         next unless (match = loaded_feature.match(/rubocop-(?<feature>.*)/))
 
-        feature = match[:feature]
+        # Get the expected name of the folder containing the extension code.
+        # Usually it would be the same as the extension name. but sometimes authors
+        # can choose slightly different name for their gems, e.g. rubocop-md instead of
+        # rubocop-markdown.
+        feature = EXTENSION_PATH_NAMES.fetch(loaded_feature, match[:feature])
+
         begin
           require "rubocop/#{feature}/version"
         rescue LoadError
           # Not worth mentioning libs that are not installed
-        else
-          next unless (feature_version = feature_version(feature))
-
-          "  - #{loaded_feature} #{feature_version}"
         end
+
+        next unless (feature_version = feature_version(feature))
+
+        "  - #{loaded_feature} #{feature_version}"
       end.compact
     end
 
