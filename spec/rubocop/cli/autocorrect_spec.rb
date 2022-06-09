@@ -2544,4 +2544,59 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'indents the elements of a hash in hash based on the parent hash key ' \
+     'when the parent hash is a method argument and has following other sibling pairs' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      desc 'Returns your public timeline.' do
+        headers XAuthToken: {
+          required: true,
+          description: 'Validates your identity'
+        },
+                XOptionalHeader: {
+                  required: false,
+                  description: 'Not really needed'
+                }
+      end
+      func x: [
+        :a,
+             :b
+      ],
+           y: [
+        :c,
+             :d
+      ]
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect --only] << %w[
+        Layout/FirstHashElementIndentation
+        Layout/FirstArrayElementIndentation
+        Layout/HashAlignment
+        Layout/ArrayAlignment
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      desc 'Returns your public timeline.' do
+        headers XAuthToken: {
+                  required: true,
+                  description: 'Validates your identity'
+                },
+                XOptionalHeader: {
+                  required: false,
+                  description: 'Not really needed'
+                }
+      end
+      func x: [
+             :a,
+             :b
+           ],
+           y: [
+             :c,
+             :d
+           ]
+    RUBY
+  end
 end
