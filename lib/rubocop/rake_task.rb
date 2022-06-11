@@ -60,11 +60,17 @@ module RuboCop
       @formatters = []
     end
 
-    def setup_subtasks(name, *args, &task_block)
+    def setup_subtasks(name, *args, &task_block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       namespace(name) do
-        desc 'Autocorrect RuboCop offenses'
+        task(:auto_correct, *args) do
+          warn Rainbow(
+            'rubocop:auto_correct task is deprecated; use rubocop:autocorrect task instead.'
+          ).yellow
+          ::Rake::Task['rubocop:autocorrect'].invoke
+        end
 
-        task(:auto_correct, *args) do |_, task_args|
+        desc 'Autocorrect RuboCop offenses'
+        task(:autocorrect, *args) do |_, task_args|
           RakeFileUtils.verbose(verbose) do
             yield(*[self, task_args].slice(0, task_block.arity)) if task_block
             options = full_options.unshift('--autocorrect-all')

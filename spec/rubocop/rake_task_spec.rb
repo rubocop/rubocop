@@ -24,6 +24,20 @@ RSpec.describe RuboCop::RakeTask do
       expect(Rake::Task.task_defined?(:lint_lib)).to be true
       expect(Rake::Task.task_defined?('lint_lib:auto_correct')).to be true
     end
+
+    it 'creates a rubocop task and a rubocop autocorrect task' do
+      described_class.new
+
+      expect(Rake::Task.task_defined?(:rubocop)).to be true
+      expect(Rake::Task.task_defined?('rubocop:autocorrect')).to be true
+    end
+
+    it 'creates a named task and a named autocorrect task' do
+      described_class.new(:lint_lib)
+
+      expect(Rake::Task.task_defined?(:lint_lib)).to be true
+      expect(Rake::Task.task_defined?('lint_lib:autocorrect')).to be true
+    end
   end
 
   describe 'running tasks' do
