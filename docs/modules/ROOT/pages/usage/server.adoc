@@ -1,21 +1,29 @@
 = Server Mode
 
-You can reduce the RuboCop boot time by using the `--server` option.
+NOTE: The server mode was introduced in RuboCop 1.31. If you're using an older
+RuboCop version you can check out the https://github.com/fohte/rubocop-daemon[rubocop-daemon]
+project that served as the inspiration for RuboCop's built-in functionality.
 
-The server option speeds up the launch of the `rubocop` command by serverizing
-the process that loaded the RuboCop runtime production files (i.e. `require 'rubocop'`).
+You can reduce the RuboCop boot time significantly (something like 850x faster) by using the `--server` command-line option.
 
-NOTE: The feature cannot be used on JRuby and Windows that do not support fork.
+The `--server` option speeds up the launch of the `rubocop` command by serverizing
+the process that loads the RuboCop runtime production files (i.e. `require 'rubocop'`).
+
+Fun trivia - RuboCop starts slowly simply because it needs to `require` a ton of files and that's fairly
+slow. With the RuboCop server we sidestep this nasty issue and make it much more pleasant to
+interact with RuboCop from text editors and IDEs.
+
+NOTE: The feature cannot be used on JRuby and Windows that do not support the `fork` system call.
 
 == Run with Server
 
-There are two ways to enable server.
+There are two ways to enable server:
 
 - `rubocop --server` ... If server process has not started yet,
 start server process and execute inspection with server.
 - `rubocop --start-server` ... Just start server process.
 
-When server is started, it outputs the host and port.
+When the server is started, it outputs the host and port.
 
 ```console
 % rubocop --start-server
@@ -24,16 +32,16 @@ RuboCop server starting on 127.0.0.1:55772.
 
 NOTE: The `rubocop` command is executed using server process if server is started.
 Whenever server process is not running, it will load the RuboCop runtime files and execute.
-(same behavior as 1.30 and lower)
+(same behavior as with RuboCop 1.30 and lower)
 
-If server is already running, just display the PID. The new server will not start.
+If server is already running, the command only displays the server PID. A new server will not be started.
 
 ```console
 % rubocop --start-server
 RuboCop server (16060) is already running.
 ```
 
-A started server process name is `rubocop --server` with project directory path.
+The server process name is basically `rubocop --server` and the project directory path:
 
 ```console
 % ps aux | grep 'rubocop --server'
@@ -44,7 +52,7 @@ user             16337   0.0  0.0  5331560   2396   ??  S    23:51PM   0:00.00 r
 == Restart Server
 
 The started server does not reload the configuration file.
-You will need to restart server when you upgrade RuboCop or change
+You will need to restart the server when you upgrade RuboCop or change
 the RuboCop configuration.
 
 ```console
@@ -52,18 +60,16 @@ the RuboCop configuration.
 RuboCop server starting on 127.0.0.1:55822.
 ```
 
-This may be supported so that no reboot is required in future.
-
 == Command Line Options
 
-These are options for server operations.
+These are the command-line options for server operations:
 
-* `--server` ... If server process has not started yet, start the
+* `--server` ... If a server process has not been started yet, start the
 server process and execute inspection with server. You can specify
-the server host and port with the $RUBOCOP_SERVER_HOST and
-the $RUBOCOP_SERVER_PORT environment variables.
-* `--no-server` ... If server process has been started, stop the
-server process and execute inspection with server.
+the server host and port with the `$RUBOCOP_SERVER_HOST` and
+the `$RUBOCOP_SERVER_PORT` environment variables.
+* `--no-server` ... If a server process has been started, stop the
+server process and execute inspection without the server.
 * `--restart-server` ... Restart server process.
 * `--start-server` ... Start server process.
 * `--stop-server` ... Stop server process.
