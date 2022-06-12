@@ -6,14 +6,14 @@ project that served as the inspiration for RuboCop's built-in functionality.
 
 You can reduce the RuboCop boot time significantly (something like 850x faster) by using the `--server` command-line option.
 
-The `--server` option speeds up the launch of the `rubocop` command by serverizing
-the process that loads the RuboCop runtime production files (i.e. `require 'rubocop'`).
+The `--server` option speeds up the launch of the `rubocop` command by utilizing
+a standalone server process that loads the RuboCop runtime production files (i.e. `require 'rubocop'`).
 
-Fun trivia - RuboCop starts slowly simply because it needs to `require` a ton of files and that's fairly
+Normally RuboCop starts somewhat slowly because it needs to `require` a ton of files and that's fairly
 slow. With the RuboCop server we sidestep this nasty issue and make it much more pleasant to
 interact with RuboCop from text editors and IDEs.
 
-NOTE: The feature cannot be used on JRuby and Windows that do not support the `fork` system call.
+NOTE: The feature cannot be used on JRuby and Windows, as they do not support the `fork` system call.
 
 == Run with Server
 
@@ -30,11 +30,11 @@ When the server is started, it outputs the host and port.
 RuboCop server starting on 127.0.0.1:55772.
 ```
 
-NOTE: The `rubocop` command is executed using server process if server is started.
-Whenever server process is not running, it will load the RuboCop runtime files and execute.
+NOTE: The `rubocop` command is executed using the server process if a server is started.
+Whenever a server process is not running, it will load the RuboCop runtime files and execute.
 (same behavior as with RuboCop 1.30 and lower)
 
-If server is already running, the command only displays the server PID. A new server will not be started.
+If a server is already running, the command only displays the server's PID. A new server will not be started.
 
 ```console
 % rubocop --start-server
