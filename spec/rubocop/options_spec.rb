@@ -84,11 +84,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                the $RUBOCOP_CACHE_ROOT environment variable.
 
           Server Options:
-                  --[no-]server                If server process has not started yet, start the
-                                               server process and execute inspection with server.
+                  --[no-]server                If a server process has not been started yet, start
+                                               the server process and execute inspection with server.
                                                Default is false.
-                                               You can specify server host and port with
-                                               the $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT
+                                               You can specify the server host and port with the
+                                               $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT
                                                environment variables.
                   --restart-server             Restart server process.
                   --start-server               Start server process.
