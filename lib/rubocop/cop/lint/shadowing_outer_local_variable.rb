@@ -67,9 +67,17 @@ module RuboCop
           variable_node = variable.scope.node.parent
           return false unless variable_node.conditional?
 
-          outer_local_variable_node = outer_local_variable.scope.node
+          outer_local_variable_node =
+            find_conditional_node_from_ascendant(outer_local_variable.declaration_node)
 
           outer_local_variable_node.conditional? && variable_node == outer_local_variable_node
+        end
+
+        def find_conditional_node_from_ascendant(node)
+          return unless (parent = node.parent)
+          return parent if parent.conditional?
+
+          find_conditional_node_from_ascendant(parent)
         end
       end
     end
