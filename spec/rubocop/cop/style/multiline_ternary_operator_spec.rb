@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when the false branch is on a separate line' do
+  it 'registers an offense and corrects when the false branch is on a separate line and assigning a return value' do
     expect_offense(<<~RUBY)
       a = cond ? b :
           ^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
@@ -27,6 +27,22 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
 
     expect_correction(<<~RUBY)
       a = if cond
+        b
+      else
+        c
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the false branch is on a separate line' do
+    expect_offense(<<~RUBY)
+      cond ? b :
+      ^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+      c
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if cond
         b
       else
         c
