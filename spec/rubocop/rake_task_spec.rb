@@ -11,6 +11,7 @@ RSpec.describe RuboCop::RakeTask do
   after { Rake::Task.clear }
 
   describe 'defining tasks' do
+    # rubocop:todo Naming/InclusiveLanguage
     it 'creates a rubocop task and a rubocop auto_correct task' do
       described_class.new
 
@@ -24,6 +25,7 @@ RSpec.describe RuboCop::RakeTask do
       expect(Rake::Task.task_defined?(:lint_lib)).to be true
       expect(Rake::Task.task_defined?('lint_lib:auto_correct')).to be true
     end
+    # rubocop:enable Naming/InclusiveLanguage
 
     it 'creates a rubocop task and a rubocop autocorrect task' do
       described_class.new
@@ -148,7 +150,7 @@ RSpec.describe RuboCop::RakeTask do
 
         expect(cli).to receive(:run).with(options)
 
-        Rake::Task['rubocop:auto_correct'].execute
+        Rake::Task['rubocop:autocorrect'].execute
       end
 
       it 'runs with with the options that were passed to its parent task' do
@@ -166,7 +168,7 @@ RSpec.describe RuboCop::RakeTask do
 
         expect(cli).to receive(:run).with(options)
 
-        Rake::Task['rubocop:auto_correct'].execute
+        Rake::Task['rubocop:autocorrect'].execute
       end
     end
   end

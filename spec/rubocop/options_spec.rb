@@ -32,6 +32,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         rescue SystemExit # rubocop:disable Lint/SuppressedException
         end
 
+        # rubocop:todo Naming/InclusiveLanguage
         expected_help = <<~OUTPUT
           Usage: rubocop [options] [file1, file2, ...]
 
@@ -186,6 +187,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
         OUTPUT
+        # rubocop:enable Naming/InclusiveLanguage
 
         expect($stdout.string).to eq(expected_help)
       end
@@ -572,6 +574,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
+    # rubocop:todo Naming/InclusiveLanguage
     describe 'deprecated options' do
       describe '--auto-correct' do
         it 'emits a warning and sets the correct options instead' do
@@ -601,6 +604,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         end
       end
     end
+    # rubocop:enable Naming/InclusiveLanguage
 
     def expect_autocorrect_options_for_fix_layout
       options_keys = options.instance_variable_get(:@options).keys

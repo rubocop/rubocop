@@ -1073,7 +1073,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', source)
 
     expect(cli.run([
-                     '--auto-correct-all',
+                     '--autocorrect-all',
                      '--only',
                      ['Layout/IndentationConsistency', 'Layout/IndentationWidth'].join(',')
                    ])).to eq(0)
@@ -2460,7 +2460,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     YAML
 
     status = cli.run(
-      %w[--auto-correct-all -d --only] << %w[
+      %w[--autocorrect-all -d --only] << %w[
         Layout/CaseIndentation Layout/ElseAlignment
       ].join(',')
     )

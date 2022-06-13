@@ -25,12 +25,12 @@ module RuboCop
             return if allowed_string_interpolation_method_call?(node)
 
             add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
-              auto_correct(corrector, node)
+              autocorrect(corrector, node)
             end
           end
           # rubocop:enable Metrics/PerceivedComplexity
 
-          def auto_correct(corrector, node)
+          def autocorrect(corrector, node)
             if parentheses_at_the_end_of_multiline_call?(node)
               corrector.replace(args_begin(node), ' \\')
             else

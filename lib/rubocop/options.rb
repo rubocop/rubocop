@@ -130,6 +130,7 @@ module RuboCop
       end
     end
 
+    # rubocop:todo Naming/InclusiveLanguage
     # the autocorrect command-line arguments map to the autocorrect @options values like so:
     #                            :fix_layout  :autocorrect  :safe_autocorrect  :autocorrect_all
     # -x, --fix-layout           true         true          -                  -
@@ -157,6 +158,7 @@ module RuboCop
         option(opts, '--disable-uncorrectable')
       end
     end
+    # rubocop:enable Naming/InclusiveLanguage
 
     def add_config_generation_options(opts)
       section(opts, 'Config Generation') do
