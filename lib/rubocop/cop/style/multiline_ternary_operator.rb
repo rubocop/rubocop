@@ -7,7 +7,7 @@ module RuboCop
       #
       # NOTE: `return if ... else ... end` is syntax error. If `return` is used before
       # multiline ternary operator expression, it will be autocorrected to single-line
-      # ternary operator. The same is true for `break`, `next`, and method call.
+      # ternary operator. The same is true for `break`, `next`, method call, and without assignment.
       #
       # @example
       #   # bad
@@ -73,7 +73,8 @@ module RuboCop
         end
 
         def enforce_single_line_ternary_operator?(node)
-          SINGLE_LINE_TYPES.include?(node.parent.type) && !use_assignment_method?(node.parent)
+          node.parent.nil? ||
+            (SINGLE_LINE_TYPES.include?(node.parent.type) && !use_assignment_method?(node.parent))
         end
 
         def use_assignment_method?(node)

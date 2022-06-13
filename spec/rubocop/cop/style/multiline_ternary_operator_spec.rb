@@ -108,6 +108,18 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
+  it 'register an offense and corrects when returning a multiline ternary operator expression without assignment' do
+    expect_offense(<<~RUBY)
+      cond ? foo :
+      ^^^^^^^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+             bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? foo : bar
+    RUBY
+  end
+
   it 'register an offense and corrects when returning a multiline ternary operator expression with `return`' do
     expect_offense(<<~RUBY)
       return cond ?
