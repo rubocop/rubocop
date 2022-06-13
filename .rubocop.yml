@@ -100,6 +100,12 @@ Naming/InclusiveLanguage:
   Enabled: true
   CheckStrings: true
   FlaggedTerms:
+    auto-correct:
+      Suggestions:
+        - autocorrect
+    auto_correct:
+      Suggestions:
+        - autocorrect
     behaviour:
       Suggestions:
         - behavior
@@ -108,6 +114,7 @@ Naming/InclusiveLanguage:
         - offense
   Exclude:
     - lib/rubocop/cop/naming/inclusive_language.rb
+    - lib/rubocop/cop/mixin/auto_corrector.rb
     - spec/rubocop/cop/naming/inclusive_language_spec.rb
 
 RSpec/FilePath:
