@@ -70,7 +70,7 @@ module RuboCop
         end
 
         def use_deprecated_attributes?(node, block_parameter)
-          %i[test_files date].each do |attribute|
+          %i[test_files date specification_version rubygems_version].each do |attribute|
             node, method_name = node_and_method_name(node, attribute)
             unless node.send_type? && node.receiver&.source == block_parameter &&
                    node.method?(method_name)

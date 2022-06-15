@@ -92,6 +92,8 @@ RSpec.describe RuboCop::Cop::Gemspec::DeprecatedAttributeAssignment, :config do
   end
 
   it_behaves_like 'deprecated attributes', 'date', "Time.now.strftime('%Y-%m-%d')"
+  it_behaves_like 'deprecated attributes', 'rubygems_version', '2.5'
+  it_behaves_like 'deprecated attributes', 'specification_version', '2.5'
   it_behaves_like 'deprecated attributes', 'test_files', "Dir.glob('test/**/*')"
   it_behaves_like 'deprecated attributes with addition', 'test_files', "Dir.glob('test/**/*')"
 end
