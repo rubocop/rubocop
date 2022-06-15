@@ -169,8 +169,8 @@ module RuboCop
           when :parent_hash_key
             'Indent the right bracket the same as the parent hash key.' \
           else
-            'Indent the right bracket the same as the start of the line' \
-            ' where the left bracket is.'
+            'Indent the right bracket the same as the start of the line ' \
+            'where the left bracket is.'
           end
         end
       end

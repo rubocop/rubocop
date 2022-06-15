@@ -118,8 +118,8 @@ RSpec.describe RuboCop::Cop::Commissioner do
       let(:force) { instance_double(RuboCop::Cop::Force).as_null_object }
       let(:forces) { [force] }
 
-      it 'passes the input params to all cops/forces that implement their own' \
-         ' #investigate method' do
+      it 'passes the input params to all cops/forces that implement their own ' \
+         '#investigate method' do
         expect(cop).to receive(:on_new_investigation).with(no_args)
         expect(force).to receive(:investigate).with(processed_source)
 

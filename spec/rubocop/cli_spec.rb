@@ -813,8 +813,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run([])).to eq(2)
         expect($stderr.string).to include('obsolete parameter ' \
                                           '`MultiSpaceAllowedForOperators` ' \
-                                          '(for `Layout/SpaceAroundOperators`)' \
-                                          ' found')
+                                          '(for `Layout/SpaceAroundOperators`) ' \
+                                          'found')
       end
     end
 
@@ -847,8 +847,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
         expect(cli.run(['example.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
-          'Error: The `Layout/MultilineOperationIndentation` cop only accepts' \
-          ' an `IndentationWidth` configuration parameter when ' \
+          'Error: The `Layout/MultilineOperationIndentation` cop only accepts ' \
+          'an `IndentationWidth` configuration parameter when ' \
           '`EnforcedStyle` is `indented`.'
         )
       end

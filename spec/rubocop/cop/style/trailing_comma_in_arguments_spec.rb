@@ -46,8 +46,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       RUBY
     end
 
-    it 'accepts method call without trailing comma with single element hash' \
-       ' parameters at the end' do
+    it 'accepts method call without trailing comma with single element hash ' \
+       'parameters at the end' do
       expect_no_offenses('some_method(a: 1)')
     end
 
@@ -82,8 +82,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'registers an offense for trailing comma in a method call with hash' \
-         ' parameters at the end' do
+      it 'registers an offense for trailing comma in a method call with hash ' \
+         'parameters at the end' do
         expect_offense(<<~RUBY)
           receiver&.some_method(a, b, c: 0, d: 1, )
                                                 ^ Avoid comma after the last parameter of a method call#{extra_info}.
@@ -316,8 +316,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         end
       end
 
-      it 'registers an offense for no trailing comma in a method call with' \
-         ' hash parameters at the end' do
+      it 'registers an offense for no trailing comma in a method call with ' \
+         'hash parameters at the end' do
         expect_offense(<<~RUBY)
           some_method(
                         a,
@@ -367,8 +367,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts no trailing comma in a method call with a multiline' \
-         ' braceless hash at the end with more than one parameter on a line' do
+      it 'accepts no trailing comma in a method call with a multiline ' \
+         'braceless hash at the end with more than one parameter on a line' do
         expect_no_offenses(<<~RUBY)
           some_method(
                         a,
@@ -445,8 +445,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         end
       end
 
-      it 'registers an offense for no trailing comma in a method call with' \
-         ' hash parameters at the end' do
+      it 'registers an offense for no trailing comma in a method call with ' \
+         'hash parameters at the end' do
         expect_offense(<<~RUBY)
           some_method(
                         a,

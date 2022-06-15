@@ -1019,8 +1019,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
       home = File.dirname(File.dirname(File.dirname(File.dirname(__FILE__))))
       expect($stdout.string.lines.grep(/configuration/).map(&:chomp))
-        .to eq(["For #{abs('')}:" \
-                " Default configuration from #{home}/config/default.yml"])
+        .to eq(["For #{abs('')}: " \
+                "Default configuration from #{home}/config/default.yml"])
     end
 
     it 'shows cop names' do
@@ -1450,6 +1450,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         end
       end
 
+      # rubocop:disable Layout/LineContinuationLeadingSpace
       context 'when clang format is specified' do
         it 'outputs with clang format' do
           create_file('example1.rb', ['x= 0 ', '#' * 130, 'y ', 'puts x'])
@@ -1544,6 +1545,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           ].join("\n"))
         end
       end
+      # rubocop:enable Layout/LineContinuationLeadingSpace
 
       context 'when emacs format is specified' do
         it 'outputs with emacs format' do
