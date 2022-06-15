@@ -19,8 +19,8 @@ module RuboCop
         include Alignment
         extend AutoCorrector
 
-        MSG = 'Favor a normal %<keyword>s-statement over a modifier' \
-              ' clause in a multiline statement.'
+        MSG = 'Favor a normal %<keyword>s-statement over a modifier ' \
+              'clause in a multiline statement.'
 
         def on_if(node)
           return unless node.modifier_form? && node.body.multiline?

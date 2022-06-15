@@ -56,8 +56,8 @@ module RuboCop
           return unless style == :aligned && cop_config['IndentationWidth']
 
           raise ValidationError,
-                'The `Layout/MultilineMethodCallIndentation`' \
-                ' cop only accepts an `IndentationWidth` ' \
+                'The `Layout/MultilineMethodCallIndentation` ' \
+                'cop only accepts an `IndentationWidth` ' \
                 'configuration parameter when ' \
                 '`EnforcedStyle` is `indented`.'
         end

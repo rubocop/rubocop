@@ -94,8 +94,8 @@ RSpec.describe RuboCop::Cop::Corrector do
           expect do
             do_rewrite { |corr| corr.public_send(method, op_string, *params) }
           end.to raise_error(RuntimeError,
-                             'Corrector expected range source buffer to be' \
-                             ' a Parser::Source::Buffer, but got String')
+                             'Corrector expected range source buffer to be ' \
+                             'a Parser::Source::Buffer, but got String')
           expect do
             do_rewrite { |corr| corr.public_send(method, op_other, *params) }
           end.to raise_error(RuntimeError,

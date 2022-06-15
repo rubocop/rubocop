@@ -265,8 +265,8 @@ module RuboCop
     # FIXME: Handling colors in exception messages like this is ugly.
     def msg_not_boolean(parent, key, value)
       "#{Rainbow('').reset}" \
-        "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow}" \
-        " is supposed to be a boolean and #{Rainbow(value).yellow} is not."
+        "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow} " \
+        "is supposed to be a boolean and #{Rainbow(value).yellow} is not."
     end
   end
 end

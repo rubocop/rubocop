@@ -19,8 +19,8 @@ module RuboCop
       class RegexpAsCondition < Base
         extend AutoCorrector
 
-        MSG = 'Do not use regexp literal as a condition.' \
-              ' The regexp literal matches `$_` implicitly.'
+        MSG = 'Do not use regexp literal as a condition. ' \
+              'The regexp literal matches `$_` implicitly.'
 
         def on_match_current_line(node)
           add_offense(node) { |corrector| corrector.replace(node, "#{node.source} =~ $_") }

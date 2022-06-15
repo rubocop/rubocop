@@ -212,8 +212,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
       RUBY
     end
 
-    it 'accepts a self receiver used to distinguish from an argument' \
-       ' when an inner method is defined' do
+    it 'accepts a self receiver used to distinguish from an argument ' \
+       'when an inner method is defined' do
       expect_no_offenses(<<~RUBY)
         def foo(bar)
           def inner_method(); end

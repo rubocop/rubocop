@@ -397,8 +397,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
 
   context 'affecting by IndentationWidth from Layout\Tab' do
     shared_examples 'with tabs indentation' do
-      it "registers an offense for a line that's including 2 tab with size 2" \
-         ' and 28 other characters' do
+      it "registers an offense for a line that's including 2 tab with size 2 " \
+         'and 28 other characters' do
         expect_offense(<<~RUBY)
           \t\t#{'#' * 28}a
               #{' ' * 24}^^^ Line is too long. [33/30]

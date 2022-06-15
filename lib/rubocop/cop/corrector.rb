@@ -109,8 +109,8 @@ module RuboCop
                 "Parser::Source::Buffer, but got #{buffer.class}"
         end
         raise "Correction target buffer #{buffer.object_id} " \
-              "name:#{buffer.name.inspect}" \
-              " is not current #{@source_buffer.object_id} " \
+              "name:#{buffer.name.inspect} " \
+              "is not current #{@source_buffer.object_id} " \
               "name:#{@source_buffer.name.inspect} under investigation"
       end
     end
