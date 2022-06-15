@@ -124,7 +124,7 @@ module RuboCop
         def summary
           if @correction_count.positive?
             if @correctable_count.positive?
-              "#{files} inspected, #{offenses} detected, #{corrections} corrected,"\
+              "#{files} inspected, #{offenses} detected, #{corrections} corrected," \
                 " #{correctable}"
             else
               "#{files} inspected, #{offenses} detected, #{corrections} corrected"

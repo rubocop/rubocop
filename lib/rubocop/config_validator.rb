@@ -107,7 +107,7 @@ module RuboCop
       return if unknown_cops.empty?
 
       if ConfigLoader.ignore_unrecognized_cops
-        warn Rainbow('The following cops or departments are not '\
+        warn Rainbow('The following cops or departments are not ' \
                      'recognized and will be ignored:').yellow
         warn unknown_cops.join("\n")
 

@@ -47,14 +47,14 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
     RUBY
   end
 
-  it 'does not register an offense when comparing with float method '\
+  it 'does not register an offense when comparing with float method ' \
      'that can return numeric and returns integer' do
     expect_no_offenses(<<~RUBY)
       x == 1.1.ceil
     RUBY
   end
 
-  it 'registers an offense when comparing with float method '\
+  it 'registers an offense when comparing with float method ' \
      'that can return numeric and returns float' do
     expect_offense(<<~RUBY)
       x == 1.1.ceil(1)

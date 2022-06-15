@@ -56,8 +56,8 @@ RSpec.describe RuboCop::Config do
         it 'prints a warning about the cop' do
           configuration
           expect($stderr.string)
-            .to match('The following cops or departments are not recognized and will be ignored:\n'\
-                      'unrecognized cop or department LyneLenth found in .rubocop.yml')
+            .to eq("The following cops or departments are not recognized and will be ignored:\n" \
+                   "unrecognized cop or department LyneLenth found in .rubocop.yml\n")
         end
       end
 
@@ -227,7 +227,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple valid enforced styles '\
+    context 'when the configuration includes multiple valid enforced styles ' \
             'and one invalid style' do
       before do
         create_file(configuration_path, <<~YAML)

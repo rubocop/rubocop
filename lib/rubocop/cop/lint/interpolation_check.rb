@@ -24,7 +24,7 @@ module RuboCop
       class InterpolationCheck < Base
         extend AutoCorrector
 
-        MSG = 'Interpolation in single quoted string detected. '\
+        MSG = 'Interpolation in single quoted string detected. ' \
               'Use double quoted strings if you need interpolation.'
 
         def on_str(node)

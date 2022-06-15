@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Corrector do
     it 'raises a useful error if not given a node or a range' do
       expect do
         do_rewrite { |corr| corr.replace(1..3, 'oops') }
-      end.to raise_error(TypeError, 'Expected a Parser::Source::Range, '\
+      end.to raise_error(TypeError, 'Expected a Parser::Source::Range, ' \
                                     'Comment or RuboCop::AST::Node, got Range')
     end
 
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Corrector do
           expect do
             do_rewrite { |corr| corr.public_send(method, op_string, *params) }
           end.to raise_error(RuntimeError,
-                             'Corrector expected range source buffer to be'\
+                             'Corrector expected range source buffer to be' \
                              ' a Parser::Source::Buffer, but got String')
           expect do
             do_rewrite { |corr| corr.public_send(method, op_other, *params) }

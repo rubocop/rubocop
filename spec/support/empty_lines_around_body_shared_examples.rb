@@ -36,7 +36,7 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       end
 
       context "when #{type} has a namespace" do
-        it 'requires no empty lines for namespace but '\
+        it 'requires no empty lines for namespace but ' \
            "requires blank line at the beginning and ending of #{type} body" do
           expect_no_offenses(<<~RUBY)
             #{type} Parent
@@ -146,8 +146,8 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
     end
 
     context 'when first child is NOT a method' do
-      it "does not require blank line at the beginning of #{type} body "\
-         'but requires blank line before first def definition '\
+      it "does not require blank line at the beginning of #{type} body " \
+         'but requires blank line before first def definition ' \
          "and requires blank line at the end of #{type} body" do
         expect_no_offenses(<<~RUBY)
           #{type} SomeObject
@@ -232,8 +232,8 @@ shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
       end
 
       context "when #{type} has a namespace" do
-        it 'requires no empty lines for namespace '\
-           "and does not require blank line at the beginning of #{type} body "\
+        it 'requires no empty lines for namespace ' \
+           "and does not require blank line at the beginning of #{type} body " \
            "but requires blank line at the end of #{type} body" do
           expect_no_offenses(<<~RUBY)
             #{type} Parent

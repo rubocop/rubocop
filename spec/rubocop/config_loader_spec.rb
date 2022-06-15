@@ -1260,7 +1260,7 @@ RSpec.describe RuboCop::ConfigLoader do
           YAML
         end
 
-        it 'enables cops that are explicitly in the config file '\
+        it 'enables cops that are explicitly in the config file ' \
            'even if they are disabled by default' do
           cop_class = RuboCop::Cop::Style::Copyright
           expect(cop_enabled?(cop_class)).to be true

@@ -227,7 +227,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'autocorrects in more complex case with lambda and assignment, and '\
+  it 'autocorrects in more complex case with lambda and assignment, and ' \
      'aligns the next line two spaces out from the start of the block' do
     expect_offense(<<~RUBY)
       x = -> (y) { foo

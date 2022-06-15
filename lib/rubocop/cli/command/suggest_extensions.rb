@@ -18,7 +18,7 @@ module RuboCop
           return if skip? || extensions.none?
 
           puts
-          puts 'Tip: Based on detected gems, the following '\
+          puts 'Tip: Based on detected gems, the following ' \
                'RuboCop extension libraries might be helpful:'
 
           extensions.sort.each do |extension|
@@ -26,8 +26,8 @@ module RuboCop
           end
 
           puts
-          puts 'You can opt out of this message by adding the following to your config '\
-               '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions '\
+          puts 'You can opt out of this message by adding the following to your config ' \
+               '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions ' \
                'for more options):'
           puts '  AllCops:'
           puts '    SuggestExtensions: false'

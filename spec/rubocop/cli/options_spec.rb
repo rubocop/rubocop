@@ -1500,7 +1500,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             'Incorrect indentation detected (column 0 instead of 1).',
             '# frozen_string_literal: true',
             '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
-            'example2.rb:3:1: C: [Correctable] Layout/IndentationStyle: '\
+            'example2.rb:3:1: C: [Correctable] Layout/IndentationStyle: ' \
             'Tab detected in indentation.',
             "\tx",
             '^',
@@ -1863,7 +1863,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(cli.run(['--autocorrect', '--format', 'simple', target_file])).to eq(1)
 
         expect($stdout.string.lines.to_a.last).to eq(
-          '1 file inspected, 1 offense detected, 1 more offense '\
+          '1 file inspected, 1 offense detected, 1 more offense ' \
           "can be corrected with `rubocop -A`\n"
         )
       end
@@ -1879,7 +1879,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(cli.run(['--autocorrect', '--format', 'simple', target_file])).to eq(1)
 
         expect($stdout.string.lines.to_a.last).to eq(
-          '1 file inspected, 2 offenses detected, 1 offense corrected, 1 more offense '\
+          '1 file inspected, 2 offenses detected, 1 offense corrected, 1 more offense ' \
           "can be corrected with `rubocop -A`\n"
         )
       end

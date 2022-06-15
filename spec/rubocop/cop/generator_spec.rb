@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Generator do
       allow(new_cop).to receive(:exit!)
       expect { new_cop.write_source }
         .to output(
-          'rake new_cop: lib/rubocop/cop/layout/indentation_style.rb '\
+          'rake new_cop: lib/rubocop/cop/layout/indentation_style.rb ' \
           "already exists!\n"
         ).to_stderr
     end
@@ -145,7 +145,7 @@ RSpec.describe RuboCop::Cop::Generator do
       allow(new_cop).to receive(:exit!)
       expect { new_cop.write_spec }
         .to output(
-          'rake new_cop: spec/rubocop/cop/layout/indentation_style_spec.rb '\
+          'rake new_cop: spec/rubocop/cop/layout/indentation_style_spec.rb ' \
           "already exists!\n"
         ).to_stderr
     end

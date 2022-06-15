@@ -1242,7 +1242,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         }
       end
 
-      it 'registers an offense and corrects misaligned hash values, '\
+      it 'registers an offense and corrects misaligned hash values, ' \
          'prefer table because it is specified first' do
         expect_offense(<<~RUBY)
           hash = {

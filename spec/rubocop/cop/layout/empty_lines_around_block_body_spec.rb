@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
         RUBY
       end
 
-      it 'registers an offense for block body starting with a blank passed to '\
+      it 'registers an offense for block body starting with a blank passed to ' \
          'a multi-line method call' do
         expect_offense(<<~RUBY)
           some_method arg,

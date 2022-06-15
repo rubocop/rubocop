@@ -112,7 +112,7 @@ module RuboCop
 
           write_config_file(config_file, file_string, rubocop_yml_contents)
 
-          puts "Added inheritance from `#{relative_path_to_todo_from_options_config}` "\
+          puts "Added inheritance from `#{relative_path_to_todo_from_options_config}` " \
                "in `#{ConfigLoader::DOTFILE}`."
         end
 

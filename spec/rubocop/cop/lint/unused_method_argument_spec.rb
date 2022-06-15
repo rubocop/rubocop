@@ -500,7 +500,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'accepts an empty singleton method with a single unused parameter &'\
+    it 'accepts an empty singleton method with a single unused parameter &' \
        'raise NotImplementedError' do
       expect_no_offenses(<<~RUBY)
         def self.method(unused)

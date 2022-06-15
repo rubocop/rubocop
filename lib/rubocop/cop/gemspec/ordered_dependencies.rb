@@ -55,7 +55,7 @@ module RuboCop
         include OrderedGemNode
 
         MSG = 'Dependencies should be sorted in an alphabetical order within ' \
-              'their section of the gemspec. '\
+              'their section of the gemspec. ' \
               'Dependency `%<previous>s` should appear before `%<current>s`.'
 
         def on_new_investigation

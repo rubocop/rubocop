@@ -5,7 +5,7 @@ module RuboCop
   module Version
     STRING = '1.30.1'
 
-    MSG = '%<version>s (using Parser %<parser_version>s, '\
+    MSG = '%<version>s (using Parser %<parser_version>s, ' \
           'rubocop-ast %<rubocop_ast_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s %<ruby_platform>s)'
 

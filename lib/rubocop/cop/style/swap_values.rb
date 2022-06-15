@@ -22,7 +22,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Replace this and assignments at lines %<x_line>d '\
+        MSG = 'Replace this and assignments at lines %<x_line>d ' \
               'and %<y_line>d with `%<replacement>s`.'
 
         SIMPLE_ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn casgn].to_set.freeze
