@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
       expect_no_offenses("x = <<HELLO\n\thello\n\t\n\t\t\nhello\nHELLO")
     end
 
-    it 'registers and corrects an offense for a line indented with fractional number of'\
+    it 'registers and corrects an offense for a line indented with fractional number of' \
        'indentation groups by rounding down' do
       expect_offense(<<~RUBY)
            x = 0

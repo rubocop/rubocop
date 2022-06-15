@@ -49,7 +49,7 @@ module RuboCop
               when :heredoc
                 ->(node) { heredoc_node?(node) }
               else
-                raise ArgumentError, "Unknown foldable type: #{type.inspect}. "\
+                raise ArgumentError, "Unknown foldable type: #{type.inspect}. " \
                                      "Valid foldable types are: #{FOLDABLE_TYPES.join(', ')}."
               end
             end

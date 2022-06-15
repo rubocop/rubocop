@@ -38,7 +38,7 @@ module RuboCop
         include RangeHelp
         include GemspecHelp
 
-        MSG = '`%<assignment>s` method calls already given on line '\
+        MSG = '`%<assignment>s` method calls already given on line ' \
               '%<line_of_first_occurrence>d of the gemspec.'
 
         # @!method assignment_method_declarations(node)

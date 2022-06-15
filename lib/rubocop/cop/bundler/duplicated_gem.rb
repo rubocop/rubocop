@@ -38,7 +38,7 @@ module RuboCop
       class DuplicatedGem < Base
         include RangeHelp
 
-        MSG = 'Gem `%<gem_name>s` requirements already given on line '\
+        MSG = 'Gem `%<gem_name>s` requirements already given on line ' \
               '%<line_of_first_occurrence>d of the Gemfile.'
 
         def on_new_investigation

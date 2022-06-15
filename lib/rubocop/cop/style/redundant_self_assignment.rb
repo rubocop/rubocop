@@ -32,7 +32,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Redundant self assignment detected. '\
+        MSG = 'Redundant self assignment detected. ' \
               'Method `%<method_name>s` modifies its receiver in place.'
 
         METHODS_RETURNING_SELF = %i[

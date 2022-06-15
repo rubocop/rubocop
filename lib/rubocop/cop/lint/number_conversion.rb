@@ -64,9 +64,9 @@ module RuboCop
           to_c: "#{Complex.name}(%<number_object>s)",
           to_r: "#{Rational.name}(%<number_object>s)"
         }.freeze
-        MSG = 'Replace unsafe number conversion with number '\
-              'class parsing, instead of using '\
-              '`%<current>s`, use stricter '\
+        MSG = 'Replace unsafe number conversion with number ' \
+              'class parsing, instead of using ' \
+              '`%<current>s`, use stricter ' \
               '`%<corrected_method>s`.'
         CONVERSION_METHODS = %i[Integer Float Complex Rational to_i to_f to_c to_r].freeze
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')

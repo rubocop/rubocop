@@ -2383,7 +2383,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
-  it 'properly corrects when `Style/SoleNestedConditional` and one of '\
+  it 'properly corrects when `Style/SoleNestedConditional` and one of ' \
      '`Style/NegatedIf` or `Style/NegatedUnless` detect offenses' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
@@ -2477,7 +2477,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
-  it 'breaks line at the beginning of trailing class/module body without removing a semicolon in the body'\
+  it 'breaks line at the beginning of trailing class/module body without removing a semicolon in the body' \
      'when using `Style/TrailingBodyOnClass` and `Style/TrailingBodyOnModule`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

@@ -1738,7 +1738,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to start_with(
-          'Error: RuboCop found unsupported Ruby version 1.9 in '\
+          'Error: RuboCop found unsupported Ruby version 1.9 in ' \
           '`TargetRubyVersion`'
         )
 
@@ -1836,7 +1836,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       failure_message do
-        "expected to suggest extensions [#{extensions.join(', ')}], "\
+        "expected to suggest extensions [#{extensions.join(', ')}], " \
           "but got [#{suggested.join(', ')}]"
       end
 
