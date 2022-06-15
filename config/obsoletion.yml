@@ -55,6 +55,8 @@ renamed:
 
 # Cops that were removed
 removed:
+  Gemspec/DateAssignment:
+    alternatives: Gemspec/DeprecatedAttributeAssignment
   Layout/SpaceAfterControlKeyword:
     alternatives: Layout/SpaceAroundKeyword
   Layout/SpaceBeforeModifierKeyword:

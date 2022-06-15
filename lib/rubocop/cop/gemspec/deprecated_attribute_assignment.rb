@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Gemspec
       # Checks that deprecated attribute attributes are not set in a gemspec file.
-      # Removing `test_files` allows the user to receive smaller packed gems.
+      # Removing deprecated attributes allows the user to receive smaller packed gems.
       #
       # @example
       #
@@ -29,7 +29,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Do not set `test_files` in gemspec.'
+        MSG = 'Do not set `%<attribute>s` in gemspec.'
 
         # @!method gem_specification(node)
         def_node_matcher :gem_specification, <<~PATTERN
@@ -45,14 +45,14 @@ module RuboCop
 
           block_parameter = block_node.arguments.first.source
 
-          date_assignment = block_node.descendants.detect do |node|
-            use_test_files?(node, block_parameter)
+          assignment = block_node.descendants.detect do |node|
+            use_deprecated_attributes?(node, block_parameter)
           end
+          return unless assignment
 
-          return unless date_assignment
-
-          add_offense(date_assignment) do |corrector|
-            range = range_by_whole_lines(date_assignment.source_range, include_final_newline: true)
+          message = format_message_from
+          add_offense(assignment, message: message) do |corrector|
+            range = range_by_whole_lines(assignment.source_range, include_final_newline: true)
 
             corrector.remove(range)
           end
@@ -60,16 +60,31 @@ module RuboCop
 
         private
 
-        def use_test_files?(node, block_parameter)
-          node, method_name = if node.op_asgn_type?
-                                lhs, _op, _rhs = *node
+        def node_and_method_name(node, attribute)
+          if node.op_asgn_type?
+            lhs, _op, _rhs = *node
+            [lhs, attribute]
+          else
+            [node, "#{attribute}=".to_sym]
+          end
+        end
 
-                                [lhs, :test_files]
-                              else
-                                [node, :test_files=]
-                              end
+        def use_deprecated_attributes?(node, block_parameter)
+          %i[test_files date].each do |attribute|
+            node, method_name = node_and_method_name(node, attribute)
+            unless node.send_type? && node.receiver&.source == block_parameter &&
+                   node.method?(method_name)
+              next
+            end
 
-          node.send_type? && node.receiver&.source == block_parameter && node.method?(method_name)
+            @attribute = attribute.to_s
+            return true
+          end
+          false
+        end
+
+        def format_message_from
+          format(MSG, attribute: @attribute)
         end
       end
     end
