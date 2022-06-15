@@ -160,7 +160,6 @@ require_relative 'rubocop/cop/bundler/gem_version'
 require_relative 'rubocop/cop/bundler/insecure_protocol_source'
 require_relative 'rubocop/cop/bundler/ordered_gems'
 
-require_relative 'rubocop/cop/gemspec/date_assignment'
 require_relative 'rubocop/cop/gemspec/dependency_version'
 require_relative 'rubocop/cop/gemspec/deprecated_attribute_assignment'
 require_relative 'rubocop/cop/gemspec/duplicated_assignment'

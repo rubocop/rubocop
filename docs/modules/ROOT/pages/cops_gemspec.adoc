@@ -1,36 +1,5 @@
 = Gemspec
 
-== Gemspec/DateAssignment
-
-|===
-| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
-
-| Pending
-| Yes
-| Yes
-| 1.10
-| -
-|===
-
-Checks that `date =` is not used in gemspec file.
-It is set automatically when the gem is packaged.
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-Gem::Specification.new do |spec|
-  spec.name = 'your_cool_gem_name'
-  spec.date = Time.now.strftime('%Y-%m-%d')
-end
-
-# good
-Gem::Specification.new do |spec|
-  spec.name = 'your_cool_gem_name'
-end
-----
-
 === Configurable attributes
 
 |===
