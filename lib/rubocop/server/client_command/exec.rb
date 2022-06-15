@@ -30,11 +30,11 @@ module RuboCop
 
         def status
           unless Cache.status_path.file?
-            raise "rubocop server: Could not find status file at: #{Cache.status_path}"
+            raise "RuboCop server: Could not find status file at: #{Cache.status_path}"
           end
 
           status = Cache.status_path.read
-          raise "rubocop server: '#{status}' is not a valid status!" if (status =~ /^\d+$/).nil?
+          raise "RuboCop server: '#{status}' is not a valid status!" if (status =~ /^\d+$/).nil?
 
           status.to_i
         end
