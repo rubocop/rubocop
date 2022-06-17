@@ -36,6 +36,12 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
+  it 'does not register an offense for expression followed by chained expression with safe navigation operator' do
+    expect_no_offenses(<<~RUBY)
+      func (x).func.func.func.func&.func
+    RUBY
+  end
+
   it 'does not register an offense for math expression' do
     expect_no_offenses(<<~RUBY)
       puts (2 + 3) * 4

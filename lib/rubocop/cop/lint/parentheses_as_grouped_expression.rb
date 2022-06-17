@@ -55,7 +55,7 @@ module RuboCop
 
         def chained_calls?(node)
           first_argument = node.first_argument
-          first_argument.send_type? && (node.children.last&.children&.count || 0) > 1
+          first_argument.call_type? && (node.children.last&.children&.count || 0) > 1
         end
 
         def ternary_expression?(node)
