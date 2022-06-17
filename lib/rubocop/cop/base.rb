@@ -220,6 +220,10 @@ module RuboCop
         @config.target_rails_version
       end
 
+      def active_support_extensions_enabled?
+        @config.active_support_extensions_enabled?
+      end
+
       def relevant_file?(file)
         file == RuboCop::AST::ProcessedSource::STRING_SOURCE_NAME ||
           (file_name_matches_any?(file, 'Include', true) &&

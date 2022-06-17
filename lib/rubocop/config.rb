@@ -146,6 +146,10 @@ module RuboCop
       for_all_cops['NewCops'] == 'enable'
     end
 
+    def active_support_extensions_enabled?
+      for_all_cops['ActiveSupportExtensionsEnabled']
+    end
+
     def file_to_include?(file)
       relative_file_path = path_relative_to_config(file)
 

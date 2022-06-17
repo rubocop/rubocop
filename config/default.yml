@@ -153,6 +153,8 @@ AllCops:
     rubocop-sequel: [sequel]
     rubocop-rake: [rake]
     rubocop-graphql: [graphql]
+  # Enable/Disable checking the methods extended by Active Support.
+  ActiveSupportExtensionsEnabled: false
 
 #################### Bundler ###############################
 
