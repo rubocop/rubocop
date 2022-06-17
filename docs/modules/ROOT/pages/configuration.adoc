@@ -784,3 +784,14 @@ The following is an example of specifying `Rails` department.
 Rails:
   DocumentationBaseURL: https://docs.rubocop.org/rubocop-rails
 ----
+
+== Enable checking Active Support extensions
+
+Some cops for checking specified methods (e.g. `Style/HashExcept`) supports Active Support extensions.
+This is off by default, but can be enabled by the `ActiveSupportExtensionsEnabled` option.
+
+[source,yaml]
+----
+AllCops:
+  ActiveSupportExtensionsEnabled: true
+----
