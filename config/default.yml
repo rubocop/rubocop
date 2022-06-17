@@ -3726,6 +3726,7 @@ Style/HashExcept:
                  that can be replaced with `Hash#except` method.
   Enabled: pending
   VersionAdded: '1.7'
+  VersionChanged: '<<next>>'
 
 Style/HashLikeCase:
   Description: >-
