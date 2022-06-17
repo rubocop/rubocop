@@ -3,6 +3,8 @@
 module RuboCop
   module Cop
     module Metrics
+      # Checks the coplexity for the human reader.
+      #
       # Tries to produce a complexity score that's a measure of the
       # complexity the reader experiences when looking at a method. For that
       # reason it considers `when` nodes as something that doesn't add as much

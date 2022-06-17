@@ -24,7 +24,11 @@ Dir['tasks/**/*.rake'].each { |t| load t }
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation)
 
-task default: %i[documentation_syntax_check spec ascii_spec internal_investigation]
+task default: %i[documentation_syntax_check
+                 spec
+                 ascii_spec
+                 confirm_config
+                 internal_investigation]
 
 require 'yard'
 YARD::Rake::YardocTask.new
@@ -120,3 +124,47 @@ task documentation_syntax_check: :yard_for_generate_documentation do
   end
   abort unless ok
 end
+
+desc 'Build config/default.yml'
+task :build_config do
+  require_relative 'lib/rubocop/config_formatter'
+  require_relative 'lib/rubocop/description_extractor'
+
+  glob = File.join('lib', 'rubocop', 'cop',
+                   '{bundler,gemspec,layout,lint,metrics,migration,naming,security,style}',
+                   '*.rb')
+  # Due to YARD's sensitivity to file require order (as of 0.9.25),
+  # we have to prepend the list with our base cop, RuboCop::Cop::RSpec::Base.
+  # Otherwise, cop's parent class for cops loaded before our base cop class
+  # are detected as RuboCop::Cop::Base, and that complicates the detection
+  # of their relation with RuboCop RSpec.
+  base_cop_path = File.join('lib', 'rubocop', 'cop', 'base.rb')
+  YARD::Tags::Library.define_tag('Cop Safety Information', :safety)
+  YARD.parse(Dir[glob].prepend(base_cop_path), [])
+
+  descriptions = RuboCop::DescriptionExtractor.new(YARD::Registry.all).to_h
+  current_config = if Psych::VERSION >= '4.0.0' # RUBY_VERSION >= '3.1.0'
+                     YAML.unsafe_load_file('config/default.yml')
+                   else
+                     YAML.load_file('config/default.yml')
+                   end
+
+  File.write(
+    'config/default.yml',
+    RuboCop::ConfigFormatter.new(current_config, descriptions).dump
+  )
+end
+
+desc 'Confirm config/default.yml is up to date'
+task confirm_config: :build_config do
+  _, stdout, _, process =
+    Open3.popen3('git diff --exit-code config/default.yml')
+
+  raise <<~ERROR unless process.value.success?
+    default.yml is out of sync:
+
+    #{stdout.read}
+    Run rake build_config
+  ERROR
+end
+
