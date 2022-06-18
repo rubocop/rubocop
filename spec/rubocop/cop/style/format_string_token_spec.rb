@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       it_behaves_like 'maximum allowed unannotated', token
     end
 
-    context 'when enforced style is template' do
+    context 'when enforced style is template (default)' do
       let(:enforced_style) { :template }
 
       it 'registers offenses for annotated style' do

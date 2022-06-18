@@ -4208,7 +4208,7 @@ puts '%10s' % 'hoge'
 | Yes
 | No
 | 0.49
-| 1.0
+| <<next>>
 |===
 
 Use a consistent style for named format string tokens.
@@ -4227,19 +4227,7 @@ if the number of them is less than or equals to
 
 === Examples
 
-==== EnforcedStyle: annotated (default)
-
-[source,ruby]
-----
-# bad
-format('%{greeting}', greeting: 'Hello')
-format('%s', 'Hello')
-
-# good
-format('%<greeting>s', greeting: 'Hello')
-----
-
-==== EnforcedStyle: template
+==== EnforcedStyle: template (default)
 
 [source,ruby]
 ----
@@ -4249,6 +4237,18 @@ format('%s', 'Hello')
 
 # good
 format('%{greeting}', greeting: 'Hello')
+----
+
+==== EnforcedStyle: annotated
+
+[source,ruby]
+----
+# bad
+format('%{greeting}', greeting: 'Hello')
+format('%s', 'Hello')
+
+# good
+format('%<greeting>s', greeting: 'Hello')
 ----
 
 ==== EnforcedStyle: unannotated
@@ -4300,8 +4300,8 @@ redirect('foo/%{bar_id}')
 | Name | Default value | Configurable values
 
 | EnforcedStyle
-| `annotated`
-| `annotated`, `template`, `unannotated`
+| `template`
+| `template`, `annotated`, `unannotated`
 
 | MaxUnannotatedPlaceholdersAllowed
 | `1`
