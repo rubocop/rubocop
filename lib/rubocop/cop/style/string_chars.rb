@@ -22,7 +22,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `chars` instead of `%<current>s`.'
+        MSG = 'Use `chars` instead of `%{current}`.'
         RESTRICT_ON_SEND = %i[split].freeze
         BAD_ARGUMENTS = %w[// '' ""].freeze
 

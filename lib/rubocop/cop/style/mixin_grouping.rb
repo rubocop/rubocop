@@ -35,7 +35,7 @@ module RuboCop
         extend AutoCorrector
 
         MIXIN_METHODS = %i[extend include prepend].freeze
-        MSG = 'Put `%<mixin>s` mixins in %<suffix>s.'
+        MSG = 'Put `%{mixin}` mixins in %{suffix}.'
 
         def on_class(node)
           begin_node = node.child_nodes.find(&:begin_type?) || node

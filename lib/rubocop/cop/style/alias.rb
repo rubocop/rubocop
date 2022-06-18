@@ -27,8 +27,8 @@ module RuboCop
         extend AutoCorrector
 
         MSG_ALIAS = 'Use `alias_method` instead of `alias`.'
-        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` %<current>s.'
-        MSG_SYMBOL_ARGS  = 'Use `alias %<prefer>s` instead of `alias %<current>s`.'
+        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` %{current}.'
+        MSG_SYMBOL_ARGS  = 'Use `alias %{prefer}` instead of `alias %{current}`.'
 
         RESTRICT_ON_SEND = %i[alias_method].freeze
 

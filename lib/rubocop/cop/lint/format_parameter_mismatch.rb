@@ -36,8 +36,8 @@ module RuboCop
       #   format('Numbered format: %1$s and numbered %2$s', a_value, another)
       class FormatParameterMismatch < Base
         # http://rubular.com/r/CvpbxkcTzy
-        MSG = "Number of arguments (%<arg_num>i) to `%<method>s` doesn't " \
-              'match the number of fields (%<field_num>i).'
+        MSG = "Number of arguments (%{arg_num}) to `%{method}` doesn't " \
+              'match the number of fields (%{field_num}).'
         MSG_INVALID = 'Format string is invalid because formatting sequence types ' \
                       '(numbered, named or unnumbered) are mixed.'
 

@@ -45,8 +45,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        EXPLODED_MSG = 'Provide an exception class and message as arguments to `%<method>s`.'
-        COMPACT_MSG = 'Provide an exception object as an argument to `%<method>s`.'
+        EXPLODED_MSG = 'Provide an exception class and message as arguments to `%{method}`.'
+        COMPACT_MSG = 'Provide an exception object as an argument to `%{method}`.'
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
 

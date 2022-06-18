@@ -72,7 +72,7 @@ module RuboCop
         include Alignment
         extend AutoCorrector
 
-        MSG_INDENT = 'Indent `)` to column %<expected>d (not %<actual>d)'
+        MSG_INDENT = 'Indent `)` to column %{expected} (not %{actual})'
 
         MSG_ALIGN = 'Align `)` with `(`.'
 

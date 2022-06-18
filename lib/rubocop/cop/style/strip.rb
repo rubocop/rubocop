@@ -17,7 +17,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `strip` instead of `%<methods>s`.'
+        MSG = 'Use `strip` instead of `%{methods}`.'
         RESTRICT_ON_SEND = %i[lstrip rstrip].freeze
 
         # @!method lstrip_rstrip(node)

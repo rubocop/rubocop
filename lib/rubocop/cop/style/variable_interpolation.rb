@@ -19,8 +19,8 @@ module RuboCop
         include Interpolation
         extend AutoCorrector
 
-        MSG = 'Replace interpolated variable `%<variable>s` ' \
-              'with expression `#{%<variable>s}`.' # rubocop:disable Lint/InterpolationCheck
+        MSG = 'Replace interpolated variable `%{variable}` ' \
+              'with expression `#{%{variable}}`.' # rubocop:disable Lint/InterpolationCheck
 
         def on_node_with_interpolations(node)
           var_nodes(node.children).each do |var_node|

@@ -50,7 +50,7 @@ module RuboCop
       #
       #   alias bar foo
       class DuplicateMethods < Base
-        MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
+        MSG = 'Method `%{method}` is defined at both %{defined} and %{current}.'
 
         RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr].freeze
 

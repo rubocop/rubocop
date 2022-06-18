@@ -18,7 +18,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Do not use `attr`. Use `%<replacement>s` instead.'
+        MSG = 'Do not use `attr`. Use `%{replacement}` instead.'
         RESTRICT_ON_SEND = %i[attr].freeze
 
         def on_send(node)

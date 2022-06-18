@@ -24,7 +24,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Combine both accessors into `attr_accessor %<name>s`.'
+        MSG = 'Combine both accessors into `attr_accessor %{name}`.'
 
         def on_new_investigation
           @macros_to_rewrite = {}

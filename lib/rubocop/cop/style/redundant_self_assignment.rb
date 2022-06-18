@@ -33,7 +33,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant self assignment detected. ' \
-              'Method `%<method_name>s` modifies its receiver in place.'
+              'Method `%{method_name}` modifies its receiver in place.'
 
         METHODS_RETURNING_SELF = %i[
           append clear collect! compare_by_identity concat delete_if

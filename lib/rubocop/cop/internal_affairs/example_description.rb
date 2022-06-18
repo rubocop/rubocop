@@ -30,7 +30,7 @@ module RuboCop
           attr_accessor :descriptions
         end
 
-        MSG = 'Description does not match use of `%<method_name>s`.'
+        MSG = 'Description does not match use of `%{method_name}`.'
 
         RESTRICT_ON_SEND = %i[
           expect_offense

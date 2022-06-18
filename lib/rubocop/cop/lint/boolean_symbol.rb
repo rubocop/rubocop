@@ -29,7 +29,7 @@ module RuboCop
       class BooleanSymbol < Base
         extend AutoCorrector
 
-        MSG = 'Symbol with a boolean name - you probably meant to use `%<boolean>s`.'
+        MSG = 'Symbol with a boolean name - you probably meant to use `%{boolean}`.'
 
         # @!method boolean_symbol?(node)
         def_node_matcher :boolean_symbol?, '(sym {:true :false})'

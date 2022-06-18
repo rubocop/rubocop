@@ -74,7 +74,7 @@ module RuboCop
         include IgnoredMethods
         extend AutoCorrector
 
-        MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` instead of a block.'
+        MSG = 'Pass `&:%{method}` as an argument to `%{block_method}` instead of a block.'
         SUPER_TYPES = %i[super zsuper].freeze
 
         # @!method proc_node?(node)

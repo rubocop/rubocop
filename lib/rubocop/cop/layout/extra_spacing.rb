@@ -34,7 +34,7 @@ module RuboCop
         include RangeHelp
 
         MSG_UNNECESSARY = 'Unnecessary spacing detected.'
-        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %<location>s assignment.'
+        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %{location} assignment.'
 
         def on_new_investigation
           return if processed_source.blank?

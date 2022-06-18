@@ -47,8 +47,8 @@ module RuboCop
         include MultilineElementIndentation
         extend AutoCorrector
 
-        MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
-              'in method args, relative to %<base_description>s.'
+        MSG = 'Use %{configured_indentation_width} spaces for indentation ' \
+              'in method args, relative to %{base_description}.'
 
         def on_def(node)
           return if node.arguments.empty?

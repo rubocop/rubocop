@@ -6,7 +6,7 @@ module RuboCop
     module CodeLength
       extend ExcludeLimit
 
-      MSG = '%<label>s has too many lines. [%<length>d/%<max>d]'
+      MSG = '%{label} has too many lines. [%{length}/%{max}]'
 
       exclude_limit 'Max'
 

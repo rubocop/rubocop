@@ -64,7 +64,7 @@ module RuboCop
       #   define_method(:foo) { |arg| }
       #
       class UselessRuby2Keywords < Base
-        MSG = '`ruby2_keywords` is unnecessary for method `%<method_name>s`.'
+        MSG = '`ruby2_keywords` is unnecessary for method `%{method_name}`.'
         RESTRICT_ON_SEND = %i[ruby2_keywords].freeze
 
         # Looks for statically or dynamically defined methods with a given name

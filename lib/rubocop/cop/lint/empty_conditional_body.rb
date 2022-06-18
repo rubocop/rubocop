@@ -55,7 +55,7 @@ module RuboCop
       class EmptyConditionalBody < Base
         include CommentsHelp
 
-        MSG = 'Avoid `%<keyword>s` branches without a body.'
+        MSG = 'Avoid `%{keyword}` branches without a body.'
 
         def on_if(node)
           return if node.body

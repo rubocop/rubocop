@@ -51,7 +51,7 @@ module RuboCop
         include IgnoredMethods
         extend AutoCorrector
 
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
+        MSG = 'Use `%{prefer}` instead of `%{current}`.'
 
         REPLACEMENTS = { 'zero?' => '==', 'positive?' => '>', 'negative?' => '<' }.freeze
 

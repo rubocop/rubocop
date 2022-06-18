@@ -17,7 +17,7 @@ module RuboCop
       #     # ...
       #   end
       class AutoResourceCleanup < Base
-        MSG = 'Use the block version of `%<class>s.%<method>s`.'
+        MSG = 'Use the block version of `%{class}.%{method}`.'
 
         TARGET_METHODS = { File: :open }.freeze
 

@@ -40,8 +40,8 @@ module RuboCop
         include VisibilityHelp
         extend AutoCorrector
 
-        GROUPED_MSG = 'Group together all `%<accessor>s` attributes.'
-        SEPARATED_MSG = 'Use one attribute per `%<accessor>s`.'
+        GROUPED_MSG = 'Group together all `%{accessor}` attributes.'
+        SEPARATED_MSG = 'Use one attribute per `%{accessor}`.'
 
         ACCESSOR_METHODS = %i[attr_reader attr_writer attr_accessor attr].freeze
 

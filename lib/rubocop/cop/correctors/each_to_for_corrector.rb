@@ -6,8 +6,8 @@ module RuboCop
     class EachToForCorrector
       extend NodePattern::Macros
 
-      CORRECTION_WITH_ARGUMENTS = 'for %<variables>s in %<collection>s do'
-      CORRECTION_WITHOUT_ARGUMENTS = 'for _ in %<enumerable>s do'
+      CORRECTION_WITH_ARGUMENTS = 'for %{variables} in %{collection} do'
+      CORRECTION_WITHOUT_ARGUMENTS = 'for _ in %{enumerable} do'
 
       def initialize(block_node)
         @block_node = block_node

@@ -4,10 +4,10 @@ module RuboCop
   module Cop
     # Common functionality shared by Uncommunicative cops
     module UncommunicativeName
-      CASE_MSG = 'Only use lowercase characters for %<name_type>s.'
-      NUM_MSG = 'Do not end %<name_type>s with a number.'
-      LENGTH_MSG = '%<name_type>s must be at least %<min>s characters long.'
-      FORBIDDEN_MSG = 'Do not use %<name>s as a name for a %<name_type>s.'
+      CASE_MSG = 'Only use lowercase characters for %{name_type}.'
+      NUM_MSG = 'Do not end %{name_type} with a number.'
+      LENGTH_MSG = '%{name_type} must be at least %{min} characters long.'
+      FORBIDDEN_MSG = 'Do not use %{name} as a name for a %{name_type}.'
 
       def check(node, args)
         args.each do |arg|

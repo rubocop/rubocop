@@ -16,7 +16,7 @@ module RuboCop
       class UriRegexp < Base
         extend AutoCorrector
 
-        MSG = '`%<current>s` is obsolete and should not be used. Instead, use `%<preferred>s`.'
+        MSG = '`%{current}` is obsolete and should not be used. Instead, use `%{preferred}`.'
         URI_CONSTANTS = ['URI', '::URI'].freeze
         RESTRICT_ON_SEND = %i[regexp].freeze
 

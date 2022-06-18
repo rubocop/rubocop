@@ -17,8 +17,8 @@ module RuboCop
         include OnNormalIfUnless
         extend AutoCorrector
 
-        MSG_IF_ELSE = 'Do not use `if %<expr>s;` - use `if/else` instead.'
-        MSG_TERNARY = 'Do not use `if %<expr>s;` - use a ternary operator instead.'
+        MSG_IF_ELSE = 'Do not use `if %{expr};` - use `if/else` instead.'
+        MSG_TERNARY = 'Do not use `if %{expr};` - use a ternary operator instead.'
 
         def on_normal_if_unless(node)
           return unless node.else_branch

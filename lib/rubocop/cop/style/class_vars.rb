@@ -46,7 +46,7 @@ module RuboCop
       #   end
       #
       class ClassVars < Base
-        MSG = 'Replace class var %<class_var>s with a class instance var.'
+        MSG = 'Replace class var %{class_var} with a class instance var.'
         RESTRICT_ON_SEND = %i[class_variable_set].freeze
 
         def on_cvasgn(node)

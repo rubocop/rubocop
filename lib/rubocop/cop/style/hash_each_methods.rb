@@ -31,7 +31,7 @@ module RuboCop
         include Lint::UnusedArgument
         extend AutoCorrector
 
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
+        MSG = 'Use `%{prefer}` instead of `%{current}`.'
 
         # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN

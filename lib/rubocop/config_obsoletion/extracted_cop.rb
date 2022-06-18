@@ -21,7 +21,7 @@ module RuboCop
       end
 
       def rule_message
-        msg = '%<name>s been extracted to the `%<gem>s` gem.'
+        msg = '%{name} been extracted to the `%{gem}` gem.'
         format(msg,
                name: affected_cops.size > 1 ? "`#{department}` cops have" : "`#{old_name}` has",
                gem: gem)

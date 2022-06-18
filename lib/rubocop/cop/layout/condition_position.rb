@@ -26,7 +26,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Place the condition on the same line as `%<keyword>s`.'
+        MSG = 'Place the condition on the same line as `%{keyword}`.'
 
         def on_if(node)
           return if node.ternary?

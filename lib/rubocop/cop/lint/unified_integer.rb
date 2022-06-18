@@ -20,7 +20,7 @@ module RuboCop
       class UnifiedInteger < Base
         extend AutoCorrector
 
-        MSG = 'Use `Integer` instead of `%<klass>s`.'
+        MSG = 'Use `Integer` instead of `%{klass}`.'
 
         # @!method fixnum_or_bignum_const(node)
         def_node_matcher :fixnum_or_bignum_const, <<~PATTERN

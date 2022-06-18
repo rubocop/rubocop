@@ -45,7 +45,7 @@ module RuboCop
       #   end
       #
       class ConstantVisibility < Base
-        MSG = 'Explicitly make `%<constant_name>s` public or private using ' \
+        MSG = 'Explicitly make `%{constant_name}` public or private using ' \
               'either `#public_constant` or `#private_constant`.'
 
         def on_casgn(node)

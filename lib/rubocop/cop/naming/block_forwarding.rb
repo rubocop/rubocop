@@ -45,7 +45,7 @@ module RuboCop
 
         minimum_target_ruby_version 3.1
 
-        MSG = 'Use %<style>s block forwarding.'
+        MSG = 'Use %{style} block forwarding.'
 
         def on_def(node)
           return if node.arguments.empty?

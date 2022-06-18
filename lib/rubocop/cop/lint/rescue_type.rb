@@ -37,7 +37,7 @@ module RuboCop
       class RescueType < Base
         extend AutoCorrector
 
-        MSG = 'Rescuing from `%<invalid_exceptions>s` will raise a ' \
+        MSG = 'Rescuing from `%{invalid_exceptions}` will raise a ' \
               '`TypeError` instead of catching the actual exception.'
         INVALID_TYPES = %i[array dstr float hash nil int str sym].freeze
 

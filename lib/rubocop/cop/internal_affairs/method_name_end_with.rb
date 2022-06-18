@@ -29,7 +29,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<method_name>s` instead of `%<method_suffix>s`.'
+        MSG = 'Use `%{method_name}` instead of `%{method_suffix}`.'
         SUGGEST_METHOD_FOR_SUFFIX = {
           '=' => 'assignment_method?',
           '!' => 'bang_method?',

@@ -144,7 +144,7 @@ module RuboCop
           sclass: :class_singleton
         }.freeze
 
-        MSG = '`%<category>s` is supposed to appear before `%<previous>s`.'
+        MSG = '`%{category}` is supposed to appear before `%{previous}`.'
 
         # @!method dynamic_constant?(node)
         def_node_matcher :dynamic_constant?, <<~PATTERN

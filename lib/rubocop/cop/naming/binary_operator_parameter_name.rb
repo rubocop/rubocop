@@ -16,7 +16,7 @@ module RuboCop
       class BinaryOperatorParameterName < Base
         extend AutoCorrector
 
-        MSG = 'When defining the `%<opr>s` operator, name its argument `other`.'
+        MSG = 'When defining the `%{opr}` operator, name its argument `other`.'
 
         OP_LIKE_METHODS = %i[eql? equal?].freeze
         EXCLUDED = %i[+@ -@ [] []= << === ` =~].freeze

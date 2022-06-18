@@ -36,7 +36,7 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
 
-        MSG = 'Use an empty %<type>s instead of always returning nil.'
+        MSG = 'Use an empty %{type} instead of always returning nil.'
 
         # @!method nil_return?(node)
         def_node_matcher :nil_return?, <<~PATTERN

@@ -10,9 +10,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include RangeHelp
 
-        MSG_EXTRA = 'Extra empty line detected at %<kind>s body %<location>s.'
-        MSG_MISSING = 'Empty line missing at %<kind>s body %<location>s.'
-        MSG_DEFERRED = 'Empty line missing before first %<type>s definition'
+        MSG_EXTRA = 'Extra empty line detected at %{kind} body %{location}.'
+        MSG_MISSING = 'Empty line missing at %{kind} body %{location}.'
+        MSG_DEFERRED = 'Empty line missing before first %{type} definition'
 
         private
 

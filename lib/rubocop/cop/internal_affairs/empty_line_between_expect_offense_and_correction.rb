@@ -33,7 +33,7 @@ module RuboCop
       class EmptyLineBetweenExpectOffenseAndCorrection < Base
         extend AutoCorrector
 
-        MSG = 'Add empty line between `expect_offense` and `%<expect_correction>s`.'
+        MSG = 'Add empty line between `expect_offense` and `%{expect_correction}`.'
         RESTRICT_ON_SEND = %i[expect_offense].freeze
         CORRECTION_EXPECTATION_METHODS = %i[expect_correction expect_no_corrections].freeze
 

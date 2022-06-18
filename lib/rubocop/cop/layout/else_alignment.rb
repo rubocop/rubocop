@@ -35,7 +35,7 @@ module RuboCop
         include CheckAssignment
         extend AutoCorrector
 
-        MSG = 'Align `%<else_range>s` with `%<base_range>s`.'
+        MSG = 'Align `%{else_range}` with `%{base_range}`.'
 
         def on_if(node, base = nil)
           return if ignored_node?(node)

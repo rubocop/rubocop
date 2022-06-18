@@ -42,7 +42,7 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
 
-        MSG = 'Use `File.%<write_method>s`.'
+        MSG = 'Use `File.%{write_method}`.'
 
         RESTRICT_ON_SEND = %i[open].to_set.freeze
 

@@ -46,8 +46,8 @@ module RuboCop
       #     end
       #   end
       class IneffectiveAccessModifier < Base
-        MSG = '`%<modifier>s` (on line %<line>d) does not make singleton ' \
-              'methods %<modifier>s. Use %<alternative>s instead.'
+        MSG = '`%{modifier}` (on line %{line}) does not make singleton ' \
+              'methods %{modifier}. Use %{alternative} instead.'
         ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a `class << self` block'
         ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` block'
 

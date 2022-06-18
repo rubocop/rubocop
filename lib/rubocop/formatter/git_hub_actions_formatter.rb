@@ -31,7 +31,7 @@ module RuboCop
 
       def report_offense(file, offense)
         output.printf(
-          "\n::%<severity>s file=%<file>s,line=%<line>d,col=%<column>d::%<message>s\n",
+          "\n::%{severity} file=%{file},line=%{line},col=%{column}::%{message}\n",
           severity: github_severity(offense),
           file: PathUtil.smart_path(file),
           line: offense.line,

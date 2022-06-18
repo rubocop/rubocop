@@ -17,7 +17,7 @@ module RuboCop
       class MinMax < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<receiver>s.minmax` instead of `%<offender>s`.'
+        MSG = 'Use `%{receiver}.minmax` instead of `%{offender}`.'
 
         def on_array(node)
           min_max_candidate(node) do |receiver|

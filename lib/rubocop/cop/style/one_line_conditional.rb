@@ -36,7 +36,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Favor the ternary operator (`?:`) or multi-line constructs ' \
-              'over single-line `%<keyword>s/then/else/end` constructs.'
+              'over single-line `%{keyword}/then/else/end` constructs.'
 
         def on_normal_if_unless(node)
           return unless node.single_line?

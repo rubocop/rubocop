@@ -62,13 +62,13 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_COLON_STYLE = 'Annotation keywords like `%<keyword>s` should be all ' \
+        MSG_COLON_STYLE = 'Annotation keywords like `%{keyword}` should be all ' \
                           'upper case, followed by a colon, and a space, ' \
                           'then a note describing the problem.'
-        MSG_SPACE_STYLE = 'Annotation keywords like `%<keyword>s` should be all ' \
+        MSG_SPACE_STYLE = 'Annotation keywords like `%{keyword}` should be all ' \
                           'upper case, followed by a space, ' \
                           'then a note describing the problem.'
-        MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, is missing a note.'
+        MISSING_NOTE = 'Annotation comment, with keyword `%{keyword}`, is missing a note.'
 
         def on_new_investigation
           processed_source.comments.each_with_index do |comment, index|

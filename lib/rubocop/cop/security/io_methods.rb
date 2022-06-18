@@ -30,7 +30,7 @@ module RuboCop
       class IoMethods < Base
         extend AutoCorrector
 
-        MSG = '`File.%<method_name>s` is safer than `IO.%<method_name>s`.'
+        MSG = '`File.%{method_name}` is safer than `IO.%{method_name}`.'
         RESTRICT_ON_SEND = %i[read binread write binwrite foreach readlines].freeze
 
         def on_send(node)

@@ -6,7 +6,7 @@ module RuboCop
     class ForToEachCorrector
       extend NodePattern::Macros
 
-      CORRECTION = '%<collection>s.each do |%<argument>s|'
+      CORRECTION = '%{collection}.each do |%{argument}|'
 
       def initialize(for_node)
         @for_node        = for_node

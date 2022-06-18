@@ -73,7 +73,7 @@ module RuboCop
         include DocumentationComment
         include RangeHelp
 
-        MSG = 'Missing top-level documentation comment for `%<type>s %<identifier>s`.'
+        MSG = 'Missing top-level documentation comment for `%{type} %{identifier}`.'
 
         # @!method constant_definition?(node)
         def_node_matcher :constant_definition?, '{class module casgn}'

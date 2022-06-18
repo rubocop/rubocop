@@ -19,7 +19,7 @@ module RuboCop
       #   Marshal.load(Marshal.dump({}))
       #
       class MarshalLoad < Base
-        MSG = 'Avoid using `Marshal.%<method>s`.'
+        MSG = 'Avoid using `Marshal.%{method}`.'
         RESTRICT_ON_SEND = %i[load restore].freeze
 
         # @!method marshal_load(node)

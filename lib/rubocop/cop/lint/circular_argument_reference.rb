@@ -48,7 +48,7 @@ module RuboCop
       #     dry_ingredients.combine
       #   end
       class CircularArgumentReference < Base
-        MSG = 'Circular argument reference - `%<arg_name>s`.'
+        MSG = 'Circular argument reference - `%{arg_name}`.'
 
         def on_kwoptarg(node)
           check_for_circular_argument_references(*node)

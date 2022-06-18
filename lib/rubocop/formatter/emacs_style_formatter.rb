@@ -9,7 +9,7 @@ module RuboCop
       def file_finished(file, offenses)
         offenses.each do |o|
           output.printf(
-            "%<path>s:%<line>d:%<column>d: %<severity>s: %<message>s\n",
+            "%{path}:%{line}:%{column}: %{severity}: %{message}\n",
             path: file,
             line: o.line,
             column: o.real_column,

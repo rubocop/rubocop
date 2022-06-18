@@ -46,7 +46,7 @@ module RuboCop
 
         offenses.each do |o|
           output.printf(
-            "%<severity>s:%3<line>d:%3<column>d: %<message>s\n",
+            "%{severity}:%3<line>d:%3<column>d: %{message}\n", # rubocop:disable Style/FormatStringToken - JRuby fails to format with whitespace separator
             severity: colored_severity_code(o),
             line: o.line,
             column: o.real_column,

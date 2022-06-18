@@ -150,7 +150,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Indent the first argument one step more than %<base>s.'
+        MSG = 'Indent the first argument one step more than %{base}.'
 
         def on_send(node)
           return if style != :consistent && enforce_first_argument_with_fixed_indentation?

@@ -42,7 +42,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'The source `:%<source>s` is deprecated because HTTP requests ' \
+        MSG = 'The source `:%{source}` is deprecated because HTTP requests ' \
               'are insecure. ' \
               "Please change your source to 'https://rubygems.org' " \
               "if possible, or 'http://rubygems.org' if not."

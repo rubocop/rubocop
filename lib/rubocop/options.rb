@@ -312,8 +312,8 @@ module RuboCop
       private
 
       def format_message_from(name, cop_names)
-        message = 'Unrecognized cop or department: %<name>s.'
-        message_with_candidate = "%<message>s\nDid you mean? %<candidate>s"
+        message = 'Unrecognized cop or department: %{name}.'
+        message_with_candidate = "%{message}\nDid you mean? %{candidate}"
         corrections = NameSimilarity.find_similar_names(name, cop_names)
 
         if corrections.empty?
@@ -363,7 +363,7 @@ module RuboCop
     def validate_auto_gen_config
       return if @options.key?(:auto_gen_config)
 
-      message = '--%<flag>s can only be used together with --auto-gen-config.'
+      message = '--%{flag} can only be used together with --auto-gen-config.'
 
       %i[exclude_limit offense_counts auto_gen_timestamp
          auto_gen_only_exclude].each do |option|
