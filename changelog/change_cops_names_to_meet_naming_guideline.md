@@ -1,0 +1,1 @@
+* [#7077](https://github.com/rubocop/rubocop/issues/7077): Rename Layout/IndentationConsistency, Lint/PercentStringArray, Lint/PercentSymbolArray, Naming/VariableNumber, Style/DefWithParentheses to meet the naming guideline. ([@pirj][])

@@ -29,8 +29,26 @@ Do 4 steps:
      e.g. "Add new `Department/Name` cop"
   4. Run `bundle exec rake changelog:new` to generate a changelog entry
      for your new cop.
-
 ----
+
+=== Choose a Name
+
+Use the following rules to give the new cop a name:
+
+* Pick a department. See the xref:cops.adoc[list of existing departments]
+* The name is self-explanatory
+* The name explains the offense the cop detects, e.g. `ExtraSpacing`
+* The name starts with a noun instead of a verb, e.g. `ArrayAlignment` instead of `AlignArray`
+* The name is easy to understand, e.g. `IndentationStyle` instead of just `Tab`
+* The name is specific, e.g. `DuplicateHashKey` instead of just `DuplicateKey`
+* The name is neutral when possible and accommodates multiple styles when feasible, e.g. `EmptyLineBeforeBegin`.
+* The name uses commonly-used terms, e.g. `RedundantPercentI` instead of `RedundantPercentSymbolArray`
+* The name uses correct terms, e.g. arguments in a method call, and parameters in a method signature
+* Lines with no symbols are called "empty", not "blank", e.g. `LeadingEmptyLines` instead of `LeadingBlankLines`
+* Prefer "redundant" to "unneeded", e.g. `RedundantSelf` instead of `UnneededSelf`
+
+See the https://github.com/rubocop/rubocop/blob/master/config/obsoletion.yml["renamed" section of `config/obsoletion.yml`]
+for good and bad examples (old name is on the left, new name on the right).
 
 == Basics
 
