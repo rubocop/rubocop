@@ -34,7 +34,7 @@ module RuboCop
       class RefinementImportMethods < Base
         extend TargetRubyVersion
 
-        MSG = 'Use `import_methods` instead of `%<current>s` because it is deprecated in Ruby 3.1.'
+        MSG = 'Use `import_methods` instead of `%{current}` because it is deprecated in Ruby 3.1.'
         RESTRICT_ON_SEND = %i[include prepend].freeze
 
         minimum_target_ruby_version 3.1

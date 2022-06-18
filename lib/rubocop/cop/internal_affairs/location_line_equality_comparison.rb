@@ -18,7 +18,7 @@ module RuboCop
       class LocationLineEqualityComparison < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<preferred>s`.'
+        MSG = 'Use `%{preferred}`.'
 
         # @!method line_send(node)
         def_node_matcher :line_send, <<~PATTERN

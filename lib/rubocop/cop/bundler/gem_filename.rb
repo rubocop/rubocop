@@ -30,13 +30,13 @@ module RuboCop
         include RangeHelp
 
         MSG_GEMFILE_REQUIRED = '`gems.rb` file was found but `Gemfile` is required ' \
-                               '(file path: %<file_path>s).'
+                               '(file path: %{file_path}).'
         MSG_GEMS_RB_REQUIRED = '`Gemfile` was found but `gems.rb` file is required ' \
-                               '(file path: %<file_path>s).'
+                               '(file path: %{file_path}).'
         MSG_GEMFILE_MISMATCHED = 'Expected a `Gemfile.lock` with `Gemfile` but found ' \
-                                 '`gems.locked` file (file path: %<file_path>s).'
+                                 '`gems.locked` file (file path: %{file_path}).'
         MSG_GEMS_RB_MISMATCHED = 'Expected a `gems.locked` file with `gems.rb` but found ' \
-                                 '`Gemfile.lock` (file path: %<file_path>s).'
+                                 '`Gemfile.lock` (file path: %{file_path}).'
         GEMFILE_FILES = %w[Gemfile Gemfile.lock].freeze
         GEMS_RB_FILES = %w[gems.rb gems.locked].freeze
 

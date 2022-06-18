@@ -27,7 +27,7 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
 
-        MSG = 'Pass a block to `to_set` instead of calling `%<method>s.to_set`.'
+        MSG = 'Pass a block to `to_set` instead of calling `%{method}.to_set`.'
         RESTRICT_ON_SEND = %i[to_set].freeze
 
         # @!method map_to_set?(node)

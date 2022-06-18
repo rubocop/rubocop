@@ -31,7 +31,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Invert the negated condition and swap the %<type>s branches.'
+        MSG = 'Invert the negated condition and swap the %{type} branches.'
 
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
 

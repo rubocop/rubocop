@@ -38,7 +38,7 @@ module RuboCop
         include AllowedMethods
 
         MSG = 'Prefer keyword arguments for arguments with a boolean default value; ' \
-              'use `%<replacement>s` instead of `%<original>s`.'
+              'use `%{replacement}` instead of `%{original}`.'
 
         def on_def(node)
           return if allowed_method?(node.method_name)

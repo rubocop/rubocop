@@ -70,8 +70,8 @@ module RuboCop
         include RangeHelp
 
         EMPTY_ARRAY = [].freeze
-        MSG = "Consider replacing '%<term>s'%<suffix>s."
-        MSG_FOR_FILE_PATH = "Consider replacing '%<term>s' in file path%<suffix>s."
+        MSG = "Consider replacing '%{term}'%{suffix}."
+        MSG_FOR_FILE_PATH = "Consider replacing '%{term}' in file path%{suffix}."
 
         WordLocation = Struct.new(:word, :position)
 

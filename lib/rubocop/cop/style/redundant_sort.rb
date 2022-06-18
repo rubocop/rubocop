@@ -80,7 +80,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<suggestion>s` instead of `%<sorter>s...%<accessor_source>s`.'
+        MSG = 'Use `%{suggestion}` instead of `%{sorter}...%{accessor_source}`.'
 
         RESTRICT_ON_SEND = %i[sort sort_by].freeze
 

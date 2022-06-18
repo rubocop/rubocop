@@ -25,9 +25,9 @@ module RuboCop
       class ConcatArrayLiterals < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
+        MSG = 'Use `%{prefer}` instead of `%{current}`.'
         MSG_FOR_PERCENT_LITERALS =
-          'Use `push` with elements as arguments without array brackets instead of `%<current>s`.'
+          'Use `push` with elements as arguments without array brackets instead of `%{current}`.'
         RESTRICT_ON_SEND = %i[concat].freeze
 
         # rubocop:disable Metrics

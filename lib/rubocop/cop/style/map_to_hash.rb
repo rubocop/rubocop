@@ -34,7 +34,7 @@ module RuboCop
 
         minimum_target_ruby_version 2.6
 
-        MSG = 'Pass a block to `to_h` instead of calling `%<method>s.to_h`.'
+        MSG = 'Pass a block to `to_h` instead of calling `%{method}.to_h`.'
         RESTRICT_ON_SEND = %i[to_h].freeze
 
         # @!method map_to_h?(node)

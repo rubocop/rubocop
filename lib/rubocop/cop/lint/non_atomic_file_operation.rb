@@ -46,8 +46,8 @@ module RuboCop
         include Alignment
 
         MSG_REMOVE_FILE_EXIST_CHECK = 'Remove unnecessary existence check ' \
-                                      '`%<receiver>s.%<method_name>s`.'
-        MSG_CHANGE_FORCE_METHOD = 'Use atomic file operation method `FileUtils.%<method_name>s`.'
+                                      '`%{receiver}.%{method_name}`.'
+        MSG_CHANGE_FORCE_METHOD = 'Use atomic file operation method `FileUtils.%{method_name}`.'
         MAKE_FORCE_METHODS = %i[makedirs mkdir_p mkpath].freeze
         MAKE_METHODS = %i[mkdir].freeze
         REMOVE_FORCE_METHODS = %i[rm_f rm_rf].freeze

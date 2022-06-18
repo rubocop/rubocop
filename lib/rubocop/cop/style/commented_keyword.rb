@@ -44,7 +44,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Do not place comments on the same line as the `%<keyword>s` keyword.'
+        MSG = 'Do not place comments on the same line as the `%{keyword}` keyword.'
 
         KEYWORDS = %w[begin class def end module].freeze
         KEYWORD_REGEXES = KEYWORDS.map { |w| /^\s*#{w}\s/ }.freeze

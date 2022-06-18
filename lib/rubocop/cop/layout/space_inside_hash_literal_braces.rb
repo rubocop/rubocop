@@ -73,7 +73,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Space inside %<problem>s.'
+        MSG = 'Space inside %{problem}.'
 
         def on_hash(node)
           tokens = processed_source.tokens_within(node)

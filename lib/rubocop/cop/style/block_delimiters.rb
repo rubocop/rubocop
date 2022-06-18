@@ -174,7 +174,7 @@ module RuboCop
 
         ALWAYS_BRACES_MESSAGE = 'Prefer `{...}` over `do...end` for blocks.'
 
-        BRACES_REQUIRED_MESSAGE = "Brace delimiters `{...}` required for '%<method_name>s' method."
+        BRACES_REQUIRED_MESSAGE = "Brace delimiters `{...}` required for '%{method_name}' method."
 
         def on_send(node)
           return unless node.arguments?

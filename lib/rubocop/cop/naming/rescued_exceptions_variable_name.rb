@@ -61,7 +61,7 @@ module RuboCop
       class RescuedExceptionsVariableName < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<preferred>s` instead of `%<bad>s`.'
+        MSG = 'Use `%{preferred}` instead of `%{bad}`.'
 
         def on_resbody(node)
           offending_name = variable_name(node)

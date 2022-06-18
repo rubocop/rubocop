@@ -74,12 +74,12 @@ module RuboCop
         include RangeHelp
 
         GROUP_STYLE_MESSAGE = [
-          '`%<access_modifier>s` should not be',
+          '`%{access_modifier}` should not be',
           'inlined in method definitions.'
         ].join(' ')
 
         INLINE_STYLE_MESSAGE = [
-          '`%<access_modifier>s` should be',
+          '`%{access_modifier}` should be',
           'inlined in method definitions.'
         ].join(' ')
 

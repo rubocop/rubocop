@@ -39,7 +39,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Redundant escape of %<char>s inside string literal.'
+        MSG = 'Redundant escape of %{char} inside string literal.'
 
         def on_str(node)
           return if node.parent&.regexp_type? || node.parent&.xstr_type? || node.character_literal?

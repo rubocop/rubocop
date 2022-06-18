@@ -16,7 +16,7 @@ module RuboCop
       class CreateEmptyFile < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<replacement>s`.'
+        MSG = 'Use `%{replacement}`.'
         RESTRICT_ON_SEND = %i[create_file].freeze
 
         def on_send(node)

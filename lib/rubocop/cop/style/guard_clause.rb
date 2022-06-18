@@ -98,7 +98,7 @@ module RuboCop
         include MinBodyLength
         include StatementModifier
 
-        MSG = 'Use a guard clause (`%<example>s`) instead of wrapping the ' \
+        MSG = 'Use a guard clause (`%{example}`) instead of wrapping the ' \
               'code inside a conditional expression.'
 
         def on_def(node)

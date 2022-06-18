@@ -39,9 +39,9 @@ module RuboCop
       class FileName < Base
         include RangeHelp
 
-        MSG_SNAKE_CASE = 'The name of this source file (`%<basename>s`) should use snake_case.'
-        MSG_NO_DEFINITION = '`%<basename>s` should define a class or module called `%<namespace>s`.'
-        MSG_REGEX = '`%<basename>s` should match `%<regex>s`.'
+        MSG_SNAKE_CASE = 'The name of this source file (`%{basename}`) should use snake_case.'
+        MSG_NO_DEFINITION = '`%{basename}` should define a class or module called `%{namespace}`.'
+        MSG_REGEX = '`%{basename}` should match `%{regex}`.'
 
         SNAKE_CASE = /^[\d[[:lower:]]_.?!]+$/.freeze
 

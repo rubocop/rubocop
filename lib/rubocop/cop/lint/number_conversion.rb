@@ -76,15 +76,15 @@ module RuboCop
         include AllowedPattern
 
         CONVERSION_METHOD_CLASS_MAPPING = {
-          to_i: "#{Integer.name}(%<number_object>s, 10)",
-          to_f: "#{Float.name}(%<number_object>s)",
-          to_c: "#{Complex.name}(%<number_object>s)",
-          to_r: "#{Rational.name}(%<number_object>s)"
+          to_i: "#{Integer.name}(%{number_object}, 10)",
+          to_f: "#{Float.name}(%{number_object})",
+          to_c: "#{Complex.name}(%{number_object})",
+          to_r: "#{Rational.name}(%{number_object})"
         }.freeze
         MSG = 'Replace unsafe number conversion with number ' \
               'class parsing, instead of using ' \
-              '`%<current>s`, use stricter ' \
-              '`%<corrected_method>s`.'
+              '`%{current}`, use stricter ' \
+              '`%{corrected_method}`.'
         CONVERSION_METHODS = %i[Integer Float Complex Rational to_i to_f to_c to_r].freeze
         METHODS = CONVERSION_METHOD_CLASS_MAPPING.keys.map(&:inspect).join(' ')
 

@@ -63,7 +63,7 @@ module RuboCop
         include AllowedMethods
         extend AutoCorrector
 
-        MSG = 'Remove redundant %<keyword>s with boolean literal branches.'
+        MSG = 'Remove redundant %{keyword} with boolean literal branches.'
         MSG_FOR_ELSIF = 'Use `else` instead of redundant `elsif` with boolean literal branches.'
 
         # @!method if_with_boolean_literal_branches?(node)

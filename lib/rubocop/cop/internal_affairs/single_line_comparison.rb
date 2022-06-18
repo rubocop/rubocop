@@ -28,7 +28,7 @@ module RuboCop
       class SingleLineComparison < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<preferred>s`.'
+        MSG = 'Use `%{preferred}`.'
         RESTRICT_ON_SEND = %i[== !=].freeze
 
         # @!method single_line_comparison(node)

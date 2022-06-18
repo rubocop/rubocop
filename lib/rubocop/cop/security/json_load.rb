@@ -26,7 +26,7 @@ module RuboCop
       class JSONLoad < Base
         extend AutoCorrector
 
-        MSG = 'Prefer `JSON.parse` over `JSON.%<method>s`.'
+        MSG = 'Prefer `JSON.parse` over `JSON.%{method}`.'
         RESTRICT_ON_SEND = %i[load restore].freeze
 
         # @!method json_load(node)

@@ -27,7 +27,7 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
 
-        MSG = '`%<constant>s` is overwritten by `rescue =>`.'
+        MSG = '`%{constant}` is overwritten by `rescue =>`.'
 
         # @!method overwritten_constant(node)
         def_node_matcher :overwritten_constant, <<~PATTERN

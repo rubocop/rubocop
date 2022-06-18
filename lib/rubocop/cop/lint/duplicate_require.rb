@@ -27,7 +27,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Duplicate `%<method>s` detected.'
+        MSG = 'Duplicate `%{method}` detected.'
         REQUIRE_METHODS = Set.new(%i[require require_relative]).freeze
         RESTRICT_ON_SEND = REQUIRE_METHODS
 

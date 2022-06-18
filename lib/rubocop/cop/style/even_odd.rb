@@ -18,7 +18,7 @@ module RuboCop
       class EvenOdd < Base
         extend AutoCorrector
 
-        MSG = 'Replace with `Integer#%<method>s?`.'
+        MSG = 'Replace with `Integer#%{method}?`.'
         RESTRICT_ON_SEND = %i[== !=].freeze
 
         # @!method even_odd_candidate?(node)

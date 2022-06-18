@@ -20,8 +20,8 @@ module RuboCop
       class RedundantPercentQ < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<q_type>s` only for strings that contain both ' \
-              'single quotes and double quotes%<extra>s.'
+        MSG = 'Use `%{q_type}` only for strings that contain both ' \
+              'single quotes and double quotes%{extra}.'
         DYNAMIC_MSG = ', or for dynamic strings that contain double quotes'
         SINGLE_QUOTE = "'"
         QUOTE = '"'

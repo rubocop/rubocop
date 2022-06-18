@@ -65,7 +65,7 @@ module RuboCop
       #     my_debugger
       #   end
       class Debugger < Base
-        MSG = 'Remove debugger entry point `%<source>s`.'
+        MSG = 'Remove debugger entry point `%{source}`.'
 
         def on_send(node)
           return unless debugger_method?(node)

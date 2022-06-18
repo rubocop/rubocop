@@ -45,8 +45,8 @@ module RuboCop
       class MissingCopEnableDirective < Base
         include RangeHelp
 
-        MSG = 'Re-enable %<cop>s %<type>s with `# rubocop:enable` after disabling it.'
-        MSG_BOUND = 'Re-enable %<cop>s %<type>s within %<max_range>s lines after disabling it.'
+        MSG = 'Re-enable %{cop} %{type} with `# rubocop:enable` after disabling it.'
+        MSG_BOUND = 'Re-enable %{cop} %{type} within %{max_range} lines after disabling it.'
 
         def on_new_investigation
           each_missing_enable do |cop, line_range|

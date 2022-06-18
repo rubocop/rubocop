@@ -23,7 +23,7 @@ module RuboCop
       class ClassMethods < Base
         extend AutoCorrector
 
-        MSG = 'Use `self.%<method>s` instead of `%<class>s.%<method>s`.'
+        MSG = 'Use `self.%{method}` instead of `%{class}.%{method}`.'
 
         def on_class(node)
           return unless node.body

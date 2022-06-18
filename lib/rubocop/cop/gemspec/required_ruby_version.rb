@@ -57,7 +57,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[required_ruby_version=].freeze
         NOT_EQUAL_MSG = '`required_ruby_version` and `TargetRubyVersion` ' \
-                        '(%<target_ruby_version>s, which may be specified in ' \
+                        '(%{target_ruby_version}, which may be specified in ' \
                         '.rubocop.yml) should be equal.'
         MISSING_MSG = '`required_ruby_version` should be specified.'
 

@@ -143,7 +143,7 @@ module RuboCop
           sclass: :class_singleton
         }.freeze
 
-        MSG = '`%<category>s` is supposed to appear before `%<previous>s`.'
+        MSG = '`%{category}` is supposed to appear before `%{previous}`.'
 
         # Validates code style on class declaration.
         # Add offense when find a node out of expected order.

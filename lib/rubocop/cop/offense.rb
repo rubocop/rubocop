@@ -146,7 +146,7 @@ module RuboCop
       # @api private
       # This is just for debugging purpose.
       def to_s
-        format('%<severity>s:%3<line>d:%3<column>d: %<message>s',
+        format('%{severity}:%3<line>d:%3<column>d: %{message}',
                severity: severity.code, line: line,
                column: real_column, message: message)
       end

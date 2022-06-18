@@ -4,15 +4,15 @@
 class Changelog
   ENTRIES_PATH = 'changelog/'
   FIRST_HEADER = /#{Regexp.escape("## master (unreleased)\n")}/m.freeze
-  ENTRIES_PATH_TEMPLATE = "#{ENTRIES_PATH}%<type>s_%<name>s.md"
+  ENTRIES_PATH_TEMPLATE = "#{ENTRIES_PATH}%{type}_%{name}.md"
   TYPE_REGEXP = /#{Regexp.escape(ENTRIES_PATH)}([a-z]+)_/.freeze
   TYPE_TO_HEADER = { new: 'New features', fix: 'Bug fixes', change: 'Changes' }.freeze
   HEADER = /### (.*)/.freeze
   PATH = 'CHANGELOG.md'
   REF_URL = 'https://github.com/rubocop/rubocop'
   MAX_LENGTH = 40
-  CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
-  SIGNATURE = Regexp.new(format(Regexp.escape('[@%<user>s][]'), user: '([\w-]+)'))
+  CONTRIBUTOR = '[@%{user}]: https://github.com/%{user}'
+  SIGNATURE = Regexp.new(format(Regexp.escape('[@%<user>s][]'), user: '([\w-]+)')) # rubocop:disable Style/FormatStringToken
   EOF = "\n"
 
   # New entry

@@ -37,7 +37,7 @@ module RuboCop
 
         minimum_target_ruby_version 3.0
 
-        MSG = 'Use `%<prefer>s` instead.'
+        MSG = 'Use `%{prefer}` instead.'
         RESTRICT_ON_SEND = %i[reject select filter].freeze
 
         # @!method bad_method_with_poro?(node)

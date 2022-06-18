@@ -5,8 +5,8 @@ module RuboCop
     # Error raised when an unqualified cop name is used that could
     # refer to two or more cops under different departments
     class AmbiguousCopName < RuboCop::Error
-      MSG = 'Ambiguous cop name `%<name>s` used in %<origin>s needs ' \
-            'department qualifier. Did you mean %<options>s?'
+      MSG = 'Ambiguous cop name `%{name}` used in %{origin} needs ' \
+            'department qualifier. Did you mean %{options}?'
 
       def initialize(name, origin, badges)
         super(

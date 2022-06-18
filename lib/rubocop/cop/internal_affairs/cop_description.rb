@@ -21,7 +21,7 @@ module RuboCop
       class CopDescription < Base
         extend AutoCorrector
 
-        MSG = 'Description should be started with %<suggestion>s instead of `This cop ...`.'
+        MSG = 'Description should be started with %{suggestion} instead of `This cop ...`.'
 
         SPECIAL_WORDS = %w[is can could should will would must may].freeze
         COP_DESC_OFFENSE_REGEX = \

@@ -38,7 +38,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<method>s %<module_name>s` instead of `%<bad_method>s`.'
+        MSG = 'Use `%{method} %{module_name}` instead of `%{bad_method}`.'
         MIXIN_METHODS = %i[include prepend extend].freeze
         SEND_METHODS = %i[send public_send __send__].freeze
         RESTRICT_ON_SEND = SEND_METHODS

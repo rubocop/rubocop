@@ -34,8 +34,8 @@ module RuboCop
       class ZeroLengthPredicate < Base
         extend AutoCorrector
 
-        ZERO_MSG = 'Use `empty?` instead of `%<current>s`.'
-        NONZERO_MSG = 'Use `!empty?` instead of `%<current>s`.'
+        ZERO_MSG = 'Use `empty?` instead of `%{current}`.'
+        NONZERO_MSG = 'Use `!empty?` instead of `%{current}`.'
 
         RESTRICT_ON_SEND = %i[size length].freeze
 

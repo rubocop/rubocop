@@ -15,7 +15,7 @@ module RuboCop
       #   # good
       #   raise ArgumentError, 'Error message here'
       class ImplicitRuntimeError < Base
-        MSG = 'Use `%<method>s` with an explicit exception class and message, ' \
+        MSG = 'Use `%{method}` with an explicit exception class and message, ' \
               'rather than just a message.'
         RESTRICT_ON_SEND = %i[raise fail].freeze
 

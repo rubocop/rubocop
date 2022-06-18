@@ -32,7 +32,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Use %<style>s heredoc delimiters.'
+        MSG = 'Use %{style} heredoc delimiters.'
 
         def on_heredoc(node)
           return if correct_case_delimiters?(node)

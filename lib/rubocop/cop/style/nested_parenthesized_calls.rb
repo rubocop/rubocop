@@ -26,7 +26,7 @@ module RuboCop
         include AllowedMethods
         extend AutoCorrector
 
-        MSG = 'Add parentheses to nested method call `%<source>s`.'
+        MSG = 'Add parentheses to nested method call `%{source}`.'
 
         def self.autocorrect_incompatible_with
           [Style::MethodCallWithArgsParentheses]

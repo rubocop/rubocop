@@ -72,10 +72,10 @@ module RuboCop
           'keyword arguments.',
           'Passing trim_mode with the 3rd argument of `ERB.new` is ' \
           'deprecated. Use keyword argument like ' \
-          '`ERB.new(str, trim_mode: %<arg_value>s)` instead.',
+          '`ERB.new(str, trim_mode: %{arg_value})` instead.',
           'Passing eoutvar with the 4th argument of `ERB.new` is ' \
           'deprecated. Use keyword argument like ' \
-          '`ERB.new(str, eoutvar: %<arg_value>s)` instead.'
+          '`ERB.new(str, eoutvar: %{arg_value})` instead.'
         ].freeze
 
         RESTRICT_ON_SEND = %i[new].freeze

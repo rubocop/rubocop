@@ -109,7 +109,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Expected %<expected>s between %<type>s definitions; found %<actual>d.'
+        MSG = 'Expected %{expected} between %{type} definitions; found %{actual}.'
 
         def self.autocorrect_incompatible_with
           [Layout::EmptyLines]

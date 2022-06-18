@@ -8,10 +8,10 @@ module RuboCop
       # namespace and injects the provided one in alpha
       class ConfigurationInjector
         TEMPLATE = <<~YAML
-          %<badge>s:
+          %{badge}:
             Description: 'TODO: Write a description of the cop.'
             Enabled: pending
-            VersionAdded: '%<version_added>s'
+            VersionAdded: '%{version_added}'
         YAML
 
         def initialize(configuration_file_path:, badge:, version_added: '<<next>>')

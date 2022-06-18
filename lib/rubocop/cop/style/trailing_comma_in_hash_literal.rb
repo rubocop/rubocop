@@ -89,7 +89,7 @@ module RuboCop
         extend AutoCorrector
 
         def on_hash(node)
-          check_literal(node, 'item of %<article>s hash')
+          check_literal(node, 'item of %{article} hash')
         end
       end
     end

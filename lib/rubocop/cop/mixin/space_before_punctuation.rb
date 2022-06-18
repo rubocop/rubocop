@@ -7,7 +7,7 @@ module RuboCop
     module SpaceBeforePunctuation
       include RangeHelp
 
-      MSG = 'Space found before %<token>s.'
+      MSG = 'Space found before %{token}.'
 
       def on_new_investigation
         each_missing_space(processed_source.sorted_tokens) do |token, pos_before|

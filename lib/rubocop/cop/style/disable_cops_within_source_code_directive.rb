@@ -35,7 +35,7 @@ module RuboCop
 
         # rubocop:enable Lint/RedundantCopDisableDirective
         MSG = 'Rubocop disable/enable directives are not permitted.'
-        MSG_FOR_COPS = 'Rubocop disable/enable directives for %<cops>s are not permitted.'
+        MSG_FOR_COPS = 'Rubocop disable/enable directives for %{cops} are not permitted.'
 
         def on_new_investigation
           processed_source.comments.each do |comment|

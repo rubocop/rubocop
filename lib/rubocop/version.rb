@@ -5,9 +5,9 @@ module RuboCop
   module Version
     STRING = '1.41.1'
 
-    MSG = '%<version>s (using Parser %<parser_version>s, ' \
-          'rubocop-ast %<rubocop_ast_version>s, ' \
-          'running on %<ruby_engine>s %<ruby_version>s)%<server_mode>s [%<ruby_platform>s]'
+    MSG = '%{version} (using Parser %{parser_version}, ' \
+          'rubocop-ast %{rubocop_ast_version}, ' \
+          'running on %{ruby_engine} %{ruby_version})%{server_mode} [%{ruby_platform}]'
 
     CANONICAL_FEATURE_NAMES = { 'Rspec' => 'RSpec', 'Graphql' => 'GraphQL', 'Md' => 'Markdown',
                                 'Thread_safety' => 'ThreadSafety' }.freeze

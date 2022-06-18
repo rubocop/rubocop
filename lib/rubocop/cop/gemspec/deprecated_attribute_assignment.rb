@@ -29,7 +29,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Do not set `%<attribute>s` in gemspec.'
+        MSG = 'Do not set `%{attribute}` in gemspec.'
 
         # @!method gem_specification(node)
         def_node_matcher :gem_specification, <<~PATTERN

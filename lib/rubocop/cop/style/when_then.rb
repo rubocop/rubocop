@@ -20,7 +20,7 @@ module RuboCop
       class WhenThen < Base
         extend AutoCorrector
 
-        MSG = 'Do not use `when %<expression>s;`. Use `when %<expression>s then` instead.'
+        MSG = 'Do not use `when %{expression};`. Use `when %{expression} then` instead.'
 
         def on_when(node)
           return if node.multiline? || node.then? || !node.body

@@ -69,7 +69,7 @@ module RuboCop
 
         exclude_limit 'Max'
 
-        MSG = 'Line is too long. [%<length>d/%<max>d]'
+        MSG = 'Line is too long. [%{length}/%{max}]'
 
         def on_block(node)
           check_for_breakable_block(node)

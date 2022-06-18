@@ -23,7 +23,7 @@ module RuboCop
       #     'Item 2'
       #   ]
       class ImplicitStringConcatenation < Base
-        MSG = 'Combine %<string1>s and %<string2>s into a single string ' \
+        MSG = 'Combine %{string1} and %{string2} into a single string ' \
               'literal, rather than using implicit string concatenation.'
         FOR_ARRAY = ' Or, if they were intended to be separate array ' \
                     'elements, separate them with a comma.'

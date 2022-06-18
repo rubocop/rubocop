@@ -40,8 +40,8 @@ module RuboCop
       class DeprecatedConstants < Base
         extend AutoCorrector
 
-        SUGGEST_GOOD_MSG = 'Use `%<good>s` instead of `%<bad>s`%<deprecated_message>s.'
-        DO_NOT_USE_MSG = 'Do not use `%<bad>s`%<deprecated_message>s.'
+        SUGGEST_GOOD_MSG = 'Use `%{good}` instead of `%{bad}`%{deprecated_message}.'
+        DO_NOT_USE_MSG = 'Do not use `%{bad}`%{deprecated_message}.'
 
         def on_const(node)
           # FIXME: Workaround for "`undefined method `expression' for nil:NilClass`" when processing

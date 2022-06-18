@@ -31,7 +31,7 @@ module RuboCop
       #     do_something(some_var)
       #   end
       class UselessAssignment < Base
-        MSG = 'Useless assignment to variable - `%<variable>s`.'
+        MSG = 'Useless assignment to variable - `%{variable}`.'
 
         def self.joining_forces
           VariableForce

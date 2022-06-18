@@ -128,7 +128,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Useless `%<current>s` access modifier.'
+        MSG = 'Useless `%{current}` access modifier.'
 
         def on_class(node)
           check_node(node.body)

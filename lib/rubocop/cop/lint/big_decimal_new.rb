@@ -17,8 +17,8 @@ module RuboCop
       class BigDecimalNew < Base
         extend AutoCorrector
 
-        MSG = '`%<double_colon>sBigDecimal.new()` is deprecated. ' \
-              'Use `%<double_colon>sBigDecimal()` instead.'
+        MSG = '`%{double_colon}BigDecimal.new()` is deprecated. ' \
+              'Use `%{double_colon}BigDecimal()` instead.'
         RESTRICT_ON_SEND = %i[new].freeze
 
         # @!method big_decimal_new(node)

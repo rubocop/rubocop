@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_BLOCK = 'Use `sort` instead of `sort_by { |%<var>s| %<var>s }`.'
+        MSG_BLOCK = 'Use `sort` instead of `sort_by { |%{var}| %{var} }`.'
         MSG_NUMBLOCK = 'Use `sort` instead of `sort_by { _1 }`.'
 
         def on_block(node)

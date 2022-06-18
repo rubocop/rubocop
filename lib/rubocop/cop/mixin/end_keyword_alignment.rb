@@ -7,8 +7,8 @@ module RuboCop
       include ConfigurableEnforcedStyle
       include RangeHelp
 
-      MSG = '`end` at %<end_line>d, %<end_col>d is not aligned with ' \
-            '`%<source>s` at %<align_line>d, %<align_col>d.'
+      MSG = '`end` at %{end_line}, %{end_col} is not aligned with ' \
+            '`%{source}` at %{align_line}, %{align_col}.'
 
       private
 

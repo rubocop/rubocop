@@ -56,7 +56,7 @@ module RuboCop
 
         MSG = 'Dependencies should be sorted in an alphabetical order within ' \
               'their section of the gemspec. ' \
-              'Dependency `%<previous>s` should appear before `%<current>s`.'
+              'Dependency `%{previous}` should appear before `%{current}`.'
 
         def on_new_investigation
           return if processed_source.blank?

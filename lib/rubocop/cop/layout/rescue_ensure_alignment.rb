@@ -26,9 +26,9 @@ module RuboCop
         include EndKeywordAlignment
         extend AutoCorrector
 
-        MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
-              'aligned with `%<beginning>s` at ' \
-              '%<begin_loc_line>d, %<begin_loc_column>d.'
+        MSG = '`%{kw_loc}` at %{kw_loc_line}, %{kw_loc_column} is not ' \
+              'aligned with `%{beginning}` at ' \
+              '%{begin_loc_line}, %{begin_loc_column}.'
         ANCESTOR_TYPES = %i[kwbegin def defs class module block].freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
         ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method private_class_method].freeze

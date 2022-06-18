@@ -19,7 +19,7 @@ module RuboCop
         extend AutoCorrector
         extend TargetRubyVersion
 
-        MSG = 'Use `dirname(%<path>s, %<level>s)` instead.'
+        MSG = 'Use `dirname(%{path}, %{level})` instead.'
         RESTRICT_ON_SEND = %i[dirname].freeze
 
         minimum_target_ruby_version 3.1

@@ -46,7 +46,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
+        MSG = 'Use `%{prefer}` instead of `%{current}`.'
 
         def on_and(node)
           process_logical_operator(node) if style == :always

@@ -111,7 +111,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Move `%<source>s` out of the conditional.'
+        MSG = 'Move `%{source}` out of the conditional.'
 
         def on_if(node)
           return if node.elsif?

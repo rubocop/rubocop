@@ -45,7 +45,7 @@ module RuboCop
 
         offenses.each do |o|
           output.printf(
-            "%<severity>s:%3<line>d:%3<column>d: %<message>s\n",
+            "%{severity}:%3<line>d:%3<column>d: %{message}\n",
             severity: colored_severity_code(o),
             line: o.line,
             column: o.real_column,

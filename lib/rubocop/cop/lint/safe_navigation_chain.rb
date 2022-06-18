@@ -64,7 +64,7 @@ module RuboCop
           source =
             if brackets?(send_node)
               format(
-                '%<method_name>s(%<arguments>s)%<method_chain>s',
+                '%{method_name}(%{arguments})%{method_chain}',
                 arguments: send_node.arguments.map(&:source).join(', '),
                 method_name: send_node.method_name,
                 method_chain: send_node.source_range.end.join(send_node.source_range.end).source

@@ -100,8 +100,8 @@ module RuboCop
 
         SNAKE_SEPARATOR = '_'
         KEBAB_SEPARATOR = '-'
-        MSG = 'Prefer %<style>s case for magic comments.'
-        MSG_VALUE = 'Prefer %<case>s for magic comment values.'
+        MSG = 'Prefer %{style} case for magic comments.'
+        MSG_VALUE = 'Prefer %{case} for magic comment values.'
 
         # Value object to extract source ranges for the different parts of a magic comment
         class CommentRange

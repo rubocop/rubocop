@@ -27,8 +27,8 @@ module RuboCop
       class SpaceAroundKeyword < Base
         extend AutoCorrector
 
-        MSG_BEFORE = 'Space before keyword `%<range>s` is missing.'
-        MSG_AFTER = 'Space after keyword `%<range>s` is missing.'
+        MSG_BEFORE = 'Space before keyword `%{range}` is missing.'
+        MSG_AFTER = 'Space after keyword `%{range}` is missing.'
 
         DO = 'do'
         SAFE_NAVIGATION = '&.'

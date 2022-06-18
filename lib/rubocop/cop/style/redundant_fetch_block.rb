@@ -40,7 +40,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<good>s` instead of `%<bad>s`.'
+        MSG = 'Use `%{good}` instead of `%{bad}`.'
 
         # @!method redundant_fetch_block_candidate?(node)
         def_node_matcher :redundant_fetch_block_candidate?, <<~PATTERN

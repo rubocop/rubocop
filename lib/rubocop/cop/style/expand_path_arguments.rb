@@ -44,8 +44,8 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `expand_path(%<new_path>s%<new_default_dir>s)` instead of ' \
-              '`expand_path(%<current_path>s, __FILE__)`.'
+        MSG = 'Use `expand_path(%{new_path}%{new_default_dir})` instead of ' \
+              '`expand_path(%{current_path}, __FILE__)`.'
         PATHNAME_MSG = 'Use `Pathname(__dir__).expand_path` instead of ' \
                        '`Pathname(__FILE__).parent.expand_path`.'
         PATHNAME_NEW_MSG = 'Use `Pathname.new(__dir__).expand_path` ' \

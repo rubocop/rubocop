@@ -38,7 +38,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = '%<style>s access modifiers like `%<node>s`.'
+        MSG = '%{style} access modifiers like `%{node}`.'
 
         def on_class(node)
           return unless node.body&.begin_type?

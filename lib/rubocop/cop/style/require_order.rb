@@ -70,7 +70,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[require require_relative].freeze
 
-        MSG = 'Sort `%<name>s` in alphabetical order.'
+        MSG = 'Sort `%{name}` in alphabetical order.'
 
         # @!method if_inside_only_require(node)
         def_node_matcher :if_inside_only_require, <<~PATTERN

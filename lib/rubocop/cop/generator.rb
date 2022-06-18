@@ -13,7 +13,7 @@ module RuboCop
 
         module RuboCop
           module Cop
-            module %<department>s
+            module %{department}
               # TODO: Write cop description and example of bad / good code. For every
               # `SupportedStyle` and unique configuration, there needs to be examples.
               # Examples must have valid Ruby syntax. Do not use upticks.
@@ -53,7 +53,7 @@ module RuboCop
               #   # good
               #   good_foo_method(args)
               #
-              class %<cop_name>s < Base
+              class %{cop_name} < Base
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
@@ -85,7 +85,7 @@ module RuboCop
       SPEC_TEMPLATE = <<~SPEC
         # frozen_string_literal: true
 
-        RSpec.describe RuboCop::Cop::%<department>s::%<cop_name>s, :config do
+        RSpec.describe RuboCop::Cop::%{department}::%{cop_name}, :config do
           let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code
@@ -108,7 +108,7 @@ module RuboCop
 
       CONFIGURATION_ADDED_MESSAGE =
         '[modify] A configuration for the cop is added into ' \
-        '%<configuration_file_path>s.'
+        '%{configuration_file_path}.'
 
       def initialize(name, output: $stdout)
         @badge = Badge.parse(name)

@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Include a copyright notice matching /%<notice>s/ before any code.'
+        MSG = 'Include a copyright notice matching /%{notice}/ before any code.'
         AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in your RuboCop config'
 
         def on_new_investigation

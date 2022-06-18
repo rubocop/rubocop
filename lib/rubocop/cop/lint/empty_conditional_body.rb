@@ -65,7 +65,7 @@ module RuboCop
         include CommentsHelp
         include RangeHelp
 
-        MSG = 'Avoid `%<keyword>s` branches without a body.'
+        MSG = 'Avoid `%{keyword}` branches without a body.'
 
         def on_if(node)
           return if node.body || same_line?(node.loc.begin, node.loc.end)

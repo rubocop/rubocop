@@ -16,7 +16,7 @@ module RuboCop
       class LambdaOrProc < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<prefer>s`.'
+        MSG = 'Use `%{prefer}`.'
 
         # @!method lambda_or_proc(node)
         def_node_matcher :lambda_or_proc, <<~PATTERN

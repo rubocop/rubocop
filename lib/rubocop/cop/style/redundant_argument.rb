@@ -54,7 +54,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Argument %<arg>s is redundant because it is implied by default.'
+        MSG = 'Argument %{arg} is redundant because it is implied by default.'
 
         def on_send(node)
           return if node.receiver.nil?

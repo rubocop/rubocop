@@ -25,7 +25,7 @@ module RuboCop
       class FetchEnvVar < Base
         extend AutoCorrector
 
-        MSG = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
+        MSG = 'Use `ENV.fetch(%{key})` or `ENV.fetch(%{key}, nil)` instead of `ENV[%{key}]`.'
 
         # @!method env_with_bracket?(node)
         def_node_matcher :env_with_bracket?, <<~PATTERN

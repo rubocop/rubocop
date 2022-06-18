@@ -25,7 +25,7 @@ module RuboCop
         minimum_target_ruby_version 2.7
         exclude_limit 'Max'
 
-        MSG = 'Avoid using more than %<max>i numbered %<parameter>s; %<count>i detected.'
+        MSG = 'Avoid using more than %{max} numbered %{parameter}; %{count} detected.'
 
         def on_numblock(node)
           _send_node, param_count, * = *node

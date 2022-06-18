@@ -21,7 +21,7 @@ module RuboCop
       #
       #   0 # just use 0 instead
       class RandOne < Base
-        MSG = '`%<method>s` always returns `0`. Perhaps you meant `rand(2)` or `rand`?'
+        MSG = '`%{method}` always returns `0`. Perhaps you meant `rand(2)` or `rand`?'
         RESTRICT_ON_SEND = %i[rand].freeze
 
         # @!method rand_one?(node)

@@ -61,8 +61,8 @@ module RuboCop
           )
         PATTERN
 
-        MSG = 'Use `%<negated>s%<receiver>s.intersect?(%<argument>s)` ' \
-              'instead of `(%<receiver>s & %<argument>s).%<method_name>s`.'
+        MSG = 'Use `%{negated}%{receiver}.intersect?(%{argument})` ' \
+              'instead of `(%{receiver} & %{argument}).%{method_name}`.'
         STRAIGHT_METHODS = %i[present? any?].freeze
         NEGATED_METHODS = %i[blank? empty?].freeze
         RESTRICT_ON_SEND = (STRAIGHT_METHODS + NEGATED_METHODS).freeze

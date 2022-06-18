@@ -99,7 +99,7 @@ module RuboCop
         include AllowedMethods
         extend AutoCorrector
 
-        MSG = 'Use `attr_%<kind>s` to define trivial %<kind>s methods.'
+        MSG = 'Use `attr_%{kind}` to define trivial %{kind} methods.'
 
         def on_def(node)
           return if top_level_node?(node)

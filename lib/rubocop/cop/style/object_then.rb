@@ -29,7 +29,7 @@ module RuboCop
 
         minimum_target_ruby_version 2.6
 
-        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
+        MSG = 'Prefer `%{prefer}` over `%{current}`.'
 
         def on_block(node)
           check_method_node(node.send_node)

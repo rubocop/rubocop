@@ -41,7 +41,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Inherit from `%<prefer>s` instead of `Exception`.'
+        MSG = 'Inherit from `%{prefer}` instead of `Exception`.'
         PREFERRED_BASE_CLASS = {
           runtime_error: 'RuntimeError',
           standard_error: 'StandardError'

@@ -62,8 +62,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = '%<command>s space inside reference brackets.'
-        EMPTY_MSG = '%<command>s space inside empty reference brackets.'
+        MSG = '%{command} space inside reference brackets.'
+        EMPTY_MSG = '%{command} space inside empty reference brackets.'
 
         RESTRICT_ON_SEND = %i[[] []=].freeze
 
