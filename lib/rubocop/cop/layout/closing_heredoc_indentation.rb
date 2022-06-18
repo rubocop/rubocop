@@ -52,8 +52,7 @@ module RuboCop
 
         SIMPLE_HEREDOC = '<<'
         MSG = '`%{closing}` is not aligned with `%{opening}`.'
-        MSG_ARG = '`%{closing}` is not aligned with `%{opening}` or ' \
-                  'beginning of method definition.'
+        MSG_ARG = '`%{closing}` is not aligned with `%{opening}` or beginning of method definition.'
 
         def on_heredoc(node)
           return if heredoc_type(node) == SIMPLE_HEREDOC ||

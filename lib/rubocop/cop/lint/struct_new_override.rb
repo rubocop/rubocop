@@ -22,8 +22,7 @@ module RuboCop
       #   g.count #=> 2
       #
       class StructNewOverride < Base
-        MSG = '`%{member_name}` member overrides `Struct#%{method_name}`' \
-              ' and it may be unexpected.'
+        MSG = '`%{member_name}` member overrides `Struct#%{method_name}` and it may be unexpected.'
         RESTRICT_ON_SEND = %i[new].freeze
 
         STRUCT_METHOD_NAMES = Struct.instance_methods
