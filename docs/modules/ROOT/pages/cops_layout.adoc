@@ -238,7 +238,7 @@ Checks the indentation of the first line of the
 right-hand-side of a multi-line assignment.
 
 The indentation of the remaining lines can be corrected with
-other cops such as `IndentationConsistency` and `EndAlignment`.
+other cops such as `InconsistentIndentation` and `EndAlignment`.
 
 === Examples
 
@@ -3511,7 +3511,7 @@ RUBY
 
 * https://rubystyle.guide#squiggly-heredocs
 
-== Layout/IndentationConsistency
+== Layout/InconsistentIndentation
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -3748,7 +3748,7 @@ end
 Checks for indentation that doesn't use the specified number
 of spaces.
 
-See also the IndentationConsistency cop which is the companion to this
+See also the Layout/InconsistentIndentation cop which is the companion to this
 one.
 
 === Examples

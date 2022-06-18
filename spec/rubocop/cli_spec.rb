@@ -725,7 +725,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'when configured for indented_internal_methods style indentation' do
       it 'accepts indented_internal_methods style indentation' do
         create_file('.rubocop.yml', <<~YAML)
-          Layout/IndentationConsistency:
+          Layout/InconsistentIndentation:
             EnforcedStyle: indented_internal_methods
           Style/FrozenStringLiteralComment:
             Enabled: false
@@ -759,7 +759,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       %w[class module].each do |parent|
         it "registers offense for normal indentation in #{parent}" do
           create_file('.rubocop.yml', <<~YAML)
-            Layout/IndentationConsistency:
+            Layout/InconsistentIndentation:
               EnforcedStyle: indented_internal_methods
             Style/FrozenStringLiteralComment:
               Enabled: false

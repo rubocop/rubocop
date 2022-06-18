@@ -6,6 +6,7 @@ renamed:
   Layout/AlignArray: Layout/ArrayAlignment
   Layout/AlignHash: Layout/HashAlignment
   Layout/AlignParameters: Layout/ParameterAlignment
+  Layout/IndentationConsistency: Layout/InconsistentIndentation
   Layout/IndentArray: Layout/FirstArrayElementIndentation
   Layout/IndentAssignment: Layout/AssignmentIndentation
   Layout/IndentFirstArgument: Layout/FirstArgumentIndentation
@@ -203,7 +204,7 @@ changed_parameters:
 
 # Enforced styles that have been removed or replaced
 changed_enforced_styles:
-  - cops: Layout/IndentationConsistency
+  - cops: Layout/InconsistentIndentation
     parameters: EnforcedStyle
     value: rails
     alternative: indented_internal_methods

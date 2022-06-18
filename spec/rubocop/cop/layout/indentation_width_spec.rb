@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
     RuboCop::Config.new(
       'Layout/IndentationWidth' => cop_config,
       'Layout/AccessModifierIndentation' => access_modifier_config,
-      'Layout/IndentationConsistency' => consistency_config,
+      'Layout/InconsistentIndentation' => consistency_config,
       'Layout/EndAlignment' => end_alignment_config,
       'Layout/DefEndAlignment' => def_end_alignment_config
     )
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
       RUBY
 
-      # The second `b1` will be corrected by IndentationConsistency.
+      # The second `b1` will be corrected by InconsistentIndentation.
       expect_correction(<<~RUBY)
         if a1
             b1
@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           end
         RUBY
 
-        # The second `b1` will be corrected by IndentationConsistency.
+        # The second `b1` will be corrected by InconsistentIndentation.
         expect_correction(<<~RUBY)
           if a1
             b1
@@ -1196,7 +1196,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
 
       it 'leaves body unchanged if the first body line is on the same line with class keyword' do
-        # The class body will be corrected by IndentationConsistency.
+        # The class body will be corrected by InconsistentIndentation.
         expect_no_offenses(<<~RUBY)
           class Test foo
               def func1
@@ -1215,7 +1215,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
 
       it 'leaves body unchanged if the first body line is on the same line with an opening of singleton class' do
-        # The class body will be corrected by IndentationConsistency.
+        # The class body will be corrected by InconsistentIndentation.
         expect_no_offenses(<<~RUBY)
           class << self; foo
               def func1
@@ -1397,7 +1397,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
 
       it 'leaves body unchanged if the first body line is on the same line with module keyword' do
-        # The module body will be corrected by IndentationConsistency.
+        # The module body will be corrected by InconsistentIndentation.
         expect_no_offenses(<<~RUBY)
           module Test foo
               def func1

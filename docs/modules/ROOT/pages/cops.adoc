@@ -138,7 +138,7 @@ In the following section you find all available cops:
 * xref:cops_layout.adoc#layouthashalignment[Layout/HashAlignment]
 * xref:cops_layout.adoc#layoutheredocargumentclosingparenthesis[Layout/HeredocArgumentClosingParenthesis]
 * xref:cops_layout.adoc#layoutheredocindentation[Layout/HeredocIndentation]
-* xref:cops_layout.adoc#layoutindentationconsistency[Layout/IndentationConsistency]
+* xref:cops_layout.adoc#layoutinconsistentindentation[Layout/InconsistentIndentation]
 * xref:cops_layout.adoc#layoutindentationstyle[Layout/IndentationStyle]
 * xref:cops_layout.adoc#layoutindentationwidth[Layout/IndentationWidth]
 * xref:cops_layout.adoc#layoutinitialindentation[Layout/InitialIndentation]

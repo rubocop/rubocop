@@ -723,7 +723,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, indented_internal_methods',
-         'Layout/IndentationConsistency:',
+         'Layout/InconsistentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
@@ -825,7 +825,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, indented_internal_methods',
-         'Layout/IndentationConsistency:',
+         'Layout/InconsistentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
@@ -988,7 +988,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         # This cop supports safe autocorrection (--autocorrect).
         # Configuration parameters: EnforcedStyle.
         # SupportedStyles: normal, indented_internal_methods
-        Layout/IndentationConsistency:
+        Layout/InconsistentIndentation:
           Exclude:
             - 'example2.rb'
 
@@ -1092,7 +1092,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, indented_internal_methods',
-         'Layout/IndentationConsistency:',
+         'Layout/InconsistentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',

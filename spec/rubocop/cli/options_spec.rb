@@ -1508,7 +1508,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             'Indentation of first line in file detected.',
             "\tx",
             ' ^',
-            'example2.rb:4:1: C: [Correctable] Layout/IndentationConsistency: ' \
+            'example2.rb:4:1: C: [Correctable] Layout/InconsistentIndentation: ' \
             'Inconsistent indentation detected.',
             'def a ...',
             '^^^^^',
@@ -1562,7 +1562,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             #{abs('example2.rb')}:1:1: C: [Correctable] Layout/CommentIndentation: Incorrect indentation detected (column 0 instead of 1).
             #{abs('example2.rb')}:3:1: C: [Correctable] Layout/IndentationStyle: Tab detected in indentation.
             #{abs('example2.rb')}:3:2: C: [Correctable] Layout/InitialIndentation: Indentation of first line in file detected.
-            #{abs('example2.rb')}:4:1: C: [Correctable] Layout/IndentationConsistency: Inconsistent indentation detected.
+            #{abs('example2.rb')}:4:1: C: [Correctable] Layout/InconsistentIndentation: Inconsistent indentation detected.
           RESULT
           expect($stdout.string).to eq(expected_output)
         end

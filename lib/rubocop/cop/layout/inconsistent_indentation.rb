@@ -118,7 +118,7 @@ module RuboCop
       #       def bar
       #       end
       #   end
-      class IndentationConsistency < Base
+      class InconsistentIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         extend AutoCorrector

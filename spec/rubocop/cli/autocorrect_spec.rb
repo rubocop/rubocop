@@ -951,7 +951,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
-  it 'corrects Tab and IndentationConsistency offenses' do
+  it 'corrects Tab and InconsistentIndentation offenses' do
     source = <<~RUBY
         render_views
           describe 'GET index' do
@@ -981,7 +981,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
-  it 'corrects IndentationWidth and IndentationConsistency offenses' do
+  it 'corrects IndentationWidth and InconsistentIndentation offenses' do
     source = <<~RUBY
       require 'spec_helper'
       describe ArticlesController do
@@ -1017,13 +1017,13 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
-  it 'corrects IndentationWidth and IndentationConsistency offenses' \
+  it 'corrects IndentationWidth and InconsistentIndentation offenses' \
      'when using `EnforcedStyle: outdent` and ' \
      '`EnforcedStyle: indented_internal_methods`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/AccessModifierIndentation:
         EnforcedStyle: outdent
-      Layout/IndentationConsistency:
+      Layout/InconsistentIndentation:
         EnforcedStyle: indented_internal_methods
     YAML
 
@@ -1043,7 +1043,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      '--only',
                      [
                        'Layout/AccessModifierIndentation',
-                       'Layout/IndentationConsistency',
+                       'Layout/InconsistentIndentation',
                        'Layout/IndentationWidth'
                      ].join(',')
                    ])).to eq(0)
@@ -1060,7 +1060,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
-  it 'corrects IndentationWidth and IndentationConsistency offenses' \
+  it 'corrects IndentationWidth and InconsistentIndentation offenses' \
      'without correcting `Style/TrailingBodyOnClass`' do
     source = <<~'RUBY'
       class Test foo
@@ -1075,7 +1075,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(cli.run([
                      '--autocorrect-all',
                      '--only',
-                     ['Layout/IndentationConsistency', 'Layout/IndentationWidth'].join(',')
+                     ['Layout/InconsistentIndentation', 'Layout/IndentationWidth'].join(',')
                    ])).to eq(0)
 
     corrected = <<~'RUBY'
@@ -1339,7 +1339,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       %w[--autocorrect-all --format offenses --only] << %w[
         SingleLineMethods Semicolon EmptyLineBetweenDefs
         DefWithParentheses TrailingWhitespace TrailingBodyOnMethodDefinition
-        DefEndAlignment IndentationConsistency
+        DefEndAlignment InconsistentIndentation
       ].join(',')
     )
     expect(exit_status).to eq(0)
@@ -1358,7 +1358,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
       4   Layout/TrailingWhitespace
       3   Style/Semicolon
-      2   Layout/IndentationConsistency
+      2   Layout/InconsistentIndentation
       2   Style/SingleLineMethods
       1   Layout/DefEndAlignment
       1   Layout/EmptyLineBetweenDefs
@@ -2370,7 +2370,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     status = cli.run(
       %w[--autocorrect --only] << %w[
         Semicolon SingleLineMethods TrailingBodyOnMethodDefinition
-        DefEndAlignment TrailingWhitespace IndentationConsistency
+        DefEndAlignment TrailingWhitespace InconsistentIndentation
       ].join(',')
     )
     expect(status).to eq(0)

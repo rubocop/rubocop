@@ -908,7 +908,7 @@ Layout/HeredocIndentation:
   VersionAdded: '0.49'
   VersionChanged: '0.85'
 
-Layout/IndentationConsistency:
+Layout/InconsistentIndentation:
   Description: 'Keep indentation straight.'
   StyleGuide: '#spaces-indentation'
   Enabled: true

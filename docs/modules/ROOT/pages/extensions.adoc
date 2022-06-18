@@ -158,7 +158,7 @@ changed_parameters: # must be an array of hashes
     severity: warning
 
 changed_enforced_styles: # must be an array of hashes
-  - cops: Layout/IndentationConsistency
+  - cops: Layout/InconsistentIndentation
     parameters: EnforcedStyle
     value: rails
     reason: >

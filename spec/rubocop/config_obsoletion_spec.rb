@@ -21,6 +21,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/AlignHash' => { Enabled: true },
           'Layout/AlignParameters' => { Enabled: true },
           'Layout/FirstParameterIndentation' => { Enabled: true },
+          'Layout/IndentationConsistency' => { Enabled: true },
           'Layout/IndentArray' => { Enabled: true },
           'Layout/IndentAssignment' => { Enabled: true },
           'Layout/IndentFirstArgument' => { Enabled: true },
@@ -92,6 +93,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Layout/AlignHash` cop has been renamed to `Layout/HashAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/AlignParameters` cop has been renamed to `Layout/ParameterAlignment`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentationConsistency` cop has been renamed to `Layout/InconsistentIndentation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/IndentArray` cop has been renamed to `Layout/FirstArrayElementIndentation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -337,7 +340,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/EndAlignment' => { 'AlignWith' => 'end' },
           'Lint/DefEndAlignment' => { 'AlignWith' => 'end' },
           # Obsolete EnforcedStyles
-          'Layout/IndentationConsistency' => { 'EnforcedStyle' => 'rails' }
+          'Layout/InconsistentIndentation' => { 'EnforcedStyle' => 'rails' }
         }
       end
 
@@ -383,7 +386,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
           obsolete parameter `EnforcedMode` (for `Rails/UniqBeforePluck`) found in example/.rubocop.yml
           `EnforcedMode` has been renamed to `EnforcedStyle`.
-          obsolete `EnforcedStyle: rails` (for `Layout/IndentationConsistency`) found in example/.rubocop.yml
+          obsolete `EnforcedStyle: rails` (for `Layout/InconsistentIndentation`) found in example/.rubocop.yml
           `EnforcedStyle: rails` has been renamed to `EnforcedStyle: indented_internal_methods`.
         OUTPUT
       end
