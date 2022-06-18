@@ -32,6 +32,7 @@ Style/AccessorGrouping:
     - lib/rubocop/cop/offense.rb
 
 Style/FormatStringToken:
+  EnforcedStyle: template
   # Because we parse a lot of source codes from strings. Percent arrays
   # look like unannotated format string tokens to this cop.
   Exclude:
