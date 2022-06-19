@@ -26,6 +26,7 @@ renamed:
   Lint/Eval: Security/Eval
   Lint/HandleExceptions: Lint/SuppressedException
   Lint/MultipleCompare: Lint/MultipleComparison
+  Lint/PercentStringArray: Lint/RedundantPercentWPunctuation
   Lint/StringConversionInInterpolation: Lint/RedundantStringCoercion
   Lint/UnneededCopDisableDirective: Lint/RedundantCopDisableDirective
   Lint/UnneededCopEnableDirective: Lint/RedundantCopEnableDirective

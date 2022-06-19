@@ -3748,51 +3748,6 @@ do_something (foo * bar).baz
 
 * https://rubystyle.guide#parens-no-spaces
 
-== Lint/PercentStringArray
-
-|===
-| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
-
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.41
-| -
-|===
-
-Checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
-
-It is more likely that the additional characters are unintended (for
-example, mistranslating an array of literals to percent string notation)
-rather than meant to be part of the resulting strings.
-
-=== Safety
-
-The cop is unsafe because the correction changes the values in the array
-and that might have been done purposely.
-
-[source,ruby]
-----
-%w('foo', "bar") #=> ["'foo',", '"bar"']
-%w(foo bar)      #=> ['foo', 'bar']
-----
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-
-%w('foo', "bar")
-----
-
-[source,ruby]
-----
-# good
-
-%w(foo bar)
-----
-
 == Lint/PercentSymbolArray
 
 |===
@@ -4046,6 +4001,51 @@ end
 
 Dir['./lib/**/*.rb'].each do |file|
 end
+----
+
+== Lint/RedundantPercentWPunctuation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.41
+| -
+|===
+
+Checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
+
+It is more likely that the additional characters are unintended (for
+example, mistranslating an array of literals to percent string notation)
+rather than meant to be part of the resulting strings.
+
+=== Safety
+
+The cop is unsafe because the correction changes the values in the array
+and that might have been done purposely.
+
+[source,ruby]
+----
+%w('foo', "bar") #=> ["'foo',", '"bar"']
+%w(foo bar)      #=> ['foo', 'bar']
+----
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+
+%w('foo', "bar")
+----
+
+[source,ruby]
+----
+# good
+
+%w(foo bar)
 ----
 
 == Lint/RedundantRequireStatement

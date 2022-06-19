@@ -36,6 +36,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/DuplicatedKey' => { Enabled: true },
           'Lint/HandleExceptions' => { Enabled: true },
           'Lint/MultipleCompare' => { Enabled: true },
+          'Lint/PercentStringArray' => { Enabled: true },
           'Lint/StringConversionInInterpolation' => { Enabled: true },
           'Lint/UnneededCopDisableDirective' => { Enabled: true },
           'Lint/UnneededCopEnableDirective' => { Enabled: true },
@@ -131,6 +132,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Lint/HandleExceptions` cop has been renamed to `Lint/SuppressedException`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/MultipleCompare` cop has been renamed to `Lint/MultipleComparison`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/PercentStringArray` cop has been renamed to `Lint/RedundantPercentWPunctuation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/StringConversionInInterpolation` cop has been renamed to `Lint/RedundantStringCoercion`.
           (obsolete configuration found in example/.rubocop.yml, please update it)

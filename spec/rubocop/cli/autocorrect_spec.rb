@@ -1624,14 +1624,15 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         TargetRubyVersion: 2.6
     YAML
     create_file('example.rb', src)
-    exit_status = cli.run(%w[-a -f simple --only Lint/BooleanSymbol,Lint/PercentStringArray])
+    exit_status =
+      cli.run(%w[-a -f simple --only Lint/BooleanSymbol,Lint/RedundantPercentWPunctuation])
     expect(exit_status).to eq(1)
     expect($stderr.string).to eq('')
     expect(File.read('example.rb')).to eq(corrected)
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
       W:  1:  7: [Correctable] Lint/BooleanSymbol: Symbol with a boolean name - you probably meant to use false.
-      W:  2:  1: [Correctable] Lint/PercentStringArray: Within %w/%W, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
+      W:  2:  1: [Correctable] Lint/RedundantPercentWPunctuation: Within %w/%W, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
 
       1 file inspected, 2 offenses detected, 2 more offenses can be corrected with `rubocop -A`
     RESULT

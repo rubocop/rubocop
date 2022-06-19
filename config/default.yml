@@ -1989,13 +1989,6 @@ Lint/ParenthesesAsGroupedExpression:
   VersionAdded: '0.12'
   VersionChanged: '0.83'
 
-Lint/PercentStringArray:
-  Description: >-
-                 Checks for unwanted commas and quotes in %w/%W literals.
-  Enabled: true
-  Safe: false
-  VersionAdded: '0.41'
-
 Lint/PercentSymbolArray:
   Description: >-
                  Checks for unwanted commas and colons in %i/%I literals.
@@ -2038,6 +2031,13 @@ Lint/RedundantDirGlobSort:
   VersionAdded: '1.8'
   VersionChanged: '1.26'
   SafeAutoCorrect: false
+
+Lint/RedundantPercentWPunctuation:
+  Description: >-
+                 Checks for unwanted commas and quotes in %w/%W literals.
+  Enabled: true
+  Safe: false
+  VersionAdded: '0.41'
 
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
