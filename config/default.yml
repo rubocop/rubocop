@@ -1989,12 +1989,6 @@ Lint/ParenthesesAsGroupedExpression:
   VersionAdded: '0.12'
   VersionChanged: '0.83'
 
-Lint/PercentSymbolArray:
-  Description: >-
-                 Checks for unwanted commas and colons in %i/%I literals.
-  Enabled: true
-  VersionAdded: '0.41'
-
 Lint/RaiseException:
   Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
   StyleGuide: '#raise-exception'
@@ -2031,6 +2025,12 @@ Lint/RedundantDirGlobSort:
   VersionAdded: '1.8'
   VersionChanged: '1.26'
   SafeAutoCorrect: false
+
+Lint/RedundantPercentIPunctuation:
+  Description: >-
+                 Checks for unwanted commas and colons in %i/%I literals.
+  Enabled: true
+  VersionAdded: '0.41'
 
 Lint/RedundantPercentWPunctuation:
   Description: >-

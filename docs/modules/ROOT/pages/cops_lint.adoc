@@ -3748,40 +3748,6 @@ do_something (foo * bar).baz
 
 * https://rubystyle.guide#parens-no-spaces
 
-== Lint/PercentSymbolArray
-
-|===
-| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
-
-| Enabled
-| Yes
-| Yes
-| 0.41
-| -
-|===
-
-Checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
-
-It is more likely that the additional characters are unintended (for
-example, mistranslating an array of literals to percent string notation)
-rather than meant to be part of the resulting symbols.
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-
-%i(:foo, :bar)
-----
-
-[source,ruby]
-----
-# good
-
-%i(foo bar)
-----
-
 == Lint/RaiseException
 
 |===
@@ -4001,6 +3967,40 @@ end
 
 Dir['./lib/**/*.rb'].each do |file|
 end
+----
+
+== Lint/RedundantPercentIPunctuation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| Yes
+| 0.41
+| -
+|===
+
+Checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
+
+It is more likely that the additional characters are unintended (for
+example, mistranslating an array of literals to percent string notation)
+rather than meant to be part of the resulting symbols.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+
+%i(:foo, :bar)
+----
+
+[source,ruby]
+----
+# good
+
+%i(foo bar)
 ----
 
 == Lint/RedundantPercentWPunctuation

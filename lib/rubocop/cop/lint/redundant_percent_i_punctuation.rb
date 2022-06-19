@@ -20,7 +20,7 @@ module RuboCop
       #   # good
       #
       #   %i(foo bar)
-      class PercentSymbolArray < Base
+      class RedundantPercentIPunctuation < Base
         include PercentLiteral
         extend AutoCorrector
 
