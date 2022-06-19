@@ -57,7 +57,7 @@ module RuboCop
 
         def autocorrect(corrector, node)
           range = if node.single_line?
-                    range_with_surrounding_space(range: node.body.loc.expression)
+                    range_with_surrounding_space(node.body.loc.expression)
                   else
                     range_by_whole_lines(node.body.loc.expression, include_final_newline: true)
                   end

@@ -70,7 +70,7 @@ module RuboCop
 
         def autocorrect(corrector, operator_range)
           # Include any trailing whitespace so we don't create a syntax error.
-          operator_range = range_with_surrounding_space(range: operator_range,
+          operator_range = range_with_surrounding_space(operator_range,
                                                         side: :right,
                                                         newlines: false)
           one_more_char = operator_range.resize(operator_range.size + 1)

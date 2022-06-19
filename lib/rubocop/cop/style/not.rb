@@ -33,7 +33,7 @@ module RuboCop
           return unless node.prefix_not?
 
           add_offense(node.loc.selector) do |corrector|
-            range = range_with_surrounding_space(range: node.loc.selector, side: :right)
+            range = range_with_surrounding_space(node.loc.selector, side: :right)
 
             if opposite_method?(node.receiver)
               correct_opposite_method(corrector, range, node.receiver)

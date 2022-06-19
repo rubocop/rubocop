@@ -86,7 +86,7 @@ module RuboCop
           if node.parenthesized?
             range_between(node.loc.begin.begin_pos, node.loc.end.end_pos)
           else
-            range_with_surrounding_space(range: node.first_argument.source_range, newlines: false)
+            range_with_surrounding_space(node.first_argument.source_range, newlines: false)
           end
         end
       end

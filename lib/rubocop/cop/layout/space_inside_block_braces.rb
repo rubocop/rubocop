@@ -185,7 +185,7 @@ module RuboCop
                       'Space between { and | detected.')
             end
           else
-            brace_with_space = range_with_surrounding_space(range: left_brace, side: :right)
+            brace_with_space = range_with_surrounding_space(left_brace, side: :right)
             space(brace_with_space.begin_pos + 1, brace_with_space.end_pos,
                   'Space inside { detected.')
           end
@@ -196,7 +196,7 @@ module RuboCop
         end
 
         def space_inside_right_brace(right_brace)
-          brace_with_space = range_with_surrounding_space(range: right_brace, side: :left)
+          brace_with_space = range_with_surrounding_space(right_brace, side: :left)
           space(brace_with_space.begin_pos, brace_with_space.end_pos - 1,
                 'Space inside } detected.')
         end

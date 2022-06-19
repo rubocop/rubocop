@@ -138,7 +138,7 @@ module RuboCop
           corrector.insert_after(outer_condition, "#{and_operator}#{replace_condition(condition)}")
 
           range = range_between(if_branch.loc.keyword.begin_pos, condition.source_range.end_pos)
-          corrector.remove(range_with_surrounding_space(range: range, newlines: false))
+          corrector.remove(range_with_surrounding_space(range, newlines: false))
           corrector.remove(if_branch.loc.keyword)
         end
 
@@ -157,7 +157,7 @@ module RuboCop
                                   "#{'!' if node.unless?}#{replace_condition(node.condition)} && ")
 
           corrector.remove(node.condition.loc.expression)
-          corrector.remove(range_with_surrounding_space(range: node.loc.keyword, newlines: false))
+          corrector.remove(range_with_surrounding_space(node.loc.keyword, newlines: false))
           corrector.replace(if_branch.loc.keyword, 'if')
         end
 

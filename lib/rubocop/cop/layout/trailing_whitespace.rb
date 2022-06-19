@@ -89,7 +89,7 @@ module RuboCop
         end
 
         def whitespace_only?(range)
-          source = range_with_surrounding_space(range: range).source
+          source = range_with_surrounding_space(range).source
           source.start_with?("\n") && source.end_with?("\n")
         end
 

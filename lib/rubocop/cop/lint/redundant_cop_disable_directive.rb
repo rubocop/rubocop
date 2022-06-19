@@ -71,16 +71,16 @@ module RuboCop
              processed_source.comment_config.comment_only_line?(directive_comment_range.line) &&
              directive_comment_range.begin_pos == line_comment_range.begin_pos
             # When the previous line is blank, it should be retained
-            range_with_surrounding_space(range: directive_comment_range, side: :right)
+            range_with_surrounding_space(directive_comment_range, side: :right)
           else
             # Eat the entire comment, the preceding space, and the preceding
             # newline if there is one.
             original_begin = directive_comment_range.begin_pos
             range = range_with_surrounding_space(
-              range: directive_comment_range, side: :left, newlines: true
+              directive_comment_range, side: :left, newlines: true
             )
 
-            range_with_surrounding_space(range: range,
+            range_with_surrounding_space(range,
                                          side: :right,
                                          # Special for a comment that
                                          # begins the file: remove
@@ -94,13 +94,13 @@ module RuboCop
           # is NOT being removed?
           if ends_its_line?(ranges.last) && trailing_range?(ranges, range)
             # Eat the comma on the left.
-            range = range_with_surrounding_space(range: range, side: :left)
+            range = range_with_surrounding_space(range, side: :left)
             range = range_with_surrounding_comma(range, :left)
           end
 
           range = range_with_surrounding_comma(range, :right)
           # Eat following spaces up to EOL, but not the newline itself.
-          range_with_surrounding_space(range: range, side: :right, newlines: false)
+          range_with_surrounding_space(range, side: :right, newlines: false)
         end
 
         def each_redundant_disable(&block)

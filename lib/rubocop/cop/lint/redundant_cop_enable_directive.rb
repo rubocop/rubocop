@@ -60,7 +60,7 @@ module RuboCop
               message: format(MSG, cop: all_or_name(name))
             ) do |corrector|
               if directive.match?(cop_names)
-                corrector.remove(range_with_surrounding_space(range: directive.range, side: :right))
+                corrector.remove(range_with_surrounding_space(directive.range, side: :right))
               else
                 corrector.remove(range_with_comma(comment, name))
               end

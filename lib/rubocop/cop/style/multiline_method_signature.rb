@@ -59,7 +59,7 @@ module RuboCop
             node.first_argument.source_range.begin_pos, node.last_argument.source_range.end_pos
           )
 
-          range_with_surrounding_space(range: range, side: :left)
+          range_with_surrounding_space(range, side: :left)
         end
 
         def opening_line(node)

@@ -41,7 +41,7 @@ module RuboCop
           return unless unnecessary_require_statement?(node)
 
           add_offense(node) do |corrector|
-            range = range_with_surrounding_space(range: node.loc.expression, side: :right)
+            range = range_with_surrounding_space(node.loc.expression, side: :right)
 
             corrector.remove(range)
           end
