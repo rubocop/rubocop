@@ -45,6 +45,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Naming/UncommunicativeBlockParamName' => { Enabled: true },
           'Naming/UncommunicativeMethodParamName' => { Enabled: true },
           'Naming/VariableNumber' => { Enabled: true },
+          'Style/DefWithParentheses' => { Enabled: true },
           'Style/DeprecatedHashMethods' => { Enabled: true },
           'Style/MethodCallParentheses' => { Enabled: true },
           'Style/OpMethod' => { Enabled: true },
@@ -159,6 +160,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Style/ClassAndModuleCamelCase` cop has been moved to `Naming/ClassAndModuleCamelCase`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/ConstantName` cop has been moved to `Naming/ConstantName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/DefWithParentheses` cop has been renamed to `Style/RedundantMethodDefParentheses`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/DeprecatedHashMethods` cop has been renamed to `Style/PreferredHashMethods`.
           (obsolete configuration found in example/.rubocop.yml, please update it)

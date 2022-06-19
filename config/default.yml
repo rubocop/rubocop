@@ -3367,13 +3367,6 @@ Style/DateTime:
   SafeAutoCorrect: false
   AllowCoercion: false
 
-Style/DefWithParentheses:
-  Description: 'Use def with parentheses when there are arguments.'
-  StyleGuide: '#method-parens'
-  Enabled: true
-  VersionAdded: '0.9'
-  VersionChanged: '0.12'
-
 Style/Dir:
   Description: >-
                  Use the `__dir__` method to retrieve the canonicalized
@@ -4613,6 +4606,13 @@ Style/RedundantInterpolation:
   SafeAutoCorrect: false
   VersionAdded: '0.76'
   VersionChanged: '1.30'
+
+Style/RedundantMethodDefParentheses:
+  Description: 'Use def with parentheses when there are arguments.'
+  StyleGuide: '#method-parens'
+  Enabled: true
+  VersionAdded: '0.9'
+  VersionChanged: '0.12'
 
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."

@@ -350,7 +350,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
               example.rb:2:1: C: [Correctable] Style/EmptyMethod: Put empty method definitions on a single line.
               def foo() ...
               ^^^^^^^^^
-              example.rb:2:8: C: [Correctable] Style/DefWithParentheses: Omit the parentheses in defs when the method doesn't accept any arguments.
+              example.rb:2:8: C: [Correctable] Style/RedundantMethodDefParentheses: Omit the parentheses in defs when the method doesn't accept any arguments.
               def foo()
                      ^^
 
@@ -394,7 +394,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
               example.rb:2:1: C: [Correctable] Style/EmptyMethod: Put empty method definitions on a single line.
               def foo() ...
               ^^^^^^^^^
-              example.rb:2:8: C: [Correctable] Style/DefWithParentheses: Omit the parentheses in defs when the method doesn't accept any arguments.
+              example.rb:2:8: C: [Correctable] Style/RedundantMethodDefParentheses: Omit the parentheses in defs when the method doesn't accept any arguments.
               def foo()
                      ^^
 

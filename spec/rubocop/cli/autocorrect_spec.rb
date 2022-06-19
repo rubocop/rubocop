@@ -1338,7 +1338,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     exit_status = cli.run(
       %w[--autocorrect-all --format offenses --only] << %w[
         SingleLineMethods Semicolon EmptyLineBetweenDefs
-        DefWithParentheses TrailingWhitespace TrailingBodyOnMethodDefinition
+        RedundantMethodDefParentheses TrailingWhitespace TrailingBodyOnMethodDefinition
         DefEndAlignment InconsistentIndentation
       ].join(',')
     )
@@ -1362,7 +1362,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       2   Style/SingleLineMethods
       1   Layout/DefEndAlignment
       1   Layout/EmptyLineBetweenDefs
-      1   Style/DefWithParentheses
+      1   Style/RedundantMethodDefParentheses
       1   Style/TrailingBodyOnMethodDefinition
       --
       15  Total
