@@ -29,7 +29,7 @@ module RuboCop
         end
 
         def correct_for_blockarg_type(corrector, node)
-          range = range_with_surrounding_space(range: node.source_range, side: :left)
+          range = range_with_surrounding_space(node.source_range, side: :left)
           range = range_with_surrounding_comma(range, :left)
 
           corrector.remove(range)

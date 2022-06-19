@@ -51,7 +51,7 @@ module RuboCop
             text = comment.without(:encoding)
 
             if text.blank?
-              corrector.remove(range_with_surrounding_space(range: range, side: :right))
+              corrector.remove(range_with_surrounding_space(range, side: :right))
             else
               corrector.replace(range, text)
             end

@@ -182,7 +182,7 @@ module RuboCop
         end
 
         def remove_comment(corrector, node)
-          corrector.remove(range_with_surrounding_space(range: node.pos, side: :right))
+          corrector.remove(range_with_surrounding_space(node.pos, side: :right))
         end
 
         def enable_comment(corrector)

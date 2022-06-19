@@ -117,7 +117,7 @@ module RuboCop
 
         def autocorrect_arguments(corrector, node)
           end_pos = range_with_surrounding_space(
-            range: node.arguments.source_range,
+            node.arguments.source_range,
             side: :right,
             newlines: false
           ).end_pos

@@ -29,7 +29,7 @@ module RuboCop
           return unless non_modifier_then?(node)
 
           add_offense(node.loc.begin, message: format(MSG, keyword: node.keyword)) do |corrector|
-            corrector.remove(range_with_surrounding_space(range: node.loc.begin, side: :left))
+            corrector.remove(range_with_surrounding_space(node.loc.begin, side: :left))
           end
         end
 
