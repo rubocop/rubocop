@@ -2745,6 +2745,28 @@ Naming/MethodParameterName:
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
+Naming/NumericVariableSuffix:
+  Description: 'Use the configured style when numbering symbols, methods and variables.'
+  StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
+  Enabled: true
+  VersionAdded: '0.50'
+  VersionChanged: '1.4'
+  EnforcedStyle: normalcase
+  SupportedStyles:
+    - snake_case
+    - normalcase
+    - non_integer
+  CheckMethodNames: true
+  CheckSymbols: true
+  AllowedIdentifiers:
+    - capture3     # Open3.capture3
+    - iso8601      # Time#iso8601
+    - rfc1123_date # CGI.rfc1123_date
+    - rfc822       # Time#rfc822
+    - rfc2822      # Time#rfc2822
+    - rfc3339      # DateTime.rfc3339
+  AllowedPatterns: []
+
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'
@@ -2792,28 +2814,6 @@ Naming/VariableName:
     - snake_case
     - camelCase
   AllowedIdentifiers: []
-  AllowedPatterns: []
-
-Naming/VariableNumber:
-  Description: 'Use the configured style when numbering symbols, methods and variables.'
-  StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
-  Enabled: true
-  VersionAdded: '0.50'
-  VersionChanged: '1.4'
-  EnforcedStyle: normalcase
-  SupportedStyles:
-    - snake_case
-    - normalcase
-    - non_integer
-  CheckMethodNames: true
-  CheckSymbols: true
-  AllowedIdentifiers:
-    - capture3     # Open3.capture3
-    - iso8601      # Time#iso8601
-    - rfc1123_date # CGI.rfc1123_date
-    - rfc822       # Time#rfc822
-    - rfc2822      # Time#rfc2822
-    - rfc3339      # DateTime.rfc3339
   AllowedPatterns: []
 
 #################### Security ##############################

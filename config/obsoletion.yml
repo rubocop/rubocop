@@ -35,6 +35,7 @@ renamed:
   Metrics/LineLength: Layout/LineLength
   Naming/UncommunicativeBlockParamName: Naming/BlockParameterName
   Naming/UncommunicativeMethodParamName: Naming/MethodParameterName
+  Naming/VariableNumber: Naming/NumericVariableSuffix
   Style/AccessorMethodName: Naming/AccessorMethodName
   Style/AsciiIdentifiers: Naming/AsciiIdentifiers
   Style/ClassAndModuleCamelCase: Naming/ClassAndModuleCamelCase
@@ -53,7 +54,7 @@ renamed:
   Style/UnneededPercentQ: Style/RedundantPercentQ
   Style/UnneededSort: Style/RedundantSort
   Style/VariableName: Naming/VariableName
-  Style/VariableNumber: Naming/VariableNumber
+  Style/VariableNumber: Naming/NumericVariableSuffix
 
 # Cops that were removed
 removed:

@@ -44,6 +44,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/UnneededSplatExpansion' => { Enabled: true },
           'Naming/UncommunicativeBlockParamName' => { Enabled: true },
           'Naming/UncommunicativeMethodParamName' => { Enabled: true },
+          'Naming/VariableNumber' => { Enabled: true },
           'Style/DeprecatedHashMethods' => { Enabled: true },
           'Style/MethodCallParentheses' => { Enabled: true },
           'Style/OpMethod' => { Enabled: true },
@@ -149,6 +150,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Naming/UncommunicativeMethodParamName` cop has been renamed to `Naming/MethodParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Naming/VariableNumber` cop has been renamed to `Naming/NumericVariableSuffix`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/AccessorMethodName` cop has been moved to `Naming/AccessorMethodName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/AsciiIdentifiers` cop has been moved to `Naming/AsciiIdentifiers`.
@@ -185,7 +188,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/VariableName` cop has been moved to `Naming/VariableName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/VariableNumber` cop has been moved to `Naming/VariableNumber`.
+          The `Style/VariableNumber` cop has been renamed to `Naming/NumericVariableSuffix`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)

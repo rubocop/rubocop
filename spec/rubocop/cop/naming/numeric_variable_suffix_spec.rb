@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
+RSpec.describe RuboCop::Cop::Naming::NumericVariableSuffix, :config do
   let(:cop_config) { { 'CheckMethodNames' => true, 'CheckSymbols' => true } }
 
   shared_examples 'offense' do |style, variable, style_to_allow_offenses|

@@ -351,10 +351,10 @@ In the following section you find all available cops:
 * xref:cops_naming.adoc#namingmemoizedinstancevariablename[Naming/MemoizedInstanceVariableName]
 * xref:cops_naming.adoc#namingmethodname[Naming/MethodName]
 * xref:cops_naming.adoc#namingmethodparametername[Naming/MethodParameterName]
+* xref:cops_naming.adoc#namingnumericvariablesuffix[Naming/NumericVariableSuffix]
 * xref:cops_naming.adoc#namingpredicatename[Naming/PredicateName]
 * xref:cops_naming.adoc#namingrescuedexceptionsvariablename[Naming/RescuedExceptionsVariableName]
 * xref:cops_naming.adoc#namingvariablename[Naming/VariableName]
-* xref:cops_naming.adoc#namingvariablenumber[Naming/VariableNumber]
 
 === Department xref:cops_security.adoc[Security]
 
