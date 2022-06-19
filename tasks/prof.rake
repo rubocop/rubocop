@@ -5,6 +5,13 @@ namespace :prof do
 
   desc 'Run RuboCop on itself with profiling on'
   task :run, [:path] do |_task, args|
+    # Must be run `rubocop` with the local process.
+    require 'rubocop/server'
+    if RuboCop::Server.running?
+      RuboCop::Server::ClientCommand::Stop.new.run
+      puts 'Stop the server for profiling.'
+    end
+
     path = args.fetch(:path, '.')
     cmd = "bin/rubocop-profile #{path}"
     system cmd
