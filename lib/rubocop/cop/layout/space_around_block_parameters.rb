@@ -127,7 +127,7 @@ module RuboCop
 
           expr = arg.source_range
           check_no_space(
-            range_with_surrounding_space(range: expr, side: :left).begin_pos,
+            range_with_surrounding_space(expr, side: :left).begin_pos,
             expr.begin_pos - 1,
             'Extra space before'
           )

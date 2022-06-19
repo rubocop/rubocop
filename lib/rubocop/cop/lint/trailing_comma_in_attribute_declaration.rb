@@ -45,7 +45,7 @@ module RuboCop
 
         def trailing_comma_range(node)
           range_with_surrounding_space(
-            range: node.arguments[-2].source_range,
+            node.arguments[-2].source_range,
             side: :right
           ).end.resize(1)
         end
