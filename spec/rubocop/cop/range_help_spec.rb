@@ -38,13 +38,22 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     subject do
       obj = TestRangeHelp.new
       obj.instance_exec(processed_source) { |src| @processed_source = src }
-      r = obj.send(:range_with_surrounding_space, range: input_range, side: side)
+      r = obj.send(:range_with_surrounding_space, input_range, side: side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 
     let(:source) { 'f {  a(2) }' }
     let(:processed_source) { parse_source(source) }
     let(:input_range) { Parser::Source::Range.new(processed_source.buffer, 5, 9) }
+
+    if RUBY_VERSION < '3.0'
+      # Ruby 3.0+ raises ArgumentError: wrong number of arguments (given 0, expected 1)
+      it 'fails when passing range as a kwarg' do
+        obj = TestRangeHelp.new
+        expect { obj.__send__(:range_with_surrounding_space, range: 'range') }
+          .to raise_error(/Pass range as the first positional argument/)
+      end
+    end
 
     context 'when side is :both' do
       let(:side) { :both }

@@ -281,7 +281,7 @@ module RuboCop
         def move_comment_before_block(corrector, comment, block_node, closing_brace)
           range = block_node.chained? ? end_of_chain(block_node.parent).source_range : closing_brace
           comment_range = range_between(range.end_pos, comment.loc.expression.end_pos)
-          corrector.remove(range_with_surrounding_space(range: comment_range, side: :right))
+          corrector.remove(range_with_surrounding_space(comment_range, side: :right))
           corrector.insert_after(range, "\n")
 
           corrector.insert_before(block_node, "#{comment.text}\n")

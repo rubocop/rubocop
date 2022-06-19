@@ -133,7 +133,7 @@ module RuboCop
         def register_offense_to_method_definition_arguments(method_definition)
           add_offense(arguments_range(method_definition)) do |corrector|
             arguments_range = range_with_surrounding_space(
-              range: method_definition.arguments.source_range, side: :left
+              method_definition.arguments.source_range, side: :left
             )
             corrector.replace(arguments_range, '(...)')
           end

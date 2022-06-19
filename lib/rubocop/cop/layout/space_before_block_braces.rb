@@ -65,7 +65,7 @@ module RuboCop
           return if conflict_with_block_delimiters?(node)
 
           left_brace = node.loc.begin
-          space_plus_brace = range_with_surrounding_space(range: left_brace)
+          space_plus_brace = range_with_surrounding_space(left_brace)
           used_style =
             space_plus_brace.source.start_with?('{') ? :no_space : :space
 

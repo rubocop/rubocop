@@ -41,7 +41,7 @@ module RuboCop
       end
 
       def correct_next_line_brace(corrector)
-        corrector.remove(range_with_surrounding_space(range: node.loc.end, side: :left))
+        corrector.remove(range_with_surrounding_space(node.loc.end, side: :left))
 
         corrector.insert_before(
           last_element_range_with_trailing_comma(node).end,
@@ -51,7 +51,7 @@ module RuboCop
 
       def content_if_comment_present(corrector, node)
         range = range_with_surrounding_space(
-          range: children(node).last.source_range,
+          children(node).last.source_range,
           side: :right
         ).end.resize(1)
         if range.source == '#'
@@ -86,7 +86,7 @@ module RuboCop
 
       def last_element_trailing_comma_range(node)
         range = range_with_surrounding_space(
-          range: children(node).last.source_range,
+          children(node).last.source_range,
           side: :right
         ).end.resize(1)
 

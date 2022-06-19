@@ -34,7 +34,7 @@ module RuboCop
       def add_parentheses(node, corrector)
         if node.args_type?
           arguments_range = node.source_range
-          args_with_space = range_with_surrounding_space(range: arguments_range, side: :left)
+          args_with_space = range_with_surrounding_space(arguments_range, side: :left)
           leading_space = range_between(args_with_space.begin_pos, arguments_range.begin_pos)
           corrector.replace(leading_space, '(')
           corrector.insert_after(arguments_range, ')')

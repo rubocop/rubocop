@@ -44,7 +44,7 @@ module RuboCop
           last_arg = nested.last_argument.source_range
 
           leading_space =
-            range_with_surrounding_space(range: first_arg.begin,
+            range_with_surrounding_space(first_arg.begin,
                                          side: :left,
                                          whitespace: true,
                                          continuations: true)

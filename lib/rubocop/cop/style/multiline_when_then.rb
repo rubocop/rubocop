@@ -39,9 +39,7 @@ module RuboCop
 
           range = node.loc.begin
           add_offense(range) do |corrector|
-            corrector.remove(
-              range_with_surrounding_space(range: range, side: :left, newlines: false)
-            )
+            corrector.remove(range_with_surrounding_space(range, side: :left, newlines: false))
           end
         end
 

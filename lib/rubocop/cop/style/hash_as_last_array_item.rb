@@ -87,7 +87,7 @@ module RuboCop
 
         def remove_last_element_trailing_comma(corrector, node)
           range = range_with_surrounding_space(
-            range: node.children.last.source_range,
+            node.children.last.source_range,
             side: :right
           ).end.resize(1)
 
