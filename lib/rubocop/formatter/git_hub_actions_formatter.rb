@@ -7,8 +7,21 @@ module RuboCop
     class GitHubActionsFormatter < BaseFormatter
       ESCAPE_MAP = { '%' => '%25', "\n" => '%0A', "\r" => '%0D' }.freeze
 
+      def started(_target_files)
+        @offenses_for_files = {}
+      end
+
       def file_finished(file, offenses)
-        offenses.each { |offense| report_offense(file, offense) }
+        @offenses_for_files[file] = offenses unless offenses.empty?
+      end
+
+      def finished(_inspected_files)
+        @offenses_for_files.each do |file, offenses|
+          offenses.each do |offense|
+            report_offense(file, offense)
+          end
+        end
+        output.puts
       end
 
       private
@@ -31,7 +44,7 @@ module RuboCop
 
       def report_offense(file, offense)
         output.printf(
-          "\n::%<severity>s file=%<file>s,line=%<line>d,col=%<column>d::%<message>s\n",
+          "\n::%<severity>s file=%<file>s,line=%<line>d,col=%<column>d::%<message>s",
           severity: github_severity(offense),
           file: PathUtil.smart_path(file),
           line: offense.line,
