@@ -51,7 +51,8 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range,
+      NOT_GIVEN = Module.new
+      def range_with_surrounding_space(range = NOT_GIVEN,
                                        side: :both,
                                        newlines: true, whitespace: false,
                                        continuations: false)

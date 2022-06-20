@@ -49,10 +49,10 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     it 'fails when passing range as a kwarg' do
       obj = TestRangeHelp.new
       if RUBY_VERSION >= '3.0'
-        expect { obj.__send__(:range_with_surrounding_space, range: 'range') }
+        expect { obj.__send__(:range_with_surrounding_space, range: input_range) }
           .to raise_error(ArgumentError, /wrong number of arguments \(given 0, expected 1\)/)
       else
-        expect { obj.__send__(:range_with_surrounding_space, range: 'range') }
+        expect { obj.__send__(:range_with_surrounding_space, range: input_range) }
           .to raise_error(ArgumentError, /unknown keyword: :range/)
       end
     end
