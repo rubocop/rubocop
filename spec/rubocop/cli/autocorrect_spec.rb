@@ -2518,4 +2518,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'corrects `Naming/RescuedExceptionsVariableName` and `, `Style/RescueStandardError`' \
+     'and `Lint/OverwriteByRescue` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      begin
+        something
+      rescue => StandardError
+      end
+    RUBY
+
+    status = cli.run(
+      %w[--autocorrect-all --only] << %w[
+        Naming/RescuedExceptionsVariableName
+        Style/RescueStandardError
+        Lint/ConstantOverwrittenInRescue
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      begin
+        something
+      rescue StandardError
+      end
+    RUBY
+  end
 end
