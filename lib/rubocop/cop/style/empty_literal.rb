@@ -23,7 +23,7 @@ module RuboCop
 
         ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'
         HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'
-        STR_MSG = 'Use string literal `%<prefer>s` instead of `String.new`.'
+        STR_MSG = 'Use string literal `%{prefer}` instead of `String.new`.'
 
         RESTRICT_ON_SEND = %i[new].freeze
 

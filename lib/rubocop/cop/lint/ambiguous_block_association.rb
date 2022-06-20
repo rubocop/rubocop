@@ -36,8 +36,8 @@ module RuboCop
       class AmbiguousBlockAssociation < Base
         include IgnoredMethods
 
-        MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \
-              'block will be associated with the `%<method>s` method ' \
+        MSG = 'Parenthesize the param `%{param}` to make sure that the ' \
+              'block will be associated with the `%{method}` method ' \
               'call.'
 
         def on_send(node)

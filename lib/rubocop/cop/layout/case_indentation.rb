@@ -115,7 +115,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Indent `%<branch_type>s` %<depth>s `%<base>s`.'
+        MSG = 'Indent `%{branch_type}` %{depth} `%{base}`.'
 
         def on_case(case_node)
           return if case_node.single_line?

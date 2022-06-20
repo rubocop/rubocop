@@ -41,10 +41,10 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
+        MSG_USE_MODIFIER = 'Favor modifier `%{keyword}` usage when having a ' \
                            'single-line body. Another good alternative is ' \
                            'the usage of control flow `&&`/`||`.'
-        MSG_USE_NORMAL = 'Modifier form of `%<keyword>s` makes the line too long.'
+        MSG_USE_NORMAL = 'Modifier form of `%{keyword}` makes the line too long.'
 
         def self.autocorrect_incompatible_with
           [Style::SoleNestedConditional]

@@ -26,7 +26,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
+        MSG = 'Prefer `%{prefer}` over `%{current}`.'
 
         def on_block(node)
           check_method_node(node.send_node)

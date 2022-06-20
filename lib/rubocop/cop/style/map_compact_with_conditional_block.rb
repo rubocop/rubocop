@@ -40,7 +40,7 @@ module RuboCop
       class MapCompactWithConditionalBlock < Base
         extend AutoCorrector
 
-        MSG = 'Replace `map { ... }.compact` with `%<method>s`.'
+        MSG = 'Replace `map { ... }.compact` with `%{method}`.'
 
         # @!method map_and_compact?(node)
         def_node_matcher :map_and_compact?, <<~RUBY

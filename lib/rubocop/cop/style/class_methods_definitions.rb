@@ -65,7 +65,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<preferred>s` to define a class method.'
+        MSG = 'Use `%{preferred}` to define a class method.'
         MSG_SCLASS = 'Do not define public methods within class << self.'
 
         def on_sclass(node)

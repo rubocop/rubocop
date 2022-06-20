@@ -77,7 +77,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Reverse the order of the operands `%<source>s`.'
+        MSG = 'Reverse the order of the operands `%{source}`.'
         REVERSE_COMPARISON = { '<' => '>', '<=' => '>=', '>' => '<', '>=' => '<=' }.freeze
         EQUALITY_OPERATORS = %i[== !=].freeze
         NONCOMMUTATIVE_OPERATORS = %i[===].freeze

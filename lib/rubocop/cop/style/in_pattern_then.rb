@@ -24,7 +24,7 @@ module RuboCop
 
         minimum_target_ruby_version 2.7
 
-        MSG = 'Do not use `in %<pattern>s;`. Use `in %<pattern>s then` instead.'
+        MSG = 'Do not use `in %{pattern};`. Use `in %{pattern} then` instead.'
 
         def on_in_pattern(node)
           return if node.multiline? || node.then? || !node.body

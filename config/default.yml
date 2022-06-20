@@ -3635,20 +3635,20 @@ Style/FormatString:
 Style/FormatStringToken:
   Description: 'Use a consistent style for format string tokens.'
   Enabled: true
-  EnforcedStyle: annotated
+  EnforcedStyle: template
   SupportedStyles:
+    # Prefer simple looking "template" style tokens like `%{name}`, `%{age}`
+    - template
     # Prefer tokens which contain a sprintf like type annotation like
     # `%<name>s`, `%<age>d`, `%<score>f`
     - annotated
-    # Prefer simple looking "template" style tokens like `%{name}`, `%{age}`
-    - template
     - unannotated
   # `MaxUnannotatedPlaceholdersAllowed` defines the number of `unannotated`
   # style token in a format string to be allowed when enforced style is not
   # `unannotated`.
   MaxUnannotatedPlaceholdersAllowed: 1
   VersionAdded: '0.49'
-  VersionChanged: '1.0'
+  VersionChanged: '<<next>>'
   IgnoredMethods: []
 
 Style/FrozenStringLiteralComment:

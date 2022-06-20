@@ -21,7 +21,7 @@ module RuboCop
       class AmbiguousAssignment < Base
         include RangeHelp
 
-        MSG = 'Suspicious assignment detected. Did you mean `%<op>s`?'
+        MSG = 'Suspicious assignment detected. Did you mean `%{op}`?'
 
         SIMPLE_ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn casgn].freeze
 

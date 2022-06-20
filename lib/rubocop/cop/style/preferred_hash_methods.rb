@@ -34,7 +34,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Use `Hash#%<prefer>s` instead of `Hash#%<current>s`.'
+        MSG = 'Use `Hash#%{prefer}` instead of `Hash#%{current}`.'
 
         OFFENDING_SELECTORS = { short: %i[has_key? has_value?], verbose: %i[key? value?] }.freeze
 

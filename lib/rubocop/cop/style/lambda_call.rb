@@ -22,7 +22,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Prefer the use of `%<prefer>s` over `%<current>s`.'
+        MSG = 'Prefer the use of `%{prefer}` over `%{current}`.'
         RESTRICT_ON_SEND = %i[call].freeze
 
         def on_send(node)

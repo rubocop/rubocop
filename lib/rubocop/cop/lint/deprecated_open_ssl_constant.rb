@@ -41,7 +41,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<constant>s.%<method>s(%<replacement_args>s)` instead of `%<original>s`.'
+        MSG = 'Use `%{constant}.%{method}(%{replacement_args})` instead of `%{original}`.'
 
         NO_ARG_ALGORITHM = %w[BF DES IDEA RC4].freeze
 

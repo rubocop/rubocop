@@ -97,7 +97,7 @@ module RuboCop
           end
         end
 
-        MSG = '`%<current>s` is deprecated in favor of `%<prefer>s`.'
+        MSG = '`%{current}` is deprecated in favor of `%{prefer}`.'
 
         DEPRECATED_METHODS_OBJECT = {
           DeprecatedClassMethod.new(:exists?, class_constant: :File) =>

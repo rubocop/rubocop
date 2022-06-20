@@ -57,8 +57,8 @@ module RuboCop
         exclude_limit 'Max'
         exclude_limit 'MaxOptionalParameters'
 
-        MSG = 'Avoid parameter lists longer than %<max>d parameters. [%<count>d/%<max>d]'
-        OPTIONAL_PARAMETERS_MSG = 'Method has too many optional parameters. [%<count>d/%<max>d]'
+        MSG = 'Avoid parameter lists longer than %{max} parameters. [%{count}/%{max}]'
+        OPTIONAL_PARAMETERS_MSG = 'Method has too many optional parameters. [%{count}/%{max}]'
 
         NAMED_KEYWORD_TYPES = %i[kwoptarg kwarg].freeze
         private_constant :NAMED_KEYWORD_TYPES

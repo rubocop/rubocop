@@ -30,7 +30,7 @@ module RuboCop
       class Sample < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'
+        MSG = 'Use `%{correct}` instead of `%{incorrect}`.'
         RESTRICT_ON_SEND = %i[first last [] at slice].freeze
 
         # @!method sample_candidate?(node)

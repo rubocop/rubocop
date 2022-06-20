@@ -46,7 +46,7 @@ module RuboCop
       #   1 << 1
       #
       class BinaryOperatorWithIdenticalOperands < Base
-        MSG = 'Binary operator `%<op>s` has identical operands.'
+        MSG = 'Binary operator `%{op}` has identical operands.'
         ALLOWED_MATH_OPERATORS = %i[+ * ** << >>].to_set.freeze
 
         def on_send(node)

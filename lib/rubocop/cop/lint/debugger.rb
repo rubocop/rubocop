@@ -55,7 +55,7 @@ module RuboCop
       #     my_debugger
       #   end
       class Debugger < Base
-        MSG = 'Remove debugger entry point `%<source>s`.'
+        MSG = 'Remove debugger entry point `%{source}`.'
 
         # @!method kernel?(node)
         def_node_matcher :kernel?, <<~PATTERN

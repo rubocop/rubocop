@@ -32,7 +32,7 @@ module RuboCop
       #     return
       #   end
       class ReturnInVoidContext < Base
-        MSG = 'Do not return a value in `%<method>s`.'
+        MSG = 'Do not return a value in `%{method}`.'
 
         def on_return(return_node)
           return unless return_node.descendants.any?

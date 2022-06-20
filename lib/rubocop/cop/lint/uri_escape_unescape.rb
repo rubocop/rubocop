@@ -41,8 +41,8 @@ module RuboCop
           URI.decode_www_form_component
         ].freeze
 
-        MSG = '`%<uri_method>s` method is obsolete and should not be used. ' \
-              'Instead, use %<replacements>s depending on your specific use ' \
+        MSG = '`%{uri_method}` method is obsolete and should not be used. ' \
+              'Instead, use %{replacements} depending on your specific use ' \
               'case.'
         METHOD_NAMES = %i[escape encode unescape decode].freeze
         RESTRICT_ON_SEND = METHOD_NAMES

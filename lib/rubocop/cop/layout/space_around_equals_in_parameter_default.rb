@@ -33,7 +33,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Surrounding space %<type>s in default value assignment.'
+        MSG = 'Surrounding space %{type} in default value assignment.'
 
         def on_optarg(node)
           tokens = processed_source.tokens_within(node)

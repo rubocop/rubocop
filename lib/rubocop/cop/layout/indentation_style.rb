@@ -37,7 +37,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = '%<type>s detected in indentation.'
+        MSG = '%{type} detected in indentation.'
 
         def on_new_investigation
           str_ranges = string_literal_ranges(processed_source.ast)

@@ -5,7 +5,7 @@ module RuboCop
     # Encapsulation of a ConfigObsoletion rule for changing a parameter
     # @api private
     class ChangedParameter < ParameterRule
-      BASE_MESSAGE = 'obsolete parameter `%<parameter>s` (for `%<cop>s`) found in %<path>s'
+      BASE_MESSAGE = 'obsolete parameter `%{parameter}` (for `%{cop}`) found in %{path}'
 
       def message
         base = format(BASE_MESSAGE, parameter: parameter, cop: cop, path: smart_loaded_path)

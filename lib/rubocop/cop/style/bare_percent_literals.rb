@@ -27,7 +27,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Use `%%%<good>s` instead of `%%%<bad>s`.'
+        MSG = 'Use `%%%{good}` instead of `%%%{bad}`.'
 
         def on_dstr(node)
           check(node)

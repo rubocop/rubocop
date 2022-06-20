@@ -15,7 +15,7 @@ module RuboCop
       class SelfAssignment < Base
         extend AutoCorrector
 
-        MSG = 'Use self-assignment shorthand `%<method>s=`.'
+        MSG = 'Use self-assignment shorthand `%{method}=`.'
         OPS = %i[+ - * ** / | &].freeze
 
         def self.autocorrect_incompatible_with

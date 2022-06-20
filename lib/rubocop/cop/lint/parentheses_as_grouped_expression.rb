@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = '`%<argument>s` interpreted as grouped expression.'
+        MSG = '`%{argument}` interpreted as grouped expression.'
 
         def on_send(node)
           return if valid_context?(node)

@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Remove the redundant `subject`%<additional_message>s.'
+        MSG = 'Remove the redundant `subject`%{additional_message}.'
 
         # @!method described_class_subject?(node)
         def_node_matcher :described_class_subject?, <<~PATTERN

@@ -25,7 +25,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Useless call to `%<count>i.times` detected.'
+        MSG = 'Useless call to `%{count}.times` detected.'
         RESTRICT_ON_SEND = %i[times].freeze
 
         # @!method times_call?(node)

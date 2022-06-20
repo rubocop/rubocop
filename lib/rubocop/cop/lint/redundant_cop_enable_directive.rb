@@ -39,7 +39,7 @@ module RuboCop
         include SurroundingSpace
         extend AutoCorrector
 
-        MSG = 'Unnecessary enabling of %<cop>s.'
+        MSG = 'Unnecessary enabling of %{cop}.'
 
         def on_new_investigation
           return if processed_source.blank?

@@ -16,7 +16,7 @@ module RuboCop
       class PerlBackrefs < Base
         extend AutoCorrector
 
-        MESSAGE_FORMAT = 'Prefer `%<preferred_expression>s` over `%<original_expression>s`.'
+        MESSAGE_FORMAT = 'Prefer `%{preferred_expression}` over `%{original_expression}`.'
 
         def on_back_ref(node)
           on_back_ref_or_gvar_or_nth_ref(node)

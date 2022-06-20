@@ -31,7 +31,7 @@ module RuboCop
       class SingleLineBlockParams < Base
         extend AutoCorrector
 
-        MSG = 'Name `%<method>s` block params `|%<params>s|`.'
+        MSG = 'Name `%{method}` block params `|%{params}|`.'
 
         def on_block(node)
           return unless node.single_line?

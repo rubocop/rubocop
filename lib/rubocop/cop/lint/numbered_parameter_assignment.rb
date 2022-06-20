@@ -28,8 +28,8 @@ module RuboCop
       #   non_numbered_parameter_name = :value
       #
       class NumberedParameterAssignment < Base
-        NUM_PARAM_MSG = '`_%<number>s` is reserved for numbered parameter; consider another name.'
-        LVAR_MSG = '`_%<number>s` is similar to numbered parameter; consider another name.'
+        NUM_PARAM_MSG = '`_%{number}` is reserved for numbered parameter; consider another name.'
+        LVAR_MSG = '`_%{number}` is similar to numbered parameter; consider another name.'
         NUMBERED_PARAMETER_RANGE = (1..9).freeze
 
         def on_lvasgn(node)

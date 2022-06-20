@@ -23,8 +23,8 @@ module RuboCop
 
         minimum_target_ruby_version 2.4
 
-        MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of ' \
-              '`%<receiver>s.unpack(%<format>s)%<method>s`.'
+        MSG = 'Use `%{receiver}.unpack1(%{format})` instead of ' \
+              '`%{receiver}.unpack(%{format})%{method}`.'
         RESTRICT_ON_SEND = %i[first [] slice at].freeze
 
         # @!method unpack_and_first_element?(node)

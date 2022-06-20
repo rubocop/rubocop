@@ -35,7 +35,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<good>s` instead of `%<bad>s`.'
+        MSG = 'Use `%{good}` instead of `%{bad}`.'
 
         RESTRICT_ON_SEND = %i[reject reject! select select!].freeze
 

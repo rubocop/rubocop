@@ -8,7 +8,7 @@ module RuboCop
     class RemovedCop < CopRule
       attr_reader :old_name, :metadata
 
-      BASE_MESSAGE = 'The `%<old_name>s` cop has been removed'
+      BASE_MESSAGE = 'The `%{old_name}` cop has been removed'
 
       def initialize(config, old_name, metadata)
         super(config, old_name)

@@ -32,7 +32,7 @@ module RuboCop
       class IncompatibleIoSelectWithFiberScheduler < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<preferred>s` instead of `%<current>s`.'
+        MSG = 'Use `%{preferred}` instead of `%{current}`.'
         RESTRICT_ON_SEND = %i[select].freeze
 
         # @!method io_select(node)

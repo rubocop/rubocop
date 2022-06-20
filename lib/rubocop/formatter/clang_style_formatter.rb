@@ -16,7 +16,7 @@ module RuboCop
 
       def report_offense(file, offense)
         output.printf(
-          "%<path>s:%<line>d:%<column>d: %<severity>s: %<message>s\n",
+          "%{path}:%{line}:%{column}: %{severity}: %{message}\n",
           path: cyan(smart_path(file)),
           line: offense.line,
           column: offense.real_column,

@@ -68,9 +68,9 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include SymbolHelp
 
-        MSG = 'Unnecessary symbol conversion; use `%<correction>s` instead.'
+        MSG = 'Unnecessary symbol conversion; use `%{correction}` instead.'
         MSG_CONSISTENCY = 'Symbol hash key should be quoted for consistency; ' \
-                          'use `%<correction>s` instead.'
+                          'use `%{correction}` instead.'
         RESTRICT_ON_SEND = %i[to_sym intern].freeze
 
         def on_send(node)

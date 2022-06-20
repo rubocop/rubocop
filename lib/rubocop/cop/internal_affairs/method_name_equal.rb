@@ -16,7 +16,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `method?(%<method_name>s)` instead of `method_name == %<method_name>s`.'
+        MSG = 'Use `method?(%{method_name})` instead of `method_name == %{method_name}`.'
         RESTRICT_ON_SEND = %i[==].freeze
 
         # @!method method_name?(node)

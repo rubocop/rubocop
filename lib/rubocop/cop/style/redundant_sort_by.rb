@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `sort` instead of `sort_by { |%<var>s| %<var>s }`.'
+        MSG = 'Use `sort` instead of `sort_by { |%{var}| %{var} }`.'
 
         # @!method redundant_sort_by(node)
         def_node_matcher :redundant_sort_by, <<~PATTERN

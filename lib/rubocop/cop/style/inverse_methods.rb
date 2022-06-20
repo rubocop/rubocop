@@ -45,7 +45,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'
+        MSG = 'Use `%{inverse}` instead of inverting `%{method}`.'
         CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze

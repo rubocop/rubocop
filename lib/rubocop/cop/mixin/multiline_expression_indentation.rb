@@ -9,7 +9,7 @@ module RuboCop
       UNALIGNED_RHS_TYPES     = %i[if while until for return array kwbegin].freeze
       DEFAULT_MESSAGE_TAIL    = 'an expression'
       ASSIGNMENT_MESSAGE_TAIL = 'an expression in an assignment'
-      KEYWORD_MESSAGE_TAIL    = 'a %<kind>s in %<article>s `%<keyword>s` statement'
+      KEYWORD_MESSAGE_TAIL    = 'a %{kind} in %{article} `%{keyword}` statement'
 
       def on_send(node)
         return if !node.receiver || node.method?(:[])

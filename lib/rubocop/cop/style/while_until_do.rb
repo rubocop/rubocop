@@ -31,7 +31,7 @@ module RuboCop
       class WhileUntilDo < Base
         extend AutoCorrector
 
-        MSG = 'Do not use `do` with multi-line `%<keyword>s`.'
+        MSG = 'Do not use `do` with multi-line `%{keyword}`.'
 
         def on_while(node)
           return unless node.multiline? && node.do?

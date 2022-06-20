@@ -33,7 +33,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Do not use trailing `_`s in parallel assignment. Prefer `%<code>s`.'
+        MSG = 'Do not use trailing `_`s in parallel assignment. Prefer `%{code}`.'
         UNDERSCORE = '_'
         DISALLOW = %i[lvasgn splat].freeze
         private_constant :DISALLOW

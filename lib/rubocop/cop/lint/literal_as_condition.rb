@@ -32,7 +32,7 @@ module RuboCop
       class LiteralAsCondition < Base
         include RangeHelp
 
-        MSG = 'Literal `%<literal>s` appeared as a condition.'
+        MSG = 'Literal `%{literal}` appeared as a condition.'
 
         def on_if(node)
           check_for_literal(node)

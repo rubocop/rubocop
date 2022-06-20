@@ -20,7 +20,7 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
 
-        MSG = 'Use `each_with_object` instead of `%<method>s`.'
+        MSG = 'Use `each_with_object` instead of `%{method}`.'
         METHODS = %i[inject reduce].freeze
 
         # @!method each_with_object_candidate?(node)

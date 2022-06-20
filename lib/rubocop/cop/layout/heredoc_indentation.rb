@@ -25,9 +25,9 @@ module RuboCop
         include Heredoc
         extend AutoCorrector
 
-        TYPE_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
-                   'heredoc by using `<<~` instead of `%<current_indent_type>s`.'
-        WIDTH_MSG = 'Use %<indentation_width>d spaces for indentation in a heredoc.'
+        TYPE_MSG = 'Use %{indentation_width} spaces for indentation in a ' \
+                   'heredoc by using `<<~` instead of `%{current_indent_type}`.'
+        WIDTH_MSG = 'Use %{indentation_width} spaces for indentation in a heredoc.'
 
         def on_heredoc(node)
           body = heredoc_body(node)

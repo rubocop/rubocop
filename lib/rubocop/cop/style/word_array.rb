@@ -44,7 +44,7 @@ module RuboCop
         extend AutoCorrector
 
         PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'
-        ARRAY_MSG = 'Use `%<prefer>s` for an array of words.'
+        ARRAY_MSG = 'Use `%{prefer}` for an array of words.'
 
         class << self
           attr_accessor :largest_brackets

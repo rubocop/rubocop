@@ -33,7 +33,7 @@ module RuboCop
         include AllowedPattern
         include RangeHelp
 
-        MSG = 'Use %<style>s for method names.'
+        MSG = 'Use %{style} for method names.'
 
         # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'

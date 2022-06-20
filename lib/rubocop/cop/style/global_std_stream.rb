@@ -34,7 +34,7 @@ module RuboCop
       class GlobalStdStream < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<gvar_name>s` instead of `%<const_name>s`.'
+        MSG = 'Use `%{gvar_name}` instead of `%{const_name}`.'
 
         STD_STREAMS = %i[STDIN STDOUT STDERR].to_set.freeze
 

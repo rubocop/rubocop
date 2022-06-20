@@ -44,7 +44,7 @@ module RuboCop
       class NonNilCheck < Base
         extend AutoCorrector
 
-        MSG_FOR_REPLACEMENT = 'Prefer `%<prefer>s` over `%<current>s`.'
+        MSG_FOR_REPLACEMENT = 'Prefer `%{prefer}` over `%{current}`.'
         MSG_FOR_REDUNDANCY = 'Explicit non-nil checks are usually redundant.'
 
         RESTRICT_ON_SEND = %i[!= nil? !].freeze

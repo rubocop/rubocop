@@ -36,7 +36,7 @@ module RuboCop
       #   puts $1 # => foo
       #
       class OutOfRangeRegexpRef < Base
-        MSG = '$%<backref>s is out of range (%<count>s regexp capture %<group>s detected).'
+        MSG = '$%{backref} is out of range (%{count} regexp capture %{group} detected).'
 
         REGEXP_RECEIVER_METHODS = %i[=~ === match].to_set.freeze
         REGEXP_ARGUMENT_METHODS = %i[=~ match grep gsub gsub! sub sub! [] slice slice! index rindex

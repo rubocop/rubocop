@@ -105,7 +105,7 @@ module RuboCop
         include ConfigurableNumbering
         include AllowedPattern
 
-        MSG = 'Use %<style>s for %<identifier_type>s numbers.'
+        MSG = 'Use %{style} for %{identifier_type} numbers.'
 
         def valid_name?(node, name, given_style = style)
           super || matches_allowed_pattern?(name)

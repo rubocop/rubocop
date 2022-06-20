@@ -27,7 +27,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Prefer `Object#%<prefer>s` over `Object#%<current>s`.'
+        MSG = 'Prefer `Object#%{prefer}` over `Object#%{current}`.'
         RESTRICT_ON_SEND = %i[is_a? kind_of?].freeze
 
         def on_send(node)

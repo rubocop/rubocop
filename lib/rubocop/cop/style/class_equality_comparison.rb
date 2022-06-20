@@ -21,7 +21,7 @@ module RuboCop
         include IgnoredMethods
         extend AutoCorrector
 
-        MSG = 'Use `instance_of?(%<class_name>s)` instead of comparing classes.'
+        MSG = 'Use `instance_of?(%{class_name})` instead of comparing classes.'
 
         RESTRICT_ON_SEND = %i[== equal? eql?].freeze
 

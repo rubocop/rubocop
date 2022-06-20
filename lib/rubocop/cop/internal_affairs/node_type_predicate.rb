@@ -16,7 +16,7 @@ module RuboCop
       class NodeTypePredicate < Base
         extend AutoCorrector
 
-        MSG = 'Use `#%<type>s_type?` to check node type.'
+        MSG = 'Use `#%{type}_type?` to check node type.'
         RESTRICT_ON_SEND = %i[==].freeze
 
         # @!method node_type_check(node)

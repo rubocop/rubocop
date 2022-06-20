@@ -31,7 +31,7 @@ module RuboCop
       class SingleArgumentDig < Base
         extend AutoCorrector
 
-        MSG = 'Use `%<receiver>s[%<argument>s]` instead of `%<original>s`.'
+        MSG = 'Use `%{receiver}[%{argument}]` instead of `%{original}`.'
         RESTRICT_ON_SEND = %i[dig].freeze
 
         # @!method single_argument_dig?(node)

@@ -35,7 +35,7 @@ module RuboCop
       #   open("| foo")
       #   URI.open("http://example.com")
       class Open < Base
-        MSG = 'The use of `%<receiver>sopen` is a serious security risk.'
+        MSG = 'The use of `%{receiver}open` is a serious security risk.'
         RESTRICT_ON_SEND = %i[open].freeze
 
         # @!method open?(node)

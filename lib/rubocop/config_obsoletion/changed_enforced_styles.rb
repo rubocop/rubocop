@@ -5,7 +5,7 @@ module RuboCop
     # Encapsulation of a ConfigObsoletion rule for changing a parameter
     # @api private
     class ChangedEnforcedStyles < ParameterRule
-      BASE_MESSAGE = 'obsolete `%<parameter>s: %<value>s` (for `%<cop>s`) found in %<path>s'
+      BASE_MESSAGE = 'obsolete `%{parameter}: %{value}` (for `%{cop}`) found in %{path}'
 
       def violated?
         super && config[cop][parameter] == value

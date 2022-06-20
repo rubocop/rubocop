@@ -63,8 +63,8 @@ module RuboCop
       #     bar(x)
       #   end
       class UnmodifiedReduceAccumulator < Base
-        MSG = 'Ensure the accumulator `%<accum>s` will be modified by `%<method>s`.'
-        MSG_INDEX = 'Do not return an element of the accumulator in `%<method>s`.'
+        MSG = 'Ensure the accumulator `%{accum}` will be modified by `%{method}`.'
+        MSG_INDEX = 'Do not return an element of the accumulator in `%{method}`.'
 
         # @!method reduce_with_block?(node)
         def_node_matcher :reduce_with_block?, <<~PATTERN

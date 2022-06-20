@@ -5,7 +5,7 @@ module RuboCop
     # Common functionality for cops checking for missing space after
     # punctuation.
     module SpaceAfterPunctuation
-      MSG = 'Space missing after %<token>s.'
+      MSG = 'Space missing after %{token}.'
 
       def on_new_investigation
         each_missing_space(processed_source.tokens) do |token|

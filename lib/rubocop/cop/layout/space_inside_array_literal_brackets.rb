@@ -72,8 +72,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = '%<command>s space inside array brackets.'
-        EMPTY_MSG = '%<command>s space inside empty array brackets.'
+        MSG = '%{command} space inside array brackets.'
+        EMPTY_MSG = '%{command} space inside empty array brackets.'
 
         def on_array(node)
           return unless node.square_brackets?

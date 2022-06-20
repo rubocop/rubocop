@@ -26,7 +26,7 @@ module RuboCop
         include StatementModifier
         extend AutoCorrector
 
-        MSG = 'Avoid modifier `%<keyword>s` after another conditional.'
+        MSG = 'Avoid modifier `%{keyword}` after another conditional.'
 
         def on_if(node)
           return unless node.modifier_form? && node.body.if_type?

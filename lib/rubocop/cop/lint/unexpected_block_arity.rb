@@ -39,7 +39,7 @@ module RuboCop
       #   values.sort { |*x| x[0] <=> x[1] }
       #
       class UnexpectedBlockArity < Base
-        MSG = '`%<method>s` expects at least %<expected>i positional arguments, got %<actual>i.'
+        MSG = '`%{method}` expects at least %{expected} positional arguments, got %{actual}.'
 
         def on_block(node)
           return if acceptable?(node)

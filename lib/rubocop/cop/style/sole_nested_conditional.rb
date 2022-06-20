@@ -50,7 +50,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Consider merging nested conditions into outer `%<conditional_type>s` conditions.'
+        MSG = 'Consider merging nested conditions into outer `%{conditional_type}` conditions.'
 
         def self.autocorrect_incompatible_with
           [Style::NegatedIf, Style::NegatedUnless]

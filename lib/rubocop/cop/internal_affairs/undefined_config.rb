@@ -9,8 +9,7 @@ module RuboCop
           Safe SafeAutoCorrect AutoCorrect Severity StyleGuide Details Reference Include Exclude
         ].freeze
         RESTRICT_ON_SEND = %i[[] fetch].freeze
-        MSG = '`%<name>s` is not defined in the configuration for `%<cop>s` ' \
-              'in `config/default.yml`.'
+        MSG = '`%{name}` is not defined in the configuration for `%{cop}` in `config/default.yml`.'
 
         # @!method cop_class_def(node)
         def_node_search :cop_class_def, <<~PATTERN

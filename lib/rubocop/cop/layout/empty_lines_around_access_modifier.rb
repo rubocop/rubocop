@@ -45,11 +45,11 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_AFTER = 'Keep a blank line after `%<modifier>s`.'
-        MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after `%<modifier>s`.'
+        MSG_AFTER = 'Keep a blank line after `%{modifier}`.'
+        MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after `%{modifier}`.'
 
-        MSG_BEFORE_FOR_ONLY_BEFORE = 'Keep a blank line before `%<modifier>s`.'
-        MSG_AFTER_FOR_ONLY_BEFORE = 'Remove a blank line after `%<modifier>s`.'
+        MSG_BEFORE_FOR_ONLY_BEFORE = 'Keep a blank line before `%{modifier}`.'
+        MSG_AFTER_FOR_ONLY_BEFORE = 'Remove a blank line after `%{modifier}`.'
 
         def initialize(config = nil, options = nil)
           super

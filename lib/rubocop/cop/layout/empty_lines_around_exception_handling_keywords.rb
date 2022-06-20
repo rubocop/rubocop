@@ -62,7 +62,7 @@ module RuboCop
         include EmptyLinesAroundBody
         extend AutoCorrector
 
-        MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'
+        MSG = 'Extra empty line detected %{location} the `%{keyword}`.'
 
         def on_def(node)
           check_body(node.body, node.loc.line)

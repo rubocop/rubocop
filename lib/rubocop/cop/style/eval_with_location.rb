@@ -56,12 +56,12 @@ module RuboCop
       class EvalWithLocation < Base
         extend AutoCorrector
 
-        MSG = 'Pass `__FILE__` and `__LINE__` to `%<method_name>s`.'
+        MSG = 'Pass `__FILE__` and `__LINE__` to `%{method_name}`.'
         MSG_EVAL = 'Pass a binding, `__FILE__` and `__LINE__` to `eval`.'
-        MSG_INCORRECT_FILE = 'Incorrect file for `%<method_name>s`; ' \
-                             'use `%<expected>s` instead of `%<actual>s`.'
-        MSG_INCORRECT_LINE = 'Incorrect line number for `%<method_name>s`; ' \
-                             'use `%<expected>s` instead of `%<actual>s`.'
+        MSG_INCORRECT_FILE = 'Incorrect file for `%{method_name}`; ' \
+                             'use `%{expected}` instead of `%{actual}`.'
+        MSG_INCORRECT_LINE = 'Incorrect line number for `%{method_name}`; ' \
+                             'use `%{expected}` instead of `%{actual}`.'
 
         RESTRICT_ON_SEND = %i[eval class_eval module_eval instance_eval].freeze
 

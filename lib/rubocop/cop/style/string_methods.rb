@@ -18,7 +18,7 @@ module RuboCop
         include MethodPreference
         extend AutoCorrector
 
-        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
+        MSG = 'Prefer `%{prefer}` over `%{current}`.'
 
         def on_send(node)
           return unless (preferred_method = preferred_method(node.method_name))

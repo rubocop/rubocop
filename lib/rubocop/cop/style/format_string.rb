@@ -39,7 +39,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
-        MSG = 'Favor `%<prefer>s` over `%<current>s`.'
+        MSG = 'Favor `%{prefer}` over `%{current}`.'
         RESTRICT_ON_SEND = %i[format sprintf %].freeze
 
         # @!method formatter(node)

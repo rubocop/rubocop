@@ -49,8 +49,8 @@ module RuboCop
         include Alignment
         extend AutoCorrector
 
-        MSG = 'Incorrect indentation detected (column %<column>d ' \
-              'instead of %<correct_comment_indentation>d).'
+        MSG = 'Incorrect indentation detected (column %{column} ' \
+              'instead of %{correct_comment_indentation}).'
 
         def on_new_investigation
           processed_source.comments.each_with_index { |comment, ix| check(comment, ix) }

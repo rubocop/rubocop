@@ -64,7 +64,7 @@ module RuboCop
       #   end
       #
       class ShadowedArgument < Base
-        MSG = 'Argument `%<argument>s` was shadowed by a local variable before it was used.'
+        MSG = 'Argument `%{argument}` was shadowed by a local variable before it was used.'
 
         # @!method uses_var?(node)
         def_node_search :uses_var?, '(lvar %)'

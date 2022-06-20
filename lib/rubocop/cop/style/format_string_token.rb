@@ -13,16 +13,7 @@ module RuboCop
       #
       # This cop can be customized ignored methods with `IgnoredMethods`.
       #
-      # @example EnforcedStyle: annotated (default)
-      #
-      #   # bad
-      #   format('%{greeting}', greeting: 'Hello')
-      #   format('%s', 'Hello')
-      #
-      #   # good
-      #   format('%<greeting>s', greeting: 'Hello')
-      #
-      # @example EnforcedStyle: template
+      # @example EnforcedStyle: template (default)
       #
       #   # bad
       #   format('%<greeting>s', greeting: 'Hello')
@@ -30,6 +21,15 @@ module RuboCop
       #
       #   # good
       #   format('%{greeting}', greeting: 'Hello')
+      #
+      # @example EnforcedStyle: annotated
+      #
+      #   # bad
+      #   format('%{greeting}', greeting: 'Hello')
+      #   format('%s', 'Hello')
+      #
+      #   # good
+      #   format('%<greeting>s', greeting: 'Hello')
       #
       # @example EnforcedStyle: unannotated
       #

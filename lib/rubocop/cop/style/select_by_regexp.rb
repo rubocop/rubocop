@@ -46,7 +46,7 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
 
-        MSG = 'Prefer `%<replacement>s` to `%<original_method>s` with a regexp match.'
+        MSG = 'Prefer `%{replacement}` to `%{original_method}` with a regexp match.'
         RESTRICT_ON_SEND = %i[select find_all reject].freeze
         REPLACEMENTS = { select: 'grep', find_all: 'grep', reject: 'grep_v' }.freeze
         REGEXP_METHODS = %i[match? =~].to_set.freeze

@@ -51,9 +51,8 @@ module RuboCop
         extend AutoCorrector
 
         SIMPLE_HEREDOC = '<<'
-        MSG = '`%<closing>s` is not aligned with `%<opening>s`.'
-        MSG_ARG = '`%<closing>s` is not aligned with `%<opening>s` or ' \
-                  'beginning of method definition.'
+        MSG = '`%{closing}` is not aligned with `%{opening}`.'
+        MSG_ARG = '`%{closing}` is not aligned with `%{opening}` or beginning of method definition.'
 
         def on_heredoc(node)
           return if heredoc_type(node) == SIMPLE_HEREDOC ||

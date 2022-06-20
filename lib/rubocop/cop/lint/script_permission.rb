@@ -33,7 +33,7 @@ module RuboCop
       class ScriptPermission < Base
         extend AutoCorrector
 
-        MSG = "Script file %<file>s doesn't have execute permission."
+        MSG = "Script file %{file} doesn't have execute permission."
         SHEBANG = '#!'
 
         def on_new_investigation

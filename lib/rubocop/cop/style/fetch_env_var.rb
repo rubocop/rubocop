@@ -43,10 +43,10 @@ module RuboCop
         extend AutoCorrector
 
         # rubocop:disable Layout/LineLength
-        MSG_DEFAULT_NIL = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
-        MSG_DEFAULT_RHS_SECOND_ARG_OF_FETCH = 'Use `ENV.fetch(%<key>s, %<default>s)` instead of `ENV[%<key>s] || %<default>s`.'
-        MSG_DEFAULT_RHS_SINGLE_LINE_BLOCK = 'Use `ENV.fetch(%<key>s) { %<default>s }` instead of `ENV[%<key>s] || %<default>s`.'
-        MSG_DEFAULT_RHS_MULTILINE_BLOCK = 'Use `ENV.fetch(%<key>s)` with a block containing `%<default>s ...`'
+        MSG_DEFAULT_NIL = 'Use `ENV.fetch(%{key})` or `ENV.fetch(%{key}, nil)` instead of `ENV[%{key}]`.'
+        MSG_DEFAULT_RHS_SECOND_ARG_OF_FETCH = 'Use `ENV.fetch(%{key}, %{default})` instead of `ENV[%{key}] || %{default}`.'
+        MSG_DEFAULT_RHS_SINGLE_LINE_BLOCK = 'Use `ENV.fetch(%{key}) { %{default} }` instead of `ENV[%{key}] || %{default}`.'
+        MSG_DEFAULT_RHS_MULTILINE_BLOCK = 'Use `ENV.fetch(%{key})` with a block containing `%{default} ...`'
         # rubocop:enable Layout/LineLength
 
         # @!method env_with_bracket?(node)

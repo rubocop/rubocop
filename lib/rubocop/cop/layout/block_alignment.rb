@@ -66,7 +66,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = '%<current>s is not aligned with %<prefer>s%<alt_prefer>s.'
+        MSG = '%{current} is not aligned with %{prefer}%{alt_prefer}.'
 
         # @!method block_end_align_target?(node, child)
         def_node_matcher :block_end_align_target?, <<~PATTERN

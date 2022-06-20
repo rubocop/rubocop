@@ -147,10 +147,10 @@ module RuboCop
       class MemoizedInstanceVariableName < Base
         include ConfigurableEnforcedStyle
 
-        MSG = 'Memoized variable `%<var>s` does not match ' \
-              'method name `%<method>s`. Use `@%<suggested_var>s` instead.'
-        UNDERSCORE_REQUIRED = 'Memoized variable `%<var>s` does not start ' \
-                              'with `_`. Use `@%<suggested_var>s` instead.'
+        MSG = 'Memoized variable `%{var}` does not match ' \
+              'method name `%{method}`. Use `@%{suggested_var}` instead.'
+        UNDERSCORE_REQUIRED = 'Memoized variable `%{var}` does not start ' \
+                              'with `_`. Use `@%{suggested_var}` instead.'
         DYNAMIC_DEFINE_METHODS = %i[define_method define_singleton_method].to_set.freeze
 
         # @!method method_definition?(node)

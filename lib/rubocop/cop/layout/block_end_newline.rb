@@ -28,7 +28,7 @@ module RuboCop
         include Alignment
         extend AutoCorrector
 
-        MSG = 'Expression at %<line>d, %<column>d should be on its own line.'
+        MSG = 'Expression at %{line}, %{column} should be on its own line.'
 
         def on_block(node)
           return if node.single_line?
