@@ -35,33 +35,65 @@ RSpec.describe RuboCop::Cop::RangeHelp do
   end
 
   describe 'source indicated by #range_with_surrounding_space' do
-    subject do
-      obj = TestRangeHelp.new
-      obj.instance_exec(processed_source) { |src| @processed_source = src }
-      r = obj.send(:range_with_surrounding_space, range: input_range, side: side)
-      processed_source.buffer.source[r.begin_pos...r.end_pos]
-    end
-
     let(:source) { 'f {  a(2) }' }
     let(:processed_source) { parse_source(source) }
     let(:input_range) { Parser::Source::Range.new(processed_source.buffer, 5, 9) }
+    let(:obj) { TestRangeHelp.new }
 
-    context 'when side is :both' do
-      let(:side) { :both }
-
-      it { is_expected.to eq('  a(2) ') }
+    before do
+      obj.instance_exec(processed_source) { |src| @processed_source = src }
     end
 
-    context 'when side is :left' do
-      let(:side) { :left }
+    shared_examples 'works with various `side`s' do
+      context 'when side is :both' do
+        let(:side) { :both }
 
-      it { is_expected.to eq('  a(2)') }
+        it { is_expected.to eq('  a(2) ') }
+      end
+
+      context 'when side is :left' do
+        let(:side) { :left }
+
+        it { is_expected.to eq('  a(2)') }
+      end
+
+      context 'when side is :right' do
+        let(:side) { :right }
+
+        it { is_expected.to eq('a(2) ') }
+      end
     end
 
-    context 'when side is :right' do
-      let(:side) { :right }
+    context 'when passing range as a kwarg' do
+      subject do
+        r = obj.send(:range_with_surrounding_space, range: input_range, side: side)
+        processed_source.buffer.source[r.begin_pos...r.end_pos]
+      end
 
-      it { is_expected.to eq('a(2) ') }
+      it 'outputs a deprecation message' do
+        expect { obj.__send__(:range_with_surrounding_space, range: input_range) }
+          .to output(/Passing `range` as a keyword argument is deprecated/).to_stderr
+      end
+
+      it_behaves_like 'works with various `side`s' do
+        require 'rspec/support/spec/with_isolated_stderr'
+        include RSpec::Support::WithIsolatedStdErr
+
+        around do |example|
+          with_isolated_stderr do
+            example.run
+          end
+        end
+      end
+    end
+
+    context 'when `range` is passed as a positional argument' do
+      subject do
+        r = obj.send(:range_with_surrounding_space, input_range, side: side)
+        processed_source.buffer.source[r.begin_pos...r.end_pos]
+      end
+
+      it_behaves_like 'works with various `side`s'
     end
   end
 

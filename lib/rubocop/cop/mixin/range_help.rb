@@ -51,9 +51,18 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range:, side: :both,
-                                       newlines: true, whitespace: false,
-                                       continuations: false)
+      NOT_GIVEN = Module.new
+      def range_with_surrounding_space(range_positional = NOT_GIVEN, # rubocop:disable Metrics/ParameterLists
+                                       range: NOT_GIVEN, side: :both, newlines: true,
+                                       whitespace: false, continuations: false)
+        unless range == NOT_GIVEN
+          warn <<~WARNING
+            Passing `range` as a keyword argument is deprecated, and will be removed in RuboCop 2.0. Pass the range as the first positional argument instead.
+          WARNING
+        end
+
+        range = range_positional unless range_positional == NOT_GIVEN
+
         buffer = @processed_source.buffer
         src = buffer.source
 
