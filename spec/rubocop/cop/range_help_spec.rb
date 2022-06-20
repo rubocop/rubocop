@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     it 'fails when passing range as a kwarg' do
       obj = TestRangeHelp.new
       expect { obj.__send__(:range_with_surrounding_space, range: input_range) }
-        .to raise_error(ArgumentError, /unknown keyword: [:]*range/)
+        .to raise_error(ArgumentError, /unknown keyword: :*range/)
     end
 
     context 'when side is :both' do
