@@ -51,17 +51,10 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      OMITTED = Module.new
       def range_with_surrounding_space(range,
                                        side: :both,
                                        newlines: true, whitespace: false,
                                        continuations: false)
-        if range.is_a?(Hash) && range.key?(:range)
-          raise 'Pass range as the first positional argument to ' \
-                '`range_with_surrounding_space`. ' \
-                'Passing with the `range:` kwarg is not supported.'
-        end
-
         buffer = @processed_source.buffer
         src = buffer.source
 

@@ -46,12 +46,14 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     let(:processed_source) { parse_source(source) }
     let(:input_range) { Parser::Source::Range.new(processed_source.buffer, 5, 9) }
 
-    if RUBY_VERSION < '3.0'
-      # Ruby 3.0+ raises ArgumentError: wrong number of arguments (given 0, expected 1)
-      it 'fails when passing range as a kwarg' do
-        obj = TestRangeHelp.new
+    it 'fails when passing range as a kwarg' do
+      obj = TestRangeHelp.new
+      if RUBY_VERSION >= '3.0'
         expect { obj.__send__(:range_with_surrounding_space, range: 'range') }
-          .to raise_error(/Pass range as the first positional argument/)
+          .to raise_error(ArgumentError, /wrong number of arguments \(given 0, expected 1\)/)
+      else
+        expect { obj.__send__(:range_with_surrounding_space, range: 'range') }
+          .to raise_error(ArgumentError, /unknown keyword: :range/)
       end
     end
 
