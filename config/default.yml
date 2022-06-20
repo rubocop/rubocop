@@ -1561,6 +1561,11 @@ Lint/ConstantDefinitionInBlock:
   AllowedMethods:
     - enums
 
+Lint/ConstantOverwrittenInRescue:
+  Description: 'Checks for overwriting an exception with an exception result by use `rescue =>`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
