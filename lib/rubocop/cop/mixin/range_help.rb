@@ -51,9 +51,13 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range:, side: :both,
-                                       newlines: true, whitespace: false,
-                                       continuations: false)
+      NOT_GIVEN = Module.new
+      def range_with_surrounding_space(range_positional = NOT_GIVEN, # rubocop:disable Metrics/ParameterLists
+                                       range: NOT_GIVEN, side: :both, newlines: true,
+                                       whitespace: false, continuations: false)
+
+        range = range_positional unless range_positional == NOT_GIVEN
+
         buffer = @processed_source.buffer
         src = buffer.source
 
