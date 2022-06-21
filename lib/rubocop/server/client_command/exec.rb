@@ -28,6 +28,21 @@ module RuboCop
 
         private
 
+        def ensure_server!
+          if incompatible_version?
+            puts 'RuboCop version incompatibility found, RuboCop server restarting...'
+            ClientCommand::Stop.new.run
+          elsif check_running_server
+            return
+          end
+
+          ClientCommand::Start.new.run
+        end
+
+        def incompatible_version?
+          RuboCop::Version::STRING != Cache.version_path.read
+        end
+
         def status
           unless Cache.status_path.file?
             raise "RuboCop server: Could not find status file at: #{Cache.status_path}"

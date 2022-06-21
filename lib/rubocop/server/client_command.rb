@@ -10,6 +10,8 @@
 # https://github.com/fohte/rubocop-daemon/blob/master/LICENSE.txt
 #
 module RuboCop
+  autoload :Version, 'rubocop/version'
+
   module Server
     # @api private
     module ClientCommand
