@@ -29,10 +29,12 @@ module RuboCop
               exit 0
             end
 
-            Server::Core.new.start(
-              ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1'),
-              ENV.fetch('RUBOCOP_SERVER_PORT', 0)
-            )
+            Cache.write_version_file(RuboCop::Version::STRING)
+
+            host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
+            port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
+
+            Server::Core.new.start(host, port)
           end
         end
       end

@@ -38,12 +38,6 @@ module RuboCop
             warn 'RuboCop server is not running.' unless running
           end
         end
-
-        def ensure_server!
-          return if check_running_server
-
-          ClientCommand::Start.new([]).run
-        end
       end
     end
   end
