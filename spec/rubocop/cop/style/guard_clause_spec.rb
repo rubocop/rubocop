@@ -407,15 +407,47 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   context 'with Metrics/MaxLineLength enabled' do
-    it 'registers an offense with non-modifier example code if too long for single line' do
-      expect_offense(<<~RUBY)
-        def test
-          if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
-          ^^ Use a guard clause (`unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line; return; end`) instead of wrapping the code inside a conditional expression.
-            work
-          end
+    context 'when the correction is too long for a single line' do
+      context 'with a trivial body' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def test
+              if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+                work
+              end
+            end
+          RUBY
         end
-      RUBY
+      end
+
+      context 'with a nested `if` node' do
+        it 'does registers an offense' do
+          expect_offense(<<~RUBY)
+            def test
+              if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              ^^ Use a guard clause (`unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line; return; end`) instead of wrapping the code inside a conditional expression.
+                if something_else
+                  work
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'with a nested `begin` node' do
+        it 'does registers an offense' do
+          expect_offense(<<~RUBY)
+            def test
+              if something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line
+              ^^ Use a guard clause (`unless something && something_that_makes_the_guard_clause_too_long_to_fit_on_one_line; return; end`) instead of wrapping the code inside a conditional expression.
+                work
+                more_work
+              end
+            end
+          RUBY
+        end
+      end
     end
   end
 

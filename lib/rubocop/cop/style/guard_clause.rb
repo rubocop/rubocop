@@ -110,7 +110,7 @@ module RuboCop
           kw = if guard_clause_in_if
                  node.loc.keyword.source
                else
-                 opposite_keyword(node)
+                 node.inverse_keyword
                end
 
           register_offense(node, guard_clause_source(guard_clause), kw)
@@ -123,7 +123,7 @@ module RuboCop
           return if allowed_consecutive_conditionals? &&
                     consecutive_conditionals?(node.parent, node)
 
-          register_offense(node, 'return', opposite_keyword(node))
+          register_offense(node, 'return', node.inverse_keyword)
         end
 
         def consecutive_conditionals?(parent, node)
@@ -134,14 +134,12 @@ module RuboCop
           end
         end
 
-        def opposite_keyword(node)
-          node.if? ? 'unless' : 'if'
-        end
-
         def register_offense(node, scope_exiting_keyword, conditional_keyword)
           condition, = node.node_parts
           example = [scope_exiting_keyword, conditional_keyword, condition.source].join(' ')
           if too_long_for_single_line?(node, example)
+            return if trivial?(node)
+
             example = "#{conditional_keyword} #{condition.source}; #{scope_exiting_keyword}; end"
           end
 
@@ -165,6 +163,10 @@ module RuboCop
 
         def accepted_form?(node, ending: false)
           accepted_if?(node, ending) || node.condition.multiline? || node.parent&.assignment?
+        end
+
+        def trivial?(node)
+          node.branches.one? && !node.if_branch.if_type? && !node.if_branch.begin_type?
         end
 
         def accepted_if?(node, ending)
