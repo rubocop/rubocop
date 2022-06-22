@@ -51,7 +51,12 @@ module RuboCop
           return if node.body || comment_lines?(node)
           return if correct_style?(node)
 
-          add_offense(node) { |corrector| corrector.replace(node, corrected(node)) }
+          add_offense(node) do |corrector|
+            correction = corrected(node)
+            next if compact_style? && max_line_length && correction.size > max_line_length
+
+            corrector.replace(node, correction)
+          end
         end
         alias on_defs on_def
 
@@ -97,6 +102,12 @@ module RuboCop
 
         def expanded_style?
           style == :expanded
+        end
+
+        def max_line_length
+          return unless config.for_cop('Layout/LineLength')['Enabled']
+
+          config.for_cop('Layout/LineLength')['Max']
         end
       end
     end
