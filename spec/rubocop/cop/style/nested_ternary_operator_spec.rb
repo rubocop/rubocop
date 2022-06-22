@@ -9,9 +9,9 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
 
     expect_correction(<<~RUBY)
       if a
-        b ? b1 : b2
+      b ? b1 : b2
       else
-        a2
+      a2
       end
     RUBY
   end
@@ -25,9 +25,9 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
 
     expect_correction(<<~RUBY)
       if cond
-        foo
+      foo
       else
-        bar(foo.a ? foo.b : foo) { |e, k| e.nil? ? nil : e[k] }
+      bar(foo.a ? foo.b : foo) { |e, k| e.nil? ? nil : e[k] }
       end
     RUBY
   end
@@ -40,9 +40,9 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
 
     expect_correction(<<~RUBY)
       if x
-        y + (z ? 1 : 0)
+      y + (z ? 1 : 0)
       else
-        nil
+      nil
       end
     RUBY
   end
@@ -53,6 +53,26 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
         cond ? b : c
       else
         d
+      end
+    RUBY
+  end
+
+  it 'can handle multiple nested ternaries' do
+    expect_offense(<<~RUBY)
+      a ? b : c ? d : e ? f : g
+                      ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+              ^^^^^^^^^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+      b
+      else
+      if c
+      d
+      else
+      e ? f : g
+      end
       end
     RUBY
   end

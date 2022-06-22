@@ -17,6 +17,8 @@ module RuboCop
       #   end
       class NestedTernaryOperator < Base
         extend AutoCorrector
+        include RangeHelp
+        include IgnoredNode
 
         MSG = 'Ternary operators must not be nested. Prefer `if` or `else` constructs instead.'
 
@@ -26,14 +28,10 @@ module RuboCop
           node.each_descendant(:if).select(&:ternary?).each do |nested_ternary|
             add_offense(nested_ternary) do |corrector|
               if_node = if_node(nested_ternary)
+              next if part_of_ignored_node?(if_node)
 
-              corrector.replace(if_node, <<~RUBY.chop)
-                if #{if_node.condition.source}
-                  #{remove_parentheses(if_node.if_branch.source)}
-                else
-                  #{if_node.else_branch.source}
-                end
-              RUBY
+              autocorrect(corrector, if_node)
+              ignore_node(if_node)
             end
           end
         end
@@ -47,10 +45,24 @@ module RuboCop
           if_node(node)
         end
 
+        def autocorrect(corrector, if_node)
+          replace_loc_and_whitespace(corrector, if_node.loc.question, "\n")
+          replace_loc_and_whitespace(corrector, if_node.loc.colon, "\nelse\n")
+          corrector.replace(if_node.if_branch, remove_parentheses(if_node.if_branch.source))
+          corrector.wrap(if_node, 'if ', "\nend")
+        end
+
         def remove_parentheses(source)
           return source unless source.start_with?('(')
 
           source.delete_prefix('(').delete_suffix(')')
+        end
+
+        def replace_loc_and_whitespace(corrector, range, replacement)
+          corrector.replace(
+            range_with_surrounding_space(range: range, whitespace: true),
+            replacement
+          )
         end
       end
     end
