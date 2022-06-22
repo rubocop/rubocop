@@ -668,30 +668,7 @@ require_relative 'rubocop/cop/security/open'
 require_relative 'rubocop/cop/security/yaml_load'
 
 require_relative 'rubocop/cop/team'
-
-require_relative 'rubocop/formatter/base_formatter'
-require_relative 'rubocop/formatter/simple_text_formatter'
-# relies on simple text
-require_relative 'rubocop/formatter/clang_style_formatter'
-require_relative 'rubocop/formatter/disabled_config_formatter'
-require_relative 'rubocop/formatter/emacs_style_formatter'
-require_relative 'rubocop/formatter/file_list_formatter'
-require_relative 'rubocop/formatter/fuubar_style_formatter'
-require_relative 'rubocop/formatter/git_hub_actions_formatter'
-require_relative 'rubocop/formatter/html_formatter'
-require_relative 'rubocop/formatter/json_formatter'
-require_relative 'rubocop/formatter/junit_formatter'
-require_relative 'rubocop/formatter/markdown_formatter'
-require_relative 'rubocop/formatter/offense_count_formatter'
-require_relative 'rubocop/formatter/progress_formatter'
-require_relative 'rubocop/formatter/quiet_formatter'
-require_relative 'rubocop/formatter/tap_formatter'
-require_relative 'rubocop/formatter/worst_offenders_formatter'
-require_relative 'rubocop/formatter/pacman_formatter'
-# relies on progress formatter
-require_relative 'rubocop/formatter/auto_gen_config_formatter'
-
-require_relative 'rubocop/formatter/formatter_set'
+require_relative 'rubocop/formatter'
 
 require_relative 'rubocop/cached_data'
 require_relative 'rubocop/config'

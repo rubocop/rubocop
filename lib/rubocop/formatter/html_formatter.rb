@@ -4,7 +4,6 @@ require 'cgi'
 require 'erb'
 require 'ostruct'
 require 'base64'
-require_relative 'text_util'
 
 module RuboCop
   module Formatter
