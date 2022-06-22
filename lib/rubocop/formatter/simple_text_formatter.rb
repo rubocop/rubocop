@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'colorizable'
-require_relative 'text_util'
-
 module RuboCop
   module Formatter
     # A basic formatter that displays only files with offenses.

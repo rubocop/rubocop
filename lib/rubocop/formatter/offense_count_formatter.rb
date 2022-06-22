@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'ruby-progressbar'
+
 module RuboCop
   module Formatter
     # This formatter displays the list of offended cops with a count of how
