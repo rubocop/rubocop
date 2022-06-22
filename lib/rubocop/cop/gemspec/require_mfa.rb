@@ -36,29 +36,29 @@ module RuboCop
       #     spec.metadata['rubygems_mfa_required'] = 'true'
       #   end
       #
-      #  # bad
-      #  Gem::Specification.new do |spec|
-      #    spec.metadata = {
-      #      'rubygems_mfa_required' => 'false'
-      #    }
-      #  end
+      #   # bad
+      #   Gem::Specification.new do |spec|
+      #     spec.metadata = {
+      #       'rubygems_mfa_required' => 'false'
+      #     }
+      #   end
       #
-      #  # good
-      #  Gem::Specification.new do |spec|
-      #    spec.metadata = {
-      #      'rubygems_mfa_required' => 'true'
-      #    }
-      #  end
+      #   # good
+      #   Gem::Specification.new do |spec|
+      #     spec.metadata = {
+      #       'rubygems_mfa_required' => 'true'
+      #     }
+      #   end
       #
-      #  # bad
-      #  Gem::Specification.new do |spec|
-      #    spec.metadata['rubygems_mfa_required'] = 'false'
-      #  end
+      #   # bad
+      #   Gem::Specification.new do |spec|
+      #     spec.metadata['rubygems_mfa_required'] = 'false'
+      #   end
       #
-      #  # good
-      #  Gem::Specification.new do |spec|
-      #    spec.metadata['rubygems_mfa_required'] = 'true'
-      #  end
+      #   # good
+      #   Gem::Specification.new do |spec|
+      #     spec.metadata['rubygems_mfa_required'] = 'true'
+      #   end
       #
       class RequireMFA < Base
         include GemspecHelp
