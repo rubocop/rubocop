@@ -242,6 +242,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
         end
       RUBY
     end
+
+    it 'does not crash when used inside rescue' do
+      expect_no_offenses(<<~RUBY)
+        begin
+          bar #{assignment} 2
+        rescue
+          bar #{assignment} 1
+        end
+      RUBY
+    end
   end
 
   shared_examples 'multiline all variable types offense' do |variable|
