@@ -98,6 +98,8 @@ module RuboCop
           check_inside(node, left_brace, right_brace)
         end
 
+        alias on_numblock on_block
+
         private
 
         def check_inside(node, left_brace, right_brace)
@@ -126,7 +128,7 @@ module RuboCop
         end
 
         def braces_with_contents_inside(node, inner)
-          args_delimiter = node.arguments.loc.begin # Can be ( | or nil.
+          args_delimiter = node.arguments.loc.begin if node.block_type? # Can be ( | or nil.
 
           check_left_brace(inner, node.loc.begin, args_delimiter)
           check_right_brace(inner, node.loc.begin, node.loc.end, node.single_line?)
