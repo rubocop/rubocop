@@ -1,1 +1,1 @@
-* [#10709](https://github.com/rubocop/rubocop/pull/10709): Rename custom rake task from `rubocop:auto_correct` to `rubocop:autocorrect`. ([@koic][])
+* [#10709](https://github.com/rubocop/rubocop/pull/10709): Deprecate `rubocop:auto_correct` custom rake task and newly split `rubocop:autocorrect` and `rubocop:autocorrect-all` custom rake tasks. ([@koic][])
