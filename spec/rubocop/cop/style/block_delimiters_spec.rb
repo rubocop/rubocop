@@ -27,6 +27,35 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         }, 1
       RUBY
     end
+
+    context 'Ruby >= 2.7', :ruby27 do
+      it 'registers an offense for a single line numblock with do-end' do
+        expect_offense(<<~RUBY)
+          each do _1 end
+               ^^ Prefer `{...}` over `do...end` for single-line blocks.
+        RUBY
+      end
+
+      it 'accepts a single line numblock with braces' do
+        expect_no_offenses('each { _1 }')
+      end
+
+      it 'accepts a multi-line numblock with do-end' do
+        expect_no_offenses(<<~RUBY)
+          each do
+            _1
+          end
+        RUBY
+      end
+
+      it 'accepts a multi-line numblock that needs braces to be valid ruby' do
+        expect_no_offenses(<<~RUBY)
+          puts [1, 2, 3].map {
+            _1 * _1
+          }, 1
+        RUBY
+      end
+    end
   end
 
   context 'EnforcedStyle: semantic' do

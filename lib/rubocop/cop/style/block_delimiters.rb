@@ -184,6 +184,8 @@ module RuboCop
           end
         end
 
+        alias on_numblock on_block
+
         private
 
         def autocorrect(corrector, node)
@@ -300,7 +302,7 @@ module RuboCop
 
         def get_blocks(node, &block)
           case node.type
-          when :block
+          when :block, :numblock
             yield node
           when :send
             get_blocks(node.receiver, &block) if node.receiver
