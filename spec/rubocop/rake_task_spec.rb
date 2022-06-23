@@ -141,6 +141,18 @@ RSpec.describe RuboCop::RakeTask do
     end
 
     context 'autocorrect' do
+      it 'runs with --autocorrect' do
+        described_class.new
+
+        cli = instance_double(RuboCop::CLI, run: 0)
+        allow(RuboCop::CLI).to receive(:new).and_return(cli)
+        options = ['--autocorrect']
+
+        expect(cli).to receive(:run).with(options)
+
+        Rake::Task['rubocop:autocorrect'].execute
+      end
+
       it 'runs with --autocorrect-all' do
         described_class.new
 
@@ -150,7 +162,7 @@ RSpec.describe RuboCop::RakeTask do
 
         expect(cli).to receive(:run).with(options)
 
-        Rake::Task['rubocop:autocorrect'].execute
+        Rake::Task['rubocop:autocorrect_all'].execute
       end
 
       it 'runs with with the options that were passed to its parent task' do
@@ -168,7 +180,7 @@ RSpec.describe RuboCop::RakeTask do
 
         expect(cli).to receive(:run).with(options)
 
-        Rake::Task['rubocop:autocorrect'].execute
+        Rake::Task['rubocop:autocorrect_all'].execute
       end
     end
   end
