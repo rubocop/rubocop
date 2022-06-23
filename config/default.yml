@@ -888,6 +888,11 @@ Layout/HashAlignment:
     - ignore_implicit
     - ignore_explicit
 
+Layout/HashValueIndentation:
+  Description: 'Checks for the hash value whether its indentation is relative to the key.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Layout/HeredocArgumentClosingParenthesis:
   Description: >-
                  Checks for the placement of the closing parenthesis in a
