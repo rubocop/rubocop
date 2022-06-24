@@ -968,66 +968,6 @@ OpenSSL::Digest::SHA256.digest('foo')
 OpenSSL::Digest.digest('SHA256', 'foo')
 ----
 
-== Lint/DisjunctiveAssignmentInConstructor
-
-|===
-| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
-
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.62
-| 0.88
-|===
-
-Checks constructors for disjunctive assignments (`||=`) that should
-be plain assignments.
-
-So far, this cop is only concerned with disjunctive assignment of
-instance variables.
-
-In ruby, an instance variable is nil until a value is assigned, so the
-disjunction is unnecessary. A plain assignment has the same effect.
-
-=== Safety
-
-This cop is unsafe because it can register a false positive when a
-method is redefined in a subclass that calls super. For example:
-
-[source,ruby]
-----
-class Base
-  def initialize
-    @config ||= 'base'
-  end
-end
-
-class Derived < Base
-  def initialize
-    @config = 'derived'
-    super
-  end
-end
-----
-
-Without the disjunctive assignment, `Derived` will be unable to override
-the value for `@config`.
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-def initialize
-  @x ||= 1
-end
-
-# good
-def initialize
-  @x = 1
-end
-----
-
 == Lint/DuplicateBranch
 
 |===
@@ -3593,6 +3533,66 @@ _1 = :value
 
 # good
 non_numbered_parameter_name = :value
+----
+
+== Lint/OrAssignmentInConstructor
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.62
+| 0.88
+|===
+
+Checks constructors for or-assignments (`||=`) that should
+be plain assignments.
+
+So far, this cop is only concerned with or-assignment of
+instance variables.
+
+In ruby, an instance variable is nil until a value is assigned, so the
+disjunction is unnecessary. A plain assignment has the same effect.
+
+=== Safety
+
+This cop is unsafe because it can register a false positive when a
+method is redefined in a subclass that calls super. For example:
+
+[source,ruby]
+----
+class Base
+  def initialize
+    @config ||= 'base'
+  end
+end
+
+class Derived < Base
+  def initialize
+    @config = 'derived'
+    super
+  end
+end
+----
+
+Without the or-assignment, `Derived` will be unable to override
+the value for `@config`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def initialize
+  @x ||= 1
+end
+
+# good
+def initialize
+  @x = 1
+end
 ----
 
 == Lint/OrAssignmentToConstant
@@ -6445,6 +6445,48 @@ end
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
+
+== Lint/UselessElseWithoutRescue
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| No
+| 0.17
+| <<next>>
+|===
+
+Checks for useless `else` in `begin..end` without `rescue`.
+
+NOTE: This syntax is no longer valid on Ruby 2.6 or higher.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+
+begin
+  do_something
+else
+  do_something_else # This will never be run.
+end
+----
+
+[source,ruby]
+----
+# good
+
+begin
+  do_something
+rescue
+  handle_errors
+else
+  do_something_else
+end
+----
 
 == Lint/UselessMethodDefinition
 

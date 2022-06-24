@@ -3,10 +3,10 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks constructors for disjunctive assignments (`||=`) that should
+      # Checks constructors for or-assignments (`||=`) that should
       # be plain assignments.
       #
-      # So far, this cop is only concerned with disjunctive assignment of
+      # So far, this cop is only concerned with or-assignment of
       # instance variables.
       #
       # In ruby, an instance variable is nil until a value is assigned, so the
@@ -32,7 +32,7 @@ module RuboCop
       #   end
       #   ----
       #
-      #   Without the disjunctive assignment, `Derived` will be unable to override
+      #   Without the or-assignment, `Derived` will be unable to override
       #   the value for `@config`.
       #
       # @example
@@ -45,10 +45,10 @@ module RuboCop
       #   def initialize
       #     @x = 1
       #   end
-      class DisjunctiveAssignmentInConstructor < Base
+      class OrAssignmentInConstructor < Base
         extend AutoCorrector
 
-        MSG = 'Unnecessary disjunctive assignment. Use plain assignment.'
+        MSG = 'Unnecessary or-assignment. Use plain assignment.'
 
         def on_def(node)
           check(node)
@@ -79,24 +79,24 @@ module RuboCop
           lines.each do |line|
             case line.type
             when :or_asgn
-              check_disjunctive_assignment(line)
+              check_or_assignment(line)
             else
-              # Once we encounter something other than a disjunctive
-              # assignment, we cease our investigation, because we can't be
-              # certain that any future disjunctive assignments are offensive.
+              # Once we encounter something other than an or-assignment,
+              # we cease our investigation, because we can't be
+              # certain that any future or-assignments are offensive.
               # You're off the case, detective!
               break
             end
           end
         end
 
-        # Add an offense if the LHS of the given disjunctive assignment is
+        # Add an offense if the LHS of the given or-assignment is
         # an instance variable.
         #
         # For now, we only care about assignments to instance variables.
         #
-        # @param [Node] node a disjunctive assignment
-        def check_disjunctive_assignment(node)
+        # @param [Node] node an or-assignment
+        def check_or_assignment(node)
           lhs = node.child_nodes.first
           return unless lhs.ivasgn_type?
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe(
-  RuboCop::Cop::Lint::DisjunctiveAssignmentInConstructor,
+  RuboCop::Cop::Lint::OrAssignmentInConstructor,
   :config
 ) do
   context 'empty constructor' do
@@ -15,7 +15,7 @@ RSpec.describe(
     end
   end
 
-  context 'constructor does not have disjunctive assignment' do
+  context 'constructor does not have or-assignment' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         class Banana
@@ -27,7 +27,7 @@ RSpec.describe(
     end
   end
 
-  context 'constructor has disjunctive assignment' do
+  context 'constructor has or-assignment' do
     context 'LHS is lvar' do
       it 'accepts' do
         expect_no_offenses(<<~RUBY)
@@ -46,7 +46,7 @@ RSpec.describe(
           class Banana
             def initialize
               @delicious ||= true
-                         ^^^ Unnecessary disjunctive assignment. Use plain assignment.
+                         ^^^ Unnecessary or-assignment. Use plain assignment.
             end
           end
         RUBY
@@ -66,7 +66,7 @@ RSpec.describe(
             class Banana
               def initialize
                 @delicious ||= true
-                           ^^^ Unnecessary disjunctive assignment. Use plain assignment.
+                           ^^^ Unnecessary or-assignment. Use plain assignment.
                 super
               end
             end
@@ -83,7 +83,7 @@ RSpec.describe(
         end
       end
 
-      context 'constructor calls super before disjunctive assignment' do
+      context 'constructor calls super before or-assignment' do
         it 'accepts' do
           expect_no_offenses(<<~RUBY)
             class Banana
@@ -96,14 +96,14 @@ RSpec.describe(
         end
       end
 
-      context 'constructor calls any method before disjunctive assignment' do
+      context 'constructor calls any method before or-assignment' do
         it 'accepts' do
           expect_no_offenses(<<~RUBY)
             class Banana
               def initialize
                 # With the limitations of static analysis, it's very difficult
-                # to determine, after this method call, whether the disjunctive
-                # assignment is necessary or not.
+                # to determine, after this method call, whether the or-assignment
+                # is necessary or not.
                 absolutely_any_method
                 @delicious ||= true
               end

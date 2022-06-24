@@ -1638,13 +1638,6 @@ Lint/DeprecatedOpenSSLConstant:
   Enabled: true
   VersionAdded: '0.84'
 
-Lint/DisjunctiveAssignmentInConstructor:
-  Description: 'In constructor, plain assignment is preferred over disjunctive.'
-  Enabled: true
-  Safe: false
-  VersionAdded: '0.62'
-  VersionChanged: '0.88'
-
 Lint/DuplicateBranch:
   Description: Checks that there are no repeated bodies within `if/unless`, `case-when` and `rescue` constructs.
   Enabled: pending
@@ -1962,6 +1955,13 @@ Lint/NumberedParameterAssignment:
   Description: 'Checks for uses of numbered parameter assignment.'
   Enabled: pending
   VersionAdded: '1.9'
+
+Lint/OrAssignmentInConstructor:
+  Description: 'Checks constructors for or-assignments to instance variables.'
+  Enabled: true
+  Safe: false
+  VersionAdded: '0.62'
+  VersionChanged: '0.88'
 
 Lint/OrAssignmentToConstant:
   Description: 'Checks unintended or-assignment to constant.'
