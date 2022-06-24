@@ -11,6 +11,10 @@ module RuboCop
       # NOTE: A method definition is not considered empty if it contains
       # comments.
       #
+      # NOTE: Autocorrection will not be applied for the `compact` style
+      # if the resulting code is longer than the `Max` configuration for
+      # `Layout/LineLength`, but an offense will still be registered.
+      #
       # @example EnforcedStyle: compact (default)
       #   # bad
       #   def foo(bar)
