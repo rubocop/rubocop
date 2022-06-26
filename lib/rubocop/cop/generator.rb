@@ -162,7 +162,7 @@ module RuboCop
         end
 
         dir = File.dirname(path)
-        FileUtils.mkdir_p(dir) unless File.exist?(dir)
+        FileUtils.mkdir_p(dir)
 
         File.write(path, contents)
         output.puts "[create] #{path}"

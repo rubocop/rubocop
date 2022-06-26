@@ -1956,6 +1956,12 @@ Lint/NoReturnInBeginEndBlocks:
   Enabled: pending
   VersionAdded: '1.2'
 
+Lint/NonAtomicFileOperation:
+  Description: Checks for non-atomic file operations.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  SafeAutoCorrect: false
+
 Lint/NonDeterministicRequireOrder:
   Description: 'Always sort arrays returned by Dir.glob when requiring files.'
   Enabled: true

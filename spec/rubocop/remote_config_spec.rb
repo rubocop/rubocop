@@ -16,7 +16,7 @@ RSpec.describe RuboCop::RemoteConfig do
   end
 
   after do
-    File.unlink cached_file_path if File.exist? cached_file_path
+    FileUtils.rm_rf cached_file_path
   end
 
   describe '.file' do
