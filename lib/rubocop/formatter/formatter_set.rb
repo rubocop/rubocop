@@ -55,7 +55,7 @@ module RuboCop
       def add_formatter(formatter_type, output_path = nil)
         if output_path
           dir_path = File.dirname(output_path)
-          FileUtils.mkdir_p(dir_path) unless File.exist?(dir_path)
+          FileUtils.mkdir_p(dir_path)
           output = File.open(output_path, 'w')
         else
           output = $stdout

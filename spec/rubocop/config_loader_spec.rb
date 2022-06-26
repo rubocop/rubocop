@@ -1095,7 +1095,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       after do
-        File.unlink cache_file if File.exist? cache_file
+        FileUtils.rm_rf cache_file
       end
 
       it 'resolves the inherited config' do
@@ -1124,7 +1124,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       after do
-        File.unlink cache_file if File.exist? cache_file
+        FileUtils.rm_rf cache_file
       end
 
       it 'creates the cached file alongside the owning file' do
@@ -1150,7 +1150,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
       after do
         [cache_file, cache_file2].each do |f|
-          File.unlink f if File.exist? f
+          FileUtils.rm_rf f
         end
       end
 
