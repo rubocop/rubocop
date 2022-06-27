@@ -39,7 +39,7 @@ module RuboCop
       #   def Baz.foo
       #     do_something
       #   end
-      class DefWithParentheses < Base
+      class RedundantMethodDefParentheses < Base
         extend AutoCorrector
 
         MSG = "Omit the parentheses in defs when the method doesn't accept any arguments."

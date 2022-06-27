@@ -30,7 +30,7 @@ module RuboCop
       #   # good
       #
       #   %w(foo bar)
-      class PercentStringArray < Base
+      class RedundantPercentWPunctuation < Base
         include PercentLiteral
         extend AutoCorrector
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray, :config do
+RSpec.describe RuboCop::Cop::Lint::RedundantPercentIPunctuation, :config do
   context 'detecting colons or commas in a %i/%I string' do
     %w[i I].each do |char|
       it 'accepts tokens without colons or commas' do

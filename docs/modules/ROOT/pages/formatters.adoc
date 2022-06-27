@@ -310,7 +310,7 @@ $ rubocop --format offenses
 13   Style/Documentation
 10   Style/ExpandPathArguments
 8    Style/EmptyMethod
-6    Layout/IndentationConsistency
+6    Layout/InconsistentIndentation
 4    Lint/SuppressedException
 3    Layout/EmptyLinesAroundAccessModifier
 2    Layout/ExtraSpacing

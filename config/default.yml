@@ -903,7 +903,7 @@ Layout/HeredocIndentation:
   VersionAdded: '0.49'
   VersionChanged: '0.85'
 
-Layout/IndentationConsistency:
+Layout/InconsistentIndentation:
   Description: 'Keep indentation straight.'
   StyleGuide: '#spaces-indentation'
   Enabled: true
@@ -1658,13 +1658,6 @@ Lint/DeprecatedOpenSSLConstant:
   Enabled: true
   VersionAdded: '0.84'
 
-Lint/DisjunctiveAssignmentInConstructor:
-  Description: 'In constructor, plain assignment is preferred over disjunctive.'
-  Enabled: true
-  Safe: false
-  VersionAdded: '0.62'
-  VersionChanged: '0.88'
-
 Lint/DuplicateBranch:
   Description: Checks that there are no repeated bodies within `if/unless`, `case-when` and `rescue` constructs.
   Enabled: pending
@@ -1989,6 +1982,13 @@ Lint/NumberedParameterAssignment:
   Enabled: pending
   VersionAdded: '1.9'
 
+Lint/OrAssignmentInConstructor:
+  Description: 'Checks constructors for or-assignments to instance variables.'
+  Enabled: true
+  Safe: false
+  VersionAdded: '0.62'
+  VersionChanged: '0.88'
+
 Lint/OrAssignmentToConstant:
   Description: 'Checks unintended or-assignment to constant.'
   Enabled: pending
@@ -2014,19 +2014,6 @@ Lint/ParenthesesAsGroupedExpression:
   Enabled: true
   VersionAdded: '0.12'
   VersionChanged: '0.83'
-
-Lint/PercentStringArray:
-  Description: >-
-                 Checks for unwanted commas and quotes in %w/%W literals.
-  Enabled: true
-  Safe: false
-  VersionAdded: '0.41'
-
-Lint/PercentSymbolArray:
-  Description: >-
-                 Checks for unwanted commas and colons in %i/%I literals.
-  Enabled: true
-  VersionAdded: '0.41'
 
 Lint/RaiseException:
   Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
@@ -2064,6 +2051,19 @@ Lint/RedundantDirGlobSort:
   VersionAdded: '1.8'
   VersionChanged: '1.26'
   SafeAutoCorrect: false
+
+Lint/RedundantPercentIPunctuation:
+  Description: >-
+                 Checks for unwanted commas and colons in %i/%I literals.
+  Enabled: true
+  VersionAdded: '0.41'
+
+Lint/RedundantPercentWPunctuation:
+  Description: >-
+                 Checks for unwanted commas and quotes in %w/%W literals.
+  Enabled: true
+  Safe: false
+  VersionAdded: '0.41'
 
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
@@ -2771,6 +2771,28 @@ Naming/MethodParameterName:
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
+Naming/NumericVariableSuffix:
+  Description: 'Use the configured style when numbering symbols, methods and variables.'
+  StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
+  Enabled: true
+  VersionAdded: '0.50'
+  VersionChanged: '1.4'
+  EnforcedStyle: normalcase
+  SupportedStyles:
+    - snake_case
+    - normalcase
+    - non_integer
+  CheckMethodNames: true
+  CheckSymbols: true
+  AllowedIdentifiers:
+    - capture3     # Open3.capture3
+    - iso8601      # Time#iso8601
+    - rfc1123_date # CGI.rfc1123_date
+    - rfc822       # Time#rfc822
+    - rfc2822      # Time#rfc2822
+    - rfc3339      # DateTime.rfc3339
+  AllowedPatterns: []
+
 Naming/PredicateName:
   Description: 'Check the names of predicate methods.'
   StyleGuide: '#bool-methods-qmark'
@@ -2818,28 +2840,6 @@ Naming/VariableName:
     - snake_case
     - camelCase
   AllowedIdentifiers: []
-  AllowedPatterns: []
-
-Naming/VariableNumber:
-  Description: 'Use the configured style when numbering symbols, methods and variables.'
-  StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
-  Enabled: true
-  VersionAdded: '0.50'
-  VersionChanged: '1.4'
-  EnforcedStyle: normalcase
-  SupportedStyles:
-    - snake_case
-    - normalcase
-    - non_integer
-  CheckMethodNames: true
-  CheckSymbols: true
-  AllowedIdentifiers:
-    - capture3     # Open3.capture3
-    - iso8601      # Time#iso8601
-    - rfc1123_date # CGI.rfc1123_date
-    - rfc822       # Time#rfc822
-    - rfc2822      # Time#rfc2822
-    - rfc3339      # DateTime.rfc3339
   AllowedPatterns: []
 
 #################### Security ##############################
@@ -3392,13 +3392,6 @@ Style/DateTime:
   VersionChanged: '0.92'
   SafeAutoCorrect: false
   AllowCoercion: false
-
-Style/DefWithParentheses:
-  Description: 'Use def with parentheses when there are arguments.'
-  StyleGuide: '#method-parens'
-  Enabled: true
-  VersionAdded: '0.9'
-  VersionChanged: '0.12'
 
 Style/Dir:
   Description: >-
@@ -4640,6 +4633,13 @@ Style/RedundantInterpolation:
   SafeAutoCorrect: false
   VersionAdded: '0.76'
   VersionChanged: '1.30'
+
+Style/RedundantMethodDefParentheses:
+  Description: 'Use def with parentheses when there are arguments.'
+  StyleGuide: '#method-parens'
+  Enabled: true
+  VersionAdded: '0.9'
+  VersionChanged: '0.12'
 
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."

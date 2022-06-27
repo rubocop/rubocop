@@ -2294,63 +2294,6 @@ something.to_time
 
 * https://rubystyle.guide#date--time
 
-== Style/DefWithParentheses
-
-|===
-| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
-
-| Enabled
-| Yes
-| Yes
-| 0.9
-| 0.12
-|===
-
-Checks for parentheses in the definition of a method,
-that does not take any arguments. Both instance and
-class/singleton methods are checked.
-
-=== Examples
-
-[source,ruby]
-----
-# bad
-def foo()
-  do_something
-end
-
-# good
-def foo
-  do_something
-end
-
-# bad
-def foo() = do_something
-
-# good
-def foo = do_something
-
-# good (without parentheses it's a syntax error)
-def foo() do_something end
-----
-
-[source,ruby]
-----
-# bad
-def Baz.foo()
-  do_something
-end
-
-# good
-def Baz.foo
-  do_something
-end
-----
-
-=== References
-
-* https://rubystyle.guide#method-parens
-
 == Style/Dir
 
 NOTE: Required Ruby version: 2.0
@@ -10182,6 +10125,63 @@ y << 'b'   # raise `FrozenError`.
 # good if @var is already a String
 @var
 ----
+
+== Style/RedundantMethodDefParentheses
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.12
+|===
+
+Checks for parentheses in the definition of a method,
+that does not take any arguments. Both instance and
+class/singleton methods are checked.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def foo()
+  do_something
+end
+
+# good
+def foo
+  do_something
+end
+
+# bad
+def foo() = do_something
+
+# good
+def foo = do_something
+
+# good (without parentheses it's a syntax error)
+def foo() do_something end
+----
+
+[source,ruby]
+----
+# bad
+def Baz.foo()
+  do_something
+end
+
+# good
+def Baz.foo
+  do_something
+end
+----
+
+=== References
+
+* https://rubystyle.guide#method-parens
 
 == Style/RedundantParentheses
 

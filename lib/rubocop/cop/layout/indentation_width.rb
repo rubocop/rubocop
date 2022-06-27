@@ -6,7 +6,7 @@ module RuboCop
       # Checks for indentation that doesn't use the specified number
       # of spaces.
       #
-      # See also the IndentationConsistency cop which is the companion to this
+      # See also the Layout/InconsistentIndentation cop which is the companion to this
       # one.
       #
       # @example
@@ -167,7 +167,7 @@ module RuboCop
 
           return unless members.any? && members.first.begin_type?
 
-          if indentation_consistency_style == 'indented_internal_methods'
+          if inconsistent_indentation_style == 'indented_internal_methods'
             check_members_for_indented_internal_methods_style(members)
           else
             check_members_for_normal_style(base, members)
@@ -188,7 +188,7 @@ module RuboCop
 
         def check_members_for_indented_internal_methods_style(members)
           each_member(members) do |member, previous_modifier|
-            check_indentation(previous_modifier, member, indentation_consistency_style)
+            check_indentation(previous_modifier, member, inconsistent_indentation_style)
           end
         end
 
@@ -213,7 +213,7 @@ module RuboCop
         end
 
         def indented_internal_methods_style?
-          indentation_consistency_style == 'indented_internal_methods'
+          inconsistent_indentation_style == 'indented_internal_methods'
         end
 
         def special_modifier?(node)
@@ -224,8 +224,8 @@ module RuboCop
           config.for_cop('Layout/AccessModifierIndentation')['EnforcedStyle']
         end
 
-        def indentation_consistency_style
-          config.for_cop('Layout/IndentationConsistency')['EnforcedStyle']
+        def inconsistent_indentation_style
+          config.for_cop('Layout/InconsistentIndentation')['EnforcedStyle']
         end
 
         def check_assignment(node, rhs)

@@ -303,7 +303,7 @@ RSpec.describe RuboCop::Config do
     context 'when the configuration includes an obsolete EnforcedStyle parameter' do
       before do
         create_file(configuration_path, <<~YAML)
-          Layout/IndentationConsistency:
+          Layout/InconsistentIndentation:
             EnforcedStyle: rails
         YAML
       end

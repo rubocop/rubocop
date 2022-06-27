@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::PercentStringArray, :config do
+RSpec.describe RuboCop::Cop::Lint::RedundantPercentWPunctuation, :config do
   context 'detecting quotes or commas in a %w/%W string' do
     %w[w W].each do |char|
       it 'accepts tokens without quotes or commas' do

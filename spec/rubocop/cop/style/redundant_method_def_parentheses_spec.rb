@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::DefWithParentheses, :config do
+RSpec.describe RuboCop::Cop::Style::RedundantMethodDefParentheses, :config do
   it 'reports an offense for def with empty parens' do
     expect_offense(<<~RUBY)
       def func()

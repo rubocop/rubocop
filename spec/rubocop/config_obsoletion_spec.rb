@@ -21,6 +21,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/AlignHash' => { Enabled: true },
           'Layout/AlignParameters' => { Enabled: true },
           'Layout/FirstParameterIndentation' => { Enabled: true },
+          'Layout/IndentationConsistency' => { Enabled: true },
           'Layout/IndentArray' => { Enabled: true },
           'Layout/IndentAssignment' => { Enabled: true },
           'Layout/IndentFirstArgument' => { Enabled: true },
@@ -35,6 +36,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/DuplicatedKey' => { Enabled: true },
           'Lint/HandleExceptions' => { Enabled: true },
           'Lint/MultipleCompare' => { Enabled: true },
+          'Lint/PercentStringArray' => { Enabled: true },
           'Lint/StringConversionInInterpolation' => { Enabled: true },
           'Lint/UnneededCopDisableDirective' => { Enabled: true },
           'Lint/UnneededCopEnableDirective' => { Enabled: true },
@@ -42,6 +44,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/UnneededSplatExpansion' => { Enabled: true },
           'Naming/UncommunicativeBlockParamName' => { Enabled: true },
           'Naming/UncommunicativeMethodParamName' => { Enabled: true },
+          'Naming/VariableNumber' => { Enabled: true },
+          'Style/DefWithParentheses' => { Enabled: true },
           'Style/DeprecatedHashMethods' => { Enabled: true },
           'Style/MethodCallParentheses' => { Enabled: true },
           'Style/OpMethod' => { Enabled: true },
@@ -93,6 +97,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/AlignParameters` cop has been renamed to `Layout/ParameterAlignment`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Layout/IndentationConsistency` cop has been renamed to `Layout/InconsistentIndentation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/IndentArray` cop has been renamed to `Layout/FirstArrayElementIndentation`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/IndentAssignment` cop has been renamed to `Layout/AssignmentIndentation`.
@@ -129,6 +135,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/MultipleCompare` cop has been renamed to `Lint/MultipleComparison`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Lint/PercentStringArray` cop has been renamed to `Lint/RedundantPercentWPunctuation`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/StringConversionInInterpolation` cop has been renamed to `Lint/RedundantStringCoercion`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Lint/UnneededCopDisableDirective` cop has been renamed to `Lint/RedundantCopDisableDirective`.
@@ -143,6 +151,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Naming/UncommunicativeMethodParamName` cop has been renamed to `Naming/MethodParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Naming/VariableNumber` cop has been renamed to `Naming/NumericVariableSuffix`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/AccessorMethodName` cop has been moved to `Naming/AccessorMethodName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/AsciiIdentifiers` cop has been moved to `Naming/AsciiIdentifiers`.
@@ -150,6 +160,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
           The `Style/ClassAndModuleCamelCase` cop has been moved to `Naming/ClassAndModuleCamelCase`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/ConstantName` cop has been moved to `Naming/ConstantName`.
+          (obsolete configuration found in example/.rubocop.yml, please update it)
+          The `Style/DefWithParentheses` cop has been renamed to `Style/RedundantMethodDefParentheses`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/DeprecatedHashMethods` cop has been renamed to `Style/PreferredHashMethods`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -179,7 +191,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/VariableName` cop has been moved to `Naming/VariableName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/VariableNumber` cop has been moved to `Naming/VariableNumber`.
+          The `Style/VariableNumber` cop has been renamed to `Naming/NumericVariableSuffix`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Layout/SpaceAfterControlKeyword` cop has been removed. Please use `Layout/SpaceAroundKeyword` instead.
           (obsolete configuration found in example/.rubocop.yml, please update it)
@@ -337,7 +349,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Lint/EndAlignment' => { 'AlignWith' => 'end' },
           'Lint/DefEndAlignment' => { 'AlignWith' => 'end' },
           # Obsolete EnforcedStyles
-          'Layout/IndentationConsistency' => { 'EnforcedStyle' => 'rails' }
+          'Layout/InconsistentIndentation' => { 'EnforcedStyle' => 'rails' }
         }
       end
 
@@ -383,7 +395,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           `AlignWith` has been renamed to `EnforcedStyleAlignWith`.
           obsolete parameter `EnforcedMode` (for `Rails/UniqBeforePluck`) found in example/.rubocop.yml
           `EnforcedMode` has been renamed to `EnforcedStyle`.
-          obsolete `EnforcedStyle: rails` (for `Layout/IndentationConsistency`) found in example/.rubocop.yml
+          obsolete `EnforcedStyle: rails` (for `Layout/InconsistentIndentation`) found in example/.rubocop.yml
           `EnforcedStyle: rails` has been renamed to `EnforcedStyle: indented_internal_methods`.
         OUTPUT
       end

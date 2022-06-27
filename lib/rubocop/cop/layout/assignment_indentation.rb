@@ -20,7 +20,7 @@ module RuboCop
       #     end
       #
       # The indentation of the remaining lines can be corrected with
-      # other cops such as `IndentationConsistency` and `EndAlignment`.
+      # other cops such as `InconsistentIndentation` and `EndAlignment`.
       class AssignmentIndentation < Base
         include CheckAssignment
         include Alignment

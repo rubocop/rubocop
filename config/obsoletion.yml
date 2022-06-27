@@ -6,6 +6,7 @@ renamed:
   Layout/AlignArray: Layout/ArrayAlignment
   Layout/AlignHash: Layout/HashAlignment
   Layout/AlignParameters: Layout/ParameterAlignment
+  Layout/IndentationConsistency: Layout/InconsistentIndentation
   Layout/IndentArray: Layout/FirstArrayElementIndentation
   Layout/IndentAssignment: Layout/AssignmentIndentation
   Layout/IndentFirstArgument: Layout/FirstArgumentIndentation
@@ -25,6 +26,7 @@ renamed:
   Lint/Eval: Security/Eval
   Lint/HandleExceptions: Lint/SuppressedException
   Lint/MultipleCompare: Lint/MultipleComparison
+  Lint/PercentStringArray: Lint/RedundantPercentWPunctuation
   Lint/StringConversionInInterpolation: Lint/RedundantStringCoercion
   Lint/UnneededCopDisableDirective: Lint/RedundantCopDisableDirective
   Lint/UnneededCopEnableDirective: Lint/RedundantCopEnableDirective
@@ -33,10 +35,12 @@ renamed:
   Metrics/LineLength: Layout/LineLength
   Naming/UncommunicativeBlockParamName: Naming/BlockParameterName
   Naming/UncommunicativeMethodParamName: Naming/MethodParameterName
+  Naming/VariableNumber: Naming/NumericVariableSuffix
   Style/AccessorMethodName: Naming/AccessorMethodName
   Style/AsciiIdentifiers: Naming/AsciiIdentifiers
   Style/ClassAndModuleCamelCase: Naming/ClassAndModuleCamelCase
   Style/ConstantName: Naming/ConstantName
+  Style/DefWithParentheses: Style/RedundantMethodDefParentheses
   Style/DeprecatedHashMethods: Style/PreferredHashMethods
   Style/FileName: Naming/FileName
   Style/FlipFlop: Lint/FlipFlop
@@ -51,7 +55,7 @@ renamed:
   Style/UnneededPercentQ: Style/RedundantPercentQ
   Style/UnneededSort: Style/RedundantSort
   Style/VariableName: Naming/VariableName
-  Style/VariableNumber: Naming/VariableNumber
+  Style/VariableNumber: Naming/NumericVariableSuffix
 
 # Cops that were removed
 removed:
@@ -205,7 +209,7 @@ changed_parameters:
 
 # Enforced styles that have been removed or replaced
 changed_enforced_styles:
-  - cops: Layout/IndentationConsistency
+  - cops: Layout/InconsistentIndentation
     parameters: EnforcedStyle
     value: rails
     alternative: indented_internal_methods

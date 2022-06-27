@@ -100,7 +100,7 @@ module RuboCop
       #   # good
       #   :some_sym_v1
       #
-      class VariableNumber < Base
+      class NumericVariableSuffix < Base
         include AllowedIdentifiers
         include ConfigurableNumbering
         include AllowedPattern

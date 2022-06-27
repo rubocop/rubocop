@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           )
         RUBY
 
-        # The first `)` Will be corrected by IndentationConsistency.
+        # The first `)` Will be corrected by InconsistentIndentation.
         expect_correction(<<~RUBY, loop: false)
           foo(
             bar(
@@ -517,7 +517,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
           )
         RUBY
 
-        # The first `)` Will be corrected by IndentationConsistency.
+        # The first `)` Will be corrected by InconsistentIndentation.
         expect_correction(<<~RUBY, loop: false)
           foo(
             bar(

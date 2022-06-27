@@ -70,7 +70,7 @@
         def set_book
     ```
 
-  * **Line # 66 - convention:** Layout/IndentationConsistency: Inconsistent indentation detected.
+  * **Line # 66 - convention:** Layout/InconsistentIndentation: Inconsistent indentation detected.
 
     ```rb
         def set_book ...
@@ -88,7 +88,7 @@
         def book_params
     ```
 
-  * **Line # 71 - convention:** Layout/IndentationConsistency: Inconsistent indentation detected.
+  * **Line # 71 - convention:** Layout/InconsistentIndentation: Inconsistent indentation detected.
 
     ```rb
         def book_params ...
