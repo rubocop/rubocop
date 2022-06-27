@@ -1,1 +1,0 @@
-* [#7900](https://github.com/rubocop/rubocop/issues/7900): Fix `Style/FormatStringToken` false positive with formatted input and `template` style enforced, and add autocorrection. ([@FnControlOption][])
