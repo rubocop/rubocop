@@ -976,14 +976,14 @@ Layout/LineContinuationLeadingSpace:
   Enabled: pending
   AutoCorrect: false
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.31'
 
 Layout/LineContinuationSpacing:
   Description: 'Checks the spacing in front of backslash in line continuations.'
   Enabled: pending
   AutoCorrect: true
   SafeAutoCorrect: true
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.31'
   EnforcedStyle: space
   SupportedStyles:
     - space
@@ -1568,7 +1568,7 @@ Lint/ConstantDefinitionInBlock:
 Lint/ConstantOverwrittenInRescue:
   Description: 'Checks for overwriting an exception with an exception result by use `rescue =>`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.31'
 
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
@@ -1959,7 +1959,7 @@ Lint/NoReturnInBeginEndBlocks:
 Lint/NonAtomicFileOperation:
   Description: Checks for non-atomic file operations.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.31'
   SafeAutoCorrect: false
 
 Lint/NonDeterministicRequireOrder:
@@ -2378,7 +2378,7 @@ Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
   Enabled: true
   VersionAdded: '0.17'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.31'
 
 Lint/UselessMethodDefinition:
   Description: 'Checks for useless method definitions.'
@@ -3709,7 +3709,7 @@ Style/GuardClause:
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
   VersionAdded: '0.20'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.31'
   # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
   # needs to have to trigger this cop
   MinBodyLength: 1
@@ -3750,7 +3750,7 @@ Style/HashExcept:
                  that can be replaced with `Hash#except` method.
   Enabled: pending
   VersionAdded: '1.7'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.31'
 
 Style/HashLikeCase:
   Description: >-

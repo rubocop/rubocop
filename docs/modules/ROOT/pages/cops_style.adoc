@@ -3241,6 +3241,10 @@ to go on its own line (expanded style).
 NOTE: A method definition is not considered empty if it contains
 comments.
 
+NOTE: Autocorrection will not be applied for the `compact` style
+if the resulting code is longer than the `Max` configuration for
+`Layout/LineLength`, but an offense will still be registered.
+
 === Examples
 
 ==== EnforcedStyle: compact (default)
@@ -4206,7 +4210,7 @@ puts '%10s' % 'hoge'
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.49
 | 1.0
 |===
@@ -4536,7 +4540,7 @@ $stdin.read
 | Yes
 | No
 | 0.20
-| 1.28
+| 1.31
 |===
 
 Use a guard clause instead of wrapping the code inside a conditional
@@ -4844,7 +4848,7 @@ NOTE: Required Ruby version: 3.0
 | Yes
 | Yes
 | 1.7
-| -
+| 1.31
 |===
 
 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
@@ -4865,6 +4869,9 @@ And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
 {foo: 1, bar: 2, baz: 3}.reject {|k, v| k == :bar }
 {foo: 1, bar: 2, baz: 3}.select {|k, v| k != :bar }
 {foo: 1, bar: 2, baz: 3}.filter {|k, v| k != :bar }
+{foo: 1, bar: 2, baz: 3}.reject {|k, v| %i[foo bar].include?(k) }
+{foo: 1, bar: 2, baz: 3}.select {|k, v| !%i[foo bar].include?(k) }
+{foo: 1, bar: 2, baz: 3}.filter {|k, v| !%i[foo bar].include?(k) }
 
 # good
 {foo: 1, bar: 2, baz: 3}.except(:bar)

@@ -650,6 +650,41 @@ end
 
 * https://rubystyle.guide#no-constant-definition-in-block
 
+== Lint/ConstantOverwrittenInRescue
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.31
+| -
+|===
+
+Checks for overwriting an exception with an exception result by use `rescue =>`.
+
+You intended to write as `rescue StandardError`.
+However, you have written `rescue => StandardError`.
+In that case, the result of `rescue` will overwrite `StandardError`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+begin
+  something
+rescue => StandardError
+end
+
+# good
+begin
+  something
+rescue StandardError
+end
+----
+
 == Lint/ConstantResolution
 
 |===
@@ -3346,6 +3381,59 @@ some_variable = if some_condition_is_met
                 else
                   do_something
                 end
+----
+
+== Lint/NonAtomicFileOperation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.31
+| -
+|===
+
+Checks for non-atomic file operation.
+And then replace it with a nearly equivalent and atomic method.
+
+These can cause problems that are difficult to reproduce,
+especially in cases of frequent file operations in parallel,
+such as test runs with parallel_rspec.
+
+For examples: creating a directory if there is none, has the following problems
+
+An exception occurs when the directory didn't exist at the time of `exist?`,
+but someone else created it before `mkdir` was executed.
+
+Subsequent processes are executed without the directory that should be there
+when the directory existed at the time of `exist?`,
+but someone else deleted it shortly afterwards.
+
+=== Safety
+
+This cop is unsafe, because autocorrection change to atomic processing.
+The atomic processing of the replacement destination is not guaranteed
+to be strictly equivalent to that before the replacement.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+unless FileTest.exist?(path)
+  FileUtils.makedirs(path)
+end
+
+if FileTest.exist?(path)
+  FileUtils.remove(path)
+end
+
+# good
+FileUtils.mkdir_p(path)
+
+FileUtils.rm_rf(path)
 ----
 
 == Lint/NonDeterministicRequireOrder
@@ -6445,6 +6533,48 @@ end
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
+
+== Lint/UselessElseWithoutRescue
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| No
+| 0.17
+| 1.31
+|===
+
+Checks for useless `else` in `begin..end` without `rescue`.
+
+NOTE: This syntax is no longer valid on Ruby 2.6 or higher.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+
+begin
+  do_something
+else
+  do_something_else # This will never be run.
+end
+----
+
+[source,ruby]
+----
+# good
+
+begin
+  do_something
+rescue
+  handle_errors
+else
+  do_something_else
+end
+----
 
 == Lint/UselessMethodDefinition
 

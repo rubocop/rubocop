@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.31.0 (2022-06-27)
+
 ### New features
 
 * [#10699](https://github.com/rubocop/rubocop/pull/10699): Add new global `ActiveSupportExtensionsEnabled` option. ([@nobuyo][])

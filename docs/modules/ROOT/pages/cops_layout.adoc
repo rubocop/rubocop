@@ -2916,6 +2916,14 @@ hash = {
 and_in_a_method_call({
   no: :difference
                      })
+takes_multi_pairs_hash(x: {
+  a: 1,
+  b: 2
+},
+                       y: {
+                         c: 1,
+                         d: 2
+                       })
 
 # good
 special_inside_parentheses
@@ -2925,6 +2933,14 @@ hash = {
 but_in_a_method_call({
                        its_like: :this
                      })
+takes_multi_pairs_hash(x: {
+                         a: 1,
+                         b: 2
+                       },
+                       y: {
+                         c: 1,
+                         d: 2
+                       })
 ----
 
 ==== EnforcedStyle: consistent
@@ -2964,11 +2980,27 @@ and_in_a_method_call({
 and_now_for_something = {
                           completely: :different
 }
+takes_multi_pairs_hash(x: {
+  a: 1,
+  b: 2
+},
+                        y: {
+                             c: 1,
+                             d: 2
+                           })
 
 # good
 and_now_for_something = {
                           completely: :different
                         }
+takes_multi_pairs_hash(x: {
+                            a: 1,
+                            b: 2
+                          },
+                       y: {
+                            c: 1,
+                            d: 2
+                          })
 ----
 
 === Configurable attributes
@@ -3975,6 +4007,113 @@ end
 # (start of file)
 # a comment
 ----
+
+== Layout/LineContinuationLeadingSpace
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.31
+| -
+|===
+
+Checks that strings broken over multiple lines (by a backslash) contain
+trailing spaces instead of leading spaces.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+'this text contains a lot of' \
+'               spaces'
+
+# good
+'this text contains a lot of               ' \
+'spaces'
+
+# bad
+'this text is too' \
+' long'
+
+# good
+'this text is too ' \
+'long'
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AutoCorrect
+| `false`
+| Boolean
+|===
+
+== Layout/LineContinuationSpacing
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.31
+| -
+|===
+
+Checks that the backslash of a line continuation is separated from
+preceding text by exactly one space (default) or zero spaces.
+
+=== Examples
+
+==== EnforcedStyle: space (default)
+
+[source,ruby]
+----
+# bad
+'a'\
+'b'  \
+'c'
+
+# good
+'a' \
+'b' \
+'c'
+----
+
+==== EnforcedStyle: no_space
+
+[source,ruby]
+----
+# bad
+'a' \
+'b'  \
+'c'
+
+# good
+'a'\
+'b'\
+'c'
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AutoCorrect
+| `true`
+| Boolean
+
+| EnforcedStyle
+| `space`
+| `space`, `no_space`
+|===
 
 == Layout/LineEndStringConcatenationIndentation
 

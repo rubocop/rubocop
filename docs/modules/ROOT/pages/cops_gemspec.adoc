@@ -1,15 +1,5 @@
 = Gemspec
 
-=== Configurable attributes
-
-|===
-| Name | Default value | Configurable values
-
-| Include
-| `+**/*.gemspec+`
-| Array
-|===
-
 == Gemspec/DependencyVersion
 
 |===
@@ -108,7 +98,7 @@ end
 |===
 
 Checks that deprecated attribute attributes are not set in a gemspec file.
-Removing `test_files` allows the user to receive smaller packed gems.
+Removing deprecated attributes allows the user to receive smaller packed gems.
 
 === Examples
 
@@ -309,30 +299,6 @@ operations):
 This helps make your gem more secure, as users can be more
 confident that gem updates were pushed by maintainers.
 
- # bad
- Gem::Specification.new do |spec|
-   spec.metadata = {
-     'rubygems_mfa_required' => 'false'
-   }
- end
-
- # good
- Gem::Specification.new do |spec|
-   spec.metadata = {
-     'rubygems_mfa_required' => 'true'
-   }
- end
-
- # bad
- Gem::Specification.new do |spec|
-   spec.metadata['rubygems_mfa_required'] = 'false'
- end
-
- # good
- Gem::Specification.new do |spec|
-   spec.metadata['rubygems_mfa_required'] = 'true'
- end
-
 === Examples
 
 [source,ruby]
@@ -347,6 +313,30 @@ Gem::Specification.new do |spec|
   spec.metadata = {
     'rubygems_mfa_required' => 'true'
   }
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata['rubygems_mfa_required'] = 'true'
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.metadata = {
+    'rubygems_mfa_required' => 'false'
+  }
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata = {
+    'rubygems_mfa_required' => 'true'
+  }
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.metadata['rubygems_mfa_required'] = 'false'
 end
 
 # good
