@@ -6317,5 +6317,4 @@
 [@zachahn]: https://github.com/zachahn
 [@kaitielth]: https://github.com/kaitielth
 [@j-miyake]: https://github.com/j-miyake
-[@kaitielth]: https://github.com/kaitielth
 [@FnControlOption]: https://github.com/FnControlOption
