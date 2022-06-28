@@ -79,6 +79,20 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationSpacing, :config do
         X
       RUBY
     end
+
+    it 'ignores when too much space in front of backslash after `__END__`' do
+      expect_no_offenses(<<~'RUBY')
+        foo
+        bar
+        __END__
+        baz    \
+        qux
+      RUBY
+    end
+
+    it 'ignores empty code' do
+      expect_no_offenses('')
+    end
   end
 
   context 'EnforcedStyle: no_space' do
@@ -158,6 +172,20 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationSpacing, :config do
           ok
         X
       RUBY
+    end
+
+    it 'ignores when too much space in front of backslash after `__END__`' do
+      expect_no_offenses(<<~'RUBY')
+        foo
+        bar
+        __END__
+        baz    \
+        qux
+      RUBY
+    end
+
+    it 'ignores empty code' do
+      expect_no_offenses('')
     end
   end
 end
