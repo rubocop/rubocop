@@ -301,6 +301,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation, :config do
           RUBY
         end
 
+        it 'accepts indent based on the preceding left parenthesis ' \
+           'when the right bracket and its following pair is on the same line' do
+          expect_no_offenses(<<~RUBY)
+            func(:x, y: [
+                   :a,
+                   :b
+                 ], z: [
+                   :c,
+                   :d
+                 ])
+          RUBY
+        end
+
         it 'accepts indent based on the left brace when the outer hash key and ' \
            'the left bracket is not on the same line' do
           expect_no_offenses(<<~RUBY)
@@ -403,6 +416,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation, :config do
           RUBY
         end
 
+        it 'accepts indent based on the start of the line where the left bracket is' \
+           'when the right bracket and its following pair is on the same line' do
+          expect_no_offenses(<<~RUBY)
+            func(:x, y: [
+              :a,
+              :b
+            ], z: [
+              :c,
+              :d
+            ])
+          RUBY
+        end
+
         it 'accepts indent based on the left brace when the outer hash key and ' \
            'the left bracket is not on the same line' do
           expect_no_offenses(<<~RUBY)
@@ -489,7 +515,20 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation, :config do
         RUBY
       end
 
-      it 'accepts indent based on the left brace when the outer hash key and ' \
+      it 'accepts indent based on the start of the line where the left bracket is' \
+         'when the right bracket and its following pair is on the same line' do
+        expect_no_offenses(<<~RUBY)
+          func :x, y: [
+            :a,
+            :b
+          ], z: [
+            :c,
+            :d
+          ]
+        RUBY
+      end
+
+      it 'accepts indent based on the left bracket when the outer hash key and ' \
          'the left bracket is not on the same line' do
         expect_no_offenses(<<~RUBY)
           func x:
