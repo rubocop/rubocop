@@ -173,4 +173,14 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when using `FileTest.exist?` with `if` condition that has `else` branch' do
+    expect_no_offenses(<<~RUBY)
+      if FileTest.exist?(path)
+        FileUtils.mkdir(path)
+      else
+        do_something
+      end
+    RUBY
+  end
 end

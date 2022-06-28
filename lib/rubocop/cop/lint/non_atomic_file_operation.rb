@@ -72,6 +72,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.parent&.if_type?
+          return if node.parent.else_branch
           return if explicit_not_force?(node)
           return unless (exist_node = send_exist_node(node.parent).first)
           return unless exist_node.first_argument == node.first_argument
