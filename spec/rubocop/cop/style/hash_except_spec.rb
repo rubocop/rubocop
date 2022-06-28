@@ -142,6 +142,30 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
           {foo: 1, bar: 2, baz: 3}.except("\#{foo}", 'bar')
         RUBY
       end
+
+      it 'registers and corrects an offense when using `reject` and calling `include?` method with variable' do
+        expect_offense(<<~RUBY)
+          array = [:foo, :bar]
+          {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.include?(k) }
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array = [:foo, :bar]
+          {foo: 1, bar: 2, baz: 3}.except(*array)
+        RUBY
+      end
+
+      it 'registers and corrects an offense when using `reject` and calling `include?` method with method call' do
+        expect_offense(<<~RUBY)
+          {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.include?(k) }
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: 1, bar: 2, baz: 3}.except(*array)
+        RUBY
+      end
     end
 
     context 'using `exclude?`' do
@@ -316,6 +340,30 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
             {foo: 1, bar: 2, baz: 3}.except("\#{foo}", 'bar')
           RUBY
         end
+
+        it 'registers and corrects an offense when using `reject` and calling `key.in?` method with variable' do
+          expect_offense(<<~RUBY)
+            array = %i[foo bar]
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| k.in?(array) }
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array = %i[foo bar]
+            {foo: 1, bar: 2, baz: 3}.except(*array)
+          RUBY
+        end
+
+        it 'registers and corrects an offense when using `reject` and calling `key.in?` method with method call' do
+          expect_offense(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| k.in?(array) }
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.except(*array)
+          RUBY
+        end
       end
 
       context 'using `include?`' do
@@ -373,6 +421,30 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
             {foo: 1, bar: 2, baz: 3}.except("\#{foo}", 'bar')
           RUBY
         end
+
+        it 'registers and corrects an offense when using `reject` and calling `include?` method with variable' do
+          expect_offense(<<~RUBY)
+            array = %i[foo bar]
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.include?(k) }
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array = %i[foo bar]
+            {foo: 1, bar: 2, baz: 3}.except(*array)
+          RUBY
+        end
+
+        it 'registers and corrects an offense when using `reject` and calling `include?` method with method call' do
+          expect_offense(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.include?(k) }
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.except(*array)
+          RUBY
+        end
       end
 
       context 'using `exclude?`' do
@@ -428,6 +500,30 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
 
           expect_correction(<<~RUBY)
             {foo: 1, bar: 2, baz: 3}.except("\#{foo}", 'bar')
+          RUBY
+        end
+
+        it 'registers and corrects an offense when using `reject` and calling `!exclude?` method with variable' do
+          expect_offense(<<~RUBY)
+            array = %i[foo bar]
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.exclude?(k) }
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array = %i[foo bar]
+            {foo: 1, bar: 2, baz: 3}.except(*array)
+          RUBY
+        end
+
+        it 'registers and corrects an offense when using `reject` and calling `!exclude?` method with method call' do
+          expect_offense(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.exclude?(k) }
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.except(*array)
           RUBY
         end
       end
