@@ -51,7 +51,8 @@ module RuboCop
         return [left_brace.column, :left_brace_or_bracket] if style == brace_alignment_style
 
         pair = hash_pair_where_value_beginning_with(left_brace)
-        if pair && key_and_value_begin_on_same_line?(pair) && pair.right_sibling
+        if pair && key_and_value_begin_on_same_line?(pair) &&
+           right_sibling_begins_on_subsequent_line?(pair)
           return [pair.loc.column, :parent_hash_key]
         end
 
@@ -77,6 +78,10 @@ module RuboCop
 
       def key_and_value_begin_on_same_line?(pair)
         same_line?(pair.key, pair.value)
+      end
+
+      def right_sibling_begins_on_subsequent_line?(pair)
+        pair.right_sibling && (pair.last_line < pair.right_sibling.first_line)
       end
 
       def detected_styles(actual_column, offset, left_parenthesis, left_brace)

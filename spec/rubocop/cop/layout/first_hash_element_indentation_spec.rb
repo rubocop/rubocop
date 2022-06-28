@@ -385,6 +385,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
           RUBY
         end
 
+        it 'accepts indent based on the preceding left parenthesis' \
+           'when the right brace and its following pair is on the same line' do
+          expect_no_offenses(<<~RUBY)
+            func(:x, y: {
+                   a: 1,
+                   b: 2
+                 }, z: {
+                   c: 1,
+                   d: 2
+                 })
+          RUBY
+        end
+
         it 'accepts indent based on the left brace when the outer hash key and ' \
            'the left brace is not on the same line' do
           expect_no_offenses(<<~RUBY)
@@ -487,6 +500,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
           RUBY
         end
 
+        it 'accepts indent based on the start of the line where the left brace is' \
+           'when the right brace and its following pair is on the same line' do
+          expect_no_offenses(<<~RUBY)
+            func(:x, y: {
+              a: 1,
+              b: 2
+            }, z: {
+              c: 1,
+              d: 2
+            })
+          RUBY
+        end
+
         it 'accepts indent based on the left brace when the outer hash key and ' \
            'the left brace is not on the same line' do
           expect_no_offenses(<<~RUBY)
@@ -534,7 +560,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       end
 
       it 'registers an offense for the first inner hash member not based on the start of line ' \
-         'where the outer hash key is when no other outer hash members follow' do
+         'when the outer hash pair has no following siblings' do
         expect_offense(<<~RUBY)
           func x: :foo, y: {
                           a: 1, b: 2 }
@@ -571,6 +597,19 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
                  c: 1,
                  d: 2
                }
+        RUBY
+      end
+
+      it 'accepts indent based on the start of the line where the left brace is' \
+         'when the right brace and its following pair is on the same line' do
+        expect_no_offenses(<<~RUBY)
+          func :x, y: {
+            a: 1,
+            b: 2
+          }, z: {
+            c: 1,
+            d: 2
+          }
         RUBY
       end
 
