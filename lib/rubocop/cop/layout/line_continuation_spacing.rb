@@ -32,10 +32,14 @@ module RuboCop
         extend AutoCorrector
 
         def on_new_investigation
+          last_line = last_line(processed_source)
+
           @ignored_ranges = string_literal_ranges(processed_source.ast) +
                             comment_ranges(processed_source.comments)
 
           processed_source.raw_source.lines.each_with_index do |line, index|
+            break if index >= last_line
+
             line_number = index + 1
             investigate(line, line_number)
           end
@@ -101,6 +105,12 @@ module RuboCop
 
         def comment_ranges(comments)
           comments.map(&:loc).map(&:expression)
+        end
+
+        def last_line(processed_source)
+          last_token = processed_source.tokens.last
+
+          last_token ? last_token.line : processed_source.lines.length
         end
 
         def ignore_range?(backtick_range)
