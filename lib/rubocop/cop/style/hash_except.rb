@@ -144,7 +144,7 @@ module RuboCop
             return key.join(', ')
           end
 
-          key.source
+          key.literal? ? key.source : "*#{key.source}"
         end
 
         def decorate_source(value)
