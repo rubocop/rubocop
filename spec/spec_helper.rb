@@ -71,11 +71,11 @@ RSpec.configure do |config|
 
   config.after(:suite) { RuboCop::Cop::Registry.reset! }
 
-  if %w[ruby-head-ascii_spec ruby-head-spec].include? ENV.fetch('CIRCLE_STAGE', nil)
+  if %w[ruby-head-ascii_spec ruby-head-spec].include? ENV.fetch('CIRCLE_JOB', nil)
     config.filter_run_excluding broken_on: :ruby_head
   end
 
-  if %w[jruby-9.3-ascii_spec jruby-9.3-spec].include? ENV.fetch('CIRCLE_STAGE', nil)
+  if %w[jruby-9.3-ascii_spec jruby-9.3-spec].include? ENV.fetch('CIRCLE_JOB', nil)
     config.filter_run_excluding broken_on: :jruby
   end
 end
