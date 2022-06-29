@@ -117,10 +117,10 @@ module RuboCop
         end
 
         def check_module_function(nodes)
-          private_directive = nodes.any? { |node| private_directive?(node) }
+          return if nodes.any? { |node| private_directive?(node) }
 
           nodes.each do |node|
-            yield node if extend_self_node?(node) && !private_directive
+            yield node if extend_self_node?(node)
           end
         end
 
