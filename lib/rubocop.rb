@@ -72,7 +72,6 @@ require_relative 'rubocop/cop/mixin/configurable_enforced_style'
 require_relative 'rubocop/cop/mixin/configurable_formatting'
 require_relative 'rubocop/cop/mixin/configurable_naming'
 require_relative 'rubocop/cop/mixin/configurable_numbering'
-require_relative 'rubocop/cop/mixin/def_node'
 require_relative 'rubocop/cop/mixin/documentation_comment'
 require_relative 'rubocop/cop/mixin/duplication'
 require_relative 'rubocop/cop/mixin/range_help'
@@ -130,6 +129,7 @@ require_relative 'rubocop/cop/mixin/uncommunicative_name'
 require_relative 'rubocop/cop/mixin/unused_argument'
 require_relative 'rubocop/cop/mixin/visibility_help'
 require_relative 'rubocop/cop/mixin/comments_help' # relies on visibility_help
+require_relative 'rubocop/cop/mixin/def_node' # relies on visibility_help
 
 require_relative 'rubocop/cop/utils/format_string'
 

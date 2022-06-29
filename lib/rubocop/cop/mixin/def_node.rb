@@ -5,8 +5,7 @@ module RuboCop
     # Common functionality for checking def nodes.
     module DefNode
       extend NodePattern::Macros
-
-      NON_PUBLIC_MODIFIERS = %w[private protected].freeze
+      include VisibilityHelp
 
       private
 
@@ -15,11 +14,7 @@ module RuboCop
       end
 
       def preceding_non_public_modifier?(node)
-        stripped_source_upto(node.first_line).any? { |line| NON_PUBLIC_MODIFIERS.include?(line) }
-      end
-
-      def stripped_source_upto(index)
-        processed_source[0..index].map(&:strip)
+        node_visibility(node) != :public
       end
 
       # @!method non_public_modifier?(node)
