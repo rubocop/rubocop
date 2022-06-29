@@ -2,6 +2,16 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#10763](https://github.com/rubocop/rubocop/issues/10763): Fix a false positive for `Layout/LineContinuationSpacing` when using continuation keyword `\` after `__END__`. ([@koic][])
+* [#10755](https://github.com/rubocop/rubocop/issues/10755): Fix a false positive for `Lint/LiteralAsCondition` when using a literal in `case-in` condition where the match variable is used in `in` are accepted as a pattern matching. ([@koic][])
+* [#10760](https://github.com/rubocop/rubocop/issues/10760): Fix a false positive for `Lint/NonAtomicFileOperation` when using `FileTest.exist?` with `if` condition that has `else` branch. ([@koic][])
+* [#10745](https://github.com/rubocop/rubocop/issues/10745): Require JSON 2.3 or higher to fix an incompatible JSON API error. ([@koic][])
+* [#10754](https://github.com/rubocop/rubocop/issues/10754): Fix an incorrect autocorrect for `Style/HashExcept` when using a non-literal collection receiver for `include?`. ([@koic][])
+* [#10751](https://github.com/rubocop/rubocop/issues/10751): Fix autocorrect for Layout/FirstHashElementIndentation. ([@j-miyake][])
+* [#10750](https://github.com/rubocop/rubocop/pull/10750): Recover 7x slow running `rubocop`. ([@koic][])
+
 ## 1.31.0 (2022-06-27)
 
 ### New features
