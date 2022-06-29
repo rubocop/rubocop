@@ -28,6 +28,7 @@ module RuboCop
       # * always - forces use of the 3.1 syntax (e.g. {foo:})
       # * never - forces use of explicit hash literal value
       # * either - accepts both shorthand and explicit use of hash literal value
+      # * consistent - like "always", but will avoid mixing styles in a single hash
       #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
@@ -89,6 +90,20 @@ module RuboCop
       #   # good
       #   {foo:, bar:}
       #
+      # @example EnforcedShorthandSyntax: consistent
+      #
+      #   # bad
+      #   {foo: , bar: bar}
+      #
+      #   # good
+      #   {foo:, bar:}
+      #
+      #   # bad
+      #   {foo: , bar: baz}
+      #
+      #   # good
+      #   {foo: foo, bar: baz}
+      #
       class HashSyntax < Base
         include ConfigurableEnforcedStyle
         include HashShorthandSyntax
@@ -103,6 +118,8 @@ module RuboCop
           pairs = node.pairs
 
           return if pairs.empty?
+
+          on_hash_for_mixed_shorthand(node)
 
           if style == :hash_rockets || force_hash_rockets?(pairs)
             hash_rockets_check(pairs)

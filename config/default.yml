@@ -3839,6 +3839,8 @@ Style/HashSyntax:
     - never
     # accepts both shorthand and explicit use of hash literal value.
     - either
+    # like "always", but will avoid mixing styles in a single hash
+    - consistent
   # Force hashes that have a symbol value to use hash rockets
   UseHashRocketsWithSymbolValues: false
   # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
