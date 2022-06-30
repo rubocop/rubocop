@@ -26,7 +26,7 @@ module RuboCop
       def check_first(first, left_brace, left_parenthesis, offset)
         actual_column = first.source_range.column
 
-        indent_base_column, indent_base_type = indent_base(left_brace, left_parenthesis)
+        indent_base_column, indent_base_type = indent_base(left_brace, first, left_parenthesis)
         expected_column = indent_base_column + configured_indentation_width + offset
 
         @column_delta = expected_column - actual_column
@@ -47,10 +47,10 @@ module RuboCop
         end
       end
 
-      def indent_base(left_brace, left_parenthesis)
+      def indent_base(left_brace, first, left_parenthesis)
         return [left_brace.column, :left_brace_or_bracket] if style == brace_alignment_style
 
-        pair = hash_pair_where_value_beginning_with(left_brace)
+        pair = hash_pair_where_value_beginning_with(left_brace, first)
         if pair && key_and_value_begin_on_same_line?(pair) &&
            right_sibling_begins_on_subsequent_line?(pair)
           return [pair.loc.column, :parent_hash_key]
@@ -63,17 +63,10 @@ module RuboCop
         [left_brace.source_line =~ /\S/, :start_of_line]
       end
 
-      def hash_pair_where_value_beginning_with(left_brace)
-        node = node_beginning_with(left_brace)
-        node.parent&.pair_type? ? node.parent : nil
-      end
+      def hash_pair_where_value_beginning_with(left_brace, first)
+        return unless first && first.parent.loc.begin == left_brace
 
-      def node_beginning_with(left_brace)
-        processed_source.ast.each_descendant do |node|
-          if node.loc.is_a?(Parser::Source::Map::Collection) && (node.loc.begin == left_brace)
-            break node
-          end
-        end
+        first.parent&.parent&.pair_type? ? first.parent.parent : nil
       end
 
       def key_and_value_begin_on_same_line?(pair)
