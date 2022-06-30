@@ -120,14 +120,15 @@ module RuboCop
             check_first(first_elem, left_bracket, left_parenthesis, 0)
           end
 
-          check_right_bracket(array_node.loc.end, left_bracket, left_parenthesis)
+          check_right_bracket(array_node.loc.end, first_elem, left_bracket, left_parenthesis)
         end
 
-        def check_right_bracket(right_bracket, left_bracket, left_parenthesis)
+        def check_right_bracket(right_bracket, first_elem, left_bracket, left_parenthesis)
           # if the right bracket is on the same line as the last value, accept
           return if /\S/.match?(right_bracket.source_line[0...right_bracket.column])
 
-          expected_column, indent_base_type = indent_base(left_bracket, left_parenthesis)
+          expected_column, indent_base_type = indent_base(left_bracket, first_elem,
+                                                          left_parenthesis)
           @column_delta = expected_column - right_bracket.column
           return if @column_delta.zero?
 

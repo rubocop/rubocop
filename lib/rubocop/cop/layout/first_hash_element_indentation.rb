@@ -158,14 +158,14 @@ module RuboCop
             end
           end
 
-          check_right_brace(hash_node.loc.end, left_brace, left_parenthesis)
+          check_right_brace(hash_node.loc.end, first_pair, left_brace, left_parenthesis)
         end
 
-        def check_right_brace(right_brace, left_brace, left_parenthesis)
+        def check_right_brace(right_brace, first_pair, left_brace, left_parenthesis)
           # if the right brace is on the same line as the last value, accept
           return if /\S/.match?(right_brace.source_line[0...right_brace.column])
 
-          expected_column, indent_base_type = indent_base(left_brace, left_parenthesis)
+          expected_column, indent_base_type = indent_base(left_brace, first_pair, left_parenthesis)
           @column_delta = expected_column - right_brace.column
           return if @column_delta.zero?
 
