@@ -73,11 +73,15 @@ module RuboCop
       namespace(name) do
         # rubocop:todo Naming/InclusiveLanguage
         task(:auto_correct, *args) do
+          require 'rainbow'
           warn Rainbow(
             'rubocop:auto_correct task is deprecated; ' \
             'use rubocop:autocorrect task or rubocop:autocorrect_all task instead.'
           ).yellow
-          ::Rake::Task['rubocop:autocorrect'].invoke
+          RakeFileUtils.verbose(verbose) do
+            yield(*[self, task_args].slice(0, task_block.arity)) if task_block
+            perform('--autocorrect')
+          end
         end
         # rubocop:enable Naming/InclusiveLanguage
 
