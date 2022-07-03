@@ -48,7 +48,7 @@ module RuboCop
       InvestigationReport = Struct.new(:cop, :processed_source, :offenses, :corrector)
 
       # List of methods names to restrict calls for `on_send` / `on_csend`
-      RESTRICT_ON_SEND = Set[].freeze
+      RESTRICT_ON_SEND = Set[].freeze # rubocop:disable InternalAffairs/UselessRestrictOnSend
 
       # List of cops that should not try to autocorrect at the same
       # time as this cop
