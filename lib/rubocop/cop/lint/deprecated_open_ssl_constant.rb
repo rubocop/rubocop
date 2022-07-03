@@ -37,7 +37,7 @@ module RuboCop
       #   # good
       #   OpenSSL::Digest.digest('SHA256', 'foo')
       #
-      class DeprecatedOpenSSLConstant < Base
+      class DeprecatedOpenSSLConstant < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

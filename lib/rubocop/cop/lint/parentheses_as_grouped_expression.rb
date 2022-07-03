@@ -15,7 +15,7 @@ module RuboCop
       #   do_something(foo)
       #   do_something (2 + 3) * 4
       #   do_something (foo * bar).baz
-      class ParenthesesAsGroupedExpression < Base
+      class ParenthesesAsGroupedExpression < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

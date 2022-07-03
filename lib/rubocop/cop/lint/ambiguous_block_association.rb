@@ -33,7 +33,7 @@ module RuboCop
       #
       #   # good
       #   expect { do_something }.to change { object.attribute }
-      class AmbiguousBlockAssociation < Base
+      class AmbiguousBlockAssociation < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include IgnoredMethods
 
         MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \

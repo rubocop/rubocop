@@ -54,7 +54,7 @@ module RuboCop
       #   def some_method
       #     my_debugger
       #   end
-      class Debugger < Base
+      class Debugger < Base # rubocop:todo InternalAffairs/RestrictOnSend
         MSG = 'Remove debugger entry point `%<source>s`.'
 
         # @!method kernel?(node)

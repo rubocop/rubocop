@@ -50,7 +50,7 @@ module RuboCop
       #  # bad
       #  gem 'rubocop', tag: 'v1.17.0'
       #
-      class GemVersion < Base
+      class GemVersion < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         include GemDeclaration
 

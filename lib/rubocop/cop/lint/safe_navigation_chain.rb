@@ -23,7 +23,7 @@ module RuboCop
       #
       #   x&.foo&.bar
       #   x&.foo || bar
-      class SafeNavigationChain < Base
+      class SafeNavigationChain < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include NilMethods
         extend TargetRubyVersion
 

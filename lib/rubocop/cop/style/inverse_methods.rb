@@ -40,7 +40,7 @@ module RuboCop
       #     next if f.zero?
       #     f != 1
       #   end
-      class InverseMethods < Base
+      class InverseMethods < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include IgnoredNode
         include RangeHelp
         extend AutoCorrector

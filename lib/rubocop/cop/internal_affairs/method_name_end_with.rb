@@ -25,7 +25,7 @@ module RuboCop
       #   # good
       #   node.bang_method?
       #
-      class MethodNameEndWith < Base
+      class MethodNameEndWith < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

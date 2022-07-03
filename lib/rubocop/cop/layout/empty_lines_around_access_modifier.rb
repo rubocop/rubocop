@@ -40,7 +40,7 @@ module RuboCop
       #     def baz; end
       #   end
       #
-      class EmptyLinesAroundAccessModifier < Base
+      class EmptyLinesAroundAccessModifier < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         include RangeHelp
         extend AutoCorrector

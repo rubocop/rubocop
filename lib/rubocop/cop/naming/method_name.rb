@@ -28,7 +28,7 @@ module RuboCop
       #
       #   # good
       #   def fooBar; end
-      class MethodName < Base
+      class MethodName < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableNaming
         include AllowedPattern
         include RangeHelp

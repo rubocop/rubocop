@@ -144,7 +144,7 @@ module RuboCop
       #                 nested_first_param),
       #   second_param
       #
-      class FirstArgumentIndentation < Base
+      class FirstArgumentIndentation < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp

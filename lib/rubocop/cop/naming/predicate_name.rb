@@ -27,7 +27,7 @@ module RuboCop
       #   # good
       #   def value?
       #   end
-      class PredicateName < Base
+      class PredicateName < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include AllowedMethods
 
         # @!method dynamic_method_define(node)

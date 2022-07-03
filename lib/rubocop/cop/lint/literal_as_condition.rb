@@ -32,7 +32,7 @@ module RuboCop
       #   while true
       #     break if condition
       #   end
-      class LiteralAsCondition < Base
+      class LiteralAsCondition < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
 
         MSG = 'Literal `%<literal>s` appeared as a condition.'

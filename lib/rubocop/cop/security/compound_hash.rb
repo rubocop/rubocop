@@ -26,7 +26,7 @@ module RuboCop
       #   def hash
       #     [@foo, @bar].hash
       #   end
-      class CompoundHash < Base
+      class CompoundHash < Base # rubocop:todo InternalAffairs/RestrictOnSend
         COMBINATOR_IN_HASH_MSG = 'Use `[...].hash` instead of combining hash values manually.'
         MONUPLE_HASH_MSG =
           'Delegate hash directly without wrapping in an array when only using a single value'

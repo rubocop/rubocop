@@ -24,7 +24,7 @@ module RuboCop
       #   end
       #
       #   something = 123 if test
-      class SpaceAroundKeyword < Base
+      class SpaceAroundKeyword < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         MSG_BEFORE = 'Space before keyword `%<range>s` is missing.'

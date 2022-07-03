@@ -45,7 +45,7 @@ module RuboCop
       #   x + x
       #   1 << 1
       #
-      class BinaryOperatorWithIdenticalOperands < Base
+      class BinaryOperatorWithIdenticalOperands < Base # rubocop:todo InternalAffairs/RestrictOnSend
         MSG = 'Binary operator `%<op>s` has identical operands.'
         ALLOWED_MATH_OPERATORS = %i[+ * ** << >>].to_set.freeze
 

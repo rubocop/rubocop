@@ -11,7 +11,7 @@ module RuboCop
       #
       #   # good
       #   object.some_method
-      class MethodCallWithoutArgsParentheses < Base
+      class MethodCallWithoutArgsParentheses < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include IgnoredMethods
         extend AutoCorrector
 

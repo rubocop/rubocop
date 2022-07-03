@@ -37,7 +37,7 @@ module RuboCop
       #   # good
       #   array.reject { |e| some_condition? }
       #
-      class MapCompactWithConditionalBlock < Base
+      class MapCompactWithConditionalBlock < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         MSG = 'Replace `map { ... }.compact` with `%<method>s`.'

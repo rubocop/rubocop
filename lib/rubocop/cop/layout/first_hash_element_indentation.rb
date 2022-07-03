@@ -110,7 +110,7 @@ module RuboCop
       #                               c: 1,
       #                               d: 2
       #                             })
-      class FirstHashElementIndentation < Base
+      class FirstHashElementIndentation < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include Alignment
         include ConfigurableEnforcedStyle
         include MultilineElementIndentation

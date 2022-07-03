@@ -149,7 +149,7 @@ module RuboCop
       #     x * 100
       #   end
       #
-      class BlockDelimiters < Base
+      class BlockDelimiters < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         include IgnoredMethods
         include RangeHelp

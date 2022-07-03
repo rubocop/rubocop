@@ -50,7 +50,7 @@ module RuboCop
       #
       #   # good
       #   a ** b
-      class SpaceAroundOperators < Base
+      class SpaceAroundOperators < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include PrecedingFollowingAlignment
         include RangeHelp
         include RationalLiteral

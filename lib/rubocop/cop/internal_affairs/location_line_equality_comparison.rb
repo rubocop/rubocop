@@ -15,7 +15,7 @@ module RuboCop
       #   # good
       #   same_line?(node, node.parent)
       #
-      class LocationLineEqualityComparison < Base
+      class LocationLineEqualityComparison < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         MSG = 'Use `%<preferred>s`.'

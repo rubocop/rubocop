@@ -20,7 +20,7 @@ module RuboCop
       #     # ignored
       #     method foo, bar,
       #       baz
-      class FirstMethodArgumentLineBreak < Base
+      class FirstMethodArgumentLineBreak < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include FirstElementLineBreak
         extend AutoCorrector
 

@@ -39,7 +39,7 @@ module RuboCop
       #   !ENV['X']
       #   ENV['X'].some_method # (e.g. `.nil?`)
       #
-      class FetchEnvVar < Base
+      class FetchEnvVar < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         # rubocop:disable Layout/LineLength

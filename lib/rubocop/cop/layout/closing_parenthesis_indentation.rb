@@ -68,7 +68,7 @@ module RuboCop
       #   )
       #
       #
-      class ClosingParenthesisIndentation < Base
+      class ClosingParenthesisIndentation < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include Alignment
         extend AutoCorrector
 

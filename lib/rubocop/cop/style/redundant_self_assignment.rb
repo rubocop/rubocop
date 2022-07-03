@@ -28,7 +28,7 @@ module RuboCop
       #   foo.concat(ary)
       #   self.foo += ary
       #
-      class RedundantSelfAssignment < Base
+      class RedundantSelfAssignment < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

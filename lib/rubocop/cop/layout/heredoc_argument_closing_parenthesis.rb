@@ -50,7 +50,7 @@ module RuboCop
       #        123,
       #      )
       #
-      class HeredocArgumentClosingParenthesis < Base
+      class HeredocArgumentClosingParenthesis < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

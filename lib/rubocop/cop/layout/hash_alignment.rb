@@ -175,7 +175,7 @@ module RuboCop
       #   do_something({foo: 1,
       #     bar: 2})
       #
-      class HashAlignment < Base
+      class HashAlignment < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include HashAlignmentStyles
         include RangeHelp
         extend AutoCorrector

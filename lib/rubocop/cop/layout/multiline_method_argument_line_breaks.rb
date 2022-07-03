@@ -22,7 +22,7 @@ module RuboCop
       #     b,
       #     c
       #   )
-      class MultilineMethodArgumentLineBreaks < Base
+      class MultilineMethodArgumentLineBreaks < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include MultilineElementLineBreaks
         extend AutoCorrector
 

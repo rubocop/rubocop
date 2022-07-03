@@ -163,5 +163,9 @@ InternalAffairs/StyleDetectedApiUse:
   Exclude:
     - 'lib/rubocop/cop/mixin/percent_array.rb'
 
+InternalAffairs/RestrictOnSend:
+  Exclude:
+    - 'lib/rubocop/cop/mixin/**/*.rb'
+
 Gemspec/DependencyVersion:
   Enabled: true

@@ -12,7 +12,7 @@ module RuboCop
       #
       #   # bad
       #   method1(method2 arg)
-      class NestedParenthesizedCalls < Base
+      class NestedParenthesizedCalls < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         include AllowedMethods
         extend AutoCorrector

@@ -21,7 +21,7 @@ module RuboCop
       #   something y, z
       #   something 'hello'
       #
-      class SpaceBeforeFirstArg < Base
+      class SpaceBeforeFirstArg < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include PrecedingFollowingAlignment
         include RangeHelp
         extend AutoCorrector

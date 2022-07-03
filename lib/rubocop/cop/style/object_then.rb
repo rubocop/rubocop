@@ -22,7 +22,7 @@ module RuboCop
       #   # good
       #   obj.yield_self { |x| x.do_something }
       #
-      class ObjectThen < Base
+      class ObjectThen < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
