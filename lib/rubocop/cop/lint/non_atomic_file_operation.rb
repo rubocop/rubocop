@@ -71,18 +71,22 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.parent&.if_type?
-          return if node.parent.else_branch
+          return unless (parent = node.parent) && parent.if_type?
+          return if allowable_use_with_if?(parent)
           return if explicit_not_force?(node)
-          return unless (exist_node = send_exist_node(node.parent).first)
+          return unless (exist_node = send_exist_node(parent).first)
           return unless exist_node.first_argument == node.first_argument
 
-          offense(node, exist_node)
+          register_offense(node, exist_node)
         end
 
         private
 
-        def offense(node, exist_node)
+        def allowable_use_with_if?(if_node)
+          if_node.condition.and_type? || if_node.condition.or_type? || if_node.else_branch
+        end
+
+        def register_offense(node, exist_node)
           range = range_between(node.parent.loc.keyword.begin_pos,
                                 exist_node.loc.expression.end_pos)
 
