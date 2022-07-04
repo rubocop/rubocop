@@ -183,4 +183,20 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when using complex conditional with `&&`' do
+    expect_no_offenses(<<~RUBY)
+      if FileTest.exist?(path) && File.stat(path).socket?
+        FileUtils.mkdir(path)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using complex conditional with `||`' do
+    expect_no_offenses(<<~RUBY)
+      if FileTest.exist?(path) || condition
+        FileUtils.mkdir(path)
+      end
+    RUBY
+  end
 end
