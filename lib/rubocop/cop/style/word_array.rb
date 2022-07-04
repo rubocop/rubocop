@@ -44,7 +44,7 @@ module RuboCop
         extend AutoCorrector
 
         PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'
-        ARRAY_MSG = 'Use `%<prefer>s` for an array of words.'
+        ARRAY_MSG = 'Use %<prefer>s for an array of words.'
 
         class << self
           attr_accessor :largest_brackets
@@ -92,8 +92,7 @@ module RuboCop
               to_string_literal(word.children[0])
             end
           end
-
-          "[#{words.join(', ')}]"
+          build_bracketed_array_with_appropriate_whitespace(elements: words, node: node)
         end
       end
     end

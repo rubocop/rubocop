@@ -220,6 +220,25 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
     end
 
+    it 'autocorrects multiline %i array' do
+      expect_offense(<<~RUBY)
+        %i(
+        ^^^ Use an array literal `[...]` for an array of symbols.
+          one
+          two
+          three
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [
+          :one,
+          :two,
+          :three
+        ]
+      RUBY
+    end
+
     it 'autocorrects an array has interpolations' do
       expect_offense(<<~'RUBY')
         %I(#{foo} #{foo}bar foo#{bar} foo)
