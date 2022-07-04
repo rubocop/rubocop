@@ -81,7 +81,8 @@ module RuboCop
         end
 
         def like_method_argument_parentheses?(node)
-          node.send_type? && node.arguments.size == 1 && !node.arithmetic_operation?
+          node.send_type? && node.arguments.one? &&
+            !node.arithmetic_operation? && node.first_argument.begin_type?
         end
 
         def empty_parentheses?(node)
