@@ -39,7 +39,7 @@ module RuboCop
         minimum_target_ruby_version 2.0
 
         PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
-        ARRAY_MSG = 'Use `%<prefer>s` for an array of symbols.'
+        ARRAY_MSG = 'Use %<prefer>s for an array of symbols.'
 
         class << self
           attr_accessor :largest_brackets
@@ -74,8 +74,7 @@ module RuboCop
               to_symbol_literal(c.value.to_s)
             end
           end
-
-          "[#{syms.join(', ')}]"
+          build_bracketed_array_with_appropriate_whitespace(elements: syms, node: node)
         end
 
         def to_symbol_literal(string)

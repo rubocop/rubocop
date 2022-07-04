@@ -416,6 +416,23 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
+    it 'autocorrects multiline %w() array' do
+      expect_offense(<<~'RUBY')
+        %w(
+        ^^^ Use an array literal `[...]` for an array of words.
+          foo
+          bar
+        )
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        [
+          'foo',
+          'bar'
+        ]
+      RUBY
+    end
+
     it 'autocorrects a %W() array which uses string with hyphen' do
       expect_offense(<<~'RUBY')
         %W(foo bar #{foo}-bar)
