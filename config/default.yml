@@ -2128,6 +2128,11 @@ Lint/RequireParentheses:
   Enabled: true
   VersionAdded: '0.18'
 
+Lint/RequireRangeParentheses:
+  Description: 'Checks that a range literal is enclosed in parentheses when the end of the range is at a line break.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/RequireRelativeSelfPath:
   Description: 'Checks for uses a file requiring itself with `require_relative`.'
   Enabled: pending
