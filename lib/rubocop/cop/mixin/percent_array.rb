@@ -98,8 +98,7 @@ module RuboCop
       def whitespace_between(node)
         if node.children.length >= 2
           node.source[
-            node.children[0].location.expression.end_pos...
-              node.children[1].location.expression.begin_pos
+            node.children[0].loc.expression.end_pos...node.children[1].loc.expression.begin_pos
           ]
         else
           ' '
@@ -112,7 +111,7 @@ module RuboCop
       # @param [RuboCop::AST::ArrayNode] node
       # @return [String]
       def whitespace_leading(node)
-        node.source[node.location.begin.end_pos...node.children[0].location.expression.begin_pos]
+        node.source[node.loc.begin.end_pos...node.children[0].loc.expression.begin_pos]
       end
 
       # Provides trailing whitespace for building a bracketed array.
@@ -121,7 +120,7 @@ module RuboCop
       # @param [RuboCop::AST::ArrayNode] node
       # @return [String]
       def whitespace_trailing(node)
-        node.source[node.children[-1].location.expression.end_pos...node.location.end.begin_pos]
+        node.source[node.children[-1].loc.expression.end_pos...node.loc.end.begin_pos]
       end
     end
   end
