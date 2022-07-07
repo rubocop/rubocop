@@ -47,6 +47,8 @@ module RuboCop
       class TopLevelMethodDefinition < Base
         MSG = 'Do not define methods at the top-level.'
 
+        RESTRICT_ON_SEND = %i[define_method].freeze # rubocop:disable InternalAffairs/UselessRestrictOnSend
+
         def on_def(node)
           return unless top_level_method_definition?(node)
 

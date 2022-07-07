@@ -97,4 +97,10 @@ RSpec.describe RuboCop::Cop::Style::TopLevelMethodDefinition, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when just called method on top-level' do
+    expect_no_offenses(<<~RUBY)
+      require_relative 'foo'
+    RUBY
+  end
 end
