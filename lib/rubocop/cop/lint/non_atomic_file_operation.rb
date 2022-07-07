@@ -25,30 +25,38 @@ module RuboCop
       #   to be strictly equivalent to that before the replacement.
       #
       # @example
-      #   # bad
-      #   unless FileTest.exist?(path)
-      #     FileUtils.makedirs(path)
+      #   # bad - race condition with another process may result in an error in `mkdir`
+      #   unless Dir.exist?(path)
+      #     FileUtils.mkdir(path)
       #   end
       #
-      #   if FileTest.exist?(path)
+      #   # good - atomic and idempotent creation
+      #   FileUtils.mkdir_p(path)
+      #
+      #   # bad - race condition with another process may result in an error in `remove`
+      #   if File.exist?(path)
       #     FileUtils.remove(path)
       #   end
       #
-      #   # good
-      #   FileUtils.mkdir_p(path)
-      #
-      #   FileUtils.rm_rf(path)
+      #   # good - atomic and idempotent removal
+      #   FileUtils.rm_f(path)
       #
       class NonAtomicFileOperation < Base
         extend AutoCorrector
         include Alignment
         include RangeHelp
 
-        MSG = 'Remove unnecessary existence checks `%<receiver>s.%<method_name>s`.'
-        MAKE_METHODS = %i[makedirs mkdir mkdir_p mkpath].freeze
-        REMOVE_METHODS = %i[remove remove_dir remove_entry remove_entry_secure delete unlink
-                            remove_file rm rm_f rm_r rm_rf rmdir rmtree safe_unlink].freeze
-        RESTRICT_ON_SEND = (MAKE_METHODS + REMOVE_METHODS).freeze
+        MSG_REMOVE_FILE_EXIST_CHECK = 'Remove unnecessary existence check ' \
+                                      '`%<receiver>s.%<method_name>s`.'
+        MSG_CHANGE_FORCE_METHOD = 'Use atomic file operation method `FileUtils.%<method_name>s`.'
+        MAKE_FORCE_METHODS = %i[makedirs mkdir_p mkpath].freeze
+        MAKE_METHODS = %i[mkdir].freeze
+        REMOVE_RECURSIVE_METHODS = %i[rm_r rmtree].freeze
+        REMOVE_FORCE_METHODS = %i[rm_f rm_rf].freeze
+        REMOVE_METHODS = %i[remove remove_dir remove_entry remove_entry_secure
+                            delete unlink remove_file rm rmdir safe_unlink].freeze
+        RESTRICT_ON_SEND = (MAKE_METHODS + MAKE_FORCE_METHODS + REMOVE_METHODS +
+          REMOVE_FORCE_METHODS + REMOVE_RECURSIVE_METHODS).freeze
 
         # @!method send_exist_node(node)
         def_node_search :send_exist_node, <<-PATTERN
@@ -87,38 +95,59 @@ module RuboCop
         end
 
         def register_offense(node, exist_node)
+          unless force_method?(node)
+            add_offense(node,
+                        message: format(MSG_CHANGE_FORCE_METHOD,
+                                        method_name: replacement_method(node)))
+          end
+
           range = range_between(node.parent.loc.keyword.begin_pos,
                                 exist_node.loc.expression.end_pos)
-
-          add_offense(range, message: message(exist_node)) do |corrector|
+          add_offense(range, message: message_remove_file_exist_check(exist_node)) do |corrector|
             autocorrect(corrector, node, range)
           end
         end
 
-        def message(node)
+        def message_remove_file_exist_check(node)
           receiver, method_name = receiver_and_method_name(node)
-          format(MSG, receiver: receiver, method_name: method_name)
+          format(MSG_REMOVE_FILE_EXIST_CHECK, receiver: receiver, method_name: method_name)
         end
 
         def autocorrect(corrector, node, range)
           corrector.remove(range)
-          corrector.replace(node.child_nodes.first.loc.name, 'FileUtils')
-          corrector.replace(node.loc.selector, replacement_method(node))
+          autocorrect_replace_method(corrector, node)
           corrector.remove(node.parent.loc.end) if node.parent.multiline?
         end
 
-        def replacement_method(node)
-          return node.method_name if force_option?(node)
+        def autocorrect_replace_method(corrector, node)
+          return if force_method?(node)
 
+          corrector.replace(node.child_nodes.first.loc.name, 'FileUtils')
+          corrector.replace(node.loc.selector, replacement_method(node))
+        end
+
+        def replacement_method(node)
           if MAKE_METHODS.include?(node.method_name)
             'mkdir_p'
-          elsif REMOVE_METHODS.include?(node.method_name)
+          elsif REMOVE_RECURSIVE_METHODS.include?(node.method_name)
             'rm_rf'
+          elsif REMOVE_METHODS.include?(node.method_name)
+            'rm_f'
+          else
+            node.method_name
           end
+        end
+
+        def force_method?(node)
+          force_method_name?(node) || force_option?(node)
         end
 
         def force_option?(node)
           node.arguments.any? { |arg| force?(arg) }
+        end
+
+        def force_method_name?(node)
+          (MAKE_FORCE_METHODS + REMOVE_FORCE_METHODS).include?(node.method_name)
         end
       end
     end

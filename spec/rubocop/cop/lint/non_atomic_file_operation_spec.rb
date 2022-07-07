@@ -1,30 +1,82 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
-  %i[makedirs mkdir mkdir_p mkpath].each do |make_method|
-    it 'registers an offense when use `FileTest.exist?` before creating file' do
+  it 'registers an offense when use `FileTest.exist?` before creating file' do
+    expect_offense(<<~RUBY)
+      unless FileTest.exist?(path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.mkdir(path)
+        ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.mkdir_p(path)
+
+    RUBY
+  end
+
+  %i[makedirs mkdir_p mkpath].each do |make_method|
+    it 'registers an offense when use `FileTest.exist?` before force creating file' do
       expect_offense(<<~RUBY)
         unless FileTest.exist?(path)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exist?`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
           FileUtils.#{make_method}(path)
         end
       RUBY
 
       expect_correction(<<~RUBY)
 
-        #{trailing_whitespace}#{trailing_whitespace}FileUtils.mkdir_p(path)
+        #{trailing_whitespace}#{trailing_whitespace}FileUtils.#{make_method}(path)
 
       RUBY
     end
   end
 
   %i[remove remove_dir remove_entry remove_entry_secure delete unlink
-     remove_file rm rm_f rm_r rm_rf rmdir rmtree safe_unlink].each do |remove_method|
+     remove_file rm rmdir safe_unlink].each do |remove_method|
     it 'registers an offense when use `FileTest.exist?` before remove file' do
+      expect_offense(<<~RUBY, remove_method: remove_method)
+        if FileTest.exist?(path)
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+          FileUtils.#{remove_method}(path)
+          ^^^^^^^^^^^{remove_method}^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_f(path)
+
+      RUBY
+    end
+  end
+
+  %i[rm_f rm_rf].each do |remove_method|
+    it 'registers an offense when use `FileTest.exist?` before force remove file' do
       expect_offense(<<~RUBY)
         if FileTest.exist?(path)
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exist?`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
           FileUtils.#{remove_method}(path)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        #{trailing_whitespace}#{trailing_whitespace}FileUtils.#{remove_method}(path)
+
+      RUBY
+    end
+  end
+
+  %i[rm_r rmtree].each do |remove_method|
+    it 'registers an offense when use `FileTest.exist?` before remove recursive file' do
+      expect_offense(<<~RUBY, remove_method: remove_method)
+        if FileTest.exist?(path)
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+          FileUtils.#{remove_method}(path)
+          ^^^^^^^^^^^{remove_method}^^^^^^ Use atomic file operation method `FileUtils.rm_rf`.
         end
       RUBY
 
@@ -39,7 +91,7 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
   it 'registers an offense when use `FileTest.exist?` before creating file with an option `force: true`' do
     expect_offense(<<~RUBY)
       unless FileTest.exists?(path)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exists?`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exists?`.
         FileUtils.makedirs(path, force: true)
       end
     RUBY
@@ -62,14 +114,14 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
   it 'registers an offense when use `FileTest.exist?` before creating file with an option not `force`' do
     expect_offense(<<~RUBY)
       unless FileTest.exists?(path)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exists?`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exists?`.
         FileUtils.makedirs(path, verbose: true)
       end
     RUBY
 
     expect_correction(<<~RUBY)
 
-      #{trailing_whitespace}#{trailing_whitespace}FileUtils.mkdir_p(path, verbose: true)
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path, verbose: true)
 
     RUBY
   end
@@ -77,14 +129,14 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
   it 'registers an offense when use `FileTest.exists?` before creating file' do
     expect_offense(<<~RUBY)
       unless FileTest.exists?(path)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exists?`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exists?`.
         FileUtils.makedirs(path)
       end
     RUBY
 
     expect_correction(<<~RUBY)
 
-      #{trailing_whitespace}#{trailing_whitespace}FileUtils.mkdir_p(path)
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path)
 
     RUBY
   end
@@ -92,22 +144,23 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
   it 'registers an offense when use `FileTest.exist?` with negated `if` before creating file' do
     expect_offense(<<~RUBY)
       if !FileTest.exist?(path)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exist?`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
         FileUtils.makedirs(path)
       end
     RUBY
 
     expect_correction(<<~RUBY)
 
-      #{trailing_whitespace}#{trailing_whitespace}FileUtils.mkdir_p(path)
+      #{trailing_whitespace}#{trailing_whitespace}FileUtils.makedirs(path)
 
     RUBY
   end
 
   it 'registers an offense when use file existence checks `unless` by postfix before creating file' do
     expect_offense(<<~RUBY)
-      FileUtils.makedirs(path) unless FileTest.exist?(path)
-                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exist?`.
+      FileUtils.mkdir(path) unless FileTest.exist?(path)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+      ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -118,11 +171,12 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
   it 'registers an offense when use file existence checks `if` by postfix before removing file' do
     expect_offense(<<~RUBY)
       FileUtils.remove(path) if FileTest.exist?(path)
-                             ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence checks `FileTest.exist?`.
+                             ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+      ^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
     RUBY
 
     expect_correction(<<~RUBY)
-      FileUtils.rm_rf(path)#{trailing_whitespace}
+      FileUtils.rm_f(path)#{trailing_whitespace}
     RUBY
   end
 
