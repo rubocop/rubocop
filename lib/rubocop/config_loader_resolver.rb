@@ -179,7 +179,7 @@ module RuboCop
 
     def determine_inherit_mode(hash, key)
       cop_cfg = hash[key]
-      local_inherit = cop_cfg.delete('inherit_mode') if cop_cfg.is_a?(Hash)
+      local_inherit = cop_cfg['inherit_mode'] if cop_cfg.is_a?(Hash)
       local_inherit || hash['inherit_mode'] || {}
     end
 

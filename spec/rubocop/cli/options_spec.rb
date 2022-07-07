@@ -1203,8 +1203,16 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       create_file('.rubocop.yml', <<~YAML)
         Layout/LineLength:
           Max: 110
+        Lint/DeprecatedConstants:
+          inherit_mode:
+            merge:
+              - DeprecatedConstants
+          DeprecatedConstants:
+            MY_CONST:
+              Alternative: 'MyConst'
+              DeprecatedVersion: '2.7'
       YAML
-      # expect(cli.run(['--show-cops'] + arguments)).to eq(0)
+
       cli.run(['--show-cops'] + arguments)
     end
 
@@ -1275,6 +1283,43 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       end
 
       include_examples 'prints config'
+    end
+
+    context 'with one cop given and inherit_mode set in its local configuration' do
+      let(:arguments) { ['Lint/DeprecatedConstants'] }
+
+      it 'prints that cop including inherit_mode' do
+        expect(stdout).to match(
+          ['# Supports --autocorrect',
+           'Lint/DeprecatedConstants:',
+           '  Description: Checks for deprecated constants.',
+           '  Enabled: pending',
+           /^  VersionAdded: '[0-9.]+'$/,
+           /^  VersionChanged: '[0-9.]+'$/,
+           '  DeprecatedConstants:',
+           '    NIL:',
+           '      Alternative: nil',
+           "      DeprecatedVersion: '2.4'",
+           "    'TRUE':",
+           "      Alternative: 'true'",
+           "      DeprecatedVersion: '2.4'",
+           "    'FALSE':",
+           "      Alternative: 'false'",
+           "      DeprecatedVersion: '2.4'",
+           '    Net::HTTPServerException:',
+           '      Alternative: Net::HTTPClientException',
+           "      DeprecatedVersion: '2.6'",
+           '    Random::DEFAULT:',
+           '      Alternative: Random.new',
+           "      DeprecatedVersion: '3.0'",
+           '    MY_CONST:',
+           '      Alternative: MyConst',
+           "      DeprecatedVersion: '2.7'",
+           '  inherit_mode:',
+           '    merge:',
+           '    - DeprecatedConstants'].join("\n")
+        )
+      end
     end
 
     context 'with two cops given' do
