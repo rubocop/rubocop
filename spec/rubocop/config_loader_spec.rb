@@ -590,6 +590,51 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when inherit_mode:merge for a cop lists parameters that are either in parent or in ' \
+            'default configuration' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file('hosted_config.yml', <<~YAML)
+          AllCops:
+            NewCops: enable
+
+          Naming/VariableNumber:
+            EnforcedStyle: snake_case
+            Exclude:
+              - foo.rb
+            Include:
+              - bar.rb
+        YAML
+        create_file(file_path, <<~YAML)
+          inherit_from:
+            - hosted_config.yml
+
+          Naming/VariableNumber:
+            inherit_mode:
+              merge:
+                - AllowedIdentifiers
+                - Exclude
+                - Include
+            AllowedIdentifiers:
+              - iso2
+            Exclude:
+              - test.rb
+            Include:
+              - another_test.rb
+        YAML
+      end
+
+      it 'merges array parameters with parent or default configuration' do
+        examples_configuration = configuration_from_file['Naming/VariableNumber']
+        expect(examples_configuration['Exclude'].map { |abs_path| File.basename(abs_path) })
+          .to contain_exactly('foo.rb', 'test.rb')
+        expect(examples_configuration['Include']).to contain_exactly('bar.rb', 'another_test.rb')
+        expect(examples_configuration['AllowedIdentifiers'])
+          .to contain_exactly(*%w[capture3 iso8601 rfc1123_date rfc2822 rfc3339 rfc822 iso2])
+      end
+    end
+
     context 'when a department is disabled', :restore_registry do
       let(:file_path) { '.rubocop.yml' }
 
