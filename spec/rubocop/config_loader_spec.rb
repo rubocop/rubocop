@@ -635,6 +635,42 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a department is enabled in the top directory and disabled in a subdirectory' do
+      let(:file_path) { '.rubocop.yml' }
+      let(:configuration_from_subdir) do
+        described_class.configuration_from_file('subdir/.rubocop.yml')
+      end
+
+      before do
+        stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', 'rubocop')
+        stub_const('RuboCop::ConfigLoader::DEFAULT_FILE',
+                   File.join('rubocop', 'config', 'default.yml'))
+
+        create_file('rubocop/config/default.yml', <<~YAML)
+          Layout/SomeCop:
+            Enabled: pending
+        YAML
+        create_file(file_path, <<~YAML)
+          Layout:
+            Enabled: true
+        YAML
+        create_file('subdir/.rubocop.yml', <<~YAML)
+          Layout:
+            Enabled: false
+        YAML
+      end
+
+      it 'does not disable pending cops of that department in the top directory' do
+        # The cop is disabled in subdir because its department is disabled there.
+        subdir_configuration = configuration_from_subdir.for_cop('Layout/SomeCop')
+        expect(subdir_configuration['Enabled']).to be(false)
+
+        # The disabling of the cop in subdir should not leak into the top directory.
+        examples_configuration = configuration_from_file.for_cop('Layout/SomeCop')
+        expect(examples_configuration['Enabled']).to eq('pending')
+      end
+    end
+
     context 'when a department is disabled', :restore_registry do
       let(:file_path) { '.rubocop.yml' }
 
