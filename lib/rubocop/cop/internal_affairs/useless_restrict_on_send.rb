@@ -33,7 +33,13 @@ module RuboCop
         MSG = 'Useless `RESTRICT_ON_SEND` is defined.'
 
         # @!method defined_send_callback?(node)
-        def_node_search :defined_send_callback?, '(def {:on_send :after_send} ...)'
+        def_node_search :defined_send_callback?, <<~PATTERN
+          {
+            (def {:on_send :after_send} ...)
+            (alias (sym {:on_send :after_send}) _source ...)
+            (send nil? :alias_method {(sym {:on_send :after_send}) (str {"on_send" "after_send"})} _source ...)
+          }
+        PATTERN
 
         def on_casgn(node)
           return if !restrict_on_send?(node) || defined_send_callback?(node.parent)
