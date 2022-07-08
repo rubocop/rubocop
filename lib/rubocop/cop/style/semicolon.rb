@@ -31,6 +31,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Do not use semicolons to terminate expressions.'
+        REGEXP_DOTS = %i[tDOT2 tDOT3].freeze
 
         def self.autocorrect_incompatible_with
           [Style::SingleLineMethods]
@@ -38,6 +39,10 @@ module RuboCop
 
         def on_new_investigation
           return if processed_source.blank?
+
+          ast = processed_source.ast
+          @range_nodes = ast.range_type? ? [ast] : []
+          @range_nodes.concat(ast.each_descendant(:irange, :erange).to_a)
 
           check_for_line_terminator_or_opener
         end
@@ -64,12 +69,14 @@ module RuboCop
           # Make the obvious check first
           return unless processed_source.raw_source.include?(';')
 
-          each_semicolon { |line, column| register_semicolon(line, column, false) }
+          each_semicolon do |line, column, token_before_semicolon|
+            register_semicolon(line, column, false, token_before_semicolon)
+          end
         end
 
         def each_semicolon
           tokens_for_lines.each do |line, tokens|
-            yield line, tokens.last.column if tokens.last.semicolon?
+            yield line, tokens.last.column, tokens[-2] if tokens.last.semicolon?
             yield line, tokens.first.column if tokens.first.semicolon?
           end
         end
@@ -78,13 +85,21 @@ module RuboCop
           processed_source.tokens.group_by(&:line)
         end
 
-        def register_semicolon(line, column, after_expression)
+        def register_semicolon(line, column, after_expression, token_before_semicolon = nil)
           range = source_range(processed_source.buffer, line, column)
 
           add_offense(range) do |corrector|
             if after_expression
               corrector.replace(range, "\n")
             else
+              # Prevents becoming one range instance with subsequent line when endless range
+              # without parentheses.
+              # See: https://github.com/rubocop/rubocop/issues/10791
+              if REGEXP_DOTS.include?(token_before_semicolon&.type)
+                range_node = find_range_node(token_before_semicolon)
+                corrector.wrap(range_node, '(', ')') if range_node
+              end
+
               corrector.remove(range)
             end
           end
@@ -101,6 +116,12 @@ module RuboCop
           semicolons = processed_source[line - 1].enum_for(:scan, ';')
           semicolons.each do
             yield Regexp.last_match.begin(0)
+          end
+        end
+
+        def find_range_node(token_before_semicolon)
+          @range_nodes.detect do |range_node|
+            range_node.source_range.contains?(token_before_semicolon.pos)
           end
         end
       end
