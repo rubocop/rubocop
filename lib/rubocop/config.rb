@@ -25,7 +25,7 @@ module RuboCop
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
         qualified_cop_name = Cop::Registry.qualified_cop_name(cop, loaded_path)
-        cop_options = self[qualified_cop_name] || {}
+        cop_options = self[qualified_cop_name].dup || {}
         cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
         h[cop] = cop_options
       end
