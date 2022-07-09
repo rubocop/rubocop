@@ -237,8 +237,8 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `-o/--out`
 | Write output to a file instead of STDOUT.
 
-| `--parallel`
-| Use available CPUs to execute inspection in parallel.
+| `--[no-]parallel`
+| Use available CPUs to execute inspection in parallel. Default is parallel.
 
 | `-r/--require`
 | Require Ruby file (see xref:extensions.adoc#loading-extensions[Loading Extensions]).

@@ -213,16 +213,20 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      # NOTE: Cannot be autocorrected with `parallel`.
       context 'when specifying `--debug` and `-a` options`' do
-        it 'fails with an error message' do
+        it 'uses parallel inspection when correcting the file' do
           create_file('example1.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts "hello"
+          RUBY
+          expect(cli.run(['--debug', '-a'])).to eq(0)
+          expect($stdout.string).to include('Use parallel by default.')
+          expect(File.read('example1.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
             puts 'hello'
           RUBY
-          expect(cli.run(['--debug', '-a'])).to eq(0)
-          expect($stdout.string).not_to include('Use parallel by default.')
         end
       end
 

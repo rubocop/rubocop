@@ -260,29 +260,26 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       context 'combined with an autocorrect argument' do
         context 'combined with --fix-layout' do
-          it 'ignores --parallel' do
+          it 'allows --parallel' do
             options.parse %w[--parallel --fix-layout]
-            expect($stdout.string).to include('-P/--parallel is being ignored because it is not ' \
-                                              'compatible with -x/--fix-layout')
-            expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
+            expect($stdout.string).not_to include('-P/--parallel is being ignored')
+            expect(options.instance_variable_get(:@options).keys).to include(:parallel)
           end
         end
 
         context 'combined with --autocorrect' do
-          it 'ignores --parallel' do
+          it 'allows --parallel' do
             options.parse %w[--parallel --autocorrect]
-            expect($stdout.string).to include('-P/--parallel is being ignored because it is not ' \
-                                              'compatible with -a/--autocorrect')
-            expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
+            expect($stdout.string).not_to include('-P/--parallel is being ignored')
+            expect(options.instance_variable_get(:@options).keys).to include(:parallel)
           end
         end
 
         context 'combined with --autocorrect-all' do
-          it 'ignores --parallel' do
+          it 'allows --parallel' do
             options.parse %w[--parallel --autocorrect-all]
-            expect($stdout.string).to include('-P/--parallel is being ignored because it is not ' \
-                                              'compatible with -A/--autocorrect-all')
-            expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
+            expect($stdout.string).not_to include('-P/--parallel is being ignored')
+            expect(options.instance_variable_get(:@options).keys).to include(:parallel)
           end
         end
       end
@@ -309,7 +306,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         it 'ignores --parallel and lists both incompatible arguments' do
           options.parse %w[--parallel --fail-fast --autocorrect]
           expect($stdout.string).to include('-P/--parallel is being ignored because it is not ' \
-                                            'compatible with -F/--fail-fast, -a/--autocorrect')
+                                            'compatible with -F/--fail-fast')
           expect(options.instance_variable_get(:@options).keys).not_to include(:parallel)
         end
       end

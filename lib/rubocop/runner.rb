@@ -63,8 +63,12 @@ module RuboCop
     # Warms up the RuboCop cache by forking a suitable number of RuboCop
     # instances that each inspects its allotted group of files.
     def warm_cache(target_files)
+      saved_options = @options.dup
       puts 'Running parallel inspection' if @options[:debug]
+      %i[autocorrect safe_autocorrect].each { |opt| @options[opt] = false }
       Parallel.each(target_files) { |target_file| file_offenses(target_file) }
+    ensure
+      @options = saved_options
     end
 
     def find_target_files(paths)

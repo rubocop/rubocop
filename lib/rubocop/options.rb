@@ -421,12 +421,9 @@ module RuboCop
     end
 
     def invalid_arguments_for_parallel
-      [('--auto-gen-config'    if @options.key?(:auto_gen_config)),
-       ('-F/--fail-fast'       if @options.key?(:fail_fast)),
-       ('-x/--fix-layout'      if @options.key?(:fix_layout)),
-       ('-a/--autocorrect'     if @options.key?(:safe_autocorrect)),
-       ('-A/--autocorrect-all' if @options.key?(:autocorrect_all)),
-       ('--cache false'        if @options > { cache: 'false' })].compact
+      [('--auto-gen-config' if @options.key?(:auto_gen_config)),
+       ('-F/--fail-fast'    if @options.key?(:fail_fast)),
+       ('--cache false'     if @options > { cache: 'false' })].compact
     end
 
     def only_includes_redundant_disable?
