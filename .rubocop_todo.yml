@@ -29,6 +29,7 @@ Metrics/ModuleLength:
 RSpec/AnyInstance:
   Exclude:
     - 'spec/rubocop/cli_spec.rb'
+    - 'spec/rubocop/cli/suggest_extensions_spec.rb'
     - 'spec/rubocop/cop/lint/duplicate_methods_spec.rb'
     - 'spec/rubocop/cop/team_spec.rb'
     - 'spec/rubocop/target_finder_spec.rb'
