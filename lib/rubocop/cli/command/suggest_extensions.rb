@@ -17,20 +17,10 @@ module RuboCop
         def run
           return if skip? || extensions.none?
 
-          puts
-          puts 'Tip: Based on detected gems, the following ' \
-               'RuboCop extension libraries might be helpful:'
+          print_install_suggestions if not_installed_extensions.any?
+          print_load_suggestions if installed_and_not_loaded_extensions.any?
 
-          extensions.sort.each do |extension|
-            puts "  * #{extension} (https://rubygems.org/gems/#{extension})"
-          end
-
-          puts
-          puts 'You can opt out of this message by adding the following to your config ' \
-               '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions ' \
-               'for more options):'
-          puts '  AllCops:'
-          puts '    SuggestExtensions: false'
+          print_opt_out_instruction
 
           puts if @options[:display_time]
         end
@@ -48,15 +38,63 @@ module RuboCop
             !INCLUDED_FORMATTERS.include?(current_formatter)
         end
 
+        def print_install_suggestions
+          puts
+          puts 'Tip: Based on detected gems, the following ' \
+               'RuboCop extension libraries might be helpful:'
+
+          not_installed_extensions.sort.each do |extension|
+            puts "  * #{extension} (https://rubygems.org/gems/#{extension})"
+          end
+        end
+
+        def print_load_suggestions
+          puts
+          puts 'The following RuboCop extension libraries are installed but not loaded in config:'
+
+          installed_and_not_loaded_extensions.sort.each do |extension|
+            puts "  * #{extension}"
+          end
+        end
+
+        def print_opt_out_instruction
+          puts
+          puts 'You can opt out of this message by adding the following to your config ' \
+               '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions ' \
+               'for more options):'
+          puts '  AllCops:'
+          puts '    SuggestExtensions: false'
+        end
+
         def current_formatter
           @options[:format] || @config_store.for_pwd.for_all_cops['DefaultFormatter'] || 'p'
         end
 
-        def extensions
+        def all_extensions
           return [] unless lockfile.dependencies.any?
 
           extensions = @config_store.for_pwd.for_all_cops['SuggestExtensions'] || {}
-          extensions.select { |_, v| (Array(v) & dependent_gems).any? }.keys - installed_gems
+          extensions.select { |_, v| (Array(v) & dependent_gems).any? }.keys
+        end
+
+        def extensions
+          not_installed_extensions + installed_and_not_loaded_extensions
+        end
+
+        def installed_extensions
+          all_extensions & installed_gems
+        end
+
+        def not_installed_extensions
+          all_extensions - installed_gems
+        end
+
+        def loaded_extensions
+          @config_store.for_pwd.loaded_features.to_a
+        end
+
+        def installed_and_not_loaded_extensions
+          installed_extensions - loaded_extensions
         end
 
         def lockfile
