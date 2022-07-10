@@ -3512,6 +3512,7 @@ Style/EmptyElse:
     - empty
     - nil
     - both
+  AllowComments: false
 
 Style/EmptyLambdaParameter:
   Description: 'Omit parens for empty lambda parameters.'

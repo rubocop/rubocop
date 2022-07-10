@@ -89,6 +89,41 @@ module RuboCop
       #   if condition
       #     statement
       #   end
+      #
+      # @example AllowComments: false (default)
+      #
+      #   # bad
+      #   if condition
+      #     statement
+      #   else
+      #     # something comment
+      #     nil
+      #   end
+      #
+      #   # bad
+      #   if condition
+      #     statement
+      #   else
+      #     # something comment
+      #   end
+      #
+      # @example AllowComments: true
+      #
+      #   # good
+      #   if condition
+      #     statement
+      #   else
+      #     # something comment
+      #     nil
+      #   end
+      #
+      #   # good
+      #   if condition
+      #     statement
+      #   else
+      #     # something comment
+      #   end
+      #
       class EmptyElse < Base
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
@@ -108,6 +143,8 @@ module RuboCop
         private
 
         def check(node)
+          return if cop_config['AllowComments'] && comment_in_else?(node.loc)
+
           empty_check(node) if empty_style?
           nil_check(node) if nil_style?
         end
