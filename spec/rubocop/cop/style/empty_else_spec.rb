@@ -530,6 +530,174 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
     end
   end
 
+  context 'when `AllowComments: true`' do
+    let(:config) do
+      RuboCop::Config.new('Style/EmptyElse' => {
+                            'AllowComments' => true,
+                            'EnforcedStyle' => 'both',
+                            'SupportedStyles' => %w[empty nil both]
+                          },
+                          'Style/MissingElse' => missing_else_config)
+    end
+
+    context 'given an if-statement' do
+      context 'with not comment and empty else-clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if condition
+              statement
+            else
+            ^^^^ Redundant `else`-clause.
+            end
+          RUBY
+        end
+      end
+
+      context 'with not comment and nil else-clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if condition
+              statement
+            else
+            ^^^^ Redundant `else`-clause.
+              nil
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and empty else-clause' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            if condition
+              statement
+            else
+              # some comment
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and nil else-clause' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            if condition
+              statement
+            else
+              nil # some comment
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'given an unless-statement' do
+      context 'with not comment and empty else-clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            unless condition
+              statement
+            else
+            ^^^^ Redundant `else`-clause.
+            end
+          RUBY
+        end
+      end
+
+      context 'with not comment and nil else-clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            unless condition
+              statement
+            else
+            ^^^^ Redundant `else`-clause.
+              nil
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and empty else-clause' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            unless condition
+              statement
+            else
+              # some comment
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and nil else-clause' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            unless condition
+              statement
+            else
+              nil # some comment
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'given a case statement' do
+      context 'with not comment and empty else-clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            case a
+            when condition
+              statement
+            else
+            ^^^^ Redundant `else`-clause.
+            end
+          RUBY
+        end
+      end
+
+      context 'with not comment and nil else-clause' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            case a
+            when condition
+              statement
+            else
+            ^^^^ Redundant `else`-clause.
+              nil
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and empty else-clause' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            case a
+            when condition
+              statement
+            else
+              # some comment
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and nil else-clause' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            case a
+            when condition
+              statement
+            else
+              nil # some comment
+            end
+          RUBY
+        end
+      end
+    end
+  end
+
   context 'with nested if and case statement' do
     let(:config) do
       RuboCop::Config.new('Style/EmptyElse' => {
