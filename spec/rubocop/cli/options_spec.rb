@@ -73,144 +73,117 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
-  if RuboCop::Server.support_server?
-    context 'when supporting server' do
-      describe '--server' do
-        before do
-          create_file('.rubocop.yml', <<~YAML)
-            AllCops:
-              NewCops: enable
-          YAML
-          create_file('example.rb', '"hello"')
-        end
-
-        after do
-          `ruby -I . "#{rubocop}" --stop-server`
-        end
-
-        it 'starts server and inspects' do
-          options = '--server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
-          output = `ruby -I . "#{rubocop}" #{options}`
-          expect(output).to match(
-            /RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\.\nInspecting 1 file/
-          )
-        end
+  context 'when supporting server' do
+    describe '--server' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            NewCops: enable
+        YAML
+        create_file('example.rb', '"hello"')
       end
 
-      describe '--no-server' do
-        before do
-          create_file('.rubocop.yml', <<~YAML)
-            AllCops:
-              NewCops: enable
-          YAML
-          create_file('example.rb', '"hello"')
-        end
-
-        it 'starts server and inspects' do
-          options = '--no-server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
-          output = `ruby -I . "#{rubocop}" #{options}`
-          expect(output).not_to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
-          expect(output).to include(<<~RESULT)
-            Inspecting 1 file
-            C
-
-            Offenses:
-
-            example.rb:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-            "hello"
-            ^
-            example.rb:1:1: C: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
-            "hello"
-            ^^^^^^^
-
-            1 file inspected, 2 offenses detected, 2 offenses autocorrectable
-          RESULT
-        end
+      after do
+        backticks(%(ruby -I . "#{rubocop}" --stop-server))
       end
 
-      describe '--start-server' do
-        after do
-          `ruby -I . "#{rubocop}" --stop-server`
-        end
-
-        it 'start server process and displays an information message' do
-          output = `ruby -I . "#{rubocop}" --start-server`
-          expect(output).to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
-        end
-      end
-
-      describe '--stop-server' do
-        before do
-          `ruby -I . "#{rubocop}" --start-server`
-        end
-
-        it 'stops server process and displays an information message' do
-          output = `ruby -I . "#{rubocop}" --stop-server`
-          expect(output).to eq ''
-        end
-      end
-
-      describe '--restart-server' do
-        before do
-          `ruby -I . "#{rubocop}" --start-server`
-        end
-
-        after do
-          `ruby -I . "#{rubocop}" --stop-server`
-        end
-
-        it 'restart server process and displays an information message' do
-          output = `ruby -I . "#{rubocop}" --restart-server`
-          expect(output).to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
-        end
-      end
-
-      describe '--server-status' do
-        context 'when server is not runnning' do
-          it 'displays server status' do
-            output = `ruby -I . "#{rubocop}" --server-status`
-            expect(output).to match(/RuboCop server is not running./)
-          end
-        end
-
-        context 'when server is runnning' do
-          before do
-            `ruby -I . "#{rubocop}" --start-server`
-          end
-
-          after do
-            `ruby -I . "#{rubocop}" --stop-server`
-          end
-
-          it 'displays server status' do
-            output = `ruby -I . "#{rubocop}" --server-status`
-            expect(output).to match(/RuboCop server \(\d+\) is running./)
-          end
-        end
+      it 'starts server and inspects' do
+        options = '--server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
+        output = backticks(%(ruby -I . "#{rubocop}" #{options}))
+        expect(output).to match(
+          /RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\.\nInspecting 1 file/
+        )
       end
     end
-  else
-    context 'when not supporting server' do
-      describe 'no server options' do
-        it 'displays an warning message' do
-          stdout, stderr, status = Open3.capture3("ruby -I . \"#{rubocop}\"")
-          expect(stdout).to eq(<<~RESULT)
-            Inspecting 0 files
 
+    describe '--no-server' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            NewCops: enable
+        YAML
+        create_file('example.rb', '"hello"')
+      end
 
-            0 files inspected, no offenses detected
-          RESULT
-          expect(stderr).not_to include("RuboCop server is not supported by this Ruby.\n")
-          expect(status.exitstatus).to eq 0
+      it 'starts server and inspects' do
+        options = '--no-server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
+        output = backticks(%(ruby -I . "#{rubocop}" #{options}))
+        expect(output).not_to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
+        expect(output).to include(<<~RESULT)
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+          "hello"
+          ^
+          example.rb:1:1: C: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+          "hello"
+          ^^^^^^^
+
+          1 file inspected, 2 offenses detected, 2 offenses autocorrectable
+        RESULT
+      end
+    end
+
+    describe '--start-server' do
+      after do
+        backticks(%(ruby -I . "#{rubocop}" --stop-server))
+      end
+
+      it 'start server process and displays an information message' do
+        output = backticks(%(ruby -I . "#{rubocop}" --start-server))
+        expect(output).to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
+      end
+    end
+
+    describe '--stop-server' do
+      before do
+        backticks(%(ruby -I . "#{rubocop}" --start-server))
+      end
+
+      it 'stops server process and displays an information message' do
+        output = backticks(%(ruby -I . "#{rubocop}" --stop-server))
+        expect(output).to eq ''
+      end
+    end
+
+    describe '--restart-server' do
+      before do
+        backticks(%(ruby -I . "#{rubocop}" --start-server))
+      end
+
+      after do
+        backticks(%(ruby -I . "#{rubocop}" --stop-server))
+      end
+
+      it 'restart server process and displays an information message' do
+        output = backticks(%(ruby -I . "#{rubocop}" --restart-server))
+        expect(output).to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
+      end
+    end
+
+    describe '--server-status' do
+      context 'when server is not runnning' do
+        it 'displays server status' do
+          output = backticks(%(ruby -I . "#{rubocop}" --server-status))
+          expect(output).to match(/RuboCop server is not running./)
         end
       end
 
-      describe '--start-server' do
-        it 'displays an warning message' do
-          stdout, stderr, status = Open3.capture3("ruby -I . \"#{rubocop}\" --start-server")
-          expect(stdout).to eq ''
-          expect(stderr).to include("RuboCop server is not supported by this Ruby.\n")
-          expect(status.exitstatus).to eq 2
+      context 'when server is runnning' do
+        before do
+          backticks(%(ruby -I . "#{rubocop}" --start-server))
+        end
+
+        after do
+          backticks(%(ruby -I . "#{rubocop}" --stop-server))
+        end
+
+        it 'displays server status' do
+          output = backticks(%(ruby -I . "#{rubocop}" --server-status))
+          expect(output).to match(/RuboCop server \(\d+\) is running./)
         end
       end
     end

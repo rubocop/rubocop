@@ -18,12 +18,8 @@ module RuboCop
         def run
           return unless check_running_server
 
-          pid = fork do
-            send_request(command: 'stop')
-            Server.wait_for_running_status!(false)
-          end
-
-          Process.waitpid(pid)
+          send_request(command: 'stop')
+          Server.wait_for_status! { !Server.running? }
         end
       end
     end

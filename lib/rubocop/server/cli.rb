@@ -31,12 +31,6 @@ module RuboCop
       end
 
       def run(argv = ARGV)
-        unless Server.support_server?
-          return error('RuboCop server is not supported by this Ruby.') if use_server_option?(argv)
-
-          return STATUS_SUCCESS
-        end
-
         deleted_server_arguments = delete_server_argument_from(argv)
 
         if deleted_server_arguments.size >= 2
@@ -87,10 +81,6 @@ module RuboCop
         SERVER_OPTIONS.each_with_object([]) do |server_option, server_arguments|
           server_arguments << all_arguments.delete(server_option)
         end.compact
-      end
-
-      def use_server_option?(argv)
-        (argv & SERVER_OPTIONS).any?
       end
 
       def error(message)

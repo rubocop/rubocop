@@ -26,9 +26,9 @@ module RuboCop
       end
 
       def start(host, port)
-        $PROGRAM_NAME = "rubocop --server #{Cache.project_dir}"
+        return start_spawned(host, port) if ENV['RUBOCOP_SERVER_SPAWNED']
 
-        require 'rubocop'
+        require 'rubocop' if forking?
         start_server(host, port)
 
         demonize if server_mode?
@@ -36,17 +36,62 @@ module RuboCop
 
       private
 
+      def forking?
+        RUBY_ENGINE == 'ruby' && !RuboCop::Platform.windows?
+      end
+
       def demonize
         Cache.write_port_and_token_files(port: @server.addr[1], token: token)
 
-        pid = fork do
-          Process.daemon(true)
-          Cache.write_pid_file do
-            read_socket(@server.accept) until @server.closed?
+        if forking?
+          pid = fork do
+            $PROGRAM_NAME = "rubocop --server #{Cache.project_dir}"
+            Process.daemon(true)
+            Cache.write_pid_file do
+              read_socket(@server.accept) until @server.closed?
+            end
           end
-        end
 
-        Process.waitpid(pid)
+          Process.waitpid(pid)
+        else
+          spawn_server
+        end
+      end
+
+      def ruby_exe
+        ruby = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
+
+        ruby.gsub! File::SEPARATOR, File::ALT_SEPARATOR if File::ALT_SEPARATOR
+
+        ruby
+      end
+
+      def spawn_server
+        host = @server.addr[3]
+        port = @server.addr[1]
+        @server.close
+        pid = spawn({ 'RUBOCOP_SERVER_SPAWNED' => 'true',
+                      'RUBOCOP_SERVER_HOST' => host,
+                      'RUBOCOP_SERVER_PORT' => port.to_s },
+                    ruby_exe, $PROGRAM_NAME, '--start-server')
+        Process.detach(pid)
+        Server.wait_for_status! { Server.listening? }
+      end
+
+      # actually run a server in this process that started in another process
+      def start_spawned(host, port)
+        $PROGRAM_NAME = "rubocop --server #{Cache.project_dir}"
+
+        # We're a background process now, so need to ignore Ctrl-C
+        # from the foreground
+        trap('SIGINT') { nil } if RuboCop::Platform.windows?
+
+        require 'rubocop'
+        @server = TCPServer.new(host, port.to_i)
+
+        Cache.write_pid_file do
+          read_socket(@server.accept) until @server.closed?
+        end
       end
 
       def server_mode?

@@ -26,23 +26,24 @@ module RuboCop
     autoload :SocketReader, 'rubocop/server/socket_reader'
 
     class << self
-      def support_server?
-        RUBY_ENGINE == 'ruby' && !RuboCop::Platform.windows?
-      end
-
       def running?
-        return false unless support_server? # Never running.
-
         Cache.dir.exist? && Cache.pid_path.file? && Cache.pid_running?
       end
 
-      def wait_for_running_status!(expected)
+      def listening?
+        TCPSocket.open('127.0.0.1', Cache.port_path.read) { nil }
+        true
+      rescue Errno::ECONNREFUSED
+        false
+      end
+
+      def wait_for_status!
         start_time = Time.now
-        while Server.running? != expected
+        until yield
           sleep 0.1
           next unless Time.now - start_time > TIMEOUT
 
-          warn "running? was not #{expected} after #{TIMEOUT} seconds!"
+          warn "timed out waiting for server to respond after #{TIMEOUT} seconds!"
           exit 1
         end
       end

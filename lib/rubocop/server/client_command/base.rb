@@ -34,7 +34,7 @@ module RuboCop
         end
 
         def check_running_server
-          Server.running?.tap do |running|
+          (Server.running? && Server.listening?).tap do |running|
             warn 'RuboCop server is not running.' unless running
           end
         end

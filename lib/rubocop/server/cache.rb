@@ -22,7 +22,9 @@ module RuboCop
         # Searches for Gemfile or gems.rb in the current dir or any parent dirs
         def project_dir
           current_dir = Dir.pwd
-          while current_dir != '/'
+          separators = Regexp.escape(File::SEPARATOR + File::ALT_SEPARATOR.to_s)
+          # the regex matches C:\ on a Windows machine
+          while current_dir != '/' && !current_dir.match?(/^[A-Z]:[#{separators}]$/)
             return current_dir if GEMFILE_NAMES.any? do |gemfile|
               File.exist?(File.join(current_dir, gemfile))
             end
@@ -34,7 +36,11 @@ module RuboCop
         end
 
         def project_dir_cache_key
-          @project_dir_cache_key ||= project_dir[1..].tr('/', '+')
+          @project_dir_cache_key ||= begin
+            dir = project_dir
+            dir = dir[1..] unless RuboCop::Platform.windows?
+            dir.tr('/:', '++')
+          end
         end
 
         def dir
@@ -70,7 +76,7 @@ module RuboCop
 
         def pid_running?
           Process.kill(0, pid_path.read.to_i) == 1
-        rescue Errno::ESRCH
+        rescue Errno::ESRCH, Errno::ENOENT
           false
         end
 

@@ -21,21 +21,31 @@ module RuboCop
             return
           end
 
+          # if we're a spawned server process, the spawner already has the lock
+          # and we can't acquire it recursively
+          return start if ENV['RUBOCOP_SERVER_SPAWNED']
+
           Cache.acquire_lock do |locked|
             unless locked
               # Another process is already starting server,
               # so wait for it to be ready.
-              Server.wait_for_running_status!(true)
+              Server.wait_for_status! { Server.running? && Server.listening? }
               exit 0
             end
 
-            Cache.write_version_file(RuboCop::Version::STRING)
-
-            host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
-            port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
-
-            Server::Core.new.start(host, port)
+            start
           end
+        end
+
+        private
+
+        def start
+          Cache.write_version_file(RuboCop::Version::STRING)
+
+          host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
+          port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
+
+          Server::Core.new.start(host, port)
         end
       end
     end

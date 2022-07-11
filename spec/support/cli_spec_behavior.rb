@@ -9,6 +9,18 @@ RSpec.shared_context 'cli spec behavior' do
     File.expand_path(path)
   end
 
+  # JRuby 9.3 is hanging on backticks when a child process is spawned. I
+  # think it's related to # https://github.com/jruby/jruby/issues/2024. In the
+  # meantime, this workaround avoids an unbounded read.
+  def backticks(command)
+    IO.popen(command) do |io|
+      Process.wait(io.pid)
+      break '' if io.eof?
+
+      io.readpartial(4096).delete("\r")
+    end
+  end
+
   before do
     RuboCop::ConfigLoader.debug = false
     RuboCop::ConfigLoader.default_configuration = nil
