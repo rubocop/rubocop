@@ -31,7 +31,6 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Do not use semicolons to terminate expressions.'
-        REGEXP_DOTS = %i[tDOT2 tDOT3].freeze
 
         def self.autocorrect_incompatible_with
           [Style::SingleLineMethods]
@@ -39,10 +38,6 @@ module RuboCop
 
         def on_new_investigation
           return if processed_source.blank?
-
-          ast = processed_source.ast
-          @range_nodes = ast.range_type? ? [ast] : []
-          @range_nodes.concat(ast.each_descendant(:irange, :erange).to_a)
 
           check_for_line_terminator_or_opener
         end
@@ -95,7 +90,7 @@ module RuboCop
               # Prevents becoming one range instance with subsequent line when endless range
               # without parentheses.
               # See: https://github.com/rubocop/rubocop/issues/10791
-              if REGEXP_DOTS.include?(token_before_semicolon&.type)
+              if token_before_semicolon&.regexp_dots?
                 range_node = find_range_node(token_before_semicolon)
                 corrector.wrap(range_node, '(', ')') if range_node
               end
@@ -120,9 +115,17 @@ module RuboCop
         end
 
         def find_range_node(token_before_semicolon)
-          @range_nodes.detect do |range_node|
+          range_nodes.detect do |range_node|
             range_node.source_range.contains?(token_before_semicolon.pos)
           end
+        end
+
+        def range_nodes
+          return @range_nodes if instance_variable_defined?(:@range_nodes)
+
+          ast = processed_source.ast
+          @range_nodes = ast.range_type? ? [ast] : []
+          @range_nodes.concat(ast.each_descendant(:irange, :erange).to_a)
         end
       end
     end
