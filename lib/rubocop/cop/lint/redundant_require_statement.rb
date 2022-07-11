@@ -12,8 +12,6 @@ module RuboCop
       #   ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
       #   ["enumerator.so", "rational.so", "complex.so", "thread.rb"]
       #
-      # This cop targets Ruby 2.2 or higher containing these 4 features.
-      #
       # @example
       #   # bad
       #   require 'unloaded_feature'
@@ -24,9 +22,6 @@ module RuboCop
       class RedundantRequireStatement < Base
         include RangeHelp
         extend AutoCorrector
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.2
 
         MSG = 'Remove unnecessary `require` statement.'
         RESTRICT_ON_SEND = %i[require].freeze
