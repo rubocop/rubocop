@@ -513,7 +513,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
     end
   end
 
-  context 'when using safe navigation operator', :ruby23 do
+  context 'when using safe navigation operator' do
     it 'does not break' do
       expect_no_offenses(<<~RUBY)
         foo&.bar do |_|

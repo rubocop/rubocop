@@ -25,9 +25,6 @@ module RuboCop
       #   x&.foo || bar
       class SafeNavigationChain < Base
         include NilMethods
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.3
 
         MSG = 'Do not chain ordinary method call after safe navigation operator.'
 

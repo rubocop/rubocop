@@ -278,7 +278,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       end
     end
 
-    context 'when frozen string literals is enabled', :ruby23 do
+    context 'when frozen string literals is enabled' do
       it 'does not register an offense for String.new' do
         expect_no_offenses(<<~RUBY)
           # frozen_string_literal: true

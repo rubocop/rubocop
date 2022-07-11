@@ -80,13 +80,10 @@ module RuboCop
         include NilMethods
         include RangeHelp
         extend AutoCorrector
-        extend TargetRubyVersion
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'
         LOGIC_JUMP_KEYWORDS = %i[break fail next raise return throw yield].freeze
-
-        minimum_target_ruby_version 2.3
 
         # if format: (if checked_variable body nil)
         # unless format: (if checked_variable nil body)

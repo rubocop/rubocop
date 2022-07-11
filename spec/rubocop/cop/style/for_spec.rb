@@ -522,7 +522,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator', :ruby23 do
+    context 'when using safe navigation operator' do
       it 'does not break' do
         expect_no_offenses(<<~RUBY)
           def func

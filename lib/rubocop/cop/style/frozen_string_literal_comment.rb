@@ -86,9 +86,6 @@ module RuboCop
         include FrozenStringLiteral
         include RangeHelp
         extend AutoCorrector
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.3
 
         MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: true`.'
         MSG_MISSING = 'Missing frozen string literal comment.'
