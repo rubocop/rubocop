@@ -344,20 +344,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  context '< Ruby 2.5', :ruby24 do
-    it 'accepts a do-end block with a begin-end' do
-      expect_no_offenses(<<~RUBY)
-        do_something do
-          begin
-            foo
-          rescue => e
-            bar
-          end
-        end
-      RUBY
-    end
-  end
-
   context '>= ruby 2.5', :ruby25 do
     it 'registers an offense for a do-end block with redundant begin-end' do
       expect_offense(<<~RUBY)

@@ -250,12 +250,6 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
     end
   end
 
-  context 'below Ruby 2.5', :ruby24 do
-    it 'does not flag even if transform_keys could be used' do
-      expect_no_offenses('x.each_with_object({}) {|(k, v), h| h[foo(k)] = v}')
-    end
-  end
-
   context 'when using Ruby 2.6 or newer', :ruby26 do
     it 'flags _.to_h{...} when transform_keys could be used' do
       expect_offense(<<~RUBY)

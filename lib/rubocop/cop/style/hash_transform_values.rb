@@ -26,9 +26,6 @@ module RuboCop
       class HashTransformValues < Base
         include HashTransformMethod
         extend AutoCorrector
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.4
 
         # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
