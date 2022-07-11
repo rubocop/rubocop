@@ -34,9 +34,6 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include PercentArray
         extend AutoCorrector
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.0
 
         PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
         ARRAY_MSG = 'Use %<prefer>s for an array of symbols.'
