@@ -2,7 +2,7 @@
 
 require 'tmpdir'
 
-RSpec.shared_context 'isolated environment', :isolated_environment do
+RSpec.shared_context 'isolated environment' do
   around do |example|
     Dir.mktmpdir do |tmpdir|
       original_home = Dir.home
@@ -38,7 +38,7 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
   end
 end
 
-RSpec.shared_context 'maintain registry', :restore_registry do
+RSpec.shared_context 'maintain registry' do
   around(:each) { |example| RuboCop::Cop::Registry.with_temporary_global { example.run } }
 
   def stub_cop_class(name, inherit: RuboCop::Cop::Base, &block)
@@ -49,7 +49,7 @@ RSpec.shared_context 'maintain registry', :restore_registry do
 end
 
 # This context assumes nothing and defines `cop`, among others.
-RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
+RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
   ### Meant to be overridden at will
 
   let(:cop_class) do
@@ -116,46 +116,46 @@ RSpec.shared_context 'mock console output' do
   end
 end
 
-RSpec.shared_context 'ruby 2.0', :ruby20 do
+RSpec.shared_context 'ruby 2.0' do
   let(:ruby_version) { 2.0 }
 end
 
-RSpec.shared_context 'ruby 2.1', :ruby21 do
+RSpec.shared_context 'ruby 2.1' do
   let(:ruby_version) { 2.1 }
 end
 
-RSpec.shared_context 'ruby 2.2', :ruby22 do
+RSpec.shared_context 'ruby 2.2' do
   let(:ruby_version) { 2.2 }
 end
 
-RSpec.shared_context 'ruby 2.3', :ruby23 do
+RSpec.shared_context 'ruby 2.3' do
   let(:ruby_version) { 2.3 }
 end
 
-RSpec.shared_context 'ruby 2.4', :ruby24 do
+RSpec.shared_context 'ruby 2.4' do
   let(:ruby_version) { 2.4 }
 end
 
-RSpec.shared_context 'ruby 2.5', :ruby25 do
+RSpec.shared_context 'ruby 2.5' do
   let(:ruby_version) { 2.5 }
 end
 
-RSpec.shared_context 'ruby 2.6', :ruby26 do
+RSpec.shared_context 'ruby 2.6' do
   let(:ruby_version) { 2.6 }
 end
 
-RSpec.shared_context 'ruby 2.7', :ruby27 do
+RSpec.shared_context 'ruby 2.7' do
   let(:ruby_version) { 2.7 }
 end
 
-RSpec.shared_context 'ruby 3.0', :ruby30 do
+RSpec.shared_context 'ruby 3.0' do
   let(:ruby_version) { 3.0 }
 end
 
-RSpec.shared_context 'ruby 3.1', :ruby31 do
+RSpec.shared_context 'ruby 3.1' do
   let(:ruby_version) { 3.1 }
 end
 
-RSpec.shared_context 'ruby 3.2', :ruby32 do
+RSpec.shared_context 'ruby 3.2' do
   let(:ruby_version) { 3.2 }
 end

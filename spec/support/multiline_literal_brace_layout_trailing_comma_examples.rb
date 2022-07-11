@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples_for 'multiline literal brace layout trailing comma' do
+RSpec.shared_examples_for 'multiline literal brace layout trailing comma' do
   let(:prefix) { '' } # A prefix before the opening brace.
   let(:suffix) { '' } # A suffix for the line after the closing brace.
   let(:open) { nil } # The opening brace.
