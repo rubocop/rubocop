@@ -51,3 +51,26 @@ jobs:
         run: bundle exec rake ascii_spec
       - name: internal_investigation
         run: bundle exec rake internal_investigation
+
+  rspec4:
+    runs-on: ubuntu-latest
+    name: RSpec 4
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use latest RSpec 4 from `4-0-dev` branch
+        run: |
+          sed -e "/'rspec', '~> 3/d" -i Gemfile
+          cat << EOF > Gemfile.local
+            gem 'rspec', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-core', github: 'rspec/rspec-core', branch: '4-0-dev'
+            gem 'rspec-expectations', github: 'rspec/rspec-expectations', branch: '4-0-dev'
+            gem 'rspec-mocks', github: 'rspec/rspec-mocks', branch: '4-0-dev'
+            gem 'rspec-support', github: 'rspec/rspec-support', branch: '4-0-dev'
+          EOF
+      - name: set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: spec
+        run: bundle exec rspec
