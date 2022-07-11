@@ -218,76 +218,66 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
     RUBY
   end
 
-  context 'when using Ruby 2.6 or newer', :ruby26 do
-    it 'flags _.to_h{...} when transform_values could be used' do
-      expect_offense(<<~RUBY)
-        x.to_h {|k, v| [k, foo(v)]}
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
-      RUBY
+  it 'flags _.to_h{...} when transform_values could be used' do
+    expect_offense(<<~RUBY)
+      x.to_h {|k, v| [k, foo(v)]}
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
+    RUBY
 
-      expect_correction(<<~RUBY)
-        x.transform_values {|v| foo(v)}
-      RUBY
-    end
-
-    it 'register and corrects an offense _.to_h{...} when value is a hash literal and is enclosed in braces' do
-      expect_offense(<<~RUBY)
-        {a: 1, b: 2}.to_h { |key, val| [key, { value: val }] }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        {a: 1, b: 2}.transform_values { |val| { value: val } }
-      RUBY
-    end
-
-    it 'register and corrects an offense _.to_h{...} when value is a hash literal and is not enclosed in braces' do
-      expect_offense(<<~RUBY)
-        {a: 1, b: 2}.to_h { |key, val| [key, value: val] }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        {a: 1, b: 2}.transform_values { |val| { value: val } }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when both key & value are transformed' do
-      expect_no_offenses(<<~RUBY)
-        x.to_h { |k, v| [k.to_sym, foo(v)] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is an array literal' do
-      expect_no_offenses(<<~RUBY)
-        [1, 2, 3].to_h { |k, v| [k, foo(v)] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is `each_with_index`' do
-      expect_no_offenses(<<~RUBY)
-        [1, 2, 3].each_with_index.to_h { |k, v| [k, foo(v)] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is `with_index`' do
-      expect_no_offenses(<<~RUBY)
-        [1, 2, 3].each.with_index.to_h { |k, v| [k, foo(v)] }
-      RUBY
-    end
-
-    it 'does not flag `_.to_h{...}` when its receiver is `zip`' do
-      expect_no_offenses(<<~RUBY)
-        %i[a b c].zip([1, 2, 3]).to_h { |k, v| [k, foo(v)] }
-      RUBY
-    end
+    expect_correction(<<~RUBY)
+      x.transform_values {|v| foo(v)}
+    RUBY
   end
 
-  context 'below Ruby 2.6', :ruby25 do
-    it 'does not flag _.to_h{...}' do
-      expect_no_offenses(<<~RUBY)
-        x.to_h {|k, v| [k, foo(v)]}
-      RUBY
-    end
+  it 'register and corrects an offense _.to_h{...} when value is a hash literal and is enclosed in braces' do
+    expect_offense(<<~RUBY)
+      {a: 1, b: 2}.to_h { |key, val| [key, { value: val }] }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {a: 1, b: 2}.transform_values { |val| { value: val } }
+    RUBY
+  end
+
+  it 'register and corrects an offense _.to_h{...} when value is a hash literal and is not enclosed in braces' do
+    expect_offense(<<~RUBY)
+      {a: 1, b: 2}.to_h { |key, val| [key, value: val] }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {a: 1, b: 2}.transform_values { |val| { value: val } }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when both key & value are transformed' do
+    expect_no_offenses(<<~RUBY)
+      x.to_h { |k, v| [k.to_sym, foo(v)] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is an array literal' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].to_h { |k, v| [k, foo(v)] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is `each_with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each_with_index.to_h { |k, v| [k, foo(v)] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is `with_index`' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each.with_index.to_h { |k, v| [k, foo(v)] }
+    RUBY
+  end
+
+  it 'does not flag `_.to_h{...}` when its receiver is `zip`' do
+    expect_no_offenses(<<~RUBY)
+      %i[a b c].zip([1, 2, 3]).to_h { |k, v| [k, foo(v)] }
+    RUBY
   end
 end

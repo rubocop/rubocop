@@ -24,12 +24,10 @@ RSpec.describe RuboCop::Cop::Lint::RequireRangeParentheses, :config do
     RUBY
   end
 
-  context 'Ruby >= 2.6', :ruby26 do
-    it 'does not register an offense when using endless range only' do
-      expect_no_offenses(<<~RUBY)
-        42..
-      RUBY
-    end
+  it 'does not register an offense when using endless range only' do
+    expect_no_offenses(<<~RUBY)
+      42..
+    RUBY
   end
 
   context 'Ruby >= 2.7', :ruby27 do

@@ -130,52 +130,50 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
-  context 'Ruby >= 2.6', :ruby26 do
-    it 'registers an offense for endless range with semicolon (irange only)' do
-      expect_offense(<<~RUBY)
+  it 'registers an offense for endless range with semicolon (irange only)' do
+    expect_offense(<<~RUBY)
+      42..;
+          ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (42..)
+    RUBY
+  end
+
+  it 'registers an offense for endless range with semicolon (irange and erange)' do
+    expect_offense(<<~RUBY)
+      42..;
+          ^ Do not use semicolons to terminate expressions.
+      42...;
+           ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (42..)
+      (42...)
+    RUBY
+  end
+
+  it 'registers an offense for endless range with semicolon in the method definition' do
+    expect_offense(<<~RUBY)
+      def foo
         42..;
             ^ Do not use semicolons to terminate expressions.
-      RUBY
+      end
+    RUBY
 
-      expect_correction(<<~RUBY)
+    expect_correction(<<~RUBY)
+      def foo
         (42..)
-      RUBY
-    end
+      end
+    RUBY
+  end
 
-    it 'registers an offense for endless range with semicolon (irange and erange)' do
-      expect_offense(<<~RUBY)
-        42..;
-            ^ Do not use semicolons to terminate expressions.
-        42...;
-             ^ Do not use semicolons to terminate expressions.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        (42..)
-        (42...)
-      RUBY
-    end
-
-    it 'registers an offense for endless range with semicolon in the method definition' do
-      expect_offense(<<~RUBY)
-        def foo
-          42..;
-              ^ Do not use semicolons to terminate expressions.
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def foo
-          (42..)
-        end
-      RUBY
-    end
-
-    it 'does not register an offense for endless range without semicolon' do
-      expect_no_offenses(<<~RUBY)
-        42..
-      RUBY
-    end
+  it 'does not register an offense for endless range without semicolon' do
+    expect_no_offenses(<<~RUBY)
+      42..
+    RUBY
   end
 
   context 'with a multi-expression line without a semicolon' do

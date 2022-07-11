@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         }
       )
   end
-  let(:target_ruby_version) { 2.5 }
+  let(:target_ruby_version) { 2.6 }
   let(:hash_style) { 'key' }
   let(:allow_for_alignment) { true }
   let(:exponent_operator_style) { nil }

@@ -72,24 +72,22 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
     end
   end
 
-  context 'target ruby version > 2.6', :ruby26 do
-    it 'registers an offense when `required_ruby_version` is specified with >= and is higher than `TargetRubyVersion`' do
-      expect_offense(<<~RUBY, '/path/to/bar.gemspec')
-        Gem::Specification.new do |spec|
-          spec.required_ruby_version = '>= 2.7.0'
-                                       ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
-        end
-      RUBY
-    end
+  it 'registers an offense when `required_ruby_version` is specified with >= and is higher than `TargetRubyVersion`' do
+    expect_offense(<<~RUBY, '/path/to/bar.gemspec')
+      Gem::Specification.new do |spec|
+        spec.required_ruby_version = '>= 2.7.0'
+                                     ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
+      end
+    RUBY
+  end
 
-    it 'registers an offense when `required_ruby_version` is specified with ~> and is higher than `TargetRubyVersion`' do
-      expect_offense(<<~RUBY, '/path/to/bar.gemspec')
-        Gem::Specification.new do |spec|
-          spec.required_ruby_version = '~> 2.7.0'
-                                       ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
-        end
-      RUBY
-    end
+  it 'registers an offense when `required_ruby_version` is specified with ~> and is higher than `TargetRubyVersion`' do
+    expect_offense(<<~RUBY, '/path/to/bar.gemspec')
+      Gem::Specification.new do |spec|
+        spec.required_ruby_version = '~> 2.7.0'
+                                     ^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.6, which may be specified in .rubocop.yml) should be equal.
+      end
+    RUBY
   end
 
   # rubocop:disable RSpec/RepeatedExampleGroupDescription

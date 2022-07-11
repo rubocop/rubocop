@@ -63,9 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateHashKey, :config do
   it_behaves_like 'duplicated literal key', 'false'
   it_behaves_like 'duplicated literal key', 'nil'
   it_behaves_like 'duplicated literal key', "'str'"
-  context 'target ruby version >= 2.6', :ruby26 do
-    it_behaves_like 'duplicated literal key', '(42..)'
-  end
+  it_behaves_like 'duplicated literal key', '(42..)'
 
   shared_examples 'duplicated non literal key' do |key|
     it "does not register an offense for duplicated `#{key}` hash keys" do

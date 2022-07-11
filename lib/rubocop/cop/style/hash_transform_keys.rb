@@ -7,8 +7,6 @@ module RuboCop
       # `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
       # transforming the keys of a hash, and tries to use a simpler & faster
       # call to `transform_keys` instead.
-      # It should only be enabled on Ruby version 2.5 or newer.
-      # (`transform_keys` was added in Ruby 2.5.)
       #
       # @safety
       #   This cop is unsafe, as it can produce false positives if we are
@@ -28,9 +26,6 @@ module RuboCop
       class HashTransformKeys < Base
         include HashTransformMethod
         extend AutoCorrector
-        extend TargetRubyVersion
-
-        minimum_target_ruby_version 2.5
 
         # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
