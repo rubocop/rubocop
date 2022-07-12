@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     module Naming
       # Makes sure that predicates are named properly.
+      # `is_a?` method is allowed by default.
+      # These are customizable with `AllowedMethods` option.
       #
       # @example
       #   # bad
@@ -27,6 +29,12 @@ module RuboCop
       #   # good
       #   def value?
       #   end
+      #
+      # @example AllowedMethods: ['is_a?'] (default)
+      #   # good
+      #   def is_a?(value)
+      #   end
+      #
       class PredicateName < Base
         include AllowedMethods
 
