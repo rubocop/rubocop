@@ -5,12 +5,24 @@ module RuboCop
     module Style
       # Checks for unwanted parentheses in parameterless method calls.
       #
+      # This cop can be customized ignored methods with `IgnoredMethods`.
+      # By default, there are no methods to ignored.
+      #
       # @example
       #   # bad
       #   object.some_method()
       #
       #   # good
       #   object.some_method
+      #
+      # @example IgnoredMethods: [] (default)
+      #   # bad
+      #   object.foo()
+      #
+      # @example IgnoredMethods: [foo]
+      #   # good
+      #   object.foo()
+      #
       class MethodCallWithoutArgsParentheses < Base
         include IgnoredMethods
         extend AutoCorrector

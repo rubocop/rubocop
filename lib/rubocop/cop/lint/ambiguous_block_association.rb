@@ -7,6 +7,7 @@ module RuboCop
       # when param passed without parentheses.
       #
       # This cop can customize ignored methods with `IgnoredMethods`.
+      # By default, there are no methods to ignored.
       #
       # @example
       #
@@ -29,10 +30,16 @@ module RuboCop
       #   # Lambda arguments require no disambiguation
       #   foo = ->(bar) { bar.baz }
       #
+      # @example IgnoredMethods: [] (default)
+      #
+      #   # bad
+      #   expect { do_something }.to change { object.attribute }
+      #
       # @example IgnoredMethods: [change]
       #
       #   # good
       #   expect { do_something }.to change { object.attribute }
+      #
       class AmbiguousBlockAssociation < Base
         include IgnoredMethods
 
