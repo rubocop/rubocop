@@ -15,6 +15,7 @@ module RuboCop
       #
       # NOTE: The `ExcludedMethods` configuration is deprecated and only kept
       # for backwards compatibility. Please use `IgnoredMethods` instead.
+      # By default, there are no methods to ignored.
       #
       # @example CountAsOne: ['array', 'heredoc']
       #

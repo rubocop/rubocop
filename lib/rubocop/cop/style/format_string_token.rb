@@ -12,6 +12,7 @@ module RuboCop
       # to encoded URLs or Date/Time formatting strings.
       #
       # This cop can be customized ignored methods with `IgnoredMethods`.
+      # By default, there are no methods to ignored.
       #
       # @example EnforcedStyle: annotated (default)
       #
@@ -60,6 +61,11 @@ module RuboCop
       #
       #   # good
       #   format('%06d', 10)
+      #
+      # @example IgnoredMethods: [] (default)
+      #
+      #   # bad
+      #   redirect('foo/%{bar_id}')
       #
       # @example IgnoredMethods: [redirect]
       #

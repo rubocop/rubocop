@@ -16,7 +16,8 @@ module RuboCop
       # NOTE: Some values cannot be converted properly using one of the `Kernel`
       # method (for instance, `Time` and `DateTime` values are allowed by this
       # cop by default). Similarly, Rails' duration methods do not work well
-      # with `Integer()` and can be ignored with `IgnoredMethods`.
+      # with `Integer()` and can be ignored with `IgnoredMethods`. By default,
+      # there are no methods to ignored.
       #
       # @safety
       #   Autocorrection is unsafe because it is not guaranteed that the
@@ -44,6 +45,11 @@ module RuboCop
       #   ['1', '2', '3'].map { |i| Integer(i, 10) }
       #   foo.try { |i| Float(i) }
       #   bar.send { |i| Complex(i) }
+      #
+      # @example IgnoredMethods: [] (default)
+      #
+      #   # bad
+      #   10.minutes.to_i
       #
       # @example IgnoredMethods: [minutes]
       #
