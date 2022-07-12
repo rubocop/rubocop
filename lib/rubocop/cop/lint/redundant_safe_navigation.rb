@@ -35,6 +35,13 @@ module RuboCop
       #   # good - without `&.` this will always return `true`
       #   foo&.respond_to?(:to_a)
       #
+      # @example AllowedMethods: [foo?]
+      #   # bad
+      #   do_something if attrs&.foo?(:[])
+      #
+      #   # good
+      #   do_something if attrs&.bar?(:[])
+      #
       class RedundantSafeNavigation < Base
         include AllowedMethods
         include RangeHelp

@@ -5,6 +5,9 @@ module RuboCop
     module Style
       # Looks for trivial reader/writer methods, that could
       # have been created with the attr_* family of functions automatically.
+      # `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`,
+      # `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, and `to_sym` methods
+      # are allowed by default. These are customizable with `AllowedMethods` option.
       #
       # @example
       #   # bad
