@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     RUBY
   end
 
+  it 'registers an offense for csend' do
+    expect_offense(<<~RUBY)
+      coll&.map { |e| e.upcase }
+                ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      coll&.map(&:upcase)
+    RUBY
+  end
+
   it 'registers an offense for a block when method in body is unary -/+' do
     expect_offense(<<~RUBY)
       something.map { |x| -x }
