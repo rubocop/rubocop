@@ -117,11 +117,14 @@ module RuboCop
         end
 
         def remove_end(corrector, body)
-          range = range_between(
-            body.loc.end.begin_pos - leading_spaces(body).size,
-            body.loc.end.end_pos + 1
-          )
+          begin_pos = body.loc.end.begin_pos
+          begin_pos -= leading_spaces(body).size unless oneline?(body)
+          range = range_between(begin_pos, body.loc.end.end_pos + 1)
           corrector.remove(range)
+        end
+
+        def oneline?(node)
+          node.loc.name.line == node.loc.end.line
         end
 
         def configured_indentation_width

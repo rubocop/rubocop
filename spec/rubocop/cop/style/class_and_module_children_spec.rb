@@ -205,6 +205,24 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'registers a offense for classes with nested oneline children' do
+      expect_offense(<<~RUBY)
+        class FooClass
+              ^^^^^^^^ Use compact module/class definition instead of nested style.
+          class BarClass end
+        end
+        class FooClass
+              ^^^^^^^^ Use compact module/class definition instead of nested style.
+          class BarClass; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class FooClass::BarClass end
+        class FooClass::BarClass; end
+      RUBY
+    end
+
     it 'registers a offense for modules with nested children' do
       expect_offense(<<~RUBY)
         module FooModule
@@ -221,6 +239,24 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           def method_example
           end
         end
+      RUBY
+    end
+
+    it 'registers a offense for modules with nested oneline children' do
+      expect_offense(<<~RUBY)
+        module FooModule
+               ^^^^^^^^^ Use compact module/class definition instead of nested style.
+          module BarModule end
+        end
+        module FooModule
+               ^^^^^^^^^ Use compact module/class definition instead of nested style.
+          module BarModule; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module FooModule::BarModule end
+        module FooModule::BarModule; end
       RUBY
     end
 
