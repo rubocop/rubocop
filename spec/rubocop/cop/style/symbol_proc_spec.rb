@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     RUBY
   end
 
-  it 'registers an offense for csend' do
+  it 'registers an offense for safe navigation operator' do
     expect_offense(<<~RUBY)
       coll&.map { |e| e.upcase }
                 ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.

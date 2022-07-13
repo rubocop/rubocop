@@ -89,7 +89,7 @@ module RuboCop
         def_node_matcher :proc_node?, '(send (const {nil? cbase} :Proc) :new)'
 
         # @!method symbol_proc_receiver?(node)
-        def_node_matcher :symbol_proc_receiver?, '{({csend | send} ...) (super ...) zsuper}'
+        def_node_matcher :symbol_proc_receiver?, '{(call ...) (super ...) zsuper}'
 
         # @!method symbol_proc?(node)
         def_node_matcher :symbol_proc?, <<~PATTERN
