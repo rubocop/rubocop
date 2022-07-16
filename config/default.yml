@@ -3514,6 +3514,11 @@ Style/EmptyElse:
     - both
   AllowComments: false
 
+Style/EmptyHeredoc:
+  Description: 'Checks for using empty heredoc to reduce redundancy.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/EmptyLambdaParameter:
   Description: 'Omit parens for empty lambda parameters.'
   Enabled: true
