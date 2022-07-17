@@ -15,7 +15,7 @@ do so.
   complete sentences.
 * Include the output of `rubocop -V`:
 
-```
+```console
 $ rubocop -V
 1.31.2 (using Parser 2.7.2.0, rubocop-ast 1.1.1, running on ruby 2.7.2 x86_64-linux)
   - rubocop-performance 1.9.1
@@ -54,7 +54,9 @@ We are running [misspell](https://github.com/client9/misspell) which is mainly w
 Correct commonly misspelled English words quickly with `misspell`. `misspell` is different from most other spell checkers
 because it doesn't use a custom dictionary. You can run `misspell` locally against all files with:
 
-    $ find . -type f | xargs ./misspell -i 'enviromnent' -error
+```console
+$ find . -type f | xargs ./misspell -i 'enviromnent' -error
+```
 
 Notable `misspell` help options or flags are:
 
@@ -65,16 +67,20 @@ We also run [codespell](https://github.com/codespell-project/codespell) with Git
 [codespell](https://pypi.org/project/codespell/) runs against a [small custom dictionary](../codespell.txt).
 `codespell` is written in [Python](https://www.python.org/) and you can run it with:
 
-    $ codespell --ignore-words=codespell.txt
+```console
+$ codespell --ignore-words=codespell.txt
+```
 
 ### Creating changelog entries
 
 Changelog entries are just files under the `changelog/` folder that will be merged
 into `CHANGELOG.md` at release time. You can create new changelog entries like this:
 
-    $ bundle exec rake changelog:new
-    $ bundle exec rake changelog:fix
-    $ bundle exec rake changelog:change
+```console
+$ bundle exec rake changelog:new
+$ bundle exec rake changelog:fix
+$ bundle exec rake changelog:change
+```
 
 Those commands correspond to "new feature", "bug-fix" and "changed" entries in the changelog.
 
@@ -85,7 +91,7 @@ Just make sure they are properly named.
 
 Here are a few examples:
 
-```
+```markdown
 * [#716](https://github.com/rubocop/rubocop/issues/716): Fixed a regression in the autocorrection logic of `MethodDefParentheses`. ([@bbatsov][])
 * New cop `ElseLayout` checks for odd arrangement of code in the `else` branch of a conditional expression. ([@bbatsov][])
 * [#7542](https://github.com/rubocop/rubocop/pull/7542): **(Breaking)** Move `LineLength` cop from `Metrics` department to `Layout` department. ([@koic][])
