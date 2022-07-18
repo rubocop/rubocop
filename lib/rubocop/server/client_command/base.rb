@@ -29,7 +29,7 @@ module RuboCop
             socket.puts [Cache.token_path.read, Dir.pwd, command, *args].shelljoin
             socket.write body
             socket.close_write
-            $stdout.write socket.read(4096) until socket.eof?
+            $stdout.write socket.readpartial(4096) until socket.eof?
           end
         end
 
