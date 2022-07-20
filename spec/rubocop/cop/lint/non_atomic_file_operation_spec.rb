@@ -71,19 +71,11 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
   end
 
   %i[rm_r rmtree].each do |remove_method|
-    it 'registers an offense when use `FileTest.exist?` before remove recursive file' do
-      expect_offense(<<~RUBY, remove_method: remove_method)
+    it 'does not register an offense when use `FileTest.exist?` before remove recursive file' do
+      expect_no_offenses(<<~RUBY, remove_method: remove_method)
         if FileTest.exist?(path)
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
           FileUtils.#{remove_method}(path)
-          ^^^^^^^^^^^{remove_method}^^^^^^ Use atomic file operation method `FileUtils.rm_rf`.
         end
-      RUBY
-
-      expect_correction(<<~RUBY)
-
-        #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_rf(path)
-
       RUBY
     end
   end
