@@ -99,6 +99,40 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     end
   end
 
+  context 'when using `ENV.clone`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        ENV.clone
+            ^^^^^ `ENV.clone` is deprecated in favor of `ENV.to_h`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ENV.to_h
+      RUBY
+    end
+
+    it 'does not register an offense for method calls to `ENV` other than `clone`' do
+      expect_no_offenses('ENV.values')
+    end
+  end
+
+  context 'when using `ENV.dup`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        ENV.dup
+            ^^^ `ENV.dup` is deprecated in favor of `ENV.to_h`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ENV.to_h
+      RUBY
+    end
+
+    it 'does not register an offense for method calls to `ENV` other than `dup`' do
+      expect_no_offenses('ENV.values')
+    end
+  end
+
   context 'prefer `Addrinfo#getnameinfo` over `Socket.gethostbyaddr`' do
     it 'registers an offense for Socket.gethostbyaddr' do
       expect_offense(<<~RUBY)

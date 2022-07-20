@@ -8,22 +8,22 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   File.exists?(some_path)
       #   Dir.exists?(some_path)
       #   iterator?
       #   ENV.freeze # Calling `Env.freeze` raises `TypeError` since Ruby 2.7.
+      #   ENV.clone
+      #   ENV.dup # Calling `Env.dup` raises `TypeError` since Ruby 3.1.
       #   Socket.gethostbyname(host)
       #   Socket.gethostbyaddr(host)
       #
-      # @example
-      #
       #   # good
-      #
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
       #   block_given?
       #   ENV # `ENV.freeze` cannot prohibit changes to environment variables.
+      #   ENV.to_h
+      #   ENV.to_h # `ENV.dup` cannot dup `ENV`, use `ENV.to_h` to get a copy of `ENV` as a hash.
       #   Addrinfo.getaddrinfo(nodename, service)
       #   Addrinfo.tcp(host, port).getnameinfo
       class DeprecatedClassMethods < Base
@@ -110,6 +110,12 @@ module RuboCop
 
           DeprecatedClassMethod.new(:freeze, class_constant: :ENV) =>
             Replacement.new(nil, class_constant: :ENV),
+
+          DeprecatedClassMethod.new(:clone, class_constant: :ENV) =>
+            Replacement.new(:to_h, class_constant: :ENV),
+
+          DeprecatedClassMethod.new(:dup, class_constant: :ENV) =>
+            Replacement.new(:to_h, class_constant: :ENV),
 
           DeprecatedClassMethod.new(:gethostbyaddr, class_constant: :Socket, correctable: false) =>
             Replacement.new(:getnameinfo, class_constant: :Addrinfo, instance_method: true),
