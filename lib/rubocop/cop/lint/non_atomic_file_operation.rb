@@ -51,12 +51,11 @@ module RuboCop
         MSG_CHANGE_FORCE_METHOD = 'Use atomic file operation method `FileUtils.%<method_name>s`.'
         MAKE_FORCE_METHODS = %i[makedirs mkdir_p mkpath].freeze
         MAKE_METHODS = %i[mkdir].freeze
-        REMOVE_RECURSIVE_METHODS = %i[rm_r rmtree].freeze
         REMOVE_FORCE_METHODS = %i[rm_f rm_rf].freeze
         REMOVE_METHODS = %i[remove remove_dir remove_entry remove_entry_secure
                             delete unlink remove_file rm rmdir safe_unlink].freeze
         RESTRICT_ON_SEND = (MAKE_METHODS + MAKE_FORCE_METHODS + REMOVE_METHODS +
-          REMOVE_FORCE_METHODS + REMOVE_RECURSIVE_METHODS).freeze
+          REMOVE_FORCE_METHODS).freeze
 
         # @!method send_exist_node(node)
         def_node_search :send_exist_node, <<-PATTERN
@@ -79,16 +78,21 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless (parent = node.parent) && parent.if_type?
-          return if allowable_use_with_if?(parent)
+          return unless if_node_child?(node)
           return if explicit_not_force?(node)
-          return unless (exist_node = send_exist_node(parent).first)
+          return unless (exist_node = send_exist_node(node.parent).first)
           return unless exist_node.first_argument == node.first_argument
 
           register_offense(node, exist_node)
         end
 
         private
+
+        def if_node_child?(node)
+          return false unless (parent = node.parent)
+
+          parent.if_type? && !allowable_use_with_if?(parent)
+        end
 
         def allowable_use_with_if?(if_node)
           if_node.condition.and_type? || if_node.condition.or_type? || if_node.else_branch
@@ -129,8 +133,6 @@ module RuboCop
         def replacement_method(node)
           if MAKE_METHODS.include?(node.method_name)
             'mkdir_p'
-          elsif REMOVE_RECURSIVE_METHODS.include?(node.method_name)
-            'rm_rf'
           elsif REMOVE_METHODS.include?(node.method_name)
             'rm_f'
           else
