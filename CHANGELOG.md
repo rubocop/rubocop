@@ -2,6 +2,33 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#10820](https://github.com/rubocop/rubocop/pull/10820): Add new `Style/EmptyHeredoc` cop. ([@koic][])
+* [#10691](https://github.com/rubocop/rubocop/pull/10691): Add new `Layout/MultilineMethodParameterLineBreaks` cop. ([@Korri][])
+* [#10790](https://github.com/rubocop/rubocop/pull/10790): Support `AllowComments` option for `Style/EmptyElse`. ([@ydah][])
+* [#10792](https://github.com/rubocop/rubocop/pull/10792): Add new `Lint/RequireRangeParentheses` cop. ([@koic][])
+* [#10692](https://github.com/rubocop/rubocop/pull/10692): Break long method definitions when auto-correcting. ([@Korri][])
+
+### Bug fixes
+
+* [#10824](https://github.com/rubocop/rubocop/pull/10824): Make `Lint/DeprecatedClassMethods` aware of `ENV.clone` and `ENV.dup`. ([@koic][])
+* [#10788](https://github.com/rubocop/rubocop/issues/10788): Relax `Style/FetchEnvVar` to allow `ENV[]` in LHS of `||`. ([@j-miyake][])
+* [#10813](https://github.com/rubocop/rubocop/issues/10813): Fix recursive deletion to suppression in `Lint/NonAtomicFileOperation`. ([@ydah][])
+* [#10791](https://github.com/rubocop/rubocop/issues/10791): Fix an incorrect autocorrect for `Style/Semicolon` when using endless range before semicolon. ([@koic][])
+* [#10781](https://github.com/rubocop/rubocop/pull/10781): Fix a suggestions for safer conversions for `Lint/NonAtomicFileOperation`. ([@ydah][])
+* [#10263](https://github.com/rubocop/rubocop/pull/10263): Fix the value of `Enabled` leaking between configurations. ([@jonas054][])
+
+### Changes
+
+* [#10613](https://github.com/rubocop/rubocop/issues/10613): Allow autocorrecting with -P/--parallel and make it the default. ([@jonas054][])
+* Add EnforcedStyle (leading/trailing) configuration to `Layout::LineContinuationLeadingSpace`. ([@bquorning][])
+* [#10784](https://github.com/rubocop/rubocop/pull/10784): Preserve multiline semantics on `Style/SymbolArray` and `Style/WordArray`. ([@r7kamura][])
+* [#10814](https://github.com/rubocop/rubocop/pull/10814): Avoid buffering stdout when running in server mode. ([@ccutrer][])
+* [#10817](https://github.com/rubocop/rubocop/pull/10817): Add autocorrect support for `Style/SafeNavigationChain`. ([@r7kamura][])
+* [#10810](https://github.com/rubocop/rubocop/pull/10810): Support safe navigation operator on `Style/SymbolProc`. ([@r7kamura][])
+* [#10803](https://github.com/rubocop/rubocop/pull/10803): Require RuboCop AST 1.9.1 or higher. ([@koic][])
+
 ## 1.31.2 (2022-07-07)
 
 ### Bug fixes
@@ -6341,3 +6368,6 @@
 [@kaitielth]: https://github.com/kaitielth
 [@j-miyake]: https://github.com/j-miyake
 [@FnControlOption]: https://github.com/FnControlOption
+[@ccutrer]: https://github.com/ccutrer
+[@Korri]: https://github.com/Korri
+[@Korri]: https://github.com/Korri
