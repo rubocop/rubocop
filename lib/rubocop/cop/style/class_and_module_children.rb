@@ -117,10 +117,10 @@ module RuboCop
         end
 
         def remove_end(corrector, body)
-          range = range_between(
-            body.loc.end.begin_pos - leading_spaces(body).size,
-            body.loc.end.end_pos + 1
-          )
+          remove_begin_pos = body.loc.end.begin_pos - leading_spaces(body).size
+          adjustment = processed_source.raw_source[remove_begin_pos] == ';' ? 0 : 1
+          range = range_between(remove_begin_pos, body.loc.end.end_pos + adjustment)
+
           corrector.remove(range)
         end
 
