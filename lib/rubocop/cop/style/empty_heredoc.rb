@@ -48,10 +48,24 @@ module RuboCop
           add_offense(node) do |corrector|
             heredoc_end = node.loc.heredoc_end
 
-            corrector.replace(node, "''")
+            corrector.replace(node, preferred_string_literal)
             corrector.remove(range_by_whole_lines(heredoc_body, include_final_newline: true))
             corrector.remove(range_by_whole_lines(heredoc_end, include_final_newline: true))
           end
+        end
+
+        private
+
+        def preferred_string_literal
+          enforce_double_quotes? ? '""' : "''"
+        end
+
+        def enforce_double_quotes?
+          string_literals_config['EnforcedStyle'] == 'double_quotes'
+        end
+
+        def string_literals_config
+          config.for_cop('Style/StringLiterals')
         end
       end
     end
