@@ -977,7 +977,7 @@ Layout/LineContinuationLeadingSpace:
   AutoCorrect: false
   SafeAutoCorrect: false
   VersionAdded: '1.31'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.32'
   EnforcedStyle: trailing
   SupportedStyles:
     - leading
@@ -1163,7 +1163,7 @@ Layout/MultilineMethodParameterLineBreaks:
                  Checks that each parameter in a multi-line method definition
                  starts on a separate line.
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.32'
 
 Layout/MultilineOperationIndentation:
   Description: >-
@@ -2143,7 +2143,7 @@ Lint/RequireParentheses:
 Lint/RequireRangeParentheses:
   Description: 'Checks that a range literal is enclosed in parentheses when the end of the range is at a line break.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.32'
 
 Lint/RequireRelativeSelfPath:
   Description: 'Checks for uses a file requiring itself with `require_relative`.'
@@ -3517,7 +3517,7 @@ Style/EmptyElse:
 Style/EmptyHeredoc:
   Description: 'Checks for using empty heredoc to reduce redundancy.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.32'
 
 Style/EmptyLambdaParameter:
   Description: 'Omit parens for empty lambda parameters.'

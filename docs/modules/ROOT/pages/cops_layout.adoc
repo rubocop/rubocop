@@ -4017,13 +4017,16 @@ end
 | Yes
 | No
 | 1.31
-| -
+| 1.32
 |===
 
 Checks that strings broken over multiple lines (by a backslash) contain
-trailing spaces instead of leading spaces.
+trailing spaces instead of leading spaces (default) or leading spaces
+instead of trailing spaces.
 
 === Examples
+
+==== EnforcedStyle: trailing (default)
 
 [source,ruby]
 ----
@@ -4044,6 +4047,27 @@ trailing spaces instead of leading spaces.
 'long'
 ----
 
+==== EnforcedStyle: leading
+
+[source,ruby]
+----
+# bad
+'this text contains a lot of               ' \
+'spaces'
+
+# good
+'this text contains a lot of' \
+'               spaces'
+
+# bad
+'this text is too ' \
+'long'
+
+# good
+'this text is too' \
+' long'
+----
+
 === Configurable attributes
 
 |===
@@ -4052,6 +4076,10 @@ trailing spaces instead of leading spaces.
 | AutoCorrect
 | `false`
 | Boolean
+
+| EnforcedStyle
+| `trailing`
+| `leading`, `trailing`
 |===
 
 == Layout/LineContinuationSpacing
@@ -4265,6 +4293,7 @@ are recommended to further format the broken lines.
 * MultilineHashBraceLayout
 * MultilineHashKeyLineBreaks
 * MultilineMethodArgumentLineBreaks
+* MultilineMethodParameterLineBreaks
 * ParameterAlignment
 
 Together, these cops will pretty print hashes, arrays,
@@ -4812,7 +4841,7 @@ starts on a separate line.
 Ensures that each argument in a multi-line method call
 starts on a separate line.
 
-NOTE: this cop does not move the first argument, if you want that to
+NOTE: This cop does not move the first argument, if you want that to
 be on a separate line, see `Layout/FirstMethodArgumentLineBreak`.
 
 === Examples
@@ -4830,6 +4859,9 @@ foo(
   b,
   c
 )
+
+# good
+foo(a, b, c)
 ----
 
 == Layout/MultilineMethodCallBraceLayout
@@ -5171,6 +5203,47 @@ end
 | `symmetrical`
 | `symmetrical`, `new_line`, `same_line`
 |===
+
+== Layout/MultilineMethodParameterLineBreaks
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| Yes
+| Yes
+| 1.32
+| -
+|===
+
+Ensures that each parameter in a multi-line method definition
+starts on a separate line.
+
+NOTE: This cop does not move the first argument, if you want that to
+be on a separate line, see `Layout/FirstMethodParameterLineBreak`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def foo(a, b,
+  c
+)
+end
+
+# good
+def foo(
+  a,
+  b,
+  c
+)
+end
+
+# good
+def foo(a, b, c)
+end
+----
 
 == Layout/MultilineOperationIndentation
 

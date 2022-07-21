@@ -1076,6 +1076,8 @@ end
 |===
 
 Makes sure that predicates are named properly.
+`is_a?` method is allowed by default.
+These are customizable with `AllowedMethods` option.
 
 === Examples
 
@@ -1101,6 +1103,15 @@ end
 
 # good
 def value?
+end
+----
+
+==== AllowedMethods: ['is_a?'] (default)
+
+[source,ruby]
+----
+# good
+def is_a?(value)
 end
 ----
 

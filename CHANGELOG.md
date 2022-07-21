@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.32.0 (2022-07-21)
+
 ### New features
 
 * [#10820](https://github.com/rubocop/rubocop/pull/10820): Add new `Style/EmptyHeredoc` cop. ([@koic][])

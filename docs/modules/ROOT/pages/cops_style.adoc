@@ -1217,6 +1217,8 @@ var.kind_of?(String)
 
 Enforces the use of `Object#instance_of?` instead of class comparison
 for equality.
+`==`, `equal?`, and `eql?` methods are ignored by default.
+These are customizable with `IgnoredMethods` option.
 
 === Examples
 
@@ -1230,6 +1232,34 @@ var.class.name == 'Date'
 
 # good
 var.instance_of?(Date)
+----
+
+==== IgnoreMethods: [] (default)
+
+[source,ruby]
+----
+# good
+var.instance_of?(Date)
+
+# bad
+var.class == Date
+var.class.equal?(Date)
+var.class.eql?(Date)
+var.class.name == 'Date'
+----
+
+==== IgnoreMethods: [`==`]
+
+[source,ruby]
+----
+# good
+var.instance_of?(Date)
+var.class == Date
+var.class.name == 'Date'
+
+# bad
+var.class.equal?(Date)
+var.class.eql?(Date)
 ----
 
 === Configurable attributes
@@ -3147,6 +3177,46 @@ if condition
 end
 ----
 
+==== AllowComments: false (default)
+
+[source,ruby]
+----
+# bad
+if condition
+  statement
+else
+  # something comment
+  nil
+end
+
+# bad
+if condition
+  statement
+else
+  # something comment
+end
+----
+
+==== AllowComments: true
+
+[source,ruby]
+----
+# good
+if condition
+  statement
+else
+  # something comment
+  nil
+end
+
+# good
+if condition
+  statement
+else
+  # something comment
+end
+----
+
 === Configurable attributes
 
 |===
@@ -3155,7 +3225,56 @@ end
 | EnforcedStyle
 | `both`
 | `empty`, `nil`, `both`
+
+| AllowComments
+| `false`
+| Boolean
 |===
+
+== Style/EmptyHeredoc
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.32
+| -
+|===
+
+Checks for using empty heredoc to reduce redundancy.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+<<~EOS
+EOS
+
+<<-EOS
+EOS
+
+<<EOS
+EOS
+
+# good
+''
+
+# bad
+do_something(<<~EOS)
+EOS
+
+do_something(<<-EOS)
+EOS
+
+do_something(<<EOS)
+EOS
+
+# good
+do_something('')
+----
 
 == Style/EmptyLambdaParameter
 
@@ -3802,34 +3921,17 @@ which may cause unexpected behaviors when the developer forgets to set it.
 On the other hand, `ENV.fetch` raises KeyError or returns the explicitly
 specified default value.
 
-When an `ENV[]` is the LHS of `||`, the autocorrect makes the RHS
-the default value of `ENV.fetch`.
-
 === Examples
 
 [source,ruby]
 ----
 # bad
 ENV['X']
-ENV['X'] || 'string literal'
-ENV['X'] || some_method
 x = ENV['X']
-
-ENV['X'] || y.map do |a|
-  puts a * 2
-end
 
 # good
 ENV.fetch('X')
-ENV.fetch('X', 'string literal')
-ENV.fetch('X') { some_method }
 x = ENV.fetch('X')
-
-ENV.fetch('X') do
-  y.map do |a|
-    puts a * 2
-  end
-end
 
 # also good
 !ENV['X']
@@ -4224,6 +4326,7 @@ The reason is that _unannotated_ format is very similar
 to encoded URLs or Date/Time formatting strings.
 
 This cop can be customized ignored methods with `IgnoredMethods`.
+By default, there are no methods to ignored.
 
 It is allowed to contain unannotated token
 if the number of them is less than or equals to
@@ -4288,6 +4391,14 @@ format('%s %s.', 'Hello', 'world')
 
 # good
 format('%06d', 10)
+----
+
+==== IgnoredMethods: [] (default)
+
+[source,ruby]
+----
+# bad
+redirect('foo/%{bar_id}')
 ----
 
 ==== IgnoredMethods: [redirect]
@@ -5488,6 +5599,8 @@ end
 Checks for redundant `if` with boolean literal branches.
 It checks only conditions to return boolean value (`true` or `false`) for safe detection.
 The conditions to be checked are comparison methods, predicate methods, and double negative.
+`nonzero?` method is allowed by default.
+These are customizable with `AllowedMethods` option.
 
 === Safety
 
@@ -6443,6 +6556,9 @@ Array 1
 
 Checks for unwanted parentheses in parameterless method calls.
 
+This cop can be customized ignored methods with `IgnoredMethods`.
+By default, there are no methods to ignored.
+
 === Examples
 
 [source,ruby]
@@ -6452,6 +6568,22 @@ object.some_method()
 
 # good
 object.some_method
+----
+
+==== IgnoredMethods: [] (default)
+
+[source,ruby]
+----
+# bad
+object.foo()
+----
+
+==== IgnoredMethods: [foo]
+
+[source,ruby]
+----
+# good
+object.foo()
 ----
 
 === Configurable attributes
@@ -7939,6 +8071,10 @@ something if b && a
 
 Checks for unparenthesized method calls in the argument list
 of a parenthesized method call.
+`be`, `be_a`, `be_an`, `be_between`, `be_falsey`, `be_kind_of`, `be_instance_of`,
+`be_truthy`, `be_within`, `eq`, `eql`, `end_with`, `include`, `match`, `raise_error`,
+`respond_to`, and `start_with` methods are allowed by default.
+These are customizable with `AllowedMethods` option.
 
 === Examples
 
@@ -7949,6 +8085,14 @@ method1(method2(arg))
 
 # bad
 method1(method2 arg)
+----
+
+==== AllowedMethods: [foo]
+
+[source,ruby]
+----
+# good
+method1(foo arg)
 ----
 
 === Configurable attributes
@@ -8543,13 +8687,16 @@ of digits in them.
 Checks for usage of comparison operators (`==`,
 `>`, `<`) to test numbers as zero, positive, or negative.
 These can be replaced by their respective predicate methods.
-The cop can also be configured to do the reverse.
+This cop can also be configured to do the reverse.
 
-The cop disregards `#nonzero?` as its value is truthy or falsey,
+This cop can be customized ignored methods with `IgnoredMethods`.
+By default, there are no methods to ignored.
+
+This cop disregards `#nonzero?` as its value is truthy or falsey,
 but not `true` and `false`, and thus not always interchangeable with
 `!= 0`.
 
-The cop ignores comparisons to global variables, since they are often
+This cop ignores comparisons to global variables, since they are often
 populated with objects which can be compared with integers, but are
 not themselves `Integer` polymorphic.
 
@@ -8566,13 +8713,11 @@ to a false positive for non-standard classes.
 [source,ruby]
 ----
 # bad
-
 foo == 0
 0 > foo
 bar.baz > 0
 
 # good
-
 foo.zero?
 foo.negative?
 bar.baz.positive?
@@ -8583,14 +8728,34 @@ bar.baz.positive?
 [source,ruby]
 ----
 # bad
-
 foo.zero?
 foo.negative?
 bar.baz.positive?
 
 # good
-
 foo == 0
+0 > foo
+bar.baz > 0
+----
+
+==== IgnoredMethods: [] (default) with EnforcedStyle: predicate
+
+[source,ruby]
+----
+# bad
+foo == 0
+0 > foo
+bar.baz > 0
+----
+
+==== IgnoredMethods: [==] with EnforcedStyle: predicate
+
+[source,ruby]
+----
+# good
+foo == 0
+
+# bad
 0 > foo
 bar.baz > 0
 ----
@@ -12566,6 +12731,8 @@ Use symbols as procs when possible.
 
 If you prefer a style that allows block for method with arguments,
 please set `true` to `AllowMethodsWithArguments`.
+respond_to , and `define_method?` methods are ignored by default.
+These are customizable with `IgnoredMethods` option.
 
 === Safety
 
@@ -12647,6 +12814,15 @@ something.do_something do |s| # some comment
   s.upcase # some comment
   # some comment
 end
+----
+
+==== IgnoredMethods: [respond_to, define_method] (default)
+
+[source,ruby]
+----
+# good
+respond_to { |foo| foo.bar }
+define_method(:foo) { |foo| foo.bar }
 ----
 
 === Configurable attributes
@@ -13474,6 +13650,9 @@ a, b, _something = foo()
 
 Looks for trivial reader/writer methods, that could
 have been created with the attr_* family of functions automatically.
+`to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`,
+`to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, and `to_sym` methods
+are allowed by default. These are customizable with `AllowedMethods` option.
 
 === Examples
 

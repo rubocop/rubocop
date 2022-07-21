@@ -47,6 +47,7 @@ Checks for ambiguous block association with method
 when param passed without parentheses.
 
 This cop can customize ignored methods with `IgnoredMethods`.
+By default, there are no methods to ignored.
 
 === Examples
 
@@ -71,6 +72,14 @@ foo == bar { |b| b.baz }
 # good
 # Lambda arguments require no disambiguation
 foo = ->(bar) { bar.baz }
+----
+
+==== IgnoredMethods: [] (default)
+
+[source,ruby]
+----
+# bad
+expect { do_something }.to change { object.attribute }
 ----
 
 ==== IgnoredMethods: [change]
@@ -879,23 +888,22 @@ Checks for uses of the deprecated class method usages.
 [source,ruby]
 ----
 # bad
-
 File.exists?(some_path)
 Dir.exists?(some_path)
 iterator?
 ENV.freeze # Calling `Env.freeze` raises `TypeError` since Ruby 2.7.
+ENV.clone
+ENV.dup # Calling `Env.dup` raises `TypeError` since Ruby 3.1.
 Socket.gethostbyname(host)
 Socket.gethostbyaddr(host)
-----
 
-[source,ruby]
-----
 # good
-
 File.exist?(some_path)
 Dir.exist?(some_path)
 block_given?
 ENV # `ENV.freeze` cannot prohibit changes to environment variables.
+ENV.to_h
+ENV.to_h # `ENV.dup` cannot dup `ENV`, use `ENV.to_h` to get a copy of `ENV` as a hash.
 Addrinfo.getaddrinfo(nodename, service)
 Addrinfo.tcp(host, port).getnameinfo
 ----
@@ -3424,19 +3432,21 @@ to be strictly equivalent to that before the replacement.
 
 [source,ruby]
 ----
-# bad
-unless FileTest.exist?(path)
-  FileUtils.makedirs(path)
+# bad - race condition with another process may result in an error in `mkdir`
+unless Dir.exist?(path)
+  FileUtils.mkdir(path)
 end
 
-if FileTest.exist?(path)
+# good - atomic and idempotent creation
+FileUtils.mkdir_p(path)
+
+# bad - race condition with another process may result in an error in `remove`
+if File.exist?(path)
   FileUtils.remove(path)
 end
 
-# good
-FileUtils.mkdir_p(path)
-
-FileUtils.rm_rf(path)
+# good - atomic and idempotent removal
+FileUtils.rm_f(path)
 ----
 
 == Lint/NonDeterministicRequireOrder
@@ -3584,7 +3594,8 @@ always correct to raise if a value is not numeric.
 NOTE: Some values cannot be converted properly using one of the `Kernel`
 method (for instance, `Time` and `DateTime` values are allowed by this
 cop by default). Similarly, Rails' duration methods do not work well
-with `Integer()` and can be ignored with `IgnoredMethods`.
+with `Integer()` and can be ignored with `IgnoredMethods`. By default,
+there are no methods to ignored.
 
 === Safety
 
@@ -3615,6 +3626,14 @@ Rational('1/3')
 ['1', '2', '3'].map { |i| Integer(i, 10) }
 foo.try { |i| Float(i) }
 bar.send { |i| Complex(i) }
+----
+
+==== IgnoredMethods: [] (default)
+
+[source,ruby]
+----
+# bad
+10.minutes.to_i
 ----
 
 ==== IgnoredMethods: [minutes]
@@ -4225,6 +4244,17 @@ end
 foo&.respond_to?(:to_a)
 ----
 
+==== AllowedMethods: [foo?]
+
+[source,ruby]
+----
+# bad
+do_something if attrs&.foo?(:[])
+
+# good
+do_something if attrs&.bar?(:[])
+----
+
 === Configurable attributes
 
 |===
@@ -4561,6 +4591,55 @@ if day.is?(:tuesday) && month == :jan
 end
 ----
 
+== Lint/RequireRangeParentheses
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.32
+| -
+|===
+
+Checks that a range literal is enclosed in parentheses when the end of the range is
+at a line break.
+
+NOTE: The following is maybe intended for `(42..)`. But, compatible is `42..do_something`.
+So, this cop does not provide autocorrection because it is left to user.
+
+[source,ruby]
+----
+case condition
+when 42..
+  do_something
+end
+----
+
+=== Examples
+
+[source,ruby]
+----
+# bad - Represents `(1..42)`, not endless range.
+1..
+42
+
+# good - It's incompatible, but your intentions when using endless range may be:
+(1..)
+42
+
+# good
+1..42
+
+# good
+(1..42)
+
+# good
+(1..
+42)
+----
+
 == Lint/RequireRelativeSelfPath
 
 |===
@@ -4735,7 +4814,7 @@ NOTE: Required Ruby version: 2.3
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.47
 | 0.77
 |===
