@@ -367,6 +367,20 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'registers a offense for classes with nested one-liner children' do
+      expect_offense(<<~RUBY)
+        class FooClass
+              ^^^^^^^^ Use compact module/class definition instead of nested style.
+          class BarClass; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class FooClass::BarClass
+        end
+      RUBY
+    end
+
     it 'accepts class/module with single method' do
       expect_no_offenses(<<~RUBY)
         class FooClass
