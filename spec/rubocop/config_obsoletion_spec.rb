@@ -573,5 +573,28 @@ RSpec.describe RuboCop::ConfigObsoletion do
         expect { config_obsoletion.reject_obsolete! }.not_to raise_error
       end
     end
+
+    context 'when using `changed_parameters` by an external library' do
+      after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
+
+      let(:hash) { {} }
+      let(:external_obsoletions) do
+        create_file('external/obsoletions.yml', <<~YAML)
+          changed_parameters:
+            - cops: Rails/FindEach
+              parameters: IgnoredMethods
+              alternatives:
+                - AllowedMethods
+                - AllowedPatterns
+              severity: warning
+        YAML
+      end
+
+      it 'allows the extracted cops' do
+        described_class.files << external_obsoletions
+
+        expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+      end
+    end
   end
 end
