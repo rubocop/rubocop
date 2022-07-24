@@ -4,16 +4,17 @@ module RuboCop
   module Cop
     module Metrics
       # Checks if the length of a method exceeds some maximum value.
-      # Comment lines can optionally be ignored.
+      # Comment lines can optionally be allowed.
       # The maximum allowed length is configurable.
       #
       # You can set literals you want to fold with `CountAsOne`.
       # Available are: 'array', 'hash', and 'heredoc'. Each literal
       # will be counted as one line regardless of its actual size.
       #
-      # NOTE: The `ExcludedMethods` configuration is deprecated and only kept
-      # for backwards compatibility. Please use `IgnoredMethods` instead.
-      # By default, there are no methods to ignored.
+      # NOTE: The `ExcludedMethods` and `IgnoredMethods` configuration is
+      # deprecated and only kept for backwards compatibility.
+      # Please use `AllowedMethods` and `AllowedPatterns` instead.
+      # By default, there are no methods to allowed.
       #
       # @example CountAsOne: ['array', 'heredoc']
       #
@@ -35,14 +36,13 @@ module RuboCop
       #
       class MethodLength < Base
         include CodeLength
-        include IgnoredMethods
-
-        ignored_methods deprecated_key: 'ExcludedMethods'
+        include AllowedMethods
+        include AllowedPattern
 
         LABEL = 'Method'
 
         def on_def(node)
-          return if ignored_method?(node.method_name)
+          return if allowed_method?(node.method_name) || matches_allowed_pattern?(node.method_name)
 
           check_code_length(node)
         end

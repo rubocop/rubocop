@@ -16,8 +16,8 @@ module RuboCop
       # NOTE: Some values cannot be converted properly using one of the `Kernel`
       # method (for instance, `Time` and `DateTime` values are allowed by this
       # cop by default). Similarly, Rails' duration methods do not work well
-      # with `Integer()` and can be ignored with `IgnoredMethods`. By default,
-      # there are no methods to ignored.
+      # with `Integer()` and can be allowed with `AllowedMethods`. By default,
+      # there are no methods to allowed.
       #
       # @safety
       #   Autocorrection is unsafe because it is not guaranteed that the
@@ -46,12 +46,22 @@ module RuboCop
       #   foo.try { |i| Float(i) }
       #   bar.send { |i| Complex(i) }
       #
-      # @example IgnoredMethods: [] (default)
+      # @example AllowedMethods: [] (default)
       #
       #   # bad
       #   10.minutes.to_i
       #
-      # @example IgnoredMethods: [minutes]
+      # @example AllowedMethods: [minutes]
+      #
+      #   # good
+      #   10.minutes.to_i
+      #
+      # @example AllowedPatterns: [] (default)
+      #
+      #   # bad
+      #   10.minutes.to_i
+      #
+      # @example AllowedPatterns: [/min*/]
       #
       #   # good
       #   10.minutes.to_i
@@ -62,7 +72,8 @@ module RuboCop
       #   Time.now.to_datetime.to_i
       class NumberConversion < Base
         extend AutoCorrector
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
 
         CONVERSION_METHOD_CLASS_MAPPING = {
           to_i: "#{Integer.name}(%<number_object>s, 10)",
@@ -97,7 +108,7 @@ module RuboCop
 
         def handle_conversion_method(node)
           to_method(node) do |receiver, to_method|
-            next if receiver.nil? || ignore_receiver?(receiver)
+            next if receiver.nil? || allow_receiver?(receiver)
 
             message = format(
               MSG,
@@ -141,15 +152,20 @@ module RuboCop
           corrector.remove(node.loc.end)
         end
 
-        def ignore_receiver?(receiver)
+        def allow_receiver?(receiver)
           if receiver.numeric_type? || (receiver.send_type? &&
-            (conversion_method?(receiver.method_name) || ignored_method?(receiver.method_name)))
+            (conversion_method?(receiver.method_name) ||
+            allowed_method_name?(receiver.method_name)))
             true
           elsif (receiver = top_receiver(receiver))
             receiver.const_type? && ignored_class?(receiver.const_name)
           else
             false
           end
+        end
+
+        def allowed_method_name?(name)
+          allowed_method?(name) || matches_allowed_pattern?(name)
         end
 
         def top_receiver(node)

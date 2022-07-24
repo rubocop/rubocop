@@ -86,12 +86,30 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
     end
   end
 
-  context 'IgnoredMethods' do
-    let(:cop_config) { { 'IgnoredMethods' => %w[change] } }
+  context 'when AllowedMethods is enabled' do
+    let(:cop_config) { { 'AllowedMethods' => %w[change] } }
 
-    it 'does not register an offense for an ignored method' do
+    it 'does not register an offense for an allowed method' do
       expect_no_offenses(<<~RUBY)
         expect { order.expire }.to change { order.events }
+      RUBY
+    end
+
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        expect { order.expire }.to update { order.events }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `update { order.events }` to make sure that the block will be associated with the `update` method call.
+      RUBY
+    end
+  end
+
+  context 'when AllowedPatterns is enabled' do
+    let(:cop_config) { { 'AllowedPatterns' => [/change/] } }
+
+    it 'does not register an offense for an allowed method' do
+      expect_no_offenses(<<~RUBY)
+        expect { order.expire }.to change { order.events }
+        expect { order.expire }.to not_change { order.events }
       RUBY
     end
 

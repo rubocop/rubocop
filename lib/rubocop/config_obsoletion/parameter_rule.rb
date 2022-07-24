@@ -32,6 +32,10 @@ module RuboCop
         metadata['alternative']
       end
 
+      def alternatives
+        metadata['alternatives']
+      end
+
       def reason
         metadata['reason']
       end

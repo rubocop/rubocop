@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # Enforces the use of `Object#instance_of?` instead of class comparison
       # for equality.
-      # `==`, `equal?`, and `eql?` methods are ignored by default.
-      # These are customizable with `IgnoredMethods` option.
+      # `==`, `equal?`, and `eql?` methods are allowed by default.
+      # These are customizable with `AllowedMethods` option.
       #
       # @example
       #   # bad
@@ -18,7 +18,7 @@ module RuboCop
       #   # good
       #   var.instance_of?(Date)
       #
-      # @example IgnoreMethods: [] (default)
+      # @example AllowedMethods: [] (default)
       #   # good
       #   var.instance_of?(Date)
       #
@@ -28,7 +28,7 @@ module RuboCop
       #   var.class.eql?(Date)
       #   var.class.name == 'Date'
       #
-      # @example IgnoreMethods: [`==`]
+      # @example AllowedMethods: [`==`]
       #   # good
       #   var.instance_of?(Date)
       #   var.class == Date
@@ -37,10 +37,31 @@ module RuboCop
       #   # bad
       #   var.class.equal?(Date)
       #   var.class.eql?(Date)
+      #
+      # @example AllowedPatterns: [] (default)
+      #   # good
+      #   var.instance_of?(Date)
+      #
+      #   # bad
+      #   var.class == Date
+      #   var.class.equal?(Date)
+      #   var.class.eql?(Date)
+      #   var.class.name == 'Date'
+      #
+      # @example AllowedPatterns: [`/eq/`]
+      #   # good
+      #   var.instance_of?(Date)
+      #   var.class.equal?(Date)
+      #   var.class.eql?(Date)
+      #
+      #   # bad
+      #   var.class == Date
+      #   var.class.name == 'Date'
       #
       class ClassEqualityComparison < Base
         include RangeHelp
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
         extend AutoCorrector
 
         MSG = 'Use `instance_of?(%<class_name>s)` instead of comparing classes.'
@@ -56,7 +77,9 @@ module RuboCop
 
         def on_send(node)
           def_node = node.each_ancestor(:def, :defs).first
-          return if def_node && ignored_method?(def_node.method_name)
+          return if def_node &&
+                    (allowed_method?(def_node.method_name) ||
+                    matches_allowed_pattern?(def_node.method_name))
 
           class_comparison_candidate?(node) do |receiver_node, class_node|
             range = offense_range(receiver_node, node)

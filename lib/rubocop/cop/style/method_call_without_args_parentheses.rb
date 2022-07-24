@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # Checks for unwanted parentheses in parameterless method calls.
       #
-      # This cop can be customized ignored methods with `IgnoredMethods`.
-      # By default, there are no methods to ignored.
+      # This cop can be customized allowed methods with `AllowedMethods`.
+      # By default, there are no methods to allowed.
       #
       # @example
       #   # bad
@@ -15,16 +15,17 @@ module RuboCop
       #   # good
       #   object.some_method
       #
-      # @example IgnoredMethods: [] (default)
+      # @example AllowedMethods: [] (default)
       #   # bad
       #   object.foo()
       #
-      # @example IgnoredMethods: [foo]
+      # @example AllowedMethods: [foo]
       #   # good
       #   object.foo()
       #
       class MethodCallWithoutArgsParentheses < Base
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
         extend AutoCorrector
 
         MSG = 'Do not use parentheses for method calls with no arguments.'
@@ -33,7 +34,7 @@ module RuboCop
           return unless !node.arguments? && node.parenthesized?
           return if ineligible_node?(node)
           return if default_argument?(node)
-          return if ignored_method?(node.method_name)
+          return if allowed_method_name?(node.method_name)
           return if same_name_assignment?(node)
 
           register_offense(node)
@@ -54,6 +55,10 @@ module RuboCop
 
         def default_argument?(node)
           node.parent&.optarg_type?
+        end
+
+        def allowed_method_name?(name)
+          allowed_method?(name) || matches_allowed_pattern?(name)
         end
 
         def same_name_assignment?(node)

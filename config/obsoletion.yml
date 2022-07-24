@@ -187,7 +187,9 @@ changed_parameters:
       - Metrics/BlockLength
       - Metrics/MethodLength
     parameters: ExcludedMethods
-    alternative: IgnoredMethods
+    alternatives:
+      - AllowedMethods
+      - AllowedPatterns
     severity: warning
   - cops: Lint/Debugger
     parameters: DebuggerReceivers
@@ -201,6 +203,26 @@ changed_parameters:
       - Style/MethodCallWithArgsParentheses
     parameters: IgnoredPatterns
     alternative: AllowedPatterns
+    severity: warning
+  - cops:
+      - Lint/AmbiguousBlockAssociation
+      - Lint/NumberConversion
+      - Metrics/AbcSize
+      - Metrics/BlockLength
+      - Metrics/CyclomaticComplexity
+      - Metrics/MethodLength
+      - Metrics/PerceivedComplexity
+      - Style/BlockDelimiters
+      - Style/ClassEqualityComparison
+      - Style/FormatStringToken
+      - Style/MethodCallWithArgsParentheses
+      - Style/MethodCallWithoutArgsParentheses
+      - Style/NumericPredicate
+      - Style/SymbolLiteral
+    parameters: IgnoredMethods
+    alternatives:
+      - AllowedMethods
+      - AllowedPatterns
     severity: warning
 
 # Enforced styles that have been removed or replaced

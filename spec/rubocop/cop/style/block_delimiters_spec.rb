@@ -63,7 +63,8 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       'EnforcedStyle' => 'semantic',
       'ProceduralMethods' => %w[tap],
       'FunctionalMethods' => %w[let],
-      'IgnoredMethods' => ['lambda', /test/]
+      'AllowedMethods' => ['lambda'],
+      'AllowedPatterns' => [/test/]
     }
 
     let(:cop_config) { cop_config }
@@ -374,7 +375,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
   end
 
   context 'EnforcedStyle: line_count_based' do
-    cop_config = { 'EnforcedStyle' => 'line_count_based', 'IgnoredMethods' => ['proc', /test/] }
+    cop_config = {
+      'EnforcedStyle' => 'line_count_based',
+      'AllowedMethods' => ['proc'],
+      'AllowedPatterns' => [/test/]
+    }
 
     let(:cop_config) { cop_config }
 
@@ -603,7 +608,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
   end
 
   context 'EnforcedStyle: braces_for_chaining' do
-    cop_config = { 'EnforcedStyle' => 'braces_for_chaining', 'IgnoredMethods' => ['proc', /test/] }
+    cop_config = {
+      'EnforcedStyle' => 'braces_for_chaining',
+      'AllowedMethods' => ['proc'],
+      'AllowedPatterns' => [/test/]
+    }
 
     let(:cop_config) { cop_config }
 
@@ -768,7 +777,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
   end
 
   context 'EnforcedStyle: always_braces' do
-    cop_config = { 'EnforcedStyle' => 'always_braces', 'IgnoredMethods' => ['proc', /test/] }
+    cop_config = {
+      'EnforcedStyle' => 'always_braces',
+      'AllowedMethods' => ['proc'],
+      'AllowedPatterns' => [/test/]
+    }
 
     let(:cop_config) { cop_config }
 

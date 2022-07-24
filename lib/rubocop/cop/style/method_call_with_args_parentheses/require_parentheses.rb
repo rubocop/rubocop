@@ -12,7 +12,7 @@ module RuboCop
           private
 
           def require_parentheses(node)
-            return if ignored_method?(node.method_name)
+            return if allowed_method_name?(node.method_name)
             return if matches_allowed_pattern?(node.method_name)
             return if eligible_for_parentheses_omission?(node)
             return unless node.arguments? && !node.parenthesized?
@@ -22,6 +22,10 @@ module RuboCop
 
               corrector.insert_after(args_end(node), ')') unless args_parenthesized?(node)
             end
+          end
+
+          def allowed_method_name?(name)
+            allowed_method?(name) || matches_allowed_pattern?(name)
           end
 
           def eligible_for_parentheses_omission?(node)

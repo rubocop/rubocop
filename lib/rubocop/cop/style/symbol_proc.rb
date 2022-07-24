@@ -7,13 +7,13 @@ module RuboCop
       #
       # If you prefer a style that allows block for method with arguments,
       # please set `true` to `AllowMethodsWithArguments`.
-      # respond_to , and `define_method?` methods are ignored by default.
-      # These are customizable with `IgnoredMethods` option.
+      # respond_to , and `define_method?` methods are allowed by default.
+      # These are customizable with `AllowedMethods` option.
       #
       # @safety
       #   This cop is unsafe because `proc`s and blocks work differently
       #   when additional arguments are passed in. A block will silently
-      #   ignore additional arguments, but a `proc` will raise
+      #   allow additional arguments, but a `proc` will raise
       #   an `ArgumentError`.
       #
       #   For example:
@@ -71,15 +71,25 @@ module RuboCop
       #     # some comment
       #   end
       #
-      # @example IgnoredMethods: [respond_to, define_method] (default)
+      # @example AllowedMethods: [respond_to, define_method] (default)
       #   # good
       #   respond_to { |foo| foo.bar }
       #   define_method(:foo) { |foo| foo.bar }
       #
+      #
+      # @example AllowedPatterns: [] (default)
+      #   # bad
+      #   something.map { |s| s.upcase }
+      #
+      # @example AllowedPatterns: [/map/] (default)
+      #   # good
+      #   something.map { |s| s.upcase }
+      #
       class SymbolProc < Base
         include CommentsHelp
         include RangeHelp
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
         extend AutoCorrector
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` instead of a block.'
@@ -108,10 +118,10 @@ module RuboCop
           symbol_proc?(node) do |dispatch_node, arguments_node, method_name|
             # TODO: Rails-specific handling that we should probably make
             # configurable - https://github.com/rubocop/rubocop/issues/1485
-            # we should ignore lambdas & procs
+            # we should allow lambdas & procs
             return if proc_node?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)
-            return if ignored_method?(dispatch_node.method_name)
+            return if allowed_method_name?(dispatch_node.method_name)
             return if allow_if_method_has_argument?(node.send_node)
             return if node.block_type? && destructuring_block_argument?(arguments_node)
             return if allow_comments? && contains_comments?(node)
@@ -127,6 +137,10 @@ module RuboCop
         end
 
         private
+
+        def allowed_method_name?(name)
+          allowed_method?(name) || matches_allowed_pattern?(name)
+        end
 
         def register_offense(node, method_name, block_method_name)
           block_start = node.loc.begin.begin_pos

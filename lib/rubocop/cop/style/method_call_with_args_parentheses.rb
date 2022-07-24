@@ -6,8 +6,8 @@ module RuboCop
       # Enforces the presence (default) or absence of parentheses in
       # method calls containing parameters.
       #
-      # In the default style (require_parentheses), macro methods are ignored.
-      # Additional methods can be added to the `IgnoredMethods`
+      # In the default style (require_parentheses), macro methods are allowed.
+      # Additional methods can be added to the `AllowedMethods`
       # or `AllowedPatterns` list. These options are
       # valid only in the default style. Macros can be included by
       # either setting `IgnoreMacros` to false or adding specific macros to
@@ -15,13 +15,13 @@ module RuboCop
       #
       # Precedence of options is all follows:
       #
-      # 1. `IgnoredMethods`
+      # 1. `AllowedMethods`
       # 2. `AllowedPatterns`
       # 3. `IncludedMacros`
       #
       # eg. If a method is listed in both
-      # `IncludedMacros` and `IgnoredMethods`, then the latter takes
-      # precedence (that is, the method is ignored).
+      # `IncludedMacros` and `AllowedMethods`, then the latter takes
+      # precedence (that is, the method is allowed).
       #
       # In the alternative style (omit_parentheses), there are three additional
       # options.
@@ -65,7 +65,7 @@ module RuboCop
       #   # Setter methods don't need parens
       #   foo.bar = baz
       #
-      #   # okay with `puts` listed in `IgnoredMethods`
+      #   # okay with `puts` listed in `AllowedMethods`
       #   puts 'test'
       #
       #   # okay with `^assert` listed in `AllowedPatterns`
@@ -197,7 +197,7 @@ module RuboCop
         require_relative 'method_call_with_args_parentheses/require_parentheses'
 
         include ConfigurableEnforcedStyle
-        include IgnoredMethods
+        include AllowedMethods
         include AllowedPattern
         include RequireParentheses
         include OmitParentheses

@@ -11,8 +11,8 @@ module RuboCop
       # The reason is that _unannotated_ format is very similar
       # to encoded URLs or Date/Time formatting strings.
       #
-      # This cop can be customized ignored methods with `IgnoredMethods`.
-      # By default, there are no methods to ignored.
+      # This cop can be customized allowed methods with `AllowedMethods`.
+      # By default, there are no methods to allowed.
       #
       # @example EnforcedStyle: annotated (default)
       #
@@ -62,23 +62,34 @@ module RuboCop
       #   # good
       #   format('%06d', 10)
       #
-      # @example IgnoredMethods: [] (default)
+      # @example AllowedMethods: [] (default)
       #
       #   # bad
       #   redirect('foo/%{bar_id}')
       #
-      # @example IgnoredMethods: [redirect]
+      # @example AllowedMethods: [redirect]
+      #
+      #   # good
+      #   redirect('foo/%{bar_id}')
+      #
+      # @example AllowedPatterns: [] (default)
+      #
+      #   # bad
+      #   redirect('foo/%{bar_id}')
+      #
+      # @example AllowedPatterns: [/redirect/]
       #
       #   # good
       #   redirect('foo/%{bar_id}')
       #
       class FormatStringToken < Base
         include ConfigurableEnforcedStyle
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
         extend AutoCorrector
 
         def on_str(node)
-          return if format_string_token?(node) || use_ignored_method?(node)
+          return if format_string_token?(node) || use_allowed_method?(node)
 
           detections = collect_detections(node)
           return if detections.empty?
@@ -103,9 +114,11 @@ module RuboCop
           !node.value.include?('%') || node.each_ancestor(:xstr, :regexp).any?
         end
 
-        def use_ignored_method?(node)
+        def use_allowed_method?(node)
           send_parent = node.each_ancestor(:send).first
-          send_parent && ignored_method?(send_parent.method_name)
+          send_parent &&
+            (allowed_method?(send_parent.method_name) ||
+            matches_allowed_pattern?(send_parent.method_name))
         end
 
         def check_sequence(detected_sequence, token_range)

@@ -242,18 +242,25 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
     end
   end
 
-  context 'when there are ignored methods' do
+  context 'when there are allowed methods' do
     let(:cop_config) do
       {
         'EnforcedStyle' => 'predicate',
         'AutoCorrect' => true,
-        'IgnoredMethods' => ['where', /order/]
+        'AllowedMethods' => ['where'],
+        'AllowedPatterns' => [/order/]
       }
     end
 
     context 'simple method call' do
       context '`EnforcedStyle` is `predicate`' do
-        let(:cop_config) { { 'EnforcedStyle' => 'predicate', 'IgnoredMethods' => %w[==] } }
+        let(:cop_config) do
+          {
+            'EnforcedStyle' => 'predicate',
+            'AllowedMethods' => %w[==],
+            'AllowedPatterns' => []
+          }
+        end
 
         it 'allows checking if a number is zero' do
           expect_no_offenses(<<~RUBY)
@@ -265,7 +272,13 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
       end
 
       context '`EnforcedStyle` is `comparison`' do
-        let(:cop_config) { { 'EnforcedStyle' => 'comparison', 'IgnoredMethods' => %w[zero?] } }
+        let(:cop_config) do
+          {
+            'EnforcedStyle' => 'comparison',
+            'AllowedMethods' => [],
+            'AllowedPatterns' => [/zero/]
+          }
+        end
 
         it 'allows checking if a number is zero' do
           expect_no_offenses(<<~RUBY)

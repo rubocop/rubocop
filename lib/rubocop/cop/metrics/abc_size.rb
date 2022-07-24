@@ -33,7 +33,9 @@ module RuboCop
       #      render 'pages/search/page'
       #    end
       #
-      # This cop also takes into account `IgnoredMethods` (defaults to `[]`)
+      # This cop also takes into account `AllowedMethods` (defaults to `[]`)
+      # And `AllowedPatterns` (defaults to `[]`)
+      #
       class AbcSize < Base
         include MethodComplexity
 
