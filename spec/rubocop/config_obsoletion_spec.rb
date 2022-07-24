@@ -399,11 +399,49 @@ RSpec.describe RuboCop::ConfigObsoletion do
     context 'when the configuration includes any deprecated parameters' do
       let(:hash) do
         {
+          'Lint/AmbiguousBlockAssociation' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Lint/NumberConversion' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Metrics/AbcSize' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
           'Metrics/BlockLength' => {
-            'ExcludedMethods' => %w[foo bar]
+            'ExcludedMethods' => %w[foo bar],
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Metrics/CyclomaticComplexity' => {
+            'IgnoredMethods' => %w[foo bar]
           },
           'Metrics/MethodLength' => {
-            'ExcludedMethods' => %w[foo bar]
+            'ExcludedMethods' => %w[foo bar],
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Metrics/PerceivedComplexity' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/BlockDelimiters' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/ClassEqualityComparison' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/FormatStringToken' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/MethodCallWithArgsParentheses' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/MethodCallWithoutArgsParentheses' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/NumericPredicate' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/SymbolLiteral' => {
+            'IgnoredMethods' => %w[foo bar]
           }
         }
       end
@@ -413,9 +451,37 @@ RSpec.describe RuboCop::ConfigObsoletion do
       let(:expected_message) do
         <<~OUTPUT.chomp
           obsolete parameter `ExcludedMethods` (for `Metrics/BlockLength`) found in example/.rubocop.yml
-          `ExcludedMethods` has been renamed to `IgnoredMethods`.
+          `ExcludedMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
           obsolete parameter `ExcludedMethods` (for `Metrics/MethodLength`) found in example/.rubocop.yml
-          `ExcludedMethods` has been renamed to `IgnoredMethods`.
+          `ExcludedMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Lint/AmbiguousBlockAssociation`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Lint/NumberConversion`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/AbcSize`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/BlockLength`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/CyclomaticComplexity`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/MethodLength`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/PerceivedComplexity`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/BlockDelimiters`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/ClassEqualityComparison`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/FormatStringToken`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/MethodCallWithArgsParentheses`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/MethodCallWithoutArgsParentheses`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/NumericPredicate`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/SymbolLiteral`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
         OUTPUT
       end
 

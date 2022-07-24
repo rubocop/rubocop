@@ -322,21 +322,11 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    context 'with IgnoredMethods' do
-      context 'with a string' do
-        let(:cop_config) { { 'IgnoredMethods' => %w[puts] } }
+    context 'with AllowedMethods' do
+      let(:cop_config) { { 'AllowedMethods' => %w[puts] } }
 
-        it 'ignores method listed in IgnoredMethods' do
-          expect_no_offenses('puts :test')
-        end
-      end
-
-      context 'with a regex' do
-        let(:cop_config) { { 'IgnoredMethods' => [/puts/] } }
-
-        it 'ignores method listed in IgnoredMethods' do
-          expect_no_offenses('puts :test')
-        end
+      it 'allow method listed in AllowedMethods' do
+        expect_no_offenses('puts :test')
       end
     end
 
@@ -1039,12 +1029,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
-    context 'for a macro in both IncludedMacros and IgnoredMethods' do
+    context 'for a macro in both IncludedMacros and AllowedMethods' do
       let(:cop_config) do
         {
           'IgnoreMacros' => 'true',
           'IncludedMacros' => ['bar'],
-          'IgnoredMethods' => ['bar']
+          'AllowedMethods' => ['bar']
         }
       end
 

@@ -2,14 +2,16 @@
 
 RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   let(:enforced_style) { :annotated }
-  let(:ignored_methods) { [] }
+  let(:allowed_methods) { [] }
+  let(:allowed_patterns) { [] }
 
   let(:cop_config) do
     {
       'EnforcedStyle' => enforced_style,
       'SupportedStyles' => %i[annotated template unannotated],
       'MaxUnannotatedPlaceholdersAllowed' => 0,
-      'IgnoredMethods' => ignored_methods
+      'AllowedMethods' => allowed_methods,
+      'AllowedPatterns' => allowed_patterns
     }
   end
 
@@ -318,8 +320,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       RUBY
     end
 
-    context 'when `IgnoredMethods: redirect`' do
-      let(:ignored_methods) { ['redirect'] }
+    context 'when AllowedMethods is enabled' do
+      let(:allowed_methods) { ['redirect'] }
 
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
@@ -341,8 +343,42 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       end
     end
 
-    context 'when `IgnoredMethods: []`' do
-      let(:ignored_methods) { [] }
+    context 'when AllowedMethods is disabled' do
+      let(:allowed_methods) { [] }
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          redirect("%{foo}")
+                    ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+        RUBY
+      end
+    end
+
+    context 'when AllowedPatterns is enabled' do
+      let(:allowed_patterns) { [/redirect/] }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          redirect("%{foo}")
+        RUBY
+      end
+
+      it 'does not register an offense for value in nested structure' do
+        expect_no_offenses(<<~RUBY)
+          redirect("%{foo}", bye: "%{foo}")
+        RUBY
+      end
+
+      it 'registers an offense for different method call within ignored method' do
+        expect_offense(<<~RUBY)
+          redirect("%{foo}", bye: foo("%{foo}"))
+                                       ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+        RUBY
+      end
+    end
+
+    context 'when AllowedPatterns is disabled' do
+      let(:allowed_patterns) { [] }
 
       it 'registers an offense' do
         expect_offense(<<~RUBY)

@@ -8,14 +8,14 @@ module RuboCop
       # These can be replaced by their respective predicate methods.
       # This cop can also be configured to do the reverse.
       #
-      # This cop can be customized ignored methods with `IgnoredMethods`.
-      # By default, there are no methods to ignored.
+      # This cop can be customized allowed methods with `AllowedMethods`.
+      # By default, there are no methods to allowed.
       #
       # This cop disregards `#nonzero?` as its value is truthy or falsey,
       # but not `true` and `false`, and thus not always interchangeable with
       # `!= 0`.
       #
-      # This cop ignores comparisons to global variables, since they are often
+      # This cop allows comparisons to global variables, since they are often
       # populated with objects which can be compared with integers, but are
       # not themselves `Integer` polymorphic.
       #
@@ -46,13 +46,13 @@ module RuboCop
       #   0 > foo
       #   bar.baz > 0
       #
-      # @example IgnoredMethods: [] (default) with EnforcedStyle: predicate
+      # @example AllowedMethods: [] (default) with EnforcedStyle: predicate
       #   # bad
       #   foo == 0
       #   0 > foo
       #   bar.baz > 0
       #
-      # @example IgnoredMethods: [==] with EnforcedStyle: predicate
+      # @example AllowedMethods: [==] with EnforcedStyle: predicate
       #   # good
       #   foo == 0
       #
@@ -60,9 +60,25 @@ module RuboCop
       #   0 > foo
       #   bar.baz > 0
       #
+      # @example AllowedPatterns: [] (default) with EnforcedStyle: comparison
+      #   # bad
+      #   foo.zero?
+      #   foo.negative?
+      #   bar.baz.positive?
+      #
+      # @example AllowedPatterns: [/zero/] with EnforcedStyle: predicate
+      #   # good
+      #   # bad
+      #   foo.zero?
+      #
+      #   # bad
+      #   foo.negative?
+      #   bar.baz.positive?
+      #
       class NumericPredicate < Base
         include ConfigurableEnforcedStyle
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
         extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
@@ -75,9 +91,9 @@ module RuboCop
           numeric, replacement = check(node)
           return unless numeric
 
-          return if ignored_method?(node.method_name) ||
+          return if allowed_method_name?(node.method_name) ||
                     node.each_ancestor(:send, :block).any? do |ancestor|
-                      ignored_method?(ancestor.method_name)
+                      allowed_method_name?(ancestor.method_name)
                     end
 
           message = format(MSG, prefer: replacement, current: node.source)
@@ -87,6 +103,10 @@ module RuboCop
         end
 
         private
+
+        def allowed_method_name?(name)
+          allowed_method?(name) || matches_allowed_pattern?(name)
+        end
 
         def check(node)
           numeric, operator =

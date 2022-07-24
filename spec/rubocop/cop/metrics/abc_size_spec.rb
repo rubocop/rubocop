@@ -76,9 +76,9 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
-    context 'when method is in list of ignored methods' do
-      context 'when given a string' do
-        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
+    context 'when method is in list of allowed methods' do
+      context 'when AllowedMethods is enabled' do
+        let(:cop_config) { { 'Max' => 0, 'AllowedMethods' => ['foo'] } }
 
         it 'does not register an offense when defining an instance method' do
           expect_no_offenses(<<~RUBY)
@@ -105,8 +105,8 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
         end
       end
 
-      context 'when given a regex' do
-        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => [/foo/] } }
+      context 'when AllowedPatterns is enabled' do
+        let(:cop_config) { { 'Max' => 0, 'AllowedPatterns' => [/foo/] } }
 
         it 'does not register an offense when defining an instance method' do
           expect_no_offenses(<<~RUBY)

@@ -1502,7 +1502,9 @@ Lint/AmbiguousBlockAssociation:
   Enabled: true
   VersionAdded: '0.48'
   VersionChanged: '1.13'
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
 
 Lint/AmbiguousOperator:
   Description: >-
@@ -1991,7 +1993,9 @@ Lint/NumberConversion:
   VersionAdded: '0.53'
   VersionChanged: '1.1'
   SafeAutoCorrect: false
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   IgnoredClasses:
     - Time
     - DateTime
@@ -2443,7 +2447,9 @@ Metrics/AbcSize:
   VersionChanged: '1.5'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   CountRepeatedAttributes: true
   Max: 17
 
@@ -2456,10 +2462,12 @@ Metrics/BlockLength:
   Max: 25
   CountAsOne: []
   ExcludedMethods: [] # deprecated, retained for backwards compatibility
-  IgnoredMethods:
+  AllowedMethods:
     # By default, exclude the `#refine` method, as it tends to have larger
     # associated blocks.
     - refine
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   Exclude:
     - '**/*.gemspec'
 
@@ -2489,7 +2497,9 @@ Metrics/CyclomaticComplexity:
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '0.81'
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   Max: 7
 
 Metrics/MethodLength:
@@ -2502,7 +2512,9 @@ Metrics/MethodLength:
   Max: 10
   CountAsOne: []
   ExcludedMethods: [] # deprecated, retained for backwards compatibility
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
 
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
@@ -2530,7 +2542,9 @@ Metrics/PerceivedComplexity:
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '0.81'
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   Max: 8
 
 ################## Migration #############################
@@ -3061,7 +3075,7 @@ Style/BlockDelimiters:
     # This looks at the usage of a block's method to determine its type (e.g. is
     # the result of a `map` assigned to a variable or passed to another
     # method) but exceptions are permitted in the `ProceduralMethods`,
-    # `FunctionalMethods` and `IgnoredMethods` sections below.
+    # `FunctionalMethods` and `AllowedMethods` sections below.
     - semantic
     # The `braces_for_chaining` style enforces braces around single line blocks
     # and do..end around multi-line blocks, except for multi-line blocks whose
@@ -3102,7 +3116,7 @@ Style/BlockDelimiters:
     - let!
     - subject
     - watch
-  IgnoredMethods:
+  AllowedMethods:
     # Methods that can be either procedural or functional and cannot be
     # categorised from their usage alone, e.g.
     #
@@ -3119,6 +3133,8 @@ Style/BlockDelimiters:
     - lambda
     - proc
     - it
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   # The AllowBracesOnProceduralOneLiners option is ignored unless the
   # EnforcedStyle is set to `semantic`. If so:
   #
@@ -3222,10 +3238,12 @@ Style/ClassEqualityComparison:
   StyleGuide: '#instance-of-vs-class-comparison'
   Enabled: true
   VersionAdded: '0.93'
-  IgnoredMethods:
+  AllowedMethods:
     - ==
     - equal?
     - eql?
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
 
 Style/ClassMethods:
   Description: 'Use self when defining module/class methods.'
@@ -3687,7 +3705,9 @@ Style/FormatStringToken:
   MaxUnannotatedPlaceholdersAllowed: 1
   VersionAdded: '0.49'
   VersionChanged: '1.0'
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
 
 Style/FrozenStringLiteralComment:
   Description: >-
@@ -4006,7 +4026,8 @@ Style/MethodCallWithArgsParentheses:
   VersionAdded: '0.47'
   VersionChanged: '1.7'
   IgnoreMacros: true
-  IgnoredMethods: []
+  AllowedMethods: []
+  IgnoredMethods: [] # deprecated
   AllowedPatterns: []
   IgnoredPatterns: [] # deprecated
   IncludedMacros: []
@@ -4023,7 +4044,9 @@ Style/MethodCallWithoutArgsParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
   StyleGuide: '#method-invocation-parens'
   Enabled: true
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   VersionAdded: '0.47'
   VersionChanged: '0.55'
 
@@ -4393,7 +4416,9 @@ Style/NumericPredicate:
   SupportedStyles:
     - predicate
     - comparison
-  IgnoredMethods: []
+  AllowedMethods: []
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   # Exclude RSpec specs because assertions like `expect(1).to be > 0` cause
   # false positives.
   Exclude:
@@ -5030,11 +5055,13 @@ Style/SymbolProc:
   VersionAdded: '0.26'
   VersionChanged: '1.28'
   AllowMethodsWithArguments: false
-  # A list of method names to be ignored by the check.
+  # A list of method names to be always allowed by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
-  IgnoredMethods:
+  AllowedMethods:
     - respond_to
     - define_method
+  AllowedPatterns: []
+  IgnoredMethods: [] # deprecated
   AllowComments: false
 
 Style/TernaryParentheses:

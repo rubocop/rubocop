@@ -54,21 +54,19 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('::Proc.new { |x| x.method }')
   end
 
-  context 'with IgnoredMethods' do
-    context 'when given a string' do
-      let(:cop_config) { { 'IgnoredMethods' => %w[respond_to] } }
+  context 'when AllowedMethods is enabled' do
+    let(:cop_config) { { 'AllowedMethods' => %w[respond_to] } }
 
-      it 'accepts ignored method' do
-        expect_no_offenses('respond_to { |format| format.xml }')
-      end
+    it 'accepts ignored method' do
+      expect_no_offenses('respond_to { |format| format.xml }')
     end
+  end
 
-    context 'when given a regex' do
-      let(:cop_config) { { 'IgnoredMethods' => [/respond_/] } }
+  context 'when AllowedPatterns is enabled' do
+    let(:cop_config) { { 'AllowedPatterns' => [/respond_/] } }
 
-      it 'accepts ignored method' do
-        expect_no_offenses('respond_to { |format| format.xml }')
-      end
+    it 'accepts ignored method' do
+      expect_no_offenses('respond_to { |format| format.xml }')
     end
   end
 

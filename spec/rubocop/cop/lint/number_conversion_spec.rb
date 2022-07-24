@@ -266,39 +266,37 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     end
   end
 
-  context 'IgnoredMethods' do
-    context 'with a string' do
-      let(:cop_config) { { 'IgnoredMethods' => %w[minutes] } }
+  context 'AllowedMethods' do
+    let(:cop_config) { { 'AllowedMethods' => %w[minutes] } }
 
-      it 'does not register an offense for an ignored method' do
-        expect_no_offenses(<<~RUBY)
-          10.minutes.to_i
-        RUBY
-      end
-
-      it 'registers an offense for other methods' do
-        expect_offense(<<~RUBY)
-          10.hours.to_i
-          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
-        RUBY
-      end
+    it 'does not register an offense for an allowed method' do
+      expect_no_offenses(<<~RUBY)
+        10.minutes.to_i
+      RUBY
     end
 
-    context 'with a regex' do
-      let(:cop_config) { { 'IgnoredMethods' => [/minutes/] } }
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        10.hours.to_i
+        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
+      RUBY
+    end
+  end
 
-      it 'does not register an offense for an ignored method' do
-        expect_no_offenses(<<~RUBY)
-          10.minutes.to_i
-        RUBY
-      end
+  context 'AllowedPatterns' do
+    let(:cop_config) { { 'AllowedPatterns' => [/min/] } }
 
-      it 'registers an offense for other methods' do
-        expect_offense(<<~RUBY)
-          10.hours.to_i
-          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
-        RUBY
-      end
+    it 'does not register an offense for an allowed method' do
+      expect_no_offenses(<<~RUBY)
+        10.minutes.to_i
+      RUBY
+    end
+
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        10.hours.to_i
+        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
+      RUBY
     end
   end
 end

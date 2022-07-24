@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
-  let(:cop_config) { { 'IgnoredMethods' => [] } }
+  let(:cop_config) { { 'AllowedMethods' => [] } }
 
   it 'registers an offense and corrects when comparing class using `==` for equality' do
     expect_offense(<<~RUBY)
@@ -75,31 +75,29 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
     RUBY
   end
 
-  context 'when IgnoredMethods is specified' do
-    context 'with a string' do
-      let(:cop_config) { { 'IgnoredMethods' => ['=='] } }
+  context 'when AllowedMethods is enabled' do
+    let(:cop_config) { { 'AllowedMethods' => ['=='] } }
 
-      it 'does not register an offense when comparing class for equality' do
-        expect_no_offenses(<<~RUBY)
-          def ==(other)
-            self.class == other.class &&
-              name == other.name
-          end
-        RUBY
-      end
+    it 'does not register an offense when comparing class for equality' do
+      expect_no_offenses(<<~RUBY)
+        def ==(other)
+          self.class == other.class &&
+            name == other.name
+        end
+      RUBY
     end
+  end
 
-    context 'with a regex' do
-      let(:cop_config) { { 'IgnoredMethods' => [/equal/] } }
+  context 'when AllowedPatterns is enabled' do
+    let(:cop_config) { { 'AllowedPatterns' => [/equal/] } }
 
-      it 'does not register an offense when comparing class for equality' do
-        expect_no_offenses(<<~RUBY)
-          def equal?(other)
-            self.class == other.class &&
-              name == other.name
-          end
-        RUBY
-      end
+    it 'does not register an offense when comparing class for equality' do
+      expect_no_offenses(<<~RUBY)
+        def equal?(other)
+          self.class == other.class &&
+            name == other.name
+        end
+      RUBY
     end
   end
 end

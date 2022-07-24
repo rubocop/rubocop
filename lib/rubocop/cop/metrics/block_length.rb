@@ -14,8 +14,8 @@ module RuboCop
       #
       #
       # NOTE: The `ExcludedMethods` configuration is deprecated and only kept
-      # for backwards compatibility. Please use `IgnoredMethods` instead.
-      # By default, there are no methods to ignored.
+      # for backwards compatibility. Please use `AllowedMethods` and `AllowedPatterns`
+      # instead. By default, there are no methods to allowed.
       #
       # @example CountAsOne: ['array', 'heredoc']
       #
@@ -38,14 +38,13 @@ module RuboCop
       # NOTE: This cop does not apply for `Struct` definitions.
       class BlockLength < Base
         include CodeLength
-        include IgnoredMethods
-
-        ignored_methods deprecated_key: 'ExcludedMethods'
+        include AllowedMethods
+        include AllowedPattern
 
         LABEL = 'Block'
 
         def on_block(node)
-          return if ignored_method?(node.method_name)
+          return if allowed_method?(node.method_name) || matches_allowed_pattern?(node.method_name)
           return if method_receiver_excluded?(node)
           return if node.class_constructor? || node.struct_constructor?
 
@@ -59,7 +58,7 @@ module RuboCop
           node_receiver = node.receiver&.source&.gsub(/\s+/, '')
           node_method = String(node.method_name)
 
-          ignored_methods.any? do |config|
+          allowed_methods.any? do |config|
             next unless config.is_a?(String)
 
             receiver, method = config.split('.')

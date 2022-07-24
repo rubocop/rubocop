@@ -205,82 +205,58 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     end
   end
 
-  context 'when methods to ignore are defined' do
-    %w[IgnoredMethods ExcludedMethods].each do |key|
-      context "with #{key} config" do
-        context 'with a string' do
-          before { cop_config[key] = ['foo'] }
+  context 'when methods to allow are defined' do
+    context 'AllowedMethods is enabled' do
+      before { cop_config['AllowedMethods'] = ['foo'] }
 
-          it 'still rejects other methods with more than 5 lines' do
-            expect_offense(<<~RUBY)
-              def m
-              ^^^^^ Method has too many lines. [6/5]
-                a = 1
-                a = 2
-                a = 3
-                a = 4
-                a = 5
-                a = 6
-              end
-            RUBY
+      it 'still rejects other methods with more than 5 lines' do
+        expect_offense(<<~RUBY)
+          def m
+          ^^^^^ Method has too many lines. [6/5]
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
           end
+        RUBY
+      end
 
-          it 'accepts the foo method with more than 5 lines' do
-            expect_no_offenses(<<~RUBY)
-              def foo
-                a = 1
-                a = 2
-                a = 3
-                a = 4
-                a = 5
-                a = 6
-              end
-            RUBY
+      it 'accepts the foo method with more than 5 lines' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
           end
-        end
-
-        context 'with a regex' do
-          before { cop_config[key] = [/_name$/] }
-
-          it 'accepts the user_name method' do
-            expect_no_offenses(<<~RUBY)
-              def user_name
-                a = 1
-                a = 2
-                a = 3
-                a = 4
-                a = 5
-                a = 6
-              end
-            RUBY
-          end
-
-          it 'raises offense for firstname' do
-            expect_offense(<<~RUBY)
-              def firstname
-              ^^^^^^^^^^^^^ Method has too many lines. [6/5]
-                a = 1
-                a = 2
-                a = 3
-                a = 4
-                a = 5
-                a = 6
-              end
-            RUBY
-          end
-        end
+        RUBY
       end
     end
 
-    context 'if both IgnoredMethods and ExcludedMethods are given' do
-      before do
-        cop_config['IgnoredMethods'] = ['foo']
-        cop_config['ExcludedMethods'] = ['m']
+    context 'AllowedPatterns is enabled' do
+      before { cop_config['AllowedPatterns'] = [/_name/] }
+
+      it 'accepts the user_name method' do
+        expect_no_offenses(<<~RUBY)
+          def user_name
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
+          end
+        RUBY
       end
 
-      it 'uses both configs' do
-        expect_no_offenses(<<~RUBY)
-          def m
+      it 'raises offense for firstname' do
+        expect_offense(<<~RUBY)
+          def firstname
+          ^^^^^^^^^^^^^ Method has too many lines. [6/5]
             a = 1
             a = 2
             a = 3
