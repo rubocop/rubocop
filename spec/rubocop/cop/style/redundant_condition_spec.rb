@@ -277,6 +277,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when the branches contains arithmetic operation' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            @value - foo
+          else
+            @value - 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          @value - (foo || 'bar')
+        RUBY
+      end
+
       it 'registers an offense and corrects when the branches contains method call' do
         expect_offense(<<~RUBY)
           if foo

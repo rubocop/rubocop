@@ -154,16 +154,22 @@ module RuboCop
           if_branch.method?(else_branch.method_name) && if_branch.receiver == else_branch.receiver
         end
 
-        def if_source(if_branch)
+        def if_source(if_branch, arithmetic_operation)
           if branches_have_method?(if_branch.parent) && if_branch.parenthesized?
             if_branch.source.delete_suffix(')')
+          elsif arithmetic_operation
+            argument_source = if_branch.first_argument.source
+
+            "#{if_branch.receiver.source} #{if_branch.method_name} (#{argument_source}"
           else
             if_branch.source
           end
         end
 
-        def else_source(else_branch)
-          if branches_have_method?(else_branch.parent)
+        def else_source(else_branch, arithmetic_operation) # rubocop:disable Metrics/AbcSize
+          if arithmetic_operation
+            "#{else_branch.first_argument.source})"
+          elsif branches_have_method?(else_branch.parent)
             else_source_if_has_method(else_branch)
           elsif require_parentheses?(else_branch)
             "(#{else_branch.source})"
@@ -198,7 +204,12 @@ module RuboCop
 
         def make_ternary_form(node)
           _condition, if_branch, else_branch = *node
-          ternary_form = [if_source(if_branch), else_source(else_branch)].join(' || ')
+          arithmetic_operation = use_arithmetic_operation?(if_branch)
+
+          ternary_form = [
+            if_source(if_branch, arithmetic_operation),
+            else_source(else_branch, arithmetic_operation)
+          ].join(' || ')
           ternary_form += ')' if branches_have_method?(node) && if_branch.parenthesized?
 
           if node.parent&.send_type?
@@ -225,6 +236,10 @@ module RuboCop
 
         def require_braces?(node)
           node.hash_type? && !node.braces?
+        end
+
+        def use_arithmetic_operation?(node)
+          node.respond_to?(:arithmetic_operation?) && node.arithmetic_operation?
         end
 
         def without_argument_parentheses_method?(node)
