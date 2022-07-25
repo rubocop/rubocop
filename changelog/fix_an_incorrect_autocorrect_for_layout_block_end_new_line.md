@@ -1,0 +1,1 @@
+* [#10832](https://github.com/rubocop/rubocop/issues/10832): Fix an incorrect autocorrect for `Layout/BlockEndNewline` when multiline block `}` is not on its own line and using heredoc argument. ([@koic][])
