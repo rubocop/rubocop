@@ -47,10 +47,15 @@ module RuboCop
 
     # Default rules for obsoletions are in config/obsoletion.yml
     # Additional rules files can be added with `RuboCop::ConfigObsoletion.files << filename`
-    def load_rules
+    def load_rules # rubocop:disable Metrics/AbcSize
       rules = self.class.files.each_with_object({}) do |filename, hash|
         hash.merge!(YAML.safe_load(File.read(filename))) do |_key, first, second|
-          first.merge(second)
+          case first
+          when Hash
+            first.merge(second)
+          when Array
+            first.concat(second)
+          end
         end
       end
 
