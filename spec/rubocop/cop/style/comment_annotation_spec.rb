@@ -82,6 +82,22 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
       end
     end
 
+    context 'upper case keyword with colon but no note is after line breaks' do
+      it 'registers an offense and autocorrection' do
+        expect_offense(<<~RUBY)
+          # HACK:
+            ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
+          # this is a comment 1
+          # this is a comment 2
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # HACK: this is a comment 1
+          # this is a comment 2
+        RUBY
+      end
+    end
+
     context 'upper case keyword with space but no note' do
       it 'registers an offense without autocorrection' do
         expect_offense(<<~RUBY)
@@ -225,6 +241,22 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
         RUBY
 
         expect_no_corrections
+      end
+    end
+
+    context 'upper case keyword with colon but note is after line breaks' do
+      it 'registers an offense and autocorrection' do
+        expect_offense(<<~RUBY)
+          # HACK:
+            ^^^^^ Annotation comment, with keyword `HACK`, is missing a note.
+          # this is a comment 1
+          # this is a comment 2
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # HACK this is a comment 1
+          # this is a comment 2
+        RUBY
       end
     end
 

@@ -40,6 +40,13 @@ module RuboCop
       #   # good
       #   # OPTIMIZE: does not work
       #
+      #   # bad
+      #   # HACK:
+      #   # does not work
+      #
+      #   # good
+      #   # HACK: does not work
+      #
       # @example RequireColon: false
       #   # bad
       #   # TODO: make better
@@ -58,6 +65,14 @@ module RuboCop
       #
       #   # good
       #   # OPTIMIZE does not work
+      #
+      #   # bad
+      #   # HACK
+      #   # does not work
+      #
+      #   # good
+      #   # HACK does not work
+      #
       class CommentAnnotation < Base
         include RangeHelp
         extend AutoCorrector
@@ -71,20 +86,20 @@ module RuboCop
         MISSING_NOTE = 'Annotation comment, with keyword `%<keyword>s`, is missing a note.'
 
         def on_new_investigation
-          processed_source.comments.each_with_index do |comment, index|
-            next unless first_comment_line?(processed_source.comments, index) ||
-                        inline_comment?(comment)
+          comments = processed_source.comments
+          comments.each_with_index do |comment, index|
+            next unless first_comment_line?(comments, index) || inline_comment?(comment)
 
             annotation = AnnotationComment.new(comment, keywords)
             next unless annotation.annotation? && !annotation.correct?(colon: requires_colon?)
 
-            register_offense(annotation)
+            register_offense(annotation, comments, index)
           end
         end
 
         private
 
-        def register_offense(annotation)
+        def register_offense(annotation, comments, index)
           range = annotation_range(annotation)
           message = if annotation.note
                       requires_colon? ? MSG_COLON_STYLE : MSG_SPACE_STYLE
@@ -93,9 +108,11 @@ module RuboCop
                     end
 
           add_offense(range, message: format(message, keyword: annotation.keyword)) do |corrector|
-            next if annotation.note.nil?
+            if (has_note = annotation.note.nil?) && next_line_comment?(comments, index)
+              correct_offensess(corrector, range, annotation.keyword, comments[index + 1])
+            end
 
-            correct_offense(corrector, range, annotation.keyword)
+            correct_offense(corrector, range, annotation.keyword) unless has_note
           end
         end
 
@@ -107,6 +124,11 @@ module RuboCop
           !comment_line?(comment.loc.expression.source_line)
         end
 
+        def next_line_comment?(comments, index)
+          comments[index + 1]&.loc&.line &&
+            comments[index].loc.line == comments[index + 1].loc.line - 1
+        end
+
         def annotation_range(annotation)
           range_between(*annotation.bounds)
         end
@@ -115,6 +137,18 @@ module RuboCop
           return corrector.replace(range, "#{keyword.upcase}: ") if requires_colon?
 
           corrector.replace(range, "#{keyword.upcase} ")
+        end
+
+        def correct_offensess(corrector, range, keyword, next_comment)
+          separator = requires_colon? ? ': ' : ' '
+          corrector.replace(range, "#{keyword.upcase}#{separator}")
+          corrector.insert_after(range, comment_body(next_comment))
+          corrector.remove(range_by_whole_lines(next_comment.loc.expression,
+                                                include_final_newline: true))
+        end
+
+        def comment_body(comment)
+          comment.text.gsub(/^# /, '')
         end
 
         def requires_colon?
