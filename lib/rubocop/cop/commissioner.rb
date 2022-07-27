@@ -76,10 +76,10 @@ module RuboCop
       end
 
       # @return [InvestigationReport]
-      def investigate(processed_source)
+      def investigate(processed_source, offset: 0, original: processed_source)
         reset
 
-        @cops.each { |cop| cop.send :begin_investigation, processed_source }
+        begin_investigation(processed_source, offset: offset, original: original)
         if processed_source.valid_syntax?
           invoke(:on_new_investigation, @cops)
           invoke_with_argument(:investigate, @forces, processed_source)
@@ -94,6 +94,12 @@ module RuboCop
       end
 
       private
+
+      def begin_investigation(processed_source, offset:, original:)
+        @cops.each do |cop|
+          cop.begin_investigation(processed_source, offset: offset, original: original)
+        end
+      end
 
       def trigger_responding_cops(callback, node)
         @callbacks[callback]&.each do |cop|

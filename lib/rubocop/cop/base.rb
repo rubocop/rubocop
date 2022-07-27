@@ -180,6 +180,10 @@ module RuboCop
 
         status, corrector = enabled_line?(range.line) ? correct(range, &block) : :disabled
 
+        # Since this range may be generated from Ruby code embedded in some
+        # template file, we convert it to location info in the original file.
+        range = range_for_original(range)
+
         current_offenses << Offense.new(severity, range, message, name, status, corrector)
       end
 
@@ -286,6 +290,21 @@ module RuboCop
       end
       # rubocop:enable Layout/ClassStructure
 
+      # Called before any investigation
+      # @api private
+      def begin_investigation(processed_source, offset: 0, original: processed_source)
+        @current_offenses = nil
+        @current_offense_locations = nil
+        @currently_disabled_lines = nil
+        @processed_source = processed_source
+        @current_corrector = nil
+
+        # We need to keep track of the original source and offset,
+        # because `processed_source` here may be an embedded code in it.
+        @current_offset = offset
+        @current_original = original
+      end
+
       private
 
       ### Reserved for Cop::Cop
@@ -318,15 +337,6 @@ module RuboCop
 
       private_class_method def self.restrict_on_send
         @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
-      end
-
-      # Called before any investigation
-      def begin_investigation(processed_source)
-        @current_offenses = nil
-        @current_offense_locations = nil
-        @currently_disabled_lines = nil
-        @processed_source = processed_source
-        @current_corrector = nil
       end
 
       EMPTY_OFFENSES = [].freeze
@@ -458,6 +468,14 @@ module RuboCop
                     "Valid severities are #{Severity::NAMES.join(', ')}."
           warn(Rainbow(message).red)
         end
+      end
+
+      def range_for_original(range)
+        ::Parser::Source::Range.new(
+          @current_original.buffer,
+          range.begin_pos + @current_offset,
+          range.end_pos + @current_offset
+        )
       end
     end
   end

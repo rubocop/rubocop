@@ -77,7 +77,7 @@ module RuboCop
       end
 
       # @return [Commissioner::InvestigationReport]
-      def investigate(processed_source)
+      def investigate(processed_source, offset: 0, original: processed_source)
         be_ready
 
         # The autocorrection process may have to be repeated multiple times
@@ -87,14 +87,15 @@ module RuboCop
         on_duty = roundup_relevant_cops(processed_source.file_path)
 
         autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
+        report = investigate_partial(autocorrect_cops, processed_source,
+                                     offset: offset, original: original)
 
-        report = investigate_partial(autocorrect_cops, processed_source)
-
-        unless autocorrect(processed_source, report)
+        unless autocorrect(processed_source, report, offset: offset, original: original)
           # If we corrected some errors, another round of inspection will be
           # done, and any other offenses will be caught then, so only need
           # to check other_cops if no correction was done
-          report = report.merge(investigate_partial(other_cops, processed_source))
+          report = report.merge(investigate_partial(other_cops, processed_source,
+                                                    offset: offset, original: original))
         end
 
         process_errors(processed_source.path, report.errors)
@@ -116,12 +117,12 @@ module RuboCop
 
       private
 
-      def autocorrect(processed_source, report)
+      def autocorrect(processed_source, report, original:, offset:)
         @updated_source_file = false
         return unless autocorrect?
         return if report.processed_source.parser_error
 
-        new_source = autocorrect_report(report)
+        new_source = autocorrect_report(report, original: original, offset: offset)
 
         return unless new_source
 
@@ -149,9 +150,9 @@ module RuboCop
       end
 
       # @return [Commissioner::InvestigationReport]
-      def investigate_partial(cops, processed_source)
+      def investigate_partial(cops, processed_source, offset:, original:)
         commissioner = Commissioner.new(cops, self.class.forces_for(cops), @options)
-        commissioner.investigate(processed_source)
+        commissioner.investigate(processed_source, offset: offset, original: original)
       end
 
       # @return [Array<cop>]
@@ -175,18 +176,22 @@ module RuboCop
         cop.class.support_target_rails_version?(cop.target_rails_version)
       end
 
-      def autocorrect_report(report)
-        corrector = collate_corrections(report)
+      def autocorrect_report(report, offset:, original:)
+        corrector = collate_corrections(report, offset: offset, original: original)
 
         corrector.rewrite unless corrector.empty?
       end
 
-      def collate_corrections(report)
-        corrector = Corrector.new(report.processed_source)
+      def collate_corrections(report, offset:, original:)
+        corrector = Corrector.new(original)
 
         each_corrector(report) do |to_merge|
           suppress_clobbering do
-            corrector.merge!(to_merge)
+            if offset.positive?
+              corrector.import!(to_merge, offset: offset)
+            else
+              corrector.merge!(to_merge)
+            end
           end
         end
 
