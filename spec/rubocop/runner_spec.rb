@@ -121,6 +121,102 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
     end
 
+    context 'with available custom ruby extractor' do
+      before do
+        described_class.ruby_extractors.unshift(custom_ruby_extractor)
+
+        # Make Style/EndOfLine give same output regardless of platform.
+        create_file('.rubocop.yml', <<~YAML)
+          Layout/EndOfLine:
+            EnforcedStyle: lf
+        YAML
+      end
+
+      after do
+        described_class.ruby_extractors.shift
+      end
+
+      let(:custom_ruby_extractor) do
+        lambda do |_processed_source|
+          [
+            {
+              offset: 1,
+              processed_source: RuboCop::ProcessedSource.new(<<~RUBY, 3.1, 'dummy.rb')
+                # frozen_string_literal: true
+
+                def valid_code; end
+              RUBY
+            },
+            {
+              offset: 2,
+              processed_source: RuboCop::ProcessedSource.new(source, 3.1, 'dummy.rb')
+            }
+          ]
+        end
+      end
+
+      let(:source) do
+        <<~RUBY
+          # frozen_string_literal: true
+
+          def INVALID_CODE; end
+        RUBY
+      end
+
+      it 'sends the offense to a formatter' do
+        runner.run([])
+        expect(formatter_output).to eq <<~RESULT
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:3:7: C: Naming/MethodName: Use snake_case for method names.
+          def INVALID_CODE; end
+                ^^^^^^^^^^^^
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
+    context 'with unavailable custom ruby extractor' do
+      before do
+        described_class.ruby_extractors.unshift(custom_ruby_extractor)
+      end
+
+      after do
+        described_class.ruby_extractors.shift
+      end
+
+      let(:custom_ruby_extractor) do
+        lambda do |_processed_source|
+        end
+      end
+
+      let(:source) { <<~RUBY }
+        # frozen_string_literal: true
+
+        def INVALID_CODE; end
+      RUBY
+
+      it 'sends the offense to a formatter' do
+        runner.run([])
+        expect(formatter_output).to eq <<~RESULT
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:3:5: C: Naming/MethodName: Use snake_case for method names.
+          def INVALID_CODE; end
+              ^^^^^^^^^^^^
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
     context 'if a cop crashes' do
       before do
         # The cache responds that it's not valid, which means that new results

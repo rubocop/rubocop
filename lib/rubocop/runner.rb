@@ -24,6 +24,27 @@ module RuboCop
       end
     end
 
+    class << self
+      # @return [Array<#call>]
+      def ruby_extractors
+        @ruby_extractors ||= [default_ruby_extractor]
+      end
+
+      private
+
+      # @return [#call]
+      def default_ruby_extractor
+        lambda do |processed_source|
+          [
+            {
+              offset: 0,
+              processed_source: processed_source
+            }
+          ]
+        end
+      end
+    end
+
     # @api private
     MAX_ITERATIONS = 200
 
@@ -319,10 +340,25 @@ module RuboCop
     end
 
     def inspect_file(processed_source, team = mobilize_team(processed_source))
-      report = team.investigate(processed_source)
-      @errors.concat(team.errors)
-      @warnings.concat(team.warnings)
-      [report.offenses, team.updated_source_file?]
+      extracted_ruby_sources = extract_ruby_sources(processed_source)
+      offenses = extracted_ruby_sources.flat_map do |extracted_ruby_source|
+        report = team.investigate(
+          extracted_ruby_source[:processed_source],
+          offset: extracted_ruby_source[:offset],
+          original: processed_source
+        )
+        @errors.concat(team.errors)
+        @warnings.concat(team.warnings)
+        report.offenses
+      end
+      [offenses, team.updated_source_file?]
+    end
+
+    def extract_ruby_sources(processed_source)
+      self.class.ruby_extractors.find do |ruby_extractor|
+        result = ruby_extractor.call(processed_source)
+        break result if result
+      end
     end
 
     def mobilize_team(processed_source)
