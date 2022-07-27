@@ -1972,6 +1972,7 @@ Lint/NoReturnInBeginEndBlocks:
 
 Lint/NonAtomicFileOperation:
   Description: Checks for non-atomic file operations.
+  StyleGuide: '#atomic-file-operations'
   Enabled: pending
   VersionAdded: '1.31'
   SafeAutoCorrect: false
