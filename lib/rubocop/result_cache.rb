@@ -14,6 +14,12 @@ module RuboCop
                       fix_layout autocorrect safe_autocorrect autocorrect_all
                       cache fail_fast stdin parallel].freeze
 
+    DL_EXTENSIONS = ::RbConfig::CONFIG
+                    .values_at('DLEXT', 'DLEXT2')
+                    .reject { |ext| !ext || ext.empty? }
+                    .map    { |ext| ".#{ext}" }
+                    .freeze
+
     # Remove old files so that the cache doesn't grow too big. When the
     # threshold MaxFilesInCache has been exceeded, the oldest 50% of all the
     # files in the cache are removed. The reason for removing so much is that
@@ -174,12 +180,22 @@ module RuboCop
             .select { |path| File.file?(path) }
             .sort!
             .each do |path|
-              content = File.binread(path)
-              digest << Zlib.crc32(content).to_s # mtime not reliable
+              digest << digest(path)
             end
           digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
           digest.hexdigest
         end
+    end
+
+    def digest(path)
+      content = if path.end_with?(*DL_EXTENSIONS)
+                  # Shared libraries often contain timestamps of when
+                  # they were compiled and other non-stable data.
+                  File.basename(path)
+                else
+                  File.binread(path) # mtime not reliable
+                end
+      Zlib.crc32(content).to_s
     end
 
     def rubocop_extra_features
