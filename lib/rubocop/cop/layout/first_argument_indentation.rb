@@ -153,7 +153,8 @@ module RuboCop
         MSG = 'Indent the first argument one step more than %<base>s.'
 
         def on_send(node)
-          return if style != :consistent && enforce_first_argument_with_fixed_indentation?
+          return if style != :consistent && enforce_first_argument_with_fixed_indentation? &&
+                    !enable_layout_first_method_argument_line_break?
           return if !node.arguments? || bare_operator?(node) || node.setter_method?
 
           indent = base_indentation(node) + configured_indentation_width
@@ -265,6 +266,10 @@ module RuboCop
           return false unless argument_alignment_config['Enabled']
 
           argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def enable_layout_first_method_argument_line_break?
+          config.for_cop('Layout/FirstMethodArgumentLineBreak')['Enabled']
         end
 
         def argument_alignment_config
