@@ -1887,6 +1887,47 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     end
   end
 
+  it 'registers an offense and corrects when using `Layout/ArgumentAlignment`, `Layout/FirstArgumentIndentation`, and `Layout/FirstMethodArgumentLineBreak` ' \
+     'and specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` ' \
+     'and `EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation`' do
+    create_file('example.rb', <<~RUBY)
+      # frozen_string_literal: true
+
+      it do
+          expect(do_something).to eq([
+          'foo',
+          'bar'
+        ])
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ArgumentAlignment:
+        EnforcedStyle: with_fixed_indentation
+      Layout/FirstArgumentIndentation:
+        EnforcedStyle: consistent
+      Layout/FirstMethodArgumentLineBreak:
+        Enabled: true
+    YAML
+
+    expect(cli.run(['--autocorrect', '--only', %w[
+      Layout/ArgumentAlignment Layout/FirstArgumentIndentation Layout/FirstMethodArgumentLineBreak
+      Layout/IndentationWidth
+    ].join(',')])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      it do
+        expect(do_something).to eq(
+          [
+            'foo',
+            'bar'
+          ])
+      end
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation`' do
     create_file('example.rb', <<~RUBY)
