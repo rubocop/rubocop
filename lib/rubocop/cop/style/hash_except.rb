@@ -159,10 +159,6 @@ module RuboCop
           key_argument = node.argument_list.first.source
           body = extract_body_if_nagated(node.body)
           lhs, _method_name, rhs = *body
-
-          return lhs if body.method?('include?')
-          return lhs if body.method?('exclude?')
-          return rhs if body.method?('in?')
           return if [lhs, rhs].map(&:source).none?(key_argument)
 
           [lhs, rhs].find { |operand| operand.source != key_argument }
