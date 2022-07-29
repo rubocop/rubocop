@@ -11,11 +11,7 @@ module RuboCop
       config_dir = File.dirname(path)
       hash.delete('require').tap do |loaded_features|
         Array(loaded_features).each do |feature|
-          if feature.start_with?('.')
-            require(File.join(config_dir, feature))
-          else
-            require(feature)
-          end
+          FeatureLoader.load(config_directory_path: config_dir, feature: feature)
         end
       end
     end
