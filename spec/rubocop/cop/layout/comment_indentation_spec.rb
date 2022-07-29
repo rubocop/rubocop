@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
                                               #         -2 is the last child, etc...
                                               #         This shift of 1 from standard Ruby indices is stored in DELTA
                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Incorrect indentation detected (column 38 instead of 4).
-            @in_sync = false                  # `true` iff `@cur_child_var` and `@cur_index_var` correspond to `@cur_index`
+            @in_sync = false                  # `true` if `@cur_child_var` and `@cur_index_var` correspond to `@cur_index`
                                               # Must be true if `@cur_index` is `:variadic_mode`
                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Incorrect indentation detected (column 38 instead of 4).
             compile_terms(seq)
@@ -284,7 +284,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
                                               #   < 0 : when the index is known from the end, where -1 is *past the end*,
                                               #         -2 is the last child, etc...
                                               #         This shift of 1 from standard Ruby indices is stored in DELTA
-            @in_sync = false                  # `true` iff `@cur_child_var` and `@cur_index_var` correspond to `@cur_index`
+            @in_sync = false                  # `true` if `@cur_child_var` and `@cur_index_var` correspond to `@cur_index`
                                               # Must be true if `@cur_index` is `:variadic_mode`
             compile_terms(seq)
           end

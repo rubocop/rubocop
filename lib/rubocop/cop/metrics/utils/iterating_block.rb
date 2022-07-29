@@ -43,7 +43,7 @@ module RuboCop
             end
           end
 
-          # Returns true iff name is a known iterating type (e.g. :each, :transform_values)
+          # Returns true if name is a known iterating type (e.g. :each, :transform_values)
           def iterating_method?(name)
             KNOWN_ITERATING_METHODS.include? name
           end
