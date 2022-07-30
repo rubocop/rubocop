@@ -19,6 +19,8 @@ module RuboCop
       GEMFILE_NAMES = %w[Gemfile gems.rb].freeze
 
       class << self
+        attr_accessor :cache_root_path
+
         # Searches for Gemfile or gems.rb in the current dir or any parent dirs
         def project_dir
           current_dir = Dir.pwd
@@ -38,10 +40,15 @@ module RuboCop
         end
 
         def dir
-          cache_path = File.expand_path('~/.cache/rubocop_cache/server')
           Pathname.new(File.join(cache_path, project_dir_cache_key)).tap do |d|
             d.mkpath unless d.exist?
           end
+        end
+
+        def cache_path
+          cache_root_dir = cache_root_path || File.join(Dir.home, '.cache')
+
+          File.expand_path(File.join(cache_root_dir, 'rubocop_cache', 'server'))
         end
 
         def port_path
