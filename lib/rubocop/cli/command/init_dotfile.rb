@@ -6,7 +6,7 @@ module RuboCop
       # Generate a .rubocop.yml file in the current directory.
       # @api private
       class InitDotfile < Base
-        DOTFILE = ConfigLoader::DOTFILE
+        DOTFILE = ConfigFinder::DOTFILE
 
         self.command_name = :init
 

@@ -85,14 +85,14 @@ RSpec.describe RuboCop::ConfigLoader do
 
       before do
         # Force reload of project root
-        described_class.project_root = nil
+        RuboCop::ConfigFinder.project_root = nil
         create_empty_file('Gemfile')
         create_empty_file('../.rubocop.yml')
       end
 
       after do
         # Don't leak project root change
-        described_class.project_root = nil
+        RuboCop::ConfigFinder.project_root = nil
       end
 
       it 'ignores the spurious config and falls back to the provided default file if run from the project' do
