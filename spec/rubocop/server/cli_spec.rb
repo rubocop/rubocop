@@ -145,6 +145,24 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
         expect($stderr.string).to eq "--server-status cannot be combined with other options.\n"
       end
     end
+
+    context 'when using server option with `--cache-root path` option' do
+      it 'returns exit status 0 and display an error message' do
+        expect(cli.run(['--server-status', '--cache-root', '/tmp'])).to eq(0)
+        expect(cli.exit?).to be(true)
+        expect($stdout.string).to eq "RuboCop server is not running.\n"
+        expect($stderr.string).not_to eq "--server-status cannot be combined with other options.\n"
+      end
+    end
+
+    context 'when using server option with `--cache-root=path` option' do
+      it 'returns exit status 0 and display an information message' do
+        expect(cli.run(['--server-status', '--cache-root=/tmp'])).to eq(0)
+        expect(cli.exit?).to be(true)
+        expect($stdout.string).to eq "RuboCop server is not running.\n"
+        expect($stderr.string).not_to eq "--server-status cannot be combined with other options.\n"
+      end
+    end
   else
     context 'when using `--server` option' do
       it 'returns exit status 2 and display an error message' do
