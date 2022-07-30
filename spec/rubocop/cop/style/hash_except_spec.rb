@@ -166,6 +166,12 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
           {foo: 1, bar: 2, baz: 3}.except(*array)
         RUBY
       end
+
+      it 'does not register an offense when using `reject` and calling `include?` method with symbol array and second block value' do
+        expect_no_offenses(<<~RUBY)
+          {foo: 1, bar: 2, baz: 3}.reject { |k, v| ![1, 2].include?(v) }
+        RUBY
+      end
     end
 
     context 'using `exclude?`' do
@@ -364,6 +370,12 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
             {foo: 1, bar: 2, baz: 3}.except(*array)
           RUBY
         end
+
+        it 'does not register an offense when using `reject` and calling `in?` method with symbol array and second block value' do
+          expect_no_offenses(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| v.in?([1, 2]) }
+          RUBY
+        end
       end
 
       context 'using `include?`' do
@@ -524,6 +536,12 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
 
           expect_correction(<<~RUBY)
             {foo: 1, bar: 2, baz: 3}.except(*array)
+          RUBY
+        end
+
+        it 'does not register an offense when using `reject` and calling `exclude?` method with symbol array and second block value' do
+          expect_no_offenses(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| ![1, 2].exclude?(v) }
           RUBY
         end
       end

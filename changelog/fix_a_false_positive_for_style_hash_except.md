@@ -1,0 +1,1 @@
+* [#10843](https://github.com/rubocop/rubocop/issues/10843): Fix a false positive for `Style/HashExcept` when using `reject` and calling `include?` method with symbol array and second block value. ([@koic][])
