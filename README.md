@@ -46,7 +46,7 @@ If you'd rather install RuboCop using `bundler`, add a line for it in your `Gemf
 gem 'rubocop', require: false
 ```
 
-RuboCop is stable between major versions, both in terms of API and cop configuration.
+RuboCop is stable between minor versions, both in terms of API and cop configuration.
 We aim to ease the maintenance of RuboCop extensions and the upgrades between RuboCop
 releases. All big changes are reserved for major releases.
 To prevent an unwanted RuboCop update you might want to use a conservative version lock
