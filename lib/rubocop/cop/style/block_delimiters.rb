@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module RuboCop
   module Cop
     module Style
@@ -165,7 +164,7 @@ module RuboCop
       #     process(something)
       #   }
       #
-      class BlockDelimiters < Base
+      class BlockDelimiters < Base # rubocop:disable Metrics/ClassLength
         include ConfigurableEnforcedStyle
         include AllowedMethods
         include AllowedPattern
@@ -500,4 +499,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

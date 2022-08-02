@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# The Lint/RedundantCopEnableDirective and Lint/RedundantCopDisableDirective
-# cops need to be disabled so as to be able to provide a (bad) example of an
-# unneeded enable.
-
-# rubocop:disable Lint/RedundantCopEnableDirective
-# rubocop:disable Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
+    # The Lint/RedundantCopEnableDirective and Lint/RedundantCopDisableDirective
+    # cops need to be disabled so as to be able to provide a (bad) example of an
+    # unneeded enable.
+    #
+    # rubocop:disable Lint/RedundantCopEnableDirective, Lint/RedundantCopDisableDirective
     module Lint
       # Detects instances of rubocop:enable comments that can be
       # removed.
@@ -37,6 +36,7 @@ module RuboCop
       #   # rubocop:enable all
       #   baz
       class RedundantCopEnableDirective < Base
+        # rubocop:enable Lint/RedundantCopDisableDirective, Lint/RedundantCopEnableDirective
         include RangeHelp
         include SurroundingSpace
         extend AutoCorrector
@@ -130,6 +130,3 @@ module RuboCop
     end
   end
 end
-
-# rubocop:enable Lint/RedundantCopDisableDirective
-# rubocop:enable Lint/RedundantCopEnableDirective
