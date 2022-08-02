@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable RSpec/FilePath
-RSpec.describe RuboCop::Cop::EnforceSuperclass, :restore_registry do
+RSpec.describe RuboCop::Cop::EnforceSuperclass, :restore_registry do # rubocop:disable RSpec/FilePath
   subject(:cop) { cop_class.new }
 
   let(:cop_class) { RuboCop::Cop::RSpec::ApplicationRecord }
@@ -117,4 +116,3 @@ RSpec.describe RuboCop::Cop::EnforceSuperclass, :restore_registry do
     RUBY
   end
 end
-# rubocop:enable RSpec/FilePath
