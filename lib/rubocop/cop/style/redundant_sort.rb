@@ -123,13 +123,8 @@ module RuboCop
 
         def register_offense(node, sort_node, sorter, accessor)
           message = message(node, sorter, accessor)
-
           add_offense(offense_range(sort_node, node), message: message) do |corrector|
-            # Remove accessor, e.g. `first` or `[-1]`.
-            corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
-
-            # Replace "sort" or "sort_by" with the appropriate min/max method.
-            corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
+            autocorrect(corrector, node, sort_node, sorter, accessor)
           end
         end
 
@@ -147,6 +142,20 @@ module RuboCop
                  suggestion: suggestion(sorter, accessor, arg_value(node)),
                  sorter: sorter,
                  accessor_source: accessor_source)
+        end
+
+        def autocorrect(corrector, node, sort_node, sorter, accessor)
+          # Remove accessor, e.g. `first` or `[-1]`.
+          corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
+          # Replace "sort" or "sort_by" with the appropriate min/max method.
+          corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
+          # Replace to avoid syntax errors when followed by a logical operator.
+          replace_with_logical_operator(corrector, node) if with_logical_operator?(node)
+        end
+
+        def replace_with_logical_operator(corrector, node)
+          corrector.insert_after(node.child_nodes.first, " #{node.parent.loc.operator.source}")
+          corrector.remove(node.parent.loc.operator)
         end
 
         def suggestion(sorter, accessor, arg)
@@ -186,6 +195,12 @@ module RuboCop
           else
             node.loc.selector.begin_pos
           end
+        end
+
+        def with_logical_operator?(node)
+          return unless (parent = node.parent)
+
+          parent.or_type? || parent.and_type?
         end
       end
     end
