@@ -291,6 +291,147 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects for `!!` with multi-line array at return location' do
+      expect_offense(<<~RUBY)
+        def foo
+          [
+            foo1,
+            !!bar1,
+            ^ Avoid the use of double negation (`!!`).
+            !!baz1
+            ^ Avoid the use of double negation (`!!`).
+          ]
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          [
+            foo1,
+            !bar1.nil?,
+            !baz1.nil?
+          ]
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `!!` with single-line array at return location' do
+      expect_offense(<<~RUBY)
+        def foo
+          [foo1, !!bar1, baz1]
+                 ^ Avoid the use of double negation (`!!`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          [foo1, !bar1.nil?, baz1]
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `!!` with multi-line hash at return location' do
+      expect_offense(<<~RUBY)
+        def foo
+          {
+            foo: foo1,
+            bar: !!bar1,
+                 ^ Avoid the use of double negation (`!!`).
+            baz: !!baz1
+                 ^ Avoid the use of double negation (`!!`).
+          }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          {
+            foo: foo1,
+            bar: !bar1.nil?,
+            baz: !baz1.nil?
+          }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `!!` with single-line hash at return location' do
+      expect_offense(<<~RUBY)
+        def foo
+          { foo: foo1, bar: !!bar1, baz: baz1 }
+                            ^ Avoid the use of double negation (`!!`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          { foo: foo1, bar: !bar1.nil?, baz: baz1 }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `!!` with nested hash at return location' do
+      expect_offense(<<~RUBY)
+        def foo
+          {
+            foo: foo1,
+            bar: { baz: !!quux }
+                        ^ Avoid the use of double negation (`!!`).
+          }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          {
+            foo: foo1,
+            bar: { baz: !quux.nil? }
+          }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `!!` with nested array at return location' do
+      expect_offense(<<~RUBY)
+        def foo
+          [
+            foo1,
+            [baz, !!quux]
+                  ^ Avoid the use of double negation (`!!`).
+          ]
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          [
+            foo1,
+            [baz, !quux.nil?]
+          ]
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `!!` with complex array at return location' do
+      expect_offense(<<~RUBY)
+        def foo
+          [
+            foo1,
+            { baz: !!quux }
+                   ^ Avoid the use of double negation (`!!`).
+          ]
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          [
+            foo1,
+            { baz: !quux.nil? }
+          ]
+        end
+      RUBY
+    end
+
     # rubocop:disable RSpec/RepeatedExampleGroupDescription
     context 'Ruby >= 2.7', :ruby27 do
       # rubocop:enable RSpec/RepeatedExampleGroupDescription
