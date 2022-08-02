@@ -93,6 +93,8 @@ module RuboCop
 
           if conditional_node
             double_negative_condition_return_value?(node, last_child, conditional_node)
+          elsif last_child.pair_type? || last_child.hash_type? || last_child.parent.array_type?
+            false
           else
             last_child.last_line <= node.last_line
           end
