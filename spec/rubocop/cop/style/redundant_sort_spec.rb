@@ -56,6 +56,81 @@ RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
     RUBY
   end
 
+  it 'registers an offense when first is called on sort_by with line breaks' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .sort_by { |x| x.length }
+         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
+        .first
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .min_by { |x| x.length }
+      #{'  '}
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort_by with line breaks and `||` operator' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .sort_by { |x| x.length }
+         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
+        .first || []
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .min_by { |x| x.length } ||
+          []
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort_by with line breaks and `&&` operator' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .sort_by { |x| x.length }
+         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
+        .first && []
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .min_by { |x| x.length } &&
+          []
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort_by with line breaks and `or` operator' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .sort_by { |x| x.length }
+         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
+        .first or []
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .min_by { |x| x.length } or
+          []
+    RUBY
+  end
+
+  it 'registers an offense when first is called on sort_by with line breaks and `and` operator' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .sort_by { |x| x.length }
+         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `min_by` instead of `sort_by...first`.
+        .first and []
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .min_by { |x| x.length } and
+          []
+    RUBY
+  end
+
   it 'registers an offense when first is called on sort_by no block' do
     expect_offense(<<~RUBY)
       [1, 2].sort_by(&:something).first
