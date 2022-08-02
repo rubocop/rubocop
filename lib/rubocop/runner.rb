@@ -64,6 +64,10 @@ module RuboCop
     # instances that each inspects its allotted group of files.
     def warm_cache(target_files)
       saved_options = @options.dup
+      if target_files.length <= 1
+        puts 'Skipping parallel inspection: only a single file needs inspection' if @options[:debug]
+        return
+      end
       puts 'Running parallel inspection' if @options[:debug]
       %i[autocorrect safe_autocorrect].each { |opt| @options[opt] = false }
       Parallel.each(target_files) { |target_file| file_offenses(target_file) }

@@ -35,7 +35,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       context 'on Unix-like systems' do
         it 'prints a message if --debug is specified' do
           cli.run ['--parallel', '--debug']
-          expect($stdout.string).to match(/Running parallel inspection/)
+          expect($stdout.string).to match(
+            /Skipping parallel inspection: only a single file needs inspection/
+          )
         end
 
         it 'does not print a message if --debug is not specified' do
