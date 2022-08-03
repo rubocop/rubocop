@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'pathname'
+require_relative '../cache_config'
+require_relative '../config_finder'
 
 #
 # This code is based on https://github.com/fohte/rubocop-daemon.
@@ -46,9 +48,32 @@ module RuboCop
         end
 
         def cache_path
-          cache_root_dir = cache_root_path || File.join(Dir.home, '.cache')
+          cache_root_dir = if cache_root_path
+                             File.join(cache_root_path, 'rubocop_cache')
+                           else
+                             cache_root_dir_from_config
+                           end
 
-          File.expand_path(File.join(cache_root_dir, 'rubocop_cache', 'server'))
+          File.expand_path(File.join(cache_root_dir, 'server'))
+        end
+
+        def cache_root_dir_from_config
+          CacheConfig.root_dir do
+            # `RuboCop::ConfigStore` has heavy dependencies, this is a lightweight implementation
+            # so that only the necessary `CacheRootDirectory` can be obtained.
+            require 'yaml'
+
+            config_path = ConfigFinder.find_config_path(Dir.pwd)
+
+            # Ruby 3.1+
+            config_yaml = if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('4.0.0')
+                            YAML.safe_load_file(config_path, permitted_classes: [Regexp, Symbol])
+                          else
+                            YAML.load_file(config_path)
+                          end
+
+            config_yaml.dig('AllCops', 'CacheRootDirectory')
+          end
         end
 
         def port_path

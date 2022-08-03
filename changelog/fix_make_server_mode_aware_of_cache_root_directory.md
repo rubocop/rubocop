@@ -1,0 +1,1 @@
+* [#10842](https://github.com/rubocop/rubocop/issues/10842): Make server mode aware of `CacheRootDirectory` config option value, `RUBOCOP_CACHE_ROOT`, and `XDG_CACHE_HOME` environment variables. ([@koic][])
