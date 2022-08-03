@@ -15,9 +15,19 @@ module RuboCop
       # [source,yaml]
       # ----
       # Lint/Debugger:
-      #   WebConsole: ~
+      #   DebuggerMethods:
+      #     WebConsole: ~
       # ----
       #
+      # You can also add your own methods by adding a new category:
+      #
+      # [source,yaml]
+      # ----
+      # Lint/Debugger:
+      #   DebuggerMethods:
+      #     MyDebugger:
+      #       MyDebugger.debug_this
+      # ----
       #
       # @example
       #
