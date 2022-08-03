@@ -4,6 +4,7 @@ require 'digest/sha1'
 require 'find'
 require 'etc'
 require 'zlib'
+require_relative 'cache_config'
 
 module RuboCop
   # Provides functionality for caching RuboCop runs.
@@ -67,24 +68,9 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = ENV.fetch('RUBOCOP_CACHE_ROOT', nil)
-      root ||= config_store.for_pwd.for_all_cops['CacheRootDirectory']
-      root ||= if ENV.key?('XDG_CACHE_HOME')
-                 # Include user ID in the path to make sure the user has write
-                 # access.
-                 File.join(ENV.fetch('XDG_CACHE_HOME'), Process.uid.to_s)
-               else
-                 # On FreeBSD, the /home path is a symbolic link to /usr/home
-                 # and the $HOME environment variable returns the /home path.
-                 #
-                 # As $HOME is a built-in environment variable, FreeBSD users
-                 # always get a warning message.
-                 #
-                 # To avoid raising warn log messages on FreeBSD, we retrieve
-                 # the real path of the home folder.
-                 File.join(File.realpath(Dir.home), '.cache')
-               end
-      File.join(root, 'rubocop_cache')
+      CacheConfig.root_dir do
+        config_store.for_pwd.for_all_cops['CacheRootDirectory']
+      end
     end
 
     def self.allow_symlinks_in_cache_location?(config_store)

@@ -352,7 +352,7 @@ RSpec.describe RuboCop::Cop::Generator do
 
     let(:config) do
       config = RuboCop::ConfigStore.new
-      path = File.join(RuboCop::ConfigLoader::RUBOCOP_HOME, RuboCop::ConfigLoader::DOTFILE)
+      path = File.join(RuboCop::ConfigLoader::RUBOCOP_HOME, RuboCop::ConfigFinder::DOTFILE)
       config.options_config = path
       config
     end

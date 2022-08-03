@@ -3,6 +3,7 @@
 require 'erb'
 require 'yaml'
 require 'pathname'
+require_relative 'config_finder'
 
 module RuboCop
   # Raised when a RuboCop configuration file is not found.
@@ -15,8 +16,7 @@ module RuboCop
   # during a run of the rubocop program, if files in several
   # directories are inspected.
   class ConfigLoader
-    DOTFILE = '.rubocop.yml'
-    XDG_CONFIG = 'config.yml'
+    DOTFILE = ConfigFinder::DOTFILE
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
 
@@ -25,7 +25,7 @@ module RuboCop
 
       attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops,
                     :ignore_unrecognized_cops
-      attr_writer :default_configuration, :project_root
+      attr_writer :default_configuration
       attr_reader :loaded_features
 
       alias debug? debug
@@ -95,8 +95,7 @@ module RuboCop
       # user's home directory is checked. If there's no .rubocop.yml
       # there either, the path to the default file is returned.
       def configuration_file_for(target_dir)
-        find_project_dotfile(target_dir) || find_user_dotfile ||
-          find_user_xdg_config || DEFAULT_FILE
+        ConfigFinder.find_config_path(target_dir)
       end
 
       def configuration_from_file(config_file, check: true)
@@ -122,7 +121,7 @@ module RuboCop
       end
 
       def add_excludes_from_files(config, config_file)
-        exclusion_file = find_last_file_upwards(DOTFILE, config_file, project_root)
+        exclusion_file = find_last_file_upwards(DOTFILE, config_file, ConfigFinder.project_root)
 
         return unless exclusion_file
         return if PathUtil.relative_path(exclusion_file) == PathUtil.relative_path(config_file)
@@ -136,12 +135,6 @@ module RuboCop
           print 'Default ' if debug?
           load_file(DEFAULT_FILE)
         end
-      end
-
-      # Returns the path RuboCop inferred as the root of the project. No file
-      # searches will go past this directory.
-      def project_root
-        @project_root ||= find_project_root
       end
 
       PENDING_BANNER = <<~BANNER
@@ -185,39 +178,6 @@ module RuboCop
 
       def file_path(file)
         File.absolute_path(file.is_a?(RemoteConfig) ? file.file : file)
-      end
-
-      def find_project_dotfile(target_dir)
-        find_file_upwards(DOTFILE, target_dir, project_root)
-      end
-
-      def find_project_root
-        pwd = Dir.pwd
-        gems_file = find_last_file_upwards('Gemfile', pwd) || find_last_file_upwards('gems.rb', pwd)
-        return unless gems_file
-
-        File.dirname(gems_file)
-      end
-
-      def find_user_dotfile
-        return unless ENV.key?('HOME')
-
-        file = File.join(Dir.home, DOTFILE)
-        return file if File.exist?(file)
-      end
-
-      def find_user_xdg_config
-        xdg_config_home = expand_path(ENV.fetch('XDG_CONFIG_HOME', '~/.config'))
-        xdg_config = File.join(xdg_config_home, 'rubocop', XDG_CONFIG)
-        return xdg_config if File.exist?(xdg_config)
-      end
-
-      def expand_path(path)
-        File.expand_path(path)
-      rescue ArgumentError
-        # Could happen because HOME or ID could not be determined. Fall back on
-        # using the path literally in that case.
-        path
       end
 
       def resolver

@@ -98,7 +98,7 @@ module RuboCop
         def add_inheritance_from_auto_generated_file(config_file)
           file_string = " #{relative_path_to_todo_from_options_config}"
 
-          config_file ||= ConfigLoader::DOTFILE
+          config_file ||= ConfigFinder::DOTFILE
 
           if File.exist?(config_file)
             files = Array(ConfigLoader.load_yaml_configuration(config_file)['inherit_from'])
@@ -113,7 +113,7 @@ module RuboCop
           write_config_file(config_file, file_string, rubocop_yml_contents)
 
           puts "Added inheritance from `#{relative_path_to_todo_from_options_config}` " \
-               "in `#{ConfigLoader::DOTFILE}`."
+               "in `#{ConfigFinder::DOTFILE}`."
         end
 
         def existing_configuration(config_file)
