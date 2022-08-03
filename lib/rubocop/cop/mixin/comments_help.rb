@@ -12,10 +12,14 @@ module RuboCop
       end
 
       def contains_comments?(node)
+        comments_in_range(node).any?
+      end
+
+      def comments_in_range(node)
         start_line = node.source_range.line
         end_line = find_end_line(node)
 
-        processed_source.each_comment_in_lines(start_line...end_line).any?
+        processed_source.each_comment_in_lines(start_line...end_line)
       end
 
       private
