@@ -4,6 +4,9 @@ module RuboCop
   module Cop
     module Lint
       # Checks for the presence of `if`, `elsif` and `unless` branches without a body.
+      #
+      # NOTE: empty `else` branches are handled by `Style/EmptyElse`.
+      #
       # @example
       #   # bad
       #   if condition
@@ -53,7 +56,9 @@ module RuboCop
       #   end
       #
       class EmptyConditionalBody < Base
+        extend AutoCorrector
         include CommentsHelp
+        include RangeHelp
 
         MSG = 'Avoid `%<keyword>s` branches without a body.'
 
@@ -61,7 +66,61 @@ module RuboCop
           return if node.body
           return if cop_config['AllowComments'] && contains_comments?(node)
 
-          add_offense(node, message: format(MSG, keyword: node.keyword))
+          add_offense(node, message: format(MSG, keyword: node.keyword)) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        private
+
+        def autocorrect(corrector, node)
+          remove_comments(corrector, node)
+          remove_empty_branch(corrector, node)
+          correct_other_branches(corrector, node)
+        end
+
+        def remove_comments(corrector, node)
+          comments_in_range(node).each do |comment|
+            range = range_by_whole_lines(comment.loc.expression, include_final_newline: true)
+            corrector.remove(range)
+          end
+        end
+
+        def remove_empty_branch(corrector, node)
+          corrector.remove(deletion_range(branch_range(node)))
+        end
+
+        def correct_other_branches(corrector, node)
+          return unless (node.if? || node.unless?) && node.else_branch
+
+          if node.else_branch.if_type?
+            # Replace an orphaned `elsif` with `if`
+            corrector.replace(node.else_branch.loc.keyword, 'if')
+          else
+            # Flip orphaned `else`
+            corrector.replace(node.loc.else, "#{node.inverse_keyword} #{node.condition.source}")
+          end
+        end
+
+        def branch_range(node)
+          if node.loc.else
+            node.source_range.with(end_pos: node.loc.else.begin_pos - 1)
+          else
+            node.source_range
+          end
+        end
+
+        def deletion_range(range)
+          # Collect a range between the start of the `if` node and the next relevant node,
+          # including final new line.
+          # Based on `RangeHelp#range_by_whole_lines` but allows the `if` to not start
+          # on the first column.
+          buffer = @processed_source.buffer
+
+          last_line = buffer.source_line(range.last_line)
+          end_offset = last_line.length - range.last_column + 1
+
+          range.adjust(end_pos: end_offset).intersect(buffer.source_range)
         end
       end
     end
