@@ -22,7 +22,7 @@
 
 * [#10841](https://github.com/rubocop/rubocop/pull/10841): Don't hash shared libraries for cache key. ([@ChrisBr][])
 * [#10862](https://github.com/rubocop/rubocop/pull/10862): Add autocorrection to `Lint/EmptyConditionalBody`. ([@dvandersluis][])
-* [#10829](https://github.com/rubocop/rubocop/pull/10829): Deprecate `IgnoredMethods` option in integrate to `AllowedMethods` and `AllowedPatterns` option. ([@ydah][])
+* [#10829](https://github.com/rubocop/rubocop/pull/10829): Deprecate `IgnoredMethods` option in favor of the `AllowedMethods` and `AllowedPatterns` options. ([@ydah][])
 
 ## 1.32.0 (2022-07-21)
 
