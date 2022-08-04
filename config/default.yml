@@ -1604,6 +1604,7 @@ Lint/Debugger:
     # a user's configuration, but are otherwise not significant.
     Kernel:
       - binding.irb
+      - Kernel.binding.irb
     Byebug:
       - byebug
       - remote_byebug
@@ -1621,6 +1622,9 @@ Lint/Debugger:
       - binding.pry
       - binding.remote_pry
       - binding.pry_remote
+      - Kernel.binding.pry
+      - Kernel.binding.remote_pry
+      - Kernel.binding.pry_remote
       - Pry.rescue
     Rails:
       - debugger
