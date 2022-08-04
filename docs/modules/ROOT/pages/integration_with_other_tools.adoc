@@ -7,7 +7,7 @@ to do autocorrection for you. In these cases, `rubocop` ends up getting called r
 which may result in some slowness, as `rubocop` has to require its entire environment on
 each call.
 
-You can alleviate some of that boot time by using xref:server.adoc["Server"] or
+You can alleviate some of that boot time by using xref:usage/server.adoc["Server"] or
 https://github.com/fohte/rubocop-daemon[rubocop-daemon]. `rubocop-daemon` is a
 wrapper around `rubocop` that loads everything into a daemonized process so that
 subsequent runs save on that boot time after the first execution. Please see the
@@ -22,7 +22,7 @@ that source files that have not been changed are not being re-evaluated unnecess
 All popular editors provide some form of linter integration. Typically this is done
 either via LSP (if supported by the underlying server) or by shelling out to a linter and processing its output so it could be displayed inside the editor.
 
-As noted above, the `rubocop` binary starts relatively slowly which makes it problematic in the shelling out case. The RuboCop xref:server.adoc["Server"] functionality
+As noted above, the `rubocop` binary starts relatively slowly which makes it problematic in the shelling out case. The RuboCop xref:usage/server.adoc["Server"] functionality
 has designed to address this problem and provide lightning fast editor integration.
 
 === LSP
