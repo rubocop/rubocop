@@ -1637,7 +1637,7 @@ items.include?
 
 | PreferredMethods
 | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
-| 
+|
 
 | MethodsAcceptingSymbol
 | `inject`, `reduce`
@@ -4789,7 +4789,7 @@ else
 end
 
 # good
-foo || raise('exception') if something
+return (foo || raise('exception')) if something
 ok
 ----
 
@@ -5971,11 +5971,11 @@ end
 
 | InverseMethods
 | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
-| 
+|
 
 | InverseBlocks
 | `{:select=>:reject, :select!=>:reject!}`
-| 
+|
 |===
 
 == Style/IpAddresses
@@ -9460,7 +9460,7 @@ default.
 
 | PreferredDelimiters
 | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
-| 
+|
 |===
 
 === References
@@ -9897,7 +9897,7 @@ A.foo
 
 | Methods
 | `{"join"=>"", "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
-| 
+|
 |===
 
 == Style/RedundantAssignment
@@ -12647,7 +12647,7 @@ from the String class.
 
 | PreferredMethods
 | `{"intern"=>"to_sym"}`
-| 
+|
 |===
 
 == Style/Strip
@@ -14352,7 +14352,7 @@ array of 2 or fewer elements.
 
 | WordRegex
 | `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)`
-| 
+|
 |===
 
 === References
