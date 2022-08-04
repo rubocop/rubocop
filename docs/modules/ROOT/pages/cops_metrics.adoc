@@ -27,7 +27,8 @@ You can have repeated "attributes" calls count as a single "branch".
 For this purpose, attributes are any method with no argument; no attempt
 is meant to distinguish actual `attr_reader` from other methods.
 
-This cop also takes into account `IgnoredMethods` (defaults to `[]`)
+This cop also takes into account `AllowedMethods` (defaults to `[]`)
+And `AllowedPatterns` (defaults to `[]`)
 
 === Examples
 
@@ -53,6 +54,14 @@ end
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`
@@ -95,8 +104,8 @@ will be counted as one line regardless of its actual size.
 
 
 NOTE: The `ExcludedMethods` configuration is deprecated and only kept
-for backwards compatibility. Please use `IgnoredMethods` instead.
-By default, there are no methods to ignored.
+for backwards compatibility. Please use `AllowedMethods` and `AllowedPatterns`
+instead. By default, there are no methods to allowed.
 
 NOTE: This cop does not apply for `Struct` definitions.
 
@@ -144,8 +153,16 @@ end                 # 5 points
 | `[]`
 | Array
 
-| IgnoredMethods
+| AllowedMethods
 | `refine`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
+| IgnoredMethods
+| `[]`
 | Array
 
 | Exclude
@@ -299,6 +316,14 @@ Blocks that are calls to builtin iteration methods
 |===
 | Name | Default value | Configurable values
 
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
 | IgnoredMethods
 | `[]`
 | Array
@@ -321,16 +346,17 @@ Blocks that are calls to builtin iteration methods
 |===
 
 Checks if the length of a method exceeds some maximum value.
-Comment lines can optionally be ignored.
+Comment lines can optionally be allowed.
 The maximum allowed length is configurable.
 
 You can set literals you want to fold with `CountAsOne`.
 Available are: 'array', 'hash', and 'heredoc'. Each literal
 will be counted as one line regardless of its actual size.
 
-NOTE: The `ExcludedMethods` configuration is deprecated and only kept
-for backwards compatibility. Please use `IgnoredMethods` instead.
-By default, there are no methods to ignored.
+NOTE: The `ExcludedMethods` and `IgnoredMethods` configuration is
+deprecated and only kept for backwards compatibility.
+Please use `AllowedMethods` and `AllowedPatterns` instead.
+By default, there are no methods to allowed.
 
 === Examples
 
@@ -373,6 +399,14 @@ end               # 5 points
 | Array
 
 | ExcludedMethods
+| `[]`
+| Array
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
 | `[]`
 | Array
 
@@ -599,6 +633,14 @@ end                             # 7 complexity points
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`
