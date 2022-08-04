@@ -1755,7 +1755,7 @@ Lint/EmptyConditionalBody:
   Enabled: true
   AllowComments: true
   VersionAdded: '0.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.33'
 
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'

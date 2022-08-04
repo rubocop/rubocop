@@ -46,8 +46,8 @@ x != y # or x = !y
 Checks for ambiguous block association with method
 when param passed without parentheses.
 
-This cop can customize ignored methods with `IgnoredMethods`.
-By default, there are no methods to ignored.
+This cop can customize allowed methods with `AllowedMethods`.
+By default, there are no methods to allowed.
 
 === Examples
 
@@ -74,7 +74,7 @@ foo == bar { |b| b.baz }
 foo = ->(bar) { bar.baz }
 ----
 
-==== IgnoredMethods: [] (default)
+==== AllowedMethods: [] (default)
 
 [source,ruby]
 ----
@@ -82,7 +82,7 @@ foo = ->(bar) { bar.baz }
 expect { do_something }.to change { object.attribute }
 ----
 
-==== IgnoredMethods: [change]
+==== AllowedMethods: [change]
 
 [source,ruby]
 ----
@@ -90,10 +90,35 @@ expect { do_something }.to change { object.attribute }
 expect { do_something }.to change { object.attribute }
 ----
 
+==== AllowedPatterns: [] (default)
+
+[source,ruby]
+----
+# bad
+expect { do_something }.to change { object.attribute }
+----
+
+==== AllowedPatterns: [/change/]
+
+[source,ruby]
+----
+# good
+expect { do_something }.to change { object.attribute }
+expect { do_something }.to not_change { object.attribute }
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`
@@ -808,7 +833,18 @@ Specific default groups can be disabled if necessary:
 [source,yaml]
 ----
 Lint/Debugger:
-  WebConsole: ~
+  DebuggerMethods:
+    WebConsole: ~
+----
+
+You can also add your own methods by adding a new category:
+
+[source,yaml]
+----
+Lint/Debugger:
+  DebuggerMethods:
+    MyDebugger:
+      MyDebugger.debug_this
 ----
 
 === Examples
@@ -1765,12 +1801,14 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.89
-| -
+| 1.33
 |===
 
 Checks for the presence of `if`, `elsif` and `unless` branches without a body.
+
+NOTE: empty `else` branches are handled by `Style/EmptyElse`.
 
 === Examples
 
@@ -3449,6 +3487,10 @@ end
 FileUtils.rm_f(path)
 ----
 
+=== References
+
+* https://rubystyle.guide#atomic-file-operations
+
 == Lint/NonDeterministicRequireOrder
 
 |===
@@ -3594,8 +3636,8 @@ always correct to raise if a value is not numeric.
 NOTE: Some values cannot be converted properly using one of the `Kernel`
 method (for instance, `Time` and `DateTime` values are allowed by this
 cop by default). Similarly, Rails' duration methods do not work well
-with `Integer()` and can be ignored with `IgnoredMethods`. By default,
-there are no methods to ignored.
+with `Integer()` and can be allowed with `AllowedMethods`. By default,
+there are no methods to allowed.
 
 === Safety
 
@@ -3628,7 +3670,7 @@ foo.try { |i| Float(i) }
 bar.send { |i| Complex(i) }
 ----
 
-==== IgnoredMethods: [] (default)
+==== AllowedMethods: [] (default)
 
 [source,ruby]
 ----
@@ -3636,7 +3678,23 @@ bar.send { |i| Complex(i) }
 10.minutes.to_i
 ----
 
-==== IgnoredMethods: [minutes]
+==== AllowedMethods: [minutes]
+
+[source,ruby]
+----
+# good
+10.minutes.to_i
+----
+
+==== AllowedPatterns: [] (default)
+
+[source,ruby]
+----
+# bad
+10.minutes.to_i
+----
+
+==== AllowedPatterns: [/min*/]
 
 [source,ruby]
 ----
@@ -3656,6 +3714,14 @@ Time.now.to_datetime.to_i
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`

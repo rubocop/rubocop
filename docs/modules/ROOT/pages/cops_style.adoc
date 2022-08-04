@@ -736,7 +736,7 @@ multi-line blocks.
 Methods that can be either procedural or functional and cannot be
 categorised from their usage alone is ignored.
 `lambda`, `proc`, and `it` are their defaults.
-Additional methods can be added to the `IgnoredMethods`.
+Additional methods can be added to the `AllowedMethods`.
 
 === Examples
 
@@ -801,7 +801,7 @@ map { |x|
   x
 }.inspect
 
-# The AllowBracesOnProceduralOneLiners option is ignored unless the
+# The AllowBracesOnProceduralOneLiners option is allowed unless the
 # EnforcedStyle is set to `semantic`. If so:
 
 # If the AllowBracesOnProceduralOneLiners option is unspecified, or
@@ -862,7 +862,7 @@ words.each { |word|
 ----
 # Methods listed in the BracesRequiredMethods list, such as 'sig'
 # in this example, will require `{...}` braces. This option takes
-# precedence over all other configurations except IgnoredMethods.
+# precedence over all other configurations except AllowedMethods.
 
 # bad
 sig do
@@ -885,7 +885,7 @@ def bar(foo)
 end
 ----
 
-==== IgnoredMethods: ['lambda', 'proc', 'it' ] (default)
+==== AllowedMethods: ['lambda', 'proc', 'it' ] (default)
 
 [source,ruby]
 ----
@@ -897,6 +897,28 @@ end
 foo = lambda do |x|
   x * 100
 end
+----
+
+==== AllowedPatterns: [] (default)
+
+[source,ruby]
+----
+# bad
+things.map { |thing|
+  something = thing.some_method
+  process(something)
+}
+----
+
+==== AllowedPatterns: [/map/]
+
+[source,ruby]
+----
+# good
+things.map { |thing|
+  something = thing.some_method
+  process(something)
+}
 ----
 
 === Configurable attributes
@@ -916,8 +938,16 @@ end
 | `let`, `let!`, `subject`, `watch`
 | Array
 
-| IgnoredMethods
+| AllowedMethods
 | `lambda`, `proc`, `it`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
+| IgnoredMethods
+| `[]`
 | Array
 
 | AllowBracesOnProceduralOneLiners
@@ -1217,8 +1247,8 @@ var.kind_of?(String)
 
 Enforces the use of `Object#instance_of?` instead of class comparison
 for equality.
-`==`, `equal?`, and `eql?` methods are ignored by default.
-These are customizable with `IgnoredMethods` option.
+`==`, `equal?`, and `eql?` methods are allowed by default.
+These are customizable with `AllowedMethods` option.
 
 === Examples
 
@@ -1234,7 +1264,7 @@ var.class.name == 'Date'
 var.instance_of?(Date)
 ----
 
-==== IgnoreMethods: [] (default)
+==== AllowedMethods: [] (default)
 
 [source,ruby]
 ----
@@ -1248,7 +1278,7 @@ var.class.eql?(Date)
 var.class.name == 'Date'
 ----
 
-==== IgnoreMethods: [`==`]
+==== AllowedMethods: [`==`]
 
 [source,ruby]
 ----
@@ -1260,6 +1290,34 @@ var.class.name == 'Date'
 # bad
 var.class.equal?(Date)
 var.class.eql?(Date)
+----
+
+==== AllowedPatterns: [] (default)
+
+[source,ruby]
+----
+# good
+var.instance_of?(Date)
+
+# bad
+var.class == Date
+var.class.equal?(Date)
+var.class.eql?(Date)
+var.class.name == 'Date'
+----
+
+==== AllowedPatterns: [`/eq/`]
+
+[source,ruby]
+----
+# good
+var.instance_of?(Date)
+var.class.equal?(Date)
+var.class.eql?(Date)
+
+# bad
+var.class == Date
+var.class.name == 'Date'
 ----
 
 === Configurable attributes
@@ -1267,8 +1325,16 @@ var.class.eql?(Date)
 |===
 | Name | Default value | Configurable values
 
-| IgnoredMethods
+| AllowedMethods
 | `==`, `equal?`, `eql?`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
+| IgnoredMethods
+| `[]`
 | Array
 |===
 
@@ -4325,8 +4391,8 @@ which are passed as arguments to those methods:
 The reason is that _unannotated_ format is very similar
 to encoded URLs or Date/Time formatting strings.
 
-This cop can be customized ignored methods with `IgnoredMethods`.
-By default, there are no methods to ignored.
+This cop can be customized allowed methods with `AllowedMethods`.
+By default, there are no methods to allowed.
 
 It is allowed to contain unannotated token
 if the number of them is less than or equals to
@@ -4393,7 +4459,7 @@ format('%s %s.', 'Hello', 'world')
 format('%06d', 10)
 ----
 
-==== IgnoredMethods: [] (default)
+==== AllowedMethods: [] (default)
 
 [source,ruby]
 ----
@@ -4401,7 +4467,23 @@ format('%06d', 10)
 redirect('foo/%{bar_id}')
 ----
 
-==== IgnoredMethods: [redirect]
+==== AllowedMethods: [redirect]
+
+[source,ruby]
+----
+# good
+redirect('foo/%{bar_id}')
+----
+
+==== AllowedPatterns: [] (default)
+
+[source,ruby]
+----
+# bad
+redirect('foo/%{bar_id}')
+----
+
+==== AllowedPatterns: [/redirect/]
 
 [source,ruby]
 ----
@@ -4421,6 +4503,14 @@ redirect('foo/%{bar_id}')
 | MaxUnannotatedPlaceholdersAllowed
 | `1`
 | Integer
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`
@@ -6267,8 +6357,8 @@ something.to_h { |v| [v, v * 2] }
 Enforces the presence (default) or absence of parentheses in
 method calls containing parameters.
 
-In the default style (require_parentheses), macro methods are ignored.
-Additional methods can be added to the `IgnoredMethods`
+In the default style (require_parentheses), macro methods are allowed.
+Additional methods can be added to the `AllowedMethods`
 or `AllowedPatterns` list. These options are
 valid only in the default style. Macros can be included by
 either setting `IgnoreMacros` to false or adding specific macros to
@@ -6276,13 +6366,13 @@ the `IncludedMacros` list.
 
 Precedence of options is all follows:
 
-1. `IgnoredMethods`
+1. `AllowedMethods`
 2. `AllowedPatterns`
 3. `IncludedMacros`
 
 eg. If a method is listed in both
-`IncludedMacros` and `IgnoredMethods`, then the latter takes
-precedence (that is, the method is ignored).
+`IncludedMacros` and `AllowedMethods`, then the latter takes
+precedence (that is, the method is allowed).
 
 In the alternative style (omit_parentheses), there are three additional
 options.
@@ -6330,7 +6420,7 @@ foo == bar
 # Setter methods don't need parens
 foo.bar = baz
 
-# okay with `puts` listed in `IgnoredMethods`
+# okay with `puts` listed in `AllowedMethods`
 puts 'test'
 
 # okay with `^assert` listed in `AllowedPatterns`
@@ -6501,6 +6591,10 @@ Array 1
 | `true`
 | Boolean
 
+| AllowedMethods
+| `[]`
+| Array
+
 | IgnoredMethods
 | `[]`
 | Array
@@ -6556,8 +6650,8 @@ Array 1
 
 Checks for unwanted parentheses in parameterless method calls.
 
-This cop can be customized ignored methods with `IgnoredMethods`.
-By default, there are no methods to ignored.
+This cop can be customized allowed methods with `AllowedMethods`.
+By default, there are no methods to allowed.
 
 === Examples
 
@@ -6570,7 +6664,7 @@ object.some_method()
 object.some_method
 ----
 
-==== IgnoredMethods: [] (default)
+==== AllowedMethods: [] (default)
 
 [source,ruby]
 ----
@@ -6578,7 +6672,7 @@ object.some_method
 object.foo()
 ----
 
-==== IgnoredMethods: [foo]
+==== AllowedMethods: [foo]
 
 [source,ruby]
 ----
@@ -6590,6 +6684,14 @@ object.foo()
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`
@@ -8689,14 +8791,14 @@ Checks for usage of comparison operators (`==`,
 These can be replaced by their respective predicate methods.
 This cop can also be configured to do the reverse.
 
-This cop can be customized ignored methods with `IgnoredMethods`.
-By default, there are no methods to ignored.
+This cop can be customized allowed methods with `AllowedMethods`.
+By default, there are no methods to allowed.
 
 This cop disregards `#nonzero?` as its value is truthy or falsey,
 but not `true` and `false`, and thus not always interchangeable with
 `!= 0`.
 
-This cop ignores comparisons to global variables, since they are often
+This cop allows comparisons to global variables, since they are often
 populated with objects which can be compared with integers, but are
 not themselves `Integer` polymorphic.
 
@@ -8738,7 +8840,7 @@ foo == 0
 bar.baz > 0
 ----
 
-==== IgnoredMethods: [] (default) with EnforcedStyle: predicate
+==== AllowedMethods: [] (default) with EnforcedStyle: predicate
 
 [source,ruby]
 ----
@@ -8748,7 +8850,7 @@ foo == 0
 bar.baz > 0
 ----
 
-==== IgnoredMethods: [==] with EnforcedStyle: predicate
+==== AllowedMethods: [==] with EnforcedStyle: predicate
 
 [source,ruby]
 ----
@@ -8760,6 +8862,29 @@ foo == 0
 bar.baz > 0
 ----
 
+==== AllowedPatterns: [] (default) with EnforcedStyle: comparison
+
+[source,ruby]
+----
+# bad
+foo.zero?
+foo.negative?
+bar.baz.positive?
+----
+
+==== AllowedPatterns: [/zero/] with EnforcedStyle: predicate
+
+[source,ruby]
+----
+# good
+# bad
+foo.zero?
+
+# bad
+foo.negative?
+bar.baz.positive?
+----
+
 === Configurable attributes
 
 |===
@@ -8768,6 +8893,14 @@ bar.baz > 0
 | EnforcedStyle
 | `predicate`
 | `predicate`, `comparison`
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`
@@ -12731,14 +12864,14 @@ Use symbols as procs when possible.
 
 If you prefer a style that allows block for method with arguments,
 please set `true` to `AllowMethodsWithArguments`.
-respond_to , and `define_method?` methods are ignored by default.
-These are customizable with `IgnoredMethods` option.
+respond_to , and `define_method?` methods are allowed by default.
+These are customizable with `AllowedMethods` option.
 
 === Safety
 
 This cop is unsafe because `proc`s and blocks work differently
 when additional arguments are passed in. A block will silently
-ignore additional arguments, but a `proc` will raise
+allow additional arguments, but a `proc` will raise
 an `ArgumentError`.
 
 For example:
@@ -12816,13 +12949,29 @@ something.do_something do |s| # some comment
 end
 ----
 
-==== IgnoredMethods: [respond_to, define_method] (default)
+==== AllowedMethods: [respond_to, define_method] (default)
 
 [source,ruby]
 ----
 # good
 respond_to { |foo| foo.bar }
 define_method(:foo) { |foo| foo.bar }
+----
+
+==== AllowedPatterns: [] (default)
+
+[source,ruby]
+----
+# bad
+something.map { |s| s.upcase }
+----
+
+==== AllowedPatterns: [/map/] (default)
+
+[source,ruby]
+----
+# good
+something.map { |s| s.upcase }
 ----
 
 === Configurable attributes
@@ -12834,8 +12983,16 @@ define_method(:foo) { |foo| foo.bar }
 | `false`
 | Boolean
 
-| IgnoredMethods
+| AllowedMethods
 | `respond_to`, `define_method`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
+| IgnoredMethods
+| `[]`
 | Array
 
 | AllowComments
