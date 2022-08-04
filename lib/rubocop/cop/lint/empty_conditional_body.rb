@@ -7,6 +7,11 @@ module RuboCop
       #
       # NOTE: empty `else` branches are handled by `Style/EmptyElse`.
       #
+      # @safety
+      #   Autocorrection for this cop is not safe. The conditions for empty branches that
+      #   the autocorrection removes may have side effects, or the logic in subsequent
+      #   branches may change due to the removal of a previous condition.
+      #
       # @example
       #   # bad
       #   if condition
