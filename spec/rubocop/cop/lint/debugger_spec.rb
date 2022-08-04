@@ -27,6 +27,39 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
         RUBY
       end
     end
+
+    context 'with a method chain' do
+      let(:cop_config) { { 'DebuggerMethods' => %w[debugger.foo.bar] } }
+
+      it 'registers an offense for a `debugger.foo.bar` call' do
+        expect_offense(<<~RUBY)
+          debugger.foo.bar
+          ^^^^^^^^^^^^^^^^ Remove debugger entry point `debugger.foo.bar`.
+        RUBY
+      end
+    end
+
+    context 'with a const chain' do
+      let(:cop_config) { { 'DebuggerMethods' => %w[Foo::Bar::Baz.debug] } }
+
+      it 'registers an offense for a `Foo::Bar::Baz.debug` call' do
+        expect_offense(<<~RUBY)
+          Foo::Bar::Baz.debug
+          ^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Foo::Bar::Baz.debug`.
+        RUBY
+      end
+    end
+
+    context 'with a const chain and a method chain' do
+      let(:cop_config) { { 'DebuggerMethods' => %w[Foo::Bar::Baz.debug.this.code] } }
+
+      it 'registers an offense for a `Foo::Bar::Baz.debug.this.code` call' do
+        expect_offense(<<~RUBY)
+          Foo::Bar::Baz.debug.this.code
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Foo::Bar::Baz.debug.this.code`.
+        RUBY
+      end
+    end
   end
 
   context 'built-in methods' do
