@@ -113,13 +113,14 @@ module RuboCop
           [Layout::SpaceBeforeBlockBraces]
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_block(node)
           symbol_proc?(node) do |dispatch_node, arguments_node, method_name|
             # TODO: Rails-specific handling that we should probably make
             # configurable - https://github.com/rubocop/rubocop/issues/1485
             # we should allow lambdas & procs
             return if proc_node?(dispatch_node)
+            return if unsafe_hash_usage?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)
             return if allowed_method_name?(dispatch_node.method_name)
             return if allow_if_method_has_argument?(node.send_node)
@@ -129,7 +130,7 @@ module RuboCop
             register_offense(node, method_name, dispatch_node.method_name)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         alias on_numblock on_block
 
         def destructuring_block_argument?(argument_node)
@@ -137,6 +138,11 @@ module RuboCop
         end
 
         private
+
+        # See: https://github.com/rubocop/rubocop/issues/10864
+        def unsafe_hash_usage?(node)
+          node.receiver&.hash_type? && %i[reject select].include?(node.method_name)
+        end
 
         def allowed_method_name?(name)
           allowed_method?(name) || matches_allowed_pattern?(name)
