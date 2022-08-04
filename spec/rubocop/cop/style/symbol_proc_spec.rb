@@ -150,6 +150,36 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(&run).not_to raise_error
   end
 
+  %w[reject select].each do |method|
+    it "registers an offense when receiver is an array literal and using `#{method}` with a block" do
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].%{method} {|item| item.foo }
+                  _{method} ^^^^^^^^^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{method}(&:foo)
+      RUBY
+    end
+
+    it "registers an offense when receiver is some value and using `#{method}` with a block" do
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].#{method} {|item| item.foo }
+                  _{method} ^^^^^^^^^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{method}(&:foo)
+      RUBY
+    end
+
+    it "does not register an offense when receiver is a hash literal and using `#{method}` with a block" do
+      expect_no_offenses(<<~RUBY, method: method)
+        {foo: 42}.#{method} {|item| item.foo }
+      RUBY
+    end
+  end
+
   context 'when `AllowMethodsWithArguments: true`' do
     let(:cop_config) { { 'AllowMethodsWithArguments' => true } }
 
@@ -290,7 +320,37 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   context 'numblocks', :ruby27 do
-    it 'registers an offense for a block with a single numeric argument' do
+    %w[reject select].each do |method|
+      it "registers an offense when receiver is an array literal and using `#{method}` with a numblock" do
+        expect_offense(<<~RUBY, method: method)
+          [1, 2, 3].%{method} { _1.foo }
+                    _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].#{method}(&:foo)
+        RUBY
+      end
+
+      it "registers an offense when receiver is some value and using `#{method}` with a numblock" do
+        expect_offense(<<~RUBY, method: method)
+          do_something.%{method} { _1.foo }
+                       _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something.#{method}(&:foo)
+        RUBY
+      end
+
+      it "does not register an offense when receiver is a hash literal and using `#{method}` with a numblock" do
+        expect_no_offenses(<<~RUBY, method: method)
+          {foo: 42}.#{method} { _1.foo }
+        RUBY
+      end
+    end
+
+    it 'registers an offense for a block with a numbered parameter' do
       expect_offense(<<~RUBY)
         something { _1.foo }
                   ^^^^^^^^^^ Pass `&:foo` as an argument to `something` instead of a block.
@@ -301,27 +361,27 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       RUBY
     end
 
-    it 'accepts block with multiple numeric argumnets' do
+    it 'accepts block with multiple numbered parameteres' do
       expect_no_offenses('something { _1 + _2 }')
     end
 
-    it 'accepts lambda with 1 argument' do
+    it 'accepts lambda with 1 numbered parameter' do
       expect_no_offenses('-> { _1.method }')
     end
 
-    it 'accepts proc with 1 argument' do
+    it 'accepts proc with 1 numbered parameter' do
       expect_no_offenses('proc { _1.method }')
     end
 
-    it 'accepts block with only second numeric argument' do
+    it 'accepts block with only second numbered parameter' do
       expect_no_offenses('something { _2.first }')
     end
 
-    it 'accepts Proc.new with 1 argument' do
+    it 'accepts Proc.new with 1 numbered parameter' do
       expect_no_offenses('Proc.new { _1.method }')
     end
 
-    it 'accepts ::Proc.new with 1 argument' do
+    it 'accepts ::Proc.new with 1 numbered parameter' do
       expect_no_offenses('::Proc.new { _1.method }')
     end
   end
