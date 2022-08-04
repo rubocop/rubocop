@@ -1,1 +1,0 @@
-* [#10830](https://github.com/rubocop/rubocop/issues/10830): Fix an incorrect autocorrect for `Layout/FirstArgumentIndentation` when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and `EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation` and enabling `Layout/FirstMethodArgumentLineBreak`. ([@koic][])

@@ -1,1 +1,0 @@
-* [#10771](https://github.com/rubocop/rubocop/issues/10771): Make server mode aware of `--cache-root` command line option. ([@koic][])
