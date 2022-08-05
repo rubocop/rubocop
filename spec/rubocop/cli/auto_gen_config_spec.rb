@@ -379,7 +379,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '',
                 '# Offense count: 1',
                 '# This cop supports safe autocorrection (--autocorrect).',
-                '# Configuration parameters: Strict, AllowedNumbers.',
+                '# Configuration parameters: Strict, AllowedNumbers, AllowedPatterns.',
                 'Style/NumericLiterals:',
                 '  MinDigits: 7',
                 '',
