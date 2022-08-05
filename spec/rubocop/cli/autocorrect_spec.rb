@@ -2640,4 +2640,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
            ]
     RUBY
   end
+
+  it 'properly autocorrects when `Style/TernaryParentheses` requires parentheses ' \
+     'that `Style/RedundantParentheses` would otherwise remove' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      foo ? bar : baz
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Style/TernaryParentheses:
+        EnforcedStyle: require_parentheses
+      Style/RedundantParentheses:
+        Enabled: true
+    YAML
+
+    status = cli.run(
+      %w[--autocorrect-all --only] << %w[
+        Style/TernaryParentheses
+        Style/RedundantParentheses
+      ].join(',')
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      (foo) ? bar : baz
+    RUBY
+  end
 end
