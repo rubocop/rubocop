@@ -57,18 +57,65 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '(retry)', 'retry', 'a keyword'
   it_behaves_like 'redundant', '(self)', 'self', 'a keyword'
 
-  it 'registers an offense for parens around constant ternary condition' do
-    expect_offense(<<~RUBY)
-      (X) ? Y : N
-      ^^^ Don't use parentheses around a constant.
-      (X)? Y : N
-      ^^^ Don't use parentheses around a constant.
-    RUBY
+  context 'ternaries' do
+    let(:other_cops) do
+      {
+        'Style/TernaryParentheses' => {
+          'Enabled' => ternary_parentheses_enabled,
+          'EnforcedStyle' => ternary_parentheses_enforced_style
+        }
+      }
+    end
+    let(:ternary_parentheses_enabled) { true }
+    let(:ternary_parentheses_enforced_style) { nil }
 
-    expect_correction(<<~RUBY)
-      X ? Y : N
-      X ? Y : N
-    RUBY
+    context 'when Style/TernaryParentheses is not enabled' do
+      let(:ternary_parentheses_enabled) { false }
+
+      it 'registers an offense for parens around constant ternary condition' do
+        expect_offense(<<~RUBY)
+          (X) ? Y : N
+          ^^^ Don't use parentheses around a constant.
+          (X)? Y : N
+          ^^^ Don't use parentheses around a constant.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          X ? Y : N
+          X ? Y : N
+        RUBY
+      end
+    end
+
+    context 'when Style/TernaryParentheses has EnforcedStyle: require_no_parentheses' do
+      let(:ternary_parentheses_enforced_style) { 'require_no_parentheses' }
+
+      it 'registers an offense for parens around ternary condition' do
+        expect_offense(<<~RUBY)
+          (X) ? Y : N
+          ^^^ Don't use parentheses around a constant.
+          (X)? Y : N
+          ^^^ Don't use parentheses around a constant.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          X ? Y : N
+          X ? Y : N
+        RUBY
+      end
+    end
+
+    context 'when Style/TernaryParentheses has EnforcedStyle: require_parentheses' do
+      let(:ternary_parentheses_enforced_style) { 'require_parentheses' }
+
+      it_behaves_like 'plausible', '(X) ? Y : N'
+    end
+
+    context 'when Style/TernaryParentheses has EnforcedStyle: require_parentheses_when_complex' do
+      let(:ternary_parentheses_enforced_style) { 'require_parentheses_when_complex' }
+
+      it_behaves_like 'plausible', '(X) ? Y : N'
+    end
   end
 
   it_behaves_like 'keyword with return value', 'break'
