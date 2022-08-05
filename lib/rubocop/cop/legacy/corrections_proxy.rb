@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Legacy
       # Legacy support for Corrector#corrections
-      # See https://docs.rubocop.org/rubocop/cop_api_v1_changelog.html
+      # See https://docs.rubocop.org/rubocop/v1_upgrade_notes.html
       class CorrectionsProxy
         def initialize(corrector)
           @corrector = corrector

@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Legacy
       # Legacy Corrector for v0 API support.
-      # See https://docs.rubocop.org/rubocop/cop_api_v1_changelog.html
+      # See https://docs.rubocop.org/rubocop/v1_upgrade_notes.html
       class Corrector < RuboCop::Cop::Corrector
         # Support legacy second argument
         def initialize(source, corr = [])
