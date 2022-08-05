@@ -67,19 +67,6 @@ module RuboCop
       class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
 
-        # @!method kernel?(node)
-        def_node_matcher :kernel?, <<~PATTERN
-          (const {nil? cbase} :Kernel)
-        PATTERN
-
-        # @!method valid_receiver?(node, arg1)
-        def_node_matcher :valid_receiver?, <<~PATTERN
-          {
-            (const {nil? cbase} %1)
-            (send {nil? #kernel?} %1)
-          }
-        PATTERN
-
         def on_send(node)
           return unless debugger_method?(node)
 
@@ -101,7 +88,7 @@ module RuboCop
 
               *receiver, method_name = v.split('.')
               {
-                receiver: receiver.empty? ? nil : receiver.join.to_sym,
+                receiver: receiver.empty? ? nil : receiver.map(&:to_sym),
                 method_name: method_name.to_sym
               }
             end.compact
@@ -115,9 +102,22 @@ module RuboCop
             if method[:receiver].nil?
               send_node.receiver.nil?
             else
-              valid_receiver?(send_node.receiver, method[:receiver])
+              method[:receiver] == receiver_chain(send_node)
             end
           end
+        end
+
+        def receiver_chain(send_node)
+          receivers = []
+          receiver = send_node.receiver
+
+          while receiver
+            name = receiver.send_type? ? receiver.method_name : receiver.const_name&.to_sym
+            receivers.unshift(name)
+            receiver = receiver.receiver
+          end
+
+          receivers
         end
       end
     end
