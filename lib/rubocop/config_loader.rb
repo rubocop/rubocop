@@ -137,6 +137,18 @@ module RuboCop
         end
       end
 
+      # Returns the path RuboCop inferred as the root of the project. No file
+      # searches will go past this directory.
+      # @deprecated Use `RuboCop::ConfigFinder.project_root` instead.
+      def project_root
+        warn Rainbow(<<~WARNING).yellow
+          `RuboCop::ConfigLoader.project_root` is deprecated and will be removed in RuboCop 2.0. \
+          Use `RuboCop::ConfigFinder.project_root` instead.
+        WARNING
+
+        ConfigFinder.project_root
+      end
+
       PENDING_BANNER = <<~BANNER
         The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
 
