@@ -2,11 +2,6 @@
 
 RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
   let(:redundant_parens_enabled) { false }
-  let(:other_cops) do
-    {
-      'Style/RedundantParentheses' => { 'Enabled' => redundant_parens_enabled }
-    }
-  end
 
   shared_examples 'safe assignment disabled' do |style, message|
     let(:cop_config) { { 'EnforcedStyle' => style, 'AllowSafeAssignment' => false } }
@@ -895,26 +890,6 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
       it 'accepts safe assignment' do
         expect_no_offenses('foo = (bar = baz == 1) ? a : b')
-      end
-    end
-  end
-
-  context 'when `RedundantParenthesis` would cause an infinite loop' do
-    let(:redundant_parens_enabled) { true }
-
-    context 'when `EnforcedStyle: require_parentheses`' do
-      let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
-
-      it 'accepts' do
-        expect_no_offenses('foo = bar? ? a : b')
-      end
-    end
-
-    context 'when `EnforcedStyle: require_parentheses_when_complex`' do
-      let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses_when_complex' } }
-
-      it 'accepts' do
-        expect_no_offenses('!condition.nil? ? foo : bar')
       end
     end
   end

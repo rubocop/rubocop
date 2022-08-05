@@ -71,7 +71,7 @@ module RuboCop
 
           return if only_closing_parenthesis_is_last_line?(condition)
           return if condition_as_parenthesized_one_line_pattern_matching?(condition)
-          return unless node.ternary? && !infinite_loop? && offense?(node)
+          return unless node.ternary? && offense?(node)
 
           message = message(node)
 
@@ -166,20 +166,8 @@ module RuboCop
           style == :require_parentheses_when_complex
         end
 
-        def redundant_parentheses_enabled?
-          @config.for_cop('Style/RedundantParentheses').fetch('Enabled')
-        end
-
         def parenthesized?(node)
           node.begin_type?
-        end
-
-        # When this cop is configured to enforce parentheses and the
-        # `RedundantParentheses` cop is enabled, it will cause an infinite loop
-        # as they compete to add and remove the parentheses respectively.
-        def infinite_loop?
-          (require_parentheses? || require_parentheses_when_complex?) &&
-            redundant_parentheses_enabled?
         end
 
         def unsafe_autocorrect?(condition)

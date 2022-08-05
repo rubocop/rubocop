@@ -58,7 +58,8 @@ module RuboCop
           allowed_ancestor?(node) ||
             allowed_method_call?(node) ||
             allowed_array_or_hash_element?(node) ||
-            allowed_multiple_expression?(node)
+            allowed_multiple_expression?(node) ||
+            allowed_ternary?(node)
         end
 
         def allowed_ancestor?(node)
@@ -78,6 +79,19 @@ module RuboCop
           return false unless ancestor
 
           !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
+        end
+
+        def allowed_ternary?(node)
+          return unless node&.parent&.if_type?
+
+          node.parent.ternary? && ternary_parentheses_required?
+        end
+
+        def ternary_parentheses_required?
+          config = @config.for_cop('Style/TernaryParentheses')
+          allowed_styles = %w[require_parentheses require_parentheses_when_complex]
+
+          config.fetch('Enabled') && allowed_styles.include?(config['EnforcedStyle'])
         end
 
         def like_method_argument_parentheses?(node)
