@@ -161,7 +161,7 @@ module RuboCop
           next unless value.is_a?(Array)
           next if value.empty?
 
-          output_buffer.puts "# #{param}: #{value.join(', ')}"
+          output_buffer.puts "# #{param}: #{value.uniq.join(', ')}"
         end
       end
 
