@@ -951,6 +951,33 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       YAML
     end
 
+    context 'when configurable parameter is an obsolete parameter' do
+      it 'displayed as a new parameter setting value without duplication' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            NewCops: enable
+          Naming/MethodName:
+            # `IgnoredPatterns` is obsolete. `AllowedPatterns` is newly used.
+            IgnoredPatterns:
+              - change
+              - not_change
+        YAML
+        create_file('example1.rb', ['# frozen_string_literal: true', '', 'def fooBar; end'])
+        create_file('example2.rb', ['# frozen_string_literal: true', '', 'def fooBar; end'])
+
+        expect(cli.run(['--auto-gen-config'])).to eq(0)
+        File.readlines('.rubocop_todo.yml')
+        expect(File.readlines('.rubocop_todo.yml')[9..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: AllowedPatterns, IgnoredPatterns.
+            # SupportedStyles: snake_case, camelCase
+            # AllowedPatterns: change, not_change
+            Naming/MethodName:
+              EnforcedStyle: camelCase
+          YAML
+      end
+    end
+
     it 'does not generate configuration for the Syntax cop' do
       create_file('example1.rb', <<~RUBY)
         # frozen_string_literal: true
