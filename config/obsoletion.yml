@@ -224,6 +224,11 @@ changed_parameters:
       - AllowedMethods
       - AllowedPatterns
     severity: warning
+  - cops:
+      - Lint/RedundantSafeNavigation
+    parameters: AllowedMethods
+    alternative: ForbiddenMethods
+    severity: warning
 
 # Enforced styles that have been removed or replaced
 changed_enforced_styles:

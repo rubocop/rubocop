@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # Checks for redundant safe navigation calls.
       # `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, and `equal?` methods
-      # are checked by default. These are customizable with `AllowedMethods` option.
+      # are checked by default. These are customizable with `ForbiddenMethods` option.
       #
       # In the example below, the safe navigation operator (`&.`) is unnecessary
       # because `NilClass` has methods like `respond_to?` and `is_a?`.
@@ -35,7 +35,7 @@ module RuboCop
       #   # good - without `&.` this will always return `true`
       #   foo&.respond_to?(:to_a)
       #
-      # @example AllowedMethods: [foo?]
+      # @example ForbiddenMethods: [foo?]
       #   # bad
       #   do_something if attrs&.foo?(:[])
       #
@@ -43,7 +43,7 @@ module RuboCop
       #   do_something if attrs&.bar?(:[])
       #
       class RedundantSafeNavigation < Base
-        include AllowedMethods
+        include ForbiddenMethods
         include RangeHelp
         extend AutoCorrector
 
@@ -57,7 +57,7 @@ module RuboCop
         PATTERN
 
         def on_csend(node)
-          return unless check?(node) && allowed_method?(node.method_name)
+          return unless check?(node) && forbidden_method?(node.method_name)
           return if respond_to_nil_specific_method?(node)
 
           range = range_between(node.loc.dot.begin_pos, node.source_range.end_pos)
@@ -78,6 +78,10 @@ module RuboCop
 
         def condition?(parent, node)
           (parent.conditional? || parent.post_condition_loop?) && parent.condition == node
+        end
+
+        def cop_config_deprecated_values
+          Array(cop_config['AllowedMethods'])
         end
       end
     end

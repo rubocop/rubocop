@@ -75,6 +75,7 @@ require_relative 'rubocop/cop/mixin/configurable_naming'
 require_relative 'rubocop/cop/mixin/configurable_numbering'
 require_relative 'rubocop/cop/mixin/documentation_comment'
 require_relative 'rubocop/cop/mixin/duplication'
+require_relative 'rubocop/cop/mixin/forbidden_methods'
 require_relative 'rubocop/cop/mixin/range_help'
 require_relative 'rubocop/cop/mixin/annotation_comment' # relies on range
 require_relative 'rubocop/cop/mixin/empty_lines_around_body' # relies on range

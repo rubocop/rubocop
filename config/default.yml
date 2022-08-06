@@ -2097,13 +2097,15 @@ Lint/RedundantSafeNavigation:
   Description: 'Checks for redundant safe navigation calls.'
   Enabled: true
   VersionAdded: '0.93'
-  AllowedMethods:
+  VersionChanged: '<<next>>'
+  ForbiddenMethods:
     - instance_of?
     - kind_of?
     - is_a?
     - eql?
     - respond_to?
     - equal?
+  AllowedMethods: [] # deprecated
   Safe: false
 
 Lint/RedundantSplatExpansion:

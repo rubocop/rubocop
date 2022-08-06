@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
-  let(:cop_config) { { 'AllowedMethods' => %w[respond_to?] } }
+  let(:cop_config) { { 'ForbiddenMethods' => %w[respond_to?] } }
 
   it 'registers an offense and corrects when `&.` is used inside `if` condition' do
     expect_offense(<<~RUBY)
@@ -92,5 +92,29 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     expect_no_offenses(<<~RUBY)
       do_something if foo&.respond_to?(:to_a)
     RUBY
+  end
+
+  context 'when deprecated `AllowedMethods` option should behave similarly' do
+    let(:cop_config) { { 'ForbiddenMethods' => %w[], 'AllowedMethods' => %w[is_a?] } }
+
+    it 'registers an offense and corrects when `&.` is used inside `if` condition' do
+      expect_offense(<<~RUBY)
+        if foo&.is_a?(:bar)
+              ^^^^^^^^^^^^^ Redundant safe navigation detected.
+          do_something
+        elsif foo&.is_a?(:baz)
+                 ^^^^^^^^^^^^^ Redundant safe navigation detected.
+          do_something_else
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo.is_a?(:bar)
+          do_something
+        elsif foo.is_a?(:baz)
+          do_something_else
+        end
+      RUBY
+    end
   end
 end

@@ -332,6 +332,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Layout/EndAlignment' => { 'AlignWith' => 'end' },
           'Layout/DefEndAlignment' => { 'AlignWith' => 'end' },
           'Rails/UniqBeforePluck' => { 'EnforcedMode' => 'x' },
+          'Lint/RedundantSafeNavigation' => { 'AllowedMethods' => 'instance_of?' },
           # Moved cops with obsolete parameters
           'Lint/BlockAlignment' => { 'AlignWith' => 'end' },
           'Lint/EndAlignment' => { 'AlignWith' => 'end' },
