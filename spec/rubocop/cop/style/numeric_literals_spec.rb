@@ -253,4 +253,42 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
       RUBY
     end
   end
+
+  context 'AllowedPatterns' do
+    let(:cop_config) { { 'AllowedPatterns' => [/\d{2}_\d{2}_\d{4}/] } }
+
+    it 'does not register an offense for numbers that exactly match the pattern' do
+      expect_no_offenses(<<~RUBY)
+        12_34_5678
+      RUBY
+    end
+
+    it 'registers an offense for numbers that do not exactly match the pattern' do
+      expect_offense(<<~RUBY)
+        1234_56_78_9012
+        ^^^^^^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+      RUBY
+    end
+
+    it 'corrects by inserting underscores every 3 digits' do
+      expect_offense(<<~RUBY)
+        12345678
+        ^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        12_345_678
+      RUBY
+    end
+
+    context 'AllowedPatterns with repetition' do
+      let(:cop_config) { { 'AllowedPatterns' => [/\d{4}(_\d{4})+/] } }
+
+      it 'does not register an offense for numbers that match the pattern' do
+        expect_no_offenses(<<~RUBY)
+          1234_5678_9012_3456
+        RUBY
+      end
+    end
+  end
 end

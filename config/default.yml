@@ -4405,6 +4405,7 @@ Style/NumericLiterals:
   Strict: false
   # You can specify allowed numbers. (e.g. port number 3000, 8080, and etc)
   AllowedNumbers: []
+  AllowedPatterns: []
 
 Style/NumericPredicate:
   Description: >-
