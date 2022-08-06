@@ -154,4 +154,32 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline, :config do
       }
     RUBY
   end
+
+  it 'registers an offense and corrects when a multiline block ends with a hash' do
+    expect_offense(<<~RUBY)
+      foo {
+        { bar: :baz } }
+                      ^ Expression at 2, 17 should be on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo {
+        { bar: :baz }
+      }
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a multiline block ends with a method call with hash arguments' do
+    expect_offense(<<~RUBY)
+      foo {
+        bar(baz: :quux) }
+                        ^ Expression at 2, 19 should be on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo {
+        bar(baz: :quux)
+      }
+    RUBY
+  end
 end
