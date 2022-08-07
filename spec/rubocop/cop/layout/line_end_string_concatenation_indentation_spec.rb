@@ -58,13 +58,13 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
       RUBY
     end
 
-    it 'registers an offense for aligned strings in an if/elif/else statement' do
+    it 'registers an offense for aligned strings in an if/elsif/else statement' do
       expect_offense(<<~'RUBY')
         if cond1
           'a' \
           'b'
           ^^^ Indent the first part of a string concatenated with backslash.
-        elif cond2
+        elsif cond2
           'c' \
           'd'
           ^^^ Indent the first part of a string concatenated with backslash.
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
         if cond1
           'a' \
             'b'
-        elif cond2
+        elsif cond2
           'c' \
             'd'
         else
