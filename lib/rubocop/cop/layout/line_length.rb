@@ -22,6 +22,7 @@ module RuboCop
       # (Many of these are enabled by default.)
       #
       # * ArgumentAlignment
+      # * ArrayAlignment
       # * BlockAlignment
       # * BlockDelimiters
       # * BlockEndNewline
