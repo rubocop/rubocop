@@ -148,7 +148,18 @@ module RuboCop
           )
           corrector.replace(range, and_operator)
           corrector.remove(range_by_whole_lines(node.loc.end, include_final_newline: true))
-          corrector.wrap(if_branch.condition, '(', ')') if wrap_condition?(if_branch.condition)
+
+          wrap_condition(corrector, if_branch.condition)
+        end
+
+        def wrap_condition(corrector, condition)
+          # Handle `send` and `block` nodes that need to be wrapped in parens
+          # FIXME: autocorrection prevents syntax errors by wrapping the entire node in parens,
+          #        but wrapping the argument list would be a more ergonomic correction.
+          node_to_check = condition&.block_type? ? condition.send_node : condition
+          return unless wrap_condition?(node_to_check)
+
+          corrector.wrap(condition, '(', ')')
         end
 
         def correct_for_outer_condition_modify_form_style(corrector, node, if_branch)
@@ -207,7 +218,7 @@ module RuboCop
         end
 
         def require_parentheses?(condition)
-          condition.send_type? && !condition.arguments.empty? && !condition.parenthesized? &&
+          condition.call_type? && !condition.arguments.empty? && !condition.parenthesized? &&
             !condition.comparison_method?
         end
 
@@ -219,7 +230,7 @@ module RuboCop
 
         def wrap_condition?(node)
           node.and_type? || node.or_type? ||
-            (node.send_type? && node.arguments.any? && !node.parenthesized?)
+            (node.call_type? && node.arguments.any? && !node.parenthesized?)
         end
 
         def replace_condition(condition)
