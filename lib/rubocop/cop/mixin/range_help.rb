@@ -54,11 +54,11 @@ module RuboCop
       NOT_GIVEN = Module.new
       def range_with_surrounding_space(range_positional = NOT_GIVEN, # rubocop:disable Metrics/ParameterLists
                                        range: NOT_GIVEN, side: :both, newlines: true,
-                                       whitespace: false, continuations: false)
+                                       whitespace: false, continuations: false,
+                                       buffer: @processed_source.buffer)
 
         range = range_positional unless range_positional == NOT_GIVEN
 
-        buffer = @processed_source.buffer
         src = buffer.source
 
         go_left, go_right = directions(side)

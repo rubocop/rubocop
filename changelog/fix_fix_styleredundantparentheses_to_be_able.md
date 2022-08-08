@@ -1,0 +1,1 @@
+* [#10883](https://github.com/rubocop/rubocop/issues/10883): Fix `Style/RedundantParentheses` to be able to detect offenses and properly correct when the end parentheses and comma are on their own line. ([@dvandersluis][])
