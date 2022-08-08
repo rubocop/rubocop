@@ -121,6 +121,7 @@ module RuboCop
             # we should allow lambdas & procs
             return if proc_node?(dispatch_node)
             return if unsafe_hash_usage?(dispatch_node)
+            return if unsafe_array_usage?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)
             return if allowed_method_name?(dispatch_node.method_name)
             return if allow_if_method_has_argument?(node.send_node)
@@ -142,6 +143,10 @@ module RuboCop
         # See: https://github.com/rubocop/rubocop/issues/10864
         def unsafe_hash_usage?(node)
           node.receiver&.hash_type? && %i[reject select].include?(node.method_name)
+        end
+
+        def unsafe_array_usage?(node)
+          node.receiver&.array_type? && %i[min max].include?(node.method_name)
         end
 
         def allowed_method_name?(name)

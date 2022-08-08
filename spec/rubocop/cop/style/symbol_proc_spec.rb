@@ -180,6 +180,25 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
   end
 
+  %w[min max].each do |method|
+    it "registers an offense when receiver is a hash literal and using `#{method}` with a block" do
+      expect_offense(<<~RUBY, method: method)
+        {foo: 42}.%{method} {|item| item.foo }
+                  _{method} ^^^^^^^^^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {foo: 42}.#{method}(&:foo)
+      RUBY
+    end
+
+    it "does not register an offense when receiver is a array literal and using `#{method}` with a block" do
+      expect_no_offenses(<<~RUBY, method: method)
+        [1, 2, 3].#{method} {|item| item.foo }
+      RUBY
+    end
+  end
+
   context 'when `AllowMethodsWithArguments: true`' do
     let(:cop_config) { { 'AllowMethodsWithArguments' => true } }
 
@@ -346,6 +365,25 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       it "does not register an offense when receiver is a hash literal and using `#{method}` with a numblock" do
         expect_no_offenses(<<~RUBY, method: method)
           {foo: 42}.#{method} { _1.foo }
+        RUBY
+      end
+    end
+
+    %w[min max].each do |method|
+      it "registers an offense when receiver is an hash literal and using `#{method}` with a numblock" do
+        expect_offense(<<~RUBY, method: method)
+          {foo: 42}.%{method} { _1.foo }
+                    _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: 42}.#{method}(&:foo)
+        RUBY
+      end
+
+      it "does not register an offense when receiver is a array literal and using `#{method}` with a numblock" do
+        expect_no_offenses(<<~RUBY, method: method)
+          [1, 2, 3].#{method} { _1.foo }
         RUBY
       end
     end
