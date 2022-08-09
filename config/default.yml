@@ -1760,7 +1760,7 @@ Lint/EmptyConditionalBody:
   SafeAutoCorrect: false
   AllowComments: true
   VersionAdded: '0.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.34'
 
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'

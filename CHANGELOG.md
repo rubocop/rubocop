@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.34.0 (2022-08-09)
+
 ### New features
 
 * [#10170](https://github.com/rubocop/rubocop/pull/10170): Add new `InternalAffairs/SingleLineComparison` cop. ([@dvandersluis][])

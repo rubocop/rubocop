@@ -901,7 +901,7 @@ end
 | Array
 
 | DebuggerMethods
-| `{"Kernel"=>["binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["save_and_open_page", "save_and_open_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Pry.rescue"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
+| `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["save_and_open_page", "save_and_open_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
 | 
 |===
 
@@ -1801,14 +1801,20 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.89
-| 1.33
+| 1.34
 |===
 
 Checks for the presence of `if`, `elsif` and `unless` branches without a body.
 
 NOTE: empty `else` branches are handled by `Style/EmptyElse`.
+
+=== Safety
+
+Autocorrection for this cop is not safe. The conditions for empty branches that
+the autocorrection removes may have side effects, or the logic in subsequent
+branches may change due to the removal of a previous condition.
 
 === Examples
 
@@ -5226,6 +5232,14 @@ Checks for a rescued exception that get shadowed by a
 less specific exception being rescued before a more specific
 exception is rescued.
 
+An exception is considered shadowed if it is rescued after its
+ancestor is, or if it and its ancestor are both rescued in the
+same `rescue` statement. In both cases, the more specific rescue is
+unnecessary because it is covered by rescuing the less specific
+exception. (ie. `rescue Exception, StandardError` has the same behavior
+whether `StandardError` is included or not, because all `StandardError`s
+are rescued by `rescue Exception`).
+
 === Examples
 
 [source,ruby]
@@ -5238,6 +5252,13 @@ rescue Exception
   handle_exception
 rescue StandardError
   handle_standard_error
+end
+
+# bad
+begin
+  something
+rescue Exception, StandardError
+  handle_error
 end
 
 # good
