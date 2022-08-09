@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Style::Encoding, :config do
 
   it 'does not register an offense on a different magic comment type' do
     expect_no_offenses(<<~RUBY)
-      # frozen-string-literal: true
+      # frozen_string_literal: true
       def foo() end
     RUBY
   end
@@ -63,21 +63,21 @@ RSpec.describe RuboCop::Cop::Style::Encoding, :config do
 
   it 'registers an offense and corrects the magic comment follows another magic comment' do
     expect_offense(<<~RUBY)
-      # frozen-string-literal: true
+      # frozen_string_literal: true
       # encoding: utf-8
       ^^^^^^^^^^^^^^^^^ Unnecessary utf-8 encoding comment.
       def foo() end
     RUBY
 
     expect_correction(<<~RUBY)
-      # frozen-string-literal: true
+      # frozen_string_literal: true
       def foo() end
     RUBY
   end
 
   it 'does not register an offense when encoding is not at the top of the file' do
     expect_no_offenses(<<~RUBY)
-      # frozen-string-literal: true
+      # frozen_string_literal: true
 
       # encoding: utf-8
       def foo() end

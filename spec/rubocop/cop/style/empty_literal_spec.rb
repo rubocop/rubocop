@@ -298,16 +298,16 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
         end
       end
 
-      context 'and there is a frozen-string-literal: false comment' do
+      context 'and there is a frozen_string_literal: false comment' do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)
-            # frozen-string-literal: false
+            # frozen_string_literal: false
             test = String.new
                    ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
           RUBY
 
           expect_correction(<<~RUBY)
-            # frozen-string-literal: false
+            # frozen_string_literal: false
             test = ''
           RUBY
         end

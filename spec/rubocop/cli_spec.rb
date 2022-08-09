@@ -1814,7 +1814,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   describe 'info severity' do
     let(:code) do
       <<~RUBY
-        # frozen-string-literal: true
+        # frozen_string_literal: true
 
         'this line is longer than the accepted maximum'
       RUBY
