@@ -218,25 +218,80 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it_behaves_like 'plausible', "[(1\n),]"
+  context 'literals in an array' do
+    context 'when there is a comma on the same line as the closing parentheses' do
+      it 'registers an offense and corrects when there is no subsequent item' do
+        expect_offense(<<~RUBY)
+          [
+            (
+            ^ Don't use parentheses around a literal.
+              1
+            )
+          ]
+        RUBY
 
-  it_behaves_like 'plausible', <<~RUBY
-    [
-      (
-        1
-      ),
-      2
-    ]
-  RUBY
+        expect_correction(<<~RUBY)
+          [
+          #{trailing_whitespace * 2}
+              1
+          #{trailing_whitespace * 2}
+          ]
+        RUBY
+      end
 
-  it_behaves_like 'plausible', <<~RUBY
-    [
-      x = (
-        1
-      ),
-      y = 2
-    ]
-  RUBY
+      it 'registers an offense and corrects when there is a trailing comma' do
+        expect_offense(<<~RUBY)
+          [(1
+           ^^ Don't use parentheses around a literal.
+          ),]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1,]
+        RUBY
+      end
+
+      it 'registers an offense and corrects when there is a subsequent item' do
+        expect_offense(<<~RUBY)
+          [
+            (
+            ^ Don't use parentheses around a literal.
+              1
+            ),
+            2
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+          #{trailing_whitespace * 2}
+              1,
+            2
+          ]
+        RUBY
+      end
+
+      it 'registers an offense and corrects when there is assignment' do
+        expect_offense(<<~RUBY)
+          [
+            x = (
+                ^ Don't use parentheses around a literal.
+              1
+            ),
+            y = 2
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            x =#{trailing_whitespace}
+              1,
+            y = 2
+          ]
+        RUBY
+      end
+    end
+  end
 
   it 'registers an offense for parens around a literal hash value' do
     expect_offense(<<~RUBY)
@@ -262,7 +317,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it_behaves_like 'plausible', "{a: (1\n),}"
+  it 'registers an offense and corrects for a parenthesized item in a hash where ' \
+     'the comma is on a line with the closing parens' do
+    expect_offense(<<~RUBY)
+      { a: (1
+           ^^ Don't use parentheses around a literal.
+      ),}
+    RUBY
+
+    expect_correction(<<~RUBY)
+      { a: 1,}
+    RUBY
+  end
 
   it 'registers an offense for parens around an integer exponentiation base' do
     expect_offense(<<~RUBY)
@@ -505,6 +571,26 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       yield ({
         foo: bar,
       })
+    RUBY
+  end
+
+  it 'registers an offense and corrects when method arguments are unnecessarily parenthesized' do
+    expect_offense(<<~RUBY)
+      foo(
+        (
+        ^ Don't use parentheses around a literal.
+          1
+        ),
+        2
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(
+      #{trailing_whitespace * 2}
+          1,
+        2
+      )
     RUBY
   end
 end

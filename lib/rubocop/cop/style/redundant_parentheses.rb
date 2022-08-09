@@ -57,7 +57,6 @@ module RuboCop
         def allowed_expression?(node)
           allowed_ancestor?(node) ||
             allowed_method_call?(node) ||
-            allowed_array_or_hash_element?(node) ||
             allowed_multiple_expression?(node) ||
             allowed_ternary?(node)
         end
@@ -165,26 +164,6 @@ module RuboCop
 
         def keyword_ancestor?(node)
           node.parent&.keyword?
-        end
-
-        def allowed_array_or_hash_element?(node)
-          # Don't flag
-          # ```
-          # { a: (1
-          #      ), }
-          # ```
-          hash_or_array_element?(node) && only_closing_paren_before_comma?(node)
-        end
-
-        def hash_or_array_element?(node)
-          node.each_ancestor(:array, :hash).any?
-        end
-
-        def only_closing_paren_before_comma?(node)
-          source_buffer = node.source_range.source_buffer
-          line_range = source_buffer.line_range(node.loc.end.line)
-
-          /^\s*\)\s*,/.match?(line_range.source)
         end
 
         def disallowed_literal?(begin_node, node)
