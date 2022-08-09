@@ -1,0 +1,1 @@
+* [#10776](https://github.com/rubocop/rubocop/pull/10776): New option (`consistent`) for `EnforcedShorthandSyntax` in `Style/HashSyntax` to avoid mixing shorthand and non-shorthand hash keys in ruby 3.1. ([@h-lame][])
