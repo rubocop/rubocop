@@ -60,7 +60,8 @@ module RuboCop
         end
 
         def last_heredoc_argument(node)
-          return unless (arguments = node&.arguments)
+          return unless node&.send_type?
+          return unless (arguments = node.arguments)
 
           heredoc = arguments.reverse.detect(&:heredoc?)
           return heredoc if heredoc

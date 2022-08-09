@@ -41,6 +41,22 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline, :config do
     RUBY
   end
 
+
+  it 'registers an offense and corrects when multiline block `}` is not on its own line' \
+    'with lambda literal `->`.' do
+    expect_offense(<<~RUBY)
+      -> {
+        nil }
+            ^ Expression at 2, 7 should be on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      -> {
+        nil
+      }
+    RUBY
+  end
+
   it 'registers an offense and corrects when `}` of multiline block ' \
      'without processing is not on its own line' do
     expect_offense(<<~RUBY)
