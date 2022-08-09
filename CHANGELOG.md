@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#10893](https://github.com/rubocop/rubocop/issues/10893): Fix an error when running `rubocop` without `bundle exec`. ([@koic][])
+
 ## 1.34.0 (2022-08-09)
 
 ### New features
