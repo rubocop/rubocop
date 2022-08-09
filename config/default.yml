@@ -1994,6 +1994,11 @@ Lint/NonLocalExitFromIterator:
   Enabled: true
   VersionAdded: '0.30'
 
+Lint/NoopRescue:
+  Description: 'Check for suppress or ignore checked exception.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/NumberConversion:
   Description: 'Checks unsafe usage of number conversion methods.'
   Enabled: false
