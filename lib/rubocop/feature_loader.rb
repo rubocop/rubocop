@@ -30,7 +30,9 @@ module RuboCop
     end
 
     def load
-      ::Kernel.require(target)
+      # Don't use `::Kernel.require(target)` to prevent the following error:
+      # https://github.com/rubocop/rubocop/issues/10893
+      require(target)
     rescue ::LoadError => e
       raise if e.path != target
 
