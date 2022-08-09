@@ -1183,8 +1183,8 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       it 'registers and corrects an offense when hash values are omitted' do
         expect_offense(<<~RUBY)
           {foo:, bar:}
-           ^^^ Explicit the hash value.
-                 ^^^ Explicit the hash value.
+           ^^^ Include the hash value.
+                 ^^^ Include the hash value.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -1195,7 +1195,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       it 'registers and corrects an offense when hash key and hash value are partially the same' do
         expect_offense(<<~RUBY)
           {foo:, bar: bar, baz: qux}
-           ^^^ Explicit the hash value.
+           ^^^ Include the hash value.
         RUBY
 
         expect_correction(<<~RUBY)

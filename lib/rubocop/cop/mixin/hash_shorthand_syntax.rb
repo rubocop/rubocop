@@ -5,7 +5,7 @@ module RuboCop
     # This module checks for Ruby 3.1's hash value omission syntax.
     module HashShorthandSyntax
       OMIT_HASH_VALUE_MSG = 'Omit the hash value.'
-      EXPLICIT_HASH_VALUE_MSG = 'Explicit the hash value.'
+      EXPLICIT_HASH_VALUE_MSG = 'Include the hash value.'
 
       def on_pair(node)
         return if ignore_hash_shorthand_syntax?(node)
