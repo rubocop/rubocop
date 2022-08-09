@@ -663,6 +663,46 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
             end
         RUBY
       end
+
+      context 'with a `csend` node' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            if foo
+              if bar&.baz quux
+              ^^ Consider merging nested conditions into outer `if` conditions.
+                do_something
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if foo && (bar&.baz quux)
+                do_something
+              end
+          RUBY
+        end
+      end
+
+      context 'with a block' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            if foo
+              if ok? bar do
+              ^^ Consider merging nested conditions into outer `if` conditions.
+                  do_something
+                end
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if foo && (ok? bar do
+                  do_something
+                end)
+              end
+          RUBY
+        end
+      end
     end
   end
 
