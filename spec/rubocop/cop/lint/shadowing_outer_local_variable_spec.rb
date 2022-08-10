@@ -251,6 +251,18 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
     end
   end
 
+  context 'when the same variable name as a block variable is used in return value assignment of `if`' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          foo = if condition
+                  bar { |foo| baz(foo) }
+                end
+        end
+      RUBY
+    end
+  end
+
   context 'when multiple block arguments have same name "_"' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

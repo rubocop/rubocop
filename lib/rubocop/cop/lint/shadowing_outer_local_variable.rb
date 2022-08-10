@@ -69,6 +69,7 @@ module RuboCop
 
           outer_local_variable_node =
             find_conditional_node_from_ascendant(outer_local_variable.declaration_node)
+          return true unless outer_local_variable_node
 
           outer_local_variable_node.conditional? && variable_node == outer_local_variable_node
         end
