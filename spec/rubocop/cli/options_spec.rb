@@ -14,6 +14,11 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
   describe '--parallel' do
     if RuboCop::Platform.windows?
       context 'on Windows' do
+        before do
+          create_file('test_1.rb', ['puts "hello world"'])
+          create_file('test_2.rb', ['puts "what a lovely day"'])
+        end
+
         it 'prints a warning' do
           cli.run ['-P']
           expect($stderr.string).to include('Process.fork is not supported by this Ruby')
@@ -35,7 +40,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       context 'on Unix-like systems' do
         it 'prints a message if --debug is specified' do
           cli.run ['--parallel', '--debug']
-          expect($stdout.string).to match(/Running parallel inspection/)
+          expect($stdout.string).to match(
+            /Skipping parallel inspection: only a single file needs inspection/
+          )
         end
 
         it 'does not print a message if --debug is not specified' do
