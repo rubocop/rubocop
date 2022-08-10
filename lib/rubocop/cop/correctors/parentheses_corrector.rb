@@ -7,6 +7,8 @@ module RuboCop
       class << self
         include RangeHelp
 
+        COMMA_REGEXP = /(?<=\))\s*,/.freeze
+
         def correct(corrector, node)
           corrector.remove(node.loc.begin)
           corrector.remove(node.loc.end)
@@ -39,7 +41,15 @@ module RuboCop
         def handle_orphaned_comma(corrector, node)
           return unless only_closing_paren_before_comma?(node)
 
-          range = range_with_surrounding_space(
+          range = extend_range_for_heredoc(node, parens_range(node))
+          corrector.remove(range)
+
+          add_heredoc_comma(corrector, node)
+        end
+
+        # Get a range for the closing parenthesis and all whitespace to the left of it
+        def parens_range(node)
+          range_with_surrounding_space(
             range: node.loc.end,
             buffer: node.source_range.source_buffer,
             side: :left,
@@ -47,8 +57,28 @@ module RuboCop
             whitespace: true,
             continuations: true
           )
+        end
 
-          corrector.remove(range)
+        # If the node contains a heredoc, remove the comma too
+        # It'll be added back in the right place later
+        def extend_range_for_heredoc(node, range)
+          return range unless heredoc?(node)
+
+          comma_line = range_by_whole_lines(node.loc.end, buffer: node.source_range.source_buffer)
+          offset = comma_line.source.match(COMMA_REGEXP)[0]&.size || 0
+
+          range.adjust(end_pos: offset)
+        end
+
+        # Add a comma back after the heredoc identifier
+        def add_heredoc_comma(corrector, node)
+          return unless heredoc?(node)
+
+          corrector.insert_after(node.child_nodes.last.loc.expression, ',')
+        end
+
+        def heredoc?(node)
+          node.child_nodes.last.loc.is_a?(Parser::Source::Map::Heredoc)
         end
       end
     end

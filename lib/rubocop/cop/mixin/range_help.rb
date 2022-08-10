@@ -70,9 +70,8 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_by_whole_lines(range, include_final_newline: false)
-        buffer = @processed_source.buffer
-
+      def range_by_whole_lines(range, include_final_newline: false,
+                               buffer: @processed_source.buffer)
         last_line = buffer.source_line(range.last_line)
         end_offset = last_line.length - range.last_column
         end_offset += 1 if include_final_newline

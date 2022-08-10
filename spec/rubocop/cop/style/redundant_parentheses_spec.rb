@@ -593,4 +593,37 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       )
     RUBY
   end
+
+  it 'registers an offense and corrects an array of multiple heredocs' do
+    expect_offense(<<~RUBY)
+      [
+        (
+        ^ Don't use parentheses around a literal.
+        <<-STRING
+          foo
+        STRING
+        ) ,
+        (
+        ^ Don't use parentheses around a literal.
+        <<-STRING
+          bar
+        STRING
+        )
+      ]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [
+      #{trailing_whitespace * 2}
+        <<-STRING,
+          foo
+        STRING
+      #{trailing_whitespace * 2}
+        <<-STRING
+          bar
+        STRING
+      #{trailing_whitespace * 2}
+      ]
+    RUBY
+  end
 end
