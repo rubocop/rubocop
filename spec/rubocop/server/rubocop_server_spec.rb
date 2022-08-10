@@ -21,6 +21,10 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
       end
 
       it 'displays a restart information message' do
+        # FIXME: Avoid flaky test for RSpec 4. It may be related that test-queue is not available.
+        # https://github.com/rubocop/rubocop/pull/10806#discussion_r918415067
+        skip if ENV['GITHUB_JOB'] == 'rspec4'
+
         create_file('example.rb', <<~RUBY)
           # frozen_string_literal: true
 
