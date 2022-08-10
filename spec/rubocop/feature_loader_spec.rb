@@ -14,20 +14,28 @@ RSpec.describe RuboCop::FeatureLoader do
       'feature'
     end
 
+    let(:allow_feature_loader) do
+      allow_any_instance_of(described_class) # rubocop:disable RSpec/AnyInstance
+    end
+
+    let(:expect_feature_loader) do
+      expect_any_instance_of(described_class) # rubocop:disable RSpec/AnyInstance
+    end
+
     context 'with normally lodable feature' do
       before do
-        allow(Kernel).to receive(:require)
+        allow_feature_loader.to receive(:require)
       end
 
       it 'loads it normally' do
-        expect(Kernel).to receive(:require).with('feature')
+        expect_feature_loader.to receive(:require).with('feature')
         load
       end
     end
 
     context 'with dot-prefixed lodable feature' do
       before do
-        allow(Kernel).to receive(:require)
+        allow_feature_loader.to receive(:require)
       end
 
       let(:feature) do
@@ -35,15 +43,15 @@ RSpec.describe RuboCop::FeatureLoader do
       end
 
       it 'loads it as relative path' do
-        expect(Kernel).to receive(:require).with('path-to-config/./path/to/feature')
+        expect_feature_loader.to receive(:require).with('path-to-config/./path/to/feature')
         load
       end
     end
 
     context 'with namespaced feature' do
       before do
-        allow(Kernel).to receive(:require).with('feature-foo').and_call_original
-        allow(Kernel).to receive(:require).with('feature/foo')
+        allow_feature_loader.to receive(:require).with('feature-foo').and_call_original
+        allow_feature_loader.to receive(:require).with('feature/foo')
       end
 
       let(:feature) do
@@ -51,15 +59,16 @@ RSpec.describe RuboCop::FeatureLoader do
       end
 
       it 'loads it as namespaced feature' do
-        expect(Kernel).to receive(:require).with('feature/foo')
+        expect_feature_loader.to receive(:require).with('feature/foo')
         load
       end
     end
 
     context 'with dot-prefixed namespaced feature' do
       before do
-        allow(Kernel).to receive(:require).with('path-to-config/./feature-foo').and_call_original
-        allow(Kernel).to receive(:require).with('path-to-config/./feature/foo')
+        allow_feature_loader.to receive(:require).with('path-to-config/./feature-foo')
+                                                 .and_call_original
+        allow_feature_loader.to receive(:require).with('path-to-config/./feature/foo')
       end
 
       let(:feature) do
@@ -67,14 +76,14 @@ RSpec.describe RuboCop::FeatureLoader do
       end
 
       it 'loads it as namespaced feature' do
-        expect(Kernel).to receive(:require).with('path-to-config/./feature/foo')
+        expect_feature_loader.to receive(:require).with('path-to-config/./feature/foo')
         load
       end
     end
 
     context 'with unexpected LoadError from require' do
       before do
-        allow(Kernel).to receive(:require).and_raise(LoadError)
+        allow_feature_loader.to receive(:require).and_raise(LoadError)
       end
 
       it 'raises LoadError' do
