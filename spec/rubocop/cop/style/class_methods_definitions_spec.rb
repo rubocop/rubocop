@@ -294,5 +294,13 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when defining singleton methods not on self' do
+      expect_no_offenses(<<~RUBY)
+        object = Object.new
+        def object.method
+        end
+      RUBY
+    end
   end
 end
