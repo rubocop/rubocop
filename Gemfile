@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'asciidoctor'
 gem 'bump', require: false
 gem 'memory_profiler', platform: :mri
 gem 'rake', '~> 13.0'
