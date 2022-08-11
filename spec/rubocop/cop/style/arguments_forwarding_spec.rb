@@ -250,4 +250,38 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       end
     end
   end
+
+  context 'TargetRubyVersion >= 3.1', :ruby31 do
+    it 'registers an offense when using restarg and anonymous block arg' do
+      expect_offense(<<~RUBY)
+        def foo(*args, &)
+                ^^^^^^^^ Use arguments forwarding.
+          bar(*args, &)
+              ^^^^^^^^ Use arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar(...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using restarg, kwargs, and anonymous block arg' do
+      expect_offense(<<~RUBY)
+        def foo(*args, **kwargs, &)
+                ^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+          bar(*args, **kwargs, &)
+              ^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar(...)
+        end
+      RUBY
+    end
+  end
 end

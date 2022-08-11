@@ -73,11 +73,11 @@ module RuboCop
           {
             (send _ _
               (splat (lvar %1))
-              (block-pass (lvar %2)))
+              (block-pass {(lvar %2) nil?}))
             (send _ _
               (splat (lvar %1))
               (hash (kwsplat (lvar %3)))
-              (block-pass (lvar %2)))
+              (block-pass {(lvar %2) nil?}))
           }
         PATTERN
 
