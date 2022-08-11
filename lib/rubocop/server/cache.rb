@@ -69,10 +69,12 @@ module RuboCop
             config_yaml = if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('4.0.0')
                             YAML.safe_load_file(config_path, permitted_classes: [Regexp, Symbol])
                           else
-                            YAML.load_file(config_path)
+                            config = YAML.load_file(config_path)
+
+                            config == false ? nil : config
                           end
 
-            config_yaml.dig('AllCops', 'CacheRootDirectory')
+            config_yaml&.dig('AllCops', 'CacheRootDirectory')
           end
         end
 
