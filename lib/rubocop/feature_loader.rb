@@ -37,7 +37,9 @@ module RuboCop
       raise if e.path != target
 
       begin
-        ::Kernel.require(namespaced_target)
+        # Don't use `::Kernel.require(target)` to prevent the following error:
+        # https://github.com/rubocop/rubocop/issues/10893
+        require(namespaced_target)
       rescue ::LoadError => error_for_namespaced_target
         raise e if error_for_namespaced_target.path == namespaced_target
 
