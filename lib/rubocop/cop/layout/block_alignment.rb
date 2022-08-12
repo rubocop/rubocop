@@ -82,6 +82,8 @@ module RuboCop
           check_block_alignment(start_for_block_node(node), node)
         end
 
+        alias on_numblock on_block
+
         def style_parameter_name
           'EnforcedStyleAlignWith'
         end
