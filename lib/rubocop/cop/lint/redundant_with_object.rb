@@ -31,18 +31,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG_EACH_WITH_OBJECT = 'Use `each` instead of `each_with_object`.'
-
         MSG_WITH_OBJECT = 'Remove redundant `with_object`.'
-
-        # @!method redundant_with_object?(node)
-        def_node_matcher :redundant_with_object?, <<~PATTERN
-          (block
-            $(send _ {:each_with_object :with_object}
-              _)
-            (args
-              (arg _))
-            ...)
-        PATTERN
 
         def on_block(node)
           return unless (send = redundant_with_object?(node))
@@ -59,7 +48,19 @@ module RuboCop
           end
         end
 
+        alias on_numblock on_block
+
         private
+
+        # @!method redundant_with_object?(node)
+        def_node_matcher :redundant_with_object?, <<~PATTERN
+          {
+            (block
+              $(send _ {:each_with_object :with_object} _) (args (arg _)) ...)
+            (numblock
+              $(send _ {:each_with_object :with_object} _) 1 ...)
+          }
+        PATTERN
 
         def message(node)
           if node.method?(:each_with_object)
