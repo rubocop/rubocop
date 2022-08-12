@@ -18,6 +18,24 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    context 'Ruby 2.7' do
+      it 'registers an offense when looping over the same data as previous loop in numblocks' do
+        expect_offense(<<~RUBY)
+          items.each { do_something(_1) }
+          items.each { do_something_else(_1, arg) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+
+          items.each_with_index { do_something(_1) }
+          items.each_with_index { do_something_else(_1, arg) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+
+          items.reverse_each { do_something(_1) }
+          items.reverse_each { do_something_else(_1, arg) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        RUBY
+      end
+    end
+
     it 'does not register an offense when the same loops are interleaved with some code' do
       expect_no_offenses(<<~RUBY)
         items.each { |item| do_something(item) }
