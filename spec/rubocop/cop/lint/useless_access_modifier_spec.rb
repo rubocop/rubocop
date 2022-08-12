@@ -329,6 +329,42 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
          end
       RUBY
     end
+
+    context 'Ruby 2.7', :ruby27 do
+      it 'still points out redundant uses within the block' do
+        expect_offense(<<~RUBY)
+          class SomeClass
+            concerning :SecondThing do
+              p _1
+              def omg
+              end
+              private
+              def method
+              end
+              private
+              ^^^^^^^ Useless `private` access modifier.
+              def another_method
+              end
+            end
+           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class SomeClass
+            concerning :SecondThing do
+              p _1
+              def omg
+              end
+              private
+              def method
+              end
+              def another_method
+              end
+            end
+           end
+        RUBY
+      end
+    end
   end
 
   context 'when using ActiveSupport behavior when Rails is not eabled' do
