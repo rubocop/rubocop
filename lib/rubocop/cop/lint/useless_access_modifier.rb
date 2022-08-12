@@ -142,6 +142,8 @@ module RuboCop
           check_node(node.body)
         end
 
+        alias on_numblock on_block
+
         private
 
         def autocorrect(corrector, node)
@@ -157,17 +159,17 @@ module RuboCop
 
         # @!method dynamic_method_definition?(node)
         def_node_matcher :dynamic_method_definition?, <<~PATTERN
-          {(send nil? :define_method ...) (block (send nil? :define_method ...) ...)}
+          {(send nil? :define_method ...) ({block numblock} (send nil? :define_method ...) ...)}
         PATTERN
 
         # @!method class_or_instance_eval?(node)
         def_node_matcher :class_or_instance_eval?, <<~PATTERN
-          (block (send _ {:class_eval :instance_eval}) ...)
+          ({block numblock} (send _ {:class_eval :instance_eval}) ...)
         PATTERN
 
         # @!method class_or_module_or_struct_new_call?(node)
         def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
-          (block (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
+          ({block numblock} (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
         PATTERN
 
         def check_node(node)
@@ -277,7 +279,7 @@ module RuboCop
             matcher_name = "#{m}_block?".to_sym
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<~PATTERN
-                (block (send {nil? const} {:#{m}} ...) ...)
+                ({block numblock} (send {nil? const} {:#{m}} ...) ...)
               PATTERN
             end
 
