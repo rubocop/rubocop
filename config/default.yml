@@ -4020,7 +4020,7 @@ Style/LineEndConcatenation:
 Style/MagicCommentFormat:
   Description: 'Use a consistent style for magic comments.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.35'
   EnforcedStyle: snake_case
   SupportedStyles:
     # `snake` will enforce the magic comment is written

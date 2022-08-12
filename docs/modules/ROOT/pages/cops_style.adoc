@@ -5180,6 +5180,7 @@ The supported styles are:
 * always - forces use of the 3.1 syntax (e.g. {foo:})
 * never - forces use of explicit hash literal value
 * either - accepts both shorthand and explicit use of hash literal value
+* consistent - like "always", but will avoid mixing styles in a single hash
 
 === Examples
 
@@ -5268,6 +5269,23 @@ The supported styles are:
 {foo:, bar:}
 ----
 
+==== EnforcedShorthandSyntax: consistent
+
+[source,ruby]
+----
+# bad
+{foo: , bar: bar}
+
+# good
+{foo:, bar:}
+
+# bad
+{foo: , bar: baz}
+
+# good
+{foo: foo, bar: baz}
+----
+
 === Configurable attributes
 
 |===
@@ -5279,7 +5297,7 @@ The supported styles are:
 
 | EnforcedShorthandSyntax
 | `always`
-| `always`, `never`, `either`
+| `always`, `never`, `either`, `consistent`
 
 | UseHashRocketsWithSymbolValues
 | `false`
@@ -6249,6 +6267,161 @@ some_str = 'ala' <<
 some_str = 'ala' \
            'bala'
 ----
+
+== Style/MagicCommentFormat
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.35
+| -
+|===
+
+Ensures magic comments are written consistently throughout your code base.
+Looks for discrepancies in separators (`-` vs `_`) and capitalization for
+both magic comment directives and values.
+
+Required capitalization can be set with the `DirectiveCapitalization` and
+`ValueCapitalization` configuration keys.
+
+NOTE: If one of these configuration is set to nil, any capitalization is allowed.
+
+=== Examples
+
+==== EnforcedStyle: snake_case (default)
+
+[source,ruby]
+----
+# The `snake_case` style will enforce that the frozen string literal
+# comment is written in snake case. (Words separated by underscores)
+# bad
+# frozen-string-literal: true
+
+module Bar
+  # ...
+end
+
+# good
+# frozen_string_literal: false
+
+module Bar
+  # ...
+end
+----
+
+==== EnforcedStyle: kebab_case
+
+[source,ruby]
+----
+# The `kebab_case` style will enforce that the frozen string literal
+# comment is written in kebab case. (Words separated by hyphens)
+# bad
+# frozen_string_literal: true
+
+module Baz
+  # ...
+end
+
+# good
+# frozen-string-literal: true
+
+module Baz
+  # ...
+end
+----
+
+==== DirectiveCapitalization: lowercase (default)
+
+[source,ruby]
+----
+# bad
+# FROZEN-STRING-LITERAL: true
+
+# good
+# frozen-string-literal: true
+----
+
+==== DirectiveCapitalization: uppercase
+
+[source,ruby]
+----
+# bad
+# frozen-string-literal: true
+
+# good
+# FROZEN-STRING-LITERAL: true
+----
+
+==== DirectiveCapitalization: nil
+
+[source,ruby]
+----
+# any capitalization is accepted
+
+# good
+# frozen-string-literal: true
+
+# good
+# FROZEN-STRING-LITERAL: true
+----
+
+==== ValueCapitalization: nil (default)
+
+[source,ruby]
+----
+# any capitalization is accepted
+
+# good
+# frozen-string-literal: true
+
+# good
+# frozen-string-literal: TRUE
+----
+
+==== ValueCapitalization: lowercase
+
+[source,ruby]
+----
+# when a value is not given, any capitalization is accepted
+
+# bad
+# frozen-string-literal: TRUE
+
+# good
+# frozen-string-literal: TRUE
+----
+
+==== ValueCapitalization: uppercase
+
+[source,ruby]
+----
+# bad
+# frozen-string-literal: true
+
+# good
+# frozen-string-literal: TRUE
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `snake_case`
+| `snake_case`, `kebab_case`
+
+| DirectiveCapitalization
+| `lowercase`
+| String
+
+| ValueCapitalization
+| `<none>`
+| 
+|===
 
 == Style/MapCompactWithConditionalBlock
 

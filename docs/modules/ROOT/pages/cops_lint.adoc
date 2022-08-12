@@ -2284,18 +2284,18 @@ NOTE: Required Ruby version: 2.6
 
 This cop emulates the following Ruby warnings in Ruby 2.6.
 
+[source,console]
+----
 % cat example.rb
 ERB.new('hi', nil, '-', '@output_buffer')
 % ruby -rerb example.rb
-example.rb:1: warning: Passing safe_level with the 2nd argument of
-ERB.new is deprecated. Do not use it, and specify other arguments as
-keyword arguments.
-example.rb:1: warning: Passing trim_mode with the 3rd argument of
-ERB.new is deprecated. Use keyword argument like
-ERB.new(str, trim_mode:...) instead.
-example.rb:1: warning: Passing eoutvar with the 4th argument of ERB.new
-is deprecated. Use keyword argument like ERB.new(str, eoutvar: ...)
-instead.
+example.rb:1: warning: Passing safe_level with the 2nd argument of ERB.new is
+deprecated. Do not use it, and specify other arguments as keyword arguments.
+example.rb:1: warning: Passing trim_mode with the 3rd argument of ERB.new is
+deprecated. Use keyword argument like ERB.new(str, trim_mode:...) instead.
+example.rb:1: warning: Passing eoutvar with the 4th argument of ERB.new is
+deprecated. Use keyword argument like ERB.new(str, eoutvar: ...) instead.
+----
 
 Now non-keyword arguments other than first one are softly deprecated
 and will be removed when Ruby 2.5 becomes EOL.

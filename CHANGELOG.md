@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.35.0 (2022-08-12)
+
 ### New features
 
 * [#9364](https://github.com/rubocop/rubocop/pull/9364): Add `Style/MagicCommentFormat` cop. ([@dvandersluis][], [@mattbearman][])
