@@ -12,6 +12,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantSortBy, :config do
     RUBY
   end
 
+  context 'Ruby 2.7', :ruby27 do
+    it 'autocorrects array.sort_by { |x| x }' do
+      expect_offense(<<~RUBY)
+        array.sort_by { _1 }
+              ^^^^^^^^^^^^^^ Use `sort` instead of `sort_by { _1 }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.sort
+      RUBY
+    end
+  end
+
   it 'autocorrects array.sort_by { |y| y }' do
     expect_offense(<<~RUBY)
       array.sort_by { |y| y }
