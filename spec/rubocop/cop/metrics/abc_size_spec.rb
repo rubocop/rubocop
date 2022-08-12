@@ -67,6 +67,17 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it 'registers an offense for a `define_method` with numblock' do
+        expect_offense(<<~RUBY)
+          define_method :method_name do
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 0, 0> 1/0]
+            x = _1
+          end
+        RUBY
+      end
+    end
+
     it 'treats safe navigation method calls like regular method calls + a condition' do
       expect_offense(<<~RUBY)
         def method_name

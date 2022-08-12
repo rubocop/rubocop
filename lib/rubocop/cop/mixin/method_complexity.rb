@@ -29,14 +29,14 @@ module RuboCop
         end
       end
 
+      alias on_numblock on_block
+
       private
 
       # @!method define_method?(node)
       def_node_matcher :define_method?, <<~PATTERN
-        (block
-         (send nil? :define_method ({sym str} $_))
-         args
-         _)
+        ({block numblock}
+         (send nil? :define_method ({sym str} $_)) _ _)
       PATTERN
 
       def check_complexity(node, method_name)
