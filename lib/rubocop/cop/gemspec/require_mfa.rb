@@ -84,7 +84,7 @@ module RuboCop
           (str "true")
         PATTERN
 
-        def on_block(node) # rubocop:disable Metrics/MethodLength
+        def on_block(node) # rubocop:disable Metrics/MethodLength, InternalAffairs/NumblockHandler
           gem_specification(node) do |block_var|
             metadata_value = metadata(node)
             mfa_value = mfa_value(metadata_value)
