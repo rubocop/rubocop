@@ -39,6 +39,8 @@ module RuboCop
           register_offense(node)
         end
 
+        alias on_numblock on_block
+
         private
 
         def register_offense(node)
