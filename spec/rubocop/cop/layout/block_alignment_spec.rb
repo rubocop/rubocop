@@ -675,4 +675,23 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
   end
+
+  context 'Ruby 2.7', :ruby27 do
+    it 'accepts end aligned with a call chain left hand side' do
+      expect_no_offenses(<<~RUBY)
+        parser.diagnostics.consumer = lambda do
+          _1 << diagnostic
+        end
+      RUBY
+    end
+
+    it 'registers an offense for mismatched block end with a mass assignment' do
+      expect_offense(<<~RUBY)
+        var1, var2 = lambda do
+          [_1, _2]
+          end
+          ^^^ `end` at 3, 2 is not aligned with `var1, var2` at 1, 0.
+      RUBY
+    end
+  end
 end
