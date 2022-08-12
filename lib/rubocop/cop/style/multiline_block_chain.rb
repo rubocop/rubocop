@@ -31,7 +31,7 @@ module RuboCop
           node.send_node.each_node(:send) do |send_node|
             receiver = send_node.receiver
 
-            next unless receiver&.block_type? && receiver&.multiline?
+            next unless (receiver&.block_type? || receiver&.numblock_type?) && receiver&.multiline?
 
             range = range_between(receiver.loc.end.begin_pos, node.send_node.source_range.end_pos)
 
@@ -42,6 +42,8 @@ module RuboCop
             break
           end
         end
+
+        alias on_numblock on_block
       end
     end
   end
