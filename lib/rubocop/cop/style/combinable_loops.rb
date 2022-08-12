@@ -66,6 +66,8 @@ module RuboCop
           add_offense(node) if same_collection_looping?(node, node.left_sibling)
         end
 
+        alias on_numblock on_block
+
         def on_for(node)
           return unless node.parent&.begin_type?
 
@@ -82,7 +84,7 @@ module RuboCop
         end
 
         def same_collection_looping?(node, sibling)
-          sibling&.block_type? &&
+          (sibling&.block_type? || sibling&.numblock_type?) &&
             sibling.send_node.method?(node.method_name) &&
             sibling.receiver == node.receiver &&
             sibling.send_node.arguments == node.send_node.arguments
