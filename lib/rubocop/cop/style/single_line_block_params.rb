@@ -33,7 +33,7 @@ module RuboCop
 
         MSG = 'Name `%<method>s` block params `|%<params>s|`.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return unless node.single_line?
 
           return unless eligible_method?(node)
