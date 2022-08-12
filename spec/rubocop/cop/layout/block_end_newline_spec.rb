@@ -182,4 +182,40 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline, :config do
       }
     RUBY
   end
+
+  context 'Ruby 2.7', :ruby27 do
+    it 'registers an offense and corrects when multiline block `}` is not on its own line ' \
+       'and using method chain' do
+      expect_offense(<<~RUBY)
+        test {
+          _1 }.bar.baz
+             ^ Expression at 2, 6 should be on its own line.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test {
+          _1
+        }.bar.baz
+      RUBY
+    end
+
+    it 'registers an offense and corrects when multiline block `}` is not on its own line ' \
+       'and using heredoc argument' do
+      expect_offense(<<~RUBY)
+        test {
+          _1.push(<<~EOS) }
+                          ^ Expression at 2, 19 should be on its own line.
+            Heredoc text.
+          EOS
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test {
+          _1.push(<<~EOS)
+            Heredoc text.
+          EOS
+        }
+      RUBY
+    end
+  end
 end
