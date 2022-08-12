@@ -24,6 +24,26 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it "registers an offense for #{condition} inside of downto numblock" do
+        expect_offense(<<~RUBY, condition: condition)
+          3.downto(1) do
+            %{condition} _1 == 1
+            ^{condition}^^^^^^^^ Use `next` to skip iteration.
+              puts _1
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          3.downto(1) do
+            next #{opposite} _1 == 1
+            puts _1
+          end
+        RUBY
+      end
+    end
+
     it "registers an offense for #{condition} inside of each" do
       expect_offense(<<~RUBY, condition: condition)
         [].each do |o|

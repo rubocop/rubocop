@@ -71,6 +71,8 @@ module RuboCop
           check(node)
         end
 
+        alias on_numblock on_block
+
         def on_while(node)
           check(node)
         end
