@@ -966,7 +966,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'do/end' do
-        it 'adds an offense and does correct it' do
+        it 'adds an offense for block with arguments and does correct it' do
           expect_offense(<<~RUBY)
             foo.select do |bar| 4444000039123123129993912312312999199291203123 end
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
@@ -974,6 +974,18 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
 
           expect_correction(<<~RUBY)
             foo.select do |bar|
+             4444000039123123129993912312312999199291203123 end
+          RUBY
+        end
+
+        it 'adds an offense for block without arguments and does correct it' do
+          expect_offense(<<~RUBY)
+            foo.select do 4444000039123123129993912312312999199291203123 end
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [64/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.select do
              4444000039123123129993912312312999199291203123 end
           RUBY
         end
@@ -1034,6 +1046,32 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                foooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo }
             RUBY
           end
+        end
+      end
+
+      context 'Ruby 2.7', :ruby27 do
+        it 'adds an offense for {} block does correct it' do
+          expect_offense(<<~RUBY)
+            foo.select { _1 + 4444000039123123129993912312312999199291203123123 }
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [69/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.select {
+             _1 + 4444000039123123129993912312312999199291203123123 }
+          RUBY
+        end
+
+        it 'adds an offense for do-end block and does correct it' do
+          expect_offense(<<~RUBY)
+            foo.select do _1 + 4444000039123123129993912312312999199291203123 end
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [69/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.select do
+             _1 + 4444000039123123129993912312312999199291203123 end
+          RUBY
         end
       end
     end
