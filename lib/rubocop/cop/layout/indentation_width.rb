@@ -90,6 +90,8 @@ module RuboCop
           check_members(end_loc, [node.body])
         end
 
+        alias on_numblock on_block
+
         def on_class(node)
           base = node.loc.keyword
           return if same_line?(base, node.body)
