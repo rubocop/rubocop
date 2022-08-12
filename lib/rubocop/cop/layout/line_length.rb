@@ -74,6 +74,8 @@ module RuboCop
           check_for_breakable_block(node)
         end
 
+        alias on_numblock on_block
+
         def on_potential_breakable_node(node)
           check_for_breakable_node(node)
         end
@@ -131,7 +133,7 @@ module RuboCop
           if block_node.arguments? && !block_node.lambda?
             block_node.arguments.loc.end
           else
-            block_node.loc.begin
+            block_node.braces? ? block_node.loc.begin : block_node.loc.begin.adjust(begin_pos: 1)
           end
         end
 
