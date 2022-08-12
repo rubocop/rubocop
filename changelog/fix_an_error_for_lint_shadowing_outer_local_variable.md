@@ -1,1 +1,0 @@
-* [#10899](https://github.com/rubocop/rubocop/issues/10899): Fix an error for `Lint/ShadowingOuterLocalVariable` when the same variable name as a block variable is used in return value assignment of `if`. ([@koic][])

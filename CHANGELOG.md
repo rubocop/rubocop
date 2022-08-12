@@ -2,6 +2,25 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#9364](https://github.com/rubocop/rubocop/pull/9364): Add `Style/MagicCommentFormat` cop. ([@dvandersluis][], [@mattbearman][])
+* [#10776](https://github.com/rubocop/rubocop/pull/10776): New option (`consistent`) for `EnforcedShorthandSyntax` in `Style/HashSyntax` to avoid mixing shorthand and non-shorthand hash keys in ruby 3.1. ([@h-lame][])
+
+### Bug fixes
+
+* [#10899](https://github.com/rubocop/rubocop/issues/10899): Fix an error for `Lint/ShadowingOuterLocalVariable` when the same variable name as a block variable is used in return value assignment of `if`. ([@koic][])
+* [#10916](https://github.com/rubocop/rubocop/pull/10916): Fix an error when .rubocop.yml is empty. ([@koic][])
+* [#10915](https://github.com/rubocop/rubocop/pull/10915): Fix numblock support to `Layout/BlockAlignment`, `Layout/BlockEndNewline`, `Layout/EmptyLinesAroundAccessModifier`, `Layout/EmptyLinesAroundBlockBody`, `Layout/IndentationWidth`, `Layout/LineLength`, `Layout/MultilineBlockLayout`, `Layout/SpaceBeforeBlockBraces`, `Lint/NextWithoutAccumulator`, `Lint/NonDeterministicRequireOrder`, `Lint/RedundantWithIndex`, `Lint/RedundantWithObject`, `Lint/UnreachableLoop`, `Lint/UselessAccessModifier`, `Lint/Void`, `Metrics/AbcSize`, `Metrics/CyclomaticComplexity`, `Style/CollectionMethods`, `Style/CombinableLoops`, `Style/EachWithObject`, `Style/For`, `Style/HashEachMethods`, `Style/InverseMethods`, `Style/MethodCalledOnDoEndBlock`, `Style/MultilineBlockChain`, `Style/Next`, `Style/ObjectThen`, `Style/Proc`, `Style/RedundantBegin`, `Style/RedundantSelf`, `Style/RedundantSortBy` and `Style/TopLevelMethodDefinition`. ([@gsamokovarov][])
+* [#10895](https://github.com/rubocop/rubocop/issues/10895): Fix incorrect autocomplete in `Style/RedundantParentheses` when a heredoc is used in an array. ([@dvandersluis][])
+* [#10909](https://github.com/rubocop/rubocop/pull/10909): Fix loading behavior on running without `bundle exec`. ([@r7kamura][])
+* [#10913](https://github.com/rubocop/rubocop/issues/10913): Make `Style/ArgumentsForwarding` aware of anonymous block argument. ([@koic][])
+* [#10911](https://github.com/rubocop/rubocop/pull/10911): Fix Style/ClassMethodsDefinitions for non-self receivers. ([@sambostock][])
+
+### Changes
+
+* [#10915](https://github.com/rubocop/rubocop/pull/10915): Depend on rubocop-ast 1.20.1 for numblocks support in #macro?. ([@gsamokovarov][])
+
 ## 1.34.1 (2022-08-09)
 
 ### Bug fixes
@@ -6430,3 +6449,4 @@
 [@Korri]: https://github.com/Korri
 [@ChrisBr]: https://github.com/ChrisBr
 [@mollerhoj]: https://github.com/mollerhoj
+[@mattbearman]: https://github.com/mattbearman
