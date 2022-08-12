@@ -29,7 +29,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           arguments = node.arguments
 
           return unless node.arguments? && pipes?(arguments)
