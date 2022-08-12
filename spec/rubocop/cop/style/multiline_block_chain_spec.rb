@@ -24,6 +24,19 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it 'registers an offense for a slightly more complicated case' do
+        expect_offense(<<~RUBY)
+          a do
+            _1
+          end.c1.c2 do
+          ^^^^^^^^^ Avoid multi-line chains of blocks.
+            _1
+          end
+        RUBY
+      end
+    end
+
     it 'registers two offenses for a chain of three blocks' do
       expect_offense(<<~RUBY)
         a do
