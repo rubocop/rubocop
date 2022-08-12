@@ -32,6 +32,19 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
       it 'does not register an offense for Hash#each_value' do
         expect_no_offenses('foo.each_value { |v| p v }')
       end
+
+      context 'Ruby 2.7' do
+        it 'registers offense, autocorrects foo#keys.each to foo#each_key with numblock' do
+          expect_offense(<<~RUBY)
+            foo.keys.each { p _1 }
+                ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.each_key { p _1 }
+          RUBY
+        end
+      end
     end
 
     context 'when receiver is a hash literal' do

@@ -35,12 +35,14 @@ module RuboCop
 
         # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN
-          (block $(send (send _ ${:keys :values}) :each) ...)
+          ({block numblock} $(send (send _ ${:keys :values}) :each) ...)
         PATTERN
 
         def on_block(node)
           register_kv_offense(node)
         end
+
+        alias on_numblock on_block
 
         private
 
