@@ -131,6 +131,21 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder, :config do
           RUBY
         end
 
+        it 'registers an offsense and autocorrects to add .sort when the numblock has `require`' do
+          expect_offense(<<~RUBY)
+            Dir["./lib/**/*.rb"].each do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Sort files before requiring them.
+              require _1
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            Dir["./lib/**/*.rb"].sort.each do
+              require _1
+            end
+          RUBY
+        end
+
         it 'registers an offsense and autocorrects to add .sort when the block has `require_relative`' do
           expect_offense(<<~RUBY)
             Dir["./lib/**/*.rb"].each do |file|

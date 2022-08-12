@@ -74,6 +74,18 @@ module RuboCop
           end
         end
 
+        def on_numblock(node)
+          return if target_ruby_version >= 3.0
+          return unless node.body
+          return unless unsorted_dir_loop?(node.send_node)
+
+          node.argument_list
+              .filter { |argument| var_is_required?(node.body, argument.name) }
+              .each do
+                add_offense(node.send_node) { |corrector| correct_block(corrector, node.send_node) }
+              end
+        end
+
         def on_block_pass(node)
           return if target_ruby_version >= 3.0
           return unless method_require?(node)
