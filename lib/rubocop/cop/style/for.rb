@@ -75,6 +75,8 @@ module RuboCop
           end
         end
 
+        alias on_numblock on_block
+
         private
 
         def suspect_enumerable?(node)
