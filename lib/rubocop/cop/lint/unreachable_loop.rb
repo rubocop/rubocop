@@ -101,10 +101,14 @@ module RuboCop
           check(node) if loop_method?(node)
         end
 
+        def on_numblock(node)
+          check(node) if loop_method?(node)
+        end
+
         private
 
         def loop_method?(node)
-          return false unless node.block_type?
+          return false unless node.block_type? || node.numblock_type?
 
           send_node = node.send_node
           return false if matches_allowed_pattern?(send_node.source)
@@ -179,6 +183,8 @@ module RuboCop
 
         def preceded_by_continue_statement?(break_statement)
           break_statement.left_siblings.any? do |sibling|
+            # Numblocks have the arguments count as a number in the AST.
+            next if sibling.is_a?(Integer)
             next if sibling.loop_keyword? || loop_method?(sibling)
 
             sibling.each_descendant(*CONTINUE_KEYWORDS).any?
