@@ -63,7 +63,7 @@ module RuboCop
       class EmptyBlock < Base
         MSG = 'Empty block detected.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return if node.body
           return if allow_empty_lambdas? && lambda_or_proc?(node)
           return if cop_config['AllowComments'] && allow_comment?(node)
