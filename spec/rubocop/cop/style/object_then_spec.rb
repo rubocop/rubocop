@@ -15,6 +15,19 @@ RSpec.describe RuboCop::Cop::Style::ObjectThen, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it 'registers an offense for yield_self with block' do
+        expect_offense(<<~RUBY)
+          obj.yield_self { _1.test }
+              ^^^^^^^^^^ Prefer `then` over `yield_self`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          obj.then { _1.test }
+        RUBY
+      end
+    end
+
     it 'registers an offense for yield_self with proc param' do
       expect_offense(<<~RUBY)
         obj.yield_self(&:test)
