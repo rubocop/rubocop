@@ -32,6 +32,8 @@ module RuboCop
 
           check(node, node.body, adjusted_first_line: first_line)
         end
+
+        alias on_numblock on_block
       end
     end
   end
