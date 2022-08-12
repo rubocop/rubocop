@@ -68,6 +68,8 @@ module RuboCop
           add_offense_for_expression(node, node.body, MSG)
         end
 
+        alias on_numblock on_block
+
         private
 
         def args_on_beginning_line?(node)

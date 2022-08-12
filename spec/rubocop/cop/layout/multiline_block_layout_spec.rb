@@ -348,4 +348,34 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
       end
     RUBY
   end
+
+  context 'Ruby 2.7', :ruby27 do
+    it 'registers an offense and corrects for missing newline in {} block w/o params' do
+      expect_offense(<<~RUBY)
+        test { _1
+               ^^ Block body expression is on the same line as the block start.
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test {#{trailing_whitespace}
+          _1
+        }
+      RUBY
+    end
+
+    it 'registers an offense and corrects for missing newline in do/end block with params' do
+      expect_offense(<<~RUBY)
+        test do _1
+                ^^ Block body expression is on the same line as the block start.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test do#{trailing_whitespace}
+          _1
+        end
+      RUBY
+    end
+  end
 end
