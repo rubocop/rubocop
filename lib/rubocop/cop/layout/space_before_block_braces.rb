@@ -76,6 +76,8 @@ module RuboCop
           end
         end
 
+        alias on_numblock on_block
+
         private
 
         def check_empty(left_brace, space_plus_brace, used_style)
