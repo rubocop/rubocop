@@ -163,5 +163,9 @@ InternalAffairs/StyleDetectedApiUse:
   Exclude:
     - 'lib/rubocop/cop/mixin/percent_array.rb'
 
+InternalAffairs/NumblockHandler:
+  Exclude:
+    - 'lib/rubocop/cop/internal_affairs/*.rb'
+
 Gemspec/DependencyVersion:
   Enabled: true
