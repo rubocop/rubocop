@@ -27,7 +27,7 @@ module RuboCop
 
         MSG = 'Use `Integer#times` for a simple loop which iterates a fixed number of times.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return unless offending_each_range(node)
 
           send_node = node.send_node
