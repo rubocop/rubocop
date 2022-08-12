@@ -80,8 +80,11 @@ module RuboCop
           @block_line = node.source_range.first_line
         end
 
-        def on_send(node)
-          return unless node.bare_access_modifier? && !node.parent&.block_type?
+        alias on_numblock on_block
+
+        def on_send(node) # rubocop:disable Metrics/CyclomaticComplexity
+          return unless node.bare_access_modifier? &&
+                        !(node.parent&.block_type? || node.parent&.numblock_type?)
           return if expected_empty_lines?(node)
 
           message = message(node)
