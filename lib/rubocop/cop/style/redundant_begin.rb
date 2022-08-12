@@ -89,6 +89,8 @@ module RuboCop
           register_offense(node.body)
         end
 
+        alias on_numblock on_block
+
         def on_kwbegin(node)
           return unless (target_node = offensive_kwbegins(node).to_a.last)
 
