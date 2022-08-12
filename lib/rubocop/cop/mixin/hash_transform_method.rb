@@ -14,7 +14,7 @@ module RuboCop
         {(array ...) (send _ :each_with_index) (send _ :with_index _ ?) (send _ :zip ...)}
       PATTERN
 
-      def on_block(node)
+      def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
         on_bad_each_with_object(node) do |*match|
           handle_possible_offense(node, match, 'each_with_object')
         end
