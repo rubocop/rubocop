@@ -44,6 +44,19 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
     RUBY
   end
 
+  context 'Ruby 2.7', :ruby27 do
+    it 'registers an offense for calling !.none? with a numblock' do
+      expect_offense(<<~RUBY)
+        !foo.none? { _1.even? }
+        ^^^^^^^^^^^^^^^^^^^^^^^ Use `any?` instead of inverting `none?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.any? { _1.even? }
+      RUBY
+    end
+  end
+
   it 'registers an offense for calling !.any? inside parens' do
     expect_offense(<<~RUBY)
       !(foo.any? &:working?)
