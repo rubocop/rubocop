@@ -120,6 +120,8 @@ module RuboCop
           add_scope(node, @local_variables_scopes[node])
         end
 
+        alias on_numblock on_block
+
         def on_if(node)
           # Allow conditional nodes to use `self` in the condition if that variable
           # name is used in an `lvasgn` or `masgn` within the `if`.
