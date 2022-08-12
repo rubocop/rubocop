@@ -67,4 +67,15 @@ RSpec.describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock, :config do
       expect_no_offenses('a { b }.c')
     end
   end
+
+  context 'Ruby 2.7', :ruby27 do
+    it 'registers an offense for a chained call' do
+      expect_offense(<<~RUBY)
+        a do
+          _1
+        end.c
+        ^^^^^ Avoid chaining a method call on a do...end block.
+      RUBY
+    end
+  end
 end
