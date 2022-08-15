@@ -173,8 +173,6 @@ module RuboCop
         end
 
         def correct_for_comment(corrector, node, if_branch)
-          return if config.for_cop('Style/IfUnlessModifier')['Enabled']
-
           comments = processed_source.ast_with_comments[if_branch]
           comment_text = comments.map(&:text).join("\n") << "\n"
 
