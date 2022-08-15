@@ -62,17 +62,18 @@ module RuboCop
             # `RuboCop::ConfigStore` has heavy dependencies, this is a lightweight implementation
             # so that only the necessary `CacheRootDirectory` can be obtained.
             require 'yaml'
-
             config_path = ConfigFinder.find_config_path(Dir.pwd)
 
-            # Ruby 3.1+
-            config_yaml = if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('4.0.0')
-                            YAML.safe_load_file(config_path, permitted_classes: [Regexp, Symbol])
-                          else
-                            config = YAML.load_file(config_path)
+            require 'erb'
+            file_contents = File.read(config_path)
+            yaml_code = ERB.new(file_contents).result
 
-                            config == false ? nil : config
-                          end
+            config_yaml = YAML.safe_load(yaml_code, permitted_classes: [Regexp, Symbol])
+
+            # For compatibility with Ruby 3.0 or lower.
+            if Gem::Version.new(Psych::VERSION) < Gem::Version.new('4.0.0')
+              config_yaml == false ? nil : config_yaml
+            end
 
             config_yaml&.dig('AllCops', 'CacheRootDirectory')
           end
