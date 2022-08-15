@@ -219,5 +219,26 @@ RSpec.describe RuboCop::Server::Cache do
         end
       end
     end
+
+    context 'when ERB pre-processing of the configuration file', :isolated_environment do
+      context 'when cache root path is not specified path' do
+        before do
+          cache_class.cache_root_path = nil
+        end
+
+        it 'does not raise an error' do
+          create_file('.rubocop.yml', <<~YAML)
+            Style/Encoding:
+              Enabled: <%= 1 == 1 %>
+              Exclude:
+              <% Dir['*.rb'].sort.each do |name| %>
+                - <%= name %>
+              <% end %>
+          YAML
+
+          expect { cache_class.cache_path }.not_to raise_error
+        end
+      end
+    end
   end
 end
