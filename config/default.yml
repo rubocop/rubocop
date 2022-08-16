@@ -3188,6 +3188,15 @@ Style/CaseEquality:
   #   # good
   #   String === "string"
   AllowOnConstant: false
+  # If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
+  # the case equality operator is `self.class`.
+  #
+  #   # bad
+  #   some_class === object
+  #
+  #   # good
+  #   self.class === object
+  AllowOnSelfClass: false
 
 Style/CaseLikeIf:
   Description: 'Identifies places where `if-elsif` constructions can be replaced with `case-when`.'
