@@ -7,6 +7,9 @@ module RuboCop
       #
       # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is a constant.
+
+      # If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
+      # the case equality operator is `self.class`. Note intermediate variables are not accepted.
       #
       # @example
       #   # bad
@@ -26,6 +29,14 @@ module RuboCop
       #   # good
       #   Array === something
       #
+      # @example AllowOnSelfClass: false (default)
+      #   # bad
+      #   self.class === something
+      #
+      # @example AllowOnSelfClass: true
+      #   # good
+      #   self.class === something
+      #
       class CaseEquality < Base
         extend AutoCorrector
 
@@ -33,7 +44,10 @@ module RuboCop
         RESTRICT_ON_SEND = %i[===].freeze
 
         # @!method case_equality?(node)
-        def_node_matcher :case_equality?, '(send $#const? :=== $_)'
+        def_node_matcher :case_equality?, '(send $#offending_receiver? :=== $_)'
+
+        # @!method self_class?(node)
+        def_node_matcher :self_class?, '(send (self) :class)'
 
         def on_send(node)
           case_equality?(node) do |lhs, rhs|
@@ -48,12 +62,11 @@ module RuboCop
 
         private
 
-        def const?(node)
-          if cop_config.fetch('AllowOnConstant', false)
-            !node&.const_type?
-          else
-            true
-          end
+        def offending_receiver?(node)
+          return false if node&.const_type? && cop_config.fetch('AllowOnConstant', false)
+          return false if self_class?(node) && cop_config.fetch('AllowOnSelfClass', false)
+
+          true
         end
 
         def replacement(lhs, rhs)
@@ -66,11 +79,28 @@ module RuboCop
             #
             # So here is noop.
           when :begin
-            child = lhs.children.first
-            "#{lhs.source}.include?(#{rhs.source})" if child&.range_type?
+            begin_replacement(lhs, rhs)
           when :const
-            "#{rhs.source}.is_a?(#{lhs.source})"
+            const_replacement(lhs, rhs)
+          when :send
+            send_replacement(lhs, rhs)
           end
+        end
+
+        def begin_replacement(lhs, rhs)
+          return unless lhs.children.first&.range_type?
+
+          "#{lhs.source}.include?(#{rhs.source})"
+        end
+
+        def const_replacement(lhs, rhs)
+          "#{rhs.source}.is_a?(#{lhs.source})"
+        end
+
+        def send_replacement(lhs, rhs)
+          return unless self_class?(lhs)
+
+          "#{rhs.source}.is_a?(#{lhs.source})"
         end
       end
     end

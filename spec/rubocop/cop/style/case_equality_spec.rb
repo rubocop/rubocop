@@ -73,4 +73,42 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
 
     include_examples 'offenses'
   end
+
+  context 'when AllowOnSelfClass is false' do
+    let(:cop_config) { { 'AllowOnSelfClass' => false } }
+
+    it 'registers an offense and corrects for === when the receiver is self.class' do
+      expect_offense(<<~RUBY)
+        self.class === var
+                   ^^^ Avoid the use of the case equality operator `===`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var.is_a?(self.class)
+      RUBY
+    end
+
+    include_examples 'offenses'
+  end
+
+  context 'when AllowOnSelfClass is true' do
+    let(:cop_config) { { 'AllowOnSelfClass' => true } }
+
+    it 'does not register an offense for === when the receiver is self.class' do
+      expect_no_offenses(<<~RUBY)
+        self.class === var
+      RUBY
+    end
+
+    it 'registers an offense and corrects for === when the receiver is self.klass' do
+      expect_offense(<<~RUBY)
+        self.klass === var
+                   ^^^ Avoid the use of the case equality operator `===`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    include_examples 'offenses'
+  end
 end
