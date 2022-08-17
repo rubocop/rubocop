@@ -41,7 +41,9 @@ module RuboCop
         # https://github.com/rubocop/rubocop/issues/10893
         require(namespaced_target)
       rescue ::LoadError => error_for_namespaced_target
-        raise e if error_for_namespaced_target.path == namespaced_target
+        # NOTE: This wrap is necessary due to JRuby 9.3.4.0 incompatibility:
+        # https://github.com/jruby/jruby/issues/7316
+        raise LoadError, e if error_for_namespaced_target.path == namespaced_target
 
         raise error_for_namespaced_target
       end
