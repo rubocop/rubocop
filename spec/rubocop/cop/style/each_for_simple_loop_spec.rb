@@ -9,15 +9,32 @@ RSpec.describe RuboCop::Cop::Style::EachForSimpleLoop, :config do
     expect_no_offenses('(0..b).each {}')
   end
 
-  it 'does not register offense for inline block with parameters' do
-    expect_no_offenses('(0..10).each { |n| puts n }')
+  context 'with inline block with parameters' do
+    it 'autocorrects an offense' do
+      expect_offense(<<~RUBY)
+        (0...10).each { |n| }
+        ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        10.times { |n| }
+      RUBY
+    end
   end
 
-  it 'does not register offense for multiline block with parameters' do
-    expect_no_offenses(<<~RUBY)
-      (0..10).each do |n|
-      end
-    RUBY
+  context 'with multiline block with parameters' do
+    it 'autocorrects an offense' do
+      expect_offense(<<~RUBY)
+        (0...10).each do |n|
+        ^^^^^^^^^^^^^ Use `Integer#times` for a simple loop which iterates a fixed number of times.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        10.times do |n|
+        end
+      RUBY
+    end
   end
 
   it 'does not register offense for character range' do
