@@ -205,6 +205,17 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
         RUBY
       end
 
+      it 'registers an offense when safe guard check and safe navigation method call are connected with `&&` condition' do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable} && %{variable}&.do_something
+          ^{variable}^^^^^{variable}^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead of checking if an object exists before calling the method.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.do_something
+        RUBY
+      end
+
       it 'registers an offense for a method call on an accessor ' \
          'safeguarded by a check for the accessed variable' do
         expect_offense(<<~RUBY, variable: variable)

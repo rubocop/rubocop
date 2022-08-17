@@ -123,7 +123,7 @@ module RuboCop
           return unless receiver == checked_variable
           return if use_var_only_in_unless_modifier?(node, checked_variable)
           return if chain_length(method_chain, method) > max_chain_length
-          return if unsafe_method_used?(method_chain, method)
+          return if unsafe_method_used?(method_chain, method) && !method.safe_navigation?
           return if method_chain.method?(:empty?)
 
           add_offense(node) { |corrector| autocorrect(corrector, node) }
@@ -141,7 +141,7 @@ module RuboCop
 
           corrector.remove(begin_range(node, body))
           corrector.remove(end_range(node, body))
-          corrector.insert_before(method_call.loc.dot, '&')
+          corrector.insert_before(method_call.loc.dot, '&') unless method_call.safe_navigation?
           handle_comments(corrector, node, method_call)
 
           add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
