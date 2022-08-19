@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     expect_no_offenses(<<~RUBY)
       foo = if condition
         foo
-      elsif another_condtion
+      elsif another_condition
         bar
       else
         baz
@@ -164,7 +164,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     expect_no_offenses(<<~RUBY)
       foo = if condition
               bar
-            elsif another_condtion
+            elsif another_condition
               foo
             else
               baz
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     expect_no_offenses(<<~RUBY)
       foo = if condition
               bar
-            elsif another_condtion
+            elsif another_condition
               baz
             else
               foo

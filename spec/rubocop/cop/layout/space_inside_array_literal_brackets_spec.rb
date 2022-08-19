@@ -243,7 +243,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects multiline array on end bracketwith trailing method' do
+    it 'registers an offense and corrects multiline array on end bracket with trailing method' do
       expect_offense(<<~RUBY)
         [:good,
          :bad  ].compact
@@ -423,7 +423,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects multiline array on end bracketwith trailing method' do
+    it 'registers an offense and corrects multiline array on end bracket with trailing method' do
       expect_offense(<<~RUBY)
         [ :good,
           :bad].compact

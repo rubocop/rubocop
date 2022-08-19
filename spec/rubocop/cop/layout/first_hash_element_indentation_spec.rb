@@ -667,7 +667,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
     end
 
     context "when 'consistent' style is used" do
-      it 'registers an offense and correcs incorrect indentation' do
+      it 'registers an offense and corrects incorrect indentation' do
         expect_offense(<<~RUBY)
           func({
             a: 1

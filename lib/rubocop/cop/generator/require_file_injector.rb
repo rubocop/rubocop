@@ -55,8 +55,8 @@ module RuboCop
           end
         end
 
-        def require_path_fragments(require_directove)
-          path = require_directove.match(REQUIRE_PATH)
+        def require_path_fragments(require_directive)
+          path = require_directive.match(REQUIRE_PATH)
 
           path ? path.captures.first.split('/') : []
         end

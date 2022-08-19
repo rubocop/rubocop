@@ -72,10 +72,10 @@ module RuboCop
         PATTERN
 
         def allowed_conditional_expression_on_rhs?(node)
-          node&.if_type? && contains_contant?(node)
+          node&.if_type? && contains_constant?(node)
         end
 
-        def contains_contant?(node)
+        def contains_constant?(node)
           node.branches.any?(&:const_type?)
         end
       end

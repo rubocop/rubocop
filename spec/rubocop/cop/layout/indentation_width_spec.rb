@@ -1425,7 +1425,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           RUBY
         end
 
-        it 'accepts normal non-indented internal methods ofmodule functions' do
+        it 'accepts normal non-indented internal methods of module functions' do
           expect_no_offenses(<<~RUBY)
             module Test
               module_function

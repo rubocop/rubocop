@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   it 'allows for empty if blocks with comments' do
     expect_no_offenses(<<~RUBY)
       if foo
-        # a random commnet
+        # a random comment
         # TODO: Implement this before
       end
     RUBY

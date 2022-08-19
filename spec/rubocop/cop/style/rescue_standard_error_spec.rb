@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
     end
 
     context 'when rescuing in a begin block' do
-      it 'accpets rescuing no error class' do
+      it 'accepts rescuing no error class' do
         expect_no_offenses(<<~RUBY)
           begin
             foo
@@ -433,7 +433,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
         end
       end
 
-      it 'accepts rescueing a single error other than StandardError' do
+      it 'accepts rescuing a single error other than StandardError' do
         expect_no_offenses(<<~RUBY)
           def baz
             foo
@@ -443,7 +443,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
         RUBY
       end
 
-      it 'accepts rescueing a single error other than StandardError, assigned to a variable' do
+      it 'accepts rescuing a single error other than StandardError, assigned to a variable' do
         expect_no_offenses(<<~RUBY)
           def baz
             foo

@@ -93,12 +93,12 @@ module RuboCop
 
         def highlighted_source_line(offense)
           source_before_highlight(offense) +
-            hightlight_source_tag(offense) +
+            highlight_source_tag(offense) +
             source_after_highlight(offense) +
             possible_ellipses(offense.location)
         end
 
-        def hightlight_source_tag(offense)
+        def highlight_source_tag(offense)
           "<span class=\"highlight #{offense.severity}\">" \
             "#{escape(offense.highlighted_area.source)}" \
             '</span>'

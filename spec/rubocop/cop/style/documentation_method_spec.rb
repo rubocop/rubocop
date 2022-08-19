@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
 
     context 'when declaring methods in a class' do
       context 'without documentation comment' do
-        context 'wheh method is public' do
+        context 'when method is public' do
           it 'registers an offense' do
             expect_offense(<<~CODE)
               class Foo

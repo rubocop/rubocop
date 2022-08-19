@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateCaseCondition, :config do
     RUBY
   end
 
-  it 'registers multiple offenses for repeated multi-value condtionals' do
+  it 'registers multiple offenses for repeated multi-value conditionals' do
     expect_offense(<<~RUBY)
       case x
       when a, b

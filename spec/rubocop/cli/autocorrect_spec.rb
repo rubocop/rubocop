@@ -1699,7 +1699,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
-  it 'corrects Style/BlockDelimiters offenses when specifing' \
+  it 'corrects Style/BlockDelimiters offenses when specifying' \
      'Layout/SpaceInsideBlockBraces together' do
     create_file('example.rb', <<~RUBY)
       each {

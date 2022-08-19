@@ -22,7 +22,7 @@ RSpec.describe RuboCop::FeatureLoader do
       expect_any_instance_of(described_class) # rubocop:disable RSpec/AnyInstance
     end
 
-    context 'with normally lodable feature' do
+    context 'with normally loadable feature' do
       before do
         allow_feature_loader.to receive(:require)
       end
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::FeatureLoader do
       end
     end
 
-    context 'with dot-prefixed lodable feature' do
+    context 'with dot-prefixed loadable feature' do
       before do
         allow_feature_loader.to receive(:require)
       end

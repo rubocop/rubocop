@@ -399,7 +399,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       RUBY
     end
 
-    it 'accepts block with multiple numbered parameteres' do
+    it 'accepts block with multiple numbered parameters' do
       expect_no_offenses('something { _1 + _2 }')
     end
 

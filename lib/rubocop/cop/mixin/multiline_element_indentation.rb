@@ -57,7 +57,7 @@ module RuboCop
         end
 
         if left_parenthesis && style == :special_inside_parentheses
-          return [left_parenthesis.column + 1, :first_colmn_after_left_parenthesis]
+          return [left_parenthesis.column + 1, :first_column_after_left_parenthesis]
         end
 
         [left_brace.source_line =~ /\S/, :start_of_line]

@@ -814,7 +814,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'accepts for a hash rocket with an extra space for alignmenton multiple line' do
+    it 'accepts for a hash rocket with an extra space for alignment on multiple line' do
       expect_no_offenses(<<~RUBY)
         {
           1 =>  2,
