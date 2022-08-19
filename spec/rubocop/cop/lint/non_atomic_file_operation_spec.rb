@@ -95,6 +95,19 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
   end
 
+  it 'registers an offense when using `FileTest.exist?` as a condition for `elsif`' do
+    expect_offense(<<~RUBY)
+      if condition
+        do_something
+      elsif FileTest.exist?(path)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+        FileUtils.rm_f path
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense when use `FileTest.exist?` before creating file with an option `force: false`' do
     expect_no_offenses(<<~RUBY)
       unless FileTest.exists?(path)
