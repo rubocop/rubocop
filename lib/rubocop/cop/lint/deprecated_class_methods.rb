@@ -66,7 +66,7 @@ module RuboCop
           private
 
           def delimiter
-            CLASS_METHOD_DELIMETER
+            CLASS_METHOD_DELIMITER
           end
         end
 
@@ -89,7 +89,7 @@ module RuboCop
           private
 
           def delimiter
-            instance_method? ? INSTANCE_METHOD_DELIMETER : CLASS_METHOD_DELIMETER
+            instance_method? ? INSTANCE_METHOD_DELIMITER : CLASS_METHOD_DELIMITER
           end
 
           def instance_method?
@@ -126,8 +126,8 @@ module RuboCop
 
         RESTRICT_ON_SEND = DEPRECATED_METHODS_OBJECT.keys.map(&:method).freeze
 
-        CLASS_METHOD_DELIMETER = '.'
-        INSTANCE_METHOD_DELIMETER = '#'
+        CLASS_METHOD_DELIMITER = '.'
+        INSTANCE_METHOD_DELIMITER = '#'
 
         def on_send(node)
           check(node) do |deprecated|

@@ -22,20 +22,20 @@ module RuboCop
       #   # all platforms.
       #
       #   # bad
-      #   puts 'Hello' # Return character is CR+LF on all platfoms.
+      #   puts 'Hello' # Return character is CR+LF on all platforms.
       #
       #   # good
-      #   puts 'Hello' # Return character is LF on all platfoms.
+      #   puts 'Hello' # Return character is LF on all platforms.
       #
       # @example EnforcedStyle: crlf
       #   # The `crlf` style means that CR+LF (Carriage Return + Line Feed) is
       #   # enforced on all platforms.
       #
       #   # bad
-      #   puts 'Hello' # Return character is LF on all platfoms.
+      #   puts 'Hello' # Return character is LF on all platforms.
       #
       #   # good
-      #   puts 'Hello' # Return character is CR+LF on all platfoms.
+      #   puts 'Hello' # Return character is CR+LF on all platforms.
       #
       class EndOfLine < Base
         include ConfigurableEnforcedStyle

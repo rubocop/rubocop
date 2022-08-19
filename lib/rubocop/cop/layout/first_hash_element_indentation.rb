@@ -192,7 +192,7 @@ module RuboCop
           case indent_base_type
           when :left_brace_or_bracket
             'the position of the opening brace'
-          when :first_colmn_after_left_parenthesis
+          when :first_column_after_left_parenthesis
             'the first position after the preceding left parenthesis'
           when :parent_hash_key
             'the parent hash key'
@@ -213,7 +213,7 @@ module RuboCop
           case indent_base_type
           when :left_brace_or_bracket
             'Indent the right brace the same as the left brace.'
-          when :first_colmn_after_left_parenthesis
+          when :first_column_after_left_parenthesis
             'Indent the right brace the same as the first position ' \
             'after the preceding left parenthesis.'
           when :parent_hash_key

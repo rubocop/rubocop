@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
 
-    it 'registers and corrects an offense when using access modifier and dedented method definition ' \
+    it 'registers and corrects an offense when using access modifier and indented method definition ' \
        'at the top level' do
       expect_offense(<<~'RUBY')
         public

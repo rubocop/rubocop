@@ -87,7 +87,7 @@ module RuboCop
             if word.dstr_type?
               string_literal = to_string_literal(word.source)
 
-              trim_string_interporation_escape_character(string_literal)
+              trim_string_interpolation_escape_character(string_literal)
             else
               to_string_literal(word.children[0])
             end

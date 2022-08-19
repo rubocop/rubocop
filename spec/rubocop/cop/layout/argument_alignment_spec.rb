@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects multiline missed indendation' do
+    it 'registers an offense and corrects multiline missed indentation' do
       expect_offense(<<~RUBY)
         func(a,
                b,

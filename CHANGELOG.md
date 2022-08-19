@@ -1100,7 +1100,7 @@
 * [#9251](https://github.com/rubocop/rubocop/issues/9251): Fix extracted cop warning when the extension is loaded using `--require`. ([@dvandersluis][])
 * [#9244](https://github.com/rubocop/rubocop/issues/9244): When a cop defined in an extension is explicitly enabled, ensure that it remains enabled. ([@dvandersluis][])
 * [#8046](https://github.com/rubocop/rubocop/issues/8046): Fix an error for `Layout/HeredocArgumentClosingParenthesis` when there is an argument between a heredoc argument and the closing paretheses. ([@koic][])
-* [#9261](https://github.com/rubocop/rubocop/pull/9261): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when one line for multiple condidate values of `when` statement. ([@makicamel][])
+* [#9261](https://github.com/rubocop/rubocop/pull/9261): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when one line for multiple candidate values of `when` statement. ([@makicamel][])
 * [#9258](https://github.com/rubocop/rubocop/pull/9258): Fix calculation of cop department for nested departments. ([@mvz][])
 * [#9277](https://github.com/rubocop/rubocop/pull/9277): Fix `Layout/EmptyLineBetweenDefs` error with endless method definitions. ([@dvandersluis][])
 * [#9278](https://github.com/rubocop/rubocop/pull/9278): Update `Style/MethodDefParentheses` to ignore endless method definitions since parentheses are always required. ([@dvandersluis][])
@@ -1474,7 +1474,7 @@
 * [#8740](https://github.com/rubocop/rubocop/issues/8740): Fix a false positive for `Style/HashAsLastArrayItem` when the hash is in an implicit array. ([@dvandersluis][])
 * [#8739](https://github.com/rubocop/rubocop/issues/8739): Fix an error for `Lint/UselessTimes` when using empty block argument. ([@koic][])
 * [#8742](https://github.com/rubocop/rubocop/issues/8742): Fix some assignment counts for `Metrics/AbcSize`. ([@marcandre][])
-* [#8750](https://github.com/rubocop/rubocop/pull/8750): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when line break for multiple condidate values of `when` statement. ([@koic][])
+* [#8750](https://github.com/rubocop/rubocop/pull/8750): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when line break for multiple candidate values of `when` statement. ([@koic][])
 * [#8754](https://github.com/rubocop/rubocop/pull/8754): Fix an error for `Style/RandomWithOffset` when using a range with non-integer bounds. ([@eugeneius][])
 * [#8756](https://github.com/rubocop/rubocop/issues/8756): Fix an infinite loop error for `Layout/EmptyLinesAroundAccessModifier` with `Layout/EmptyLinesAroundBlockBody` when using access modifier with block argument. ([@koic][])
 * [#8372](https://github.com/rubocop/rubocop/issues/8372): Fix `Lint/RedundantCopEnableDirective` autocorrection to not leave orphaned empty `# rubocop:enable` comments. ([@dvandersluis][])
@@ -1800,7 +1800,7 @@
 * [#7990](https://github.com/rubocop/rubocop/issues/7990): Fix resolving `inherit_gem` in remote configs. ([@CvX][])
 * [#8035](https://github.com/rubocop/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when using double quoted string argument. ([@koic][])
 * [#7971](https://github.com/rubocop/rubocop/issues/7971): Fix an issue where `--disable-uncorrectable` would not update uncorrected code with `rubocop:todo`. ([@rrosenblum][])
-* [#8035](https://github.com/rubocop/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when argument is a variable, method, or consntant. ([@koic][])
+* [#8035](https://github.com/rubocop/rubocop/issues/8035): Fix a false positive for `Lint/DeprecatedOpenSSLConstant` when argument is a variable, method, or constant. ([@koic][])
 
 ### Changes
 
@@ -3838,7 +3838,7 @@
 * [#3165](https://github.com/rubocop/rubocop/pull/3165): Add new `Lint/PercentSymbolArray` cop. ([@owst][])
 * [#3177](https://github.com/rubocop/rubocop/pull/3177): Add new `Style/NumericLiteralPrefix` cop. ([@tejasbubane][])
 * [#1646](https://github.com/rubocop/rubocop/issues/1646): Add configuration style `indented_relative_to_receiver` for `Style/MultilineMethodCallIndentation`. ([@jonas054][])
-* New cop `Lint/ShadowedException` checks for the order which exceptions are rescued to avoid rescueing a less specific exception before a more specific exception. ([@rrosenblum][])
+* New cop `Lint/ShadowedException` checks for the order which exceptions are rescued to avoid rescuing a less specific exception before a more specific exception. ([@rrosenblum][])
 * [#3127](https://github.com/rubocop/rubocop/pull/3127): New cop `Lint/InheritException` checks for error classes inheriting from `Exception`, and instead suggests `RuntimeError` or `StandardError`. ([@drenmi][])
 * Add new `Performance/PushSplat` cop. ([@segiddins][])
 * [#3089](https://github.com/rubocop/rubocop/issues/3089): Add new `Rails/Exit` cop. ([@sgringwe][])

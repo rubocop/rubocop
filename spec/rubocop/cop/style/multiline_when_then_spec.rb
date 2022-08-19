@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
     RUBY
   end
 
-  it 'registers an offense when one line for multiple condidate values of `when`' do
+  it 'registers an offense when one line for multiple candidate values of `when`' do
     expect_offense(<<~RUBY)
       case foo
       when bar, baz then
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
     RUBY
   end
 
-  it 'does not register an offense when line break for multiple condidate values of `when`' do
+  it 'does not register an offense when line break for multiple candidate values of `when`' do
     expect_no_offenses(<<~RUBY)
       case foo
       when bar,

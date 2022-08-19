@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers an offense and correcs when a reference bracket with a ' \
+    it 'registers an offense and corrects when a reference bracket with a ' \
        'trailing whitespace is assigned by another reference bracket' do
       expect_offense(<<~RUBY)
         a["foo" ] = b["something"]
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'accpets extra spacing in array brackets' do
+    it 'accepts extra spacing in array brackets' do
       expect_offense(<<~RUBY)
         j[ "pop"] = [89, nil, ""    ]
           ^ Do not use space inside reference brackets.

@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it 'accepts missing blank line when at the beginning of fileand preceded by a comment' do
+      it 'accepts missing blank line when at the beginning of file and preceded by a comment' do
         expect_no_offenses(<<~RUBY)
           # comment
           #{access_modifier}

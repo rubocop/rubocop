@@ -130,7 +130,7 @@ module RuboCop
               call_as_argument_or_chain?(node) ||
               hash_literal_in_arguments?(node) ||
               node.descendants.any? do |n|
-                n.forwarded_args_type? || ambigious_literal?(n) || logical_operator?(n) ||
+                n.forwarded_args_type? || ambiguous_literal?(n) || logical_operator?(n) ||
                   call_with_braced_block?(n)
               end
           end
@@ -166,7 +166,7 @@ module RuboCop
             previous.parenthesized? || allowed_chained_call_with_parentheses?(previous)
           end
 
-          def ambigious_literal?(node)
+          def ambiguous_literal?(node)
             splat?(node) || ternary_if?(node) || regexp_slash_literal?(node) || unary_literal?(node)
           end
 

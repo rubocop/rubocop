@@ -457,7 +457,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
-      it 'registers an offense when the method call has no argumnets' do
+      it 'registers an offense when the method call has no arguments' do
         expect_offense(<<~RUBY)
           RSpec.shared_context do
           ^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
@@ -529,7 +529,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
-      it 'accepts when the method call has no argumnets' do
+      it 'accepts when the method call has no arguments' do
         expect_no_offenses(<<~RUBY)
           RSpec.shared_context do
             let(:ruby_version) { 2.4 }

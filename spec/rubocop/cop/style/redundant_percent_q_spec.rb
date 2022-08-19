@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
       expect_no_offenses("%q('\"hi\"')")
     end
 
-    it 'registers an offfense for a string containing escaped backslashes' do
+    it 'registers an offense for a string containing escaped backslashes' do
       expect_offense(<<~'RUBY')
         %q(\\\\foo\\\\)
         ^^^^^^^^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.

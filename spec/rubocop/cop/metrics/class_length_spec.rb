@@ -254,7 +254,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
       RUBY
     end
 
-    it 'registers an offense when inspecting or equals (`||=`) for consntant' do
+    it 'registers an offense when inspecting or equals (`||=`) for constant' do
       expect_offense(<<~RUBY)
         Foo ||= Struct.new(:foo, :bar) do
                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Class has too many lines. [6/5]
@@ -332,7 +332,7 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
         RUBY
       end
 
-      it 'registers an offense when inspecting or equals (`||=`) for consntant' do
+      it 'registers an offense when inspecting or equals (`||=`) for constant' do
         expect_offense(<<~RUBY)
           Foo ||= Struct.new(:foo, :bar) do
                   ^^^^^^^^^^^^^^^^^^^^^^^^^ Class has too many lines. [6/5]
