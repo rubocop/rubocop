@@ -99,17 +99,17 @@ module RuboCop
         end
 
         def register_offense(node, exist_node)
-          unless force_method?(node)
-            add_offense(node,
-                        message: format(MSG_CHANGE_FORCE_METHOD,
-                                        method_name: replacement_method(node)))
-          end
+          add_offense(node, message: message_change_force_method(node)) unless force_method?(node)
 
           range = range_between(node.parent.loc.keyword.begin_pos,
                                 exist_node.loc.expression.end_pos)
           add_offense(range, message: message_remove_file_exist_check(exist_node)) do |corrector|
-            autocorrect(corrector, node, range)
+            autocorrect(corrector, node, range) unless node.parent.elsif?
           end
+        end
+
+        def message_change_force_method(node)
+          format(MSG_CHANGE_FORCE_METHOD, method_name: replacement_method(node))
         end
 
         def message_remove_file_exist_check(node)
