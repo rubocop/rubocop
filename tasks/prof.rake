@@ -24,14 +24,11 @@ namespace :prof do
 
   desc 'List the slowest cops'
   task slow_cops: :run_if_needed do
-    method = 'RuboCop::Cop::Commissioner#trigger_responding_cops'
+    method = 'Kernel#public_send'
     cmd = "stackprof #{dump_path} --text --method '#{method}'"
     puts cmd
     output = `#{cmd}`
-    _header, list, _code = *output
-      .lines
-      .grep_v(/RuboCop::Cop::Commissioner/) # ignore internal calls
-      .slice_after { |line| line.match?(/callees.*:|code:/) }
+    list = output.lines.grep(/RuboCop::Cop::.+#on_\w+/)
     puts list.first(40)
   end
 
