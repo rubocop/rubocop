@@ -225,11 +225,7 @@ module RuboCop
           adjustment = delta + @reindented_lines[lineno]
           @reindented_lines[lineno] = adjustment
 
-          if adjustment.positive?
-            corrector.remove_leading(buffer.line_range(lineno), adjustment)
-          elsif adjustment.negative?
-            corrector.insert_before(buffer.line_range(lineno), ' ' * -adjustment)
-          end
+          corrector.remove_leading(buffer.line_range(lineno), adjustment) if adjustment.positive?
         end
       end
     end
