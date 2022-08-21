@@ -123,7 +123,7 @@ module RuboCop
           return unless receiver == checked_variable
           return if use_var_only_in_unless_modifier?(node, checked_variable)
           return if chain_length(method_chain, method) > max_chain_length
-          return if unsafe_method_used?(method_chain, method) && !method.safe_navigation?
+          return if unsafe_method_used?(method_chain, method)
           return if method_chain.method?(:empty?)
 
           add_offense(node) { |corrector| autocorrect(corrector, node) }
@@ -250,7 +250,9 @@ module RuboCop
         end
 
         def unsafe_method?(send_node)
-          negated?(send_node) || send_node.assignment? || !send_node.dot?
+          negated?(send_node) ||
+            send_node.assignment? ||
+            (!send_node.dot? && !send_node.safe_navigation?)
         end
 
         def negated?(send_node)
