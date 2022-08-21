@@ -116,6 +116,10 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     expect_no_offenses('foo.baz = bar if foo')
   end
 
+  it 'allows an object check before a negated method call with a safe navigation' do
+    expect_no_offenses('obj && !obj&.do_something')
+  end
+
   it 'allows object checks in the condition of an elsif statement ' \
      'and a method call on that object in the body' do
     expect_no_offenses(<<~RUBY)
