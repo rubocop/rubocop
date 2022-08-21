@@ -315,6 +315,27 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       RUBY
     end
 
+    it 'registers an offense when line break before condition' do
+      expect_offense(<<~RUBY)
+        array.each do |item|
+          if
+          ^^ Use `next` to skip iteration.
+             condition
+            next if item.zero?
+            do_something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.each do |item|
+          next unless condition
+            next if item.zero?
+            do_something
+        end
+      RUBY
+    end
+
     it 'allows loops with conditional break' do
       expect_no_offenses(<<~RUBY)
         loop do
