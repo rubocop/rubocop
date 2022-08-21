@@ -29,20 +29,21 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `%<preferred>s`.'
-        RESTRICT_ON_SEND = %i[==].freeze
+        RESTRICT_ON_SEND = %i[== !=].freeze
 
         # @!method single_line_comparison(node)
         def_node_matcher :single_line_comparison, <<~PATTERN
           {
-            (send (send $_receiver {:line :first_line}) :== (send _receiver :last_line))
-            (send (send $_receiver :last_line) :== (send _receiver {:line :first_line}))
+            (send (send $_receiver {:line :first_line}) {:== :!=} (send _receiver :last_line))
+            (send (send $_receiver :last_line) {:== :!=} (send _receiver {:line :first_line}))
           }
         PATTERN
 
         def on_send(node)
           return unless (receiver = single_line_comparison(node))
 
-          preferred = "#{extract_receiver(receiver)}.single_line?"
+          bang = node.method?(:!=) ? '!' : ''
+          preferred = "#{bang}#{extract_receiver(receiver)}.single_line?"
 
           add_offense(node, message: format(MSG, preferred: preferred)) do |corrector|
             corrector.replace(node, preferred)

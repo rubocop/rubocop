@@ -89,6 +89,28 @@ RSpec.describe RuboCop::Cop::InternalAffairs::SingleLineComparison, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when negative comparing `first_line` with `last_line`' do
+    expect_offense(<<~RUBY)
+      node.first_line != node.last_line
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!node.single_line?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !node.single_line?
+    RUBY
+  end
+
+  it 'registers and corrects an offense when negative comparing `last_line` with `first_line`' do
+    expect_offense(<<~RUBY)
+      node.last_line != node.first_line
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!node.single_line?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !node.single_line?
+    RUBY
+  end
+
   it 'does not register an offense when comparing the same line' do
     expect_no_offenses(<<~RUBY)
       node.loc.first_line == node.loc.line

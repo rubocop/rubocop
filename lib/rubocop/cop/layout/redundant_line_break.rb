@@ -101,7 +101,7 @@ module RuboCop
           !comment_within?(node) &&
             node.each_descendant(:if, :case, :kwbegin, :def).none? &&
             node.each_descendant(:dstr, :str).none?(&:heredoc?) &&
-            node.each_descendant(:begin).none? { |b| b.first_line != b.last_line }
+            node.each_descendant(:begin).none? { |b| !b.single_line? }
         end
 
         def convertible_block?(node)

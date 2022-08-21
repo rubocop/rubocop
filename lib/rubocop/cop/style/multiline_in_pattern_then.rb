@@ -49,7 +49,7 @@ module RuboCop
 
         # Requires `then` for write `in` and its body on the same line.
         def require_then?(in_pattern_node)
-          return true if in_pattern_node.pattern.first_line != in_pattern_node.pattern.last_line
+          return true unless in_pattern_node.pattern.single_line?
           return false unless in_pattern_node.body
 
           same_line?(in_pattern_node, in_pattern_node.body)

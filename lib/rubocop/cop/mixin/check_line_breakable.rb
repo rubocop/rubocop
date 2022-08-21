@@ -220,7 +220,7 @@ module RuboCop
       def already_on_multiple_lines?(node)
         return node.first_line != node.arguments.last.last_line if node.def_type?
 
-        node.first_line != node.last_line
+        !node.single_line?
       end
     end
   end
