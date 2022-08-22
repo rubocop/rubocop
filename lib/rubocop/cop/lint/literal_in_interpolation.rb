@@ -58,6 +58,7 @@ module RuboCop
           (node.str_type? && !node.loc.respond_to?(:begin)) || node.source_range.is?('__LINE__')
         end
 
+        # rubocop:disable Metrics/MethodLength
         def autocorrected_value(node)
           case node.type
           when :int
@@ -70,10 +71,13 @@ module RuboCop
             autocorrected_value_for_symbol(node)
           when :array
             autocorrected_value_for_array(node)
+          when :nil
+            ''
           else
             node.source.gsub('"', '\"')
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def autocorrected_value_for_string(node)
           if node.source.start_with?("'", '%q')

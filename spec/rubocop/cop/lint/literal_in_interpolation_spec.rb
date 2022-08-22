@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it_behaves_like('literal interpolation', '{"a" => "b"}', '{\"a\" => \"b\"}')
   it_behaves_like('literal interpolation', true)
   it_behaves_like('literal interpolation', false)
-  it_behaves_like('literal interpolation', 'nil')
+  it_behaves_like('literal interpolation', 'nil', '')
   it_behaves_like('literal interpolation', ':symbol', 'symbol')
   it_behaves_like('literal interpolation', ':"symbol"', 'symbol')
   it_behaves_like('literal interpolation', 1..2)
