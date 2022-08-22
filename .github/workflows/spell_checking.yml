@@ -2,6 +2,9 @@ name: Spell Checking
 
 on: [pull_request]
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   codespell:
     name: Check spelling of all files with codespell

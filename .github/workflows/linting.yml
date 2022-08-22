@@ -2,8 +2,14 @@ name: Linting
 on:
   - pull_request
   - workflow_dispatch
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   yamllint:
+    permissions:
+      contents: read  # for actions/checkout to fetch code
+      pull-requests: write  # for karancode/yamllint-github-action to post comments on PRs
     name: Yamllint
     runs-on: ubuntu-latest
     steps:
