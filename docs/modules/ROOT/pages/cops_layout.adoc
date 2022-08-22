@@ -2445,10 +2445,10 @@ puts 'Hello' # Return character is LF on other than Windows.
 # all platforms.
 
 # bad
-puts 'Hello' # Return character is CR+LF on all platfoms.
+puts 'Hello' # Return character is CR+LF on all platforms.
 
 # good
-puts 'Hello' # Return character is LF on all platfoms.
+puts 'Hello' # Return character is LF on all platforms.
 ----
 
 ==== EnforcedStyle: crlf
@@ -2459,10 +2459,10 @@ puts 'Hello' # Return character is LF on all platfoms.
 # enforced on all platforms.
 
 # bad
-puts 'Hello' # Return character is LF on all platfoms.
+puts 'Hello' # Return character is LF on all platforms.
 
 # good
-puts 'Hello' # Return character is CR+LF on all platfoms.
+puts 'Hello' # Return character is CR+LF on all platforms.
 ----
 
 === Configurable attributes
