@@ -68,6 +68,8 @@ module RuboCop
         # `transform_values` if value transformation uses key.
         return if captures.transformation_uses_both_args?
 
+        return unless captures.use_transformed_argname?
+
         message = "Prefer `#{new_method_name}` over `#{match_desc}`."
         add_offense(node, message: message) do |corrector|
           correction = prepare_correction(node)
@@ -113,11 +115,7 @@ module RuboCop
       end
 
       # Internal helper class to hold match data
-      Captures = Struct.new(
-        :transformed_argname,
-        :transforming_body_expr,
-        :unchanged_body_expr
-      ) do
+      Captures = Struct.new(:transformed_argname, :transforming_body_expr, :unchanged_body_expr) do
         def noop_transformation?
           transforming_body_expr.lvar_type? &&
             transforming_body_expr.children == [transformed_argname]
@@ -125,6 +123,12 @@ module RuboCop
 
         def transformation_uses_both_args?
           transforming_body_expr.descendants.include?(unchanged_body_expr)
+        end
+
+        def use_transformed_argname?
+          transforming_body_expr.each_descendant(:lvar).any? do |node|
+            node.source == transformed_argname.to_s
+          end
         end
       end
 

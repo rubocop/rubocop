@@ -156,6 +156,12 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       expect_no_offenses('Hash[x.map {|k, v| [k.to_sym, foo(v)]}]')
     end
 
+    it 'does not flag _.map {...}.to_h when key block argument is unused' do
+      expect_no_offenses(<<~RUBY)
+        x.map {|_k, v| [v, v]}.to_h
+      RUBY
+    end
+
     it 'does not flag key transformation in the absence of to_h' do
       expect_no_offenses('x.map {|k, v| [k.to_sym, v]}')
     end
@@ -271,6 +277,12 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
     it 'does not flag `_.to_h{...}` when both key & value are transformed' do
       expect_no_offenses(<<~RUBY)
         x.to_h { |k, v| [k.to_sym, foo(v)] }
+      RUBY
+    end
+
+    it 'does not flag _.to_h {...} when key block argument is unused' do
+      expect_no_offenses(<<~RUBY)
+        x.to_h {|_k, v| [v, v]}
       RUBY
     end
 
