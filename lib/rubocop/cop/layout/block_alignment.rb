@@ -22,23 +22,24 @@ module RuboCop
       #   # bad
       #
       #   foo.bar
-      #      .each do
-      #        baz
-      #          end
+      #     .each do
+      #       baz
+      #         end
       #
       #   # good
       #
-      #   variable = lambda do |i|
-      #     i
+      #   foo.bar
+      #     .each do
+      #       baz
       #   end
       #
       # @example EnforcedStyleAlignWith: start_of_block
       #   # bad
       #
       #   foo.bar
-      #      .each do
-      #        baz
-      #          end
+      #     .each do
+      #       baz
+      #         end
       #
       #   # good
       #
@@ -51,16 +52,17 @@ module RuboCop
       #   # bad
       #
       #   foo.bar
-      #      .each do
-      #        baz
-      #          end
+      #     .each do
+      #       baz
+      #         end
       #
       #   # good
       #
       #   foo.bar
       #     .each do
-      #        baz
+      #       baz
       #   end
+      #
       class BlockAlignment < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
