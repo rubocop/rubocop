@@ -94,7 +94,7 @@ These are the command-line options for server operations:
 | Show server status.
 |===
 
-TIP: You can specify the server host and port with the `$RUBOCOP_SERVER_HOST`and the `$RUBOCOP_SERVER_PORT` environment variables.
+TIP: You can specify the server host and port with the $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT environment variables.
 
 == Environment Variables
 
