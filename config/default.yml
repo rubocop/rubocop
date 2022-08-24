@@ -2794,6 +2794,7 @@ Naming/MethodParameterName:
   AllowNamesEndingInNumbers: true
   # Allowed names that will not register an offense
   AllowedNames:
+    - as
     - at
     - by
     - db
