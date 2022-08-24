@@ -30,15 +30,23 @@ module RuboCop
       def allowed_patterns
         # Since there could be a pattern specified in the default config, merge the two
         # arrays together.
-        patterns = Array(cop_config['AllowedPatterns']).concat(Array(cop_config['IgnoredPatterns']))
-        deprecated_values = cop_config_deprecated_methods_values
-        return patterns unless deprecated_values.any?(Regexp)
+        if cop_config_deprecated_methods_values.any?(Regexp)
+          cop_config_patterns_values + cop_config_deprecated_methods_values
+        else
+          cop_config_patterns_values
+        end
+      end
 
-        Array(patterns.concat(deprecated_values))
+      def cop_config_patterns_values
+        @cop_config_patterns_values ||=
+          Array(cop_config.fetch('AllowedPatterns', [])) +
+          Array(cop_config.fetch('IgnoredPatterns', []))
       end
 
       def cop_config_deprecated_methods_values
-        Array(cop_config['IgnoredMethods']).concat(Array(cop_config['ExcludedMethods']))
+        @cop_config_deprecated_methods_values ||=
+          Array(cop_config.fetch('IgnoredMethods', [])) +
+          Array(cop_config.fetch('ExcludedMethods', []))
       end
     end
 
