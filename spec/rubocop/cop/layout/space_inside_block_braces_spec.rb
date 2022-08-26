@@ -387,8 +387,37 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
           expect_offense(<<~RUBY)
             items.map {|item|
               item.do_something
-                               ^{} Space inside } detected.
               }
+            ^^ Space inside } detected.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            items.map {|item|
+              item.do_something
+            }
+          RUBY
+        end
+
+        it 'accepts when braces are aligned in multiline block with bracket' do
+          expect_no_offenses(<<~RUBY)
+            foo {[
+              bar
+            ]}
+          RUBY
+        end
+
+        it 'registers an offense when braces are not aligned in multiline block with bracket' do
+          expect_offense(<<~RUBY)
+            foo {[
+              bar
+              ]}
+            ^^ Space inside } detected.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo {[
+              bar
+            ]}
           RUBY
         end
       end
