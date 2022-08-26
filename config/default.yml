@@ -2949,6 +2949,7 @@ Style/AccessModifierDeclarations:
     - inline
     - group
   AllowModifiersOnSymbols: true
+  SafeAutoCorrect: false
 
 Style/AccessorGrouping:
   Description: 'Checks for grouping of accessors in `class` and `module` bodies.'
