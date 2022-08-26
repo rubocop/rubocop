@@ -148,7 +148,9 @@ module RuboCop
             check_indentation(in_pattern_node.loc.keyword, in_pattern_node.body)
           end
 
-          check_indentation(case_match.in_pattern_branches.last.loc.keyword, case_match.else_branch)
+          else_branch = case_match.else_branch&.empty_else_type? ? nil : case_match.else_branch
+
+          check_indentation(case_match.in_pattern_branches.last.loc.keyword, else_branch)
         end
 
         def on_if(node, base = node)

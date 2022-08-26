@@ -915,6 +915,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'accepts aligned value in `in` clause and `else` is empty' do
+        expect_no_offenses(<<~'RUBY')
+          case x
+          in 42
+            foo
+          else
+          end
+        RUBY
+      end
+
       it 'accepts case/in/else laid out as a table' do
         expect_no_offenses(<<~RUBY)
           case sexp.loc.keyword.source
