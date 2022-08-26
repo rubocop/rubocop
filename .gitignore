@@ -13,6 +13,7 @@ doc
 .bundle
 Gemfile.lock
 Gemfile.local
+vendor/
 
 # rbenv
 .ruby-version
