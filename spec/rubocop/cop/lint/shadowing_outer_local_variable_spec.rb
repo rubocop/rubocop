@@ -111,6 +111,9 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
                            ^^^ Shadowing outer local variable - `foo`.
               end
             end
+          elsif other_condition?
+            bar.each do |foo|
+            end
           else
             bar.each do |foo|
             end
@@ -152,6 +155,9 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
             bar.each do |foo|
                          ^^^ Shadowing outer local variable - `foo`.
             end
+          when bar then
+            bar.each do |foo|
+            end
           else
             bar.each do |foo|
             end
@@ -168,6 +174,9 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
         def some_method
           if condition?
             foo = 1
+          elsif other_condition?
+            bar.each do |foo|
+            end
           else
             bar.each do |foo|
             end
