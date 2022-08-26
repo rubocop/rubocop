@@ -23,7 +23,7 @@ module RuboCop
 
     def initialize(rspec_args = %w[spec --force-color], parallel: true,
                    external_encoding: 'UTF-8', internal_encoding: nil)
-      @rspec_args = rspec_args
+      @rspec_args = ENV['GITHUB_ACTIONS'] == 'true' ? %w[spec --no-color] : rspec_args
       @previous_external_encoding = Encoding.default_external
       @previous_internal_encoding = Encoding.default_internal
 
