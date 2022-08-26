@@ -96,7 +96,7 @@ module RuboCop
         end
 
         def correct_other_branches(corrector, node)
-          return unless (node.if? || node.unless?) && node.else_branch
+          return unless require_other_branches_correction?(node)
 
           if node.else_branch.if_type?
             # Replace an orphaned `elsif` with `if`
@@ -107,12 +107,42 @@ module RuboCop
           end
         end
 
+        def require_other_branches_correction?(node)
+          return false unless node.if_type? && node.else_branch
+          return false if !empty_if_branch?(node) && node.elsif?
+
+          !empty_else_branch?(node)
+        end
+
+        def empty_if_branch?(node)
+          return false unless (parent = node.parent)
+          return true unless parent.if_type?
+          return true unless (if_branch = parent.if_branch)
+
+          if_branch.if_type? && !if_branch.body
+        end
+
+        def empty_else_branch?(node)
+          node.else_branch.if_type? && !node.else_branch.body
+        end
+
+        # rubocop:disable Metrics/AbcSize
         def branch_range(node)
           if node.loc.else
             node.source_range.with(end_pos: node.loc.else.begin_pos - 1)
+          elsif all_branches_body_missing?(node)
+            if_node = node.ancestors.detect(&:if?)
+            node.source_range.with(end_pos: if_node.loc.end.end_pos)
           else
             node.source_range
           end
+        end
+        # rubocop:enable Metrics/AbcSize
+
+        def all_branches_body_missing?(node)
+          return false unless node.parent&.if_type?
+
+          node.parent.branches.compact.empty?
         end
 
         def deletion_range(range)
