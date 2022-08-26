@@ -423,8 +423,14 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     end
 
     describe '--disable-uncorrectable' do
-      it 'accepts together with an autocorrect argument' do
-        %w[--fix-layout -x --autocorrect -a --autocorrect-all -A].each do |o|
+      it 'accepts together with a safe autocorrect argument' do
+        %w[--fix-layout -x --autocorrect -a].each do |o|
+          expect { options.parse ['--disable-uncorrectable', o] }.not_to raise_error
+        end
+      end
+
+      it 'accepts together with an unsafe autocorrect argument' do
+        %w[--fix-layout -x --autocorrect-all -A].each do |o|
           expect { options.parse ['--disable-uncorrectable', o] }.not_to raise_error
         end
       end
@@ -456,9 +462,20 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     end
 
     describe '--autocorrect' do
-      it 'sets some autocorrect options' do
-        options.parse %w[--autocorrect]
-        expect_autocorrect_options_for_autocorrect
+      context 'Specify only --autocorrect' do
+        it 'sets some autocorrect options' do
+          options.parse %w[--autocorrect]
+          expect_autocorrect_options_for_autocorrect
+        end
+      end
+
+      context 'Specify --autocorrect and --autocorrect-all' do
+        it 'emits a warning and sets some autocorrect options' do
+          expect { options.parse options.parse %w[--autocorrect --autocorrect-all] }.to raise_error(
+            RuboCop::OptionArgumentError,
+            /Error: Both safe and unsafe autocorrect options are specified, use only one./
+          )
+        end
       end
     end
 

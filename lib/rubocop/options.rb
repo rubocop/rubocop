@@ -400,6 +400,12 @@ module RuboCop
     end
 
     def validate_autocorrect
+      if @options.key?(:safe_autocorrect) && @options.key?(:autocorrect_all)
+        message = Rainbow(<<~MESSAGE).red
+          Error: Both safe and unsafe autocorrect options are specified, use only one.
+        MESSAGE
+        raise OptionArgumentError, message
+      end
       return if @options.key?(:autocorrect)
       return unless @options.key?(:disable_uncorrectable)
 
