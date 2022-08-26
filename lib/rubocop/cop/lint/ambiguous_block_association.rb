@@ -81,7 +81,7 @@ module RuboCop
         def allowed_method_pattern?(node)
           node.assignment? || node.operator_method? || node.method?(:[]) ||
             allowed_method?(node.last_argument.method_name) ||
-            matches_allowed_pattern?(node.last_argument.method_name)
+            matches_allowed_pattern?(node.last_argument.send_node.source)
         end
 
         def message(send_node)
