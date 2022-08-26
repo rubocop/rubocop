@@ -131,7 +131,7 @@ module RuboCop
           args_delimiter = node.arguments.loc.begin if node.block_type? # Can be ( | or nil.
 
           check_left_brace(inner, node.loc.begin, args_delimiter)
-          check_right_brace(inner, node.loc.begin, node.loc.end, node.single_line?)
+          check_right_brace(node, inner, node.loc.begin, node.loc.end, node.single_line?)
         end
 
         def check_left_brace(inner, left_brace, args_delimiter)
@@ -142,14 +142,15 @@ module RuboCop
           end
         end
 
-        def check_right_brace(inner, left_brace, right_brace, single_line)
+        def check_right_brace(node, inner, left_brace, right_brace, single_line)
           if single_line && /\S$/.match?(inner)
             no_space(right_brace.begin_pos, right_brace.end_pos, 'Space missing inside }.')
           else
+            column = node.loc.expression.column
             return if multiline_block?(left_brace, right_brace) &&
-                      aligned_braces?(left_brace, right_brace)
+                      aligned_braces?(inner, right_brace, column)
 
-            space_inside_right_brace(right_brace)
+            space_inside_right_brace(inner, right_brace, column)
           end
         end
 
@@ -157,8 +158,12 @@ module RuboCop
           left_brace.first_line != right_brace.first_line
         end
 
-        def aligned_braces?(left_brace, right_brace)
-          left_brace.first_line == right_brace.last_column
+        def aligned_braces?(inner, right_brace, column)
+          column == right_brace.column || column == inner_last_space_count(inner)
+        end
+
+        def inner_last_space_count(inner)
+          inner.split("\n").last.count(' ')
         end
 
         def no_space_inside_left_brace(left_brace, args_delimiter)
@@ -197,10 +202,21 @@ module RuboCop
           args_delimiter&.is?('|')
         end
 
-        def space_inside_right_brace(right_brace)
+        def space_inside_right_brace(inner, right_brace, column)
           brace_with_space = range_with_surrounding_space(right_brace, side: :left)
-          space(brace_with_space.begin_pos, brace_with_space.end_pos - 1,
-                'Space inside } detected.')
+          begin_pos = brace_with_space.begin_pos
+          end_pos = brace_with_space.end_pos - 1
+
+          if brace_with_space.source.match?(/\R/)
+            begin_pos = end_pos - (right_brace.column - column)
+          end
+
+          if inner.end_with?(']')
+            end_pos -= 1
+            begin_pos = end_pos - (inner_last_space_count(inner) - column)
+          end
+
+          space(begin_pos, end_pos, 'Space inside } detected.')
         end
 
         def no_space(begin_pos, end_pos, msg)
