@@ -951,29 +951,34 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       YAML
     end
 
-    context 'when configurable parameter is an obsolete parameter' do
-      it 'displayed as a new parameter setting value without duplication' do
+    context 'when duplicated default configuration parameter' do
+      before do
+        RuboCop::ConfigLoader.default_configuration['Naming/MethodParameterName']
+                             .merge!('AllowedNames' => %w[at by at])
+      end
+
+      it 'parameters are displayed without duplication' do
         create_file('.rubocop.yml', <<~YAML)
-          AllCops:
-            NewCops: enable
-          Naming/MethodName:
-            # `IgnoredPatterns` is obsolete. `AllowedPatterns` is newly used.
-            IgnoredPatterns:
-              - change
-              - not_change
+          Naming/VariableName:
+            Enabled: false
         YAML
-        create_file('example1.rb', ['# frozen_string_literal: true', '', 'def fooBar; end'])
-        create_file('example2.rb', ['# frozen_string_literal: true', '', 'def fooBar; end'])
+        create_file('example1.rb', <<~TEXT)
+          # frozen_string_literal: true
+
+          def bar(varOne, varTwo)
+            varOne + varTwo
+          end
+        TEXT
 
         expect(cli.run(['--auto-gen-config'])).to eq(0)
         File.readlines('.rubocop_todo.yml')
         expect(File.readlines('.rubocop_todo.yml')[9..].join)
           .to eq(<<~YAML)
-            # Configuration parameters: AllowedPatterns, IgnoredPatterns.
-            # SupportedStyles: snake_case, camelCase
-            # AllowedPatterns: change, not_change
-            Naming/MethodName:
-              EnforcedStyle: camelCase
+            # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
+            # AllowedNames: at, by
+            Naming/MethodParameterName:
+              Exclude:
+                - 'example1.rb'
           YAML
       end
     end
