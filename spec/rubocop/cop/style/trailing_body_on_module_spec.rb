@@ -11,6 +11,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
       module Bar extend self
                  ^^^^^^^^^^^ Place the first line of module body on its own line.
       end
+      module Bar; def bar; end
+                  ^^^^^^^^^^^^ Place the first line of module body on its own line.
+      end
+      module Bar def bar; end
+                 ^^^^^^^^^^^^ Place the first line of module body on its own line.
+      end
     RUBY
 
     expect_correction(<<~RUBY)
@@ -19,6 +25,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
       end
       module Bar#{trailing_whitespace}
         extend self
+      end
+      module Bar#{trailing_whitespace}
+        def bar; end
+      end
+      module Bar#{trailing_whitespace}
+        def bar; end
       end
     RUBY
   end
@@ -65,7 +77,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
     RUBY
   end
 
-  it 'auto-corrects with comment after body' do
+  it 'autocorrects with comment after body' do
     expect_offense(<<~RUBY)
       module BarQux; foo # comment
                      ^^^ Place the first line of module body on its own line.
@@ -80,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
     RUBY
   end
 
-  it 'auto-corrects when there are multiple semicolons' do
+  it 'autocorrects when there are multiple semicolons' do
     expect_offense(<<~RUBY)
       module Bar; def bar; end
                   ^^^^^^^^^^^^ Place the first line of module body on its own line.
@@ -95,7 +107,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
   end
 
   context 'when module is not on first line of processed_source' do
-    it 'auto-corrects offense' do
+    it 'autocorrects offense' do
       expect_offense(<<~RUBY)
 
         module Foo; body#{trailing_whitespace}

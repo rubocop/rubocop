@@ -289,6 +289,50 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
 
+    context 'when using `when ... then` in `case` in `return`' do
+      let(:source) do
+        <<~RUBY
+          return case
+                 ^^^^ Do not use empty `case` condition, instead use an `if` expression.
+                 when object.nil? then Object.new
+                 else object
+                 end
+        RUBY
+      end
+      let(:corrected_source) do
+        <<~RUBY
+          return if object.nil?
+           Object.new
+                 else object
+                 end
+        RUBY
+      end
+
+      it_behaves_like 'detect/correct empty case, accept non-empty case'
+    end
+
+    context 'when using `when ... then` in `case` in a method call' do
+      let(:source) do
+        <<~RUBY
+          do_some_work case
+                       ^^^^ Do not use empty `case` condition, instead use an `if` expression.
+                       when object.nil? then Object.new
+                       else object
+                       end
+        RUBY
+      end
+      let(:corrected_source) do
+        <<~RUBY
+          do_some_work if object.nil?
+           Object.new
+                       else object
+                       end
+        RUBY
+      end
+
+      it_behaves_like 'detect/correct empty case, accept non-empty case'
+    end
+
     context 'when using `return` in `when` clause and assigning the return value of `case`' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)

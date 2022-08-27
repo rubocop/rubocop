@@ -127,6 +127,27 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, 
     end
   RUBY
 
+  include_examples 'accepts', '`begin` and `rescue` are on the same line', <<~RUBY
+    begin; foo; rescue => e; end
+  RUBY
+
+  include_examples 'accepts', '`rescue` and `end` are on the same line', <<~RUBY
+    begin
+      foo
+    rescue => e; end
+  RUBY
+
+  include_examples 'accepts', 'last `rescue` and `end` are on the same line', <<~RUBY
+    begin
+      foo
+    rescue => x
+    rescue => y; end
+  RUBY
+
+  include_examples 'accepts', '`def` and `rescue` are on the same line', <<~RUBY
+    def do_something; foo; rescue => e; end
+  RUBY
+
   it 'with complex begin-end - registers many offenses' do
     expect_offense(<<~RUBY)
       begin

@@ -3,13 +3,31 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for identical expressions at the beginning or end of
+      # Checks for identical expressions at the beginning or end of
       # each branch of a conditional expression. Such expressions should normally
       # be placed outside the conditional expression - before or after it.
       #
       # NOTE: The cop is poorly named and some people might think that it actually
       # checks for duplicated conditional branches. The name will probably be changed
       # in a future major RuboCop release.
+      #
+      # @safety
+      #   Autocorrection is unsafe because changing the order of method invocations
+      #   may change the behavior of the code. For example:
+      #
+      #   [source,ruby]
+      #   ----
+      #   if method_that_modifies_global_state # 1
+      #     method_that_relies_on_global_state # 2
+      #     foo                                # 3
+      #   else
+      #     method_that_relies_on_global_state # 2
+      #     bar                                # 3
+      #   end
+      #   ----
+      #
+      #   In this example, `method_that_relies_on_global_state` will be moved before
+      #   `method_that_modifies_global_state`, which changes the behavior of the program.
       #
       # @example
       #   # bad
@@ -124,21 +142,30 @@ module RuboCop
           return if branches.any?(&:nil?)
 
           tails = branches.map { |branch| tail(branch) }
-          check_expressions(node, tails, :after_condition) if duplicated_expressions?(tails)
+          check_expressions(node, tails, :after_condition) if duplicated_expressions?(node, tails)
 
           heads = branches.map { |branch| head(branch) }
-          check_expressions(node, heads, :before_condition) if duplicated_expressions?(heads)
+          check_expressions(node, heads, :before_condition) if duplicated_expressions?(node, heads)
         end
 
-        def duplicated_expressions?(expressions)
-          expressions.size > 1 && expressions.uniq.one?
+        def duplicated_expressions?(node, expressions)
+          unique_expressions = expressions.uniq
+          return false unless expressions.size >= 1 && unique_expressions.one?
+
+          unique_expression = unique_expressions.first
+          return true unless unique_expression.assignment?
+
+          lhs = unique_expression.child_nodes.first
+          node.condition.child_nodes.none? { |n| n.source == lhs.source if n.variable? }
         end
 
-        def check_expressions(node, expressions, insert_position)
+        def check_expressions(node, expressions, insert_position) # rubocop:disable Metrics/MethodLength
           inserted_expression = false
 
           expressions.each do |expression|
             add_offense(expression) do |corrector|
+              next if node.if_type? && node.ternary?
+
               range = range_by_whole_lines(expression.source_range, include_final_newline: true)
               corrector.remove(range)
               next if inserted_expression

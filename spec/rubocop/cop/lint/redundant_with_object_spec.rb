@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
   end
 
   it 'registers an offense and corrects when using ' \
-    'ary.each_with_object do-end block without parentheses' do
+     'ary.each_with_object do-end block without parentheses' do
     expect_offense(<<~RUBY)
       ary.each_with_object [] do |v|
           ^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
@@ -65,6 +65,30 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
 
     it 'does not register an offense when block has 1 argument' do
       expect_no_offenses('ary.each_with_object { |v| v }')
+    end
+  end
+
+  context 'Ruby 2.7', :ruby27 do
+    it 'registers an offense and corrects when using `ary.each_with_object { _1 }`' do
+      expect_offense(<<~RUBY)
+        ary.each_with_object([]) { _1 }
+            ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary.each { _1 }
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using `ary.each.with_object([]) { _1 }`' do
+      expect_offense(<<~RUBY)
+        ary.each.with_object([]) { _1 }
+                 ^^^^^^^^^^^^^^^ Remove redundant `with_object`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary.each { _1 }
+      RUBY
     end
   end
 end

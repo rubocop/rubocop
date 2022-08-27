@@ -1,9 +1,49 @@
 = Security
 
+== Security/CompoundHash
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.28
+| -
+|===
+
+Checks for implementations of the `hash` method which combine
+values using custom logic instead of delegating to `Array#hash`.
+
+Manually combining hashes is error prone and hard to follow, especially
+when there are many values. Poor implementations may also introduce
+performance or security concerns if they are prone to collisions.
+Delegating to `Array#hash` is clearer, faster, and safer.
+
+=== Safety
+
+This cop may be unsafe if the application logic depends on the hash
+value, however this is inadvisable anyway.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def hash
+  @foo ^ @bar
+end
+
+# good
+def hash
+  [@foo, @bar].hash
+end
+----
+
 == Security/Eval
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12,7 +52,7 @@
 | -
 |===
 
-This cop checks for the use of `Kernel#eval` and `Binding#eval`.
+Checks for the use of `Kernel#eval` and `Binding#eval`.
 
 === Examples
 
@@ -24,22 +64,64 @@ eval(something)
 binding.eval(something)
 ----
 
+== Security/IoMethods
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.22
+| -
+|===
+
+Checks for the first argument to `IO.read`, `IO.binread`, `IO.write`, `IO.binwrite`,
+`IO.foreach`, and `IO.readlines`.
+
+If argument starts with a pipe character (`'|'`) and the receiver is the `IO` class,
+a subprocess is created in the same way as `Kernel#open`, and its output is returned.
+`Kernel#open` may allow unintentional command injection, which is the reason these
+`IO` methods are a security risk.
+Consider to use `File.read` to disable the behavior of subprocess invocation.
+
+=== Safety
+
+This cop is unsafe because false positive will occur if the variable passed as
+the first argument is a command that is not a file path.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+IO.read(path)
+IO.read('path')
+
+# good
+File.read(path)
+File.read('path')
+IO.read('| command') # Allow intentional command invocation.
+----
+
 == Security/JSONLoad
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
 | Yes (Unsafe)
 | 0.43
-| 0.44
+| 1.22
 |===
 
-This cop checks for the use of JSON class methods which have potential
+Checks for the use of JSON class methods which have potential
 security issues.
 
-Autocorrect is disabled by default because it's potentially dangerous.
+=== Safety
+
+This cop's autocorrection is unsafe because it's potentially dangerous.
 If using a stream, like `JSON.load(open('file'))`, it will need to call
 `#read` manually, like `JSON.parse(open('file').read)`.
 If reading single values (rather than proper JSON objects), like
@@ -59,16 +141,6 @@ JSON.restore("{}")
 JSON.parse("{}")
 ----
 
-=== Configurable attributes
-
-|===
-| Name | Default value | Configurable values
-
-| AutoCorrect
-| `false`
-| Boolean
-|===
-
 === References
 
 * https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load
@@ -76,7 +148,7 @@ JSON.parse("{}")
 == Security/MarshalLoad
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -85,7 +157,7 @@ JSON.parse("{}")
 | -
 |===
 
-This cop checks for the use of Marshal class methods which have
+Checks for the use of Marshal class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
 
@@ -111,7 +183,7 @@ Marshal.load(Marshal.dump({}))
 == Security/Open
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -120,7 +192,8 @@ Marshal.load(Marshal.dump({}))
 | 1.0
 |===
 
-This cop checks for the use of `Kernel#open` and `URI.open`.
+Checks for the use of `Kernel#open` and `URI.open` with dynamic
+data.
 
 `Kernel#open` and `URI.open` enable not only file access but also process
 invocation by prefixing a pipe symbol (e.g., `open("| ls")`).
@@ -128,24 +201,38 @@ So, it may lead to a serious security risk by using variable input to
 the argument of `Kernel#open` and `URI.open`. It would be better to use
 `File.open`, `IO.popen` or `URI.parse#open` explicitly.
 
+NOTE: `open` and `URI.open` with literal strings are not flagged by this
+cop.
+
+=== Safety
+
+This cop could register false positives if `open` is redefined
+in a class and then used without a receiver in that class.
+
 === Examples
 
 [source,ruby]
 ----
 # bad
 open(something)
+open("| #{something}")
 URI.open(something)
 
 # good
 File.open(something)
 IO.popen(something)
 URI.parse(something).open
+
+# good (literal strings)
+open("foo.text")
+open("| foo")
+URI.open("http://example.com")
 ----
 
 == Security/YAMLLoad
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -154,20 +241,29 @@ URI.parse(something).open
 | -
 |===
 
-This cop checks for the use of YAML class methods which have
+Checks for the use of YAML class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
+
+NOTE: Ruby 3.1+ (Psych 4) uses `Psych.load` as `Psych.safe_load` by default.
+
+=== Safety
+
+The behavior of the code might change depending on what was
+in the YAML payload, since `YAML.safe_load` is more restrictive.
 
 === Examples
 
 [source,ruby]
 ----
 # bad
-YAML.load("--- foo")
+YAML.load("--- !ruby/object:Foo {}") # Psych 3 is unsafe by default
 
 # good
-YAML.safe_load("--- foo")
-YAML.dump("foo")
+YAML.safe_load("--- !ruby/object:Foo {}", [Foo])                    # Ruby 2.5  (Psych 3)
+YAML.safe_load("--- !ruby/object:Foo {}", permitted_classes: [Foo]) # Ruby 3.0- (Psych 3)
+YAML.load("--- !ruby/object:Foo {}", permitted_classes: [Foo])      # Ruby 3.1+ (Psych 4)
+YAML.dump(foo)
 ----
 
 === References

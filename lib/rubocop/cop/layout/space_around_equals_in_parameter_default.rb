@@ -47,7 +47,8 @@ module RuboCop
           space_on_both_sides = space_on_both_sides?(arg, equals)
           no_surrounding_space = no_surrounding_space?(arg, equals)
 
-          if style == :space && space_on_both_sides || style == :no_space && no_surrounding_space
+          if (style == :space && space_on_both_sides) ||
+             (style == :no_space && no_surrounding_space)
             correct_style_detected
           else
             incorrect_style_detected(arg, value)

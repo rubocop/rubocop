@@ -46,7 +46,7 @@ module RuboCop
             visit_depth_last(@node) { |child| calculate_node(child) }
 
             [
-              Math.sqrt(@assignment**2 + @branch**2 + @condition**2).round(2),
+              Math.sqrt((@assignment**2) + (@branch**2) + (@condition**2)).round(2),
               "<#{@assignment}, #{@branch}, #{@condition}>"
             ]
           end
@@ -96,13 +96,12 @@ module RuboCop
           end
 
           def compound_assignment(node)
-            # Methods setter can not be detected for multiple assignments
+            # Methods setter cannot be detected for multiple assignments
             # and shorthand assigns, so we'll count them here instead
             children = node.masgn_type? ? node.children[0].children : node.children
 
             will_be_miscounted = children.count do |child|
-              child.respond_to?(:setter_method?) &&
-                !child.setter_method?
+              child.respond_to?(:setter_method?) && !child.setter_method?
             end
             @assignment += will_be_miscounted
 

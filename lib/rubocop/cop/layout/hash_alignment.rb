@@ -180,14 +180,17 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MESSAGES = { KeyAlignment => 'Align the keys of a hash literal if ' \
-                      'they span more than one line.',
-                     SeparatorAlignment => 'Align the separators of a hash ' \
-                       'literal if they span more than one line.',
-                     TableAlignment => 'Align the keys and values of a hash ' \
-                       'literal if they span more than one line.',
-                     KeywordSplatAlignment => 'Align keyword splats with the ' \
-                       'rest of the hash if it spans more than one line.' }.freeze
+        MESSAGES = {
+          KeyAlignment => 'Align the keys of a hash literal if they span more than one line.',
+          SeparatorAlignment => 'Align the separators of a hash literal if they span more than ' \
+                                'one line.',
+          TableAlignment => 'Align the keys and values of a hash literal if they span more than ' \
+                            'one line.',
+          KeywordSplatAlignment => 'Align keyword splats with the rest of the hash if it spans ' \
+                                   'more than one line.'
+        }.freeze
+
+        SEPARATOR_ALIGNMENT_STYLES = %w[EnforcedColonStyle EnforcedHashRocketStyle].freeze
 
         def on_send(node)
           return if double_splat?(node)
@@ -212,18 +215,27 @@ module RuboCop
           check_pairs(node)
         end
 
-        attr_accessor :offences_by, :column_deltas
+        attr_accessor :offenses_by, :column_deltas
 
         private
 
         def autocorrect_incompatible_with_other_cops?(node)
-          enforce_first_argument_with_fixed_indentation? &&
-            node.pairs.any? &&
-            node.parent&.call_type? && node.parent.loc.line == node.pairs.first.loc.line
+          return false unless enforce_first_argument_with_fixed_indentation? &&
+                              node.pairs.any? &&
+                              node.parent&.call_type?
+
+          left_sibling = argument_before_hash(node)
+          parent_loc = node.parent.loc
+          selector = left_sibling || parent_loc.selector || parent_loc.expression
+          same_line?(selector, node.pairs.first)
+        end
+
+        def argument_before_hash(hash_node)
+          hash_node.left_sibling.respond_to?(:loc) ? hash_node.left_sibling : nil
         end
 
         def reset!
-          self.offences_by = {}
+          self.offenses_by = {}
           self.column_deltas = Hash.new { |hash, key| hash[key] = {} }
         end
 
@@ -247,33 +259,33 @@ module RuboCop
             end
           end
 
-          add_offences
+          add_offenses
         end
 
-        def add_offences
-          kwsplat_offences = offences_by.delete(KeywordSplatAlignment)
-          register_offences_with_format(kwsplat_offences, KeywordSplatAlignment)
+        def add_offenses
+          kwsplat_offenses = offenses_by.delete(KeywordSplatAlignment)
+          register_offenses_with_format(kwsplat_offenses, KeywordSplatAlignment)
 
-          format, offences = offences_by.min_by { |_, v| v.length }
-          register_offences_with_format(offences, format)
+          format, offenses = offenses_by.min_by { |_, v| v.length }
+          register_offenses_with_format(offenses, format)
         end
 
-        def register_offences_with_format(offences, format)
-          (offences || []).each do |offence|
-            add_offense(offence, message: MESSAGES[format]) do |corrector|
-              delta = column_deltas[alignment_for(offence).first.class][offence]
+        def register_offenses_with_format(offenses, format)
+          (offenses || []).each do |offense|
+            add_offense(offense, message: MESSAGES[format]) do |corrector|
+              delta = column_deltas[alignment_for(offense).first.class][offense]
 
-              correct_node(corrector, offence, delta) unless delta.nil?
+              correct_node(corrector, offense, delta) unless delta.nil?
             end
           end
         end
 
         def check_delta(delta, node:, alignment:)
-          offences_by[alignment.class] ||= []
+          offenses_by[alignment.class] ||= []
           return if good_alignment? delta
 
           column_deltas[alignment.class][node] = delta
-          offences_by[alignment.class].push(node)
+          offenses_by[alignment.class].push(node)
         end
 
         def ignore_hash_argument?(node)
@@ -308,7 +320,7 @@ module RuboCop
           # just give each lambda the same reference and they would all get the
           # last value of each. A local variable fixes the problem.
 
-          if node.value
+          if node.value && node.respond_to?(:value_omission?) && !node.value_omission?
             correct_key_value(corrector, delta, node.key.source_range,
                               node.value.source_range,
                               node.loc.operator)

@@ -3,8 +3,15 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks if empty lines around the bodies of blocks match
+      # Checks if empty lines around the bodies of blocks match
       # the configuration.
+      #
+      # @example EnforcedStyle: no_empty_lines (default)
+      #   # good
+      #
+      #   foo do |bar|
+      #     # ...
+      #   end
       #
       # @example EnforcedStyle: empty_lines
       #   # good
@@ -13,13 +20,6 @@ module RuboCop
       #
       #     # ...
       #
-      #   end
-      #
-      # @example EnforcedStyle: no_empty_lines (default)
-      #   # good
-      #
-      #   foo do |bar|
-      #     # ...
       #   end
       class EmptyLinesAroundBlockBody < Base
         include EmptyLinesAroundBody
@@ -32,6 +32,8 @@ module RuboCop
 
           check(node, node.body, adjusted_first_line: first_line)
         end
+
+        alias on_numblock on_block
       end
     end
   end

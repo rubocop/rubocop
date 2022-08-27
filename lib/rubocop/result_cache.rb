@@ -4,13 +4,21 @@ require 'digest/sha1'
 require 'find'
 require 'etc'
 require 'zlib'
+require_relative 'cache_config'
 
 module RuboCop
-  # Provides functionality for caching rubocop runs.
+  # Provides functionality for caching RuboCop runs.
   # @api private
   class ResultCache
-    NON_CHANGING = %i[color format formatters out debug fail_level auto_correct
+    NON_CHANGING = %i[color format formatters out debug fail_level
+                      fix_layout autocorrect safe_autocorrect autocorrect_all
                       cache fail_fast stdin parallel].freeze
+
+    DL_EXTENSIONS = ::RbConfig::CONFIG
+                    .values_at('DLEXT', 'DLEXT2')
+                    .reject { |ext| !ext || ext.empty? }
+                    .map    { |ext| ".#{ext}" }
+                    .freeze
 
     # Remove old files so that the cache doesn't grow too big. When the
     # threshold MaxFilesInCache has been exceeded, the oldest 50% of all the
@@ -45,7 +53,7 @@ module RuboCop
       def remove_oldest_files(files, dirs, cache_root, verbose)
         # Add 1 to half the number of files, so that we remove the file if
         # there's only 1 left.
-        remove_count = 1 + files.length / 2
+        remove_count = 1 + (files.length / 2)
         puts "Removing the #{remove_count} oldest files from #{cache_root}" if verbose
         sorted = files.sort_by { |path| File.mtime(path) }
         remove_files(sorted, dirs, remove_count)
@@ -66,16 +74,9 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = ENV['RUBOCOP_CACHE_ROOT']
-      root ||= config_store.for_pwd.for_all_cops['CacheRootDirectory']
-      root ||= if ENV.key?('XDG_CACHE_HOME')
-                 # Include user ID in the path to make sure the user has write
-                 # access.
-                 File.join(ENV['XDG_CACHE_HOME'], Process.uid.to_s)
-               else
-                 File.join(ENV['HOME'], '.cache')
-               end
-      File.join(root, 'rubocop_cache')
+      CacheConfig.root_dir do
+        config_store.for_pwd.for_all_cops['CacheRootDirectory']
+      end
     end
 
     def self.allow_symlinks_in_cache_location?(config_store)
@@ -170,7 +171,7 @@ module RuboCop
       attr_accessor :source_checksum, :inhibit_cleanup
     end
 
-    # The checksum of the rubocop program running the inspection.
+    # The checksum of the RuboCop program running the inspection.
     def rubocop_checksum
       ResultCache.source_checksum ||=
         begin
@@ -179,12 +180,22 @@ module RuboCop
             .select { |path| File.file?(path) }
             .sort!
             .each do |path|
-              content = File.open(path, 'rb', &:read)
-              digest << Zlib.crc32(content).to_s # mtime not reliable
+              digest << digest(path)
             end
           digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
           digest.hexdigest
         end
+    end
+
+    def digest(path)
+      content = if path.end_with?(*DL_EXTENSIONS)
+                  # Shared libraries often contain timestamps of when
+                  # they were compiled and other non-stable data.
+                  File.basename(path)
+                else
+                  File.binread(path) # mtime not reliable
+                end
+      Zlib.crc32(content).to_s
     end
 
     def rubocop_extra_features

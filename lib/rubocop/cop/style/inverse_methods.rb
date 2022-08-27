@@ -3,13 +3,20 @@
 module RuboCop
   module Cop
     module Style
-      # This cop check for usages of not (`not` or `!`) called on a method
+      # Check for usages of not (`not` or `!`) called on a method
       # when an inverse of that method can be used instead.
+      #
       # Methods that can be inverted by a not (`not` or `!`) should be defined
-      # in `InverseMethods`
+      # in `InverseMethods`.
+      #
       # Methods that are inverted by inverting the return
       # of the block that is passed to the method should be defined in
-      # `InverseBlocks`
+      # `InverseBlocks`.
+      #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the method
+      #   and its inverse method are both defined on receiver, and also are
+      #   actually inverse of each other.
       #
       # @example
       #   # bad
@@ -52,18 +59,18 @@ module RuboCop
         def_node_matcher :inverse_candidate?, <<~PATTERN
           {
             (send $(send $(...) $_ $...) :!)
-            (send (block $(send $(...) $_) $...) :!)
+            (send ({block numblock} $(send $(...) $_) $...) :!)
             (send (begin $(send $(...) $_ $...)) :!)
           }
         PATTERN
 
         # @!method inverse_block?(node)
         def_node_matcher :inverse_block?, <<~PATTERN
-          (block $(send (...) $_) ... { $(send ... :!)
-                                        $(send (...) {:!= :!~} ...)
-                                        (begin ... $(send ... :!))
-                                        (begin ... $(send (...) {:!= :!~} ...))
-                                      })
+          ({block numblock} $(send (...) $_) ... { $(send ... :!)
+                                                   $(send (...) {:!= :!~} ...)
+                                                   (begin ... $(send ... :!))
+                                                   (begin ... $(send (...) {:!= :!~} ...))
+                                                 })
         PATTERN
 
         def on_send(node)
@@ -87,13 +94,15 @@ module RuboCop
 
             # Inverse method offenses inside of the block of an inverse method
             # offense, such as `y.reject { |key, _value| !(key =~ /c\d/) }`,
-            # can cause auto-correction to apply improper corrections.
+            # can cause autocorrection to apply improper corrections.
             ignore_node(block)
             add_offense(node, message: message(method, inverse_blocks[method])) do |corrector|
               correct_inverse_block(corrector, node)
             end
           end
         end
+
+        alias on_numblock on_block
 
         private
 

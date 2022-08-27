@@ -38,7 +38,7 @@ module RuboCop
     #       'Avoid chaining a method call on a do...end block.'
     #     )
     #
-    # Auto-correction can be tested using `expect_correction` after
+    # Autocorrection can be tested using `expect_correction` after
     # `expect_offense`.
     #
     # @example `expect_offense` and `expect_correction`
@@ -58,7 +58,7 @@ module RuboCop
     # that there were no offenses. The `expect_offense` method has
     # to do more work by parsing out lines that contain carets.
     #
-    # If the code produces an offense that could not be auto-corrected, you can
+    # If the code produces an offense that could not be autocorrected, you can
     # use `expect_no_corrections` after `expect_offense`.
     #
     # @example `expect_offense` and `expect_no_corrections`
@@ -126,7 +126,7 @@ module RuboCop
         @offenses
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
       def expect_correction(correction, loop: true, source: nil)
         if source
           expected_annotations = parse_annotations(source, raise_error: false)
@@ -135,6 +135,8 @@ module RuboCop
         end
 
         raise '`expect_correction` must follow `expect_offense`' unless @processed_source
+
+        source = @processed_source.raw_source
 
         iteration = 0
         new_source = loop do
@@ -155,9 +157,11 @@ module RuboCop
           _investigate(cop, @processed_source)
         end
 
+        raise 'Use `expect_no_corrections` if the code will not change' if new_source == source
+
         expect(new_source).to eq(correction)
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
 
       def expect_no_corrections
         raise '`expect_no_corrections` must follow `expect_offense`' unless @processed_source
@@ -195,13 +199,13 @@ module RuboCop
         return processed_source if processed_source.valid_syntax?
 
         raise 'Error parsing example code: ' \
-          "#{processed_source.diagnostics.map(&:render).join("\n")}"
+              "#{processed_source.diagnostics.map(&:render).join("\n")}"
       end
 
       def set_formatter_options
         RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
         RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-        cop.instance_variable_get(:@options)[:auto_correct] = true
+        cop.instance_variable_get(:@options)[:autocorrect] = true
       end
 
       # Parsed representation of code annotated with the `^^^ Message` style

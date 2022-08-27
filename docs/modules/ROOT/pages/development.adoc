@@ -2,10 +2,13 @@
 
 This section of the documentation will teach you how to develop new cops.  We'll
 start with generating a cop template and then we'll address the various aspects
-of its implementation (interacting with the AST, auto-correct, configuration)
+of its implementation (interacting with the AST, autocorrect, configuration)
 and testing.
 
 == Create a new cop
+
+NOTE: Clone the repository and run `bundle install` if not done yet.
+The following rake task can only be run inside the rubocop project directory itself.
 
 Use the bundled rake task `new_cop` to generate a cop template:
 
@@ -19,11 +22,14 @@ File modified:
   - `require_relative 'rubocop/cop/department/name'` added into lib/rubocop.rb
   - A configuration for the cop is added into config/default.yml
 
-Do 3 steps:
-  1. Add an entry to the "New features" section in CHANGELOG.md,
-     e.g. "Add new `Department/Name` cop. ([@your_id][])"
-  2. Modify the description of Department/Name in config/default.yml
-  3. Implement your new cop in the generated file!
+Do 4 steps:
+  1. Modify the description of Department/Name in config/default.yml
+  2. Implement your new cop in the generated file!
+  3. Commit your new cop with a message such as
+     e.g. "Add new `Department/Name` cop"
+  4. Run `bundle exec rake changelog:new` to generate a changelog entry
+     for your new cop.
+
 ----
 
 == Basics
@@ -293,9 +299,9 @@ offense messages with `[...]`:
 end
 ----
 
-=== Auto-correct
+=== Autocorrect
 
-The auto-correct can help humans automatically fix offenses that have been detected.
+The autocorrect can help humans automatically fix offenses that have been detected.
 It's necessary to `extend AutoCorrector`.
 The method `add_offense` yields a corrector object that is a thin wrapper on
 https://www.rubydoc.info/gems/parser/Parser/Source/TreeRewriter[parser's TreeRewriter]

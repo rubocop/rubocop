@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of `fail` and `raise`.
+      # Checks for uses of `fail` and `raise`.
       #
       # @example EnforcedStyle: only_raise (default)
       #   # The `only_raise` style enforces the sole use of `raise`.

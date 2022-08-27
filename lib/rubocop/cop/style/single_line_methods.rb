@@ -3,13 +3,13 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for single-line method definitions that contain a body.
+      # Checks for single-line method definitions that contain a body.
       # It will accept single-line methods with no body.
       #
       # Endless methods added in Ruby 3.0 are also accepted by this cop.
       #
       # If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow_single_line` or
-      # `allow_always`, single-line methods will be auto-corrected to endless
+      # `allow_always`, single-line methods will be autocorrected to endless
       # methods if there is only one statement in the body.
       #
       # @example
@@ -36,6 +36,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Avoid single-line method definitions.'
+        NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES = %i[return break next].freeze
 
         def on_def(node)
           return unless node.single_line?
@@ -62,29 +63,24 @@ module RuboCop
 
         def correct_to_endless?(body_node)
           return false if target_ruby_version < 3.0
-
-          endless_method_config = config.for_cop('Style/EndlessMethod')
-
-          return false unless endless_method_config['Enabled']
-          return false if endless_method_config['EnforcedStyle'] == 'disallow'
+          return false if disallow_endless_method_style?
           return false unless body_node
-          return false if body_node.parent.assignment_method?
+          return false if body_node.parent.assignment_method? ||
+                          NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES.include?(body_node.type)
 
           !(body_node.begin_type? || body_node.kwbegin_type?)
         end
 
         def correct_to_multiline(corrector, node)
-          each_part(node.body) do |part|
-            LineBreakCorrector.break_line_before(
-              range: part, node: node, corrector: corrector,
-              configured_width: configured_indentation_width
-            )
+          if (body = node.body) && body.begin_type? && body.parenthesized_call?
+            break_line_before(corrector, node, body)
+          else
+            each_part(body) do |part|
+              break_line_before(corrector, node, part)
+            end
           end
 
-          LineBreakCorrector.break_line_before(
-            range: node.loc.end, node: node, corrector: corrector,
-            indent_steps: 0, configured_width: configured_indentation_width
-          )
+          break_line_before(corrector, node, node.loc.end, indent_steps: 0)
 
           move_comment(node, corrector)
         end
@@ -96,6 +92,13 @@ module RuboCop
           replacement = "def #{self_receiver}#{node.method_name}#{arguments} = #{body_source}"
 
           corrector.replace(node, replacement)
+        end
+
+        def break_line_before(corrector, node, range, indent_steps: 1)
+          LineBreakCorrector.break_line_before(
+            range: range, node: node, corrector: corrector,
+            configured_width: configured_indentation_width, indent_steps: indent_steps
+          )
         end
 
         def each_part(body)
@@ -128,6 +131,13 @@ module RuboCop
 
         def require_parentheses?(method_body)
           method_body.send_type? && !method_body.arguments.empty? && !method_body.comparison_method?
+        end
+
+        def disallow_endless_method_style?
+          endless_method_config = config.for_cop('Style/EndlessMethod')
+          return false unless endless_method_config['Enabled']
+
+          endless_method_config['EnforcedStyle'] == 'disallow'
         end
       end
     end

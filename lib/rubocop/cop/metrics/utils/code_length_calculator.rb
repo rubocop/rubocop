@@ -30,8 +30,8 @@ module RuboCop
 
               descendant_length = code_length(descendant)
               length = length - descendant_length + 1
-              # Subtract 2 length of opening and closing brace if method argument omits hash braces.
-              length -= 2 if descendant.hash_type? && !descendant.braces?
+              # Subtract length of opening and closing brace if method argument omits hash braces.
+              length -= omit_length(descendant) if descendant.hash_type? && !descendant.braces?
             end
 
             length
@@ -49,8 +49,8 @@ module RuboCop
               when :heredoc
                 ->(node) { heredoc_node?(node) }
               else
-                raise ArgumentError, "Unknown foldable type: #{type.inspect}. "\
-                  "Valid foldable types are: #{FOLDABLE_TYPES.join(', ')}."
+                raise ArgumentError, "Unknown foldable type: #{type.inspect}. " \
+                                     "Valid foldable types are: #{FOLDABLE_TYPES.join(', ')}."
               end
             end
           end
@@ -135,7 +135,7 @@ module RuboCop
 
           def extract_body(node)
             case node.type
-            when :class, :module, :block, :def, :defs
+            when :class, :module, :block, :numblock, :def, :defs
               node.body
             when :casgn
               _scope, _name, value = *node
@@ -147,11 +147,30 @@ module RuboCop
 
           # Returns true for lines that shall not be included in the count.
           def irrelevant_line?(source_line)
-            source_line.blank? || !count_comments? && comment_line?(source_line)
+            source_line.blank? || (!count_comments? && comment_line?(source_line))
           end
 
           def count_comments?
             @count_comments
+          end
+
+          def omit_length(descendant)
+            parent = descendant.parent
+            return 0 if another_args?(parent)
+            return 0 unless parenthesized?(parent)
+
+            [
+              parent.loc.begin.end_pos != descendant.loc.expression.begin_pos,
+              parent.loc.end.begin_pos != descendant.loc.expression.end_pos
+            ].count(true)
+          end
+
+          def parenthesized?(node)
+            node.call_type? && node.parenthesized?
+          end
+
+          def another_args?(node)
+            node.call_type? && node.arguments.count > 1
           end
         end
       end

@@ -12,8 +12,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
     let(:file) { '/path/to/file' }
 
     let(:offense) do
-      RuboCop::Cop::Offense.new(:convention, location,
-                                'This is a message.', 'CopName', status)
+      RuboCop::Cop::Offense.new(:convention, location, 'This is a message.', 'CopName', status)
     end
 
     let(:source) { ('aa'..'az').to_a.join($RS) }

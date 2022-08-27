@@ -37,7 +37,7 @@ module RuboCop
       class IfUnlessModifier < Base
         include StatementModifier
         include LineLengthHelp
-        include IgnoredPattern
+        include AllowedPattern
         include RangeHelp
         extend AutoCorrector
 
@@ -87,15 +87,16 @@ module RuboCop
             !another_statement_on_same_line?(node)
         end
 
-        def ignored_patterns
-          config.for_cop('Layout/LineLength')['IgnoredPatterns'] || []
+        def allowed_patterns
+          line_length_config = config.for_cop('Layout/LineLength')
+          line_length_config['AllowedPatterns'] || line_length_config['IgnoredPatterns'] || []
         end
 
         def too_long_single_line?(node)
           return false unless max_line_length
 
           range = node.source_range
-          return false unless range.first_line == range.last_line
+          return false unless range.single_line?
           return false unless line_length_enabled_at_line?(range.first_line)
 
           line = range.source_line
@@ -105,7 +106,7 @@ module RuboCop
         end
 
         def too_long_line_based_on_config?(range, line)
-          return false if matches_ignored_pattern?(line)
+          return false if matches_allowed_pattern?(line)
 
           too_long = too_long_line_based_on_ignore_cop_directives?(range, line)
           return too_long unless too_long == :undetermined

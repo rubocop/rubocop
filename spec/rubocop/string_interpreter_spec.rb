@@ -4,7 +4,7 @@ RSpec.describe RuboCop::StringInterpreter do
   describe '.interpret' do
     shared_examples 'simple escape' do |escaped|
       it "handles #{escaped}" do
-        expect(described_class.interpret(escaped)).to eq escaped[1..-1]
+        expect(described_class.interpret(escaped)).to eq escaped[1..]
       end
     end
 

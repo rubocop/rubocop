@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for missing documentation comment for public methods.
+      # Checks for missing documentation comment for public methods.
       # It can optionally be configured to also require documentation for
       # non-public methods.
       #

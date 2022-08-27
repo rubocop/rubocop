@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Metrics
-      # This cop tries to produce a complexity score that's a measure of the
+      # Tries to produce a complexity score that's a measure of the
       # complexity the reader experiences when looking at a method. For that
       # reason it considers `when` nodes as something that doesn't add as much
       # complexity as an `if` or a `&&`. Except if it's one of those special
@@ -45,7 +45,7 @@ module RuboCop
             else
               # Otherwise, the case node gets 0.8 complexity points and each
               # when gets 0.2.
-              (0.8 + 0.2 * nb_branches).round
+              (0.8 + (0.2 * nb_branches)).round
             end
           when :if
             node.else? && !node.elsif? ? 2 : 1

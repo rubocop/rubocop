@@ -41,15 +41,15 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
 
   it 'correctly corrects when method already has an explicit block argument' do
     expect_offense(<<~RUBY)
-      def m(&block)
+      def m(&blk)
         items.something { |i| yield i }
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
       end
     RUBY
 
     expect_correction(<<~RUBY)
-      def m(&block)
-        items.something(&block)
+      def m(&blk)
+        items.something(&blk)
       end
     RUBY
   end
@@ -188,6 +188,51 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     expect_no_offenses(<<~RUBY)
       render("partial") do
         yield
+      end
+    RUBY
+  end
+
+  it 'does not add extra parens when correcting' do
+    expect_offense(<<~RUBY)
+      def my_method()
+        foo() { yield }
+        ^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY, loop: false)
+      def my_method(&block)
+        foo(&block)
+      end
+    RUBY
+  end
+
+  it 'does not add extra parens to `super` when correcting' do
+    expect_offense(<<~RUBY)
+      def my_method
+        super() { yield }
+        ^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY, loop: false)
+      def my_method(&block)
+        super(&block)
+      end
+    RUBY
+  end
+
+  it 'adds to the existing arguments when correcting' do
+    expect_offense(<<~RUBY)
+      def my_method(x)
+        foo(x) { yield }
+        ^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def my_method(x, &block)
+        foo(x, &block)
       end
     RUBY
   end

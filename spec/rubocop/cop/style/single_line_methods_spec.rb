@@ -32,6 +32,19 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
+  it 'registers an offense for a single-line method and method body is enclosed in parentheses' do
+    expect_offense(<<~RUBY)
+      def foo() (do_something) end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo()#{trailing_whitespace}
+        (do_something)#{trailing_whitespace}
+      end
+    RUBY
+  end
+
   context 'when AllowIfMethodIsEmpty is disabled' do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
 
@@ -83,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with semicolon after method name' do
+  it 'autocorrects def with semicolon after method name' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method; body end # Cmnt
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -97,7 +110,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects defs with parentheses after method name' do
+  it 'autocorrects defs with parentheses after method name' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def self.some_method() body end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -110,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with argument in parentheses' do
+  it 'autocorrects def with argument in parentheses' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method(arg) body end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -123,7 +136,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with argument and no parentheses' do
+  it 'autocorrects def with argument and no parentheses' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method arg; body end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -136,7 +149,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     RUBY
   end
 
-  it 'auto-corrects def with semicolon before end' do
+  it 'autocorrects def with semicolon before end' do
     expect_offense(<<-RUBY.strip_margin('|'))
       |  def some_method; b1; b2; end
       |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid single-line method definitions.
@@ -217,6 +230,30 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
             def #{op}(other) = self #{op} other
           RUBY
         end
+      end
+
+      it 'does not to an endless class method definition when using `return`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) return bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            return bar(argument);#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'does not to an endless class method definition when using `break`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) break bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            break bar(argument);#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'does not to an endless class method definition when using `next`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) next bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            next bar(argument);#{trailing_whitespace}
+          end
+        RUBY
       end
 
       # NOTE: Setter method cannot be defined in the endless method definition.

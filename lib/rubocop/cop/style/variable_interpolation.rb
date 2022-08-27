@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for variable interpolation (like "#@ivar").
+      # Checks for variable interpolation (like "#@ivar").
       #
       # @example
       #   # bad

@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
     end
 
     it 'registers an offense and corrects the emacs ruby-mode 1.1 ' \
-      'indentation of an expression in an array' do
+       'indentation of an expression in an array' do
       expect_offense(<<~RUBY)
         [
          a.
@@ -310,13 +310,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         RUBY
       end
 
-      context 'target_ruby_version >= 2.5', :ruby25 do
-        it 'accepts key access to hash' do
-          expect_no_offenses(<<~RUBY)
-            hash[key] { 10 / 0 }
-              .fmap { |x| x * 3 }
-          RUBY
-        end
+      it 'accepts key access to hash' do
+        expect_no_offenses(<<~RUBY)
+          hash[key] { 10 / 0 }
+            .fmap { |x| x * 3 }
+        RUBY
       end
 
       it 'accepts 3 aligned methods' do
@@ -357,6 +355,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
             b.c
              .d
           end
+        RUBY
+      end
+
+      it 'accepts nested method calls' do
+        expect_no_offenses(<<~RUBY)
+          expect { post :action, params: params, format: :json }.to change { Foo.bar }.by(0)
+                                                                .and change { Baz.quux }.by(0)
+                                                                .and raise_error(StandardError)
         RUBY
       end
     end
@@ -773,7 +779,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
     end
 
     it 'registers an offense and corrects the emacs ruby-mode 1.1 ' \
-      'indentation of an expression in an array' do
+       'indentation of an expression in an array' do
       expect_offense(<<~RUBY)
         [
          a.
@@ -982,6 +988,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       it "accepts indentation of assignment to #{lhs} with newline after =" do
         expect_no_offenses(<<~RUBY)
           #{lhs} =
+            int_part
+              .abs
+              .to_s
+        RUBY
+      end
+
+      it "accepts indentation of assignment to obj.#{lhs} with newline after =" do
+        expect_no_offenses(<<~RUBY)
+          obj.#{lhs} =
             int_part
               .abs
               .to_s

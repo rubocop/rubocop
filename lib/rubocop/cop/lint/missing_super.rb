@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for the presence of constructors and lifecycle callbacks
+      # Checks for the presence of constructors and lifecycle callbacks
       # without calls to `super`.
       #
       # This cop does not consider `method_missing` (and `respond_to_missing?`)

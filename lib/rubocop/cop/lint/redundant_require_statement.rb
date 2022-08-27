@@ -24,6 +24,9 @@ module RuboCop
       class RedundantRequireStatement < Base
         include RangeHelp
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.2
 
         MSG = 'Remove unnecessary `require` statement.'
         RESTRICT_ON_SEND = %i[require].freeze
@@ -38,7 +41,7 @@ module RuboCop
           return unless unnecessary_require_statement?(node)
 
           add_offense(node) do |corrector|
-            range = range_with_surrounding_space(range: node.loc.expression, side: :right)
+            range = range_with_surrounding_space(node.loc.expression, side: :right)
 
             corrector.remove(range)
           end

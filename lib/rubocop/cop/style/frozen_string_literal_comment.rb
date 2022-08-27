@@ -3,12 +3,23 @@
 module RuboCop
   module Cop
     module Style
-      # This cop is designed to help you transition from mutable string literals
+      # Helps you transition from mutable string literals
       # to frozen string literals.
-      # It will add the comment `# frozen_string_literal: true` to the top of
-      # files to enable frozen string literals. Frozen string literals may be
+      # It will add the `# frozen_string_literal: true` magic comment to the top
+      # of files to enable frozen string literals. Frozen string literals may be
       # default in future Ruby. The comment will be added below a shebang and
-      # encoding comment.
+      # encoding comment. The frozen string literal comment is only valid in Ruby 2.3+.
+      #
+      # Note that the cop will accept files where the comment exists but is set
+      # to `false` instead of `true`.
+      #
+      # To require a blank line after this comment, please see
+      # `Layout/EmptyLineAfterMagicComment` cop.
+      #
+      # @safety
+      #  This cop's autocorrection is unsafe since any strings mutations will
+      #  change from being accepted to raising `FrozenError`, as all strings
+      #  will become frozen by default, and will need to be manually refactored.
       #
       # @example EnforcedStyle: always (default)
       #   # The `always` style will always add the frozen string literal comment
@@ -75,6 +86,9 @@ module RuboCop
         include FrozenStringLiteral
         include RangeHelp
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.3
 
         MSG_MISSING_TRUE = 'Missing magic comment `# frozen_string_literal: true`.'
         MSG_MISSING = 'Missing frozen string literal comment.'
@@ -135,7 +149,7 @@ module RuboCop
 
         def frozen_string_literal_comment(processed_source)
           processed_source.find_token do |token|
-            token.text.start_with?(FrozenStringLiteral::FROZEN_STRING_LITERAL)
+            token.text.start_with?(FROZEN_STRING_LITERAL)
           end
         end
 
@@ -168,7 +182,7 @@ module RuboCop
         end
 
         def remove_comment(corrector, node)
-          corrector.remove(range_with_surrounding_space(range: node.pos, side: :right))
+          corrector.remove(range_with_surrounding_space(node.pos, side: :right))
         end
 
         def enable_comment(corrector)

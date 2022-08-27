@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for pipes for empty block parameters. Pipes for empty
+      # Checks for pipes for empty block parameters. Pipes for empty
       # block parameters do not cause syntax errors, but they are redundant.
       #
       # @example
@@ -28,7 +28,7 @@ module RuboCop
 
         MSG = 'Omit pipes for the empty block parameters.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           send_node = node.send_node
           check(node) unless send_node.send_type? && send_node.lambda_literal?
         end

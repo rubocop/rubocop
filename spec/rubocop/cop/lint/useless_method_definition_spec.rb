@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
-  let(:cop_config) { { 'AllowComments' => true } }
-
   it 'does not register an offense for empty constructor' do
     expect_no_offenses(<<~RUBY)
       class Foo

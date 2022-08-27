@@ -3,7 +3,28 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for strings that are just an interpolated expression.
+      # Checks for strings that are just an interpolated expression.
+      #
+      # @safety
+      #   Autocorrection is unsafe because when calling a destructive method to string,
+      #   the resulting string may have different behavior or raise `FrozenError`.
+      #
+      #   [source,ruby]
+      #   ----
+      #   x = 'a'
+      #   y = "#{x}"
+      #   y << 'b'   # return 'ab'
+      #   x          # return 'a'
+      #   y = x.to_s
+      #   y << 'b'   # return 'ab'
+      #   x          # return 'ab'
+      #
+      #   x = 'a'.freeze
+      #   y = "#{x}"
+      #   y << 'b'   # return 'ab'.
+      #   y = x.to_s
+      #   y << 'b'   # raise `FrozenError`.
+      #   ----
       #
       # @example
       #
@@ -56,7 +77,7 @@ module RuboCop
           first_child = node.children.first
 
           variable_interpolation?(first_child) ||
-            first_child.send_type? && !first_child.operator_method?
+            (first_child.send_type? && !first_child.operator_method?)
         end
 
         def interpolation?(node)
@@ -82,10 +103,20 @@ module RuboCop
         end
 
         def autocorrect_single_variable_interpolation(corrector, embedded_node, node)
-          variable_loc = embedded_node.children.first.loc
-          replacement = "#{variable_loc.expression.source}.to_s"
+          embedded_var = embedded_node.children.first
 
-          corrector.replace(node, replacement)
+          source = if require_parentheses?(embedded_var)
+                     receiver = range_between(
+                       embedded_var.loc.expression.begin_pos, embedded_var.loc.selector.end_pos
+                     )
+                     arguments = embedded_var.arguments.map(&:source).join(', ')
+
+                     "#{receiver.source}(#{arguments})"
+                   else
+                     embedded_var.source
+                   end
+
+          corrector.replace(node, "#{source}.to_s")
         end
 
         def autocorrect_other(corrector, embedded_node, node)
@@ -96,6 +127,10 @@ module RuboCop
           corrector.replace(loc.end, '')
           corrector.replace(embedded_loc.begin, '(')
           corrector.replace(embedded_loc.end, ').to_s')
+        end
+
+        def require_parentheses?(node)
+          node.send_type? && !node.arguments.count.zero? && !node.parenthesized_call?
         end
       end
     end

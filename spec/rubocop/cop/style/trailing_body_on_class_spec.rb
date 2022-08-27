@@ -8,14 +8,26 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass, :config do
       class Foo; body
                  ^^^^ Place the first line of class body on its own line.
       end
+      class Foo body
+                ^^^^ Place the first line of class body on its own line.
+      end
       class Bar; def bar; end
                  ^^^^^^^^^^^^ Place the first line of class body on its own line.
+      end
+      class Bar def bar; end
+                ^^^^^^^^^^^^ Place the first line of class body on its own line.
       end
     RUBY
 
     expect_correction(<<~RUBY)
       class Foo#{trailing_whitespace}
         body
+      end
+      class Foo#{trailing_whitespace}
+        body
+      end
+      class Bar#{trailing_whitespace}
+        def bar; end
       end
       class Bar#{trailing_whitespace}
         def bar; end
@@ -58,7 +70,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass, :config do
     RUBY
   end
 
-  it 'auto-corrects with comment after body' do
+  it 'autocorrects with comment after body' do
     expect_offense(<<~RUBY)
       class BarQux; foo # comment
                     ^^^ Place the first line of class body on its own line.
@@ -74,7 +86,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass, :config do
   end
 
   context 'when class is not on first line of processed_source' do
-    it 'auto-correct offense' do
+    it 'autocorrect offense' do
       expect_offense(<<-RUBY.strip_margin('|'))
         |
         |  class Foo; body#{trailing_whitespace}

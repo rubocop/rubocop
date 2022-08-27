@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the first parameter in a method
+      # Checks the indentation of the first parameter in a method
       # definition. Parameters after the first one are checked by
       # Layout/ParameterAlignment, not by this cop.
       #
@@ -48,7 +48,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
-             'in method args, relative to %<base_description>s.'
+              'in method args, relative to %<base_description>s.'
 
         def on_def(node)
           return if node.arguments.empty?
@@ -74,7 +74,7 @@ module RuboCop
           left_parenthesis = def_node.arguments.loc.begin
           first_elem = def_node.arguments.first
           return unless first_elem
-          return if first_elem.source_range.line == left_parenthesis.line
+          return if same_line?(first_elem, left_parenthesis)
 
           check_first(first_elem, left_parenthesis, nil, 0)
         end

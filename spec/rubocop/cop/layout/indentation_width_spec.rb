@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       let(:cop_config) do
         {
           'Width' => 4,
-          'IgnoredPatterns' => ['^\s*module', '^\s*(els)?if.*[A-Z][a-z]+']
+          'AllowedPatterns' => ['^\s*module', '^\s*(els)?if.*[A-Z][a-z]+']
         }
       end
 
@@ -915,6 +915,16 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'accepts aligned value in `in` clause and `else` is empty' do
+        expect_no_offenses(<<~'RUBY')
+          case x
+          in 42
+            foo
+          else
+          end
+        RUBY
+      end
+
       it 'accepts case/in/else laid out as a table' do
         expect_no_offenses(<<~RUBY)
           case sexp.loc.keyword.source
@@ -1195,9 +1205,33 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'leaves body unchanged if the first body line is on the same line with class keyword' do
+        # The class body will be corrected by IndentationConsistency.
+        expect_no_offenses(<<~RUBY)
+          class Test foo
+              def func1
+              end
+                def func2
+                end
+          end
+        RUBY
+      end
+
       it 'accepts an empty class body' do
         expect_no_offenses(<<~RUBY)
           class Test
+          end
+        RUBY
+      end
+
+      it 'leaves body unchanged if the first body line is on the same line with an opening of singleton class' do
+        # The class body will be corrected by IndentationConsistency.
+        expect_no_offenses(<<~RUBY)
+          class << self; foo
+              def func1
+              end
+                def func2
+                end
           end
         RUBY
       end
@@ -1372,6 +1406,18 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
       end
 
+      it 'leaves body unchanged if the first body line is on the same line with module keyword' do
+        # The module body will be corrected by IndentationConsistency.
+        expect_no_offenses(<<~RUBY)
+          module Test foo
+              def func1
+              end
+                def func2
+                end
+          end
+        RUBY
+      end
+
       context 'when consistency style is indented_internal_methods' do
         let(:consistency_config) { { 'EnforcedStyle' => 'indented_internal_methods' } }
 
@@ -1389,7 +1435,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           RUBY
         end
 
-        it 'accepts normal non-indented internal methods ofmodule functions' do
+        it 'accepts normal non-indented internal methods of module functions' do
           expect_no_offenses(<<~RUBY)
             module Test
               module_function
@@ -1559,6 +1605,26 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
                          derp
             ^^^^^^^^^^^^^ Use 2 (not 13) spaces for indentation.
                        end
+          RUBY
+        end
+      end
+
+      context 'Ruby 2.7', :ruby27 do
+        it 'registers an offense for bad indentation of a {} body' do
+          expect_offense(<<~RUBY)
+            func {
+               _1&.foo
+            ^^^ Use 2 (not 3) spaces for indentation.
+            }
+          RUBY
+        end
+
+        it 'registers an offense for bad indentation of a do-end body' do
+          expect_offense(<<~RUBY)
+            func do
+               _1&.foo
+            ^^^ Use 2 (not 3) spaces for indentation.
+            end
           RUBY
         end
       end

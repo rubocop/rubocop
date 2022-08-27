@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
+      # Checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
       # sequences of values to hashes.
       #
       # Correction code from splat argument (`Hash[*ary]`) is not simply determined. For example,
@@ -101,7 +101,8 @@ module RuboCop
         end
 
         def requires_parens?(node)
-          node.call_type? && node.arguments.any? && !node.parenthesized?
+          (node.call_type? && node.arguments.any? && !node.parenthesized?) ||
+            node.or_type? || node.and_type?
         end
 
         def multi_argument(node)

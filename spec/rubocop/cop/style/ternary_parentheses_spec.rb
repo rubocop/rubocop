@@ -2,11 +2,6 @@
 
 RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
   let(:redundant_parens_enabled) { false }
-  let(:other_cops) do
-    {
-      'Style/RedundantParentheses' => { 'Enabled' => redundant_parens_enabled }
-    }
-  end
 
   shared_examples 'safe assignment disabled' do |style, message|
     let(:cop_config) { { 'EnforcedStyle' => style, 'AllowSafeAssignment' => false } }
@@ -400,6 +395,32 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         RUBY
 
         expect_no_corrections
+      end
+    end
+
+    # In Ruby 2.7, `match-pattern` node represents one line pattern matching.
+    #
+    # % ruby-parse --27 -e 'foo in bar'
+    # (match-pattern (send nil :foo) (match-var :bar))
+    #
+    context 'with one line pattern matching', :ruby27 do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          (foo in bar) ? a : b
+        RUBY
+      end
+    end
+
+    # In Ruby 3.0, `match-pattern-p` node represents one line pattern matching.
+    #
+    # % ruby-parse --30 -e 'foo in bar'
+    # (match-pattern-p (send nil :foo) (match-var :bar))
+    #
+    context 'with one line pattern matching', :ruby30 do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          (foo in bar) ? a : b
+        RUBY
       end
     end
 
@@ -869,26 +890,6 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
       it 'accepts safe assignment' do
         expect_no_offenses('foo = (bar = baz == 1) ? a : b')
-      end
-    end
-  end
-
-  context 'when `RedundantParenthesis` would cause an infinite loop' do
-    let(:redundant_parens_enabled) { true }
-
-    context 'when `EnforcedStyle: require_parentheses`' do
-      let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
-
-      it 'accepts' do
-        expect_no_offenses('foo = bar? ? a : b')
-      end
-    end
-
-    context 'when `EnforcedStyle: require_parentheses_when_complex`' do
-      let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses_when_complex' } }
-
-      it 'accepts' do
-        expect_no_offenses('!condition.nil? ? foo : bar')
       end
     end
   end

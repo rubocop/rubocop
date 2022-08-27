@@ -29,26 +29,24 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     expect_no_offenses('not(something)')
   end
 
-  context 'with IgnoredMethods' do
-    context 'with a string' do
-      let(:cop_config) { { 'IgnoredMethods' => %w[s] } }
+  context 'when AllowedMethods is enabled' do
+    let(:cop_config) { { 'AllowedMethods' => %w[s] } }
 
-      it 'ignores method listed in IgnoredMethods' do
-        expect_no_offenses('s()')
-      end
+    it 'ignores method listed in AllowedMethods' do
+      expect_no_offenses('s()')
     end
+  end
 
-    context 'with a regex' do
-      let(:cop_config) { { 'IgnoredMethods' => [/test/] } }
+  context 'when AllowedPatterns is enabled' do
+    let(:cop_config) { { 'AllowedPatterns' => [/test/] } }
 
-      it 'ignores method listed in IgnoredMethods' do
-        expect_no_offenses('my_test()')
-      end
+    it 'ignores method listed in AllowedMethods' do
+      expect_no_offenses('my_test()')
     end
   end
 
   context 'assignment to a variable with the same name' do
-    it 'accepts parens in local variable assignment ' do
+    it 'accepts parens in local variable assignment' do
       expect_no_offenses('test = test()')
     end
 
@@ -114,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
 
   # These will be offenses for the EmptyLiteral cop. The autocorrect loop will
   # handle that.
-  it 'auto-corrects calls that could be empty literals' do
+  it 'autocorrects calls that could be empty literals' do
     expect_offense(<<~RUBY)
       Hash.new()
               ^^ Do not use parentheses for method calls with no arguments.

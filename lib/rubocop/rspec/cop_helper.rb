@@ -6,7 +6,7 @@ require 'tempfile'
 module CopHelper
   extend RSpec::SharedContext
 
-  let(:ruby_version) { 2.5 }
+  let(:ruby_version) { 2.6 }
   let(:rails_version) { false }
 
   def inspect_source(source, file = nil)
@@ -15,7 +15,7 @@ module CopHelper
     processed_source = parse_source(source, file)
     unless processed_source.valid_syntax?
       raise 'Error parsing example code: ' \
-        "#{processed_source.diagnostics.map(&:render).join("\n")}"
+            "#{processed_source.diagnostics.map(&:render).join("\n")}"
     end
 
     _investigate(cop, processed_source)
@@ -38,7 +38,7 @@ module CopHelper
   def autocorrect_source(source, file = nil)
     RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
     RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-    cop.instance_variable_get(:@options)[:auto_correct] = true
+    cop.instance_variable_get(:@options)[:autocorrect] = true
     processed_source = parse_source(source, file)
     _investigate(cop, processed_source)
 
@@ -49,7 +49,7 @@ module CopHelper
     team = RuboCop::Cop::Team.new([cop], nil, raise_error: true)
     report = team.investigate(processed_source)
     @last_corrector = report.correctors.first || RuboCop::Cop::Corrector.new(processed_source)
-    report.offenses
+    report.offenses.reject(&:disabled?)
   end
 end
 

@@ -13,7 +13,7 @@ module RuboCop
       #
       #   # bad
       #   Gem::Specification.new do |spec|
-      #     if RUBY_VERSION >= '2.5'
+      #     if RUBY_VERSION >= '3.0'
       #       spec.add_runtime_dependency 'gem_a'
       #     else
       #       spec.add_runtime_dependency 'gem_b'
@@ -26,19 +26,12 @@ module RuboCop
       #   end
       #
       class RubyVersionGlobalsUsage < Base
+        include GemspecHelp
+
         MSG = 'Do not use `RUBY_VERSION` in gemspec file.'
 
         # @!method ruby_version?(node)
         def_node_matcher :ruby_version?, '(const {cbase nil?} :RUBY_VERSION)'
-
-        # @!method gem_specification?(node)
-        def_node_search :gem_specification?, <<~PATTERN
-          (block
-            (send
-              (const
-                (const {cbase nil?} :Gem) :Specification) :new)
-            ...)
-        PATTERN
 
         def on_const(node)
           return unless gem_spec_with_ruby_version?(node)
@@ -49,7 +42,7 @@ module RuboCop
         private
 
         def gem_spec_with_ruby_version?(node)
-          gem_specification?(processed_source.ast) && ruby_version?(node)
+          gem_specification(processed_source.ast) && ruby_version?(node)
         end
       end
     end

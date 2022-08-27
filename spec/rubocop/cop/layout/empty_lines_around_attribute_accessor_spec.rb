@@ -33,9 +33,144 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
-  it 'accepts code that separates a attribute accessor from the code with a newline' do
+  it 'registers an offense and corrects for an attribute accessor and comment line' do
+    expect_offense(<<~RUBY)
+      attr_accessor :foo
+      ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
+      # comment
+      def do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      attr_accessor :foo
+
+      # comment
+      def do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for some attribute accessors and comment line' do
+    expect_offense(<<~RUBY)
+      attr_accessor :foo
+      attr_reader :bar
+      attr_writer :baz
+      ^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
+      # comment
+      def do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      attr_accessor :foo
+      attr_reader :bar
+      attr_writer :baz
+
+      # comment
+      def do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for an attribute accessor and some comment line' do
+    expect_offense(<<~RUBY)
+      attr_accessor :foo
+      ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
+      # comment
+      # comment
+      def do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      attr_accessor :foo
+
+      # comment
+      # comment
+      def do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for an attribute accessor and `rubocop:disable` ' \
+     'comment line' do
+    expect_offense(<<~RUBY)
+      attr_accessor :foo
+      ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
+      # rubocop:disable Department/Cop
+      def do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      attr_accessor :foo
+
+      # rubocop:disable Department/Cop
+      def do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for an attribute accessor and `rubocop:enable` ' \
+     'comment line' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Department/Cop
+      attr_accessor :foo
+      ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
+      # rubocop:enable Department/Cop
+      def do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Department/Cop
+      attr_accessor :foo
+      # rubocop:enable Department/Cop
+
+      def do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for an attribute accessor and `rubocop:enable` ' \
+     'comment line and other comment' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable Department/Cop
+      attr_accessor :foo
+      ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
+      # rubocop:enable Department/Cop
+      # comment
+      def do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rubocop:disable Department/Cop
+      attr_accessor :foo
+      # rubocop:enable Department/Cop
+
+      # comment
+      def do_something
+      end
+    RUBY
+  end
+
+  it 'accepts code that separates an attribute accessor from the code with a newline' do
     expect_no_offenses(<<~RUBY)
       attr_accessor :foo
+
+      def do_something
+      end
+    RUBY
+  end
+
+  it 'accepts code that separates an attribute accessor from the code and `rubocop:enable` ' \
+     'comment line with a newline' do
+    expect_no_offenses(<<~RUBY)
+      # rubocop:disable Department/Cop
+      attr_accessor :foo
+      # rubocop:enable Department/Cop
 
       def do_something
       end
@@ -57,6 +192,18 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
+  it 'accepts code that separates attribute accessors from the code and comment line with a newline' do
+    expect_no_offenses(<<~RUBY)
+      attr_accessor :foo
+      attr_reader :bar
+      attr_writer :baz
+
+      # comment
+      def do_something
+      end
+    RUBY
+  end
+
   it 'accepts code when used in class definition' do
     expect_no_offenses(<<~RUBY)
       class Foo
@@ -73,7 +220,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
-  it 'does not registers an offense and corrects when using `if` ... `else` branches' do
+  it 'does not register an offense and corrects when using `if` ... `else` branches' do
     expect_no_offenses(<<~RUBY)
       if condition
         attr_reader :foo

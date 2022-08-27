@@ -42,6 +42,13 @@ RSpec.describe 'RuboCop Project', type: :feature do
         expect(description.nil?).to(be(false),
                                     "`Description` configuration is required for `#{name}`.")
         expect(description).not_to include("\n")
+
+        start_with_subject = description.match(/\AThis cop (?<verb>.+?) .*/)
+        suggestion = start_with_subject[:verb]&.capitalize if start_with_subject
+        suggestion ||= 'a verb'
+        expect(start_with_subject).to(be_nil,
+                                      "`Description` for `#{name}` should be started " \
+                                      "with `#{suggestion}` instead of `This cop ...`.")
       end
     end
 
@@ -115,7 +122,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     it 'does not include `Safe: true`' do
       cop_names.each do |name|
         safe = config.dig(name, 'Safe')
-        expect(safe).not_to eq(true), "`#{name}` has unnecessary `Safe: true` config."
+        expect(safe).not_to be(true), "`#{name}` has unnecessary `Safe: true` config."
       end
     end
   end
@@ -165,7 +172,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
 
         it 'has a reference' do
-          issues.each { |issue| expect(issue[:ref].blank?).to eq(false) }
+          issues.each { |issue| expect(issue[:ref].blank?).to be(false) }
         end
 
         it 'has a valid issue number prefixed with #' do
@@ -199,10 +206,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
       describe 'body' do
         let(:bodies) do
           entries.map do |entry|
-            entry
-              .gsub(/`[^`]+`/, '``')
-              .sub(/^\*\s*(?:\[.+?\):\s*)?/, '')
-              .sub(/\s*\([^)]+\)$/, '')
+            entry.gsub(/`[^`]+`/, '``').sub(/^\*\s*(?:\[.+?\):\s*)?/, '').sub(/\s*\([^)]+\)$/, '')
           end
         end
 
@@ -240,6 +244,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
           it 'has a link to the contributors at the end' do
             expect(entries).to all(match(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)$/))
+          end
+
+          it 'has a single line' do
+            expect(File.foreach(path).count).to eq(1)
           end
 
           it 'starts with `new_`, `fix_`, or `change_`' do

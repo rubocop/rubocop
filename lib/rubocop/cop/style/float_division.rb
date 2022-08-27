@@ -3,12 +3,20 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for division with integers coerced to floats.
+      # Checks for division with integers coerced to floats.
       # It is recommended to either always use `fdiv` or coerce one side only.
       # This cop also provides other options for code consistency.
       #
-      # This cop is marked as unsafe, because if operand variable is a string object
-      # then `.to_f` will be removed and an error will occur.
+      # @safety
+      #   This cop is unsafe, because if the operand variable is a string object
+      #   then `.to_f` will be removed and an error will occur.
+      #
+      #   [source,ruby]
+      #   ----
+      #   a = '1.2'
+      #   b = '3.4'
+      #   a.to_f / b.to_f # Both `to_f` calls are required here
+      #   ----
       #
       # @example EnforcedStyle: single_coerce (default)
       #   # bad

@@ -3,7 +3,7 @@
 == Layout/AccessModifierIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -73,7 +73,7 @@ end
 == Layout/ArgumentAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -154,7 +154,7 @@ foo :bar,
 == Layout/ArrayAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -225,7 +225,7 @@ array = [1, 2, 3,
 == Layout/AssignmentIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -234,7 +234,7 @@ array = [1, 2, 3,
 | 0.77
 |===
 
-This cop checks the indentation of the first line of the
+Checks the indentation of the first line of the
 right-hand-side of a multi-line assignment.
 
 The indentation of the remaining lines can be corrected with
@@ -270,7 +270,7 @@ value =
 == Layout/BeginEndAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -279,7 +279,7 @@ value =
 | -
 |===
 
-This cop checks whether the end keyword of `begin` is aligned properly.
+Checks whether the end keyword of `begin` is aligned properly.
 
 Two modes are supported through the `EnforcedStyleAlignWith` configuration
 parameter. If it's set to `start_of_line` (which is the default), the
@@ -341,7 +341,7 @@ foo ||= begin
 == Layout/BlockAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -350,7 +350,7 @@ foo ||= begin
 | -
 |===
 
-This cop checks whether the end keywords are aligned properly for do
+Checks whether the end keywords are aligned properly for do
 end blocks.
 
 Three modes are supported through the `EnforcedStyleAlignWith`
@@ -436,7 +436,7 @@ end
 == Layout/BlockEndNewline
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -445,7 +445,7 @@ end
 | -
 |===
 
-This cop checks whether the end statement of a do..end block
+Checks whether the end statement of a do..end block
 is on its own line.
 
 === Examples
@@ -474,7 +474,7 @@ blah { |i|
 == Layout/CaseIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -483,7 +483,7 @@ blah { |i|
 | 1.16
 |===
 
-This cop checks how the `when` and `in`s of a `case` expression
+Checks how the `when` and ``in``s of a `case` expression
 are indented in relation to its `case` or `end` keyword.
 
 It will register a separate offense for each misaligned `when` and `in`.
@@ -627,7 +627,7 @@ end
 == Layout/ClassStructure
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -790,7 +790,7 @@ end
 == Layout/ClosingHeredocIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -847,7 +847,7 @@ foo arg,
 == Layout/ClosingParenthesisIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -856,7 +856,7 @@ foo arg,
 | -
 |===
 
-This cop checks the indentation of hanging closing parentheses in
+Checks the indentation of hanging closing parentheses in
 method calls, method definitions, and grouped expressions. A hanging
 closing parenthesis means `)` preceded by a line break.
 
@@ -926,16 +926,16 @@ some_method(a,
 == Layout/CommentIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
 | Yes
 | 0.49
-| -
+| 1.24
 |===
 
-This cop checks the indentation of comments.
+Checks the indentation of comments.
 
 === Examples
 
@@ -968,10 +968,42 @@ if true
 end
 ----
 
+==== AllowForAlignment: false (default)
+
+[source,ruby]
+----
+# bad
+a = 1 # A really long comment
+      # spanning two lines.
+
+# good
+# A really long comment spanning one line.
+a = 1
+----
+
+==== AllowForAlignment: true
+
+[source,ruby]
+----
+# good
+a = 1 # A really long comment
+      # spanning two lines.
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowForAlignment
+| `false`
+| Boolean
+|===
+
 == Layout/ConditionPosition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -980,7 +1012,7 @@ end
 | 0.83
 |===
 
-This cop checks for conditions that are not on the same line as
+Checks for conditions that are not on the same line as
 if/while/until.
 
 === Examples
@@ -1011,7 +1043,7 @@ end
 == Layout/DefEndAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1020,7 +1052,7 @@ end
 | -
 |===
 
-This cop checks whether the end keywords of method definitions are
+Checks whether the end keywords of method definitions are
 aligned properly.
 
 Two modes are supported through the EnforcedStyleAlignWith configuration
@@ -1078,7 +1110,7 @@ private def foo
 == Layout/DotPosition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1087,7 +1119,7 @@ private def foo
 | -
 |===
 
-This cop checks the . position in multi-line method calls.
+Checks the . position in multi-line method calls.
 
 === Examples
 
@@ -1134,7 +1166,7 @@ something.
 == Layout/ElseAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1143,7 +1175,7 @@ something.
 | -
 |===
 
-This cop checks the alignment of else keywords. Normally they should
+Checks the alignment of else keywords. Normally they should
 be aligned with an if/unless/while/until/begin/def/rescue keyword, but there
 are special cases when they should follow the same rules as the
 alignment of end.
@@ -1177,7 +1209,7 @@ end
 == Layout/EmptyComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1186,7 +1218,7 @@ end
 | -
 |===
 
-This cop checks empty comment.
+Checks empty comment.
 
 === Examples
 
@@ -1280,7 +1312,7 @@ end
 == Layout/EmptyLineAfterGuardClause
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1289,7 +1321,7 @@ end
 | 0.59
 |===
 
-This cop enforces empty line after guard clause
+Enforces empty line after guard clause
 
 === Examples
 
@@ -1328,7 +1360,7 @@ end
 == Layout/EmptyLineAfterMagicComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1366,7 +1398,7 @@ end
 == Layout/EmptyLineAfterMultilineCondition
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -1375,7 +1407,7 @@ end
 | -
 |===
 
-This cop enforces empty line after multiline condition.
+Enforces empty line after multiline condition.
 
 === Examples
 
@@ -1434,16 +1466,16 @@ end
 == Layout/EmptyLineBetweenDefs
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
 | Yes
 | 0.49
-| 1.7
+| 1.23
 |===
 
-This cop checks whether class/module/method definitions are
+Checks whether class/module/method definitions are
 separated by one or more empty lines.
 
 `NumberOfEmptyLines` can be an integer (default is 1) or
@@ -1534,13 +1566,37 @@ def b
 end
 ----
 
-==== AllowAdjacentOneLineDefs: true
+==== AllowAdjacentOneLineDefs: true (default)
 
 [source,ruby]
 ----
 # good
 class ErrorA < BaseError; end
 class ErrorB < BaseError; end
+class ErrorC < BaseError; end
+
+# good
+class ErrorA < BaseError; end
+
+class ErrorB < BaseError; end
+
+class ErrorC < BaseError; end
+----
+
+==== AllowAdjacentOneLineDefs: false
+
+[source,ruby]
+----
+# bad
+class ErrorA < BaseError; end
+class ErrorB < BaseError; end
+class ErrorC < BaseError; end
+
+# good
+class ErrorA < BaseError; end
+
+class ErrorB < BaseError; end
+
 class ErrorC < BaseError; end
 ----
 
@@ -1562,7 +1618,7 @@ class ErrorC < BaseError; end
 | Boolean
 
 | AllowAdjacentOneLineDefs
-| `false`
+| `true`
 | Boolean
 
 | NumberOfEmptyLines
@@ -1577,7 +1633,7 @@ class ErrorC < BaseError; end
 == Layout/EmptyLines
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1586,7 +1642,7 @@ class ErrorC < BaseError; end
 | -
 |===
 
-This cop checks for two or more consecutive blank lines.
+Checks for two or more consecutive blank lines.
 
 === Examples
 
@@ -1611,7 +1667,7 @@ some_method
 == Layout/EmptyLinesAroundAccessModifier
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1683,7 +1739,7 @@ end
 == Layout/EmptyLinesAroundArguments
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1692,7 +1748,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the arguments
+Checks if empty lines exist around the arguments
 of a method invocation.
 
 === Examples
@@ -1734,7 +1790,7 @@ some_method(
 == Layout/EmptyLinesAroundAttributeAccessor
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1837,7 +1893,7 @@ end
 == Layout/EmptyLinesAroundBeginBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1846,7 +1902,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the bodies of begin-end
+Checks if empty lines exist around the bodies of begin-end
 blocks.
 
 === Examples
@@ -1875,7 +1931,7 @@ end
 == Layout/EmptyLinesAroundBlockBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1884,10 +1940,21 @@ end
 | -
 |===
 
-This cop checks if empty lines around the bodies of blocks match
+Checks if empty lines around the bodies of blocks match
 the configuration.
 
 === Examples
+
+==== EnforcedStyle: no_empty_lines (default)
+
+[source,ruby]
+----
+# good
+
+foo do |bar|
+  # ...
+end
+----
 
 ==== EnforcedStyle: empty_lines
 
@@ -1899,17 +1966,6 @@ foo do |bar|
 
   # ...
 
-end
-----
-
-==== EnforcedStyle: no_empty_lines (default)
-
-[source,ruby]
-----
-# good
-
-foo do |bar|
-  # ...
 end
 ----
 
@@ -1930,7 +1986,7 @@ end
 == Layout/EmptyLinesAroundClassBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1939,10 +1995,23 @@ end
 | 0.53
 |===
 
-This cop checks if empty lines around the bodies of classes match
+Checks if empty lines around the bodies of classes match
 the configuration.
 
 === Examples
+
+==== EnforcedStyle: no_empty_lines (default)
+
+[source,ruby]
+----
+# good
+
+class Foo
+  def bar
+    # ...
+  end
+end
+----
 
 ==== EnforcedStyle: empty_lines
 
@@ -2014,19 +2083,6 @@ class Foo
 end
 ----
 
-==== EnforcedStyle: no_empty_lines (default)
-
-[source,ruby]
-----
-# good
-
-class Foo
-  def bar
-    # ...
-  end
-end
-----
-
 === Configurable attributes
 
 |===
@@ -2044,7 +2100,7 @@ end
 == Layout/EmptyLinesAroundExceptionHandlingKeywords
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2053,7 +2109,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the bodies of `begin`
+Checks if empty lines exist around the bodies of `begin`
 sections. This cop doesn't check empty lines at `begin` body
 beginning/end and around method definition body.
 `Style/EmptyLinesAroundBeginBody` or `Style/EmptyLinesAroundMethodBody`
@@ -2119,7 +2175,7 @@ end
 == Layout/EmptyLinesAroundMethodBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2128,7 +2184,7 @@ end
 | -
 |===
 
-This cop checks if empty lines exist around the bodies of methods.
+Checks if empty lines exist around the bodies of methods.
 
 === Examples
 
@@ -2156,7 +2212,7 @@ end
 == Layout/EmptyLinesAroundModuleBody
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2165,10 +2221,23 @@ end
 | -
 |===
 
-This cop checks if empty lines around the bodies of modules match
+Checks if empty lines around the bodies of modules match
 the configuration.
 
 === Examples
+
+==== EnforcedStyle: no_empty_lines (default)
+
+[source,ruby]
+----
+# good
+
+module Foo
+  def bar
+    # ...
+  end
+end
+----
 
 ==== EnforcedStyle: empty_lines
 
@@ -2212,19 +2281,6 @@ module Foo
 end
 ----
 
-==== EnforcedStyle: no_empty_lines (default)
-
-[source,ruby]
-----
-# good
-
-module Foo
-  def bar
-    # ...
-  end
-end
-----
-
 === Configurable attributes
 
 |===
@@ -2242,7 +2298,7 @@ end
 == Layout/EndAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2251,7 +2307,7 @@ end
 | -
 |===
 
-This cop checks whether the end keywords are aligned properly.
+Checks whether the end keywords are aligned properly.
 
 Three modes are supported through the `EnforcedStyleAlignWith`
 configuration parameter:
@@ -2352,7 +2408,7 @@ variable =
 == Layout/EndOfLine
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2361,7 +2417,7 @@ variable =
 | -
 |===
 
-This cop checks for Windows-style line endings in the source code.
+Checks for Windows-style line endings in the source code.
 
 === Examples
 
@@ -2389,10 +2445,10 @@ puts 'Hello' # Return character is LF on other than Windows.
 # all platforms.
 
 # bad
-puts 'Hello' # Return character is CR+LF on all platfoms.
+puts 'Hello' # Return character is CR+LF on all platforms.
 
 # good
-puts 'Hello' # Return character is LF on all platfoms.
+puts 'Hello' # Return character is LF on all platforms.
 ----
 
 ==== EnforcedStyle: crlf
@@ -2403,10 +2459,10 @@ puts 'Hello' # Return character is LF on all platfoms.
 # enforced on all platforms.
 
 # bad
-puts 'Hello' # Return character is LF on all platfoms.
+puts 'Hello' # Return character is LF on all platforms.
 
 # good
-puts 'Hello' # Return character is CR+LF on all platfoms.
+puts 'Hello' # Return character is CR+LF on all platforms.
 ----
 
 === Configurable attributes
@@ -2426,7 +2482,7 @@ puts 'Hello' # Return character is CR+LF on all platfoms.
 == Layout/ExtraSpacing
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2435,7 +2491,7 @@ puts 'Hello' # Return character is CR+LF on all platfoms.
 | -
 |===
 
-This cop checks for extra/unnecessary whitespace.
+Checks for extra/unnecessary whitespace.
 
 === Examples
 
@@ -2485,7 +2541,7 @@ some_object.method(arg)    # this is some comment
 == Layout/FirstArgumentIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2494,7 +2550,7 @@ some_object.method(arg)    # this is some comment
 | 0.77
 |===
 
-This cop checks the indentation of the first argument in a method call.
+Checks the indentation of the first argument in a method call.
 Arguments after the first one are checked by `Layout/ArgumentAlignment`,
 not by this cop.
 
@@ -2528,6 +2584,37 @@ second_param)
 
 some_method nested_call(
 nested_first_param),
+second_param
+----
+
+==== EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
+
+[source,ruby]
+----
+# Same as `special_for_inner_method_call` except that the special rule
+# only applies if the outer method call encloses its arguments in
+# parentheses.
+
+# good
+some_method(
+  first_param,
+second_param)
+
+foo = some_method(
+  first_param,
+second_param)
+
+foo = some_method(nested_call(
+                    nested_first_param),
+second_param)
+
+foo = some_method(
+  nested_call(
+    nested_first_param),
+second_param)
+
+some_method nested_call(
+  nested_first_param),
 second_param
 ----
 
@@ -2623,37 +2710,6 @@ some_method nested_call(
 second_param
 ----
 
-==== EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
-
-[source,ruby]
-----
-# Same as `special_for_inner_method_call` except that the special rule
-# only applies if the outer method call encloses its arguments in
-# parentheses.
-
-# good
-some_method(
-  first_param,
-second_param)
-
-foo = some_method(
-  first_param,
-second_param)
-
-foo = some_method(nested_call(
-                    nested_first_param),
-second_param)
-
-foo = some_method(
-  nested_call(
-    nested_first_param),
-second_param)
-
-some_method nested_call(
-  nested_first_param),
-second_param
-----
-
 === Configurable attributes
 
 |===
@@ -2671,7 +2727,7 @@ second_param
 == Layout/FirstArrayElementIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2680,7 +2736,7 @@ second_param
 | 0.77
 |===
 
-This cop checks the indentation of the first element in an array literal
+Checks the indentation of the first element in an array literal
 where the opening bracket and the first element are on separate lines.
 The other elements' indentations are handled by the ArrayAlignment cop.
 
@@ -2788,7 +2844,7 @@ and_now_for_something = [
 == Layout/FirstArrayElementLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2797,7 +2853,7 @@ and_now_for_something = [
 | -
 |===
 
-This cop checks for a line break before the first element in a
+Checks for a line break before the first element in a
 multi-line array.
 
 === Examples
@@ -2817,7 +2873,7 @@ multi-line array.
 == Layout/FirstHashElementIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -2826,7 +2882,7 @@ multi-line array.
 | 0.77
 |===
 
-This cop checks the indentation of the first key in a hash literal
+Checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
 other keys' indentations are handled by the HashAlignment cop.
 
@@ -2860,6 +2916,14 @@ hash = {
 and_in_a_method_call({
   no: :difference
                      })
+takes_multi_pairs_hash(x: {
+  a: 1,
+  b: 2
+},
+                       y: {
+                         c: 1,
+                         d: 2
+                       })
 
 # good
 special_inside_parentheses
@@ -2869,6 +2933,14 @@ hash = {
 but_in_a_method_call({
                        its_like: :this
                      })
+takes_multi_pairs_hash(x: {
+                         a: 1,
+                         b: 2
+                       },
+                       y: {
+                         c: 1,
+                         d: 2
+                       })
 ----
 
 ==== EnforcedStyle: consistent
@@ -2908,11 +2980,27 @@ and_in_a_method_call({
 and_now_for_something = {
                           completely: :different
 }
+takes_multi_pairs_hash(x: {
+  a: 1,
+  b: 2
+},
+                        y: {
+                             c: 1,
+                             d: 2
+                           })
 
 # good
 and_now_for_something = {
                           completely: :different
                         }
+takes_multi_pairs_hash(x: {
+                            a: 1,
+                            b: 2
+                          },
+                       y: {
+                            c: 1,
+                            d: 2
+                          })
 ----
 
 === Configurable attributes
@@ -2932,7 +3020,7 @@ and_now_for_something = {
 == Layout/FirstHashElementLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2941,7 +3029,7 @@ and_now_for_something = {
 | -
 |===
 
-This cop checks for a line break before the first element in a
+Checks for a line break before the first element in a
 multi-line hash.
 
 === Examples
@@ -2961,7 +3049,7 @@ multi-line hash.
 == Layout/FirstMethodArgumentLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -2970,7 +3058,7 @@ multi-line hash.
 | -
 |===
 
-This cop checks for a line break before the first argument in a
+Checks for a line break before the first argument in a
 multi-line method call.
 
 === Examples
@@ -2994,7 +3082,7 @@ method foo, bar,
 == Layout/FirstMethodParameterLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -3003,7 +3091,7 @@ method foo, bar,
 | -
 |===
 
-This cop checks for a line break before the first parameter in a
+Checks for a line break before the first parameter in a
 multi-line method parameter definition.
 
 === Examples
@@ -3033,7 +3121,7 @@ end
 == Layout/FirstParameterIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3042,7 +3130,7 @@ end
 | 0.77
 |===
 
-This cop checks the indentation of the first parameter in a method
+Checks the indentation of the first parameter in a method
 definition. Parameters after the first one are checked by
 Layout/ParameterAlignment, not by this cop.
 
@@ -3109,7 +3197,7 @@ end
 == Layout/HashAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3353,7 +3441,7 @@ do_something({foo: 1,
 == Layout/HeredocArgumentClosingParenthesis
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -3362,7 +3450,7 @@ do_something({foo: 1,
 | -
 |===
 
-This cop checks for the placement of the closing parenthesis
+Checks for the placement of the closing parenthesis
 in a method call that passes a HEREDOC string as an argument.
 It should be placed at the end of the line containing the
 opening HEREDOC tag.
@@ -3420,7 +3508,7 @@ opening HEREDOC tag.
 == Layout/HeredocIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3429,7 +3517,7 @@ opening HEREDOC tag.
 | 0.85
 |===
 
-This cop checks the indentation of the here document bodies. The bodies
+Checks the indentation of the here document bodies. The bodies
 are indented one step.
 
 Note: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),
@@ -3458,7 +3546,7 @@ RUBY
 == Layout/IndentationConsistency
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3467,7 +3555,7 @@ RUBY
 | -
 |===
 
-This cop checks for inconsistent indentation.
+Checks for inconsistent indentation.
 
 The difference between `indented_internal_methods` and `normal` is
 that the `indented_internal_methods` style prescribes that in
@@ -3611,7 +3699,7 @@ end
 == Layout/IndentationStyle
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3620,7 +3708,7 @@ end
 | 0.82
 |===
 
-This cop checks that the indentation method is consistent.
+Checks that the indentation method is consistent.
 Either tabs only or spaces only are used for indentation.
 
 === Examples
@@ -3680,7 +3768,7 @@ end
 == Layout/IndentationWidth
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3689,7 +3777,7 @@ end
 | -
 |===
 
-This cop checks for indentation that doesn't use the specified number
+Checks for indentation that doesn't use the specified number
 of spaces.
 
 See also the IndentationConsistency cop which is the companion to this
@@ -3714,7 +3802,7 @@ class A
 end
 ----
 
-==== IgnoredPatterns: ['^\s*module']
+==== AllowedPatterns: ['^\s*module']
 
 [source,ruby]
 ----
@@ -3746,6 +3834,10 @@ end
 | `2`
 | Integer
 
+| AllowedPatterns
+| `[]`
+| Array
+
 | IgnoredPatterns
 | `[]`
 | Array
@@ -3758,7 +3850,7 @@ end
 == Layout/InitialIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3767,7 +3859,7 @@ end
 | -
 |===
 
-This cop checks for indentation of the first non-blank non-comment
+Checks for indentation of the first non-blank non-comment
 line in a file.
 
 === Examples
@@ -3788,7 +3880,7 @@ end
 == Layout/LeadingCommentSpace
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3797,7 +3889,7 @@ end
 | 0.73
 |===
 
-This cop checks whether comments have a leading space after the
+Checks whether comments have a leading space after the
 `#` denoting the start of the comment. The leading space is not
 required for some RDoc special syntax, like `#++`, `#--`,
 `#:nodoc`, `=begin`- and `=end` comments, "shebang" directives,
@@ -3879,7 +3971,7 @@ or rackup options.
 == Layout/LeadingEmptyLines
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3888,7 +3980,7 @@ or rackup options.
 | 0.77
 |===
 
-This cop checks for unnecessary leading blank lines at the beginning
+Checks for unnecessary leading blank lines at the beginning
 of a file.
 
 === Examples
@@ -3916,10 +4008,251 @@ end
 # a comment
 ----
 
+== Layout/LineContinuationLeadingSpace
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.31
+| 1.32
+|===
+
+Checks that strings broken over multiple lines (by a backslash) contain
+trailing spaces instead of leading spaces (default) or leading spaces
+instead of trailing spaces.
+
+=== Examples
+
+==== EnforcedStyle: trailing (default)
+
+[source,ruby]
+----
+# bad
+'this text contains a lot of' \
+'               spaces'
+
+# good
+'this text contains a lot of               ' \
+'spaces'
+
+# bad
+'this text is too' \
+' long'
+
+# good
+'this text is too ' \
+'long'
+----
+
+==== EnforcedStyle: leading
+
+[source,ruby]
+----
+# bad
+'this text contains a lot of               ' \
+'spaces'
+
+# good
+'this text contains a lot of' \
+'               spaces'
+
+# bad
+'this text is too ' \
+'long'
+
+# good
+'this text is too' \
+' long'
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AutoCorrect
+| `false`
+| Boolean
+
+| EnforcedStyle
+| `trailing`
+| `leading`, `trailing`
+|===
+
+== Layout/LineContinuationSpacing
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.31
+| -
+|===
+
+Checks that the backslash of a line continuation is separated from
+preceding text by exactly one space (default) or zero spaces.
+
+=== Examples
+
+==== EnforcedStyle: space (default)
+
+[source,ruby]
+----
+# bad
+'a'\
+'b'  \
+'c'
+
+# good
+'a' \
+'b' \
+'c'
+----
+
+==== EnforcedStyle: no_space
+
+[source,ruby]
+----
+# bad
+'a' \
+'b'  \
+'c'
+
+# good
+'a'\
+'b'\
+'c'
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AutoCorrect
+| `true`
+| Boolean
+
+| EnforcedStyle
+| `space`
+| `space`, `no_space`
+|===
+
+== Layout/LineEndStringConcatenationIndentation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.18
+| -
+|===
+
+Checks the indentation of the next line after a line that ends with a string
+literal and a backslash.
+
+If `EnforcedStyle: aligned` is set, the concatenated string parts shall be aligned with the
+first part. There are some exceptions, such as implicit return values, where the
+concatenated string parts shall be indented regardless of `EnforcedStyle` configuration.
+
+If `EnforcedStyle: indented` is set, it's the second line that shall be indented one step
+more than the first line. Lines 3 and forward shall be aligned with line 2.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def some_method
+  'x' \
+  'y' \
+  'z'
+end
+
+my_hash = {
+  first: 'a message' \
+    'in two parts'
+}
+
+# good
+def some_method
+  'x' \
+    'y' \
+    'z'
+end
+----
+
+==== EnforcedStyle: aligned (default)
+
+[source,ruby]
+----
+# bad
+puts 'x' \
+  'y'
+
+my_hash = {
+  first: 'a message' \
+    'in two parts'
+}
+
+# good
+puts 'x' \
+     'y'
+
+my_hash = {
+  first: 'a message' \
+         'in two parts'
+}
+----
+
+==== EnforcedStyle: indented
+
+[source,ruby]
+----
+# bad
+result = 'x' \
+         'y'
+
+my_hash = {
+  first: 'a message' \
+         'in two parts'
+}
+
+# good
+result = 'x' \
+  'y'
+
+my_hash = {
+  first: 'a message' \
+    'in two parts'
+}
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `aligned`
+| `aligned`, `indented`
+
+| IndentationWidth
+| `<none>`
+| Integer
+|===
+
 == Layout/LineLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -3928,7 +4261,7 @@ end
 | 1.4
 |===
 
-This cop checks the length of lines in the source code.
+Checks the length of lines in the source code.
 The maximum length is configurable.
 The tab size is configured in the `IndentationWidth`
 of the `Layout/IndentationStyle` cop.
@@ -3945,6 +4278,7 @@ are recommended to further format the broken lines.
 (Many of these are enabled by default.)
 
 * ArgumentAlignment
+* ArrayAlignment
 * BlockAlignment
 * BlockDelimiters
 * BlockEndNewline
@@ -3960,6 +4294,7 @@ are recommended to further format the broken lines.
 * MultilineHashBraceLayout
 * MultilineHashKeyLineBreaks
 * MultilineMethodArgumentLineBreaks
+* MultilineMethodParameterLineBreaks
 * ParameterAlignment
 
 Together, these cops will pretty print hashes, arrays,
@@ -3990,10 +4325,6 @@ bar: "0000000000", baz: "0000000000"}
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `true`
-| Boolean
-
 | Max
 | `120`
 | Integer
@@ -4014,6 +4345,10 @@ bar: "0000000000", baz: "0000000000"}
 | `true`
 | Boolean
 
+| AllowedPatterns
+| `[]`
+| Array
+
 | IgnoredPatterns
 | `[]`
 | Array
@@ -4026,7 +4361,7 @@ bar: "0000000000", baz: "0000000000"}
 == Layout/MultilineArrayBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4035,7 +4370,7 @@ bar: "0000000000", baz: "0000000000"}
 | -
 |===
 
-This cop checks that the closing brace in an array literal is either
+Checks that the closing brace in an array literal is either
 on the same line as the last array element or on a new line.
 
 When using the `symmetrical` (default) style:
@@ -4148,7 +4483,7 @@ line as the last element of the array.
 == Layout/MultilineArrayLineBreaks
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4157,7 +4492,7 @@ line as the last element of the array.
 | -
 |===
 
-This cop ensures that each item in a multi-line array
+Ensures that each item in a multi-line array
 starts on a separate line.
 
 === Examples
@@ -4181,7 +4516,7 @@ starts on a separate line.
 == Layout/MultilineAssignmentLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4190,7 +4525,7 @@ starts on a separate line.
 | -
 |===
 
-This cop checks whether the multiline assignments have a newline
+Checks whether the multiline assignments have a newline
 after the assignment operator.
 
 === Examples
@@ -4279,7 +4614,7 @@ foo =
 == Layout/MultilineBlockLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4288,7 +4623,7 @@ foo =
 | -
 |===
 
-This cop checks whether the multiline do end blocks have a newline
+Checks whether the multiline do end blocks have a newline
 after the start of the block. Additionally, it checks whether the block
 arguments, if any, are on the same line as the start of the
 block. Putting block arguments on separate lines, because the whole
@@ -4341,7 +4676,7 @@ blah { |
 == Layout/MultilineHashBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4350,7 +4685,7 @@ blah { |
 | -
 |===
 
-This cop checks that the closing brace in a hash literal is either
+Checks that the closing brace in a hash literal is either
 on the same line as the last hash element, or a new line.
 
 When using the `symmetrical` (default) style:
@@ -4462,7 +4797,7 @@ line as the last element of the hash.
 == Layout/MultilineHashKeyLineBreaks
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4471,7 +4806,7 @@ line as the last element of the hash.
 | -
 |===
 
-This cop ensures that each key in a multi-line hash
+Ensures that each key in a multi-line hash
 starts on a separate line.
 
 === Examples
@@ -4495,7 +4830,7 @@ starts on a separate line.
 == Layout/MultilineMethodArgumentLineBreaks
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -4504,8 +4839,11 @@ starts on a separate line.
 | -
 |===
 
-This cop ensures that each argument in a multi-line method call
+Ensures that each argument in a multi-line method call
 starts on a separate line.
+
+NOTE: This cop does not move the first argument, if you want that to
+be on a separate line, see `Layout/FirstMethodArgumentLineBreak`.
 
 === Examples
 
@@ -4522,12 +4860,15 @@ foo(
   b,
   c
 )
+
+# good
+foo(a, b, c)
 ----
 
 == Layout/MultilineMethodCallBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4536,7 +4877,7 @@ foo(
 | -
 |===
 
-This cop checks that the closing brace in a method call is either
+Checks that the closing brace in a method call is either
 on the same line as the last method argument, or a new line.
 
 When using the `symmetrical` (default) style:
@@ -4649,7 +4990,7 @@ foo(a,
 == Layout/MultilineMethodCallIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4658,7 +4999,7 @@ foo(a,
 | -
 |===
 
-This cop checks the indentation of the method name part in method calls
+Checks the indentation of the method name part in method calls
 that span more than one line.
 
 === Examples
@@ -4733,7 +5074,7 @@ myvariable = Thing
 == Layout/MultilineMethodDefinitionBraceLayout
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4742,7 +5083,7 @@ myvariable = Thing
 | -
 |===
 
-This cop checks that the closing brace in a method definition is either
+Checks that the closing brace in a method definition is either
 on the same line as the last method parameter, or a new line.
 
 When using the `symmetrical` (default) style:
@@ -4864,10 +5205,51 @@ end
 | `symmetrical`, `new_line`, `same_line`
 |===
 
+== Layout/MultilineMethodParameterLineBreaks
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| Yes
+| Yes
+| 1.32
+| -
+|===
+
+Ensures that each parameter in a multi-line method definition
+starts on a separate line.
+
+NOTE: This cop does not move the first argument, if you want that to
+be on a separate line, see `Layout/FirstMethodParameterLineBreak`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def foo(a, b,
+  c
+)
+end
+
+# good
+def foo(
+  a,
+  b,
+  c
+)
+end
+
+# good
+def foo(a, b, c)
+end
+----
+
 == Layout/MultilineOperationIndentation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -4876,13 +5258,12 @@ end
 | -
 |===
 
-This cop checks the indentation of the right hand side operand in
-binary operations that span more than one line.
+Checks the indentation of the right hand side operand in binary operations that
+span more than one line.
 
-The `aligned` style checks that operators are aligned if they are part
-of an `if` or `while` condition, a `return` statement, etc. In other
-contexts, the second operand should be indented regardless of enforced
-style.
+The `aligned` style checks that operators are aligned if they are part of an `if` or `while`
+condition, an explicit `return` statement, etc. In other contexts, the second operand should
+be indented regardless of enforced style.
 
 === Examples
 
@@ -4894,14 +5275,14 @@ style.
 if a +
     b
   something &&
-    something_else
+  something_else
 end
 
 # good
 if a +
    b
   something &&
-  something_else
+    something_else
 end
 ----
 
@@ -4941,7 +5322,7 @@ end
 == Layout/ParameterAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5047,7 +5428,7 @@ end
 == Layout/RedundantLineBreak
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5056,7 +5437,7 @@ end
 | -
 |===
 
-This cop checks whether certain expressions, e.g. method calls, that could fit
+Checks whether certain expressions, e.g. method calls, that could fit
 completely on a single line, are broken up into multiple lines unnecessarily.
 
 === Examples
@@ -5122,7 +5503,7 @@ foo(a) { |x| puts x }
 == Layout/RescueEnsureAlignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5131,7 +5512,7 @@ foo(a) { |x| puts x }
 | -
 |===
 
-This cop checks whether the rescue and ensure keywords are aligned
+Checks whether the rescue and ensure keywords are aligned
 properly.
 
 === Examples
@@ -5156,7 +5537,7 @@ end
 == Layout/SingleLineBlockChain
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Disabled
 | Yes
@@ -5165,7 +5546,7 @@ end
 | -
 |===
 
-This cop checks if method calls are chained onto single line blocks. It considers that a
+Checks if method calls are chained onto single line blocks. It considers that a
 line break before the dot improves the readability of the code.
 
 === Examples
@@ -5188,7 +5569,7 @@ end.join('-')
 == Layout/SpaceAfterColon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5219,7 +5600,7 @@ def f(a:, b: 2); {a: 3}; end
 == Layout/SpaceAfterComma
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5250,7 +5631,7 @@ Checks for comma (,) not followed by some kind of space.
 == Layout/SpaceAfterMethodName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5281,7 +5662,7 @@ def method=(y) end
 == Layout/SpaceAfterNot
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5290,7 +5671,7 @@ def method=(y) end
 | -
 |===
 
-This cop checks for space after `!`.
+Checks for space after `!`.
 
 === Examples
 
@@ -5310,7 +5691,7 @@ This cop checks for space after `!`.
 == Layout/SpaceAfterSemicolon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5339,7 +5720,7 @@ x = 1; y = 2
 == Layout/SpaceAroundBlockParameters
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5393,7 +5774,7 @@ not by this cop.
 == Layout/SpaceAroundEqualsInParameterDefault
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5454,7 +5835,7 @@ end
 == Layout/SpaceAroundKeyword
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5491,7 +5872,7 @@ something = 123 if test
 == Layout/SpaceAroundMethodCallOperator
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5538,7 +5919,7 @@ RuboCop::Cop::Cop
 == Layout/SpaceAroundOperators
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5636,7 +6017,7 @@ a ** b
 == Layout/SpaceBeforeBlockBraces
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5719,7 +6100,7 @@ foo.map{ |a|
 == Layout/SpaceBeforeBrackets
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
@@ -5749,7 +6130,7 @@ collection[index_or_key]
 == Layout/SpaceBeforeComma
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5778,7 +6159,7 @@ each { |a, b| }
 == Layout/SpaceBeforeComment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5787,7 +6168,7 @@ each { |a, b| }
 | -
 |===
 
-This cop checks for missing space between a token and a comment on the
+Checks for missing space between a token and a comment on the
 same line.
 
 === Examples
@@ -5804,7 +6185,7 @@ same line.
 == Layout/SpaceBeforeFirstArg
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5848,7 +6229,7 @@ something 'hello'
 == Layout/SpaceBeforeSemicolon
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5873,7 +6254,7 @@ x = 1; y = 2
 == Layout/SpaceInLambdaLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5882,7 +6263,7 @@ x = 1; y = 2
 | -
 |===
 
-This cop checks for spaces between `->` and opening parameter
+Checks for spaces between `->` and opening parameter
 parenthesis (`(`) in lambda literals.
 
 === Examples
@@ -5922,7 +6303,7 @@ a = -> (x, y) { x + y }
 == Layout/SpaceInsideArrayLiteralBrackets
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -5936,20 +6317,6 @@ surrounding space depending on configuration.
 
 === Examples
 
-==== EnforcedStyle: space
-
-[source,ruby]
-----
-# The `space` style enforces that array literals have
-# surrounding space.
-
-# bad
-array = [a, b, c, d]
-
-# good
-array = [ a, b, c, d ]
-----
-
 ==== EnforcedStyle: no_space (default)
 
 [source,ruby]
@@ -5962,6 +6329,20 @@ array = [ a, b, c, d ]
 
 # good
 array = [a, b, c, d]
+----
+
+==== EnforcedStyle: space
+
+[source,ruby]
+----
+# The `space` style enforces that array literals have
+# surrounding space.
+
+# bad
+array = [a, b, c, d]
+
+# good
+array = [ a, b, c, d ]
 ----
 
 ==== EnforcedStyle: compact
@@ -6034,7 +6415,7 @@ bar = [ ]
 == Layout/SpaceInsideArrayPercentLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6059,7 +6440,7 @@ Checks for unnecessary additional spaces inside array percent literals
 == Layout/SpaceInsideBlockBraces
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6186,7 +6567,7 @@ some_array.each {   }
 == Layout/SpaceInsideHashLiteralBraces
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6298,13 +6679,13 @@ foo = {     }
 == Layout/SpaceInsideParens
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
 | Yes
 | 0.49
-| 0.55
+| 1.22
 |===
 
 Checks for spaces inside ordinary round parentheses.
@@ -6347,6 +6728,31 @@ g = ( a + 3 )
 y()
 ----
 
+==== EnforcedStyle: compact
+
+[source,ruby]
+----
+# The `compact` style enforces that parentheses have a space at the
+# beginning with the exception that successive parentheses are allowed.
+# Note: Empty parentheses should not have spaces.
+
+# bad
+f(3)
+g = (a + 3)
+y( )
+g( f( x ) )
+g( f( x( 3 ) ), 5 )
+g( ( ( 3 + 5 ) * f) ** x, 5 )
+
+# good
+f( 3 )
+g = ( a + 3 )
+y()
+g( f( x ))
+g( f( x( 3 )), 5 )
+g((( 3 + 5 ) * f ) ** x, 5 )
+----
+
 === Configurable attributes
 
 |===
@@ -6354,7 +6760,7 @@ y()
 
 | EnforcedStyle
 | `no_space`
-| `space`, `no_space`
+| `space`, `compact`, `no_space`
 |===
 
 === References
@@ -6364,7 +6770,7 @@ y()
 == Layout/SpaceInsidePercentLiteralDelimiters
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6393,7 +6799,7 @@ Checks for unnecessary additional spaces inside the delimiters of
 == Layout/SpaceInsideRangeLiteral
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6428,7 +6834,7 @@ Checks for spaces inside range literals.
 == Layout/SpaceInsideReferenceBrackets
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6521,7 +6927,7 @@ foo[ ]
 == Layout/SpaceInsideStringInterpolation
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6530,7 +6936,7 @@ foo[ ]
 | -
 |===
 
-This cop checks for whitespace within string interpolations.
+Checks for whitespace within string interpolations.
 
 === Examples
 
@@ -6573,7 +6979,7 @@ This cop checks for whitespace within string interpolations.
 == Layout/TrailingEmptyLines
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6582,10 +6988,29 @@ This cop checks for whitespace within string interpolations.
 | 0.77
 |===
 
-This cop looks for trailing blank lines and a final newline in the
+Looks for trailing blank lines and a final newline in the
 source code.
 
 === Examples
+
+==== EnforcedStyle: final_newline (default)
+
+[source,ruby]
+----
+# `final_newline` looks for one newline at the end of files.
+
+# bad
+class Foo; end
+
+# EOF
+
+# bad
+class Foo; end # EOF
+
+# good
+class Foo; end
+# EOF
+----
 
 ==== EnforcedStyle: final_blank_line
 
@@ -6607,25 +7032,6 @@ class Foo; end
 # EOF
 ----
 
-==== EnforcedStyle: final_newline (default)
-
-[source,ruby]
-----
-# `final_newline` looks for one newline at the end of files.
-
-# bad
-class Foo; end
-
-# EOF
-
-# bad
-class Foo; end # EOF
-
-# good
-class Foo; end
-# EOF
-----
-
 === Configurable attributes
 
 |===
@@ -6643,7 +7049,7 @@ class Foo; end
 == Layout/TrailingWhitespace
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -6652,7 +7058,7 @@ class Foo; end
 | 1.0
 |===
 
-This cop looks for trailing whitespace in the source code.
+Looks for trailing whitespace in the source code.
 
 === Examples
 

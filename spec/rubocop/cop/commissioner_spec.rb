@@ -35,8 +35,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
     let(:processed_source) { parse_source(source, 'file.rb') }
     let(:cop_offenses) { [] }
     let(:cop_report) do
-      RuboCop::Cop::Base::InvestigationReport
-        .new(nil, processed_source, cop_offenses, nil)
+      RuboCop::Cop::Base::InvestigationReport.new(nil, processed_source, cop_offenses, nil)
     end
 
     around { |example| RuboCop::Cop::Registry.with_temporary_global { example.run } }
@@ -119,8 +118,8 @@ RSpec.describe RuboCop::Cop::Commissioner do
       let(:force) { instance_double(RuboCop::Cop::Force).as_null_object }
       let(:forces) { [force] }
 
-      it 'passes the input params to all cops/forces that implement their own' \
-         ' #investigate method' do
+      it 'passes the input params to all cops/forces that implement their own ' \
+         '#investigate method' do
         expect(cop).to receive(:on_new_investigation).with(no_args)
         expect(force).to receive(:investigate).with(processed_source)
 

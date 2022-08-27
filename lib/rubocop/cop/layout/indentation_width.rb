@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for indentation that doesn't use the specified number
+      # Checks for indentation that doesn't use the specified number
       # of spaces.
       #
       # See also the IndentationConsistency cop which is the companion to this
@@ -24,7 +24,7 @@ module RuboCop
       #     end
       #   end
       #
-      # @example IgnoredPatterns: ['^\s*module']
+      # @example AllowedPatterns: ['^\s*module']
       #   # bad
       #   module A
       #   class B
@@ -46,7 +46,7 @@ module RuboCop
         include EndKeywordAlignment
         include Alignment
         include CheckAssignment
-        include IgnoredPattern
+        include AllowedPattern
         include RangeHelp
         extend AutoCorrector
 
@@ -90,8 +90,13 @@ module RuboCop
           check_members(end_loc, [node.body])
         end
 
+        alias on_numblock on_block
+
         def on_class(node)
-          check_members(node.loc.keyword, [node.body])
+          base = node.loc.keyword
+          return if same_line?(base, node.body)
+
+          check_members(base, [node.body])
         end
         alias on_sclass on_class
         alias on_module on_class
@@ -143,7 +148,9 @@ module RuboCop
             check_indentation(in_pattern_node.loc.keyword, in_pattern_node.body)
           end
 
-          check_indentation(case_match.in_pattern_branches.last.loc.keyword, case_match.else_branch)
+          else_branch = case_match.else_branch&.empty_else_type? ? nil : case_match.else_branch
+
+          check_indentation(case_match.in_pattern_branches.last.loc.keyword, else_branch)
         end
 
         def on_if(node, base = node)
@@ -185,8 +192,7 @@ module RuboCop
 
         def check_members_for_indented_internal_methods_style(members)
           each_member(members) do |member, previous_modifier|
-            check_indentation(previous_modifier, member,
-                              indentation_consistency_style)
+            check_indentation(previous_modifier, member, indentation_consistency_style)
           end
         end
 
@@ -270,12 +276,12 @@ module RuboCop
         end
 
         def offense(body_node, indentation, style)
-          # This cop only auto-corrects the first statement in a def body, for
+          # This cop only autocorrects the first statement in a def body, for
           # example.
           body_node = body_node.children.first if body_node.begin_type? && !parentheses?(body_node)
 
           # Since autocorrect changes a number of lines, and not only the line
-          # where the reported offending range is, we avoid auto-correction if
+          # where the reported offending range is, we avoid autocorrection if
           # this cop has already found other offenses is the same
           # range. Otherwise, two corrections can interfere with each other,
           # resulting in corrupted code.
@@ -303,7 +309,7 @@ module RuboCop
         end
 
         # Returns true if the given node is within another node that has
-        # already been marked for auto-correction by this cop.
+        # already been marked for autocorrection by this cop.
         def other_offense_in_same_range?(node)
           expr = node.source_range
           @offense_ranges ||= []
@@ -341,7 +347,7 @@ module RuboCop
           return true unless body_node
 
           # Don't check if expression is on same line as "then" keyword, etc.
-          return true if body_node.loc.line == base_loc.line
+          return true if same_line?(body_node, base_loc)
 
           return true if starts_with_access_modifier?(body_node)
 

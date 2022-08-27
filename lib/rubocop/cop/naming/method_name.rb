@@ -3,13 +3,13 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sure that all methods use the configured style,
+      # Makes sure that all methods use the configured style,
       # snake_case or camelCase, for their names.
       #
-      # This cop has `IgnoredPatterns` configuration option.
+      # This cop has `AllowedPatterns` configuration option.
       #
       #   Naming/MethodName:
-      #     IgnoredPatterns:
+      #     AllowedPatterns:
       #       - '\A\s*onSelectionBulkChange\s*'
       #       - '\A\s*onSelectionCleared\s*'
       #
@@ -30,7 +30,7 @@ module RuboCop
       #   def fooBar; end
       class MethodName < Base
         include ConfigurableNaming
-        include IgnoredPattern
+        include AllowedPattern
         include RangeHelp
 
         MSG = 'Use %<style>s for method names.'
@@ -46,14 +46,14 @@ module RuboCop
 
           attrs.last.each do |name_item|
             name = attr_name(name_item)
-            next if !name || matches_ignored_pattern?(name)
+            next if !name || matches_allowed_pattern?(name)
 
             check_name(node, name, range_position(node))
           end
         end
 
         def on_def(node)
-          return if node.operator_method? || matches_ignored_pattern?(node.method_name)
+          return if node.operator_method? || matches_allowed_pattern?(node.method_name)
 
           check_name(node, node.method_name, node.loc.name)
         end

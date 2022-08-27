@@ -11,11 +11,7 @@ module RuboCop
       config_dir = File.dirname(path)
       hash.delete('require').tap do |loaded_features|
         Array(loaded_features).each do |feature|
-          if feature.start_with?('.')
-            require(File.join(config_dir, feature))
-          else
-            require(feature)
-          end
+          FeatureLoader.load(config_directory_path: config_dir, feature: feature)
         end
       end
     end
@@ -23,7 +19,7 @@ module RuboCop
     def resolve_inheritance(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       inherited_files = Array(hash['inherit_from'])
       base_configs(path, inherited_files, file)
-        .reverse.each_with_index do |base_config, index|
+        .each_with_index.reverse_each do |base_config, index|
         override_department_setting_for_cops(base_config, hash)
         override_enabled_for_disabled_departments(base_config, hash)
 
@@ -74,7 +70,7 @@ module RuboCop
     # Merges the given configuration with the default one. If
     # AllCops:DisabledByDefault is true, it changes the Enabled params so that
     # only cops from user configuration are enabled. If
-    # AllCops::EnabledByDefault is true, it changes the Enabled params so that
+    # AllCops:EnabledByDefault is true, it changes the Enabled params so that
     # only cops explicitly disabled in user configuration are disabled.
     def merge_with_default(config, config_file, unset_nil:)
       default_configuration = ConfigLoader.default_configuration
@@ -108,7 +104,7 @@ module RuboCop
           result.delete(key)
         elsif merge_hashes?(base_hash, derived_hash, key)
           result[key] = merge(base_hash[key], derived_hash[key], **opts)
-        elsif should_union?(base_hash, key, opts[:inherit_mode])
+        elsif should_union?(derived_hash, base_hash, opts[:inherit_mode], key)
           result[key] = base_hash[key] | derived_hash[key]
         elsif opts[:debug]
           warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
@@ -179,15 +175,30 @@ module RuboCop
 
     def determine_inherit_mode(hash, key)
       cop_cfg = hash[key]
-      local_inherit = cop_cfg.delete('inherit_mode') if cop_cfg.is_a?(Hash)
+      local_inherit = cop_cfg['inherit_mode'] if cop_cfg.is_a?(Hash)
       local_inherit || hash['inherit_mode'] || {}
     end
 
-    def should_union?(base_hash, key, inherit_mode)
-      base_hash[key].is_a?(Array) &&
-        inherit_mode &&
-        inherit_mode['merge'] &&
-        inherit_mode['merge'].include?(key)
+    def should_union?(derived_hash, base_hash, root_mode, key)
+      return false unless base_hash[key].is_a?(Array)
+
+      derived_mode = derived_hash['inherit_mode']
+      return false if should_override?(derived_mode, key)
+      return true if should_merge?(derived_mode, key)
+
+      base_mode = base_hash['inherit_mode']
+      return false if should_override?(base_mode, key)
+      return true if should_merge?(base_mode, key)
+
+      should_merge?(root_mode, key)
+    end
+
+    def should_merge?(mode, key)
+      mode && mode['merge'] && mode['merge'].include?(key)
+    end
+
+    def should_override?(mode, key)
+      mode && mode['override'] && mode['override'].include?(key)
     end
 
     def merge_hashes?(base_hash, derived_hash, key)

@@ -12,10 +12,10 @@ module RuboCop
   # @api private
   class Options
     E_STDIN_NO_PATH = '-s/--stdin requires exactly one path, relative to the ' \
-      'root of the project. RuboCop will use this path to determine which ' \
-      'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
-      'like Naming/FileName can be checked.'
-    EXITING_OPTIONS = %i[version verbose_version show_cops].freeze
+                      'root of the project. RuboCop will use this path to determine which ' \
+                      'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
+                      'like Naming/FileName can be checked.'
+    EXITING_OPTIONS = %i[version verbose_version show_cops show_docs_url].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -59,29 +59,121 @@ module RuboCop
 
     def define_options
       OptionParser.new do |opts|
-        opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
+        opts.banner = rainbow.wrap('Usage: rubocop [options] [file1, file2, ...]').bright
 
-        add_list_options(opts)
-        add_only_options(opts)
-        add_configuration_options(opts)
-        add_formatting_options(opts)
-
-        option(opts, '-r', '--require FILE') { |f| require_feature(f) }
-
-        add_severity_option(opts)
-        add_flags_with_optional_args(opts)
+        add_check_options(opts)
         add_cache_options(opts)
-        add_boolean_flags(opts)
-        add_aliases(opts)
-
-        option(opts, '-s', '--stdin FILE')
+        add_server_options(opts)
+        add_output_options(opts)
+        add_autocorrection_options(opts)
+        add_config_generation_options(opts)
+        add_additional_modes(opts)
+        add_general_options(opts)
       end
     end
 
-    def add_only_options(opts)
-      add_cop_selection_csv_option('except', opts)
-      add_cop_selection_csv_option('only', opts)
-      option(opts, '--only-guide-cops')
+    def add_check_options(opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      section(opts, 'Basic Options') do
+        option(opts, '-l', '--lint') do
+          @options[:only] ||= []
+          @options[:only] << 'Lint'
+        end
+        option(opts, '-x', '--fix-layout') do
+          @options[:only] ||= []
+          @options[:only] << 'Layout'
+          @options[:autocorrect] = true
+        end
+        option(opts, '--safe')
+        add_cop_selection_csv_option('except', opts)
+        add_cop_selection_csv_option('only', opts)
+        option(opts, '--only-guide-cops')
+        option(opts, '-F', '--fail-fast')
+        option(opts, '--disable-pending-cops')
+        option(opts, '--enable-pending-cops')
+        option(opts, '--ignore-disable-comments')
+        option(opts, '--force-exclusion')
+        option(opts, '--only-recognized-file-types')
+        option(opts, '--ignore-parent-exclusion')
+        option(opts, '--ignore-unrecognized-cops')
+        option(opts, '--force-default-config')
+        option(opts, '-s', '--stdin FILE')
+        option(opts, '-P', '--[no-]parallel')
+        add_severity_option(opts)
+      end
+    end
+
+    def add_output_options(opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      section(opts, 'Output Options') do
+        option(opts, '-f', '--format FORMATTER') do |key|
+          @options[:formatters] ||= []
+          @options[:formatters] << [key]
+        end
+
+        option(opts, '-D', '--[no-]display-cop-names')
+        option(opts, '-E', '--extra-details')
+        option(opts, '-S', '--display-style-guide')
+
+        option(opts, '-o', '--out FILE') do |path|
+          if @options[:formatters]
+            @options[:formatters].last << path
+          else
+            @options[:output_path] = path
+          end
+        end
+
+        option(opts, '--stderr')
+        option(opts, '--display-time')
+        option(opts, '--display-only-failed')
+        option(opts, '--display-only-fail-level-offenses')
+        option(opts, '--display-only-correctable')
+        option(opts, '--display-only-safe-correctable')
+      end
+    end
+
+    # rubocop:todo Naming/InclusiveLanguage
+    # the autocorrect command-line arguments map to the autocorrect @options values like so:
+    #                            :fix_layout  :autocorrect  :safe_autocorrect  :autocorrect_all
+    # -x, --fix-layout           true         true          -                  -
+    # -a, --auto-correct         -            true          true               -
+    #     --safe-auto-correct    -            true          true               -
+    # -A, --auto-correct-all     -            true          -                  true
+    def add_autocorrection_options(opts) # rubocop:disable Metrics/MethodLength
+      section(opts, 'Autocorrection') do
+        option(opts, '-a', '--autocorrect') { @options[:safe_autocorrect] = true }
+        option(opts, '--auto-correct') do
+          handle_deprecated_option('--auto-correct', '--autocorrect')
+          @options[:safe_autocorrect] = true
+        end
+        option(opts, '--safe-auto-correct') do
+          handle_deprecated_option('--safe-auto-correct', '--autocorrect')
+          @options[:safe_autocorrect] = true
+        end
+
+        option(opts, '-A', '--autocorrect-all') { @options[:autocorrect] = true }
+        option(opts, '--auto-correct-all') do
+          handle_deprecated_option('--auto-correct-all', '--autocorrect-all')
+          @options[:autocorrect] = true
+        end
+
+        option(opts, '--disable-uncorrectable')
+      end
+    end
+    # rubocop:enable Naming/InclusiveLanguage
+
+    def add_config_generation_options(opts)
+      section(opts, 'Config Generation') do
+        option(opts, '--auto-gen-config')
+
+        option(opts, '--regenerate-todo') do
+          @options.replace(ConfigRegeneration.new.options.merge(@options))
+        end
+
+        option(opts, '--exclude-limit COUNT') { @validator.validate_exclude_limit_option }
+
+        option(opts, '--[no-]offense-counts')
+        option(opts, '--[no-]auto-gen-only-exclude')
+        option(opts, '--[no-]auto-gen-timestamp')
+      end
     end
 
     def add_cop_selection_csv_option(option, opts)
@@ -96,51 +188,6 @@ module RuboCop
       end
     end
 
-    def add_configuration_options(opts)
-      option(opts, '-c', '--config FILE')
-      option(opts, '--force-exclusion')
-      option(opts, '--only-recognized-file-types')
-      option(opts, '--ignore-parent-exclusion')
-      option(opts, '--force-default-config')
-      add_auto_gen_options(opts)
-    end
-
-    def add_auto_gen_options(opts)
-      option(opts, '--auto-gen-config')
-
-      option(opts, '--regenerate-todo') do
-        @options.replace(ConfigRegeneration.new.options.merge(@options))
-      end
-
-      option(opts, '--exclude-limit COUNT') { @validator.validate_exclude_limit_option }
-
-      option(opts, '--disable-uncorrectable')
-
-      option(opts, '--[no-]offense-counts')
-      option(opts, '--[no-]auto-gen-only-exclude')
-      option(opts, '--[no-]auto-gen-timestamp')
-
-      option(opts, '--init')
-    end
-
-    def add_formatting_options(opts)
-      option(opts, '-f', '--format FORMATTER') do |key|
-        @options[:formatters] ||= []
-        @options[:formatters] << [key]
-      end
-
-      option(opts, '-o', '--out FILE') do |path|
-        if @options[:formatters]
-          @options[:formatters].last << path
-        else
-          @options[:output_path] = path
-        end
-      end
-
-      option(opts, '--display-time')
-      option(opts, '--display-only-failed')
-    end
-
     def add_severity_option(opts)
       table = RuboCop::Cop::Severity::CODE_TABLE.merge(A: :autocorrect)
       option(opts, '--fail-level SEVERITY',
@@ -148,62 +195,68 @@ module RuboCop
              table) do |severity|
         @options[:fail_level] = severity
       end
-      option(opts, '--display-only-fail-level-offenses')
-    end
-
-    def add_flags_with_optional_args(opts)
-      option(opts, '--show-cops [COP1,COP2,...]') do |list|
-        @options[:show_cops] = list.nil? ? [] : list.split(',')
-      end
     end
 
     def add_cache_options(opts)
-      option(opts, '-C', '--cache FLAG')
-      option(opts, '--cache-root DIR') { @validator.validate_cache_enabled_for_cache_root }
-    end
-
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-    def add_boolean_flags(opts)
-      option(opts, '-F', '--fail-fast')
-      option(opts, '-d', '--debug')
-      option(opts, '-D', '--[no-]display-cop-names')
-      option(opts, '-E', '--extra-details')
-      option(opts, '-S', '--display-style-guide')
-      option(opts, '-a', '--auto-correct') { @options[:safe_auto_correct] = true }
-      option(opts, '--safe-auto-correct') do
-        warn '--safe-auto-correct is deprecated; use --auto-correct'
-        @options[:safe_auto_correct] = @options[:auto_correct] = true
-      end
-      option(opts, '-A', '--auto-correct-all') { @options[:auto_correct] = true }
-      option(opts, '--disable-pending-cops')
-      option(opts, '--enable-pending-cops')
-      option(opts, '--ignore-disable-comments')
-
-      option(opts, '--safe')
-
-      option(opts, '--stderr')
-      option(opts, '--[no-]color')
-
-      option(opts, '-v', '--version')
-      option(opts, '-V', '--verbose-version')
-      option(opts, '-P', '--[no-]parallel')
-    end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
-
-    def add_aliases(opts)
-      option(opts, '-l', '--lint') do
-        @options[:only] ||= []
-        @options[:only] << 'Lint'
-      end
-      option(opts, '-x', '--fix-layout') do
-        @options[:only] ||= []
-        @options[:only] << 'Layout'
-        @options[:auto_correct] = true
+      section(opts, 'Caching') do
+        option(opts, '-C', '--cache FLAG')
+        option(opts, '--cache-root DIR') { @validator.validate_cache_enabled_for_cache_root }
       end
     end
 
-    def add_list_options(opts)
-      option(opts, '-L', '--list-target-files')
+    def add_server_options(opts)
+      section(opts, 'Server Options') do
+        option(opts, '--[no-]server')
+        option(opts, '--restart-server')
+        option(opts, '--start-server')
+        option(opts, '--stop-server')
+        option(opts, '--server-status')
+      end
+    end
+
+    def add_additional_modes(opts)
+      section(opts, 'Additional Modes') do
+        option(opts, '-L', '--list-target-files')
+        option(opts, '--show-cops [COP1,COP2,...]') do |list|
+          @options[:show_cops] = list.nil? ? [] : list.split(',')
+        end
+        option(opts, '--show-docs-url [COP1,COP2,...]') do |list|
+          @options[:show_docs_url] = list.nil? ? [] : list.split(',')
+        end
+      end
+    end
+
+    def add_general_options(opts)
+      section(opts, 'General Options') do
+        option(opts, '--init')
+        option(opts, '-c', '--config FILE')
+        option(opts, '-d', '--debug')
+        option(opts, '-r', '--require FILE') { |f| require_feature(f) }
+        option(opts, '--[no-]color')
+        option(opts, '-v', '--version')
+        option(opts, '-V', '--verbose-version')
+      end
+    end
+
+    def handle_deprecated_option(old_option, new_option)
+      warn rainbow.wrap("#{old_option} is deprecated; use #{new_option} instead.").yellow
+      @options[long_opt_symbol([new_option])] = @options.delete(long_opt_symbol([old_option]))
+    end
+
+    def rainbow
+      @rainbow ||= begin
+        rainbow = Rainbow.new
+        rainbow.enabled = false if ARGV.include?('--no-color')
+        rainbow
+      end
+    end
+
+    # Creates a section of options in order to separate them visually when
+    # using `--help`.
+    def section(opts, heading, &_block)
+      heading = rainbow.wrap(heading).bright
+      opts.separator("\n#{heading}:\n")
+      yield
     end
 
     # Sets a value in the @options hash, based on the given long option and its
@@ -218,10 +271,10 @@ module RuboCop
     end
 
     # Finds the option in `args` starting with -- and converts it to a symbol,
-    # e.g. [..., '--auto-correct', ...] to :auto_correct.
+    # e.g. [..., '--autocorrect', ...] to :autocorrect.
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
-      long_opt[2..-1].sub('[no-]', '').sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
+      long_opt[2..].sub('[no-]', '').sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
 
     def require_feature(file)
@@ -292,11 +345,13 @@ module RuboCop
 
       if display_only_fail_level_offenses_with_autocorrect?
         raise OptionArgumentError, '--autocorrect cannot be used with ' \
-          '--display-only-fail-level-offenses'
+                                   '--display-only-fail-level-offenses.'
       end
       validate_auto_gen_config
-      validate_auto_correct
+      validate_autocorrect
       validate_display_only_failed
+      validate_display_only_failed_and_display_only_correctable
+      validate_display_only_correctable_and_autocorrect
       disable_parallel_when_invalid_option_combo
 
       return if incompatible_options.size <= 1
@@ -326,35 +381,49 @@ module RuboCop
             format('--display-only-failed can only be used together with --format junit.')
     end
 
-    def validate_auto_correct
-      return if @options.key?(:auto_correct)
+    def validate_display_only_correctable_and_autocorrect
+      return unless @options.key?(:autocorrect)
+      return if !@options.key?(:display_only_correctable) &&
+                !@options.key?(:display_only_safe_correctable)
+
+      raise OptionArgumentError,
+            '--autocorrect cannot be used with --display-only-[safe-]correctable.'
+    end
+
+    def validate_display_only_failed_and_display_only_correctable
+      return unless @options.key?(:display_only_failed)
+      return if !@options.key?(:display_only_correctable) &&
+                !@options.key?(:display_only_safe_correctable)
+
+      raise OptionArgumentError,
+            format('--display-only-failed cannot be used together with other display options.')
+    end
+
+    def validate_autocorrect
+      return if @options.key?(:autocorrect)
       return unless @options.key?(:disable_uncorrectable)
 
       raise OptionArgumentError,
-            format('--disable-uncorrectable can only be used together with --auto-correct.')
+            format('--disable-uncorrectable can only be used together with --autocorrect.')
     end
 
     def disable_parallel_when_invalid_option_combo
       return unless @options.key?(:parallel)
 
-      invalid_options = [
-        { name: :auto_gen_config, value: true, flag: '--auto-gen-config' },
-        { name: :fail_fast, value: true, flag: '-F/--fail-fast.' },
-        { name: :auto_correct, value: true, flag: '--auto-correct.' },
-        { name: :cache, value: 'false', flag: '--cache false' }
-      ]
-
-      invalid_flags = invalid_options.each_with_object([]) do |option, flags|
-        # `>` rather than `>=` because `@options` will also contain `parallel: true`
-        flags << option[:flag] if @options > { option[:name] => option[:value] }
-      end
+      invalid_flags = invalid_arguments_for_parallel
 
       return if invalid_flags.empty?
 
       @options.delete(:parallel)
 
       puts '-P/--parallel is being ignored because ' \
-           "it is not compatible with #{invalid_flags.join(', ')}"
+           "it is not compatible with #{invalid_flags.join(', ')}."
+    end
+
+    def invalid_arguments_for_parallel
+      [('--auto-gen-config' if @options.key?(:auto_gen_config)),
+       ('-F/--fail-fast'    if @options.key?(:fail_fast)),
+       ('--cache false'     if @options > { cache: 'false' })].compact
     end
 
     def only_includes_redundant_disable?
@@ -363,7 +432,7 @@ module RuboCop
     end
 
     def display_only_fail_level_offenses_with_autocorrect?
-      @options[:display_only_fail_level_offenses] && @options[:autocorrect]
+      @options.key?(:display_only_fail_level_offenses) && @options.key?(:autocorrect)
     end
 
     def except_syntax?
@@ -389,7 +458,7 @@ module RuboCop
     def validate_cache_enabled_for_cache_root
       return unless @options[:cache] == 'false'
 
-      raise OptionArgumentError, '--cache-root can not be used with --cache false'
+      raise OptionArgumentError, '--cache-root cannot be used with --cache false'
     end
   end
 
@@ -403,7 +472,7 @@ module RuboCop
       only:                             'Run only the given cop(s).',
       only_guide_cops:                  ['Run only cops for rules that link to a',
                                          'style guide.'],
-      except:                           'Disable the given cop(s).',
+      except:                           'Exclude the given cop(s).',
       require:                          'Require Ruby file.',
       config:                           'Specify configuration file.',
       auto_gen_config:                  ['Generate a configuration file acting as a',
@@ -422,45 +491,58 @@ module RuboCop
                                          'when running --auto-gen-config, except if the',
                                          'number of files with offenses is bigger than',
                                          'exclude-limit. Default is false.'],
-      exclude_limit:                    ['Used together with --auto-gen-config to',
-                                         'set the limit for how many Exclude',
-                                         "properties to generate. Default is #{MAX_EXCL}."],
-      disable_uncorrectable:            ['Used with --auto-correct to annotate any',
+      exclude_limit:                    ['Set the limit for how many files to explicitly exclude.',
+                                         'If there are more files than the limit, the cop will',
+                                         "be disabled instead. Default is #{MAX_EXCL}."],
+      disable_uncorrectable:            ['Used with --autocorrect to annotate any',
                                          'offenses that do not support autocorrect',
                                          'with `rubocop:todo` comments.'],
-      force_exclusion:                  ['Force excluding files specified in the',
-                                         'configuration `Exclude` even if they are',
-                                         'explicitly passed as arguments.'],
+      force_exclusion:                  ['Any files excluded by `Exclude` in configuration',
+                                         'files will be excluded, even if given explicitly',
+                                         'as arguments.'],
       only_recognized_file_types:       ['Inspect files given on the command line only if',
-                                         'they are listed in AllCops/Include parameters',
+                                         'they are listed in `AllCops/Include` parameters',
                                          'of user configuration or default configuration.'],
       ignore_disable_comments:          ['Run cops even when they are disabled locally',
-                                         'with a comment.'],
-      ignore_parent_exclusion:          ['Prevent from inheriting AllCops/Exclude from',
+                                         'by a `rubocop:disable` directive.'],
+      ignore_parent_exclusion:          ['Prevent from inheriting `AllCops/Exclude` from',
                                          'parent folders.'],
+      ignore_unrecognized_cops:         ['Ignore unrecognized cops or departments in the config.'],
       force_default_config:             ['Use default configuration even if configuration',
                                          'files are present in the directory tree.'],
       format:                           ['Choose an output formatter. This option',
                                          'can be specified multiple times to enable',
                                          'multiple formatters at the same time.',
-                                         '[p]rogress is used by default',
-                                         *FORMATTER_OPTION_LIST.map { |item| "  #{item}" },
+                                         *FORMATTER_OPTION_LIST.map do |item|
+                                           "  #{item}#{' (default)' if item == '[p]rogress'}"
+                                         end,
                                          '  custom formatter class name'],
       out:                              ['Write output to a file instead of STDOUT.',
                                          'This option applies to the previously',
                                          'specified --format, or the default format',
                                          'if no format is specified.'],
-      fail_level:                       ['Minimum severity (A/I/R/C/W/E/F) for exit',
-                                         'with error code.'],
+      fail_level:                       ['Minimum severity for exit with error code.',
+                                         '  [A] autocorrect',
+                                         '  [I] info',
+                                         '  [R] refactor',
+                                         '  [C] convention',
+                                         '  [W] warning',
+                                         '  [E] error',
+                                         '  [F] fatal'],
       display_time:                     'Display elapsed time in seconds.',
       display_only_failed:              ['Only output offense messages. Omit passing',
                                          'cops. Only valid for --format junit.'],
       display_only_fail_level_offenses:
                                         ['Only output offense messages at',
                                          'the specified --fail-level or above'],
+      display_only_correctable:         ['Only output correctable offense messages.'],
+      display_only_safe_correctable:    ['Only output safe-correctable offense messages',
+                                         'when combined with --display-only-correctable.'],
       show_cops:                        ['Shows the given cops, or all cops by',
                                          'default, and their configurations for the',
                                          'current directory.'],
+      show_docs_url:                    ['Display url to documentation for the given',
+                                         'cops, or base url by default.'],
       fail_fast:                        ['Inspect files in order of modification',
                                          'time and stop after the first file',
                                          'containing offenses.'],
@@ -482,20 +564,32 @@ module RuboCop
       safe:                             'Run only safe cops.',
       stderr:                           ['Write all output to stderr except for the',
                                          'autocorrected source. This is especially useful',
-                                         'when combined with --auto-correct and --stdin.'],
+                                         'when combined with --autocorrect and --stdin.'],
       list_target_files:                'List all files RuboCop will inspect.',
-      auto_correct:                     'Auto-correct offenses (only when it\'s safe).',
+      autocorrect:                      'Autocorrect offenses (only when it\'s safe).',
+      auto_correct:                     '(same, deprecated)',
       safe_auto_correct:                '(same, deprecated)',
-      auto_correct_all:                 'Auto-correct offenses (safe and unsafe)',
-      fix_layout:                       'Run only layout cops, with auto-correct on.',
+      autocorrect_all:                  'Autocorrect offenses (safe and unsafe).',
+      auto_correct_all:                 '(same, deprecated)',
+      fix_layout:                       'Run only layout cops, with autocorrect on.',
       color:                            'Force color output on or off.',
       version:                          'Display version.',
       verbose_version:                  'Display verbose version.',
       parallel:                         ['Use available CPUs to execute inspection in',
-                                         'parallel. Default is false.'],
+                                         'parallel. Default is true.'],
       stdin:                            ['Pipe source from STDIN, using FILE in offense',
                                          'reports. This is useful for editor integration.'],
-      init:                             'Generate a .rubocop.yml file in the current directory.'
+      init:                             'Generate a .rubocop.yml file in the current directory.',
+      server:                           ['If a server process has not been started yet, start',
+                                         'the server process and execute inspection with server.',
+                                         'Default is false.',
+                                         'You can specify the server host and port with the',
+                                         '$RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT',
+                                         'environment variables.'],
+      restart_server:                   'Restart server process.',
+      start_server:                     'Start server process.',
+      stop_server:                      'Stop server process.',
+      server_status:                    'Show server status.'
     }.freeze
   end
 end

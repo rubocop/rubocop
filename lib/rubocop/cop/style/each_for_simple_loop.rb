@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for loops which iterate a constant number of times,
+      # Checks for loops which iterate a constant number of times,
       # using a Range literal and `#each`. This can be done more readably using
       # `Integer#times`.
       #
@@ -27,7 +27,7 @@ module RuboCop
 
         MSG = 'Use `Integer#times` for a simple loop which iterates a fixed number of times.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return unless offending_each_range(node)
 
           send_node = node.send_node

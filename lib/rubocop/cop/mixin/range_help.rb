@@ -51,10 +51,14 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range:, side: :both,
-                                       newlines: true, whitespace: false,
-                                       continuations: false)
-        buffer = @processed_source.buffer
+      NOT_GIVEN = Module.new
+      def range_with_surrounding_space(range_positional = NOT_GIVEN, # rubocop:disable Metrics/ParameterLists
+                                       range: NOT_GIVEN, side: :both, newlines: true,
+                                       whitespace: false, continuations: false,
+                                       buffer: @processed_source.buffer)
+
+        range = range_positional unless range_positional == NOT_GIVEN
+
         src = buffer.source
 
         go_left, go_right = directions(side)
@@ -66,9 +70,8 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_by_whole_lines(range, include_final_newline: false)
-        buffer = @processed_source.buffer
-
+      def range_by_whole_lines(range, include_final_newline: false,
+                               buffer: @processed_source.buffer)
         last_line = buffer.source_line(range.last_line)
         end_offset = last_line.length - range.last_column
         end_offset += 1 if include_final_newline

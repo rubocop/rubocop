@@ -19,7 +19,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = '`(...)` interpreted as grouped expression.'
+        MSG = '`%<argument>s` interpreted as grouped expression.'
 
         def on_send(node)
           return if valid_context?(node)
@@ -28,8 +28,9 @@ module RuboCop
           return unless space_length.positive?
 
           range = space_range(node.first_argument.source_range, space_length)
+          message = format(MSG, argument: node.first_argument.source)
 
-          add_offense(range) { |corrector| corrector.remove(range) }
+          add_offense(range, message: message) { |corrector| corrector.remove(range) }
         end
         alias on_csend on_send
 
@@ -41,7 +42,11 @@ module RuboCop
           end
 
           node.operator_method? || node.setter_method? || chained_calls?(node) ||
-            operator_keyword?(node) || node.first_argument.hash_type?
+            valid_first_argument?(node.first_argument)
+        end
+
+        def valid_first_argument?(first_arg)
+          first_arg.operator_keyword? || first_arg.hash_type? || ternary_expression?(first_arg)
         end
 
         def first_argument_starts_with_left_parenthesis?(node)
@@ -50,12 +55,11 @@ module RuboCop
 
         def chained_calls?(node)
           first_argument = node.first_argument
-          first_argument.send_type? && (node.children.last&.children&.count || 0) > 1
+          first_argument.call_type? && (node.children.last&.children&.count || 0) > 1
         end
 
-        def operator_keyword?(node)
-          first_argument = node.first_argument
-          first_argument.operator_keyword?
+        def ternary_expression?(node)
+          node.if_type? && node.ternary?
         end
 
         def spaces_before_left_parenthesis(node)
@@ -65,7 +69,7 @@ module RuboCop
                             else
                               0
                             end
-          without_receiver = node.source[receiver_length..-1]
+          without_receiver = node.source[receiver_length..]
 
           # Escape question mark if any.
           method_regexp = Regexp.escape(node.method_name)

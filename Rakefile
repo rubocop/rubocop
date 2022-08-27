@@ -4,6 +4,7 @@
 # and started before any application code is loaded.
 require 'simplecov' if ENV['COVERAGE']
 
+desc 'Check for no pending changelog entries before release'
 task release: 'changelog:check_clean' # Before task is required
 
 require 'bundler'
@@ -21,12 +22,7 @@ require 'rubocop/rake_task'
 Dir['tasks/**/*.rake'].each { |t| load t }
 
 desc 'Run RuboCop over itself'
-RuboCop::RakeTask.new(:internal_investigation).tap do |task|
-  if RUBY_ENGINE == 'ruby' &&
-     !/mswin|msys|mingw|cygwin|bccwin|wince|emc/.match?(RbConfig::CONFIG['host_os'])
-    task.options = %w[--parallel]
-  end
-end
+RuboCop::RakeTask.new(:internal_investigation)
 
 task default: %i[documentation_syntax_check spec ascii_spec internal_investigation]
 
@@ -81,7 +77,7 @@ task documentation_syntax_check: :yard_for_generate_documentation do
   require 'parser/ruby25'
   require 'parser/ruby26'
   require 'parser/ruby27'
-  require 'parser/ruby30'
+  require 'parser/ruby31'
 
   ok = true
   YARD::Registry.load!
@@ -112,7 +108,7 @@ task documentation_syntax_check: :yard_for_generate_documentation do
                elsif cop == RuboCop::Cop::Lint::NumberedParameterAssignment
                  Parser::Ruby27.new(RuboCop::AST::Builder.new)
                else
-                 Parser::Ruby30.new(RuboCop::AST::Builder.new)
+                 Parser::Ruby31.new(RuboCop::AST::Builder.new)
                end
       parser.diagnostics.all_errors_are_fatal = true
       parser.parse(buffer)

@@ -8,102 +8,100 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       '/some/.rubocop.yml'
     )
   end
-  let(:cop_config) do
+  let(:cop_config) do # matches default.yml
     {
       'IgnoreExecutableScripts' => true,
       'ExpectMatchingDefinition' => false,
-      'Regex' => nil
+      'Regex' => nil,
+      'CheckDefinitionPathHierarchy' => true,
+      'CheckDefinitionPathHierarchyRoots' => %w[lib spec test src]
     }
   end
-
   let(:includes) { ['**/*.rb'] }
-  let(:source) { 'print 1' }
-  let(:processed_source) { parse_source(source) }
-  let(:offenses) { _investigate(cop, processed_source) }
-  let(:messages) { offenses.sort.map(&:message) }
-
-  before { allow(processed_source.buffer).to receive(:name).and_return(filename) }
 
   context 'with camelCase file names ending in .rb' do
-    let(:filename) { '/some/dir/testCase.rb' }
-
-    it 'reports an offense' do
-      expect(offenses.size).to eq(1)
+    it 'registers an offense' do
+      expect_offense(<<~RUBY, '/some/dir/testCase.rb')
+        print 1
+        ^ The name of this source file (`testCase.rb`) should use snake_case.
+      RUBY
     end
   end
 
   context 'with camelCase file names without file extension' do
-    let(:filename) { '/some/dir/testCase' }
-
-    it 'reports an offense' do
-      expect(offenses.size).to eq(1)
+    it 'registers an offense' do
+      expect_offense(<<~RUBY, '/some/dir/testCase')
+        print 1
+        ^ The name of this source file (`testCase`) should use snake_case.
+      RUBY
     end
   end
 
   context 'with snake_case file names ending in .rb' do
-    let(:filename) { '/some/dir/test_case.rb' }
-
-    it 'reports an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, '/some/dir/test_case.rb')
+        print 1
+      RUBY
     end
   end
 
   context 'with snake_case file names without file extension' do
-    let(:filename) { '/some/dir/test_case' }
-
-    it 'does not report an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, '/some/dir/test_case')
+        print 1
+      RUBY
     end
   end
 
   context 'with snake_case file names with non-rb extension' do
-    let(:filename) { '/some/dir/some_task.rake' }
-
-    it 'does not report an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, '/some/dir/test_case.rake')
+        print 1
+      RUBY
     end
   end
 
   context 'with snake_case file names with multiple extensions' do
-    let(:filename) { 'some/dir/some_view.html.slim_spec.rb' }
-
-    it 'does not report an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, 'some/dir/some_view.html.slim_spec.rb')
+        print 1
+      RUBY
     end
   end
 
   context 'with snake_case names which use ? and !' do
-    let(:filename) { 'some/dir/file?!.rb' }
-
-    it 'does not report an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, 'some/dir/file?!.rb')
+        print 1
+      RUBY
     end
   end
 
   context 'with snake_case names which use +' do
-    let(:filename) { 'some/dir/some_file.xlsx+mobile.axlsx' }
-
-    it 'does not report an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, 'some/dir/some_file.xlsx+mobile.axlsx')
+        print 1
+      RUBY
     end
   end
 
   context 'with non-snake-case file names with a shebang' do
-    let(:filename) { '/some/dir/test-case' }
-    let(:source) { <<~RUBY }
-      #!/usr/bin/env ruby
-      print 1
-    RUBY
-
-    it 'does not report an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, '/some/dir/test-case')
+        #!/usr/bin/env ruby
+        print 1
+      RUBY
     end
 
     context 'when IgnoreExecutableScripts is disabled' do
-      let(:cop_config) { { 'IgnoreExecutableScripts' => false } }
+      let(:cop_config) { super().merge('IgnoreExecutableScripts' => false) }
 
-      it 'reports an offense' do
-        expect(offenses.size).to eq(1)
+      it 'registers an offense' do
+        expect_offense(<<~RUBY, '/some/dir/test-case')
+          #!/usr/bin/env ruby
+          ^ The name of this source file (`test-case`) should use snake_case.
+          print 1
+        RUBY
       end
     end
   end
@@ -112,149 +110,143 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     let(:includes) { ['**/Gemfile'] }
 
     context 'with a non-snake_case file name' do
-      let(:filename) { '/some/dir/Gemfile' }
-
-      it 'does not report an offense' do
-        expect(offenses.empty?).to be(true)
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, '/some/dir/Gemfile')
+          print 1
+        RUBY
       end
     end
   end
 
   context 'when ExpectMatchingDefinition is true' do
-    let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
-        'ExpectMatchingDefinition' => true,
-        'CheckDefinitionPathHierarchy' => 'true'
-      }
-    end
+    let(:cop_config) { super().merge('ExpectMatchingDefinition' => true) }
 
     context 'on a file which defines no class or module at all' do
       %w[lib src test spec].each do |dir|
         context "under #{dir}" do
-          let(:filename) { "/some/dir/#{dir}/file/test_case.rb" }
-
           it 'registers an offense' do
-            expect(offenses.size).to eq(1)
-            expect(messages).to eq(['test_case.rb should define a class ' \
-                                    'or module called `File::TestCase`.'])
+            expect_offense(<<~RUBY, "/some/dir/#{dir}/file/test_case.rb")
+              print 1
+              ^ `test_case.rb` should define a class or module called `File::TestCase`.
+            RUBY
           end
         end
       end
 
-      context 'under some other random directory' do
-        let(:filename) { '/some/other/dir/test_case.rb' }
+      context 'under lib when not added to root' do
+        let(:cop_config) { super().merge('CheckDefinitionPathHierarchyRoots' => ['foo']) }
 
         it 'registers an offense' do
-          expect(offenses.size).to eq(1)
-          expect(messages).to eq(['test_case.rb should define a class ' \
-                                  'or module called `TestCase`.'])
+          expect_offense(<<~RUBY, '/some/other/dir/test_case.rb')
+            print 1
+            ^ `test_case.rb` should define a class or module called `TestCase`.
+          RUBY
+        end
+      end
+
+      context 'under some other random directory' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY, '/some/other/dir/test_case.rb')
+            print 1
+            ^ `test_case.rb` should define a class or module called `TestCase`.
+          RUBY
         end
       end
     end
 
     context 'on an empty file' do
-      let(:source) { '' }
-      let(:filename) { '/lib/rubocop/blah.rb' }
-
       it 'registers an offense' do
-        expect(offenses.size).to eq(1)
-        expect(messages).to eq(['blah.rb should define a class or module called `Rubocop::Blah`.'])
+        expect_offense(<<~RUBY, '/lib/rubocop/blah.rb')
+          ^ `blah.rb` should define a class or module called `Rubocop::Blah`.
+        RUBY
       end
     end
 
     context 'on an empty file with a space in its filename' do
-      let(:source) { '' }
-      let(:filename) { 'a file.rb' }
-
       it 'registers an offense' do
-        expect(offenses.size).to eq(1)
-        expect(messages).to eq(['The name of this source file (`a file.rb`) ' \
-                                'should use snake_case.'])
+        expect_offense(<<~RUBY, 'a file.rb')
+          ^ The name of this source file (`a file.rb`) should use snake_case.
+        RUBY
       end
     end
 
-    shared_examples 'matching module or class' do
+    shared_examples 'matching module or class' do |source|
       %w[lib src test spec].each do |dir|
         context "in a matching directory under #{dir}" do
-          let(:filename) { "/some/dir/#{dir}/a/b.rb" }
-
           it 'does not register an offense' do
-            expect(offenses.empty?).to be(true)
+            expect_no_offenses(<<~RUBY, "/some/dir/#{dir}/a/b.rb")
+              #{source}
+            RUBY
           end
         end
 
         context "in a non-matching directory under #{dir}" do
-          let(:filename) { "/some/dir/#{dir}/c/b.rb" }
-
           it 'registers an offense' do
-            expect(offenses.size).to eq(1)
-            expect(messages).to eq(['b.rb should define a class or module called `C::B`.'])
+            expect_offense(<<~RUBY, "/some/dir/#{dir}/c/b.rb")
+              # b.rb
+              ^ `b.rb` should define a class or module called `C::B`.
+              #{source}
+            RUBY
           end
         end
 
         context "in a directory with multiple instances of #{dir}" do
-          let(:filename) { "/some/dir/#{dir}/project/#{dir}/a/b.rb" }
-
           it 'does not register an offense' do
-            expect(offenses.empty?).to be(true)
+            expect_no_offenses(<<~RUBY, "/some/dir/#{dir}/project/#{dir}/a/b.rb")
+              #{source}
+            RUBY
           end
         end
       end
 
       context 'in a directory elsewhere which only matches the module name' do
-        let(:filename) { '/some/dir/b.rb' }
-
         it 'does not register an offense' do
-          expect(offenses.empty?).to be(true)
+          expect_no_offenses(<<~RUBY, '/some/dir/b.rb')
+            #{source}
+          RUBY
         end
       end
 
       context 'in a directory elsewhere which does not match the module name' do
-        let(:filename) { '/some/dir/e.rb' }
-
         it 'registers an offense' do
-          expect(offenses.size).to eq(1)
-          expect(messages).to eq(['e.rb should define a class or module called `E`.'])
+          expect_offense(<<~RUBY, '/some/dir/e.rb')
+            # start of file
+            ^ `e.rb` should define a class or module called `E`.
+            #{source}
+          RUBY
         end
       end
     end
 
     context 'on a file which defines a nested module' do
-      let(:source) { <<~RUBY }
+      include_examples 'matching module or class', <<~RUBY
         module A
           module B
           end
         end
       RUBY
-
-      include_examples 'matching module or class'
     end
 
     context 'on a file which defines a nested class' do
-      let(:source) { <<~RUBY }
+      include_examples 'matching module or class', <<~RUBY
         module A
           class B
           end
         end
       RUBY
-
-      include_examples 'matching module or class'
     end
 
     context 'on a file which uses Name::Spaced::Module syntax' do
-      let(:source) { <<~RUBY }
+      include_examples 'matching module or class', <<~RUBY
         begin
           module A::B
           end
         end
       RUBY
-
-      include_examples 'matching module or class'
     end
 
     context 'on a file which defines multiple classes' do
-      let(:source) { <<~RUBY }
+      include_examples 'matching module or class', <<~RUBY
         class X
         end
         module M
@@ -264,103 +256,137 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
           end
         end
       RUBY
+    end
 
-      include_examples 'matching module or class'
+    context 'on a file which defines a Struct without a block' do
+      include_examples 'matching module or class', <<~RUBY
+        module A
+          B = Struct.new(:foo, :bar)
+        end
+      RUBY
+    end
+
+    context 'on a file which defines a Struct with a block' do
+      include_examples 'matching module or class', <<~RUBY
+        module A
+          B = Struct.new(:foo, :bar) do
+          end
+        end
+      RUBY
     end
   end
 
   context 'when CheckDefinitionPathHierarchy is false' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
-        'ExpectMatchingDefinition' => true,
-        'CheckDefinitionPathHierarchy' => false
-      }
+      super().merge('ExpectMatchingDefinition' => true, 'CheckDefinitionPathHierarchy' => false)
     end
 
     context 'on a file with a matching class' do
-      let(:source) { <<~RUBY }
-        begin
-          class ImageCollection
-          end
-        end
-      RUBY
-      let(:filename) { '/lib/image_collection.rb' }
-
       it 'does not register an offense' do
-        expect(offenses.empty?).to be(true)
+        expect_no_offenses(<<~RUBY, '/lib/image_collection.rb')
+          begin
+            class ImageCollection
+            end
+          end
+        RUBY
       end
     end
 
     context 'on a file with a non-matching class' do
-      let(:source) { <<~RUBY }
-        begin
-          class PictureCollection
-          end
-        end
-      RUBY
-      let(:filename) { '/lib/image_collection.rb' }
-
       it 'registers an offense' do
-        expect(offenses.size).to eq(1)
-        expect(messages).to eq(['image_collection.rb should define a ' \
-                                'class or module called `ImageCollection`.'])
+        expect_offense(<<~RUBY, '/lib/image_collection.rb')
+          begin
+          ^ `image_collection.rb` should define a class or module called `ImageCollection`.
+            class PictureCollection
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'on a file with a matching struct' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, '/lib/image_collection.rb')
+          ImageCollection = Struct.new
+        RUBY
+      end
+    end
+
+    context 'on a file with a non-matching struct' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY, '/lib/image_collection.rb')
+          PictureCollection = Struct.new
+          ^ `image_collection.rb` should define a class or module called `ImageCollection`.
+        RUBY
       end
     end
 
     context 'on an empty file' do
-      let(:source) { '' }
-      let(:filename) { '/lib/rubocop/foo.rb' }
-
       it 'registers an offense' do
-        expect(offenses.size).to eq(1)
-        expect(messages).to eq(['foo.rb should define a class or module called `Foo`.'])
+        expect_offense(<<~RUBY, '/lib/rubocop/foo.rb')
+          ^ `foo.rb` should define a class or module called `Foo`.
+        RUBY
       end
     end
 
     context 'in a non-matching directory, but with a matching class' do
-      let(:source) { <<~RUBY }
-        begin
-          module Foo
-          end
-        end
-      RUBY
-      let(:filename) { '/lib/some/path/foo.rb' }
-
       it 'does not register an offense' do
-        expect(offenses.empty?).to be(true)
+        expect_no_offenses(<<~RUBY, '/lib/some/path/foo.rb')
+          begin
+            module Foo
+            end
+          end
+        RUBY
       end
     end
 
     context 'with a non-matching module containing a matching class' do
-      let(:source) { <<~RUBY }
-        begin
-          module NonMatching
-            class Foo
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, 'lib/foo.rb')
+          begin
+            module NonMatching
+              class Foo
+              end
             end
           end
-        end
-      RUBY
-      let(:filename) { 'lib/foo.rb' }
-
-      it 'does not register an offense' do
-        expect(offenses.empty?).to be(true)
+        RUBY
       end
     end
 
     context 'with a matching module containing a non-matching class' do
-      let(:source) { <<~RUBY }
-        begin
-          module Foo
-            class NonMatching
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, 'lib/foo.rb')
+          begin
+            module Foo
+              class NonMatching
+              end
             end
           end
-        end
-      RUBY
-      let(:filename) { 'lib/foo.rb' }
+        RUBY
+      end
+    end
 
+    context 'with a non-matching module containing a matching struct' do
       it 'does not register an offense' do
-        expect(offenses.empty?).to be(true)
+        expect_no_offenses(<<~RUBY, 'lib/foo.rb')
+          begin
+            module NonMatching
+              Foo = Struct.new
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with a matching module containing a non-matching struct' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, 'lib/foo.rb')
+          begin
+            module Foo
+              NonMatching = Struct.new
+            end
+          end
+        RUBY
       end
     end
   end
@@ -369,107 +395,83 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     let(:cop_config) { { 'Regex' => /\A[aeiou]\z/i } }
 
     context 'with a matching name' do
-      let(:filename) { 'a.rb' }
-
       it 'does not register an offense' do
-        expect(offenses.empty?).to be(true)
+        expect_no_offenses(<<~RUBY, 'a.rb')
+          print 1
+        RUBY
       end
     end
 
     context 'with a non-matching name' do
-      let(:filename) { 'z.rb' }
-
       it 'registers an offense' do
-        expect(offenses.size).to eq(1)
-        expect(messages).to eq(['`z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.'])
+        expect_offense(<<~RUBY, 'z.rb')
+          print 1
+          ^ `z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.
+        RUBY
       end
     end
   end
 
   context 'with acronym namespace' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
-        'ExpectMatchingDefinition' => true,
-        'AllowedAcronyms' => ['CLI']
-      }
+      super().merge('ExpectMatchingDefinition' => true, 'AllowedAcronyms' => ['CLI'])
     end
 
-    let(:filename) { '/lib/my/cli/admin_user.rb' }
-
-    let(:source) { <<~RUBY }
-      module My
-        module CLI
-          class AdminUser
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, '/lib/my/cli/admin_user.rb')
+        module My
+          module CLI
+            class AdminUser
+            end
           end
         end
-      end
-    RUBY
-
-    it 'does not register an offense' do
-      expect(offenses.empty?).to be(true)
+      RUBY
     end
   end
 
   context 'with acronym class name' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
-        'ExpectMatchingDefinition' => true,
-        'AllowedAcronyms' => ['CLI']
-      }
+      super().merge('ExpectMatchingDefinition' => true, 'AllowedAcronyms' => ['CLI'])
     end
 
-    let(:filename) { '/lib/my/cli.rb' }
-
-    let(:source) { <<~RUBY }
-      module My
-        class CLI
-        end
-      end
-    RUBY
-
     it 'does not register an offense' do
-      expect(offenses.empty?).to be(true)
+      expect_no_offenses(<<~RUBY, '/lib/my/cli.rb')
+        module My
+          class CLI
+          end
+        end
+      RUBY
     end
   end
 
   context 'with include acronym name' do
     let(:cop_config) do
-      {
-        'IgnoreExecutableScripts' => true,
-        'ExpectMatchingDefinition' => true,
-        'AllowedAcronyms' => ['HTTP']
-      }
+      super().merge('ExpectMatchingDefinition' => true, 'AllowedAcronyms' => ['HTTP'])
     end
 
-    let(:filename) { '/lib/my/http_server.rb' }
-
-    let(:source) { <<~RUBY }
-      module My
-        class HTTPServer
-        end
-      end
-    RUBY
-
     it 'does not register an offense' do
-      expect(offenses.empty?).to be(true)
+      expect_no_offenses(<<~RUBY, '/lib/my/http_server.rb')
+        module My
+          class HTTPServer
+          end
+        end
+      RUBY
     end
   end
 
   context 'with dotfiles' do
-    let(:filename) { '.pryrc' }
-
-    it 'does not report an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, '.pryrc')
+        print 1
+      RUBY
     end
   end
 
   context 'with non-ascii characters in filename' do
-    let(:filename) { '/some/dir/ünbound_sérvér.rb' }
-
-    it 'reports an offense' do
-      expect(offenses.empty?).to be(true)
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY, '/some/dir/ünbound_sérvér.rb')
+        print 1
+      RUBY
     end
   end
 end

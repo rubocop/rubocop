@@ -3,25 +3,27 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for uses of the deprecated class method usages.
+      # Checks for uses of the deprecated class method usages.
       #
       # @example
       #
       #   # bad
-      #
       #   File.exists?(some_path)
       #   Dir.exists?(some_path)
       #   iterator?
+      #   ENV.freeze # Calling `Env.freeze` raises `TypeError` since Ruby 2.7.
+      #   ENV.clone
+      #   ENV.dup # Calling `Env.dup` raises `TypeError` since Ruby 3.1.
       #   Socket.gethostbyname(host)
       #   Socket.gethostbyaddr(host)
       #
-      # @example
-      #
       #   # good
-      #
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
       #   block_given?
+      #   ENV # `ENV.freeze` cannot prohibit changes to environment variables.
+      #   ENV.to_h
+      #   ENV.to_h # `ENV.dup` cannot dup `ENV`, use `ENV.to_h` to get a copy of `ENV` as a hash.
       #   Addrinfo.getaddrinfo(nodename, service)
       #   Addrinfo.tcp(host, port).getnameinfo
       class DeprecatedClassMethods < Base
@@ -58,13 +60,13 @@ module RuboCop
           end
 
           def to_s
-            [class_constant, method].compact.join(delimeter)
+            [class_constant, method].compact.join(delimiter)
           end
 
           private
 
-          def delimeter
-            CLASS_METHOD_DELIMETER
+          def delimiter
+            CLASS_METHOD_DELIMITER
           end
         end
 
@@ -81,13 +83,13 @@ module RuboCop
           end
 
           def to_s
-            [class_constant, method].compact.join(delimeter)
+            [class_constant, method].compact.join(delimiter)
           end
 
           private
 
-          def delimeter
-            instance_method? ? INSTANCE_METHOD_DELIMETER : CLASS_METHOD_DELIMETER
+          def delimiter
+            instance_method? ? INSTANCE_METHOD_DELIMITER : CLASS_METHOD_DELIMITER
           end
 
           def instance_method?
@@ -106,6 +108,15 @@ module RuboCop
 
           DeprecatedClassMethod.new(:iterator?) => Replacement.new(:block_given?),
 
+          DeprecatedClassMethod.new(:freeze, class_constant: :ENV) =>
+            Replacement.new(nil, class_constant: :ENV),
+
+          DeprecatedClassMethod.new(:clone, class_constant: :ENV) =>
+            Replacement.new(:to_h, class_constant: :ENV),
+
+          DeprecatedClassMethod.new(:dup, class_constant: :ENV) =>
+            Replacement.new(:to_h, class_constant: :ENV),
+
           DeprecatedClassMethod.new(:gethostbyaddr, class_constant: :Socket, correctable: false) =>
             Replacement.new(:getnameinfo, class_constant: :Addrinfo, instance_method: true),
 
@@ -115,16 +126,23 @@ module RuboCop
 
         RESTRICT_ON_SEND = DEPRECATED_METHODS_OBJECT.keys.map(&:method).freeze
 
-        CLASS_METHOD_DELIMETER = '.'
-        INSTANCE_METHOD_DELIMETER = '#'
+        CLASS_METHOD_DELIMITER = '.'
+        INSTANCE_METHOD_DELIMITER = '#'
 
         def on_send(node)
           check(node) do |deprecated|
-            message = format(MSG, current: deprecated, prefer: replacement(deprecated))
+            prefer = replacement(deprecated)
+            message = format(MSG, current: deprecated, prefer: prefer)
+            current_method = node.loc.selector
 
-            add_offense(node.loc.selector, message: message) do |corrector|
-              if deprecated.correctable?
-                corrector.replace(node.loc.selector, replacement(deprecated).method)
+            add_offense(current_method, message: message) do |corrector|
+              next unless deprecated.correctable?
+
+              if (preferred_method = prefer.method)
+                corrector.replace(current_method, preferred_method)
+              else
+                corrector.remove(node.loc.dot)
+                corrector.remove(current_method)
               end
             end
           end

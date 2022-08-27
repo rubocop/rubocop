@@ -67,6 +67,17 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it 'registers an offense for a `define_method` with numblock' do
+        expect_offense(<<~RUBY)
+          define_method :method_name do
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 0, 0> 1/0]
+            x = _1
+          end
+        RUBY
+      end
+    end
+
     it 'treats safe navigation method calls like regular method calls + a condition' do
       expect_offense(<<~RUBY)
         def method_name
@@ -76,9 +87,9 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
-    context 'when method is in list of ignored methods' do
-      context 'when given a string' do
-        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
+    context 'when method is in list of allowed methods' do
+      context 'when AllowedMethods is enabled' do
+        let(:cop_config) { { 'Max' => 0, 'AllowedMethods' => ['foo'] } }
 
         it 'does not register an offense when defining an instance method' do
           expect_no_offenses(<<~RUBY)
@@ -105,8 +116,8 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
         end
       end
 
-      context 'when given a regex' do
-        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => [/foo/] } }
+      context 'when AllowedPatterns is enabled' do
+        let(:cop_config) { { 'Max' => 0, 'AllowedPatterns' => [/foo/] } }
 
         it 'does not register an offense when defining an instance method' do
           expect_no_offenses(<<~RUBY)

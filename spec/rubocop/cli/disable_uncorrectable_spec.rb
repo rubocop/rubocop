@@ -6,7 +6,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
   include_context 'cli spec behavior'
 
   describe '--disable-uncorrectable' do
-    let(:exit_code) { cli.run(%w[--auto-correct-all --format simple --disable-uncorrectable]) }
+    let(:exit_code) { cli.run(%w[--autocorrect-all --format simple --disable-uncorrectable]) }
 
     let(:setup_long_line) do
       create_file('.rubocop.yml', <<~YAML)
@@ -177,7 +177,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
             class Chess
               # rubocop:todo Metrics/MethodLength
               # rubocop:todo Metrics/AbcSize
-              def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity
+              def choose_move(who_to_move) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
                 legal_moves = all_legal_moves_that_dont_put_me_in_check(who_to_move)
 
                 return nil if legal_moves.empty?
@@ -256,6 +256,66 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
               # rubocop:enable Naming/VariableName
               puts(script)
             end
+          RUBY
+        end
+      end
+    end
+
+    context 'when exist offense for Layout/SpaceInsideArrayLiteralBrackets' do
+      context 'when `EnforcedStyle: no_space`' do
+        it 'does not disable anything for cops that support autocorrect' do
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts [ :something ]
+            # last line
+          RUBY
+          expect(exit_code).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<~OUTPUT)
+            == example.rb ==
+            C:  3:  7: [Corrected] Layout/SpaceInsideArrayLiteralBrackets: Do not use space inside array brackets.
+
+            1 file inspected, 1 offense detected, 1 offense corrected
+          OUTPUT
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            puts [:something]
+            # last line
+          RUBY
+        end
+      end
+
+      context 'when `EnforcedStyle: space`' do
+        let(:setup_space_inside_array) do
+          create_file('.rubocop.yml', <<~YAML)
+            Layout/SpaceInsideArrayLiteralBrackets:
+              EnforcedStyle: space
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts [:something]
+            # last line
+          RUBY
+        end
+
+        it 'does not disable anything for cops that support autocorrect' do
+          setup_space_inside_array
+          expect(exit_code).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<~OUTPUT)
+            == example.rb ==
+            C:  3:  6: [Corrected] Layout/SpaceInsideArrayLiteralBrackets: Use space inside array brackets.
+
+            1 file inspected, 1 offense detected, 1 offense corrected
+          OUTPUT
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            puts [ :something ]
+            # last line
           RUBY
         end
       end

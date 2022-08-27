@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for nested use of if, unless, while and until in their
+      # Checks for nested use of if, unless, while and until in their
       # modifier form.
       #
       # @example

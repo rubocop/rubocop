@@ -19,7 +19,7 @@ https://codeclimate.com/[Code Climate] provides automated code review for test c
 
 == CodeFactor
 
-https://www.codefactor.io[CodeFactor] reports various code metrics like duplication, churn, and problems for code style, performance, complexity, and many others. CodeFactor is free for open source. It supports analysis and auto-correction for RuboCop.
+https://www.codefactor.io[CodeFactor] reports various code metrics like duplication, churn, and problems for code style, performance, complexity, and many others. CodeFactor is free for open source. It supports analysis and autocorrection for RuboCop.
 
 == Hound
 
@@ -37,4 +37,4 @@ https://github.com/reviewdog/reviewdog[ReviewDog] is similar to Pronto but with 
 == Sider
 
 https://sider.review[Sider] improves your team's productivity by automating code analysis.
-It supports RuboCop's auto-correction.
+It supports RuboCop's autocorrection.

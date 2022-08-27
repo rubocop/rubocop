@@ -66,4 +66,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterColon, :config do
       end
     RUBY
   end
+
+  context 'Ruby >= 3.1', :ruby31 do
+    it 'does not register an offense colon without space after it when using hash value omission' do
+      expect_no_offenses('{x:, y:}')
+    end
+
+    it 'accepts colons denoting hash value omission argument' do
+      expect_no_offenses(<<~RUBY)
+        foo(table:, nodes:)
+      RUBY
+    end
+  end
 end

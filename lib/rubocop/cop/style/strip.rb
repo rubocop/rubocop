@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop identifies places where `lstrip.rstrip` can be replaced by
+      # Identifies places where `lstrip.rstrip` can be replaced by
       # `strip`.
       #
       # @example

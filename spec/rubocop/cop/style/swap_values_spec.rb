@@ -52,4 +52,11 @@ RSpec.describe RuboCop::Cop::Style::SwapValues, :config do
       y = not_a_tmp
     RUBY
   end
+
+  it 'does not register an offense when assigning receiver object at `def`' do
+    expect_no_offenses(<<~RUBY)
+      def (foo = Object.new).do_something
+      end
+    RUBY
+  end
 end

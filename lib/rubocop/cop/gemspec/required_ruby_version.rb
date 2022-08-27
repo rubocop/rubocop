@@ -3,10 +3,11 @@
 module RuboCop
   module Cop
     module Gemspec
-      # Checks that `required_ruby_version` of gemspec is specified and
-      # equal to `TargetRubyVersion` of .rubocop.yml.
-      # Thereby, RuboCop to perform static analysis working on the version
-      # required by gemspec.
+      # Checks that `required_ruby_version` in a gemspec file is set to a valid
+      # value (non-blank) and matches `TargetRubyVersion` as set in RuboCop's
+      # configuration for the gem.
+      #
+      # This ensures that RuboCop is using the same Ruby version as the gem.
       #
       # @example
       #   # When `TargetRubyVersion` of .rubocop.yml is `2.5`.
@@ -26,6 +27,11 @@ module RuboCop
       #     spec.required_ruby_version = '>= 2.6.0'
       #   end
       #
+      #   # bad
+      #   Gem::Specification.new do |spec|
+      #     spec.required_ruby_version = ''
+      #   end
+      #
       #   # good
       #   Gem::Specification.new do |spec|
       #     spec.required_ruby_version = '>= 2.5.0'
@@ -42,55 +48,63 @@ module RuboCop
       #   end
       #
       #   # accepted but not recommended, since
-      #   # Ruby does not really follow semantic versionning
+      #   # Ruby does not really follow semantic versioning
       #   Gem::Specification.new do |spec|
       #     spec.required_ruby_version = '~> 2.5'
       #   end
       class RequiredRubyVersion < Base
         include RangeHelp
 
-        NOT_EQUAL_MSG = '`required_ruby_version` (%<required_ruby_version>s, ' \
-                        'declared in %<gemspec_filename>s) and `TargetRubyVersion` ' \
+        RESTRICT_ON_SEND = %i[required_ruby_version=].freeze
+        NOT_EQUAL_MSG = '`required_ruby_version` and `TargetRubyVersion` ' \
                         '(%<target_ruby_version>s, which may be specified in ' \
                         '.rubocop.yml) should be equal.'
         MISSING_MSG = '`required_ruby_version` should be specified.'
 
-        # @!method required_ruby_version(node)
-        def_node_search :required_ruby_version, <<~PATTERN
-          (send _ :required_ruby_version= $_)
+        # @!method required_ruby_version?(node)
+        def_node_search :required_ruby_version?, <<~PATTERN
+          (send _ :required_ruby_version= _)
         PATTERN
 
         # @!method defined_ruby_version(node)
         def_node_matcher :defined_ruby_version, <<~PATTERN
-          {$(str _) $(array (str _) (str _))
-            (send (const (const nil? :Gem) :Requirement) :new $(str _))}
+          {
+            $(str _)
+            $(array (str _) (str _))
+            (send (const (const nil? :Gem) :Requirement) :new $str+)
+          }
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
         def on_new_investigation
-          version_def = required_ruby_version(processed_source.ast).first
-
-          if version_def
-            ruby_version = extract_ruby_version(defined_ruby_version(version_def))
-            return if !ruby_version || ruby_version == target_ruby_version.to_s
-
-            add_offense(
-              version_def.loc.expression,
-              message: not_equal_message(ruby_version, target_ruby_version)
-            )
-          else
-            range = source_range(processed_source.buffer, 1, 0)
-            add_offense(range, message: MISSING_MSG)
-          end
+          add_global_offense(MISSING_MSG) unless required_ruby_version?(processed_source.ast)
         end
-        # rubocop:enable Metrics/AbcSize
+
+        def on_send(node)
+          version_def = node.first_argument
+          return if dynamic_version?(version_def)
+
+          ruby_version = extract_ruby_version(defined_ruby_version(version_def))
+          return if ruby_version == target_ruby_version.to_s
+
+          add_offense(version_def, message: not_equal_message(ruby_version, target_ruby_version))
+        end
 
         private
+
+        def dynamic_version?(node)
+          (node.send_type? && !node.receiver) ||
+            node.variable? ||
+            node.each_descendant(:send, *RuboCop::AST::Node::VARIABLES).any?
+        end
 
         def extract_ruby_version(required_ruby_version)
           return unless required_ruby_version
 
-          if required_ruby_version.array_type?
+          if required_ruby_version.is_a?(Array)
+            required_ruby_version = required_ruby_version.detect do |v|
+              /[>=]/.match?(v.str_content)
+            end
+          elsif required_ruby_version.array_type?
             required_ruby_version = required_ruby_version.children.detect do |v|
               /[>=]/.match?(v.str_content)
             end

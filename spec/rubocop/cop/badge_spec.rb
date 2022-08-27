@@ -35,7 +35,9 @@ RSpec.describe RuboCop::Cop::Badge do
       end
     end
 
+    include_examples 'cop identifier parsing', 'bar', %w[Bar]
     include_examples 'cop identifier parsing', 'Bar', %w[Bar]
+    include_examples 'cop identifier parsing', 'snake_case/example', %w[SnakeCase Example]
     include_examples 'cop identifier parsing', 'Foo/Bar', %w[Foo Bar]
     include_examples 'cop identifier parsing', 'Foo/Bar/Baz', %w[Foo Bar Baz]
     include_examples 'cop identifier parsing', 'Foo/Bar/Baz/Qux', %w[Foo Bar Baz Qux]
@@ -77,6 +79,20 @@ RSpec.describe RuboCop::Cop::Badge do
 
     it 'says `Deep/Department/CopName` is qualified' do
       expect(described_class.parse('Deep/Department/Bar').qualified?).to be(true)
+    end
+  end
+
+  describe '#camel_case' do
+    it 'converts "lint" to CamelCase' do
+      expect(described_class.camel_case('lint')).to eq('Lint')
+    end
+
+    it 'converts "foo_bar" to CamelCase' do
+      expect(described_class.camel_case('foo_bar')).to eq('FooBar')
+    end
+
+    it 'converts "rspec" to CamelCase' do
+      expect(described_class.camel_case('rspec')).to eq('RSpec')
     end
   end
 end

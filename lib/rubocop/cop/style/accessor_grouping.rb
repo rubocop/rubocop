@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for grouping of accessors in `class` and `module` bodies.
+      # Checks for grouping of accessors in `class` and `module` bodies.
       # By default it enforces accessors to be placed in grouped declarations,
       # but it can be configured to enforce separating them in multiple declarations.
       #
@@ -59,8 +59,8 @@ module RuboCop
 
         def check(send_node)
           return if previous_line_comment?(send_node)
-          return unless grouped_style? && sibling_accessors(send_node).size > 1 ||
-                        separated_style? && send_node.arguments.size > 1
+          return unless (grouped_style? && sibling_accessors(send_node).size > 1) ||
+                        (separated_style? && send_node.arguments.size > 1)
 
           message = message(send_node)
           add_offense(send_node, message: message) do |corrector|
@@ -72,7 +72,7 @@ module RuboCop
           if (preferred_accessors = preferred_accessors(node))
             corrector.replace(node, preferred_accessors)
           else
-            range = range_with_surrounding_space(range: node.loc.expression, side: :left)
+            range = range_with_surrounding_space(node.loc.expression, side: :left)
             corrector.remove(range)
           end
         end
@@ -122,14 +122,14 @@ module RuboCop
         def preferred_accessors(node)
           if grouped_style?
             accessors = sibling_accessors(node)
-            group_accessors(node, accessors) if node == accessors.first
+            group_accessors(node, accessors) if node.loc == accessors.first.loc
           else
             separate_accessors(node)
           end
         end
 
         def group_accessors(node, accessors)
-          accessor_names = accessors.flat_map { |accessor| accessor.arguments.map(&:source) }
+          accessor_names = accessors.flat_map { |accessor| accessor.arguments.map(&:source) }.uniq
 
           "#{node.method_name} #{accessor_names.join(', ')}"
         end

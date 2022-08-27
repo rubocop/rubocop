@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for every useless assignment to local variable in every
+      # Checks for every useless assignment to local variable in every
       # scope.
       # The basic idea for this cop was from the warning of `ruby -cw`:
       #
@@ -85,7 +85,7 @@ module RuboCop
           return unless assignment.meta_assignment_node.equal?(return_value_node)
 
           " Use `#{assignment.operator.sub(/=$/, '')}` " \
-          "instead of `#{assignment.operator}`."
+            "instead of `#{assignment.operator}`."
         end
 
         def similar_name_message(variable)

@@ -8,13 +8,7 @@ module RuboCop
     # and spec file when given a valid qualified cop name.
     # @api private
     class Generator
-      # NOTE: RDoc 5.1.0 or lower has the following issue.
-      # https://github.com/rubocop/rubocop/issues/7043
-      #
-      # The following `String#gsub` can be replaced with
-      # squiggly heredoc when RuboCop supports Ruby 2.5 or higher
-      # (RDoc 6.0 or higher).
-      SOURCE_TEMPLATE = <<-RUBY.gsub(/^ {8}/, '')
+      SOURCE_TEMPLATE = <<~RUBY
         # frozen_string_literal: true
 
         module RuboCop
@@ -23,6 +17,11 @@ module RuboCop
               # TODO: Write cop description and example of bad / good code. For every
               # `SupportedStyle` and unique configuration, there needs to be examples.
               # Examples must have valid Ruby syntax. Do not use upticks.
+              #
+              # @safety
+              #   Delete this section if the cop is not unsafe (`Safe: false` or
+              #   `SafeAutoCorrect: false`), or use it to explain how the cop is
+              #   unsafe.
               #
               # @example EnforcedStyle: bar (default)
               #   # Description of the `bar` style.
@@ -63,6 +62,11 @@ module RuboCop
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'
 
+                # TODO: Don't call `on_send` unless the method name is in this list
+                # If you don't need `on_send` in the cop you created, remove it.
+                RESTRICT_ON_SEND = %%i[bad_method].freeze
+
+                # @!method bad_method?(node)
                 def_node_matcher :bad_method?, <<~PATTERN
                   (send nil? :bad_method ...)
                 PATTERN
@@ -104,11 +108,10 @@ module RuboCop
 
       CONFIGURATION_ADDED_MESSAGE =
         '[modify] A configuration for the cop is added into ' \
-          '%<configuration_file_path>s.'
+        '%<configuration_file_path>s.'
 
-      def initialize(name, github_user, output: $stdout)
+      def initialize(name, output: $stdout)
         @badge = Badge.parse(name)
-        @github_user = github_user
         @output = output
         return if badge.qualified?
 
@@ -142,17 +145,19 @@ module RuboCop
 
       def todo
         <<~TODO
-          Do 3 steps:
-            1. Add an entry to the "New features" section in CHANGELOG.md,
-               e.g. "Add new `#{badge}` cop. ([@#{github_user}][])"
-            2. Modify the description of #{badge} in config/default.yml
-            3. Implement your new cop in the generated file!
+          Do 4 steps:
+            1. Modify the description of #{badge} in config/default.yml
+            2. Implement your new cop in the generated file!
+            3. Commit your new cop with a message such as
+               e.g. "Add new `#{badge}` cop"
+            4. Run `bundle exec rake changelog:new` to generate a changelog entry
+               for your new cop.
         TODO
       end
 
       private
 
-      attr_reader :badge, :github_user, :output
+      attr_reader :badge, :output
 
       def write_unless_file_exists(path, contents)
         if File.exist?(path)
@@ -161,7 +166,7 @@ module RuboCop
         end
 
         dir = File.dirname(path)
-        FileUtils.mkdir_p(dir) unless File.exist?(dir)
+        FileUtils.mkdir_p(dir)
 
         File.write(path, contents)
         output.puts "[create] #{path}"
@@ -176,7 +181,8 @@ module RuboCop
       end
 
       def generate(template)
-        format(template, department: badge.department, cop_name: badge.cop_name)
+        format(template, department: badge.department.to_s.gsub('/', '::'),
+                         cop_name: badge.cop_name)
       end
 
       def spec_path
@@ -203,8 +209,8 @@ module RuboCop
         return 'rspec' if camel_case_string == 'RSpec'
 
         camel_case_string
-          .gsub(/([^A-Z])([A-Z]+)/, '\1_\2')
-          .gsub(/([A-Z])([A-Z][^A-Z\d]+)/, '\1_\2')
+          .gsub(%r{([^A-Z/])([A-Z]+)}, '\1_\2')
+          .gsub(%r{([A-Z])([A-Z][^A-Z\d/]+)}, '\1_\2')
           .downcase
       end
     end

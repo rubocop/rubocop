@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks how the `when` and `in`s of a `case` expression
+      # Checks how the `when` and ``in``s of a `case` expression
       # are indented in relation to its `case` or `end` keyword.
       #
       # It will register a separate offense for each misaligned `when` and `in`.
@@ -119,17 +119,33 @@ module RuboCop
 
         def on_case(case_node)
           return if case_node.single_line?
+          return if enforced_style_end? && end_and_last_conditional_same_line?(case_node)
 
           case_node.each_when { |when_node| check_when(when_node, 'when') }
         end
 
         def on_case_match(case_match_node)
           return if case_match_node.single_line?
+          return if enforced_style_end? && end_and_last_conditional_same_line?(case_match_node)
 
           case_match_node.each_in_pattern { |in_pattern_node| check_when(in_pattern_node, 'in') }
         end
 
         private
+
+        def end_and_last_conditional_same_line?(node)
+          end_line = node.loc.end&.line
+          last_conditional_line = if node.loc.else
+                                    node.loc.else.line
+                                  else
+                                    node.child_nodes.last.loc.begin&.line
+                                  end
+          end_line && last_conditional_line && end_line == last_conditional_line
+        end
+
+        def enforced_style_end?
+          cop_config[style_parameter_name] == 'end'
+        end
 
         def check_when(when_node, branch_type)
           when_column = when_node.loc.keyword.column

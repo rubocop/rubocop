@@ -4,9 +4,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantFileExtensionInRequire, :config do
   it 'registers an offense and corrects when requiring filename ending with `.rb`' do
     expect_offense(<<~RUBY)
       require 'foo.rb'
-              ^^^^^^^^ Redundant `.rb` file extension detected.
+                  ^^^ Redundant `.rb` file extension detected.
       require_relative '../foo.rb'
-                       ^^^^^^^^^^^ Redundant `.rb` file extension detected.
+                              ^^^ Redundant `.rb` file extension detected.
     RUBY
 
     expect_correction(<<~RUBY)

@@ -63,10 +63,18 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef, :config do
     RUBY
   end
 
+  it 'does not register offense to a regexp with encoding option and valid references for numbered captures' do
+    expect_no_offenses(<<~RUBY)
+      /(foo)(bar)/u =~ "foobar"
+      puts $1
+      puts $2
+    RUBY
+  end
+
   # RuboCop does not know a value of variables that it will contain in the regexp literal.
   # For example, `/(?<foo>#{var}*)` is interpreted as `/(?<foo>*)`.
   # So it does not offense when variables are used in regexp literals.
-  it 'does not register an offence regexp containing non literal' do
+  it 'does not register an offense regexp containing non literal' do
     expect_no_offenses(<<~'RUBY')
       var = '(\d+)'
       /(?<foo>#{var}*)/ =~ "12"

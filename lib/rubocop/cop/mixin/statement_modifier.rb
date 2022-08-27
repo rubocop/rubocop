@@ -54,7 +54,7 @@ module RuboCop
       end
 
       def first_line_comment(node)
-        comment = processed_source.find_comment { |c| c.loc.line == node.loc.line }
+        comment = processed_source.find_comment { |c| same_line?(c, node) }
         return unless comment
 
         comment_source = comment.loc.expression.source
@@ -63,7 +63,7 @@ module RuboCop
 
       def code_after(node)
         end_element = node.loc.end
-        code = end_element.source_line[end_element.last_column..-1]
+        code = end_element.source_line[end_element.last_column..]
         code unless code.empty?
       end
 

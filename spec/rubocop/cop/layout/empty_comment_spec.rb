@@ -9,8 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
       ^ Source code comment is empty.
     RUBY
 
-    expect_correction(<<~RUBY)
-    RUBY
+    expect_correction('')
   end
 
   it 'registers an offense and corrects using multiline empty comments' do
@@ -21,8 +20,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
       ^ Source code comment is empty.
     RUBY
 
-    expect_correction(<<~RUBY)
-    RUBY
+    expect_correction('')
   end
 
   it 'registers an offense and corrects using an empty comment next to code' do
@@ -83,8 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
         ^ Source code comment is empty.
       RUBY
 
-      expect_correction(<<~RUBY)
-      RUBY
+      expect_correction('')
     end
 
     it 'registers an offense and corrects using border comment' do
@@ -93,8 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Source code comment is empty.
       RUBY
 
-      expect_correction(<<~RUBY)
-      RUBY
+      expect_correction('')
     end
   end
 

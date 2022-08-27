@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the first line of the
+      # Checks the indentation of the first line of the
       # right-hand-side of a multi-line assignment.
       #
       # @example
@@ -33,7 +33,7 @@ module RuboCop
         def check_assignment(node, rhs)
           return unless rhs
           return unless node.loc.operator
-          return if node.loc.operator.line == rhs.first_line
+          return if same_line?(node.loc.operator, rhs)
 
           base = display_column(leftmost_multiple_assignment(node).source_range)
           check_alignment([rhs], base + configured_indentation_width)

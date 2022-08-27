@@ -23,6 +23,15 @@ RSpec.describe RuboCop::Cop::Style::TopLevelMethodDefinition, :config do
       RUBY
     end
 
+    context 'Ruby >= 2.7', :ruby27 do
+      it 'registers offense with inline numblock' do
+        expect_offense(<<~RUBY)
+          define_method(:foo) { puts _1 }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not define methods at the top-level.
+        RUBY
+      end
+    end
+
     it 'registers offense for multi-line block' do
       expect_offense(<<~RUBY)
         define_method(:foo) do |x|
@@ -95,6 +104,12 @@ RSpec.describe RuboCop::Cop::Style::TopLevelMethodDefinition, :config do
 
         define_method(:c, instance_method(:d))
       end
+    RUBY
+  end
+
+  it 'does not register an offense when just called method on top-level' do
+    expect_no_offenses(<<~RUBY)
+      require_relative 'foo'
     RUBY
   end
 end

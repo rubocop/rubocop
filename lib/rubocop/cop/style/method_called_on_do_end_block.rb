@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for methods called on a do...end block. The point of
+      # Checks for methods called on a do...end block. The point of
       # this check is that it's easy to miss the call tacked on to the block
       # when reading code.
       #
@@ -35,12 +35,15 @@ module RuboCop
           ignore_node(node.send_node)
         end
 
+        alias on_numblock on_block
+
         def on_send(node)
           return if ignored_node?(node)
 
           receiver = node.receiver
 
-          return unless receiver&.block_type? && receiver.loc.end.is?('end')
+          return unless (receiver&.block_type? || receiver&.numblock_type?) &&
+                        receiver.loc.end.is?('end')
 
           range = range_between(receiver.loc.end.begin_pos, node.source_range.end_pos)
 

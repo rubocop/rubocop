@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('!test')
     end
 
-    it 'auto-corrects fully parenthesized args by removing space' do
+    it 'autocorrects fully parenthesized args by removing space' do
       expect_offense(<<~RUBY)
         top.eq (1 + 2)
         ^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects parenthesized args for local methods by removing space' do
+    it 'autocorrects parenthesized args for local methods by removing space' do
       expect_offense(<<~RUBY)
         def foo
           eq (1 + 2)
@@ -222,7 +222,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects call with multiple args by adding braces' do
+    it 'autocorrects call with multiple args by adding braces' do
       expect_offense(<<~RUBY)
         def foo
           eq 1, (2 + 3)
@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects partially parenthesized args by adding needed braces' do
+    it 'autocorrects partially parenthesized args by adding needed braces' do
       expect_offense(<<~RUBY)
         top.eq (1 + 2) + 3
         ^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls with multiple args by adding needed braces' do
+    it 'autocorrects calls with multiple args by adding needed braces' do
       expect_offense(<<~RUBY)
         top.eq (1 + 2), 3
         ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where arg is method call' do
+    it 'autocorrects calls where arg is method call' do
       expect_offense(<<~RUBY)
         def my_method
           foo bar.baz(abc, xyz)
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where multiple args are method calls' do
+    it 'autocorrects calls where multiple args are method calls' do
       expect_offense(<<~RUBY)
         def my_method
           foo bar.baz(abc, xyz), foo(baz)
@@ -292,7 +292,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where the argument node is a constant' do
+    it 'autocorrects calls where the argument node is a constant' do
       expect_offense(<<~RUBY)
         def my_method
           raise NotImplementedError
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects calls where the argument node is a number' do
+    it 'autocorrects calls where the argument node is a number' do
       expect_offense(<<~RUBY)
         def my_method
           sleep 1
@@ -322,21 +322,11 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    context 'with IgnoredMethods' do
-      context 'with a string' do
-        let(:cop_config) { { 'IgnoredMethods' => %w[puts] } }
+    context 'with AllowedMethods' do
+      let(:cop_config) { { 'AllowedMethods' => %w[puts] } }
 
-        it 'ignores method listed in IgnoredMethods' do
-          expect_no_offenses('puts :test')
-        end
-      end
-
-      context 'with a regex' do
-        let(:cop_config) { { 'IgnoredMethods' => [/puts/] } }
-
-        it 'ignores method listed in IgnoredMethods' do
-          expect_no_offenses('puts :test')
-        end
+      it 'allow method listed in AllowedMethods' do
+        expect_no_offenses('puts :test')
       end
     end
 
@@ -364,10 +354,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
-    context 'IgnoredPatterns' do
-      let(:cop_config) { { 'IgnoredPatterns' => %w[^assert ^refute] } }
+    context 'AllowedPatterns' do
+      let(:cop_config) { { 'AllowedPatterns' => %w[^assert ^refute] } }
 
-      it 'ignored methods listed in IgnoredPatterns' do
+      it 'ignored methods listed in AllowedPatterns' do
         expect_no_offenses('assert 2 == 2')
         expect_no_offenses('assert_equal 2, 2')
         expect_no_offenses('assert_match /^yes/i, result')
@@ -408,6 +398,72 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       it 'accepts parens for braced numeric block calls' do
         expect_no_offenses(<<~RUBY)
           numblock.call(:arg) { _1 }
+        RUBY
+      end
+    end
+
+    context 'hash value omission in 3.1', :ruby31 do
+      it 'registers an offense when last argument is a hash value omission' do
+        expect_offense(<<~RUBY)
+          foo(bar:, baz:)
+             ^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar:, baz:
+        RUBY
+      end
+
+      it 'does not register an offense when hash value omission with parentheses and using modifier form' do
+        expect_no_offenses(<<~RUBY)
+          do_something(value:) if condition
+        RUBY
+      end
+
+      it 'registers and corrects an offense when explicit hash value with parentheses and using modifier form' do
+        expect_offense(<<~RUBY)
+          do_something(value: value) if condition
+                      ^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something value: value if condition
+        RUBY
+      end
+
+      it 'does not register an offense when without parentheses call expr follows' do
+        expect_no_offenses(<<~RUBY)
+          foo value:
+        RUBY
+      end
+
+      it 'registers an offense when with parentheses call expr follows' do
+        # Require hash value omission be enclosed in parentheses to prevent the following issue:
+        # https://bugs.ruby-lang.org/issues/18396.
+        expect_offense(<<~RUBY)
+          foo(value:)
+          foo(arg)
+             ^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:)
+          foo arg
+        RUBY
+      end
+
+      it 'registers an offense using assignment with parentheses call expr follows' do
+        # Require hash value omission be enclosed in parentheses to prevent the following issue:
+        # https://bugs.ruby-lang.org/issues/18396.
+        expect_offense(<<~RUBY)
+          var = foo(value:)
+          foo(arg)
+             ^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = foo(value:)
+          foo arg
         RUBY
       end
     end
@@ -773,7 +829,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects single-line calls' do
+    it 'autocorrects single-line calls' do
       expect_offense(<<~RUBY)
         top.test(1, 2, foo: bar(3))
                 ^^^^^^^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
@@ -784,7 +840,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects multi-line calls with trailing whitespace' do
+    it 'autocorrects multi-line calls with trailing whitespace' do
       trailing_whitespace = ' '
 
       expect_offense(<<~RUBY)
@@ -801,7 +857,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'auto-corrects complex multi-line calls' do
+    it 'autocorrects complex multi-line calls' do
       expect_offense(<<~RUBY)
         foo(arg,
            ^^^^^ Omit parentheses for method calls with arguments.
@@ -973,12 +1029,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
-    context 'for a macro in both IncludedMacros and IgnoredMethods' do
+    context 'for a macro in both IncludedMacros and AllowedMethods' do
       let(:cop_config) do
         {
           'IgnoreMacros' => 'true',
           'IncludedMacros' => ['bar'],
-          'IgnoredMethods' => ['bar']
+          'AllowedMethods' => ['bar']
         }
       end
 

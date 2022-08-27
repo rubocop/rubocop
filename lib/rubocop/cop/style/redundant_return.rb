@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant `return` expressions.
+      # Checks for redundant `return` expressions.
       #
       # @example
       #   # These bad cases should be extended to handle methods whose body is
@@ -76,7 +76,7 @@ module RuboCop
             corrector.replace(first_argument, first_argument.source.delete_prefix('*'))
           end
 
-          keyword = range_with_surrounding_space(range: return_node.loc.keyword, side: :right)
+          keyword = range_with_surrounding_space(return_node.loc.keyword, side: :right)
           corrector.remove(keyword)
         end
 

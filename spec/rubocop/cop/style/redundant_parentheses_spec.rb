@@ -57,18 +57,65 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '(retry)', 'retry', 'a keyword'
   it_behaves_like 'redundant', '(self)', 'self', 'a keyword'
 
-  it 'registers an offense for parens around constant ternary condition' do
-    expect_offense(<<~RUBY)
-      (X) ? Y : N
-      ^^^ Don't use parentheses around a constant.
-      (X)? Y : N
-      ^^^ Don't use parentheses around a constant.
-    RUBY
+  context 'ternaries' do
+    let(:other_cops) do
+      {
+        'Style/TernaryParentheses' => {
+          'Enabled' => ternary_parentheses_enabled,
+          'EnforcedStyle' => ternary_parentheses_enforced_style
+        }
+      }
+    end
+    let(:ternary_parentheses_enabled) { true }
+    let(:ternary_parentheses_enforced_style) { nil }
 
-    expect_correction(<<~RUBY)
-      X ? Y : N
-      X ? Y : N
-    RUBY
+    context 'when Style/TernaryParentheses is not enabled' do
+      let(:ternary_parentheses_enabled) { false }
+
+      it 'registers an offense for parens around constant ternary condition' do
+        expect_offense(<<~RUBY)
+          (X) ? Y : N
+          ^^^ Don't use parentheses around a constant.
+          (X)? Y : N
+          ^^^ Don't use parentheses around a constant.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          X ? Y : N
+          X ? Y : N
+        RUBY
+      end
+    end
+
+    context 'when Style/TernaryParentheses has EnforcedStyle: require_no_parentheses' do
+      let(:ternary_parentheses_enforced_style) { 'require_no_parentheses' }
+
+      it 'registers an offense for parens around ternary condition' do
+        expect_offense(<<~RUBY)
+          (X) ? Y : N
+          ^^^ Don't use parentheses around a constant.
+          (X)? Y : N
+          ^^^ Don't use parentheses around a constant.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          X ? Y : N
+          X ? Y : N
+        RUBY
+      end
+    end
+
+    context 'when Style/TernaryParentheses has EnforcedStyle: require_parentheses' do
+      let(:ternary_parentheses_enforced_style) { 'require_parentheses' }
+
+      it_behaves_like 'plausible', '(X) ? Y : N'
+    end
+
+    context 'when Style/TernaryParentheses has EnforcedStyle: require_parentheses_when_complex' do
+      let(:ternary_parentheses_enforced_style) { 'require_parentheses_when_complex' }
+
+      it_behaves_like 'plausible', '(X) ? Y : N'
+    end
   end
 
   it_behaves_like 'keyword with return value', 'break'
@@ -125,6 +172,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'plausible', '+(1.foo.bar)'
   it_behaves_like 'plausible', '()'
 
+  it 'registers an offense for parens around a receiver of a method call with an argument' do
+    expect_offense(<<~RUBY)
+      (x).y(z)
+      ^^^ Don't use parentheses around a method call.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.y(z)
+    RUBY
+  end
+
   it 'registers an offense for parens around an interpolated expression' do
     expect_offense(<<~RUBY)
       "\#{(foo)}"
@@ -160,25 +218,80 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it_behaves_like 'plausible', "[(1\n),]"
+  context 'literals in an array' do
+    context 'when there is a comma on the same line as the closing parentheses' do
+      it 'registers an offense and corrects when there is no subsequent item' do
+        expect_offense(<<~RUBY)
+          [
+            (
+            ^ Don't use parentheses around a literal.
+              1
+            )
+          ]
+        RUBY
 
-  it_behaves_like 'plausible', <<~RUBY
-    [
-      (
-        1
-      ),
-      2
-    ]
-  RUBY
+        expect_correction(<<~RUBY)
+          [
+          #{trailing_whitespace * 2}
+              1
+          #{trailing_whitespace * 2}
+          ]
+        RUBY
+      end
 
-  it_behaves_like 'plausible', <<~RUBY
-    [
-      x = (
-        1
-      ),
-      y = 2
-    ]
-  RUBY
+      it 'registers an offense and corrects when there is a trailing comma' do
+        expect_offense(<<~RUBY)
+          [(1
+           ^^ Don't use parentheses around a literal.
+          ),]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1,]
+        RUBY
+      end
+
+      it 'registers an offense and corrects when there is a subsequent item' do
+        expect_offense(<<~RUBY)
+          [
+            (
+            ^ Don't use parentheses around a literal.
+              1
+            ),
+            2
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+          #{trailing_whitespace * 2}
+              1,
+            2
+          ]
+        RUBY
+      end
+
+      it 'registers an offense and corrects when there is assignment' do
+        expect_offense(<<~RUBY)
+          [
+            x = (
+                ^ Don't use parentheses around a literal.
+              1
+            ),
+            y = 2
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            x =#{trailing_whitespace}
+              1,
+            y = 2
+          ]
+        RUBY
+      end
+    end
+  end
 
   it 'registers an offense for parens around a literal hash value' do
     expect_offense(<<~RUBY)
@@ -204,7 +317,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it_behaves_like 'plausible', "{a: (1\n),}"
+  it 'registers an offense and corrects for a parenthesized item in a hash where ' \
+     'the comma is on a line with the closing parens' do
+    expect_offense(<<~RUBY)
+      { a: (1
+           ^^ Don't use parentheses around a literal.
+      ),}
+    RUBY
+
+    expect_correction(<<~RUBY)
+      { a: 1,}
+    RUBY
+  end
 
   it 'registers an offense for parens around an integer exponentiation base' do
     expect_offense(<<~RUBY)
@@ -381,13 +505,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   end
 
   context 'when the first argument in a method call begins with a hash literal' do
-    it 'accepts parentheses if the argument list is not parenthesized ' do
+    it 'accepts parentheses if the argument list is not parenthesized' do
       expect_no_offenses('x ({ y: 1 }), z')
       expect_no_offenses('x ({ y: 1 }.merge({ y: 2 })), z')
       expect_no_offenses('x ({ y: 1 }.merge({ y: 2 }).merge({ y: 3 })), z')
     end
 
-    it 'registers an offense if the argument list is parenthesized ' do
+    it 'registers an offense if the argument list is parenthesized' do
       expect_offense(<<~RUBY)
         x(({ y: 1 }), z)
           ^^^^^^^^^^ Don't use parentheses around a literal.
@@ -447,6 +571,59 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       yield ({
         foo: bar,
       })
+    RUBY
+  end
+
+  it 'registers an offense and corrects when method arguments are unnecessarily parenthesized' do
+    expect_offense(<<~RUBY)
+      foo(
+        (
+        ^ Don't use parentheses around a literal.
+          1
+        ),
+        2
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(
+      #{trailing_whitespace * 2}
+          1,
+        2
+      )
+    RUBY
+  end
+
+  it 'registers an offense and corrects an array of multiple heredocs' do
+    expect_offense(<<~RUBY)
+      [
+        (
+        ^ Don't use parentheses around a literal.
+        <<-STRING
+          foo
+        STRING
+        ) ,
+        (
+        ^ Don't use parentheses around a literal.
+        <<-STRING
+          bar
+        STRING
+        )
+      ]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [
+      #{trailing_whitespace * 2}
+        <<-STRING,
+          foo
+        STRING
+      #{trailing_whitespace * 2}
+        <<-STRING
+          bar
+        STRING
+      #{trailing_whitespace * 2}
+      ]
     RUBY
   end
 end

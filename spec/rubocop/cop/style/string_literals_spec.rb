@@ -157,6 +157,17 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
     end
 
+    it 'registers an offense for "\\"' do
+      expect_offense(<<~'RUBY')
+        "\\"
+        ^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        '\\'
+      RUBY
+    end
+
     it 'registers an offense for words with non-ascii chars' do
       expect_offense(<<~RUBY)
         "España"
@@ -243,6 +254,14 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       expect_no_offenses('a = %(x)')
     end
 
+    it 'accepts single quoted string with backslash' do
+      expect_no_offenses(<<~'RUBY')
+        '\,'
+        '100\%'
+        '(\)'
+      RUBY
+    end
+
     it 'accepts heredocs' do
       expect_no_offenses(<<~RUBY)
         execute <<-SQL
@@ -266,6 +285,8 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         c = '#{x}'
         d = '#@x'
         e = '#$x'
+        f = '\s'
+        g = '\z'
       RUBY
     end
 

@@ -95,7 +95,7 @@ module RuboCop
 
     def wanted_dir_patterns(base_dir, exclude_pattern, flags)
       base_dir = base_dir.gsub('/{}/', '/\{}/')
-      dirs = Dir.glob(File.join(base_dir.gsub('/**/', '/\**/'), '*/'), flags)
+      dirs = Dir.glob(File.join(base_dir.gsub('/*/', '/\*/').gsub('/**/', '/\**/'), '*/'), flags)
                 .reject do |dir|
                   next true if dir.end_with?('/./', '/../')
                   next true if File.fnmatch?(exclude_pattern, dir, flags)

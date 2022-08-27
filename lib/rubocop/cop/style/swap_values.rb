@@ -3,9 +3,11 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of shorthand-style swapping of 2 variables.
-      # Its autocorrection is marked as unsafe, because it can erroneously remove
-      # the temporary variable which is used later.
+      # Enforces the use of shorthand-style swapping of 2 variables.
+      #
+      # @safety
+      #   Autocorrection is unsafe, because the temporary variable used to
+      #   swap variables will be removed, but may be referred to elsewhere.
       #
       # @example
       #   # bad
@@ -20,8 +22,8 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Replace this and assignments at lines %<x_line>d '\
-          'and %<y_line>d with `%<replacement>s`.'
+        MSG = 'Replace this and assignments at lines %<x_line>d ' \
+              'and %<y_line>d with `%<replacement>s`.'
 
         SIMPLE_ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn casgn].to_set.freeze
 
@@ -56,6 +58,8 @@ module RuboCop
         end
 
         def simple_assignment?(node)
+          return false unless node.respond_to?(:type)
+
           SIMPLE_ASSIGNMENT_TYPES.include?(node.type)
         end
 

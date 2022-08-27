@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks hash literal syntax.
+      # Checks hash literal syntax.
       #
       # It can enforce either the use of the class hash rocket syntax or
       # the use of the newer Ruby 1.9 syntax (when applicable).
@@ -18,6 +18,17 @@ module RuboCop
       # * no_mixed_keys - simply checks for hashes with mixed syntaxes
       # * ruby19_no_mixed_keys - forces use of ruby 1.9 syntax and forbids mixed
       # syntax hashes
+      #
+      # This cop has `EnforcedShorthandSyntax` option.
+      # It can enforce either the use of the explicit hash value syntax or
+      # the use of Ruby 3.1's hash value shorthand syntax.
+      #
+      # The supported styles are:
+      #
+      # * always - forces use of the 3.1 syntax (e.g. {foo:})
+      # * never - forces use of explicit hash literal value
+      # * either - accepts both shorthand and explicit use of hash literal value
+      # * consistent - like "always", but will avoid mixing styles in a single hash
       #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
@@ -54,8 +65,48 @@ module RuboCop
       #   # good
       #   {a: 1, b: 2}
       #   {:c => 3, 'd' => 4}
+      #
+      # @example EnforcedShorthandSyntax: always (default)
+      #
+      #   # bad
+      #   {foo: foo, bar: bar}
+      #
+      #   # good
+      #   {foo:, bar:}
+      #
+      # @example EnforcedShorthandSyntax: never
+      #
+      #   # bad
+      #   {foo:, bar:}
+      #
+      #   # good
+      #   {foo: foo, bar: bar}
+      #
+      # @example EnforcedShorthandSyntax: either
+      #
+      #   # good
+      #   {foo: foo, bar: bar}
+      #
+      #   # good
+      #   {foo:, bar:}
+      #
+      # @example EnforcedShorthandSyntax: consistent
+      #
+      #   # bad
+      #   {foo: , bar: bar}
+      #
+      #   # good
+      #   {foo:, bar:}
+      #
+      #   # bad
+      #   {foo: , bar: baz}
+      #
+      #   # good
+      #   {foo: foo, bar: baz}
+      #
       class HashSyntax < Base
         include ConfigurableEnforcedStyle
+        include HashShorthandSyntax
         include RangeHelp
         extend AutoCorrector
 
@@ -68,13 +119,15 @@ module RuboCop
 
           return if pairs.empty?
 
+          on_hash_for_mixed_shorthand(node)
+
           if style == :hash_rockets || force_hash_rockets?(pairs)
             hash_rockets_check(pairs)
           elsif style == :ruby19_no_mixed_keys
             ruby19_no_mixed_keys_check(pairs)
           elsif style == :no_mixed_keys
             no_mixed_keys_check(pairs)
-          elsif node.source.include?('=>')
+          else
             ruby19_check(pairs)
           end
         end
@@ -187,7 +240,7 @@ module RuboCop
           operator = pair_node.loc.operator
 
           range = key.join(operator)
-          range_with_surrounding_space(range: range, side: :right)
+          range_with_surrounding_space(range, side: :right)
         end
 
         def argument_without_space?(node)
@@ -199,7 +252,7 @@ module RuboCop
 
           key_with_hash_rocket = ":#{pair_node.key.source}#{pair_node.inverse_delimiter(true)}"
           corrector.replace(pair_node.key, key_with_hash_rocket)
-          corrector.remove(range_with_surrounding_space(range: op))
+          corrector.remove(range_with_surrounding_space(op))
         end
 
         def autocorrect_no_mixed_keys(corrector, pair_node)

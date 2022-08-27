@@ -28,7 +28,7 @@ module RuboCop
                               indent_steps: 1)
           corrector.insert_before(
             range,
-            "\n#{' ' * (node.loc.keyword.column + indent_steps * configured_width)}"
+            "\n#{' ' * (node.loc.keyword.column + (indent_steps * configured_width))}"
           )
         end
 
@@ -50,7 +50,13 @@ module RuboCop
 
         def semicolon(node)
           @semicolon ||= {}.compare_by_identity
-          @semicolon[node] ||= processed_source.tokens_within(node).find(&:semicolon?)
+          @semicolon[node] ||= processed_source.sorted_tokens.select(&:semicolon?).find do |token|
+            same_line?(token, node.body) && trailing_class_definition?(token, node.body)
+          end
+        end
+
+        def trailing_class_definition?(token, body)
+          token.column < body.loc.column
         end
       end
     end

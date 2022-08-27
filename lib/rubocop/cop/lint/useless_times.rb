@@ -3,12 +3,13 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for uses of `Integer#times` that will never yield
+      # Checks for uses of `Integer#times` that will never yield
       # (when the integer <= 0) or that will only ever yield once
       # (`1.times`).
       #
-      # This cop is marked as unsafe as `times` returns its receiver, which
-      # is *usually* OK, but might change behavior.
+      # @safety
+      #   This cop is unsafe as `times` returns its receiver, which is
+      #   *usually* OK, but might change behavior.
       #
       # @example
       #   # bad
@@ -50,22 +51,26 @@ module RuboCop
           node = node.block_node if node.block_literal?
 
           add_offense(node, message: format(MSG, count: count)) do |corrector|
-            next unless own_line?(node)
+            next if !own_line?(node) || node.parent&.send_type?
 
-            if never_process?(count, node)
-              remove_node(corrector, node)
-            elsif !proc_name.empty?
-              autocorrect_block_pass(corrector, node, proc_name)
-            else
-              autocorrect_block(corrector, node)
-            end
+            autocorrect(corrector, count, node, proc_name)
           end
         end
 
         private
 
+        def autocorrect(corrector, count, node, proc_name)
+          if never_process?(count, node)
+            remove_node(corrector, node)
+          elsif !proc_name.empty?
+            autocorrect_block_pass(corrector, node, proc_name)
+          else
+            autocorrect_block(corrector, node)
+          end
+        end
+
         def never_process?(count, node)
-          count < 1 || node.block_type? && node.body.nil?
+          count < 1 || (node.block_type? && node.body.nil?)
         end
 
         def remove_node(corrector, node)
@@ -81,7 +86,7 @@ module RuboCop
           return if block_reassigns_arg?(node, block_arg)
 
           source = node.body.source
-          source.gsub!(/\b#{block_arg}\b/, '1') if block_arg
+          source.gsub!(/\b#{block_arg}\b/, '0') if block_arg
 
           corrector.replace(node, fix_indentation(source, node.loc.column...node.body.loc.column))
         end
@@ -90,7 +95,7 @@ module RuboCop
           # Cleanup indentation in a multiline block
           source_lines = source.split("\n")
 
-          source_lines[1..-1].each do |line|
+          source_lines[1..].each do |line|
             next if line.empty?
 
             line[range] = ''

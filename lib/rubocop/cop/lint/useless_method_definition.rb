@@ -3,11 +3,12 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for useless method definitions, specifically: empty constructors
+      # Checks for useless method definitions, specifically: empty constructors
       # and methods just delegating to `super`.
       #
-      # This cop is marked as unsafe as it can trigger false positives for cases when
-      # an empty constructor just overrides the parent constructor, which is bad anyway.
+      # @safety
+      #   This cop is unsafe as it can register false positives for cases when an empty
+      #   constructor just overrides the parent constructor, which is bad anyway.
       #
       # @example
       #   # bad

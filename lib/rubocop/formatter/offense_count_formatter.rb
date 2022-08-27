@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'ruby-progressbar'
+
 module RuboCop
   module Formatter
     # This formatter displays the list of offended cops with a count of how
@@ -17,6 +19,7 @@ module RuboCop
       def started(target_files)
         super
         @offense_counts = Hash.new(0)
+        @style_guide_links = {}
 
         return unless output.tty?
 
@@ -37,6 +40,9 @@ module RuboCop
 
       def file_finished(_file, offenses)
         offenses.each { |o| @offense_counts[o.cop_name] += 1 }
+        if options[:display_style_guide]
+          offenses.each { |o| @style_guide_links[o.cop_name] ||= o.message[/ \(http\S+\)\Z/] }
+        end
         @progressbar.increment if instance_variable_defined?(:@progressbar)
       end
 
@@ -52,8 +58,8 @@ module RuboCop
         output.puts
 
         per_cop_counts.each do |cop_name, count|
-          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}" \
-                      "#{cop_name}\n"
+          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}#{cop_name}" \
+                      "#{@style_guide_links[cop_name]}\n"
         end
         output.puts '--'
         output.puts "#{total_count}  Total"

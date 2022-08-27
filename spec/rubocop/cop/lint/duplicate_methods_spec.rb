@@ -510,6 +510,41 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'does not register for the same method in different scopes within `class << self`' do
+    expect_no_offenses(<<~RUBY, 'test.rb')
+      class A
+        class << self
+          def foo
+          end
+
+          class B
+            def foo
+            end
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'properly registers and offense when deeply nested' do
+    expect_offense(<<~RUBY, 'test.rb')
+      module A
+        module B
+          class C
+            class << self
+              def foo
+              end
+
+              def foo
+              ^^^^^^^ Method `A::B::C.foo` is defined at both test.rb:5 and test.rb:8.
+              end
+            end
+          end
+        end
+      end
+    RUBY
+  end
+
   context 'when path is in the project root' do
     before do
       allow(Dir).to receive(:pwd).and_return('/path/to/project/root')

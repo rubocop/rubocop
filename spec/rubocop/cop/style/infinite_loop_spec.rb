@@ -184,8 +184,8 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
     RUBY
   end
 
-  shared_examples_for 'auto-corrector' do |keyword, lit|
-    it "auto-corrects single line modifier #{keyword}" do
+  shared_examples_for 'autocorrector' do |keyword, lit|
+    it "autocorrects single line modifier #{keyword}" do
       expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         something += 1 %{keyword} %{lit} # comment
                        ^{keyword} Use `Kernel#loop` for infinite loops.
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
     context 'with non-default indentation width' do
       let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 4 }) }
 
-      it "auto-corrects multi-line modifier #{keyword} and indents correctly" do
+      it "autocorrects multi-line modifier #{keyword} and indents correctly" do
         expect_offense(<<~RUBY, keyword: keyword, lit: lit)
           # comment
           something 1, # comment 1
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
       end
     end
 
-    it "auto-corrects begin-end-#{keyword} with one statement" do
+    it "autocorrects begin-end-#{keyword} with one statement" do
       expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         begin # comment 1
           something += 1 # comment 2
@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
       RUBY
     end
 
-    it "auto-corrects begin-end-#{keyword} with two statements" do
+    it "autocorrects begin-end-#{keyword} with two statements" do
       expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         begin
           something += 1
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
       RUBY
     end
 
-    it "auto-corrects single line modifier #{keyword} with and" do
+    it "autocorrects single line modifier #{keyword} with and" do
       expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         something and something_else %{keyword} %{lit}
                                      ^{keyword} Use `Kernel#loop` for infinite loops.
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
       RUBY
     end
 
-    it "auto-corrects the usage of #{keyword} with do" do
+    it "autocorrects the usage of #{keyword} with do" do
       expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         %{keyword} %{lit} do
         ^{keyword} Use `Kernel#loop` for infinite loops.
@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
       RUBY
     end
 
-    it "auto-corrects the usage of #{keyword} without do" do
+    it "autocorrects the usage of #{keyword} without do" do
       expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         %{keyword} %{lit}
         ^{keyword} Use `Kernel#loop` for infinite loops.
@@ -289,6 +289,6 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
     end
   end
 
-  it_behaves_like 'auto-corrector', 'while', 'true'
-  it_behaves_like 'auto-corrector', 'until', 'false'
+  it_behaves_like 'autocorrector', 'while', 'true'
+  it_behaves_like 'autocorrector', 'until', 'false'
 end

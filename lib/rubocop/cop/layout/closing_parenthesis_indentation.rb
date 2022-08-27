@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of hanging closing parentheses in
+      # Checks the indentation of hanging closing parentheses in
       # method calls, method definitions, and grouped expressions. A hanging
       # closing parenthesis means `)` preceded by a line break.
       #
@@ -155,7 +155,13 @@ module RuboCop
         end
 
         def all_elements_aligned?(elements)
-          elements.map { |e| e.loc.column }.uniq.count == 1
+          elements.flat_map do |e|
+            if e.hash_type?
+              e.each_pair.map { |pair| pair.loc.column }
+            else
+              e.loc.column
+            end
+          end.uniq.count == 1
         end
 
         def first_argument_line(elements)

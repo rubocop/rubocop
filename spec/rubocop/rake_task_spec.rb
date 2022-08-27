@@ -11,6 +11,7 @@ RSpec.describe RuboCop::RakeTask do
   after { Rake::Task.clear }
 
   describe 'defining tasks' do
+    # rubocop:todo Naming/InclusiveLanguage
     it 'creates a rubocop task and a rubocop auto_correct task' do
       described_class.new
 
@@ -23,6 +24,21 @@ RSpec.describe RuboCop::RakeTask do
 
       expect(Rake::Task.task_defined?(:lint_lib)).to be true
       expect(Rake::Task.task_defined?('lint_lib:auto_correct')).to be true
+    end
+    # rubocop:enable Naming/InclusiveLanguage
+
+    it 'creates a rubocop task and a rubocop autocorrect task' do
+      described_class.new
+
+      expect(Rake::Task.task_defined?(:rubocop)).to be true
+      expect(Rake::Task.task_defined?('rubocop:autocorrect')).to be true
+    end
+
+    it 'creates a named task and a named autocorrect task' do
+      described_class.new(:lint_lib)
+
+      expect(Rake::Task.task_defined?(:lint_lib)).to be true
+      expect(Rake::Task.task_defined?('lint_lib:autocorrect')).to be true
     end
   end
 
@@ -124,17 +140,29 @@ RSpec.describe RuboCop::RakeTask do
       expect($stderr.string.strip).to eq 'RuboCop failed!'
     end
 
-    context 'auto_correct' do
-      it 'runs with --auto-correct-all' do
+    context 'autocorrect' do
+      it 'runs with --autocorrect' do
         described_class.new
 
         cli = instance_double(RuboCop::CLI, run: 0)
         allow(RuboCop::CLI).to receive(:new).and_return(cli)
-        options = ['--auto-correct-all']
+        options = ['--autocorrect']
 
         expect(cli).to receive(:run).with(options)
 
-        Rake::Task['rubocop:auto_correct'].execute
+        Rake::Task['rubocop:autocorrect'].execute
+      end
+
+      it 'runs with --autocorrect-all' do
+        described_class.new
+
+        cli = instance_double(RuboCop::CLI, run: 0)
+        allow(RuboCop::CLI).to receive(:new).and_return(cli)
+        options = ['--autocorrect-all']
+
+        expect(cli).to receive(:run).with(options)
+
+        Rake::Task['rubocop:autocorrect_all'].execute
       end
 
       it 'runs with with the options that were passed to its parent task' do
@@ -148,11 +176,11 @@ RSpec.describe RuboCop::RakeTask do
 
         cli = instance_double(RuboCop::CLI, run: 0)
         allow(RuboCop::CLI).to receive(:new).and_return(cli)
-        options = ['--auto-correct-all', '--format', 'files', '-D', 'lib/**/*.rb']
+        options = ['--autocorrect-all', '--format', 'files', '-D', 'lib/**/*.rb']
 
         expect(cli).to receive(:run).with(options)
 
-        Rake::Task['rubocop:auto_correct'].execute
+        Rake::Task['rubocop:autocorrect_all'].execute
       end
     end
   end

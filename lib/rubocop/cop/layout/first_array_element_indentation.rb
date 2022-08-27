@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the first element in an array literal
+      # Checks the indentation of the first element in an array literal
       # where the opening bracket and the first element are on separate lines.
       # The other elements' indentations are handled by the ArrayAlignment cop.
       #
@@ -115,34 +115,38 @@ module RuboCop
           left_bracket = array_node.loc.begin
           first_elem = array_node.values.first
           if first_elem
-            return if first_elem.source_range.line == left_bracket.line
+            return if same_line?(first_elem, left_bracket)
 
             check_first(first_elem, left_bracket, left_parenthesis, 0)
           end
 
-          check_right_bracket(array_node.loc.end, left_bracket, left_parenthesis)
+          check_right_bracket(array_node.loc.end, first_elem, left_bracket, left_parenthesis)
         end
 
-        def check_right_bracket(right_bracket, left_bracket, left_parenthesis)
+        def check_right_bracket(right_bracket, first_elem, left_bracket, left_parenthesis)
           # if the right bracket is on the same line as the last value, accept
           return if /\S/.match?(right_bracket.source_line[0...right_bracket.column])
 
-          expected_column = base_column(left_bracket, left_parenthesis)
+          expected_column, indent_base_type = indent_base(left_bracket, first_elem,
+                                                          left_parenthesis)
           @column_delta = expected_column - right_bracket.column
           return if @column_delta.zero?
 
-          msg = msg(left_parenthesis)
+          msg = message_for_right_bracket(indent_base_type)
           add_offense(right_bracket, message: msg) do |corrector|
             autocorrect(corrector, right_bracket)
           end
         end
 
         # Returns the description of what the correct indentation is based on.
-        def base_description(left_parenthesis)
-          if style == :align_brackets
+        def base_description(indent_base_type)
+          case indent_base_type
+          when :left_brace_or_bracket
             'the position of the opening bracket'
-          elsif left_parenthesis && style == :special_inside_parentheses
+          when :first_column_after_left_parenthesis
             'the first position after the preceding left parenthesis'
+          when :parent_hash_key
+            'the parent hash key'
           else
             'the start of the line where the left square bracket is'
           end
@@ -156,15 +160,18 @@ module RuboCop
           )
         end
 
-        def msg(left_parenthesis)
-          if style == :align_brackets
+        def message_for_right_bracket(indent_base_type)
+          case indent_base_type
+          when :left_brace_or_bracket
             'Indent the right bracket the same as the left bracket.'
-          elsif style == :special_inside_parentheses && left_parenthesis
+          when :first_column_after_left_parenthesis
             'Indent the right bracket the same as the first position ' \
             'after the preceding left parenthesis.'
+          when :parent_hash_key
+            'Indent the right bracket the same as the parent hash key.' \
           else
-            'Indent the right bracket the same as the start of the line' \
-            ' where the left bracket is.'
+            'Indent the right bracket the same as the start of the line ' \
+            'where the left bracket is.'
           end
         end
       end

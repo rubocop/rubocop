@@ -36,36 +36,23 @@ module RuboCop
       #   end
       class DuplicatedAssignment < Base
         include RangeHelp
+        include GemspecHelp
 
-        MSG = '`%<assignment>s` method calls already given on line '\
+        MSG = '`%<assignment>s` method calls already given on line ' \
               '%<line_of_first_occurrence>d of the gemspec.'
-
-        # @!method gem_specification(node)
-        def_node_search :gem_specification, <<~PATTERN
-          (block
-            (send
-              (const
-                (const {cbase nil?} :Gem) :Specification) :new)
-            (args
-              (arg $_)) ...)
-        PATTERN
 
         # @!method assignment_method_declarations(node)
         def_node_search :assignment_method_declarations, <<~PATTERN
           (send
-            (lvar #match_block_variable_name?) #assignment_method? ...)
+            (lvar #match_block_variable_name?) _ ...)
         PATTERN
 
         def on_new_investigation
           return if processed_source.blank?
 
           duplicated_assignment_method_nodes.each do |nodes|
-            nodes[1..-1].each do |node|
-              register_offense(
-                node,
-                node.method_name,
-                nodes.first.first_line
-              )
+            nodes[1..].each do |node|
+              register_offense(node, node.method_name, nodes.first.first_line)
             end
           end
         end
@@ -78,12 +65,9 @@ module RuboCop
           end
         end
 
-        def assignment_method?(method_name)
-          method_name.to_s.end_with?('=')
-        end
-
         def duplicated_assignment_method_nodes
           assignment_method_declarations(processed_source.ast)
+            .select(&:assignment_method?)
             .group_by(&:method_name)
             .values
             .select { |nodes| nodes.size > 1 }

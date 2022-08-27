@@ -34,44 +34,44 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when there are no cop names' do
       let(:cop_names) { [] }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when cop names are same as in the comment' do
       let(:cop_names) { %w[Metrics/AbcSize Metrics/PerceivedComplexity Style/Not] }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when cop names are same but in a different order' do
       let(:cop_names) { %w[Style/Not Metrics/AbcSize Metrics/PerceivedComplexity] }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when cop names are subset of names' do
       let(:cop_names) { %w[Metrics/AbcSize Style/Not] }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when cop names are superset of names' do
       let(:cop_names) { %w[Lint/Void Metrics/AbcSize Metrics/PerceivedComplexity Style/Not] }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when cop names are same but have duplicated names' do
       let(:cop_names) { %w[Metrics/AbcSize Metrics/AbcSize Metrics/PerceivedComplexity Style/Not] }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when disabled all cops' do
       let(:text) { '#rubocop:enable all' }
       let(:cop_names) { %w[all] }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when typo' do
       let(:text) { '# rudocop:todo Dig/ThisMine' }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -109,13 +109,13 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when relates to single line' do
       let(:text) { 'def foo # rubocop:disable all' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when does NOT relate to single line' do
       let(:text) { '# rubocop:disable all' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -125,19 +125,19 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when disable' do
       let(:text) { '# rubocop:disable all' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when enable' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when todo' do
       let(:text) { '# rubocop:todo all' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -147,19 +147,19 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when disable' do
       let(:text) { '# rubocop:disable all' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when enable' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when todo' do
       let(:text) { '# rubocop:todo all' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -169,13 +169,13 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when mentioned all' do
       let(:text) { '# rubocop:disable all' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when mentioned specific cops' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -306,25 +306,25 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when enabled all cops' do
       let(:text) { 'def foo # rubocop:enable all' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when enabled specific cops' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when disabled all cops' do
       let(:text) { '# rubocop:disable all' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when disabled specific cops' do
       let(:text) { '# rubocop:disable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -334,25 +334,25 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when enabled all cops' do
       let(:text) { 'def foo # rubocop:enable all' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when enabled specific cops' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when disabled all cops' do
       let(:text) { '# rubocop:disable all' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when disabled specific cops' do
       let(:text) { '# rubocop:disable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -385,20 +385,20 @@ RSpec.describe RuboCop::DirectiveComment do
       let(:text) { '# rubocop:enable Foo' }
       let(:department?) { true }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'when another department disabled' do
       let(:text) { '# rubocop:enable Bar' }
       let(:department?) { true }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when cop disabled' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 
@@ -412,25 +412,25 @@ RSpec.describe RuboCop::DirectiveComment do
     context "when cop is overridden by it's department" do
       let(:text) { '# rubocop:enable Foo, Foo/Bar' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context "when cop is not overridden by it's department" do
       let(:text) { '# rubocop:enable Bar, Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when there are no departments' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
 
     context 'when there are no cops' do
       let(:text) { '# rubocop:enable Foo' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

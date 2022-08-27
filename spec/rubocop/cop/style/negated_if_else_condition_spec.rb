@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
     RUBY
   end
 
-  it 'registers an offens and corrects a multiline ternary' do
+  it 'registers an offense and corrects a multiline ternary' do
     expect_offense(<<~RUBY)
       !x ?
       ^^^^ Invert the negated condition and swap the ternary branches.
@@ -323,7 +323,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
     RUBY
   end
 
-  it 'does not register an offense when not whe whole condition is negated' do
+  it 'does not register an offense when only part of the condition is negated' do
     expect_no_offenses(<<~RUBY)
       if !x && y
         do_something

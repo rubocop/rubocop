@@ -570,7 +570,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
   end
 
   context 'when a variable is reassigned and unreferenced in a if branch ' \
-          'while the variable is referenced in the paired else branch ' do
+          'while the variable is referenced in the paired else branch' do
     it 'registers an offense for the reassignment in the if branch' do
       expect_offense(<<~RUBY)
         def some_method(flag)
@@ -761,8 +761,8 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
   end
 
   context 'when a variable is reassigned with binary operator ' \
-           'assignment while assigning to itself in rhs ' \
-           'then referenced' do
+          'assignment while assigning to itself in rhs ' \
+          'then referenced' do
     it 'registers an offense for the assignment in rhs' do
       expect_offense(<<~RUBY)
         def some_method

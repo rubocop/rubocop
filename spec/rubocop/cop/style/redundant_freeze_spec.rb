@@ -20,8 +20,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   it_behaves_like 'immutable objects', '1.5'
   it_behaves_like 'immutable objects', ':sym'
   it_behaves_like 'immutable objects', ':""'
-  it_behaves_like 'immutable objects', "ENV['foo']"
-  it_behaves_like 'immutable objects', "::ENV['foo']"
   it_behaves_like 'immutable objects', "'foo'.count"
   it_behaves_like 'immutable objects', '(1 + 2)'
   it_behaves_like 'immutable objects', '(2 > 1)'
@@ -44,12 +42,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   it_behaves_like 'mutable objects', "('a' * 20)"
   it_behaves_like 'mutable objects', '(a + b)'
   it_behaves_like 'mutable objects', '([42] * 42)'
+  it_behaves_like 'mutable objects', "ENV['foo']"
+  it_behaves_like 'mutable objects', "::ENV['foo']"
 
-  it 'allows .freeze on  method call' do
+  it 'allows .freeze on method call' do
     expect_no_offenses('TOP_TEST = Something.new.freeze')
   end
 
-  context 'when the receiver is a frozen string literal' do
+  context 'when the receiver is a string literal' do
     # TODO : It is not yet decided when frozen string will be the default.
     # It has been abandoned in the Ruby 3.0 period, but may default in
     # the long run. So these tests are left with a provisional value of 4.0.
@@ -75,20 +75,40 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
       end
     end
 
-    context 'when the frozen string literal comment is missing' do
-      it_behaves_like 'mutable objects', '"#{a}"'
+    context 'Ruby 3.0 or higher', :ruby30 do
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
     end
 
-    context 'when the frozen string literal comment is true' do
-      let(:prefix) { '# frozen_string_literal: true' }
+    context 'Ruby 2.7 or lower', :ruby27 do
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
 
-      it_behaves_like 'immutable objects', '"#{a}"'
-    end
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
 
-    context 'when the frozen string literal comment is false' do
-      let(:prefix) { '# frozen_string_literal: false' }
+        it_behaves_like 'immutable objects', '"#{a}"'
+      end
 
-      it_behaves_like 'mutable objects', '"#{a}"'
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
     end
 
     describe 'Regexp and Range literals' do

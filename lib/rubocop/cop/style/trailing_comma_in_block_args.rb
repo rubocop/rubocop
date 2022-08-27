@@ -3,10 +3,29 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks whether trailing commas in block arguments are
+      # Checks whether trailing commas in block arguments are
       # required. Blocks with only one argument and a trailing comma require
       # that comma to be present. Blocks with more than one argument never
       # require a trailing comma.
+      #
+      # @safety
+      #   This cop is unsafe because a trailing comma can indicate there are
+      #   more parameters that are not used.
+      #
+      #   For example:
+      #   [source,ruby]
+      #   ----
+      #   # with a trailing comma
+      #   {foo: 1, bar: 2, baz: 3}.map {|key,| key }
+      #   #=> [:foo, :bar, :baz]
+      #
+      #   # without a trailing comma
+      #   {foo: 1, bar: 2, baz: 3}.map {|key| key }
+      #   #=> [[:foo, 1], [:bar, 2], [:baz, 3]]
+      #   ----
+      #
+      #   This can be fixed by replacing the trailing comma with a placeholder
+      #   argument (such as `|key, _value|`).
       #
       # @example
       #   # bad
@@ -45,7 +64,7 @@ module RuboCop
 
         MSG = 'Useless trailing comma present in block arguments.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           # lambda literal (`->`) never has block arguments.
           return if node.send_node.lambda_literal?
           return unless useless_trailing_comma?(node)

@@ -38,19 +38,15 @@ module RuboCop
       class DuplicatedGem < Base
         include RangeHelp
 
-        MSG = 'Gem `%<gem_name>s` requirements already given on line '\
-          '%<line_of_first_occurrence>d of the Gemfile.'
+        MSG = 'Gem `%<gem_name>s` requirements already given on line ' \
+              '%<line_of_first_occurrence>d of the Gemfile.'
 
         def on_new_investigation
           return if processed_source.blank?
 
           duplicated_gem_nodes.each do |nodes|
-            nodes[1..-1].each do |node|
-              register_offense(
-                node,
-                node.first_argument.to_a.first,
-                nodes.first.first_line
-              )
+            nodes[1..].each do |node|
+              register_offense(node, node.first_argument.to_a.first, nodes.first.first_line)
             end
           end
         end
@@ -68,7 +64,7 @@ module RuboCop
         end
 
         def conditional_declaration?(nodes)
-          parent = nodes[0].parent
+          parent = nodes[0].each_ancestor.find { |ancestor| !ancestor.begin_type? }
           return false unless parent&.if_type? || parent&.when_type?
 
           root_conditional_node = parent.if_type? ? parent : parent.parent

@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'registers an offense rescuing exceptions that are ancestors of each other ' do
+    it 'registers an offense rescuing exceptions that are ancestors of each other' do
       expect_offense(<<~RUBY)
         def
           something
@@ -200,8 +200,8 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
   end
 
   context 'multiple rescues' do
-    it 'registers an offense when a higher level exception is rescued before' \
-       ' a lower level exception' do
+    it 'registers an offense when a higher level exception is rescued before ' \
+       'a lower level exception' do
       expect_offense(<<~RUBY)
         begin
           something

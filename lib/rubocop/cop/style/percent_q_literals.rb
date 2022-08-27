@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for usage of the %Q() syntax when %q() would do.
+      # Checks for usage of the %Q() syntax when %q() would do.
       #
       # @example EnforcedStyle: lower_case_q (default)
       #   # The `lower_case_q` style prefers `%q` unless
@@ -53,8 +53,8 @@ module RuboCop
         end
 
         def correct_literal_style?(node)
-          style == :lower_case_q && type(node) == '%q' ||
-            style == :upper_case_q && type(node) == '%Q'
+          (style == :lower_case_q && type(node) == '%q') ||
+            (style == :upper_case_q && type(node) == '%Q')
         end
 
         def message(_range)

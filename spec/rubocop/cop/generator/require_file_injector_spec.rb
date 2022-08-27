@@ -4,11 +4,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
   let(:stdout) { StringIO.new }
   let(:root_file_path) { 'lib/root.rb' }
   let(:injector) do
-    described_class.new(
-      source_path: source_path,
-      root_file_path: root_file_path,
-      output: stdout
-    )
+    described_class.new(source_path: source_path, root_file_path: root_file_path, output: stdout)
   end
 
   around do |example|

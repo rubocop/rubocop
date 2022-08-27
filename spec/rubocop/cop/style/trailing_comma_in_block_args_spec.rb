@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs, :config do
   end
 
   context 'when `->` has multiple arguments' do
-    it 'does not registers an offense' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         -> (foo, bar) { do_something(foo, bar) }
       RUBY

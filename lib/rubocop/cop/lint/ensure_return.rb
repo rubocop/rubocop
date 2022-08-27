@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for `return` from an `ensure` block.
+      # Checks for `return` from an `ensure` block.
       # `return` from an ensure block is a dangerous code smell as it
       # will take precedence over any exception being raised,
       # and the exception will be silently thrown away as if it were rescued.

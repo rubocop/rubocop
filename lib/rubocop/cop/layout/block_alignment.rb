@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether the end keywords are aligned properly for do
+      # Checks whether the end keywords are aligned properly for do
       # end blocks.
       #
       # Three modes are supported through the `EnforcedStyleAlignWith`
@@ -22,23 +22,24 @@ module RuboCop
       #   # bad
       #
       #   foo.bar
-      #      .each do
-      #        baz
-      #          end
+      #     .each do
+      #       baz
+      #         end
       #
       #   # good
       #
-      #   variable = lambda do |i|
-      #     i
+      #   foo.bar
+      #     .each do
+      #       baz
       #   end
       #
       # @example EnforcedStyleAlignWith: start_of_block
       #   # bad
       #
       #   foo.bar
-      #      .each do
-      #        baz
-      #          end
+      #     .each do
+      #       baz
+      #         end
       #
       #   # good
       #
@@ -51,16 +52,17 @@ module RuboCop
       #   # bad
       #
       #   foo.bar
-      #      .each do
-      #        baz
-      #          end
+      #     .each do
+      #       baz
+      #         end
       #
       #   # good
       #
       #   foo.bar
       #     .each do
-      #        baz
+      #       baz
       #   end
+      #
       class BlockAlignment < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
@@ -82,6 +84,8 @@ module RuboCop
           check_block_alignment(start_for_block_node(node), node)
         end
 
+        alias on_numblock on_block
+
         def style_parameter_name
           'EnforcedStyleAlignWith'
         end
@@ -101,11 +105,11 @@ module RuboCop
         def block_end_align_target(node)
           lineage = [node, *node.ancestors]
 
-          target = lineage.each_cons(2) do |current, parent|
-            break current if end_align_target?(current, parent)
+          lineage.each_cons(2) do |current, parent|
+            return current if end_align_target?(current, parent)
           end
 
-          target || lineage.last
+          lineage.last
         end
 
         def end_align_target?(node, parent)
@@ -210,7 +214,7 @@ module RuboCop
 
         def format_source_line_column(source_line_column)
           "`#{source_line_column[:source]}` at #{source_line_column[:line]}, " \
-          "#{source_line_column[:column]}"
+            "#{source_line_column[:column]}"
         end
 
         def compute_start_col(ancestor_node, node)

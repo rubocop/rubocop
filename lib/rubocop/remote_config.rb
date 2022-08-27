@@ -23,9 +23,7 @@ module RuboCop
         next if response.is_a?(Net::HTTPNotModified)
         next if response.is_a?(SocketError)
 
-        File.open cache_path, 'w' do |io|
-          io.write response.body
-        end
+        File.write(cache_path, response.body)
       end
 
       cache_path
@@ -33,7 +31,7 @@ module RuboCop
 
     def inherit_from_remote(file, path)
       new_uri = @uri.dup
-      new_uri.path.gsub!(%r{/[^/]*$}, "/#{file}")
+      new_uri.path.gsub!(%r{/[^/]*$}, "/#{file.delete_prefix('./')}")
       RemoteConfig.new(new_uri.to_s, File.dirname(path))
     end
 

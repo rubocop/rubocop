@@ -3,7 +3,11 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for inheritance from Struct.new.
+      # Checks for inheritance from Struct.new.
+      #
+      # @safety
+      #   Autocorrection is unsafe because it will change the inheritance
+      #   tree (e.g. return value of `Module#ancestors`) of the constant.
       #
       # @example
       #   # bad
@@ -30,7 +34,7 @@ module RuboCop
           return unless struct_constructor?(node.parent_class)
 
           add_offense(node.parent_class.source_range) do |corrector|
-            corrector.remove(range_with_surrounding_space(range: node.loc.keyword, newlines: false))
+            corrector.remove(range_with_surrounding_space(node.loc.keyword, newlines: false))
             corrector.replace(node.loc.operator, '=')
 
             correct_parent(node.parent_class, corrector)
@@ -47,7 +51,7 @@ module RuboCop
 
         def correct_parent(parent, corrector)
           if parent.block_type?
-            corrector.remove(range_with_surrounding_space(range: parent.loc.end, newlines: false))
+            corrector.remove(range_with_surrounding_space(parent.loc.end, newlines: false))
           elsif (class_node = parent.parent).body.nil?
             corrector.remove(range_for_empty_class_body(class_node, parent))
           else

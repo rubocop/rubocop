@@ -567,7 +567,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
     end
   end
 
-  context '>= Ruby 2.5 ensure/rescue/else in Block Argument', :ruby25 do
+  context 'ensure/rescue/else in Block Argument' do
     it 'accepts a correctly aligned else' do
       expect_no_offenses(<<~RUBY)
         array_like.each do |n|

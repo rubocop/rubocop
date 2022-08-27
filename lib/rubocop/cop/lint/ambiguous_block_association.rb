@@ -3,10 +3,11 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for ambiguous block association with method
+      # Checks for ambiguous block association with method
       # when param passed without parentheses.
       #
-      # This cop can customize ignored methods with `IgnoredMethods`.
+      # This cop can customize allowed methods with `AllowedMethods`.
+      # By default, there are no methods to allowed.
       #
       # @example
       #
@@ -29,12 +30,30 @@ module RuboCop
       #   # Lambda arguments require no disambiguation
       #   foo = ->(bar) { bar.baz }
       #
-      # @example IgnoredMethods: [change]
+      # @example AllowedMethods: [] (default)
+      #
+      #   # bad
+      #   expect { do_something }.to change { object.attribute }
+      #
+      # @example AllowedMethods: [change]
       #
       #   # good
       #   expect { do_something }.to change { object.attribute }
+      #
+      # @example AllowedPatterns: [] (default)
+      #
+      #   # bad
+      #   expect { do_something }.to change { object.attribute }
+      #
+      # @example AllowedPatterns: [/change/]
+      #
+      #   # good
+      #   expect { do_something }.to change { object.attribute }
+      #   expect { do_something }.to not_change { object.attribute }
+      #
       class AmbiguousBlockAssociation < Base
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
 
         MSG = 'Parenthesize the param `%<param>s` to make sure that the ' \
               'block will be associated with the `%<method>s` method ' \
@@ -44,7 +63,8 @@ module RuboCop
           return unless node.arguments?
 
           return unless ambiguous_block_association?(node)
-          return if node.parenthesized? || node.last_argument.lambda? || allowed_method?(node)
+          return if node.parenthesized? || node.last_argument.lambda? || node.last_argument.proc? ||
+                    allowed_method_pattern?(node)
 
           message = message(node)
 
@@ -58,9 +78,10 @@ module RuboCop
           send_node.last_argument.block_type? && !send_node.last_argument.send_node.arguments?
         end
 
-        def allowed_method?(node)
+        def allowed_method_pattern?(node)
           node.assignment? || node.operator_method? || node.method?(:[]) ||
-            ignored_method?(node.last_argument.send_node.source)
+            allowed_method?(node.last_argument.method_name) ||
+            matches_allowed_pattern?(node.last_argument.method_name)
         end
 
         def message(send_node)

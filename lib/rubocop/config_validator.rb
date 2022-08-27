@@ -44,12 +44,20 @@ module RuboCop
       check_obsoletions
 
       alert_about_unrecognized_cops(invalid_cop_names)
-      check_target_ruby
       validate_new_cops_parameter
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
       validate_syntax_cop
       reject_mutually_exclusive_defaults
+    end
+
+    # Validations that should only be run after all config resolving has
+    # taken place:
+    # * The target ruby version is only checked once the entire inheritance
+    # chain has been loaded so that only the final value is validated, and
+    # any obsolete but overridden values are ignored.
+    def validate_after_resolution
+      check_target_ruby
     end
 
     def target_ruby_version
@@ -81,11 +89,11 @@ module RuboCop
 
       msg = if last_version
               "RuboCop found unsupported Ruby version #{target_ruby_version} " \
-              "in #{source}. #{target_ruby_version}-compatible " \
-              "analysis was dropped after version #{last_version}."
+                "in #{source}. #{target_ruby_version}-compatible " \
+                "analysis was dropped after version #{last_version}."
             else
               'RuboCop found unknown Ruby version ' \
-              "#{target_ruby_version.inspect} in #{source}."
+                "#{target_ruby_version.inspect} in #{source}."
             end
 
       msg += "\nSupported versions: #{TargetRuby.supported_versions.join(', ')}"
@@ -94,6 +102,22 @@ module RuboCop
     end
 
     def alert_about_unrecognized_cops(invalid_cop_names)
+      unknown_cops = list_unknown_cops(invalid_cop_names)
+
+      return if unknown_cops.empty?
+
+      if ConfigLoader.ignore_unrecognized_cops
+        warn Rainbow('The following cops or departments are not ' \
+                     'recognized and will be ignored:').yellow
+        warn unknown_cops.join("\n")
+
+        return
+      end
+
+      raise ValidationError, unknown_cops.join("\n")
+    end
+
+    def list_unknown_cops(invalid_cop_names)
       unknown_cops = []
       invalid_cop_names.each do |name|
         # There could be a custom cop with this name. If so, don't warn
@@ -104,17 +128,31 @@ module RuboCop
         # to do so than to pass the value around to various methods.
         next if name == 'inherit_mode'
 
-        suggestions = NameSimilarity.find_similar_names(name, Cop::Registry.global.map(&:cop_name))
-        suggestion = "Did you mean `#{suggestions.join('`, `')}`?" if suggestions.any?
-
         message = <<~MESSAGE.rstrip
-          unrecognized cop #{name} found in #{smart_loaded_path}
-          #{suggestion}
+          unrecognized cop or department #{name} found in #{smart_loaded_path}
+          #{suggestion(name)}
         MESSAGE
 
         unknown_cops << message
       end
-      raise ValidationError, unknown_cops.join("\n") if unknown_cops.any?
+
+      unknown_cops
+    end
+
+    def suggestion(name)
+      registry = Cop::Registry.global
+      departments = registry.departments.map(&:to_s)
+      suggestions = NameSimilarity.find_similar_names(name, departments + registry.map(&:cop_name))
+      if suggestions.any?
+        "Did you mean `#{suggestions.join('`, `')}`?"
+      else
+        # Department names can contain slashes, e.g. Chef/Correctness, but there's no support for
+        # the concept of higher level departments in RuboCop. It's a flat structure. So if the user
+        # tries to configure a "top level department", we hint that it's the bottom level
+        # departments that should be configured.
+        suggestions = departments.select { |department| department.start_with?("#{name}/") }
+        "#{name} is not a department. Use `#{suggestions.join('`, `')}`." if suggestions.any?
+      end
     end
 
     def validate_syntax_cop
@@ -179,8 +217,8 @@ module RuboCop
           next if validate_support_and_has_list(name, style, valid)
 
           msg = "invalid #{style_name} '#{style}' for #{name} found in " \
-            "#{smart_loaded_path}\n" \
-            "Valid choices are: #{valid.join(', ')}"
+                "#{smart_loaded_path}\n" \
+                "Valid choices are: #{valid.join(', ')}"
           raise ValidationError, msg
         end
       end
@@ -206,7 +244,7 @@ module RuboCop
         next unless cop_config.is_a?(Hash)
         next unless cop_config['Safe'] == false && cop_config['SafeAutoCorrect'] == true
 
-        msg = 'Unsafe cops cannot have a safe auto-correction ' \
+        msg = 'Unsafe cops cannot have a safe autocorrection ' \
               "(section #{name} in #{smart_loaded_path})"
         raise ValidationError, msg
       end
@@ -227,8 +265,8 @@ module RuboCop
     # FIXME: Handling colors in exception messages like this is ugly.
     def msg_not_boolean(parent, key, value)
       "#{Rainbow('').reset}" \
-        "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow}" \
-        " is supposed to be a boolean and #{Rainbow(value).yellow} is not."
+        "Property #{Rainbow(key).yellow} of cop #{Rainbow(parent).yellow} " \
+        "is supposed to be a boolean and #{Rainbow(value).yellow} is not."
     end
   end
 end

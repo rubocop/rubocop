@@ -63,6 +63,8 @@ module RuboCop
           add_offense(node)
         end
 
+        alias on_numblock on_block
+
         private
 
         def top_level_method_definition?(node)
@@ -75,7 +77,7 @@ module RuboCop
 
         # @!method define_method_block?(node)
         def_node_matcher :define_method_block?, <<~PATTERN
-          (block (send _ {:define_method} _) ...)
+          ({block numblock} (send _ {:define_method} _) ...)
         PATTERN
       end
     end

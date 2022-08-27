@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of `if-else` and ternary operators with a negated condition
+      # Checks for uses of `if-else` and ternary operators with a negated condition
       # which can be simplified by inverting condition and swapping branches.
       #
       # @example

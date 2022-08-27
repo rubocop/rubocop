@@ -60,6 +60,165 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
     end
   end
 
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with same branches of same `if` condition node not in the method definition' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        if condition?
+          foo = 1
+          puts foo
+          bar.each do |foo|
+                       ^^^ Shadowing outer local variable - `foo`.
+          end
+        else
+          bar.each do |foo|
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with same branches of same `if` condition node' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          if condition?
+            foo = 1
+            puts foo
+            bar.each do |foo|
+                         ^^^ Shadowing outer local variable - `foo`.
+            end
+          else
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with same branches of same nested `if` condition node' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          if condition?
+            foo = 1
+            puts foo
+            if other_condition?
+              bar.each do |foo|
+                           ^^^ Shadowing outer local variable - `foo`.
+              end
+            end
+          elsif other_condition?
+            bar.each do |foo|
+            end
+          else
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with same branches of same `unless` condition node' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          unless condition?
+            foo = 1
+            puts foo
+            bar.each do |foo|
+                         ^^^ Shadowing outer local variable - `foo`.
+            end
+          else
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with same branches of same `case` condition node' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          case condition
+          when foo then
+            foo = 1
+            puts foo
+            bar.each do |foo|
+                         ^^^ Shadowing outer local variable - `foo`.
+            end
+          when bar then
+            bar.each do |foo|
+            end
+          else
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with different branches of same `if` condition node' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          if condition?
+            foo = 1
+          elsif other_condition?
+            bar.each do |foo|
+            end
+          else
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with different branches of same `unless` condition node' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          unless condition?
+            foo = 1
+          else
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
+          'with different branches of same `case` condition node' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          case condition
+          when foo then
+            foo = 1
+          else
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when a block argument has different name with outer scope variables' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
@@ -96,6 +255,18 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
           1.times do
             puts foo
           end
+        end
+      RUBY
+    end
+  end
+
+  context 'when the same variable name as a block variable is used in return value assignment of `if`' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          foo = if condition
+                  bar { |foo| baz(foo) }
+                end
         end
       RUBY
     end
@@ -163,7 +334,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
   end
 
   context 'with Ractor.new' do
-    it 'does not regiser an offense' do
+    it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         def foo(*args)
           Ractor.new(*args) do |*args|

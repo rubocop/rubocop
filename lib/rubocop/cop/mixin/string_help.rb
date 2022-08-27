@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Classes that include this module just implement functions to determine
-    # what is an offense and how to do auto-correction. They get help with
+    # what is an offense and how to do autocorrection. They get help with
     # adding offenses for the faulty string nodes, and with filtering out
     # nodes.
     module StringHelp

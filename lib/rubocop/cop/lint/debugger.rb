@@ -3,21 +3,31 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for debug calls (such as `debugger` or `binding.pry`) that should
+      # Checks for debug calls (such as `debugger` or `binding.pry`) that should
       # not be kept for production code.
       #
       # The cop can be configured using `DebuggerMethods`. By default, a number of gems
-      # debug entrypoints are configured (`Kernel`, `Byebug`, `Capybara`, `Pry`, `Rails`,
-      # and `WebConsole`). Additional methods can be added.
+      # debug entrypoints are configured (`Kernel`, `Byebug`, `Capybara`, `debug.rb`,
+      # `Pry`, `Rails`, `RubyJard`, and `WebConsole`). Additional methods can be added.
       #
       # Specific default groups can be disabled if necessary:
       #
       # [source,yaml]
       # ----
       # Lint/Debugger:
-      #   WebConsole: ~
+      #   DebuggerMethods:
+      #     WebConsole: ~
       # ----
       #
+      # You can also add your own methods by adding a new category:
+      #
+      # [source,yaml]
+      # ----
+      # Lint/Debugger:
+      #   DebuggerMethods:
+      #     MyDebugger:
+      #       MyDebugger.debug_this
+      # ----
       #
       # @example
       #
@@ -57,21 +67,6 @@ module RuboCop
       class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
 
-        RESTRICT_ON_SEND = [].freeze
-
-        # @!method kernel?(node)
-        def_node_matcher :kernel?, <<~PATTERN
-          (const {nil? cbase} :Kernel)
-        PATTERN
-
-        # @!method valid_receiver?(node, arg1)
-        def_node_matcher :valid_receiver?, <<~PATTERN
-          {
-            (const {nil? cbase} %1)
-            (send {nil? #kernel?} %1)
-          }
-        PATTERN
-
         def on_send(node)
           return unless debugger_method?(node)
 
@@ -93,7 +88,7 @@ module RuboCop
 
               *receiver, method_name = v.split('.')
               {
-                receiver: receiver.empty? ? nil : receiver.join.to_sym,
+                receiver: receiver.empty? ? nil : receiver.map(&:to_sym),
                 method_name: method_name.to_sym
               }
             end.compact
@@ -107,9 +102,22 @@ module RuboCop
             if method[:receiver].nil?
               send_node.receiver.nil?
             else
-              valid_receiver?(send_node.receiver, method[:receiver])
+              method[:receiver] == receiver_chain(send_node)
             end
           end
+        end
+
+        def receiver_chain(send_node)
+          receivers = []
+          receiver = send_node.receiver
+
+          while receiver
+            name = receiver.send_type? ? receiver.method_name : receiver.const_name&.to_sym
+            receivers.unshift(name)
+            receiver = receiver.receiver
+          end
+
+          receivers
         end
       end
     end

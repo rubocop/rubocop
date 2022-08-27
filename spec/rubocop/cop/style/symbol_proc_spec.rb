@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     RUBY
   end
 
+  it 'registers an offense for safe navigation operator' do
+    expect_offense(<<~RUBY)
+      coll&.map { |e| e.upcase }
+                ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      coll&.map(&:upcase)
+    RUBY
+  end
+
   it 'registers an offense for a block when method in body is unary -/+' do
     expect_offense(<<~RUBY)
       something.map { |x| -x }
@@ -43,21 +54,19 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('::Proc.new { |x| x.method }')
   end
 
-  context 'with IgnoredMethods' do
-    context 'when given a string' do
-      let(:cop_config) { { 'IgnoredMethods' => %w[respond_to] } }
+  context 'when AllowedMethods is enabled' do
+    let(:cop_config) { { 'AllowedMethods' => %w[respond_to] } }
 
-      it 'accepts ignored method' do
-        expect_no_offenses('respond_to { |format| format.xml }')
-      end
+    it 'accepts ignored method' do
+      expect_no_offenses('respond_to { |format| format.xml }')
     end
+  end
 
-    context 'when given a regex' do
-      let(:cop_config) { { 'IgnoredMethods' => [/respond_/] } }
+  context 'when AllowedPatterns is enabled' do
+    let(:cop_config) { { 'AllowedPatterns' => [/respond_/] } }
 
-      it 'accepts ignored method' do
-        expect_no_offenses('respond_to { |format| format.xml }')
-      end
+    it 'accepts ignored method' do
+      expect_no_offenses('respond_to { |format| format.xml }')
     end
   end
 
@@ -125,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     RUBY
   end
 
-  it 'auto-corrects correctly when there are no arguments in parentheses' do
+  it 'autocorrects correctly when there are no arguments in parentheses' do
     expect_offense(<<~RUBY)
       coll.map(   ) { |s| s.upcase }
                     ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
@@ -139,6 +148,55 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   it 'does not crash with a bare method call' do
     run = -> { expect_no_offenses('coll.map { |s| bare_method }') }
     expect(&run).not_to raise_error
+  end
+
+  %w[reject select].each do |method|
+    it "registers an offense when receiver is an array literal and using `#{method}` with a block" do
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].%{method} {|item| item.foo }
+                  _{method} ^^^^^^^^^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{method}(&:foo)
+      RUBY
+    end
+
+    it "registers an offense when receiver is some value and using `#{method}` with a block" do
+      expect_offense(<<~RUBY, method: method)
+        [1, 2, 3].#{method} {|item| item.foo }
+                  _{method} ^^^^^^^^^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].#{method}(&:foo)
+      RUBY
+    end
+
+    it "does not register an offense when receiver is a hash literal and using `#{method}` with a block" do
+      expect_no_offenses(<<~RUBY, method: method)
+        {foo: 42}.#{method} {|item| item.foo }
+      RUBY
+    end
+  end
+
+  %w[min max].each do |method|
+    it "registers an offense when receiver is a hash literal and using `#{method}` with a block" do
+      expect_offense(<<~RUBY, method: method)
+        {foo: 42}.%{method} {|item| item.foo }
+                  _{method} ^^^^^^^^^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {foo: 42}.#{method}(&:foo)
+      RUBY
+    end
+
+    it "does not register an offense when receiver is a array literal and using `#{method}` with a block" do
+      expect_no_offenses(<<~RUBY, method: method)
+        [1, 2, 3].#{method} {|item| item.foo }
+      RUBY
+    end
   end
 
   context 'when `AllowMethodsWithArguments: true`' do
@@ -156,6 +214,15 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           super(one, two) { |x| x.test }
+        RUBY
+      end
+    end
+
+    context 'when method has no arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          coll.map { |e| e.upcase }
+                   ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
         RUBY
       end
     end
@@ -191,6 +258,56 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
   end
 
+  context 'AllowComments: true' do
+    let(:cop_config) { { 'AllowComments' => true } }
+
+    it 'registers an offense for a block with parameterless method call on param' \
+       'and not contains a comment' do
+      expect_offense(<<~RUBY)
+        # comment a
+        something do |e|
+                  ^^^^^^ Pass `&:upcase` as an argument to `something` instead of a block.
+          e.upcase
+        end # comment b
+        # comment c
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # comment a
+        something(&:upcase) # comment b
+        # comment c
+      RUBY
+    end
+
+    it 'accepts block with parameterless method call on param and contains a comment' do
+      expect_no_offenses(<<~RUBY)
+        something do |e| # comment
+          e.upcase
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
+        something do |e|
+          # comment
+          e.upcase
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
+        something do |e|
+          e.upcase # comment
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
+        something do |e|
+          e.upcase
+          # comment
+        end
+      RUBY
+    end
+  end
+
   context 'when `super` has no arguments' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
@@ -204,7 +321,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
   end
 
-  it 'auto-corrects correctly when args have a trailing comma' do
+  it 'autocorrects correctly when args have a trailing comma' do
     expect_offense(<<~RUBY)
       mail(
         to: 'foo',
@@ -222,7 +339,56 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   context 'numblocks', :ruby27 do
-    it 'registers an offense for a block with a single numeric argument' do
+    %w[reject select].each do |method|
+      it "registers an offense when receiver is an array literal and using `#{method}` with a numblock" do
+        expect_offense(<<~RUBY, method: method)
+          [1, 2, 3].%{method} { _1.foo }
+                    _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].#{method}(&:foo)
+        RUBY
+      end
+
+      it "registers an offense when receiver is some value and using `#{method}` with a numblock" do
+        expect_offense(<<~RUBY, method: method)
+          do_something.%{method} { _1.foo }
+                       _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something.#{method}(&:foo)
+        RUBY
+      end
+
+      it "does not register an offense when receiver is a hash literal and using `#{method}` with a numblock" do
+        expect_no_offenses(<<~RUBY, method: method)
+          {foo: 42}.#{method} { _1.foo }
+        RUBY
+      end
+    end
+
+    %w[min max].each do |method|
+      it "registers an offense when receiver is an hash literal and using `#{method}` with a numblock" do
+        expect_offense(<<~RUBY, method: method)
+          {foo: 42}.%{method} { _1.foo }
+                    _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: 42}.#{method}(&:foo)
+        RUBY
+      end
+
+      it "does not register an offense when receiver is a array literal and using `#{method}` with a numblock" do
+        expect_no_offenses(<<~RUBY, method: method)
+          [1, 2, 3].#{method} { _1.foo }
+        RUBY
+      end
+    end
+
+    it 'registers an offense for a block with a numbered parameter' do
       expect_offense(<<~RUBY)
         something { _1.foo }
                   ^^^^^^^^^^ Pass `&:foo` as an argument to `something` instead of a block.
@@ -233,27 +399,27 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       RUBY
     end
 
-    it 'accepts block with multiple numeric argumnets' do
+    it 'accepts block with multiple numbered parameters' do
       expect_no_offenses('something { _1 + _2 }')
     end
 
-    it 'accepts lambda with 1 argument' do
+    it 'accepts lambda with 1 numbered parameter' do
       expect_no_offenses('-> { _1.method }')
     end
 
-    it 'accepts proc with 1 argument' do
+    it 'accepts proc with 1 numbered parameter' do
       expect_no_offenses('proc { _1.method }')
     end
 
-    it 'accepts block with only second numeric argument' do
+    it 'accepts block with only second numbered parameter' do
       expect_no_offenses('something { _2.first }')
     end
 
-    it 'accepts Proc.new with 1 argument' do
+    it 'accepts Proc.new with 1 numbered parameter' do
       expect_no_offenses('Proc.new { _1.method }')
     end
 
-    it 'accepts ::Proc.new with 1 argument' do
+    it 'accepts ::Proc.new with 1 numbered parameter' do
       expect_no_offenses('::Proc.new { _1.method }')
     end
   end

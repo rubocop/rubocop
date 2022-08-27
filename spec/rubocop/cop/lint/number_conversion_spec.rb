@@ -13,17 +13,6 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'when using `#to_i` for integer' do
-      expect_offense(<<~RUBY)
-        10.to_i
-        ^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.to_i`, use stricter `Integer(10, 10)`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        Integer(10, 10)
-      RUBY
-    end
-
     it 'when using `#to_f`' do
       expect_offense(<<~RUBY)
         "10.2".to_f
@@ -43,6 +32,45 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
 
       expect_correction(<<~RUBY)
         Complex("10")
+      RUBY
+    end
+
+    it 'when using `#to_r`' do
+      expect_offense(<<~RUBY)
+        "1/3".to_r
+        ^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `"1/3".to_r`, use stricter `Rational("1/3")`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Rational("1/3")
+      RUBY
+    end
+
+    it 'when using `#to_i` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_i
+        42.0.to_i
+      RUBY
+    end
+
+    it 'when using `#to_f` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_f
+        42.0.to_f
+      RUBY
+    end
+
+    it 'when using `#to_c` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_c
+        42.0.to_c
+      RUBY
+    end
+
+    it 'when using `#to_r` for number literals' do
+      expect_no_offenses(<<~RUBY)
+        42.to_r
+        42.0.to_r
       RUBY
     end
 
@@ -163,6 +191,35 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'registers an offense when using nested number conversion methods' do
+      expect_offense(<<~RUBY)
+        var.to_i.to_f
+        ^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `var.to_i`, use stricter `Integer(var, 10)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Integer(var, 10).to_f
+      RUBY
+    end
+
+    it 'does not register an offense when using `Integer` constructor' do
+      expect_no_offenses(<<~RUBY)
+        Integer(var, 10).to_f
+      RUBY
+    end
+
+    it 'does not register an offense when using `Float` constructor' do
+      expect_no_offenses(<<~RUBY)
+        Float(var).to_i
+      RUBY
+    end
+
+    it 'does not register an offense when using `Complex` constructor' do
+      expect_no_offenses(<<~RUBY)
+        Complex(var).to_f
+      RUBY
+    end
+
     it 'registers offense with send' do
       expect_offense(<<~RUBY)
         "foo".send(:to_c)
@@ -209,39 +266,37 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     end
   end
 
-  context 'IgnoredMethods' do
-    context 'with a string' do
-      let(:cop_config) { { 'IgnoredMethods' => %w[minutes] } }
+  context 'AllowedMethods' do
+    let(:cop_config) { { 'AllowedMethods' => %w[minutes] } }
 
-      it 'does not register an offense for an ignored method' do
-        expect_no_offenses(<<~RUBY)
-          10.minutes.to_i
-        RUBY
-      end
-
-      it 'registers an offense for other methods' do
-        expect_offense(<<~RUBY)
-          10.hours.to_i
-          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
-        RUBY
-      end
+    it 'does not register an offense for an allowed method' do
+      expect_no_offenses(<<~RUBY)
+        10.minutes.to_i
+      RUBY
     end
 
-    context 'with a regex' do
-      let(:cop_config) { { 'IgnoredMethods' => [/minutes/] } }
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        10.hours.to_i
+        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
+      RUBY
+    end
+  end
 
-      it 'does not register an offense for an ignored method' do
-        expect_no_offenses(<<~RUBY)
-          10.minutes.to_i
-        RUBY
-      end
+  context 'AllowedPatterns' do
+    let(:cop_config) { { 'AllowedPatterns' => [/min/] } }
 
-      it 'registers an offense for other methods' do
-        expect_offense(<<~RUBY)
-          10.hours.to_i
-          ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
-        RUBY
-      end
+    it 'does not register an offense for an allowed method' do
+      expect_no_offenses(<<~RUBY)
+        10.minutes.to_i
+      RUBY
+    end
+
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        10.hours.to_i
+        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
+      RUBY
     end
   end
 end

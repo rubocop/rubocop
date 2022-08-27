@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for unnecessary single-element Regexp character classes.
+      # Checks for unnecessary single-element Regexp character classes.
       #
       # @example
       #
@@ -32,7 +32,7 @@ module RuboCop
 
         REQUIRES_ESCAPE_OUTSIDE_CHAR_CLASS_CHARS = '.*+?{}()|$'.chars.freeze
         MSG_REDUNDANT_CHARACTER_CLASS = 'Redundant single-element character class, ' \
-        '`%<char_class>s` can be replaced with `%<element>s`.'
+                                        '`%<char_class>s` can be replaced with `%<element>s`.'
 
         def on_regexp(node)
           each_redundant_character_class(node) do |loc|
@@ -63,6 +63,7 @@ module RuboCop
             next if expr.type != :set || expr.expressions.size != 1
             next if expr.negative?
             next if %i[set posixclass nonposixclass].include?(expr.expressions.first.type)
+            next if multiple_codepoins?(expr.expressions.first)
 
             yield expr
           end
@@ -79,8 +80,16 @@ module RuboCop
           !non_redundant
         end
 
+        def multiple_codepoins?(expression)
+          expression.respond_to?(:codepoints) && expression.codepoints.count >= 2
+        end
+
         def without_character_class(loc)
-          loc.source[1..-2]
+          without_character_class = loc.source[1..-2]
+
+          # Adds `\` to prevent autocorrection that changes to an interpolated string when `[#]`.
+          # e.g. From `/[#]{0}/` to `/#{0}/`
+          loc.source == '[#]' ? "\\#{without_character_class}" : without_character_class
         end
 
         def whitespace_in_free_space_mode?(node, elem)
@@ -90,7 +99,7 @@ module RuboCop
         end
 
         def backslash_b?(elem)
-          # \b's behaviour is different inside and outside of a character class, matching word
+          # \b's behavior is different inside and outside of a character class, matching word
           # boundaries outside but backspace (0x08) when inside.
           elem == '\b'
         end

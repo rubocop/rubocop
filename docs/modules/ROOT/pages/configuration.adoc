@@ -269,7 +269,7 @@ In this example the `Exclude` would only include `bar.rb`.
 
 Configuration files are pre-processed using the ERB templating mechanism. This
 makes it possible to add dynamic content that will be evaluated when the
-configuation file is read. For example, you could let RuboCop ignore all files
+configuration file is read. For example, you could let RuboCop ignore all files
 ignored by Git.
 
 [source,yaml]
@@ -557,7 +557,7 @@ These details will only be seen when RuboCop is run with the `--extra-details` f
 
 === AutoCorrect
 
-Cops that support the `--auto-correct` option can have that support
+Cops that support the `--autocorrect` option can have that support
 disabled. For example:
 
 [source,yaml]
@@ -716,7 +716,7 @@ adding an "inner comment" on the comment line.
 # coding: utf-8 # rubocop:disable Style/Encoding
 ----
 
-Running `rubocop --[safe-]auto-correct --disable-uncorrectable` will
+Running `rubocop --autocorrect --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.
 
@@ -764,3 +764,34 @@ Rails/TimeZone:
 ----
 
 The style guide URL is https://rails.rubystyle.guide#time.
+
+== Setting the documentation URL
+
+You can specify the base URL of the documentation using `DocumentationBaseURL`.
+If specified under `AllCops`, all cops are targeted.
+
+[source,yaml]
+----
+AllCops:
+  DocumentationBaseURL: https://docs.rubocop.org/rubocop
+----
+
+If specified under a specific department, it takes precedence over `AllCops`.
+The following is an example of specifying `Rails` department.
+
+[source,yaml]
+----
+Rails:
+  DocumentationBaseURL: https://docs.rubocop.org/rubocop-rails
+----
+
+== Enable checking Active Support extensions
+
+Some cops for checking specified methods (e.g. `Style/HashExcept`) supports Active Support extensions.
+This is off by default, but can be enabled by the `ActiveSupportExtensionsEnabled` option.
+
+[source,yaml]
+----
+AllCops:
+  ActiveSupportExtensionsEnabled: true
+----

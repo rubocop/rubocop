@@ -15,7 +15,7 @@ RuboCop packs a lot of features on top of what you'd normally expect from a
 linter:
 
 * Works with every major Ruby implementation
-* Auto-correction of many of the code offenses it detects
+* Autocorrection of many of the code offenses it detects
 * Robust code formatting capabilities
 * Multiple result formatters for both interactive use and for feeding data into other tools
 * Ability to have different configuration for different parts of your codebase
@@ -39,7 +39,7 @@ A long-term goal of RuboCop (and its core extensions) is to cover with cops all 
 
 == Philosophy
 
-Early on RuboCop aimed to be an opinionated linter/formater that adhered very closely to the Ruby Style Guide (think `gofmt` and the like).
+Early on RuboCop aimed to be an opinionated linter/formatter that adhered very closely to the Ruby Style Guide (think `gofmt` and the like).
 In those days cops supported just a single style and you couldn't even turn individual cops off. Eventually, we realized
 that in the Ruby community there were some many competing styles and preferences that it was going to be really
 challenging to find one set of defaults that makes everyone happy. Part of this was Ruby's own culture and philosophy,

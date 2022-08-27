@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where the `#__dir__` method can replace more
+      # Checks for places where the `#__dir__` method can replace more
       # complex constructs to retrieve a canonicalized absolute path to the
       # current file.
       #
@@ -18,6 +18,9 @@ module RuboCop
       #   path = __dir__
       class Dir < Base
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.0
 
         MSG = "Use `__dir__` to get an absolute path to the current file's directory."
         RESTRICT_ON_SEND = %i[expand_path dirname].freeze

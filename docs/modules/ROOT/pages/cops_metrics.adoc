@@ -3,7 +3,7 @@
 == Metrics/AbcSize
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12,16 +12,23 @@
 | 1.5
 |===
 
-This cop checks that the ABC size of methods is not higher than the
+Checks that the ABC size of methods is not higher than the
 configured maximum. The ABC size is based on assignments, branches
 (method calls), and conditions. See http://c2.com/cgi/wiki?AbcMetric
 and https://en.wikipedia.org/wiki/ABC_Software_Metric.
+
+Interpreting ABC size:
+
+* <= 17 satisfactory
+* 18..30 unsatisfactory
+* > 30 dangerous
 
 You can have repeated "attributes" calls count as a single "branch".
 For this purpose, attributes are any method with no argument; no attempt
 is meant to distinguish actual `attr_reader` from other methods.
 
-This cop also takes into account `IgnoredMethods` (defaults to `[]`)
+This cop also takes into account `AllowedMethods` (defaults to `[]`)
+And `AllowedPatterns` (defaults to `[]`)
 
 === Examples
 
@@ -48,6 +55,14 @@ end
 |===
 | Name | Default value | Configurable values
 
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
 | IgnoredMethods
 | `[]`
 | Array
@@ -69,7 +84,7 @@ end
 == Metrics/BlockLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -78,7 +93,7 @@ end
 | 1.5
 |===
 
-This cop checks if the length of a block exceeds some maximum value.
+Checks if the length of a block exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 The cop can be configured to ignore blocks passed to certain methods.
@@ -89,7 +104,8 @@ will be counted as one line regardless of its actual size.
 
 
 NOTE: The `ExcludedMethods` configuration is deprecated and only kept
-for backwards compatibility. Please use `IgnoredMethods` instead.
+for backwards compatibility. Please use `AllowedMethods` and `AllowedPatterns`
+instead. By default, there are no methods to allowed.
 
 NOTE: This cop does not apply for `Struct` definitions.
 
@@ -137,19 +153,27 @@ end                 # 5 points
 | `[]`
 | Array
 
-| IgnoredMethods
+| AllowedMethods
 | `refine`
 | Array
 
+| AllowedPatterns
+| `[]`
+| Array
+
+| IgnoredMethods
+| `[]`
+| Array
+
 | Exclude
-| `**/*.gemspec`
+| `+**/*.gemspec+`
 | Array
 |===
 
 == Metrics/BlockNesting
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -158,7 +182,7 @@ end                 # 5 points
 | 0.47
 |===
 
-This cop checks for excessive nesting of conditional and looping
+Checks for excessive nesting of conditional and looping
 constructs.
 
 You can configure if blocks are considered using the `CountBlocks`
@@ -188,7 +212,7 @@ The maximum level of nesting allowed is configurable.
 == Metrics/ClassLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -197,7 +221,7 @@ The maximum level of nesting allowed is configurable.
 | 0.87
 |===
 
-This cop checks if the length a class exceeds some maximum value.
+Checks if the length a class exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 
@@ -251,7 +275,7 @@ end                 # 5 points
 == Metrics/CyclomaticComplexity
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -260,7 +284,7 @@ end                 # 5 points
 | 0.81
 |===
 
-This cop checks that the cyclomatic complexity of methods is not higher
+Checks that the cyclomatic complexity of methods is not higher
 than the configured maximum. The cyclomatic complexity is the number of
 linearly independent paths through a method. The algorithm counts
 decision points and adds one.
@@ -292,6 +316,14 @@ Blocks that are calls to builtin iteration methods
 |===
 | Name | Default value | Configurable values
 
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
 | IgnoredMethods
 | `[]`
 | Array
@@ -304,7 +336,7 @@ Blocks that are calls to builtin iteration methods
 == Metrics/MethodLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -313,16 +345,18 @@ Blocks that are calls to builtin iteration methods
 | 1.5
 |===
 
-This cop checks if the length of a method exceeds some maximum value.
-Comment lines can optionally be ignored.
+Checks if the length of a method exceeds some maximum value.
+Comment lines can optionally be allowed.
 The maximum allowed length is configurable.
 
 You can set literals you want to fold with `CountAsOne`.
 Available are: 'array', 'hash', and 'heredoc'. Each literal
 will be counted as one line regardless of its actual size.
 
-NOTE: The `ExcludedMethods` configuration is deprecated and only kept
-for backwards compatibility. Please use `IgnoredMethods` instead.
+NOTE: The `ExcludedMethods` and `IgnoredMethods` configuration is
+deprecated and only kept for backwards compatibility.
+Please use `AllowedMethods` and `AllowedPatterns` instead.
+By default, there are no methods to allowed.
 
 === Examples
 
@@ -368,6 +402,14 @@ end               # 5 points
 | `[]`
 | Array
 
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
 | IgnoredMethods
 | `[]`
 | Array
@@ -380,7 +422,7 @@ end               # 5 points
 == Metrics/ModuleLength
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -389,7 +431,7 @@ end               # 5 points
 | 0.87
 |===
 
-This cop checks if the length a module exceeds some maximum value.
+Checks if the length a module exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 
@@ -441,7 +483,7 @@ end                 # 5 points
 == Metrics/ParameterLists
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -450,11 +492,14 @@ end                 # 5 points
 | 1.5
 |===
 
-This cop checks for methods with too many parameters.
+Checks for methods with too many parameters.
 
 The maximum number of parameters is configurable.
 Keyword arguments can optionally be excluded from the total count,
 as they add less complexity than positional or optional parameters.
+
+NOTE: Explicit block argument `&block` is not counted to prevent
+erroneous change that is avoided by making block argument implicit.
 
 This cop also checks for the maximum number of optional parameters.
 This can be configured using the `MaxOptionalParameters` config option.
@@ -548,7 +593,7 @@ end
 == Metrics/PerceivedComplexity
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -557,7 +602,7 @@ end
 | 0.81
 |===
 
-This cop tries to produce a complexity score that's a measure of the
+Tries to produce a complexity score that's a measure of the
 complexity the reader experiences when looking at a method. For that
 reason it considers `when` nodes as something that doesn't add as much
 complexity as an `if` or a `&&`. Except if it's one of those special
@@ -588,6 +633,14 @@ end                             # 7 complexity points
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
 
 | IgnoredMethods
 | `[]`

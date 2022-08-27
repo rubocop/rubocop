@@ -123,39 +123,39 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
 
         it 'registers an offense for a method without parentheses on multiple lines' do
           expect_offense(<<~RUBY)
-                      def resolve_inheritance_from_gems(hash)
-                        gems = hash.delete('inherit_gem')
-                        (gems || {}).each_pair do |gem_name, config_path|
-                          if gem_name == 'rubocop'
-                            raise ArgumentError,
-                            ^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
-                                  "can't inherit configuration from the rubocop gem"
-                          end
-            #{'      '}
-                          hash['inherit_from'] = Array(hash['inherit_from'])
-                          Array(config_path).reverse_each do |path|
-                            # Put gem configuration first so local configuration overrides it.
-                            hash['inherit_from'].unshift gem_config_path(gem_name, path)
-                          end
-                        end
-                      end
+            def resolve_inheritance_from_gems(hash)
+              gems = hash.delete('inherit_gem')
+              (gems || {}).each_pair do |gem_name, config_path|
+                if gem_name == 'rubocop'
+                  raise ArgumentError,
+                  ^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+                        "can't inherit configuration from the rubocop gem"
+                end
+
+                hash['inherit_from'] = Array(hash['inherit_from'])
+                Array(config_path).reverse_each do |path|
+                  # Put gem configuration first so local configuration overrides it.
+                  hash['inherit_from'].unshift gem_config_path(gem_name, path)
+                end
+              end
+            end
           RUBY
 
           expect_correction(<<~RUBY)
-                      def resolve_inheritance_from_gems(hash)
-                        gems = hash.delete('inherit_gem')
-                        (gems || {}).each_pair do |gem_name, config_path|
-                          if gem_name == 'rubocop'
-                            raise ArgumentError, "can't inherit configuration from the rubocop gem"
-                          end
-            #{'      '}
-                          hash['inherit_from'] = Array(hash['inherit_from'])
-                          Array(config_path).reverse_each do |path|
-                            # Put gem configuration first so local configuration overrides it.
-                            hash['inherit_from'].unshift gem_config_path(gem_name, path)
-                          end
-                        end
-                      end
+            def resolve_inheritance_from_gems(hash)
+              gems = hash.delete('inherit_gem')
+              (gems || {}).each_pair do |gem_name, config_path|
+                if gem_name == 'rubocop'
+                  raise ArgumentError, "can't inherit configuration from the rubocop gem"
+                end
+
+                hash['inherit_from'] = Array(hash['inherit_from'])
+                Array(config_path).reverse_each do |path|
+                  # Put gem configuration first so local configuration overrides it.
+                  hash['inherit_from'].unshift gem_config_path(gem_name, path)
+                end
+              end
+            end
           RUBY
         end
       end
@@ -170,6 +170,23 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
 
         expect_correction(<<~RUBY)
           my_method(1, 2, "x")
+        RUBY
+      end
+
+      it 'registers an offense for a method call on multiple lines inside a block' do
+        expect_offense(<<~RUBY)
+          some_array.map do |something|
+            my_method(
+            ^^^^^^^^^^ Redundant line break detected.
+              something,
+            )
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          some_array.map do |something|
+            my_method( something, )
+          end
         RUBY
       end
 
@@ -271,6 +288,60 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             m(7 + 8 + 9)
         RUBY
       end
+
+      context 'method chains' do
+        it 'properly corrects a method chain on multiple lines' do
+          expect_offense(<<~RUBY)
+            foo(' .x')
+            ^^^^^^^^^^ Redundant line break detected.
+              .bar
+              .baz
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo(' .x').bar.baz
+          RUBY
+        end
+
+        it 'registers an offense and corrects with a arguments on multiple lines' do
+          expect_offense(<<~RUBY)
+            foo(x,
+            ^^^^^^ Redundant line break detected.
+                y,
+                z)
+              .bar
+              .baz
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo(x, y, z).bar.baz
+          RUBY
+        end
+
+        it 'registers an offense and corrects with a string argument on multiple lines' do
+          expect_offense(<<~RUBY)
+            foo('....' \\
+            ^^^^^^^^^^^^ Redundant line break detected.
+                '....')
+              .bar
+              .baz
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo('........').bar.baz
+          RUBY
+        end
+
+        it 'does not register an offense with a heredoc argument' do
+          expect_no_offenses(<<~RUBY)
+            foo(<<~EOS)
+              xyz
+            EOS
+              .bar
+              .baz
+          RUBY
+        end
+      end
     end
 
     context 'for an expression that does not fit on a single line' do
@@ -316,7 +387,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         it 'accepts an assignment containing a heredoc' do
           expect_no_offenses(<<~RUBY)
             correct = lambda do
-              autocorrect_source(<<~EOT1)
+              expect_no_offenses(<<~EOT1)
                 <<-EOT2
                 foo
                 EOT2
@@ -386,7 +457,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
-      it 'registers an offense when the method call has no argumnets' do
+      it 'registers an offense when the method call has no arguments' do
         expect_offense(<<~RUBY)
           RSpec.shared_context do
           ^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
@@ -458,7 +529,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
-      it 'accepts when the method call has no argumnets' do
+      it 'accepts when the method call has no arguments' do
         expect_no_offenses(<<~RUBY)
           RSpec.shared_context do
             let(:ruby_version) { 2.4 }

@@ -142,7 +142,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'auto-corrects when using `<<` method higher precedence than `||` operator' do
+      it 'autocorrects when using `<<` method higher precedence than `||` operator' do
         expect_offense(<<~RUBY)
           ary << if foo
                  ^^^^^^ Use double pipes `||` instead.
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
       end
 
       it 'registers an offense and corrects when `if` condition and `then` ' \
-        'branch are the same and it has no `else` branch' do
+         'branch are the same and it has no `else` branch' do
         expect_offense(<<~RUBY)
           if do_something
           ^^^^^^^^^^^^^^^ This condition is not needed.
@@ -225,6 +225,195 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
 
         expect_correction(<<~RUBY)
           foo || (1..2)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when defined inside method and the branches contains assignment' do
+        expect_offense(<<~RUBY)
+          def test
+            if foo
+            ^^^^^^ Use double pipes `||` instead.
+              @value = foo
+            else
+              @value = 'bar'
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def test
+            @value = foo || 'bar'
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains assignment' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            @value = foo
+          else
+            @value = 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          @value = foo || 'bar'
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains assignment method' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            test.bar = foo
+          else
+            test.bar = 'baz'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          test.bar = foo || 'baz'
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains arithmetic operation' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            @value - foo
+          else
+            @value - 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          @value - (foo || 'bar')
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains method call' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar foo
+          else
+            bar 1..2
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar foo || (1..2)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains method call with braced hash' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar foo
+          else
+            bar({ baz => quux })
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar foo || { baz => quux }
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains method call with non-braced hash' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar foo
+          else
+            bar baz => quux
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar foo || { baz => quux }
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains parenthesized method call' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar(foo)
+          else
+            bar(1..2)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar(foo || (1..2))
+        RUBY
+      end
+
+      it 'does not register offenses when using `nil?` and the branches contains assignment' do
+        expect_no_offenses(<<~RUBY)
+          if foo.nil?
+            @value = foo
+          else
+            @value = 'bar'
+          end
+        RUBY
+      end
+
+      it 'does not register offenses when the branches contains assignment but target not matched' do
+        expect_no_offenses(<<~RUBY)
+          if foo
+            @foo = foo
+          else
+            @baz = 'quux'
+          end
+        RUBY
+      end
+
+      it 'does not register offenses when using `nil?` and the branches contains method which has multiple arguments' do
+        expect_no_offenses(<<~RUBY)
+          if foo.nil?
+            test.bar foo, bar
+          else
+            test.bar = 'baz', 'quux'
+          end
+        RUBY
+      end
+
+      it 'does not register offenses when the branches contains hash key access' do
+        expect_no_offenses(<<~RUBY)
+          if foo
+            bar[foo]
+          else
+            bar[1]
+          end
+        RUBY
+      end
+
+      it 'registers an offense and correct when the branches are the same with the same receivers' do
+        expect_offense(<<~RUBY)
+          if x
+          ^^^^ Use double pipes `||` instead.
+            X.find(x)
+          else
+            X.find(y)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          X.find(x || y)
+        RUBY
+      end
+
+      it 'does not register an offense when the branches are the same with different receivers' do
+        expect_no_offenses(<<~RUBY)
+          if x
+            X.find(x)
+          else
+            Y.find(y)
+          end
         RUBY
       end
     end
@@ -299,6 +488,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
 
         expect_correction(<<~RUBY)
           time_period = updated_during || (2.days.ago...Time.now)
+        RUBY
+      end
+
+      it 'registers an offense and corrects with ternary expression and the branches contains parenthesized method call' do
+        expect_offense(<<~RUBY)
+          foo ? bar(foo) : bar(quux)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar(foo || quux)
+        RUBY
+      end
+
+      it 'registers an offense and corrects with ternary expression and the branches contains chained parenthesized method call' do
+        expect_offense(<<~RUBY)
+          foo ? foo(foo).bar(foo) : foo(foo).bar(quux)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(foo).bar(foo || quux)
         RUBY
       end
 

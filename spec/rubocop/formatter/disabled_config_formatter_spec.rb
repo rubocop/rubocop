@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
      RuboCop::Cop::Offense.new(:convention, location, 'message', 'Test/Cop2')]
   end
 
-  let(:location) { OpenStruct.new(line: 1, column: 5) }
+  let(:location) { FakeLocation.new(line: 1, column: 5) }
 
   let(:heading) do
     format(
@@ -240,23 +240,23 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
-  context 'with auto-correct supported cop', :restore_registry do
+  context 'with autocorrect supported cop', :restore_registry do
     before do
       stub_cop_class('Test::Cop3') { extend RuboCop::Cop::AutoCorrector }
 
-      formatter.started(['test_auto_correct.rb'])
-      formatter.file_started('test_auto_correct.rb', {})
-      formatter.file_finished('test_auto_correct.rb', offenses)
-      formatter.finished(['test_auto_correct.rb'])
+      formatter.started(['test_autocorrect.rb'])
+      formatter.file_started('test_autocorrect.rb', {})
+      formatter.file_finished('test_autocorrect.rb', offenses)
+      formatter.finished(['test_autocorrect.rb'])
     end
 
     let(:expected_rubocop_todo) do
       [heading,
        '# Offense count: 1',
-       '# Cop supports --auto-correct.',
+       '# This cop supports safe autocorrection (--autocorrect).',
        'Test/Cop3:',
        '  Exclude:',
-       "    - 'test_auto_correct.rb'",
+       "    - 'test_autocorrect.rb'",
        ''].join("\n")
     end
 
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       ]
     end
 
-    it 'adds a comment about --auto-correct option' do
+    it 'adds a comment about --autocorrect option' do
       expect(output.string).to eq(expected_rubocop_todo)
     end
   end

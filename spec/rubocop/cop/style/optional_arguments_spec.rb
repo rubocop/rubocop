@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::OptionalArguments, :config do
       end
     end
 
-    context 'required params' do
+    context 'required params', :ruby21 do
       it 'registers an offense for optional arguments that come before ' \
          'required arguments where there are name arguments' do
         expect_offense(<<~RUBY)

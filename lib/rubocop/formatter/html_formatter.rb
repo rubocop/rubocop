@@ -4,7 +4,6 @@ require 'cgi'
 require 'erb'
 require 'ostruct'
 require 'base64'
-require_relative 'text_util'
 
 module RuboCop
   module Formatter
@@ -23,12 +22,15 @@ module RuboCop
         end
       end
 
+      Summary = Struct.new(:offense_count, :inspected_files, :target_files, keyword_init: true)
+      FileOffenses = Struct.new(:path, :offenses, keyword_init: true)
+
       attr_reader :files, :summary
 
       def initialize(output, options = {})
         super
         @files = []
-        @summary = OpenStruct.new(offense_count: 0)
+        @summary = Summary.new(offense_count: 0)
       end
 
       def started(target_files)
@@ -36,7 +38,7 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
-        files << OpenStruct.new(path: file, offenses: offenses)
+        files << FileOffenses.new(path: file, offenses: offenses)
         summary.offense_count += offenses.count
       end
 
@@ -50,14 +52,7 @@ module RuboCop
         context = ERBContext.new(files, summary)
 
         template = File.read(TEMPLATE_PATH, encoding: Encoding::UTF_8)
-
-        # The following condition is workaround for until Ruby 2.6 is released.
-        # https://github.com/ruby/ruby/commit/cc777d09f44fa909a336ba14f3aa802ffe16e010
-        erb = if RUBY_VERSION >= '2.6'
-                ERB.new(template, trim_mode: '-')
-              else
-                ERB.new(template, nil, '-')
-              end
+        erb = ERB.new(template, trim_mode: '-')
         html = erb.result(context.binding)
 
         output.write html
@@ -98,12 +93,12 @@ module RuboCop
 
         def highlighted_source_line(offense)
           source_before_highlight(offense) +
-            hightlight_source_tag(offense) +
+            highlight_source_tag(offense) +
             source_after_highlight(offense) +
             possible_ellipses(offense.location)
         end
 
-        def hightlight_source_tag(offense)
+        def highlight_source_tag(offense)
           "<span class=\"highlight #{offense.severity}\">" \
             "#{escape(offense.highlighted_area.source)}" \
             '</span>'
@@ -116,11 +111,11 @@ module RuboCop
 
         def source_after_highlight(offense)
           source_line = offense.location.source_line
-          escape(source_line[offense.highlighted_area.end_pos..-1])
+          escape(source_line[offense.highlighted_area.end_pos..])
         end
 
         def possible_ellipses(location)
-          location.first_line == location.last_line ? '' : " #{ELLIPSES}"
+          location.single_line? ? '' : " #{ELLIPSES}"
         end
 
         def escape(string)

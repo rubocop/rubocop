@@ -22,6 +22,8 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
   it_behaves_like 'accepts', 'Proc.new { puts "proc" }'
   it_behaves_like 'accepts', 'expect { order.save }.to(change { orders.size })'
   it_behaves_like 'accepts', 'scope :active, -> { where(status: "active") }'
+  it_behaves_like 'accepts', 'scope :active, proc { where(status: "active") }'
+  it_behaves_like 'accepts', 'scope :active, Proc.new { where(status: "active") }'
   it_behaves_like('accepts', 'assert_equal posts.find { |p| p.title == "Foo" }, results.first')
   it_behaves_like('accepts', 'assert_equal(posts.find { |p| p.title == "Foo" }, results.first)')
   it_behaves_like('accepts', 'assert_equal(results.first, posts.find { |p| p.title == "Foo" })')
@@ -84,12 +86,30 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
     end
   end
 
-  context 'IgnoredMethods' do
-    let(:cop_config) { { 'IgnoredMethods' => %w[change] } }
+  context 'when AllowedMethods is enabled' do
+    let(:cop_config) { { 'AllowedMethods' => %w[change] } }
 
-    it 'does not register an offense for an ignored method' do
+    it 'does not register an offense for an allowed method' do
       expect_no_offenses(<<~RUBY)
         expect { order.expire }.to change { order.events }
+      RUBY
+    end
+
+    it 'registers an offense for other methods' do
+      expect_offense(<<~RUBY)
+        expect { order.expire }.to update { order.events }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `update { order.events }` to make sure that the block will be associated with the `update` method call.
+      RUBY
+    end
+  end
+
+  context 'when AllowedPatterns is enabled' do
+    let(:cop_config) { { 'AllowedPatterns' => [/change/] } }
+
+    it 'does not register an offense for an allowed method' do
+      expect_no_offenses(<<~RUBY)
+        expect { order.expire }.to change { order.events }
+        expect { order.expire }.to not_change { order.events }
       RUBY
     end
 

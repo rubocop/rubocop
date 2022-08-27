@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
   end
 
   it 'registers an offense and corrects when `a` is compared three times, once on the ' \
-    'righthand side' do
+     'righthand side' do
     expect_offense(<<~RUBY)
       a = "a"
       if a == "a" || "b" == a || a == "c"

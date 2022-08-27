@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop ensures that eval methods (`eval`, `instance_eval`, `class_eval`
+      # Ensures that eval methods (`eval`, `instance_eval`, `class_eval`
       # and `module_eval`) are given filename and line number values (`__FILE__`
       # and `__LINE__`). This data is used to ensure that any errors raised
       # within the evaluated code will be given the correct identification
@@ -43,7 +43,7 @@ module RuboCop
       #   RUBY
       #
       # This cop works only when a string literal is given as a code string.
-      # No offence is reported if a string variable is given as below:
+      # No offense is reported if a string variable is given as below:
       #
       # @example
       #   # not checked

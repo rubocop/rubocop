@@ -161,6 +161,12 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
     RUBY
   end
 
+  it 'does not register an offense when building digest using an algorithm string and nested digest constants' do
+    expect_no_offenses(<<~RUBY)
+      OpenSSL::Digest::Digest.new('SHA256')
+    RUBY
+  end
+
   it 'does not register an offense when using ::Digest class methods with an algorithm string and value' do
     expect_no_offenses(<<~RUBY)
       OpenSSL::Digest.digest('SHA256', 'foo')

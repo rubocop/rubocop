@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of explicit block argument to avoid writing
+      # Enforces the use of explicit block argument to avoid writing
       # block literal that just passes its arguments to another block.
       #
       # NOTE: This cop only registers an offense if the block args match the
@@ -42,7 +42,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Consider using explicit block argument in the '\
+        MSG = 'Consider using explicit block argument in the ' \
               "surrounding method's signature over `yield`."
 
         # @!method yielding_block?(node)
@@ -67,16 +67,26 @@ module RuboCop
             # so this can cause crashes in haml_lint
             return unless def_node
 
+            block_name = extract_block_name(def_node)
+
             add_offense(block_node) do |corrector|
               corrector.remove(block_body_range(block_node, send_node))
 
-              add_block_argument(send_node, corrector)
-              add_block_argument(def_node, corrector) if @def_nodes.add?(def_node)
+              add_block_argument(send_node, corrector, block_name)
+              add_block_argument(def_node, corrector, block_name) if @def_nodes.add?(def_node)
             end
           end
         end
 
         private
+
+        def extract_block_name(def_node)
+          if def_node.block_argument?
+            def_node.arguments.last.name
+          else
+            'block'
+          end
+        end
 
         def yielding_arguments?(block_args, yield_args)
           yield_args = yield_args.dup.fill(
@@ -91,18 +101,43 @@ module RuboCop
           end
         end
 
-        def add_block_argument(node, corrector)
+        def add_block_argument(node, corrector, block_name)
           if node.arguments?
-            last_arg = node.arguments.last
-            arg_range = range_with_surrounding_comma(last_arg.source_range, :right)
-            replacement = ' &block'
-            replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
-            corrector.insert_after(arg_range, replacement) unless last_arg.blockarg_type?
-          elsif node.call_type? || node.zsuper_type?
-            corrector.insert_after(node, '(&block)')
+            insert_argument(node, corrector, block_name)
+          elsif empty_arguments?(node)
+            corrector.replace(node.arguments, "(&#{block_name})")
+          elsif call_like?(node)
+            correct_call_node(node, corrector, block_name)
           else
-            corrector.insert_after(node.loc.name, '(&block)')
+            corrector.insert_after(node.loc.name, "(&#{block_name})")
           end
+        end
+
+        def empty_arguments?(node)
+          # Is there an arguments node with only parentheses?
+          node.arguments.is_a?(RuboCop::AST::Node) && node.arguments.loc.begin
+        end
+
+        def call_like?(node)
+          node.call_type? || node.zsuper_type? || node.super_type?
+        end
+
+        def insert_argument(node, corrector, block_name)
+          last_arg = node.arguments.last
+          arg_range = range_with_surrounding_comma(last_arg.source_range, :right)
+          replacement = " &#{block_name}"
+          replacement = ",#{replacement}" unless arg_range.source.end_with?(',')
+          corrector.insert_after(arg_range, replacement) unless last_arg.blockarg_type?
+        end
+
+        def correct_call_node(node, corrector, block_name)
+          corrector.insert_after(node, "(&#{block_name})")
+          return unless node.parenthesized?
+
+          args_begin = Util.args_begin(node)
+          args_end = Util.args_end(node)
+          range = range_between(args_begin.begin_pos, args_end.end_pos)
+          corrector.remove(range)
         end
 
         def block_body_range(block_node, send_node)

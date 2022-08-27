@@ -7,6 +7,7 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
 
 jobs:
   main:
@@ -19,13 +20,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # [ ubuntu, macos, windows ]
-        os: [ windows ]
-        ruby: [ '2.5', '2.6', '2.7', '3.0', 'head' ]
+        # [ubuntu, macos, windows]
+        os: [windows]
+        ruby: ['2.6', '2.7', '3.0', '3.1', 'head']
         include:
-          - { os: windows, ruby: mingw }
+          - os: windows
+            ruby: mingw
         exclude:
-          - { os: windows, ruby: head  }
+          - os: windows
+            ruby: head
 
     steps:
       - name: windows misc
@@ -35,17 +38,40 @@ jobs:
           echo "TMPDIR=$env:RUNNER_TEMP" >> $GITHUB_ENV
           git config --system core.autocrlf false
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
 
       - name: install dependencies
-        run:  bundle install --jobs 3 --retry 3
+        run: bundle install --jobs 3 --retry 3
       - name: spec
-        run:  bundle exec rake spec
+        run: bundle exec rake spec
       - name: ascii_spec
-        run:  bundle exec rake ascii_spec
+        run: bundle exec rake ascii_spec
       - name: internal_investigation
-        run:  bundle exec rake internal_investigation
+        run: bundle exec rake internal_investigation
+
+  rspec4:
+    runs-on: ubuntu-latest
+    name: RSpec 4
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use latest RSpec 4 from `4-0-dev` branch
+        run: |
+          sed -e "/'rspec', '~> 3/d" -i Gemfile
+          cat << EOF > Gemfile.local
+            gem 'rspec', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-core', github: 'rspec/rspec-core', branch: '4-0-dev'
+            gem 'rspec-expectations', github: 'rspec/rspec-expectations', branch: '4-0-dev'
+            gem 'rspec-mocks', github: 'rspec/rspec-mocks', branch: '4-0-dev'
+            gem 'rspec-support', github: 'rspec/rspec-support', branch: '4-0-dev'
+          EOF
+      - name: set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: spec
+        run: bundle exec rspec

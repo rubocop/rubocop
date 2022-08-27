@@ -15,7 +15,7 @@ module RuboCop
         node.arguments.each do |arg|
           on_node(type, arg, :send) do |type_node|
             left_brace = type_node.loc.begin
-            if left_brace && left_brace.line == left_parenthesis.line
+            if left_brace && same_line?(left_brace, left_parenthesis)
               yield type_node, left_parenthesis
               ignore_node(type_node)
             end
@@ -25,15 +25,17 @@ module RuboCop
 
       def check_first(first, left_brace, left_parenthesis, offset)
         actual_column = first.source_range.column
-        expected_column = base_column(left_brace, left_parenthesis) +
-                          configured_indentation_width + offset
+
+        indent_base_column, indent_base_type = indent_base(left_brace, first, left_parenthesis)
+        expected_column = indent_base_column + configured_indentation_width + offset
+
         @column_delta = expected_column - actual_column
         styles = detected_styles(actual_column, offset, left_parenthesis, left_brace)
 
         if @column_delta.zero?
           check_expected_style(styles)
         else
-          incorrect_style_detected(styles, first, left_parenthesis)
+          incorrect_style_detected(styles, first, indent_base_type)
         end
       end
 
@@ -45,14 +47,34 @@ module RuboCop
         end
       end
 
-      def base_column(left_brace, left_parenthesis)
-        if style == brace_alignment_style
-          left_brace.column
-        elsif left_parenthesis && style == :special_inside_parentheses
-          left_parenthesis.column + 1
-        else
-          left_brace.source_line =~ /\S/
+      def indent_base(left_brace, first, left_parenthesis)
+        return [left_brace.column, :left_brace_or_bracket] if style == brace_alignment_style
+
+        pair = hash_pair_where_value_beginning_with(left_brace, first)
+        if pair && key_and_value_begin_on_same_line?(pair) &&
+           right_sibling_begins_on_subsequent_line?(pair)
+          return [pair.loc.column, :parent_hash_key]
         end
+
+        if left_parenthesis && style == :special_inside_parentheses
+          return [left_parenthesis.column + 1, :first_column_after_left_parenthesis]
+        end
+
+        [left_brace.source_line =~ /\S/, :start_of_line]
+      end
+
+      def hash_pair_where_value_beginning_with(left_brace, first)
+        return unless first && first.parent.loc.begin == left_brace
+
+        first.parent&.parent&.pair_type? ? first.parent.parent : nil
+      end
+
+      def key_and_value_begin_on_same_line?(pair)
+        same_line?(pair.key, pair.value)
+      end
+
+      def right_sibling_begins_on_subsequent_line?(pair)
+        pair.right_sibling && (pair.last_line < pair.right_sibling.first_line)
       end
 
       def detected_styles(actual_column, offset, left_parenthesis, left_brace)
@@ -73,8 +95,8 @@ module RuboCop
         styles
       end
 
-      def incorrect_style_detected(styles, first, left_parenthesis)
-        msg = message(base_description(left_parenthesis))
+      def incorrect_style_detected(styles, first, base_column_type)
+        msg = message(base_description(base_column_type))
 
         add_offense(first, message: msg) do |corrector|
           autocorrect(corrector, first)

@@ -3,8 +3,17 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks the style of children definitions at classes and
+      # Checks the style of children definitions at classes and
       # modules. Basically there are two different styles:
+      #
+      # @safety
+      #   Autocorrection is unsafe.
+      #
+      #   Moving from compact to nested children requires knowledge of whether the
+      #   outer parent is a module or a class. Moving from nested to compact requires
+      #   verification that the outer parent is defined elsewhere. Rubocop does not
+      #   have the knowledge to perform either operation safely and thus requires
+      #   manual oversight.
       #
       # @example EnforcedStyle: nested (default)
       #   # good
@@ -102,6 +111,7 @@ module RuboCop
         def compact_definition(corrector, node)
           compact_node(corrector, node)
           remove_end(corrector, node.body)
+          unindent(corrector, node)
         end
 
         def compact_node(corrector, node)
@@ -125,11 +135,24 @@ module RuboCop
         end
 
         def remove_end(corrector, body)
-          range = range_between(
-            body.loc.end.begin_pos - leading_spaces(body).size,
-            body.loc.end.end_pos + 1
-          )
+          remove_begin_pos = body.loc.end.begin_pos - leading_spaces(body).size
+          adjustment = processed_source.raw_source[remove_begin_pos] == ';' ? 0 : 1
+          range = range_between(remove_begin_pos, body.loc.end.end_pos + adjustment)
+
           corrector.remove(range)
+        end
+
+        def configured_indentation_width
+          config.for_badge(Layout::IndentationWidth.badge).fetch('Width', 2)
+        end
+
+        def unindent(corrector, node)
+          return if node.body.children.last.nil?
+
+          column_delta = configured_indentation_width - leading_spaces(node.body.children.last).size
+          return if column_delta.zero?
+
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
         end
 
         def leading_spaces(node)

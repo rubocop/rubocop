@@ -3,10 +3,19 @@
 module RuboCop
   module Cop
     module Lint
-      # Prefer using `Hash#compare_by_identity` than using `object_id` for hash keys.
+      # Prefer using `Hash#compare_by_identity` rather than using `object_id`
+      # for hash keys.
       #
-      # This cop is marked as unsafe as a hash possibly can contain other keys
-      # besides `object_id`s.
+      # This cop looks for hashes being keyed by objects' `object_id`, using
+      # one of these methods: `key?`, `has_key?`, `fetch`, `[]` and `[]=`.
+      #
+      # @safety
+      #   This cop is unsafe. Although unlikely, the hash could store both object
+      #   ids and other values that need be compared by value, and thus
+      #   could be a false positive.
+      #
+      #   Furthermore, this cop cannot guarantee that the receiver of one of the
+      #   methods (`key?`, etc.) is actually a hash.
       #
       # @example
       #   # bad

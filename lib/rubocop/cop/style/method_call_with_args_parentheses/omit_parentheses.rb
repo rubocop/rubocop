@@ -13,9 +13,11 @@ module RuboCop
 
           private
 
+          # rubocop:disable Metrics/PerceivedComplexity
           def omit_parentheses(node)
             return unless node.parenthesized?
             return if inside_endless_method_def?(node)
+            return if require_parentheses_for_hash_value_omission?(node)
             return if syntax_like_method_call?(node)
             return if super_call_without_arguments?(node)
             return if allowed_camel_case_method_call?(node)
@@ -23,11 +25,12 @@ module RuboCop
             return if allowed_string_interpolation_method_call?(node)
 
             add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
-              auto_correct(corrector, node)
+              autocorrect(corrector, node)
             end
           end
+          # rubocop:enable Metrics/PerceivedComplexity
 
-          def auto_correct(corrector, node)
+          def autocorrect(corrector, node)
             if parentheses_at_the_end_of_multiline_call?(node)
               corrector.replace(args_begin(node), ' \\')
             else
@@ -43,6 +46,23 @@ module RuboCop
           def inside_endless_method_def?(node)
             # parens are required around arguments inside an endless method
             node.each_ancestor(:def, :defs).any?(&:endless?) && node.arguments.any?
+          end
+
+          def require_parentheses_for_hash_value_omission?(node)
+            return false unless (last_argument = node.last_argument)
+            return false if !last_argument.hash_type? || !last_argument.pairs.last&.value_omission?
+
+            modifier_form?(node) || exist_next_line_expression?(node)
+          end
+
+          def modifier_form?(node)
+            node.parent.respond_to?(:modifier_form?) && node.parent.modifier_form?
+          end
+
+          # Require hash value omission be enclosed in parentheses to prevent the following issue:
+          # https://bugs.ruby-lang.org/issues/18396.
+          def exist_next_line_expression?(node)
+            node.parent&.assignment? ? node.parent.right_sibling : node.right_sibling
           end
 
           def syntax_like_method_call?(node)
@@ -93,8 +113,8 @@ module RuboCop
             parent = node.parent&.block_type? ? node.parent.parent : node.parent
             parent &&
               (logical_operator?(parent) ||
-              parent.send_type? &&
-              parent.arguments.any? { |argument| logical_operator?(argument) })
+              (parent.send_type? &&
+              parent.arguments.any? { |argument| logical_operator?(argument) }))
           end
 
           def call_in_optional_arguments?(node)
@@ -110,7 +130,7 @@ module RuboCop
               call_as_argument_or_chain?(node) ||
               hash_literal_in_arguments?(node) ||
               node.descendants.any? do |n|
-                n.forwarded_args_type? || ambigious_literal?(n) || logical_operator?(n) ||
+                n.forwarded_args_type? || ambiguous_literal?(n) || logical_operator?(n) ||
                   call_with_braced_block?(n)
               end
           end
@@ -122,14 +142,14 @@ module RuboCop
 
           def call_as_argument_or_chain?(node)
             node.parent &&
-              (node.parent.send_type? && !assigned_before?(node.parent, node) ||
+              ((node.parent.send_type? && !assigned_before?(node.parent, node)) ||
               node.parent.csend_type? || node.parent.super_type? || node.parent.yield_type?)
           end
 
           def hash_literal_in_arguments?(node)
             node.arguments.any? do |n|
               hash_literal?(n) ||
-                n.send_type? && node.descendants.any? { |descendant| hash_literal?(descendant) }
+                (n.send_type? && node.descendants.any? { |descendant| hash_literal?(descendant) })
             end
           end
 
@@ -146,7 +166,7 @@ module RuboCop
             previous.parenthesized? || allowed_chained_call_with_parentheses?(previous)
           end
 
-          def ambigious_literal?(node)
+          def ambiguous_literal?(node)
             splat?(node) || ternary_if?(node) || regexp_slash_literal?(node) || unary_literal?(node)
           end
 
@@ -171,8 +191,8 @@ module RuboCop
           end
 
           def unary_literal?(node)
-            node.numeric_type? && node.sign? ||
-              node.parent&.send_type? && node.parent&.unary_operation?
+            (node.numeric_type? && node.sign?) ||
+              (node.parent&.send_type? && node.parent&.unary_operation?)
           end
 
           def assigned_before?(node, target)

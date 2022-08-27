@@ -27,4 +27,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComment, :config do
       =end
     RUBY
   end
+
+  it 'registers an offense and corrects after a heredoc' do
+    expect_offense(<<~RUBY)
+      <<~STR# my string
+            ^^^^^^^^^^^ Put a space before an end-of-line comment.
+        text
+      STR
+    RUBY
+
+    expect_correction(<<~RUBY)
+      <<~STR # my string
+        text
+      STR
+    RUBY
+  end
 end

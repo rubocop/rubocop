@@ -32,6 +32,24 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             ^^^^^^^^^^^^^^^ Missing method documentation comment.
           CODE
         end
+
+        it 'registers an offense when method is public, but there were private methods before' do
+          expect_offense(<<~CODE)
+            class Foo
+                private
+
+                def baz
+                end
+
+                public
+
+                def foo
+                ^^^^^^^ Missing method documentation comment.
+                  puts 'bar'
+                end
+            end
+          CODE
+        end
       end
 
       context 'when method is private' do
@@ -227,7 +245,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
 
     context 'when declaring methods in a class' do
       context 'without documentation comment' do
-        context 'wheh method is public' do
+        context 'when method is public' do
           it 'registers an offense' do
             expect_offense(<<~CODE)
               class Foo

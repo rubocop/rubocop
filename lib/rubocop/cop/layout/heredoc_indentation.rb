@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the here document bodies. The bodies
+      # Checks the indentation of the here document bodies. The bodies
       # are indented one step.
       #
       # Note: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),
@@ -141,13 +141,6 @@ module RuboCop
           base_line_num = node.loc.expression.line
           base_line = processed_source.lines[base_line_num - 1]
           indent_level(base_line)
-        end
-
-        def indent_level(str)
-          indentations = str.lines
-                            .map { |line| line[/^\s*/] }
-                            .reject { |line| line.end_with?("\n") }
-          indentations.empty? ? 0 : indentations.min_by(&:size).size
         end
 
         # Returns '~', '-' or nil

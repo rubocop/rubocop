@@ -121,7 +121,18 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
         RUBY
       end
 
-      it 'registers an offense for a quoted symbol' do
+      it 'registers an offense for a quoted symbol key' do
+        expect_offense(<<~RUBY)
+          { :'foo' => :bar }
+            ^^^^^^ Unnecessary symbol conversion; use `:foo` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          { :foo => :bar }
+        RUBY
+      end
+
+      it 'registers an offense for a quoted symbol value' do
         expect_offense(<<~RUBY)
           { foo: :'bar' }
                  ^^^^^^ Unnecessary symbol conversion; use `:bar` instead.

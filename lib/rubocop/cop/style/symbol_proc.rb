@@ -7,6 +7,34 @@ module RuboCop
       #
       # If you prefer a style that allows block for method with arguments,
       # please set `true` to `AllowMethodsWithArguments`.
+      # respond_to , and `define_method?` methods are allowed by default.
+      # These are customizable with `AllowedMethods` option.
+      #
+      # @safety
+      #   This cop is unsafe because `proc`s and blocks work differently
+      #   when additional arguments are passed in. A block will silently
+      #   allow additional arguments, but a `proc` will raise
+      #   an `ArgumentError`.
+      #
+      #   For example:
+      #
+      #   [source,ruby]
+      #   ----
+      #   class Foo
+      #     def bar
+      #       :bar
+      #     end
+      #   end
+      #
+      #   def call(options = {}, &block)
+      #     block.call(Foo.new, options)
+      #   end
+      #
+      #   call { |x| x.bar }
+      #   #=> :bar
+      #   call(&:bar)
+      #   # ArgumentError: wrong number of arguments (given 1, expected 0)
+      #   ----
       #
       # @example
       #   # bad
@@ -26,9 +54,42 @@ module RuboCop
       # @example AllowMethodsWithArguments: true
       #   # good
       #   something.do_something(foo) { |o| o.bar }
+      #
+      # @example AllowComments: false (default)
+      #   # bad
+      #   something.do_something do |s| # some comment
+      #     # some comment
+      #     s.upcase # some comment
+      #     # some comment
+      #   end
+      #
+      # @example AllowComments: true
+      #   # good  - if there are comment in either position
+      #   something.do_something do |s| # some comment
+      #     # some comment
+      #     s.upcase # some comment
+      #     # some comment
+      #   end
+      #
+      # @example AllowedMethods: [respond_to, define_method] (default)
+      #   # good
+      #   respond_to { |foo| foo.bar }
+      #   define_method(:foo) { |foo| foo.bar }
+      #
+      #
+      # @example AllowedPatterns: [] (default)
+      #   # bad
+      #   something.map { |s| s.upcase }
+      #
+      # @example AllowedPatterns: [/map/] (default)
+      #   # good
+      #   something.map { |s| s.upcase }
+      #
       class SymbolProc < Base
+        include CommentsHelp
         include RangeHelp
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
         extend AutoCorrector
 
         MSG = 'Pass `&:%<method>s` as an argument to `%<block_method>s` instead of a block.'
@@ -38,7 +99,7 @@ module RuboCop
         def_node_matcher :proc_node?, '(send (const {nil? cbase} :Proc) :new)'
 
         # @!method symbol_proc_receiver?(node)
-        def_node_matcher :symbol_proc_receiver?, '{(send ...) (super ...) zsuper}'
+        def_node_matcher :symbol_proc_receiver?, '{(call ...) (super ...) zsuper}'
 
         # @!method symbol_proc?(node)
         def_node_matcher :symbol_proc?, <<~PATTERN
@@ -52,20 +113,25 @@ module RuboCop
           [Layout::SpaceBeforeBlockBraces]
         end
 
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_block(node)
           symbol_proc?(node) do |dispatch_node, arguments_node, method_name|
             # TODO: Rails-specific handling that we should probably make
             # configurable - https://github.com/rubocop/rubocop/issues/1485
-            # we should ignore lambdas & procs
+            # we should allow lambdas & procs
             return if proc_node?(dispatch_node)
+            return if unsafe_hash_usage?(dispatch_node)
+            return if unsafe_array_usage?(dispatch_node)
             return if %i[lambda proc].include?(dispatch_node.method_name)
-            return if ignored_method?(dispatch_node.method_name)
-            return if allow_if_method_has_argument?(node)
+            return if allowed_method_name?(dispatch_node.method_name)
+            return if allow_if_method_has_argument?(node.send_node)
             return if node.block_type? && destructuring_block_argument?(arguments_node)
+            return if allow_comments? && contains_comments?(node)
 
             register_offense(node, method_name, dispatch_node.method_name)
           end
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         alias on_numblock on_block
 
         def destructuring_block_argument?(argument_node)
@@ -73,6 +139,19 @@ module RuboCop
         end
 
         private
+
+        # See: https://github.com/rubocop/rubocop/issues/10864
+        def unsafe_hash_usage?(node)
+          node.receiver&.hash_type? && %i[reject select].include?(node.method_name)
+        end
+
+        def unsafe_array_usage?(node)
+          node.receiver&.array_type? && %i[min max].include?(node.method_name)
+        end
+
+        def allowed_method_name?(name)
+          allowed_method?(name) || matches_allowed_pattern?(name)
+        end
 
         def register_offense(node, method_name, block_method_name)
           block_start = node.loc.begin.begin_pos
@@ -106,7 +185,7 @@ module RuboCop
 
         def block_range_with_space(node)
           block_range = range_between(begin_pos_for_replacement(node), node.loc.end.end_pos)
-          range_with_surrounding_space(range: block_range, side: :left)
+          range_with_surrounding_space(block_range, side: :left)
         end
 
         def begin_pos_for_replacement(node)
@@ -119,8 +198,12 @@ module RuboCop
           end
         end
 
-        def allow_if_method_has_argument?(node)
-          !!cop_config.fetch('AllowMethodsWithArguments', false) && !node.arguments.count.zero?
+        def allow_if_method_has_argument?(send_node)
+          !!cop_config.fetch('AllowMethodsWithArguments', false) && !send_node.arguments.count.zero?
+        end
+
+        def allow_comments?
+          cop_config.fetch('AllowComments', false)
         end
       end
     end

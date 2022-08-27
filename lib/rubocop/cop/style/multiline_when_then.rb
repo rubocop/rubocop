@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks uses of the `then` keyword
+      # Checks uses of the `then` keyword
       # in multi-line when statements.
       #
       # @example
@@ -39,9 +39,7 @@ module RuboCop
 
           range = node.loc.begin
           add_offense(range) do |corrector|
-            corrector.remove(
-              range_with_surrounding_space(range: range, side: :left, newlines: false)
-            )
+            corrector.remove(range_with_surrounding_space(range, side: :left, newlines: false))
           end
         end
 
@@ -54,7 +52,7 @@ module RuboCop
           end
           return false unless when_node.body
 
-          when_node.loc.line == when_node.body.loc.line
+          same_line?(when_node, when_node.body)
         end
 
         def accept_node_type?(node)

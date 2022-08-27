@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for accessing the first element of `String#unpack`
+      # Checks for accessing the first element of `String#unpack`
       # which can be replaced with the shorter method `unpack1`.
       #
       # @example
@@ -19,9 +19,12 @@ module RuboCop
       #
       class UnpackFirst < Base
         extend AutoCorrector
+        extend TargetRubyVersion
 
-        MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of '\
-          '`%<receiver>s.unpack(%<format>s)%<method>s`.'
+        minimum_target_ruby_version 2.4
+
+        MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of ' \
+              '`%<receiver>s.unpack(%<format>s)%<method>s`.'
         RESTRICT_ON_SEND = %i[first [] slice at].freeze
 
         # @!method unpack_and_first_element?(node)

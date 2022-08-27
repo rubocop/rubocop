@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where `case-when` represents a simple 1:1
+      # Checks for places where `case-when` represents a simple 1:1
       # mapping and can be replaced with a hash lookup.
       #
       # @example MinBranchesCount: 3 (default)

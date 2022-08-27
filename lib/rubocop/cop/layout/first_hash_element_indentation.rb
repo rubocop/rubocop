@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the first key in a hash literal
+      # Checks the indentation of the first key in a hash literal
       # where the opening brace and the first key are on separate lines. The
       # other keys' indentations are handled by the HashAlignment cop.
       #
@@ -32,6 +32,14 @@ module RuboCop
       #   and_in_a_method_call({
       #     no: :difference
       #                        })
+      #   takes_multi_pairs_hash(x: {
+      #     a: 1,
+      #     b: 2
+      #   },
+      #                          y: {
+      #                            c: 1,
+      #                            d: 2
+      #                          })
       #
       #   # good
       #   special_inside_parentheses
@@ -41,6 +49,14 @@ module RuboCop
       #   but_in_a_method_call({
       #                          its_like: :this
       #                        })
+      #   takes_multi_pairs_hash(x: {
+      #                            a: 1,
+      #                            b: 2
+      #                          },
+      #                          y: {
+      #                            c: 1,
+      #                            d: 2
+      #                          })
       #
       # @example EnforcedStyle: consistent
       #   # The `consistent` style enforces that the first key in a hash
@@ -64,6 +80,7 @@ module RuboCop
       #     no: :difference
       #   })
       #
+      #
       # @example EnforcedStyle: align_braces
       #   # The `align_brackets` style enforces that the opening and closing
       #   # braces are indented to the same position.
@@ -72,11 +89,27 @@ module RuboCop
       #   and_now_for_something = {
       #                             completely: :different
       #   }
+      #   takes_multi_pairs_hash(x: {
+      #     a: 1,
+      #     b: 2
+      #   },
+      #                           y: {
+      #                                c: 1,
+      #                                d: 2
+      #                              })
       #
       #   # good
       #   and_now_for_something = {
       #                             completely: :different
       #                           }
+      #   takes_multi_pairs_hash(x: {
+      #                               a: 1,
+      #                               b: 2
+      #                             },
+      #                          y: {
+      #                               c: 1,
+      #                               d: 2
+      #                             })
       class FirstHashElementIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
@@ -116,7 +149,7 @@ module RuboCop
           first_pair = hash_node.pairs.first
 
           if first_pair
-            return if first_pair.first_line == left_brace.line
+            return if same_line?(first_pair, left_brace)
 
             if separator_style?(first_pair)
               check_based_on_longest_key(hash_node, left_brace, left_parenthesis)
@@ -125,18 +158,18 @@ module RuboCop
             end
           end
 
-          check_right_brace(hash_node.loc.end, left_brace, left_parenthesis)
+          check_right_brace(hash_node.loc.end, first_pair, left_brace, left_parenthesis)
         end
 
-        def check_right_brace(right_brace, left_brace, left_parenthesis)
+        def check_right_brace(right_brace, first_pair, left_brace, left_parenthesis)
           # if the right brace is on the same line as the last value, accept
           return if /\S/.match?(right_brace.source_line[0...right_brace.column])
 
-          expected_column = base_column(left_brace, left_parenthesis)
+          expected_column, indent_base_type = indent_base(left_brace, first_pair, left_parenthesis)
           @column_delta = expected_column - right_brace.column
           return if @column_delta.zero?
 
-          message = message_for_right_brace(left_parenthesis)
+          message = message_for_right_brace(indent_base_type)
           add_offense(right_brace, message: message) do |corrector|
             autocorrect(corrector, right_brace)
           end
@@ -155,11 +188,14 @@ module RuboCop
         end
 
         # Returns the description of what the correct indentation is based on.
-        def base_description(left_parenthesis)
-          if style == :align_braces
+        def base_description(indent_base_type)
+          case indent_base_type
+          when :left_brace_or_bracket
             'the position of the opening brace'
-          elsif left_parenthesis && style == :special_inside_parentheses
+          when :first_column_after_left_parenthesis
             'the first position after the preceding left parenthesis'
+          when :parent_hash_key
+            'the parent hash key'
           else
             'the start of the line where the left curly brace is'
           end
@@ -173,12 +209,15 @@ module RuboCop
           )
         end
 
-        def message_for_right_brace(left_parenthesis)
-          if style == :align_braces
+        def message_for_right_brace(indent_base_type)
+          case indent_base_type
+          when :left_brace_or_bracket
             'Indent the right brace the same as the left brace.'
-          elsif style == :special_inside_parentheses && left_parenthesis
+          when :first_column_after_left_parenthesis
             'Indent the right brace the same as the first position ' \
             'after the preceding left parenthesis.'
+          when :parent_hash_key
+            'Indent the right brace the same as the parent hash key.'
           else
             'Indent the right brace the same as the start of the line ' \
             'where the left brace is.'

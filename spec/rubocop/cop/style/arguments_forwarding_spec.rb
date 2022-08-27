@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
   context 'TargetRubyVersion <= 2.6', :ruby26 do
-    it 'does not registers an offense when using restarg with block arg' do
+    it 'does not register an offense when using restarg with block arg' do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           bar(*args, &block)
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
 
       # A method definition that uses forwarding arguments without parentheses
       # is a syntax error. e.g. `def do_something ...`
-      # Therefore it enforces parentheses with auto-correction.
+      # Therefore it enforces parentheses with autocorrection.
       expect_correction(<<~RUBY)
         def foo(...)
           bar(...)
@@ -204,6 +204,14 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when using only kwrest arg' do
+        expect_no_offenses(<<~RUBY)
+          def foo(**kwargs)
+            bar(**kwargs)
+          end
+        RUBY
+      end
     end
 
     context 'AllowOnlyRestArgument: false' do
@@ -224,6 +232,56 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
           end
         RUBY
       end
+
+      it 'registers an offense when using only kwrest arg' do
+        expect_offense(<<~RUBY)
+          def foo(**kwargs)
+                  ^^^^^^^^ Use arguments forwarding.
+            bar(**kwargs)
+                ^^^^^^^^ Use arguments forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(...)
+            bar(...)
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'TargetRubyVersion >= 3.1', :ruby31 do
+    it 'registers an offense when using restarg and anonymous block arg' do
+      expect_offense(<<~RUBY)
+        def foo(*args, &)
+                ^^^^^^^^ Use arguments forwarding.
+          bar(*args, &)
+              ^^^^^^^^ Use arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar(...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using restarg, kwargs, and anonymous block arg' do
+      expect_offense(<<~RUBY)
+        def foo(*args, **kwargs, &)
+                ^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+          bar(*args, **kwargs, &)
+              ^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar(...)
+        end
+      RUBY
     end
   end
 end

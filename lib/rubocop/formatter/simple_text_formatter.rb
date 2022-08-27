@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'colorizable'
-require_relative 'text_util'
 
 module RuboCop
   module Formatter
@@ -61,7 +60,9 @@ module RuboCop
                             correction_count,
                             correctable_count,
                             rainbow,
-                            safe_auto_correct: @options[:safe_auto_correct])
+                            # :safe_autocorrect is a derived option based on several command-line
+                            # arguments - see Rubocop::Options#add_autocorrection_options
+                            safe_autocorrect: @options[:safe_autocorrect])
 
         output.puts
         output.puts report.summary
@@ -108,22 +109,22 @@ module RuboCop
         # rubocop:disable Metrics/ParameterLists
         def initialize(
           file_count, offense_count, correction_count, correctable_count, rainbow,
-          safe_auto_correct: false
+          safe_autocorrect: false
         )
           @file_count = file_count
           @offense_count = offense_count
           @correction_count = correction_count
           @correctable_count = correctable_count
           @rainbow = rainbow
-          @safe_auto_correct = safe_auto_correct
+          @safe_autocorrect = safe_autocorrect
         end
         # rubocop:enable Metrics/ParameterLists
 
         def summary
           if @correction_count.positive?
             if @correctable_count.positive?
-              "#{files} inspected, #{offenses} detected, #{corrections} corrected,"\
-                " #{correctable}"
+              "#{files} inspected, #{offenses} detected, #{corrections} corrected, " \
+                "#{correctable}"
             else
               "#{files} inspected, #{offenses} detected, #{corrections} corrected"
             end
@@ -157,12 +158,12 @@ module RuboCop
         end
 
         def correctable
-          if @safe_auto_correct
+          if @safe_autocorrect
             text = pluralize(@correctable_count, 'more offense')
             "#{colorize(text, :yellow)} can be corrected with `rubocop -A`"
           else
             text = pluralize(@correctable_count, 'offense')
-            "#{colorize(text, :yellow)} auto-correctable"
+            "#{colorize(text, :yellow)} autocorrectable"
           end
         end
       end

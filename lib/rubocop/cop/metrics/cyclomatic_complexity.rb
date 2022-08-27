@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Metrics
-      # This cop checks that the cyclomatic complexity of methods is not higher
+      # Checks that the cyclomatic complexity of methods is not higher
       # than the configured maximum. The cyclomatic complexity is the number of
       # linearly independent paths through a method. The algorithm counts
       # decision points and adds one.
@@ -44,15 +44,6 @@ module RuboCop
           return 0 if node.csend_type? && discount_for_repeated_csend?(node)
 
           1
-        end
-
-        def block_method(node)
-          case node.type
-          when :block
-            node.method_name
-          when :block_pass
-            node.parent.method_name
-          end
         end
 
         def count_block?(block)

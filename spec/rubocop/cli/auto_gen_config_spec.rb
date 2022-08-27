@@ -8,7 +8,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
   include_context 'cli spec behavior'
 
   describe '--auto-gen-config' do
-    before { RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {} }
+    before do
+      RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+      RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
+    end
 
     shared_examples 'LineLength handling' do |ctx, initial_dotfile, exp_dotfile|
       context ctx do
@@ -43,14 +46,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             .to eq(<<~YAML)
 
               # Offense count: 1
-              # Cop supports --auto-correct.
+              # This cop supports safe autocorrection (--autocorrect).
               Style/IfUnlessModifier:
                 Exclude:
                   - 'example.rb'
 
               # Offense count: 2
-              # Cop supports --auto-correct.
-              # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # This cop supports safe autocorrection (--autocorrect).
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, IgnoredPatterns.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 138
@@ -162,14 +165,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             .to eq(<<~YAML)
 
               # Offense count: 1
-              # Cop supports --auto-correct.
-              # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
+              # This cop supports safe autocorrection (--autocorrect).
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, IgnoredPatterns.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 99
 
               # Offense count: 1
-              # Cop supports --auto-correct.
+              # This cop supports unsafe autocorrection (--autocorrect-all).
               # Configuration parameters: EnforcedStyle.
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
@@ -197,7 +200,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         end
       end
 
-      context 'when .rubocop.yml has Layout/LineLength disabled ' do
+      context 'when .rubocop.yml has Layout/LineLength disabled' do
         let(:line_length_max) { 90 }
         let(:line_length_enabled) { false }
 
@@ -217,7 +220,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             .to eq(<<~YAML)
 
               # Offense count: 1
-              # Cop supports --auto-correct.
+              # This cop supports unsafe autocorrection (--autocorrect-all).
               # Configuration parameters: EnforcedStyle.
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
@@ -225,7 +228,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                   - 'example.rb'
 
               # Offense count: 1
-              # Cop supports --auto-correct.
+              # This cop supports safe autocorrection (--autocorrect).
               Style/IfUnlessModifier:
                 Exclude:
                   - 'example.rb'
@@ -266,7 +269,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             .to eq(<<~YAML)
 
               # Offense count: 1
-              # Cop supports --auto-correct.
+              # This cop supports unsafe autocorrection (--autocorrect-all).
               # Configuration parameters: EnforcedStyle.
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
@@ -274,7 +277,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                   - 'example.rb'
 
               # Offense count: 1
-              # Cop supports --auto-correct.
+              # This cop supports safe autocorrection (--autocorrect).
               Style/IfUnlessModifier:
                 Exclude:
                   - 'example.rb'
@@ -310,9 +313,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       YAML
       create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
       expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[8..-1].map(&:chomp))
+      expect(File.readlines('.rubocop_todo.yml')[8..].map(&:chomp))
         .to eq(['# Offense count: 1',
-                '# Cop supports --auto-correct.',
+                '# This cop supports safe autocorrection (--autocorrect).',
                 '# Configuration parameters: AllowForAlignment, ' \
                 'EnforcedStyleForExponentOperator.',
                 '# SupportedStylesForExponentOperator: space, no_space',
@@ -321,17 +324,17 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 2',
-                '# Cop supports --auto-correct.',
+                '# This cop supports safe autocorrection (--autocorrect).',
                 '# Configuration parameters: AllowInHeredoc.',
                 'Layout/TrailingWhitespace:',
                 '  Exclude:',
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 1',
-                '# Cop supports --auto-correct.',
-                '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+                '# This cop supports safe autocorrection (--autocorrect).',
+                '# Configuration parameters: AllowHeredoc, ' \
                 'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-                'IgnoredPatterns.',
+                'AllowedPatterns, IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 125'])
@@ -352,22 +355,22 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
       create_file('.rubocop_todo.yml', [''])
       expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[8..-1].join)
+      expect(File.readlines('.rubocop_todo.yml')[8..].join)
         .to eq(['# Offense count: 1',
-                '# Cop supports --auto-correct.',
+                '# This cop supports safe autocorrection (--autocorrect).',
                 '# Configuration parameters: AllowInHeredoc.',
                 'Layout/TrailingWhitespace:',
                 '  Exclude:',
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 2',
-                '# Cop supports --auto-correct.',
+                '# This cop supports safe autocorrection (--autocorrect).',
                 'Migration/DepartmentName:',
                 '  Exclude:',
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 1',
-                '# Cop supports --auto-correct.',
+                '# This cop supports unsafe autocorrection (--autocorrect-all).',
                 '# Configuration parameters: EnforcedStyle.',
                 '# SupportedStyles: always, always_true, never',
                 'Style/FrozenStringLiteralComment:',
@@ -375,16 +378,16 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 1',
-                '# Cop supports --auto-correct.',
-                '# Configuration parameters: Strict.',
+                '# This cop supports safe autocorrection (--autocorrect).',
+                '# Configuration parameters: Strict, AllowedNumbers, AllowedPatterns.',
                 'Style/NumericLiterals:',
                 '  MinDigits: 7',
                 '',
                 '# Offense count: 1',
-                '# Cop supports --auto-correct.',
-                '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+                '# This cop supports safe autocorrection (--autocorrect).',
+                '# Configuration parameters: AllowHeredoc, ' \
                 'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-                'IgnoredPatterns.',
+                'AllowedPatterns, IgnoredPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 121',
@@ -402,10 +405,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         YAML
         expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml])).to eq(0)
         expect(Dir['.*']).to include('.rubocop_todo.yml')
-        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # Cop supports --auto-correct.
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -419,23 +422,68 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               - 'example1.rb'
         YAML
         expect(File.read('dir/cop_config.yml')).to eq(<<~YAML)
-          inherit_from: .rubocop_todo.yml
+          inherit_from: ../.rubocop_todo.yml
 
           Layout/TrailingWhitespace:
             Enabled: false
           Layout/LineLength:
             Max: 95
         YAML
+        # Checks that the command can be run again with config modified by itself.
+        expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml])).to eq(0)
+      end
+
+      it 'can generate a todo list if default .rubocop.yml exists' do
+        create_file('example1.rb', ['def foo', '  # bar', '  end'])
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            DisabledByDefault: true
+
+          Layout/DefEndAlignment:
+            Enabled: true
+        YAML
+        create_empty_file('cop_config.yml')
+
+        expect(cli.run(%w[--auto-gen-config --config cop_config.yml])).to eq(0)
+        expect(Dir['.*']).to include('.rubocop_todo.yml')
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
+        expect(todo_contents).to eq(<<~YAML)
+          # Offense count: 1
+          # This cop supports safe autocorrection (--autocorrect).
+          # Configuration parameters: AllowForAlignment.
+          Layout/CommentIndentation:
+            Exclude:
+              - 'example1.rb'
+
+          # Offense count: 1
+          # This cop supports safe autocorrection (--autocorrect).
+          # Configuration parameters: EnforcedStyleAlignWith, Severity.
+          # SupportedStylesAlignWith: start_of_line, def
+          Layout/DefEndAlignment:
+            Exclude:
+              - 'example1.rb'
+
+          # Offense count: 1
+          # This cop supports unsafe autocorrection (--autocorrect-all).
+          # Configuration parameters: EnforcedStyle.
+          # SupportedStyles: always, always_true, never
+          Style/FrozenStringLiteralComment:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(File.read('cop_config.yml')).to eq(<<~YAML)
+          inherit_from: .rubocop_todo.yml
+        YAML
       end
     end
 
-    context 'when working with a cop who do not support auto-correction' do
+    context 'when working with a cop who do not support autocorrection' do
       it 'can generate a todo list' do
         create_file('example1.rb', <<~RUBY)
           def fooBar; end
         RUBY
         create_file('.rubocop.yml', <<~YAML)
-          # The following cop does not support auto-correction.
+          # The following cop does not support autocorrection.
           Naming/MethodName:
             Enabled: true
         YAML
@@ -443,17 +491,16 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect($stderr.string).to eq('')
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['.*']).to include('.rubocop_todo.yml')
-        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # Configuration parameters: EnforcedStyle, IgnoredPatterns.
+          # Configuration parameters: AllowedPatterns, IgnoredPatterns.
           # SupportedStyles: snake_case, camelCase
           Naming/MethodName:
-            Exclude:
-              - 'example1.rb'
+            EnforcedStyle: camelCase
 
           # Offense count: 1
-          # Cop supports --auto-correct.
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -463,8 +510,43 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect(File.read('.rubocop.yml')).to eq(<<~YAML)
           inherit_from: .rubocop_todo.yml
 
-          # The following cop does not support auto-correction.
+          # The following cop does not support autocorrection.
           Naming/MethodName:
+            Enabled: true
+        YAML
+      end
+    end
+
+    context 'when cop is not safe to autocorrect' do
+      it 'can generate a todo list, with the appropriate flag' do
+        create_file('example1.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          users = (user.name + ' ' + user.email) * 5
+          puts users
+        RUBY
+        create_file('.rubocop.yml', <<~YAML)
+          # The following cop supports autocorrection but is not safe
+          Style/StringConcatenation:
+            Enabled: true
+        YAML
+        expect(cli.run(%w[--auto-gen-config])).to eq(0)
+        expect($stderr.string).to eq('')
+        expect(Dir['.*']).to include('.rubocop_todo.yml')
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
+        expect(todo_contents).to eq(<<~YAML)
+          # Offense count: 1
+          # This cop supports unsafe autocorrection (--autocorrect-all).
+          # Configuration parameters: Mode.
+          Style/StringConcatenation:
+            Exclude:
+              - 'example1.rb'
+        YAML
+        expect(File.read('.rubocop.yml')).to eq(<<~YAML)
+          inherit_from: .rubocop_todo.yml
+
+          # The following cop supports autocorrection but is not safe
+          Style/StringConcatenation:
             Enabled: true
         YAML
       end
@@ -478,17 +560,17 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         create_file('.rubocop.yml', <<~YAML)
           # rubocop config file
           ---  # YAML document start
-          # The following cop does not support auto-correction.
+          # The following cop does not support autocorrection.
           Naming/MethodName:
             Enabled: true
         YAML
         expect(cli.run(%w[--auto-gen-config])).to eq(0)
         expect($stderr.string).to eq('')
         expect(Dir['.*']).to include('.rubocop_todo.yml')
-        todo_contents = File.read('.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # Cop supports --auto-correct.
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -500,7 +582,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           ---  # YAML document start
           inherit_from: .rubocop_todo.yml
 
-          # The following cop does not support auto-correction.
+          # The following cop does not support autocorrection.
           Naming/MethodName:
             Enabled: true
         YAML
@@ -523,10 +605,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect($stderr.string).to eq('')
         # expect($stdout.string).to include('Created .rubocop_todo.yml.')
         expect(Dir['dir/.*']).to include('dir/.rubocop_todo.yml')
-        todo_contents = File.read('dir/.rubocop_todo.yml').lines[8..-1].join
+        todo_contents = File.read('dir/.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # Cop supports --auto-correct.
+          # This cop supports unsafe autocorrection (--autocorrect-all).
           # Configuration parameters: EnforcedStyle.
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
@@ -631,13 +713,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'again.',
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
+         '# Configuration parameters: AllowForAlignment.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
          '# Offense count: 2',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, indented_internal_methods',
          'Layout/IndentationConsistency:',
@@ -645,7 +728,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: IndentationWidth, EnforcedStyle.',
          '# SupportedStyles: spaces, tabs',
          'Layout/IndentationStyle:',
@@ -653,13 +736,13 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          'Layout/InitialIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowForAlignment, ' \
          'EnforcedStyleForExponentOperator.',
          '# SupportedStylesForExponentOperator: space, no_space',
@@ -668,7 +751,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Offense count: 2',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowInHeredoc.',
          'Layout/TrailingWhitespace:',
          '  Exclude:',
@@ -689,10 +772,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Offense count: 2',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         '# This cop supports safe autocorrection (--autocorrect).',
+         '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'IgnoredPatterns.',
+         'AllowedPatterns, IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -732,13 +815,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'again.',
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
+         '# Configuration parameters: AllowForAlignment.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, indented_internal_methods',
          'Layout/IndentationConsistency:',
@@ -746,7 +830,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: IndentationWidth, EnforcedStyle.',
          '# SupportedStyles: spaces, tabs',
          'Layout/IndentationStyle:',
@@ -754,13 +838,13 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          'Layout/InitialIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowForAlignment, ' \
          'EnforcedStyleForExponentOperator.',
          '# SupportedStylesForExponentOperator: space, no_space',
@@ -769,7 +853,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Offense count: 3',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowInHeredoc.',
          'Layout/TrailingWhitespace:',
          '  Enabled: false', # Offenses in 2 files, limit is 1, so no Exclude
@@ -781,10 +865,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          "    - 'example1.rb'",
          '',
          '# Offense count: 3',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         '# This cop supports safe autocorrection (--autocorrect).',
+         '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'IgnoredPatterns.',
+         'AllowedPatterns, IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -822,7 +906,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               - 'example1.rb'
               - 'example2.rb'
         YAML
-        actual = File.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+        actual = File.read('.rubocop_todo.yml').lines.grep_v(/^(#.*)?$/)
         expect(actual.join).to eq(expected)
 
         $stdout = StringIO.new
@@ -840,7 +924,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               Exclude:
                 - 'example2.rb'
           YAML
-          actual = File.read('.rubocop_todo.yml').lines.reject { |line| line =~ /^(#.*)?$/ }
+          actual = File.read('.rubocop_todo.yml').lines.grep_v(/^(#.*)?$/)
           expect(actual.join).to eq(expected)
 
           expect(cli.run([])).to eq(0)
@@ -865,6 +949,38 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           Exclude:
             - 'example1.rb'
       YAML
+    end
+
+    context 'when duplicated default configuration parameter' do
+      before do
+        RuboCop::ConfigLoader.default_configuration['Naming/MethodParameterName']
+                             .merge!('AllowedNames' => %w[at by at])
+      end
+
+      it 'parameters are displayed without duplication' do
+        create_file('.rubocop.yml', <<~YAML)
+          Naming/VariableName:
+            Enabled: false
+        YAML
+        create_file('example1.rb', <<~TEXT)
+          # frozen_string_literal: true
+
+          def bar(varOne, varTwo)
+            varOne + varTwo
+          end
+        TEXT
+
+        expect(cli.run(['--auto-gen-config'])).to eq(0)
+        File.readlines('.rubocop_todo.yml')
+        expect(File.readlines('.rubocop_todo.yml')[9..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
+            # AllowedNames: at, by
+            Naming/MethodParameterName:
+              Exclude:
+                - 'example1.rb'
+          YAML
+      end
     end
 
     it 'does not generate configuration for the Syntax cop' do
@@ -894,13 +1010,14 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         # versions of RuboCop, may require this file to be generated again.
 
         # Offense count: 1
-        # Cop supports --auto-correct.
+        # This cop supports safe autocorrection (--autocorrect).
+        # Configuration parameters: AllowForAlignment.
         Layout/CommentIndentation:
           Exclude:
             - 'example2.rb'
 
         # Offense count: 1
-        # Cop supports --auto-correct.
+        # This cop supports safe autocorrection (--autocorrect).
         # Configuration parameters: EnforcedStyle.
         # SupportedStyles: normal, indented_internal_methods
         Layout/IndentationConsistency:
@@ -908,7 +1025,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             - 'example2.rb'
 
         # Offense count: 1
-        # Cop supports --auto-correct.
+        # This cop supports safe autocorrection (--autocorrect).
         # Configuration parameters: IndentationWidth, EnforcedStyle.
         # SupportedStyles: spaces, tabs
         Layout/IndentationStyle:
@@ -916,7 +1033,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             - 'example2.rb'
 
         # Offense count: 1
-        # Cop supports --auto-correct.
+        # This cop supports safe autocorrection (--autocorrect).
         Layout/InitialIndentation:
           Exclude:
             - 'example2.rb'
@@ -942,7 +1059,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'again.',
          '',
          '# Offense count: 1',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: EnforcedStyle, AllowInnerSlashes.',
          '# SupportedStyles: slashes, percent_r, mixed',
          'Style/RegexpLiteral:',
@@ -998,31 +1115,32 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# versions of RuboCop, may require this file to be generated ' \
          'again.',
          '',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
+         '# Configuration parameters: AllowForAlignment.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: EnforcedStyle.',
          '# SupportedStyles: normal, indented_internal_methods',
          'Layout/IndentationConsistency:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: IndentationWidth, EnforcedStyle.',
          '# SupportedStyles: spaces, tabs',
          'Layout/IndentationStyle:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          'Layout/InitialIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
          '',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowForAlignment, ' \
          'EnforcedStyleForExponentOperator.',
          '# SupportedStylesForExponentOperator: space, no_space',
@@ -1030,7 +1148,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '  Exclude:',
          "    - 'example1.rb'",
          '',
-         '# Cop supports --auto-correct.',
+         '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowInHeredoc.',
          'Layout/TrailingWhitespace:',
          '  Exclude:',
@@ -1048,10 +1166,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '  Exclude:',
          "    - 'example1.rb'",
          '',
-         '# Cop supports --auto-correct.',
-         '# Configuration parameters: AutoCorrect, AllowHeredoc, ' \
+         '# This cop supports safe autocorrection (--autocorrect).',
+         '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'IgnoredPatterns.',
+         'AllowedPatterns, IgnoredPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -1127,19 +1245,19 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
       it 'disables cop if --exclude-limit is exceeded' do
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(0)
-        expect(File.readlines('.rubocop_todo.yml')[8..-1].join)
+        expect(File.readlines('.rubocop_todo.yml')[8..].join)
           .to eq(<<~YAML)
             # Offense count: 3
-            # Cop supports --auto-correct.
+            # This cop supports unsafe autocorrection (--autocorrect-all).
             # Configuration parameters: EnforcedStyle.
             # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
               Enabled: false
 
             # Offense count: 2
-            # Cop supports --auto-correct.
-            # Configuration parameters: EnforcedStyle.
-            # SupportedStyles: use_perl_names, use_english_names
+            # This cop supports unsafe autocorrection (--autocorrect-all).
+            # Configuration parameters: RequireEnglish, EnforcedStyle.
+            # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
             Style/SpecialGlobalVars:
               Enabled: false
           YAML
@@ -1148,10 +1266,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       it 'generates Exclude list if --exclude-limit is not exceeded' do
         create_file('example4.rb', ['$!'])
         expect(cli.run(['--auto-gen-config', '--exclude-limit', '10'])).to eq(0)
-        expect(File.readlines('.rubocop_todo.yml')[8..-1].join)
+        expect(File.readlines('.rubocop_todo.yml')[8..].join)
           .to eq(<<~YAML)
             # Offense count: 4
-            # Cop supports --auto-correct.
+            # This cop supports unsafe autocorrection (--autocorrect-all).
             # Configuration parameters: EnforcedStyle.
             # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
@@ -1162,9 +1280,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 - 'example4.rb'
 
             # Offense count: 3
-            # Cop supports --auto-correct.
-            # Configuration parameters: EnforcedStyle.
-            # SupportedStyles: use_perl_names, use_english_names
+            # This cop supports unsafe autocorrection (--autocorrect-all).
+            # Configuration parameters: RequireEnglish, EnforcedStyle.
+            # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
             Style/SpecialGlobalVars:
               Exclude:
                 - 'example1.rb'
@@ -1184,9 +1302,60 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           Inspecting 1 file
           C
 
-          1 file inspected, 1 offense detected, 1 offense auto-correctable
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
           Created .rubocop_todo.yml.
         OUTPUT
+      end
+    end
+
+    it 'generates EnforcedStyle parameter if it solves all offenses' do
+      create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
+
+      expect(cli.run(['--auto-gen-config'])).to eq(0)
+      expect(File.readlines('.rubocop_todo.yml')[10..].join)
+        .to eq(<<~YAML)
+          # Configuration parameters: EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+          # SupportedShorthandSyntax: always, never, either, consistent
+          Style/HashSyntax:
+            EnforcedStyle: hash_rockets
+        YAML
+    end
+
+    it 'generates Exclude if no EnforcedStyle solves all offenses' do
+      create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)', 'h(b: 2)'])
+
+      expect(cli.run(['--auto-gen-config'])).to eq(0)
+      expect(File.readlines('.rubocop_todo.yml')[10..].join)
+        .to eq(<<~YAML)
+          # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+          # SupportedShorthandSyntax: always, never, either, consistent
+          Style/HashSyntax:
+            Exclude:
+              - 'example1.rb'
+        YAML
+    end
+
+    context 'when hash value omission enabled', :ruby31 do
+      it 'generates Exclude if it solves all offenses' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            NewCops: enable
+            TargetRubyVersion: 3.1
+        YAML
+        create_file('example1.rb', ['# frozen_string_literal: true', '', '{ a: a }'])
+
+        expect(cli.run(['--auto-gen-config'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+            # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+            # SupportedShorthandSyntax: always, never, either, consistent
+            Style/HashSyntax:
+              Exclude:
+                - 'example1.rb'
+          YAML
       end
     end
 

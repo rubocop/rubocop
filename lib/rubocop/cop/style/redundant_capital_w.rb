@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for usage of the %W() syntax when %w() would do.
+      # Checks for usage of the %W() syntax when %w() would do.
       #
       # @example
       #   # bad
@@ -37,8 +37,7 @@ module RuboCop
 
         def requires_interpolation?(node)
           node.child_nodes.any? do |string|
-            string.dstr_type? ||
-              double_quotes_required?(string.source)
+            string.dstr_type? || double_quotes_required?(string.source)
           end
         end
       end

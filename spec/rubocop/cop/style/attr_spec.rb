@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
     RUBY
   end
 
-  context 'auto-corrects' do
+  context 'autocorrects' do
     it 'attr to attr_reader' do
       expect_offense(<<~RUBY)
         attr :name

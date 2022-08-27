@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
   end
 
   context 'when no extra lines' do
-    it 'accpets one line methods' do
+    it 'accepts one line methods' do
       expect_no_offenses(<<~RUBY)
         foo(bar)
       RUBY

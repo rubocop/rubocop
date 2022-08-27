@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for case statements with an empty condition.
+      # Checks for case statements with an empty condition.
       #
       # @example
       #
@@ -47,8 +47,7 @@ module RuboCop
           branch_bodies = [*case_node.when_branches.map(&:body), case_node.else_branch].compact
 
           return if branch_bodies.any? do |body|
-            body.return_type? ||
-            body.each_descendant.any?(&:return_type?)
+            body.return_type? || body.each_descendant.any?(&:return_type?)
           end
 
           add_offense(case_node.loc.keyword) { |corrector| autocorrect(corrector, case_node) }
@@ -70,7 +69,7 @@ module RuboCop
 
           keep_first_when_comment(case_range, corrector)
 
-          when_nodes[1..-1].each do |when_node|
+          when_nodes[1..].each do |when_node|
             corrector.replace(when_node.loc.keyword, 'elsif')
           end
         end
@@ -78,6 +77,8 @@ module RuboCop
         def correct_when_conditions(corrector, when_nodes)
           when_nodes.each do |when_node|
             conditions = when_node.conditions
+
+            replace_then_with_line_break(corrector, conditions, when_node)
 
             next unless conditions.size > 1
 
@@ -96,6 +97,14 @@ module RuboCop
 
           line_beginning = case_range.adjust(begin_pos: -case_range.column)
           corrector.insert_before(line_beginning, comments)
+        end
+
+        def replace_then_with_line_break(corrector, conditions, when_node)
+          return unless when_node.parent.parent && when_node.then?
+
+          range = range_between(conditions.last.source_range.end_pos, when_node.loc.begin.end_pos)
+
+          corrector.replace(range, "\n")
         end
       end
     end

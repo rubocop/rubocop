@@ -3,47 +3,82 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for usage of comparison operators (`==`,
+      # Checks for usage of comparison operators (`==`,
       # `>`, `<`) to test numbers as zero, positive, or negative.
       # These can be replaced by their respective predicate methods.
-      # The cop can also be configured to do the reverse.
+      # This cop can also be configured to do the reverse.
       #
-      # The cop disregards `#nonzero?` as its value is truthy or falsey,
+      # This cop can be customized allowed methods with `AllowedMethods`.
+      # By default, there are no methods to allowed.
+      #
+      # This cop disregards `#nonzero?` as its value is truthy or falsey,
       # but not `true` and `false`, and thus not always interchangeable with
       # `!= 0`.
       #
-      # The cop ignores comparisons to global variables, since they are often
+      # This cop allows comparisons to global variables, since they are often
       # populated with objects which can be compared with integers, but are
       # not themselves `Integer` polymorphic.
       #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the receiver
+      #   defines the predicates or can be compared to a number, which may lead
+      #   to a false positive for non-standard classes.
+      #
       # @example EnforcedStyle: predicate (default)
       #   # bad
-      #
       #   foo == 0
       #   0 > foo
       #   bar.baz > 0
       #
       #   # good
-      #
       #   foo.zero?
       #   foo.negative?
       #   bar.baz.positive?
       #
       # @example EnforcedStyle: comparison
       #   # bad
-      #
       #   foo.zero?
       #   foo.negative?
       #   bar.baz.positive?
       #
       #   # good
-      #
       #   foo == 0
       #   0 > foo
       #   bar.baz > 0
+      #
+      # @example AllowedMethods: [] (default) with EnforcedStyle: predicate
+      #   # bad
+      #   foo == 0
+      #   0 > foo
+      #   bar.baz > 0
+      #
+      # @example AllowedMethods: [==] with EnforcedStyle: predicate
+      #   # good
+      #   foo == 0
+      #
+      #   # bad
+      #   0 > foo
+      #   bar.baz > 0
+      #
+      # @example AllowedPatterns: [] (default) with EnforcedStyle: comparison
+      #   # bad
+      #   foo.zero?
+      #   foo.negative?
+      #   bar.baz.positive?
+      #
+      # @example AllowedPatterns: [/zero/] with EnforcedStyle: predicate
+      #   # good
+      #   # bad
+      #   foo.zero?
+      #
+      #   # bad
+      #   foo.negative?
+      #   bar.baz.positive?
+      #
       class NumericPredicate < Base
         include ConfigurableEnforcedStyle
-        include IgnoredMethods
+        include AllowedMethods
+        include AllowedPattern
         extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
@@ -56,9 +91,9 @@ module RuboCop
           numeric, replacement = check(node)
           return unless numeric
 
-          return if ignored_method?(node.method_name) ||
+          return if allowed_method_name?(node.method_name) ||
                     node.each_ancestor(:send, :block).any? do |ancestor|
-                      ignored_method?(ancestor.method_name)
+                      allowed_method_name?(ancestor.method_name)
                     end
 
           message = format(MSG, prefer: replacement, current: node.source)
@@ -69,6 +104,10 @@ module RuboCop
 
         private
 
+        def allowed_method_name?(name)
+          allowed_method?(name) || matches_allowed_pattern?(name)
+        end
+
         def check(node)
           numeric, operator =
             if style == :predicate
@@ -77,7 +116,7 @@ module RuboCop
               predicate(node)
             end
 
-          return unless numeric && operator
+          return unless numeric && operator && replacement_supported?(operator)
 
           [numeric, replacement(numeric, operator)]
         end
@@ -100,6 +139,14 @@ module RuboCop
 
         def require_parentheses?(node)
           node.send_type? && node.binary_operation? && !node.parenthesized?
+        end
+
+        def replacement_supported?(operator)
+          if %i[> <].include?(operator)
+            target_ruby_version >= 2.3
+          else
+            true
+          end
         end
 
         def invert

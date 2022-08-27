@@ -3,14 +3,14 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for the use of local variable names from an outer scope
+      # Checks for the use of local variable names from an outer scope
       # in block arguments or block-local variables. This mirrors the warning
       # given by `ruby -cw` prior to Ruby 2.6:
       # "shadowing outer local variable - foo".
       #
       # NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
       # because `Ractor` should not access outer variables.
-      # eg. following syle is encouraged:
+      # eg. following style is encouraged:
       #
       #   worker_id, pipe = env
       #   Ractor.new(worker_id, pipe) do |worker_id, pipe|
@@ -57,9 +57,40 @@ module RuboCop
 
           outer_local_variable = variable_table.find_variable(variable.name)
           return unless outer_local_variable
+          return if same_conditions_node_different_branch?(variable, outer_local_variable)
 
           message = format(MSG, variable: variable.name)
           add_offense(variable.declaration_node, message: message)
+        end
+
+        def same_conditions_node_different_branch?(variable, outer_local_variable)
+          variable_node = variable_node(variable)
+          return false unless variable_node.conditional?
+
+          outer_local_variable_node =
+            find_conditional_node_from_ascendant(outer_local_variable.declaration_node)
+          return true unless outer_local_variable_node
+
+          outer_local_variable_node.conditional? &&
+            (variable_node == outer_local_variable_node ||
+              variable_node == outer_local_variable_node.else_branch)
+        end
+
+        def variable_node(variable)
+          parent_node = variable.scope.node.parent
+
+          if parent_node.when_type?
+            parent_node.parent
+          else
+            parent_node
+          end
+        end
+
+        def find_conditional_node_from_ascendant(node)
+          return unless (parent = node.parent)
+          return parent if parent.conditional?
+
+          find_conditional_node_from_ascendant(parent)
         end
       end
     end

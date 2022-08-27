@@ -3,9 +3,12 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for literals used as the conditions or as
+      # Checks for literals used as the conditions or as
       # operands in and/or expressions serving as the conditions of
       # if/while/until/case-when/case-in.
+      #
+      # NOTE: Literals in `case-in` condition where the match variable is used in
+      # `in` are accepted as a pattern matching.
       #
       # @example
       #
@@ -69,6 +72,8 @@ module RuboCop
 
         def on_case_match(case_match_node)
           if case_match_node.condition
+            return if case_match_node.descendants.any?(&:match_var_type?)
+
             check_case(case_match_node)
           else
             case_match_node.each_in_pattern do |in_pattern_node|

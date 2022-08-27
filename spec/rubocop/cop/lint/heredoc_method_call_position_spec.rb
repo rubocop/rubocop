@@ -131,14 +131,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition, :config do
           3).foo
         RUBY
 
-        # Should not autocorrect -- cannot always be done safely.
-        expect_correction(<<~RUBY)
-          <<-SQL
-            foo
-          SQL
-          .abc(1, 2,
-          3).foo
-        RUBY
+        expect_no_corrections
       end
     end
 
@@ -153,14 +146,7 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition, :config do
           .foo
         RUBY
 
-        # Should not autocorrect -- cannot always be done safely.
-        expect_correction(<<~RUBY)
-          <<-SQL
-            foo
-          SQL
-          .abc
-          .foo
-        RUBY
+        expect_no_corrections
       end
     end
   end

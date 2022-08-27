@@ -3,12 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of consistent method names
+      # Enforces the use of consistent method names
       # from the Enumerable module.
-      #
-      # Unfortunately we cannot actually know if a method is from
-      # Enumerable or not (static analysis limitation), so this cop
-      # can yield some false positives.
       #
       # You can customize the mapping from undesired method to desired method.
       #
@@ -18,9 +14,14 @@ module RuboCop
       #     PreferredMethods:
       #       find: detect
       #
-      # The default mapping for `PreferredMethods` behaves as follows.
+      # @safety
+      #   This cop is unsafe because it finds methods by name, without actually
+      #   being able to determine if the receiver is an Enumerable or not, so
+      #   this cop may register false positives.
       #
       # @example
+      #   # These examples are based on the default mapping for `PreferredMethods`.
+      #
       #   # bad
       #   items.collect
       #   items.collect!
@@ -47,6 +48,8 @@ module RuboCop
           check_method_node(node.send_node)
         end
 
+        alias on_numblock on_block
+
         def on_send(node)
           return unless implicit_block?(node)
 
@@ -68,7 +71,8 @@ module RuboCop
           return false unless node.arguments.any?
 
           node.last_argument.block_pass_type? ||
-            node.last_argument.sym_type? && methods_accepting_symbol.include?(node.method_name.to_s)
+            (node.last_argument.sym_type? &&
+            methods_accepting_symbol.include?(node.method_name.to_s))
         end
 
         def message(node)

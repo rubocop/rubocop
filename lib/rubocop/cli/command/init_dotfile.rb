@@ -6,7 +6,7 @@ module RuboCop
       # Generate a .rubocop.yml file in the current directory.
       # @api private
       class InitDotfile < Base
-        DOTFILE = ConfigLoader::DOTFILE
+        DOTFILE = ConfigFinder::DOTFILE
 
         self.command_name = :init
 
@@ -31,7 +31,7 @@ module RuboCop
               # See https://docs.rubocop.org/rubocop/configuration
             DESC
 
-            File.open(DOTFILE, 'w') { |f| f.write(description) }
+            File.write(DOTFILE, description)
 
             puts "Writing new #{DOTFILE} to #{path}"
 

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for empty interpolation.
+      # Checks for empty interpolation.
       #
       # @example
       #

@@ -29,7 +29,9 @@ module RuboCop
       #   b c { block }.            <-- b is indented relative to a
       #   d                         <-- d is indented relative to a
       def left_hand_side(lhs)
-        lhs = lhs.parent while lhs.parent&.send_type? && lhs.parent.loc.dot
+        while lhs.parent&.send_type? && lhs.parent.loc.dot && !lhs.parent.assignment_method?
+          lhs = lhs.parent
+        end
         lhs
       end
 
@@ -134,7 +136,7 @@ module RuboCop
 
           next if a.setter_method?
           next unless kind == :with_or_without_parentheses ||
-                      kind == :with_parentheses && parentheses?(a)
+                      (kind == :with_parentheses && parentheses?(a))
 
           a.arguments.any? { |arg| within_node?(node, arg) }
         end
@@ -156,7 +158,7 @@ module RuboCop
 
       def disqualified_rhs?(candidate, ancestor)
         UNALIGNED_RHS_TYPES.include?(ancestor.type) ||
-          ancestor.block_type? && part_of_block_body?(candidate, ancestor)
+          (ancestor.block_type? && part_of_block_body?(candidate, ancestor))
       end
 
       def valid_rhs?(candidate, ancestor)
@@ -194,8 +196,7 @@ module RuboCop
 
       def not_for_this_cop?(node)
         node.ancestors.any? do |ancestor|
-          grouped_expression?(ancestor) ||
-            inside_arg_list_parentheses?(node, ancestor)
+          grouped_expression?(ancestor) || inside_arg_list_parentheses?(node, ancestor)
         end
       end
 

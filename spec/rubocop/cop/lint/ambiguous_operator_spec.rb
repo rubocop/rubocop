@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator, :config do
           expect_offense(<<~RUBY)
             do_something(+24)
             do_something +42
-                         ^ Ambiguous positive number operator. Parenthesize the method arguments if it's surely a positive number operator, or add a whitespace to the right of the `+` if it should be a addition.
+                         ^ Ambiguous positive number operator. Parenthesize the method arguments if it's surely a positive number operator, or add a whitespace to the right of the `+` if it should be an addition.
           RUBY
 
           expect_correction(<<~RUBY)
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator, :config do
           expect_offense(<<~RUBY)
             do_something
             do_something +42
-                         ^ Ambiguous positive number operator. Parenthesize the method arguments if it's surely a positive number operator, or add a whitespace to the right of the `+` if it should be a addition.
+                         ^ Ambiguous positive number operator. Parenthesize the method arguments if it's surely a positive number operator, or add a whitespace to the right of the `+` if it should be an addition.
           RUBY
 
           expect_correction(<<~RUBY)
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator, :config do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)
             do_something **kwargs
-                         ^^ Ambiguous keyword splat operator. Parenthesize the method arguments if it's surely a keyword splat operator, or add a whitespace to the right of the `**` if it should be a exponent.
+                         ^^ Ambiguous keyword splat operator. Parenthesize the method arguments if it's surely a keyword splat operator, or add a whitespace to the right of the `**` if it should be an exponent.
           RUBY
 
           expect_correction(<<~RUBY)

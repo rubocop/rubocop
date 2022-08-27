@@ -23,9 +23,9 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
 
-        MSG = 'Preceed `%<method>s` with a `@!method` YARD directive.'
+        MSG = 'Precede `%<method>s` with a `@!method` YARD directive.'
         MSG_WRONG_NAME = '`@!method` YARD directive has invalid method name, ' \
-          'use `%<expected>s` instead of `%<actual>s`.'
+                         'use `%<expected>s` instead of `%<actual>s`.'
         MSG_TOO_MANY = 'Multiple `@!method` YARD directives found for this matcher.'
 
         RESTRICT_ON_SEND = %i[def_node_matcher def_node_search].to_set.freeze
@@ -99,11 +99,7 @@ module RuboCop
           # If the pattern matcher uses arguments (`%1`, `%2`, etc.), include them in the directive
           arguments = pattern_arguments(node.arguments[1].source)
 
-          range = range_with_surrounding_space(
-            range: node.loc.expression,
-            side: :left,
-            newlines: false
-          )
+          range = range_with_surrounding_space(node.loc.expression, side: :left, newlines: false)
           indentation = range.source.match(/^\s*/)[0]
           directive = "#{indentation}# @!method #{actual_name}(#{arguments.join(', ')})\n"
           directive = "\n#{directive}" if add_newline?(node)

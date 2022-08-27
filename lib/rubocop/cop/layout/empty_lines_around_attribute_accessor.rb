@@ -70,18 +70,39 @@ module RuboCop
         def on_send(node)
           return unless node.attribute_accessor?
           return if next_line_empty?(node.last_line)
+          return if next_line_empty_or_enable_directive_comment?(node.last_line)
 
           next_line_node = next_line_node(node)
           return unless require_empty_line?(next_line_node)
 
-          add_offense(node) do |corrector|
-            range = range_by_whole_lines(node.source_range)
-
-            corrector.insert_after(range, "\n")
-          end
+          add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
 
         private
+
+        def autocorrect(corrector, node)
+          node_range = range_by_whole_lines(node.source_range)
+
+          next_line = node_range.last_line + 1
+          if next_line_enable_directive_comment?(next_line)
+            node_range = processed_source.comment_at_line(next_line)
+          end
+
+          corrector.insert_after(node_range, "\n")
+        end
+
+        def next_line_empty_or_enable_directive_comment?(line)
+          return true if next_line_empty?(line)
+
+          next_line = line + 1
+          next_line_enable_directive_comment?(next_line) && next_line_empty?(next_line)
+        end
+
+        def next_line_enable_directive_comment?(line)
+          return false unless (comment = processed_source.comment_at_line(line))
+
+          DirectiveComment.new(comment).enabled?
+        end
 
         def next_line_empty?(line)
           processed_source[line].nil? || processed_source[line].blank?

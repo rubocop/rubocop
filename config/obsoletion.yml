@@ -55,6 +55,8 @@ renamed:
 
 # Cops that were removed
 removed:
+  Gemspec/DateAssignment:
+    alternatives: Gemspec/DeprecatedAttributeAssignment
   Layout/SpaceAfterControlKeyword:
     alternatives: Layout/SpaceAroundKeyword
   Layout/SpaceBeforeModifierKeyword:
@@ -152,7 +154,7 @@ changed_parameters:
     alternative: EnforcedStyle
   - cops: Style/MethodCallWithArgsParentheses
     parameters: IgnoredMethodPatterns
-    alternative: IgnoredPatterns
+    alternative: AllowedPatterns
   - cops:
       - Performance/Count
       - Performance/Detect
@@ -185,11 +187,42 @@ changed_parameters:
       - Metrics/BlockLength
       - Metrics/MethodLength
     parameters: ExcludedMethods
-    alternative: IgnoredMethods
+    alternatives:
+      - AllowedMethods
+      - AllowedPatterns
     severity: warning
   - cops: Lint/Debugger
     parameters: DebuggerReceivers
     reason: "`DebuggerReceivers` is no longer necessary, method receivers should be specified in `DebuggerMethods` instead."
+    severity: warning
+  - cops:
+      - Layout/IndentationWidth
+      - Layout/LineLength
+      - Lint/UnreachableLoop
+      - Naming/MethodName
+      - Style/MethodCallWithArgsParentheses
+    parameters: IgnoredPatterns
+    alternative: AllowedPatterns
+    severity: warning
+  - cops:
+      - Lint/AmbiguousBlockAssociation
+      - Lint/NumberConversion
+      - Metrics/AbcSize
+      - Metrics/BlockLength
+      - Metrics/CyclomaticComplexity
+      - Metrics/MethodLength
+      - Metrics/PerceivedComplexity
+      - Style/BlockDelimiters
+      - Style/ClassEqualityComparison
+      - Style/FormatStringToken
+      - Style/MethodCallWithArgsParentheses
+      - Style/MethodCallWithoutArgsParentheses
+      - Style/NumericPredicate
+      - Style/SymbolLiteral
+    parameters: IgnoredMethods
+    alternatives:
+      - AllowedMethods
+      - AllowedPatterns
     severity: warning
 
 # Enforced styles that have been removed or replaced

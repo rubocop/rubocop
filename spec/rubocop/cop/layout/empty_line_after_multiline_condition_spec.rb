@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
     RUBY
   end
 
-  it 'does not register an offense when modifier `if` with multiline condition'\
+  it 'does not register an offense when modifier `if` with multiline condition' \
      'is the last child of its parent' do
     expect_no_offenses(<<~RUBY)
       def m
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
     RUBY
   end
 
-  it 'does not register an offense when modifier `while` with multiline condition'\
+  it 'does not register an offense when modifier `while` with multiline condition' \
      'is the last child of its parent' do
     expect_no_offenses(<<~RUBY)
       def m

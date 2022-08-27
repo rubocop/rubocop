@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for `raise` or `fail` statements which are
+      # Checks for `raise` or `fail` statements which are
       # raising `Exception` class.
       #
       # You can specify a module name that will be an implicit namespace
@@ -12,6 +12,10 @@ module RuboCop
       # prevent the false positive by specifying a namespace to be omitted for
       # `Exception`. Alternatively, make `Exception` a fully qualified class
       # name with an explicit namespace.
+      #
+      # @safety
+      #   This cop is unsafe because it will change the exception class being
+      #   raised, which is a change in behavior.
       #
       # @example
       #   # bad

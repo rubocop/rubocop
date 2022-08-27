@@ -16,7 +16,7 @@ RSpec.describe RuboCop::RemoteConfig do
   end
 
   after do
-    File.unlink cached_file_path if File.exist? cached_file_path
+    FileUtils.rm_rf cached_file_path
   end
 
   describe '.file' do
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::RemoteConfig do
         it 'raises error' do
           expect do
             remote_config
-          end.to raise_error(Net::HTTPServerException,
+          end.to raise_error(Net::HTTPClientException,
                              '404 "" while downloading remote config file http://example.com/rubocop.yml')
         end
       end
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::RemoteConfig do
         it 'raises error' do
           expect do
             remote_config
-          end.to raise_error(Net::HTTPServerException,
+          end.to raise_error(Net::HTTPClientException,
                              '404 "" while downloading remote config file http://example.com/rubocop.yml')
         end
       end
@@ -182,6 +182,19 @@ RSpec.describe RuboCop::RemoteConfig do
           remote_config
         end.to raise_error(Net::HTTPFatalError,
                            '500 "" while downloading remote config file http://example.com/rubocop.yml')
+      end
+    end
+  end
+
+  describe '.inherit_from_remote' do
+    context 'when the remote includes file starting with `./`' do
+      let(:includes_file) { './base.yml' }
+
+      it 'returns remote includes URI' do
+        remote_config = described_class.new(remote_config_url, base_dir)
+        includes_config = remote_config.inherit_from_remote(includes_file, remote_config_url)
+
+        expect(includes_config.uri).to eq URI.parse('http://example.com/base.yml')
       end
     end
   end

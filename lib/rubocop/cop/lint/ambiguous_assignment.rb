@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for mistyped shorthand assignments.
+      # Checks for mistyped shorthand assignments.
       #
       # @example
       #   # bad

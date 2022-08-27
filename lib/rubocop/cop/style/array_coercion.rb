@@ -3,11 +3,29 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
+      # Enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
       #
-      # This cop is disabled by default because false positive will occur if
-      # the argument of `Array()` is not an array (e.g. Hash, Set),
-      # an array will be returned as an incompatibility result.
+      # The cop is disabled by default due to safety concerns.
+      #
+      # @safety
+      #   This cop is unsafe because a false positive may occur if
+      #   the argument of `Array()` is (or could be) nil or depending
+      #   on how the argument is handled by `Array()` (which can be
+      #   different than just wrapping the argument in an array).
+      #
+      #   For example:
+      #
+      #   [source,ruby]
+      #   ----
+      #   [nil]             #=> [nil]
+      #   Array(nil)        #=> []
+      #
+      #   [{a: 'b'}]        #= [{a: 'b'}]
+      #   Array({a: 'b'})   #=> [[:a, 'b']]
+      #
+      #   [Time.now]        #=> [#<Time ...>]
+      #   Array(Time.now)   #=> [14, 16, 14, 16, 9, 2021, 4, 259, true, "EDT"]
+      #   ----
       #
       # @example
       #   # bad

@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument, :config 
     end
   end
 
-  it 'does not register an offense when `#message` with another node  is passed' do
+  it 'does not register an offense when `#message` with another node is passed' do
     expect_no_offenses(<<~RUBY, 'example_cop.rb')
       add_offense(node, message: message(other_node))
     RUBY

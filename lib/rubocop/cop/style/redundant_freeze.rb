@@ -3,9 +3,12 @@
 module RuboCop
   module Cop
     module Style
-      # This cop check for uses of `Object#freeze` on immutable objects.
+      # Check for uses of `Object#freeze` on immutable objects.
       #
       # NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
+      #
+      # NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated
+      # string literals when `# frozen-string-literal: true` is used.
       #
       # @example
       #   # bad
@@ -37,9 +40,7 @@ module RuboCop
           node = strip_parenthesis(node)
 
           return true if node.immutable_literal?
-
-          return true if FROZEN_STRING_LITERAL_TYPES.include?(node.type) &&
-                         frozen_string_literals_enabled?
+          return true if frozen_string_literal?(node)
 
           target_ruby_version >= 3.0 && (node.regexp_type? || node.range_type?)
         end
@@ -58,7 +59,6 @@ module RuboCop
             (begin (send {float int} {:+ :- :* :** :/ :% :<<} _))
             (begin (send !{(str _) array} {:+ :- :* :** :/ :%} {float int}))
             (begin (send _ {:== :=== :!= :<= :>= :< :>} _))
-            (send (const {nil? cbase} :ENV) :[] _)
             (send _ {:count :length :size} ...)
             (block (send _ {:count :length :size} ...) ...)
           }

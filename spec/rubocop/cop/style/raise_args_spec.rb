@@ -17,6 +17,19 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
     end
 
+    context 'with a raise with 2 args and exception object is assigned to a local variable' do
+      it 'reports an offense' do
+        expect_offense(<<~RUBY)
+          raise error_class, msg
+          ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          raise error_class.new(msg)
+        RUBY
+      end
+    end
+
     context 'with a raise with exception instantiation and message arguments' do
       it 'reports an offense' do
         expect_offense(<<~RUBY)
@@ -31,7 +44,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when used in a ternary expression' do
-      it 'registers an offense and auto-corrects' do
+      it 'registers an offense and autocorrects' do
         expect_offense(<<~RUBY)
           foo ? raise(Ex, 'error') : bar
                 ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
@@ -44,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when used in a logical and expression' do
-      it 'registers an offense and auto-corrects' do
+      it 'registers an offense and autocorrects' do
         expect_offense(<<~RUBY)
           bar && raise(Ex, 'error')
                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
@@ -57,7 +70,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when used in a logical or expression' do
-      it 'registers an offense and auto-corrects' do
+      it 'registers an offense and autocorrects' do
         expect_offense(<<~RUBY)
           bar || raise(Ex, 'error')
                  ^^^^^^^^^^^^^^^^^^ Provide an exception object as an argument to `raise`.
@@ -132,6 +145,10 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     it 'accepts a raise with an exception argument' do
       expect_no_offenses('raise Ex.new(msg)')
     end
+
+    it 'accepts exception constructor with keyword arguments and message argument' do
+      expect_no_offenses('raise MyKwArgError.new(a: 1, b: 2), message')
+    end
   end
 
   context 'when enforced style is exploded' do
@@ -165,7 +182,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       context 'when used in a ternary expression' do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY)
             foo ? raise(Ex.new('error')) : bar
                   ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
@@ -178,7 +195,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       context 'when used in a logical and expression' do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY)
             bar && raise(Ex.new('error'))
                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
@@ -191,7 +208,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       end
 
       context 'when used in a logical or expression' do
-        it 'registers an offense and auto-corrects' do
+        it 'registers an offense and autocorrects' do
           expect_offense(<<~RUBY)
             bar || raise(Ex.new('error'))
                    ^^^^^^^^^^^^^^^^^^^^^^ Provide an exception class and message as arguments to `raise`.
@@ -250,7 +267,7 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     context 'when an exception object is assigned to a local variable' do
-      it 'auto-corrects to exploded style' do
+      it 'autocorrects to exploded style' do
         expect_offense(<<~RUBY)
           def do_something
             klass = RuntimeError
@@ -317,8 +334,16 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       expect_no_offenses('raise RuntimeError, msg')
     end
 
+    it 'accepts a raise when exception object is assigned to a local variable' do
+      expect_no_offenses('raise error_class, msg')
+    end
+
     it 'accepts a raise with msg argument' do
       expect_no_offenses('raise msg')
+    end
+
+    it 'accepts a raise with `new` method without receiver' do
+      expect_no_offenses('raise new')
     end
   end
 end

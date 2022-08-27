@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     RUBY
   end
 
-  it 'auto-corrects when there are too many new lines' do
+  it 'autocorrects when there are too many new lines' do
     expect_offense(<<~RUBY)
       def a; end
 

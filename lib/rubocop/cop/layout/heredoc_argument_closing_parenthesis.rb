@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for the placement of the closing parenthesis
+      # Checks for the placement of the closing parenthesis
       # in a method call that passes a HEREDOC string as an argument.
       # It should be placed at the end of the line containing the
       # opening HEREDOC tag.
@@ -55,7 +55,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Put the closing parenthesis for a method call with a ' \
-        'HEREDOC parameter on the same line as the HEREDOC opening.'
+              'HEREDOC parameter on the same line as the HEREDOC opening.'
 
         def self.autocorrect_incompatible_with
           [Style::TrailingCommaInArguments]
@@ -167,7 +167,7 @@ module RuboCop
 
           end_of_outer_send = outermost_send.loc.end
 
-          end_of_outer_send.line == end_of_last_arg_of_outer_send.line &&
+          same_line?(end_of_outer_send, end_of_last_arg_of_outer_send) &&
             end_of_outer_send.column == end_of_last_arg_of_outer_send.column + 1
         end
 

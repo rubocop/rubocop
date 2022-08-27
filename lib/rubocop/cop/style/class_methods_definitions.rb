@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces using `def self.method_name` or `class << self` to define class methods.
+      # Enforces using `def self.method_name` or `class << self` to define class methods.
       #
       # @example EnforcedStyle: def_self (default)
       #   # bad
@@ -70,7 +70,7 @@ module RuboCop
 
         def on_sclass(node)
           return unless def_self_style?
-          return unless node.identifier.source == 'self'
+          return unless node.identifier.self_type?
           return unless all_methods_public?(node)
 
           add_offense(node, message: MSG_SCLASS) do |corrector|
@@ -80,6 +80,7 @@ module RuboCop
 
         def on_defs(node)
           return if def_self_style?
+          return unless node.receiver.self_type?
 
           message = format(MSG, preferred: 'class << self')
           add_offense(node, message: message)

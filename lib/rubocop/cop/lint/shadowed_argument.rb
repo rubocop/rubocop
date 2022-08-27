@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for shadowed arguments.
+      # Checks for shadowed arguments.
       #
       # This cop has `IgnoreImplicitReferences` configuration option.
       # It means argument shadowing is used in order to pass parameters
@@ -141,7 +141,7 @@ module RuboCop
         end
 
         def reference_pos(node)
-          node = node.parent.masgn_type? ? node.parent : node
+          node = node.parent if node.parent.masgn_type?
 
           node.source_range.begin_pos
         end

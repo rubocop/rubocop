@@ -4,11 +4,17 @@ module RuboCop
   # The kind of Ruby that code inspected by RuboCop is written in.
   # @api private
   class TargetRuby
-    KNOWN_RUBIES = [2.5, 2.6, 2.7, 3.0, 3.1].freeze
-    DEFAULT_VERSION = KNOWN_RUBIES.first
+    KNOWN_RUBIES = [2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2].freeze
+    DEFAULT_VERSION = 2.6
 
     OBSOLETE_RUBIES = {
-      1.9 => '0.41', 2.0 => '0.50', 2.1 => '0.57', 2.2 => '0.68', 2.3 => '0.81', 2.4 => '1.12'
+      1.9 => '0.41',
+      2.0 => '0.50',
+      2.1 => '0.57',
+      2.2 => '0.68',
+      2.3 => '0.81',
+      2.4 => '1.12',
+      2.5 => '1.28'
     }.freeze
     private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES
 
@@ -166,7 +172,7 @@ module RuboCop
         right_hand_side = version_from_gemspec_file(file)
         return if right_hand_side.nil?
 
-        find_minimal_known_ruby(right_hand_side)
+        find_default_minimal_known_ruby(right_hand_side)
       end
 
       def gemspec_filename
@@ -200,11 +206,13 @@ module RuboCop
         array.children.map(&:value)
       end
 
-      def find_minimal_known_ruby(right_hand_side)
+      def find_default_minimal_known_ruby(right_hand_side)
         version = version_from_right_hand_side(right_hand_side)
         requirement = Gem::Requirement.new(version)
 
-        KNOWN_RUBIES.detect { |v| requirement.satisfied_by?(Gem::Version.new("#{v}.99")) }
+        KNOWN_RUBIES.detect do |v|
+          v >= DEFAULT_VERSION && requirement.satisfied_by?(Gem::Version.new("#{v}.99"))
+        end
       end
     end
 

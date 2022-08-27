@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             let(:offenses) do
               [
                 RuboCop::Cop::Offense.new(:convention,
-                                          OpenStruct.new(line: 7, column: 0),
+                                          FakeLocation.new(line: 7, column: 0),
                                           'Class has too many lines.',
                                           'Metrics/ClassLength')
               ]
@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             let(:offenses) do
               [
                 RuboCop::Cop::Offense.new(:convention,
-                                          OpenStruct.new(line: 7, column: 0),
+                                          FakeLocation.new(line: 7, column: 0),
                                           'Method has too many lines.',
                                           'Metrics/MethodLength')
               ]
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
               let(:offenses) do
                 [
                   RuboCop::Cop::Offense.new(:convention,
-                                            OpenStruct.new(line: 4, column: 0),
+                                            FakeLocation.new(line: 4, column: 0),
                                             'Method has too many lines.',
                                             'Metrics/MethodLength')
                 ]
@@ -178,7 +178,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
               let(:offenses) do
                 [
                   RuboCop::Cop::Offense.new(:convention,
-                                            OpenStruct.new(line: 4, column: 0),
+                                            FakeLocation.new(line: 4, column: 0),
                                             'Method has too many lines.',
                                             'Metrics/MethodLength')
                 ]
@@ -239,7 +239,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
         let(:offenses) do
           offense_lines.map do |line|
             RuboCop::Cop::Offense.new(:convention,
-                                      OpenStruct.new(line: line, column: 3),
+                                      FakeLocation.new(line: line, column: 3),
                                       message,
                                       cop_name)
           end
@@ -288,7 +288,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
         let(:offenses) do
           [
             RuboCop::Cop::Offense.new(:convention,
-                                      OpenStruct.new(line: 3, column: 0),
+                                      FakeLocation.new(line: 3, column: 0),
                                       'Tab detected.',
                                       'Layout/IndentationStyle')
           ]
@@ -508,7 +508,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
       let(:offenses) do
         [
           RuboCop::Cop::Offense.new(:convention,
-                                    OpenStruct.new(line: 2, column: 0),
+                                    FakeLocation.new(line: 2, column: 0),
                                     'Class has too many lines.',
                                     'Metrics/ClassLength')
         ]

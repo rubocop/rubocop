@@ -3,7 +3,7 @@
 == Naming/AccessorMethodName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -12,7 +12,7 @@
 | -
 |===
 
-This cop makes sure that accessor methods are named properly. Applies
+Makes sure that accessor methods are named properly. Applies
 to both instance and class methods.
 
 NOTE: Offenses are only registered for methods with the expected
@@ -56,7 +56,7 @@ end
 == Naming/AsciiIdentifiers
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -65,7 +65,7 @@ end
 | 0.87
 |===
 
-This cop checks for non-ascii characters in identifier and constant names.
+Checks for non-ascii characters in identifier and constant names.
 Identifiers are always checked and whether constants are checked
 can be controlled using AsciiConstants config.
 
@@ -141,7 +141,7 @@ FOÖ = "foo"
 == Naming/BinaryOperatorParameterName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -150,7 +150,7 @@ FOÖ = "foo"
 | 1.2
 |===
 
-This cop makes sure that certain binary operator methods have their
+Makes sure that certain binary operator methods have their
 sole  parameter named `other`.
 
 === Examples
@@ -168,10 +168,84 @@ def +(other); end
 
 * https://rubystyle.guide#other-arg
 
+== Naming/BlockForwarding
+
+NOTE: Required Ruby version: 3.1
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.24
+| -
+|===
+
+In Ruby 3.1, anonymous block forwarding has been added.
+
+This cop identifies places where `do_something(&block)` can be replaced
+by `do_something(&)`.
+
+It also supports the opposite style by alternative `explicit` option.
+You can specify the block variable name for autocorrection with `BlockForwardingName`.
+The default variable name is `block`. If the name is already in use, it will not be
+autocorrected.
+
+=== Examples
+
+==== EnforcedStyle: anonymous (default)
+
+[source,ruby]
+----
+# bad
+def foo(&block)
+  bar(&block)
+end
+
+# good
+def foo(&)
+  bar(&)
+end
+----
+
+==== EnforcedStyle: explicit
+
+[source,ruby]
+----
+# bad
+def foo(&)
+  bar(&)
+end
+
+# good
+def foo(&block)
+  bar(&block)
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `anonymous`
+| `anonymous`, `explicit`
+
+| BlockForwardingName
+| `block`
+| String
+|===
+
+=== References
+
+* https://rubystyle.guide#block-forwarding
+
 == Naming/BlockParameterName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -180,7 +254,7 @@ def +(other); end
 | 0.77
 |===
 
-This cop checks block parameter names for how descriptive they
+Checks block parameter names for how descriptive they
 are. It is highly configurable.
 
 The `MinNameLength` config option takes an integer. It represents
@@ -204,7 +278,7 @@ end
 # With `AllowNamesEndingInNumbers` set to false
 foo { |num1, num2| num1 * num2 }
 
-# With `MinParamNameLength` set to number greater than 1
+# With `MinNameLength` set to number greater than 1
 baz { |a, b, c| do_stuff(a, b, c) }
 
 # good
@@ -242,7 +316,7 @@ baz { |age, height, gender| do_stuff(age, height, gender) }
 == Naming/ClassAndModuleCamelCase
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -251,7 +325,7 @@ baz { |age, height, gender| do_stuff(age, height, gender) }
 | 0.85
 |===
 
-This cop checks for class and module names with
+Checks for class and module names with
 an underscore in them.
 
 `AllowedNames` config takes an array of permitted names.
@@ -296,7 +370,7 @@ end
 == Naming/ConstantName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -305,7 +379,7 @@ end
 | -
 |===
 
-This cop checks whether constant names are written using
+Checks whether constant names are written using
 SCREAMING_SNAKE_CASE.
 
 To avoid false positives, it ignores cases in which we cannot know
@@ -331,16 +405,16 @@ INCH_IN_CM = 2.54
 == Naming/FileName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
 | No
 | 0.50
-| -
+| 1.23
 |===
 
-This cop makes sure that Ruby source files have snake_case
+Makes sure that Ruby source files have snake_case
 names. Ruby scripts (i.e. source files with a shebang in the
 first line) are ignored.
 
@@ -348,6 +422,18 @@ The cop also ignores `.gemspec` files, because Bundler
 recommends using dashes to separate namespaces in nested gems
 (i.e. `bundler-console` becomes `Bundler::Console`). As such, the
 gemspec is supposed to be named `bundler-console.gemspec`.
+
+When `ExpectMatchingDefinition` (default: `false`) is `true`, the cop requires
+each file to have a class, module or `Struct` defined in it that matches
+the filename. This can be further configured using
+`CheckDefinitionPathHierarchy` (default: `true`) to determine whether the
+path should match the namespace of the above definition.
+
+When `IgnoreExecutableScripts` (default: `true`) is `true`, files that start
+with a shebang line are not considered by the cop.
+
+When `Regex` is set, the cop will flag any filename that does not match
+the regular expression.
 
 === Examples
 
@@ -381,6 +467,10 @@ anything/using_snake_case.rake
 | `true`
 | Boolean
 
+| CheckDefinitionPathHierarchyRoots
+| `lib`, `spec`, `test`, `src`
+| Array
+
 | Regex
 | `<none>`
 | 
@@ -401,7 +491,7 @@ anything/using_snake_case.rake
 == Naming/HeredocDelimiterCase
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -410,7 +500,7 @@ anything/using_snake_case.rake
 | 1.2
 |===
 
-This cop checks that your heredocs are using the configured case.
+Checks that your heredocs are using the configured case.
 By default it is configured to enforce uppercase heredocs.
 
 === Examples
@@ -462,7 +552,7 @@ sql
 == Naming/HeredocDelimiterNaming
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -471,7 +561,7 @@ sql
 | -
 |===
 
-This cop checks that your heredocs are using meaningful delimiters.
+Checks that your heredocs are using meaningful delimiters.
 By default it disallows `END` and `EO*`, and can be configured through
 forbidden listing additional delimiters.
 
@@ -509,10 +599,146 @@ EOS
 
 * https://rubystyle.guide#heredoc-delimiters
 
+== Naming/InclusiveLanguage
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| Yes
+| No
+| 1.18
+| 1.21
+|===
+
+This cops recommends the use of inclusive language instead of problematic terms.
+The cop can check the following locations for offenses:
+- identifiers
+- constants
+- variables
+- strings
+- symbols
+- comments
+- file paths
+Each of these locations can be individually enabled/disabled via configuration,
+for example CheckIdentifiers = true/false.
+
+Flagged terms are configurable for the cop. For each flagged term an optional
+Regex can be specified to identify offenses. Suggestions for replacing a flagged term can
+be configured and will be displayed as part of the offense message.
+An AllowedRegex can be specified for a flagged term to exempt allowed uses of the term.
+`WholeWord: true` can be set on a flagged term to indicate the cop should only match when
+a term matches the whole word (partial matches will not be offenses).
+
+=== Examples
+
+==== FlaggedTerms: { whitelist: { Suggestions: ['allowlist'] } }
+
+[source,ruby]
+----
+# Suggest replacing identifier whitelist with allowlist
+
+# bad
+whitelist_users = %w(user1 user1)
+
+# good
+allowlist_users = %w(user1 user2)
+----
+
+==== FlaggedTerms: { master: { Suggestions: ['main', 'primary', 'leader'] } }
+
+[source,ruby]
+----
+# Suggest replacing master in an instance variable name with main, primary, or leader
+
+# bad
+@master_node = 'node1.example.com'
+
+# good
+@primary_node = 'node1.example.com'
+----
+
+==== FlaggedTerms: { whitelist: { Regex: !ruby/regexp '/white[-_\s]?list' } }
+
+[source,ruby]
+----
+# Identify problematic terms using a Regexp
+
+# bad
+white_list = %w(user1 user2)
+
+# good
+allow_list = %w(user1 user2)
+----
+
+==== FlaggedTerms: { master: { AllowedRegex: 'master\'?s degree' } }
+
+[source,ruby]
+----
+# Specify allowed uses of the flagged term as a string or regexp.
+
+# bad
+# They had a masters
+
+# good
+# They had a master's degree
+----
+
+==== FlaggedTerms: { slave: { WholeWord: true } }
+
+[source,ruby]
+----
+# Specify that only terms that are full matches will be flagged.
+
+# bad
+Slave
+
+# good (won't be flagged despite containing `slave`)
+TeslaVehicle
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| CheckIdentifiers
+| `true`
+| Boolean
+
+| CheckConstants
+| `true`
+| Boolean
+
+| CheckVariables
+| `true`
+| Boolean
+
+| CheckStrings
+| `false`
+| Boolean
+
+| CheckSymbols
+| `true`
+| Boolean
+
+| CheckComments
+| `true`
+| Boolean
+
+| CheckFilepaths
+| `true`
+| Boolean
+
+| FlaggedTerms
+| `{"whitelist"=>{"Regex"=>/white[-_\s]?list/, "Suggestions"=>["allowlist", "permit"]}, "blacklist"=>{"Regex"=>/black[-_\s]?list/, "Suggestions"=>["denylist", "block"]}, "slave"=>{"WholeWord"=>true, "Suggestions"=>["replica", "secondary", "follower"]}}`
+| 
+|===
+
 == Naming/MemoizedInstanceVariableName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | No
@@ -521,7 +747,7 @@ EOS
 | 1.2
 |===
 
-This cop checks for memoized methods whose instance variable name
+Checks for memoized methods whose instance variable name
 does not match the method name. Applies to both regular methods
 (defined with `def`) and dynamic methods (defined with
 `define_method` or `define_singleton_method`).
@@ -531,6 +757,8 @@ directive. It can be configured to allow for memoized instance variables
 prefixed with an underscore. Prefixing ivars with an underscore is a
 convention that is used to implicitly indicate that an ivar should not
 be set or referenced outside of the memoization method.
+
+=== Safety
 
 This cop relies on the pattern `@instance_var ||= ...`,
 but this is sometimes used for other purposes than memoization
@@ -689,7 +917,7 @@ end
 == Naming/MethodName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -698,13 +926,13 @@ end
 | -
 |===
 
-This cop makes sure that all methods use the configured style,
+Makes sure that all methods use the configured style,
 snake_case or camelCase, for their names.
 
-This cop has `IgnoredPatterns` configuration option.
+This cop has `AllowedPatterns` configuration option.
 
   Naming/MethodName:
-    IgnoredPatterns:
+    AllowedPatterns:
       - '\A\s*onSelectionBulkChange\s*'
       - '\A\s*onSelectionCleared\s*'
 
@@ -743,6 +971,10 @@ def fooBar; end
 | `snake_case`
 | `snake_case`, `camelCase`
 
+| AllowedPatterns
+| `[]`
+| Array
+
 | IgnoredPatterns
 | `[]`
 | Array
@@ -755,7 +987,7 @@ def fooBar; end
 == Naming/MethodParameterName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -764,7 +996,7 @@ def fooBar; end
 | 0.77
 |===
 
-This cop checks method parameter names for how descriptive they
+Checks method parameter names for how descriptive they
 are. It is highly configurable.
 
 The `MinNameLength` config option takes an integer. It represents
@@ -790,7 +1022,7 @@ def foo(num1, num2)
   num1 * num2
 end
 
-# With `MinArgNameLength` set to number greater than 1
+# With `MinNameLength` set to number greater than 1
 def baz(a, b, c)
   do_stuff(a, b, c)
 end
@@ -834,7 +1066,7 @@ end
 == Naming/PredicateName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -843,7 +1075,30 @@ end
 | 0.77
 |===
 
-This cop makes sure that predicates are named properly.
+Checks that predicate methods names end with a question mark and
+do not start with a forbidden prefix.
+
+A method is determined to be a predicate method if its name starts
+with one of the prefixes defined in the `NamePrefix` configuration.
+You can change what prefixes are considered by changing this option.
+Any method name that starts with one of these prefixes is required by
+the cop to end with a `?`. Other methods can be allowed by adding to
+the `AllowedMethods` configuration.
+
+NOTE: The `is_a?` method is allowed by default.
+
+If `ForbiddenPrefixes` is set, methods that start with the configured
+prefixes will not be allowed and will be removed by autocorrection.
+
+In other words, if `ForbiddenPrefixes` is empty, a method named `is_foo`
+will register an offense only due to the lack of question mark (and will be
+autocorrected to `is_foo?`). If `ForbiddenPrefixes` contains `is_`,
+`is_foo` will register an offense both because the ? is missing and because of
+the `is_` prefix, and will be corrected to `foo?`.
+
+NOTE: `ForbiddenPrefixes` is only applied to prefixes in `NamePrefix`;
+a prefix in the former but not the latter will not be considered by
+this cop.
 
 === Examples
 
@@ -872,6 +1127,15 @@ def value?
 end
 ----
 
+==== AllowedMethods: ['is_a?'] (default)
+
+[source,ruby]
+----
+# good
+def is_a?(value)
+end
+----
+
 === Configurable attributes
 
 |===
@@ -894,7 +1158,7 @@ end
 | Array
 
 | Exclude
-| `spec/**/*`
+| `+spec/**/*+`
 | Array
 |===
 
@@ -905,7 +1169,7 @@ end
 == Naming/RescuedExceptionsVariableName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -914,7 +1178,7 @@ end
 | 0.68
 |===
 
-This cop makes sure that rescued exceptions variables are named as
+Makes sure that rescued exceptions variables are named as
 expected.
 
 The `PreferredName` config option takes a `String`. It represents
@@ -992,7 +1256,7 @@ end
 == Naming/VariableName
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1001,7 +1265,7 @@ end
 | 1.8
 |===
 
-This cop makes sure that all variables use the configured style,
+Makes sure that all variables use the configured style,
 snake_case or camelCase, for their names.
 
 === Examples
@@ -1028,6 +1292,14 @@ foo_bar = 1
 fooBar = 1
 ----
 
+==== AllowedPatterns: ['_v\d+\z']
+
+[source,ruby]
+----
+# good
+:release_v1
+----
+
 === Configurable attributes
 
 |===
@@ -1040,6 +1312,10 @@ fooBar = 1
 | AllowedIdentifiers
 | `[]`
 | Array
+
+| AllowedPatterns
+| `[]`
+| Array
 |===
 
 === References
@@ -1049,7 +1325,7 @@ fooBar = 1
 == Naming/VariableNumber
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -1058,7 +1334,7 @@ fooBar = 1
 | 1.4
 |===
 
-This cop makes sure that all numbered variables use the
+Makes sure that all numbered variables use the
 configured style, snake_case, normalcase, or non_integer,
 for their numbering.
 
@@ -1067,27 +1343,6 @@ can be used to specify whether method names and symbols should be checked.
 Both are enabled by default.
 
 === Examples
-
-==== EnforcedStyle: snake_case
-
-[source,ruby]
-----
-# bad
-:some_sym1
-variable1 = 1
-
-def some_method1; end
-
-def some_method_1(arg1); end
-
-# good
-:some_sym_1
-variable_1 = 1
-
-def some_method_1; end
-
-def some_method_1(arg_1); end
-----
 
 ==== EnforcedStyle: normalcase (default)
 
@@ -1108,6 +1363,27 @@ variable1 = 1
 def some_method1; end
 
 def some_method1(arg1); end
+----
+
+==== EnforcedStyle: snake_case
+
+[source,ruby]
+----
+# bad
+:some_sym1
+variable1 = 1
+
+def some_method1; end
+
+def some_method_1(arg1); end
+
+# good
+:some_sym_1
+variable_1 = 1
+
+def some_method_1; end
+
+def some_method_1(arg_1); end
 ----
 
 ==== EnforcedStyle: non_integer
@@ -1185,6 +1461,14 @@ def some_method_1; end
 expect(Open3).to receive(:capture3)
 ----
 
+==== AllowedPatterns: ['_v\d+\z']
+
+[source,ruby]
+----
+# good
+:some_sym_v1
+----
+
 === Configurable attributes
 
 |===
@@ -1204,6 +1488,10 @@ expect(Open3).to receive(:capture3)
 
 | AllowedIdentifiers
 | `capture3`, `iso8601`, `rfc1123_date`, `rfc822`, `rfc2822`, `rfc3339`
+| Array
+
+| AllowedPatterns
+| `[]`
 | Array
 |===
 

@@ -71,6 +71,8 @@ module RuboCop
           check(node)
         end
 
+        alias on_numblock on_block
+
         def on_while(node)
           check(node)
         end
@@ -185,7 +187,7 @@ module RuboCop
         end
 
         def end_followed_by_whitespace_only?(source_buffer, end_pos)
-          /\A\s*$/.match?(source_buffer.source[end_pos..-1])
+          /\A\s*$/.match?(source_buffer.source[end_pos..])
         end
 
         def reindentable_lines(node)
@@ -223,11 +225,7 @@ module RuboCop
           adjustment = delta + @reindented_lines[lineno]
           @reindented_lines[lineno] = adjustment
 
-          if adjustment.positive?
-            corrector.remove_leading(buffer.line_range(lineno), adjustment)
-          elsif adjustment.negative?
-            corrector.insert_before(buffer.line_range(lineno), ' ' * -adjustment)
-          end
+          corrector.remove_leading(buffer.line_range(lineno), adjustment) if adjustment.positive?
         end
       end
     end

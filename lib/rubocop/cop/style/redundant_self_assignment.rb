@@ -3,12 +3,13 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where redundant assignments are made for in place
+      # Checks for places where redundant assignments are made for in place
       # modification methods.
       #
-      # This cop is marked as unsafe, because it can produce false positives for
-      # user defined methods having one of the expected names, but not modifying
-      # its receiver in place.
+      # @safety
+      #   This cop is unsafe, because it can produce false positives for
+      #   user defined methods having one of the expected names, but not modifying
+      #   its receiver in place.
       #
       # @example
       #   # bad
@@ -31,7 +32,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Redundant self assignment detected. '\
+        MSG = 'Redundant self assignment detected. ' \
               'Method `%<method_name>s` modifies its receiver in place.'
 
         METHODS_RETURNING_SELF = %i[
@@ -66,8 +67,7 @@ module RuboCop
         alias on_gvasgn on_lvasgn
 
         def on_send(node)
-          # TODO: Remove `Symbol#to_s` after supporting only Ruby >= 2.7.
-          return unless node.method_name.to_s.end_with?('=')
+          return unless node.assignment_method?
           return unless redundant_assignment?(node)
 
           message = format(MSG, method_name: node.first_argument.method_name)

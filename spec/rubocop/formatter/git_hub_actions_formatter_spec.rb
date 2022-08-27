@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
   let(:cop_class) { RuboCop::Cop::Cop }
   let(:output) { StringIO.new }
 
-  describe '#file_finished' do
+  describe '#finished' do
     let(:file) { '/path/to/file' }
     let(:message) { 'This is a message.' }
     let(:status) { :uncorrected }
@@ -22,7 +22,11 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
 
     let(:location) { source_range(0...1) }
 
-    before { formatter.file_finished(file, offenses) }
+    before do
+      formatter.started([file])
+      formatter.file_finished(file, offenses)
+      formatter.finished([file])
+    end
 
     context 'when offenses are detected' do
       it 'reports offenses as errors' do
@@ -30,11 +34,20 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
       end
     end
 
+    context 'when file is relative to the current directory' do
+      let(:file) { "#{Dir.pwd}/path/to/file" }
+
+      it 'reports offenses as error with the relative path' do
+        expect(output.string)
+          .to include('::error file=path/to/file,line=1,col=1::This is a message.')
+      end
+    end
+
     context 'when no offenses are detected' do
       let(:offenses) { [] }
 
       it 'does not print anything' do
-        expect(output.string).to eq ''
+        expect(output.string).to eq "\n"
       end
     end
 

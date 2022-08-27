@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop looks for trailing whitespace in the source code.
+      # Looks for trailing whitespace in the source code.
       #
       # @example
       #   # The line in this example contains spaces after the 0.
@@ -41,6 +41,7 @@ module RuboCop
       #
       class TrailingWhitespace < Base
         include RangeHelp
+        include Heredoc
         extend AutoCorrector
 
         MSG = 'Trailing whitespace detected.'
@@ -54,6 +55,8 @@ module RuboCop
           end
         end
 
+        def on_heredoc(_node); end
+
         private
 
         def process_line(line, lineno)
@@ -63,11 +66,31 @@ module RuboCop
           range = offense_range(lineno, line)
           add_offense(range) do |corrector|
             if heredoc
-              corrector.wrap(range, "\#{'", "'}") unless static?(heredoc)
+              process_line_in_heredoc(corrector, range, heredoc)
             else
               corrector.remove(range)
             end
           end
+        end
+
+        def process_line_in_heredoc(corrector, range, heredoc)
+          indent_level = indent_level(find_heredoc(range.line).loc.heredoc_body.source)
+          whitespace_only = whitespace_only?(range)
+          if whitespace_only && whitespace_is_indentation?(range, indent_level)
+            corrector.remove(range)
+          elsif !static?(heredoc)
+            range = range_between(range.begin_pos + indent_level, range.end_pos) if whitespace_only
+            corrector.wrap(range, "\#{'", "'}")
+          end
+        end
+
+        def whitespace_is_indentation?(range, level)
+          range.source[/[ \t]+/].length <= level
+        end
+
+        def whitespace_only?(range)
+          source = range_with_surrounding_space(range).source
+          source.start_with?("\n") && source.end_with?("\n")
         end
 
         def static?(heredoc)

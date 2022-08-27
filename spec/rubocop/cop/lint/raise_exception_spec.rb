@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Lint::RaiseException, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects for `raise` with `Exception.new(args*)` ' do
+  it 'registers an offense and corrects for `raise` with `Exception.new(args*)`' do
     expect_offense(<<~RUBY)
       raise Exception.new('arg1', 'arg2')
             ^^^^^^^^^ Use `StandardError` over `Exception`.

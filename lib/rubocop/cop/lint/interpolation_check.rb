@@ -3,7 +3,12 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for interpolation in a single quoted string.
+      # Checks for interpolation in a single quoted string.
+      #
+      # @safety
+      #   This cop is generally safe, but is marked as unsafe because
+      #   it is possible to actually intentionally have text inside
+      #   `#{...}` in a single quoted string.
       #
       # @example
       #
@@ -19,7 +24,7 @@ module RuboCop
       class InterpolationCheck < Base
         extend AutoCorrector
 
-        MSG = 'Interpolation in single quoted string detected. '\
+        MSG = 'Interpolation in single quoted string detected. ' \
               'Use double quoted strings if you need interpolation.'
 
         def on_str(node)

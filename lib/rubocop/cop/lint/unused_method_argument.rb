@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for unused method arguments.
+      # Checks for unused method arguments.
       #
       # @example
       #   # bad
@@ -64,7 +64,7 @@ module RuboCop
 
         # @!method not_implemented?(node)
         def_node_matcher :not_implemented?, <<~PATTERN
-          {(send nil? :raise (const {nil? cbase} :NotImplementedError))
+          {(send nil? :raise (const {nil? cbase} :NotImplementedError) ...)
            (send nil? :fail ...)}
         PATTERN
 
@@ -87,9 +87,8 @@ module RuboCop
         end
 
         def ignored_method?(body)
-          cop_config['IgnoreEmptyMethods'] && body.nil? ||
-            cop_config['IgnoreNotImplementedMethods'] &&
-              not_implemented?(body)
+          (cop_config['IgnoreEmptyMethods'] && body.nil?) ||
+            (cop_config['IgnoreNotImplementedMethods'] && not_implemented?(body))
         end
 
         def message(variable)

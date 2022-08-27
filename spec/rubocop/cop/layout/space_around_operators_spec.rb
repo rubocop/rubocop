@@ -278,9 +278,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     RUBY
   end
 
-  it 'accepts the construct class <<self with no space after <<' do
-    expect_no_offenses(<<~RUBY)
-      class <<self
+  it 'registers an offense and corrects singleton class operator`' do
+    expect_offense(<<~RUBY)
+      class<<self
+           ^^ Surrounding space missing for operator `<<`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class << self
       end
     RUBY
   end
@@ -808,7 +814,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'accepts for a hash rocket with an extra space for alignmenton multiple line' do
+    it 'accepts for a hash rocket with an extra space for alignment on multiple line' do
       expect_no_offenses(<<~RUBY)
         {
           1 =>  2,
@@ -849,6 +855,20 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       expect_correction(<<~RUBY)
         x =~ /abc/
         y !~ /abc/
+      RUBY
+    end
+
+    it 'does not register an offenses match operators between `<<` and `+=`' do
+      expect_no_offenses(<<~RUBY)
+        x  << foo
+        yz += bar
+      RUBY
+    end
+
+    it 'does not register an offenses match operators between `+=` and `<<`' do
+      expect_no_offenses(<<~RUBY)
+        x  += foo
+        yz << bar
       RUBY
     end
 
@@ -946,6 +966,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         begin
         rescue Exception => e
         end
+      RUBY
+    end
+  end
+
+  describe 'when Layout/ExtraSpacing has `ForceEqualSignAlignment` configured to true' do
+    let(:other_cops) do
+      { 'Layout/ExtraSpacing' => { 'Enabled' => true, 'ForceEqualSignAlignment' => true } }
+    end
+
+    it 'allows variables to be aligned' do
+      expect_no_offenses(<<~RUBY)
+        first  = {
+          x: y
+        }.freeze
+        second = true
+      RUBY
+    end
+
+    it 'allows constants to be aligned' do
+      expect_no_offenses(<<~RUBY)
+        FIRST  = {
+          x: y
+        }.freeze
+        SECOND = true
       RUBY
     end
   end

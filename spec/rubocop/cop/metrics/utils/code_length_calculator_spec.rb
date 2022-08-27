@@ -97,6 +97,147 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         expect(length).to eq(2)
       end
 
+      it 'folds multiline hashes without braces as method args if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(foo: :bar,
+              baz: :quux)
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'folds multiline hashes with line break after it as method args if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(foo: :bar,
+              baz: :quux
+            )
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'folds multiline hashes with line break before it as method args if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(
+              foo: :bar,
+              baz: :quux)
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'folds hashes without braces as the one of method args if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(foo, foo: :bar,
+              baz: :quux)
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'counts single line correctly if asked folding' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(foo: :bar, baz: :quux)
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'counts single line without parentheses correctly if asked folding' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo foo: :bar, baz: :quux
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'counts single line hash with line breaks correctly if asked folding' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(
+              foo: :bar, baz: :quux
+            )
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'folds hashes with comment if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(
+              # foo: :bar,
+              baz: :quux
+            )
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(1)
+      end
+
+      it 'counts single line hash as the one of method args if asked folding' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(
+              bar,
+              baz: :quux
+            )
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(4)
+      end
+
+      it 'counts single line hash as the one of method args with safe navigation operator if asked folding' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo&.bar(
+              baz,
+              qux: :quux
+            )
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(4)
+      end
+
+      it 'counts single line hash with other args correctly if asked folding' do
+        source = parse_source(<<~RUBY)
+          def test
+            foo(
+              { foo: :bar },
+              bar, baz
+            )
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(4)
+      end
+
       it 'folds hashes as method kwargs if asked' do
         source = parse_source(<<~RUBY)
           def test

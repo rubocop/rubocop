@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for the presence of parentheses around ternary
+      # Checks for the presence of parentheses around ternary
       # conditions. It is configurable to enforce inclusion or omission of
       # parentheses using `EnforcedStyle`. Omission is only enforced when
       # removing the parentheses won't cause a different behavior.
@@ -67,8 +67,11 @@ module RuboCop
         MSG_COMPLEX = '%<command>s parentheses for ternary expressions with complex conditions.'
 
         def on_if(node)
-          return if only_closing_parenthesis_is_last_line?(node.condition)
-          return unless node.ternary? && !infinite_loop? && offense?(node)
+          condition = node.condition
+
+          return if only_closing_parenthesis_is_last_line?(condition)
+          return if condition_as_parenthesized_one_line_pattern_matching?(condition)
+          return unless node.ternary? && offense?(node)
 
           message = message(node)
 
@@ -77,11 +80,22 @@ module RuboCop
           end
         end
 
+        private
+
         def only_closing_parenthesis_is_last_line?(condition)
           condition.source.split("\n").last == ')'
         end
 
-        private
+        def condition_as_parenthesized_one_line_pattern_matching?(condition)
+          return false unless condition.parenthesized_call?
+          return false unless (first_child = condition.children.first)
+
+          if target_ruby_version >= 3.0
+            first_child.match_pattern_p_type?
+          else
+            first_child.match_pattern_type? # For Ruby 2.7's one line pattern matching AST.
+          end
+        end
 
         def autocorrect(corrector, node)
           condition = node.condition
@@ -152,26 +166,13 @@ module RuboCop
           style == :require_parentheses_when_complex
         end
 
-        def redundant_parentheses_enabled?
-          @config.for_cop('Style/RedundantParentheses').fetch('Enabled')
-        end
-
         def parenthesized?(node)
           node.begin_type?
         end
 
-        # When this cop is configured to enforce parentheses and the
-        # `RedundantParentheses` cop is enabled, it will cause an infinite loop
-        # as they compete to add and remove the parentheses respectively.
-        def infinite_loop?
-          (require_parentheses? || require_parentheses_when_complex?) &&
-            redundant_parentheses_enabled?
-        end
-
         def unsafe_autocorrect?(condition)
           condition.children.any? do |child|
-            unparenthesized_method_call?(child) ||
-              below_ternary_precedence?(child)
+            unparenthesized_method_call?(child) || below_ternary_precedence?(child)
           end
         end
 

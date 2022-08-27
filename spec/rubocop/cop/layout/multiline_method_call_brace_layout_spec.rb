@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     expect_no_offenses('puts()')
   end
 
-  it 'ignores calls with a multiline empty brace ' do
+  it 'ignores calls with a multiline empty brace' do
     expect_no_offenses(<<~RUBY)
       puts(
       )
@@ -37,6 +37,14 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
   it_behaves_like 'multiline literal brace layout trailing comma' do
     let(:open) { 'foo(' }
     let(:close) { ')' }
+
+    let(:same_line_message) do
+      'Closing method call brace must be on the same line as the last ' \
+        'argument when opening [...]'
+    end
+    let(:always_same_line_message) do
+      'Closing method call brace must be on the same line as the last argument.'
+    end
   end
 
   context 'when EnforcedStyle is new_line' do

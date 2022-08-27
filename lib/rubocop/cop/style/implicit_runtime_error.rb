@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for `raise` or `fail` statements which do not specify an
+      # Checks for `raise` or `fail` statements which do not specify an
       # explicit exception class. (This raises a `RuntimeError`. Some projects
       # might prefer to use exception classes which more precisely identify the
       # nature of the error.)
@@ -15,8 +15,8 @@ module RuboCop
       #   # good
       #   raise ArgumentError, 'Error message here'
       class ImplicitRuntimeError < Base
-        MSG = 'Use `%<method>s` with an explicit exception class and message,' \
-              ' rather than just a message.'
+        MSG = 'Use `%<method>s` with an explicit exception class and message, ' \
+              'rather than just a message.'
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
         # @!method implicit_runtime_error_raise_or_fail(node)

@@ -239,6 +239,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
     end
   end
 
+  context 'with a character class containing multiple unicode code-points' do
+    it 'does not register an offense and corrects' do
+      expect_no_offenses(<<~'RUBY')
+        foo = /[\u{0061 0062}]/
+      RUBY
+    end
+  end
+
   context 'with a character class containing a single unicode character property' do
     it 'registers an offense and corrects' do
       expect_offense(<<~'RUBY')
@@ -278,6 +286,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
     end
   end
 
+  context 'with a character class containing an unescaped-#' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~'RUBY')
+        foo = /[#]{0}/
+               ^^^ Redundant single-element character class, `[#]` can be replaced with `\#`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /\#{0}/
+      RUBY
+    end
+  end
+
   context 'with a character class containing an escaped-b' do
     # See https://github.com/rubocop/rubocop/issues/8193 for details - in short \b != [\b] - the
     # former matches a word boundary, the latter a backspace character.
@@ -287,7 +308,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
   end
 
   context 'with a character class containing a character requiring escape outside' do
-    # Not implemented for now, since we would have to escape on auto-correct, and the cop message
+    # Not implemented for now, since we would have to escape on autocorrect, and the cop message
     # would need to be dynamic to not be misleading.
     it 'does not register an offense' do
       expect_no_offenses('foo = /[+]/')

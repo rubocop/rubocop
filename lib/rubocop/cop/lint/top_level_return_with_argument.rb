@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for top level return with arguments. If there is a
+      # Checks for top level return with arguments. If there is a
       # top-level return statement with an argument, then the argument is
       # always ignored. This is detected automatically since Ruby 2.7.
       #

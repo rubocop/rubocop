@@ -3,8 +3,21 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for string literal concatenation at
+      # Checks for string literal concatenation at
       # the end of a line.
+      #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the
+      #   receiver is a string, in which case replacing `<<` with `\`
+      #   would result in a syntax error.
+      #
+      #   For example, this would be a false positive:
+      #   [source,ruby]
+      #   ----
+      #   array << 'foo' <<
+      #            'bar' <<
+      #            'baz'
+      #   ----
       #
       # @example
       #
@@ -46,7 +59,7 @@ module RuboCop
 
           return unless eligible_token_set?(predecessor, operator, successor)
 
-          return if operator.line == successor.line
+          return if same_line?(operator, successor)
 
           next_successor = token_after_last_string(successor, index)
 
@@ -57,7 +70,7 @@ module RuboCop
 
         def autocorrect(corrector, operator_range)
           # Include any trailing whitespace so we don't create a syntax error.
-          operator_range = range_with_surrounding_space(range: operator_range,
+          operator_range = range_with_surrounding_space(operator_range,
                                                         side: :right,
                                                         newlines: false)
           one_more_char = operator_range.resize(operator_range.size + 1)

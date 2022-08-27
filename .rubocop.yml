@@ -5,6 +5,7 @@ require:
   - rubocop/cop/internal_affairs
   - rubocop-performance
   - rubocop-rspec
+  - rubocop-rake
 
 AllCops:
   NewCops: enable
@@ -14,7 +15,7 @@ AllCops:
     - 'tmp/**/*'
     - '.git/**/*'
     - 'bin/*'
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
   SuggestExtensions: false
 
 Naming/PredicateName:
@@ -39,7 +40,7 @@ Style/FormatStringToken:
 Style/IpAddresses:
   # The test for this cop includes strings that would cause offenses
   Exclude:
-  - spec/rubocop/cop/style/ip_addresses_spec.rb
+    - spec/rubocop/cop/style/ip_addresses_spec.rb
 
 Layout/EndOfLine:
   EnforcedStyle: lf
@@ -67,7 +68,7 @@ Layout/HashAlignment:
 
 Layout/LineLength:
   Max: 100
-  IgnoredPatterns:
+  AllowedPatterns:
     - !ruby/regexp /\A +(it|describe|context|shared_examples|include_examples|it_behaves_like) ["']/
 
 Lint/InterpolationCheck:
@@ -79,9 +80,6 @@ Lint/UselessAccessModifier:
     - 'def_matcher'
     - 'def_node_matcher'
 
-Lint/BooleanSymbol:
-  Enabled: false
-
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
@@ -92,10 +90,32 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Exclude:
     - lib/rubocop/config_obsoletion.rb
+    - lib/rubocop/options.rb
 
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
+
+Naming/InclusiveLanguage:
+  Enabled: true
+  CheckStrings: true
+  FlaggedTerms:
+    auto-correct:
+      Suggestions:
+        - autocorrect
+    auto_correct:
+      Suggestions:
+        - autocorrect
+    behaviour:
+      Suggestions:
+        - behavior
+    offence:
+      Suggestions:
+        - offense
+  Exclude:
+    - lib/rubocop/cop/naming/inclusive_language.rb
+    - lib/rubocop/cop/mixin/auto_corrector.rb
+    - spec/rubocop/cop/naming/inclusive_language_spec.rb
 
 RSpec/FilePath:
   Exclude:
@@ -131,3 +151,21 @@ RSpec/StubbedMock:
 InternalAffairs/ExampleDescription:
   Include:
     - 'spec/rubocop/cop/**/*.rb'
+
+InternalAffairs/UndefinedConfig:
+  Include:
+    - 'lib/rubocop/cop/**/*.rb'
+  Exclude:
+    - 'lib/rubocop/cop/correctors/**/*.rb'
+    - 'lib/rubocop/cop/mixin/**/*.rb'
+
+InternalAffairs/StyleDetectedApiUse:
+  Exclude:
+    - 'lib/rubocop/cop/mixin/percent_array.rb'
+
+InternalAffairs/NumblockHandler:
+  Exclude:
+    - 'lib/rubocop/cop/internal_affairs/*.rb'
+
+Gemspec/DependencyVersion:
+  Enabled: true

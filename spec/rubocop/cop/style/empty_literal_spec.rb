@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       expect_no_offenses('test = Array.new(3)')
     end
 
-    it 'auto-corrects Array.new in block in block' do
+    it 'autocorrects Array.new in block in block' do
       expect_offense(<<~RUBY)
         puts { Array.new }
                ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'does not registers an offense Array.new with block' do
+    it 'does not register an offense Array.new with block' do
       expect_no_offenses('test = Array.new { 1 }')
     end
 
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       end
     end
 
-    it 'auto-corrects Hash.new in block ' do
+    it 'autocorrects Hash.new in block' do
       expect_offense(<<~RUBY)
         puts { Hash.new }
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-corrects Hash.new to {} in various contexts' do
+    it 'autocorrects Hash.new to {} in various contexts' do
       expect_offense(<<~RUBY)
         test = Hash.new
                ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct Hash.new to {} as the only parameter to a method' do
+    it 'autocorrects Hash.new to {} as the only parameter to a method' do
       expect_offense(<<~RUBY)
         yadayada.map { a }.reduce Hash.new
                                   ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct Hash.new to {} as the first parameter to a method' do
+    it 'autocorrects Hash.new to {} as the first parameter to a method' do
       expect_offense(<<~RUBY)
         yadayada.map { a }.reduce Hash.new, :merge
                                   ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
@@ -173,8 +173,8 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct changes Hash.new to {} and wraps it in parentheses ' \
-      'when it is the only argument to super' do
+    it 'autocorrects Hash.new to {} and wraps it in parentheses ' \
+       'when it is the only argument to super' do
       expect_offense(<<~RUBY)
         def foo
           super Hash.new
@@ -189,8 +189,8 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       RUBY
     end
 
-    it 'auto-correct changes Hash.new to {} and wraps all arguments in ' \
-      'parentheses when it is the first argument to super' do
+    it 'autocorrects Hash.new to {} and wraps all arguments in ' \
+       'parentheses when it is the first argument to super' do
       expect_offense(<<~RUBY)
         def foo
           super Hash.new, something
@@ -252,9 +252,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
 
     context 'when double-quoted string literals are preferred' do
       let(:other_cops) do
-        super().merge('Style/StringLiterals' => {
-                        'EnforcedStyle' => 'double_quotes'
-                      })
+        super().merge('Style/StringLiterals' => { 'EnforcedStyle' => 'double_quotes' })
       end
 
       it 'registers an offense for String.new' do
@@ -280,7 +278,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       end
     end
 
-    context 'when frozen string literals is enabled' do
+    context 'when frozen string literals is enabled', :ruby23 do
       it 'does not register an offense for String.new' do
         expect_no_offenses(<<~RUBY)
           # frozen_string_literal: true
@@ -300,16 +298,16 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
         end
       end
 
-      context 'and there is a frozen-string-literal: false comment' do
+      context 'and there is a frozen_string_literal: false comment' do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)
-            # frozen-string-literal: false
+            # frozen_string_literal: false
             test = String.new
                    ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
           RUBY
 
           expect_correction(<<~RUBY)
-            # frozen-string-literal: false
+            # frozen_string_literal: false
             test = ''
           RUBY
         end

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for missing space between a token and a comment on the
+      # Checks for missing space between a token and a comment on the
       # same line.
       #
       # @example
@@ -18,9 +18,9 @@ module RuboCop
         MSG = 'Put a space before an end-of-line comment.'
 
         def on_new_investigation
-          processed_source.tokens.each_cons(2) do |token1, token2|
+          processed_source.sorted_tokens.each_cons(2) do |token1, token2|
             next unless token2.comment?
-            next unless token1.line == token2.line
+            next unless same_line?(token1, token2)
             next unless token1.pos.end == token2.pos.begin
 
             range = token2.pos

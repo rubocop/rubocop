@@ -264,7 +264,8 @@ module RuboCop
 
         def source_range_with_comment(node)
           begin_pos, end_pos =
-            if node.def_type? && !node.method?(:initialize) || node.send_type? && node.def_modifier?
+            if (node.def_type? && !node.method?(:initialize)) ||
+               (node.send_type? && node.def_modifier?)
               start_node = find_visibility_start(node) || node
               end_node = find_visibility_end(node) || node
               [begin_pos_with_comment(start_node),
@@ -289,10 +290,14 @@ module RuboCop
           (node.first_line - 1).downto(1) do |annotation_line|
             break unless (comment = processed_source.comment_at_line(annotation_line))
 
-            first_comment = comment
+            first_comment = comment if whole_line_comment_at_line?(annotation_line)
           end
 
           start_line_position(first_comment || node)
+        end
+
+        def whole_line_comment_at_line?(line)
+          /\A\s*#/.match?(processed_source.lines[line - 1])
         end
 
         def start_line_position(node)

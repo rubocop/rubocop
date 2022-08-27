@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             end
           RUBY
 
-          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` autocorrection.
           expect_correction(<<~RUBY)
             x ||= begin
               1
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
                   end
           RUBY
 
-          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` autocorrection.
           expect_correction(<<~RUBY)
             x ||= begin
                     1
@@ -167,7 +167,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
             end
           RUBY
 
-          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` auto-correction.
+          # Except for `rescue`, it will be aligned by `Layout/BeginEndAlignment` autocorrection.
           expect_correction(<<~RUBY)
             x ||= begin
               1
@@ -439,104 +439,159 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
-  context '>= Ruby 2.5', :ruby25 do
-    it 'accepts aligned rescue in do-end block' do
-      expect_no_offenses(<<~RUBY)
+  it 'accepts aligned rescue in do-end block' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].each do |el|
+        el.to_s
+      rescue StandardError => _exception
+        next
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block with `.()` call' do
+    expect_no_offenses(<<~RUBY)
+      foo.() do |el|
+        el.to_s
+      rescue StandardError => _exception
+        next
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue with do-end block that line break with leading dot for method calls' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'accepts aligned rescue with do-end block that line break with trailing dot for method calls' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'accepts aligned rescue do-end block assigned to local variable' do
+    expect_no_offenses(<<~RUBY)
+      result = [1, 2, 3].map do |el|
+        el.to_s
+      rescue StandardError => _exception
+        next
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block assigned to instance variable' do
+    expect_no_offenses(<<~RUBY)
+      @instance = [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block assigned to class variable' do
+    expect_no_offenses(<<~RUBY)
+      @@class = [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block assigned to global variable' do
+    expect_no_offenses(<<~RUBY)
+      $global = [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block assigned to class' do
+    expect_no_offenses(<<~RUBY)
+      CLASS = [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block on multi-assignment' do
+    expect_no_offenses(<<~RUBY)
+      a, b = [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block on operation assignment' do
+    expect_no_offenses(<<~RUBY)
+      a += [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block on and-assignment' do
+    expect_no_offenses(<<~RUBY)
+      a &&= [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block on or-assignment' do
+    expect_no_offenses(<<~RUBY)
+      a ||= [].map do |_|
+      rescue StandardError => _
+      end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in assigned do-end block starting on newline' do
+    expect_no_offenses(<<~RUBY)
+      valid =
+        proc do |bar|
+          baz
+        rescue
+          qux
+        end
+    RUBY
+  end
+
+  it 'accepts aligned rescue in do-end block in a method' do
+    expect_no_offenses(<<~RUBY)
+      def foo
         [1, 2, 3].each do |el|
           el.to_s
         rescue StandardError => _exception
           next
         end
-      RUBY
-    end
+      end
+    RUBY
+  end
 
-    it 'accepts aligned rescue do-end block assigned to local variable' do
-      expect_no_offenses(<<~RUBY)
-        result = [1, 2, 3].map do |el|
-          el.to_s
+  context 'rescue with do-end block' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def foo
+          [1, 2, 3].each do |el|
+            el.to_s
         rescue StandardError => _exception
-          next
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block assigned to instance variable' do
-      expect_no_offenses(<<~RUBY)
-        @instance = [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block assigned to class variable' do
-      expect_no_offenses(<<~RUBY)
-        @@class = [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block assigned to global variable' do
-      expect_no_offenses(<<~RUBY)
-        $global = [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block assigned to class' do
-      expect_no_offenses(<<~RUBY)
-        CLASS = [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block on multi-assignment' do
-      expect_no_offenses(<<~RUBY)
-        a, b = [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block on operation assignment' do
-      expect_no_offenses(<<~RUBY)
-        a += [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block on and-assignment' do
-      expect_no_offenses(<<~RUBY)
-        a &&= [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in do-end block on or-assignment' do
-      expect_no_offenses(<<~RUBY)
-        a ||= [].map do |_|
-        rescue StandardError => _
-        end
-      RUBY
-    end
-
-    it 'accepts aligned rescue in assigned do-end block starting on newline' do
-      expect_no_offenses(<<~RUBY)
-        valid =
-          proc do |bar|
-            baz
-          rescue
-            qux
+        ^^^^^^ `rescue` at 4, 0 is not aligned with `[1, 2, 3].each do` at 2, 2.
+            next
           end
+        end
       RUBY
-    end
 
-    it 'accepts aligned rescue in do-end block in a method' do
-      expect_no_offenses(<<~RUBY)
+      expect_correction(<<~RUBY)
         def foo
           [1, 2, 3].each do |el|
             el.to_s
@@ -546,206 +601,212 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
         end
       RUBY
     end
+  end
 
-    context 'rescue with do-end block' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          def foo
-            [1, 2, 3].each do |el|
-              el.to_s
+  context 'rescue in do-end block assigned to local variable' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        result = [1, 2, 3].map do |el|
           rescue StandardError => _exception
-          ^^^^^^ `rescue` at 4, 0 is not aligned with `[1, 2, 3].each do` at 2, 2.
-              next
-            end
-          end
-        RUBY
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `result` at 1, 0.
+        end
+      RUBY
 
-        expect_correction(<<~RUBY)
-          def foo
-            [1, 2, 3].each do |el|
-              el.to_s
-            rescue StandardError => _exception
-              next
-            end
-          end
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        result = [1, 2, 3].map do |el|
+        rescue StandardError => _exception
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block assigned to local variable' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          result = [1, 2, 3].map do |el|
-            rescue StandardError => _exception
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `result` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          result = [1, 2, 3].map do |el|
+  context 'rescue in do-end block assigned to instance variable' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        @instance = [1, 2, 3].map do |el|
           rescue StandardError => _exception
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `@instance` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @instance = [1, 2, 3].map do |el|
+        rescue StandardError => _exception
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block assigned to instance variable' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          @instance = [1, 2, 3].map do |el|
-            rescue StandardError => _exception
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `@instance` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          @instance = [1, 2, 3].map do |el|
-          rescue StandardError => _exception
-          end
-        RUBY
-      end
-    end
-
-    context 'rescue in do-end block assigned to class variable' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          @@class = [].map do |_|
-            rescue StandardError => _
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `@@class` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          @@class = [].map do |_|
+  context 'rescue in do-end block assigned to class variable' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        @@class = [].map do |_|
           rescue StandardError => _
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `@@class` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @@class = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block assigned to global variable' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          $global = [].map do |_|
-            rescue StandardError => _
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `$global` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          $global = [].map do |_|
+  context 'rescue in do-end block assigned to global variable' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        $global = [].map do |_|
           rescue StandardError => _
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `$global` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        $global = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block assigned to class' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          CLASS = [].map do |_|
-            rescue StandardError => _
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `CLASS` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          CLASS = [].map do |_|
+  context 'rescue in do-end block assigned to class' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        CLASS = [].map do |_|
           rescue StandardError => _
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `CLASS` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        CLASS = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block on multi-assignment' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          a, b = [].map do |_|
-            rescue StandardError => _
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `a, b` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          a, b = [].map do |_|
+  context 'rescue in do-end block on multi-assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        a, b = [].map do |_|
           rescue StandardError => _
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `a, b` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a, b = [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block on operation assignment' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          a += [].map do |_|
-            rescue StandardError => _
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `a` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          a += [].map do |_|
+  context 'rescue in do-end block on operation assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        a += [].map do |_|
           rescue StandardError => _
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `a` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a += [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block on and-assignment' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          a &&= [].map do |_|
-            rescue StandardError => _
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `a` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          a &&= [].map do |_|
+  context 'rescue in do-end block on and-assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        a &&= [].map do |_|
           rescue StandardError => _
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `a` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a &&= [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in do-end block on or-assignment' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          a ||= [].map do |_|
-            rescue StandardError => _
-            ^^^^^^ `rescue` at 2, 2 is not aligned with `a` at 1, 0.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          a ||= [].map do |_|
+  context 'rescue in do-end block on or-assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        a ||= [].map do |_|
           rescue StandardError => _
-          end
-        RUBY
-      end
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `a` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a ||= [].map do |_|
+        rescue StandardError => _
+        end
+      RUBY
     end
+  end
 
-    context 'rescue in assigned do-end block starting on newline' do
-      it 'registers an offense' do
-        expect_offense(<<~RUBY)
-          valid =
-            proc do |bar|
-              baz
-              rescue
-              ^^^^^^ `rescue` at 4, 4 is not aligned with `proc do` at 2, 2.
-              qux
-            end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          valid =
-            proc do |bar|
-              baz
+  context 'rescue in assigned do-end block starting on newline' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        valid =
+          proc do |bar|
+            baz
             rescue
-              qux
-            end
-        RUBY
-      end
+            ^^^^^^ `rescue` at 4, 4 is not aligned with `proc do` at 2, 2.
+            qux
+          end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        valid =
+          proc do |bar|
+            baz
+          rescue
+            qux
+          end
+      RUBY
+    end
+  end
+
+  context 'when using zsuper with block' do
+    it 'registers and corrects an offense and corrects when incorrect alignment' do
+      expect_offense(<<~RUBY)
+        super do
+          nil
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `super do` at 1, 0.
+          nil
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        super do
+          nil
+        ensure
+          nil
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when correct alignment' do
+      expect_no_offenses(<<~RUBY)
+        super do
+          nil
+        ensure
+          nil
+        end
+      RUBY
     end
   end
 

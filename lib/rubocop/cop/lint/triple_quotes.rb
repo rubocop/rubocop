@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for "triple quotes" (strings delimted by any odd number
+      # Checks for "triple quotes" (strings delimited by any odd number
       # of quotes greater than 1).
       #
       # Ruby allows multiple strings to be implicitly concatenated by just

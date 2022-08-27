@@ -30,12 +30,20 @@ module RuboCop
       #     bar(*args)
       #   end
       #
+      #   def foo(**kwargs)
+      #     bar(**kwargs)
+      #   end
+      #
       # @example AllowOnlyRestArgument: false
       #   # bad
       #   # The following code can replace the arguments with `...`,
       #   # but it will change the behavior. Because `...` forwards block also.
       #   def foo(*args)
       #     bar(*args)
+      #   end
+      #
+      #   def foo(**kwargs)
+      #     bar(**kwargs)
       #   end
       #
       class ArgumentsForwarding < Base
@@ -49,12 +57,15 @@ module RuboCop
 
         # @!method use_rest_arguments?(node)
         def_node_matcher :use_rest_arguments?, <<~PATTERN
-          (args (restarg $_) $...)
+          (args ({restarg kwrestarg} $_) $...)
         PATTERN
 
         # @!method only_rest_arguments?(node, name)
         def_node_matcher :only_rest_arguments?, <<~PATTERN
-          (send _ _ (splat (lvar %1)))
+          {
+            (send _ _ (splat (lvar %1)))
+            (send _ _ (hash (kwsplat (lvar %1))))
+          }
         PATTERN
 
         # @!method forwarding_method_arguments?(node, rest_name, block_name, kwargs_name)
@@ -62,11 +73,11 @@ module RuboCop
           {
             (send _ _
               (splat (lvar %1))
-              (block-pass (lvar %2)))
+              (block-pass {(lvar %2) nil?}))
             (send _ _
               (splat (lvar %1))
               (hash (kwsplat (lvar %3)))
-              (block-pass (lvar %2)))
+              (block-pass {(lvar %2) nil?}))
           }
         PATTERN
 
@@ -122,7 +133,7 @@ module RuboCop
         def register_offense_to_method_definition_arguments(method_definition)
           add_offense(arguments_range(method_definition)) do |corrector|
             arguments_range = range_with_surrounding_space(
-              range: method_definition.arguments.source_range, side: :left
+              method_definition.arguments.source_range, side: :left
             )
             corrector.replace(arguments_range, '(...)')
           end

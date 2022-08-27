@@ -57,15 +57,15 @@ module RuboCop
           return if node.keywords?
 
           # Do not register an offense for multi-line braces when specifying
-          # `EnforcedStyle: no_space`. It will conflict with auto-correction
+          # `EnforcedStyle: no_space`. It will conflict with autocorrection
           # by `EnforcedStyle: line_count_based` of `Style/BlockDelimiters` cop.
-          # That means preventing auto-correction to incorrect auto-corrected
+          # That means preventing autocorrection to incorrect autocorrected
           # code.
           # See: https://github.com/rubocop/rubocop/issues/7534
           return if conflict_with_block_delimiters?(node)
 
           left_brace = node.loc.begin
-          space_plus_brace = range_with_surrounding_space(range: left_brace)
+          space_plus_brace = range_with_surrounding_space(left_brace)
           used_style =
             space_plus_brace.source.start_with?('{') ? :no_space : :space
 
@@ -75,6 +75,8 @@ module RuboCop
             check_non_empty(left_brace, space_plus_brace, used_style)
           end
         end
+
+        alias on_numblock on_block
 
         private
 

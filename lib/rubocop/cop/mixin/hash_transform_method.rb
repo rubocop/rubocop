@@ -14,7 +14,7 @@ module RuboCop
         {(array ...) (send _ :each_with_index) (send _ :with_index _ ?) (send _ :zip ...)}
       PATTERN
 
-      def on_block(node)
+      def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
         on_bad_each_with_object(node) do |*match|
           handle_possible_offense(node, match, 'each_with_object')
         end
@@ -68,6 +68,8 @@ module RuboCop
         # `transform_values` if value transformation uses key.
         return if captures.transformation_uses_both_args?
 
+        return unless captures.use_transformed_argname?
+
         message = "Prefer `#{new_method_name}` over `#{match_desc}`."
         add_offense(node, message: message) do |corrector|
           correction = prepare_correction(node)
@@ -113,11 +115,7 @@ module RuboCop
       end
 
       # Internal helper class to hold match data
-      Captures = Struct.new(
-        :transformed_argname,
-        :transforming_body_expr,
-        :unchanged_body_expr
-      ) do
+      Captures = Struct.new(:transformed_argname, :transforming_body_expr, :unchanged_body_expr) do
         def noop_transformation?
           transforming_body_expr.lvar_type? &&
             transforming_body_expr.children == [transformed_argname]
@@ -125,6 +123,12 @@ module RuboCop
 
         def transformation_uses_both_args?
           transforming_body_expr.descendants.include?(unchanged_body_expr)
+        end
+
+        def use_transformed_argname?
+          transforming_body_expr.each_descendant(:lvar).any? do |node|
+            node.source == transformed_argname.to_s
+          end
         end
       end
 
@@ -139,9 +143,9 @@ module RuboCop
         end
 
         def self.from_map_to_h(node, match)
-          strip_trailing_chars = 0
-
-          unless node.parent&.block_type?
+          if node.parent&.block_type? && node.parent.send_node == node
+            strip_trailing_chars = 0
+          else
             map_range = node.children.first.source_range
             node_range = node.source_range
             strip_trailing_chars = node_range.end_pos - map_range.end_pos
@@ -175,7 +179,12 @@ module RuboCop
         end
 
         def set_new_body_expression(transforming_body_expr, corrector)
-          corrector.replace(block_node.body, transforming_body_expr.loc.expression.source)
+          body_source = transforming_body_expr.loc.expression.source
+          if transforming_body_expr.hash_type? && !transforming_body_expr.braces?
+            body_source = "{ #{body_source} }"
+          end
+
+          corrector.replace(block_node.body, body_source)
         end
       end
     end

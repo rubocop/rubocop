@@ -25,6 +25,19 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it "registers an offense for #{method} with numblock" do
+        expect_offense(<<~RUBY, method: method)
+          [1, 2, 3].%{method} { _1 + 1 }
+                    ^{method} Prefer `#{preferred_method}` over `#{method}`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].#{preferred_method} { _1 + 1 }
+        RUBY
+      end
+    end
+
     it "registers an offense for #{method} with proc param" do
       expect_offense(<<~RUBY, method: method)
         [1, 2, 3].%{method}(&:test)

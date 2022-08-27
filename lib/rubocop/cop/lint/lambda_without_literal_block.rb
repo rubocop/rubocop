@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks uses of lambda without a literal block.
+      # Checks uses of lambda without a literal block.
       # It emulates the following warning in Ruby 3.0:
       #
       #   % ruby -vwe 'lambda(&proc {})'
@@ -12,7 +12,7 @@ module RuboCop
       #   lambda instead
       #
       # This way, proc object is never converted to lambda.
-      # Auto-correction replaces with compatible proc argument.
+      # Autocorrection replaces with compatible proc argument.
       #
       # @example
       #
@@ -31,8 +31,15 @@ module RuboCop
         MSG = 'lambda without a literal block is deprecated; use the proc without lambda instead.'
         RESTRICT_ON_SEND = %i[lambda].freeze
 
+        # @!method lambda_with_symbol_proc?(node)
+        def_node_matcher :lambda_with_symbol_proc?, <<~PATTERN
+          (send nil? :lambda (block_pass (sym _)))
+        PATTERN
+
         def on_send(node)
-          return if node.parent&.block_type? || !node.first_argument
+          if node.parent&.block_type? || !node.first_argument || lambda_with_symbol_proc?(node)
+            return
+          end
 
           add_offense(node) do |corrector|
             corrector.replace(node, node.first_argument.source.delete('&'))

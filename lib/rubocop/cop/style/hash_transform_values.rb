@@ -3,17 +3,15 @@
 module RuboCop
   module Cop
     module Style
-      # This cop looks for uses of `_.each_with_object({}) {...}`,
+      # Looks for uses of `_.each_with_object({}) {...}`,
       # `_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
       # transforming the values of a hash, and tries to use a simpler & faster
       # call to `transform_values` instead.
       #
-      # This can produce false positives if we are transforming an enumerable
-      # of key-value-like pairs that isn't actually a hash, e.g.:
-      # `[[k1, v1], [k2, v2], ...]`
-      #
-      # This cop should only be enabled on Ruby version 2.4 or newer
-      # (`transform_values` was added in Ruby 2.4.)
+      # @safety
+      #   This cop is unsafe, as it can produce false positives if we are
+      #   transforming an enumerable of key-value-like pairs that isn't actually
+      #   a hash, e.g.: `[[k1, v1], [k2, v2], ...]`
       #
       # @example
       #   # bad
@@ -28,17 +26,20 @@ module RuboCop
       class HashTransformValues < Base
         include HashTransformMethod
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.4
 
         # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block
-            ({send csend} !#array_receiver? :each_with_object (hash))
+            (call !#array_receiver? :each_with_object (hash))
             (args
               (mlhs
                 (arg _key)
                 (arg $_))
               (arg _memo))
-            ({send csend} (lvar _memo) :[]= $(lvar _key) $!`_memo))
+            (call (lvar _memo) :[]= $(lvar _key) $!`_memo))
         PATTERN
 
         # @!method on_bad_hash_brackets_map(node)
@@ -47,7 +48,7 @@ module RuboCop
             (const _ :Hash)
             :[]
             (block
-              ({send csend} !#array_receiver? {:map :collect})
+              (call !#array_receiver? {:map :collect})
               (args
                 (arg _key)
                 (arg $_))
@@ -56,9 +57,9 @@ module RuboCop
 
         # @!method on_bad_map_to_h(node)
         def_node_matcher :on_bad_map_to_h, <<~PATTERN
-          ({send csend}
+          (call
             (block
-              ({send csend} !#array_receiver? {:map :collect})
+              (call !#array_receiver? {:map :collect})
               (args
                 (arg _key)
                 (arg $_))
@@ -69,7 +70,7 @@ module RuboCop
         # @!method on_bad_to_h(node)
         def_node_matcher :on_bad_to_h, <<~PATTERN
           (block
-            ({send csend} !#array_receiver? :to_h)
+            (call !#array_receiver? :to_h)
             (args
               (arg _key)
               (arg $_))

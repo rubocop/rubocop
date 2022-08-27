@@ -28,6 +28,14 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
           RUBY
         end
       end
+
+      context 'when inheriting a standard lib exception class that is not a subclass of `StandardError`' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            class C < Interrupt; end
+          RUBY
+        end
+      end
     end
 
     context 'with enforced style set to `standard_error`' do
@@ -53,6 +61,14 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
 
           expect_correction(<<~RUBY)
             Class.new(StandardError)
+          RUBY
+        end
+      end
+
+      context 'when inheriting a standard lib exception class that is not a subclass of `StandardError`' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            class C < Interrupt; end
           RUBY
         end
       end

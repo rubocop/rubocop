@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for redundant `with_index`.
+      # Checks for redundant `with_index`.
       #
       # @example
       #   # bad
@@ -33,16 +33,6 @@ module RuboCop
         MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'
         MSG_WITH_INDEX = 'Remove redundant `with_index`.'
 
-        # @!method redundant_with_index?(node)
-        def_node_matcher :redundant_with_index?, <<~PATTERN
-          (block
-            $(send
-              _ {:each_with_index :with_index} ...)
-            (args
-              (arg _))
-            ...)
-        PATTERN
-
         def on_block(node)
           return unless (send = redundant_with_index?(node))
 
@@ -58,7 +48,20 @@ module RuboCop
           end
         end
 
+        alias on_numblock on_block
+
         private
+
+        # @!method redundant_with_index?(node)
+        def_node_matcher :redundant_with_index?, <<~PATTERN
+          {
+            (block
+              $(send _ {:each_with_index :with_index} ...)
+              (args (arg _)) ...)
+            (numblock
+              $(send _ {:each_with_index :with_index} ...) 1 ...)
+          }
+        PATTERN
 
         def message(node)
           if node.method?(:each_with_index)

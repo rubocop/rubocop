@@ -31,18 +31,14 @@ namespace :cut_release do
   # Replace `<<next>>` (and variations) with version being cut.
   def update_cop_versions(_old_version, new_version)
     update_file('config/default.yml') do |default|
-      default.gsub(/['"]?<<\s*next\s*>>['"]?/i,
-                   "'#{version_sans_patch(new_version)}'")
+      default.gsub(/['"]?<<\s*next\s*>>['"]?/i, "'#{version_sans_patch(new_version)}'")
     end
     RuboCop::ConfigLoader.default_configuration = nil # invalidate loaded conf
   end
 
   def update_docs(old_version, new_version)
     update_file('docs/antora.yml') do |antora_metadata|
-      antora_metadata.sub(
-        "version: 'master'",
-        "version: '#{version_sans_patch(new_version)}'"
-      )
+      antora_metadata.sub('version: ~', "version: '#{version_sans_patch(new_version)}'")
     end
 
     update_file('docs/modules/ROOT/pages/installation.adoc') do |installation|
@@ -55,26 +51,20 @@ namespace :cut_release do
 
   def update_issue_template(old_version, new_version)
     update_file('.github/ISSUE_TEMPLATE/bug_report.md') do |issue_template|
-      issue_template.sub(
-        "#{old_version} (using Parser ",
-        "#{new_version} (using Parser "
-      )
+      issue_template.sub("#{old_version} (using Parser ", "#{new_version} (using Parser ")
     end
   end
 
   def update_contributing_doc(old_version, new_version)
     update_file('CONTRIBUTING.md') do |contributing_doc|
-      contributing_doc.sub(
-        "#{old_version} (using Parser ",
-        "#{new_version} (using Parser "
-      )
+      contributing_doc.sub("#{old_version} (using Parser ", "#{new_version} (using Parser ")
     end
   end
 
   def add_header_to_changelog(version)
     update_file('CHANGELOG.md') do |changelog|
       changelog.sub("## master (unreleased)\n\n", '\0' \
-        "## #{version} (#{Time.now.strftime('%F')})\n\n")
+                                                  "## #{version} (#{Time.now.strftime('%F')})\n\n")
     end
   end
 

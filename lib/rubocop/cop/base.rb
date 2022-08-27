@@ -24,7 +24,7 @@ module RuboCop
     # `add_global_offense`. Use the `processed_source` method to
     # get the currently processed source being investigated.
     #
-    # In case of invalid syntax / unparseable content,
+    # In case of invalid syntax / unparsable content,
     # the callback `on_other_file` is called instead of all the other
     # `on_...` callbacks.
     #
@@ -48,7 +48,7 @@ module RuboCop
       InvestigationReport = Struct.new(:cop, :processed_source, :offenses, :corrector)
 
       # List of methods names to restrict calls for `on_send` / `on_csend`
-      RESTRICT_ON_SEND = Set[].freeze
+      RESTRICT_ON_SEND = Set[].freeze # rubocop:disable InternalAffairs/UselessRestrictOnSend
 
       # List of cops that should not try to autocorrect at the same
       # time as this cop
@@ -158,7 +158,7 @@ module RuboCop
         Registry.global.dismiss(self)
       end
 
-      # Returns if class supports auto_correct.
+      # Returns if class supports autocorrect.
       # It is recommended to extend AutoCorrector instead of overriding
       def self.support_autocorrect?
         false
@@ -220,10 +220,14 @@ module RuboCop
         @config.target_rails_version
       end
 
+      def active_support_extensions_enabled?
+        @config.active_support_extensions_enabled?
+      end
+
       def relevant_file?(file)
         file == RuboCop::AST::ProcessedSource::STRING_SOURCE_NAME ||
-          file_name_matches_any?(file, 'Include', true) &&
-            !file_name_matches_any?(file, 'Exclude', false)
+          (file_name_matches_any?(file, 'Include', true) &&
+            !file_name_matches_any?(file, 'Exclude', false))
       end
 
       def excluded_file?(file)
@@ -261,7 +265,7 @@ module RuboCop
       # @deprecated Make potential errors with previous API more obvious
       def offenses
         raise 'The offenses are not directly available; ' \
-          'they are returned as the result of the investigation'
+              'they are returned as the result of the investigation'
       end
 
       ### Reserved for Commissioner
@@ -441,7 +445,7 @@ module RuboCop
           severity.to_sym
         else
           message = "Warning: Invalid severity '#{severity}'. " \
-            "Valid severities are #{Severity::NAMES.join(', ')}."
+                    "Valid severities are #{Severity::NAMES.join(', ')}."
           warn(Rainbow(message).red)
         end
       end

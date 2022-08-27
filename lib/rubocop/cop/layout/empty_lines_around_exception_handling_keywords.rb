@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks if empty lines exist around the bodies of `begin`
+      # Checks if empty lines exist around the bodies of `begin`
       # sections. This cop doesn't check empty lines at `begin` body
       # beginning/end and around method definition body.
       # `Style/EmptyLinesAroundBeginBody` or `Style/EmptyLinesAroundMethodBody`
@@ -65,27 +65,34 @@ module RuboCop
         MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'
 
         def on_def(node)
-          check_body(node.body)
+          check_body(node.body, node.loc.line)
         end
         alias on_defs on_def
 
         def on_kwbegin(node)
           body, = *node
-          check_body(body)
+          check_body(body, node.loc.line)
         end
 
         private
 
-        def check_body(node)
-          locations = keyword_locations(node)
+        def check_body(body, line_of_def_or_kwbegin)
+          locations = keyword_locations(body)
+
           locations.each do |loc|
             line = loc.line
+            next if line == line_of_def_or_kwbegin || last_rescue_and_end_on_same_line(body)
+
             keyword = loc.source
             # below the keyword
             check_line(style, line, message('after', keyword), &:empty?)
             # above the keyword
             check_line(style, line - 2, message('before', keyword), &:empty?)
           end
+        end
+
+        def last_rescue_and_end_on_same_line(body)
+          body.rescue_type? && body.resbody_branches.last.loc.line == body.parent.loc.end.line
         end
 
         def message(location, keyword)

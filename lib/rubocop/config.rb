@@ -25,7 +25,7 @@ module RuboCop
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
         qualified_cop_name = Cop::Registry.qualified_cop_name(cop, loaded_path)
-        cop_options = self[qualified_cop_name] || {}
+        cop_options = self[qualified_cop_name].dup || {}
         cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
         h[cop] = cop_options
       end
@@ -48,6 +48,11 @@ module RuboCop
       deprecation_check { |deprecation_message| warn("#{loaded_path} - #{deprecation_message}") }
       @validator.validate
       make_excludes_absolute
+      self
+    end
+
+    def validate_after_resolution
+      @validator.validate_after_resolution
       self
     end
 
@@ -139,6 +144,10 @@ module RuboCop
 
     def enabled_new_cops?
       for_all_cops['NewCops'] == 'enable'
+    end
+
+    def active_support_extensions_enabled?
+      for_all_cops['ActiveSupportExtensionsEnabled']
     end
 
     def file_to_include?(file)
@@ -233,7 +242,7 @@ module RuboCop
       return nil unless loaded_path
 
       base_path = base_dir_for_path_parameters
-      ['gems.locked', 'Gemfile.lock'].each do |file_name|
+      ['Gemfile.lock', 'gems.locked'].each do |file_name|
         path = find_file_upwards(file_name, base_path)
         return path if path
       end

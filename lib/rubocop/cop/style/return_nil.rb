@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces consistency between 'return nil' and 'return'.
+      # Enforces consistency between 'return nil' and 'return'.
       #
       # Supported styles are: return, return_nil.
       #
@@ -74,7 +74,8 @@ module RuboCop
         end
 
         def correct_style?(node)
-          style == :return && !return_nil_node?(node) || style == :return_nil && !return_node?(node)
+          (style == :return && !return_nil_node?(node)) ||
+            (style == :return_nil && !return_node?(node))
         end
 
         def scoped_node?(node)

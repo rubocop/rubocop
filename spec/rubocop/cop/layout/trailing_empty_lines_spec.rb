@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
       RUBY
     end
 
-    it 'auto-corrects even if some lines have space' do
+    it 'autocorrects even if some lines have space' do
       expect_offense(<<~RUBY)
         x = 0
 
@@ -139,14 +139,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
       expect_no_offenses("x = 0\n\n")
     end
 
-    it 'auto-corrects missing blank line' do
+    it 'autocorrects missing blank line' do
       expect_correction(<<~RUBY, source: "x = 0\n")
         x = 0
 
       RUBY
     end
 
-    it 'auto-corrects missing newline' do
+    it 'autocorrects missing newline' do
       expect_correction(<<~RUBY, source: 'x = 0')
         x = 0
 

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop checks that your heredocs are using the configured case.
+      # Checks that your heredocs are using the configured case.
       # By default it is configured to enforce uppercase heredocs.
       #
       # @example EnforcedStyle: uppercase (default)

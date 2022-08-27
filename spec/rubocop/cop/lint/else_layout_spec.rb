@@ -23,6 +23,24 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects for the entire else body being on the same line' do
+    expect_offense(<<~RUBY)
+      if something
+        test
+      else something_else
+           ^^^^^^^^^^^^^^ Odd `else` layout detected. Did you mean to use `elsif`?
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if something
+        test
+      else
+        something_else
+      end
+    RUBY
+  end
+
   it 'accepts proper else' do
     expect_no_offenses(<<~RUBY)
       if something
@@ -30,15 +48,6 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
       else
         something
         test
-      end
-    RUBY
-  end
-
-  it 'accepts single-expr else regardless of layout' do
-    expect_no_offenses(<<~RUBY)
-      if something
-        test
-      else bala
       end
     RUBY
   end
@@ -114,6 +123,21 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
       else
         ()
       end
+    RUBY
+  end
+
+  it 'does not register an offense for an elsif with no body' do
+    expect_no_offenses(<<~RUBY)
+      if something
+        foo
+      elsif something_else
+      end
+    RUBY
+  end
+
+  it 'does not register an offense if the entire if is on a single line' do
+    expect_no_offenses(<<~RUBY)
+      if a then b else c end
     RUBY
   end
 end

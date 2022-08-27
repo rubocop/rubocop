@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for trailing inline comments.
+      # Checks for trailing inline comments.
       #
       # @example
       #

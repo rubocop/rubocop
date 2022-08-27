@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
         expect(offenses.size).to eq(1)
         message = <<~MESSAGE.chomp
           unexpected token $end
-          (Using Ruby 2.5 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+          (Using Ruby 2.6 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
         MESSAGE
         offense = offenses.first
         expect(offense.message).to eq(message)
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
           expect(offenses.size).to eq(1)
           message = <<~MESSAGE.chomp
             Lint/Syntax: unexpected token $end
-            (Using Ruby 2.5 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+            (Using Ruby 2.6 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
           MESSAGE
           offense = offenses.first
           expect(offense.message).to eq(message)
@@ -34,14 +34,16 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
         end
       end
 
-      context 'with --auto-correct-all --disable-uncorrectable options' do
-        let(:cop_options) { { auto_correct: true, disable_uncorrectable: true } }
+      context 'with --autocorrect --disable-uncorrectable options' do
+        let(:cop_options) do
+          { autocorrect: true, safe_autocorrect: true, disable_uncorrectable: true }
+        end
 
         it 'returns an offense' do
           expect(offenses.size).to eq(1)
           message = <<~MESSAGE.chomp
             unexpected token $end
-            (Using Ruby 2.5 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+            (Using Ruby 2.6 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
           MESSAGE
           offense = offenses.first
           expect(offense.message).to eq(message)

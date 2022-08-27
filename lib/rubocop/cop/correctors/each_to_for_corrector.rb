@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This class auto-corrects `#each` enumeration to `for` iteration.
+    # This class autocorrects `#each` enumeration to `for` iteration.
     class EachToForCorrector
       extend NodePattern::Macros
 
@@ -11,7 +11,7 @@ module RuboCop
 
       def initialize(block_node)
         @block_node = block_node
-        @collection_node = block_node.send_node.receiver
+        @collection_node = block_node.receiver
         @argument_node = block_node.arguments
       end
 

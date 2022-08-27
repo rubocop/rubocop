@@ -3,24 +3,31 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for a redundant argument passed to certain methods.
+      # Checks for a redundant argument passed to certain methods.
       #
-      # Limitations:
-      #
-      # 1. This cop matches for method names only and hence cannot tell apart
-      #    methods with same name in different classes.
-      # 2. This cop is limited to methods with single parameter.
-      # 3. This cop is unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
-      #    That depends on the nature of the target methods, of course.
+      # NOTE: This cop is limited to methods with single parameter.
       #
       # Method names and their redundant arguments can be configured like this:
       #
+      # [source,yaml]
+      # ----
       # Methods:
       #   join: ''
       #   split: ' '
       #   chomp: "\n"
       #   chomp!: "\n"
       #   foo: 2
+      # ----
+      #
+      # @safety
+      #   This cop is unsafe because of the following limitations:
+      #
+      #   1. This cop matches by method names only and hence cannot tell apart
+      #      methods with same name in different classes.
+      #   2. This cop may be unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
+      #      That depends on the nature of the target methods, of course. For example, the default
+      #      argument to join is `$OUTPUT_FIELD_SEPARATOR` (or `$,`) rather than `''`, and if that
+      #      global is changed, `''` is no longer a redundant argument.
       #
       # @example
       #   # bad
@@ -51,8 +58,11 @@ module RuboCop
           return if node.arguments.count != 1
           return unless redundant_argument?(node)
 
-          add_offense(node, message: format(MSG, arg: node.arguments.first.source)) do |corrector|
-            corrector.remove(argument_range(node))
+          offense_range = argument_range(node)
+          message = format(MSG, arg: node.arguments.first.source)
+
+          add_offense(offense_range, message: message) do |corrector|
+            corrector.remove(offense_range)
           end
         end
 
@@ -76,7 +86,7 @@ module RuboCop
           if node.parenthesized?
             range_between(node.loc.begin.begin_pos, node.loc.end.end_pos)
           else
-            range_with_surrounding_space(range: node.first_argument.source_range, newlines: false)
+            range_with_surrounding_space(node.first_argument.source_range, newlines: false)
           end
         end
       end

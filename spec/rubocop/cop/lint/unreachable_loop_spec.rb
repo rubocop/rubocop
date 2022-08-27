@@ -160,8 +160,8 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
     end
   end
 
-  context 'with IgnoredPatterns' do
-    let(:cop_config) { { 'IgnoredPatterns' => [/exactly\(\d+\)\.times/] } }
+  context 'with AllowedPatterns' do
+    let(:cop_config) { { 'AllowedPatterns' => [/exactly\(\d+\)\.times/] } }
 
     context 'with a ignored method call' do
       it 'does not register an offense' do
@@ -177,6 +177,15 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
           2.times { raise StandardError }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
         RUBY
+      end
+
+      context 'Ruby 2.7', :ruby27 do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            2.times { raise _1 }
+            ^^^^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
+          RUBY
+        end
       end
     end
   end
@@ -249,5 +258,16 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
         return do_something(value) || break
       end
     RUBY
+  end
+
+  context 'Ruby 2.7', :ruby27 do
+    it 'registers an offense when using `return do_something(value) || break` in a loop' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].each do
+        ^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
+          return _1.odd? || break
+        end
+      RUBY
+    end
   end
 end

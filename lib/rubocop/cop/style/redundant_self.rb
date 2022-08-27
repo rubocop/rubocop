@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant uses of `self`.
+      # Checks for redundant uses of `self`.
       #
       # The usage of `self` is only needed when:
       #
@@ -53,7 +53,7 @@ module RuboCop
                       yield __FILE__ __LINE__ __ENCODING__].freeze
 
         def self.autocorrect_incompatible_with
-          [ColonMethodCall]
+          [ColonMethodCall, Layout::DotPosition]
         end
 
         def initialize(config = nil, options = nil)
@@ -100,6 +100,10 @@ module RuboCop
           add_lhs_to_local_variables_scopes(rhs, lhs)
         end
 
+        def on_in_pattern(node)
+          add_match_var_scopes(node)
+        end
+
         def on_send(node)
           return unless node.self_receiver? && regular_method_call?(node)
           return if node.parent&.mlhs_type?
@@ -115,6 +119,8 @@ module RuboCop
         def on_block(node)
           add_scope(node, @local_variables_scopes[node])
         end
+
+        alias on_numblock on_block
 
         def on_if(node)
           # Allow conditional nodes to use `self` in the condition if that variable
@@ -183,6 +189,12 @@ module RuboCop
         def add_masgn_lhs_variables(rhs, lhs)
           lhs.children.each do |child|
             add_lhs_to_local_variables_scopes(rhs, child.to_a.first)
+          end
+        end
+
+        def add_match_var_scopes(in_pattern_node)
+          in_pattern_node.each_descendant(:match_var) do |match_var_node|
+            @local_variables_scopes[in_pattern_node] << match_var_node.children.first
           end
         end
       end

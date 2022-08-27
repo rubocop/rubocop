@@ -37,38 +37,38 @@ RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes, :config do
   # For example, `/(?<foo>#{var}*)` is interpreted as `/(?<foo>*)`.
   # So it does not offense when variables are used in regexp literals.
   context 'when containing a non-regexp literal' do
-    it 'does not register an offence when containing a lvar' do
+    it 'does not register an offense when containing a lvar' do
       expect_no_offenses(<<~'RUBY')
         var = '(\d+)'
         /(?<foo>#{var}*)/
       RUBY
     end
 
-    it 'does not register an offence when containing a ivar' do
+    it 'does not register an offense when containing a ivar' do
       expect_no_offenses(<<~'RUBY')
         /(?<foo>#{@var}*)/
       RUBY
     end
 
-    it 'does not register an offence when containing a cvar' do
+    it 'does not register an offense when containing a cvar' do
       expect_no_offenses(<<~'RUBY')
         /(?<foo>#{@@var}*)/
       RUBY
     end
 
-    it 'does not register an offence when containing a gvar' do
+    it 'does not register an offense when containing a gvar' do
       expect_no_offenses(<<~'RUBY')
         /(?<foo>#{$var}*)/
       RUBY
     end
 
-    it 'does not register an offence when containing a method' do
+    it 'does not register an offense when containing a method' do
       expect_no_offenses(<<~'RUBY')
         /(?<foo>#{do_something}*)/
       RUBY
     end
 
-    it 'does not register an offence when containing a constant' do
+    it 'does not register an offense when containing a constant' do
       expect_no_offenses(<<~'RUBY')
         /(?<foo>#{CONST}*)/
       RUBY

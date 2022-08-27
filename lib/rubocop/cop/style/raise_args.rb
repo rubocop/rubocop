@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks the args passed to `fail` and `raise`. For exploded
+      # Checks the args passed to `fail` and `raise`. For exploded
       # style (default), it recommends passing the exception class and message
       # to `raise`, rather than construct an instance of the error. It will
       # still allow passing just a message, or the construction of an error
@@ -80,7 +80,7 @@ module RuboCop
           return node.source if message_nodes.size > 1
 
           argument = message_nodes.first.source
-          exception_class = exception_node.const_name || exception_node.receiver.source
+          exception_class = exception_node.receiver&.source || exception_node.source
 
           if node.parent && requires_parens?(node.parent)
             "#{node.method_name}(#{exception_class}.new(#{argument}))"
@@ -91,6 +91,9 @@ module RuboCop
 
         def check_compact(node)
           if node.arguments.size > 1
+            exception = node.first_argument
+            return if exception.send_type? && exception.first_argument&.hash_type?
+
             add_offense(node, message: format(COMPACT_MSG, method: node.method_name)) do |corrector|
               replacement = correction_exploded_to_compact(node)
 
@@ -107,8 +110,7 @@ module RuboCop
 
           first_arg = node.first_argument
 
-          return unless first_arg.send_type? && first_arg.method?(:new)
-          return if acceptable_exploded_args?(first_arg.arguments)
+          return if !use_new_method?(first_arg) || acceptable_exploded_args?(first_arg.arguments)
 
           return if allowed_non_exploded_type?(first_arg)
 
@@ -118,6 +120,10 @@ module RuboCop
             corrector.replace(node, replacement)
             opposite_style_detected
           end
+        end
+
+        def use_new_method?(first_arg)
+          first_arg.send_type? && first_arg.receiver && first_arg.method?(:new)
         end
 
         def acceptable_exploded_args?(args)
@@ -141,7 +147,7 @@ module RuboCop
         end
 
         def requires_parens?(parent)
-          parent.and_type? || parent.or_type? || parent.if_type? && parent.ternary?
+          parent.and_type? || parent.or_type? || (parent.if_type? && parent.ternary?)
         end
       end
     end

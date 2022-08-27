@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
-    context 'auto-correct' do
+    context 'autocorrect' do
       context 'with range' do
         let(:expected_each_with_range) do
           <<~RUBY
@@ -180,6 +180,196 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
       end
+
+      it 'corrects an array with `+` operator' do
+        expect_offense(<<~RUBY)
+          def func
+            a = [1, 2]
+            b = [3, 4]
+            c = [5]
+
+            for n in a + b + c
+            ^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            a = [1, 2]
+            b = [3, 4]
+            c = [5]
+
+            (a + b + c).each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects an array with `-` operator' do
+        expect_offense(<<~RUBY)
+          def func
+            a = [1, 2, 3, 4]
+            b = [3]
+
+            for n in a - b
+            ^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            a = [1, 2, 3, 4]
+            b = [3]
+
+            (a - b).each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects an array with `*` operator' do
+        expect_offense(<<~RUBY)
+          def func
+            for n in [1, 2, 3, 4] * 3
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            ([1, 2, 3, 4] * 3).each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects an array with `|` operator' do
+        expect_offense(<<~RUBY)
+          def func
+            a = [1, 2, 3, 4]
+            b = [4, 5]
+
+            for n in a | b
+            ^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            a = [1, 2, 3, 4]
+            b = [4, 5]
+
+            (a | b).each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects an array with `&` operator' do
+        expect_offense(<<~RUBY)
+          def func
+            a = [1, 2, 3, 4]
+            b = [4, 5]
+
+            for n in a & b
+            ^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            a = [1, 2, 3, 4]
+            b = [4, 5]
+
+            (a & b).each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects an array with `&&` operator' do
+        expect_offense(<<~RUBY)
+          def func
+            a = []
+            b = [1, 2, 3]
+
+            for n in a && b
+            ^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            a = []
+            b = [1, 2, 3]
+
+            (a && b).each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects an array with `||` operator' do
+        expect_offense(<<~RUBY)
+          def func
+            a = nil
+            b = [1, 2, 3]
+
+            for n in a || b
+            ^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            a = nil
+            b = [1, 2, 3]
+
+            (a || b).each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
+
+      it 'corrects to `each` without parenthesize collection if non-operator method called' do
+        expect_offense(<<~RUBY)
+          def func
+            for n in [1, 2, nil].compact
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+              puts n
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            [1, 2, nil].compact.each do |n|
+              puts n
+            end
+          end
+        RUBY
+      end
     end
 
     it 'accepts multiline each' do
@@ -250,6 +440,27 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         end
       RUBY
+    end
+
+    context 'Ruby 2.7', :ruby27 do
+      it 'registers an offense for each without an item and uses _ as the item' do
+        expect_offense(<<~RUBY)
+          def func
+            [1, 2, 3].each do
+            ^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+              puts _1
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def func
+            for _ in [1, 2, 3] do
+              puts _1
+            end
+          end
+        RUBY
+      end
     end
 
     it 'registers an offense for correct + opposite style' do
@@ -332,7 +543,7 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
-    context 'when using safe navigation operator' do
+    context 'when using safe navigation operator', :ruby23 do
       it 'does not break' do
         expect_no_offenses(<<~RUBY)
           def func

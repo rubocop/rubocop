@@ -10,7 +10,7 @@ module RuboCop
       end
 
       def body_on_first_line?(node, body)
-        node.source_range.first_line == body.source_range.first_line
+        same_line?(node, body)
       end
 
       def first_part_of(body)

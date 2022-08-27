@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks symbol literal syntax.
+      # Checks symbol literal syntax.
       #
       # @example
       #

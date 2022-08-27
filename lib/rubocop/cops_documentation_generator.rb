@@ -33,15 +33,33 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     cops.with_department(department).sort!
   end
 
-  def cops_body(cop, description, examples_objects, pars)
+  def cops_body(cop, description, examples_objects, safety_objects, pars) # rubocop:disable Metrics/AbcSize
+    check_examples_to_have_the_default_enforced_style!(examples_objects, cop)
+
     content = h2(cop.cop_name)
     content << required_ruby_version(cop)
     content << properties(cop)
     content << "#{description}\n"
-    content << examples(examples_objects) if examples_objects.count.positive?
+    content << safety_object(safety_objects) if safety_objects.any? { |s| !s.text.blank? }
+    content << examples(examples_objects) if examples_objects.any?
     content << configurations(pars)
     content << references(cop)
     content
+  end
+
+  def check_examples_to_have_the_default_enforced_style!(examples_object, cop)
+    return if examples_object.none?
+
+    examples_describing_enforced_style = examples_object.map(&:name).grep(/EnforcedStyle:/)
+    return if examples_describing_enforced_style.none?
+
+    if examples_describing_enforced_style.index { |name| name.match?('default') }.nonzero?
+      raise "Put the example with the default EnforcedStyle on top for #{cop.cop_name}"
+    end
+
+    return if examples_describing_enforced_style.any? { |name| name.match?('default') }
+
+    raise "Specify the default EnforcedStyle for #{cop.cop_name}"
   end
 
   def examples(examples_object)
@@ -49,6 +67,16 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       content << "\n" unless content.end_with?("\n\n")
       content << h4(example.name) unless example.name == ''
       content << code_example(example)
+    end
+  end
+
+  def safety_object(safety_object_objects)
+    safety_object_objects.each_with_object(h3('Safety').dup) do |safety_object, content|
+      next if safety_object.text.blank?
+
+      content << "\n" unless content.end_with?("\n\n")
+      content << safety_object.text
+      content << "\n"
     end
   end
 
@@ -61,8 +89,8 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   # rubocop:disable Metrics/MethodLength
   def properties(cop)
     header = [
-      'Enabled by default', 'Safe', 'Supports autocorrection', 'VersionAdded',
-      'VersionChanged'
+      'Enabled by default', 'Safe', 'Supports autocorrection', 'Version Added',
+      'Version Changed'
     ]
     autocorrect = if cop.support_autocorrect?
                     "Yes#{' (Unsafe)' unless cop.new(config).safe_autocorrect?}"
@@ -180,8 +208,8 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def wrap_backtick(value)
     if value.is_a?(String)
-      # Use `+` to prevent text like `**/*.gemspec` from being bold.
-      value.start_with?('*') ? "`+#{value}+`" : "`#{value}`"
+      # Use `+` to prevent text like `**/*.gemspec`, `spec/**/*` from being bold.
+      value.include?('*') ? "`+#{value}+`" : "`#{value}`"
     else
       "`#{value}`"
     end
@@ -217,12 +245,13 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     ]
     pars = cop_config.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
-    examples_object = []
+    examples_object = safety_object = []
     cop_code(cop) do |code_object|
       description = code_object.docstring unless code_object.docstring.blank?
       examples_object = code_object.tags('example')
+      safety_object = code_object.tags('safety')
     end
-    cops_body(cop, description, examples_object, pars)
+    cops_body(cop, description, examples_object, safety_object, pars)
   end
 
   def cop_code(cop)
@@ -234,7 +263,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def table_of_content_for_department(department)
-    type_title = department[0].upcase + department[1..-1]
+    type_title = department[0].upcase + department[1..]
     filename = "#{department_to_basename(department)}.adoc"
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
     cops_of_department(department).each do |cop|

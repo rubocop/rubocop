@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop makes sure that all variables use the configured style,
+      # Makes sure that all variables use the configured style,
       # snake_case or camelCase, for their names.
       #
       # @example EnforcedStyle: snake_case (default)
@@ -19,11 +19,20 @@ module RuboCop
       #
       #   # good
       #   fooBar = 1
+      #
+      # @example AllowedPatterns: ['_v\d+\z']
+      #   # good
+      #   :release_v1
       class VariableName < Base
         include AllowedIdentifiers
         include ConfigurableNaming
+        include AllowedPattern
 
         MSG = 'Use %<style>s for variable names.'
+
+        def valid_name?(node, name, given_style = style)
+          super || matches_allowed_pattern?(name)
+        end
 
         def on_lvasgn(node)
           name, = *node

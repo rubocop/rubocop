@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for ambiguous operators in the first argument of a
+      # Checks for ambiguous operators in the first argument of a
       # method invocation without parentheses.
       #
       # @example
@@ -24,11 +24,11 @@ module RuboCop
         extend AutoCorrector
 
         AMBIGUITIES = {
-          '+'  => { actual: 'positive number', possible: 'addition' },
-          '-'  => { actual: 'negative number', possible: 'subtraction' },
-          '*'  => { actual: 'splat',           possible: 'multiplication' },
-          '&'  => { actual: 'block',           possible: 'binary AND' },
-          '**' => { actual: 'keyword splat',   possible: 'exponent' }
+          '+'  => { actual: 'positive number', possible: 'an addition' },
+          '-'  => { actual: 'negative number', possible: 'a subtraction' },
+          '*'  => { actual: 'splat',           possible: 'a multiplication' },
+          '&'  => { actual: 'block',           possible: 'a binary AND' },
+          '**' => { actual: 'keyword splat',   possible: 'an exponent' }
         }.each do |key, hash|
           hash[:operator] = key
         end
@@ -36,7 +36,7 @@ module RuboCop
         MSG_FORMAT = 'Ambiguous %<actual>s operator. Parenthesize the method ' \
                      "arguments if it's surely a %<actual>s operator, or add " \
                      'a whitespace to the right of the `%<operator>s` if it ' \
-                     'should be a %<possible>s.'
+                     'should be %<possible>s.'
 
         def on_new_investigation
           processed_source.diagnostics.each do |diagnostic|

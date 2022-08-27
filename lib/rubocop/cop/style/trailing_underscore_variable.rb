@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for extra underscores in variable assignment.
+      # Checks for extra underscores in variable assignment.
       #
       # @example
       #   # bad

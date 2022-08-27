@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop checks method parameter names for how descriptive they
+      # Checks method parameter names for how descriptive they
       # are. It is highly configurable.
       #
       # The `MinNameLength` config option takes an integer. It represents
@@ -26,7 +26,7 @@ module RuboCop
       #     num1 * num2
       #   end
       #
-      #   # With `MinArgNameLength` set to number greater than 1
+      #   # With `MinNameLength` set to number greater than 1
       #   def baz(a, b, c)
       #     do_stuff(a, b, c)
       #   end

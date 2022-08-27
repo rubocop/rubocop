@@ -3,13 +3,17 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for the formatting of empty method definitions.
+      # Checks for the formatting of empty method definitions.
       # By default it enforces empty method definitions to go on a single
       # line (compact style), but it can be configured to enforce the `end`
       # to go on its own line (expanded style).
       #
       # NOTE: A method definition is not considered empty if it contains
-      #       comments.
+      # comments.
+      #
+      # NOTE: Autocorrection will not be applied for the `compact` style
+      # if the resulting code is longer than the `Max` configuration for
+      # `Layout/LineLength`, but an offense will still be registered.
       #
       # @example EnforcedStyle: compact (default)
       #   # bad
@@ -51,7 +55,12 @@ module RuboCop
           return if node.body || comment_lines?(node)
           return if correct_style?(node)
 
-          add_offense(node) { |corrector| corrector.replace(node, corrected(node)) }
+          add_offense(node) do |corrector|
+            correction = corrected(node)
+            next if compact_style? && max_line_length && correction.size > max_line_length
+
+            corrector.replace(node, correction)
+          end
         end
         alias on_defs on_def
 
@@ -62,7 +71,7 @@ module RuboCop
         end
 
         def correct_style?(node)
-          compact_style? && compact?(node) || expanded_style? && expanded?(node)
+          (compact_style? && compact?(node)) || (expanded_style? && expanded?(node))
         end
 
         def corrected(node)
@@ -97,6 +106,12 @@ module RuboCop
 
         def expanded_style?
           style == :expanded
+        end
+
+        def max_line_length
+          return unless config.for_cop('Layout/LineLength')['Enabled']
+
+          config.for_cop('Layout/LineLength')['Max']
         end
       end
     end

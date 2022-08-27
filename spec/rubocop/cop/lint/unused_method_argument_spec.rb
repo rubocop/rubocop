@@ -14,8 +14,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       context 'and an argument is unused' do
         it 'registers an offense and adds underscore-prefix' do
           message = 'Unused method argument - `foo`. ' \
-                      "If it's necessary, use `_` or `_foo` " \
-                      "as an argument name to indicate that it won't be used."
+                    "If it's necessary, use `_` or `_foo` " \
+                    "as an argument name to indicate that it won't be used."
 
           expect_offense(<<~RUBY)
             def some_method(foo, bar)
@@ -34,8 +34,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         context 'and there is some whitespace around the unused argument' do
           it 'registers an offense and preserves whitespace' do
             message = 'Unused method argument - `bar`. ' \
-                        "If it's necessary, use `_` or `_bar` " \
-                        "as an argument name to indicate that it won't be used."
+                      "If it's necessary, use `_` or `_bar` " \
+                      "as an argument name to indicate that it won't be used."
 
             expect_offense(<<~RUBY)
               def some_method(foo,
@@ -67,8 +67,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         context "and one argument is assigned to another, whilst other's value is not used" do
           it 'registers an offense' do
             message = "Unused method argument - `a`. If it's necessary, use " \
-                        '`_` or `_a` as an argument name to indicate that ' \
-                        "it won't be used."
+                      '`_` or `_a` as an argument name to indicate that ' \
+                      "it won't be used."
 
             expect_offense(<<~RUBY)
               def foo(a, b)
@@ -88,13 +88,13 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
       context 'and all the arguments are unused' do
         it 'registers offenses and suggests the use of `*` and ' \
-           'auto-corrects to add underscore-prefix to all arguments' do
+           'autocorrects to add underscore-prefix to all arguments' do
           (foo_message, bar_message) = %w[foo bar].map do |arg|
             "Unused method argument - `#{arg}`. " \
-            "If it's necessary, use `_` or `_#{arg}` " \
-            "as an argument name to indicate that it won't be used. " \
-            'You can also write as `some_method(*)` if you want the method ' \
-            "to accept any arguments but don't care about them."
+              "If it's necessary, use `_` or `_#{arg}` " \
+              "as an argument name to indicate that it won't be used. " \
+              'You can also write as `some_method(*)` if you want the method ' \
+              "to accept any arguments but don't care about them."
           end
 
           expect_offense(<<~RUBY)
@@ -115,8 +115,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     context 'when a splat argument is unused' do
       it 'registers an offense and preserves the splat' do
         message = 'Unused method argument - `bar`. ' \
-                    "If it's necessary, use `_` or `_bar` " \
-                    "as an argument name to indicate that it won't be used."
+                  "If it's necessary, use `_` or `_bar` " \
+                  "as an argument name to indicate that it won't be used."
 
         expect_offense(<<~RUBY)
           def some_method(foo, *bar)
@@ -136,8 +136,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     context 'when an argument with a default value is unused' do
       it 'registers an offense and preserves the default value' do
         message = 'Unused method argument - `bar`. ' \
-                    "If it's necessary, use `_` or `_bar` " \
-                    "as an argument name to indicate that it won't be used."
+                  "If it's necessary, use `_` or `_bar` " \
+                  "as an argument name to indicate that it won't be used."
 
         expect_offense(<<~RUBY)
           def some_method(foo, bar = 1)
@@ -154,16 +154,18 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
     end
 
-    context 'when a required keyword argument is unused' do
-      it 'registers an offense but does not suggest underscore-prefix' do
-        expect_offense(<<~RUBY)
-          def self.some_method(foo, bar:)
-                                    ^^^ Unused method argument - `bar`.
-            puts foo
-          end
-        RUBY
+    context 'when a required keyword argument is unused', ruby: 2.1 do
+      context 'when a required keyword argument is unused' do
+        it 'registers an offense but does not suggest underscore-prefix' do
+          expect_offense(<<~RUBY)
+            def self.some_method(foo, bar:)
+                                      ^^^ Unused method argument - `bar`.
+              puts foo
+            end
+          RUBY
 
-        expect_no_corrections
+          expect_no_corrections
+        end
       end
     end
 
@@ -195,8 +197,8 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     context 'when a trailing block argument is unused' do
       it 'registers an offense and removes the unused block arg' do
         message = 'Unused method argument - `block`. ' \
-                    "If it's necessary, use `_` or `_block` " \
-                    "as an argument name to indicate that it won't be used."
+                  "If it's necessary, use `_` or `_block` " \
+                  "as an argument name to indicate that it won't be used."
 
         expect_offense(<<~RUBY)
           def some_method(foo, bar, &block)
@@ -216,10 +218,10 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     context 'when a singleton method argument is unused' do
       it 'registers an offense' do
         message = "Unused method argument - `foo`. If it's necessary, use " \
-                    '`_` or `_foo` as an argument name to indicate that it ' \
-                    "won't be used. You can also write as `some_method(*)` " \
-                    'if you want the method to accept any arguments but ' \
-                    "don't care about them."
+                  '`_` or `_foo` as an argument name to indicate that it ' \
+                  "won't be used. You can also write as `some_method(*)` " \
+                  'if you want the method to accept any arguments but ' \
+                  "don't care about them."
 
         expect_offense(<<~RUBY)
           def self.some_method(foo)
@@ -297,10 +299,10 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       context 'when a method argument is unused' do
         it 'registers an offense' do
           message = "Unused method argument - `foo`. If it's necessary, use " \
-                      '`_` or `_foo` as an argument name to indicate that ' \
-                      "it won't be used. You can also write as " \
-                      '`some_method(*)` if you want the method to accept any ' \
-                      "arguments but don't care about them."
+                    '`_` or `_foo` as an argument name to indicate that ' \
+                    "it won't be used. You can also write as " \
+                    '`some_method(*)` if you want the method to accept any ' \
+                    "arguments but don't care about them."
 
           expect_offense(<<~RUBY)
             def some_method(foo)
@@ -332,9 +334,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       context 'inside another method definition' do
         (foo_message, bar_message) = %w[foo bar].map do |arg|
           "Unused method argument - `#{arg}`. If it's necessary, use `_` or " \
-          "`_#{arg}` as an argument name to indicate that it won't be " \
-          'used. You can also write as `some_method(*)` if you want the ' \
-          "method to accept any arguments but don't care about them."
+            "`_#{arg}` as an argument name to indicate that it won't be " \
+            'used. You can also write as `some_method(*)` if you want the ' \
+            "method to accept any arguments but don't care about them."
         end
 
         it 'registers offenses' do
@@ -363,10 +365,10 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       context 'when a method argument is unused' do
         it 'registers an offense' do
           message = "Unused method argument - `foo`. If it's necessary, use " \
-                      '`_` or `_foo` as an argument name to indicate that it ' \
-                      "won't be used. You can also write as `some_method(*)` " \
-                      'if you want the method to accept any arguments but ' \
-                      "don't care about them."
+                    '`_` or `_foo` as an argument name to indicate that it ' \
+                    "won't be used. You can also write as `some_method(*)` " \
+                    'if you want the method to accept any arguments but ' \
+                    "don't care about them."
 
           expect_offense(<<~RUBY)
             def some_method(foo)
@@ -404,10 +406,10 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     it 'registers an offense for a non-empty method with a single unused parameter' do
       message = "Unused method argument - `arg`. If it's necessary, use " \
-                  '`_` or `_arg` as an argument name to indicate that it ' \
-                  "won't be used. You can also write as `method(*)` if you " \
-                  "want the method to accept any arguments but don't care " \
-                  'about them.'
+                '`_` or `_arg` as an argument name to indicate that it ' \
+                "won't be used. You can also write as `method(*)` if you " \
+                "want the method to accept any arguments but don't care " \
+                'about them.'
 
       expect_offense(<<~RUBY)
         def method(arg)
@@ -433,9 +435,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     it 'registers an offense for a non-empty method with multiple unused parameters' do
       (a_message, b_message, others_message) = %w[a b others].map do |arg|
         "Unused method argument - `#{arg}`. If it's necessary, use `_` or " \
-        "`_#{arg}` as an argument name to indicate that it won't be used. " \
-        'You can also write as `method(*)` if you want the method ' \
-        "to accept any arguments but don't care about them."
+          "`_#{arg}` as an argument name to indicate that it won't be used. " \
+          'You can also write as `method(*)` if you want the method ' \
+          "to accept any arguments but don't care about them."
       end
 
       expect_offense(<<~RUBY)
@@ -466,6 +468,14 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
+    it 'accepts a method with a single unused parameter & raises NotImplementedError, message' do
+      expect_no_offenses(<<~RUBY)
+        def method(arg)
+          raise NotImplementedError, message
+        end
+      RUBY
+    end
+
     it 'accepts a method with a single unused parameter & raises ::NotImplementedError' do
       expect_no_offenses(<<~RUBY)
         def method(arg)
@@ -490,7 +500,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       RUBY
     end
 
-    it 'accepts an empty singleton method with a single unused parameter &'\
+    it 'accepts an empty singleton method with a single unused parameter &' \
        'raise NotImplementedError' do
       expect_no_offenses(<<~RUBY)
         def self.method(unused)
@@ -501,10 +511,10 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
 
     it 'registers an offense for a non-empty method with a single unused parameter' do
       message = "Unused method argument - `arg`. If it's necessary, use " \
-                  '`_` or `_arg` as an argument name to indicate that it ' \
-                  "won't be used. You can also write as `method(*)` if you " \
-                  "want the method to accept any arguments but don't care " \
-                  'about them.'
+                '`_` or `_arg` as an argument name to indicate that it ' \
+                "won't be used. You can also write as `method(*)` if you " \
+                "want the method to accept any arguments but don't care " \
+                'about them.'
 
       expect_offense(<<~RUBY)
         def method(arg)
@@ -531,9 +541,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
     it 'registers an offense for a non-empty method with multiple unused parameters' do
       (a_message, b_message, others_message) = %w[a b others].map do |arg|
         "Unused method argument - `#{arg}`. If it's necessary, use `_` or " \
-        "`_#{arg}` as an argument name to indicate that it won't be used. " \
-        'You can also write as `method(*)` if you want the method ' \
-        "to accept any arguments but don't care about them."
+          "`_#{arg}` as an argument name to indicate that it won't be used. " \
+          'You can also write as `method(*)` if you want the method ' \
+          "to accept any arguments but don't care about them."
       end
 
       expect_offense(<<~RUBY)

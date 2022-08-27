@@ -6,6 +6,10 @@ module RuboCop
       # Use a guard clause instead of wrapping the code inside a conditional
       # expression
       #
+      # A condition with an `elsif` or `else` branch is allowed unless
+      # one of `return`, `break`, `next`, `raise`, or `fail` is used
+      # in the body of the conditional expression.
+      #
       # @example
       #   # bad
       #   def test
@@ -47,6 +51,44 @@ module RuboCop
       #   # good
       #   foo || raise('exception') if something
       #   ok
+      #
+      # @example AllowConsecutiveConditionals: false (default)
+      #   # bad
+      #   def test
+      #     if foo?
+      #       work
+      #     end
+      #
+      #     if bar?  # <- reports an offense
+      #       work
+      #     end
+      #   end
+      #
+      # @example AllowConsecutiveConditionals: true
+      #   # good
+      #   def test
+      #     if foo?
+      #       work
+      #     end
+      #
+      #     if bar?
+      #       work
+      #     end
+      #   end
+      #
+      #   # bad
+      #   def test
+      #     if foo?
+      #       work
+      #     end
+      #
+      #     do_something
+      #
+      #     if bar?  # <- reports an offense
+      #       work
+      #     end
+      #   end
+      #
       class GuardClause < Base
         include MinBodyLength
         include StatementModifier
@@ -79,7 +121,7 @@ module RuboCop
           kw = if guard_clause_in_if
                  node.loc.keyword.source
                else
-                 opposite_keyword(node)
+                 node.inverse_keyword
                end
 
           register_offense(node, guard_clause_source(guard_clause), kw)
@@ -89,18 +131,26 @@ module RuboCop
 
         def check_ending_if(node)
           return if accepted_form?(node, ending: true) || !min_body_length?(node)
+          return if allowed_consecutive_conditionals? &&
+                    consecutive_conditionals?(node.parent, node)
 
-          register_offense(node, 'return', opposite_keyword(node))
+          register_offense(node, 'return', node.inverse_keyword)
         end
 
-        def opposite_keyword(node)
-          node.if? ? 'unless' : 'if'
+        def consecutive_conditionals?(parent, node)
+          parent.each_child_node.inject(false) do |if_type, child|
+            break if_type if node == child
+
+            child.if_type?
+          end
         end
 
         def register_offense(node, scope_exiting_keyword, conditional_keyword)
           condition, = node.node_parts
           example = [scope_exiting_keyword, conditional_keyword, condition.source].join(' ')
           if too_long_for_single_line?(node, example)
+            return if trivial?(node)
+
             example = "#{conditional_keyword} #{condition.source}; #{scope_exiting_keyword}; end"
           end
 
@@ -126,6 +176,10 @@ module RuboCop
           accepted_if?(node, ending) || node.condition.multiline? || node.parent&.assignment?
         end
 
+        def trivial?(node)
+          node.branches.one? && !node.if_branch.if_type? && !node.if_branch.begin_type?
+        end
+
         def accepted_if?(node, ending)
           return true if node.modifier_form? || node.ternary?
 
@@ -134,6 +188,10 @@ module RuboCop
           else
             !node.else? || node.elsif?
           end
+        end
+
+        def allowed_consecutive_conditionals?
+          cop_config.fetch('AllowConsecutiveConditionals', false)
         end
       end
     end

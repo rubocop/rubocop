@@ -317,7 +317,7 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     RUBY
   end
 
-  it 'accepts reader nested within an instance_eval calll' do
+  it 'accepts reader nested within an instance_eval call' do
     expect_no_offenses(<<~RUBY)
       something.instance_eval do
         begin

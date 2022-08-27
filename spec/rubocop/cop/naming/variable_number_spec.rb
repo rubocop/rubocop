@@ -104,6 +104,13 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
             ^^^^^^^ Use snake_case for method name numbers.
       RUBY
     end
+
+    it 'registers an offense for normal case numbering in a global variable name' do
+      expect_offense(<<~RUBY)
+        $arg1 = :foo
+        ^^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
   end
 
   context 'when configured for normal' do
@@ -167,6 +174,13 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       expect_offense(<<~RUBY)
         def method_1; end
             ^^^^^^^^ Use normalcase for method name numbers.
+      RUBY
+    end
+
+    it 'registers an offense for snake case numbering in a global variable name' do
+      expect_offense(<<~RUBY)
+        $arg_1 = :foo
+        ^^^^^^ Use normalcase for variable numbers.
       RUBY
     end
   end
@@ -316,6 +330,107 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
 
     it 'does not register an offense for a symbol that is allowed' do
       expect_no_offenses(':capture3')
+    end
+  end
+
+  context 'when AllowedPatterns is set' do
+    let(:cop_config) do
+      {
+        'AllowedIdentifiers' => [],
+        'AllowedPatterns' => [
+          '_v\d+\z',
+          'allow_me'
+        ],
+        'CheckSymbols' => true,
+        'CheckMethodNames' => true,
+        'EnforcedStyle' => 'snake_case'
+      }
+    end
+
+    it 'registers an offense for a local variable name that does not match an allowed pattern' do
+      expect_offense(<<~RUBY)
+        foo_a1 = :foo
+        ^^^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for a local variable name that matches an allowed pattern' do
+      expect_no_offenses(<<~RUBY)
+        foo_v1 = :foo
+        foo_allow_me_a1 = :allowed
+      RUBY
+    end
+
+    it 'registers an offense for a instance variable name that does not match an allowed pattern' do
+      expect_offense(<<~RUBY)
+        @foo_a1 = :foo
+        ^^^^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for a instance variable name that matches an allowed pattern' do
+      expect_no_offenses(<<~RUBY)
+        @foo_v1 = :foo
+        @foo_allow_me_a1 = :allowed
+      RUBY
+    end
+
+    it 'registers an offense for a class variable name that does not match an allowed pattern' do
+      expect_offense(<<~RUBY)
+        @@foo_a1 = :foo
+        ^^^^^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for a class variable name that matches an allowed pattern' do
+      expect_no_offenses(<<~RUBY)
+        @@foo_v1 = :foo
+        @@foo_allow_me_a1 = :allowed
+      RUBY
+    end
+
+    it 'registers an offense for a global variable name that does not match an allowed pattern' do
+      expect_offense(<<~RUBY)
+        $foo_a1 = :foo
+        ^^^^^^^ Use snake_case for variable numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for a global variable name that matches an allowed pattern' do
+      expect_no_offenses(<<~RUBY)
+        $foo_v1 = :foo
+        $foo_allow_me_a1 = :allowed
+      RUBY
+    end
+
+    it 'registers an offense for a method name that does not match an allowed pattern' do
+      expect_offense(<<~RUBY)
+        def foo_a1
+            ^^^^^^ Use snake_case for method name numbers.
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a method name that matches an allowed pattern' do
+      expect_no_offenses(<<~RUBY)
+        def foo_v1
+        end
+
+        def foo_allow_me_a1
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a symbol that does not match an allowed pattern' do
+      expect_offense(<<~RUBY)
+        :foo_a1
+        ^^^^^^^ Use snake_case for symbol numbers.
+      RUBY
+    end
+
+    it 'does not register an offense for a symbol that matches an allowed pattern' do
+      expect_no_offenses(':foo_v1')
+      expect_no_offenses(':foo_allow_me_a1')
     end
   end
 end

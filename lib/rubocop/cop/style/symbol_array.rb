@@ -3,11 +3,12 @@
 module RuboCop
   module Cop
     module Style
-      # This cop can check for array literals made up of symbols that are not
+      # Checks for array literals made up of symbols that are not
       # using the %i() syntax.
       #
       # Alternatively, it checks for symbol arrays using the %i() syntax on
-      # projects which do not want to use that syntax.
+      # projects which do not want to use that syntax, perhaps because they
+      # support a version of Ruby lower than 2.0.
       #
       # Configuration option: MinSize
       # If set, arrays with fewer elements than this value will not trigger the
@@ -33,9 +34,12 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include PercentArray
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.0
 
         PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
-        ARRAY_MSG = 'Use `[]` for an array of symbols.'
+        ARRAY_MSG = 'Use %<prefer>s for an array of symbols.'
 
         class << self
           attr_accessor :largest_brackets
@@ -60,18 +64,17 @@ module RuboCop
           end
         end
 
-        def correct_bracketed(corrector, node)
+        def build_bracketed_array(node)
           syms = node.children.map do |c|
             if c.dsym_type?
               string_literal = to_string_literal(c.source)
 
-              ":#{trim_string_interporation_escape_character(string_literal)}"
+              ":#{trim_string_interpolation_escape_character(string_literal)}"
             else
               to_symbol_literal(c.value.to_s)
             end
           end
-
-          corrector.replace(node, "[#{syms.join(', ')}]")
+          build_bracketed_array_with_appropriate_whitespace(elements: syms, node: node)
         end
 
         def to_symbol_literal(string)

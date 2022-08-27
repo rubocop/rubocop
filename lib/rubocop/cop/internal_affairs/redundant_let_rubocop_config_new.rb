@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # This cop checks that `let` is `RuboCop::Config.new` with no arguments.
+      # Checks that `let` is `RuboCop::Config.new` with no arguments.
       #
       # @example
       #   # bad

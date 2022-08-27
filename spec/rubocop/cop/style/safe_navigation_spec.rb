@@ -2,6 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
+  let(:target_ruby_version) { 2.3 }
 
   it 'allows calls to methods not safeguarded by respond_to' do
     expect_no_offenses('foo.bar')
@@ -115,6 +116,10 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     expect_no_offenses('foo.baz = bar if foo')
   end
 
+  it 'allows an object check before a negated method call with a safe navigation' do
+    expect_no_offenses('obj && !obj&.do_something')
+  end
+
   it 'allows object checks in the condition of an elsif statement ' \
      'and a method call on that object in the body' do
     expect_no_offenses(<<~RUBY)
@@ -129,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   it 'allows for empty if blocks with comments' do
     expect_no_offenses(<<~RUBY)
       if foo
-        # a random commnet
+        # a random comment
         # TODO: Implement this before
       end
     RUBY
@@ -201,6 +206,17 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         expect_correction(<<~RUBY)
           #{variable}&.to_i
+        RUBY
+      end
+
+      it 'registers an offense when safe guard check and safe navigation method call are connected with `&&` condition' do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable} && %{variable}&.do_something
+          ^{variable}^^^^^{variable}^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead of checking if an object exists before calling the method.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.do_something
         RUBY
       end
 
@@ -370,7 +386,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       end
 
       it 'registers an offense for a chained method call safeguarded ' \
-          'with an unless nil check for the object' do
+         'with an unless nil check for the object' do
         expect_offense(<<~RUBY, variable: variable)
           %{variable}.one.two(baz) { |e| e.qux } unless %{variable}.nil?
           ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
@@ -871,12 +887,55 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
             RUBY
           end
 
+          context 'MaxChainLength: 1' do
+            let(:cop_config) { { 'MaxChainLength' => 1 } }
+
+            it 'registers an offense for an object check followed by 1 chained method calls' do
+              expect_offense(<<~RUBY, variable: variable)
+                %{variable} && %{variable}.one
+                ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                #{variable}&.one
+              RUBY
+            end
+
+            it 'allows an object check followed by 2 chained method calls' do
+              expect_no_offenses(<<~RUBY)
+                #{variable} && #{variable}.one.two
+              RUBY
+            end
+          end
+
+          context 'MaxChainLength: 3' do
+            let(:cop_config) { { 'MaxChainLength' => 3 } }
+
+            it 'registers an offense for an object check followed by 3 chained method calls' do
+              expect_offense(<<~RUBY, variable: variable)
+                %{variable} && %{variable}.one.two.three
+                ^{variable}^^^^^{variable}^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                #{variable}&.one&.two&.three
+              RUBY
+            end
+
+            it 'allows an object check followed by 4 chained method calls' do
+              expect_no_offenses(<<~RUBY)
+                #{variable} && #{variable}.one.two.three.fore
+              RUBY
+            end
+          end
+
           context 'with Lint/SafeNavigationChain disabled' do
             let(:config) do
-              RuboCop::Config.new('Lint/SafeNavigationChain' => {
-                                    'Enabled' => false
-                                  },
-                                  'Style/SafeNavigation' => cop_config)
+              RuboCop::Config.new(
+                'AllCops' => { 'TargetRubyVersion' => target_ruby_version },
+                'Lint/SafeNavigationChain' => { 'Enabled' => false },
+                'Style/SafeNavigation' => cop_config
+              )
             end
 
             it 'allows an object check followed by chained method calls' do
@@ -917,8 +976,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
         end
 
-        it 'registers an offense for an object check followed by ' \
-           'a method calls that nil responds to ' do
+        it 'registers an offense for an object check followed by a method calls that nil responds to' do
           expect_offense(<<~RUBY, variable: variable)
             %{variable} && %{variable}.to_i
             ^{variable}^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
@@ -1104,6 +1162,12 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
     it 'allows enumerable accessor method calls safeguarded by a respond_to check' do
       expect_no_offenses('foo[0] if foo.respond_to?(:[])')
+    end
+  end
+
+  context 'when Ruby <= 2.2', :ruby22 do
+    it 'does not register an offense when a method call that nil responds to safe guarded by an object check' do
+      expect_no_offenses('foo.bar if foo')
     end
   end
 end

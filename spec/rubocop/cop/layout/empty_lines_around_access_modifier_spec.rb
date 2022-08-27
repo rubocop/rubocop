@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
         RUBY
       end
 
-      it 'accepts missing blank line when at the beginning of fileand preceded by a comment' do
+      it 'accepts missing blank line when at the beginning of file and preceded by a comment' do
         expect_no_offenses(<<~RUBY)
           # comment
           #{access_modifier}
@@ -413,6 +413,39 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
 
             #{access_modifier}
             def test; end
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'Ruby 2.7', :ruby27 do
+    %w[private protected public module_function].each do |access_modifier|
+      it "registers an offense for missing around line before #{access_modifier}" do
+        expect_offense(<<~RUBY)
+          included do
+            _1
+            #{access_modifier}
+            #{'^' * access_modifier.size} Keep a blank line before and after `#{access_modifier}`.
+            def test; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          included do
+            _1
+
+            #{access_modifier}
+
+            def test; end
+          end
+        RUBY
+      end
+
+      it "ignores #{access_modifier} with numblock argument" do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            #{access_modifier} { _1 }
           end
         RUBY
       end

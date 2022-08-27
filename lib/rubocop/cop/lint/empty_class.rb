@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for classes and metaclasses without a body.
+      # Checks for classes and metaclasses without a body.
       # Such empty classes and metaclasses are typically an oversight or we should provide a comment
       # to be clearer what we're aiming for.
       #

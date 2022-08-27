@@ -133,6 +133,17 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInPattern, :config do
   context 'when `AllowComments: true`', :ruby27 do
     let(:cop_config) { { 'AllowComments' => true } }
 
+    it 'registers an offense for empty `in` when comment is in another branch' do
+      expect_offense(<<~RUBY)
+        case condition
+        in [a]
+        ^^^^^^ Avoid `in` branches without a body.
+        in [a, b]
+          # do nothing
+        end
+      RUBY
+    end
+
     it 'accepts an empty `in` body with a comment' do
       expect_no_offenses(<<~RUBY)
         case condition

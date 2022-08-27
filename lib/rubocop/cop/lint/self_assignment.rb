@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for self-assignments.
+      # Checks for self-assignments.
       #
       # @example
       #   # bad

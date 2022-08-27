@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when withing eigenclass' do
+  it 'registers an offense and corrects when within eigenclass' do
     expect_offense(<<~RUBY)
       class Foo
         attr_reader :bar
@@ -217,7 +217,7 @@ RSpec.describe RuboCop::Cop::Style::BisectedAttrAccessor, :config do
     RUBY
   end
 
-  it 'does not register an offense when accessors are withing different visibility scopes' do
+  it 'does not register an offense when accessors are within different visibility scopes' do
     expect_no_offenses(<<~RUBY)
       class Foo
         attr_reader :bar

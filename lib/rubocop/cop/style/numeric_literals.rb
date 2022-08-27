@@ -3,8 +3,16 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for big numeric literals without _ between groups
+      # Checks for big numeric literals without `_` between groups
       # of digits in them.
+      #
+      # Additional allowed patterns can be added by adding regexps to
+      # the `AllowedPatterns` configuration. All regexps are treated
+      # as anchored even if the patterns do not contain anchors (so
+      # `\d{4}_\d{4}` will allow `1234_5678` but not `1234_5678_9012`).
+      #
+      # NOTE: Even if `AllowedPatterns` are given, autocorrection will
+      # only correct to the standard pattern of an `_` every 3 digits.
       #
       # @example
       #
@@ -27,8 +35,14 @@ module RuboCop
       #   # bad
       #   10_000_00 # typical representation of $10,000 in cents
       #
+      # @example AllowedNumbers: [3000]
+      #
+      #   # good
+      #   3000 # You can specify allowed numbers. (e.g. port number)
+      #
       class NumericLiterals < Base
         include IntegerNode
+        include AllowedPattern
         extend AutoCorrector
 
         MSG = 'Use underscores(_) as thousands separator and separate every 3 digits with them.'
@@ -51,25 +65,25 @@ module RuboCop
 
         def check(node)
           int = integer_part(node)
-
           # TODO: handle non-decimal literals as well
           return if int.start_with?('0')
+          return if allowed_numbers.include?(int)
+          return if matches_allowed_pattern?(int)
           return unless int.size >= min_digits
 
           case int
           when /^\d+$/
-            return unless (self.min_digits = int.size + 1)
-
-            register_offense(node)
+            register_offense(node) { self.min_digits = int.size + 1 }
           when /\d{4}/, short_group_regex
-            return unless (self.config_to_allow_offenses = { 'Enabled' => false })
-
-            register_offense(node)
+            register_offense(node) { self.config_to_allow_offenses = { 'Enabled' => false } }
           end
         end
 
-        def register_offense(node)
-          add_offense(node) { |corrector| corrector.replace(node, format_number(node)) }
+        def register_offense(node, &_block)
+          add_offense(node) do |corrector|
+            yield
+            corrector.replace(node, format_number(node))
+          end
         end
 
         def short_group_regex
@@ -99,6 +113,15 @@ module RuboCop
 
         def min_digits
           cop_config['MinDigits']
+        end
+
+        def allowed_numbers
+          cop_config.fetch('AllowedNumbers', []).map(&:to_s)
+        end
+
+        def allowed_patterns
+          # Convert the patterns to be anchored
+          super.map { |regexp| Regexp.new(/\A#{regexp}\z/) }
         end
       end
     end

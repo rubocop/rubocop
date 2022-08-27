@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       RUBY
     end
 
-    it 'registers offense and corrects if atleast two separate accessors without comments' do
+    it 'registers offense and corrects if at least two separate accessors without comments' do
       expect_offense(<<~RUBY)
         class Foo
           # @return [String] value of foo
@@ -149,6 +149,33 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
           attr_reader :three
 
           attr_reader :four, :five
+        end
+      RUBY
+    end
+
+    it 'registers an offense and correct if the same accessor is listed twice' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_reader :one
+          ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          attr_reader :two
+          ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          attr_reader :one
+          ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          attr_reader :one, :two
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the same accessor is given more than once in the same statement' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          attr_reader :one, :one
         end
       RUBY
     end
@@ -269,6 +296,33 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
         class Foo
           # Some comment
           attr_reader :one, :two
+        end
+      RUBY
+    end
+
+    it 'does not register an offense if the same accessor is listed twice' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          attr_reader :one
+          attr_reader :two
+          attr_reader :one
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when the same accessor is given more than once in the same statement' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_reader :one, :two, :one
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          attr_reader :one
+          attr_reader :two
+        attr_reader :one
         end
       RUBY
     end

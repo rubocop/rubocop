@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the method name part in method calls
+      # Checks the indentation of the method name part in method calls
       # that span more than one line.
       #
       # @example EnforcedStyle: aligned (default)
@@ -56,8 +56,8 @@ module RuboCop
           return unless style == :aligned && cop_config['IndentationWidth']
 
           raise ValidationError,
-                'The `Layout/MultilineMethodCallIndentation`' \
-                ' cop only accepts an `IndentationWidth` ' \
+                'The `Layout/MultilineMethodCallIndentation` ' \
+                'cop only accepts an `IndentationWidth` ' \
                 'configuration parameter when ' \
                 '`EnforcedStyle` is `indented`.'
         end
@@ -75,7 +75,7 @@ module RuboCop
         def right_hand_side(send_node)
           dot = send_node.loc.dot
           selector = send_node.loc.selector
-          if send_node.dot? && selector && dot.line == selector.line
+          if send_node.dot? && selector && same_line?(dot, selector)
             dot.join(selector)
           elsif selector
             selector
@@ -201,13 +201,30 @@ module RuboCop
         def semantic_alignment_node(node)
           return if argument_in_method_call(node, :with_parentheses)
 
+          dot_right_above = get_dot_right_above(node)
+          return dot_right_above if dot_right_above
+
+          node = first_call_has_a_dot(node)
+          return if node.loc.dot.line != node.first_line
+
+          node
+        end
+
+        def get_dot_right_above(node)
+          node.each_ancestor.find do |a|
+            dot = a.loc.respond_to?(:dot) && a.loc.dot
+            next unless dot
+
+            dot.line == node.loc.dot.line - 1 && dot.column == node.loc.dot.column
+          end
+        end
+
+        def first_call_has_a_dot(node)
           # descend to root of method chain
           node = node.receiver while node.receiver
           # ascend to first call which has a dot
           node = node.parent
           node = node.parent until node.loc.respond_to?(:dot) && node.loc.dot
-
-          return if node.loc.dot.line != node.first_line
 
           node
         end

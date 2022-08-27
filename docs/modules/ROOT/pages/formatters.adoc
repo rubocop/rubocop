@@ -343,6 +343,15 @@ Useful for CI environments. It will create an HTML report like http://f.cl.ly/it
 $ rubocop --format html -o rubocop.html
 ----
 
+== Markdown Formatter
+
+Useful for CI environments, especially if posting comments back to pull requests. It will create a markdown report like https://github.com/rubocop/rubocop/blob/master/spec/fixtures/markdown_formatter/expected.md[this].
+
+[source,sh]
+----
+$ rubocop --format markdown -o rubocop.md
+----
+
 == TAP Formatter
 
 *Machine-parsable*

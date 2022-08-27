@@ -3,9 +3,29 @@
 module RuboCop
   module Cop
     module Style
-      # This cop can either enforce or forbid Yoda conditions,
+      # Enforces or forbids Yoda conditions,
       # i.e. comparison operations where the order of expression is reversed.
       # eg. `5 == x`
+      #
+      # @safety
+      #   This cop is unsafe because comparison operators can be defined
+      #   differently on different classes, and are not guaranteed to
+      #   have the same result if reversed.
+      #
+      #   For example:
+      #
+      #   [source,ruby]
+      #   ----
+      #   class MyKlass
+      #     def ==(other)
+      #       true
+      #     end
+      #   end
+      #
+      #   obj = MyKlass.new
+      #   obj == 'string'   #=> true
+      #   'string' == obj   #=> false
+      #   ----
       #
       # @example EnforcedStyle: forbid_for_all_comparison_operators (default)
       #   # bad
@@ -58,14 +78,11 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Reverse the order of the operands `%<source>s`.'
-
         REVERSE_COMPARISON = { '<' => '>', '<=' => '>=', '>' => '<', '>=' => '<=' }.freeze
-
         EQUALITY_OPERATORS = %i[== !=].freeze
-
         NONCOMMUTATIVE_OPERATORS = %i[===].freeze
-
         PROGRAM_NAMES = %i[$0 $PROGRAM_NAME].freeze
+        RESTRICT_ON_SEND = RuboCop::AST::Node::COMPARISON_OPERATORS
 
         # @!method file_constant_equal_program_name?(node)
         def_node_matcher :file_constant_equal_program_name?, <<~PATTERN
@@ -74,7 +91,7 @@ module RuboCop
 
         def on_send(node)
           return unless yoda_compatible_condition?(node)
-          return if equality_only? && non_equality_operator?(node) ||
+          return if (equality_only? && non_equality_operator?(node)) ||
                     file_constant_equal_program_name?(node)
 
           valid_yoda?(node) || add_offense(node) do |corrector|
@@ -102,8 +119,8 @@ module RuboCop
           lhs = node.receiver
           rhs = node.first_argument
 
-          return true if lhs.literal? && rhs.literal? ||
-                         !lhs.literal? && !rhs.literal? ||
+          return true if (lhs.literal? && rhs.literal?) ||
+                         (!lhs.literal? && !rhs.literal?) ||
                          interpolation?(lhs)
 
           enforce_yoda? ? lhs.literal? : rhs.literal?

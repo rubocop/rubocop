@@ -69,6 +69,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
       expect_no_offenses(<<-GEM, 'Gemfile')
         if Dir.exist?(local)
           gem 'rubocop', path: local
+          gem 'flog', path: local
         else
           gem 'rubocop', '~> 0.90.0'
         end

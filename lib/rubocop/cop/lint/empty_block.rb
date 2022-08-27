@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for blocks without a body.
+      # Checks for blocks without a body.
       # Such empty blocks are typically an oversight or we should provide a comment
       # be clearer what we're aiming for.
       #
@@ -63,7 +63,7 @@ module RuboCop
       class EmptyBlock < Base
         MSG = 'Empty block detected.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return if node.body
           return if allow_empty_lambdas? && lambda_or_proc?(node)
           return if cop_config['AllowComments'] && allow_comment?(node)

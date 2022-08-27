@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when `end` is on the same line with last arguemnt' do
+      it 'registers an offense and corrects when `end` is on the same line with last argument' do
         expect_offense(<<~RUBY)
           def foo(bar,
           ^^^^^^^^^^^^ Avoid multi-line method signatures.

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop is used to identify instances of sorting and then
+      # Identifies instances of sorting and then
       # taking only the first or last element. The same behavior can
       # be accomplished without a relatively expensive sort by using
       # `Enumerable#min` instead of sorting and taking the first
@@ -11,6 +11,33 @@ module RuboCop
       # last element. Similarly, `Enumerable#min_by` and
       # `Enumerable#max_by` can replace `Enumerable#sort_by` calls
       # after which only the first or last element is used.
+      #
+      # @safety
+      #   This cop is unsafe, because `sort...last` and `max` may not return the
+      #   same element in all cases.
+      #
+      #   In an enumerable where there are multiple elements where `a <=> b == 0`,
+      #   or where the transformation done by the `sort_by` block has the
+      #   same result, `sort.last` and `max` (or `sort_by.last` and `max_by`)
+      #   will return different elements. `sort.last` will return the last
+      #   element but `max` will return the first element.
+      #
+      #   For example:
+      #
+      #   [source,ruby]
+      #   ----
+      #     class MyString < String; end
+      #     strings = [MyString.new('test'), 'test']
+      #     strings.sort.last.class   #=> String
+      #     strings.max.class         #=> MyString
+      #   ----
+      #
+      #   [source,ruby]
+      #   ----
+      #     words = %w(dog horse mouse)
+      #     words.sort_by { |word| word.length }.last   #=> 'mouse'
+      #     words.max_by { |word| word.length }         #=> 'horse'
+      #   ----
       #
       # @example
       #   # bad
@@ -60,8 +87,8 @@ module RuboCop
         # @!method redundant_sort?(node)
         def_node_matcher :redundant_sort?, <<~MATCHER
           {
-            (send $(send _ $:sort ...) ${:last :first})
-            (send $(send _ $:sort ...) ${:[] :at :slice} {(int 0) (int -1)})
+            (send $(send _ $:sort) ${:last :first})
+            (send $(send _ $:sort) ${:[] :at :slice} {(int 0) (int -1)})
 
             (send $(send _ $:sort_by _) ${:last :first})
             (send $(send _ $:sort_by _) ${:[] :at :slice} {(int 0) (int -1)})
@@ -75,33 +102,34 @@ module RuboCop
         MATCHER
 
         def on_send(node)
-          if (sort_node, sorter, accessor = redundant_sort?(node.parent))
-            ancestor = node.parent
-          elsif (sort_node, sorter, accessor = redundant_sort?(node.parent&.parent))
-            ancestor = node.parent.parent
-          else
-            return
-          end
+          ancestor, sort_node, sorter, accessor =
+            find_redundant_sort(node.parent, node.parent&.parent)
+          return unless ancestor
 
-          message = message(ancestor, sorter, accessor)
-
-          add_offense(offense_range(sort_node, ancestor), message: message) do |corrector|
-            autocorrect(corrector, ancestor, sort_node, sorter, accessor)
-          end
+          register_offense(ancestor, sort_node, sorter, accessor)
         end
 
         private
 
-        def autocorrect(corrector, node, sort_node, sorter, accessor)
-          # Remove accessor, e.g. `first` or `[-1]`.
-          corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
+        def find_redundant_sort(*nodes)
+          nodes.each do |node|
+            if (sort_node, sorter, accessor = redundant_sort?(node))
+              return [node, sort_node, sorter, accessor]
+            end
+          end
 
-          # Replace "sort" or "sort_by" with the appropriate min/max method.
-          corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
+          nil
         end
 
-        def offense_range(sort_node, ancestor)
-          range_between(sort_node.loc.selector.begin_pos, ancestor.loc.expression.end_pos)
+        def register_offense(node, sort_node, sorter, accessor)
+          message = message(node, sorter, accessor)
+          add_offense(offense_range(sort_node, node), message: message) do |corrector|
+            autocorrect(corrector, node, sort_node, sorter, accessor)
+          end
+        end
+
+        def offense_range(sort_node, node)
+          range_between(sort_node.loc.selector.begin_pos, node.loc.expression.end_pos)
         end
 
         def message(node, sorter, accessor)
@@ -114,6 +142,20 @@ module RuboCop
                  suggestion: suggestion(sorter, accessor, arg_value(node)),
                  sorter: sorter,
                  accessor_source: accessor_source)
+        end
+
+        def autocorrect(corrector, node, sort_node, sorter, accessor)
+          # Remove accessor, e.g. `first` or `[-1]`.
+          corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
+          # Replace "sort" or "sort_by" with the appropriate min/max method.
+          corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
+          # Replace to avoid syntax errors when followed by a logical operator.
+          replace_with_logical_operator(corrector, node) if with_logical_operator?(node)
+        end
+
+        def replace_with_logical_operator(corrector, node)
+          corrector.insert_after(node.child_nodes.first, " #{node.parent.loc.operator.source}")
+          corrector.remove(node.parent.loc.operator)
         end
 
         def suggestion(sorter, accessor, arg)
@@ -153,6 +195,12 @@ module RuboCop
           else
             node.loc.selector.begin_pos
           end
+        end
+
+        def with_logical_operator?(node)
+          return unless (parent = node.parent)
+
+          parent.or_type? || parent.and_type?
         end
       end
     end

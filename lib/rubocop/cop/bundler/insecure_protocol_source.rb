@@ -3,18 +3,21 @@
 module RuboCop
   module Cop
     module Bundler
-      # The symbol argument `:gemcutter`, `:rubygems`, and `:rubyforge`
-      # are deprecated. So please change your source to URL string that
-      # 'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
+      # Passing symbol arguments to `source` (e.g. `source :rubygems`) is
+      # deprecated because they default to using HTTP requests. Instead, specify
+      # `'https://rubygems.org'` if possible, or `'http://rubygems.org'` if not.
       #
-      # This autocorrect will replace these symbols with 'https://rubygems.org'.
-      # Because it is secure, HTTPS request is strongly recommended. And in
-      # most use cases HTTPS will be fine.
+      # When autocorrecting, this cop will replace symbol arguments with
+      # `'https://rubygems.org'`.
       #
-      # However, it don't replace all `sources` of `http://` with `https://`.
-      # For example, when specifying an internal gem server using HTTP on the
-      # intranet, a use case where HTTPS cannot be specified was considered.
-      # Consider using HTTP only if you cannot use HTTPS.
+      # This cop will not replace existing sources that use `http://`. This may
+      # be necessary where HTTPS is not available. For example, where using an
+      # internal gem server via an intranet, or where HTTPS is prohibited.
+      # However, you should strongly prefer `https://` where possible, as it is
+      # more secure.
+      #
+      # If you don't allow `http://`, please set `false` to `AllowHttpProtocol`.
+      # This option is `true` by default for safe autocorrection.
       #
       # @example
       #   # bad
@@ -24,7 +27,17 @@ module RuboCop
       #
       #   # good
       #   source 'https://rubygems.org' # strongly recommended
+      #
+      # @example AllowHttpProtocol: true (default)
+      #
+      #   # good
+      #   source 'http://rubygems.org' # use only if HTTPS is unavailable
+      #
+      # @example AllowHttpProtocol: false
+      #
+      #   # bad
       #   source 'http://rubygems.org'
+      #
       class InsecureProtocolSource < Base
         include RangeHelp
         extend AutoCorrector
@@ -33,28 +46,39 @@ module RuboCop
               'are insecure. ' \
               "Please change your source to 'https://rubygems.org' " \
               "if possible, or 'http://rubygems.org' if not."
+        MSG_HTTP_PROTOCOL = 'Use `https://rubygems.org` instead of `http://rubygems.org`.'
 
         RESTRICT_ON_SEND = %i[source].freeze
 
         # @!method insecure_protocol_source?(node)
         def_node_matcher :insecure_protocol_source?, <<~PATTERN
           (send nil? :source
-            $(sym ${:gemcutter :rubygems :rubyforge}))
+            ${(sym :gemcutter) (sym :rubygems) (sym :rubyforge) (:str "http://rubygems.org")})
         PATTERN
 
         def on_send(node)
-          insecure_protocol_source?(node) do |source_node, source|
-            message = format(MSG, source: source)
+          insecure_protocol_source?(node) do |source_node|
+            source = source_node.value
+            use_http_protocol = source == 'http://rubygems.org'
 
-            add_offense(
-              source_node,
-              message: message
-            ) do |corrector|
-              corrector.replace(
-                source_node, "'https://rubygems.org'"
-              )
+            return if allow_http_protocol? && use_http_protocol
+
+            message = if use_http_protocol
+                        MSG_HTTP_PROTOCOL
+                      else
+                        format(MSG, source: source)
+                      end
+
+            add_offense(source_node, message: message) do |corrector|
+              corrector.replace(source_node, "'https://rubygems.org'")
             end
           end
+        end
+
+        private
+
+        def allow_http_protocol?
+          cop_config.fetch('AllowHttpProtocol', true)
         end
       end
     end

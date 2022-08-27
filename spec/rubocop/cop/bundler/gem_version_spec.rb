@@ -24,6 +24,9 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
         gem 'rubocop', '~> 1'
         gem 'rubocop', '~> 1.12', require: false
         gem 'rubocop', '>= 1.5.0', '< 1.10.0', git: 'https://github.com/rubocop/rubocop'
+        gem 'rubocop', branch: 'feature-branch'
+        gem 'rubocop', ref: 'b3f37bc7f'
+        gem 'rubocop', tag: 'v1'
       RUBY
     end
 
@@ -52,6 +55,12 @@ RSpec.describe RuboCop::Cop::Bundler::GemVersion, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
         gem 'rubocop', '>= 1.5.0', '< 1.10.0', git: 'https://github.com/rubocop/rubocop'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
+        gem 'rubocop', branch: 'feature-branch'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
+        gem 'rubocop', ref: 'b3f37bc7f'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
+        gem 'rubocop', tag: 'v1'
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Gem version specification is forbidden.
       RUBY
     end
 

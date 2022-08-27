@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     describe 'for a custom cop class', :restore_registry do
       let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -102,8 +102,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
 
     before do
-      allow(processed_source.comment_config).to receive(:cop_enabled_at_line?)
-        .and_return(false)
+      allow(processed_source.comment_config).to receive(:cop_enabled_at_line?).and_return(false)
     end
 
     context 'ignore_disable_comments is false' do
@@ -185,7 +184,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to true' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to eq(true)
+          expect(cop.offenses.first.corrected?).to be(true)
         end
       end
 
@@ -194,7 +193,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to false' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to eq(false)
+          expect(cop.offenses.first.corrected?).to be(false)
         end
       end
 
@@ -206,7 +205,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to false' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to eq(false)
+          expect(cop.offenses.first.corrected?).to be(false)
         end
       end
     end
@@ -283,7 +282,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
 
     context 'when the option is given' do
-      let(:cop_options) { { auto_correct: true } }
+      let(:cop_options) { { autocorrect: true } }
 
       it { is_expected.to be(true) }
 
@@ -340,7 +339,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       it { is_expected.to be(false) }
     end
 
-    context 'when auto-correction of the cop is declared unsafe' do
+    context 'when autocorrection of the cop is declared unsafe' do
       let(:cop_config) { { 'SafeAutoCorrect' => false } }
 
       it { is_expected.to be(false) }

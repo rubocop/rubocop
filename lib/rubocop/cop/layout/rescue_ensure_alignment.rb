@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether the rescue and ensure keywords are aligned
+      # Checks whether the rescue and ensure keywords are aligned
       # properly.
       #
       # @example
@@ -29,8 +29,7 @@ module RuboCop
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
               'aligned with `%<beginning>s` at ' \
               '%<begin_loc_line>d, %<begin_loc_column>d.'
-        ANCESTOR_TYPES = %i[kwbegin def defs class module].freeze
-        RUBY_2_5_ANCESTOR_TYPES = (ANCESTOR_TYPES + %i[block]).freeze
+        ANCESTOR_TYPES = %i[kwbegin def defs class module block].freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
         ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method private_class_method].freeze
 
@@ -62,7 +61,7 @@ module RuboCop
           alignment_loc = alignment_location(alignment_node)
           kw_loc        = node.loc.keyword
 
-          return if alignment_loc.column == kw_loc.column || alignment_loc.line == kw_loc.line
+          return if alignment_loc.column == kw_loc.column || same_line?(alignment_loc, kw_loc)
 
           add_offense(
             kw_loc, message: format_message(alignment_node, alignment_loc, kw_loc)
@@ -118,6 +117,8 @@ module RuboCop
           ancestor_node = ancestor_node(node)
 
           return ancestor_node if ancestor_node.nil? || ancestor_node.kwbegin_type?
+          return if ancestor_node.respond_to?(:send_node) &&
+                    aligned_with_line_break_method?(ancestor_node, node)
 
           assignment_node = assignment_node(ancestor_node)
           return assignment_node if same_line?(ancestor_node, assignment_node)
@@ -129,14 +130,26 @@ module RuboCop
         end
 
         def ancestor_node(node)
-          ancestor_types =
-            if target_ruby_version >= 2.5
-              RUBY_2_5_ANCESTOR_TYPES
-            else
-              ANCESTOR_TYPES
-            end
+          node.each_ancestor(*ANCESTOR_TYPES).first
+        end
 
-          node.each_ancestor(*ancestor_types).first
+        def aligned_with_line_break_method?(ancestor_node, node)
+          send_node_loc = ancestor_node.send_node.loc
+          do_keyword_line = ancestor_node.loc.begin.line
+          rescue_keyword_column = node.loc.keyword.column
+          selector = send_node_loc.respond_to?(:selector) ? send_node_loc.selector : send_node_loc
+
+          if aligned_with_leading_dot?(do_keyword_line, send_node_loc, rescue_keyword_column)
+            return true
+          end
+
+          do_keyword_line == selector&.line && rescue_keyword_column == selector.column
+        end
+
+        def aligned_with_leading_dot?(do_keyword_line, send_node_loc, rescue_keyword_column)
+          return false unless send_node_loc.respond_to?(:dot) && (dot = send_node_loc.dot)
+
+          do_keyword_line == dot.line && rescue_keyword_column == dot.column
         end
 
         def assignment_node(node)

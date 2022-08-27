@@ -7,11 +7,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
   let(:registry) { RuboCop::Cop::Registry.global }
   let(:team) do
-    RuboCop::Cop::Team.mobilize(
-      registry,
-      RuboCop::ConfigLoader.default_configuration,
-      options
-    )
+    RuboCop::Cop::Team.mobilize(registry, RuboCop::ConfigLoader.default_configuration, options)
   end
 
   let(:file) { 'example.rb' }
@@ -45,7 +41,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it 'is valid and can be loaded' do
         cache.save(offenses)
         cache2 = described_class.new(file, team, options2, config_store, cache_root)
-        expect(cache2.valid?).to eq(true)
+        expect(cache2.valid?).to be(true)
         saved_offenses = cache2.load
         expect(saved_offenses).to eq(offenses)
       end
@@ -53,7 +49,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
     # Fixes https://github.com/rubocop/rubocop/issues/6274
     context 'when offenses are saved' do
-      context 'an offence with status corrected' do
+      context 'an offense with status corrected' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected
@@ -66,7 +62,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status corrected_with_todo' do
+      context 'an offense with status corrected_with_todo' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :corrected_with_todo
@@ -79,7 +75,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status uncorrected' do
+      context 'an offense with status uncorrected' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :uncorrected
@@ -92,7 +88,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status unsupported' do
+      context 'an offense with status unsupported' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :unsupported
@@ -105,7 +101,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'an offence with status new_status' do
+      context 'an offense with status new_status' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
             :warning, location, 'unused var', 'Lint/UselessAssignment', :new_status
@@ -129,7 +125,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache.save(offenses)
           create_file('example.rb', ['x = 2'])
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(false)
+          expect(cache2.valid?).to be(false)
         end
       end
 
@@ -139,7 +135,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             cache.save(offenses)
             FileUtils.chmod('+x', file)
             cache2 = described_class.new(file, team, options, config_store, cache_root)
-            expect(cache2.valid?).to eq(false)
+            expect(cache2.valid?).to be(false)
           end
         end
       end
@@ -156,7 +152,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             end
           end
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(false)
+          expect(cache2.valid?).to be(false)
         end
       end
 
@@ -165,7 +161,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache.save(offenses)
           allow(team).to(receive(:external_dependency_checksum).and_return('bar'))
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(false)
+          expect(cache2.valid?).to be(false)
         end
       end
 
@@ -174,7 +170,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache.save(offenses)
           allow(team).to(receive(:external_dependency_checksum).and_return('foo'))
           cache2 = described_class.new(file, team, options, config_store, cache_root)
-          expect(cache2.valid?).to eq(true)
+          expect(cache2.valid?).to be(true)
         end
       end
 
@@ -206,7 +202,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             cache2.save(offenses)
             # The cache file has not been created because there was a symlink in
             # its path.
-            expect(cache2.valid?).to eq(false)
+            expect(cache2.valid?).to be(false)
             expect($stderr.string).to match(/Warning: .* is a symlink, which is not allowed.\n/)
           end
         end
@@ -225,9 +221,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           it 'permits caching and prints no warning' do
             cache2.save(offenses)
 
-            expect(cache2.valid?).to eq(true)
-            expect($stderr.string)
-              .not_to match(/Warning: .* is a symlink, which is not allowed.\n/)
+            expect(cache2.valid?).to be(true)
+            expect($stderr.string).not_to match(/Warning: .* is a symlink, which is not allowed.\n/)
           end
         end
       end
@@ -253,7 +248,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         cache2 = described_class.new(file, team,
                                      { only: ['Layout/LineLength'] },
                                      config_store, cache_root)
-        expect(cache2.valid?).to eq(false)
+        expect(cache2.valid?).to be(false)
       end
     end
 
@@ -262,7 +257,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         cache.save(offenses)
         cache2 = described_class.new(file, team, { display_cop_names: true },
                                      config_store, cache_root)
-        expect(cache2.valid?).to eq(false)
+        expect(cache2.valid?).to be(false)
       end
     end
 
@@ -284,8 +279,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           "unused var \xF0",
           (+'unused var あ').force_encoding(::Encoding::ASCII_8BIT)
         ].map do |message|
-          RuboCop::Cop::Offense.new(:warning, location, message,
-                                    'Lint/UselessAssignment')
+          RuboCop::Cop::Offense.new(:warning, location, message, 'Lint/UselessAssignment')
         end
       end
 
@@ -382,7 +376,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
 
         it 'contains the given path and UID' do
           cacheroot = described_class.cache_root(config_store)
-          expect(cacheroot).to eq(File.join(ENV['XDG_CACHE_HOME'], puid, 'rubocop_cache'))
+          expect(cacheroot).to eq(File.join(ENV.fetch('XDG_CACHE_HOME'), puid, 'rubocop_cache'))
         end
       end
     end

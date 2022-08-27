@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks the indentation of the first argument in a method call.
+      # Checks the indentation of the first argument in a method call.
       # Arguments after the first one are checked by `Layout/ArgumentAlignment`,
       # not by this cop.
       #
@@ -35,6 +35,33 @@ module RuboCop
       #
       #   some_method nested_call(
       #   nested_first_param),
+      #   second_param
+      #
+      # @example EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
+      #   # Same as `special_for_inner_method_call` except that the special rule
+      #   # only applies if the outer method call encloses its arguments in
+      #   # parentheses.
+      #
+      #   # good
+      #   some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     first_param,
+      #   second_param)
+      #
+      #   foo = some_method(nested_call(
+      #                       nested_first_param),
+      #   second_param)
+      #
+      #   foo = some_method(
+      #     nested_call(
+      #       nested_first_param),
+      #   second_param)
+      #
+      #   some_method nested_call(
+      #     nested_first_param),
       #   second_param
       #
       # @example EnforcedStyle: consistent
@@ -117,33 +144,6 @@ module RuboCop
       #                 nested_first_param),
       #   second_param
       #
-      # @example EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
-      #   # Same as `special_for_inner_method_call` except that the special rule
-      #   # only applies if the outer method call encloses its arguments in
-      #   # parentheses.
-      #
-      #   # good
-      #   some_method(
-      #     first_param,
-      #   second_param)
-      #
-      #   foo = some_method(
-      #     first_param,
-      #   second_param)
-      #
-      #   foo = some_method(nested_call(
-      #                       nested_first_param),
-      #   second_param)
-      #
-      #   foo = some_method(
-      #     nested_call(
-      #       nested_first_param),
-      #   second_param)
-      #
-      #   some_method nested_call(
-      #     nested_first_param),
-      #   second_param
-      #
       class FirstArgumentIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
@@ -153,8 +153,9 @@ module RuboCop
         MSG = 'Indent the first argument one step more than %<base>s.'
 
         def on_send(node)
-          return if style != :consistent && enforce_first_argument_with_fixed_indentation?
-          return if !node.arguments? || bare_operator?(node)
+          return if style != :consistent && enforce_first_argument_with_fixed_indentation? &&
+                    !enable_layout_first_method_argument_line_break?
+          return if !node.arguments? || bare_operator?(node) || node.setter_method?
 
           indent = base_indentation(node) + configured_indentation_width
 
@@ -265,6 +266,10 @@ module RuboCop
           return false unless argument_alignment_config['Enabled']
 
           argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def enable_layout_first_method_argument_line_break?
+          config.for_cop('Layout/FirstMethodArgumentLineBreak')['Enabled']
         end
 
         def argument_alignment_config

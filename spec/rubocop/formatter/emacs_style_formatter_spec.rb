@@ -33,8 +33,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
       let(:file) { '/path/to/file' }
 
       let(:offense) do
-        RuboCop::Cop::Offense.new(:convention, location,
-                                  'This is a message.', 'CopName', status)
+        RuboCop::Cop::Offense.new(:convention, location, 'This is a message.', 'CopName', status)
       end
 
       let(:location) do
@@ -55,8 +54,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
       let(:file) { '/path/to/file' }
 
       let(:offense) do
-        RuboCop::Cop::Offense.new(:convention, location,
-                                  'This is a message.', 'CopName', status)
+        RuboCop::Cop::Offense.new(:convention, location, 'This is a message.', 'CopName', status)
       end
 
       let(:location) do

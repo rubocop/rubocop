@@ -126,6 +126,33 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
+    context '>= Ruby 2.7', :ruby27 do
+      it 'registers an offense for assigning any variable type to case in' do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable} = case foo
+          ^{variable}^^^^^^^^^^^ Assign variables inside of conditionals
+                        in "a"
+                          1
+                        in "b"
+                          2
+                        else
+                          3
+                        end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case foo
+          in "a"
+            #{variable} = 1
+          in "b"
+            #{variable} = 2
+          else
+            #{variable} = 3
+          end
+        RUBY
+      end
+    end
+
     it 'does not crash for rescue assignment' do
       expect_no_offenses(<<~RUBY)
         begin
@@ -212,6 +239,16 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
           bar #{assignment} 1
         else
           bar #{assignment} 2
+        end
+      RUBY
+    end
+
+    it 'does not crash when used inside rescue' do
+      expect_no_offenses(<<~RUBY)
+        begin
+          bar #{assignment} 2
+        rescue
+          bar #{assignment} 1
         end
       RUBY
     end
@@ -526,7 +563,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     end
   end
 
-  shared_examples 'single line condition auto-correct' do
+  shared_examples 'single line condition autocorrect' do
     it 'corrects assignment to an if else condition' do
       expect_offense(<<~RUBY)
         bar = if foo
@@ -821,7 +858,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       end
     end
 
-    it_behaves_like('single line condition auto-correct')
+    it_behaves_like('single line condition autocorrect')
 
     it 'corrects assignment to a namespaced constant' do
       expect_offense(<<~RUBY)
@@ -938,7 +975,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     it_behaves_like('multiline all assignment types offense', '&&=')
     it_behaves_like('multiline all assignment types offense', '<<')
 
-    it_behaves_like('single line condition auto-correct')
+    it_behaves_like('single line condition autocorrect')
 
     it 'corrects assignment to a multiline if else condition' do
       expect_offense(<<~RUBY)

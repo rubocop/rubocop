@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop checks for memoized methods whose instance variable name
+      # Checks for memoized methods whose instance variable name
       # does not match the method name. Applies to both regular methods
       # (defined with `def`) and dynamic methods (defined with
       # `define_method` or `define_singleton_method`).
@@ -13,6 +13,11 @@ module RuboCop
       # prefixed with an underscore. Prefixing ivars with an underscore is a
       # convention that is used to implicitly indicate that an ivar should not
       # be set or referenced outside of the memoization method.
+      #
+      # @safety
+      #   This cop relies on the pattern `@instance_var ||= ...`,
+      #   but this is sometimes used for other purposes than memoization
+      #   so this cop is considered unsafe.
       #
       # @example EnforcedStyleForLeadingUnderscores: disallowed (default)
       #   # bad
@@ -139,17 +144,13 @@ module RuboCop
       #   define_method(:foo) do
       #     @_foo ||= calculate_expensive_thing
       #   end
-      #
-      # This cop relies on the pattern `@instance_var ||= ...`,
-      # but this is sometimes used for other purposes than memoization
-      # so this cop is considered unsafe.
       class MemoizedInstanceVariableName < Base
         include ConfigurableEnforcedStyle
 
         MSG = 'Memoized variable `%<var>s` does not match ' \
-          'method name `%<method>s`. Use `@%<suggested_var>s` instead.'
+              'method name `%<method>s`. Use `@%<suggested_var>s` instead.'
         UNDERSCORE_REQUIRED = 'Memoized variable `%<var>s` does not start ' \
-          'with `_`. Use `@%<suggested_var>s` instead.'
+                              'with `_`. Use `@%<suggested_var>s` instead.'
         DYNAMIC_DEFINE_METHODS = %i[define_method define_singleton_method].to_set.freeze
 
         # @!method method_definition?(node)

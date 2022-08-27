@@ -49,7 +49,7 @@ module RuboCop
       end
 
       def autocorrect?
-        @options[:auto_correct]
+        @options[:autocorrect]
       end
 
       def debug?
@@ -68,7 +68,7 @@ module RuboCop
 
         # The autocorrection process may have to be repeated multiple times
         # until there are no corrections left to perform
-        # To speed things up, run auto-correcting cops by themselves, and only
+        # To speed things up, run autocorrecting cops by themselves, and only
         # run the other cops when no corrections are left
         on_duty = roundup_relevant_cops(processed_source.file_path)
 
@@ -131,7 +131,7 @@ module RuboCop
           @options[:stdin] = new_source
         else
           filename = processed_source.buffer.name
-          File.open(filename, 'w') { |f| f.write(new_source) }
+          File.write(filename, new_source)
         end
         @updated_source_file = true
       end

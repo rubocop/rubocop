@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for spaces between `->` and opening parameter
+      # Checks for spaces between `->` and opening parameter
       # parenthesis (`(`) in lambda literals.
       #
       # @example EnforcedStyle: require_no_space (default)
@@ -30,15 +30,17 @@ module RuboCop
         def on_send(node)
           return unless arrow_lambda_with_args?(node)
 
-          lambda_node = range_of_offense(node)
-
           if style == :require_space && !space_after_arrow?(node)
+            lambda_node = range_of_offense(node)
+
             add_offense(lambda_node, message: MSG_REQUIRE_SPACE) do |corrector|
-              corrector.insert_before(node.parent.children[1], ' ')
+              corrector.insert_before(lambda_arguments(node), ' ')
             end
           elsif style == :require_no_space && space_after_arrow?(node)
-            add_offense(lambda_node, message: MSG_REQUIRE_NO_SPACE) do |corrector|
-              corrector.remove(space_after_arrow(node))
+            space = space_after_arrow(node)
+
+            add_offense(space, message: MSG_REQUIRE_NO_SPACE) do |corrector|
+              corrector.remove(space)
             end
           end
         end
@@ -65,6 +67,10 @@ module RuboCop
             node.parent.loc.expression.begin_pos,
             node.parent.arguments.loc.expression.end_pos
           )
+        end
+
+        def lambda_arguments(node)
+          node.parent.children[1]
         end
       end
     end

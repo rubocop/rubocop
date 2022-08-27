@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This class auto-corrects lambda literal to method notation.
+    # This class autocorrects lambda literal to method notation.
     class LambdaLiteralToMethodCorrector
       def initialize(block_node)
         @block_node = block_node
@@ -87,8 +87,8 @@ module RuboCop
       end
 
       def needs_separating_space?
-        block_begin.begin_pos == arguments_end_pos &&
-          selector_end.end_pos == arguments_begin_pos ||
+        (block_begin.begin_pos == arguments_end_pos &&
+          selector_end.end_pos == arguments_begin_pos) ||
           block_begin.begin_pos == selector_end.end_pos
       end
 

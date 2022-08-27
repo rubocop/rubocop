@@ -43,6 +43,167 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
   end
 
+  shared_examples 'literals that are frozen' do |o|
+    let(:prefix) { o }
+
+    it_behaves_like 'immutable objects', '[1, 2, 3]'
+    it_behaves_like 'immutable objects', '%w(a b c)'
+    it_behaves_like 'immutable objects', '{ a: 1, b: 2 }'
+    it_behaves_like 'immutable objects', "'str'"
+    it_behaves_like 'immutable objects', '"top#{1 + 2}"'
+    it_behaves_like 'immutable objects', '1'
+    it_behaves_like 'immutable objects', '1.5'
+    it_behaves_like 'immutable objects', ':sym'
+    it_behaves_like 'immutable objects', 'FOO + BAR'
+    it_behaves_like 'immutable objects', 'FOO - BAR'
+    it_behaves_like 'immutable objects', "'foo' + 'bar'"
+    it_behaves_like 'immutable objects', "ENV['foo']"
+    it_behaves_like 'immutable objects', "::ENV['foo']"
+  end
+
+  shared_examples 'literals that are not frozen' do |o|
+    let(:prefix) { o }
+
+    it_behaves_like 'mutable objects', '[1, 2, 3]'
+    it_behaves_like 'mutable objects', '%w(a b c)'
+    it_behaves_like 'mutable objects', '{ a: 1, b: 2 }'
+    it_behaves_like 'mutable objects', "'str'"
+    it_behaves_like 'mutable objects', '"top#{1 + 2}"'
+
+    it_behaves_like 'immutable objects', '1'
+    it_behaves_like 'immutable objects', '1.5'
+    it_behaves_like 'immutable objects', ':sym'
+    it_behaves_like 'immutable objects', 'FOO + BAR'
+    it_behaves_like 'immutable objects', 'FOO - BAR'
+    it_behaves_like 'immutable objects', "'foo' + 'bar'"
+    it_behaves_like 'immutable objects', "ENV['foo']"
+    it_behaves_like 'immutable objects', "::ENV['foo']"
+  end
+
+  shared_examples 'string literal' do
+    # TODO : It is not yet decided when frozen string will be the default.
+    # It has been abandoned in the Ruby 3.0 period, but may default in
+    # the long run. So these tests are left with a provisional value of 4.0.
+    if RuboCop::TargetRuby.supported_versions.include?(4.0)
+      context 'when the target ruby version >= 4.0' do
+        let(:ruby_version) { 4.0 }
+
+        context 'when the frozen string literal comment is missing' do
+          it_behaves_like 'immutable objects', '"#{a}"'
+        end
+
+        context 'when the frozen string literal comment is true' do
+          let(:prefix) { '# frozen_string_literal: true' }
+
+          it_behaves_like 'immutable objects', '"#{a}"'
+        end
+
+        context 'when the frozen string literal comment is false' do
+          let(:prefix) { '# frozen_string_literal: false' }
+
+          it_behaves_like 'immutable objects', '"#{a}"'
+        end
+      end
+    end
+
+    context 'Ruby 3.0 or higher', :ruby30 do
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+        it_behaves_like 'immutable objects', <<~'RUBY'
+          <<~HERE
+            foo
+            bar
+          HERE
+        RUBY
+        it 'registers an offense when using interpolated heredoc constant' do
+          expect_offense(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = <<~HERE
+                    ^^^^^^^ Freeze mutable objects assigned to constants.
+              foo #{use_interpolation}
+              bar
+            HERE
+          RUBY
+        end
+
+        it 'does not register an offense when using a multiline string' do
+          expect_no_offenses(<<~RUBY)
+            # frozen_string_literal: true
+
+            CONST = 'foo' \
+                    'bar'
+          RUBY
+        end
+
+        it 'registers an offense when using a multiline string with interpolation' do
+          expect_offense(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = "#{foo}" \
+                    ^^^^^^^^^^ Freeze mutable objects assigned to constants.
+                    'bar'
+          RUBY
+        end
+      end
+
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+    end
+
+    context 'Ruby 2.7 or lower', :ruby27 do
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
+
+        it_behaves_like 'immutable objects', '"#{a}"'
+        it_behaves_like 'immutable objects', <<~'RUBY'
+          <<~HERE
+            foo
+            bar
+          HERE
+        RUBY
+        it 'does not register an offense when using interpolated heredoc constant' do
+          expect_no_offenses(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = <<~HERE
+              foo #{use_interpolation}
+              bar
+            HERE
+          RUBY
+        end
+
+        it 'does not register an offense when using a multiline string' do
+          expect_no_offenses(<<~RUBY)
+            # frozen_string_literal: true
+
+            CONST = 'foo' \
+                    'bar'
+          RUBY
+        end
+      end
+
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+
+        it_behaves_like 'mutable objects', '"#{a}"'
+      end
+    end
+  end
+
   context 'Strict: false' do
     let(:cop_config) { { 'EnforcedStyle' => 'literals' } }
 
@@ -94,7 +255,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     context 'when assigning an array without brackets' do
-      it 'adds brackets when auto-correcting' do
+      it 'adds brackets when autocorrecting' do
         expect_offense(<<~RUBY)
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.
@@ -157,6 +318,34 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           RUBY
         end
       end
+
+      context 'when using shareable_constant_value' do
+        it_behaves_like 'literals that are frozen', '# shareable_constant_value: literal'
+        it_behaves_like 'literals that are frozen', '# shareable_constant_value: experimental_everything'
+        it_behaves_like 'literals that are frozen', '# shareable_constant_value: experimental_copy'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: none'
+      end
+
+      it 'raises offense when shareable_constant_value is specified as an inline comment' do
+        expect_offense(<<~RUBY)
+          X = [1, 2, 3] # shareable_constant_value: literal
+              ^^^^^^^^^ Freeze mutable objects assigned to constants.
+          Y = [4, 5, 6]
+              ^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+      end
+
+      it 'raises offense only for shareable_constant_value as none when set in the order of: literal, none and experimental_everything' do
+        expect_offense(<<~RUBY)
+          # shareable_constant_value: literal
+          X = [1, 2, 3]
+          # shareable_constant_value: none
+          Y = [4, 5, 6]
+              ^^^^^^^^^ Freeze mutable objects assigned to constants.
+          # shareable_constant_value: experimental_everything
+          Z = [7, 8, 9]
+        RUBY
+      end
     end
 
     context 'Ruby 2.7 or lower', :ruby27 do
@@ -174,7 +363,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
 
       context 'when assigning a range (irange) without parenthesis' do
-        it 'adds parenthesis when auto-correcting' do
+        it 'adds parentheses when autocorrecting' do
           expect_offense(<<~RUBY)
             XXX = 1..99
                   ^^^^^ Freeze mutable objects assigned to constants.
@@ -198,7 +387,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
 
       context 'when assigning a range (erange) without parenthesis' do
-        it 'adds parenthesis when auto-correcting' do
+        it 'adds parentheses when autocorrecting' do
           expect_offense(<<~RUBY)
             XXX = 1...99
                   ^^^^^^ Freeze mutable objects assigned to constants.
@@ -220,50 +409,16 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           RUBY
         end
       end
-    end
 
-    context 'when the constant is a frozen string literal' do
-      # TODO : It is not yet decided when frozen string will be the default.
-      # It has been abandoned in the Ruby 3.0 period, but may default in
-      # the long run. So these tests are left with a provisional value of 4.0.
-      if RuboCop::TargetRuby.supported_versions.include?(4.0)
-        context 'when the target ruby version >= 4.0' do
-          let(:ruby_version) { 4.0 }
-
-          context 'when the frozen string literal comment is missing' do
-            it_behaves_like 'immutable objects', '"#{a}"'
-          end
-
-          context 'when the frozen string literal comment is true' do
-            let(:prefix) { '# frozen_string_literal: true' }
-
-            it_behaves_like 'immutable objects', '"#{a}"'
-          end
-
-          context 'when the frozen string literal comment is false' do
-            let(:prefix) { '# frozen_string_literal: false' }
-
-            it_behaves_like 'immutable objects', '"#{a}"'
-          end
-        end
-      end
-
-      context 'when the frozen string literal comment is missing' do
-        it_behaves_like 'mutable objects', '"#{a}"'
-      end
-
-      context 'when the frozen string literal comment is true' do
-        let(:prefix) { '# frozen_string_literal: true' }
-
-        it_behaves_like 'immutable objects', '"#{a}"'
-      end
-
-      context 'when the frozen string literal comment is false' do
-        let(:prefix) { '# frozen_string_literal: false' }
-
-        it_behaves_like 'mutable objects', '"#{a}"'
+      context 'when using shareable_constant_values' do
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: literal'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: experimental_everything'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: experimental_copy'
+        it_behaves_like 'literals that are not frozen', '# shareable_constant_value: none'
       end
     end
+
+    it_behaves_like 'string literal'
   end
 
   context 'Strict: true' do
@@ -448,7 +603,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
     end
 
     context 'when assigning an array without brackets' do
-      it 'adds brackets when auto-correcting' do
+      it 'adds brackets when autocorrecting' do
         expect_offense(<<~RUBY)
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.
@@ -486,20 +641,6 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       RUBY
     end
 
-    context 'when the frozen string literal comment is missing' do
-      it_behaves_like 'mutable objects', '"#{a}"'
-    end
-
-    context 'when the frozen string literal comment is true' do
-      let(:prefix) { '# frozen_string_literal: true' }
-
-      it_behaves_like 'immutable objects', '"#{a}"'
-    end
-
-    context 'when the frozen string literal comment is false' do
-      let(:prefix) { '# frozen_string_literal: false' }
-
-      it_behaves_like 'mutable objects', '"#{a}"'
-    end
+    it_behaves_like 'string literal'
   end
 end

@@ -3,11 +3,15 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant `if` with boolean literal branches.
+      # Checks for redundant `if` with boolean literal branches.
       # It checks only conditions to return boolean value (`true` or `false`) for safe detection.
       # The conditions to be checked are comparison methods, predicate methods, and double negative.
-      # However, auto-correction is unsafe because there is no guarantee that all predicate methods
-      # will return boolean value. Those methods can be allowed with `AllowedMethods` config.
+      # `nonzero?` method is allowed by default.
+      # These are customizable with `AllowedMethods` option.
+      #
+      # @safety
+      #   Autocorrection is unsafe because there is no guarantee that all predicate methods
+      #   will return a boolean value. Those methods can be allowed with `AllowedMethods` config.
       #
       # @example
       #   # bad
@@ -23,7 +27,18 @@ module RuboCop
       #   # good
       #   foo == bar
       #
-      # @example AllowedMethods: ['nonzero?']
+      # @example
+      #   # bad
+      #   if foo.do_something?
+      #     true
+      #   else
+      #     false
+      #   end
+      #
+      #   # good (but potentially an unsafe correction)
+      #   foo.do_something?
+      #
+      # @example AllowedMethods: ['nonzero?'] (default)
       #   # good
       #   num.nonzero? ? true : false
       #
@@ -109,12 +124,13 @@ module RuboCop
         end
 
         def opposite_condition?(node)
-          !node.unless? && node.if_branch.false_type? || node.unless? && node.if_branch.true_type?
+          (!node.unless? && node.if_branch.false_type?) ||
+            (node.unless? && node.if_branch.true_type?)
         end
 
         def require_parentheses?(condition)
           condition.and_type? || condition.or_type? ||
-            condition.send_type? && condition.comparison_method?
+            (condition.send_type? && condition.comparison_method?)
         end
       end
     end

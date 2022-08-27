@@ -31,8 +31,55 @@ RSpec.describe RuboCop::Config do
       it 'raises an validation error' do
         expect { configuration }.to raise_error(
           RuboCop::ValidationError,
-          'unrecognized cop LyneLenth found in .rubocop.yml'
+          'unrecognized cop or department LyneLenth found in .rubocop.yml'
         )
+      end
+    end
+
+    context 'when the configuration includes any unrecognized cop name and given `--ignore-unrecognized-cops` option' do
+      context 'there is unrecognized cop' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            LyneLenth:
+              Enabled: true
+              Max: 100
+          YAML
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = true
+          $stderr = StringIO.new
+        end
+
+        after do
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
+          $stderr = STDERR
+        end
+
+        it 'prints a warning about the cop' do
+          configuration
+          expect($stderr.string)
+            .to eq("The following cops or departments are not recognized and will be ignored:\n" \
+                   "unrecognized cop or department LyneLenth found in .rubocop.yml\n")
+        end
+      end
+
+      context 'there are no unrecognized cops' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            Layout/LineLength:
+              Enabled: true
+          YAML
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = true
+          $stderr = StringIO.new
+        end
+
+        after do
+          RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
+          $stderr = STDERR
+        end
+
+        it 'does not print any warnings' do
+          configuration
+          expect($stderr.string).to eq('')
+        end
       end
     end
 
@@ -180,7 +227,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when the configuration includes multiple valid enforced styles '\
+    context 'when the configuration includes multiple valid enforced styles ' \
             'and one invalid style' do
       before do
         create_file(configuration_path, <<~YAML)
@@ -192,8 +239,7 @@ RSpec.describe RuboCop::Config do
       end
 
       it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /trailing_comma/)
+        expect { configuration.validate }.to raise_error(RuboCop::ValidationError, /trailing_comma/)
       end
     end
 
@@ -372,7 +418,7 @@ RSpec.describe RuboCop::Config do
 
     describe 'conflicting Safe settings' do
       context 'when the configuration includes an unsafe cop that is ' \
-              'explicitly declared to have a safe auto-correction' do
+              'explicitly declared to have a safe autocorrection' do
         before do
           create_file(configuration_path, <<~YAML)
             Style/PreferredHashMethods:
@@ -385,13 +431,13 @@ RSpec.describe RuboCop::Config do
           expect { configuration.validate }
             .to raise_error(
               RuboCop::ValidationError,
-              /Unsafe cops cannot have a safe auto-correction/
+              /Unsafe cops cannot have a safe autocorrection/
             )
         end
       end
 
       context 'when the configuration includes an unsafe cop without ' \
-              'a declaration of its auto-correction' do
+              'a declaration of its autocorrection' do
         before do
           create_file(configuration_path, <<~YAML)
             Style/PreferredHashMethods:

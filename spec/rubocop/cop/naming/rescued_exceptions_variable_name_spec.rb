@@ -130,6 +130,19 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         end
       end
 
+      context 'shadowing an external variable' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            e = 'error message'
+            begin
+              something
+            rescue StandardError => e1
+              log(e, e1)
+            end
+          RUBY
+        end
+      end
+
       context 'with lower letters class name' do
         it 'does not register an offense' do
           expect_no_offenses(<<~RUBY)
@@ -300,7 +313,7 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
     end
 
     context 'with variable being referenced' do
-      it 'renames the variable references when auto-correcting' do
+      it 'renames the variable references when autocorrecting' do
         expect_offense(<<~RUBY)
           begin
             get something

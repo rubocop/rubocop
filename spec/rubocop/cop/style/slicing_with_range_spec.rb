@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
-  it 'reports no offense for array slicing with -1' do
-    expect_no_offenses(<<~RUBY)
-      ary[1..-1]
-    RUBY
+  context '<= Ruby 2.5', :ruby25 do
+    it 'reports no offense for array slicing with -1' do
+      expect_no_offenses(<<~RUBY)
+        ary[1..-1]
+      RUBY
+    end
   end
 
   context '>= Ruby 2.6', :ruby26 do

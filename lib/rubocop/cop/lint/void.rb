@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for operators, variables, literals, and nonmutating
+      # Checks for operators, variables, literals, and nonmutating
       # methods used in void context.
       #
       # @example CheckForMethodsWithNoSideEffects: false (default)
@@ -66,6 +66,8 @@ module RuboCop
 
           check_expression(node.body)
         end
+
+        alias on_numblock on_block
 
         def on_begin(node)
           check_begin(node)

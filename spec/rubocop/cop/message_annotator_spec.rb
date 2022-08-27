@@ -62,9 +62,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
 
     context 'when StyleGuide is set in the config' do
       let(:config) do
-        RuboCop::Config.new(
-          'Cop/Cop' => { 'StyleGuide' => 'http://example.org/styleguide' }
-        )
+        RuboCop::Config.new('Cop/Cop' => { 'StyleGuide' => 'http://example.org/styleguide' })
       end
 
       it 'adds style guide url' do
@@ -158,11 +156,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
   describe '#urls' do
     let(:urls) { annotator.urls }
     let(:config) do
-      RuboCop::Config.new(
-        'AllCops' => {
-          'StyleGuideBaseURL' => 'http://example.org/styleguide'
-        }
-      )
+      RuboCop::Config.new('AllCops' => { 'StyleGuideBaseURL' => 'http://example.org/styleguide' })
     end
 
     it 'returns an empty array without StyleGuide URL' do

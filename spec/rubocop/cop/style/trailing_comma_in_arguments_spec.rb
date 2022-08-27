@@ -46,8 +46,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       RUBY
     end
 
-    it 'accepts method call without trailing comma with single element hash' \
-        ' parameters at the end' do
+    it 'accepts method call without trailing comma with single element hash ' \
+       'parameters at the end' do
       expect_no_offenses('some_method(a: 1)')
     end
 
@@ -82,8 +82,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'registers an offense for trailing comma in a method call with hash' \
-        ' parameters at the end' do
+      it 'registers an offense for trailing comma in a method call with hash ' \
+         'parameters at the end' do
         expect_offense(<<~RUBY)
           receiver&.some_method(a, b, c: 0, d: 1, )
                                                 ^ Avoid comma after the last parameter of a method call#{extra_info}.
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'auto-corrects unwanted comma after modified heredoc parameter' do
+      it 'autocorrects unwanted comma after modified heredoc parameter' do
         expect_offense(<<~'RUBY')
           some_method(
             <<-LOREM.delete("\n"),
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
           RUBY
         end
 
-        it 'auto-corrects unwanted comma inside string interpolation' do
+        it 'autocorrects unwanted comma inside string interpolation' do
           expect_offense(<<~'RUBY')
             some_method(
               bar: <<-BAR,
@@ -316,8 +316,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         end
       end
 
-      it 'registers an offense for no trailing comma in a method call with' \
-         ' hash parameters at the end' do
+      it 'registers an offense for no trailing comma in a method call with ' \
+         'hash parameters at the end' do
         expect_offense(<<~RUBY)
           some_method(
                         a,
@@ -367,8 +367,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'accepts no trailing comma in a method call with a multiline' \
-         ' braceless hash at the end with more than one parameter on a line' do
+      it 'accepts no trailing comma in a method call with a multiline ' \
+         'braceless hash at the end with more than one parameter on a line' do
         expect_no_offenses(<<~RUBY)
           some_method(
                         a,
@@ -402,7 +402,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'does not break when a method call is chaned on the offending one' do
+      it 'does not break when a method call is chained on the offending one' do
         expect_no_offenses(<<~RUBY)
           foo.bar(
             baz: 1,
@@ -445,8 +445,8 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         end
       end
 
-      it 'registers an offense for no trailing comma in a method call with' \
-         ' hash parameters at the end' do
+      it 'registers an offense for no trailing comma in a method call with ' \
+         'hash parameters at the end' do
         expect_offense(<<~RUBY)
           some_method(
                         a,
@@ -468,7 +468,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'registers an offense for no trailing comma in a method call with' \
-          'two parameters on the same line' do
+         'two parameters on the same line' do
         expect_offense(<<~RUBY)
           some_method(a, b
                          ^ Put a comma after the last parameter of a multiline method call.
@@ -533,7 +533,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         RUBY
       end
 
-      it 'auto-corrects missing comma after a heredoc' do
+      it 'autocorrects missing comma after a heredoc' do
         expect_offense(<<~RUBY)
           route(1, <<-HELP.chomp
                    ^^^^^^^^^^^^^ Put a comma after the last parameter of a multiline method call.

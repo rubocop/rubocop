@@ -127,7 +127,7 @@ module RuboCop
           alias_method :eql?, :==
 
           def hash
-            control_node.object_id.hash ^ child_node.object_id.hash
+            [control_node.object_id, control_node.object_id].hash
           end
 
           private

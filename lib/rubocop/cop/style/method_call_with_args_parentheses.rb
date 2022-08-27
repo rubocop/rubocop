@@ -3,25 +3,25 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the presence (default) or absence of parentheses in
+      # Enforces the presence (default) or absence of parentheses in
       # method calls containing parameters.
       #
-      # In the default style (require_parentheses), macro methods are ignored.
-      # Additional methods can be added to the `IgnoredMethods`
-      # or `IgnoredPatterns` list. These options are
+      # In the default style (require_parentheses), macro methods are allowed.
+      # Additional methods can be added to the `AllowedMethods`
+      # or `AllowedPatterns` list. These options are
       # valid only in the default style. Macros can be included by
       # either setting `IgnoreMacros` to false or adding specific macros to
       # the `IncludedMacros` list.
       #
       # Precedence of options is all follows:
       #
-      # 1. `IgnoredMethods`
-      # 2. `IgnoredPatterns`
+      # 1. `AllowedMethods`
+      # 2. `AllowedPatterns`
       # 3. `IncludedMacros`
       #
       # eg. If a method is listed in both
-      # `IncludedMacros` and `IgnoredMethods`, then the latter takes
-      # precedence (that is, the method is ignored).
+      # `IncludedMacros` and `AllowedMethods`, then the latter takes
+      # precedence (that is, the method is allowed).
       #
       # In the alternative style (omit_parentheses), there are three additional
       # options.
@@ -43,9 +43,11 @@ module RuboCop
       # NOTE: Parentheses are still allowed in cases where omitting them
       # results in ambiguous or syntactically incorrect code. For example,
       # parentheses are required around a method with arguments when inside an
-      # endless method definition introduced in Ruby 3.0.  Parentheses are also
+      # endless method definition introduced in Ruby 3.0. Parentheses are also
       # allowed when forwarding arguments with the triple-dot syntax introduced
       # in Ruby 2.7 as omitting them starts an endless range.
+      # And Ruby 3.1's hash omission syntax has a case that requires parentheses
+      # because of the following issue: https://bugs.ruby-lang.org/issues/18396.
       #
       # @example EnforcedStyle: require_parentheses (default)
       #
@@ -63,10 +65,10 @@ module RuboCop
       #   # Setter methods don't need parens
       #   foo.bar = baz
       #
-      #   # okay with `puts` listed in `IgnoredMethods`
+      #   # okay with `puts` listed in `AllowedMethods`
       #   puts 'test'
       #
-      #   # okay with `^assert` listed in `IgnoredPatterns`
+      #   # okay with `^assert` listed in `AllowedPatterns`
       #   assert_equal 'test', x
       #
       # @example EnforcedStyle: omit_parentheses
@@ -195,8 +197,8 @@ module RuboCop
         require_relative 'method_call_with_args_parentheses/require_parentheses'
 
         include ConfigurableEnforcedStyle
-        include IgnoredMethods
-        include IgnoredPattern
+        include AllowedMethods
+        include AllowedPattern
         include RequireParentheses
         include OmitParentheses
         extend AutoCorrector

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether the multiline assignments have a newline
+      # Checks whether the multiline assignments have a newline
       # after the assignment operator.
       #
       # @example EnforcedStyle: new_line (default)
@@ -64,16 +64,16 @@ module RuboCop
         extend AutoCorrector
 
         NEW_LINE_OFFENSE = 'Right hand side of multi-line assignment is on ' \
-          'the same line as the assignment operator `=`.'
+                           'the same line as the assignment operator `=`.'
 
         SAME_LINE_OFFENSE = 'Right hand side of multi-line assignment is not ' \
-          'on the same line as the assignment operator `=`.'
+                            'on the same line as the assignment operator `=`.'
 
         def check_assignment(node, rhs)
           return if node.send_type? && node.loc.operator&.source != '='
           return unless rhs
           return unless supported_types.include?(rhs.type)
-          return if rhs.first_line == rhs.last_line
+          return if rhs.single_line?
 
           check_by_enforced_style(node, rhs)
         end
@@ -88,7 +88,7 @@ module RuboCop
         end
 
         def check_new_line_offense(node, rhs)
-          return unless node.loc.operator.line == rhs.first_line
+          return unless same_line?(node.loc.operator, rhs)
 
           add_offense(node, message: NEW_LINE_OFFENSE) do |corrector|
             corrector.insert_after(node.loc.operator, "\n")

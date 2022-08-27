@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This auto-corrects punctuation
+    # This autocorrects punctuation
     class PunctuationCorrector
       class << self
         def remove_space(corrector, space_before)

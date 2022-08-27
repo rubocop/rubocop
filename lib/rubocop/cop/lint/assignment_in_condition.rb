@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for assignments in the conditions of
+      # Checks for assignments in the conditions of
       # if/while/until.
       #
       # `AllowSafeAssignment` option for safe assignment.
@@ -49,7 +49,7 @@ module RuboCop
         def on_if(node)
           return if node.condition.block_type?
 
-          traverse_node(node.condition, ASGN_TYPES) do |asgn_node|
+          traverse_node(node.condition) do |asgn_node|
             next :skip_children if skip_children?(asgn_node)
             next if allowed_construct?(asgn_node)
 
@@ -83,13 +83,15 @@ module RuboCop
             (safe_assignment_allowed? && safe_assignment?(asgn_node))
         end
 
-        # each_node/visit_descendants_with_types with :skip_children
-        def traverse_node(node, types, &block)
-          result = yield node if types.include?(node.type)
+        def traverse_node(node, &block)
+          # if the node is a block, any assignments are irrelevant
+          return if node.block_type?
+
+          result = yield node if ASGN_TYPES.include?(node.type)
 
           return if result == :skip_children
 
-          node.each_child_node { |child| traverse_node(child, types, &block) }
+          node.each_child_node { |child| traverse_node(child, &block) }
         end
       end
     end

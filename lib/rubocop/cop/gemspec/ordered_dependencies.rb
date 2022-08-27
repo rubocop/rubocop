@@ -50,15 +50,15 @@ module RuboCop
       #   spec.add_dependency 'rubocop'
       #   # For tests
       #   spec.add_dependency 'rspec'
-      class OrderedDependencies < Cop
-        include ConfigurableEnforcedStyle
+      class OrderedDependencies < Base
+        extend AutoCorrector
         include OrderedGemNode
 
         MSG = 'Dependencies should be sorted in an alphabetical order within ' \
-              'their section of the gemspec. '\
+              'their section of the gemspec. ' \
               'Dependency `%<previous>s` should appear before `%<current>s`.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
           dependency_declarations(processed_source.ast)
@@ -69,15 +69,6 @@ module RuboCop
 
             register_offense(previous, current)
           end
-        end
-
-        def autocorrect(node)
-          OrderedGemCorrector.correct(
-            processed_source,
-            node,
-            previous_declaration(node),
-            treat_comments_as_separators
-          )
         end
 
         private

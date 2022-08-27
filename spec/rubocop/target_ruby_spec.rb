@@ -307,13 +307,13 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
               <<-HEREDOC
                 Gem::Specification.new do |s|
                   s.name = 'test'
-                  s.required_ruby_version = '> 2.5.8'
+                  s.required_ruby_version = '> 2.6.8'
                   s.licenses = ['MIT']
                 end
               HEREDOC
 
             create_file(gemspec_file_path, content)
-            expect(target_ruby.version).to eq 2.5
+            expect(target_ruby.version).to eq 2.6
           end
 
           it 'sets target_ruby from approximate version' do

@@ -86,7 +86,7 @@ module RuboCop
 
           return unless arg_node&.dstr_type? && interpolated?(arg_node)
           return if inline_comment_docs?(arg_node) ||
-                    arg_node.heredoc? && comment_block_docs?(arg_node)
+                    (arg_node.heredoc? && comment_block_docs?(arg_node))
 
           add_offense(node.loc.selector)
         end

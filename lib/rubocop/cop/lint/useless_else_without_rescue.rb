@@ -3,10 +3,9 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for useless `else` in `begin..end` without `rescue`.
+      # Checks for useless `else` in `begin..end` without `rescue`.
       #
-      # NOTE: This syntax is no longer valid on Ruby 2.6 or higher and
-      # this cop is going to be removed at some point the future.
+      # NOTE: This syntax is no longer valid on Ruby 2.6 or higher.
       #
       # @example
       #

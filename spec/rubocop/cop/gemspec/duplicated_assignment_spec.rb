@@ -33,6 +33,16 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense when using `required_ruby_version=` twice' do
+    expect_offense(<<~RUBY)
+      ::Gem::Specification.new do |spec|
+        spec.required_ruby_version = '2.5'
+        spec.required_ruby_version = '2.6'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version=` method calls already given on line 2 of the gemspec.
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `<<` twice' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|

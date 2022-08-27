@@ -118,8 +118,8 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
             RuboCop::Cop::Offense.new(
               :error,
               Parser::Source::Range.new(source_buffer,
-                                        4 * line_length + 1,
-                                        4 * line_length + 2),
+                                        (4 * line_length) + 1,
+                                        (4 * line_length) + 2),
               'bar',
               'Cop'
             ),
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
               :convention,
               Parser::Source::Range.new(source_buffer,
                                         5 * line_length,
-                                        5 * line_length + 1),
+                                        (5 * line_length) + 1),
               'foo',
               'Cop'
             )

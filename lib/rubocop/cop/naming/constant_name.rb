@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cop checks whether constant names are written using
+      # Checks whether constant names are written using
       # SCREAMING_SNAKE_CASE.
       #
       # To avoid false positives, it ignores cases in which we cannot know
@@ -54,7 +54,7 @@ module RuboCop
         private
 
         def allowed_assignment?(value)
-          value && %i[block const casgn].include?(value.type) ||
+          (value && %i[block const casgn].include?(value.type)) ||
             allowed_method_call_on_rhs?(value) ||
             class_or_struct_return_method?(value) ||
             allowed_conditional_expression_on_rhs?(value)
@@ -72,10 +72,10 @@ module RuboCop
         PATTERN
 
         def allowed_conditional_expression_on_rhs?(node)
-          node&.if_type? && contains_contant?(node)
+          node&.if_type? && contains_constant?(node)
         end
 
-        def contains_contant?(node)
+        def contains_constant?(node)
           node.branches.any?(&:const_type?)
         end
       end

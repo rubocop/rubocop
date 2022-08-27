@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether comments have a leading space after the
+      # Checks whether comments have a leading space after the
       # `#` denoting the start of the comment. The leading space is not
       # required for some RDoc special syntax, like `#++`, `#--`,
       # `#:nodoc`, `=begin`- and `=end` comments, "shebang" directives,
@@ -57,7 +57,7 @@ module RuboCop
 
         def on_new_investigation
           processed_source.comments.each do |comment|
-            next unless /\A#+[^#\s=:+-]/.match?(comment.text)
+            next unless /\A#+[^#\s=+-]/.match?(comment.text)
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
             next if doxygen_comment_style?(comment)
             next if gemfile_ruby_comment?(comment)
@@ -77,7 +77,7 @@ module RuboCop
         end
 
         def allowed_on_first_line?(comment)
-          shebang?(comment) || rackup_config_file? && rackup_options?(comment)
+          shebang?(comment) || (rackup_config_file? && rackup_options?(comment))
         end
 
         def shebang?(comment)

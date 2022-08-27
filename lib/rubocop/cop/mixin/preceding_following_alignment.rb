@@ -93,7 +93,15 @@ module RuboCop
       end
 
       def aligned_assignment?(range, line)
-        range.source[-1] == '=' && line[range.last_column - 1] == '='
+        (range.source[-1] == '=' && line[range.last_column - 1] == '=') ||
+          aligned_with_append_operator?(range, line)
+      end
+
+      def aligned_with_append_operator?(range, line)
+        last_column = range.last_column
+
+        (range.source == '<<' && line[last_column - 1] == '=') ||
+          (range.source[-1] == '=' && line[(last_column - 2)..(last_column - 1)] == '<<')
       end
 
       def aligned_identical?(range, line)

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop enforces empty line after guard clause
+      # Enforces empty line after guard clause
       #
       # @example
       #
@@ -38,12 +38,14 @@ module RuboCop
       class EmptyLineAfterGuardClause < Base
         include RangeHelp
         extend AutoCorrector
+        extend Util
 
         MSG = 'Add empty line after guard clause.'
         END_OF_HEREDOC_LINE = 1
 
         def on_if(node)
           return if correct_style?(node)
+          return if multiple_statements_on_line?(node)
 
           if node.modifier_form? && (heredoc_node = last_heredoc_argument(node))
             return if next_line_empty_or_enable_directive_comment?(heredoc_line(node, heredoc_node))
@@ -165,6 +167,13 @@ module RuboCop
           else
             node
           end
+        end
+
+        def multiple_statements_on_line?(node)
+          parent = node.parent
+          return false unless parent
+
+          parent.begin_type? && parent.single_line?
         end
       end
     end

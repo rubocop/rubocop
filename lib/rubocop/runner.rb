@@ -8,12 +8,12 @@ module RuboCop
   class Runner # rubocop:disable Metrics/ClassLength
     # An exception indicating that the inspection loop got stuck correcting
     # offenses back and forth.
-    class InfiniteCorrectionLoop < RuntimeError
+    class InfiniteCorrectionLoop < StandardError
       attr_reader :offenses
 
       def initialize(path, offenses_by_iteration, loop_start: -1)
         @offenses = offenses_by_iteration.flatten.uniq
-        root_cause = offenses_by_iteration[loop_start..-1]
+        root_cause = offenses_by_iteration[loop_start..]
                      .map { |x| x.map(&:cop_name).uniq.join(', ') }
                      .join(' -> ')
 
@@ -60,11 +60,15 @@ module RuboCop
 
     private
 
-    # Warms up the RuboCop cache by forking a suitable number of rubocop
+    # Warms up the RuboCop cache by forking a suitable number of RuboCop
     # instances that each inspects its allotted group of files.
     def warm_cache(target_files)
+      saved_options = @options.dup
       puts 'Running parallel inspection' if @options[:debug]
+      %i[autocorrect safe_autocorrect].each { |opt| @options[opt] = false }
       Parallel.each(target_files) { |target_file| file_offenses(target_file) }
+    ensure
+      @options = saved_options
     end
 
     def find_target_files(paths)
@@ -143,10 +147,10 @@ module RuboCop
 
       if cache&.valid?
         offenses = cache.load
-        # If we're running --auto-correct and the cache says there are
+        # If we're running --autocorrect and the cache says there are
         # offenses, we need to actually inspect the file. If the cache shows no
         # offenses, we're good.
-        real_run_needed = @options[:auto_correct] && offenses.any?
+        real_run_needed = @options[:autocorrect] && offenses.any?
       else
         real_run_needed = true
       end
@@ -207,17 +211,14 @@ module RuboCop
     end
 
     def file_finished(file, offenses)
-      if @options[:display_only_fail_level_offenses]
-        offenses = offenses.select { |o| considered_failure?(o) }
-      end
+      offenses = offenses_to_report(offenses)
       formatter_set.file_finished(file, offenses)
     end
 
     def cached_run?
       @cached_run ||=
         (@options[:cache] == 'true' ||
-         @options[:cache] != 'false' &&
-         @config_store.for_pwd.for_all_cops['UseCache']) &&
+         (@options[:cache] != 'false' && @config_store.for_pwd.for_all_cops['UseCache'])) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
         # need to do that processing and cannot use caching.
@@ -243,7 +244,7 @@ module RuboCop
       # error message.
       offenses_by_iteration = []
 
-      # When running with --auto-correct, we need to inspect the file (which
+      # When running with --autocorrect, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
@@ -379,6 +380,34 @@ module RuboCop
       return true if @options[:fail_level] == :autocorrect
 
       !offense.corrected? && offense.severity >= minimum_severity_to_fail
+    end
+
+    def offenses_to_report(offenses)
+      if @options[:display_only_fail_level_offenses]
+        offenses.select { |o| considered_failure?(o) }
+      elsif @options[:display_only_safe_correctable]
+        offenses.select { |o| supports_safe_autocorrect?(o) }
+      elsif @options[:display_only_correctable]
+        offenses.select(&:correctable?)
+      else
+        offenses
+      end
+    end
+
+    def supports_safe_autocorrect?(offense)
+      cop_class = Cop::Registry.global.find_by_cop_name(offense.cop_name)
+      default_cfg = default_config(offense.cop_name)
+
+      offense.correctable? &&
+        cop_class&.support_autocorrect? && mark_as_safe_by_config?(default_cfg)
+    end
+
+    def mark_as_safe_by_config?(config)
+      config.nil? || (config.fetch('Safe', true) && config.fetch('SafeAutoCorrect', true))
+    end
+
+    def default_config(cop_name)
+      RuboCop::ConfigLoader.default_configuration[cop_name]
     end
 
     def minimum_severity_to_fail

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks whether the block parameters of a single-line
+      # Checks whether the block parameters of a single-line
       # method accepting a block match the names specified via configuration.
       #
       # For instance one can configure `reduce`(`inject`) to use |a, e| as
@@ -33,13 +33,13 @@ module RuboCop
 
         MSG = 'Name `%<method>s` block params `|%<params>s|`.'
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return unless node.single_line?
 
           return unless eligible_method?(node)
           return unless eligible_arguments?(node)
 
-          method_name = node.send_node.method_name
+          method_name = node.method_name
           return if args_match?(method_name, node.arguments)
 
           preferred_block_arguments = build_preferred_arguments_map(node, target_args(method_name))
@@ -81,7 +81,7 @@ module RuboCop
         end
 
         def eligible_method?(node)
-          node.send_node.receiver && method_names.include?(node.send_node.method_name)
+          node.receiver && method_names.include?(node.method_name)
         end
 
         def methods
@@ -109,7 +109,9 @@ module RuboCop
           # we remove any leading underscores before comparing.
           actual_args_no_underscores = actual_args.map { |arg| arg.to_s.sub(/^_+/, '') }
 
-          actual_args_no_underscores == target_args(method_name)
+          # Allow the arguments if the names match but not all are given
+          expected_args = target_args(method_name).first(actual_args_no_underscores.size)
+          actual_args_no_underscores == expected_args
         end
       end
     end

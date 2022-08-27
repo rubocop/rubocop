@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks whether certain expressions, e.g. method calls, that could fit
+      # Checks whether certain expressions, e.g. method calls, that could fit
       # completely on a single line, are broken up into multiple lines unnecessarily.
       #
       # @example any configuration
@@ -101,14 +101,13 @@ module RuboCop
           !comment_within?(node) &&
             node.each_descendant(:if, :case, :kwbegin, :def).none? &&
             node.each_descendant(:dstr, :str).none?(&:heredoc?) &&
-            node.each_descendant(:begin).none? { |b| b.first_line != b.last_line }
+            node.each_descendant(:begin).none? { |b| !b.single_line? }
         end
 
         def convertible_block?(node)
-          return false unless node.parent&.block_type?
-
-          send_node = node.parent&.send_node
-          send_node.parenthesized? || !send_node.arguments?
+          parent = node.parent
+          parent&.block_type? && node == parent.send_node &&
+            (node.parenthesized? || !node.arguments?)
         end
 
         def comment_within?(node)
@@ -127,6 +126,7 @@ module RuboCop
             .gsub(/" *\\\n\s*'/, %q(" + ')) # Double quote, backslash, and then single quote
             .gsub(/' *\\\n\s*"/, %q(' + ")) # Single quote, backslash, and then double quote
             .gsub(/(["']) *\\\n\s*\1/, '')  # Double or single quote, backslash, then same quote
+            .gsub(/\n\s*(?=\.\w)/, '')      # Extra space within method chaining
             .gsub(/\s*\\?\n\s*/, ' ')       # Any other line break, with or without backslash
         end
 

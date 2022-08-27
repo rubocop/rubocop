@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault, :confi
     end
 
     it 'registers an offense and corrects default value assignment where first is partially right ' \
-      'without space' do
+       'without space' do
       expect_offense(<<~RUBY)
         def f(x, y= 0, z=1)
                   ^^ Surrounding space missing in default value assignment.

@@ -1,0 +1,117 @@
+= Autocorrect
+:page-aliases: auto_correct.adoc
+
+In autocorrect mode, RuboCop will try to automatically fix offenses:
+
+[source,sh]
+----
+$ rubocop -A
+# or
+$ rubocop --autocorrect-all
+----
+
+There are a couple of things to keep in mind about autocorrect:
+
+- For some offenses, it is not possible to implement automatic correction.
+- Some automatic corrections that _are_ possible have not been implemented yet.
+- Some automatic corrections might change (slightly) the semantics of the code,
+meaning they'd produce code that's mostly equivalent to the original code, but
+not 100% equivalent. We call such autocorrect behavior "unsafe".
+
+TIP: You should always run your test suite after using the autocorrect functionality.
+
+== Safe autocorrect
+
+[source,sh]
+----
+$ rubocop -a
+# or
+$ rubocop --autocorrect
+----
+
+In RuboCop 0.60, we began to annotate cops as `Safe` or not safe. The definition of
+safety is that the cop doesn't generate false positives. On top of that there's `SafeAutoCorrect`
+that might be set to `false` in cases where only the autocorrect performed by a cop
+is unsafe, but that the offense detection logic is safe. To sum it up:
+
+* Safe (`true/false`) - indicates whether the cop can yield false positives (by
+design) or not.
+* SafeAutoCorrect (`true/false`) - indicates whether the autocorrect a cop
+does is safe (equivalent) by design. If a cop is unsafe its autocorrect automatically
+becomes unsafe as well.
+
+If a cop or its autocorrect is annotated as "not safe", it will be omitted when using `--autocorrect`.
+
+NOTE: Currently there might still be cops that aren't marked as unsafe or
+with unsafe autocorrect.  Eventually, the safety of each cop will be specified
+in the default configuration.
+
+=== Example of Unsafe Cop
+
+[source,ruby]
+----
+class Miner
+  def dig(how_deep)
+    # ...
+  end
+end
+
+
+Miner.new.dig(42) # => Style/SingleArgumentDig
+                  # => Use Miner.new[] instead of dig
+----
+
+This is the wrong diagnostic; this (contrived) use of `dig` is not an issue,
+and there might not be an alternative. This cop is marked as `Safe: false`.
+
+[source,ruby]
+----
+# example.rb:
+str = 'hello' # => Missing magic comment `# frozen_string_literal: true`
+str << 'world'
+
+# autocorrects to:
+# frozen_string_literal: true
+
+str = 'hello'
+str << 'world' # => now fails because `str` is frozen
+
+# must be manually corrected to:
+# frozen_string_literal: true
+
+str = +'hello' # => We want an unfrozen string literal here...
+str << 'world' # => ok
+----
+
+This diagnostic is valid since the magic comment is indeed missing (thus `Safe: true`),
+but the autocorrection is not; some string literals need to be prefixed with `+` to avoid
+having them frozen.
+
+To run all autocorrections (safe and unsafe):
+
+[source,sh]
+----
+$ rubocop -A
+# or
+$ rubocop --autocorrect-all
+----
+
+It is recommended to be even more vigilant when using this option and review carefully the changes.
+
+== Generating comments
+
+[source,sh]
+----
+$ rubocop --autocorrect --disable-uncorrectable
+----
+
+or
+
+[source,sh]
+----
+$ rubocop --autocorrect-all --disable-uncorrectable
+----
+
+You can add the flag `--disable-uncorrectable`, which will generate
+`# rubocop:todo` comments in the code to stop the reporting of offenses that
+could not be corrected automatically.

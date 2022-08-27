@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UselessElseWithoutRescue, :config do
-  context 'with `else` without `rescue`' do
+  context 'with `else` without `rescue`', :ruby25 do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         begin

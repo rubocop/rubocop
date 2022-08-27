@@ -3,13 +3,13 @@
 module RuboCop
   module Cop
     module Test
-      class ModuleMustBeAClassCop < RuboCop::Cop::Cop
-        def on_module(node)
-          add_offense(node, message: 'Module must be a Class')
-        end
+      class ModuleMustBeAClassCop < RuboCop::Cop::Base
+        extend AutoCorrector
 
-        def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.keyword, 'class') }
+        def on_module(node)
+          add_offense(node, message: 'Module must be a Class') do |corrector|
+            corrector.replace(node.loc.keyword, 'class')
+          end
         end
       end
     end

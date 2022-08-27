@@ -3,4 +3,4 @@
   entry: rubocop
   language: ruby
   types: ['ruby']
-  args: ['--auto-correct', '--force-exclusion']
+  args: ['--autocorrect', '--force-exclusion']

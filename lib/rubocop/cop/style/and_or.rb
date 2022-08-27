@@ -3,24 +3,14 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of `and` and `or`, and suggests using `&&` and
+      # Checks for uses of `and` and `or`, and suggests using `&&` and
       # `||` instead. It can be configured to check only in conditions or in
       # all contexts.
       #
-      # @example EnforcedStyle: always
-      #   # bad
-      #   foo.save and return
-      #
-      #   # bad
-      #   if foo and bar
-      #   end
-      #
-      #   # good
-      #   foo.save && return
-      #
-      #   # good
-      #   if foo && bar
-      #   end
+      # @safety
+      #   Autocorrection is unsafe because there is a different operator precedence
+      #   between logical operators (`&&` and `||`) and semantic operators (`and` and `or`),
+      #   and that might change the behavior.
       #
       # @example EnforcedStyle: conditionals (default)
       #   # bad
@@ -32,6 +22,21 @@ module RuboCop
       #
       #   # good
       #   foo.save and return
+      #
+      #   # good
+      #   if foo && bar
+      #   end
+      #
+      # @example EnforcedStyle: always
+      #   # bad
+      #   foo.save and return
+      #
+      #   # bad
+      #   if foo and bar
+      #   end
+      #
+      #   # good
+      #   foo.save && return
       #
       #   # good
       #   if foo && bar
@@ -106,7 +111,7 @@ module RuboCop
         end
 
         # ! is a special case:
-        # 'x and !obj.method arg' can be auto-corrected if we
+        # 'x and !obj.method arg' can be autocorrected if we
         # recurse down a level and add parens to 'obj.method arg'
         # however, 'not x' also parses as (send x :!)
         def correct_not(node, receiver, corrector)

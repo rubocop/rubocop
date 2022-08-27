@@ -15,11 +15,17 @@ module RuboCop
       def self.for(class_name)
         parts = class_name.split('::')
         name_deep_enough = parts.length >= 4
-        new(name_deep_enough ? parts[2..-1] : parts.last(2))
+        new(name_deep_enough ? parts[2..] : parts.last(2))
       end
 
       def self.parse(identifier)
-        new(identifier.split('/'))
+        new(identifier.split('/').map { |i| camel_case(i) })
+      end
+
+      def self.camel_case(name_part)
+        return 'RSpec' if name_part == 'rspec'
+
+        name_part.gsub(/^\w|_\w/) { |match| match[-1, 1].upcase }
       end
 
       def initialize(class_name_parts)

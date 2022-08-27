@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks that the closing brace in an array literal is either
+      # Checks that the closing brace in an array literal is either
       # on the same line as the last array element or on a new line.
       #
       # When using the `symmetrical` (default) style:
@@ -93,18 +93,18 @@ module RuboCop
         extend AutoCorrector
 
         SAME_LINE_MESSAGE = 'The closing array brace must be on the same ' \
-          'line as the last array element when the opening brace is on the ' \
-          'same line as the first array element.'
+                            'line as the last array element when the opening brace is on the ' \
+                            'same line as the first array element.'
 
         NEW_LINE_MESSAGE = 'The closing array brace must be on the line ' \
-          'after the last array element when the opening brace is on a ' \
-          'separate line from the first array element.'
+                           'after the last array element when the opening brace is on a ' \
+                           'separate line from the first array element.'
 
         ALWAYS_NEW_LINE_MESSAGE = 'The closing array brace must be on the ' \
-          'line after the last array element.'
+                                  'line after the last array element.'
 
         ALWAYS_SAME_LINE_MESSAGE = 'The closing array brace must be on the ' \
-          'same line as the last array element.'
+                                   'same line as the last array element.'
 
         def on_array(node)
           check_brace_layout(node)

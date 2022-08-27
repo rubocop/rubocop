@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
   shared_examples 'not correctable' do |keyword|
-    it "does not auto-correct when #{keyword} is the outer modifier" do
+    it "does not autocorrect when #{keyword} is the outer modifier" do
       expect_offense(<<~RUBY, keyword: keyword)
         something if a %{keyword} b
                   ^^ Avoid using nested modifiers.
@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
       expect_no_corrections
     end
 
-    it "does not auto-correct when #{keyword} is the inner modifier" do
+    it "does not autocorrect when #{keyword} is the inner modifier" do
       expect_offense(<<~RUBY, keyword: keyword)
         something %{keyword} a if b
                   ^{keyword} Avoid using nested modifiers.
@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     end
   end
 
-  it 'auto-corrects if + if' do
+  it 'autocorrects if + if' do
     expect_offense(<<~RUBY)
       something if a if b
                 ^^ Avoid using nested modifiers.
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'auto-corrects unless + unless' do
+  it 'autocorrects unless + unless' do
     expect_offense(<<~RUBY)
       something unless a unless b
                 ^^^^^^ Avoid using nested modifiers.
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'auto-corrects if + unless' do
+  it 'autocorrects if + unless' do
     expect_offense(<<~RUBY)
       something if a unless b
                 ^^ Avoid using nested modifiers.
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'auto-corrects unless with a comparison operator + if' do
+  it 'autocorrects unless with a comparison operator + if' do
     expect_offense(<<~RUBY)
       something unless b > 1 if true
                 ^^^^^^ Avoid using nested modifiers.
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'auto-corrects unless + if' do
+  it 'autocorrects unless + if' do
     expect_offense(<<~RUBY)
       something unless a if b
                 ^^^^^^ Avoid using nested modifiers.
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'adds parentheses when needed in auto-correction' do
+  it 'adds parentheses when needed in autocorrection' do
     expect_offense(<<~RUBY)
       something if a || b if c || d
                 ^^ Avoid using nested modifiers.
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'adds parentheses to method arguments when needed in auto-correction' do
+  it 'adds parentheses to method arguments when needed in autocorrection' do
     expect_offense(<<~RUBY)
       a unless [1, 2].include? a if a
         ^^^^^^ Avoid using nested modifiers.
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
-  it 'does not add redundant parentheses in auto-correction' do
+  it 'does not add redundant parentheses in autocorrection' do
     expect_offense(<<~RUBY)
       something if a unless c || d
                 ^^ Avoid using nested modifiers.

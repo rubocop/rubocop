@@ -262,47 +262,49 @@ RSpec.describe RuboCop::ConfigObsoletion do
           OUTPUT
         end
 
-        it 'prints a warning message' do
+        # FIXME: Workaround for the following random failure test.
+        # https://app.circleci.com/pipelines/github/rubocop/rubocop/5075/workflows/758481f3-39fa-4a89-9fb2-c6e78d3b4ff8/jobs/194419
+        xit 'prints a warning message' do
           config_obsoletion.reject_obsolete!
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
           expect(expected_message).to eq(e.message)
         end
       end
+    end
 
-      context 'when the extensions are loaded via inherit_gem', :restore_registry do
-        let(:resolver) { RuboCop::ConfigLoaderResolver.new }
-        let(:gem_root) { File.expand_path('gems') }
+    context 'when the extensions are loaded via inherit_gem', :restore_registry do
+      let(:resolver) { RuboCop::ConfigLoaderResolver.new }
+      let(:gem_root) { File.expand_path('gems') }
 
-        let(:hash) do
-          {
-            'inherit_gem' => { 'rubocop-includes' => '.rubocop.yml' },
-            'Performance/Casecmp' => { Enabled: true }
-          }
-        end
+      let(:hash) do
+        {
+          'inherit_gem' => { 'rubocop-includes' => '.rubocop.yml' },
+          'Performance/Casecmp' => { Enabled: true }
+        }
+      end
 
-        before do
-          create_file("#{gem_root}/rubocop-includes/.rubocop.yml", <<~YAML)
-            require:
-              - rubocop-performance
-          YAML
+      before do
+        create_file("#{gem_root}/rubocop-includes/.rubocop.yml", <<~YAML)
+          require:
+            - rubocop-performance
+        YAML
 
-          # Mock out a gem in order to test `inherit_gem`.
-          gem_class = Struct.new(:gem_dir)
-          mock_spec = gem_class.new(File.join(gem_root, 'rubocop-includes'))
-          allow(Gem::Specification).to receive(:find_by_name)
-            .with('rubocop-includes').and_return(mock_spec)
+        # Mock out a gem in order to test `inherit_gem`.
+        gem_class = Struct.new(:gem_dir)
+        mock_spec = gem_class.new(File.join(gem_root, 'rubocop-includes'))
+        allow(Gem::Specification).to receive(:find_by_name)
+          .with('rubocop-includes').and_return(mock_spec)
 
-          # Resolve `inherit_gem`
-          resolver.resolve_inheritance_from_gems(hash)
-          resolver.resolve_inheritance(loaded_path, hash, loaded_path, false)
+        # Resolve `inherit_gem`
+        resolver.resolve_inheritance_from_gems(hash)
+        resolver.resolve_inheritance(loaded_path, hash, loaded_path, false)
 
-          allow(configuration).to receive(:loaded_features).and_call_original
-        end
+        allow(configuration).to receive(:loaded_features).and_call_original
+      end
 
-        it 'does not raise a ValidationError' do
-          expect { config_obsoletion.reject_obsolete! }.not_to raise_error
-        end
+      it 'does not raise a ValidationError' do
+        expect { config_obsoletion.reject_obsolete! }.not_to raise_error
       end
     end
 
@@ -397,11 +399,49 @@ RSpec.describe RuboCop::ConfigObsoletion do
     context 'when the configuration includes any deprecated parameters' do
       let(:hash) do
         {
+          'Lint/AmbiguousBlockAssociation' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Lint/NumberConversion' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Metrics/AbcSize' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
           'Metrics/BlockLength' => {
-            'ExcludedMethods' => %w[foo bar]
+            'ExcludedMethods' => %w[foo bar],
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Metrics/CyclomaticComplexity' => {
+            'IgnoredMethods' => %w[foo bar]
           },
           'Metrics/MethodLength' => {
-            'ExcludedMethods' => %w[foo bar]
+            'ExcludedMethods' => %w[foo bar],
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Metrics/PerceivedComplexity' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/BlockDelimiters' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/ClassEqualityComparison' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/FormatStringToken' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/MethodCallWithArgsParentheses' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/MethodCallWithoutArgsParentheses' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/NumericPredicate' => {
+            'IgnoredMethods' => %w[foo bar]
+          },
+          'Style/SymbolLiteral' => {
+            'IgnoredMethods' => %w[foo bar]
           }
         }
       end
@@ -411,9 +451,37 @@ RSpec.describe RuboCop::ConfigObsoletion do
       let(:expected_message) do
         <<~OUTPUT.chomp
           obsolete parameter `ExcludedMethods` (for `Metrics/BlockLength`) found in example/.rubocop.yml
-          `ExcludedMethods` has been renamed to `IgnoredMethods`.
+          `ExcludedMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
           obsolete parameter `ExcludedMethods` (for `Metrics/MethodLength`) found in example/.rubocop.yml
-          `ExcludedMethods` has been renamed to `IgnoredMethods`.
+          `ExcludedMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Lint/AmbiguousBlockAssociation`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Lint/NumberConversion`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/AbcSize`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/BlockLength`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/CyclomaticComplexity`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/MethodLength`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Metrics/PerceivedComplexity`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/BlockDelimiters`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/ClassEqualityComparison`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/FormatStringToken`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/MethodCallWithArgsParentheses`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/MethodCallWithoutArgsParentheses`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/NumericPredicate`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
+          obsolete parameter `IgnoredMethods` (for `Style/SymbolLiteral`) found in example/.rubocop.yml
+          `IgnoredMethods` has been renamed to `AllowedMethods` and/or `AllowedPatterns`.
         OUTPUT
       end
 
@@ -496,6 +564,29 @@ RSpec.describe RuboCop::ConfigObsoletion do
         create_file('external/obsoletions.yml', <<~YAML)
           extracted:
             Performance/*: ~
+        YAML
+      end
+
+      it 'allows the extracted cops' do
+        described_class.files << external_obsoletions
+
+        expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+      end
+    end
+
+    context 'when using `changed_parameters` by an external library' do
+      after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
+
+      let(:hash) { {} }
+      let(:external_obsoletions) do
+        create_file('external/obsoletions.yml', <<~YAML)
+          changed_parameters:
+            - cops: Rails/FindEach
+              parameters: IgnoredMethods
+              alternatives:
+                - AllowedMethods
+                - AllowedPatterns
+              severity: warning
         YAML
       end
 

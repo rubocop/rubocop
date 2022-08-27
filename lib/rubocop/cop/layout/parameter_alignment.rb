@@ -73,10 +73,10 @@ module RuboCop
         extend AutoCorrector
 
         ALIGN_PARAMS_MSG = 'Align the parameters of a method definition if ' \
-          'they span more than one line.'
+                           'they span more than one line.'
 
         FIXED_INDENT_MSG = 'Use one level of indentation for parameters ' \
-          'following the first line of a multi-line method definition.'
+                           'following the first line of a multi-line method definition.'
 
         def on_def(node)
           return if node.arguments.size < 2

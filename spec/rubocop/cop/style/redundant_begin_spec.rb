@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it "doesn't modify spacing when auto-correcting" do
+  it "doesn't modify spacing when autocorrecting" do
     expect_offense(<<~RUBY)
       def method
         begin
@@ -134,7 +134,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'auto-corrects when there are trailing comments' do
+  it 'autocorrects when there are trailing comments' do
     expect_offense(<<~RUBY)
       def method
         begin # comment 1
@@ -344,75 +344,229 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'registers an offense for a do-end block with redundant begin-end' do
+  context '< Ruby 2.5', :ruby24 do
+    it 'accepts a do-end block with a begin-end' do
+      expect_no_offenses(<<~RUBY)
+        do_something do
+          begin
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+    end
+  end
+
+  context '>= ruby 2.5', :ruby25 do
+    it 'registers an offense for a do-end block with redundant begin-end' do
+      expect_offense(<<~RUBY)
+        do_something do
+          begin
+          ^^^^^ Redundant `begin` block detected.
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something do
+         #{trailing_whitespace}
+            foo
+          rescue => e
+            bar
+         #{trailing_whitespace}
+        end
+      RUBY
+    end
+
+    it 'accepts a {} block with a begin-end' do
+      expect_no_offenses(<<~RUBY)
+        do_something {
+          begin
+            foo
+          rescue => e
+            bar
+          end
+        }
+      RUBY
+    end
+
+    it 'accepts a block with a begin block after a statement' do
+      expect_no_offenses(<<~RUBY)
+        do_something do
+          something
+          begin
+            ala
+          rescue => e
+            bala
+          end
+        end
+      RUBY
+    end
+
+    it 'accepts a stabby lambda with a begin-end' do
+      expect_no_offenses(<<~RUBY)
+        -> do
+          begin
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+    end
+
+    it 'accepts super with block' do
+      expect_no_offenses(<<~RUBY)
+        def a_method
+          super do |arg|
+            foo
+          rescue => e
+            bar
+          end
+        end
+      RUBY
+    end
+  end
+
+  it 'accepts when one-liner `begin` block has multiple statements with modifier condition' do
+    expect_no_offenses(<<~RUBY)
+      begin foo; bar; end unless condition
+    RUBY
+  end
+
+  it 'accepts when multi-line `begin` block has multiple statements with modifier condition' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        foo; bar
+      end unless condition
+    RUBY
+  end
+
+  it 'reports an offense when one-liner `begin` block has single statement with modifier condition' do
     expect_offense(<<~RUBY)
-      do_something do
+      begin foo end unless condition
+      ^^^^^ Redundant `begin` block detected.
+    RUBY
+
+    expect_correction(" foo  unless condition\n")
+  end
+
+  it 'reports an offense when multi-line `begin` block has single statement with modifier condition' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        foo
+      end unless condition
+    RUBY
+
+    expect_correction("\n  foo unless condition\n")
+  end
+
+  it 'reports an offense when multi-line `begin` block has single statement and it is inside condition' do
+    expect_offense(<<~RUBY)
+      unless condition
         begin
         ^^^^^ Redundant `begin` block detected.
           foo
-        rescue => e
-          bar
+        end
+      end
+    RUBY
+
+    expect_correction("unless condition\n  \n    foo\n  \nend\n")
+  end
+
+  it 'reports an offense when assigning nested `begin` blocks' do
+    expect_offense(<<~RUBY)
+      @foo ||= begin
+        @bar ||= begin
+                 ^^^^^ Redundant `begin` block detected.
+          baz
         end
       end
     RUBY
 
     expect_correction(<<~RUBY)
-      do_something do
+      @foo ||= @bar ||= baz
+      #{trailing_whitespace * 2}
+
+    RUBY
+  end
+
+  it 'reports an offense when assigning nested blocks which contain `begin` blocks' do
+    expect_offense(<<~RUBY)
+      var = do_something do
+        begin
+        ^^^^^ Redundant `begin` block detected.
+          do_something do
+            begin
+            ^^^^^ Redundant `begin` block detected.
+              foo
+            ensure
+              bar
+            end
+          end
+        ensure
+          baz
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = do_something do
        #{trailing_whitespace}
-          foo
-        rescue => e
-          bar
+          do_something do
+           #{trailing_whitespace}
+              foo
+            ensure
+              bar
+           #{trailing_whitespace}
+          end
+        ensure
+          baz
        #{trailing_whitespace}
       end
     RUBY
   end
 
-  it 'accepts a {} block with a begin-end' do
-    expect_no_offenses(<<~RUBY)
-      do_something {
-        begin
-          foo
-        rescue => e
-          bar
+  context 'Ruby 2.7', :ruby27 do
+    it 'reports an offense when assigning nested blocks which contain `begin` blocks' do
+      expect_offense(<<~RUBY)
+        var = do_something do
+          begin
+          ^^^^^ Redundant `begin` block detected.
+            do_something do
+              begin
+              ^^^^^ Redundant `begin` block detected.
+                _1
+              ensure
+                bar
+              end
+            end
+          ensure
+            baz
+          end
         end
-      }
-    RUBY
-  end
+      RUBY
 
-  it 'accepts a block with a begin block after a statement' do
-    expect_no_offenses(<<~RUBY)
-      do_something do
-        something
-        begin
-          ala
-        rescue => e
-          bala
+      expect_correction(<<~RUBY)
+        var = do_something do
+         #{trailing_whitespace}
+            do_something do
+             #{trailing_whitespace}
+                _1
+              ensure
+                bar
+             #{trailing_whitespace}
+            end
+          ensure
+            baz
+         #{trailing_whitespace}
         end
-      end
-    RUBY
-  end
-
-  it 'accepts a stabby lambda with a begin-end' do
-    expect_no_offenses(<<~RUBY)
-      -> do
-        begin
-          foo
-        rescue => e
-          bar
-        end
-      end
-    RUBY
-  end
-
-  it 'accepts super with block' do
-    expect_no_offenses(<<~RUBY)
-      def a_method
-        super do |arg|
-          foo
-        rescue => e
-          bar
-        end
-      end
-    RUBY
+      RUBY
+    end
   end
 end

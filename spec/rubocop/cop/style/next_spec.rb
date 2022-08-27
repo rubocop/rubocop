@@ -24,6 +24,26 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it "registers an offense for #{condition} inside of downto numblock" do
+        expect_offense(<<~RUBY, condition: condition)
+          3.downto(1) do
+            %{condition} _1 == 1
+            ^{condition}^^^^^^^^ Use `next` to skip iteration.
+              puts _1
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          3.downto(1) do
+            next #{opposite} _1 == 1
+            puts _1
+          end
+        RUBY
+      end
+    end
+
     it "registers an offense for #{condition} inside of each" do
       expect_offense(<<~RUBY, condition: condition)
         [].each do |o|
@@ -295,6 +315,27 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       RUBY
     end
 
+    it 'registers an offense when line break before condition' do
+      expect_offense(<<~RUBY)
+        array.each do |item|
+          if
+          ^^ Use `next` to skip iteration.
+             condition
+            next if item.zero?
+            do_something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.each do |item|
+          next unless condition
+            next if item.zero?
+            do_something
+        end
+      RUBY
+    end
+
     it 'allows loops with conditional break' do
       expect_no_offenses(<<~RUBY)
         loop do
@@ -407,7 +448,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       end
     end
 
-    it 'auto-corrects a misaligned end' do
+    it 'autocorrects a misaligned end' do
       expect_offense(<<~RUBY)
         [1, 2, 3, 4].each do |num|
           if !opts.nil?

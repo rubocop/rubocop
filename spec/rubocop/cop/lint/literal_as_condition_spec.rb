@@ -75,11 +75,19 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
     end
 
     context '>= Ruby 2.7', :ruby27 do
-      it "registers an offense for literal #{lit} in case match" do
+      it "accepts an offense for literal #{lit} in case match with a match var" do
+        expect_no_offenses(<<~RUBY, lit: lit)
+          case %{lit}
+          in x then top
+          end
+        RUBY
+      end
+
+      it "registers an offense for literal #{lit} in case match without a match var" do
         expect_offense(<<~RUBY, lit: lit)
           case %{lit}
                ^{lit} Literal `#{lit}` appeared as a condition.
-          in x then top
+          in CONST then top
           end
         RUBY
       end
@@ -215,6 +223,14 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         case [1, 2, [3, 4]]
              ^^^^^^^^^^^^^^ Literal `[1, 2, [3, 4]]` appeared as a condition.
         in [1, 2, 5] then top
+        end
+      RUBY
+    end
+
+    it 'accepts an offense for case match with a match var' do
+      expect_no_offenses(<<~RUBY)
+        case { a: 1, b: 2, c: 3 }
+        in a: Integer => m
         end
       RUBY
     end

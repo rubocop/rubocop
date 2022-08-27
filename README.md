@@ -9,7 +9,6 @@
 [![Actions Status](https://github.com/rubocop/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop/rubocop/actions?query=workflow%3ACI)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop/rubocop/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop/rubocop/maintainability)
-[![SemVer](https://api.dependabot.com/badges/compatibility_score?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)](https://dependabot.com/compatibility-score.html?dependency-name=rubocop&package-manager=bundler&version-scheme=semver)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true)](https://discord.gg/wJjWvGRDmm)
 
 > Role models are important. <br/>
@@ -47,14 +46,14 @@ If you'd rather install RuboCop using `bundler`, add a line for it in your `Gemf
 gem 'rubocop', require: false
 ```
 
-RuboCop is stable between major versions, both in terms of API and cop configuration.
+RuboCop is stable between minor versions, both in terms of API and cop configuration.
 We aim to ease the maintenance of RuboCop extensions and the upgrades between RuboCop
 releases. All big changes are reserved for major releases.
 To prevent an unwanted RuboCop update you might want to use a conservative version lock
 in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 1.17', require: false
+gem 'rubocop', '~> 1.35', require: false
 ```
 
 See [our versioning policy](https://docs.rubocop.org/rubocop/versioning.html) for further details.
@@ -74,10 +73,12 @@ You can read a lot more about RuboCop in its [official docs](https://docs.ruboco
 
 ## Compatibility
 
-RuboCop officially supports the following Ruby implementations:
+RuboCop officially supports the following runtime Ruby implementations:
 
-* MRI 2.5+
-* JRuby 9.2+
+* MRI 2.6+
+* JRuby 9.3+
+
+Targets Ruby 2.0+ code analysis.
 
 See the [compatibility documentation](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
 
@@ -245,5 +246,5 @@ RuboCop's changelog is available [here](CHANGELOG.md).
 
 ## Copyright
 
-Copyright (c) 2012-2021 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
+Copyright (c) 2012-2022 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
 further details.

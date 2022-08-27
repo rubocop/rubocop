@@ -3,8 +3,23 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop looks for trailing blank lines and a final newline in the
+      # Looks for trailing blank lines and a final newline in the
       # source code.
+      #
+      # @example EnforcedStyle: final_newline (default)
+      #   # `final_newline` looks for one newline at the end of files.
+      #
+      #   # bad
+      #   class Foo; end
+      #
+      #   # EOF
+      #
+      #   # bad
+      #   class Foo; end # EOF
+      #
+      #   # good
+      #   class Foo; end
+      #   # EOF
       #
       # @example EnforcedStyle: final_blank_line
       #   # `final_blank_line` looks for one blank line followed by a new line
@@ -20,21 +35,6 @@ module RuboCop
       #   # good
       #   class Foo; end
       #
-      #   # EOF
-      #
-      # @example EnforcedStyle: final_newline (default)
-      #   # `final_newline` looks for one newline at the end of files.
-      #
-      #   # bad
-      #   class Foo; end
-      #
-      #   # EOF
-      #
-      #   # bad
-      #   class Foo; end # EOF
-      #
-      #   # good
-      #   class Foo; end
       #   # EOF
       #
       class TrailingEmptyLines < Base
@@ -82,7 +82,7 @@ module RuboCop
           return true if buffer.source.strip.start_with?('__END__')
           return false if processed_source.tokens.empty?
 
-          extra = buffer.source[processed_source.tokens.last.end_pos..-1]
+          extra = buffer.source[processed_source.tokens.last.end_pos..]
           extra&.strip&.start_with?('__END__')
         end
 

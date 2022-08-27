@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for multiple expressions placed on the same line.
+      # Checks for multiple expressions placed on the same line.
       # It also checks for lines terminated with a semicolon.
       #
       # This cop has `AllowAsExpressionSeparator` configuration option.
@@ -32,38 +32,29 @@ module RuboCop
 
         MSG = 'Do not use semicolons to terminate expressions.'
 
+        def self.autocorrect_incompatible_with
+          [Style::SingleLineMethods]
+        end
+
         def on_new_investigation
           return if processed_source.blank?
-
-          @processed_source = processed_source
 
           check_for_line_terminator_or_opener
         end
 
-        def on_begin(node) # rubocop:todo Metrics/CyclomaticComplexity
+        def on_begin(node)
           return if cop_config['AllowAsExpressionSeparator']
 
           exprs = node.children
 
           return if exprs.size < 2
 
-          # create a map matching lines to the number of expressions on them
-          exprs_lines = exprs.map(&:first_line)
-          lines = exprs_lines.group_by(&:itself)
-
-          lines.each do |line, expr_on_line|
+          expressions_per_line(exprs).each do |line, expr_on_line|
             # Every line with more than one expression on it is a
             # potential offense
             next unless expr_on_line.size > 1
 
-            # TODO: Find the correct position of the semicolon. We don't know
-            # if the first semicolon on the line is a separator of
-            # expressions. It's just a guess.
-            column = @processed_source[line - 1].index(';')
-
-            next unless column
-
-            convention_on(line, column, false)
+            find_semicolon_positions(line) { |pos| register_semicolon(line, pos, true) }
           end
         end
 
@@ -71,29 +62,70 @@ module RuboCop
 
         def check_for_line_terminator_or_opener
           # Make the obvious check first
-          return unless @processed_source.raw_source.include?(';')
+          return unless processed_source.raw_source.include?(';')
 
-          each_semicolon { |line, column| convention_on(line, column, true) }
+          each_semicolon do |line, column, token_before_semicolon|
+            register_semicolon(line, column, false, token_before_semicolon)
+          end
         end
 
         def each_semicolon
           tokens_for_lines.each do |line, tokens|
-            yield line, tokens.last.column if tokens.last.semicolon?
+            yield line, tokens.last.column, tokens[-2] if tokens.last.semicolon?
             yield line, tokens.first.column if tokens.first.semicolon?
           end
         end
 
         def tokens_for_lines
-          @processed_source.tokens.group_by(&:line)
+          processed_source.tokens.group_by(&:line)
         end
 
-        def convention_on(line, column, autocorrect)
-          range = source_range(@processed_source.buffer, line, column)
-          # Don't attempt to autocorrect if semicolon is separating statements
-          # on the same line
+        def register_semicolon(line, column, after_expression, token_before_semicolon = nil)
+          range = source_range(processed_source.buffer, line, column)
+
           add_offense(range) do |corrector|
-            corrector.remove(range) if autocorrect
+            if after_expression
+              corrector.replace(range, "\n")
+            else
+              # Prevents becoming one range instance with subsequent line when endless range
+              # without parentheses.
+              # See: https://github.com/rubocop/rubocop/issues/10791
+              if token_before_semicolon&.regexp_dots?
+                range_node = find_range_node(token_before_semicolon)
+                corrector.wrap(range_node, '(', ')') if range_node
+              end
+
+              corrector.remove(range)
+            end
           end
+        end
+
+        def expressions_per_line(exprs)
+          # create a map matching lines to the number of expressions on them
+          exprs_lines = exprs.map(&:first_line)
+          exprs_lines.group_by(&:itself)
+        end
+
+        def find_semicolon_positions(line)
+          # Scan for all the semicolons on the line
+          semicolons = processed_source[line - 1].enum_for(:scan, ';')
+          semicolons.each do
+            yield Regexp.last_match.begin(0)
+          end
+        end
+
+        def find_range_node(token_before_semicolon)
+          range_nodes.detect do |range_node|
+            range_node.source_range.contains?(token_before_semicolon.pos)
+          end
+        end
+
+        def range_nodes
+          return @range_nodes if instance_variable_defined?(:@range_nodes)
+
+          ast = processed_source.ast
+          @range_nodes = ast.range_type? ? [ast] : []
+          @range_nodes.concat(ast.each_descendant(:irange, :erange).to_a)
         end
       end
     end

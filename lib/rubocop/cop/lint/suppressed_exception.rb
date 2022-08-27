@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for `rescue` blocks with no body.
+      # Checks for `rescue` blocks with no body.
       #
       # @example
       #

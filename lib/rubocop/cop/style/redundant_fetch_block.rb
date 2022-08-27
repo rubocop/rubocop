@@ -3,11 +3,15 @@
 module RuboCop
   module Cop
     module Style
-      # This cop identifies places where `fetch(key) { value }`
+      # Identifies places where `fetch(key) { value }`
       # can be replaced by `fetch(key, value)`.
       #
       # In such cases `fetch(key, value)` method is faster
       # than `fetch(key) { value }`.
+      #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the receiver
+      #   does not have a different implementation of `fetch`.
       #
       # @example SafeForConstants: false (default)
       #   # bad
@@ -46,7 +50,7 @@ module RuboCop
             ${nil? #basic_literal? #const_type?})
         PATTERN
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           redundant_fetch_block_candidate?(node) do |send, body|
             return if should_not_check?(send, body)
 

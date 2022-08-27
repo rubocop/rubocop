@@ -1,19 +1,104 @@
 = Gemspec
 
-== Gemspec/DateAssignment
+== Gemspec/DependencyVersion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| Yes
+| No
+| 1.29
+| -
+|===
+
+Enforce that gem dependency version specifications or a commit reference (branch,
+ref, or tag) are either required or forbidden.
+
+=== Examples
+
+==== EnforcedStyle: required (default)
+
+[source,ruby]
+----
+# bad
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser'
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+----
+
+==== EnforcedStyle: forbidden
+
+[source,ruby]
+----
+# bad
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser', '>= 2.3.3.1', '< 3.0'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_dependency 'parser'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_development_dependency 'parser'
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `required`
+| `required`, `forbidden`
+
+| Include
+| `+**/*.gemspec+`
+| Array
+
+| AllowedGems
+| `[]`
+| Array
+|===
+
+== Gemspec/DeprecatedAttributeAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
 | Yes
 | Yes
-| 1.10
+| 1.30
 | -
 |===
 
-This cop checks that `date =` is not used in gemspec file.
-It is set automatically when the gem is packaged.
+Checks that deprecated attribute attributes are not set in a gemspec file.
+Removing deprecated attributes allows the user to receive smaller packed gems.
 
 === Examples
 
@@ -21,13 +106,19 @@ It is set automatically when the gem is packaged.
 ----
 # bad
 Gem::Specification.new do |spec|
-  s.name = 'your_cool_gem_name'
-  spec.date = Time.now.strftime('%Y-%m-%d')
+  spec.name = 'your_cool_gem_name'
+  spec.test_files = Dir.glob('test/**/*')
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.name = 'your_cool_gem_name'
+  spec.test_files += Dir.glob('test/**/*')
 end
 
 # good
 Gem::Specification.new do |spec|
-  s.name = 'your_cool_gem_name'
+  spec.name = 'your_cool_gem_name'
 end
 ----
 
@@ -44,7 +135,7 @@ end
 == Gemspec/DuplicatedAssignment
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -102,7 +193,7 @@ end
 == Gemspec/OrderedDependencies
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -181,22 +272,110 @@ spec.add_dependency 'rspec'
 | Array
 |===
 
+== Gemspec/RequireMFA
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.23
+| -
+|===
+
+Requires a gemspec to have `rubygems_mfa_required` metadata set.
+
+This setting tells RubyGems that MFA (Multi-Factor Authentication) is
+required for accounts to be able perform privileged operations, such as
+(see RubyGems' documentation for the full list of privileged
+operations):
+
+* `gem push`
+* `gem yank`
+* `gem owner --add/remove`
+* adding or removing owners using gem ownership page
+
+This helps make your gem more secure, as users can be more
+confident that gem updates were pushed by maintainers.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Gem::Specification.new do |spec|
+  # no `rubygems_mfa_required` metadata specified
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata = {
+    'rubygems_mfa_required' => 'true'
+  }
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata['rubygems_mfa_required'] = 'true'
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.metadata = {
+    'rubygems_mfa_required' => 'false'
+  }
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata = {
+    'rubygems_mfa_required' => 'true'
+  }
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.metadata['rubygems_mfa_required'] = 'false'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata['rubygems_mfa_required'] = 'true'
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Include
+| `+**/*.gemspec+`
+| Array
+|===
+
+=== References
+
+* https://guides.rubygems.org/mfa-requirement-opt-in/
+
 == Gemspec/RequiredRubyVersion
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
 | No
 | 0.52
-| 0.89
+| 1.22
 |===
 
-Checks that `required_ruby_version` of gemspec is specified and
-equal to `TargetRubyVersion` of .rubocop.yml.
-Thereby, RuboCop to perform static analysis working on the version
-required by gemspec.
+Checks that `required_ruby_version` in a gemspec file is set to a valid
+value (non-blank) and matches `TargetRubyVersion` as set in RuboCop's
+configuration for the gem.
+
+This ensures that RuboCop is using the same Ruby version as the gem.
 
 === Examples
 
@@ -219,6 +398,11 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.6.0'
 end
 
+# bad
+Gem::Specification.new do |spec|
+  spec.required_ruby_version = ''
+end
+
 # good
 Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.5.0'
@@ -235,7 +419,7 @@ Gem::Specification.new do |spec|
 end
 
 # accepted but not recommended, since
-# Ruby does not really follow semantic versionning
+# Ruby does not really follow semantic versioning
 Gem::Specification.new do |spec|
   spec.required_ruby_version = '~> 2.5'
 end
@@ -254,7 +438,7 @@ end
 == Gemspec/RubyVersionGlobalsUsage
 
 |===
-| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
 | Yes
@@ -275,7 +459,7 @@ to execute `rake release` and not user's ruby version.
 ----
 # bad
 Gem::Specification.new do |spec|
-  if RUBY_VERSION >= '2.5'
+  if RUBY_VERSION >= '3.0'
     spec.add_runtime_dependency 'gem_a'
   else
     spec.add_runtime_dependency 'gem_b'

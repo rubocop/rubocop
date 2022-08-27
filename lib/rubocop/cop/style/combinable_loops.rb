@@ -3,12 +3,13 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for places where multiple consecutive loops over the same data
+      # Checks for places where multiple consecutive loops over the same data
       # can be combined into a single loop. It is very likely that combining them
       # will make the code more efficient and more concise.
       #
-      # It is marked as unsafe, because the first loop might modify
-      # a state that the second loop depends on; these two aren't combinable.
+      # @safety
+      #   The cop is unsafe, because the first loop might modify state that the
+      #   second loop depends on; these two aren't combinable.
       #
       # @example
       #   # bad
@@ -65,6 +66,8 @@ module RuboCop
           add_offense(node) if same_collection_looping?(node, node.left_sibling)
         end
 
+        alias on_numblock on_block
+
         def on_for(node)
           return unless node.parent&.begin_type?
 
@@ -76,14 +79,14 @@ module RuboCop
 
         def collection_looping_method?(node)
           # TODO: Remove `Symbol#to_s` after supporting only Ruby >= 2.7.
-          method_name = node.send_node.method_name.to_s
+          method_name = node.method_name.to_s
           method_name.start_with?('each') || method_name.end_with?('_each')
         end
 
         def same_collection_looping?(node, sibling)
-          sibling&.block_type? &&
+          (sibling&.block_type? || sibling&.numblock_type?) &&
             sibling.send_node.method?(node.method_name) &&
-            sibling.send_node.receiver == node.send_node.receiver &&
+            sibling.receiver == node.receiver &&
             sibling.send_node.arguments == node.send_node.arguments
         end
       end

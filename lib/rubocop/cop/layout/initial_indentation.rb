@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for indentation of the first non-blank non-comment
+      # Checks for indentation of the first non-blank non-comment
       # line in a file.
       #
       # @example
@@ -41,7 +41,7 @@ module RuboCop
           return unless token
           return if token.column.zero?
 
-          space_range = range_with_surrounding_space(range: token.pos, side: :left, newlines: false)
+          space_range = range_with_surrounding_space(token.pos, side: :left, newlines: false)
           # If the file starts with a byte order mark (BOM), the column can be
           # non-zero, but then we find out here if there's no space to the left
           # of the first token.

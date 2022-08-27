@@ -6,6 +6,11 @@ module RuboCop
       # Sometimes using dig method ends up with just a single
       # argument. In such cases, dig should be replaced with [].
       #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the receiver
+      #   is an `Enumerable` or does not have a nonstandard implementation
+      #   of `dig`.
+      #
       # @example
       #   # bad
       #   { key: 'value' }.dig(:key)
@@ -39,15 +44,20 @@ module RuboCop
 
           expression = single_argument_dig?(node)
           return unless expression
+          return if expression.forwarded_args_type?
 
           receiver = node.receiver.source
           argument = expression.source
 
           message = format(MSG, receiver: receiver, argument: argument, original: node.source)
           add_offense(node, message: message) do |corrector|
+            next if part_of_ignored_node?(node)
+
             correct_access = "#{receiver}[#{argument}]"
             corrector.replace(node, correct_access)
           end
+
+          ignore_node(node)
         end
       end
     end

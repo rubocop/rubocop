@@ -30,8 +30,15 @@ module RuboCop
         node.loc.respond_to?(:end) && node.loc.end && node.loc.end.is?(')')
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def add_parentheses(node, corrector)
-        if !node.respond_to?(:arguments)
+        if node.args_type?
+          arguments_range = node.source_range
+          args_with_space = range_with_surrounding_space(arguments_range, side: :left)
+          leading_space = range_between(args_with_space.begin_pos, arguments_range.begin_pos)
+          corrector.replace(leading_space, '(')
+          corrector.insert_after(arguments_range, ')')
+        elsif !node.respond_to?(:arguments)
           corrector.wrap(node, '(', ')')
         elsif node.arguments.empty?
           corrector.insert_after(node, '()')
@@ -43,11 +50,17 @@ module RuboCop
           corrector.insert_after(args_end(node), ')')
         end
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def args_begin(node)
         loc = node.loc
-        selector =
-          node.super_type? || node.yield_type? ? loc.keyword : loc.selector
+        selector = if node.super_type? || node.yield_type?
+                     loc.keyword
+                   elsif node.def_type? || node.defs_type?
+                     loc.name
+                   else
+                     loc.selector
+                   end
         selector.end.resize(1)
       end
 
@@ -108,11 +121,12 @@ module RuboCop
         if needs_escaping?(string) && compatible_external_encoding_for?(string)
           string.inspect
         else
-          "'#{string.gsub('\\') { '\\\\' }}'"
+          # In a single-quoted strings, double quotes don't need to be escaped
+          "'#{string.gsub('\"', '"').gsub('\\') { '\\\\' }}'"
         end
       end
 
-      def trim_string_interporation_escape_character(str)
+      def trim_string_interpolation_escape_character(str)
         str.gsub(/\\\#\{(.*?)\}/) { "\#{#{Regexp.last_match(1)}}" }
       end
 
@@ -120,12 +134,22 @@ module RuboCop
         StringInterpreter.interpret(string)
       end
 
-      def same_line?(node1, node2)
-        node1.respond_to?(:loc) && node2.respond_to?(:loc) && node1.loc.line == node2.loc.line
+      def line(node_or_range)
+        if node_or_range.respond_to?(:line)
+          node_or_range.line
+        elsif node_or_range.respond_to?(:loc)
+          node_or_range.loc.line
+        end
       end
 
-      def indent(node)
-        ' ' * node.loc.column
+      def same_line?(node1, node2)
+        line1 = line(node1)
+        line2 = line(node2)
+        line1 && line2 && line1 == line2
+      end
+
+      def indent(node, offset: 0)
+        ' ' * (node.loc.column + offset)
       end
 
       def to_supported_styles(enforced_style)
@@ -135,7 +159,7 @@ module RuboCop
       private
 
       def compatible_external_encoding_for?(src)
-        src = src.dup if RUBY_ENGINE == 'jruby'
+        src = src.dup if RUBY_VERSION < '2.3' || RUBY_ENGINE == 'jruby'
         src.force_encoding(Encoding.default_external).valid_encoding?
       end
     end

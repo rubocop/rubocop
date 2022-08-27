@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks for space after `!`.
+      # Checks for space after `!`.
       #
       # @example
       #   # bad
@@ -16,6 +16,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Do not leave space between `!` and its argument.'
+        RESTRICT_ON_SEND = %i[!].freeze
 
         def on_send(node)
           return unless node.prefix_bang? && whitespace_after_operator?(node)

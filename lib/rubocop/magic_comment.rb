@@ -5,8 +5,15 @@ module RuboCop
   #
   # @abstract parent of three different magic comment handlers
   class MagicComment
-    # @see https://git.io/vMC1C IRB's pattern for matching magic comment tokens
+    # IRB's pattern for matching magic comment tokens.
+    # @see https://github.com/ruby/ruby/blob/b4a55c1/lib/irb/magic-file.rb#L5
     TOKEN = /[[:alnum:]\-_]+/.freeze
+    KEYWORDS = {
+      encoding: '(?:en)?coding',
+      frozen_string_literal: 'frozen[_-]string[_-]literal',
+      shareable_constant_value: 'shareable[_-]constant[_-]value',
+      typed: 'typed'
+    }.freeze
 
     # Detect magic comment format and pass it to the appropriate wrapper.
     #
@@ -15,8 +22,8 @@ module RuboCop
     # @return [RuboCop::MagicComment]
     def self.parse(comment)
       case comment
-      when EmacsComment::FORMAT then EmacsComment.new(comment)
-      when VimComment::FORMAT   then VimComment.new(comment)
+      when EmacsComment::REGEXP then EmacsComment.new(comment)
+      when VimComment::REGEXP   then VimComment.new(comment)
       else
         SimpleComment.new(comment)
       end
@@ -27,7 +34,14 @@ module RuboCop
     end
 
     def any?
-      frozen_string_literal_specified? || encoding_specified? || shareable_constant_value_specified?
+      frozen_string_literal_specified? ||
+        encoding_specified? ||
+        shareable_constant_value_specified? ||
+        typed_specified?
+    end
+
+    def valid?
+      @comment.start_with?('#') && any?
     end
 
     # Does the magic comment enable the frozen string literal feature.
@@ -91,6 +105,17 @@ module RuboCop
       specified?(encoding)
     end
 
+    # Was the Sorbet `typed` sigil specified?
+    #
+    # @return [Boolean]
+    def typed_specified?
+      specified?(extract_typed)
+    end
+
+    def typed
+      extract_typed
+    end
+
     private
 
     def specified?(value)
@@ -111,6 +136,18 @@ module RuboCop
     #
     # @abstract
     class EditorComment < MagicComment
+      def encoding
+        match(self.class::KEYWORDS[:encoding])
+      end
+
+      # Rewrite the comment without a given token type
+      def without(type)
+        remaining = tokens.grep_v(/\A#{self.class::KEYWORDS[type.to_sym]}/)
+        return '' if remaining.empty?
+
+        self.class::FORMAT % remaining.join(self.class::SEPARATOR)
+      end
+
       private
 
       # Find a token starting with the provided keyword and extract its value.
@@ -135,7 +172,7 @@ module RuboCop
       #
       # @return [Array<String>]
       def tokens
-        extract(self.class::FORMAT).split(self.class::SEPARATOR).map(&:strip)
+        extract(self.class::REGEXP).split(self.class::SEPARATOR).map(&:strip)
       end
     end
 
@@ -149,25 +186,25 @@ module RuboCop
     #   comment.encoding # => 'ascii-8bit'
     #
     # @see https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html
-    # @see https://git.io/vMCXh Emacs handling in Ruby's parse.y
+    # @see https://github.com/ruby/ruby/blob/3f306dc/parse.y#L6873-L6892 Emacs handling in parse.y
     class EmacsComment < EditorComment
-      FORMAT    = /-\*-(.+)-\*-/.freeze
+      REGEXP    = /-\*-(.+)-\*-/.freeze
+      FORMAT    = '# -*- %s -*-'
       SEPARATOR = ';'
       OPERATOR  = ':'
-
-      def encoding
-        match('(?:en)?coding')
-      end
 
       private
 
       def extract_frozen_string_literal
-        match('frozen[_-]string[_-]literal')
+        match(KEYWORDS[:frozen_string_literal])
       end
 
       def extract_shareable_constant_value
-        match('shareable[_-]constant[_-]values')
+        match(KEYWORDS[:shareable_constant_value])
       end
+
+      # Emacs comments cannot specify Sorbet typechecking behavior.
+      def extract_typed; end
     end
 
     # Wrapper for Vim style magic comments.
@@ -179,9 +216,11 @@ module RuboCop
     #
     #   comment.encoding # => 'ascii-8bit'
     class VimComment < EditorComment
-      FORMAT    = /#\s*vim:\s*(.+)/.freeze
+      REGEXP    = /#\s*vim:\s*(.+)/.freeze
+      FORMAT    = '# vim: %s'
       SEPARATOR = ', '
       OPERATOR  = '='
+      KEYWORDS = MagicComment::KEYWORDS.merge(encoding: 'fileencoding').freeze
 
       # For some reason the fileencoding keyword only works if there
       # is at least one other token included in the string. For example
@@ -193,7 +232,7 @@ module RuboCop
       #      # vim: foo=bar, fileencoding=ascii-8bit
       #
       def encoding
-        match('fileencoding') if tokens.size > 1
+        super if tokens.size > 1
       end
 
       # Vim comments cannot specify frozen string literal behavior.
@@ -201,6 +240,9 @@ module RuboCop
 
       # Vim comments cannot specify shareable constant values behavior.
       def shareable_constant_value; end
+
+      # Vim comments cannot specify Sorbet typechecking behavior.
+      def extract_typed; end
     end
 
     # Wrapper for regular magic comments not bound to an editor.
@@ -219,7 +261,16 @@ module RuboCop
     class SimpleComment < MagicComment
       # Match `encoding` or `coding`
       def encoding
-        extract(/\A\s*\#.*\b(?:en)?coding: (#{TOKEN})/io)
+        extract(/\A\s*\#.*\b#{KEYWORDS[:encoding]}: (#{TOKEN})/io)
+      end
+
+      # Rewrite the comment without a given token type
+      def without(type)
+        if @comment.match?(/\A#\s*#{self.class::KEYWORDS[type.to_sym]}/)
+          ''
+        else
+          @comment
+        end
       end
 
       private
@@ -230,13 +281,17 @@ module RuboCop
       # is the only text in the comment.
       #
       # Case-insensitive and dashes/underscores are acceptable.
-      # @see https://git.io/vM7Mg
+      # @see https://github.com/ruby/ruby/blob/78b95b4/parse.y#L7134-L7138
       def extract_frozen_string_literal
-        extract(/\A\s*#\s*frozen[_-]string[_-]literal:\s*(#{TOKEN})\s*\z/io)
+        extract(/\A\s*#\s*#{KEYWORDS[:frozen_string_literal]}:\s*(#{TOKEN})\s*\z/io)
       end
 
       def extract_shareable_constant_value
-        extract(/\A\s*#\s*shareable[_-]constant[_-]value:\s*(#{TOKEN})\s*\z/io)
+        extract(/\A\s*#\s*#{KEYWORDS[:shareable_constant_value]}:\s*(#{TOKEN})\s*\z/io)
+      end
+
+      def extract_typed
+        extract(/\A\s*#\s*#{KEYWORDS[:typed]}:\s*(#{TOKEN})\s*\z/io)
       end
     end
   end

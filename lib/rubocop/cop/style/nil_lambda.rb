@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for lambdas and procs that always return nil,
+      # Checks for lambdas and procs that always return nil,
       # which can be replaced with an empty lambda or proc instead.
       #
       # @example
@@ -43,7 +43,7 @@ module RuboCop
           { ({return next break} nil) (nil) }
         PATTERN
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return unless node.lambda? || node.proc?
           return unless nil_return?(node.body)
 
@@ -57,7 +57,7 @@ module RuboCop
 
         def autocorrect(corrector, node)
           range = if node.single_line?
-                    range_with_surrounding_space(range: node.body.loc.expression)
+                    range_with_surrounding_space(node.body.loc.expression)
                   else
                     range_by_whole_lines(node.body.loc.expression, include_final_newline: true)
                   end

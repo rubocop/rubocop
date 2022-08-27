@@ -59,7 +59,7 @@ module RuboCop
 
           # @!method attribute_call?(node)
           def_node_matcher :attribute_call?, <<~PATTERN
-            ( {csend send} _receiver _method # and no parameters
+            (call _receiver _method # and no parameters
             )
           PATTERN
 

@@ -329,6 +329,42 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
          end
       RUBY
     end
+
+    context 'Ruby 2.7', :ruby27 do
+      it 'still points out redundant uses within the block' do
+        expect_offense(<<~RUBY)
+          class SomeClass
+            concerning :SecondThing do
+              p _1
+              def omg
+              end
+              private
+              def method
+              end
+              private
+              ^^^^^^^ Useless `private` access modifier.
+              def another_method
+              end
+            end
+           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class SomeClass
+            concerning :SecondThing do
+              p _1
+              def omg
+              end
+              private
+              def method
+              end
+              def another_method
+              end
+            end
+           end
+        RUBY
+      end
+    end
   end
 
   context 'when using ActiveSupport behavior when Rails is not eabled' do
@@ -815,8 +851,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
     end
 
     context 'inside a class' do
-      it 'registers an offense when a modifier is ouside the block and a ' \
-        'method is defined only inside the block' do
+      it 'registers an offense when a modifier is outside the block and a method is defined only inside the block' do
         expect_offense(<<~RUBY, modifier: modifier)
           class A
             %{modifier}
@@ -829,8 +864,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
         RUBY
       end
 
-      it 'registers two offenses when a modifier is inside and outside the ' \
-        ' block and no method is defined' do
+      it 'registers two offenses when a modifier is inside and outside the block and no method is defined' do
         expect_offense(<<~RUBY, modifier: modifier)
           class A
             %{modifier}
@@ -887,8 +921,8 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
     end
 
     context 'inside a class' do
-      it 'registers an offense when a modifier is ouside the block and a ' \
-        'method is defined only inside the block' do
+      it 'registers an offense when a modifier is outside the block and a ' \
+         'method is defined only inside the block' do
         expect_offense(<<~RUBY, modifier: modifier)
           class A
             %{modifier}
@@ -901,8 +935,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
         RUBY
       end
 
-      it 'registers two offenses when a modifier is inside and outside the ' \
-        ' and no method is defined' do
+      it 'registers two offenses when a modifier is inside and outside the and no method is defined' do
         expect_offense(<<~RUBY, modifier: modifier)
           class A
             %{modifier}

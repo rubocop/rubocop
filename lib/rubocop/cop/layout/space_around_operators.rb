@@ -63,6 +63,10 @@ module RuboCop
           [Style::SelfAssignment]
         end
 
+        def on_sclass(node)
+          check_operator(:sclass, node.loc.operator, node.source_range)
+        end
+
         def on_pair(node)
           return unless node.hash_rocket?
 
@@ -104,6 +108,14 @@ module RuboCop
           check_operator(:assignment, node.loc.operator, rhs.source_range)
         end
 
+        def on_casgn(node)
+          _, _, right, = *node
+
+          return unless right
+
+          check_operator(:assignment, node.loc.operator, right.source_range)
+        end
+
         def on_binary(node)
           _, rhs, = *node
 
@@ -130,7 +142,6 @@ module RuboCop
         alias on_and      on_binary
         alias on_lvasgn   on_assignment
         alias on_masgn    on_assignment
-        alias on_casgn    on_special_asgn
         alias on_ivasgn   on_assignment
         alias on_cvasgn   on_assignment
         alias on_gvasgn   on_assignment
@@ -150,7 +161,7 @@ module RuboCop
         end
 
         def check_operator(type, operator, right_operand)
-          with_space = range_with_surrounding_space(range: operator)
+          with_space = range_with_surrounding_space(operator)
           return if with_space.source.start_with?("\n")
 
           offense(type, operator, with_space, right_operand) do |msg|
@@ -198,7 +209,7 @@ module RuboCop
           elsif excess_leading_space?(type, operator, with_space) ||
                 excess_trailing_space?(right_operand, with_space)
             "Operator `#{operator.source}` should be surrounded " \
-            'by a single space.'
+              'by a single space.'
           end
         end
 

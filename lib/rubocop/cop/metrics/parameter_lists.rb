@@ -3,11 +3,14 @@
 module RuboCop
   module Cop
     module Metrics
-      # This cop checks for methods with too many parameters.
+      # Checks for methods with too many parameters.
       #
       # The maximum number of parameters is configurable.
       # Keyword arguments can optionally be excluded from the total count,
       # as they add less complexity than positional or optional parameters.
+      #
+      # NOTE: Explicit block argument `&block` is not counted to prevent
+      # erroneous change that is avoided by making block argument implicit.
       #
       # @example Max: 3
       #   # good
@@ -94,9 +97,9 @@ module RuboCop
 
         def args_count(node)
           if count_keyword_args?
-            node.children.size
+            node.children.count { |a| !a.blockarg_type? }
           else
-            node.children.count { |a| !NAMED_KEYWORD_TYPES.include?(a.type) }
+            node.children.count { |a| !NAMED_KEYWORD_TYPES.include?(a.type) && !a.blockarg_type? }
           end
         end
 

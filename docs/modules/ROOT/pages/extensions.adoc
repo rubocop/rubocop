@@ -19,6 +19,9 @@ NOTE: The paths are directly passed to `Kernel.require`. If your
 extension file is not in `$LOAD_PATH`, you need to specify the path as
 relative path prefixed with `./` explicitly or absolute path. Paths
 starting with a `.` are resolved relative to `.rubocop.yml`.
+If a path containing `-` is given, it will be used as is, but if we
+cannot find the file to load, we will replace `-` with `/` and try it
+again as when Bundler loads gems.
 
 == Extension Suggestions
 
@@ -77,11 +80,11 @@ Minitest-specific analysis
 Rake-specific analysis
 * https://github.com/rubocop/rubocop-sequel[rubocop-sequel] -
 Code style checking for Sequel gem
+* https://github.com/rubocop/rubocop-thread_safety[rubocop-thread_safety] -
+Thread-safety analysis
 
 ==== Third-party Extensions
 
-* https://github.com/covermymeds/rubocop-thread_safety[rubocop-thread_safety] -
-Thread-safety analysis
 * https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
 Dynamic analysis for missing `require` statements
 * https://github.com/puppetlabs/rubocop-i18n[rubocop-i18n] -
@@ -92,6 +95,8 @@ Custom cops and config defaults for Chef Infra Cookbooks
 Upstream best practices and coding conventions for downstream (e.g. Debian packages) compatibility.
 * https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet]
 Sorbet-specific analysis
+* https://github.com/DmitryTsepelev/rubocop-graphql[rubocop-graphql] -
+GraphQL-specific analysis
 
 Any extensions missing? Send us a Pull Request!
 

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces the use of consistent method names
+      # Enforces the use of consistent method names
       # from the String class.
       #
       # @example

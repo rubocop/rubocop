@@ -268,6 +268,20 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
       RUBY
     end
 
+    context 'Ruby 2.7', :ruby27 do
+      it 'counts enumerating methods with numblocks as +1' do
+        expect_offense(<<~RUBY)
+          define_method :method_name do
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+            (_1.._2).map do |i|                          # map: +1
+              i * 2
+            end.each.with_index { |val, i| puts val, i } # each: +0, with_index: +1
+            return treasure.map
+          end
+        RUBY
+      end
+    end
+
     it 'counts enumerating methods with block-pass as +1' do
       expect_offense(<<~RUBY)
         define_method :method_name do
@@ -292,61 +306,59 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     end
   end
 
-  context 'when IgnoredMethods is set' do
-    context 'with a string' do
-      let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
+  context 'when AllowedMethods is enabled' do
+    let(:cop_config) { { 'Max' => 0, 'AllowedMethods' => ['foo'] } }
 
-      it 'does not register an offense when defining an instance method' do
-        expect_no_offenses(<<~RUBY)
-          def foo
-            bar.baz(:qux)
-          end
-        RUBY
-      end
-
-      it 'does not register an offense when defining a class method' do
-        expect_no_offenses(<<~RUBY)
-          def self.foo
-            bar.baz(:qux)
-          end
-        RUBY
-      end
-
-      it 'does not register an offense when using `define_method`' do
-        expect_no_offenses(<<~RUBY)
-          define_method :foo do
-            bar.baz(:qux)
-          end
-        RUBY
-      end
+    it 'does not register an offense when defining an instance method' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          bar.baz(:qux)
+        end
+      RUBY
     end
 
-    context 'with a regex' do
-      let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => [/foo/] } }
+    it 'does not register an offense when defining a class method' do
+      expect_no_offenses(<<~RUBY)
+        def self.foo
+          bar.baz(:qux)
+        end
+      RUBY
+    end
 
-      it 'does not register an offense when defining an instance method' do
-        expect_no_offenses(<<~RUBY)
-          def foo
-            bar.baz(:qux)
-          end
-        RUBY
-      end
+    it 'does not register an offense when using `define_method`' do
+      expect_no_offenses(<<~RUBY)
+        define_method :foo do
+          bar.baz(:qux)
+        end
+      RUBY
+    end
+  end
 
-      it 'does not register an offense when defining a class method' do
-        expect_no_offenses(<<~RUBY)
-          def self.foo
-            bar.baz(:qux)
-          end
-        RUBY
-      end
+  context 'when AllowedPatterns is enabled' do
+    let(:cop_config) { { 'Max' => 0, 'AllowedPatterns' => [/foo/] } }
 
-      it 'does not register an offense when using `define_method`' do
-        expect_no_offenses(<<~RUBY)
-          define_method :foo do
-            bar.baz(:qux)
-          end
-        RUBY
-      end
+    it 'does not register an offense when defining an instance method' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          bar.baz(:qux)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when defining a class method' do
+      expect_no_offenses(<<~RUBY)
+        def self.foo
+          bar.baz(:qux)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `define_method`' do
+      expect_no_offenses(<<~RUBY)
+        define_method :foo do
+          bar.baz(:qux)
+        end
+      RUBY
     end
   end
 

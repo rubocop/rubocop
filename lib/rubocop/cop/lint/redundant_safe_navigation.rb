@@ -3,16 +3,22 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for redundant safe navigation calls.
+      # Checks for redundant safe navigation calls.
       # `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, and `equal?` methods
       # are checked by default. These are customizable with `AllowedMethods` option.
       #
-      # This cop is marked as unsafe, because auto-correction can change the
-      # return type of the expression. An offending expression that previously
-      # could return `nil` will be auto-corrected to never return `nil`.
+      # The `AllowedMethods` option specifies nil-safe methods,
+      # in other words, it is a method that is allowed to skip safe navigation.
+      # Note that the `AllowedMethod` option is not an option that specifies methods
+      # for which to suppress (allow) this cop's check.
       #
       # In the example below, the safe navigation operator (`&.`) is unnecessary
       # because `NilClass` has methods like `respond_to?` and `is_a?`.
+      #
+      # @safety
+      #   This cop is unsafe, because autocorrection can change the return type of
+      #   the expression. An offending expression that previously could return `nil`
+      #   will be autocorrected to never return `nil`.
       #
       # @example
       #   # bad
@@ -33,6 +39,14 @@ module RuboCop
       #
       #   # good - without `&.` this will always return `true`
       #   foo&.respond_to?(:to_a)
+      #
+      # @example AllowedMethods: [nil_safe_method]
+      #   # bad
+      #   do_something if attrs&.nil_safe_method(:[])
+      #
+      #   # good
+      #   do_something if attrs.nil_safe_method(:[])
+      #   do_something if attrs&.not_nil_safe_method(:[])
       #
       class RedundantSafeNavigation < Base
         include AllowedMethods

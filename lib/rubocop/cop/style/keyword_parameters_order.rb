@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop enforces that optional keyword parameters are placed at the
+      # Enforces that optional keyword parameters are placed at the
       # end of the parameters list.
       #
       # This improves readability, because when looking through the source,
@@ -65,7 +65,7 @@ module RuboCop
 
         def remove_kwargs(kwarg_nodes, corrector)
           kwarg_nodes.each do |kwarg|
-            with_space = range_with_surrounding_space(range: kwarg.source_range)
+            with_space = range_with_surrounding_space(kwarg.source_range)
             corrector.remove(range_with_surrounding_comma(with_space, :left))
           end
         end

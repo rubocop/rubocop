@@ -210,9 +210,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
 
   describe 'excluded file', :config do
     let(:config) do
-      RuboCop::Config.new('Style/RescueModifier' =>
-                          { 'Enabled' => true,
-                            'Exclude' => ['**/**'] })
+      RuboCop::Config.new('Style/RescueModifier' => { 'Enabled' => true, 'Exclude' => ['**/**'] })
     end
 
     it 'processes excluded files with issue' do

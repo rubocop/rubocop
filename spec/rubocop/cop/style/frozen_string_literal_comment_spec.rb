@@ -386,7 +386,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'allows not having a frozen string literal comment ' \
-      'under a shebang and an encoding comment' do
+       'under a shebang and an encoding comment' do
       expect_no_offenses(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -395,7 +395,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'registers an offense for a frozen string literal comment ' \
-      'below shebang and encoding comments' do
+       'below shebang and encoding comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -412,7 +412,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'registers an offense for a disabled frozen string literal comment ' \
-      'below shebang and encoding comments' do
+       'below shebang and encoding comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8
@@ -429,7 +429,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'registers an offense for a frozen string literal comment ' \
-      'below shebang above an encoding comments' do
+       'below shebang above an encoding comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: true
@@ -446,7 +446,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
 
     it 'registers an offense for a disabled frozen string literal comment ' \
-      'below shebang above an encoding comments' do
+       'below shebang above an encoding comments' do
       expect_offense(<<~RUBY)
         #!/usr/bin/env ruby
         # frozen_string_literal: false
@@ -1040,6 +1040,24 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         #!/usr/bin/env ruby
         # frozen_string_literal: true
       RUBY
+    end
+  end
+
+  context 'target_ruby_version < 2.3', :ruby22 do
+    it 'accepts freezing a string' do
+      expect_no_offenses('"x".freeze')
+    end
+
+    it 'accepts calling << on a string' do
+      expect_no_offenses('"x" << "y"')
+    end
+
+    it 'accepts freezing a string with interpolation' do
+      expect_no_offenses('"#{foo}bar".freeze')
+    end
+
+    it 'accepts calling << on a string with interpolation' do
+      expect_no_offenses('"#{foo}bar" << "baz"')
     end
   end
 end

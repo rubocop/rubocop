@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
+      # Checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
       #
       # It is more likely that the additional characters are unintended (for
       # example, mistranslating an array of literals to percent string notation)
@@ -25,7 +25,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = "Within `%i`/`%I`, ':' and ',' are unnecessary and may be " \
-          'unwanted in the resulting symbols.'
+              'unwanted in the resulting symbols.'
 
         def on_array(node)
           process(node, '%i', '%I')

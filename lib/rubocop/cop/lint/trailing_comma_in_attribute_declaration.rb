@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for trailing commas in attribute declarations, such as
+      # Checks for trailing commas in attribute declarations, such as
       # `#attr_reader`. Leaving a trailing comma will nullify the next method
       # definition by overriding it with a getter method.
       #
@@ -45,7 +45,7 @@ module RuboCop
 
         def trailing_comma_range(node)
           range_with_surrounding_space(
-            range: node.arguments[-2].source_range,
+            node.arguments[-2].source_range,
             side: :right
           ).end.resize(1)
         end

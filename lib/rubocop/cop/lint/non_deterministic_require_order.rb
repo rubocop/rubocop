@@ -14,7 +14,11 @@ module RuboCop
       # `Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
       # So all bad cases are acceptable when Ruby 3.0 or higher are used.
       #
-      # This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+      # NOTE: This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+      #
+      # @safety
+      #   This cop is unsafe in the case where sorting files changes existing
+      #   expected behavior.
       #
       # @example
       #
@@ -68,6 +72,18 @@ module RuboCop
 
             add_offense(node.send_node) { |corrector| correct_block(corrector, node.send_node) }
           end
+        end
+
+        def on_numblock(node)
+          return if target_ruby_version >= 3.0
+          return unless node.body
+          return unless unsorted_dir_loop?(node.send_node)
+
+          node.argument_list
+              .filter { |argument| var_is_required?(node.body, argument.name) }
+              .each do
+                add_offense(node.send_node) { |corrector| correct_block(corrector, node.send_node) }
+              end
         end
 
         def on_block_pass(node)
@@ -139,19 +155,19 @@ module RuboCop
 
         # @!method method_require?(node)
         def_node_matcher :method_require?, <<~PATTERN
-          (block-pass (send nil? :method (sym :require)))
+          (block-pass (send nil? :method (sym {:require :require_relative})))
         PATTERN
 
         # @!method unsorted_dir_glob_pass?(node)
         def_node_matcher :unsorted_dir_glob_pass?, <<~PATTERN
           (send (const {nil? cbase} :Dir) :glob ...
-            (block-pass (send nil? :method (sym :require))))
+            (block-pass (send nil? :method (sym {:require :require_relative}))))
         PATTERN
 
         # @!method unsorted_dir_each_pass?(node)
         def_node_matcher :unsorted_dir_each_pass?, <<~PATTERN
           (send (send (const {nil? cbase} :Dir) {:[] :glob} ...) :each
-            (block-pass (send nil? :method (sym :require))))
+            (block-pass (send nil? :method (sym {:require :require_relative}))))
         PATTERN
 
         # @!method loop_variable(node)
@@ -161,7 +177,7 @@ module RuboCop
 
         # @!method var_is_required?(node, name)
         def_node_search :var_is_required?, <<~PATTERN
-          (send nil? :require (lvar %1))
+          (send nil? {:require :require_relative} (lvar %1))
         PATTERN
       end
     end

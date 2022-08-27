@@ -15,6 +15,20 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `reject` with block pass arg on array to reject nils' do
+    expect_offense(<<~RUBY)
+      array.reject(&:nil?)
+            ^^^^^^^^^^^^^^ Use `compact` instead of `reject(&:nil?)`.
+      array.reject!(&:nil?)
+            ^^^^^^^^^^^^^^^ Use `compact!` instead of `reject!(&:nil?)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.compact
+      array.compact!
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `reject` on hash to reject nils' do
     expect_offense(<<~RUBY)
       hash.reject { |k, v| v.nil? }
@@ -43,17 +57,6 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using `reject` without a receiver to reject nils' do
-    expect_offense(<<~RUBY)
-      reject { |e| e.nil? }
-      ^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `reject { |e| e.nil? }`.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      compact
-    RUBY
-  end
-
   it 'does not register an offense when using `reject` to not to rejecting nils' do
     expect_no_offenses(<<~RUBY)
       array.reject { |e| e.odd? }
@@ -65,5 +68,21 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
       array.compact
       array.compact!
     RUBY
+  end
+
+  context 'when without receiver' do
+    it 'does not register an offense and corrects when using `reject` on array to reject nils' do
+      expect_no_offenses(<<~RUBY)
+        reject { |e| e.nil? }
+        reject! { |e| e.nil? }
+      RUBY
+    end
+
+    it 'does not register an offense and corrects when using `select/select!` to reject nils' do
+      expect_no_offenses(<<~RUBY)
+        select { |e| !e.nil? }
+        select! { |k, v| !v.nil? }
+      RUBY
+    end
   end
 end

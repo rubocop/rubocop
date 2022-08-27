@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for redundant parentheses.
+      # Checks for redundant parentheses.
       #
       # @example
       #
@@ -57,8 +57,8 @@ module RuboCop
         def allowed_expression?(node)
           allowed_ancestor?(node) ||
             allowed_method_call?(node) ||
-            allowed_array_or_hash_element?(node) ||
-            allowed_multiple_expression?(node)
+            allowed_multiple_expression?(node) ||
+            allowed_ternary?(node)
         end
 
         def allowed_ancestor?(node)
@@ -80,8 +80,22 @@ module RuboCop
           !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
         end
 
+        def allowed_ternary?(node)
+          return unless node&.parent&.if_type?
+
+          node.parent.ternary? && ternary_parentheses_required?
+        end
+
+        def ternary_parentheses_required?
+          config = @config.for_cop('Style/TernaryParentheses')
+          allowed_styles = %w[require_parentheses require_parentheses_when_complex]
+
+          config.fetch('Enabled') && allowed_styles.include?(config['EnforcedStyle'])
+        end
+
         def like_method_argument_parentheses?(node)
-          node.send_type? && node.arguments.size == 1 && !node.arithmetic_operation?
+          node.send_type? && node.arguments.one? &&
+            !node.arithmetic_operation? && node.first_argument.begin_type?
         end
 
         def empty_parentheses?(node)
@@ -150,26 +164,6 @@ module RuboCop
 
         def keyword_ancestor?(node)
           node.parent&.keyword?
-        end
-
-        def allowed_array_or_hash_element?(node)
-          # Don't flag
-          # ```
-          # { a: (1
-          #      ), }
-          # ```
-          hash_or_array_element?(node) && only_closing_paren_before_comma?(node)
-        end
-
-        def hash_or_array_element?(node)
-          node.each_ancestor(:array, :hash).any?
-        end
-
-        def only_closing_paren_before_comma?(node)
-          source_buffer = node.source_range.source_buffer
-          line_range = source_buffer.line_range(node.loc.end.line)
-
-          /^\s*\)\s*,/.match?(line_range.source)
         end
 
         def disallowed_literal?(begin_node, node)

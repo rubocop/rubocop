@@ -29,7 +29,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           arguments = node.arguments
 
           return unless node.arguments? && pipes?(arguments)
@@ -113,7 +113,7 @@ module RuboCop
         def last_end_pos_inside_pipes(arguments, range)
           pos = range.end_pos
           num = pos - arguments.source_range.begin_pos
-          trailing_comma_index = arguments.source[num..-1].index(',')
+          trailing_comma_index = arguments.source[num..].index(',')
 
           trailing_comma_index ? pos + trailing_comma_index + 1 : pos
         end
@@ -127,7 +127,7 @@ module RuboCop
 
           expr = arg.source_range
           check_no_space(
-            range_with_surrounding_space(range: expr, side: :left).begin_pos,
+            range_with_surrounding_space(expr, side: :left).begin_pos,
             expr.begin_pos - 1,
             'Extra space before'
           )

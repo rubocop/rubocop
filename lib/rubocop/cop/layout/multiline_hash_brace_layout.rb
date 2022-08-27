@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # This cop checks that the closing brace in a hash literal is either
+      # Checks that the closing brace in a hash literal is either
       # on the same line as the last hash element, or a new line.
       #
       # When using the `symmetrical` (default) style:
@@ -93,18 +93,18 @@ module RuboCop
         extend AutoCorrector
 
         SAME_LINE_MESSAGE = 'Closing hash brace must be on the same line as ' \
-          'the last hash element when opening brace is on the same line as ' \
-          'the first hash element.'
+                            'the last hash element when opening brace is on the same line as ' \
+                            'the first hash element.'
 
         NEW_LINE_MESSAGE = 'Closing hash brace must be on the line after ' \
-          'the last hash element when opening brace is on a separate line ' \
-          'from the first hash element.'
+                           'the last hash element when opening brace is on a separate line ' \
+                           'from the first hash element.'
 
         ALWAYS_NEW_LINE_MESSAGE = 'Closing hash brace must be on the line ' \
-          'after the last hash element.'
+                                  'after the last hash element.'
 
         ALWAYS_SAME_LINE_MESSAGE = 'Closing hash brace must be on the same ' \
-          'line as the last hash element.'
+                                   'line as the last hash element.'
 
         def on_hash(node)
           check_brace_layout(node)

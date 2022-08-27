@@ -8,8 +8,14 @@ module RuboCop
     STATUS_OFFENSES    = 1
     STATUS_ERROR       = 2
     STATUS_INTERRUPTED = 128 + Signal.list['INT']
+    DEFAULT_PARALLEL_OPTIONS = %i[
+      color debug display_style_guide display_time display_only_fail_level_offenses
+      display_only_failed except extra_details fail_level fix_layout format
+      ignore_disable_comments lint only only_guide_cops require safe
+      autocorrect safe_autocorrect autocorrect_all
+    ].freeze
 
-    class Finished < RuntimeError; end
+    class Finished < StandardError; end
 
     attr_reader :options, :config_store
 
@@ -37,6 +43,7 @@ module RuboCop
       else
         act_on_options
         validate_options_vs_config
+        parallel_by_default!
         apply_default_formatter
         execute_runners
       end
@@ -84,6 +91,18 @@ module RuboCop
                                  'with AllCops: UseCache: false is not allowed.'
     end
 
+    def parallel_by_default!
+      # See https://github.com/rubocop/rubocop/pull/4537 for JRuby and Windows constraints.
+      return if RUBY_ENGINE != 'ruby' || RuboCop::Platform.windows?
+
+      if (@options.keys - DEFAULT_PARALLEL_OPTIONS).empty? &&
+         @config_store.for_pwd.for_all_cops['UseCache'] != false
+        puts 'Use parallel by default.' if @options[:debug]
+
+        @options[:parallel] = true
+      end
+    end
+
     def act_on_options
       set_options_to_config_loader
 
@@ -106,6 +125,7 @@ module RuboCop
       ConfigLoader.disable_pending_cops = @options[:disable_pending_cops]
       ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
+      ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
     end
 
     def handle_exiting_options
@@ -113,6 +133,7 @@ module RuboCop
 
       run_command(:version) if @options[:version] || @options[:verbose_version]
       run_command(:show_cops) if @options[:show_cops]
+      run_command(:show_docs_url) if @options[:show_docs_url]
       raise Finished
     end
 

@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Lockfile, :isolated_environment do
   let(:lockfile) do
     create_file('Gemfile.lock', <<~LOCKFILE)
       GEM
-        gems:
+        specs:
           rake (13.0.1)
           rspec (3.9.0)
           dep (1.0.0)
@@ -97,19 +97,19 @@ RSpec.describe RuboCop::Lockfile, :isolated_environment do
     context 'for an included dependency' do
       let(:name) { 'rake' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for an included gem' do
       let(:name) { 'dep2' }
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to be(true) }
     end
 
     context 'for an excluded gem' do
       let(:name) { 'other' }
 
-      it { is_expected.to eq(false) }
+      it { is_expected.to be(false) }
     end
   end
 end

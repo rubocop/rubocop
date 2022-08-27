@@ -6,6 +6,34 @@ module RuboCop
       # Checks for empty else-clauses, possibly including comments and/or an
       # explicit `nil` depending on the EnforcedStyle.
       #
+      # @example EnforcedStyle: both (default)
+      #   # warn on empty else and else with nil in it
+      #
+      #   # bad
+      #   if condition
+      #     statement
+      #   else
+      #     nil
+      #   end
+      #
+      #   # bad
+      #   if condition
+      #     statement
+      #   else
+      #   end
+      #
+      #   # good
+      #   if condition
+      #     statement
+      #   else
+      #     statement
+      #   end
+      #
+      #   # good
+      #   if condition
+      #     statement
+      #   end
+      #
       # @example EnforcedStyle: empty
       #   # warn only on empty else
       #
@@ -62,13 +90,13 @@ module RuboCop
       #     statement
       #   end
       #
-      # @example EnforcedStyle: both (default)
-      #   # warn on empty else and else with nil in it
+      # @example AllowComments: false (default)
       #
       #   # bad
       #   if condition
       #     statement
       #   else
+      #     # something comment
       #     nil
       #   end
       #
@@ -76,19 +104,26 @@ module RuboCop
       #   if condition
       #     statement
       #   else
+      #     # something comment
+      #   end
+      #
+      # @example AllowComments: true
+      #
+      #   # good
+      #   if condition
+      #     statement
+      #   else
+      #     # something comment
+      #     nil
       #   end
       #
       #   # good
       #   if condition
       #     statement
       #   else
-      #     statement
+      #     # something comment
       #   end
       #
-      #   # good
-      #   if condition
-      #     statement
-      #   end
       class EmptyElse < Base
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
@@ -108,6 +143,8 @@ module RuboCop
         private
 
         def check(node)
+          return if cop_config['AllowComments'] && comment_in_else?(node.loc)
+
           empty_check(node) if empty_style?
           nil_check(node) if nil_style?
         end

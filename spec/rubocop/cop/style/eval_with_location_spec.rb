@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
     RUBY
   end
 
-  it 'registers an offense when using `#eval` with a string on a new line ' do
+  it 'registers an offense when using `#eval` with a string on a new line' do
     expect_offense(<<~RUBY)
       eval('puts 42',
            binding,

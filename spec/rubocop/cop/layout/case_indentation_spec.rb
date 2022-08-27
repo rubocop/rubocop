@@ -2,8 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
   let(:config) do
-    merged = RuboCop::ConfigLoader
-             .default_configuration['Layout/CaseIndentation'].merge(cop_config)
+    merged = RuboCop::ConfigLoader.default_configuration['Layout/CaseIndentation'].merge(cop_config)
     RuboCop::Config.new('Layout/CaseIndentation' => merged,
                         'Layout/IndentationWidth' => { 'Width' => 2 })
   end
@@ -609,6 +608,27 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
           end
         end
 
+        context '`else` and `end` same line' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              case variable
+              when 'value1'
+              when 'value2'
+              else 'value3' end
+            RUBY
+          end
+        end
+
+        context '`when` and `end` same line' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              case variable
+              when 'value1' then 'then1'
+              when 'value2' then 'then2' end
+            RUBY
+          end
+        end
+
         context 'regarding assignment where the right hand side is a `case`' do
           it 'accepts a correctly indented assignment' do
             expect_no_offenses(<<~RUBY)
@@ -648,6 +668,16 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
         context 'with everything on a single line' do
           it 'does not register an offense' do
             expect_no_offenses('case foo; in pattern then 1; else 0; end')
+          end
+        end
+
+        context '`in` and `end` same line' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              case variable
+              in pattern then 'output1'
+              in pattern then 'output2' end
+            RUBY
           end
         end
 
@@ -818,20 +848,17 @@ RSpec.describe RuboCop::Cop::Layout::CaseIndentation, :config do
     end
   end
 
-  context 'when `case` is preceded by something else than whitespace' do
+  context 'when `when` is on the same line as `case`' do
     let(:cop_config) { {} }
 
-    it 'registers an offense and auto-corrects' do
+    it 'registers an offense but does not autocorrect' do
       expect_offense(<<~RUBY)
         case test when something
                   ^^^^ Indent `when` as deep as `case`.
         end
       RUBY
 
-      expect_correction(<<~RUBY)
-        case test when something
-        end
-      RUBY
+      expect_no_corrections
     end
   end
 end

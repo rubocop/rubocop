@@ -103,11 +103,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
 
   context 'when checking for methods with no side effects' do
     let(:config) do
-      RuboCop::Config.new(
-        'Lint/Void' => {
-          'CheckForMethodsWithNoSideEffects' => true
-        }
-      )
+      RuboCop::Config.new('Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => true })
     end
 
     it 'registers an offense if not on last line' do
@@ -129,11 +125,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
 
   context 'when not checking for methods with no side effects' do
     let(:config) do
-      RuboCop::Config.new(
-        'Lint/Void' => {
-          'CheckForMethodsWithNoSideEffects' => false
-        }
-      )
+      RuboCop::Config.new('Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => false })
     end
 
     it 'does not register an offense for void nonmutating methods' do
@@ -194,6 +186,18 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^ Literal `42` used in void context.
       end
     RUBY
+  end
+
+  context 'Ruby 2.7', :ruby27 do
+    it 'registers two offenses for void literals in `#tap` method' do
+      expect_offense(<<~RUBY)
+        foo.tap do
+          _1
+          ^^ Variable `_1` used in void context.
+          42
+        end
+      RUBY
+    end
   end
 
   it 'accepts empty block' do

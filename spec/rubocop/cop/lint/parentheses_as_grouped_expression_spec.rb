@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
   it 'registers an offense and corrects for method call with space before the parenthesis' do
     expect_offense(<<~RUBY)
       a.func (x)
-            ^ `(...)` interpreted as grouped expression.
+            ^ `(x)` interpreted as grouped expression.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
      'before the parenthesis' do
     expect_offense(<<~RUBY)
       is? (x)
-         ^ `(...)` interpreted as grouped expression.
+         ^ `(x)` interpreted as grouped expression.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -36,6 +36,12 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
+  it 'does not register an offense for expression followed by chained expression with safe navigation operator' do
+    expect_no_offenses(<<~RUBY)
+      func (x).func.func.func.func&.func
+    RUBY
+  end
+
   it 'does not register an offense for math expression' do
     expect_no_offenses(<<~RUBY)
       puts (2 + 3) * 4
@@ -49,9 +55,15 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
   end
 
   it 'does not register an offense when method argument parentheses are omitted and ' \
-    'hash argument key is enclosed in parentheses' do
+     'hash argument key is enclosed in parentheses' do
     expect_no_offenses(<<~RUBY)
       transition (foo - bar) => value
+    RUBY
+  end
+
+  it 'does not register an offense for ternary operator' do
+    expect_no_offenses(<<~RUBY)
+      foo (cond) ? 1 : 2
     RUBY
   end
 
@@ -105,7 +117,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     it 'registers an offense and corrects for method call with space before the parenthesis' do
       expect_offense(<<~RUBY)
         a&.func (x)
-               ^ `(...)` interpreted as grouped expression.
+               ^ `(x)` interpreted as grouped expression.
       RUBY
 
       expect_correction(<<~RUBY)

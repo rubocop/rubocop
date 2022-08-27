@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks uses of the `then` keyword in multi-line `in` statement.
+      # Checks uses of the `then` keyword in multi-line `in` statement.
       #
       # @example
       #   # bad
@@ -41,9 +41,7 @@ module RuboCop
 
           range = node.loc.begin
           add_offense(range) do |corrector|
-            corrector.remove(
-              range_with_surrounding_space(range: range, side: :left, newlines: false)
-            )
+            corrector.remove(range_with_surrounding_space(range, side: :left, newlines: false))
           end
         end
 
@@ -51,10 +49,10 @@ module RuboCop
 
         # Requires `then` for write `in` and its body on the same line.
         def require_then?(in_pattern_node)
-          return true if in_pattern_node.pattern.first_line != in_pattern_node.pattern.last_line
+          return true unless in_pattern_node.pattern.single_line?
           return false unless in_pattern_node.body
 
-          in_pattern_node.loc.line == in_pattern_node.body.loc.line
+          same_line?(in_pattern_node, in_pattern_node.body)
         end
       end
     end

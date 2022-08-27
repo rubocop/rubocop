@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Metrics
-      # This cop checks if the length a module exceeds some maximum value.
+      # Checks if the length a module exceeds some maximum value.
       # Comment lines can optionally be ignored.
       # The maximum allowed length is configurable.
       #
@@ -44,7 +44,7 @@ module RuboCop
 
         # @!method module_definition?(node)
         def_node_matcher :module_definition?, <<~PATTERN
-          (casgn nil? _ (block (send (const {nil? cbase} :Module) :new) ...))
+          (casgn nil? _ ({block numblock} (send (const {nil? cbase} :Module) :new) ...))
         PATTERN
 
         def message(length, max_length)

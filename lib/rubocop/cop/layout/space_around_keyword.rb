@@ -41,7 +41,7 @@ module RuboCop
           check(node, [:operator].freeze) if node.keyword?
         end
 
-        def on_block(node)
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           check(node, %i[begin end].freeze)
         end
 
@@ -228,8 +228,8 @@ module RuboCop
         def accepted_opening_delimiter?(range, char)
           return true unless char
 
-          accept_left_square_bracket?(range) && char == '[' ||
-            accept_left_parenthesis?(range) && char == '('
+          (accept_left_square_bracket?(range) && char == '[') ||
+            (accept_left_parenthesis?(range) && char == '(')
         end
 
         def accept_left_parenthesis?(range)

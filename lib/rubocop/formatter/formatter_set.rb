@@ -9,22 +9,23 @@ module RuboCop
     # which invoke same method of each formatters.
     class FormatterSet < Array
       BUILTIN_FORMATTERS_FOR_KEYS = {
-        '[a]utogenconf' => AutoGenConfigFormatter,
-        '[c]lang'       => ClangStyleFormatter,
-        '[e]macs'       => EmacsStyleFormatter,
-        '[fi]les'       => FileListFormatter,
-        '[fu]ubar'      => FuubarStyleFormatter,
-        '[g]ithub'      => GitHubActionsFormatter,
-        '[h]tml'        => HTMLFormatter,
-        '[j]son'        => JSONFormatter,
-        '[ju]nit'       => JUnitFormatter,
-        '[o]ffenses'    => OffenseCountFormatter,
-        '[pa]cman'      => PacmanFormatter,
-        '[p]rogress'    => ProgressFormatter,
-        '[q]uiet'       => QuietFormatter,
-        '[s]imple'      => SimpleTextFormatter,
-        '[t]ap'         => TapFormatter,
-        '[w]orst'       => WorstOffendersFormatter
+        '[a]utogenconf' => 'AutoGenConfigFormatter',
+        '[c]lang'       => 'ClangStyleFormatter',
+        '[e]macs'       => 'EmacsStyleFormatter',
+        '[fi]les'       => 'FileListFormatter',
+        '[fu]ubar'      => 'FuubarStyleFormatter',
+        '[g]ithub'      => 'GitHubActionsFormatter',
+        '[h]tml'        => 'HTMLFormatter',
+        '[j]son'        => 'JSONFormatter',
+        '[ju]nit'       => 'JUnitFormatter',
+        '[m]arkdown'    => 'MarkdownFormatter',
+        '[o]ffenses'    => 'OffenseCountFormatter',
+        '[pa]cman'      => 'PacmanFormatter',
+        '[p]rogress'    => 'ProgressFormatter',
+        '[q]uiet'       => 'QuietFormatter',
+        '[s]imple'      => 'SimpleTextFormatter',
+        '[t]ap'         => 'TapFormatter',
+        '[w]orst'       => 'WorstOffendersFormatter'
       }.freeze
 
       FORMATTER_APIS = %i[started finished].freeze
@@ -54,7 +55,7 @@ module RuboCop
       def add_formatter(formatter_type, output_path = nil)
         if output_path
           dir_path = File.dirname(output_path)
-          FileUtils.mkdir_p(dir_path) unless File.exist?(dir_path)
+          FileUtils.mkdir_p(dir_path)
           output = File.open(output_path, 'w')
         else
           output = $stdout
@@ -91,7 +92,8 @@ module RuboCop
 
         raise %(Cannot determine formatter for "#{specified_key}") if matching_keys.size > 1
 
-        BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
+        formatter_name = BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
+        RuboCop::Formatter.const_get(formatter_name)
       end
 
       def custom_formatter_class(specified_class_name)

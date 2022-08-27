@@ -187,7 +187,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
   describe '#run with cops autocorrecting each-other' do
     let(:source_file_path) { create_file('example.rb', source) }
 
-    let(:options) { { auto_correct: true, formatters: [['progress', formatter_output_path]] } }
+    let(:options) { { autocorrect: true, formatters: [['progress', formatter_output_path]] } }
 
     context 'with two conflicting cops' do
       subject(:runner) do
@@ -217,7 +217,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end.to raise_error(
             RuboCop::Runner::InfiniteCorrectionLoop,
             "Infinite loop detected in #{source_file_path} and caused by " \
-              'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
+            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
           )
         end
       end
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end.to raise_error(
             RuboCop::Runner::InfiniteCorrectionLoop,
             "Infinite loop detected in #{source_file_path} and caused by " \
-              'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
+            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
           )
         end
       end
@@ -273,8 +273,8 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end.to raise_error(
             RuboCop::Runner::InfiniteCorrectionLoop,
             "Infinite loop detected in #{source_file_path} and caused by " \
-              'Test/ClassMustBeAModuleCop, Test/AtoB ' \
-              '-> Test/ModuleMustBeAClassCop, Test/BtoA'
+            'Test/ClassMustBeAModuleCop, Test/AtoB ' \
+            '-> Test/ModuleMustBeAClassCop, Test/BtoA'
           )
         end
       end
@@ -308,8 +308,98 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             end.to raise_error(
               RuboCop::Runner::InfiniteCorrectionLoop,
               "Infinite loop detected in #{source_file_path} and caused by " \
-                'Test/AtoB -> Test/BtoC -> Test/CtoA'
+              'Test/AtoB -> Test/BtoC -> Test/CtoA'
             )
+          end
+        end
+      end
+
+      context 'with display options' do
+        subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
+
+        before { create_file('example.rb', source) }
+
+        context '--display-only-safe-correctable' do
+          let(:options) do
+            {
+              formatters: [['progress', formatter_output_path]],
+              display_only_safe_correctable: true
+            }
+          end
+          let(:source) { <<~RUBY }
+
+            def foo()
+            end
+          RUBY
+
+          it 'returns false' do
+            expect(runner.run([])).to be false
+          end
+
+          it 'ommits unsafe correctable `Style/FrozenStringLiteral`' do
+            runner.run([])
+            expect(formatter_output).to eq <<~RESULT
+              Inspecting 1 file
+              C
+
+              Offenses:
+
+              example.rb:2:1: C: [Correctable] Layout/LeadingEmptyLines: Unnecessary blank line at the beginning of the source.
+              def foo()
+              ^^^
+              example.rb:2:1: C: [Correctable] Style/EmptyMethod: Put empty method definitions on a single line.
+              def foo() ...
+              ^^^^^^^^^
+              example.rb:2:8: C: [Correctable] Style/DefWithParentheses: Omit the parentheses in defs when the method doesn't accept any arguments.
+              def foo()
+                     ^^
+
+              1 file inspected, 3 offenses detected, 3 offenses autocorrectable
+            RESULT
+          end
+        end
+
+        context '--display-only-correctable' do
+          let(:options) do
+            {
+              formatters: [['progress', formatter_output_path]],
+              display_only_correctable: true
+            }
+          end
+
+          let(:source) { <<~RUBY }
+
+            def foo()
+            end
+
+            'very-long-string-to-earn-un-autocorrectable-offense very-long-string-to-earn-un-autocorrectable-offense very-long-string-to-earn-un-autocorrectable-offense'
+          RUBY
+
+          it 'returns false' do
+            expect(runner.run([])).to be false
+          end
+
+          it 'ommits uncorrectable `Layout/LineLength`' do
+            runner.run([])
+            expect(formatter_output).to eq <<~RESULT
+              Inspecting 1 file
+              C
+
+              Offenses:
+
+              example.rb:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+              example.rb:2:1: C: [Correctable] Layout/LeadingEmptyLines: Unnecessary blank line at the beginning of the source.
+              def foo()
+              ^^^
+              example.rb:2:1: C: [Correctable] Style/EmptyMethod: Put empty method definitions on a single line.
+              def foo() ...
+              ^^^^^^^^^
+              example.rb:2:8: C: [Correctable] Style/DefWithParentheses: Omit the parentheses in defs when the method doesn't accept any arguments.
+              def foo()
+                     ^^
+
+              1 file inspected, 4 offenses detected, 4 offenses autocorrectable
+            RESULT
           end
         end
       end
