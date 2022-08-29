@@ -12,7 +12,7 @@ module RuboCop
       # same `rescue` statement. In both cases, the more specific rescue is
       # unnecessary because it is covered by rescuing the less specific
       # exception. (ie. `rescue Exception, StandardError` has the same behavior
-      # whether `StandardError` is included or not, because all `StandardError`s
+      # whether `StandardError` is included or not, because all ``StandardError``s
       # are rescued by `rescue Exception`).
       #
       # @example
