@@ -85,8 +85,29 @@ module RuboCop
 
         # @private
         # @param [RuboCop::AST::Node] node
+        # @return [String, nil]
+        def preferred_expression_to_node_with_constant_prefix(node)
+          expression = preferred_expression_to(node)
+          return unless expression
+
+          "#{constant_prefix(node)}#{expression}"
+        end
+
+        # @private
+        # @param [RuboCop::AST::Node] node
+        # @return [String]
+        def constant_prefix(node)
+          if node.each_ancestor(:class, :module).any?
+            '::'
+          else
+            ''
+          end
+        end
+
+        # @private
+        # @param [RuboCop::AST::Node] node
         def on_back_ref_or_gvar_or_nth_ref(node)
-          preferred_expression = preferred_expression_to(node)
+          preferred_expression = preferred_expression_to_node_with_constant_prefix(node)
           return unless preferred_expression
 
           add_offense(
