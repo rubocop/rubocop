@@ -143,4 +143,25 @@ RSpec.describe RuboCop::Cop::Style::PerlBackrefs, :config do
       /#{Regexp.last_match(1)}/
     RUBY
   end
+
+  it 'autocorrects $1 to ::Regexp.last_match(1) in namespace' do
+    expect_offense(<<~RUBY)
+      module Foo
+        class Regexp
+        end
+
+        puts $1
+             ^^ Prefer `::Regexp.last_match(1)` over `$1`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module Foo
+        class Regexp
+        end
+
+        puts ::Regexp.last_match(1)
+      end
+    RUBY
+  end
 end
