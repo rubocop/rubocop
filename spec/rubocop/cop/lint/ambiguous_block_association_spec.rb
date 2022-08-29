@@ -104,12 +104,15 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
   end
 
   context 'when AllowedPatterns is enabled' do
-    let(:cop_config) { { 'AllowedPatterns' => [/change/] } }
+    let(:cop_config) { { 'AllowedPatterns' => [/change/, /receive\(.*?\)\.twice/] } }
 
     it 'does not register an offense for an allowed method' do
       expect_no_offenses(<<~RUBY)
-        expect { order.expire }.to change { order.events }
         expect { order.expire }.to not_change { order.events }
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
+        expect(order).to receive(:complete).twice { OrderCount.update! }
       RUBY
     end
 
