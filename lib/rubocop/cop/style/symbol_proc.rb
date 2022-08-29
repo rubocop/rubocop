@@ -11,7 +11,7 @@ module RuboCop
       # These are customizable with `AllowedMethods` option.
       #
       # @safety
-      #   This cop is unsafe because `proc`s and blocks work differently
+      #   This cop is unsafe because ``proc``s and blocks work differently
       #   when additional arguments are passed in. A block will silently
       #   allow additional arguments, but a `proc` will raise
       #   an `ArgumentError`.
