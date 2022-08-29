@@ -11,10 +11,11 @@ module RuboCop
       # These are customizable with `AllowedMethods` option.
       #
       # @safety
-      #   This cop is unsafe because ``proc``s and blocks work differently
-      #   when additional arguments are passed in. A block will silently
-      #   allow additional arguments, but a `proc` will raise
-      #   an `ArgumentError`.
+      #   This cop is unsafe because there is a difference that a `Proc`
+      #   generated from `Symbol#to_proc` behaves as a lambda, while
+      #   a `Proc` generated from a block does not.
+      #   For example, a lambda will raise an `ArgumentError` if the
+      #   number of arguments is wrong, but a non-lambda `Proc` will not.
       #
       #   For example:
       #
