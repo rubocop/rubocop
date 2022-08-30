@@ -58,9 +58,7 @@ RSpec.configure do |config|
     config.filter_run_excluding broken_on: :ruby_head
   end
 
-  if %w[jruby-9.3-ascii_spec jruby-9.3-spec].include? ENV.fetch('CIRCLE_JOB', nil)
-    config.filter_run_excluding broken_on: :jruby
-  end
+  config.filter_run_excluding broken_on: :jruby if ENV.fetch('GITHUB_JOB', nil) == 'jruby'
 end
 
 module ::RSpec

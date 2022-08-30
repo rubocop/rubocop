@@ -53,6 +53,26 @@ jobs:
       - name: internal_investigation
         run: bundle exec rake internal_investigation
 
+  jruby:
+    name: JRuby 9.3
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: jruby-9.3
+
+      - name: install dependencies
+        run: bundle install --jobs 3 --retry 3
+      - name: spec
+        run: bundle exec rake spec
+      - name: ascii_spec
+        run: bundle exec rake ascii_spec
+      - name: internal_investigation
+        run: bundle exec rake internal_investigation
+
   rspec4:
     runs-on: ubuntu-latest
     name: RSpec 4

@@ -2,11 +2,6 @@
 # Please keep /.mergify.yml synced!
 version: 2
 
-jruby_env: &jruby_env
-  # By default we have 2 CPUs and 4GB ram available
-  # https://circleci.com/docs/2.0/configuration-reference/#resource_class
-  JRUBY_OPTS: "--debug -J-Xmn1024m -J-Xms2048m -J-Xmx2048m"
-
 common_env: &common_env
   # CircleCI container has two cores, but Ruby can see 32 cores. So we
   # configure test-queue.
@@ -161,32 +156,6 @@ jobs:
     steps:
       *rubocop_steps
 
-  # JRuby 9.3
-  jruby-9.3-spec:
-    docker:
-      - image: circleci/jruby:9.3
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *spec_steps
-  jruby-9.3-ascii_spec:
-    docker:
-      - image: circleci/jruby:9.3
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *ascii_spec_steps
-  jruby-9.3-rubocop:
-    docker:
-      - image: circleci/jruby:9.3
-    environment:
-      <<: *common_env
-      <<: *jruby_env
-    steps:
-      *rubocop_steps
-
   # Job for downloading the Code Climate test reporter
   cc-setup:
     docker:
@@ -221,7 +190,7 @@ jobs:
       - run:
           name: Upload coverage results to Code Climate
           command: |
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 5 --output tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 4 --output tmp/codeclimate.total.json
             ./tmp/cc-test-reporter upload-coverage --input tmp/codeclimate.total.json
 
   # Miscellaneous tasks
@@ -272,11 +241,6 @@ workflows:
             - cc-setup
       - ruby-head-ascii_spec
       - ruby-head-rubocop
-      - jruby-9.3-spec:
-          requires:
-            - cc-setup
-      - jruby-9.3-ascii_spec
-      - jruby-9.3-rubocop
 
       - cc-upload-coverage:
           requires:
@@ -284,4 +248,3 @@ workflows:
             - ruby-2.7-spec
             - ruby-3.0-spec
             - ruby-3.1-spec
-            - jruby-9.3-spec
