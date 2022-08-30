@@ -626,4 +626,33 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       ]
     RUBY
   end
+
+  context 'pin operator', :ruby31 do
+    it 'does not register an offense when using parentheses in method call with pin operator' do
+      expect_no_offenses(<<~RUBY)
+        foo in { bar: ^(baz.to_i) }
+      RUBY
+    end
+
+    it 'does not register an offense when using parentheses in safe navigation method call with pin operator' do
+      expect_no_offenses(<<~RUBY)
+        foo in { bar: ^(baz&.to_i) }
+      RUBY
+    end
+
+    it 'registers an offense when using parentheses in lvar with pin operator' do
+      expect_offense(<<~RUBY)
+        baz = 42
+
+        foo in { bar: ^(baz) }
+                       ^^^^^ Don't use parentheses around a variable.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        baz = 42
+
+        foo in { bar: ^baz }
+      RUBY
+    end
+  end
 end

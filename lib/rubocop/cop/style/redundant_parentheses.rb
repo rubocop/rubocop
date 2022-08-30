@@ -58,7 +58,8 @@ module RuboCop
           allowed_ancestor?(node) ||
             allowed_method_call?(node) ||
             allowed_multiple_expression?(node) ||
-            allowed_ternary?(node)
+            allowed_ternary?(node) ||
+            allowed_pin_operator?(node)
         end
 
         def allowed_ancestor?(node)
@@ -84,6 +85,10 @@ module RuboCop
           return unless node&.parent&.if_type?
 
           node.parent.ternary? && ternary_parentheses_required?
+        end
+
+        def allowed_pin_operator?(node)
+          node&.parent&.pin_type? && node.children.first.call_type?
         end
 
         def ternary_parentheses_required?
