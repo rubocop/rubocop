@@ -29,6 +29,9 @@ module RuboCop
         # @!method rescue?(node)
         def_node_matcher :rescue?, '{^resbody ^^resbody}'
 
+        # @!method allowed_pin_operator?(node)
+        def_node_matcher :allowed_pin_operator?, '^(pin (begin !{lvar ivar cvar gvar}))'
+
         # @!method arg_in_call_with_block?(node)
         def_node_matcher :arg_in_call_with_block?, '^^(block (send _ _ equal?(%0) ...) ...)'
 
@@ -44,6 +47,7 @@ module RuboCop
           empty_parentheses?(node) ||
             first_arg_begins_with_hash_literal?(node) ||
             rescue?(node) ||
+            allowed_pin_operator?(node) ||
             allowed_expression?(node)
         end
 

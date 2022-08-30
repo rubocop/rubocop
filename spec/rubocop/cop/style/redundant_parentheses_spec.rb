@@ -626,4 +626,49 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       ]
     RUBY
   end
+
+  context 'pin operator', :ruby31 do
+    let(:target_ruby_version) { 3.1 }
+
+    shared_examples 'redundant parentheses' do |variable, description|
+      it "registers an offense and corrects #{description}" do
+        expect_offense(<<~RUBY, variable: variable)
+          var = 0
+          foo in { bar: ^(%{variable}) }
+                         ^^{variable}^ Don\x27t use parentheses around a variable.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = 0
+          foo in { bar: ^#{variable} }
+        RUBY
+      end
+    end
+
+    it_behaves_like 'redundant parentheses', 'var', 'a local variable'
+    it_behaves_like 'redundant parentheses', '@var', 'an instance variable'
+    it_behaves_like 'redundant parentheses', '@@var', 'a class variable'
+    it_behaves_like 'redundant parentheses', '$var', 'a global variable'
+
+    shared_examples 'allowed parentheses' do |expression, description|
+      it "accepts parentheses on #{description}" do
+        expect_no_offenses(<<~RUBY)
+          var = 0
+          foo in { bar: ^(#{expression}) }
+        RUBY
+      end
+    end
+
+    it_behaves_like 'allowed parentheses', 'meth', 'a function call with no arguments'
+    it_behaves_like 'allowed parentheses', 'meth(true)', 'a function call with arguments'
+    it_behaves_like 'allowed parentheses', 'var.to_i', 'a method call on a local variable'
+    it_behaves_like 'allowed parentheses', '@var.to_i', 'a method call on an instance variable'
+    it_behaves_like 'allowed parentheses', '@@var.to_i', 'a method call on a class variable'
+    it_behaves_like 'allowed parentheses', '$var.to_i', 'a method call on a global variable'
+    it_behaves_like 'allowed parentheses', 'var + 1', 'an expression'
+    it_behaves_like 'allowed parentheses', '[1, 2]', 'an array literal'
+    it_behaves_like 'allowed parentheses', '{ baz: 2 }', 'a hash literal'
+    it_behaves_like 'allowed parentheses', '1..2', 'a range literal'
+    it_behaves_like 'allowed parentheses', '1', 'an int literal'
+  end
 end
