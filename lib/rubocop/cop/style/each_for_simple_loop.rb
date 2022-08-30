@@ -28,14 +28,14 @@ module RuboCop
         MSG = 'Use `Integer#times` for a simple loop which iterates a fixed number of times.'
 
         def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
-          return unless offending_each_range(node)
+          return unless offending?(node)
 
           send_node = node.send_node
 
           range = send_node.receiver.source_range.join(send_node.loc.selector)
 
           add_offense(range) do |corrector|
-            range_type, min, max = offending_each_range(node)
+            range_type, min, max = each_range(node)
 
             max += 1 if range_type == :irange
 
@@ -45,9 +45,44 @@ module RuboCop
 
         private
 
-        # @!method offending_each_range(node)
-        def_node_matcher :offending_each_range, <<~PATTERN
-          (block (send (begin (${irange erange} (int $_) (int $_))) :each) (args) ...)
+        def offending?(node)
+          each_range_with_zero_origin?(node) || each_range_without_block_argument?(node)
+        end
+
+        # @!method each_range(node)
+        def_node_matcher :each_range, <<~PATTERN
+          (block
+            (send
+              (begin
+                (${irange erange}
+                  (int $_) (int $_)))
+              :each)
+            (args ...)
+            ...)
+        PATTERN
+
+        # @!method each_range_with_zero_origin?(node)
+        def_node_matcher :each_range_with_zero_origin?, <<~PATTERN
+          (block
+            (send
+              (begin
+                ({irange erange}
+                  (int 0) (int _)))
+              :each)
+            (args ...)
+            ...)
+        PATTERN
+
+        # @!method each_range_without_block_argument?(node)
+        def_node_matcher :each_range_without_block_argument?, <<~PATTERN
+          (block
+            (send
+              (begin
+                ({irange erange}
+                  (int _) (int _)))
+              :each)
+            (args)
+            ...)
         PATTERN
       end
     end
