@@ -19,7 +19,7 @@ namespace :prof do
 
   desc 'Run RuboCop on itself only if dump does not exist'
   task :run_if_needed, [:path] do
-    Rake::Task[:run].run unless File.exist?(dump_path)
+    Rake::Task['prof:run'].invoke unless File.exist?(dump_path)
   end
 
   desc 'List the slowest cops'
