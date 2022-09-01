@@ -7,7 +7,7 @@
 
 | Enabled
 | Yes
-| No
+| Yes (Unsafe)
 | 0.57
 | 0.81
 |===
@@ -17,6 +17,12 @@ or inline before each method, depending on configuration.
 EnforcedStyle config covers only method definitions.
 Applications of visibility methods to symbols can be controlled
 using AllowModifiersOnSymbols config.
+
+=== Safety
+
+Autocorrection is not safe, because the visibility of dynamically
+defined methods can vary depending on the state determined by
+the group access modifier.
 
 === Examples
 
@@ -975,10 +981,8 @@ things.map { |thing|
 | 0.89
 |===
 
-Checks for uses of the case equality operator(===).
-
-If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
-the case equality operator is a constant.
+If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
+the case equality operator is `self.class`. Note intermediate variables are not accepted.
 
 === Examples
 
@@ -1010,12 +1014,32 @@ Array === something
 Array === something
 ----
 
+==== AllowOnSelfClass: false (default)
+
+[source,ruby]
+----
+# bad
+self.class === something
+----
+
+==== AllowOnSelfClass: true
+
+[source,ruby]
+----
+# good
+self.class === something
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
 
 | AllowOnConstant
+| `false`
+| Boolean
+
+| AllowOnSelfClass
 | `false`
 | Boolean
 |===
@@ -13064,10 +13088,11 @@ These are customizable with `AllowedMethods` option.
 
 === Safety
 
-This cop is unsafe because `proc`s and blocks work differently
-when additional arguments are passed in. A block will silently
-allow additional arguments, but a `proc` will raise
-an `ArgumentError`.
+This cop is unsafe because there is a difference that a `Proc`
+generated from `Symbol#to_proc` behaves as a lambda, while
+a `Proc` generated from a block does not.
+For example, a lambda will raise an `ArgumentError` if the
+number of arguments is wrong, but a non-lambda `Proc` will not.
 
 For example:
 

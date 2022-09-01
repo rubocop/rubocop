@@ -1055,7 +1055,7 @@ end
 | Boolean
 
 | AllowedNames
-| `at`, `by`, `db`, `id`, `in`, `io`, `ip`, `of`, `on`, `os`, `pp`, `to`
+| `as`, `at`, `by`, `db`, `id`, `in`, `io`, `ip`, `of`, `on`, `os`, `pp`, `to`
 | Array
 
 | ForbiddenNames

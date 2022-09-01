@@ -1439,7 +1439,7 @@ r = /[0-9x]/
 | 1.28
 |===
 
-Checks for duplicate `require`s and `require_relative`s.
+Checks for duplicate ``require``s and ``require_relative``s.
 
 === Safety
 
@@ -5243,7 +5243,7 @@ ancestor is, or if it and its ancestor are both rescued in the
 same `rescue` statement. In both cases, the more specific rescue is
 unnecessary because it is covered by rescuing the less specific
 exception. (ie. `rescue Exception, StandardError` has the same behavior
-whether `StandardError` is included or not, because all `StandardError`s
+whether `StandardError` is included or not, because all ``StandardError``s
 are rescued by `rescue Exception`).
 
 === Examples
@@ -6120,7 +6120,7 @@ A loop that can never reach the second iteration is a possible error in the code
 In rare cases where only one iteration (or at most one iteration) is intended behavior,
 the code should be refactored to use `if` conditionals.
 
-NOTE: Block methods that are used with `Enumerable`s are considered to be loops.
+NOTE: Block methods that are used with ``Enumerable``s are considered to be loops.
 
 `AllowedPatterns` can be used to match against the block receiver in order to allow
 code that would otherwise be registered as an offense (eg. `times` used not in an
@@ -6544,8 +6544,8 @@ end
 # bad
 class Foo
   # The following is redundant (methods defined on the class'
-  # singleton class are not affected by the public modifier)
-  public
+  # singleton class are not affected by the private modifier)
+  private
 
   def self.method3
   end
@@ -6815,7 +6815,7 @@ end
 Looks for `ruby2_keywords` calls for methods that do not need it.
 
 `ruby2_keywords` should only be called on methods that accept an argument splat
-(`*args`) but do not explicit keyword arguments (`k:` or `k: true`) or
+(`\*args`) but do not explicit keyword arguments (`k:` or `k: true`) or
 a keyword splat (`**kwargs`).
 
 === Examples

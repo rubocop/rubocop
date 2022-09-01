@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.36.0 (2022-09-01)
+
 ### New features
 
 * [#10931](https://github.com/rubocop/rubocop/pull/10931): Add `AllowOnSelfClass` option to `Style/CaseEquality`. ([@sambostock][])
