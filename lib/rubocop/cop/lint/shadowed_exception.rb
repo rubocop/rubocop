@@ -155,16 +155,6 @@ module RuboCop
           end
         end
 
-        # @param [RuboCop::AST::Node] rescue_group is a node of array_type
-        def rescued_exceptions(rescue_group)
-          klasses = *rescue_group
-          klasses.map do |klass|
-            next unless klass.const_type?
-
-            klass.source
-          end.compact
-        end
-
         def find_shadowing_rescue(rescues)
           rescued_groups = rescued_groups_for(rescues)
           rescued_groups.zip(rescues).each do |group, res|
