@@ -20,6 +20,45 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
     context 'when there are disabled lines' do
       context 'and there are no offenses' do
         context 'and a comment disables' do
+          context 'a cop that is disabled in the config' do
+            let(:other_cops) { { 'Metrics/MethodLength' => { 'Enabled' => false } } }
+
+            it 'returns an offense' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics/MethodLength
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+            end
+
+            describe 'when that cop was previously enabled' do
+              it 'returns no offense' do
+                expect_no_offenses(<<~RUBY)
+                  # rubocop:enable Metrics/MethodLength
+                  foo
+                  # rubocop:disable Metrics/MethodLength
+                RUBY
+              end
+            end
+
+            describe 'if that cop has offenses' do
+              let(:offenses) do
+                [
+                  RuboCop::Cop::Offense.new(:convention,
+                                            FakeLocation.new(line: 7, column: 0),
+                                            'Method has too many lines.',
+                                            'Metrics/MethodLength')
+                ]
+              end
+
+              it 'returns an offense' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable Metrics/MethodLength
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+                RUBY
+              end
+            end
+          end
+
           context 'one cop' do
             it 'returns an offense' do
               expect_offense(<<~RUBY)

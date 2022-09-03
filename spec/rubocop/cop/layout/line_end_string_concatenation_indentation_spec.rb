@@ -5,6 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
     merged = RuboCop::ConfigLoader
              .default_configuration['Layout/LineEndStringConcatenationIndentation']
              .merge(cop_config)
+             .merge('Enabled' => true)
              .merge('IndentationWidth' => cop_indent)
     RuboCop::Config
       .new('Layout/LineEndStringConcatenationIndentation' => merged,

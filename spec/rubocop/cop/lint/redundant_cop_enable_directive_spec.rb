@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
+  describe 'when cop is disabled in the configuration' do
+    let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => false } } }
+
+    it 'registers no offense when enabling the cop' do
+      expect_no_offenses(<<~RUBY)
+        foo
+        # rubocop:enable Layout/LineLength
+      RUBY
+    end
+
+    it 'registers an offense if enabling it twice' do
+      expect_offense(<<~RUBY)
+        foo
+        # rubocop:enable Layout/LineLength
+        # rubocop:enable Layout/LineLength
+                         ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/LineLength.
+      RUBY
+    end
+  end
+
   it 'registers offense and corrects unnecessary enable' do
     expect_offense(<<~RUBY)
       foo

@@ -730,6 +730,63 @@ Do not write anything other than cop name in the disabling comment. E.g.:
 # rubocop:disable Layout/LineLength --This is a bad comment that includes other than cop name.
 ----
 
+== Temporarily enabling cops in source code
+
+In a similar way to disabling cops within source code, you can also temporarily enable specific
+cops if you want to enforce specific rules for part of the totality of a file.
+
+Let's use the cop `Style/AsciiComments`, which is by default `Enabled: false`. If you want a
+specific file to have ASCII-only comments to be compatible with some specific post-processing.
+
+[source,ruby]
+----
+# rubocop:enable Style/AsciiComments
+# If applicable, leave a comment to others explaining the rationale:
+# We need the comments to remain ASCII only for compatibility with lib/post_processor.rb
+
+class Restaurant
+  # This comment has to be ASCII-only because of the rubocop:enable directive
+  def menu
+    return dishes.map(&:humanize)
+  end
+end
+----
+
+You can also enforce the same for part of a file by disabling the cop afterwards
+
+[source,ruby]
+----
+class Dish
+  def humanize
+    return [
+      "Delicious #{self.name}"
+      *ingredients
+    ].join("\n")
+  end
+end
+
+# rubocop:enable Style/AsciiComments
+# If applicable, leave a comment to others explaining the rationale:
+# We need the comments to remain ASCII only for compatibility with lib/post_processor.rb
+
+class Restaurant
+  # This comment has to be ASCII-only because of the rubocop:enable directive
+  def menu
+    return dishes.map(&:humanize)
+  end
+end
+
+# rubocop:disable Style/AsciiComments
+
+class Ingredient
+  # Notice how the comment below is non-ASCII
+  # Gets rid of odd characters like 😀, ͸
+  def sanitize
+    self.name.gsub(/[^a-z]/, '')
+  end
+end
+----
+
 == Setting the style guide URL
 
 You can specify the base URL of the style guide using `StyleGuideBaseURL`.

@@ -663,7 +663,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
 
   describe 'using custom indentation width' do
     let(:config) do
-      RuboCop::Config.new('Performance/ParallelAssignment' => {
+      RuboCop::Config.new('Style/ParallelAssignment' => {
                             'Enabled' => true
                           },
                           'Layout/IndentationWidth' => {

@@ -40,10 +40,9 @@ module RuboCop
 
       # @return [Array<Cop::Cop>]
       def self.mobilize_cops(cop_classes, config, options = {})
-        cop_classes = Registry.new(cop_classes.to_a) unless cop_classes.is_a?(Registry)
-        only = options.fetch(:only, [])
-        safe = options.fetch(:safe, false)
-        cop_classes.enabled(config, only, only_safe: safe).map do |cop_class|
+        cop_classes = Registry.new(cop_classes.to_a, options) unless cop_classes.is_a?(Registry)
+
+        cop_classes.enabled(config).map do |cop_class|
           cop_class.new(config, options)
         end
       end

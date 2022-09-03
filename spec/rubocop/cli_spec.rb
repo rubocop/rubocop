@@ -278,6 +278,36 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe 'for a disabled cop' do
+    it 'reports no offense when enabled on part of a file' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          SuggestExtensions: false
+        Lint/UselessAssignment:
+          Enabled: false
+      YAML
+
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        a = 1
+        # rubocop:enable Lint/UselessAssignment
+        b = a
+        b += 1
+        # rubocop:disable Lint/UselessAssignment
+        c = 2
+      RUBY
+
+      expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(0)
+      expect($stdout.string).to eq(<<~RESULT)
+
+        --
+        0  Total
+
+      RESULT
+    end
+  end
+
   describe 'rubocop:disable comment' do
     it 'can disable all cops in a code section' do
       src = ['# rubocop:disable all',
