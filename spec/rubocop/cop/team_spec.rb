@@ -89,7 +89,12 @@ RSpec.describe RuboCop::Cop::Team do
     include FileHelper
 
     let(:file_path) { '/tmp/example.rb' }
-    let(:source) { RuboCop::ProcessedSource.from_file(file_path, ruby_version) }
+    let(:source) do
+      source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
+      source.config = config
+      source.registry = RuboCop::Cop::Registry.new(cop_classes.cops)
+      source
+    end
     let(:offenses) { team.inspect_file(source) }
 
     before { create_file(file_path, ['#' * 90, 'puts test;']) }
@@ -129,7 +134,6 @@ RSpec.describe RuboCop::Cop::Team do
       before { create_file(file_path, 'puts "string"') }
 
       it 'does autocorrection' do
-        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
         team.inspect_file(source)
         corrected_source = File.read(file_path)
         expect(corrected_source).to eq(<<~RUBY)
@@ -154,7 +158,6 @@ RSpec.describe RuboCop::Cop::Team do
       end
 
       it 'no error occurs' do
-        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
         team.inspect_file(source)
 
         expect(team.errors.empty?).to be(true)
@@ -176,7 +179,6 @@ RSpec.describe RuboCop::Cop::Team do
       end
 
       it 'records Team#errors' do
-        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
         team.inspect_file(source)
 
         expect(team.errors).to eq([error_message])
@@ -209,8 +211,6 @@ RSpec.describe RuboCop::Cop::Team do
       end
 
       it 'records Team#errors' do
-        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
-
         team.inspect_file(source)
         expect($stderr.string).to include(error_message)
       end
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Team do
           end
         end
       end
-      let(:cop_classes) { [persisting_cop_class, RuboCop::Cop::Base] }
+      let(:cop_classes) { RuboCop::Cop::Registry.new([persisting_cop_class, RuboCop::Cop::Base]) }
 
       it 'allows cops to get ready' do
         before = team.cops.dup

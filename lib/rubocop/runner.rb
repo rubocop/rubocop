@@ -423,17 +423,21 @@ module RuboCop
     end
 
     def get_processed_source(file)
-      ruby_version = @config_store.for_file(file).target_ruby_version
+      config = @config_store.for_file(file)
+      ruby_version = config.target_ruby_version
 
-      if @options[:stdin]
-        ProcessedSource.new(@options[:stdin], ruby_version, file)
-      else
-        begin
-          ProcessedSource.from_file(file, ruby_version)
-        rescue Errno::ENOENT
-          raise RuboCop::Error, "No such file or directory: #{file}"
-        end
-      end
+      processed_source = if @options[:stdin]
+                           ProcessedSource.new(@options[:stdin], ruby_version, file)
+                         else
+                           begin
+                             ProcessedSource.from_file(file, ruby_version)
+                           rescue Errno::ENOENT
+                             raise RuboCop::Error, "No such file or directory: #{file}"
+                           end
+                         end
+      processed_source.config = config
+      processed_source.registry = mobilized_cop_classes(config)
+      processed_source
     end
 
     # A Cop::Team instance is stateful and may change when inspecting.

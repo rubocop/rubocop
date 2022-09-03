@@ -4,9 +4,30 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
+    extend Forwardable
+
+    CONFIG_DISABLED_LINE_RANGE_MIN = -Float::INFINITY
+
+    # This class provides an API compatible with RuboCop::DirectiveComment
+    # to be used for cops that are disabled in the config file
+    class ConfigDisabledCopDirectiveComment
+      attr_reader :text, :loc, :line_number
+
+      Loc = Struct.new(:expression)
+      Expression = Struct.new(:line)
+
+      def initialize(cop_name)
+        @text = "# rubocop:disable #{cop_name}"
+        @line_number = CONFIG_DISABLED_LINE_RANGE_MIN
+        @loc = Loc.new(Expression.new(CONFIG_DISABLED_LINE_RANGE_MIN))
+      end
+    end
+
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
 
     attr_reader :processed_source
+
+    def_delegators :@processed_source, :config, :registry
 
     def initialize(processed_source)
       @processed_source = processed_source
@@ -25,7 +46,11 @@ module RuboCop
     end
 
     def extra_enabled_comments
-      extra_enabled_comments_with_names(extras: Hash.new { |h, k| h[k] = [] }, names: Hash.new(0))
+      disable_count = Hash.new(0)
+      registry.disabled(config).each do |cop|
+        disable_count[cop.cop_name] += 1
+      end
+      extra_enabled_comments_with_names(extras: Hash.new { |h, k| h[k] = [] }, names: disable_count)
     end
 
     def comment_only_line?(line_number)
@@ -50,6 +75,7 @@ module RuboCop
 
     def analyze # rubocop:todo Metrics/AbcSize
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
+      inject_disabled_cops_directives(analyses)
 
       each_directive do |directive|
         directive.cop_names.each do |cop_name|
@@ -61,6 +87,15 @@ module RuboCop
       analyses.each_with_object({}) do |element, hash|
         cop_name, analysis = *element
         hash[cop_name] = cop_line_ranges(analysis)
+      end
+    end
+
+    def inject_disabled_cops_directives(analyses)
+      registry.disabled(config).each do |cop|
+        analyses[cop.cop_name] = analyze_cop(
+          analyses[cop.cop_name],
+          DirectiveComment.new(ConfigDisabledCopDirectiveComment.new(cop.cop_name))
+        )
       end
     end
 

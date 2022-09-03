@@ -28,7 +28,27 @@ module CopHelper
       file = file.path
     end
 
-    RuboCop::ProcessedSource.new(source, ruby_version, file)
+    processed_source = RuboCop::ProcessedSource.new(source, ruby_version, file)
+    processed_source.config = configuration
+    processed_source.registry = registry
+    processed_source
+  end
+
+  def configuration
+    @configuration ||= if defined?(config)
+                         config
+                       else
+                         RuboCop::Config.new({}, "#{Dir.pwd}/.rubocop.yml")
+                       end
+  end
+
+  def registry
+    @registry ||= begin
+      cops = configuration.keys.map { |cop| RuboCop::Cop::Registry.global.find_by_cop_name(cop) }
+      cops << cop_class if defined?(cop_class) && !cops.include?(cop_class)
+      cops.compact!
+      RuboCop::Cop::Registry.new(cops)
+    end
   end
 
   def autocorrect_source_file(source)

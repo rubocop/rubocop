@@ -182,6 +182,8 @@ RSpec.describe RuboCop::Cop::Registry do
   end
 
   describe '#enabled' do
+    subject(:enabled_cops) { registry.enabled(config) }
+
     let(:config) do
       RuboCop::Config.new(
         'Test/FirstArrayElementIndentation' => { 'Enabled' => false },
@@ -190,16 +192,16 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'selects cops which are enabled in the config' do
-      expect(registry.enabled(config, [])).to eql(cops.first(5))
+      expect(registry.enabled(config)).to eql(cops.first(5))
     end
 
     it 'overrides config if :only includes the cop' do
-      result = registry.enabled(config, ['Test/FirstArrayElementIndentation'])
-      expect(result).to eql(cops)
+      options[:only] = ['Test/FirstArrayElementIndentation']
+      expect(enabled_cops).to eql(cops)
     end
 
     it 'selects only safe cops if :safe passed' do
-      enabled_cops = registry.enabled(config, [], only_safe: true)
+      options[:safe] = true
       expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
     end
 
@@ -207,21 +209,19 @@ RSpec.describe RuboCop::Cop::Registry do
       let(:config) { RuboCop::Config.new('Lint/BooleanSymbol' => { 'Enabled' => 'pending' }) }
 
       it 'does not include them' do
-        result = registry.enabled(config, [])
-        expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
       end
 
       it 'overrides config if :only includes the cop' do
-        result = registry.enabled(config, ['Lint/BooleanSymbol'])
-        expect(result).to eql(cops)
+        options[:only] = ['Lint/BooleanSymbol']
+        expect(enabled_cops).to eql(cops)
       end
 
       context 'when specifying `--disable-pending-cops` command-line option' do
         let(:options) { { disable_pending_cops: true } }
 
         it 'does not include them' do
-          result = registry.enabled(config, [])
-          expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
 
         context 'when specifying `NewCops: enable` option in .rubocop.yml' do
@@ -234,8 +234,7 @@ RSpec.describe RuboCop::Cop::Registry do
 
           it 'does not include them because command-line option takes ' \
              'precedence over .rubocop.yml' do
-            result = registry.enabled(config, [])
-            expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+            expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
           end
         end
       end
@@ -244,8 +243,7 @@ RSpec.describe RuboCop::Cop::Registry do
         let(:options) { { enable_pending_cops: true } }
 
         it 'includes them' do
-          result = registry.enabled(config, [])
-          expect(result).to include(RuboCop::Cop::Lint::BooleanSymbol)
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
 
         context 'when specifying `NewCops: disable` option in .rubocop.yml' do
@@ -257,8 +255,7 @@ RSpec.describe RuboCop::Cop::Registry do
           end
 
           it 'includes them because command-line option takes precedence over .rubocop.yml' do
-            result = registry.enabled(config, [])
-            expect(result).to include(RuboCop::Cop::Lint::BooleanSymbol)
+            expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
           end
         end
       end
@@ -272,8 +269,7 @@ RSpec.describe RuboCop::Cop::Registry do
         end
 
         it 'does not include them' do
-          result = registry.enabled(config, [])
-          expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
       end
 
@@ -286,8 +282,7 @@ RSpec.describe RuboCop::Cop::Registry do
         end
 
         it 'does not include them' do
-          result = registry.enabled(config, [])
-          expect(result).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
       end
 
@@ -300,8 +295,7 @@ RSpec.describe RuboCop::Cop::Registry do
         end
 
         it 'includes them' do
-          result = registry.enabled(config, [])
-          expect(result).to include(RuboCop::Cop::Lint::BooleanSymbol)
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
       end
     end

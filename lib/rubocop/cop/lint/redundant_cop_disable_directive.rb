@@ -113,6 +113,7 @@ module RuboCop
         def each_line_range(cop, line_ranges)
           line_ranges.each_with_index do |line_range, line_range_index|
             next if ignore_offense?(line_range)
+            next if expected_final_disable?(cop, line_range)
 
             comment = processed_source.comment_at_line(line_range.begin)
             redundant = if all_disabled?(comment)
@@ -179,9 +180,19 @@ module RuboCop
         end
 
         def ignore_offense?(line_range)
+          return true if line_range.min == CommentConfig::CONFIG_DISABLED_LINE_RANGE_MIN
+
           disabled_ranges.any? do |range|
             range.cover?(line_range.min) && range.cover?(line_range.max)
           end
+        end
+
+        def expected_final_disable?(cop, line_range)
+          # A cop which is disabled in the config is being re-disabled until end of file
+          cop_class = RuboCop::Cop::Registry.global.find_by_cop_name cop
+          cop_class &&
+            !processed_source.registry.enabled?(cop_class, config) &&
+            line_range.max == Float::INFINITY
         end
 
         def department_disabled?(cop, comment)

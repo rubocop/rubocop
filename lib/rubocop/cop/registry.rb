@@ -149,16 +149,22 @@ module RuboCop
         @registry.size
       end
 
-      def enabled(config, only = [], only_safe: false)
-        select { |cop| only.include?(cop.cop_name) || enabled?(cop, config, only_safe) }
+      def enabled(config)
+        select { |cop| enabled?(cop, config) }
       end
 
-      def enabled?(cop, config, only_safe)
+      def disabled(config)
+        reject { |cop| enabled?(cop, config) }
+      end
+
+      def enabled?(cop, config)
+        return true if options.fetch(:only, []).include?(cop.cop_name)
+
         cfg = config.for_cop(cop)
 
         cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config)
 
-        if only_safe
+        if options.fetch(:safe, false)
           cop_enabled && cfg.fetch('Safe', true)
         else
           cop_enabled
