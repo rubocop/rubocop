@@ -8,6 +8,14 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
         def self.class_method; end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      module C
+      module_function
+
+        def class_method; end
+      end
+    RUBY
   end
 
   it 'registers an offense when class has `class << self` with class methods' do
@@ -19,6 +27,18 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
         class << self
           def other_class_method; end
         end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module C
+      module_function
+
+        def class_method; end
+
+       #{trailing_whitespace}
+          def other_class_method; end
+       #{trailing_whitespace}
       end
     RUBY
   end
@@ -42,6 +62,16 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
         CONST = 1
 
         def self.class_method; end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module C
+      module_function
+
+        CONST = 1
+
+        def class_method; end
       end
     RUBY
   end
@@ -101,6 +131,15 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
       ^^^^^^^ Prefer modules to classes with only class methods.
         extend M
         def self.class_method; end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module C
+      module_function
+
+        extend M
+        def class_method; end
       end
     RUBY
   end

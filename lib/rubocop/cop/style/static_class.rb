@@ -44,17 +44,48 @@ module RuboCop
       #   end
       #
       class StaticClass < Base
+        include RangeHelp
         include VisibilityHelp
+        extend AutoCorrector
 
         MSG = 'Prefer modules to classes with only class methods.'
 
         def on_class(class_node)
           return if class_node.parent_class
+          return unless class_convertible_to_module?(class_node)
 
-          add_offense(class_node) if class_convertible_to_module?(class_node)
+          add_offense(class_node) do |corrector|
+            autocorrect(corrector, class_node)
+          end
         end
 
         private
+
+        def autocorrect(corrector, class_node)
+          corrector.replace(class_node.loc.keyword, 'module')
+          corrector.insert_after(class_node.loc.name, "\nmodule_function\n")
+
+          class_elements(class_node).each do |node|
+            if node.defs_type?
+              autocorrect_def(corrector, node)
+            elsif node.sclass_type?
+              autocorrect_sclass(corrector, node)
+            end
+          end
+        end
+
+        def autocorrect_def(corrector, node)
+          corrector.remove(
+            range_between(node.receiver.source_range.begin_pos, node.loc.name.begin_pos)
+          )
+        end
+
+        def autocorrect_sclass(corrector, node)
+          corrector.remove(
+            range_between(node.loc.keyword.begin_pos, node.identifier.source_range.end_pos)
+          )
+          corrector.remove(node.loc.end)
+        end
 
         def class_convertible_to_module?(class_node)
           nodes = class_elements(class_node)
