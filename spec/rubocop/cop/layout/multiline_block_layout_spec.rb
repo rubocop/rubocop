@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'registers offenses and corrrects for new lambda literal syntax' do
+  it 'registers offenses and corrects for new lambda literal syntax' do
     expect_offense(<<~RUBY)
       -> x do foo
               ^^^ Block body expression is on the same line as the block start.
