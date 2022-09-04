@@ -234,15 +234,16 @@ module RuboCop
       #
       #   # good
       #   array.any?
+      #
       class SimplifyNotEmptyWithAny < Base
         MSG = 'Use `.any?` and remove the negation part.'.freeze
+        RESTRICT_ON_SEND = [:!].freeze # optimization: don't call `on_send` unless
+                                       # the method name is in this list
 
         def_node_matcher :not_empty_call?, <<~PATTERN
           (send (send $(...) :empty?) :!)
         PATTERN
 
-        RESTRICT_ON_SEND = [:!].freeze # optimization: don't call `on_send` unless
-                                       # the method name is in this list
         def on_send(node)
           return unless not_empty_call?(node)
 
