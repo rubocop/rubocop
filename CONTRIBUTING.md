@@ -93,7 +93,6 @@ Here are a few examples:
 
 ```markdown
 * [#716](https://github.com/rubocop/rubocop/issues/716): Fixed a regression in the autocorrection logic of `MethodDefParentheses`. ([@bbatsov][])
-* New cop `ElseLayout` checks for odd arrangement of code in the `else` branch of a conditional expression. ([@bbatsov][])
 * [#7542](https://github.com/rubocop/rubocop/pull/7542): **(Breaking)** Move `LineLength` cop from `Metrics` department to `Layout` department. ([@koic][])
 ```
 
