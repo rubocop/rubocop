@@ -96,6 +96,9 @@ These are the command-line options for server operations:
 
 TIP: You can specify the server host and port with the $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT environment variables.
 
+If `RUBOCOP_OPTS` environment variable or `.rubocop` file contains `--server` option, `rubocop` command defaults to server mode.
+Other server options such as `stop-server`, `restart-server` specified on the command line will take precedence over them.
+
 == Environment Variables
 
 You can change the startup host and port of server process with

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'rainbow'
+require_relative '../arguments_env'
+require_relative '../arguments_file'
 
 #
 # This code is based on https://github.com/fohte/rubocop-daemon.
@@ -29,7 +31,7 @@ module RuboCop
         @exit = false
       end
 
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       def run(argv = ARGV)
         unless Server.support_server?
           return error('RuboCop server is not supported by this Ruby.') if use_server_option?(argv)
@@ -50,11 +52,16 @@ module RuboCop
           return error("#{server_command} cannot be combined with other options.")
         end
 
+        if server_command.nil?
+          server_command = ArgumentsEnv.read_as_arguments.delete('--server') ||
+                           ArgumentsFile.read_as_arguments.delete('--server')
+        end
+
         run_command(server_command)
 
         STATUS_SUCCESS
       end
-      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
       def exit?
         @exit

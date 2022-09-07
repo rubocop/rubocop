@@ -95,6 +95,47 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
       end
     end
 
+    context 'when not using any server options and specifying `--server` in .rubocop file' do
+      before { create_file('.rubocop', '--server') }
+
+      it 'returns exit status 0 and display an information message' do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          x = 0
+          puts x
+        RUBY
+        expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
+        expect(cli.exit?).to be(false)
+        expect($stdout.string).to start_with 'RuboCop server starting on '
+        expect($stderr.string).to eq ''
+      end
+    end
+
+    context 'when not using any server options and specifying `--server` in `RUBOCOP_OPTS` environment variable' do
+      around do |example|
+        ENV['RUBOCOP_OPTS'] = '--server'
+        begin
+          example.run
+        ensure
+          ENV.delete('RUBOCOP_OPTS')
+        end
+      end
+
+      it 'returns exit status 0 and display an information message' do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          x = 0
+          puts x
+        RUBY
+        expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
+        expect(cli.exit?).to be(false)
+        expect($stdout.string).to start_with 'RuboCop server starting on '
+        expect($stderr.string).to eq ''
+      end
+    end
+
     context 'when using multiple server options' do
       it 'returns exit status 2 and display an error message' do
         create_file('example.rb', <<~RUBY)

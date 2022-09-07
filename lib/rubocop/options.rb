@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require 'shellwords'
+require_relative 'arguments_env'
+require_relative 'arguments_file'
 
 module RuboCop
   class IncorrectCopNameError < StandardError; end
@@ -24,7 +25,10 @@ module RuboCop
     end
 
     def parse(command_line_args)
+      args_from_file = ArgumentsFile.read_as_arguments
+      args_from_env = ArgumentsEnv.read_as_arguments
       args = args_from_file.concat(args_from_env).concat(command_line_args)
+
       define_options.parse!(args)
 
       @validator.validate_compatibility
@@ -44,18 +48,6 @@ module RuboCop
     end
 
     private
-
-    def args_from_file
-      if File.exist?('.rubocop') && !File.directory?('.rubocop')
-        File.read('.rubocop').shellsplit
-      else
-        []
-      end
-    end
-
-    def args_from_env
-      Shellwords.split(ENV.fetch('RUBOCOP_OPTS', ''))
-    end
 
     def define_options
       OptionParser.new do |opts|

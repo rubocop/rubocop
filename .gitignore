@@ -22,6 +22,9 @@ vendor/
 /spec/examples.txt
 /.test_queue_stats
 
+# RuboCop
+.rubocop
+
 # jeweler generated
 pkg
 
