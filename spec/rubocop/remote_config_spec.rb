@@ -46,7 +46,7 @@ RSpec.describe RuboCop::RemoteConfig do
 
       before do
         stub_request(:get, stripped_remote_config_url)
-          .with(basic_auth: [token])
+          .with(basic_auth: [token], headers: { 'User-Agent' => 'RuboCop' })
           .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
       end
 

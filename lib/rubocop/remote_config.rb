@@ -54,6 +54,7 @@ module RuboCop
       request = Net::HTTP::Get.new(uri.request_uri)
 
       request.basic_auth(uri.user, uri.password) if uri.user
+      request['User-Agent'] = 'RuboCop'
       request['If-Modified-Since'] = File.stat(cache_path).mtime.rfc2822 if cache_path_exists?
 
       yield request
