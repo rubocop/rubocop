@@ -3,6 +3,23 @@
 RSpec.describe RuboCop::Version do
   include FileHelper
 
+  describe '.version' do
+    subject { described_class.version(debug: debug) }
+
+    context 'debug is false (default)' do
+      let(:debug) { false }
+
+      it { is_expected.to match(/\d+\.\d+\.\d+/) }
+      it { is_expected.not_to match(/\d+\.\d+\.\d+ \(using Parser/) }
+    end
+
+    context 'debug is true' do
+      let(:debug) { true }
+
+      it { is_expected.to match(/\d+\.\d+\.\d+ \(using Parser/) }
+    end
+  end
+
   describe '.extension_versions', :isolated_environment, :restore_registry do
     subject(:extension_versions) { described_class.extension_versions(env) }
 

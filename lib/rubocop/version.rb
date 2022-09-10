@@ -7,7 +7,7 @@ module RuboCop
 
     MSG = '%<version>s (using Parser %<parser_version>s, ' \
           'rubocop-ast %<rubocop_ast_version>s, ' \
-          'running on %<ruby_engine>s %<ruby_version>s)%<server>s [%<ruby_platform>s]'
+          'running on %<ruby_engine>s %<ruby_version>s)%<server_mode>s [%<ruby_platform>s]'
 
     CANONICAL_FEATURE_NAMES = { 'Rspec' => 'RSpec', 'Graphql' => 'GraphQL', 'Md' => 'Markdown',
                                 'Thread_safety' => 'ThreadSafety' }.freeze
@@ -19,7 +19,7 @@ module RuboCop
         verbose_version = format(MSG, version: STRING, parser_version: Parser::VERSION,
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
                                       ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
-                                      server: Server.running? ? ' +server' : '',
+                                      server_mode: server_mode,
                                       ruby_platform: RUBY_PLATFORM)
         return verbose_version unless env
 
@@ -88,6 +88,11 @@ module RuboCop
     # @api private
     def self.document_version
       STRING.match('\d+\.\d+').to_s
+    end
+
+    # @api private
+    def self.server_mode
+      RuboCop.const_defined?(:Server) && Server.running? ? ' +server' : ''
     end
   end
 end
