@@ -66,6 +66,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                reports. This is useful for editor integration.
               -P, --[no-]parallel              Use available CPUs to execute inspection in
                                                parallel. Default is true.
+                  --raise-cop-error            Raise cop-related errors with cause and location.
+                                               Default is false.
                   --fail-level SEVERITY        Minimum severity for exit with error code.
                                                  [A] autocorrect
                                                  [I] info
@@ -372,6 +374,13 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         %w[autocorrect A].each do |severity|
           expect { options.parse(['--fail-level', severity]) }.not_to raise_error
         end
+      end
+    end
+
+    describe '--raise-cop-error' do
+      it 'raises cop errors' do
+        results = options.parse %w[--raise-cop-error]
+        expect(results).to eq([{ raise_cop_error: true }, []])
       end
     end
 
