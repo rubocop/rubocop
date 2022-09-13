@@ -986,7 +986,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       require 'spec_helper'
       describe ArticlesController do
         render_views
-          describe "GET \'index\'" do
+          describe "GET 'index'" do
                   it "returns http success" do
                   end
               describe "admin user" do
@@ -1004,7 +1004,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       require 'spec_helper'
       describe ArticlesController do
         render_views
-        describe \"GET 'index'\" do
+        describe "GET 'index'" do
           it 'returns http success' do
           end
           describe 'admin user' do
@@ -1670,7 +1670,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
-      puts \"Hello\", 123_456
+      puts "Hello", 123_456
     RUBY
   end
 

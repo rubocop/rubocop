@@ -80,12 +80,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
 
     it 'registers and corrects an offense for a line with tab in a string indented with tab' do
       expect_offense(<<~RUBY)
-        \t(x = \"\t\")
+        \t(x = "\t")
         ^ Tab detected in indentation.
       RUBY
 
       expect_correction(<<-RUBY.strip_margin('|'))
-        |  (x = \"\t\")
+        |  (x = "\t")
       RUBY
     end
 
@@ -184,12 +184,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
 
     it 'registers and corrects an offense for a line with tab in a string indented with space' do
       expect_offense(<<~RUBY)
-          (x = \"\t\")
+          (x = "\t")
         ^^ Space detected in indentation.
       RUBY
 
       expect_correction(<<~RUBY)
-        \t(x = \"\t\")
+        \t(x = "\t")
       RUBY
     end
 

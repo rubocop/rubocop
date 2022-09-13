@@ -4792,6 +4792,11 @@ Style/RedundantSortBy:
   Enabled: true
   VersionAdded: '0.36'
 
+Style/RedundantStringEscape:
+  Description: 'Checks for redundant escapes in Strings.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: '#percent-r'

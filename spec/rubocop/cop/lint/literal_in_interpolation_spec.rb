@@ -120,25 +120,25 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
 
     it "accepts interpolation of a string literal with space in #{prefix}[]" do
       expect_no_offenses(<<~RUBY)
-        #{prefix}[\#{\"this interpolation\"} is significant]
+        #{prefix}[\#{"this interpolation"} is significant]
       RUBY
     end
 
     it "accepts interpolation of a symbol literal with space in #{prefix}[]" do
       expect_no_offenses(<<~RUBY)
-        #{prefix}[\#{:\"this interpolation\"} is significant]
+        #{prefix}[\#{:"this interpolation"} is significant]
       RUBY
     end
 
     it "accepts interpolation of an array literal containing a string with space in #{prefix}[]" do
       expect_no_offenses(<<~RUBY)
-        #{prefix}[\#{[\"this interpolation\"]} is significant]
+        #{prefix}[\#{["this interpolation"]} is significant]
       RUBY
     end
 
     it "accepts interpolation of an array literal containing a symbol with space in #{prefix}[]" do
       expect_no_offenses(<<~RUBY)
-        #{prefix}[\#{[:\"this interpolation\"]} is significant]
+        #{prefix}[\#{[:"this interpolation"]} is significant]
       RUBY
     end
 
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        \`this is the #{expected}\`
+        `this is the #{expected}`
       RUBY
     end
 

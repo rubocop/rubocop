@@ -159,13 +159,13 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
 
   context 'double quotes inside string' do
     it 'registers an offense and corrects with double quotes' do
-      expect_offense(<<-RUBY)
-        email_with_name = "He said " + "\\\"Arrest that man!\\\"."
+      expect_offense(<<-'RUBY')
+        email_with_name = "He said " + "\"Arrest that man!\"."
                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
       RUBY
 
-      expect_correction(<<-RUBY)
-        email_with_name = "He said \\\"Arrest that man!\\\"."
+      expect_correction(<<-'RUBY')
+        email_with_name = "He said \"Arrest that man!\"."
       RUBY
     end
 
@@ -175,8 +175,8 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
       RUBY
 
-      expect_correction(<<-RUBY)
-        email_with_name = "He said \\\"Arrest that man!\\\"."
+      expect_correction(<<-'RUBY')
+        email_with_name = "He said \"Arrest that man!\"."
       RUBY
     end
   end
@@ -194,11 +194,11 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
       RUBY
 
-      expect_correction(<<-RUBY)
-        "\\\"foo\\\""
-        "\\\"foo'"
-        "'foo\\\""
-        "'foo\\\"bar"
+      expect_correction(<<-'RUBY')
+        "\"foo\""
+        "\"foo'"
+        "'foo\""
+        "'foo\"bar"
       RUBY
     end
   end
@@ -210,8 +210,8 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
         ^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
       RUBY
 
-      expect_correction(<<-RUBY)
-        "\\\"bar\\\"\#{foo}"
+      expect_correction(<<-'RUBY')
+        "\"bar\"#{foo}"
       RUBY
     end
   end
