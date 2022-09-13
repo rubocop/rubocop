@@ -288,7 +288,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       after { Encoding.default_internal = nil }
 
       it 'writes non UTF-8 encodable data to file with no exception' do
-        cache.save(offenses)
+        expect { cache.save(offenses) }.not_to raise_error
       end
     end
 

@@ -117,6 +117,17 @@ Naming/InclusiveLanguage:
     - lib/rubocop/cop/mixin/auto_corrector.rb
     - spec/rubocop/cop/naming/inclusive_language_spec.rb
 
+RSpec:
+  Language:
+    Expectations:
+      - expect_autocorrect_options_for_autocorrect
+      - expect_autocorrect_options_for_autocorrect_all
+      - expect_autocorrect_options_for_fix_layout
+      - expect_correction
+      - expect_feature_loader
+      - expect_no_offenses
+      - expect_offense
+
 RSpec/FilePath:
   Exclude:
     - spec/rubocop/cop/internal_affairs/redundant_let_rubocop_config_new_spec.rb

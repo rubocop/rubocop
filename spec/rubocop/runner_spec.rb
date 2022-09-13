@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       it 'does not call ResultCache#save' do
         # The double doesn't define #save, so we'd get an error if it were
         # called.
-        runner.run([])
+        expect(runner.run([])).to be true
       end
     end
 

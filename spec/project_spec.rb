@@ -88,6 +88,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
       configuration_keys.each_with_index { |key, idx| expect(key).to eq expected[idx] }
     end
 
+    # rubocop:disable RSpec/NoExpectationExample
     it 'has a SupportedStyles for all EnforcedStyle and EnforcedStyle is valid' do
       errors = []
       cop_names.each do |name|
@@ -109,7 +110,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
       raise errors.join("\n") unless errors.empty?
     end
+    # rubocop:enable RSpec/NoExpectationExample
 
+    # rubocop:disable RSpec/NoExpectationExample
     it 'does not have any duplication' do
       fname = File.expand_path('../config/default.yml', __dir__)
       content = File.read(fname)
@@ -118,6 +121,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
               "on line #{key1.start_line} and line #{key2.start_line}"
       end
     end
+    # rubocop:enable RSpec/NoExpectationExample
 
     it 'does not include `Safe: true`' do
       cop_names.each do |name|
