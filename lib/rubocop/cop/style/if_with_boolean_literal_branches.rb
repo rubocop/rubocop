@@ -8,6 +8,20 @@ module RuboCop
       # The conditions to be checked are comparison methods, predicate methods, and double negative.
       # `nonzero?` method is allowed by default.
       # These are customizable with `AllowedMethods` option.
+      # This cop targets only `if`s with a single `elsif` or `else` branch.
+      #
+      # [source,ruby]
+      # ----
+      # if foo
+      #   true
+      # elsif bar > baz
+      #   true
+      # elsif qux > quux # Single `elsif` is warned, but two or more `elsif`s are not.
+      #   true
+      # else
+      #   false
+      # end
+      # ----
       #
       # @safety
       #   Autocorrection is unsafe because there is no guarantee that all predicate methods
@@ -57,7 +71,7 @@ module RuboCop
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
         def on_if(node)
-          return unless if_with_boolean_literal_branches?(node)
+          return if !if_with_boolean_literal_branches?(node) || multiple_elsif?(node)
 
           condition = node.condition
           range, keyword = offense_range_with_keyword(node, condition)
@@ -75,6 +89,12 @@ module RuboCop
         end
 
         private
+
+        def multiple_elsif?(node)
+          return false unless (parent = node.parent)
+
+          parent.if_type? && parent.elsif?
+        end
 
         def offense_range_with_keyword(node, condition)
           if node.ternary?
