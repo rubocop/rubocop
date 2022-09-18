@@ -343,7 +343,7 @@ module RuboCop
         end
 
         def skip_check?(base_loc, body_node)
-          return true if ignored_line?(base_loc)
+          return true if allowed_line?(base_loc)
           return true unless body_node
 
           # Don't check if expression is on same line as "then" keyword, etc.
