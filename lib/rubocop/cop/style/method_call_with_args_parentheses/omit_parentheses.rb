@@ -20,8 +20,8 @@ module RuboCop
             return if require_parentheses_for_hash_value_omission?(node)
             return if syntax_like_method_call?(node)
             return if super_call_without_arguments?(node)
-            return if allowed_camel_case_method_call?(node)
             return if legitimate_call_with_parentheses?(node)
+            return if allowed_camel_case_method_call?(node)
             return if allowed_string_interpolation_method_call?(node)
 
             add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
@@ -97,7 +97,8 @@ module RuboCop
               call_in_optional_arguments?(node) ||
               call_in_single_line_inheritance?(node) ||
               allowed_multiline_call_with_parentheses?(node) ||
-              allowed_chained_call_with_parentheses?(node)
+              allowed_chained_call_with_parentheses?(node) ||
+              assignment_in_condition?(node)
           end
 
           def call_in_literals?(node)
@@ -201,6 +202,16 @@ module RuboCop
 
           def inside_string_interpolation?(node)
             node.ancestors.drop_while { |a| !a.begin_type? }.any?(&:dstr_type?)
+          end
+
+          def assignment_in_condition?(node)
+            parent = node.parent
+            return false unless parent
+
+            grandparent = parent.parent
+            return false unless grandparent
+
+            parent.assignment? && (grandparent.conditional? || grandparent.when_type?)
           end
         end
         # rubocop:enable Metrics/ModuleLength, Metrics/CyclomaticComplexity

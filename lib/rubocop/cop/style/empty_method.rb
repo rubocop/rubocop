@@ -52,7 +52,7 @@ module RuboCop
         MSG_EXPANDED = 'Put the `end` of empty method definitions on the next line.'
 
         def on_def(node)
-          return if node.body || comment_lines?(node)
+          return if node.body || processed_source.contains_comment?(node.source_range)
           return if correct_style?(node)
 
           add_offense(node) do |corrector|

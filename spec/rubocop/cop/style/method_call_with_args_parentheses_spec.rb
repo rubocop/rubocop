@@ -829,6 +829,19 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in assignment in conditions' do
+      expect_no_offenses(<<-RUBY)
+        case response = get("server/list")
+        when server = response.take(1)
+          if @size ||= server.take(:size)
+            pass
+          elsif @@image &&= server.take(:image)
+            pass
+          end
+        end
+      RUBY
+    end
+
     it 'autocorrects single-line calls' do
       expect_offense(<<~RUBY)
         top.test(1, 2, foo: bar(3))

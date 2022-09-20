@@ -85,7 +85,9 @@ module RuboCop
         private
 
         def body_or_allowed_comment_lines?(node)
-          node.body || (cop_config['AllowComments'] && comment_lines?(node))
+          return true if node.body
+
+          cop_config['AllowComments'] && processed_source.contains_comment?(node.source_range)
         end
       end
     end
