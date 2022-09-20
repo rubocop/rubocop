@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       expect_no_offenses(wrap('foo\n'))
     end
 
-    it 'does not register an offense for a technically-unneccessary escape' do
+    it 'does not register an offense for a technically-unnecessary escape' do
       expect_no_offenses(wrap('\d'))
     end
 
