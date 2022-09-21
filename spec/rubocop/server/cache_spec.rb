@@ -213,7 +213,7 @@ RSpec.describe RuboCop::Server::Cache do
         end
 
         it 'does not raise an error' do
-          create_file('.rubocop.yml', '')
+          create_empty_file('.rubocop.yml')
 
           expect { cache_class.cache_path }.not_to raise_error
         end
