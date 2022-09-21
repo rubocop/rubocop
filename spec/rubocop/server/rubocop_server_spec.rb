@@ -9,7 +9,7 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
 
   before do
     # Makes sure the project dir of rubocop server is the isolated_environment
-    create_file('Gemfile', '')
+    create_empty_file('Gemfile')
   end
 
   after do

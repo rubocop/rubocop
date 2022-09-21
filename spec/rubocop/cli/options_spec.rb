@@ -1042,7 +1042,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
   end
 
   describe '--display-time' do
-    before { create_file('example1.rb', '') }
+    before { create_empty_file('example1.rb') }
 
     regex = /Finished in [0-9]*\.[0-9]* seconds/
 

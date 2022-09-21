@@ -21,9 +21,11 @@ module FileHelper
     file_path
   end
 
+  # rubocop:disable InternalAffairs/CreateEmptyFile
   def create_empty_file(file_path)
     create_file(file_path, '')
   end
+  # rubocop:enable InternalAffairs/CreateEmptyFile
 
   def create_link(link_path, target_path)
     link_path = File.expand_path(link_path)
