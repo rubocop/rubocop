@@ -96,11 +96,14 @@ module RuboCop
       end
 
       def without_parentheses_call_expr_follows?(ancestor)
-        right_sibling = ancestor.right_sibling
-        right_sibling ||= ancestor.each_ancestor.find(&:assignment?)&.right_sibling
-        return false unless right_sibling
+        return false unless ancestor.respond_to?(:parenthesized?) && !ancestor.parenthesized?
 
-        ancestor.respond_to?(:parenthesized?) && !ancestor.parenthesized? && !!right_sibling
+        right_sibling = ancestor.right_sibling
+        right_sibling ||= ancestor.each_ancestor.find do |node|
+          node.assignment? || node.send_type?
+        end&.right_sibling
+
+        !!right_sibling
       end
 
       def breakdown_value_types_of_hash(hash_node)
