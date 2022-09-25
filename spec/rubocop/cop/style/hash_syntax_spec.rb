@@ -1066,6 +1066,14 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'does not register an offense when without parentheses call expr follows after nested method call' do
+        # Prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_no_offenses(<<~RUBY)
+          foo bar value: value
+          baz
+        RUBY
+      end
+
       it 'registers an offense when one line `if` condition follows (with parentheses)' do
         expect_offense(<<~RUBY)
           foo(value: value) if bar
