@@ -48,7 +48,7 @@ module RuboCop
       #   var.class.eql?(Date)
       #   var.class.name == 'Date'
       #
-      # @example AllowedPatterns: [`/eq/`]
+      # @example AllowedPatterns: ['eq']
       #   # good
       #   var.instance_of?(Date)
       #   var.class.equal?(Date)

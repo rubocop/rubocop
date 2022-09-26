@@ -157,7 +157,7 @@ module RuboCop
       #     process(something)
       #   }
       #
-      # @example AllowedPatterns: [/map/]
+      # @example AllowedPatterns: ['map']
       #
       #   # good
       #   things.map { |thing|

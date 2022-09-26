@@ -66,7 +66,7 @@ module RuboCop
       #   foo.negative?
       #   bar.baz.positive?
       #
-      # @example AllowedPatterns: [/zero/] with EnforcedStyle: predicate
+      # @example AllowedPatterns: ['zero'] with EnforcedStyle: predicate
       #   # good
       #   # bad
       #   foo.zero?

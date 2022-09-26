@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
   end
 
   context 'when AllowedPatterns is enabled' do
-    let(:cop_config) { { 'AllowedPatterns' => [/respond_/] } }
+    let(:cop_config) { { 'AllowedPatterns' => ['respond_'] } }
 
     it 'accepts ignored method' do
       expect_no_offenses('respond_to { |format| format.xml }')

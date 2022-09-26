@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
   end
 
   context 'when AllowedPatterns is enabled' do
-    let(:cop_config) { { 'AllowedPatterns' => [/test/] } }
+    let(:cop_config) { { 'AllowedPatterns' => ['test'] } }
 
     it 'ignores method listed in AllowedMethods' do
       expect_no_offenses('my_test()')

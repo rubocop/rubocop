@@ -79,7 +79,7 @@ module RuboCop
       #   # bad
       #   2.times { raise ArgumentError }
       #
-      # @example AllowedPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
+      # @example AllowedPatterns: ['(exactly|at_least|at_most)\(\d+\)\.times'] (default)
       #
       #   # good
       #   exactly(2).times { raise StandardError }
