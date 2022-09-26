@@ -61,7 +61,7 @@ module RuboCop
       #   # bad
       #   10.minutes.to_i
       #
-      # @example AllowedPatterns: [/min*/]
+      # @example AllowedPatterns: ['min*']
       #
       #   # good
       #   10.minutes.to_i

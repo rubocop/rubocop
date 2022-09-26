@@ -248,7 +248,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         'EnforcedStyle' => 'predicate',
         'AutoCorrect' => true,
         'AllowedMethods' => ['where'],
-        'AllowedPatterns' => [/order/]
+        'AllowedPatterns' => ['order']
       }
     end
 
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
           {
             'EnforcedStyle' => 'comparison',
             'AllowedMethods' => [],
-            'AllowedPatterns' => [/zero/]
+            'AllowedPatterns' => ['zero']
           }
         end
 

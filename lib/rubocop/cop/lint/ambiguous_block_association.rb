@@ -45,7 +45,7 @@ module RuboCop
       #   # bad
       #   expect { do_something }.to change { object.attribute }
       #
-      # @example AllowedPatterns: [/change/]
+      # @example AllowedPatterns: ['change']
       #
       #   # good
       #   expect { do_something }.to change { object.attribute }
