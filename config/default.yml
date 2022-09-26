@@ -1957,6 +1957,8 @@ Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
   StyleGuide: '#no-nested-methods'
   Enabled: true
+  AllowedMethods: []
+  AllowedPatterns: []
   VersionAdded: '0.32'
 
 Lint/NestedPercentLiteral:
