@@ -30,6 +30,9 @@ module RuboCop
       #
       #   # good
       #
+      #   # `class_eval`, `instance_eval`, `module_eval`, `class_exec`, `instance_exec`, and
+      #   # `module_exec` blocks are allowed by default.
+      #
       #   def foo
       #     self.class.class_eval do
       #       def bar
@@ -54,7 +57,47 @@ module RuboCop
       #       end
       #     end
       #   end
+      #
+      # @example AllowedMethods: [] (default)
+      #   # bad
+      #   def do_something
+      #     has_many :articles do
+      #       def find_or_create_by_name(name)
+      #       end
+      #     end
+      #   end
+      #
+      # @example AllowedMethods: ['has_many']
+      #   # bad
+      #   def do_something
+      #     has_many :articles do
+      #       def find_or_create_by_name(name)
+      #       end
+      #     end
+      #   end
+      #
+      # @example AllowedPatterns: [] (default)
+      #   # bad
+      #   def foo(obj)
+      #     obj.do_baz do
+      #       def bar
+      #       end
+      #     end
+      #   end
+      #
+      # @example AllowedPatterns: ['baz']
+      #   # good
+      #   def foo(obj)
+      #     obj.do_baz do
+      #       def bar
+      #       end
+      #     end
+      #   end
+      #
       class NestedMethodDefinition < Base
+        include AllowedMethods
+        include AllowedPattern
+
         MSG = 'Method definitions must not be nested. Use `lambda` instead.'
 
         def on_def(node)
@@ -77,7 +120,13 @@ module RuboCop
 
         def scoping_method_call?(child)
           child.sclass_type? || eval_call?(child) || exec_call?(child) ||
-            class_or_module_or_struct_new_call?(child)
+            class_or_module_or_struct_new_call?(child) || allowed_method_name?(child)
+        end
+
+        def allowed_method_name?(node)
+          name = node.method_name
+
+          allowed_method?(name) || matches_allowed_pattern?(name)
         end
 
         # @!method eval_call?(node)
