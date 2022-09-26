@@ -13,6 +13,17 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     expect_correction('')
   end
 
+  it 'registers an offense for missing `if` and `else` body' do
+    expect_offense(<<~RUBY)
+      if condition
+      ^^^^^^^^^^^^ Avoid `if` branches without a body.
+      else
+      end
+    RUBY
+
+    expect_correction('')
+  end
+
   it 'does not register an offense for missing `if` body with a comment' do
     expect_no_offenses(<<~RUBY)
       if condition
@@ -115,6 +126,17 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
         do_something
       end
     RUBY
+  end
+
+  it 'registers an offense for missing `unless` and `else` body' do
+    expect_offense(<<~RUBY)
+      unless condition
+      ^^^^^^^^^^^^^^^^ Avoid `unless` branches without a body.
+      else
+      end
+    RUBY
+
+    expect_correction('')
   end
 
   it 'registers an offense for missing `if` body with `elsif`' do
