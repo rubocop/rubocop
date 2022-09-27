@@ -2366,8 +2366,9 @@ Lint/UnusedMethodArgument:
   Description: 'Checks for unused method arguments.'
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.21'
-  VersionChanged: '0.81'
+  VersionChanged: '<<next>>'
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
   IgnoreNotImplementedMethods: true

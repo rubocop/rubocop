@@ -5,6 +5,11 @@ module RuboCop
     module Lint
       # Checks for unused method arguments.
       #
+      # @safety
+      #   Autocorrection for this cop is not safe. There may be metaprogramming attached to the
+      #   method (such as a Sorbet `sig`), YARD annoations, and type signtures in RBI or RBS files,
+      #   which will retain the previous argument names under autocorrection.
+      #
       # @example
       #   # bad
       #   def some_method(used, unused, _unused_but_allowed)
