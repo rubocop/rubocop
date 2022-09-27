@@ -382,7 +382,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DependencyVersion, :config do
         RUBY
       end
 
-      it 'does not registers an offense when adding dependency using git option by parenthesized call without version specification' do
+      it 'does not register an offense when adding dependency using git option by parenthesized call without version specification' do
         expect_no_offenses(<<~RUBY)
           Gem::Specification.new do |spec|
             spec.add_dependency('rubocop', git: 'https://github.com/rubocop/rubocop')
@@ -488,7 +488,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DependencyVersion, :config do
         RUBY
       end
 
-      it 'does not registers an offense when adding development dependency using git option by parenthesized call without version specification' do
+      it 'does not register an offense when adding development dependency using git option by parenthesized call without version specification' do
         expect_no_offenses(<<~RUBY)
           Gem::Specification.new do |spec|
             spec.add_development_dependency('rubocop', git: 'https://github.com/rubocop/rubocop')
@@ -594,7 +594,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DependencyVersion, :config do
         RUBY
       end
 
-      it 'does not registers an offense when adding runtime dependency using git option by parenthesized call without version specification' do
+      it 'does not register an offense when adding runtime dependency using git option by parenthesized call without version specification' do
         expect_no_offenses(<<~RUBY)
           Gem::Specification.new do |spec|
             spec.add_runtime_dependency('rubocop', git: 'https://github.com/rubocop/rubocop')
