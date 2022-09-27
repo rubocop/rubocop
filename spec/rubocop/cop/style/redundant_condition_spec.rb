@@ -469,6 +469,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects brackets accesses' do
+        expect_offense(<<~RUBY)
+          a = b[:x] ? b[:x] : b[:y]
+                    ^^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a = b[:x] || b[:y]
+        RUBY
+      end
+
       it 'registers an offense and corrects when the else branch contains an irange' do
         expect_offense(<<~RUBY)
           time_period = updated_during ? updated_during : 2.days.ago..Time.now

@@ -145,9 +145,12 @@ module RuboCop
 
           return false unless if_branch && else_branch
 
-          if_branch.send_type? && if_branch.arguments.count == 1 &&
-            else_branch.send_type? && else_branch.arguments.count == 1 &&
+          single_argument_method?(if_branch) && single_argument_method?(else_branch) &&
             same_method?(if_branch, else_branch)
+        end
+
+        def single_argument_method?(node)
+          node.send_type? && !node.method?(:[]) && node.arguments.one?
         end
 
         def same_method?(if_branch, else_branch)
