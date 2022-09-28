@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   context 'AllowedPatterns' do
-    let(:cop_config) { { 'AllowedPatterns' => [/\d{2}_\d{2}_\d{4}/] } }
+    let(:cop_config) { { 'AllowedPatterns' => ['\d{2}_\d{2}_\d{4}'] } }
 
     it 'does not register an offense for numbers that exactly match the pattern' do
       expect_no_offenses(<<~RUBY)
@@ -282,7 +282,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     end
 
     context 'AllowedPatterns with repetition' do
-      let(:cop_config) { { 'AllowedPatterns' => [/\d{4}(_\d{4})+/] } }
+      let(:cop_config) { { 'AllowedPatterns' => ['\d{4}(_\d{4})+'] } }
 
       it 'does not register an offense for numbers that match the pattern' do
         expect_no_offenses(<<~RUBY)

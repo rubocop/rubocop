@@ -98,7 +98,7 @@ module RuboCop
         def correct_other_branches(corrector, node)
           return unless require_other_branches_correction?(node)
 
-          if node.else_branch.if_type?
+          if node.else_branch&.if_type?
             # Replace an orphaned `elsif` with `if`
             corrector.replace(node.else_branch.loc.keyword, 'if')
           else
@@ -108,7 +108,7 @@ module RuboCop
         end
 
         def require_other_branches_correction?(node)
-          return false unless node.if_type? && node.else_branch
+          return false unless node.if_type? && node.else?
           return false if !empty_if_branch?(node) && node.elsif?
 
           !empty_else_branch?(node)
@@ -123,7 +123,9 @@ module RuboCop
         end
 
         def empty_else_branch?(node)
-          node.else_branch.if_type? && !node.else_branch.body
+          return false unless (else_branch = node.else_branch)
+
+          else_branch.if_type? && !else_branch.body
         end
 
         # rubocop:disable Metrics/AbcSize

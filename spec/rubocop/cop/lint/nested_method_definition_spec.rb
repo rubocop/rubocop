@@ -266,4 +266,62 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
       end
     RUBY
   end
+
+  context 'when `AllowedMethods: [has_many]`' do
+    let(:cop_config) do
+      { 'AllowedMethods' => ['has_many'] }
+    end
+
+    it 'does not register offense for nested definition inside `has_many`' do
+      expect_no_offenses(<<~RUBY)
+        def do_something
+          has_many :articles do
+            def find_or_create_by_name(name)
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers offense for nested definition inside `denied_method`' do
+      expect_offense(<<~RUBY)
+        def do_something
+          denied_method :articles do
+            def find_or_create_by_name(name)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method definitions must not be nested. Use `lambda` instead.
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when `AllowedPatterns: [baz]`' do
+    let(:cop_config) do
+      { 'AllowedPatterns' => ['baz'] }
+    end
+
+    it 'does not register offense for nested definition inside `do_baz`' do
+      expect_no_offenses(<<~RUBY)
+        def foo(obj)
+          obj.do_baz do
+            def bar
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers offense for nested definition inside `do_qux`' do
+      expect_offense(<<~RUBY)
+        def foo(obj)
+          obj.do_qux do
+            def bar
+            ^^^^^^^ Method definitions must not be nested. Use `lambda` instead.
+            end
+          end
+        end
+      RUBY
+    end
+  end
 end

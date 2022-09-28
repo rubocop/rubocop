@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
   end
 
   context 'when AllowedPatterns is enabled' do
-    let(:cop_config) { { 'AllowedPatterns' => [/equal/] } }
+    let(:cop_config) { { 'AllowedPatterns' => ['equal'] } }
 
     it 'does not register an offense when comparing class for equality' do
       expect_no_offenses(<<~RUBY)

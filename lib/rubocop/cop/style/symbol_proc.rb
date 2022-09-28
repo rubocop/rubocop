@@ -82,7 +82,7 @@ module RuboCop
       #   # bad
       #   something.map { |s| s.upcase }
       #
-      # @example AllowedPatterns: [/map/] (default)
+      # @example AllowedPatterns: ['map'] (default)
       #   # good
       #   something.map { |s| s.upcase }
       #

@@ -77,7 +77,7 @@ module RuboCop
       #   # bad
       #   redirect('foo/%{bar_id}')
       #
-      # @example AllowedPatterns: [/redirect/]
+      # @example AllowedPatterns: ['redirect']
       #
       #   # good
       #   redirect('foo/%{bar_id}')

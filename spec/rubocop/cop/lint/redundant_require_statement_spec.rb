@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
   context 'target ruby version < 2.2', :ruby21 do
-    it "does not registers an offense when using `require 'enumerator'`" do
+    it "does not register an offense when using `require 'enumerator'`" do
       expect_no_offenses(<<~RUBY)
         require 'enumerator'
       RUBY
