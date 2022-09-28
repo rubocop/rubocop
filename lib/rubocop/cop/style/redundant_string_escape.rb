@@ -50,13 +50,17 @@ module RuboCop
           each_match_range(str_contents_range, /(\\.)/) do |range|
             next if allowed_escape?(node, range.resize(3))
 
-            add_offense(range, message: format(MSG, char: range.source.chars.last)) do |corrector|
+            add_offense(range) do |corrector|
               corrector.remove_leading(range, 1)
             end
           end
         end
 
         private
+
+        def message(range)
+          format(MSG, char: range.source.chars.last)
+        end
 
         def str_contents_range(node)
           if heredoc?(node)
