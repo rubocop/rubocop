@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     it 'registers an offense and corrects an escaped # before interpolation' do
       expect_offense(<<~'RUBY', l: l, r: r)
         %{l}\##{whatever}%{r}
-        _{l}^^ Redundant escape inside string literal.
+        _{l}^^ Redundant escape of # inside string literal.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     it 'registers an offense and corrects an escaped # without following {' do
       expect_offense(<<~'RUBY', l: l, r: r)
         %{l}\#whatever%{r}
-        _{l}^^ Redundant escape inside string literal.
+        _{l}^^ Redundant escape of # inside string literal.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     it 'registers an offense and corrects an escaped # at end-of-string' do
       expect_offense(<<~'RUBY', l: l, r: r)
         %{l}\#%{r}
-        _{l}^^ Redundant escape inside string literal.
+        _{l}^^ Redundant escape of # inside string literal.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     it 'registers an offense and corrects an escaped single quote' do
       expect_offense(<<~'RUBY', l: l, r: r)
         %{l}\'%{r}
-        _{l}^^ Redundant escape inside string literal.
+        _{l}^^ Redundant escape of ' inside string literal.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       it 'registers an offense and corrects a escaped nested delimiter in a double quoted string' do
         expect_offense(<<~'RUBY', l: l, r: r)
           %{l}#{"\%{r}"}%{r}
-          _{l}   ^^ Redundant escape inside string literal.
+          _{l}   ^^ Redundant escape of %{r} inside string literal.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       it 'registers an offense and corrects an escaped double quote' do
         expect_offense(<<~'RUBY', l: l, r: r)
           %{l}\"%{r}
-          _{l}^^ Redundant escape inside string literal.
+          _{l}^^ Redundant escape of " inside string literal.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -227,9 +227,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     it 'registers an offense and corrects an unnecessary escape in multi-line broken string' do
       expect_offense(<<~'RUBY')
         "\'"\
-         ^^ Redundant escape inside string literal.
+         ^^ Redundant escape of ' inside string literal.
           "\'"
-           ^^ Redundant escape inside string literal.
+           ^^ Redundant escape of ' inside string literal.
       RUBY
 
       expect_correction(<<~'RUBY')
@@ -306,7 +306,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       expect_offense(<<~'RUBY')
         <<~MYHEREDOC
           \##{whatever}
-          ^^ Redundant escape inside string literal.
+          ^^ Redundant escape of # inside string literal.
         MYHEREDOC
       RUBY
 
@@ -321,7 +321,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       expect_offense(<<~'RUBY')
         <<~MYHEREDOC
           \#whatever
-          ^^ Redundant escape inside string literal.
+          ^^ Redundant escape of # inside string literal.
         MYHEREDOC
       RUBY
 
@@ -336,7 +336,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       expect_offense(<<~'RUBY')
         <<~MYHEREDOC
           \#
-          ^^ Redundant escape inside string literal.
+          ^^ Redundant escape of # inside string literal.
         MYHEREDOC
       RUBY
 
@@ -351,7 +351,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       expect_offense(<<~'RUBY')
         <<~MYHEREDOC
           \'
-          ^^ Redundant escape inside string literal.
+          ^^ Redundant escape of ' inside string literal.
         MYHEREDOC
       RUBY
 

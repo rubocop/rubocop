@@ -39,7 +39,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Redundant escape inside string literal.'
+        MSG = 'Redundant escape of %<char>s inside string literal.'
 
         def on_str(node)
           return if node.parent&.regexp_type? || node.parent&.xstr_type?
@@ -50,7 +50,7 @@ module RuboCop
           each_match_range(str_contents_range, /(\\.)/) do |range|
             next if allowed_escape?(node, range.resize(3))
 
-            add_offense(range) do |corrector|
+            add_offense(range, message: format(MSG, char: range.source.chars.last)) do |corrector|
               corrector.remove_leading(range, 1)
             end
           end
