@@ -12,7 +12,7 @@ module RuboCop
       #   # bad - no need to escape single quotes inside double quoted string
       #   "\'foo\'"
       #
-      #   # bad - heredoc literals are also checked for unnecessary escapes
+      #   # bad - heredocs are also checked for unnecessary escapes
       #   <<~STR
       #     \#foo \"foo\"
       #   STR
