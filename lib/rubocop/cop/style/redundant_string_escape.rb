@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for redundant escapes in Strings.
+      # Checks for redundant escapes in string literals.
       #
       # @example
       #   # bad - no need to escape # without following {/$/@
@@ -11,6 +11,11 @@ module RuboCop
       #
       #   # bad - no need to escape single quotes inside double quoted string
       #   "\'foo\'"
+      #
+      #   # bad - heredoc literals are also checked for unnecessary escapes
+      #   <<~STR
+      #     \#foo \"foo\"
+      #   STR
       #
       #   # good
       #   "#foo"
@@ -24,6 +29,11 @@ module RuboCop
       #   # good
       #   "foo\
       #   bar"
+      #
+      #   # good
+      #   <<~STR
+      #     #foo "foo"
+      #   STR
       class RedundantStringEscape < Base
         include MatchRange
         include RangeHelp

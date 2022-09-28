@@ -4793,7 +4793,7 @@ Style/RedundantSortBy:
   VersionAdded: '0.36'
 
 Style/RedundantStringEscape:
-  Description: 'Checks for redundant escapes in Strings.'
+  Description: 'Checks for redundant escapes in string literals.'
   Enabled: pending
   VersionAdded: '<<next>>'
 
