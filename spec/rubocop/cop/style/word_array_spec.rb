@@ -383,6 +383,17 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
+    it 'registers an offense for an empty %w() array' do
+      expect_offense(<<~RUBY)
+        %w()
+        ^^^^ Use `[]` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        []
+      RUBY
+    end
+
     it 'autocorrects a %w() array which uses single quotes' do
       expect_offense(<<~RUBY)
         %w(one's two's three's)

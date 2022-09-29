@@ -65,6 +65,8 @@ module RuboCop
         end
 
         def build_bracketed_array(node)
+          return '[]' if node.children.empty?
+
           syms = node.children.map do |c|
             if c.dsym_type?
               string_literal = to_string_literal(c.source)

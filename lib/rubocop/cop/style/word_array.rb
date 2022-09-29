@@ -83,6 +83,8 @@ module RuboCop
         end
 
         def build_bracketed_array(node)
+          return '[]' if node.children.empty?
+
           words = node.children.map do |word|
             if word.dstr_type?
               string_literal = to_string_literal(word.source)

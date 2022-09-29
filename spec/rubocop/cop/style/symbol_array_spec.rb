@@ -209,6 +209,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
     end
 
+    it 'registers an offense for empty array starting with %i' do
+      expect_offense(<<~RUBY)
+        %i()
+        ^^^^ Use `[]` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        []
+      RUBY
+    end
+
     it 'autocorrects an array starting with %i' do
       expect_offense(<<~RUBY)
         %i(one @two $three four-five)
