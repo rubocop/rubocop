@@ -357,7 +357,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line %r regex with slashes' do
       it 'is accepted' do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           foo = %r{
             https?://
             example\.com
@@ -482,7 +482,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line %r regex with slashes' do
       it 'is accepted' do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           foo = %r{
             https?://
             example\.com

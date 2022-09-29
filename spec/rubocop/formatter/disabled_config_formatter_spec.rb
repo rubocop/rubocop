@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
   context "when there's .rubocop.yml" do
     before do
-      create_file('.rubocop.yml', <<~YAML)
+      create_file('.rubocop.yml', <<~'YAML')
         Test/Cop1:
           Exclude:
             - Gemfile
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
        'Test/Cop2:',
        '  Exclude:',
        "    - '**/*.blah'",
-       "    - !ruby/regexp /.*/bar/*/foo\.rb$/",
+       '    - !ruby/regexp /.*/bar/*/foo\.rb$/',
        "    - 'test_a.rb'",
        ''].join("\n")
     end
