@@ -80,6 +80,14 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
     expect_no_offenses("weekdays.foo 'tuesday' && true == true")
   end
 
+  it 'accepts missing parentheses when using ternary operator' do
+    expect_no_offenses('foo && bar ? baz : qux')
+  end
+
+  it 'accepts missing parentheses when using ternary operator in square bracksts' do
+    expect_no_offenses('do_something[foo && bar ? baz : qux]')
+  end
+
   it 'accepts calls to methods that are setters' do
     expect_no_offenses('s.version = @version || ">= 1.8.5"')
   end
