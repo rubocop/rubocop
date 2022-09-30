@@ -46,10 +46,13 @@ module RuboCop
       #   # bad
       #   foo = { }
       #   bar = {    }
+      #   baz = {
+      #   }
       #
       #   # good
       #   foo = {}
       #   bar = {}
+      #   baz = {}
       #
       # @example EnforcedStyleForEmptyBraces: space
       #   # The `space` EnforcedStyleForEmptyBraces style enforces that
@@ -60,8 +63,9 @@ module RuboCop
       #
       #   # good
       #   foo = { }
-      #   foo = {  }
-      #   foo = {     }
+      #   foo = {    }
+      #   foo = {
+      #   }
       #
       class SpaceInsideHashLiteralBraces < Base
         include SurroundingSpace
@@ -77,6 +81,7 @@ module RuboCop
 
           check(tokens[0], tokens[1])
           check(tokens[-2], tokens[-1]) if tokens.size > 2
+          check_whitespace_only_hash(node) if enforce_no_space_style_for_empty_braces?
         end
 
         private
@@ -103,7 +108,7 @@ module RuboCop
           if is_same_braces && style == :compact
             false
           elsif is_empty_braces
-            cop_config['EnforcedStyleForEmptyBraces'] != 'no_space'
+            !enforce_no_space_style_for_empty_braces?
           else
             style != :no_space
           end
@@ -174,6 +179,26 @@ module RuboCop
           begin_pos -= 1 while /[ \t]/.match?(src[begin_pos - 1])
 
           range_between(begin_pos, range.end_pos - 1)
+        end
+
+        def check_whitespace_only_hash(node)
+          range = range_inside_hash(node)
+          return unless range.source.match?(/\A\s+\z/m)
+
+          add_offense(
+            range,
+            message: format(MSG, problem: 'empty hash literal braces detected')
+          ) do |corrector|
+            corrector.remove(range)
+          end
+        end
+
+        def range_inside_hash(node)
+          range_between(node.location.begin.end_pos, node.location.end.begin_pos)
+        end
+
+        def enforce_no_space_style_for_empty_braces?
+          cop_config['EnforcedStyleForEmptyBraces'] == 'no_space'
         end
       end
     end

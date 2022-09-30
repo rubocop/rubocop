@@ -22,6 +22,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     end
   end
 
+  context 'with newline inside empty braces not allowed' do
+    let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'no_space' } }
+
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        h = {
+             ^{} Space inside empty hash literal braces detected.
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        h = {}
+      RUBY
+    end
+  end
+
   context 'with space inside empty braces allowed' do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'space' } }
 
