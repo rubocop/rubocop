@@ -68,6 +68,10 @@ module RuboCop
            (send nil? :fail ...)}
         PATTERN
 
+        def self.autocorrect_incompatible_with
+          [Style::ExplicitBlockArgument]
+        end
+
         def self.joining_forces
           VariableForce
         end

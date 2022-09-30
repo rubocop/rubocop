@@ -50,6 +50,10 @@ module RuboCop
           (block $_ (args $...) (yield $...))
         PATTERN
 
+        def self.autocorrect_incompatible_with
+          [Lint::UnusedMethodArgument]
+        end
+
         def initialize(config = nil, options = nil)
           super
           @def_nodes = Set.new
