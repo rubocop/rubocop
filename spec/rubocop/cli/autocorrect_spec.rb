@@ -368,6 +368,24 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/UnusedMethodArgument` with `Style/ExplicitBlockArgument`' do
+    source = <<~RUBY
+      def foo(&block)
+        bar { yield }
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Lint/UnusedMethodArgument,Style/ExplicitBlockArgument'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(&block)
+        bar(&block)
+      end
+    RUBY
+  end
+
   describe 'trailing comma cops' do
     let(:source) do
       <<~RUBY
