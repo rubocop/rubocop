@@ -1236,6 +1236,37 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       expect(File.readlines('.rubocop_todo.yml')[2]).to match(/# using RuboCop version .*/)
     end
 
+    describe 'when --no-exclude-limit is given' do
+      before do
+        offending_files_count.times do |i|
+          create_file("example#{i}.rb", [' '])
+        end
+      end
+
+      let(:offending_files_count) do
+        RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS + 1
+      end
+
+      it 'always prefers Exclude to Enabled' do
+        expect(cli.run(['--auto-gen-config', '--no-exclude-limit'])).to eq(0)
+        lines = File.readlines('.rubocop_todo.yml')
+        expect(lines[1]).to eq("# `rubocop --auto-gen-config --no-exclude-limit`\n")
+        expect(lines[9..12].join).to eq(
+          <<~YAML
+            # This cop supports safe autocorrection (--autocorrect).
+            # Configuration parameters: AllowInHeredoc.
+            Layout/TrailingWhitespace:
+              Exclude:
+          YAML
+        )
+        expect(lines[13..]).to eq(
+          Array.new(offending_files_count) do |i|
+            "    - 'example#{i}.rb'\n"
+          end.sort
+        )
+      end
+    end
+
     describe 'when different styles appear in different files' do
       before do
         create_file('example1.rb', ['$!'])

@@ -161,6 +161,7 @@ module RuboCop
         end
 
         option(opts, '--exclude-limit COUNT') { @validator.validate_exclude_limit_option }
+        option(opts, '--no-exclude-limit')
 
         option(opts, '--[no-]offense-counts')
         option(opts, '--[no-]auto-gen-only-exclude')
@@ -495,6 +496,7 @@ module RuboCop
       disable_uncorrectable:            ['Used with --autocorrect to annotate any',
                                          'offenses that do not support autocorrect',
                                          'with `rubocop:todo` comments.'],
+      no_exclude_limit:                 ['Do not set the limit for how many files to exclude.'],
       force_exclusion:                  ['Any files excluded by `Exclude` in configuration',
                                          'files will be excluded, even if given explicitly',
                                          'as arguments.'],

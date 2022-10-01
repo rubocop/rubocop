@@ -70,7 +70,9 @@ module RuboCop
 
         command += ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
 
-        if @exclude_limit_option
+        if no_exclude_limit?
+          command += ' --no-exclude-limit'
+        elsif @exclude_limit_option
           command += format(' --exclude-limit %<limit>d', limit: Integer(@exclude_limit_option))
         end
         command += ' --no-offense-counts' unless show_offense_counts?
@@ -187,7 +189,7 @@ module RuboCop
         return unless cfg.empty?
 
         offending_files = @files_with_offenses[cop_name].sort
-        if offending_files.count > @exclude_limit
+        if !no_exclude_limit? && offending_files.count > @exclude_limit
           output_buffer.puts '  Enabled: false'
         else
           output_exclude_list(output_buffer, offending_files, cop_name)
@@ -244,6 +246,10 @@ module RuboCop
 
       def safe_autocorrect?(config)
         config.fetch('Safe', true) && config.fetch('SafeAutoCorrect', true)
+      end
+
+      def no_exclude_limit?
+        @options[:no_exclude_limit] == false
       end
     end
   end
