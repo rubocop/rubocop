@@ -1,0 +1,1 @@
+* [#11037](https://github.com/rubocop/rubocop/issues/11037): Fix a false positive for `Style/CollectionCompact` when using `to_enum.reject` or `lazy.reject` methods with Ruby 3.0 or lower. ([@koic][])
