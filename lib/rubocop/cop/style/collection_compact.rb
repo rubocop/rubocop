@@ -36,8 +36,8 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `%<good>s` instead of `%<bad>s`.'
-
         RESTRICT_ON_SEND = %i[reject reject! select select!].freeze
+        TO_ENUM_METHODS = %i[to_enum lazy].freeze
 
         # @!method reject_method_with_block_pass?(node)
         def_node_matcher :reject_method_with_block_pass?, <<~PATTERN
@@ -69,6 +69,7 @@ module RuboCop
 
         def on_send(node)
           return unless (range = offense_range(node))
+          return if target_ruby_version <= 3.0 && to_enum_method?(node)
 
           good = good_method_name(node)
           message = format(MSG, good: good, bad: range.source)
@@ -92,6 +93,10 @@ module RuboCop
 
             range(node, block_node)
           end
+        end
+
+        def to_enum_method?(node)
+          TO_ENUM_METHODS.include?(node.children.first.method_name)
         end
 
         def good_method_name(node)

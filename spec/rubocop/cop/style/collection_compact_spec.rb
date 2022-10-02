@@ -85,4 +85,50 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
       RUBY
     end
   end
+
+  context 'Ruby >= 3.1', :ruby31 do
+    it 'registers an offense and corrects when using `to_enum.reject` on array to reject nils' do
+      expect_offense(<<~RUBY)
+        array.to_enum.reject { |e| e.nil? }
+                      ^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `reject { |e| e.nil? }`.
+        array.to_enum.reject! { |e| e.nil? }
+                      ^^^^^^^^^^^^^^^^^^^^^^ Use `compact!` instead of `reject! { |e| e.nil? }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.to_enum.compact
+        array.to_enum.compact!
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using `lazy.reject` on array to reject nils' do
+      expect_offense(<<~RUBY)
+        array.lazy.reject { |e| e.nil? }
+                   ^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `reject { |e| e.nil? }`.
+        array.lazy.reject! { |e| e.nil? }
+                   ^^^^^^^^^^^^^^^^^^^^^^ Use `compact!` instead of `reject! { |e| e.nil? }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.lazy.compact
+        array.lazy.compact!
+      RUBY
+    end
+  end
+
+  context 'Ruby <= 3.0', :ruby30 do
+    it 'does not register an offense and corrects when using `to_enum.reject` on array to reject nils' do
+      expect_no_offenses(<<~RUBY)
+        array.to_enum.reject { |e| e.nil? }
+        array.to_enum.reject! { |e| e.nil? }
+      RUBY
+    end
+
+    it 'does not register an offense and corrects when using `lazy.reject` on array to reject nils' do
+      expect_no_offenses(<<~RUBY)
+        array.lazy.reject { |e| e.nil? }
+        array.lazy.reject! { |e| e.nil? }
+      RUBY
+    end
+  end
 end
