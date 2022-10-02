@@ -371,6 +371,81 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
+  context 'using `defined?` in the condtion' do
+    it 'registers for argument value is defined' do
+      expect_offense(<<~RUBY)
+        value = :custom
+
+        unless defined?(value)
+        ^^^^^^ Favor modifier `unless` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          value = :default
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        value = :custom
+
+        value = :default unless defined?(value)
+      RUBY
+    end
+
+    it 'registers for argument value is `yield`' do
+      expect_offense(<<~RUBY)
+        unless defined?(yield)
+        ^^^^^^ Favor modifier `unless` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          value = :default
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        value = :default unless defined?(yield)
+      RUBY
+    end
+
+    it 'registers for argument value is `super`' do
+      expect_offense(<<~RUBY)
+        unless defined?(super)
+        ^^^^^^ Favor modifier `unless` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          value = :default
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        value = :default unless defined?(super)
+      RUBY
+    end
+
+    it 'accepts `defined?` when argument value is undefined' do
+      expect_no_offenses(<<~RUBY)
+        other_value = do_something
+
+        unless defined?(value)
+          value = :default
+        end
+      RUBY
+    end
+
+    it 'accepts `defined?` when argument value is undefined and the first condition' do
+      expect_no_offenses(<<~RUBY)
+        other_value = do_something
+
+        unless defined?(value) && condition
+          value = :default
+        end
+      RUBY
+    end
+
+    it 'accepts `defined?` when argument value is undefined and the last condition' do
+      expect_no_offenses(<<~RUBY)
+        other_value = do_something
+
+        unless condition && defined?(value)
+          value = :default
+        end
+      RUBY
+    end
+  end
+
   context 'with implicit match conditional' do
     let(:body) { 'b' * 36 }
 
