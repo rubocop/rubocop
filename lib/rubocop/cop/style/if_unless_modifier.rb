@@ -11,6 +11,20 @@ module RuboCop
       # cop. The tab size is configured in the `IndentationWidth` of the
       # `Layout/IndentationStyle` cop.
       #
+      # NOTE: It is allowed when `defined?` argument has an undefined value,
+      # because using the modifier form causes the following incompatibility:
+      #
+      # [source,ruby]
+      # ----
+      # unless defined?(undefined_foo)
+      #   undefined_foo = 'default_value'
+      # end
+      # undefined_foo # => 'default_value'
+      #
+      # undefined_bar = 'default_value' unless defined?(undefined_bar)
+      # undefined_bar # => nil
+      # ----
+      #
       # @example
       #   # bad
       #   if condition
@@ -51,6 +65,8 @@ module RuboCop
         end
 
         def on_if(node)
+          return if defined_nodes(node).any? { |n| defined_argument_is_undefined?(node, n) }
+
           msg = if single_line_as_modifier?(node) && !named_capture_in_condition?(node)
                   MSG_USE_MODIFIER
                 elsif too_long_due_to_modifier?(node)
@@ -64,6 +80,24 @@ module RuboCop
         end
 
         private
+
+        def defined_nodes(node)
+          if node.condition.defined_type?
+            [node.condition]
+          else
+            node.condition.each_descendant.select(&:defined_type?)
+          end
+        end
+
+        def defined_argument_is_undefined?(if_node, defined_node)
+          defined_argument = defined_node.first_argument
+          return false unless defined_argument.lvar_type? || defined_argument.send_type?
+
+          if_node.left_siblings.none? do |sibling|
+            sibling.respond_to?(:lvasgn_type?) && sibling.lvasgn_type? &&
+              sibling.name == defined_argument.node_parts[0]
+          end
+        end
 
         def autocorrect(corrector, node)
           replacement = if node.modifier_form?
