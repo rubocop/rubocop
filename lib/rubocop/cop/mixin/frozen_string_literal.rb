@@ -69,6 +69,10 @@ module RuboCop
         end
       end
 
+      def leading_magic_comments
+        leading_comment_lines.map { |line| MagicComment.parse(line) }
+      end
+
       def leading_comment_lines
         first_non_comment_token = processed_source.tokens.find { |token| !token.comment? }
 

@@ -1707,6 +1707,11 @@ Lint/DuplicateHashKey:
   VersionAdded: '0.34'
   VersionChanged: '0.77'
 
+Lint/DuplicateMagicComment:
+  Description: 'Check for duplicated magic comments.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/DuplicateMethods:
   Description: 'Check for duplicate method definitions.'
   Enabled: true
