@@ -2028,7 +2028,9 @@ Lint/OrAssignmentToConstant:
 Lint/OrderedMagicComments:
   Description: 'Checks the proper ordering of magic comments and whether a magic comment is not placed before a shebang.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.53'
+  VersionChanged: '<<next>>'
 
 Lint/OutOfRangeRegexpRef:
   Description: 'Checks for out of range reference for Regexp because it always returns nil.'
