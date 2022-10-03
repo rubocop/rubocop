@@ -61,7 +61,7 @@ module RuboCop
         def magic_comment_lines
           lines = [nil, nil]
 
-          magic_comments.each.with_index do |comment, index|
+          leading_magic_comments.each.with_index do |comment, index|
             if comment.encoding_specified?
               lines[0] = index
             elsif comment.frozen_string_literal_specified?
@@ -72,10 +72,6 @@ module RuboCop
           end
 
           lines
-        end
-
-        def magic_comments
-          leading_comment_lines.map { |line| MagicComment.parse(line) }
         end
       end
     end
