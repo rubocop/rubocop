@@ -29,7 +29,9 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with assignment method', 'x&.foo = bar'],
       ['safe navigation with self assignment method', 'x&.foo += bar'],
       ['safe navigation with `to_d` method', 'x&.foo.to_d'],
-      ['safe navigation with `in?` method', 'x&.foo.in?([:baz, :qux])']
+      ['safe navigation with `in?` method', 'x&.foo.in?([:baz, :qux])'],
+      ['safe navigation with `+@` method', '+str&.to_i'],
+      ['safe navigation with `-@` method', '-str&.to_i']
     ].each do |name, code|
       include_examples 'accepts', name, code
     end
