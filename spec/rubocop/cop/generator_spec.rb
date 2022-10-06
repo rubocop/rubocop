@@ -322,6 +322,14 @@ RSpec.describe RuboCop::Cop::Generator do
     it 'converts "RSpec" to snake_case' do
       expect(generator.__send__(:snake_case, 'RSpec')).to eq('rspec')
     end
+
+    it 'converts "RSpec/Foo" to snake_case' do
+      expect(generator.__send__(:snake_case, 'RSpec/Foo')).to eq('rspec/foo')
+    end
+
+    it 'converts "RSpecFoo/Bar" to snake_case' do
+      expect(generator.__send__(:snake_case, 'RSpecFoo/Bar')).to eq('rspec_foo/bar')
+    end
   end
 
   context 'nested departments' do
