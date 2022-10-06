@@ -3857,7 +3857,7 @@ Style/HashSyntax:
     - never
     # accepts both shorthand and explicit use of hash literal value.
     - either
-    # like "always", but will avoid mixing styles in a single hash
+    # like "either", but will avoid mixing styles in a single hash
     - consistent
   # Force hashes that have a symbol value to use hash rockets
   UseHashRocketsWithSymbolValues: false
