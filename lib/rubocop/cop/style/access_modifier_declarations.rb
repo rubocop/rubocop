@@ -183,6 +183,7 @@ module RuboCop
         end
 
         def insert_def(corrector, node, source)
+          source = [*processed_source.ast_with_comments[node].map(&:text), source].join("\n")
           argument_less_modifier_node = find_argument_less_modifier_node(node)
           if argument_less_modifier_node
             corrector.insert_after(argument_less_modifier_node, "\n\n#{source}")
@@ -201,9 +202,28 @@ module RuboCop
         def remove_node(corrector, node)
           corrector.remove(
             range_by_whole_lines(
-              node.location.expression,
+              range_with_comments(node),
               include_final_newline: true
             )
+          )
+        end
+
+        def range_with_comments(node)
+          ranges = [
+            node,
+            *processed_source.ast_with_comments[node]
+          ].map do |element|
+            element.location.expression
+          end
+          ranges.reduce do |result, range|
+            add_range(result, range)
+          end
+        end
+
+        def add_range(range1, range2)
+          range1.with(
+            begin_pos: [range1.begin_pos, range2.begin_pos].min,
+            end_pos: [range1.end_pos, range2.end_pos].max
           )
         end
       end

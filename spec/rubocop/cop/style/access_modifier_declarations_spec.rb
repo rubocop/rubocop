@@ -202,6 +202,31 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
+      context 'when method has comments' do
+        it 'registers and autocorrects an offense' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              # comment
+              #{access_modifier} def foo
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+                # comment
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+            #{access_modifier}
+
+            # comment
+            def foo
+                # comment
+              end
+            end
+          RUBY
+        end
+      end
+
       include_examples 'always accepted', access_modifier
     end
   end
