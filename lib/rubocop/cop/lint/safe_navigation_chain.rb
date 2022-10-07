@@ -31,6 +31,7 @@ module RuboCop
         minimum_target_ruby_version 2.3
 
         MSG = 'Do not chain ordinary method call after safe navigation operator.'
+        PLUS_MINUS_METHODS = %i[+@ -@].freeze
 
         # @!method bad_method?(node)
         def_node_matcher :bad_method?, <<~PATTERN
@@ -42,7 +43,7 @@ module RuboCop
 
         def on_send(node)
           bad_method?(node) do |safe_nav, method|
-            return if nil_methods.include?(method)
+            return if nil_methods.include?(method) || PLUS_MINUS_METHODS.include?(node.method_name)
 
             method_chain = method_chain(node)
             location =
