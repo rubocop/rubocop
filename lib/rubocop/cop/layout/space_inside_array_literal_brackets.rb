@@ -169,19 +169,22 @@ module RuboCop
 
         def qualifies_for_compact?(node, token, side: :right)
           if side == :right
-            multi_dimensional_array?(node, token) && !next_to_bracket?(token)
+            multi_dimensional_array?(node, token) && token.space_before?
           else
-            multi_dimensional_array?(node, token, side: :left) &&
-              !next_to_bracket?(token, side: :left)
+            multi_dimensional_array?(node, token, side: :left) && token.space_after?
           end
         end
 
         def multi_dimensional_array?(node, token, side: :right)
-          i = index_for(node, token)
+          offset = side == :right ? -1 : +1
+          i = index_for(node, token) + offset
+          # TODO: change this type check once
+          # https://github.com/rubocop/rubocop-ast/pull/240 is merged
+          i += offset while processed_source.tokens_within(node)[i].new_line?
           if side == :right
-            processed_source.tokens_within(node)[i - 1].right_bracket?
+            processed_source.tokens_within(node)[i].right_bracket?
           else
-            processed_source.tokens_within(node)[i + 1].left_array_bracket?
+            processed_source.tokens_within(node)[i].left_array_bracket?
           end
         end
 
@@ -200,12 +203,13 @@ module RuboCop
         end
 
         def compact_corrections(corrector, node, left, right)
-          if qualifies_for_compact?(node, left, side: :left)
+          if multi_dimensional_array?(node, left, side: :left)
             compact(corrector, left, :right)
           elsif !left.space_after?
             corrector.insert_after(left.pos, ' ')
           end
-          if qualifies_for_compact?(node, right)
+
+          if multi_dimensional_array?(node, right)
             compact(corrector, right, :left)
           elsif !right.space_before?
             corrector.insert_before(right.pos, ' ')
@@ -213,7 +217,7 @@ module RuboCop
         end
 
         def compact(corrector, bracket, side)
-          range = side_space_range(range: bracket.pos, side: side)
+          range = side_space_range(range: bracket.pos, side: side, include_newlines: true)
           corrector.remove(range)
         end
       end

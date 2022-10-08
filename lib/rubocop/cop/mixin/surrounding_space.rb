@@ -13,7 +13,7 @@ module RuboCop
 
       private
 
-      def side_space_range(range:, side:)
+      def side_space_range(range:, side:, include_newlines: false)
         buffer = processed_source.buffer
         src = buffer.source
 
@@ -21,11 +21,11 @@ module RuboCop
         end_pos = range.end_pos
         if side == :left
           end_pos = begin_pos
-          begin_pos = reposition(src, begin_pos, -1)
+          begin_pos = reposition(src, begin_pos, -1, include_newlines: include_newlines)
         end
         if side == :right
           begin_pos = end_pos
-          end_pos = reposition(src, end_pos, 1)
+          end_pos = reposition(src, end_pos, 1, include_newlines: include_newlines)
         end
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
@@ -75,9 +75,10 @@ module RuboCop
         end
       end
 
-      def reposition(src, pos, step)
+      def reposition(src, pos, step, include_newlines: false)
         offset = step == -1 ? -1 : 0
-        pos += step while SINGLE_SPACE_REGEXP.match?(src[pos + offset])
+        pos += step while SINGLE_SPACE_REGEXP.match?(src[pos + offset]) ||
+                          (include_newlines && src[pos + offset] == "\n")
         pos.negative? ? 0 : pos
       end
 

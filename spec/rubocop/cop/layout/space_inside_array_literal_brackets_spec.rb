@@ -513,27 +513,27 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
 
     context 'multiline, 2-dimensional array with spaces' do
-      pending 'registers an offense and corrects at the beginning of array' do
+      it 'registers an offense and corrects at the beginning of array' do
         expect_offense(<<~RUBY)
           multiline = [ [ 1, 2, 3, 4 ],
                        ^ #{no_space_message}
             [ 3, 4, 5, 6 ]]
         RUBY
 
-        expect_correction(<<~RUBY, loop: false)
+        expect_correction(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]]
         RUBY
       end
 
-      pending 'registers an offense and corrects at the end of array' do
+      it 'registers an offense and corrects at the end of array' do
         expect_offense(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ] ]
                           ^ #{no_space_message}
         RUBY
 
-        expect_correction(<<~RUBY, loop: false)
+        expect_correction(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]]
         RUBY
@@ -541,7 +541,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
 
     context 'multiline, 2-dimensional array with newlines' do
-      pending 'registers an offense and corrects at the beginning of array' do
+      it 'registers an offense and corrects at the beginning of array' do
         expect_offense(<<~RUBY)
           multiline = [
                        ^{} #{no_space_message}
@@ -549,21 +549,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
             [ 3, 4, 5, 6 ]]
         RUBY
 
-        expect_correction(<<~RUBY, loop: false)
+        expect_correction(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]]
         RUBY
       end
 
-      pending 'registers an offense and corrects at the end of array' do
+      it 'registers an offense and corrects at the end of array' do
         expect_offense(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]
-                          ^{} #{no_space_message}
           ]
+          ^{} #{no_space_message}
         RUBY
 
-        expect_correction(<<~RUBY, loop: false)
+        expect_correction(<<~RUBY)
           multiline = [[ 1, 2, 3, 4 ],
             [ 3, 4, 5, 6 ]]
         RUBY
