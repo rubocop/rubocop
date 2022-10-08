@@ -12,6 +12,9 @@ RSpec.describe RuboCop::Cop::EnforceSuperclass, :restore_registry do
     stub_const("#{cop_class}::MSG", 'Models should subclass `ApplicationRecord`')
     stub_const("#{cop_class}::SUPERCLASS", 'ApplicationRecord')
     stub_const("#{cop_class}::BASE_PATTERN", '(const (const {nil? cbase} :ActiveRecord) :Base)')
+    allow(described_class).to receive(:warn).with(
+      /`RuboCop::Cop::EnforceSuperclass` is deprecated and will be removed/
+    )
     RuboCop::Cop::RSpec::ApplicationRecord.include(described_class)
   end
 
