@@ -3,14 +3,6 @@
 require 'tmpdir'
 
 RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLength
-  before do
-    if RuboCop.const_defined?(:Server)
-      # Bust server cache to behave as an isolated environment
-      RuboCop::Server::Cache.cache_root_path = nil
-      RuboCop::Server::Cache.instance_variable_set(:@project_dir_cache_key, nil)
-    end
-  end
-
   around do |example|
     Dir.mktmpdir do |tmpdir|
       original_home = Dir.home
@@ -40,11 +32,20 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
         ENV['HOME'] = original_home
         ENV['XDG_CONFIG_HOME'] = original_xdg_config_home
 
-        if RuboCop.const_defined?(:Server)
-          RuboCop::Server::Cache.cache_root_path = nil
-          RuboCop::Server::Cache.instance_variable_set(:@project_dir_cache_key, nil)
-        end
         RuboCop::FileFinder.root_level = nil
+      end
+    end
+  end
+
+  if RuboCop.const_defined?(:Server)
+    around do |example|
+      RuboCop::Server::Cache.cache_root_path = nil
+      RuboCop::Server::Cache.instance_variable_set(:@project_dir_cache_key, nil)
+      begin
+        example.run
+      ensure
+        RuboCop::Server::Cache.cache_root_path = nil
+        RuboCop::Server::Cache.instance_variable_set(:@project_dir_cache_key, nil)
       end
     end
   end
