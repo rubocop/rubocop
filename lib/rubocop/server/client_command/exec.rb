@@ -23,6 +23,7 @@ module RuboCop
             args: ARGV.dup,
             body: $stdin.tty? ? '' : $stdin.read
           )
+          warn stderr unless stderr.empty?
           status
         end
 
@@ -41,6 +42,10 @@ module RuboCop
 
         def incompatible_version?
           RuboCop::Version::STRING != Cache.version_path.read
+        end
+
+        def stderr
+          Cache.stderr_path.read
         end
 
         def status

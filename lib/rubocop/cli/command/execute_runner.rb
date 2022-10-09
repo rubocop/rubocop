@@ -41,13 +41,13 @@ module RuboCop
 
         def with_redirect
           if @options[:stderr]
-            orig_stdout = $stdout.dup
-            $stdout.reopen($stderr)
-
-            result = yield
-
-            $stdout.reopen(orig_stdout)
-            result
+            orig_stdout = $stdout
+            begin
+              $stdout = $stderr
+              yield
+            ensure
+              $stdout = orig_stdout
+            end
           else
             yield
           end
