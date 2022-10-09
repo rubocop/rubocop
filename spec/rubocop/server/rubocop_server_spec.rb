@@ -18,15 +18,6 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
 
   if RuboCop::Server.support_server?
     context 'when using `--server` option after updating RuboCop' do
-      before do
-        options = '--server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
-        `ruby -I . "#{rubocop}" #{options}`
-
-        # Emulating RuboCop updates. `0.99.9` is a version value for testing that
-        # will never be used in the real world RuboCop version.
-        RuboCop::Server::Cache.write_version_file('0.99.9')
-      end
-
       it 'displays a restart information message' do
         create_file('example.rb', <<~RUBY)
           # frozen_string_literal: true
@@ -35,7 +26,17 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
           puts x
         RUBY
 
+        create_file('Gemfile', <<~RUBY)
+          # frozen_string_literal: true
+        RUBY
+
         options = '--server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
+        expect(`ruby -I . "#{rubocop}" #{options}`).to start_with('RuboCop server starting on')
+        # Emulating RuboCop updates. `0.99.9` is a version value for testing that
+        # will never be used in the real world RuboCop version.
+        RuboCop::Server::Cache.write_version_file('0.99.9')
+
+        expect(`ruby -I . "#{rubocop}" --server-status`).to match(/RuboCop server .* is running/)
         expect(`ruby -I . "#{rubocop}" #{options}`).to start_with(
           'RuboCop version incompatibility found, RuboCop server restarting...'
         )
@@ -73,6 +74,10 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
           puts x
         RUBY
 
+        create_file('Gemfile', <<~RUBY)
+          # frozen_string_literal: true
+        RUBY
+
         # Disable `Style/FrozenStringLiteralComment` cop.
         create_file('.rubocop.yml', <<~RUBY)
           AllCops:
@@ -86,6 +91,23 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
         message.to start_with('RuboCop server starting on ')
         message.to include('no offenses')
 
+        RuboCop::Server.wait_for_running_status!(true)
+
+        debug_output = [
+          'After server start',
+          RuboCop::Server.running?,
+          `ruby -I . "#{rubocop}" --server-status`,
+          `tail  #{RuboCop::Server::Cache.dir}/*`,
+          `ps aux`,
+          `env | grep HOME`,
+          Dir.home,
+          `ruby -I . -e 'require "rubocop/server"; puts RuboCop::Server::Cache.dir'`
+        ]
+
+        expect(`ruby -I . "#{rubocop}" --server-status`).to(
+          match(/RuboCop server .* is running/), debug_output.join("\n")
+        )
+
         # Enable `Style/FrozenStringLiteralComment` cop.
         create_file('.rubocop.yml', <<~RUBY)
           AllCops:
@@ -95,8 +117,23 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
             Enabled: true
         RUBY
 
+        debug_output += [
+          'After create file',
+          RuboCop::Server.running?,
+          `ruby -I . "#{rubocop}" --server-status`,
+          `tail  #{RuboCop::Server::Cache.dir}/*`,
+          `ps aux`,
+          `env | grep HOME`,
+          Dir.home,
+          `ruby -I . -e 'require "rubocop/server"; puts RuboCop::Server::Cache.dir'`
+        ]
+
+        expect(`ruby -I . "#{rubocop}" --server-status`).to(
+          match(/RuboCop server .* is running/), debug_output.join("\n")
+        )
+
         message = expect(`ruby -I . "#{rubocop}" --server`)
-        message.not_to start_with('RuboCop server starting on ')
+        message.not_to start_with('RuboCop server starting on '), debug_output.join("\n")
         message.to include(<<~OFFENSE_DETECTED)
           Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         OFFENSE_DETECTED

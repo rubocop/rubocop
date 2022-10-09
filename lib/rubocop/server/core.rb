@@ -41,6 +41,7 @@ module RuboCop
 
         pid = fork do
           Process.daemon(true)
+          $stderr.reopen(Cache.stderr_path, 'w')
           Cache.write_pid_file do
             read_socket(@server.accept) until @server.closed?
           end
