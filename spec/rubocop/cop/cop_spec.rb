@@ -35,8 +35,8 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
     # `Rails/SafeNavigation` was extracted to rubocop-rails gem,
     # there were no cop whose names overlapped.
-    xit 'raises an error if the cop name is in more than one namespace' do
-      expect { described_class.qualified_cop_name('SafeNavigation', '--only') }
+    it 'raises an error if the cop name is in more than one namespace' do
+      expect { described_class.qualified_cop_name('SameNameInMultipleNamespace', '--only') }
         .to raise_error(RuboCop::Cop::AmbiguousCopName)
     end
 

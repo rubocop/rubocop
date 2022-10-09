@@ -9,7 +9,12 @@ RSpec.describe RuboCop::ConfigObsoletion do
   let(:loaded_path) { 'example/.rubocop.yml' }
   let(:requires) { [] }
 
-  before { allow(configuration).to receive(:loaded_features).and_return(requires) }
+  before do
+    allow(configuration).to receive(:loaded_features).and_return(requires)
+    described_class.files = [described_class::DEFAULT_RULES_FILE]
+  end
+
+  after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
 
   describe '#validate', :isolated_environment do
     context 'when the configuration includes any obsolete cop name' do
@@ -212,7 +217,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
         config_obsoletion.reject_obsolete!
         raise 'Expected a RuboCop::ValidationError'
       rescue RuboCop::ValidationError => e
-        expect(expected_message).to eq(e.message)
+        expect(e.message).to eq(expected_message)
       end
     end
 
@@ -248,7 +253,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
           config_obsoletion.reject_obsolete!
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
-          expect(expected_message).to eq(e.message)
+          expect(e.message).to eq(expected_message)
         end
       end
 
@@ -262,13 +267,11 @@ RSpec.describe RuboCop::ConfigObsoletion do
           OUTPUT
         end
 
-        # FIXME: Workaround for the following random failure test.
-        # https://app.circleci.com/pipelines/github/rubocop/rubocop/5075/workflows/758481f3-39fa-4a89-9fb2-c6e78d3b4ff8/jobs/194419
-        xit 'prints a warning message' do
+        it 'prints a warning message' do
           config_obsoletion.reject_obsolete!
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
-          expect(expected_message).to eq(e.message)
+          expect(e.message).to eq(expected_message)
         end
       end
     end
@@ -392,7 +395,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
         config_obsoletion.reject_obsolete!
         raise 'Expected a RuboCop::ValidationError'
       rescue RuboCop::ValidationError => e
-        expect(expected_message).to eq(e.message)
+        expect(e.message).to eq(expected_message)
       end
     end
 
@@ -492,8 +495,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
     end
 
     context 'when additional obsoletions are defined externally' do
-      after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
-
       let(:hash) do
         {
           'Foo/Bar' => { Enabled: true },
@@ -550,14 +551,12 @@ RSpec.describe RuboCop::ConfigObsoletion do
           config_obsoletion.reject_obsolete!
           raise 'Expected a RuboCop::ValidationError'
         rescue RuboCop::ValidationError => e
-          expect(expected_message).to eq(e.message)
+          expect(e.message).to eq(expected_message)
         end
       end
     end
 
     context 'when extractions are disabled by an external library' do
-      after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
-
       let(:hash) { { 'Performance/CollectionLiteralInLoop' => { Enabled: true } } }
 
       let(:external_obsoletions) do
@@ -575,8 +574,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
     end
 
     context 'when using `changed_parameters` by an external library' do
-      after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
-
       let(:hash) { {} }
       let(:external_obsoletions) do
         create_file('external/obsoletions.yml', <<~YAML)

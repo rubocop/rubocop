@@ -5,6 +5,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     RuboCop::Cop::Cop
       .registry
       .without_department(:Test)
+      .without_department(:Test2)
       .without_department(:InternalAffairs)
       .cops
       .map(&:cop_name)
