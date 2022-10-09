@@ -133,7 +133,7 @@ module RuboCop
         end
 
         def found_instance_method(node, name)
-          return unless (scope = node.parent_module_name)
+          return found_sclass_method(node, name) unless (scope = node.parent_module_name)
 
           # Humanize the scope
           scope = scope.sub(
@@ -143,6 +143,16 @@ module RuboCop
           scope << '#' unless scope.end_with?('.')
 
           found_method(node, "#{scope}#{name}")
+        end
+
+        def found_sclass_method(node, name)
+          singleton_ancestor = node.each_ancestor.find(&:sclass_type?)
+          return unless singleton_ancestor
+
+          singleton_receiver_node = singleton_ancestor.children[0]
+          return unless singleton_receiver_node.send_type?
+
+          found_method(node, "#{singleton_receiver_node.method_name}.#{name}")
         end
 
         def found_method(node, method_name)
