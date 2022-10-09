@@ -241,4 +241,17 @@ RSpec.describe RuboCop::Server::Cache do
       end
     end
   end
+
+  unless RuboCop::Platform.windows?
+    describe '.pid_running?', :isolated_environment do
+      it 'works properly when concurrency with server stopping and cleaning cache dir' do
+        expect(described_class).to receive(:pid_path).and_wrap_original do |method|
+          result = method.call
+          described_class.dir.rmtree # server stopping behavior
+          result
+        end
+        expect(described_class.pid_running?).to be(false)
+      end
+    end
+  end
 end
