@@ -318,6 +318,12 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
       it_behaves_like 'convert to endless method'
     end
 
+    context 'with `require_always` style' do
+      let(:endless_method_config) { { 'EnforcedStyle' => 'require_always' } }
+
+      it_behaves_like 'convert to endless method'
+    end
+
     context 'prior to ruby 3.0', :ruby27, unsupported_on: :prism do
       let(:endless_method_config) { { 'EnforcedStyle' => 'allow_always' } }
 

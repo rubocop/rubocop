@@ -3922,6 +3922,7 @@ Style/EndlessMethod:
     - allow_single_line
     - allow_always
     - disallow
+    - require_always
 
 Style/EnvHome:
   Description: "Checks for consistent usage of `ENV['HOME']`."
