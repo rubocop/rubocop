@@ -1,0 +1,1 @@
+* [#11045](https://github.com/rubocop/rubocop/pull/11045): Change the message by adding "*Open the singleton class with `class << self` instead*" when `Style/ModuleFunction` is set to `forbidden`. ([@rdeckard][])

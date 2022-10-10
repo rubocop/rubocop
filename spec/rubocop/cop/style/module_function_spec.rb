@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         expect_offense(<<~RUBY)
           module Test
             extend self
-            ^^^^^^^^^^^ Do not use `module_function` or `extend self`.
+            ^^^^^^^^^^^ Do not use `module_function` or `extend self`. Open the singleton class with `class << self` instead.
             def test; end
           end
         RUBY
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         expect_offense(<<~RUBY)
           module Test
             extend self
-            ^^^^^^^^^^^ Do not use `module_function` or `extend self`.
+            ^^^^^^^^^^^ Do not use `module_function` or `extend self`. Open the singleton class with `class << self` instead.
             def test; end
             private
             def test_private;end
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
         expect_offense(<<~RUBY)
           module Test
             extend self
-            ^^^^^^^^^^^ Do not use `module_function` or `extend self`.
+            ^^^^^^^^^^^ Do not use `module_function` or `extend self`. Open the singleton class with `class << self` instead.
             def test; end
             private :test
           end
@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
       expect_offense(<<~RUBY)
         module Test
           module_function
-          ^^^^^^^^^^^^^^^ Do not use `module_function` or `extend self`.
+          ^^^^^^^^^^^^^^^ Do not use `module_function` or `extend self`. Open the singleton class with `class << self` instead.
           def test; end
         end
       RUBY
