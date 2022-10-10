@@ -234,7 +234,6 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it 'registers an offense when class << exp is used' do
-      pending
       expect_offense(<<~RUBY, 'test.rb')
         #{opening_line}
           class << blah
@@ -242,7 +241,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             def some_method
-            ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both test.rb:3 and test.rb:6.
+            ^^^^^^^^^^^^^^^ Method `blah.some_method` is defined at both test.rb:3 and test.rb:6.
               implement 2
             end
           end
