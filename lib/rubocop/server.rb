@@ -33,7 +33,7 @@ module RuboCop
       def running?
         return false unless support_server? # Never running.
 
-        Cache.dir.exist? && Cache.pid_path.file? && Cache.pid_running?
+        Cache.pid_running?
       end
 
       def wait_for_running_status!(expected)
