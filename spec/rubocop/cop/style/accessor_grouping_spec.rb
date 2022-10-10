@@ -326,5 +326,34 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
         end
       RUBY
     end
+
+    context 'when there are comments for attributes' do
+      it 'registers and corrects an offense' do
+        expect_offense(<<~RUBY)
+          class Foo
+            attr_reader(
+            ^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+              # comment one
+              :one,
+              # comment two A
+              :two, # comment two B
+              :three # comment three
+            )
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            # comment one
+          attr_reader :one
+            # comment two A
+            # comment two B
+            attr_reader :two
+            # comment three
+            attr_reader :three
+          end
+        RUBY
+      end
+    end
   end
 end
