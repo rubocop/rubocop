@@ -135,12 +135,16 @@ module RuboCop
         end
 
         def separate_accessors(node)
-          node.arguments.map do |arg|
-            if arg == node.arguments.first
+          node.arguments.flat_map do |arg|
+            lines = [
+              *processed_source.ast_with_comments[arg].map(&:text),
               "#{node.method_name} #{arg.source}"
+            ]
+            if arg == node.arguments.first
+              lines
             else
               indent = ' ' * node.loc.column
-              "#{indent}#{node.method_name} #{arg.source}"
+              lines.map { |line| "#{indent}#{line}" }
             end
           end.join("\n")
         end
