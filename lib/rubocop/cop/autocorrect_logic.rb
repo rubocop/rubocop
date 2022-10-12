@@ -4,8 +4,10 @@ module RuboCop
   module Cop
     # This module encapsulates the logic for autocorrect behavior for a cop.
     module AutocorrectLogic
-      def autocorrect?
-        autocorrect_requested? && correctable? && autocorrect_enabled?
+      # @param range [Parser::Source::Range] Used for bounding autocorrections
+      # @return [Boolean]
+      def autocorrect?(range = nil)
+        autocorrect_requested? && correctable? && autocorrect_enabled? && in_range?(range)
       end
 
       def autocorrect_with_disable_uncorrectable?
@@ -41,7 +43,36 @@ module RuboCop
         true
       end
 
+      def in_range?(range)
+        return true unless range
+
+        bounds = []
+
+        bounds << start_line_in_range?(range) if @options[:start_line]
+        bounds << start_column_in_range?(range) if @options[:start_column]
+        bounds << end_line_in_range?(range) if @options[:end_line]
+        bounds << end_column_in_range?(range) if @options[:end_column]
+
+        bounds.all?
+      end
+
       private
+
+      def start_line_in_range?(range)
+        range.line >= @options[:start_line]
+      end
+
+      def start_column_in_range?(range)
+        range.column >= @options[:start_column]
+      end
+
+      def end_line_in_range?(range)
+        range.last_line <= @options[:end_line]
+      end
+
+      def end_column_in_range?(range)
+        range.last_column <= @options[:end_column]
+      end
 
       def disable_offense(range)
         heredoc_range = surrounding_heredoc(range)

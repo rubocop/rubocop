@@ -2684,4 +2684,70 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       (foo) ? bar : baz
     RUBY
   end
+
+  context 'with ranges provided' do
+    it 'corrects within line boundaries' do
+      source_file = Pathname('example.rb')
+      create_file(source_file, <<~RUBY)
+        class A
+          def foo
+          end
+
+          def bar
+          end
+        end
+
+        def biz
+        end
+      RUBY
+
+      status = cli.run(%w[--autocorrect-all --start-line 5 --end-line 7 --only Style/EmptyMethod])
+
+      expect(status).to eq(1)
+      expect(source_file.read).to eq(<<~RUBY)
+        class A
+          def foo
+          end
+
+          def bar; end
+        end
+
+        def biz
+        end
+      RUBY
+    end
+
+    it 'corrects within column boundaries' do
+      source_file = Pathname('example.rb')
+      create_file(source_file, <<~RUBY)
+        class A
+          def foo
+          end
+
+          def bar
+          end
+        end
+
+        def biz
+        end
+      RUBY
+
+      status = cli.run(
+        %w[--autocorrect-all --start-column 0 --end-column 3 --only Style/EmptyMethod]
+      )
+
+      expect(status).to eq(1)
+      expect(source_file.read).to eq(<<~RUBY)
+        class A
+          def foo
+          end
+
+          def bar
+          end
+        end
+
+        def biz; end
+      RUBY
+    end
+  end
 end

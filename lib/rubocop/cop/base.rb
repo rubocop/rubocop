@@ -356,7 +356,7 @@ module RuboCop
 
       # @return [Symbol] offense status
       def use_corrector(range, corrector)
-        if autocorrect?
+        if autocorrect?(range)
           attempt_correction(range, corrector)
         elsif corrector && cop_config.fetch('AutoCorrect', true)
           :uncorrected
