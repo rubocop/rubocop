@@ -129,7 +129,7 @@ module RuboCop
     # -a, --auto-correct         -            true          true               -
     #     --safe-auto-correct    -            true          true               -
     # -A, --auto-correct-all     -            true          -                  true
-    def add_autocorrection_options(opts) # rubocop:disable Metrics/MethodLength
+    def add_autocorrection_options(opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       section(opts, 'Autocorrection') do
         option(opts, '-a', '--autocorrect') { @options[:safe_autocorrect] = true }
         option(opts, '--auto-correct') do
@@ -148,6 +148,10 @@ module RuboCop
         end
 
         option(opts, '--disable-uncorrectable')
+        option(opts, '--start-line LINE', Integer)
+        option(opts, '--end-line LINE', Integer)
+        option(opts, '--start-column COLUMN', Integer)
+        option(opts, '--end-column COLUMN', Integer)
       end
     end
     # rubocop:enable Naming/InclusiveLanguage
@@ -463,7 +467,7 @@ module RuboCop
 
   # This module contains help texts for command line options.
   # @api private
-  module OptionsHelp
+  module OptionsHelp # rubocop:disable Metrics/ModuleLength
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
@@ -496,6 +500,14 @@ module RuboCop
       disable_uncorrectable:            ['Used with --autocorrect to annotate any',
                                          'offenses that do not support autocorrect',
                                          'with `rubocop:todo` comments.'],
+      start_line:                       ['Used with --autocorrect to specify',
+                                         'first line to apply corrections.'],
+      end_line:                         ['Used with --autocorrect to specify',
+                                         'last line to apply corrections.'],
+      start_column:                     ['Used with --autocorrect to specify',
+                                         'first column to apply corrections.'],
+      end_column:                       ['Used with --autocorrect to specify',
+                                         'last column to apply corrections.'],
       no_exclude_limit:                 ['Do not set the limit for how many files to exclude.'],
       force_exclusion:                  ['Any files excluded by `Exclude` in configuration',
                                          'files will be excluded, even if given explicitly',

@@ -149,6 +149,14 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --disable-uncorrectable      Used with --autocorrect to annotate any
                                                offenses that do not support autocorrect
                                                with `rubocop:todo` comments.
+                  --start-line LINE            Used with --autocorrect to specify
+                                               first line to apply corrections.
+                  --end-line LINE              Used with --autocorrect to specify
+                                               last line to apply corrections.
+                  --start-column COLUMN        Used with --autocorrect to specify
+                                               first column to apply corrections.
+                  --end-column COLUMN          Used with --autocorrect to specify
+                                               last column to apply corrections.
 
           Config Generation:
                   --auto-gen-config            Generate a configuration file acting as a
