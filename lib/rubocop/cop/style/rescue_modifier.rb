@@ -9,7 +9,7 @@ module RuboCop
       # reasons:
       #
       # * The syntax of modifier form `rescue` can be misleading because it
-      #   might led us to believe that `rescue` handles the given exception
+      #   might lead us to believe that `rescue` handles the given exception
       #   but it actually rescue all exceptions to return the given rescue
       #   block. In this case, value returned by handle_error or
       #   SomeException.
