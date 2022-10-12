@@ -307,6 +307,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
     end
   end
 
+  context 'with a character class containing an escaped-0' do
+    # See https://github.com/rubocop/rubocop/issues/11067 for details - in short "\0" != "0" - the
+    # former means an Unicode code point `"\u0000"`, the latter a number character `"0"`.
+    # Similarly "\032" means "\u001A". Other numbers starting with "\0" can also be mentioned.
+    it 'does not register an offense' do
+      expect_no_offenses('foo = /[\032]/')
+    end
+  end
+
   context 'with a character class containing a character requiring escape outside' do
     # Not implemented for now, since we would have to escape on autocorrect, and the cop message
     # would need to be dynamic to not be misleading.
