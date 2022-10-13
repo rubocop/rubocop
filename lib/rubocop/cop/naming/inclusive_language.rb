@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Naming
-      # This cops recommends the use of inclusive language instead of problematic terms.
+      # Recommends the use of inclusive language instead of problematic terms.
       # The cop can check the following locations for offenses:
       # - identifiers
       # - constants
