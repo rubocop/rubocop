@@ -581,6 +581,23 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
         RUBY
       end
 
+      it 'removes cop duplicated by department and leaves free text as a comment' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something # rubocop:disable Metrics/ClassLength - note
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something # - note
+          end
+        RUBY
+      end
+
       it 'does not remove correct department' do
         expect_no_offenses(<<~RUBY)
           # rubocop:disable Metrics

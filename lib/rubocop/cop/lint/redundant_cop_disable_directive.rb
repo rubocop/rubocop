@@ -209,7 +209,12 @@ module RuboCop
 
           add_offense(location, message: message(cop_names)) do |corrector|
             range = comment_range_with_surrounding_space(location, comment.loc.expression)
-            corrector.remove(range)
+
+            if leave_free_comment?(comment, range)
+              corrector.replace(range, ' # ')
+            else
+              corrector.remove(range)
+            end
           end
         end
 
@@ -225,6 +230,12 @@ module RuboCop
               corrector.remove(range)
             end
           end
+        end
+
+        def leave_free_comment?(comment, range)
+          free_comment = comment.text.gsub(range.source.strip, '')
+
+          !free_comment.empty? && !free_comment.start_with?('#')
         end
 
         def cop_range(comment, cop)
