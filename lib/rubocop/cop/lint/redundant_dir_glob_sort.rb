@@ -41,6 +41,7 @@ module RuboCop
           return unless (receiver = node.receiver)
           return unless receiver.receiver&.const_type? && receiver.receiver.short_name == :Dir
           return unless GLOB_METHODS.include?(receiver.method_name)
+          return if multiple_argument?(receiver)
 
           selector = node.loc.selector
 
@@ -48,6 +49,12 @@ module RuboCop
             corrector.remove(selector)
             corrector.remove(node.loc.dot)
           end
+        end
+
+        private
+
+        def multiple_argument?(glob_method)
+          glob_method.arguments.count >= 2 || glob_method.first_argument&.splat_type?
         end
       end
     end

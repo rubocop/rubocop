@@ -55,6 +55,30 @@ RSpec.describe RuboCop::Cop::Lint::RedundantDirGlobSort, :config do
       RUBY
     end
 
+    it "does not register an offense when using `Dir.glob('./b/*.txt', './a/*.txt').sort`" do
+      expect_no_offenses(<<~RUBY)
+        Dir.glob('./b/*.txt', './a/*.txt').sort.each(&method(:require))
+      RUBY
+    end
+
+    it 'does not register an offense when using `Dir.glob(*path).sort`' do
+      expect_no_offenses(<<~RUBY)
+        Dir.glob(*path).sort.each(&method(:require))
+      RUBY
+    end
+
+    it "does not register an offense when using `Dir['./b/*.txt', './a/*.txt'].sort`" do
+      expect_no_offenses(<<~RUBY)
+        Dir['./b/*.txt', './a/*.txt'].sort.each(&method(:require))
+      RUBY
+    end
+
+    it 'does not register an offense when using `Dir[*path].sort`' do
+      expect_no_offenses(<<~RUBY)
+        Dir[*path].sort.each(&method(:require))
+      RUBY
+    end
+
     it 'does not register an offense when using `collection.sort`' do
       expect_no_offenses(<<~RUBY)
         collection.sort
