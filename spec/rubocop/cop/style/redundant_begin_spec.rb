@@ -569,4 +569,33 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
       RUBY
     end
   end
+
+  context 'when using endless method definition', :ruby30 do
+    it 'registers when `begin` block has a single statement' do
+      expect_offense(<<~RUBY)
+        def foo = begin
+                  ^^^^^ Redundant `begin` block detected.
+          bar
+        end
+      RUBY
+
+      expect_correction("def foo = \n  bar\n\n")
+    end
+
+    it 'accepts when `begin` block has multiple statements' do
+      expect_no_offenses(<<~RUBY)
+        def foo = begin
+          bar
+          baz
+        end
+      RUBY
+    end
+
+    it 'accepts when `begin` block has no statements' do
+      expect_no_offenses(<<~RUBY)
+        def foo = begin
+        end
+      RUBY
+    end
+  end
 end

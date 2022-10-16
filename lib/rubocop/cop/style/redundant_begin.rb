@@ -75,6 +75,7 @@ module RuboCop
 
         def on_def(node)
           return unless node.body&.kwbegin_type?
+          return if node.endless? && !node.body.children.one?
 
           register_offense(node.body)
         end
