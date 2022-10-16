@@ -140,7 +140,9 @@ module RuboCop
         end
 
         def allow_comments?(node)
-          cop_config['AllowComments'] && contains_comments?(node)
+          return false unless cop_config['AllowComments']
+
+          contains_comments?(node) && !comments_contain_disables?(node, name)
         end
 
         def same_args?(super_node, args)

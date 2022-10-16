@@ -22,6 +22,18 @@ module RuboCop
         processed_source.each_comment_in_lines(start_line...end_line)
       end
 
+      def comments_contain_disables?(node, cop_name)
+        disabled_ranges = processed_source.disabled_line_ranges[cop_name]
+
+        return unless disabled_ranges
+
+        node_range = node.source_range.line...find_end_line(node)
+
+        disabled_ranges.any? do |disable_range|
+          disable_range.cover?(node_range) || node_range.cover?(disable_range)
+        end
+      end
+
       private
 
       def end_position_for(node)
