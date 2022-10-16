@@ -90,7 +90,7 @@ module RuboCop
           # which lines start inside a string literal?
           return [] if ast.nil?
 
-          ast.each_node(:str, :dstr).each_with_object(Set.new) do |str, ranges|
+          ast.each_node(:str, :dstr).with_object(Set.new) do |str, ranges|
             loc = str.location
 
             if str.heredoc?

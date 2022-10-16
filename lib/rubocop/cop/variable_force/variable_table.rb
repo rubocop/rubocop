@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def accessible_variables
-          scope_stack.reverse_each.each_with_object([]) do |scope, variables|
+          scope_stack.reverse_each.with_object([]) do |scope, variables|
             variables.concat(scope.variables.values)
             break variables unless scope.node.block_type?
           end
