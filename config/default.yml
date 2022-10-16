@@ -4507,6 +4507,11 @@ Style/OpenStructUse:
   Enabled: pending
   VersionAdded: '1.23'
 
+Style/OperatorMethodCall:
+  Description: 'Checks for redundant dot before operator method call.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: false
