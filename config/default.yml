@@ -4696,6 +4696,12 @@ Style/RedundantConditional:
   Enabled: true
   VersionAdded: '0.50'
 
+Style/RedundantEach:
+  Description: 'Checks for redundant `each`.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/RedundantException:
   Description: "Checks for an obsolete RuntimeException argument in raise/fail."
   StyleGuide: '#no-explicit-runtimeerror'
