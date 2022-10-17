@@ -11,7 +11,9 @@ module RuboCop
       private
 
       def rescue_modifier?(node)
-        node&.resbody_type? && @modifier_locations.include?(node.loc.keyword)
+        return false unless node.respond_to?(:resbody_type?)
+
+        node.resbody_type? && @modifier_locations.include?(node.loc.keyword)
       end
 
       # @deprecated Use ResbodyNode#exceptions instead
