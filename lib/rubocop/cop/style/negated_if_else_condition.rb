@@ -49,7 +49,8 @@ module RuboCop
         def on_if(node)
           return unless if_else?(node)
 
-          condition = node.condition
+          condition = unwrap_begin_nodes(node.condition)
+
           return if double_negation?(condition) || !negated_condition?(condition)
 
           type = node.ternary? ? 'ternary' : 'if-else'
@@ -69,6 +70,11 @@ module RuboCop
         def if_else?(node)
           else_branch = node.else_branch
           !node.elsif? && else_branch && (!else_branch.if_type? || !else_branch.elsif?)
+        end
+
+        def unwrap_begin_nodes(node)
+          node = node.children.first while node.begin_type? || node.kwbegin_type?
+          node
         end
 
         def negated_condition?(node)
