@@ -72,7 +72,7 @@ module RuboCop
             else
               offense_range.source.dup
             end
-          source.prepend('.') unless send_node.dot?
+          source.prepend('.') unless source.start_with?('.')
           source.prepend('&')
         end
 

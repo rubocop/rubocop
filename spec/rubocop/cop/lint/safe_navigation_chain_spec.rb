@@ -189,6 +189,50 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense for safe navigation on the right-hand side of the `+`' do
+      expect_offense(<<~RUBY)
+        x + foo&.bar.baz
+                    ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x + foo&.bar&.baz
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the right-hand side of the `-`' do
+      expect_offense(<<~RUBY)
+        x - foo&.bar.baz
+                    ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x - foo&.bar&.baz
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the right-hand side of the `*`' do
+      expect_offense(<<~RUBY)
+        x * foo&.bar.baz
+                    ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x * foo&.bar&.baz
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on the right-hand side of the `/`' do
+      expect_offense(<<~RUBY)
+        x / foo&.bar.baz
+                    ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x / foo&.bar&.baz
+      RUBY
+    end
+
     context 'proper highlighting' do
       it 'when there are methods before' do
         expect_offense(<<~RUBY)
