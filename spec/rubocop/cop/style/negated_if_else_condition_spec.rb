@@ -95,6 +95,74 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
         x #{inverted_method} y ? do_something_else : do_something
       RUBY
     end
+
+    it "registers an offense and corrects when negating condition with `#{method}` in parentheses for `if-else`" do
+      expect_offense(<<~RUBY, method: method)
+        if (x %{method} y)
+        ^^^^^^^{method}^^^ Invert the negated condition and swap the if-else branches.
+          do_something
+        else
+          do_something_else
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if (x #{inverted_method} y)
+          do_something_else
+        else
+          do_something
+        end
+      RUBY
+    end
+
+    it "registers an offense and corrects when negating condition with `#{method}` in parentheses for ternary" do
+      expect_offense(<<~RUBY, method: method)
+        (x %{method} y) ? do_something : do_something_else
+        ^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Invert the negated condition and swap the ternary branches.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (x #{inverted_method} y) ? do_something_else : do_something
+      RUBY
+    end
+
+    it "registers an offense and corrects when negating condition with `#{method}` in begin-end for `if-else`" do
+      expect_offense(<<~RUBY, method: method)
+        if begin
+        ^^^^^^^^ Invert the negated condition and swap the if-else branches.
+          x %{method} y
+        end
+          do_something
+        else
+          do_something_else
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if begin
+          x #{inverted_method} y
+        end
+          do_something_else
+        else
+          do_something
+        end
+      RUBY
+    end
+
+    it "registers an offense and corrects when negating condition with `#{method}` in begin-end for ternary" do
+      expect_offense(<<~RUBY, method: method)
+        begin
+        ^^^^^ Invert the negated condition and swap the ternary branches.
+          x %{method} y
+        end ? do_something : do_something_else
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          x #{inverted_method} y
+        end ? do_something_else : do_something
+      RUBY
+    end
   end
 
   it_behaves_like('negation method', '!=', '==')
