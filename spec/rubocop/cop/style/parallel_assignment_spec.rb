@@ -326,6 +326,22 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
+  it 'corrects when using parallel assignment in singleton method' do
+    expect_offense(<<~RUBY)
+      def self.foo
+        foo, bar = 1, 2
+        ^^^^^^^^^^^^^^^ Do not use parallel assignment.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def self.foo
+        foo = 1
+        bar = 2
+      end
+    RUBY
+  end
+
   it 'corrects when the expression is missing spaces' do
     expect_offense(<<~RUBY)
       a,b,c=1,2,3
