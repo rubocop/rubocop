@@ -4509,6 +4509,7 @@ Style/OpenStructUse:
 
 Style/OperatorMethodCall:
   Description: 'Checks for redundant dot before operator method call.'
+  StyleGuide: '#operator-method-call'
   Enabled: pending
   VersionAdded: '<<next>>'
 
