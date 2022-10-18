@@ -476,6 +476,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
+      context 'when using `rubocop:disable` line comment for `Style/RedundantInitialize`' do
+        it 'does not register an offense for `Lint/RedundantCopDisableDirective`' do
+          create_file('.rubocop.yml', <<~YAML)
+            Style/RedundantInitialize:
+              Enabled: true
+            Lint/RedundantCopDisableDirective:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            Class.new do
+              def initialize; end # rubocop:disable Style/RedundantInitialize
+            end
+          RUBY
+          expect(cli.run(['example.rb'])).to eq(0)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
+        end
+      end
+
       shared_examples 'RedundantCopDisableDirective not run' do |state, config|
         context "and RedundantCopDisableDirective is #{state}" do
           it 'does not report RedundantCopDisableDirective offenses' do
