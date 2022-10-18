@@ -103,6 +103,10 @@ module RuboCop
           dir.join('version')
         end
 
+        def stderr_path
+          dir.join('stderr')
+        end
+
         def pid_running?
           Process.kill(0, pid_path.read.to_i) == 1
         rescue Errno::ESRCH, Errno::ENOENT

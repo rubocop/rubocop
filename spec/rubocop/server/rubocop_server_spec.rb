@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
+require 'open3'
+
 RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RSpec/DescribeClass
   let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
 
   include_context 'cli spec behavior'
+
+  before do
+    # Makes sure the project dir of rubocop server is the isolated_environment
+    create_file('Gemfile', '')
+  end
 
   after do
     `ruby -I . "#{rubocop}" --stop-server`
@@ -27,10 +34,35 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
           x = 0
           puts x
         RUBY
+
         options = '--server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
         expect(`ruby -I . "#{rubocop}" #{options}`).to start_with(
           'RuboCop version incompatibility found, RuboCop server restarting...'
         )
+      end
+    end
+
+    context 'when using `--server` with `--stderr`' do
+      it 'sends corrected source to stdout and rest to stderr' do
+        create_file('example.rb', <<~RUBY)
+          puts 0
+        RUBY
+
+        stdout, stderr, status = Open3.capture3(
+          'ruby', '-I', '.',
+          rubocop, '--no-color', '--server', '--stderr', '-A',
+          '--stdin', 'example.rb',
+          stdin_data: 'puts 0'
+        )
+        expect(status.success?).to be true
+        expect(stdout).to eq(<<~RUBY)
+          # frozen_string_literal: true
+
+          puts 0
+        RUBY
+        expect(stderr)
+          .to include('[Corrected] Style/FrozenStringLiteralComment')
+          .and include('[Corrected] Layout/EmptyLineAfterMagicComment')
       end
     end
 

@@ -56,7 +56,8 @@ module RuboCop
       def start_server(host, port)
         @server = TCPServer.open(host, port)
 
-        puts "RuboCop server starting on #{@server.addr[3]}:#{@server.addr[1]}."
+        output_stream = ARGV.include?('--stderr') ? $stderr : $stdout
+        output_stream.puts "RuboCop server starting on #{@server.addr[3]}:#{@server.addr[1]}."
       end
 
       def read_socket(socket)

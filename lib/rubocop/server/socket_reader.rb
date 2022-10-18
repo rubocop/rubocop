@@ -24,13 +24,17 @@ module RuboCop
       def read!
         request = parse_request(@socket.read)
 
+        stderr = StringIO.new
         Helper.redirect(
           stdin: StringIO.new(request.body),
           stdout: @socket,
-          stderr: @socket
+          stderr: stderr
         ) do
           create_command_instance(request).run
         end
+      ensure
+        Cache.stderr_path.write(stderr.string)
+        @socket.close
       end
 
       private
