@@ -32,25 +32,39 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def each_repeated_character_class_element_loc(node)
           node.parsed_tree&.each_expression do |expr|
-            next if expr.type != :set || expr.token == :intersection
+            next if skip_expression?(expr)
 
             seen = Set.new
+            enum = expr.expressions.to_enum
+            expression_count = expr.expressions.count
 
-            expr.expressions.each do |child|
-              next if within_interpolation?(node, child)
+            expression_count.times do |current_number|
+              current_child = enum.next
+              next if within_interpolation?(node, current_child)
 
-              child_source = child.to_s
+              current_child_source = current_child.to_s
+              next_child = enum.peek if current_number + 1 < expression_count
 
-              yield child.expression if seen.include?(child_source)
+              if seen.include?(current_child_source)
+                next if start_with_escaped_zero_number?(current_child_source, next_child.to_s)
 
-              seen << child_source
+                yield current_child.expression
+              end
+
+              seen << current_child_source
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         private
+
+        def skip_expression?(expr)
+          expr.type != :set || expr.token == :intersection
+        end
 
         # Since we blank interpolations with a space for every char of the interpolation, we would
         # mark every space (except the first) as duplicate if we do not skip regexp_parser nodes
@@ -59,6 +73,11 @@ module RuboCop
           parse_tree_child_loc = child.expression
 
           interpolation_locs(node).any? { |il| il.overlaps?(parse_tree_child_loc) }
+        end
+
+        def start_with_escaped_zero_number?(current_child, next_child)
+          # Represents escaped code from `"\00"` (`"\u0000"`) to `"\07"` (`"\a"`).
+          current_child == '\\0' && next_child.match?(/[0-7]/)
         end
 
         def interpolation_locs(node)
