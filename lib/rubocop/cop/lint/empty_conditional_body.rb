@@ -92,7 +92,11 @@ module RuboCop
         end
 
         def remove_empty_branch(corrector, node)
-          corrector.remove(deletion_range(branch_range(node)))
+          if empty_if_branch?(node) && else_branch?(node)
+            corrector.remove(branch_range(node))
+          else
+            corrector.remove(deletion_range(branch_range(node)))
+          end
         end
 
         def correct_other_branches(corrector, node)
@@ -111,7 +115,7 @@ module RuboCop
           return false unless node.if_type? && node.else?
           return false if !empty_if_branch?(node) && node.elsif?
 
-          !empty_else_branch?(node)
+          !empty_elsif_branch?(node)
         end
 
         def empty_if_branch?(node)
@@ -122,15 +126,21 @@ module RuboCop
           if_branch.if_type? && !if_branch.body
         end
 
-        def empty_else_branch?(node)
+        def empty_elsif_branch?(node)
           return false unless (else_branch = node.else_branch)
 
           else_branch.if_type? && !else_branch.body
         end
 
+        def else_branch?(node)
+          node.else_branch && !node.else_branch.if_type?
+        end
+
         # rubocop:disable Metrics/AbcSize
         def branch_range(node)
-          if node.loc.else
+          if empty_if_branch?(node) && else_branch?(node)
+            node.source_range.with(end_pos: node.loc.else.begin_pos)
+          elsif node.loc.else
             node.source_range.with(end_pos: node.loc.else.begin_pos - 1)
           elsif all_branches_body_missing?(node)
             if_node = node.ancestors.detect(&:if?)

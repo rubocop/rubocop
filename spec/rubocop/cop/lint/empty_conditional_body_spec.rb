@@ -24,6 +24,26 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     expect_correction('')
   end
 
+  it 'registers an offense for missing `if` body with present `else` body' do
+    expect_offense(<<~RUBY)
+      class Foo
+        if condition
+        ^^^^^^^^^^^^ Avoid `if` branches without a body.
+        else
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        unless condition
+          do_something
+        end
+      end
+    RUBY
+  end
+
   it 'does not register an offense for missing `if` body with a comment' do
     expect_no_offenses(<<~RUBY)
       if condition
