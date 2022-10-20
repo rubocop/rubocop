@@ -42,6 +42,14 @@ module RuboCop
       #   ' long'
       class LineContinuationLeadingSpace < Base
         include RangeHelp
+        extend AutoCorrector
+
+        LINE_1_ENDING = /['"]\s*\\\n/.freeze
+        LINE_2_BEGINNING = /\A\s*['"]/.freeze
+        LEADING_STYLE_OFFENSE = /(?<trailing_spaces>\s+)(?<ending>#{LINE_1_ENDING})/.freeze
+        TRAILING_STYLE_OFFENSE = /(?<beginning>#{LINE_2_BEGINNING})(?<leading_spaces>\s+)/.freeze
+        private_constant :LINE_1_ENDING, :LINE_2_BEGINNING,
+                         :LEADING_STYLE_OFFENSE, :TRAILING_STYLE_OFFENSE
 
         def on_dstr(node)
           end_of_first_line = node.loc.expression.begin_pos - node.loc.expression.column
@@ -52,9 +60,9 @@ module RuboCop
             next unless continuation?(raw_line_one)
 
             if enforced_style_leading?
-              investigate_leading_style(raw_line_one, end_of_first_line)
+              investigate_leading_style(raw_line_one, raw_line_two, end_of_first_line)
             else
-              investigate_trailing_style(raw_line_two, end_of_first_line)
+              investigate_trailing_style(raw_line_one, raw_line_two, end_of_first_line)
             end
           end
         end
@@ -65,22 +73,35 @@ module RuboCop
           processed_source.raw_source.lines[node.first_line - 1, line_range(node).size]
         end
 
-        def investigate_leading_style(first_line, end_of_first_line)
-          matches = first_line.match(/(?<trailing_spaces>\s+)(?<ending>['"]\s*\\\n)/)
+        def investigate_leading_style(first_line, second_line, end_of_first_line)
+          matches = first_line.match(LEADING_STYLE_OFFENSE)
           return if matches.nil?
 
-          add_offense(leading_offense_range(end_of_first_line, matches))
+          offense_range = leading_offense_range(end_of_first_line, matches)
+          add_offense(offense_range) do |corrector|
+            insert_pos = end_of_first_line + second_line[LINE_2_BEGINNING].length
+            autocorrect(corrector, offense_range, insert_pos, matches[:trailing_spaces])
+          end
         end
 
-        def investigate_trailing_style(second_line, end_of_first_line)
-          matches = second_line.match(/\A(?<beginning>\s*['"])(?<leading_spaces>\s+)/)
+        def investigate_trailing_style(first_line, second_line, end_of_first_line)
+          matches = second_line.match(TRAILING_STYLE_OFFENSE)
           return if matches.nil?
 
-          add_offense(trailing_offense_range(end_of_first_line, matches))
+          offense_range = trailing_offense_range(end_of_first_line, matches)
+          add_offense(offense_range) do |corrector|
+            insert_pos = end_of_first_line - first_line[LINE_1_ENDING].length
+            autocorrect(corrector, offense_range, insert_pos, matches[:leading_spaces])
+          end
         end
 
         def continuation?(line)
           line.end_with?("\\\n")
+        end
+
+        def autocorrect(corrector, offense_range, insert_pos, spaces)
+          corrector.remove(offense_range)
+          corrector.replace(range_between(insert_pos, insert_pos), spaces)
         end
 
         def leading_offense_range(end_of_first_line, matches)
