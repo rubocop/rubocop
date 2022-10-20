@@ -618,6 +618,9 @@ reached.
 By adding the option `--exclude-limit COUNT`, e.g., `rubocop
 --auto-gen-config --exclude-limit 5`, you can change how many files are
 excluded before the cop is entirely disabled. The default COUNT is 15.
+If you don't want the cop to be entirely disabled regardless of the
+number of files, use the `--no-exclude-limit` option, e.g.,
+`rubocop --auto-gen-config --no-exclude-limit`.
 
 The next step is to cut and paste configuration from `.rubocop_todo.yml`
 into `.rubocop.yml` for everything that you think is in line with your
