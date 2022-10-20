@@ -180,6 +180,12 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--enable-pending-cops`
 | Run with pending cops.
 
+| `--end-column`
+| Used with --autocorrect to specify last column to apply corrections.
+
+| `--end-line`
+| Used with --autocorrect to specify last line to apply corrections.
+
 | `--except`
 | Run all cops enabled by configuration except the specified cop(s) and/or departments.
 
@@ -257,6 +263,12 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 
 | `--show-docs-url`
 | Shows urls for documentation pages of supplied cops.
+
+| `--start-column`
+| Used with --autocorrect to specify first column to apply corrections.
+
+| `--start-line`
+| Used with --autocorrect to specify first line to apply corrections.
 
 | `--stderr`
 | Write all output to stderr except for the autocorrected source. This is especially useful when combined with `--autocorrect` and `--stdin`.

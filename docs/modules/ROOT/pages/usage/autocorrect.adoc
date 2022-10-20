@@ -115,3 +115,12 @@ $ rubocop --autocorrect-all --disable-uncorrectable
 You can add the flag `--disable-uncorrectable`, which will generate
 `# rubocop:todo` comments in the code to stop the reporting of offenses that
 could not be corrected automatically.
+
+== Specifying ranges
+
+You can add `--[start|end]-line` and/or `--[start|end]-column` with integers to limit the range where corrections will be applied. The ranges are inclusive.
+
+[source,sh]
+----
+$ rubocop --autocorrect --start-line 5 --end-line 7 --start-column 1 --end-column 5
+----
