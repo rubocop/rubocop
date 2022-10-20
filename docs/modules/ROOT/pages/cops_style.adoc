@@ -916,7 +916,7 @@ things.map { |thing|
 }
 ----
 
-==== AllowedPatterns: [/map/]
+==== AllowedPatterns: ['map']
 
 [source,ruby]
 ----
@@ -1330,7 +1330,7 @@ var.class.eql?(Date)
 var.class.name == 'Date'
 ----
 
-==== AllowedPatterns: [`/eq/`]
+==== AllowedPatterns: ['eq']
 
 [source,ruby]
 ----
@@ -3628,7 +3628,7 @@ def my_method() = x.foo
 [source,ruby]
 ----
 # bad
-def my_method; x end
+def my_method() = x
 
 # bad
 def my_method() = x.foo
@@ -4507,7 +4507,7 @@ redirect('foo/%{bar_id}')
 redirect('foo/%{bar_id}')
 ----
 
-==== AllowedPatterns: [/redirect/]
+==== AllowedPatterns: ['redirect']
 
 [source,ruby]
 ----
@@ -9091,7 +9091,7 @@ foo.negative?
 bar.baz.positive?
 ----
 
-==== AllowedPatterns: [/zero/] with EnforcedStyle: predicate
+==== AllowedPatterns: ['zero'] with EnforcedStyle: predicate
 
 [source,ruby]
 ----
@@ -9301,6 +9301,39 @@ allow(test_double).to receive(:a).and_return('b')
 === References
 
 * https://docs.ruby-lang.org/en/3.0.0/OpenStruct.html#class-OpenStruct-label-Caveats
+
+== Style/OperatorMethodCall
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.37
+| -
+|===
+
+Checks for redundant dot before operator method call.
+The target operator methods are `|`, `^`, `&`, `<=>`, `==`, `===`, `=~`, `>`, `>=`, `<`,
+`<=`, `<<`, `>>`, `+`, `-`, `*`, `/`, `%`, `**`, `~`, `!`, `!=`, and `!~`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo.+ bar
+foo.& bar
+
+# good
+foo + bar
+foo & bar
+----
+
+=== References
+
+* https://rubystyle.guide#operator-method-call
 
 == Style/OptionHash
 
@@ -11186,6 +11219,54 @@ end
 array.sort
 ----
 
+== Style/RedundantStringEscape
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.37
+| -
+|===
+
+Checks for redundant escapes in string literals.
+
+=== Examples
+
+[source,ruby]
+----
+# bad - no need to escape # without following {/$/@
+"\#foo"
+
+# bad - no need to escape single quotes inside double quoted string
+"\'foo\'"
+
+# bad - heredocs are also checked for unnecessary escapes
+<<~STR
+  \#foo \"foo\"
+STR
+
+# good
+"#foo"
+
+# good
+"\#{no_interpolation}"
+
+# good
+"'foo'"
+
+# good
+"foo\
+bar"
+
+# good
+<<~STR
+  #foo "foo"
+STR
+----
+
 == Style/RegexpLiteral
 
 |===
@@ -11335,7 +11416,7 @@ The cop to check `rescue` in its modifier form is added for following
 reasons:
 
 * The syntax of modifier form `rescue` can be misleading because it
-  might led us to believe that `rescue` handles the given exception
+  might lead us to believe that `rescue` handles the given exception
   but it actually rescue all exceptions to return the given rescue
   block. In this case, value returned by handle_error or
   SomeException.
@@ -12478,7 +12559,7 @@ There are two different styles. Defaults to `require_parentheses`.
 
 | Disabled
 | No
-| No
+| Yes (Unsafe)
 | 1.3
 | -
 |===
@@ -13186,7 +13267,7 @@ define_method(:foo) { |foo| foo.bar }
 something.map { |s| s.upcase }
 ----
 
-==== AllowedPatterns: [/map/] (default)
+==== AllowedPatterns: ['map'] (default)
 
 [source,ruby]
 ----

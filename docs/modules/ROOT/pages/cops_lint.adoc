@@ -98,7 +98,7 @@ expect { do_something }.to change { object.attribute }
 expect { do_something }.to change { object.attribute }
 ----
 
-==== AllowedPatterns: [/change/]
+==== AllowedPatterns: ['change']
 
 [source,ruby]
 ----
@@ -1329,6 +1329,43 @@ hash = { food: 'apple', food: 'orange' }
 # good
 
 hash = { food: 'apple', other_food: 'orange' }
+----
+
+== Lint/DuplicateMagicComment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.37
+| -
+|===
+
+Checks for duplicated magic comments.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+
+# encoding: ascii
+# encoding: ascii
+
+# good
+
+# encoding: ascii
+
+# bad
+
+# frozen_string_literal: true
+# frozen_string_literal: true
+
+# good
+
+# frozen_string_literal: true
 ----
 
 == Lint/DuplicateMethods
@@ -3277,6 +3314,9 @@ end
 ----
 # good
 
+# `class_eval`, `instance_eval`, `module_eval`, `class_exec`, `instance_exec`, and
+# `module_exec` blocks are allowed by default.
+
 def foo
   self.class.class_eval do
     def bar
@@ -3303,6 +3343,72 @@ def foo
   end
 end
 ----
+
+==== AllowedMethods: [] (default)
+
+[source,ruby]
+----
+# bad
+def do_something
+  has_many :articles do
+    def find_or_create_by_name(name)
+    end
+  end
+end
+----
+
+==== AllowedMethods: ['has_many']
+
+[source,ruby]
+----
+# bad
+def do_something
+  has_many :articles do
+    def find_or_create_by_name(name)
+    end
+  end
+end
+----
+
+==== AllowedPatterns: [] (default)
+
+[source,ruby]
+----
+# bad
+def foo(obj)
+  obj.do_baz do
+    def bar
+    end
+  end
+end
+----
+
+==== AllowedPatterns: ['baz']
+
+[source,ruby]
+----
+# good
+def foo(obj)
+  obj.do_baz do
+    def bar
+    end
+  end
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+|===
 
 === References
 
@@ -3700,7 +3806,7 @@ bar.send { |i| Complex(i) }
 10.minutes.to_i
 ----
 
-==== AllowedPatterns: [/min*/]
+==== AllowedPatterns: ['min*']
 
 [source,ruby]
 ----
@@ -3818,13 +3924,17 @@ CONST = 1
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.53
-| -
+| 1.37
 |===
 
 Checks the proper ordering of magic comments and whether
 a magic comment is not placed before a shebang.
+
+=== Safety
+
+This cop's autocorrection is unsafe because file encoding may change.
 
 === Examples
 
@@ -3862,7 +3972,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 | -
 |===
 
-This cops looks for references of Regexp captures that are out of range
+Looks for references of Regexp captures that are out of range
 and thus always returns nil.
 
 === Safety
@@ -4232,8 +4342,6 @@ end
 
 == Lint/RedundantRequireStatement
 
-NOTE: Required Ruby version: 2.2
-
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
@@ -4247,13 +4355,22 @@ NOTE: Required Ruby version: 2.2
 Checks for unnecessary `require` statement.
 
 The following features are unnecessary `require` statement because
-they are already loaded.
+they are already loaded. e.g. Ruby 2.2:
 
   ruby -ve 'p $LOADED_FEATURES.reject { |feature| %r|/| =~ feature }'
   ruby 2.2.8p477 (2017-09-14 revision 59906) [x86_64-darwin13]
   ["enumerator.so", "rational.so", "complex.so", "thread.rb"]
 
-This cop targets Ruby 2.2 or higher containing these 4 features.
+Below are the features that each `TargetRubyVersion` targets.
+
+  * 2.0+ ... `enumerator`
+  * 2.1+ ... `thread`
+  * 2.2+ ... Add `rational` and `complex` above
+  * 2.5+ ... Add `pp` above
+  * 2.7+ ... Add `ruby2_keywords` above
+  * 3.1+ ... Add `fiber` above
+
+This cop target those features.
 
 === Examples
 
@@ -5313,9 +5430,12 @@ NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
 because `Ractor` should not access outer variables.
 eg. following style is encouraged:
 
+  [source,ruby]
+  ----
   worker_id, pipe = env
   Ractor.new(worker_id, pipe) do |worker_id, pipe|
   end
+  ----
 
 === Examples
 
@@ -6194,7 +6314,7 @@ end
 2.times { raise ArgumentError }
 ----
 
-==== AllowedPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
+==== AllowedPatterns: ['(exactly|at_least|at_most)\(\d+\)\.times'] (default)
 
 [source,ruby]
 ----

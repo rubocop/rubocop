@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.37.0 (2022-10-20)
+
 ### New features
 
 * [#11043](https://github.com/rubocop/rubocop/issues/11043): Add new `Lint/DuplicateMagicComment` cop. ([@koic][])

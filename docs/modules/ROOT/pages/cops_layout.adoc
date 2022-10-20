@@ -6637,10 +6637,13 @@ foo = {{ a: 1 } => { b: { c: 2 }}}
 # bad
 foo = { }
 bar = {    }
+baz = {
+}
 
 # good
 foo = {}
 bar = {}
+baz = {}
 ----
 
 ==== EnforcedStyleForEmptyBraces: space
@@ -6655,8 +6658,9 @@ foo = {}
 
 # good
 foo = { }
-foo = {  }
-foo = {     }
+foo = {    }
+foo = {
+}
 ----
 
 === Configurable attributes
