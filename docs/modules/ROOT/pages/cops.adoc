@@ -10,6 +10,9 @@ enforce different coding conventions.
 
 You can also load xref:extensions.adoc#custom-cops[custom cops].
 
+Cop-related failures are silenced by default but can be turned on using the
+`--raise-cop-errors` option.
+
 == Style
 
 Style cops check for stylistic consistency of your code. Many of the them are

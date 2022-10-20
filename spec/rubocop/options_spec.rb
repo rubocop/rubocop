@@ -67,6 +67,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -P, --[no-]parallel              Use available CPUs to execute inspection in
                                                parallel. Default is true.
                   --raise-cop-error            Raise cop-related errors with cause and location.
+                                               This is used to prevent cops from failing silently.
                                                Default is false.
                   --fail-level SEVERITY        Minimum severity for exit with error code.
                                                  [A] autocorrect

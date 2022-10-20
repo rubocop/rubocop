@@ -592,6 +592,7 @@ module RuboCop
       stop_server:                      'Stop server process.',
       server_status:                    'Show server status.',
       raise_cop_error:                  ['Raise cop-related errors with cause and location.',
+                                         'This is used to prevent cops from failing silently.',
                                          'Default is false.']
     }.freeze
   end
