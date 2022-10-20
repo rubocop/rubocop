@@ -2,6 +2,52 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#11043](https://github.com/rubocop/rubocop/issues/11043): Add new `Lint/DuplicateMagicComment` cop. ([@koic][])
+* [#10409](https://github.com/rubocop/rubocop/issues/10409): Add `--no-exclude-limit` CLI option. ([@r7kamura][])
+* [#10986](https://github.com/rubocop/rubocop/pull/10986): Add autocorrect for `Style/StaticClass`. ([@FnControlOption][])
+* [#11018](https://github.com/rubocop/rubocop/issues/11018): Add `AllowedMethods` and `AllowedPatterns` for `Lint/NestedMethodDefinition`. ([@koic][])
+* [#11055](https://github.com/rubocop/rubocop/pull/11055): Implement `Lint/DuplicateMethods` for object singleton class. ([@tdeo][])
+* [#10997](https://github.com/rubocop/rubocop/pull/10997): Make `rubocop` command aware of `--server` option from .rubocop and RUBOCOP_OPTS. ([@koic][])
+* [#11079](https://github.com/rubocop/rubocop/issues/11079): Add new `Style/OperatorMethodCall` cop. ([@koic][])
+* [#10439](https://github.com/rubocop/rubocop/issues/10439): Add new `Style/RedundantStringEscape` cop. ([@owst][])
+
+### Bug fixes
+
+* [#11034](https://github.com/rubocop/rubocop/issues/11034): Fix server mode behavior when using `--stderr`. ([@tdeo][])
+* [#11028](https://github.com/rubocop/rubocop/issues/11028): Fix a false positive for `Lint/RequireParentheses` when using ternary operator in square bracksts. ([@koic][])
+* [#11051](https://github.com/rubocop/rubocop/issues/11051): Preserve comments on `Style/AccessModifierDeclarations` autocorrection. ([@r7kamura][])
+* [#9116](https://github.com/rubocop/rubocop/issues/9116): Support `super` method in `Layout/FirstArgumentIndentation`. ([@tdeo][])
+* [#11068](https://github.com/rubocop/rubocop/pull/11068): Fix a false positive for `Style/RedundantRegexpCharacterClass` when using starting with "\0" number. ([@koic][])
+* [#11082](https://github.com/rubocop/rubocop/pull/11082): Fix an incorrect autocorrect for `Lint/SafeNavigationChain` when safe navigation on the right-hand side of the arithmetic operator. ([@ydah][])
+* [#10982](https://github.com/rubocop/rubocop/pull/10982): Do not autocorrect parentheses for calls in assignments in conditional branches for `Style/MethodCallWithArgsParentheses` with `omit_parentheses`. ([@gsamokovarov][])
+* [#11084](https://github.com/rubocop/rubocop/issues/11084): Fix an error for `Style/ParallelAssignment` when using parallel assignment in singleton method. ([@koic][])
+* [#11078](https://github.com/rubocop/rubocop/pull/11078): Fix a false positive for `Style/RedundantBegin` when using endless method definition for `begin` with multiple statements. ([@koic][])
+* [#11074](https://github.com/rubocop/rubocop/issues/11074): Fix a false positive for `Lint/RedundantDirGlobSort` when using `Dir.glob` with multiple arguments. ([@koic][])
+* [#11025](https://github.com/rubocop/rubocop/issues/11025): Check comments for disables in `RedundantInitialize` cop. ([@HeroProtagonist][])
+* [#11003](https://github.com/rubocop/rubocop/issues/11003): Fix clobbering exception in EmptyConditionalBody cop when if branch is empty but else is not. ([@srcoley][])
+* [#11026](https://github.com/rubocop/rubocop/issues/11026): Fix an error occurred for `Style/SymbolArray` and `Style/WordArray` when empty percent array. ([@ydah][])
+* [#11022](https://github.com/rubocop/rubocop/issues/11022): Fix an incorrect autocorrect for `Style/RedundantCondition`  when using redundant brackets access condition. ([@koic][])
+* [#11037](https://github.com/rubocop/rubocop/issues/11037): Fix a false positive for `Style/CollectionCompact` when using `to_enum.reject` or `lazy.reject` methods with Ruby 3.0 or lower. ([@koic][])
+* [#11017](https://github.com/rubocop/rubocop/pull/11017): Fix an autocorrect for `Lint/EmptyConditionalBody` that causes a SyntaxError when missing `if` and `else` body. ([@ydah][])
+* [#11047](https://github.com/rubocop/rubocop/issues/11047): Fix an incorrect autocorrect for `Style/SafeNavigationChain` when using `+@` and `-@` methods. ([@koic][])
+* [#11015](https://github.com/rubocop/rubocop/pull/11015): Fix a false positive for `Style/HashSyntax` when without parentheses call expr follows after nested method call. ([@koic][])
+* [#11067](https://github.com/rubocop/rubocop/issues/11067): Fix a false positive for `Lint/DuplicateRegexpCharacterClassElement` when using regexp character starts with escaped zero number. ([@koic][])
+* [#11030](https://github.com/rubocop/rubocop/issues/11030): Fix an incorrect autocorrect for `Lint/UnusedMethodArgument` and `Style::ExplicitBlockArgument` when autocorrection conflicts for `&block` argument. ([@koic][])
+* [#11069](https://github.com/rubocop/rubocop/issues/11069): Fix an incorrect autocorrect for `Lint/RedundantCopDisableDirective` when disable directive contains free comment. ([@koic][])
+* [#11063](https://github.com/rubocop/rubocop/pull/11063): Preserve comments on `Style/AccessorGrouping` autocorrection. ([@r7kamura][])
+* [#10994](https://github.com/rubocop/rubocop/issues/10994): Fix an error when running 3rd party gem that does not require server. ([@koic][])
+
+### Changes
+
+* [#11054](https://github.com/rubocop/rubocop/pull/11054): Implement correct behavior for compact mode for `Layout/SpaceInsideArrayLiteralBrackets`. ([@tdeo][])
+* [#10924](https://github.com/rubocop/rubocop/issues/10924): `Style/NegatedIfElseCondition` also checks negative conditions inside parentheses. ([@tsugimoto][])
+* [#11042](https://github.com/rubocop/rubocop/pull/11042): Mark `Lint/OrderedMagicComments` as unsafe autocorrection. ([@koic][])
+* [#11057](https://github.com/rubocop/rubocop/pull/11057): Make `Lint/RedundantRequireStatement` aware of `pp`, `ruby2_keywords`, and `fiber`. ([@koic][])
+* [#10988](https://github.com/rubocop/rubocop/pull/10988): Raise error when both safe and unsafe autocorrect options are specified. ([@koic][])
+* [#11032](https://github.com/rubocop/rubocop/pull/11032): Detect empty Hash literal braces containing only newlines and spaces on `Layout/SpaceInsideHashLiteralBraces`. ([@r7kamura][])
+
 ## 1.36.0 (2022-09-01)
 
 ### New features
@@ -6491,3 +6537,5 @@
 [@mattbearman]: https://github.com/mattbearman
 [@wjwh]: https://github.com/wjwh
 [@jcalvert]: https://github.com/jcalvert
+[@tsugimoto]: https://github.com/tsugimoto
+[@srcoley]: https://github.com/srcoley

@@ -1,1 +1,0 @@
-* [#11082](https://github.com/rubocop/rubocop/pull/11082): Fix an incorrect autocorrect for `Lint/SafeNavigationChain` when safe navigation on the right-hand side of the arithmetic operator. ([@ydah][])

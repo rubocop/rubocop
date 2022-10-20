@@ -1,1 +1,0 @@
-* [#10982](https://github.com/rubocop/rubocop/pull/10982): Do not autocorrect parentheses for calls in assignments in conditional branches for `Style/MethodCallWithArgsParentheses` with `omit_parentheses`. ([@gsamokovarov][])
