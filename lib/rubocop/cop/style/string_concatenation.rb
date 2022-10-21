@@ -17,9 +17,9 @@ module RuboCop
       #
       # Two modes are supported:
       # 1. `aggressive` style checks and corrects all occurrences of `+` where
-      # either the left or right side of `+` is a string literal.
+      # either the left or right side of `+` or `<<` is a string literal.
       # 2. `conservative` style on the other hand, checks and corrects only if
-      # left side (receiver of `+` method call) is a string literal.
+      # left side (receiver of `+` or `<<` method call) is a string literal.
       # This is useful when the receiver is some expression that returns string like `Pathname`
       # instead of a string literal.
       #
@@ -56,13 +56,13 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Prefer string interpolation to string concatenation.'
-        RESTRICT_ON_SEND = %i[+].freeze
+        RESTRICT_ON_SEND = %i[+ <<].freeze
 
         # @!method string_concatenation?(node)
         def_node_matcher :string_concatenation?, <<~PATTERN
           {
-            (send str_type? :+ _)
-            (send _ :+ str_type?)
+            (send str_type? [#concatenation_method? $_] _)
+            (send _ [#concatenation_method? $_] str_type?)
           }
         PATTERN
 
@@ -74,23 +74,23 @@ module RuboCop
           return unless string_concatenation?(node)
           return if line_end_concatenation?(node)
 
-          topmost_plus_node = find_topmost_plus_node(node)
-          parts = collect_parts(topmost_plus_node)
+          topmost_concat_node = find_topmost_concat_node(node)
+          parts = collect_parts(topmost_concat_node)
           return if mode == :conservative && !parts.first.str_type?
 
-          register_offense(topmost_plus_node, parts)
+          register_offense(topmost_concat_node, parts)
         end
 
         private
 
-        def register_offense(topmost_plus_node, parts)
-          add_offense(topmost_plus_node) do |corrector|
+        def register_offense(topmost_concat_node, parts)
+          add_offense(topmost_concat_node) do |corrector|
             correctable_parts = parts.none? { |part| uncorrectable?(part) }
-            if correctable_parts && !corrected_ancestor?(topmost_plus_node)
-              corrector.replace(topmost_plus_node, replacement(parts))
+            if correctable_parts && !corrected_ancestor?(topmost_concat_node)
+              corrector.replace(topmost_concat_node, replacement(parts))
 
               @corrected_nodes ||= Set.new.compare_by_identity
-              @corrected_nodes.add(topmost_plus_node)
+              @corrected_nodes.add(topmost_concat_node)
             end
           end
         end
@@ -102,12 +102,12 @@ module RuboCop
           node.receiver.str_type? &&
             node.first_argument.str_type? &&
             node.multiline? &&
-            node.source =~ /\+\s*\n/
+            node.source =~ /(\+|<{2})\s*\n/
         end
 
-        def find_topmost_plus_node(node)
+        def find_topmost_concat_node(node)
           current = node
-          while (parent = current.parent) && plus_node?(parent)
+          while (parent = current.parent) && concat_node?(parent)
             current = parent
           end
           current
@@ -116,7 +116,7 @@ module RuboCop
         def collect_parts(node, parts = [])
           return unless node
 
-          if plus_node?(node)
+          if concat_node?(node)
             collect_parts(node.receiver, parts)
             collect_parts(node.first_argument, parts)
           else
@@ -124,8 +124,16 @@ module RuboCop
           end
         end
 
+        def concat_node?(node)
+          plus_node?(node) || shovel_node?(node)
+        end
+
         def plus_node?(node)
           node.send_type? && node.method?(:+)
+        end
+
+        def shovel_node?(node)
+          node.send_type? && node.method?(:<<)
         end
 
         def uncorrectable?(part)
@@ -171,6 +179,10 @@ module RuboCop
 
         def mode
           cop_config['Mode'].to_sym
+        end
+
+        def concatenation_method?(name)
+          RESTRICT_ON_SEND.include?(name)
         end
       end
     end
