@@ -328,6 +328,35 @@ RSpec.describe 'RuboCop::CLI SuggestExtensions', :isolated_environment do # rubo
       end
     end
 
+    context 'with AllCops/SuggestExtensions: true' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            SuggestExtensions: true
+        YAML
+      end
+
+      let(:lockfile) do
+        create_file('Gemfile.lock', <<~LOCKFILE)
+          GEM
+            specs:
+              rspec (3.9.0)
+              rspec-rails (4.0.1)
+
+          PLATFORMS
+            ruby
+
+          DEPENDENCIES
+            rspec (~> 3.9)
+            rspec-rails (~> 4.0)
+        LOCKFILE
+      end
+
+      it 'shows the suggestion' do
+        expect { cli.run(['example.rb']) }.to suggest_extensions.to_install('rubocop-rspec')
+      end
+    end
+
     context 'when an extension is disabled in AllCops/SuggestExtensions' do
       before do
         create_file('.rubocop.yml', <<~YAML)

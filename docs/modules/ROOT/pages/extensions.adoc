@@ -38,6 +38,8 @@ AllCops:
   SuggestExtensions: false
 ----
 
+Suggest default extensions if `SuggestExtensions: true`.
+
 You can also opt-out of suggestions for a particular extension library as so (unspecified
 extensions will continue to be notified, as appropriate):
 
