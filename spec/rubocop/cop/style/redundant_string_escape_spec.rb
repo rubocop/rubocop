@@ -279,10 +279,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     end
   end
 
-  context 'when using character literals (e.g. `?a`)' do
-    it 'does not register an offense' do
+  context 'when using character literals' do
+    it 'does not register an offense for `?a`' do
       expect_no_offenses(<<~RUBY)
         ?a
+      RUBY
+    end
+
+    it 'does not register an offense for `?\n`' do
+      expect_no_offenses(<<~'RUBY')
+        ?\n
       RUBY
     end
   end
