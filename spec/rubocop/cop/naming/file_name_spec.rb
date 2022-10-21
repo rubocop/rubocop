@@ -474,4 +474,21 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       RUBY
     end
   end
+
+  context 'when MatchCaseSensitive is false' do
+    let(:cop_config) do
+      super().merge('MatchCaseSensitive' => false)
+    end
+
+    context 'on a file with a matching class' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY, '/lib/us_collection.rb')
+          begin
+            class USCollection
+            end
+          end
+        RUBY
+      end
+    end
+  end
 end

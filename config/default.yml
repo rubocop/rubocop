@@ -2663,6 +2663,9 @@ Naming/FileName:
     - spec
     - test
     - src
+  # This allows to compare class names and module names insensitively. Many eager
+  # loading methods are able to match names with different case patterns.
+  MatchCaseSensitive: true
   # If non-`nil`, expect all source file names to match the following regex.
   # Only the file name itself is matched, not the entire file path.
   # Use anchors as necessary if you want to match the entire name rather than

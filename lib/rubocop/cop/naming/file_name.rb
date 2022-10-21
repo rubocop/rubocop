@@ -127,6 +127,10 @@ module RuboCop
           cop_config['CheckDefinitionPathHierarchyRoots'] || []
         end
 
+        def match_case_sensitive?
+          cop_config['MatchCaseSensitive']
+        end
+
         def regex
           cop_config['Regex']
         end
@@ -153,13 +157,19 @@ module RuboCop
             next unless (const = find_definition(child))
 
             const_namespace, const_name = *const
-            next if name != const_name && !match_acronym?(name, const_name)
+            next if match_name?(name, const_name) && !match_acronym?(name, const_name)
             next unless namespace.empty? || match_namespace(child, const_namespace, namespace)
 
             return node
           end
 
           nil
+        end
+
+        def match_name?(name, const_name)
+          return !name.casecmp(const_name).zero? unless match_case_sensitive?
+
+          name != const_name
         end
 
         def find_definition(node)
