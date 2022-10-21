@@ -21,20 +21,40 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       expect_no_offenses(wrap('\#$foo'))
     end
 
+    it 'does not register an offense for a $-escaped gvar interpolation' do
+      expect_no_offenses(wrap('#\$foo'))
+    end
+
     it 'does not register an offense for an escaped ivar interpolation' do
       expect_no_offenses(wrap('\#@foo'))
+    end
+
+    it 'does not register an offense for a @-escaped ivar interpolation' do
+      expect_no_offenses(wrap('#\@foo'))
     end
 
     it 'does not register an offense for an escaped cvar interpolation' do
       expect_no_offenses(wrap('\#@@foo'))
     end
 
+    it 'does not register an offense for a @-escaped cvar interpolation' do
+      expect_no_offenses(wrap('#\@@foo'))
+    end
+
     it 'does not register an offense for an escaped interpolation' do
       expect_no_offenses(wrap('\#{my_var}'))
     end
 
-    it 'does not register an offense for an escaped # an following {' do
+    it 'does not register an offense for a bracket-escaped interpolation' do
+      expect_no_offenses(wrap('#\{my_var}'))
+    end
+
+    it 'does not register an offense for an escaped # followed {' do
       expect_no_offenses(wrap('\#{my_lvar}'))
+    end
+
+    it 'does not register a bracket-escaped lvar interpolation' do
+      expect_no_offenses(wrap('#\{my_lvar}'))
     end
 
     it 'does not register an offense for an escaped newline' do
@@ -114,6 +134,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
 
       expect_correction(<<~RUBY)
         #{l}#whatever#{r}
+      RUBY
+    end
+
+    it 'registers an offense and corrects an escaped } when escaping both brackets to avoid interpolation' do
+      expect_offense(<<~'RUBY', l: l, r: r)
+        %{l}#\{whatever\}%{r}
+        _{l}           ^^ Redundant escape of } inside string literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{l}#\\{whatever}#{r}
       RUBY
     end
 
