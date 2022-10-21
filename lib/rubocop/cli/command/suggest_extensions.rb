@@ -73,7 +73,14 @@ module RuboCop
         def all_extensions
           return [] unless lockfile.dependencies.any?
 
-          extensions = @config_store.for_pwd.for_all_cops['SuggestExtensions'] || {}
+          extensions = @config_store.for_pwd.for_all_cops['SuggestExtensions']
+          case extensions
+          when true
+            extensions = ConfigLoader.default_configuration.for_all_cops['SuggestExtensions']
+          when false, nil
+            extensions = {}
+          end
+
           extensions.select { |_, v| (Array(v) & dependent_gems).any? }.keys
         end
 
