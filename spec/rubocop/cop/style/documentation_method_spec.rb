@@ -18,23 +18,23 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
     context 'without documentation comment' do
       context 'when method is public' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             def foo
             ^^^^^^^ Missing method documentation comment.
               puts 'bar'
             end
-          CODE
+          RUBY
         end
 
         it 'registers an offense with `end` on the same line' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             def method; end
             ^^^^^^^^^^^^^^^ Missing method documentation comment.
-          CODE
+          RUBY
         end
 
         it 'registers an offense when method is public, but there were private methods before' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             class Foo
                 private
 
@@ -48,35 +48,35 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'bar'
                 end
             end
-          CODE
+          RUBY
         end
       end
 
       context 'when method is private' do
         it 'does not register an offense' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             private
 
             def foo
               puts 'bar'
             end
-          CODE
+          RUBY
         end
 
         it 'does not register an offense with `end` on the same line' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             private
 
             def foo; end
-          CODE
+          RUBY
         end
 
         it 'does not register an offense with inline `private`' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             private def foo
               puts 'bar'
             end
-          CODE
+          RUBY
         end
 
         it 'does not register an offense with inline `private` and `end`' do
@@ -87,83 +87,83 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
           let(:require_for_non_public_methods) { true }
 
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               private
 
               def foo
               ^^^^^^^ Missing method documentation comment.
                 puts 'bar'
               end
-            CODE
+            RUBY
           end
 
           it 'registers an offense with `end` on the same line' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               private
 
               def foo; end
               ^^^^^^^^^^^^ Missing method documentation comment.
-            CODE
+            RUBY
           end
 
           it 'registers an offense with inline `private`' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               private def foo
                       ^^^^^^^ Missing method documentation comment.
                 puts 'bar'
               end
-            CODE
+            RUBY
           end
 
           it 'registers an offense with inline `private` and `end`' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               private def method; end
                       ^^^^^^^^^^^^^^^ Missing method documentation comment.
-            CODE
+            RUBY
           end
         end
       end
 
       context 'when method is protected' do
         it 'does not register an offense' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             protected
 
             def foo
               puts 'bar'
             end
-          CODE
+          RUBY
         end
 
         it 'does not register an offense with inline `protected`' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             protected def foo
               puts 'bar'
             end
-          CODE
+          RUBY
         end
 
         context 'when required for non-public methods' do
           let(:require_for_non_public_methods) { true }
 
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               protected
 
               def foo
               ^^^^^^^ Missing method documentation comment.
                 puts 'bar'
               end
-            CODE
+            RUBY
           end
 
           it 'registers an offense with inline `protected`' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               protected def foo
                         ^^^^^^^ Missing method documentation comment.
                 puts 'bar'
               end
-            CODE
+            RUBY
           end
         end
       end
@@ -171,26 +171,26 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
 
     context 'with documentation comment' do
       it 'does not register an offense' do
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           # Documentation
           def foo
             puts 'bar'
           end
-        CODE
+        RUBY
       end
 
       it 'does not register an offense with `end` on the same line' do
-        expect_no_offenses(<<~CODE)
+        expect_no_offenses(<<~RUBY)
           # Documentation
           def foo; end
-        CODE
+        RUBY
       end
     end
 
     context 'with both public and private methods' do
       context 'when the public method has no documentation' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             def foo
             ^^^^^^^ Missing method documentation comment.
               puts 'bar'
@@ -201,13 +201,13 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             def baz
               puts 'bar'
             end
-          CODE
+          RUBY
         end
       end
 
       context 'when the public method has documentation' do
         it 'does not register an offense' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             # Documentation
             def foo
               puts 'bar'
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             def baz
               puts 'bar'
             end
-          CODE
+          RUBY
         end
       end
 
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
         let(:require_for_non_public_methods) { true }
 
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             # Documentation
             def foo
               puts 'bar'
@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             ^^^^^^^ Missing method documentation comment.
               puts 'bar'
             end
-          CODE
+          RUBY
         end
       end
     end
@@ -247,29 +247,29 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
       context 'without documentation comment' do
         context 'when method is public' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               class Foo
                 def bar
                 ^^^^^^^ Missing method documentation comment.
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'registers an offense with `end` on the same line' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               class Foo
                 def method; end
                 ^^^^^^^^^^^^^^^ Missing method documentation comment.
               end
-            CODE
+            RUBY
           end
         end
 
         context 'when method is private' do
           it 'does not register an offense' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo
                 private
 
@@ -277,42 +277,42 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with inline `private`' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo
                 private def bar
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with `end` on the same line' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo
                 private
 
                 def bar; end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with inline `private` and `end`' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo
                 private def bar; end
               end
-            CODE
+            RUBY
           end
 
           context 'when required for non-public methods' do
             let(:require_for_non_public_methods) { true }
 
             it 'registers an offense' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo
                   private
 
@@ -321,38 +321,38 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                     puts 'baz'
                   end
                 end
-              CODE
+              RUBY
             end
 
             it 'registers an offense with inline `private`' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo
                   private def bar
                           ^^^^^^^ Missing method documentation comment.
                     puts 'baz'
                   end
                 end
-              CODE
+              RUBY
             end
 
             it 'registers an offense with `end` on the same line' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo
                   private
 
                   def bar; end
                   ^^^^^^^^^^^^ Missing method documentation comment.
                 end
-              CODE
+              RUBY
             end
 
             it 'registers an offense with inline `private` and `end`' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo
                   private def bar; end
                           ^^^^^^^^^^^^ Missing method documentation comment.
                 end
-              CODE
+              RUBY
             end
           end
         end
@@ -361,30 +361,30 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
       context 'with documentation comment' do
         context 'when method is public' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-CODE)
+            expect_no_offenses(<<-RUBY)
               class Foo
                 # Documentation
                 def bar
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with `end` on the same line' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo
                 # Documentation
                 def bar; end
               end
-            CODE
+            RUBY
           end
         end
       end
 
       context 'with annotation comment' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             class Foo
               # FIXME: offense
               def bar
@@ -392,13 +392,13 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                 puts 'baz'
               end
             end
-          CODE
+          RUBY
         end
       end
 
       context 'with directive comment' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             class Foo
               # rubocop:disable Style/For
               def bar
@@ -406,14 +406,14 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                 puts 'baz'
               end
             end
-          CODE
+          RUBY
         end
       end
 
       context 'with both public and private methods' do
         context 'when the public method has no documentation' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               class Foo
                 def bar
                 ^^^^^^^ Missing method documentation comment.
@@ -426,13 +426,13 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
         end
 
         context 'when the public method has documentation' do
           it 'does not register an offense' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo
                 # Documentation
                 def bar
@@ -445,7 +445,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
         end
 
@@ -453,7 +453,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
           let(:require_for_non_public_methods) { true }
 
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               class Foo
                 # Documentation
                 def bar
@@ -467,7 +467,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
         end
       end
@@ -477,29 +477,29 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
       context 'without documentation comment' do
         context 'when method is public' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               module Foo
                 def bar
                 ^^^^^^^ Missing method documentation comment.
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'registers an offense with `end` on the same line' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               module Foo
                 def method; end
                 ^^^^^^^^^^^^^^^ Missing method documentation comment.
               end
-            CODE
+            RUBY
           end
         end
 
         context 'when method is private' do
           it 'does not register an offense' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 private
 
@@ -507,42 +507,42 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with inline `private`' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 private def bar
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with `end` on the same line' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 private
 
                 def bar; end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with inline `private` and `end`' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 private def bar; end
               end
-            CODE
+            RUBY
           end
 
           context 'when required for non-public methods' do
             let(:require_for_non_public_methods) { true }
 
             it 'registers an offense' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 module Foo
                   private
 
@@ -551,55 +551,55 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                     puts 'baz'
                   end
                 end
-              CODE
+              RUBY
             end
 
             it 'registers an offense with inline `private`' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 module Foo
                   private def bar
                           ^^^^^^^ Missing method documentation comment.
                     puts 'baz'
                   end
                 end
-              CODE
+              RUBY
             end
 
             it 'registers an offense with `end` on the same line' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 module Foo
                   private
 
                   def bar; end
                   ^^^^^^^^^^^^ Missing method documentation comment.
                 end
-              CODE
+              RUBY
             end
 
             it 'registers an offense with inline `private` and `end`' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 module Foo
                   private def bar; end
                           ^^^^^^^^^^^^ Missing method documentation comment.
                 end
-              CODE
+              RUBY
             end
           end
         end
 
         context 'when method is module_function' do
           it 'registers an offense for inline def' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               module Foo
                 module_function def bar
                 ^^^^^^^^^^^^^^^^^^^^^^^ Missing method documentation comment.
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'registers an offense for separate def' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               module Foo
                 def bar
                 ^^^^^^^ Missing method documentation comment.
@@ -607,7 +607,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
 
                 module_function :bar
               end
-            CODE
+            RUBY
           end
         end
       end
@@ -615,45 +615,45 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
       context 'with documentation comment' do
         context 'when method is public' do
           it 'does not register an offense' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 # Documentation
                 def bar
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with `end` on the same line' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 # Documentation
                 def bar; end
               end
-            CODE
+            RUBY
           end
         end
 
         context 'when method is module_function' do
           it 'does not register an offense for inline def' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 # Documentation
                 module_function def bar; end
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense for separate def' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 # Documentation
                 def bar; end
 
                 module_function :bar
               end
-            CODE
+            RUBY
           end
         end
       end
@@ -661,7 +661,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
       context 'with both public and private methods' do
         context 'when the public method has no documentation' do
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               module Foo
                 def bar
                 ^^^^^^^ Missing method documentation comment.
@@ -674,13 +674,13 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
         end
 
         context 'when the public method has documentation' do
           it 'does not register an offense' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               module Foo
                 # Documentation
                 def bar
@@ -693,7 +693,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
         end
 
@@ -701,7 +701,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
           let(:require_for_non_public_methods) { true }
 
           it 'registers an offense' do
-            expect_offense(<<~CODE)
+            expect_offense(<<~RUBY)
               module Foo
                 # Documentation
                 def bar
@@ -715,7 +715,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                   puts 'baz'
                 end
               end
-            CODE
+            RUBY
           end
         end
       end
@@ -724,7 +724,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
     context 'when declaring methods for class instance' do
       context 'without documentation comment' do
         it 'registers an offense' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             class Foo; end
 
             foo = Foo.new
@@ -733,24 +733,24 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             ^^^^^^^^^^^ Missing method documentation comment.
               puts 'baz'
             end
-          CODE
+          RUBY
         end
 
         it 'registers an offense with `end` on the same line' do
-          expect_offense(<<~CODE)
+          expect_offense(<<~RUBY)
             class Foo; end
 
             foo = Foo.new
 
             def foo.bar; end
             ^^^^^^^^^^^^^^^^ Missing method documentation comment.
-          CODE
+          RUBY
         end
       end
 
       context 'with documentation comment' do
         it 'does not register an offense' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             class Foo; end
 
             foo = Foo.new
@@ -759,23 +759,23 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             def foo.bar
               puts 'baz'
             end
-          CODE
+          RUBY
         end
 
         it 'does not register an offense with `end` on the same line' do
-          expect_no_offenses(<<~CODE)
+          expect_no_offenses(<<~RUBY)
             class Foo; end
 
             foo = Foo.new
 
             # Documentation
             def foo.bar; end
-          CODE
+          RUBY
         end
 
         context 'when method is private' do
           it 'does not register an offense with `end` on the same line' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo; end
 
               foo = Foo.bar
@@ -783,11 +783,11 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
               private
 
               def foo.bar; end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo; end
 
               foo = Foo.new
@@ -797,21 +797,21 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
               def foo.bar
                 puts 'baz'
               end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with inline `private` and `end`' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo; end
 
               foo = Foo.new
 
               private def foo.bar; end
-            CODE
+            RUBY
           end
 
           it 'does not register an offense with inline `private`' do
-            expect_no_offenses(<<~CODE)
+            expect_no_offenses(<<~RUBY)
               class Foo; end
 
               foo = Foo.new
@@ -819,14 +819,14 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
               private def foo.bar
                 puts 'baz'
               end
-            CODE
+            RUBY
           end
 
           context 'when required for non-public methods' do
             let(:require_for_non_public_methods) { true }
 
             it 'registers an offense with `end` on the same line' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo; end
 
                 foo = Foo.bar
@@ -835,11 +835,11 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
 
                 def foo.bar; end
                 ^^^^^^^^^^^^^^^^ Missing method documentation comment.
-              CODE
+              RUBY
             end
 
             it 'registers an offense' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo; end
 
                 foo = Foo.new
@@ -850,22 +850,22 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                 ^^^^^^^^^^^ Missing method documentation comment.
                   puts 'baz'
                 end
-              CODE
+              RUBY
             end
 
             it 'registers an offense with inline `private` and `end`' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo; end
 
                 foo = Foo.new
 
                 private def foo.bar; end
                         ^^^^^^^^^^^^^^^^ Missing method documentation comment.
-              CODE
+              RUBY
             end
 
             it 'registers an offense with inline `private`' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo; end
 
                 foo = Foo.new
@@ -874,7 +874,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                         ^^^^^^^^^^^ Missing method documentation comment.
                   puts 'baz'
                 end
-              CODE
+              RUBY
             end
           end
         end
@@ -882,7 +882,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
         context 'with both public and private methods' do
           context 'when the public method has no documentation' do
             it 'registers an offense' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo; end
 
                 foo = Foo.new
@@ -897,13 +897,13 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                 def foo.baz
                   puts 'baz'
                 end
-              CODE
+              RUBY
             end
           end
 
           context 'when the public method has documentation' do
             it 'does not register an offense' do
-              expect_no_offenses(<<~CODE)
+              expect_no_offenses(<<~RUBY)
                 class Foo; end
 
                 foo = Foo.new
@@ -918,7 +918,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                 def foo.baz
                   puts 'baz'
                 end
-              CODE
+              RUBY
             end
           end
 
@@ -926,7 +926,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             let(:require_for_non_public_methods) { true }
 
             it 'registers an offense' do
-              expect_offense(<<~CODE)
+              expect_offense(<<~RUBY)
                 class Foo; end
 
                 foo = Foo.new
@@ -942,7 +942,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
                 ^^^^^^^^^^^ Missing method documentation comment.
                   puts 'baz'
                 end
-              CODE
+              RUBY
             end
           end
         end
