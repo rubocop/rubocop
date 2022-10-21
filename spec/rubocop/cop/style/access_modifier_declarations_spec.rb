@@ -139,6 +139,14 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
+      it 'does not registers an offense when using #{access_modifier} in a block' do
+        expect_no_offenses(<<~RUBY, access_modifier: access_modifier)
+          module MyModule
+            singleton_methods.each { |method| #{access_modifier}(method) }
+          end
+        RUBY
+      end
+
       context 'when method is modified by inline modifier with disallowed symbol' do
         let(:cop_config) do
           { 'AllowModifiersOnSymbols' => false }

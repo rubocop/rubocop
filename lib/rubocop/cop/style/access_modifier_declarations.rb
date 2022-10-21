@@ -85,6 +85,8 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[private protected public module_function].freeze
 
+        ALLOWED_NODE_TYPES = %i[pair block].freeze
+
         # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
           (send nil? {:private :protected :public :module_function} (sym _))
@@ -92,7 +94,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.access_modifier?
-          return if node.parent&.pair_type?
+          return if ALLOWED_NODE_TYPES.include?(node.parent&.type)
           return if allow_modifiers_on_symbols?(node)
 
           if offense?(node)
