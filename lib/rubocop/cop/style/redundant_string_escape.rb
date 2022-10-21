@@ -90,9 +90,7 @@ module RuboCop
 
           return true if escaped[0] == ' ' && percent_array_literal?(node)
 
-          # Allow #{foo}, #$foo, #@foo, and #@@foo for escaping local, global, instance and class
-          # variable interpolations inside
-          return true if /\A#[{$@]/.match?(escaped)
+          return true if disabling_interpolation?(range)
           return true if delimiter?(node, escaped[0])
 
           false
@@ -165,6 +163,17 @@ module RuboCop
 
         def literal_in_interpolated_or_multiline_string?(node)
           node.str_type? && !begin_loc_present?(node) && node.parent&.dstr_type?
+        end
+
+        def disabling_interpolation?(range)
+          # Allow \#{foo}, \#$foo, \#@foo, and \#@@foo
+          # for escaping local, global, instance and class variable interpolations
+          return true if range.source.match?(/\A\\#[{$@]/)
+
+          # Also allow #\{foo}, #\$foo, #\@foo and #\@@foo
+          return true if range.adjust(begin_pos: -2).source.match?(/\A[^\\]#\\[{$@]/)
+
+          false
         end
       end
     end
