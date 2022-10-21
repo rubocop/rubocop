@@ -42,10 +42,9 @@ module RuboCop
         MSG = 'Redundant escape of %<char>s inside string literal.'
 
         def on_str(node)
-          return if node.parent&.regexp_type? || node.parent&.xstr_type?
+          return if node.parent&.regexp_type? || node.parent&.xstr_type? || character_literal?(node)
 
           str_contents_range = str_contents_range(node)
-          return unless str_contents_range.source.include?('\\')
 
           each_match_range(str_contents_range, /(\\.)/) do |range|
             next if allowed_escape?(node, range.resize(3))
@@ -58,6 +57,10 @@ module RuboCop
 
         private
 
+        def character_literal?(node)
+          node.loc.respond_to?(:begin) && node.loc.begin && node.loc.begin.is?('?')
+        end
+
         def message(range)
           format(MSG, char: range.source.chars.last)
         end
@@ -65,7 +68,7 @@ module RuboCop
         def str_contents_range(node)
           if heredoc?(node)
             node.loc.heredoc_body
-          elsif begin_loc_present?(node) && node.loc.end
+          elsif begin_loc_present?(node)
             contents_range(node)
           else
             node.loc.expression
