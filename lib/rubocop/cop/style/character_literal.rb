@@ -29,7 +29,7 @@ module RuboCop
 
         def offense?(node)
           # we don't register an offense for things like ?\C-\M-d
-          node.loc.begin.is?('?') && node.source.size.between?(2, 3)
+          node.character_literal? && node.source.size.between?(2, 3)
         end
 
         def autocorrect(corrector, node)
