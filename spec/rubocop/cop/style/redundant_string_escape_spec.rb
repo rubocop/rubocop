@@ -279,6 +279,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     end
   end
 
+  context 'when using character literals (e.g. `?a`)' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        ?a
+      RUBY
+    end
+  end
+
   context 'with an interpolation-enabled HEREDOC' do
     include_examples 'common no offenses', "<<~MYHEREDOC\n", "\nMYHEREDOC"
 
