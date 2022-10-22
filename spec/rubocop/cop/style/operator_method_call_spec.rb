@@ -67,4 +67,10 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
       foo.` bar
     RUBY
   end
+
+  it 'does not register an offense when using `Foo.+(bar)`' do
+    expect_no_offenses(<<~RUBY)
+      Foo.+(bar)
+    RUBY
+  end
 end

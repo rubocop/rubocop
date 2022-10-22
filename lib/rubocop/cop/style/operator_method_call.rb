@@ -25,6 +25,7 @@ module RuboCop
 
         def on_send(node)
           return unless (dot = node.loc.dot)
+          return if node.receiver.const_type?
 
           _lhs, _op, rhs = *node
           return if rhs.children.first
