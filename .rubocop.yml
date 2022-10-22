@@ -163,6 +163,10 @@ InternalAffairs/ExampleDescription:
   Include:
     - 'spec/rubocop/cop/**/*.rb'
 
+InternalAffairs/ExampleHeredocDelimiter:
+  Include:
+    - 'spec/rubocop/cop/**/*.rb'
+
 InternalAffairs/UndefinedConfig:
   Include:
     - 'lib/rubocop/cop/**/*.rb'

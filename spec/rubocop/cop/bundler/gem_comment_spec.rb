@@ -64,10 +64,10 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
     context 'and a gem has no comment' do
       it 'registers an offense' do
-        expect_offense(<<-GEM, 'Gemfile')
+        expect_offense(<<-RUBY, 'Gemfile')
           gem 'rubocop'
           ^^^^^^^^^^^^^ Missing gem description comment.
-        GEM
+        RUBY
       end
     end
 
@@ -88,44 +88,44 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
         context 'when a gem is uncommented and has no version specified' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-GEM, 'Gemfile')
+            expect_no_offenses(<<-RUBY, 'Gemfile')
             gem 'rubocop'
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has options but no version specifiers' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-GEM, 'Gemfile')
+            expect_no_offenses(<<-RUBY, 'Gemfile')
               gem 'rubocop', group: development
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a version specifier' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
                 gem 'rubocop', '~> 12.0'
                 ^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has multiple version specifiers' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
                 gem 'rubocop', '~> 12.0', '>= 11.0'
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a version specifier along with other options' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
               gem 'rubocop', '~> 12.0', required: true
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
       end
@@ -144,79 +144,79 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
         context 'when a gem is uncommented and has no version specified' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-GEM, 'Gemfile')
+            expect_no_offenses(<<-RUBY, 'Gemfile')
             gem 'rubocop'
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has options but no version specifiers' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-GEM, 'Gemfile')
+            expect_no_offenses(<<-RUBY, 'Gemfile')
               gem 'rubocop', group: development
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has only a minimum version specifier' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-GEM, 'Gemfile')
+            expect_no_offenses(<<-RUBY, 'Gemfile')
               gem 'rubocop', '>= 12.0'
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a non-minimum version specifier with a leading space' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
                 gem 'rubocop', ' ~> 12.0'
                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a version specifier without operator' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
                 gem 'rubocop', '12.0'
                 ^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a frozen version specifier' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
                 gem 'rubocop', '= 12.0'
                 ^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a pessimistic version specifier' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
                 gem 'rubocop', '~> 12.0'
                 ^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has both minimum and non-minimum version specifier' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
                 gem 'rubocop', '~> 12.0', '>= 11.0'
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a version specifier along with other options' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
               gem 'rubocop', '~> 12.0', required: true
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
       end
@@ -226,26 +226,26 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
         context 'when a gem is uncommented and has one of the specified options' do
           it 'registers an offense' do
-            expect_offense(<<-GEM, 'Gemfile')
+            expect_offense(<<-RUBY, 'Gemfile')
               gem 'rubocop', github: 'some_user/some_fork'
               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing gem description comment.
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and has a version specifier but none of the specified options' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-GEM, 'Gemfile')
+            expect_no_offenses(<<-RUBY, 'Gemfile')
               gem 'rubocop', '~> 12.0'
-            GEM
+            RUBY
           end
         end
 
         context 'when a gem is uncommented and contains only options not specified' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-GEM, 'Gemfile')
+            expect_no_offenses(<<-RUBY, 'Gemfile')
               gem 'rubocop', group: development
-            GEM
+            RUBY
           end
         end
       end

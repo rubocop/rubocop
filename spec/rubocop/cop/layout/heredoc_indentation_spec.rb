@@ -74,11 +74,11 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_correction(<<~CORRECTION)
+        expect_correction(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
-        CORRECTION
+        RUBY
       end
 
       it 'registers an offense for minus level indented' do
@@ -91,13 +91,13 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           end
         RUBY
 
-        expect_correction(<<~CORRECTION)
+        expect_correction(<<~RUBY)
           def foo
             <<~#{quote}RUBY2#{quote}
               something
             RUBY2
           end
-        CORRECTION
+        RUBY
       end
 
       it 'registers an offense for too deep indented' do
@@ -108,11 +108,11 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_correction(<<~CORRECTION)
+        expect_correction(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
-        CORRECTION
+        RUBY
       end
 
       it 'registers an offense for not indented, without `~`' do
@@ -123,11 +123,11 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_correction(<<~CORRECTION)
+        expect_correction(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
             foo
           RUBY2
-        CORRECTION
+        RUBY
       end
 
       it 'registers an offense for not indented, with `~`' do
@@ -138,11 +138,11 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_correction(<<~CORRECTION)
+        expect_correction(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
             foo
           RUBY2
-        CORRECTION
+        RUBY
       end
 
       it 'registers an offense for first line minus-level indented, with `-`' do
@@ -155,13 +155,13 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           RUBY2
         RUBY
 
-        expect_correction(<<-CORRECTION)
+        expect_correction(<<-RUBY)
         puts <<~#{quote}RUBY2#{quote}
           def foo
             bar
           end
         RUBY2
-        CORRECTION
+        RUBY
       end
 
       it 'accepts for indented, with `~`' do
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
             end
           RUBY
 
-          expect_correction(<<-CORRECTION)
+          expect_correction(<<-RUBY)
             def baz
               <<~#{quote}MSG#{quote}
                 foo
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
                   bar
               MSG
             end
-          CORRECTION
+          RUBY
         end
 
         it "registers an offense for too deep indented with #{description} line" do
@@ -220,13 +220,13 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
             RUBY2
           RUBY
 
-          expect_correction(<<-CORRECTION)
+          expect_correction(<<-RUBY)
             <<~#{quote}RUBY2#{quote}
                 foo
 #{line}
               bar
             RUBY2
-          CORRECTION
+          RUBY
         end
         # rubocop:enable Layout/HeredocIndentation
       end
