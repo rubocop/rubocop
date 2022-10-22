@@ -57,6 +57,21 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `reject` and receiver is a variable' do
+    expect_offense(<<~RUBY)
+      def foo(params)
+        params.reject { |_k, v| v.nil? }
+               ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `reject { |_k, v| v.nil? }`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo(params)
+        params.compact
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `reject` to not to rejecting nils' do
     expect_no_offenses(<<~RUBY)
       array.reject { |e| e.odd? }

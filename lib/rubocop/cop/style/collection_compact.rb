@@ -96,7 +96,9 @@ module RuboCop
         end
 
         def to_enum_method?(node)
-          TO_ENUM_METHODS.include?(node.children.first.method_name)
+          return false unless node.receiver.send_type?
+
+          TO_ENUM_METHODS.include?(node.receiver.method_name)
         end
 
         def good_method_name(node)
