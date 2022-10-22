@@ -78,8 +78,11 @@ module RuboCop
         def on_array(node)
           return unless node.square_brackets?
 
-          left, right = array_brackets(node)
-          return empty_offenses(node, left, right, EMPTY_MSG) if empty_brackets?(left, right)
+          tokens, left, right = array_brackets(node)
+
+          if empty_brackets?(tokens, left, right)
+            return empty_offenses(node, left, right, EMPTY_MSG)
+          end
 
           start_ok = next_to_newline?(node, left)
           end_ok = node.single_line? ? false : end_has_own_line?(right)
@@ -90,9 +93,9 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
-          left, right = array_brackets(node)
+          tokens, left, right = array_brackets(node)
 
-          if empty_brackets?(left, right)
+          if empty_brackets?(tokens, left, right)
             SpaceCorrector.empty_corrections(processed_source, corrector, empty_config, left, right)
           elsif style == :no_space
             SpaceCorrector.remove_space(processed_source, corrector, left, right)
@@ -104,15 +107,12 @@ module RuboCop
         end
 
         def array_brackets(node)
-          [left_array_bracket(node), right_array_bracket(node)]
-        end
+          tokens = processed_source.tokens_within(node)
 
-        def left_array_bracket(node)
-          processed_source.tokens_within(node).find(&:left_array_bracket?)
-        end
+          left = tokens.find(&:left_array_bracket?)
+          right = tokens.reverse_each.find(&:right_bracket?)
 
-        def right_array_bracket(node)
-          processed_source.tokens_within(node).reverse.find(&:right_bracket?)
+          [tokens, left, right]
         end
 
         def empty_config
