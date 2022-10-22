@@ -31,13 +31,14 @@ module RuboCop
         def on_interpolation(begin_node)
           return if begin_node.multiline?
 
-          delims = delimiters(begin_node)
-          return if empty_brackets?(*delims)
+          tokens = processed_source.tokens_within(begin_node)
+          left, right = delimiters(begin_node)
+          return if empty_brackets?(tokens, left, right)
 
           if style == :no_space
-            no_space_offenses(begin_node, *delims, NO_SPACE_MSG)
+            no_space_offenses(begin_node, left, right, NO_SPACE_MSG)
           else
-            space_offenses(begin_node, *delims, SPACE_MSG)
+            space_offenses(begin_node, left, right, SPACE_MSG)
           end
         end
 
