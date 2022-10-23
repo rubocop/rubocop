@@ -8,7 +8,8 @@ module RuboCop
       #
       # @safety
       #   It is unsafe by default because false positives may occur in the
-      #   `nil` check of block arguments to the receiver object.
+      #   `nil` check of block arguments to the receiver object. Additionally,
+      #    .compact may not exist for the highlighted object.
       #
       #   For example, `[[1, 2], [3, nil]].reject { |first, second| second.nil? }`
       #   and `[[1, 2], [3, nil]].compact` are not compatible. This will work fine
