@@ -5,6 +5,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
   let(:output) { StringIO.new }
   let(:options) { { display_style_guide: false } }
+  let(:file_count) { files.size }
 
   let(:files) do
     %w[lib/rubocop.rb spec/spec_helper.rb exe/rubocop].map do |path|
@@ -38,13 +39,17 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
   describe '#report_summary' do
     context 'when an offense is detected' do
-      let(:cop_counts) { { 'OffendedCop' => 1 } }
+      let(:cop_counts) { { 'OffendedCop' => 3 } }
 
       before { formatter.started(files) }
 
       it 'shows the cop and the offense count' do
-        formatter.report_summary(cop_counts)
-        expect(output.string).to include("\n1  OffendedCop\n--\n1  Total")
+        formatter.report_summary(cop_counts, 2)
+        expect(output.string).to include(<<~OUTPUT)
+          3  OffendedCop
+          --
+          3  Total in 2 files
+        OUTPUT
       end
     end
   end
@@ -78,7 +83,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
             1  CopA
             1  CopB
             --
-            4  Total
+            4  Total in 1 files
 
           OUTPUT
         end
@@ -95,7 +100,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
             1  CopA (https://rubystyle.guide#no-good-CopA)
             1  CopB (https://rubystyle.guide#no-good-CopB)
             --
-            4  Total
+            4  Total in 1 files
 
           OUTPUT
         end

@@ -134,7 +134,7 @@ RSpec.describe RuboCop::RakeTask do
         1  Style/FrozenStringLiteralComment
         1  Style/SpecialGlobalVars
         --
-        2  Total
+        2  Total in 1 files
 
       RESULT
       expect($stderr.string.strip).to eq 'RuboCop failed!'

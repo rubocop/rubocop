@@ -12,13 +12,14 @@ module RuboCop
     # 26  LineLength
     # 3   OneLineConditional
     # --
-    # 29  Total
+    # 29  Total in 5 files
     class OffenseCountFormatter < BaseFormatter
       attr_reader :offense_counts
 
       def started(target_files)
         super
         @offense_counts = Hash.new(0)
+        @offending_files_count = 0
         @style_guide_links = {}
 
         return unless output.tty?
@@ -43,26 +44,28 @@ module RuboCop
         if options[:display_style_guide]
           offenses.each { |o| @style_guide_links[o.cop_name] ||= o.message[/ \(http\S+\)\Z/] }
         end
+        @offending_files_count += 1 unless offenses.empty?
         @progressbar.increment if instance_variable_defined?(:@progressbar)
       end
 
       def finished(_inspected_files)
-        report_summary(@offense_counts)
+        report_summary(@offense_counts, @offending_files_count)
       end
 
       # rubocop:disable Metrics/AbcSize
-      def report_summary(offense_counts)
+      def report_summary(offense_counts, offending_files_count)
         per_cop_counts = ordered_offense_counts(offense_counts)
         total_count = total_offense_count(offense_counts)
 
         output.puts
 
+        column_width = total_count.to_s.length + 2
         per_cop_counts.each do |cop_name, count|
-          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}#{cop_name}" \
+          output.puts "#{count.to_s.ljust(column_width)}#{cop_name}" \
                       "#{@style_guide_links[cop_name]}\n"
         end
         output.puts '--'
-        output.puts "#{total_count}  Total"
+        output.puts "#{total_count}  Total in #{offending_files_count} files"
 
         output.puts
       end

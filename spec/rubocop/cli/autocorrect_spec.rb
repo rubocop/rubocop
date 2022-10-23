@@ -1383,7 +1383,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       1   Style/DefWithParentheses
       1   Style/TrailingBodyOnMethodDefinition
       --
-      15  Total
+      15  Total in 1 files
 
     RESULT
   end
@@ -1491,7 +1491,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         4  Layout/SpaceAfterComma
         2  Style/WordArray
         --
-        6  Total
+        6  Total in 1 files
 
       RESULT
     expect(File.read('example.rb'))
