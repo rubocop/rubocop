@@ -12,7 +12,7 @@ module RuboCop
     # 26  this/file/is/really/bad.rb
     # 3   just/ok.rb
     # --
-    # 29  Total
+    # 29  Total in 2 files
     class WorstOffendersFormatter < BaseFormatter
       attr_reader :offense_counts
 
@@ -36,14 +36,17 @@ module RuboCop
       def report_summary(offense_counts)
         per_file_counts = ordered_offense_counts(offense_counts)
         total_count = total_offense_count(offense_counts)
+        file_count = per_file_counts.size
 
         output.puts
 
+        column_width = total_count.to_s.length + 2
         per_file_counts.each do |file_name, count|
-          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}#{file_name}\n"
+          output.puts "#{count.to_s.ljust(column_width)}#{file_name}\n"
         end
+
         output.puts '--'
-        output.puts "#{total_count}  Total"
+        output.puts "#{total_count}  Total in #{file_count} files"
 
         output.puts
       end
