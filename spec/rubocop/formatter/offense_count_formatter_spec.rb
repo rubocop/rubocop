@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
     end
   end
 
-  let(:finish) { formatter.file_finished(files.first, offenses) }
+  let(:finish) { files.each { |file| formatter.file_finished(file, offenses) } }
 
   describe '#file_finished' do
     before { formatter.started(files) }
@@ -51,6 +51,8 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
   describe '#finished' do
     context 'when there are many offenses' do
+      let(:files) { super().take(1) }
+
       let(:offenses) do
         %w[CopB CopA CopC CopC].map do |cop|
           instance_double(RuboCop::Cop::Offense, cop_name: cop)
@@ -114,9 +116,9 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
         finish
       end
 
-      it 'has a progresbar' do
+      it 'has a progress bar' do
         formatter.finished(files)
-        expect(formatter.instance_variable_get(:@progressbar).progress).to eq 1
+        expect(formatter.instance_variable_get(:@progressbar).progress).to eq 3
       end
     end
   end
