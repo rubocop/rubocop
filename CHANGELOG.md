@@ -12,7 +12,7 @@
 * [#11114](https://github.com/rubocop/rubocop/issues/11114): Fix an error for `Style/OperatorMethodCall` when using `obj.!`. ([@koic][])
 * [#11088](https://github.com/rubocop/rubocop/issues/11088): Fix an error when specifying `SuggestExtensions: true`. ([@koic][])
 * [#11089](https://github.com/rubocop/rubocop/issues/11089): Fix an error for `Style/RedundantStringEscape` when using character literals (e.g. `?a`). ([@ydah][])
-* [#11098](https://github.com/rubocop/rubocop/issues/11098): Fix false positive for Style/RedundantStringEscape. ([@tdeo][])
+* [#11098](https://github.com/rubocop/rubocop/issues/11098): Fix false positive for `Style/RedundantStringEscape`. ([@tdeo][])
 * [#11095](https://github.com/rubocop/rubocop/pull/11095): Fix an error for `Style/RedundantStringEscape` cop when using `?\n` string character literal. ([@koic][])
 
 ## 1.37.0 (2022-10-20)
