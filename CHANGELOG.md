@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.37.1 (2022-10-24)
+
 ### Bug fixes
 
 * [#11102](https://github.com/rubocop/rubocop/issues/11102): Fix an error for `Style/AccessModifierDeclarations` when using access modifier in a block. ([@koic][])
