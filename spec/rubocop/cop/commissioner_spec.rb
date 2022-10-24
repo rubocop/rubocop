@@ -114,6 +114,16 @@ RSpec.describe RuboCop::Cop::Commissioner do
       end
     end
 
+    context 'when passed :raise_cop_error option' do
+      let(:options) { { raise_cop_error: true } }
+
+      it 're-raises the exception received while processing' do
+        allow(cop).to receive(:on_int) { raise RuboCop::ErrorWithAnalyzedFileLocation }
+
+        expect { offenses }.to raise_error(RuboCop::ErrorWithAnalyzedFileLocation)
+      end
+    end
+
     context 'when given a force' do
       let(:force) { instance_double(RuboCop::Cop::Force).as_null_object }
       let(:forces) { [force] }

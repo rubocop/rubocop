@@ -65,7 +65,7 @@ module RuboCop
     end
 
     def add_check_options(opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      section(opts, 'Basic Options') do
+      section(opts, 'Basic Options') do # rubocop:disable Metrics/BlockLength
         option(opts, '-l', '--lint') do
           @options[:only] ||= []
           @options[:only] << 'Lint'
@@ -90,6 +90,7 @@ module RuboCop
         option(opts, '--force-default-config')
         option(opts, '-s', '--stdin FILE')
         option(opts, '-P', '--[no-]parallel')
+        option(opts, '--raise-cop-error')
         add_severity_option(opts)
       end
     end
@@ -589,7 +590,10 @@ module RuboCop
       restart_server:                   'Restart server process.',
       start_server:                     'Start server process.',
       stop_server:                      'Stop server process.',
-      server_status:                    'Show server status.'
+      server_status:                    'Show server status.',
+      raise_cop_error:                  ['Raise cop-related errors with cause and location.',
+                                         'This is used to prevent cops from failing silently.',
+                                         'Default is false.']
     }.freeze
   end
 end
