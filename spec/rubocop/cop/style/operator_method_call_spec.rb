@@ -73,4 +73,10 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
       Foo.+(bar)
     RUBY
   end
+
+  it 'does not register an offense when using `obj.!`' do
+    expect_no_offenses(<<~RUBY)
+      obj.!
+    RUBY
+  end
 end

@@ -28,7 +28,7 @@ module RuboCop
           return if node.receiver.const_type?
 
           _lhs, _op, rhs = *node
-          return if rhs.children.first
+          return if rhs.nil? || rhs.children.first
 
           add_offense(dot) do |corrector|
             corrector.replace(dot, ' ')
