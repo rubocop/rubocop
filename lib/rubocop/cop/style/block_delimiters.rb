@@ -425,7 +425,7 @@ module RuboCop
           if node.parent.begin_type?
             return_value_used?(node.parent)
           else
-            node.parent.assignment? || node.parent.send_type?
+            node.parent.assignment? || node.parent.call_type?
           end
         end
 
