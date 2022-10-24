@@ -183,6 +183,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect_no_offenses('detect { true }...other')
     end
 
+    it 'accepts a single line block with {} followed by a safe navigation method call' do
+      expect_no_offenses('ary.map { |e| foo(e) }&.bar')
+    end
+
     it 'accepts a multi-line functional block with do-end if it is a known procedural method' do
       expect_no_offenses(<<~RUBY)
         foo = bar.tap do |x|
