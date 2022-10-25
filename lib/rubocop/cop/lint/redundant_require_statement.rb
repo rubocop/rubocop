@@ -49,7 +49,13 @@ module RuboCop
           return unless redundant_require_statement?(node)
 
           add_offense(node) do |corrector|
-            range = range_with_surrounding_space(node.loc.expression, side: :right)
+            if node.parent.respond_to?(:modifier_form?) && node.parent.modifier_form?
+              corrector.insert_after(node.parent, "\nend")
+
+              range = range_with_surrounding_space(node.loc.expression, side: :right)
+            else
+              range = range_by_whole_lines(node.source_range, include_final_newline: true)
+            end
 
             corrector.remove(range)
           end
