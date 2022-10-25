@@ -13,6 +13,36 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
     RUBY
   end
 
+  it 'registers an offense when using requiring `enumerator` with modifier form' do
+    expect_offense(<<~RUBY)
+      require 'enumerator' if condition
+      ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+      require 'uri'
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition
+      end
+      require 'uri'
+    RUBY
+  end
+
+  it 'registers an offense when using requiring `enumerator` in condition' do
+    expect_offense(<<~RUBY)
+      if condition
+        require 'enumerator'
+        ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+      end
+      require 'uri'
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if condition
+      end
+      require 'uri'
+    RUBY
+  end
+
   context 'target ruby version <= 2.0', :ruby20 do
     it 'does not register an offense when using requiring `thread`' do
       expect_no_offenses(<<~RUBY)
