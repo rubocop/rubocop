@@ -3,13 +3,15 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for use of `extend self` or `module_function` in a
-      # module.
+      # Checks for use of `extend self` or `module_function` in a module.
       #
-      # Supported styles are: module_function, extend_self, forbidden. `forbidden`
-      # style prohibits the usage of both styles.
+      # Supported styles are: `module_function` (default), `extend_self` and `forbidden`.
       #
-      # NOTE: the cop won't be activated when the module contains any private methods.
+      # NOTES:
+      #
+      # - `forbidden` style prohibits the usage of both styles
+      # - in default mode (`module_function`), the cop won't be activated when the module
+      #   contains any private methods
       #
       # @safety
       #   Autocorrection is unsafe (and is disabled by default) because `extend self`
@@ -28,13 +30,19 @@ module RuboCop
       #     # ...
       #   end
       #
-      # @example EnforcedStyle: module_function (default)
       #   # good
       #   module Test
       #     extend self
       #     # ...
       #     private
       #     # ...
+      #   end
+      #
+      #   # good
+      #   module Test
+      #     class << self
+      #       # ...
+      #     end
       #   end
       #
       # @example EnforcedStyle: extend_self
@@ -48,6 +56,13 @@ module RuboCop
       #   module Test
       #     extend self
       #     # ...
+      #   end
+      #
+      #   # good
+      #   module Test
+      #     class << self
+      #       # ...
+      #     end
       #   end
       #
       # @example EnforcedStyle: forbidden
@@ -69,6 +84,13 @@ module RuboCop
       #     # ...
       #     private
       #     # ...
+      #   end
+      #
+      #   # good
+      #   module Test
+      #     class << self
+      #       # ...
+      #     end
       #   end
       class ModuleFunction < Base
         include ConfigurableEnforcedStyle
