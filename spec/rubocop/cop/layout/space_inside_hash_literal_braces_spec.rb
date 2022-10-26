@@ -55,6 +55,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
         h = { }
       RUBY
     end
+
+    context 'when using method argument that both key and value are hash literals' do
+      it 'registers hashes with no spaces' do
+        expect_offense(<<~RUBY)
+          foo({key: value} => {key: value})
+                                         ^ Space inside } missing.
+                              ^ Space inside { missing.
+                         ^ Space inside } missing.
+              ^ Space inside { missing.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo({ key: value } => { key: value })
+        RUBY
+      end
+    end
   end
 
   it 'registers an offense for hashes with no spaces if so configured' do
@@ -133,6 +149,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
               b: 2,
         }
       RUBY
+    end
+
+    context 'when using method argument that both key and value are hash literals' do
+      it 'accepts hashes with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          foo({key: value} => {key: value})
+        RUBY
+      end
     end
   end
 

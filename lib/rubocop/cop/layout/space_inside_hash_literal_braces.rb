@@ -194,6 +194,8 @@ module RuboCop
         end
 
         def range_inside_hash(node)
+          return node.source_range if node.location.begin.nil?
+
           range_between(node.location.begin.end_pos, node.location.end.begin_pos)
         end
 
