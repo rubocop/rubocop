@@ -38,6 +38,8 @@ module RuboCop
       #   # bad
       #   foo[ ]
       #   foo[     ]
+      #   foo[
+      #   ]
       #
       #   # good
       #   foo[]
@@ -49,6 +51,8 @@ module RuboCop
       #   # bad
       #   foo[]
       #   foo[    ]
+      #   foo[
+      #   ]
       #
       #   # good
       #   foo[ ]
@@ -64,8 +68,6 @@ module RuboCop
         RESTRICT_ON_SEND = %i[[] []=].freeze
 
         def on_send(node)
-          return if node.multiline?
-
           tokens = processed_source.tokens_within(node)
           left_token = left_ref_bracket(node, tokens)
           return unless left_token
@@ -75,6 +77,8 @@ module RuboCop
           if empty_brackets?(left_token, right_token)
             return empty_offenses(node, left_token, right_token, EMPTY_MSG)
           end
+
+          return if node.multiline?
 
           if style == :no_space
             no_space_offenses(node, left_token, right_token, MSG)

@@ -118,14 +118,15 @@ module RuboCop
       end
 
       def offending_empty_no_space?(config, left_token, right_token)
-        config == 'no_space' && !no_space_between?(left_token, right_token)
+        config == 'no_space' && !no_character_between?(left_token, right_token)
       end
 
       def space_between?(left_bracket_token, right_bracket_token)
-        left_bracket_token.end_pos + 1 == right_bracket_token.begin_pos
+        left_bracket_token.end_pos + 1 == right_bracket_token.begin_pos &&
+          processed_source.buffer.source[left_bracket_token.end_pos] == ' '
       end
 
-      def no_space_between?(left_bracket_token, right_bracket_token)
+      def no_character_between?(left_bracket_token, right_bracket_token)
         left_bracket_token.end_pos == right_bracket_token.begin_pos
       end
     end
