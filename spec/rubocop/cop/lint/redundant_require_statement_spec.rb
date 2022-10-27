@@ -160,5 +160,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         require 'uri'
       RUBY
     end
+
+    context 'target ruby version >= 3.2', :ruby32 do
+      it 'registers an offense and corrects when using requiring `set`' do
+        expect_offense(<<~RUBY)
+          require 'set'
+          ^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+          require 'uri'
+        RUBY
+
+        expect_correction(<<~RUBY)
+          require 'uri'
+        RUBY
+      end
+    end
   end
 end
