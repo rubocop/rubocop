@@ -20,6 +20,7 @@ module RuboCop
       #   * 2.5+ ... Add `pp` above
       #   * 2.7+ ... Add `ruby2_keywords` above
       #   * 3.1+ ... Add `fiber` above
+      #   * 3.2+ ... `set`
       #
       # This cop target those features.
       #
@@ -63,7 +64,8 @@ module RuboCop
             (target_ruby_version >= 2.2 && RUBY_22_LOADED_FEATURES.include?(feature_name)) ||
             (target_ruby_version >= 2.5 && feature_name == 'pp') ||
             (target_ruby_version >= 2.7 && feature_name == 'ruby2_keywords') ||
-            (target_ruby_version >= 3.1 && feature_name == 'fiber')
+            (target_ruby_version >= 3.1 && feature_name == 'fiber') ||
+            (target_ruby_version >= 3.2 && feature_name == 'set')
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
