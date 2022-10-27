@@ -86,6 +86,36 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters, :confi
         it 'accepts spaces between entries' do
           expect_no_offenses(code_example('a  b  c'))
         end
+
+        context 'with space in blank percent literals' do
+          it 'registers and corrects an offense' do
+            expect_offense(<<~RUBY)
+              #{code_example(' ')}
+                 ^ #{message}
+            RUBY
+
+            expect_correction("#{code_example('')}\n")
+          end
+        end
+
+        context 'with spaces in blank percent literals' do
+          it 'registers and corrects an offense' do
+            expect_offense(<<~RUBY)
+              #{code_example('  ')}
+                 ^^ #{message}
+            RUBY
+
+            expect_correction("#{code_example('')}\n")
+          end
+        end
+
+        context 'with newline in blank percent literals' do
+          it 'registers and corrects an offense' do
+            expect_offense(code_example("\n").lines.insert(1, "   ^{} #{message}\n").join)
+
+            expect_correction(code_example('').to_s)
+          end
+        end
       end
     end
   end
