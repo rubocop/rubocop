@@ -8,14 +8,31 @@ module RuboCop
       #
       # @example
       #
+      #   # bad
+      #   %i( foo bar baz )
+      #
       #   # good
       #   %i(foo bar baz)
       #
       #   # bad
       #   %w( foo bar baz )
       #
+      #   # good
+      #   %w(foo bar baz)
+      #
       #   # bad
       #   %x(  ls -l )
+      #
+      #   # good
+      #   %x(ls -l)
+      #
+      #   # bad
+      #   %w( )
+      #   %w(
+      #   )
+      #
+      #   # good
+      #   %w()
       class SpaceInsidePercentLiteralDelimiters < Base
         include MatchRange
         include PercentLiteral
@@ -34,10 +51,20 @@ module RuboCop
         end
 
         def on_percent_literal(node)
+          add_offenses_for_blank_spaces(node)
           add_offenses_for_unnecessary_spaces(node)
         end
 
         private
+
+        def add_offenses_for_blank_spaces(node)
+          range = body_range(node)
+          return if range.source.empty? || !range.source.strip.empty?
+
+          add_offense(range) do |corrector|
+            corrector.remove(range)
+          end
+        end
 
         def add_offenses_for_unnecessary_spaces(node)
           return unless node.single_line?
@@ -53,6 +80,13 @@ module RuboCop
           [BEGIN_REGEX, END_REGEX].each do |regex|
             each_match_range(contents_range(node), regex, &blk)
           end
+        end
+
+        def body_range(node)
+          node.location.expression.with(
+            begin_pos: node.location.begin.end_pos,
+            end_pos: node.location.end.begin_pos
+          )
         end
       end
     end
