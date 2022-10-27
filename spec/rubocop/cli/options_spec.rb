@@ -774,7 +774,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           1  Layout/SpaceAroundOperators
           1  Layout/TrailingWhitespace
           --
-          6  Total
+          6  Total in 1 files
 
         RESULT
       end
@@ -799,7 +799,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             1  Style/FrozenStringLiteralComment
             1  Style/NumericLiterals
             --
-            7  Total
+            7  Total in 1 files
 
           RESULT
       end
@@ -936,7 +936,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             1  Style/FrozenStringLiteralComment
             1  Style/NumericPredicate
             --
-            7  Total
+            7  Total in 1 files
 
           RESULT
       end
@@ -954,7 +954,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         expect($stderr.string).to eq('')
         expect(without_option.split($RS) - with_option.split($RS))
-          .to eq(['1  Style/IfUnlessModifier', '7  Total'])
+          .to eq(['1  Style/IfUnlessModifier', '7  Total in 1 files'])
       end
     end
 
@@ -981,7 +981,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               1  Style/FrozenStringLiteralComment
               1  Style/NumericLiterals
               --
-              4  Total
+              4  Total in 1 files
 
             RESULT
         end

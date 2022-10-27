@@ -346,7 +346,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
           1  Style/FrozenStringLiteralComment
           --
-          1  Total
+          1  Total in 1 files
 
         RESULT
         expect(File.read('example.rb'))
@@ -640,7 +640,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               1  Style/AndOr
               --
-              1  Total
+              1  Total in 1 files
 
             RESULT
           end
@@ -657,7 +657,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               3  Layout/LineLength
               1  Style/AndOr
               --
-              4  Total
+              4  Total in 1 files
 
             RESULT
           end
@@ -677,7 +677,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
               3  Layout/LineLength
               --
-              3  Total
+              3  Total in 1 files
 
             RESULT
           end
@@ -694,7 +694,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               3  Layout/LineLength
               1  Style/AndOr
               --
-              4  Total
+              4  Total in 1 files
 
             RESULT
           end
@@ -988,7 +988,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
           1  Layout/TrailingWhitespace
           --
-          1  Total
+          1  Total in 1 files
 
         RESULT
     end

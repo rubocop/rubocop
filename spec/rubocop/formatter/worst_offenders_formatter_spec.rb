@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Formatter::WorstOffendersFormatter do
           3  spec/spec_helper.rb
           2  lib/rubocop.rb
           --
-          9  Total
+          9  Total in 3 files
 
         OUTPUT
       end
