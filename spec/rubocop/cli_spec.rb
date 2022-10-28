@@ -302,7 +302,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to eq(<<~RESULT)
 
         --
-        0  Total
+        0  Total in 0 files
 
       RESULT
     end
