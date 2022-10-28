@@ -2914,7 +2914,7 @@ multi-line array.
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -3144,7 +3144,7 @@ multi-line hash.
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -3245,7 +3245,7 @@ method foo, bar,
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -3342,7 +3342,7 @@ end
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -4795,7 +4795,7 @@ starts on a separate line.
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -5165,7 +5165,7 @@ starts on a separate line.
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -5263,7 +5263,7 @@ foo(
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -5709,7 +5709,7 @@ end
 |===
 | Name | Default value | Configurable values
 
-| AllowMultilineFinalElement
+| xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
 |===
@@ -7615,3 +7615,5 @@ RUBY
 === References
 
 * https://rubystyle.guide#no-trailing-whitespace
+
+include::../partials/cops_layout_footer.adoc[]
