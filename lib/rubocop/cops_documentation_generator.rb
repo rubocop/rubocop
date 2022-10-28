@@ -42,7 +42,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content << "#{description}\n"
     content << safety_object(safety_objects) if safety_objects.any? { |s| !s.text.blank? }
     content << examples(examples_objects) if examples_objects.any?
-    content << configurations(pars)
+    content << configurations(cop.department, pars)
     content << references(cop)
     content
   end
@@ -136,7 +136,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content
   end
 
-  def configurations(pars)
+  def configurations(department, pars)
     return '' if pars.empty?
 
     header = ['Name', 'Default value', 'Configurable values']
@@ -147,10 +147,18 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content = configs.map do |name|
       configurable = configurable_values(pars, name)
       default = format_table_value(pars[name])
-      [name, default, configurable]
+
+      [configuration_name(department, name), default, configurable]
     end
 
     h3('Configurable attributes') + to_table(header, content)
+  end
+
+  def configuration_name(department, name)
+    return name unless name == 'AllowMultilineFinalElement'
+
+    filename = "#{department_to_basename(department)}.adoc"
+    "xref:#{filename}#allowmultilinefinalelement[AllowMultilineFinalElement]"
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
@@ -227,10 +235,21 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content
   end
 
+  def footer_for_department(department)
+    return '' unless department == :Layout
+
+    filename = "#{department_to_basename(department)}_footer.adoc"
+    file = "#{Dir.pwd}/docs/modules/ROOT/partials/#{filename}"
+    return '' unless File.exist?(file)
+
+    "\ninclude::../partials/#{filename}[]\n"
+  end
+
   def print_cops_of_department(department)
     selected_cops = cops_of_department(department)
     content = +"= #{department}\n"
     selected_cops.each { |cop| content << print_cop_with_doc(cop) }
+    content << footer_for_department(department)
     file_name = "#{Dir.pwd}/docs/modules/ROOT/pages/#{department_to_basename(department)}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
