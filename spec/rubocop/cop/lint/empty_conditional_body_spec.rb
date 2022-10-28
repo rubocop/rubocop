@@ -24,6 +24,22 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     expect_correction('')
   end
 
+  it 'registers an offense for missing `if` and `else` body with some indentation' do
+    expect_offense(<<~RUBY)
+      def foo
+        if condition
+        ^^^^^^^^^^^^ Avoid `if` branches without a body.
+        else
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+          end
+    RUBY
+  end
+
   it 'registers an offense for missing `if` body with present `else` body' do
     expect_offense(<<~RUBY)
       class Foo
