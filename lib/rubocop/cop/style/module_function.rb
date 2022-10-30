@@ -7,7 +7,7 @@ module RuboCop
       #
       # Supported styles are: `module_function` (default), `extend_self` and `forbidden`.
       #
-      # NOTES:
+      # A couple of things to keep in mind:
       #
       # - `forbidden` style prohibits the usage of both styles
       # - in default mode (`module_function`), the cop won't be activated when the module
