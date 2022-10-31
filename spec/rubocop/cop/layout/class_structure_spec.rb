@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Lint/LiteralAsCondition
 RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
   let(:config) do
     RuboCop::Config.new(
@@ -15,8 +16,10 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           public_methods
           protected_attribute_macros
           protected_methods
+          private_constants
           private_attribute_macros
           private_delegate
+          private_class_methods
           private_methods
         ],
         'Categories' => {
@@ -137,76 +140,86 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
   end
 
   context 'with protected methods declared before private' do
-    let(:code) { <<-RUBY }
-      class MyClass
-        def public_method
+    it 'corrects it' do
+      expect_offense(<<~RUBY)
+        class MyClass
+          def public_method
+          end
+
+          private
+
+          def first_private_method
+          end
+
+          def second_private_method
+          end
+
+          protected
+          ^^^^^^^^^ `protected_methods` is supposed to appear before `private_methods`.
+
+          def first_protected_method
+          end
+
+          def second_protected_method
+          end
         end
+      RUBY
 
-        private
+      expect_correction(<<~RUBY) unless :pending
+        class MyClass
+          def public_method
+          end
 
-        def first_private_method
+          protected
+
+          def first_protected_method
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ `protected_methods` is supposed to appear before `private_methods`.
+          end
+
+          def second_protected_method
+          end
+
+          private
+
+          def first_private_method
+          end
+
+          def second_private_method
+          end
         end
-
-        def second_private_method
-        end
-
-        protected
-
-        def first_protected_method
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^ `protected_methods` is supposed to appear before `private_methods`.
-        end
-
-        def second_protected_method
-        end
-      end
-    RUBY
-
-    it { expect_offense(code) }
+      RUBY
+    end
   end
 
   context 'with attribute macros before after validations' do
-    let(:code) { <<-RUBY }
-      class Person
-        include AnotherModule
-        extend SomeModule
+    it 'corrects it' do
+      expect_offense(<<~RUBY)
+        class Person
+          include AnotherModule
+          extend SomeModule
 
-        CustomError = Class.new(StandardError)
+          CustomError = Class.new(StandardError)
 
-        validates :name
+          validates :name
 
-        attr_reader :name
-        ^^^^^^^^^^^^^^^^^ `attribute_macros` is supposed to appear before `macros`.
-
-        def self.some_public_class_method
+          attr_reader :name
+          ^^^^^^^^^^^^^^^^^ `attribute_macros` is supposed to appear before `macros`.
         end
+      RUBY
 
-        def initialize
+      expect_correction(<<~RUBY) unless :pending
+        class Person
+          include AnotherModule
+          extend SomeModule
+
+          CustomError = Class.new(StandardError)
+
+          attr_reader :name
+
+          validates :name
         end
-
-        def some_public_method
-        end
-
-        def other_public_method
-        end
-
-        private :other_public_method
-
-        def yet_other_public_method
-        end
-
-        protected
-
-        def some_protected_method
-        end
-
-        private
-
-        def some_private_method
-        end
-      end
-    RUBY
-
-    it { expect_offense(code) }
+      RUBY
+    end
   end
 
   context 'constant is not a literal' do
@@ -261,6 +274,42 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
       end
     RUBY
+  end
+
+  context 'with private constants' do
+    context 'with unrecognized constants' do
+      it 'does not register an offense for unrecognized constants' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            include Bar
+            private_constant :LIMIT # e.g. part of Bar
+
+            def name; end
+          end
+        RUBY
+      end
+    end
+
+    it 'registers an offense and corrects for literal private constants' do
+      expect_offense(<<~RUBY)
+        class Foo
+          LIMIT = 10
+          private_constant :LIMIT
+
+          def name; end
+          ^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_constants`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          def name; end
+
+          LIMIT = 10
+          private_constant :LIMIT
+        end
+      RUBY
+    end
   end
 
   it 'registers an offense and corrects when str heredoc constant is defined after public method' do
@@ -386,6 +435,31 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     end
   end
 
+  context 'when defs modifier is used' do
+    it 'registers an offense for public class methods after private class methods' do
+      expect_offense(<<~RUBY)
+        class A
+          private_class_method def self.foo
+          end
+
+          public_class_method def self.bar
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `public_class_methods` is supposed to appear before `private_class_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          public_class_method def self.bar
+          end
+
+          private_class_method def self.foo
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'initializer is private and comes after attribute macro' do
     it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
@@ -412,4 +486,70 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       RUBY
     end
   end
+
+  it 'does not get confused by single node bodies' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        test&.private_methods(def foo; end)
+      end
+    RUBY
+  end
+
+  it 'does not get confused by kwbegin nodes' do
+    expect_offense(<<~RUBY)
+      class A
+        begin
+          begin
+            private def foo; end
+            public def bar; end
+            ^^^^^^^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not get confused by non-macro calls' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        def bar
+        end
+
+        singleton_class.attr_reader :foo
+      end
+    RUBY
+  end
+
+  it 'handles categories visibility with inline style too' do
+    expect_offense(<<~RUBY)
+      class A
+        private attr_accessor :foo
+
+        attr_accessor :bar
+        ^^^^^^^^^^^^^^^^^^ `attribute_macros` is supposed to appear before `private_attribute_macros`.
+      end
+    RUBY
+  end
+
+  it 'treats inline unknown macros as not recognized' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        private something
+
+        def bar
+        end
+      end
+    RUBY
+  end
+
+  it 'considers singleton class too' do
+    expect_offense(<<~RUBY)
+      class << A
+        private def foo; end
+        public def bar; end
+        ^^^^^^^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+      end
+    RUBY
+  end
 end
+# rubocop:enable Lint/LiteralAsCondition

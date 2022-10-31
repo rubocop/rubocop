@@ -137,14 +137,16 @@ module RuboCop
         include VisibilityHelp
         extend AutoCorrector
 
-        HUMANIZED_NODE_TYPE = {
-          casgn: :constants,
-          defs: :class_methods,
-          def: :public_methods,
-          sclass: :class_singleton
-        }.freeze
-
         MSG = '`%<category>s` is supposed to appear before `%<previous>s`.'
+
+        VISIBILITY_CLASS = {
+          public: { visibility: :public, category: 'methods' }.freeze,
+          protected: { visibility: :protected, category: 'methods' }.freeze,
+          private: { visibility: :private, category: 'methods' }.freeze,
+          public_class_method: { visibility: :public, category: 'class_methods' }.freeze,
+          private_class_method: { visibility: :private, category: 'class_methods' }.freeze
+        }.freeze
+        private_constant :VISIBILITY_CLASS
 
         # @!method dynamic_constant?(node)
         def_node_matcher :dynamic_constant?, <<~PATTERN
@@ -155,17 +157,68 @@ module RuboCop
         # Add offense when find a node out of expected order.
         def on_class(class_node)
           previous = -1
-          walk_over_nested_class_definition(class_node) do |node, category|
-            index = expected_order.index(category)
+          classify_all(class_node).each do |node|
+            next unless (index = group_order(node))
+
             if index < previous
-              message = format(MSG, category: category, previous: expected_order[previous])
+              message = format(MSG, category: expected_order[index],
+                                    previous: expected_order[previous])
               add_offense(node, message: message) { |corrector| autocorrect(corrector, node) }
             end
             previous = index
           end
         end
 
+        alias on_sclass on_class
+
+        def initialize(*)
+          super
+          @symbolized_categories = categories.to_h do |key, values|
+            [key.to_sym, values.map(&:to_sym)]
+          end
+          @classifer = Utils::ClassChildrenClassifier.new(@symbolized_categories)
+          @expected_order_index = expected_order.map.with_index.to_h.transform_keys(&:to_sym)
+        end
+
+        def self.support_multiple_source?
+          true
+        end
+
         private
+
+        def classify_all(class_node)
+          @classification = @classifer.classify_children(class_node)
+          @classification.map do |node, classification|
+            node if complete_classification(node, classification)
+          end.compact
+        end
+
+        def complete_classification(_node, classification) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          return unless classification
+
+          categ = classification[:categories]
+          # post macros without a particular category and
+          # refering only to unknowns are ignored
+          # (e.g. `private :some_unknown_method`)
+          return if classification[:macro] == :post && categ.nil?
+
+          categ ||= classification[:group]
+          visibility = classification[:visibility]
+          classification[:group_order] = \
+            if categ.is_a?(Array)
+              all = categ.map do |name|
+                find_group_order(visibility, name)
+              end
+              classification[:macro] == :pre ? all.min : all.max
+            else
+              find_group_order(visibility, categ)
+            end
+        end
+
+        def find_group_order(visibility, categ)
+          visibility_categ = :"#{visibility}_#{categ}"
+          @expected_order_index[visibility_categ] || @expected_order_index[categ]
+        end
 
         # Autocorrect by swapping between two nodes autocorrecting them
         def autocorrect(corrector, node)
@@ -181,85 +234,20 @@ module RuboCop
           corrector.remove(current_range)
         end
 
-        # Classifies a node to match with something in the {expected_order}
-        # @param node to be analysed
-        # @return String when the node type is a `:block` then
-        #   {classify} recursively with the first children
-        # @return String when the node type is a `:send` then {find_category}
-        #   by method name
-        # @return String otherwise trying to {humanize_node} of the current node
-        def classify(node)
-          return node.to_s unless node.respond_to?(:type)
+        # @return [Integer | nil]
+        def group_order(node)
+          return unless (c = @classification[node])
 
-          case node.type
-          when :block
-            classify(node.send_node)
-          when :send
-            find_category(node)
-          else
-            humanize_node(node)
-          end.to_s
-        end
-
-        # Categorize a node according to the {expected_order}
-        # Try to match {categories} values against the node's method_name given
-        # also its visibility.
-        # @param node to be analysed.
-        # @return [String] with the key category or the `method_name` as string
-        def find_category(node)
-          name = node.method_name.to_s
-          category, = categories.find { |_, names| names.include?(name) }
-          key = category || name
-          visibility_key =
-            if node.def_modifier?
-              "#{name}_methods"
-            else
-              "#{node_visibility(node)}_#{key}"
-            end
-          expected_order.include?(visibility_key) ? visibility_key : key
-        end
-
-        def walk_over_nested_class_definition(class_node)
-          class_elements(class_node).each do |node|
-            classification = classify(node)
-            next if ignore?(classification)
-
-            yield node, classification
-          end
-        end
-
-        def class_elements(class_node)
-          class_def = class_node.body
-
-          return [] unless class_def
-
-          if class_def.def_type? || class_def.send_type?
-            [class_def]
-          else
-            class_def.children.compact
-          end
-        end
-
-        def ignore?(classification)
-          classification.nil? ||
-            classification.to_s.end_with?('=') ||
-            expected_order.index(classification).nil?
+          c[:group_order]
         end
 
         def ignore_for_autocorrect?(node, sibling)
-          classification = classify(node)
-          sibling_class = classify(sibling)
+          index = group_order(node)
+          sibling_index = group_order(sibling)
 
-          ignore?(sibling_class) || classification == sibling_class || dynamic_constant?(node)
-        end
-
-        def humanize_node(node)
-          if node.def_type?
-            return :initializer if node.method?(:initialize)
-
-            return "#{node_visibility(node)}_methods"
-          end
-          HUMANIZED_NODE_TYPE[node.type] || node.type
+          sibling_index.nil? ||
+            index == sibling_index ||
+            dynamic_constant?(node)
         end
 
         def source_range_with_comment(node)
