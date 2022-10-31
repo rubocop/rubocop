@@ -183,9 +183,11 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength
 
   def to_table(header, content)
-    table = ['|===', "| #{header.join(' | ')}\n\n"].join("\n")
+    # Specify `[separator=¦]` to prevent the regexp `|` is not used as a table separator.
+    # See: https://docs.asciidoctor.org/asciidoc/latest/tables/data-format/#escape-the-cell-separator
+    table = ['[separator=¦]', '|===', "| #{header.join(' | ')}\n\n"].join("\n")
     marked_contents = content.map do |plain_content|
-      plain_content.map { |c| "| #{c}" }.join("\n")
+      plain_content.map { |c| "¦ #{c}" }.join("\n")
     end
     table << marked_contents.join("\n\n")
     table << "\n|===\n"
