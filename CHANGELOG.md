@@ -2,6 +2,28 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#11110](https://github.com/rubocop/rubocop/pull/11110): Add new `Style/RedundantEach` cop. ([@koic][])
+* [#10255](https://github.com/rubocop/rubocop/pull/10255): Add simple autocorrect for `Style/GuardClause`. ([@FnControlOption][])
+* [#11126](https://github.com/rubocop/rubocop/pull/11126): Have `Lint/RedundantRequireStatement` mark `set` as a redundant require in Ruby 3.2+. ([@drenmi][])
+* [#11001](https://github.com/rubocop/rubocop/pull/11001): Add option to raise cop errors `--raise-cop-error`. ([@wildmaples][])
+* [#10987](https://github.com/rubocop/rubocop/pull/10987): Opt-in cop compatibility in redundant directives. ([@tdeo][])
+
+### Bug fixes
+
+* [#11125](https://github.com/rubocop/rubocop/pull/11125): Fix an error for `Layout/SpaceInsideHashLiteralBraces` when using method argument that both key and value are hash literals. ([@koic][])
+* [#11132](https://github.com/rubocop/rubocop/issues/11132): Fix clobbering error on `Lint/EmptyConditionalBody`. ([@r7kamura][])
+* [#11117](https://github.com/rubocop/rubocop/issues/11117): Fix a false positive for `Style/BlockDelimiters` when specifying `EnforcedStyle: semantic` and using a single line block with {} followed by a safe navigation method call. ([@koic][])
+* [#11120](https://github.com/rubocop/rubocop/issues/11120): Fix an incorrect autocorrect for `Lint/RedundantRequireStatement` when using redundant `require` with modifier form. ([@koic][])
+
+### Changes
+
+* [#11131](https://github.com/rubocop/rubocop/pull/11131): Check newline in empty reference bracket on `Layout/SpaceInsideReferenceBrackets`. ([@r7kamura][])
+* [#11045](https://github.com/rubocop/rubocop/pull/11045): Update the `Style/ModuleFunction` documentation to suggest `class << self` as an alternative. ([@rdeckard][])
+* [#11006](https://github.com/rubocop/rubocop/issues/11006): Allow multiple `elsif` for `Style/IfWithBooleanLiteralBranches`. ([@koic][])
+* [#11113](https://github.com/rubocop/rubocop/pull/11113): Report the count of files in the Worst and the Offense Count formatters. ([@hosamaly][])
+
 ## 1.37.1 (2022-10-24)
 
 ### Bug fixes
@@ -6554,3 +6576,6 @@
 [@jcalvert]: https://github.com/jcalvert
 [@tsugimoto]: https://github.com/tsugimoto
 [@srcoley]: https://github.com/srcoley
+[@rdeckard]: https://github.com/rdeckard
+[@wildmaples]: https://github.com/wildmaples
+[@hosamaly]: https://github.com/hosamaly

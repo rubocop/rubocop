@@ -1,1 +1,0 @@
-* [#11117](https://github.com/rubocop/rubocop/issues/11117): Fix a false positive for `Style/BlockDelimiters` when specifying `EnforcedStyle: semantic` and using a single line block with {} followed by a safe navigation method call. ([@koic][])
