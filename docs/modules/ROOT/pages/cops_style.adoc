@@ -2470,7 +2470,7 @@ something.to_time
 
 === References
 
-* https://rubystyle.guide#date--time
+* https://rubystyle.guide#date-time
 
 == Style/DefWithParentheses
 
