@@ -106,18 +106,48 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
-    it 'does not register an offense for alias_method with explicit receiver' do
+    it 'does not register registers an offense for alias in a def' do
       expect_no_offenses(<<~RUBY)
-        class C
-          receiver.alias_method :ala, :bala
+        def foo
+          alias :ala :bala
         end
       RUBY
     end
 
-    it 'does not register an offense for alias_method in a method def' do
-      expect_no_offenses(<<~RUBY)
-        def method
+    it 'registers an offense for alias in a defs' do
+      expect_offense(<<~RUBY)
+        def some_obj.foo
+          alias :ala :bala
+          ^^^^^ Use `alias_method` instead of `alias`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_obj.foo
           alias_method :ala, :bala
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias in a block' do
+      expect_offense(<<~RUBY)
+        included do
+          alias :ala :bala
+          ^^^^^ Use `alias_method` instead of `alias`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        included do
+          alias_method :ala, :bala
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method with explicit receiver' do
+      expect_no_offenses(<<~RUBY)
+        class C
+          receiver.alias_method :ala, :bala
         end
       RUBY
     end

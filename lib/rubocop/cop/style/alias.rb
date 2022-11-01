@@ -7,6 +7,11 @@ module RuboCop
       # depending on configuration.
       # It also flags uses of `alias :symbol` rather than `alias bareword`.
       #
+      # However, it will always enforce `method_alias` when used `alias`
+      # in an instance method definition and in a singleton method definition.
+      # If used in a block, always enforce `alias_method`
+      # unless it is an `instance_eval` block.
+      #
       # @example EnforcedStyle: prefer_alias (default)
       #   # bad
       #   alias_method :bar, :foo
@@ -22,6 +27,7 @@ module RuboCop
       #
       #   # good
       #   alias_method :bar, :foo
+      #
       class Alias < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -71,7 +77,9 @@ module RuboCop
         end
 
         def alias_method_possible?(node)
-          scope_type(node) != :instance_eval && node.children.none?(&:gvar_type?)
+          scope_type(node) != :instance_eval &&
+            node.children.none?(&:gvar_type?) &&
+            node&.parent&.type != :def
         end
 
         def add_offense_for_args(node, &block)
