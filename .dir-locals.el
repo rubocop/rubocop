@@ -5,7 +5,8 @@
   (bug-reference-url-format . "https://github.com/rubocop/rubocop/issues/%s")
   (bug-reference-bug-regexp . "#\\(?2:[[:digit:]]+\\)")
   (indent-tabs-mode . nil)
-  (fill-column . 100)))
+  (fill-column . 100)
+  (whitespace-line-column 100)))
 
 ;; To use the bug-reference stuff, do:
 ;;     (add-hook 'text-mode-hook #'bug-reference-mode)
