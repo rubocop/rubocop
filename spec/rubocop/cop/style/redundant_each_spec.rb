@@ -114,6 +114,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `each` as enumerator' do
+    expect_no_offenses(<<~RUBY)
+      array.each
+    RUBY
+  end
+
   it 'does not register an offense when using `each.with_index`' do
     expect_no_offenses(<<~RUBY)
       array.each.with_index { |v, i| do_something(v, i) }
@@ -179,6 +185,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
   it 'does not register an offense when using `each_foo {}.each_with_object([]) {}`' do
     expect_no_offenses(<<~RUBY)
       array.each_foo { |i| foo(i) }.each_with_object([]) { |i| bar(i) }
+    RUBY
+  end
+
+  it 'does not register an offense when not chaining `each_` calls' do
+    expect_no_offenses(<<~RUBY)
+      [foo.each].each
     RUBY
   end
 end
