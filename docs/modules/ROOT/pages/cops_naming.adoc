@@ -2,14 +2,15 @@
 
 == Naming/AccessorMethodName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ -
 |===
 
 Makes sure that accessor methods are named properly. Applies
@@ -55,14 +56,15 @@ end
 
 == Naming/AsciiIdentifiers
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| 0.87
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ 0.87
 |===
 
 Checks for non-ascii characters in identifier and constant names.
@@ -126,12 +128,13 @@ FOÖ = "foo"
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AsciiConstants
-| `true`
-| Boolean
+¦ AsciiConstants
+¦ `true`
+¦ Boolean
 |===
 
 === References
@@ -140,14 +143,15 @@ FOÖ = "foo"
 
 == Naming/BinaryOperatorParameterName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.50
-| 1.2
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.50
+¦ 1.2
 |===
 
 Makes sure that certain binary operator methods have their
@@ -172,14 +176,15 @@ def +(other); end
 
 NOTE: Required Ruby version: 3.1
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.24
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.24
+¦ -
 |===
 
 In Ruby 3.1, anonymous block forwarding has been added.
@@ -226,16 +231,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `anonymous`
-| `anonymous`, `explicit`
+¦ EnforcedStyle
+¦ `anonymous`
+¦ `anonymous`, `explicit`
 
-| BlockForwardingName
-| `block`
-| String
+¦ BlockForwardingName
+¦ `block`
+¦ String
 |===
 
 === References
@@ -244,14 +250,15 @@ end
 
 == Naming/BlockParameterName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.53
-| 0.77
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.53
+¦ 0.77
 |===
 
 Checks block parameter names for how descriptive they
@@ -293,36 +300,38 @@ baz { |age, height, gender| do_stuff(age, height, gender) }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| MinNameLength
-| `1`
-| Integer
+¦ MinNameLength
+¦ `1`
+¦ Integer
 
-| AllowNamesEndingInNumbers
-| `true`
-| Boolean
+¦ AllowNamesEndingInNumbers
+¦ `true`
+¦ Boolean
 
-| AllowedNames
-| `[]`
-| Array
+¦ AllowedNames
+¦ `[]`
+¦ Array
 
-| ForbiddenNames
-| `[]`
-| Array
+¦ ForbiddenNames
+¦ `[]`
+¦ Array
 |===
 
 == Naming/ClassAndModuleCamelCase
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| 0.85
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ 0.85
 |===
 
 Checks for class and module names with
@@ -355,12 +364,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedNames
-| `module_parent`
-| Array
+¦ AllowedNames
+¦ `module_parent`
+¦ Array
 |===
 
 === References
@@ -369,14 +379,15 @@ end
 
 == Naming/ConstantName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ -
 |===
 
 Checks whether constant names are written using
@@ -404,14 +415,15 @@ INCH_IN_CM = 2.54
 
 == Naming/FileName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| 1.23
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ 1.23
 |===
 
 Makes sure that Ruby source files have snake_case
@@ -452,36 +464,37 @@ anything/using_snake_case.rake
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| Exclude
-| `[]`
-| Array
+¦ Exclude
+¦ `[]`
+¦ Array
 
-| ExpectMatchingDefinition
-| `false`
-| Boolean
+¦ ExpectMatchingDefinition
+¦ `false`
+¦ Boolean
 
-| CheckDefinitionPathHierarchy
-| `true`
-| Boolean
+¦ CheckDefinitionPathHierarchy
+¦ `true`
+¦ Boolean
 
-| CheckDefinitionPathHierarchyRoots
-| `lib`, `spec`, `test`, `src`
-| Array
+¦ CheckDefinitionPathHierarchyRoots
+¦ `lib`, `spec`, `test`, `src`
+¦ Array
 
-| Regex
-| `<none>`
-| 
+¦ Regex
+¦ `<none>`
+¦ 
 
-| IgnoreExecutableScripts
-| `true`
-| Boolean
+¦ IgnoreExecutableScripts
+¦ `true`
+¦ Boolean
 
-| AllowedAcronyms
-| `CLI`, `DSL`, `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF`, `GUID`, `HTML`, `HTTP`, `HTTPS`, `ID`, `IP`, `JSON`, `LHS`, `QPS`, `RAM`, `RHS`, `RPC`, `SLA`, `SMTP`, `SQL`, `SSH`, `TCP`, `TLS`, `TTL`, `UDP`, `UI`, `UID`, `UUID`, `URI`, `URL`, `UTF8`, `VM`, `XML`, `XMPP`, `XSRF`, `XSS`
-| Array
+¦ AllowedAcronyms
+¦ `CLI`, `DSL`, `ACL`, `API`, `ASCII`, `CPU`, `CSS`, `DNS`, `EOF`, `GUID`, `HTML`, `HTTP`, `HTTPS`, `ID`, `IP`, `JSON`, `LHS`, `QPS`, `RAM`, `RHS`, `RPC`, `SLA`, `SMTP`, `SQL`, `SSH`, `TCP`, `TLS`, `TTL`, `UDP`, `UI`, `UID`, `UUID`, `URI`, `URL`, `UTF8`, `VM`, `XML`, `XMPP`, `XSRF`, `XSS`
+¦ Array
 |===
 
 === References
@@ -490,14 +503,15 @@ anything/using_snake_case.rake
 
 == Naming/HeredocDelimiterCase
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.50
-| 1.2
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.50
+¦ 1.2
 |===
 
 Checks that your heredocs are using the configured case.
@@ -537,12 +551,13 @@ sql
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `uppercase`
-| `lowercase`, `uppercase`
+¦ EnforcedStyle
+¦ `uppercase`
+¦ `lowercase`, `uppercase`
 |===
 
 === References
@@ -551,14 +566,15 @@ sql
 
 == Naming/HeredocDelimiterNaming
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ -
 |===
 
 Checks that your heredocs are using meaningful delimiters.
@@ -587,12 +603,13 @@ EOS
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| ForbiddenDelimiters
-| `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))`
-| Array
+¦ ForbiddenDelimiters
+¦ `(?-mix:(^|\s)(EO[A-Z]{1}|END)(\s|$))`
+¦ Array
 |===
 
 === References
@@ -601,14 +618,15 @@ EOS
 
 == Naming/InclusiveLanguage
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| No
-| 1.18
-| 1.21
+¦ Disabled
+¦ Yes
+¦ No
+¦ 1.18
+¦ 1.21
 |===
 
 Recommends the use of inclusive language instead of problematic terms.
@@ -699,52 +717,54 @@ TeslaVehicle
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| CheckIdentifiers
-| `true`
-| Boolean
+¦ CheckIdentifiers
+¦ `true`
+¦ Boolean
 
-| CheckConstants
-| `true`
-| Boolean
+¦ CheckConstants
+¦ `true`
+¦ Boolean
 
-| CheckVariables
-| `true`
-| Boolean
+¦ CheckVariables
+¦ `true`
+¦ Boolean
 
-| CheckStrings
-| `false`
-| Boolean
+¦ CheckStrings
+¦ `false`
+¦ Boolean
 
-| CheckSymbols
-| `true`
-| Boolean
+¦ CheckSymbols
+¦ `true`
+¦ Boolean
 
-| CheckComments
-| `true`
-| Boolean
+¦ CheckComments
+¦ `true`
+¦ Boolean
 
-| CheckFilepaths
-| `true`
-| Boolean
+¦ CheckFilepaths
+¦ `true`
+¦ Boolean
 
-| FlaggedTerms
-| `{"whitelist"=>{"Regex"=>/white[-_\s]?list/, "Suggestions"=>["allowlist", "permit"]}, "blacklist"=>{"Regex"=>/black[-_\s]?list/, "Suggestions"=>["denylist", "block"]}, "slave"=>{"WholeWord"=>true, "Suggestions"=>["replica", "secondary", "follower"]}}`
-| 
+¦ FlaggedTerms
+¦ `{"whitelist"=>{"Regex"=>/white[-_\s]?list/, "Suggestions"=>["allowlist", "permit"]}, "blacklist"=>{"Regex"=>/black[-_\s]?list/, "Suggestions"=>["denylist", "block"]}, "slave"=>{"WholeWord"=>true, "Suggestions"=>["replica", "secondary", "follower"]}}`
+¦ 
 |===
 
 == Naming/MemoizedInstanceVariableName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| No
-| 0.53
-| 1.2
+¦ Enabled
+¦ No
+¦ No
+¦ 0.53
+¦ 1.2
 |===
 
 Checks for memoized methods whose instance variable name
@@ -906,24 +926,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyleForLeadingUnderscores
-| `disallowed`
-| `disallowed`, `required`, `optional`
+¦ EnforcedStyleForLeadingUnderscores
+¦ `disallowed`
+¦ `disallowed`, `required`, `optional`
 |===
 
 == Naming/MethodName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ -
 |===
 
 Makes sure that all methods use the configured style,
@@ -964,20 +986,21 @@ def fooBar; end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `snake_case`
-| `snake_case`, `camelCase`
+¦ EnforcedStyle
+¦ `snake_case`
+¦ `snake_case`, `camelCase`
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 
-| IgnoredPatterns
-| `[]`
-| Array
+¦ IgnoredPatterns
+¦ `[]`
+¦ Array
 |===
 
 === References
@@ -986,14 +1009,15 @@ def fooBar; end
 
 == Naming/MethodParameterName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.53
-| 0.77
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.53
+¦ 0.77
 |===
 
 Checks method parameter names for how descriptive they
@@ -1043,36 +1067,38 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| MinNameLength
-| `3`
-| Integer
+¦ MinNameLength
+¦ `3`
+¦ Integer
 
-| AllowNamesEndingInNumbers
-| `true`
-| Boolean
+¦ AllowNamesEndingInNumbers
+¦ `true`
+¦ Boolean
 
-| AllowedNames
-| `as`, `at`, `by`, `db`, `id`, `in`, `io`, `ip`, `of`, `on`, `os`, `pp`, `to`
-| Array
+¦ AllowedNames
+¦ `as`, `at`, `by`, `db`, `id`, `in`, `io`, `ip`, `of`, `on`, `os`, `pp`, `to`
+¦ Array
 
-| ForbiddenNames
-| `[]`
-| Array
+¦ ForbiddenNames
+¦ `[]`
+¦ Array
 |===
 
 == Naming/PredicateName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| 0.77
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ 0.77
 |===
 
 Checks that predicate methods names end with a question mark and
@@ -1138,28 +1164,29 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| NamePrefix
-| `is_`, `has_`, `have_`
-| Array
+¦ NamePrefix
+¦ `is_`, `has_`, `have_`
+¦ Array
 
-| ForbiddenPrefixes
-| `is_`, `has_`, `have_`
-| Array
+¦ ForbiddenPrefixes
+¦ `is_`, `has_`, `have_`
+¦ Array
 
-| AllowedMethods
-| `is_a?`
-| Array
+¦ AllowedMethods
+¦ `is_a?`
+¦ Array
 
-| MethodDefinitionMacros
-| `define_method`, `define_singleton_method`
-| Array
+¦ MethodDefinitionMacros
+¦ `define_method`, `define_singleton_method`
+¦ Array
 
-| Exclude
-| `+spec/**/*+`
-| Array
+¦ Exclude
+¦ `+spec/**/*+`
+¦ Array
 |===
 
 === References
@@ -1168,14 +1195,15 @@ end
 
 == Naming/RescuedExceptionsVariableName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.67
-| 0.68
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.67
+¦ 0.68
 |===
 
 Makes sure that rescued exceptions variables are named as
@@ -1245,24 +1273,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| PreferredName
-| `e`
-| String
+¦ PreferredName
+¦ `e`
+¦ String
 |===
 
 == Naming/VariableName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| 1.8
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ 1.8
 |===
 
 Makes sure that all variables use the configured style,
@@ -1302,20 +1332,21 @@ fooBar = 1
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `snake_case`
-| `snake_case`, `camelCase`
+¦ EnforcedStyle
+¦ `snake_case`
+¦ `snake_case`, `camelCase`
 
-| AllowedIdentifiers
-| `[]`
-| Array
+¦ AllowedIdentifiers
+¦ `[]`
+¦ Array
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 |===
 
 === References
@@ -1324,14 +1355,15 @@ fooBar = 1
 
 == Naming/VariableNumber
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| 1.4
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ 1.4
 |===
 
 Makes sure that all numbered variables use the
@@ -1471,28 +1503,29 @@ expect(Open3).to receive(:capture3)
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `normalcase`
-| `snake_case`, `normalcase`, `non_integer`
+¦ EnforcedStyle
+¦ `normalcase`
+¦ `snake_case`, `normalcase`, `non_integer`
 
-| CheckMethodNames
-| `true`
-| Boolean
+¦ CheckMethodNames
+¦ `true`
+¦ Boolean
 
-| CheckSymbols
-| `true`
-| Boolean
+¦ CheckSymbols
+¦ `true`
+¦ Boolean
 
-| AllowedIdentifiers
-| `capture3`, `iso8601`, `rfc1123_date`, `rfc822`, `rfc2822`, `rfc3339`
-| Array
+¦ AllowedIdentifiers
+¦ `capture3`, `iso8601`, `rfc1123_date`, `rfc822`, `rfc2822`, `rfc3339`
+¦ Array
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 |===
 
 === References

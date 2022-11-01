@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.38.0 (2022-11-01)
+
 ### New features
 
 * [#11110](https://github.com/rubocop/rubocop/pull/11110): Add new `Style/RedundantEach` cop. ([@koic][])

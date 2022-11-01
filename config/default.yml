@@ -4700,7 +4700,7 @@ Style/RedundantEach:
   Description: 'Checks for redundant `each`.'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.38'
 
 Style/RedundantException:
   Description: "Checks for an obsolete RuntimeException argument in raise/fail."

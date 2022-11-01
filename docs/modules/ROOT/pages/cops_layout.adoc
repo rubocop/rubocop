@@ -2,14 +2,15 @@
 
 == Layout/AccessModifierIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Bare access modifiers (those not applying to specific methods) should be
@@ -54,16 +55,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `indent`
-| `outdent`, `indent`
+¦ EnforcedStyle
+¦ `indent`
+¦ `outdent`, `indent`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 === References
@@ -72,14 +74,15 @@ end
 
 == Layout/ArgumentAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.68
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.68
+¦ 0.77
 |===
 
 Here we check if the arguments on a multi-line method
@@ -135,16 +138,17 @@ foo :bar,
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `with_first_argument`
-| `with_first_argument`, `with_fixed_indentation`
+¦ EnforcedStyle
+¦ `with_first_argument`
+¦ `with_first_argument`, `with_fixed_indentation`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 === References
@@ -153,14 +157,15 @@ foo :bar,
 
 == Layout/ArrayAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.77
 |===
 
 Here we check if the elements of a multi-line array literal are
@@ -206,16 +211,17 @@ array = [1, 2, 3,
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `with_first_element`
-| `with_first_element`, `with_fixed_indentation`
+¦ EnforcedStyle
+¦ `with_first_element`
+¦ `with_first_element`, `with_fixed_indentation`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 === References
@@ -224,14 +230,15 @@ array = [1, 2, 3,
 
 == Layout/AssignmentIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.77
 |===
 
 Checks the indentation of the first line of the
@@ -259,24 +266,26 @@ value =
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/BeginEndAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.91
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.91
+¦ -
 |===
 
 Checks whether the end keyword of `begin` is aligned properly.
@@ -326,28 +335,30 @@ foo ||= begin
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyleAlignWith
-| `start_of_line`
-| `start_of_line`, `begin`
+¦ EnforcedStyleAlignWith
+¦ `start_of_line`
+¦ `start_of_line`, `begin`
 
-| Severity
-| `warning`
-| String
+¦ Severity
+¦ `warning`
+¦ String
 |===
 
 == Layout/BlockAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.53
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.53
+¦ -
 |===
 
 Checks whether the end keywords are aligned properly for do
@@ -426,24 +437,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyleAlignWith
-| `either`
-| `either`, `start_of_block`, `start_of_line`
+¦ EnforcedStyleAlignWith
+¦ `either`
+¦ `either`, `start_of_block`, `start_of_line`
 |===
 
 == Layout/BlockEndNewline
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks whether the end statement of a do..end block
@@ -474,14 +487,15 @@ blah { |i|
 
 == Layout/CaseIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 1.16
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 1.16
 |===
 
 Checks how the `when` and ``in``s of a `case` expression
@@ -605,20 +619,21 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `case`
-| `case`, `end`
+¦ EnforcedStyle
+¦ `case`
+¦ `case`, `end`
 
-| IndentOneStep
-| `false`
-| Boolean
+¦ IndentOneStep
+¦ `false`
+¦ Boolean
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 === References
@@ -627,14 +642,15 @@ end
 
 == Layout/ClassStructure
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.52
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.52
+¦ -
 |===
 
 Checks if the code style follows the ExpectedOrder configuration:
@@ -772,16 +788,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| Categories
-| `{"module_inclusion"=>["include", "prepend", "extend"]}`
-| 
+¦ Categories
+¦ `{"module_inclusion"=>["include", "prepend", "extend"]}`
+¦ 
 
-| ExpectedOrder
-| `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `public_methods`, `protected_methods`, `private_methods`
-| Array
+¦ ExpectedOrder
+¦ `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `public_methods`, `protected_methods`, `private_methods`
+¦ Array
 |===
 
 === References
@@ -790,14 +807,15 @@ end
 
 == Layout/ClosingHeredocIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.57
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.57
+¦ -
 |===
 
 Checks the indentation of here document closings.
@@ -847,14 +865,15 @@ foo arg,
 
 == Layout/ClosingParenthesisIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks the indentation of hanging closing parentheses in
@@ -926,14 +945,15 @@ some_method(a,
 
 == Layout/CommentIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 1.24
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 1.24
 |===
 
 Checks the indentation of comments.
@@ -993,24 +1013,26 @@ a = 1 # A really long comment
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowForAlignment
-| `false`
-| Boolean
+¦ AllowForAlignment
+¦ `false`
+¦ Boolean
 |===
 
 == Layout/ConditionPosition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.53
-| 0.83
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.53
+¦ 0.83
 |===
 
 Checks for conditions that are not on the same line as
@@ -1043,14 +1065,15 @@ end
 
 == Layout/DefEndAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.53
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.53
+¦ -
 |===
 
 Checks whether the end keywords of method definitions are
@@ -1096,28 +1119,30 @@ private def foo
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyleAlignWith
-| `start_of_line`
-| `start_of_line`, `def`
+¦ EnforcedStyleAlignWith
+¦ `start_of_line`
+¦ `start_of_line`, `def`
 
-| Severity
-| `warning`
-| String
+¦ Severity
+¦ `warning`
+¦ String
 |===
 
 == Layout/DotPosition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks the . position in multi-line method calls.
@@ -1152,12 +1177,13 @@ something.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `leading`
-| `leading`, `trailing`
+¦ EnforcedStyle
+¦ `leading`
+¦ `leading`, `trailing`
 |===
 
 === References
@@ -1166,14 +1192,15 @@ something.
 
 == Layout/ElseAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks the alignment of else keywords. Normally they should
@@ -1209,14 +1236,15 @@ end
 
 == Layout/EmptyComment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.53
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.53
+¦ -
 |===
 
 Checks empty comment.
@@ -1298,28 +1326,30 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowBorderComment
-| `true`
-| Boolean
+¦ AllowBorderComment
+¦ `true`
+¦ Boolean
 
-| AllowMarginComment
-| `true`
-| Boolean
+¦ AllowMarginComment
+¦ `true`
+¦ Boolean
 |===
 
 == Layout/EmptyLineAfterGuardClause
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.56
-| 0.59
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.56
+¦ 0.59
 |===
 
 Enforces empty line after guard clause
@@ -1360,14 +1390,15 @@ end
 
 == Layout/EmptyLineAfterMagicComment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for a newline after the final magic comment.
@@ -1398,14 +1429,15 @@ end
 
 == Layout/EmptyLineAfterMultilineCondition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.90
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.90
+¦ -
 |===
 
 Enforces empty line after multiline condition.
@@ -1466,14 +1498,15 @@ end
 
 == Layout/EmptyLineBetweenDefs
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 1.23
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 1.23
 |===
 
 Checks whether class/module/method definitions are
@@ -1603,28 +1636,29 @@ class ErrorC < BaseError; end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EmptyLineBetweenMethodDefs
-| `true`
-| Boolean
+¦ EmptyLineBetweenMethodDefs
+¦ `true`
+¦ Boolean
 
-| EmptyLineBetweenClassDefs
-| `true`
-| Boolean
+¦ EmptyLineBetweenClassDefs
+¦ `true`
+¦ Boolean
 
-| EmptyLineBetweenModuleDefs
-| `true`
-| Boolean
+¦ EmptyLineBetweenModuleDefs
+¦ `true`
+¦ Boolean
 
-| AllowAdjacentOneLineDefs
-| `true`
-| Boolean
+¦ AllowAdjacentOneLineDefs
+¦ `true`
+¦ Boolean
 
-| NumberOfEmptyLines
-| `1`
-| Integer
+¦ NumberOfEmptyLines
+¦ `1`
+¦ Integer
 |===
 
 === References
@@ -1633,14 +1667,15 @@ class ErrorC < BaseError; end
 
 == Layout/EmptyLines
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for two or more consecutive blank lines.
@@ -1667,14 +1702,15 @@ some_method
 
 == Layout/EmptyLinesAroundAccessModifier
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Access modifiers should be surrounded by blank lines.
@@ -1724,12 +1760,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `around`
-| `around`, `only_before`
+¦ EnforcedStyle
+¦ `around`
+¦ `around`, `only_before`
 |===
 
 === References
@@ -1739,14 +1776,15 @@ end
 
 == Layout/EmptyLinesAroundArguments
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.52
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.52
+¦ -
 |===
 
 Checks if empty lines exist around the arguments
@@ -1790,14 +1828,15 @@ some_method(
 
 == Layout/EmptyLinesAroundAttributeAccessor
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.83
-| 0.84
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.83
+¦ 0.84
 |===
 
 Checks for a newline after an attribute accessor or a group of them.
@@ -1875,16 +1914,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowAliasSyntax
-| `true`
-| Boolean
+¦ AllowAliasSyntax
+¦ `true`
+¦ Boolean
 
-| AllowedMethods
-| `alias_method`, `public`, `protected`, `private`
-| Array
+¦ AllowedMethods
+¦ `alias_method`, `public`, `protected`, `private`
+¦ Array
 |===
 
 === References
@@ -1893,14 +1933,15 @@ end
 
 == Layout/EmptyLinesAroundBeginBody
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks if empty lines exist around the bodies of begin-end
@@ -1931,14 +1972,15 @@ end
 
 == Layout/EmptyLinesAroundBlockBody
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks if empty lines around the bodies of blocks match
@@ -1972,12 +2014,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `no_empty_lines`
-| `empty_lines`, `no_empty_lines`
+¦ EnforcedStyle
+¦ `no_empty_lines`
+¦ `empty_lines`, `no_empty_lines`
 |===
 
 === References
@@ -1986,14 +2029,15 @@ end
 
 == Layout/EmptyLinesAroundClassBody
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.53
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.53
 |===
 
 Checks if empty lines around the bodies of classes match
@@ -2086,12 +2130,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `no_empty_lines`
-| `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`, `beginning_only`, `ending_only`
+¦ EnforcedStyle
+¦ `no_empty_lines`
+¦ `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`, `beginning_only`, `ending_only`
 |===
 
 === References
@@ -2100,14 +2145,15 @@ end
 
 == Layout/EmptyLinesAroundExceptionHandlingKeywords
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks if empty lines exist around the bodies of `begin`
@@ -2175,14 +2221,15 @@ end
 
 == Layout/EmptyLinesAroundMethodBody
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks if empty lines exist around the bodies of methods.
@@ -2212,14 +2259,15 @@ end
 
 == Layout/EmptyLinesAroundModuleBody
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks if empty lines around the bodies of modules match
@@ -2284,12 +2332,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `no_empty_lines`
-| `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`
+¦ EnforcedStyle
+¦ `no_empty_lines`
+¦ `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`
 |===
 
 === References
@@ -2298,14 +2347,15 @@ end
 
 == Layout/EndAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.53
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.53
+¦ -
 |===
 
 Checks whether the end keywords are aligned properly.
@@ -2394,28 +2444,30 @@ variable =
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyleAlignWith
-| `keyword`
-| `keyword`, `variable`, `start_of_line`
+¦ EnforcedStyleAlignWith
+¦ `keyword`
+¦ `keyword`, `variable`, `start_of_line`
 
-| Severity
-| `warning`
-| String
+¦ Severity
+¦ `warning`
+¦ String
 |===
 
 == Layout/EndOfLine
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.49
+¦ -
 |===
 
 Checks for Windows-style line endings in the source code.
@@ -2468,12 +2520,13 @@ puts 'Hello' # Return character is CR+LF on all platforms.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `native`
-| `native`, `lf`, `crlf`
+¦ EnforcedStyle
+¦ `native`
+¦ `native`, `lf`, `crlf`
 |===
 
 === References
@@ -2482,14 +2535,15 @@ puts 'Hello' # Return character is CR+LF on all platforms.
 
 == Layout/ExtraSpacing
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for extra/unnecessary whitespace.
@@ -2523,32 +2577,34 @@ some_object.method(arg)    # this is some comment
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowForAlignment
-| `true`
-| Boolean
+¦ AllowForAlignment
+¦ `true`
+¦ Boolean
 
-| AllowBeforeTrailingComments
-| `false`
-| Boolean
+¦ AllowBeforeTrailingComments
+¦ `false`
+¦ Boolean
 
-| ForceEqualSignAlignment
-| `false`
-| Boolean
+¦ ForceEqualSignAlignment
+¦ `false`
+¦ Boolean
 |===
 
 == Layout/FirstArgumentIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.68
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.68
+¦ 0.77
 |===
 
 Checks the indentation of the first argument in a method call.
@@ -2713,28 +2769,30 @@ second_param
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `special_for_inner_method_call_in_parentheses`
-| `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
+¦ EnforcedStyle
+¦ `special_for_inner_method_call_in_parentheses`
+¦ `consistent`, `consistent_relative_to_receiver`, `special_for_inner_method_call`, `special_for_inner_method_call_in_parentheses`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/FirstArrayElementIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.68
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.68
+¦ 0.77
 |===
 
 Checks the indentation of the first element in an array literal
@@ -2830,28 +2888,30 @@ and_now_for_something = [
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `special_inside_parentheses`
-| `special_inside_parentheses`, `consistent`, `align_brackets`
+¦ EnforcedStyle
+¦ `special_inside_parentheses`
+¦ `special_inside_parentheses`, `consistent`, `align_brackets`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/FirstArrayElementLineBreak
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for a line break before the first element in a
@@ -2873,14 +2933,15 @@ multi-line array.
 
 == Layout/FirstHashElementIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.68
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.68
+¦ 0.77
 |===
 
 Checks the indentation of the first key in a hash literal
@@ -3006,28 +3067,30 @@ takes_multi_pairs_hash(x: {
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `special_inside_parentheses`
-| `special_inside_parentheses`, `consistent`, `align_braces`
+¦ EnforcedStyle
+¦ `special_inside_parentheses`
+¦ `special_inside_parentheses`, `consistent`, `align_braces`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/FirstHashElementLineBreak
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for a line break before the first element in a
@@ -3049,14 +3112,15 @@ multi-line hash.
 
 == Layout/FirstMethodArgumentLineBreak
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for a line break before the first argument in a
@@ -3082,14 +3146,15 @@ method foo, bar,
 
 == Layout/FirstMethodParameterLineBreak
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for a line break before the first parameter in a
@@ -3121,14 +3186,15 @@ end
 
 == Layout/FirstParameterIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.77
 |===
 
 Checks the indentation of the first parameter in a method
@@ -3183,28 +3249,30 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `consistent`
-| `consistent`, `align_parentheses`
+¦ EnforcedStyle
+¦ `consistent`
+¦ `consistent`, `align_parentheses`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/HashAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 1.16
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 1.16
 |===
 
 Check that the keys, separators, and values of a multi-line hash
@@ -3423,32 +3491,34 @@ do_something({foo: 1,
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedHashRocketStyle
-| `key`
-| `key`, `separator`, `table`
+¦ EnforcedHashRocketStyle
+¦ `key`
+¦ `key`, `separator`, `table`
 
-| EnforcedColonStyle
-| `key`
-| `key`, `separator`, `table`
+¦ EnforcedColonStyle
+¦ `key`
+¦ `key`, `separator`, `table`
 
-| EnforcedLastArgumentHashStyle
-| `always_inspect`
-| `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
+¦ EnforcedLastArgumentHashStyle
+¦ `always_inspect`
+¦ `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
 |===
 
 == Layout/HeredocArgumentClosingParenthesis
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.68
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.68
+¦ -
 |===
 
 Checks for the placement of the closing parenthesis
@@ -3508,14 +3578,15 @@ opening HEREDOC tag.
 
 == Layout/HeredocIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.85
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.85
 |===
 
 Checks the indentation of the here document bodies. The bodies
@@ -3546,14 +3617,15 @@ RUBY
 
 == Layout/IndentationConsistency
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for inconsistent indentation.
@@ -3684,12 +3756,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `normal`
-| `normal`, `indented_internal_methods`
+¦ EnforcedStyle
+¦ `normal`
+¦ `normal`, `indented_internal_methods`
 |===
 
 === References
@@ -3699,14 +3772,15 @@ end
 
 == Layout/IndentationStyle
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.82
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.82
 |===
 
 Checks that the indentation method is consistent.
@@ -3750,16 +3824,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 
-| EnforcedStyle
-| `spaces`
-| `spaces`, `tabs`
+¦ EnforcedStyle
+¦ `spaces`
+¦ `spaces`, `tabs`
 |===
 
 === References
@@ -3768,14 +3843,15 @@ end
 
 == Layout/IndentationWidth
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for indentation that doesn't use the specified number
@@ -3828,20 +3904,21 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| Width
-| `2`
-| Integer
+¦ Width
+¦ `2`
+¦ Integer
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 
-| IgnoredPatterns
-| `[]`
-| Array
+¦ IgnoredPatterns
+¦ `[]`
+¦ Array
 |===
 
 === References
@@ -3850,14 +3927,15 @@ end
 
 == Layout/InitialIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for indentation of the first non-blank non-comment
@@ -3880,14 +3958,15 @@ end
 
 == Layout/LeadingCommentSpace
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.73
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.73
 |===
 
 Checks whether comments have a leading space after the
@@ -3953,16 +4032,17 @@ or rackup options.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowDoxygenCommentStyle
-| `false`
-| Boolean
+¦ AllowDoxygenCommentStyle
+¦ `false`
+¦ Boolean
 
-| AllowGemfileRubyComment
-| `false`
-| Boolean
+¦ AllowGemfileRubyComment
+¦ `false`
+¦ Boolean
 |===
 
 === References
@@ -3971,14 +4051,15 @@ or rackup options.
 
 == Layout/LeadingEmptyLines
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.57
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.57
+¦ 0.77
 |===
 
 Checks for unnecessary leading blank lines at the beginning
@@ -4011,14 +4092,15 @@ end
 
 == Layout/LineContinuationLeadingSpace
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.31
-| 1.32
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.31
+¦ 1.32
 |===
 
 Checks that strings broken over multiple lines (by a backslash) contain
@@ -4071,28 +4153,30 @@ instead of trailing spaces.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `false`
-| Boolean
+¦ AutoCorrect
+¦ `false`
+¦ Boolean
 
-| EnforcedStyle
-| `trailing`
-| `leading`, `trailing`
+¦ EnforcedStyle
+¦ `trailing`
+¦ `leading`, `trailing`
 |===
 
 == Layout/LineContinuationSpacing
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.31
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.31
+¦ -
 |===
 
 Checks that the backslash of a line continuation is separated from
@@ -4132,28 +4216,30 @@ preceding text by exactly one space (default) or zero spaces.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `true`
-| Boolean
+¦ AutoCorrect
+¦ `true`
+¦ Boolean
 
-| EnforcedStyle
-| `space`
-| `space`, `no_space`
+¦ EnforcedStyle
+¦ `space`
+¦ `space`, `no_space`
 |===
 
 == Layout/LineEndStringConcatenationIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.18
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.18
+¦ -
 |===
 
 Checks the indentation of the next line after a line that ends with a string
@@ -4238,28 +4324,30 @@ my_hash = {
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `aligned`
-| `aligned`, `indented`
+¦ EnforcedStyle
+¦ `aligned`
+¦ `aligned`, `indented`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/LineLength
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.25
-| 1.4
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.25
+¦ 1.4
 |===
 
 Checks the length of lines in the source code.
@@ -4323,36 +4411,37 @@ bar: "0000000000", baz: "0000000000"}
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| Max
-| `120`
-| Integer
+¦ Max
+¦ `120`
+¦ Integer
 
-| AllowHeredoc
-| `true`
-| Boolean
+¦ AllowHeredoc
+¦ `true`
+¦ Boolean
 
-| AllowURI
-| `true`
-| Boolean
+¦ AllowURI
+¦ `true`
+¦ Boolean
 
-| URISchemes
-| `http`, `https`
-| Array
+¦ URISchemes
+¦ `http`, `https`
+¦ Array
 
-| IgnoreCopDirectives
-| `true`
-| Boolean
+¦ IgnoreCopDirectives
+¦ `true`
+¦ Boolean
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 
-| IgnoredPatterns
-| `[]`
-| Array
+¦ IgnoredPatterns
+¦ `[]`
+¦ Array
 |===
 
 === References
@@ -4361,14 +4450,15 @@ bar: "0000000000", baz: "0000000000"}
 
 == Layout/MultilineArrayBraceLayout
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that the closing brace in an array literal is either
@@ -4473,24 +4563,26 @@ line as the last element of the array.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `symmetrical`
-| `symmetrical`, `new_line`, `same_line`
+¦ EnforcedStyle
+¦ `symmetrical`
+¦ `symmetrical`, `new_line`, `same_line`
 |===
 
 == Layout/MultilineArrayLineBreaks
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.67
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.67
+¦ -
 |===
 
 Ensures that each item in a multi-line array
@@ -4516,14 +4608,15 @@ starts on a separate line.
 
 == Layout/MultilineAssignmentLayout
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks whether the multiline assignments have a newline
@@ -4600,12 +4693,13 @@ foo =
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `new_line`
-| `same_line`, `new_line`
+¦ EnforcedStyle
+¦ `new_line`
+¦ `same_line`, `new_line`
 |===
 
 === References
@@ -4614,14 +4708,15 @@ foo =
 
 == Layout/MultilineBlockLayout
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks whether the multiline do end blocks have a newline
@@ -4676,14 +4771,15 @@ blah { |
 
 == Layout/MultilineHashBraceLayout
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that the closing brace in a hash literal is either
@@ -4787,24 +4883,26 @@ line as the last element of the hash.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `symmetrical`
-| `symmetrical`, `new_line`, `same_line`
+¦ EnforcedStyle
+¦ `symmetrical`
+¦ `symmetrical`, `new_line`, `same_line`
 |===
 
 == Layout/MultilineHashKeyLineBreaks
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.67
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.67
+¦ -
 |===
 
 Ensures that each key in a multi-line hash
@@ -4830,14 +4928,15 @@ starts on a separate line.
 
 == Layout/MultilineMethodArgumentLineBreaks
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.67
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.67
+¦ -
 |===
 
 Ensures that each argument in a multi-line method call
@@ -4868,14 +4967,15 @@ foo(a, b, c)
 
 == Layout/MultilineMethodCallBraceLayout
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that the closing brace in a method call is either
@@ -4980,24 +5080,26 @@ foo(a,
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `symmetrical`
-| `symmetrical`, `new_line`, `same_line`
+¦ EnforcedStyle
+¦ `symmetrical`
+¦ `symmetrical`, `new_line`, `same_line`
 |===
 
 == Layout/MultilineMethodCallIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks the indentation of the method name part in method calls
@@ -5060,28 +5162,30 @@ myvariable = Thing
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `aligned`
-| `aligned`, `indented`, `indented_relative_to_receiver`
+¦ EnforcedStyle
+¦ `aligned`
+¦ `aligned`, `indented`, `indented_relative_to_receiver`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/MultilineMethodDefinitionBraceLayout
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that the closing brace in a method definition is either
@@ -5198,24 +5302,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `symmetrical`
-| `symmetrical`, `new_line`, `same_line`
+¦ EnforcedStyle
+¦ `symmetrical`
+¦ `symmetrical`, `new_line`, `same_line`
 |===
 
 == Layout/MultilineMethodParameterLineBreaks
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 1.32
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 1.32
+¦ -
 |===
 
 Ensures that each parameter in a multi-line method definition
@@ -5249,14 +5355,15 @@ end
 
 == Layout/MultilineOperationIndentation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks the indentation of the right hand side operand in binary operations that
@@ -5308,28 +5415,30 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `aligned`
-| `aligned`, `indented`
+¦ EnforcedStyle
+¦ `aligned`
+¦ `aligned`, `indented`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 == Layout/ParameterAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.77
 |===
 
 Here we check if the parameters on a multi-line method call or
@@ -5410,16 +5519,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `with_first_parameter`
-| `with_first_parameter`, `with_fixed_indentation`
+¦ EnforcedStyle
+¦ `with_first_parameter`
+¦ `with_first_parameter`, `with_fixed_indentation`
 
-| IndentationWidth
-| `<none>`
-| Integer
+¦ IndentationWidth
+¦ `<none>`
+¦ Integer
 |===
 
 === References
@@ -5428,14 +5538,15 @@ end
 
 == Layout/RedundantLineBreak
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 1.13
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 1.13
+¦ -
 |===
 
 Checks whether certain expressions, e.g. method calls, that could fit
@@ -5493,24 +5604,26 @@ foo(a) { |x| puts x }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| InspectBlocks
-| `false`
-| Boolean
+¦ InspectBlocks
+¦ `false`
+¦ Boolean
 |===
 
 == Layout/RescueEnsureAlignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks whether the rescue and ensure keywords are aligned
@@ -5537,14 +5650,15 @@ end
 
 == Layout/SingleLineBlockChain
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 1.14
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 1.14
+¦ -
 |===
 
 Checks if method calls are chained onto single line blocks. It considers that a
@@ -5569,14 +5683,15 @@ end.join('-')
 
 == Layout/SpaceAfterColon
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for colon (:) not followed by some kind of space.
@@ -5600,14 +5715,15 @@ def f(a:, b: 2); {a: 3}; end
 
 == Layout/SpaceAfterComma
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for comma (,) not followed by some kind of space.
@@ -5631,14 +5747,15 @@ Checks for comma (,) not followed by some kind of space.
 
 == Layout/SpaceAfterMethodName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for space between a method name and a left parenthesis in defs.
@@ -5662,14 +5779,15 @@ def method=(y) end
 
 == Layout/SpaceAfterNot
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for space after `!`.
@@ -5691,14 +5809,15 @@ Checks for space after `!`.
 
 == Layout/SpaceAfterSemicolon
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for semicolon (;) not followed by some kind of space.
@@ -5720,14 +5839,15 @@ x = 1; y = 2
 
 == Layout/SpaceAroundBlockParameters
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks the spacing inside and after block parameters pipes. Line breaks
@@ -5764,24 +5884,26 @@ not by this cop.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyleInsidePipes
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyleInsidePipes
+¦ `no_space`
+¦ `space`, `no_space`
 |===
 
 == Layout/SpaceAroundEqualsInParameterDefault
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that the equals signs in parameter default assignments
@@ -5821,12 +5943,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `space`
-| `space`, `no_space`
+¦ EnforcedStyle
+¦ `space`
+¦ `space`, `no_space`
 |===
 
 === References
@@ -5835,14 +5958,15 @@ end
 
 == Layout/SpaceAroundKeyword
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks the spacing around the keywords.
@@ -5872,14 +5996,15 @@ something = 123 if test
 
 == Layout/SpaceAroundMethodCallOperator
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.82
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.82
+¦ -
 |===
 
 Checks method call operators to not have spaces around them.
@@ -5919,14 +6044,15 @@ RuboCop::Cop::Cop
 
 == Layout/SpaceAroundOperators
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that operators have space around them, except for ** which
@@ -5999,16 +6125,17 @@ a ** b
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowForAlignment
-| `true`
-| Boolean
+¦ AllowForAlignment
+¦ `true`
+¦ Boolean
 
-| EnforcedStyleForExponentOperator
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyleForExponentOperator
+¦ `no_space`
+¦ `space`, `no_space`
 |===
 
 === References
@@ -6017,14 +6144,15 @@ a ** b
 
 == Layout/SpaceBeforeBlockBraces
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.52
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.52
 |===
 
 Checks that block braces have or don't have a space before the opening
@@ -6086,28 +6214,30 @@ foo.map{ |a|
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `space`
-| `space`, `no_space`
+¦ EnforcedStyle
+¦ `space`
+¦ `space`, `no_space`
 
-| EnforcedStyleForEmptyBraces
-| `space`
-| `space`, `no_space`
+¦ EnforcedStyleForEmptyBraces
+¦ `space`
+¦ `space`, `no_space`
 |===
 
 == Layout/SpaceBeforeBrackets
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.7
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.7
+¦ -
 |===
 
 Checks for space between the name of a receiver and a left
@@ -6130,14 +6260,15 @@ collection[index_or_key]
 
 == Layout/SpaceBeforeComma
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for comma (,) preceded by space.
@@ -6159,14 +6290,15 @@ each { |a, b| }
 
 == Layout/SpaceBeforeComment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for missing space between a token and a comment on the
@@ -6185,14 +6317,15 @@ same line.
 
 == Layout/SpaceBeforeFirstArg
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that exactly one space is used between a method name and the
@@ -6219,24 +6352,26 @@ something 'hello'
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowForAlignment
-| `true`
-| Boolean
+¦ AllowForAlignment
+¦ `true`
+¦ Boolean
 |===
 
 == Layout/SpaceBeforeSemicolon
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for semicolon (;) preceded by space.
@@ -6254,14 +6389,15 @@ x = 1; y = 2
 
 == Layout/SpaceInLambdaLiteral
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for spaces between `->` and opening parameter
@@ -6293,24 +6429,26 @@ a = -> (x, y) { x + y }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `require_no_space`
-| `require_no_space`, `require_space`
+¦ EnforcedStyle
+¦ `require_no_space`
+¦ `require_no_space`, `require_space`
 |===
 
 == Layout/SpaceInsideArrayLiteralBrackets
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.52
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.52
+¦ -
 |===
 
 Checks that brackets used for array literals have or don't have
@@ -6401,28 +6539,30 @@ bar = [ ]
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `no_space`
-| `space`, `no_space`, `compact`
+¦ EnforcedStyle
+¦ `no_space`
+¦ `space`, `no_space`, `compact`
 
-| EnforcedStyleForEmptyBrackets
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyleForEmptyBrackets
+¦ `no_space`
+¦ `space`, `no_space`
 |===
 
 == Layout/SpaceInsideArrayPercentLiteral
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for unnecessary additional spaces inside array percent literals
@@ -6440,14 +6580,15 @@ Checks for unnecessary additional spaces inside array percent literals
 
 == Layout/SpaceInsideBlockBraces
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that block braces have or don't have surrounding space inside
@@ -6549,32 +6690,34 @@ some_array.each {   }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `space`
-| `space`, `no_space`
+¦ EnforcedStyle
+¦ `space`
+¦ `space`, `no_space`
 
-| EnforcedStyleForEmptyBraces
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyleForEmptyBraces
+¦ `no_space`
+¦ `space`, `no_space`
 
-| SpaceBeforeBlockParameters
-| `true`
-| Boolean
+¦ SpaceBeforeBlockParameters
+¦ `true`
+¦ Boolean
 |===
 
 == Layout/SpaceInsideHashLiteralBraces
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks that braces used for hash literals have or don't have
@@ -6665,16 +6808,17 @@ foo = {
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `space`
-| `space`, `no_space`, `compact`
+¦ EnforcedStyle
+¦ `space`
+¦ `space`, `no_space`, `compact`
 
-| EnforcedStyleForEmptyBraces
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyleForEmptyBraces
+¦ `no_space`
+¦ `space`, `no_space`
 |===
 
 === References
@@ -6683,14 +6827,15 @@ foo = {
 
 == Layout/SpaceInsideParens
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 1.22
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 1.22
 |===
 
 Checks for spaces inside ordinary round parentheses.
@@ -6760,12 +6905,13 @@ g((( 3 + 5 ) * f ) ** x, 5 )
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `no_space`
-| `space`, `compact`, `no_space`
+¦ EnforcedStyle
+¦ `no_space`
+¦ `space`, `compact`, `no_space`
 |===
 
 === References
@@ -6774,14 +6920,15 @@ g((( 3 + 5 ) * f ) ** x, 5 )
 
 == Layout/SpaceInsidePercentLiteralDelimiters
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for unnecessary additional spaces inside the delimiters of
@@ -6803,14 +6950,15 @@ Checks for unnecessary additional spaces inside the delimiters of
 
 == Layout/SpaceInsideRangeLiteral
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for spaces inside range literals.
@@ -6838,14 +6986,15 @@ Checks for spaces inside range literals.
 
 == Layout/SpaceInsideReferenceBrackets
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.52
-| 0.53
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.52
+¦ 0.53
 |===
 
 Checks that reference brackets have or don't have
@@ -6895,6 +7044,8 @@ array[ index ]
 # bad
 foo[ ]
 foo[     ]
+foo[
+]
 
 # good
 foo[]
@@ -6910,6 +7061,8 @@ foo[]
 # bad
 foo[]
 foo[    ]
+foo[
+]
 
 # good
 foo[ ]
@@ -6917,28 +7070,30 @@ foo[ ]
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyle
+¦ `no_space`
+¦ `space`, `no_space`
 
-| EnforcedStyleForEmptyBrackets
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyleForEmptyBrackets
+¦ `no_space`
+¦ `space`, `no_space`
 |===
 
 == Layout/SpaceInsideStringInterpolation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Checks for whitespace within string interpolations.
@@ -6969,12 +7124,13 @@ Checks for whitespace within string interpolations.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `no_space`
-| `space`, `no_space`
+¦ EnforcedStyle
+¦ `no_space`
+¦ `space`, `no_space`
 |===
 
 === References
@@ -6983,14 +7139,15 @@ Checks for whitespace within string interpolations.
 
 == Layout/TrailingEmptyLines
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.77
 |===
 
 Looks for trailing blank lines and a final newline in the
@@ -7039,12 +7196,13 @@ class Foo; end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `final_newline`
-| `final_newline`, `final_blank_line`
+¦ EnforcedStyle
+¦ `final_newline`
+¦ `final_newline`, `final_blank_line`
 |===
 
 === References
@@ -7053,14 +7211,15 @@ class Foo; end
 
 == Layout/TrailingWhitespace
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 1.0
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 1.0
 |===
 
 Looks for trailing whitespace in the source code.
@@ -7113,12 +7272,13 @@ RUBY
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowInHeredoc
-| `false`
-| Boolean
+¦ AllowInHeredoc
+¦ `false`
+¦ Boolean
 |===
 
 === References

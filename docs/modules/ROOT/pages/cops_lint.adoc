@@ -2,14 +2,15 @@
 
 == Lint/AmbiguousAssignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.7
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.7
+¦ -
 |===
 
 Checks for mistyped shorthand assignments.
@@ -33,14 +34,15 @@ x != y # or x = !y
 
 == Lint/AmbiguousBlockAssociation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.48
-| 1.13
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.48
+¦ 1.13
 |===
 
 Checks for ambiguous block association with method
@@ -109,20 +111,21 @@ expect { do_something }.to not_change { object.attribute }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedMethods
-| `[]`
-| Array
+¦ AllowedMethods
+¦ `[]`
+¦ Array
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 
-| IgnoredMethods
-| `[]`
-| Array
+¦ IgnoredMethods
+¦ `[]`
+¦ Array
 |===
 
 === References
@@ -131,14 +134,15 @@ expect { do_something }.to not_change { object.attribute }
 
 == Lint/AmbiguousOperator
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.17
-| 0.83
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.17
+¦ 0.83
 |===
 
 Checks for ambiguous operators in the first argument of a
@@ -169,14 +173,15 @@ do_something(*some_array)
 
 == Lint/AmbiguousOperatorPrecedence
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.21
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.21
+¦ -
 |===
 
 Looks for expressions containing multiple binary operators
@@ -210,14 +215,15 @@ a * b / c % d
 
 == Lint/AmbiguousRange
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes (Unsafe)
-| 1.19
-| -
+¦ Pending
+¦ Yes
+¦ Yes (Unsafe)
+¦ 1.19
+¦ -
 |===
 
 Checks for ambiguous ranges.
@@ -289,24 +295,26 @@ a.foo..b.bar
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| RequireParenthesesForMethodChains
-| `false`
-| Boolean
+¦ RequireParenthesesForMethodChains
+¦ `false`
+¦ Boolean
 |===
 
 == Lint/AmbiguousRegexpLiteral
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.17
-| 0.83
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.17
+¦ 0.83
 |===
 
 Checks for ambiguous regexp literals in the first argument of
@@ -334,14 +342,15 @@ do_something(/pattern/i)
 
 == Lint/AssignmentInCondition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.9
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.9
+¦ -
 |===
 
 Checks for assignments in the conditions of
@@ -389,12 +398,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowSafeAssignment
-| `true`
-| Boolean
+¦ AllowSafeAssignment
+¦ `true`
+¦ Boolean
 |===
 
 === References
@@ -403,14 +413,15 @@ end
 
 == Lint/BigDecimalNew
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.53
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.53
+¦ -
 |===
 
 `BigDecimal.new()` is deprecated since BigDecimal 1.3.3.
@@ -430,14 +441,15 @@ BigDecimal(123.456, 3)
 
 == Lint/BinaryOperatorWithIdenticalOperands
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| No
-| 0.89
-| 1.7
+¦ Enabled
+¦ No
+¦ No
+¦ 0.89
+¦ 1.7
 |===
 
 Checks for places where binary operator has identical operands.
@@ -489,14 +501,15 @@ x + x
 
 == Lint/BooleanSymbol
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes (Unsafe)
-| 0.50
-| 1.22
+¦ Enabled
+¦ Yes
+¦ Yes (Unsafe)
+¦ 0.50
+¦ 1.22
 |===
 
 Checks for `:true` and `:false` symbols.
@@ -530,14 +543,15 @@ false
 
 == Lint/CircularArgumentReference
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.33
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.33
+¦ -
 |===
 
 Checks for circular argument references in optional keyword
@@ -594,14 +608,15 @@ end
 
 == Lint/ConstantDefinitionInBlock
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.91
-| 1.3
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.91
+¦ 1.3
 |===
 
 Do not define constants within a block, since the block's scope does not
@@ -672,12 +687,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedMethods
-| `enums`
-| Array
+¦ AllowedMethods
+¦ `enums`
+¦ Array
 |===
 
 === References
@@ -686,14 +702,15 @@ end
 
 == Lint/ConstantOverwrittenInRescue
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.31
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.31
+¦ -
 |===
 
 Checks for overwriting an exception with an exception result by use `rescue =>`.
@@ -721,14 +738,15 @@ end
 
 == Lint/ConstantResolution
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| No
-| 0.86
-| -
+¦ Disabled
+¦ Yes
+¦ No
+¦ 0.86
+¦ -
 |===
 
 Check that certain constants are fully qualified.
@@ -797,28 +815,30 @@ Login
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| Only
-| `[]`
-| Array
+¦ Only
+¦ `[]`
+¦ Array
 
-| Ignore
-| `[]`
-| Array
+¦ Ignore
+¦ `[]`
+¦ Array
 |===
 
 == Lint/Debugger
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.14
-| 1.10
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.14
+¦ 1.10
 |===
 
 Checks for debug calls (such as `debugger` or `binding.pry`) that should
@@ -893,28 +913,30 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| DebuggerReceivers
-| `[]`
-| Array
+¦ DebuggerReceivers
+¦ `[]`
+¦ Array
 
-| DebuggerMethods
-| `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["save_and_open_page", "save_and_open_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
-| 
+¦ DebuggerMethods
+¦ `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["save_and_open_page", "save_and_open_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
+¦ 
 |===
 
 == Lint/DeprecatedClassMethods
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.19
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.19
+¦ -
 |===
 
 Checks for uses of the deprecated class method usages.
@@ -946,14 +968,15 @@ Addrinfo.tcp(host, port).getnameinfo
 
 == Lint/DeprecatedConstants
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.8
-| 1.22
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.8
+¦ 1.22
 |===
 
 Checks for deprecated constants.
@@ -988,24 +1011,26 @@ Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible wit
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| DeprecatedConstants
-| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}}`
-| 
+¦ DeprecatedConstants
+¦ `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}}`
+¦ 
 |===
 
 == Lint/DeprecatedOpenSSLConstant
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.84
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.84
+¦ -
 |===
 
 Algorithmic constants for `OpenSSL::Cipher` and `OpenSSL::Digest`
@@ -1049,14 +1074,15 @@ OpenSSL::Digest.digest('SHA256', 'foo')
 
 == Lint/DisjunctiveAssignmentInConstructor
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.62
-| 0.88
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.62
+¦ 0.88
 |===
 
 Checks constructors for disjunctive assignments (`||=`) that should
@@ -1109,14 +1135,15 @@ end
 
 == Lint/DuplicateBranch
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.3
-| 1.7
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.3
+¦ 1.7
 |===
 
 Checks that there are no repeated bodies
@@ -1213,28 +1240,30 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| IgnoreLiteralBranches
-| `false`
-| Boolean
+¦ IgnoreLiteralBranches
+¦ `false`
+¦ Boolean
 
-| IgnoreConstantBranches
-| `false`
-| Boolean
+¦ IgnoreConstantBranches
+¦ `false`
+¦ Boolean
 |===
 
 == Lint/DuplicateCaseCondition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.45
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.45
+¦ -
 |===
 
 Checks that there are no repeated conditions
@@ -1268,14 +1297,15 @@ end
 
 == Lint/DuplicateElsifCondition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.88
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.88
+¦ -
 |===
 
 Checks that there are no repeated conditions used in if 'elsif'.
@@ -1301,14 +1331,15 @@ end
 
 == Lint/DuplicateHashKey
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.34
-| 0.77
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.34
+¦ 0.77
 |===
 
 Checks for duplicated keys in hash literals.
@@ -1333,14 +1364,15 @@ hash = { food: 'apple', other_food: 'orange' }
 
 == Lint/DuplicateMagicComment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.37
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.37
+¦ -
 |===
 
 Checks for duplicated magic comments.
@@ -1370,14 +1402,15 @@ Checks for duplicated magic comments.
 
 == Lint/DuplicateMethods
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.29
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.29
+¦ -
 |===
 
 Checks for duplicated instance (or singleton) method
@@ -1435,14 +1468,15 @@ alias bar foo
 
 == Lint/DuplicateRegexpCharacterClassElement
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.1
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.1
+¦ -
 |===
 
 Checks for duplicate elements in Regexp character classes.
@@ -1466,14 +1500,15 @@ r = /[0-9x]/
 
 == Lint/DuplicateRequire
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes (Unsafe)
-| 0.90
-| 1.28
+¦ Enabled
+¦ Yes
+¦ Yes (Unsafe)
+¦ 0.90
+¦ 1.28
 |===
 
 Checks for duplicate ``require``s and ``require_relative``s.
@@ -1503,14 +1538,15 @@ require_relative 'foo'
 
 == Lint/DuplicateRescueException
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.89
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.89
+¦ -
 |===
 
 Checks that there are no repeated exceptions
@@ -1541,14 +1577,15 @@ end
 
 == Lint/EachWithObjectArgument
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.31
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.31
+¦ -
 |===
 
 Checks if each_with_object is called with an immutable
@@ -1576,14 +1613,15 @@ sum = numbers.each_with_object(num) { |e, a| a += e }
 
 == Lint/ElseLayout
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.17
-| 1.2
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.17
+¦ 1.2
 |===
 
 Checks for odd `else` block layout - like
@@ -1630,14 +1668,15 @@ end
 
 == Lint/EmptyBlock
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.1
-| 1.15
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.1
+¦ 1.15
 |===
 
 Checks for blocks without a body.
@@ -1719,28 +1758,30 @@ Proc.new { }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowComments
-| `true`
-| Boolean
+¦ AllowComments
+¦ `true`
+¦ Boolean
 
-| AllowEmptyLambdas
-| `true`
-| Boolean
+¦ AllowEmptyLambdas
+¦ `true`
+¦ Boolean
 |===
 
 == Lint/EmptyClass
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.3
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.3
+¦ -
 |===
 
 Checks for classes and metaclasses without a body.
@@ -1823,24 +1864,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowComments
-| `false`
-| Boolean
+¦ AllowComments
+¦ `false`
+¦ Boolean
 |===
 
 == Lint/EmptyConditionalBody
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes (Unsafe)
-| 0.89
-| 1.34
+¦ Enabled
+¦ Yes
+¦ Yes (Unsafe)
+¦ 0.89
+¦ 1.34
 |===
 
 Checks for the presence of `if`, `elsif` and `unless` branches without a body.
@@ -1915,24 +1958,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowComments
-| `true`
-| Boolean
+¦ AllowComments
+¦ `true`
+¦ Boolean
 |===
 
 == Lint/EmptyEnsure
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.10
-| 0.48
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.10
+¦ 0.48
 |===
 
 Checks for empty `ensure` blocks
@@ -1983,14 +2028,15 @@ end
 
 == Lint/EmptyExpression
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.45
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.45
+¦ -
 |===
 
 Checks for the presence of empty expressions.
@@ -2019,14 +2065,15 @@ end
 
 == Lint/EmptyFile
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.90
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.90
+¦ -
 |===
 
 Enforces that Ruby source files are not empty.
@@ -2060,26 +2107,28 @@ Enforces that Ruby source files are not empty.
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowComments
-| `true`
-| Boolean
+¦ AllowComments
+¦ `true`
+¦ Boolean
 |===
 
 == Lint/EmptyInPattern
 
 NOTE: Required Ruby version: 2.7
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.16
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.16
+¦ -
 |===
 
 Checks for the presence of `in` pattern branches without a body.
@@ -2132,24 +2181,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowComments
-| `true`
-| Boolean
+¦ AllowComments
+¦ `true`
+¦ Boolean
 |===
 
 == Lint/EmptyInterpolation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.20
-| 0.45
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.20
+¦ 0.45
 |===
 
 Checks for empty interpolation.
@@ -2172,14 +2223,15 @@ Checks for empty interpolation.
 
 == Lint/EmptyWhen
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.45
-| 0.83
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.45
+¦ 0.83
 |===
 
 Checks for the presence of `when` branches without a body.
@@ -2235,24 +2287,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowComments
-| `true`
-| Boolean
+¦ AllowComments
+¦ `true`
+¦ Boolean
 |===
 
 == Lint/EnsureReturn
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.9
-| 0.83
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.9
+¦ 0.83
 |===
 
 Checks for `return` from an `ensure` block.
@@ -2309,14 +2363,15 @@ end
 
 NOTE: Required Ruby version: 2.6
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.56
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.56
+¦ -
 |===
 
 This cop emulates the following Ruby warnings in Ruby 2.6.
@@ -2380,14 +2435,15 @@ end
 
 == Lint/FlipFlop
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.16
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.16
+¦ -
 |===
 
 Looks for uses of flip-flop operator
@@ -2420,14 +2476,15 @@ end
 
 == Lint/FloatComparison
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.89
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.89
+¦ -
 |===
 
 Checks for the presence of precise comparison of floating point numbers.
@@ -2465,14 +2522,15 @@ tolerance = 0.0001
 
 == Lint/FloatOutOfRange
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.36
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.36
+¦ -
 |===
 
 Identifies Float literals which are, like, really really really
@@ -2497,14 +2555,15 @@ float = 42.9
 
 == Lint/FormatParameterMismatch
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.33
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.33
+¦ -
 |===
 
 This lint sees if there is a mismatch between the number of
@@ -2547,14 +2606,15 @@ format('Numbered format: %1$s and numbered %2$s', a_value, another)
 
 == Lint/HashCompareByIdentity
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| No
-| 0.93
-| -
+¦ Enabled
+¦ No
+¦ No
+¦ 0.93
+¦ -
 |===
 
 Prefer using `Hash#compare_by_identity` rather than using `object_id`
@@ -2593,14 +2653,15 @@ hash.key?(baz)
 
 == Lint/HeredocMethodCallPosition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes
-| 0.68
-| -
+¦ Disabled
+¦ Yes
+¦ Yes
+¦ 0.68
+¦ -
 |===
 
 Checks for the ordering of a method call where
@@ -2640,14 +2701,15 @@ the receiver of the call is a HEREDOC.
 
 == Lint/IdentityComparison
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.91
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.91
+¦ -
 |===
 
 Prefer `equal?` over `==` when comparing `object_id`.
@@ -2672,14 +2734,15 @@ foo.equal?(bar)
 
 == Lint/ImplicitStringConcatenation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.36
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.36
+¦ -
 |===
 
 Checks for implicit string concatenation of string literals
@@ -2708,14 +2771,15 @@ array = [
 
 == Lint/IncompatibleIoSelectWithFiberScheduler
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes (Unsafe)
-| 1.21
-| 1.24
+¦ Pending
+¦ Yes
+¦ Yes (Unsafe)
+¦ 1.21
+¦ 1.24
 |===
 
 This cop checks for `IO.select` that is incompatible with Fiber Scheduler since Ruby 3.0.
@@ -2749,14 +2813,15 @@ io.wait_writable(timeout)
 
 == Lint/IneffectiveAccessModifier
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.36
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.36
+¦ -
 |===
 
 Checks for `private` or `protected` access modifiers which are
@@ -2809,14 +2874,15 @@ end
 
 == Lint/InheritException
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes (Unsafe)
-| 0.41
-| 1.26
+¦ Enabled
+¦ Yes
+¦ Yes (Unsafe)
+¦ 0.41
+¦ 1.26
 |===
 
 Looks for error classes inheriting from `Exception`.
@@ -2867,24 +2933,26 @@ C = Class.new(RuntimeError)
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `standard_error`
-| `standard_error`, `runtime_error`
+¦ EnforcedStyle
+¦ `standard_error`
+¦ `standard_error`, `runtime_error`
 |===
 
 == Lint/InterpolationCheck
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.50
-| 0.87
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.50
+¦ 0.87
 |===
 
 Checks for interpolation in a single quoted string.
@@ -2913,14 +2981,15 @@ foo = "something with #{interpolation} inside"
 
 == Lint/LambdaWithoutLiteralBlock
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.8
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.8
+¦ -
 |===
 
 Checks uses of lambda without a literal block.
@@ -2950,14 +3019,15 @@ lambda { do_something } # If you use lambda.
 
 == Lint/LiteralAsCondition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.51
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.51
+¦ -
 |===
 
 Checks for literals used as the conditions or as
@@ -2995,14 +3065,15 @@ end
 
 == Lint/LiteralInInterpolation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.19
-| 0.32
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.19
+¦ 0.32
 |===
 
 Checks for interpolated literals.
@@ -3025,14 +3096,15 @@ Checks for interpolated literals.
 
 == Lint/Loop
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.9
-| 1.3
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.9
+¦ 1.3
 |===
 
 Checks for uses of `begin...end while/until something`.
@@ -3093,14 +3165,15 @@ end
 
 == Lint/MissingCopEnableDirective
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.52
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.52
+¦ -
 |===
 
 Checks that there is an `# rubocop:enable ...` statement
@@ -3149,24 +3222,26 @@ x += 1
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| MaximumRangeSize
-| `Infinity`
-| Float
+¦ MaximumRangeSize
+¦ `Infinity`
+¦ Float
 |===
 
 == Lint/MissingSuper
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.89
-| 1.4
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.89
+¦ 1.4
 |===
 
 Checks for the presence of constructors and lifecycle callbacks
@@ -3214,14 +3289,15 @@ end
 
 == Lint/MixedRegexpCaptureTypes
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.85
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.85
+¦ -
 |===
 
 Do not mix named captures and numbered captures in a Regexp literal
@@ -3243,14 +3319,15 @@ named captures.
 
 == Lint/MultipleComparison
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.47
-| 1.1
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.47
+¦ 1.1
 |===
 
 In math and Python, we can use `x < y < z` style comparison to compare
@@ -3273,14 +3350,15 @@ x < y && y < z
 
 == Lint/NestedMethodDefinition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.32
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.32
+¦ -
 |===
 
 Checks for nested method definitions.
@@ -3398,16 +3476,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedMethods
-| `[]`
-| Array
+¦ AllowedMethods
+¦ `[]`
+¦ Array
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 |===
 
 === References
@@ -3416,14 +3495,15 @@ end
 
 == Lint/NestedPercentLiteral
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.52
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.52
+¦ -
 |===
 
 Checks for nested percent literals.
@@ -3457,14 +3537,15 @@ attributes = {
 
 == Lint/NextWithoutAccumulator
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.36
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.36
+¦ -
 |===
 
 Don't omit the accumulator when calling `next` in a `reduce` block.
@@ -3493,14 +3574,15 @@ end
 
 == Lint/NoReturnInBeginEndBlocks
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.2
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.2
+¦ -
 |===
 
 Checks for the presence of a `return` inside a `begin..end` block
@@ -3546,14 +3628,15 @@ some_variable = if some_condition_is_met
 
 == Lint/NonAtomicFileOperation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes (Unsafe)
-| 1.31
-| -
+¦ Pending
+¦ Yes
+¦ Yes (Unsafe)
+¦ 1.31
+¦ -
 |===
 
 Checks for non-atomic file operation.
@@ -3605,14 +3688,15 @@ FileUtils.rm_f(path)
 
 == Lint/NonDeterministicRequireOrder
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.78
-| -
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.78
+¦ -
 |===
 
 `Dir[...]` and `Dir.glob(...)` do not make any guarantees about
@@ -3675,14 +3759,15 @@ Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), sort: false).each(&method(:re
 
 == Lint/NonLocalExitFromIterator
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.30
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.30
+¦ -
 |===
 
 Checks for non-local exits from iterators without a return
@@ -3725,14 +3810,15 @@ end
 
 == Lint/NumberConversion
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Disabled
-| Yes
-| Yes (Unsafe)
-| 0.53
-| 1.1
+¦ Disabled
+¦ Yes
+¦ Yes (Unsafe)
+¦ 0.53
+¦ 1.1
 |===
 
 Warns the usage of unsafe number conversions. Unsafe
@@ -3824,36 +3910,38 @@ Time.now.to_datetime.to_i
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedMethods
-| `[]`
-| Array
+¦ AllowedMethods
+¦ `[]`
+¦ Array
 
-| AllowedPatterns
-| `[]`
-| Array
+¦ AllowedPatterns
+¦ `[]`
+¦ Array
 
-| IgnoredMethods
-| `[]`
-| Array
+¦ IgnoredMethods
+¦ `[]`
+¦ Array
 
-| IgnoredClasses
-| `Time`, `DateTime`
-| Array
+¦ IgnoredClasses
+¦ `Time`, `DateTime`
+¦ Array
 |===
 
 == Lint/NumberedParameterAssignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.9
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.9
+¦ -
 |===
 
 Checks for uses of numbered parameter assignment.
@@ -3885,14 +3973,15 @@ non_numbered_parameter_name = :value
 
 == Lint/OrAssignmentToConstant
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| No
-| Yes (Unsafe)
-| 1.9
-| -
+¦ Pending
+¦ No
+¦ Yes (Unsafe)
+¦ 1.9
+¦ -
 |===
 
 Checks for unintended or-assignment to a constant.
@@ -3919,14 +4008,15 @@ CONST = 1
 
 == Lint/OrderedMagicComments
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes (Unsafe)
-| 0.53
-| 1.37
+¦ Enabled
+¦ Yes
+¦ Yes (Unsafe)
+¦ 0.53
+¦ 1.37
 |===
 
 Checks the proper ordering of magic comments and whether
@@ -3962,14 +4052,15 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 
 == Lint/OutOfRangeRegexpRef
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| No
-| 0.89
-| -
+¦ Enabled
+¦ No
+¦ No
+¦ 0.89
+¦ -
 |===
 
 Looks for references of Regexp captures that are out of range
@@ -4010,14 +4101,15 @@ puts $1 # => foo
 
 == Lint/ParenthesesAsGroupedExpression
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.12
-| 0.83
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.12
+¦ 0.83
 |===
 
 Checks for space between the name of a called method and a left
@@ -4042,14 +4134,15 @@ do_something (foo * bar).baz
 
 == Lint/PercentStringArray
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.41
-| -
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.41
+¦ -
 |===
 
 Checks for quotes and commas in %w, e.g. `%w('foo', "bar")`
@@ -4087,14 +4180,15 @@ and that might have been done purposely.
 
 == Lint/PercentSymbolArray
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.41
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.41
+¦ -
 |===
 
 Checks for colons and commas in %i, e.g. `%i(:foo, :bar)`
@@ -4121,14 +4215,15 @@ rather than meant to be part of the resulting symbols.
 
 == Lint/RaiseException
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.81
-| 0.86
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.81
+¦ 0.86
 |===
 
 Checks for `raise` or `fail` statements which are
@@ -4171,12 +4266,13 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedImplicitNamespaces
-| `Gem`
-| Array
+¦ AllowedImplicitNamespaces
+¦ `Gem`
+¦ Array
 |===
 
 === References
@@ -4185,14 +4281,15 @@ end
 
 == Lint/RandOne
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.36
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.36
+¦ -
 |===
 
 Checks for `rand(1)` calls.
@@ -4219,14 +4316,15 @@ rand(-1.0)
 
 == Lint/RedundantCopDisableDirective
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.76
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.76
+¦ -
 |===
 
 Detects instances of rubocop:disable comments that can be
@@ -4254,14 +4352,15 @@ x += 1
 
 == Lint/RedundantCopEnableDirective
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.76
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.76
+¦ -
 |===
 
 Detects instances of rubocop:enable comments that can be
@@ -4302,14 +4401,15 @@ baz
 
 NOTE: Required Ruby version: 3.0
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes (Unsafe)
-| 1.8
-| 1.26
+¦ Pending
+¦ Yes
+¦ Yes (Unsafe)
+¦ 1.8
+¦ 1.26
 |===
 
 Sort globbed results by default in Ruby 3.0.
@@ -4342,14 +4442,15 @@ end
 
 == Lint/RedundantRequireStatement
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.76
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.76
+¦ -
 |===
 
 Checks for unnecessary `require` statement.
@@ -4369,6 +4470,7 @@ Below are the features that each `TargetRubyVersion` targets.
   * 2.5+ ... Add `pp` above
   * 2.7+ ... Add `ruby2_keywords` above
   * 3.1+ ... Add `fiber` above
+  * 3.2+ ... `set`
 
 This cop target those features.
 
@@ -4386,14 +4488,15 @@ require 'unloaded_feature'
 
 == Lint/RedundantSafeNavigation
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.93
-| -
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.93
+¦ -
 |===
 
 Checks for redundant safe navigation calls.
@@ -4452,24 +4555,26 @@ do_something if attrs&.not_nil_safe_method(:[])
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedMethods
-| `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, `equal?`
-| Array
+¦ AllowedMethods
+¦ `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, `equal?`
+¦ Array
 |===
 
 == Lint/RedundantSplatExpansion
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.76
-| 1.7
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.76
+¦ 1.7
 |===
 
 Checks for unneeded usages of splat expansion
@@ -4548,24 +4653,26 @@ do_something(*%w[foo bar baz])
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowPercentLiteralArrayArgument
-| `true`
-| Boolean
+¦ AllowPercentLiteralArrayArgument
+¦ `true`
+¦ Boolean
 |===
 
 == Lint/RedundantStringCoercion
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.19
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.19
+¦ 0.77
 |===
 
 Checks for string conversion in string interpolation,
@@ -4593,14 +4700,15 @@ which is redundant.
 
 == Lint/RedundantWithIndex
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.50
+¦ -
 |===
 
 Checks for redundant `with_index`.
@@ -4632,14 +4740,15 @@ end
 
 == Lint/RedundantWithObject
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.51
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.51
+¦ -
 |===
 
 Checks for redundant `with_object`.
@@ -4673,14 +4782,15 @@ end
 
 NOTE: Required Ruby version: 3.1
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.27
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.27
+¦ -
 |===
 
 Checks if `include` or `prepend` is called in `refine` block.
@@ -4717,14 +4827,15 @@ end
 
 == Lint/RegexpAsCondition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.51
-| 0.86
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.51
+¦ 0.86
 |===
 
 Checks for regexp literals used as `match-current-line`.
@@ -4747,14 +4858,15 @@ end
 
 == Lint/RequireParentheses
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.18
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.18
+¦ -
 |===
 
 Checks for expressions where there is a call to a predicate
@@ -4788,14 +4900,15 @@ end
 
 == Lint/RequireRangeParentheses
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.32
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.32
+¦ -
 |===
 
 Checks that a range literal is enclosed in parentheses when the end of the range is
@@ -4837,14 +4950,15 @@ end
 
 == Lint/RequireRelativeSelfPath
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.22
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.22
+¦ -
 |===
 
 Checks for uses a file requiring itself with `require_relative`.
@@ -4867,14 +4981,15 @@ require_relative 'bar'
 
 == Lint/RescueException
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.9
-| 0.27
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.9
+¦ 0.27
 |===
 
 Checks for `rescue` blocks targeting the Exception class.
@@ -4909,14 +5024,15 @@ end
 
 == Lint/RescueType
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ -
 |===
 
 Check for arguments to `rescue` that will result in a `TypeError`
@@ -4957,14 +5073,15 @@ end
 
 == Lint/ReturnInVoidContext
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ -
 |===
 
 Checks for the use of a return with a value in a context
@@ -5004,14 +5121,15 @@ end
 
 NOTE: Required Ruby version: 2.3
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.47
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.47
+¦ 0.77
 |===
 
 The safe navigation operator returns nil if the receiver is
@@ -5041,24 +5159,26 @@ x&.foo || bar
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedMethods
-| `present?`, `blank?`, `presence`, `try`, `try!`, `in?`
-| Array
+¦ AllowedMethods
+¦ `present?`, `blank?`, `presence`, `try`, `try!`, `in?`
+¦ Array
 |===
 
 == Lint/SafeNavigationConsistency
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.55
-| 0.77
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.55
+¦ 0.77
 |===
 
 Check to make sure that if safe navigation is used for a method
@@ -5090,24 +5210,26 @@ foo&.bar && (foobar.baz || foo&.baz)
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedMethods
-| `present?`, `blank?`, `presence`, `try`, `try!`
-| Array
+¦ AllowedMethods
+¦ `present?`, `blank?`, `presence`, `try`, `try!`
+¦ Array
 |===
 
 == Lint/SafeNavigationWithEmpty
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.62
-| 0.87
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.62
+¦ 0.87
 |===
 
 Checks to make sure safe navigation isn't used with `empty?` in
@@ -5132,14 +5254,15 @@ return unless foo && foo.empty?
 
 == Lint/ScriptPermission
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.49
-| 0.50
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.49
+¦ 0.50
 |===
 
 Checks if a file which has a shebang line as
@@ -5175,14 +5298,15 @@ puts 'hello, world'
 
 == Lint/SelfAssignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.89
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.89
+¦ -
 |===
 
 Checks for self-assignments.
@@ -5204,14 +5328,15 @@ Foo = Bar
 
 == Lint/SendWithMixinArgument
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.75
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.75
+¦ -
 |===
 
 This cop checks for `send`, `public_send`, and `__send__` methods
@@ -5250,14 +5375,15 @@ Foo.extend Bar
 
 == Lint/ShadowedArgument
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.52
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.52
+¦ -
 |===
 
 Checks for shadowed arguments.
@@ -5331,24 +5457,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| IgnoreImplicitReferences
-| `false`
-| Boolean
+¦ IgnoreImplicitReferences
+¦ `false`
+¦ Boolean
 |===
 
 == Lint/ShadowedException
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.41
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.41
+¦ -
 |===
 
 Checks for a rescued exception that get shadowed by a
@@ -5411,14 +5539,15 @@ end
 
 == Lint/ShadowingOuterLocalVariable
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.9
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.9
+¦ -
 |===
 
 Checks for the use of local variable names from an outer scope
@@ -5467,14 +5596,15 @@ end
 
 == Lint/StructNewOverride
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.81
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.81
+¦ -
 |===
 
 Checks unexpected overrides of the `Struct` built-in methods
@@ -5501,14 +5631,15 @@ g.count #=> 2
 
 == Lint/SuppressedException
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.9
-| 1.12
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.9
+¦ 1.12
 |===
 
 Checks for `rescue` blocks with no body.
@@ -5628,16 +5759,17 @@ do_something rescue nil
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowComments
-| `true`
-| Boolean
+¦ AllowComments
+¦ `true`
+¦ Boolean
 
-| AllowNil
-| `true`
-| Boolean
+¦ AllowNil
+¦ `true`
+¦ Boolean
 |===
 
 === References
@@ -5646,14 +5778,15 @@ do_something rescue nil
 
 == Lint/SymbolConversion
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.9
-| 1.16
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.9
+¦ 1.16
 |===
 
 Checks for uses of literal strings converted to
@@ -5728,24 +5861,26 @@ all keys to be quoted).
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| EnforcedStyle
-| `strict`
-| `strict`, `consistent`
+¦ EnforcedStyle
+¦ `strict`
+¦ `strict`, `consistent`
 |===
 
 == Lint/Syntax
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.9
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.9
+¦ -
 |===
 
 Repacks Parser's diagnostics/errors
@@ -5753,14 +5888,15 @@ into RuboCop's offenses.
 
 == Lint/ToEnumArguments
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.1
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.1
+¦ -
 |===
 
 Ensures that `to_enum`/`enum_for`, called for the current method,
@@ -5784,14 +5920,15 @@ end
 
 == Lint/ToJSON
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.66
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.66
+¦ -
 |===
 
 Checks to make sure `#to_json` includes an optional argument.
@@ -5825,14 +5962,15 @@ end
 
 == Lint/TopLevelReturnWithArgument
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.89
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.89
+¦ -
 |===
 
 Checks for top level return with arguments. If there is a
@@ -5849,14 +5987,15 @@ return 1 # 1 is always ignored.
 
 == Lint/TrailingCommaInAttributeDeclaration
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.90
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.90
+¦ -
 |===
 
 Checks for trailing commas in attribute declarations, such as
@@ -5888,14 +6027,15 @@ end
 
 == Lint/TripleQuotes
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| Yes
-| 1.9
-| -
+¦ Pending
+¦ Yes
+¦ Yes
+¦ 1.9
+¦ -
 |===
 
 Checks for "triple quotes" (strings delimited by any odd number
@@ -5941,14 +6081,15 @@ STRING
 
 == Lint/UnderscorePrefixedVariableName
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.21
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.21
+¦ -
 |===
 
 Checks for underscore-prefixed variables that are actually
@@ -5998,24 +6139,26 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowKeywordBlockArguments
-| `false`
-| Boolean
+¦ AllowKeywordBlockArguments
+¦ `false`
+¦ Boolean
 |===
 
 == Lint/UnexpectedBlockArity
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| No
-| No
-| 1.5
-| -
+¦ Pending
+¦ No
+¦ No
+¦ 1.5
+¦ -
 |===
 
 Checks for a block that is known to need more positional
@@ -6060,24 +6203,26 @@ values.sort { |*x| x[0] <=> x[1] }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| Methods
-| `{"chunk_while"=>2, "each_with_index"=>2, "each_with_object"=>2, "inject"=>2, "max"=>2, "min"=>2, "minmax"=>2, "reduce"=>2, "slice_when"=>2, "sort"=>2}`
-| 
+¦ Methods
+¦ `{"chunk_while"=>2, "each_with_index"=>2, "each_with_object"=>2, "inject"=>2, "max"=>2, "min"=>2, "minmax"=>2, "reduce"=>2, "slice_when"=>2, "sort"=>2}`
+¦ 
 |===
 
 == Lint/UnifiedInteger
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.43
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.43
+¦ -
 |===
 
 Checks for using Fixnum or Bignum constant.
@@ -6101,14 +6246,15 @@ Checks for using Fixnum or Bignum constant.
 
 == Lint/UnmodifiedReduceAccumulator
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.1
-| 1.5
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.1
+¦ 1.5
 |===
 
 Looks for `reduce` or `inject` blocks where the value returned (implicitly or
@@ -6176,14 +6322,15 @@ end
 
 == Lint/UnreachableCode
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.9
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.9
+¦ -
 |===
 
 Checks for unreachable code.
@@ -6224,14 +6371,15 @@ end
 
 == Lint/UnreachableLoop
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.89
-| 1.7
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.89
+¦ 1.7
 |===
 
 Checks for loops that will have at most one iteration.
@@ -6324,28 +6472,30 @@ exactly(2).times { raise StandardError }
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowedPatterns
-| `(?-mix:(exactly|at_least|at_most)\(\d+\)\.times)`
-| Array
+¦ AllowedPatterns
+¦ `(?-mix:(exactly|at_least|at_most)\(\d+\)\.times)`
+¦ Array
 
-| IgnoredPatterns
-| `[]`
-| Array
+¦ IgnoredPatterns
+¦ `[]`
+¦ Array
 |===
 
 == Lint/UnusedBlockArgument
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.21
-| 0.22
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.21
+¦ 0.22
 |===
 
 Checks for unused block arguments.
@@ -6419,16 +6569,17 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| IgnoreEmptyBlocks
-| `true`
-| Boolean
+¦ IgnoreEmptyBlocks
+¦ `true`
+¦ Boolean
 
-| AllowUnusedKeywordArguments
-| `false`
-| Boolean
+¦ AllowUnusedKeywordArguments
+¦ `false`
+¦ Boolean
 |===
 
 === References
@@ -6437,14 +6588,15 @@ end
 
 == Lint/UnusedMethodArgument
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.21
-| 0.81
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.21
+¦ 0.81
 |===
 
 Checks for unused method arguments.
@@ -6532,20 +6684,21 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| AllowUnusedKeywordArguments
-| `false`
-| Boolean
+¦ AllowUnusedKeywordArguments
+¦ `false`
+¦ Boolean
 
-| IgnoreEmptyMethods
-| `true`
-| Boolean
+¦ IgnoreEmptyMethods
+¦ `true`
+¦ Boolean
 
-| IgnoreNotImplementedMethods
-| `true`
-| Boolean
+¦ IgnoreNotImplementedMethods
+¦ `true`
+¦ Boolean
 |===
 
 === References
@@ -6554,14 +6707,15 @@ end
 
 == Lint/UriEscapeUnescape
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.50
+¦ -
 |===
 
 Identifies places where `URI.escape` can be replaced by
@@ -6597,14 +6751,15 @@ URI.decode_www_form_component(enc_uri)
 
 == Lint/UriRegexp
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.50
-| -
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.50
+¦ -
 |===
 
 Identifies places where `URI.regexp` is obsolete and should
@@ -6623,14 +6778,15 @@ URI::DEFAULT_PARSER.make_regexp('http://example.com')
 
 == Lint/UselessAccessModifier
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| Yes
-| 0.20
-| 0.83
+¦ Enabled
+¦ Yes
+¦ Yes
+¦ 0.20
+¦ 0.83
 |===
 
 Checks for redundant access modifiers, including those with no
@@ -6769,28 +6925,30 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| ContextCreatingMethods
-| `[]`
-| Array
+¦ ContextCreatingMethods
+¦ `[]`
+¦ Array
 
-| MethodCreatingMethods
-| `[]`
-| Array
+¦ MethodCreatingMethods
+¦ `[]`
+¦ Array
 |===
 
 == Lint/UselessAssignment
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.11
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.11
+¦ -
 |===
 
 Checks for every useless assignment to local variable in every
@@ -6831,14 +6989,15 @@ end
 
 == Lint/UselessElseWithoutRescue
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.17
-| 1.31
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.17
+¦ 1.31
 |===
 
 Checks for useless `else` in `begin..end` without `rescue`.
@@ -6873,14 +7032,15 @@ end
 
 == Lint/UselessMethodDefinition
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.90
-| 0.91
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.90
+¦ 0.91
 |===
 
 Checks for useless method definitions, specifically: empty constructors
@@ -6922,14 +7082,15 @@ end
 
 == Lint/UselessRuby2Keywords
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
-| Yes
-| No
-| 1.23
-| -
+¦ Pending
+¦ Yes
+¦ No
+¦ 1.23
+¦ -
 |===
 
 Looks for `ruby2_keywords` calls for methods that do not need it.
@@ -6998,14 +7159,15 @@ define_method(:foo) { |arg| }
 
 == Lint/UselessSetterCall
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.13
-| 1.2
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.13
+¦ 1.2
 |===
 
 Checks for setter call to local variable as the final
@@ -7045,14 +7207,15 @@ end
 
 == Lint/UselessTimes
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| No
-| Yes (Unsafe)
-| 0.91
-| -
+¦ Enabled
+¦ No
+¦ Yes (Unsafe)
+¦ 0.91
+¦ -
 |===
 
 Checks for uses of `Integer#times` that will never yield
@@ -7081,14 +7244,15 @@ do_something(1)
 
 == Lint/Void
 
+[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
-| Yes
-| No
-| 0.9
-| -
+¦ Enabled
+¦ Yes
+¦ No
+¦ 0.9
+¦ -
 |===
 
 Checks for operators, variables, literals, and nonmutating
@@ -7141,10 +7305,11 @@ end
 
 === Configurable attributes
 
+[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-| CheckForMethodsWithNoSideEffects
-| `false`
-| Boolean
+¦ CheckForMethodsWithNoSideEffects
+¦ `false`
+¦ Boolean
 |===
