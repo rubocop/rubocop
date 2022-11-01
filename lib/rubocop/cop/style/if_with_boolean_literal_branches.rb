@@ -5,10 +5,12 @@ module RuboCop
     module Style
       # Checks for redundant `if` with boolean literal branches.
       # It checks only conditions to return boolean value (`true` or `false`) for safe detection.
-      # The conditions to be checked are comparison methods, predicate methods, and double negative.
+      # The conditions to be checked are comparison methods, predicate methods, and double negation (!!).
       # `nonzero?` method is allowed by default.
       # These are customizable with `AllowedMethods` option.
-      # This cop targets only `if`s with a single `elsif` or `else` branch.
+      #
+      # This cop targets only `if`s with a single `elsif` or `else` branch. The following
+      # code will be allowed, because it has two `elsif` branches:
       #
       # [source,ruby]
       # ----
