@@ -14,6 +14,8 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
            ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
         z = "a\\"
             ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        t = "{\"[\\\"*\\\"]\""
+            ^^^^^^^^^^^^^^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RUBY
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'double_quotes')
 
@@ -22,6 +24,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         x = 'a\\b'
         y ='\\b'
         z = 'a\\'
+        t = '{"[\"*\"]"'
       RUBY
     end
 

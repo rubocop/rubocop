@@ -122,7 +122,7 @@ module RuboCop
           string.inspect
         else
           # In a single-quoted strings, double quotes don't need to be escaped
-          "'#{string.gsub('\"', '"').gsub('\\') { '\\\\' }}'"
+          "'#{string.gsub('\\') { '\\\\' }.gsub('\"', '"')}'"
         end
       end
 
