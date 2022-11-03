@@ -7,7 +7,7 @@ module RuboCop
       #
       # @safety
       #   This cop is unsafe, as it can produce false positives if the receiver
-      #   is not an `Enumerable`.
+      #   is not an `Enumerator`.
       #
       # @example
       #
