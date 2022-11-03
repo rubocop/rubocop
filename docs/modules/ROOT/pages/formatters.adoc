@@ -317,7 +317,7 @@ $ rubocop --format offenses
 1    Layout/AccessModifierIndentation
 1    Style/ClassAndModuleChildren
 --
-102  Total
+102  Total in 31 files
 ----
 
 == Worst Offenders Formatter
@@ -331,7 +331,7 @@ $ rubocop --format worst
 89  this/file/is/really/bad.rb
 2   much/better.rb
 --
-91  Total
+91  Total in 2 files
 ----
 
 == HTML Formatter
