@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
     RUBY
   end
 
+  it 'registers an offense when using `each.each(&:foo)`' do
+    expect_offense(<<~RUBY)
+      array.each.each(&:foo)
+           ^^^^^ Remove redundant `each`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.each(&:foo)
+    RUBY
+  end
+
   it 'registers an offense when using `each.each_with_index`' do
     expect_offense(<<~RUBY)
       array.each.each_with_index { |v| do_something(v) }
@@ -191,6 +202,26 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
   it 'does not register an offense when not chaining `each_` calls' do
     expect_no_offenses(<<~RUBY)
       [foo.each].each
+    RUBY
+  end
+
+  it 'does not register an offense when using `each` with a symbol proc argument' do
+    expect_no_offenses(<<~RUBY)
+      array.each(&:foo).each do |i|
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `each` with a symbol proc for last argument' do
+    expect_no_offenses(<<~RUBY)
+      array.each(foo, &:bar).each do |i|
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `reverse_each(&:foo).each {...}`' do
+    expect_no_offenses(<<~RUBY)
+      array.reverse_each(&:foo).each { |i| bar(i) }
     RUBY
   end
 end

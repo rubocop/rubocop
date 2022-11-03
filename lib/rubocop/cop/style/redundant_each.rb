@@ -61,6 +61,8 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def redundant_each_method(node)
+          return if node.last_argument&.block_pass_type?
+
           if node.method?(:each) && !node.parent&.block_type?
             ancestor_node = node.each_ancestor(:send).detect do |ancestor|
               ancestor.receiver == node &&
@@ -69,7 +71,7 @@ module RuboCop
           end
 
           ancestor_node || node.each_descendant(:send).detect do |descendant|
-            next if descendant.parent.block_type?
+            next if descendant.parent.block_type? || descendant.last_argument&.block_pass_type?
 
             detected = descendant.method_name.to_s.start_with?('each_') unless node.method?(:each)
 
