@@ -1,18 +1,37 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::RangeHelp do
-  before { stub_const('TestRangeHelp', Class.new { include RuboCop::Cop::RangeHelp }) }
+  before { stub_const('TestRangeHelp', klass) }
+
+  let(:instance) do
+    klass.new(processed_source: processed_source)
+  end
+
+  let(:klass) do
+    Class.new do
+      include RuboCop::Cop::RangeHelp
+
+      def initialize(processed_source:)
+        @processed_source = processed_source
+      end
+    end
+  end
+
+  let(:processed_source) do
+    parse_source(source)
+  end
+
+  let(:source) do
+    raise NotImplementedError
+  end
 
   describe 'source indicated by #range_with_surrounding_comma' do
     subject do
-      obj = TestRangeHelp.new
-      obj.instance_exec(processed_source) { |src| @processed_source = src }
-      r = obj.send(:range_with_surrounding_comma, input_range, side)
+      r = instance.send(:range_with_surrounding_comma, input_range, side)
       processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 
     let(:source) { 'raise " ,Error, "' }
-    let(:processed_source) { parse_source(source) }
     let(:input_range) { Parser::Source::Range.new(processed_source.buffer, 9, 14) }
 
     context 'when side is :both' do
@@ -36,13 +55,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
 
   describe 'source indicated by #range_with_surrounding_space' do
     let(:source) { 'f {  a(2) }' }
-    let(:processed_source) { parse_source(source) }
     let(:input_range) { Parser::Source::Range.new(processed_source.buffer, 5, 9) }
-    let(:obj) { TestRangeHelp.new }
-
-    before do
-      obj.instance_exec(processed_source) { |src| @processed_source = src }
-    end
 
     shared_examples 'works with various `side`s' do
       context 'when side is :both' do
@@ -66,7 +79,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
 
     context 'when passing range as a kwarg' do
       subject do
-        r = obj.send(:range_with_surrounding_space, range: input_range, side: side)
+        r = instance.send(:range_with_surrounding_space, range: input_range, side: side)
         processed_source.buffer.source[r.begin_pos...r.end_pos]
       end
 
@@ -75,7 +88,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
 
     context 'when passing range as a positional argument' do
       subject do
-        r = obj.send(:range_with_surrounding_space, input_range, side: side)
+        r = instance.send(:range_with_surrounding_space, input_range, side: side)
         processed_source.buffer.source[r.begin_pos...r.end_pos]
       end
 
@@ -95,7 +108,6 @@ RSpec.describe RuboCop::Cop::RangeHelp do
 
       something_else
     RUBY
-    let(:processed_source) { parse_source(source) }
 
     # `input_source` defined in contexts
     let(:begin_pos) { source.index(input_source) }
@@ -103,9 +115,11 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     let(:input_range) { Parser::Source::Range.new(processed_source.buffer, begin_pos, end_pos) }
 
     let(:output_range) do
-      obj = TestRangeHelp.new
-      obj.instance_exec(processed_source) { |src| @processed_source = src }
-      obj.send(:range_by_whole_lines, input_range, include_final_newline: include_final_newline)
+      instance.send(
+        :range_by_whole_lines,
+        input_range,
+        include_final_newline: include_final_newline
+      )
     end
 
     shared_examples 'final newline behavior' do
@@ -189,6 +203,50 @@ RSpec.describe RuboCop::Cop::RangeHelp do
         it { is_expected.to eq('newline_at_end') }
         it { expect(output_range.end_pos).to eq(source.size) }
       end
+    end
+  end
+
+  describe '#range_with_comments_and_lines' do
+    subject(:result) do
+      instance.send(:range_with_comments_and_lines, node)
+    end
+
+    def indent(string, amount)
+      string.gsub(/^(?!$)/, ' ' * amount)
+    end
+
+    let(:node) do
+      processed_source.ast.each_node(:def).to_a[1]
+    end
+
+    let(:source) do
+      <<~RUBY
+        class A
+          # foo 1
+          def foo
+            # foo 2
+          end
+
+          # bar 1
+          def bar
+            # bar 2
+          end
+
+          # baz 1
+          def baz
+            # baz 2
+          end
+        end
+      RUBY
+    end
+
+    it 'returns a range that includes related comments and whole lines' do
+      expect(result.source).to eq(indent(<<~RUBY, 2))
+        # bar 1
+        def bar
+          # bar 2
+        end
+      RUBY
     end
   end
 end
