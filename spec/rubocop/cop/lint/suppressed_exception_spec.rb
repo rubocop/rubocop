@@ -220,6 +220,30 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
       end
     end
 
+    context 'Ruby 2.7 or higher', :ruby27 do
+      context 'when empty rescue for `do` block with a numbered parameter' do
+        it 'registers an offense for empty rescue without comment' do
+          expect_offense(<<~RUBY)
+            foo do
+              _1
+            rescue
+            ^^^^^^ Do not suppress exceptions.
+            end
+          RUBY
+        end
+
+        it 'does not register an offense for empty rescue with comment' do
+          expect_no_offenses(<<~RUBY)
+            foo do
+              _1
+            rescue
+              # do nothing
+            end
+          RUBY
+        end
+      end
+    end
+
     it 'registers an offense for empty rescue on single line with a comment after it' do
       expect_offense(<<~RUBY)
         RSpec.describe Dummy do
