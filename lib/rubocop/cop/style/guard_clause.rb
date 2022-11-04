@@ -125,7 +125,7 @@ module RuboCop
 
           guard = nil if and_or_guard_clause?(guard_clause)
 
-          register_offense(node, guard_clause_source(guard_clause), kw, guard)
+          register_offense(node, guard_clause_exiting_keyword(guard_clause), kw, guard)
         end
 
         private
@@ -226,9 +226,14 @@ module RuboCop
           branch.source_range
         end
 
-        def guard_clause_source(guard_clause)
+        def guard_clause_exiting_keyword(guard_clause)
           if and_or_guard_clause?(guard_clause)
-            guard_clause.parent.source
+            parent = guard_clause.parent
+            if parent.and_type?
+              "return (#{parent.source})"
+            elsif parent.or_type?
+              "return #{parent.source}"
+            end
           else
             guard_clause.source
           end
