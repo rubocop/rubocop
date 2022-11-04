@@ -44,7 +44,7 @@ module RuboCop
 
         def on_regexp(node)
           each_escape(node) do |char, index, within_character_class|
-            next if allowed_escape?(node, char, within_character_class)
+            next if allowed_escape?(node, char, index, within_character_class)
 
             location = escape_range_at_index(node, index)
 
@@ -56,7 +56,7 @@ module RuboCop
 
         private
 
-        def allowed_escape?(node, char, within_character_class)
+        def allowed_escape?(node, char, index, within_character_class)
           # Strictly speaking a few single-letter metachars are currently
           # unnecessary to "escape", e.g. i, E, F, but enumerating them is
           # rather difficult, and their behavior could change over time with
@@ -65,10 +65,19 @@ module RuboCop
           return true if ALLOWED_ALWAYS_ESCAPES.include?(char) || delimiter?(node, char)
 
           if within_character_class
-            ALLOWED_WITHIN_CHAR_CLASS_METACHAR_ESCAPES.include?(char)
+            ALLOWED_WITHIN_CHAR_CLASS_METACHAR_ESCAPES.include?(char) &&
+              !char_class_begins_or_ends_with_escaped_hyphen?(node, index)
           else
             ALLOWED_OUTSIDE_CHAR_CLASS_METACHAR_ESCAPES.include?(char)
           end
+        end
+
+        def char_class_begins_or_ends_with_escaped_hyphen?(node, index)
+          # The hyphen character is allowed to be escaped within a character class
+          # but it's not necessry to escape hyphen if it's the first or last character
+          # within the character class. This method checks if that's the case.
+          # e.g. "[0-9\\-]" or "[\\-0-9]" would return true
+          node.source[index] == '[' || node.source[index + 3] == ']'
         end
 
         def delimiter?(node, char)
