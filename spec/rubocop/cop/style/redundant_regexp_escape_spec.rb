@@ -111,6 +111,32 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
       end
     end
 
+    context "with an escaped '-' character being the last character inside a character class" do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          foo = /[0-9\-]/
+                     ^^ Redundant escape inside regexp literal
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = /[0-9-]/
+        RUBY
+      end
+    end
+
+    context "with an escaped '-' character being the first character inside a character class" do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          foo = /[\-0-9]/
+                  ^^ Redundant escape inside regexp literal
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = /[-0-9]/
+        RUBY
+      end
+    end
+
     context 'with an escaped character class and following escaped char' do
       it 'does not register an offense' do
         expect_no_offenses('foo = /\[\+/')
@@ -125,7 +151,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
 
     context 'with a nested character class then allowed escape' do
       it 'does not register an offense' do
-        expect_no_offenses('foo = /[a-w&&[^c-g]\-]/')
+        expect_no_offenses('foo = /[a-w&&[^c-g]\-1-9]/')
       end
     end
 
@@ -333,8 +359,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
       end
 
       context "with an escaped '#{char}' inside a character class" do
-        it 'does not register an offense' do
-          expect_no_offenses("foo = /a[\\#{char}]b/")
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            foo = /a[\\#{char}]b/
+                     ^^ Redundant escape inside regexp literal
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo = /a[#{char}]b/
+          RUBY
         end
       end
     end
