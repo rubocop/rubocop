@@ -30,6 +30,17 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
         foo #{operator_method}(bar)
       RUBY
     end
+
+    it "registers an offense when chaining `foo.bar.#{operator_method}(baz).round(2)`" do
+      expect_offense(<<~RUBY, operator_method: operator_method)
+        foo.bar.#{operator_method}(baz).quux(2)
+               ^ Redundant dot detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (foo.bar #{operator_method} baz).quux(2)
+      RUBY
+    end
   end
 
   it 'does not register an offense when using `foo.+@bar.to_s`' do
