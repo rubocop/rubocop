@@ -38,26 +38,48 @@ module RuboCop
           ({block numblock} $(send (send _ ${:keys :values}) :each) ...)
         PATTERN
 
+        # @!method kv_each_with_block_pass(node)
+        def_node_matcher :kv_each_with_block_pass, <<~PATTERN
+          (send $(send _ ${:keys :values}) :each (block_pass (sym _)))
+        PATTERN
+
         def on_block(node)
-          register_kv_offense(node)
+          kv_each(node) do |target, method|
+            register_kv_offense(target, method)
+          end
         end
 
         alias on_numblock on_block
 
+        def on_block_pass(node)
+          kv_each_with_block_pass(node.parent) do |target, method|
+            register_kv_with_block_pass_offense(node, target, method)
+          end
+        end
+
         private
 
-        def register_kv_offense(node)
-          kv_each(node) do |target, method|
-            parent_receiver = target.receiver.receiver
-            return unless parent_receiver
-            return if allowed_receiver?(parent_receiver)
+        def register_kv_offense(target, method)
+          return unless (parent_receiver = target.receiver.receiver)
+          return if allowed_receiver?(parent_receiver)
 
-            msg = format(message, prefer: "each_#{method[0..-2]}", current: "#{method}.each")
-
-            add_offense(kv_range(target), message: msg) do |corrector|
-              correct_key_value_each(target, corrector)
-            end
+          add_offense(kv_range(target), message: format_message(method)) do |corrector|
+            correct_key_value_each(target, corrector)
           end
+        end
+
+        def register_kv_with_block_pass_offense(node, target, method)
+          return unless (parent_receiver = node.parent.receiver.receiver)
+          return if allowed_receiver?(parent_receiver)
+
+          range = target.loc.selector.with(end_pos: node.parent.loc.selector.end_pos)
+          add_offense(range, message: format_message(method)) do |corrector|
+            corrector.replace(range, "each_#{method[0..-2]}")
+          end
+        end
+
+        def format_message(method_name)
+          format(MSG, prefer: "each_#{method_name[0..-2]}", current: "#{method_name}.each")
         end
 
         def check_argument(variable)
