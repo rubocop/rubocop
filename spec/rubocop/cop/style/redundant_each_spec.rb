@@ -143,6 +143,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
     RUBY
   end
 
+  it 'does not register an offense when any method is used between methods with `each` in the method name' do
+    expect_no_offenses(<<~RUBY)
+      string.each_char.map(&:to_i).reverse.each_with_index.map { |v, i| do_something(v, i) }
+    RUBY
+  end
+
   it 'does not register an offense when using `each.with_object`' do
     expect_no_offenses(<<~RUBY)
       array.each.with_object { |v, o| do_something(v, o) }

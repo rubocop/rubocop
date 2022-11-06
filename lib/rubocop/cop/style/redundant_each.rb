@@ -68,15 +68,17 @@ module RuboCop
               ancestor.receiver == node &&
                 (RESTRICT_ON_SEND.include?(ancestor.method_name) || ancestor.method?(:reverse_each))
             end
+
+            return ancestor_node if ancestor_node
           end
 
-          ancestor_node || node.each_descendant(:send).detect do |descendant|
-            next if descendant.parent.block_type? || descendant.last_argument&.block_pass_type?
+          return unless (prev_method = node.children.first)
+          return if !prev_method.send_type? ||
+                    prev_method.parent.block_type? || prev_method.last_argument&.block_pass_type?
 
-            detected = descendant.method_name.to_s.start_with?('each_') unless node.method?(:each)
+          detected = prev_method.method_name.to_s.start_with?('each_') unless node.method?(:each)
 
-            detected || descendant.method?(:reverse_each)
-          end
+          prev_method if detected || prev_method.method?(:reverse_each)
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
