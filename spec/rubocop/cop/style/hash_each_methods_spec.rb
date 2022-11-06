@@ -25,6 +25,28 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
+      it 'registers offense, autocorrects foo#keys.each to foo#each_key with a symbol proc argument' do
+        expect_offense(<<~RUBY)
+          foo.keys.each(&:bar)
+              ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.each_key(&:bar)
+        RUBY
+      end
+
+      it 'registers offense, autocorrects foo#values.each to foo#each_value with a symbol proc argument' do
+        expect_offense(<<~RUBY)
+          foo.values.each(&:bar)
+              ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.each_value(&:bar)
+        RUBY
+      end
+
       it 'does not register an offense for foo#each_key' do
         expect_no_offenses('foo.each_key { |k| p k }')
       end
@@ -70,6 +92,28 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
+      it 'registers offense, autocorrects {}#keys.each to {}#each_key with a symbol proc argument' do
+        expect_offense(<<~RUBY)
+          {}.keys.each(&:bar)
+             ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {}.each_key(&:bar)
+        RUBY
+      end
+
+      it 'registers offense, autocorrects {}#values.each to {}#each_value with a symbol proc argument' do
+        expect_offense(<<~RUBY)
+          {}.values.each(&:bar)
+             ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {}.each_value(&:bar)
+        RUBY
+      end
+
       it 'does not register an offense for {}#each_key' do
         expect_no_offenses('{}.each_key { |k| p k }')
       end
@@ -89,6 +133,18 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
       it 'does not register an offense for `values.each`' do
         expect_no_offenses(<<~RUBY)
           values.each { |v| p v }
+        RUBY
+      end
+
+      it 'does not register an offense for `keys.each` with a symbol proc argument' do
+        expect_no_offenses(<<~RUBY)
+          keys.each(&:bar)
+        RUBY
+      end
+
+      it 'does not register an offense for `values.each` with a symbol proc argument' do
+        expect_no_offenses(<<~RUBY)
+          values.each(&:bar)
         RUBY
       end
 
@@ -114,6 +170,12 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         expect_no_offenses(<<~RUBY)
           execute = do_something(argument)
           execute.values.each { |v| p v }
+        RUBY
+      end
+
+      it 'does not register an offense when receiver is `execute` method with a symbol proc argument' do
+        expect_no_offenses(<<~RUBY)
+          execute(sql).values.each(&:bar)
         RUBY
       end
 
