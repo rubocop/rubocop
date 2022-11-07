@@ -38,6 +38,12 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
         [1, {}]
       RUBY
     end
+
+    it 'does not register an offense when using double splat operator' do
+      expect_no_offenses(<<~RUBY)
+        [1, **options]
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is no_braces' do
