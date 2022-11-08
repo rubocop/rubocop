@@ -34,6 +34,7 @@ module RuboCop
         extend AutoCorrector
 
         def on_hash(node)
+          return if node.children.first&.kwsplat_type?
           return unless (array = containing_array(node))
           return unless last_array_item?(array, node) && explicit_array?(array)
 
