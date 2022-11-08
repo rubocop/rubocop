@@ -3820,8 +3820,9 @@ Style/HashExcept:
                  Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
                  that can be replaced with `Hash#except` method.
   Enabled: pending
+  Safe: false
   VersionAdded: '1.7'
-  VersionChanged: '1.31'
+  VersionChanged: '<<next>>'
 
 Style/HashLikeCase:
   Description: >-

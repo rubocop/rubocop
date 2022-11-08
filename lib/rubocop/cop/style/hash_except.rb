@@ -13,6 +13,10 @@ module RuboCop
       # when used `==`.
       # And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
       #
+      # @safety
+      #   This cop is unsafe because it cannot be guaranteed that the receiver
+      #   is a `Hash` or responds to the replacement method.
+      #
       # @example
       #
       #   # bad
