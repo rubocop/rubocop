@@ -38,7 +38,7 @@ module RuboCop
         new(cops, config, options)
       end
 
-      # @return [Array<Cop::Cop>]
+      # @return [Array<Cop::Base>]
       def self.mobilize_cops(cop_classes, config, options = {})
         cop_classes = Registry.new(cop_classes.to_a, options) unless cop_classes.is_a?(Registry)
 
