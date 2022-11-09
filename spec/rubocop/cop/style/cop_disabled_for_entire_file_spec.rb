@@ -24,6 +24,20 @@ RSpec.describe RuboCop::Cop::Style::CopDisabledForEntireFile, :config do
     RUBY
   end
 
+  context "when enabling instead of disabling" do
+    let(:other_cops) { { "Department/CopName" => { "Enabled" => false } } }
+    let(:message) { super().gsub('disable', 'enable') }
+
+    it 'registers an offense when all the code is wrapped in an enable directive' do
+      expect_offense(<<~RUBY)
+        # rubocop:enable Department/CopName
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        false
+        # rubocop:disable Department/CopName
+      RUBY
+    end
+  end
+
   it 'registers an offense when multiple lines of code are wrapped in a disable directive' do
     expect_offense(<<~RUBY)
       # rubocop:disable Department/CopName
