@@ -127,4 +127,25 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       RUBY
     end
   end
+
+  context 'with instance variable comparison in module' do
+    it 'registers and corrects an offense' do
+      expect_offense(<<~RUBY)
+        module Foo
+          def bar?(value)
+            bar.class.name == @class_name
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?(@class_name)` instead of comparing classes.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+          def bar?(value)
+            bar.instance_of?(@class_name)
+          end
+        end
+      RUBY
+    end
+  end
 end
