@@ -67,6 +67,64 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
       end
     end
 
+    context 'when using `--server` and json is specified as the format' do
+      context 'when `--format=json`' do
+        it 'does not display the server start message' do
+          create_file('example.rb', <<~RUBY)
+            puts 0
+          RUBY
+
+          stdout, _stderr, _status = Open3.capture3(
+            'ruby', '-I', '.',
+            rubocop, '--server', '--format=json', '--stdin', 'example.rb', stdin_data: 'puts 0'
+          )
+          expect(stdout).not_to start_with 'RuboCop server starting on '
+        end
+      end
+
+      context 'when `--format=j`' do
+        it 'does not display the server start message' do
+          create_file('example.rb', <<~RUBY)
+            puts 0
+          RUBY
+
+          stdout, _stderr, _status = Open3.capture3(
+            'ruby', '-I', '.',
+            rubocop, '--server', '--format=j', '--stdin', 'example.rb', stdin_data: 'puts 0'
+          )
+          expect(stdout).not_to start_with 'RuboCop server starting on '
+        end
+      end
+
+      context 'when `--format json`' do
+        it 'does not display the server start message' do
+          create_file('example.rb', <<~RUBY)
+            puts 0
+          RUBY
+
+          stdout, _stderr, _status = Open3.capture3(
+            'ruby', '-I', '.',
+            rubocop, '--server', '--format', 'json', '--stdin', 'example.rb', stdin_data: 'puts 0'
+          )
+          expect(stdout).not_to start_with 'RuboCop server starting on '
+        end
+      end
+
+      context 'when `--format j`' do
+        it 'does not display the server start message' do
+          create_file('example.rb', <<~RUBY)
+            puts 0
+          RUBY
+
+          stdout, _stderr, _status = Open3.capture3(
+            'ruby', '-I', '.',
+            rubocop, '--server', '--format', 'j', '--stdin', 'example.rb', stdin_data: 'puts 0'
+          )
+          expect(stdout).not_to start_with 'RuboCop server starting on '
+        end
+      end
+    end
+
     context 'when using `--server` option after running server and updating configuration' do
       it 'applies .rubocop.yml configuration changes even during server startup' do
         create_file('example.rb', <<~RUBY)

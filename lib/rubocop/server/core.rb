@@ -17,6 +17,8 @@ module RuboCop
     # The core of server process. It starts TCP server and perform socket communication.
     # @api private
     class Core
+      JSON_FORMATS = %w[json j].freeze
+
       def self.token
         @token ||= SecureRandom.hex(4)
       end
@@ -57,6 +59,10 @@ module RuboCop
       def start_server(host, port)
         @server = TCPServer.open(host, port)
 
+        # JSON format does not expected output message when IDE integration with server mode.
+        # See: https://github.com/rubocop/rubocop/issues/11164
+        return if use_json_format?
+
         output_stream = ARGV.include?('--stderr') ? $stderr : $stdout
         output_stream.puts "RuboCop server starting on #{@server.addr[3]}:#{@server.addr[1]}."
       end
@@ -75,6 +81,15 @@ module RuboCop
         socket.puts e.full_message
       ensure
         socket.close
+      end
+
+      def use_json_format?
+        return true if ARGV.include?('--format=json') || ARGV.include?('--format=j')
+        return false unless (index = ARGV.index('--format'))
+
+        format = ARGV[index + 1]
+
+        JSON_FORMATS.include?(format)
       end
     end
   end
