@@ -36,17 +36,21 @@ module RuboCop
               'or if you need to disable the entire file, do it in your configuration file.'
 
         def on_new_investigation
+          # FIXME: How to detect being enabled around entire file?
+
           return if disabled_ranges.empty?
 
           disabled_ranges.each do |disabled_range|
             next unless disabled_range.cover?(code_range)
 
+            # FIXME: This can return nil?
             add_offense(processed_source.comment_at_line(disabled_range.begin))
           end
         end
 
         private
 
+        # TODO: Is it safe to memoize this?
         def disabled_ranges
           @disabled_ranges ||= processed_source
                                .disabled_line_ranges
@@ -61,6 +65,7 @@ module RuboCop
           ranges.reject { |range| range.size < 2 }
         end
 
+        # TODO: And memoize this too?
         def code_range
           @code_range ||= Range.new(
             *processed_source.sorted_tokens.reject(&:comment?).map(&:line).minmax
