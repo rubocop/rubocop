@@ -186,10 +186,6 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         def some_public_method
         end
 
-        def other_public_method
-        end
-
-        private :other_public_method
 
         def yet_other_public_method
         end
@@ -198,6 +194,11 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
         def some_protected_method
         end
+
+        def other_public_method
+        end
+
+        private :other_public_method
 
         private
 
@@ -381,6 +382,31 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
           private def foo
           end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects public method after private method marked by its name' do
+      expect_offense(<<~RUBY)
+        class A
+          def foo
+          end
+          private :foo
+
+          def bar
+          ^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          def bar
+          end
+
+          def foo
+          end
+          private :foo
         end
       RUBY
     end
