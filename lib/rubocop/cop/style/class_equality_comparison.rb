@@ -97,12 +97,14 @@ module RuboCop
           if node.children.first.method?(:name)
             return class_node.receiver.source if class_node.receiver
 
-            value = class_node.source.delete('"').delete("'")
-            value.prepend('::') if class_node.each_ancestor(:class, :module).any?
-            value
-          else
-            class_node.source
+            if class_node.str_type?
+              value = class_node.source.delete('"').delete("'")
+              value.prepend('::') if class_node.each_ancestor(:class, :module).any?
+              return value
+            end
           end
+
+          class_node.source
         end
 
         def offense_range(receiver_node, node)
