@@ -29,6 +29,17 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `reject` with block pass arg and no parentheses' do
+    expect_offense(<<~RUBY)
+      array.reject &:nil?
+            ^^^^^^^^^^^^^ Use `compact` instead of `reject &:nil?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.compact
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `reject` on hash to reject nils' do
     expect_offense(<<~RUBY)
       hash.reject { |k, v| v.nil? }
