@@ -93,7 +93,7 @@ module RuboCop
                        end
 
           # The conversion process doubles escaped slashes, so they have to be reverted
-          correction.gsub('\\\\', '\\')
+          correction.gsub('\\\\', '\\').gsub('\"', '"')
         end
 
         def style
