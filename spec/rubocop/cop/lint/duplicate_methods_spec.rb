@@ -385,6 +385,82 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         end
       RUBY
     end
+
+    it "registers an offense for duplicate nested method in #{type}" do
+      expect_offense(<<-RUBY, 'example.rb')
+        #{opening_line}
+          def foo
+            def some_method
+              implement 1
+            end
+          end
+
+          def foo
+          ^^^^^^^ Method `A#foo` is defined at both example.rb:2 and example.rb:8.
+            def some_method
+            ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:3 and example.rb:9.
+              implement 2
+            end
+          end
+        end
+      RUBY
+    end
+
+    it "registers an offense for duplicate nested method in self method of #{type}" do
+      expect_offense(<<-RUBY, 'example.rb')
+        #{opening_line}
+          def self.foo
+            def some_method
+              implement 1
+            end
+          end
+
+          def self.foo
+          ^^^^^^^^^^^^ Method `A.foo` is defined at both example.rb:2 and example.rb:8.
+            def some_method
+            ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:3 and example.rb:9.
+              implement 2
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for same method name defined in different methods' do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          def foo
+            def some_method
+              implement 1
+            end
+          end
+
+          def bar
+            def some_method
+              implement 2
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for same method name defined in different self methods' do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          def self.foo
+            def some_method
+              implement 1
+            end
+          end
+
+          def self.bar
+            def some_method
+              implement 2
+            end
+          end
+        end
+      RUBY
+    end
   end
 
   include_examples('in scope', 'class', 'class A')

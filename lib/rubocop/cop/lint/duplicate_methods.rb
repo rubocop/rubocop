@@ -51,8 +51,8 @@ module RuboCop
       #   alias bar foo
       class DuplicateMethods < Base
         MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
-
         RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr].freeze
+        DEF_TYPES = %i[def defs].freeze
 
         def initialize(config = nil, options = nil)
           super
@@ -127,8 +127,8 @@ module RuboCop
           found_method(node, "#{enclosing}.#{name}")
         end
 
-        def message_for_dup(node, method_name)
-          format(MSG, method: method_name, defined: source_location(@definitions[method_name]),
+        def message_for_dup(node, method_name, key)
+          format(MSG, method: method_name, defined: source_location(@definitions[key]),
                       current: source_location(node))
         end
 
@@ -156,18 +156,27 @@ module RuboCop
         end
 
         def found_method(node, method_name)
-          if @definitions.key?(method_name)
-            loc = case node.type
-                  when :def, :defs
+          key = method_key(node, method_name)
+
+          if @definitions.key?(key)
+            loc = if DEF_TYPES.include?(node.type)
                     node.loc.keyword.join(node.loc.name)
                   else
                     node.loc.expression
                   end
-            message = message_for_dup(node, method_name)
+            message = message_for_dup(node, method_name, key)
 
             add_offense(loc, message: message)
           else
-            @definitions[method_name] = node
+            @definitions[key] = node
+          end
+        end
+
+        def method_key(node, method_name)
+          if (ancestor_def = node.each_ancestor(*DEF_TYPES).first)
+            "#{ancestor_def.method_name}.#{method_name}"
+          else
+            method_name
           end
         end
 
