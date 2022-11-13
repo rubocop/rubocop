@@ -25,6 +25,9 @@ module RuboCop
       class ObjectThen < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.6
 
         MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
 

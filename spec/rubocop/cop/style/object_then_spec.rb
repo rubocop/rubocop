@@ -4,15 +4,25 @@ RSpec.describe RuboCop::Cop::Style::ObjectThen, :config do
   context 'EnforcedStyle: then' do
     let(:cop_config) { { 'EnforcedStyle' => 'then' } }
 
-    it 'registers an offense for yield_self with block' do
-      expect_offense(<<~RUBY)
-        obj.yield_self { |e| e.test }
-            ^^^^^^^^^^ Prefer `then` over `yield_self`.
-      RUBY
+    context 'Ruby 2.5', :ruby25 do
+      it 'accepts yield_self with block' do
+        expect_no_offenses(<<~RUBY)
+          obj.yield_self { |e| e.test }
+        RUBY
+      end
+    end
 
-      expect_correction(<<~RUBY)
-        obj.then { |e| e.test }
-      RUBY
+    context 'Ruby 2.6', :ruby26 do
+      it 'registers an offense for yield_self with block' do
+        expect_offense(<<~RUBY)
+          obj.yield_self { |e| e.test }
+              ^^^^^^^^^^ Prefer `then` over `yield_self`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          obj.then { |e| e.test }
+        RUBY
+      end
     end
 
     context 'Ruby 2.7', :ruby27 do
