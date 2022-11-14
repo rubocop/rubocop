@@ -2,15 +2,14 @@
 
 == Metrics/AbcSize
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.27
-¦ 1.5
+| Enabled
+| Yes
+| No
+| 0.27
+| 1.5
 |===
 
 Checks that the ABC size of methods is not higher than the
@@ -37,7 +36,7 @@ And `AllowedPatterns` (defaults to `[]`)
 
 [source,ruby]
 ----
-# `model` and `current_user`, refenced 3 times each,
+# `model` and `current_user`, referenced 3 times each,
 # are each counted as only 1 branch each if
 # `CountRepeatedAttributes` is set to 'false'
 
@@ -53,29 +52,28 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ CountRepeatedAttributes
-¦ `true`
-¦ Boolean
+| CountRepeatedAttributes
+| `true`
+| Boolean
 
-¦ Max
-¦ `17`
-¦ Integer
+| Max
+| `17`
+| Integer
 |===
 
 === References
@@ -85,15 +83,14 @@ end
 
 == Metrics/BlockLength
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.44
-¦ 1.5
+| Enabled
+| Yes
+| No
+| 0.44
+| 1.5
 |===
 
 Checks if the length of a block exceeds some maximum value.
@@ -137,54 +134,52 @@ end                 # 5 points
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ CountComments
-¦ `false`
-¦ Boolean
+| CountComments
+| `false`
+| Boolean
 
-¦ Max
-¦ `25`
-¦ Integer
+| Max
+| `25`
+| Integer
 
-¦ CountAsOne
-¦ `[]`
-¦ Array
+| CountAsOne
+| `[]`
+| Array
 
-¦ ExcludedMethods
-¦ `[]`
-¦ Array
+| ExcludedMethods
+| `[]`
+| Array
 
-¦ AllowedMethods
-¦ `refine`
-¦ Array
+| AllowedMethods
+| `refine`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ Exclude
-¦ `+**/*.gemspec+`
-¦ Array
+| Exclude
+| `+**/*.gemspec+`
+| Array
 |===
 
 == Metrics/BlockNesting
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.25
-¦ 0.47
+| Enabled
+| Yes
+| No
+| 0.25
+| 0.47
 |===
 
 Checks for excessive nesting of conditional and looping
@@ -198,17 +193,16 @@ The maximum level of nesting allowed is configurable.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ CountBlocks
-¦ `false`
-¦ Boolean
+| CountBlocks
+| `false`
+| Boolean
 
-¦ Max
-¦ `3`
-¦ Integer
+| Max
+| `3`
+| Integer
 |===
 
 === References
@@ -217,15 +211,14 @@ The maximum level of nesting allowed is configurable.
 
 == Metrics/ClassLength
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.25
-¦ 0.87
+| Enabled
+| Yes
+| No
+| 0.25
+| 0.87
 |===
 
 Checks if the length a class exceeds some maximum value.
@@ -263,34 +256,32 @@ end                 # 5 points
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ CountComments
-¦ `false`
-¦ Boolean
+| CountComments
+| `false`
+| Boolean
 
-¦ Max
-¦ `100`
-¦ Integer
+| Max
+| `100`
+| Integer
 
-¦ CountAsOne
-¦ `[]`
-¦ Array
+| CountAsOne
+| `[]`
+| Array
 |===
 
 == Metrics/CyclomaticComplexity
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.25
-¦ 0.81
+| Enabled
+| Yes
+| No
+| 0.25
+| 0.81
 |===
 
 Checks that the cyclomatic complexity of methods is not higher
@@ -322,38 +313,36 @@ Blocks that are calls to builtin iteration methods
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ Max
-¦ `7`
-¦ Integer
+| Max
+| `7`
+| Integer
 |===
 
 == Metrics/MethodLength
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.25
-¦ 1.5
+| Enabled
+| Yes
+| No
+| 0.25
+| 1.5
 |===
 
 Checks if the length of a method exceeds some maximum value.
@@ -394,37 +383,36 @@ end               # 5 points
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ CountComments
-¦ `false`
-¦ Boolean
+| CountComments
+| `false`
+| Boolean
 
-¦ Max
-¦ `10`
-¦ Integer
+| Max
+| `10`
+| Integer
 
-¦ CountAsOne
-¦ `[]`
-¦ Array
+| CountAsOne
+| `[]`
+| Array
 
-¦ ExcludedMethods
-¦ `[]`
-¦ Array
+| ExcludedMethods
+| `[]`
+| Array
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 |===
 
 === References
@@ -433,15 +421,14 @@ end               # 5 points
 
 == Metrics/ModuleLength
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.31
-¦ 0.87
+| Enabled
+| Yes
+| No
+| 0.31
+| 0.87
 |===
 
 Checks if the length a module exceeds some maximum value.
@@ -477,34 +464,32 @@ end                 # 5 points
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ CountComments
-¦ `false`
-¦ Boolean
+| CountComments
+| `false`
+| Boolean
 
-¦ Max
-¦ `100`
-¦ Integer
+| Max
+| `100`
+| Integer
 
-¦ CountAsOne
-¦ `[]`
-¦ Array
+| CountAsOne
+| `[]`
+| Array
 |===
 
 == Metrics/ParameterLists
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.25
-¦ 1.5
+| Enabled
+| Yes
+| No
+| 0.25
+| 1.5
 |===
 
 Checks for methods with too many parameters.
@@ -585,21 +570,20 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Max
-¦ `5`
-¦ Integer
+| Max
+| `5`
+| Integer
 
-¦ CountKeywordArgs
-¦ `true`
-¦ Boolean
+| CountKeywordArgs
+| `true`
+| Boolean
 
-¦ MaxOptionalParameters
-¦ `3`
-¦ Integer
+| MaxOptionalParameters
+| `3`
+| Integer
 |===
 
 === References
@@ -608,15 +592,14 @@ end
 
 == Metrics/PerceivedComplexity
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.25
-¦ 0.81
+| Enabled
+| Yes
+| No
+| 0.25
+| 0.81
 |===
 
 Tries to produce a complexity score that's a measure of the
@@ -648,23 +631,22 @@ end                             # 7 complexity points
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ Max
-¦ `8`
-¦ Integer
+| Max
+| `8`
+| Integer
 |===

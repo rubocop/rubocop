@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.39.0 (2022-11-14)
+
 ### New features
 
 * [#11091](https://github.com/rubocop/rubocop/pull/11091): Add autocorrect for `Layout/LineContinuationLeadingSpace`. ([@FnControlOption][])

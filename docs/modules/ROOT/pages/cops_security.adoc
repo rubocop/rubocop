@@ -2,15 +2,14 @@
 
 == Security/CompoundHash
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ No
-¦ 1.28
-¦ -
+| Pending
+| Yes
+| No
+| 1.28
+| -
 |===
 
 Checks for implementations of the `hash` method which combine
@@ -43,15 +42,14 @@ end
 
 == Security/Eval
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.47
-¦ -
+| Enabled
+| Yes
+| No
+| 0.47
+| -
 |===
 
 Checks for the use of `Kernel#eval` and `Binding#eval`.
@@ -68,15 +66,14 @@ binding.eval(something)
 
 == Security/IoMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.22
-¦ -
+| Pending
+| No
+| Yes (Unsafe)
+| 1.22
+| -
 |===
 
 Checks for the first argument to `IO.read`, `IO.binread`, `IO.write`, `IO.binwrite`,
@@ -109,15 +106,14 @@ IO.read('| command') # Allow intentional command invocation.
 
 == Security/JSONLoad
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.43
-¦ 1.22
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.43
+| 1.22
 |===
 
 Checks for the use of JSON class methods which have potential
@@ -151,15 +147,14 @@ JSON.parse("{}")
 
 == Security/MarshalLoad
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.47
-¦ -
+| Enabled
+| Yes
+| No
+| 0.47
+| -
 |===
 
 Checks for the use of Marshal class methods which have
@@ -187,15 +182,14 @@ Marshal.load(Marshal.dump({}))
 
 == Security/Open
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ No
-¦ 0.53
-¦ 1.0
+| Enabled
+| No
+| No
+| 0.53
+| 1.0
 |===
 
 Checks for the use of `Kernel#open` and `URI.open` with dynamic
@@ -237,15 +231,14 @@ URI.open("http://example.com")
 
 == Security/YAMLLoad
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.47
-¦ -
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.47
+| -
 |===
 
 Checks for the use of YAML class methods which have

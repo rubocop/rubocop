@@ -3822,7 +3822,7 @@ Style/HashExcept:
   Enabled: pending
   Safe: false
   VersionAdded: '1.7'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.39'
 
 Style/HashLikeCase:
   Description: >-

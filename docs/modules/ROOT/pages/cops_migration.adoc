@@ -2,15 +2,14 @@
 
 == Migration/DepartmentName
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.75
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.75
+| -
 |===
 
 Check that cop names in rubocop:disable comments are given with

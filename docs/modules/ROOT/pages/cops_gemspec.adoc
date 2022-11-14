@@ -2,15 +2,14 @@
 
 == Gemspec/DependencyVersion
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 1.29
-¦ -
+| Disabled
+| Yes
+| No
+| 1.29
+| -
 |===
 
 Enforce that gem dependency version specifications or a commit reference (branch,
@@ -70,34 +69,32 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `required`
-¦ `required`, `forbidden`
+| EnforcedStyle
+| `required`
+| `required`, `forbidden`
 
-¦ Include
-¦ `+**/*.gemspec+`
-¦ Array
+| Include
+| `+**/*.gemspec+`
+| Array
 
-¦ AllowedGems
-¦ `[]`
-¦ Array
+| AllowedGems
+| `[]`
+| Array
 |===
 
 == Gemspec/DeprecatedAttributeAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.30
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.30
+| -
 |===
 
 Checks that deprecated attribute attributes are not set in a gemspec file.
@@ -127,26 +124,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Include
-¦ `+**/*.gemspec+`
-¦ Array
+| Include
+| `+**/*.gemspec+`
+| Array
 |===
 
 == Gemspec/DuplicatedAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| No
+| 0.52
+| -
 |===
 
 An attribute assignment method calls should be listed only once
@@ -187,26 +182,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Include
-¦ `+**/*.gemspec+`
-¦ Array
+| Include
+| `+**/*.gemspec+`
+| Array
 |===
 
 == Gemspec/OrderedDependencies
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.51
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.51
+| -
 |===
 
 Dependencies in the gemspec should be alphabetically sorted.
@@ -263,34 +256,32 @@ spec.add_dependency 'rspec'
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ TreatCommentsAsGroupSeparators
-¦ `true`
-¦ Boolean
+| TreatCommentsAsGroupSeparators
+| `true`
+| Boolean
 
-¦ ConsiderPunctuation
-¦ `false`
-¦ Boolean
+| ConsiderPunctuation
+| `false`
+| Boolean
 
-¦ Include
-¦ `+**/*.gemspec+`
-¦ Array
+| Include
+| `+**/*.gemspec+`
+| Array
 |===
 
 == Gemspec/RequireMFA
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.23
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.23
+| -
 |===
 
 Requires a gemspec to have `rubygems_mfa_required` metadata set.
@@ -356,13 +347,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Include
-¦ `+**/*.gemspec+`
-¦ Array
+| Include
+| `+**/*.gemspec+`
+| Array
 |===
 
 === References
@@ -371,15 +361,14 @@ end
 
 == Gemspec/RequiredRubyVersion
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.52
-¦ 1.22
+| Enabled
+| Yes
+| No
+| 0.52
+| 1.22
 |===
 
 Checks that `required_ruby_version` in a gemspec file is set to a valid
@@ -438,26 +427,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Include
-¦ `+**/*.gemspec+`
-¦ Array
+| Include
+| `+**/*.gemspec+`
+| Array
 |===
 
 == Gemspec/RubyVersionGlobalsUsage
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.72
-¦ -
+| Enabled
+| Yes
+| No
+| 0.72
+| -
 |===
 
 Checks that `RUBY_VERSION` constant is not used in gemspec.
@@ -487,13 +474,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Include
-¦ `+**/*.gemspec+`
-¦ Array
+| Include
+| `+**/*.gemspec+`
+| Array
 |===
 
 === References

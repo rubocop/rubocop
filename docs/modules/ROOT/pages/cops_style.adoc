@@ -2,15 +2,14 @@
 
 == Style/AccessModifierDeclarations
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.57
-¦ 0.81
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.57
+| 0.81
 |===
 
 Access modifiers should be declared to apply to a group of methods
@@ -99,30 +98,28 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `group`
-¦ `inline`, `group`
+| EnforcedStyle
+| `group`
+| `inline`, `group`
 
-¦ AllowModifiersOnSymbols
-¦ `true`
-¦ Boolean
+| AllowModifiersOnSymbols
+| `true`
+| Boolean
 |===
 
 == Style/AccessorGrouping
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.87
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.87
+| -
 |===
 
 Checks for grouping of accessors in `class` and `module` bodies.
@@ -168,26 +165,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `grouped`
-¦ `separated`, `grouped`
+| EnforcedStyle
+| `grouped`
+| `separated`, `grouped`
 |===
 
 == Style/Alias
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.36
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.36
 |===
 
 Enforces the use of either `#alias` or `#alias_method`
@@ -222,13 +217,12 @@ alias_method :bar, :foo
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `prefer_alias`
-¦ `prefer_alias`, `prefer_alias_method`
+| EnforcedStyle
+| `prefer_alias`
+| `prefer_alias`, `prefer_alias_method`
 |===
 
 === References
@@ -237,15 +231,14 @@ alias_method :bar, :foo
 
 == Style/AndOr
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.9
-¦ 1.21
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.9
+| 1.21
 |===
 
 Checks for uses of `and` and `or`, and suggests using `&&` and
@@ -300,13 +293,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `conditionals`
-¦ `always`, `conditionals`
+| EnforcedStyle
+| `conditionals`
+| `always`, `conditionals`
 |===
 
 === References
@@ -317,15 +309,14 @@ end
 
 NOTE: Required Ruby version: 2.7
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.1
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.1
+| -
 |===
 
 In Ruby 2.7, arguments forwarding has been added.
@@ -385,13 +376,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowOnlyRestArgument
-¦ `true`
-¦ Boolean
+| AllowOnlyRestArgument
+| `true`
+| Boolean
 |===
 
 === References
@@ -400,15 +390,14 @@ end
 
 == Style/ArrayCoercion
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.88
-¦ -
+| Disabled
+| No
+| Yes (Unsafe)
+| 0.88
+| -
 |===
 
 Enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
@@ -457,15 +446,14 @@ Array(paths).each { |path| do_something(path) }
 
 == Style/ArrayJoin
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.20
-¦ 0.31
+| Enabled
+| Yes
+| Yes
+| 0.20
+| 0.31
 |===
 
 Checks for uses of "*" as a substitute for _join_.
@@ -491,15 +479,14 @@ array literal or the second is a string literal.
 
 == Style/AsciiComments
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.9
-¦ 1.21
+| Disabled
+| Yes
+| No
+| 0.9
+| 1.21
 |===
 
 Checks for non-ascii (non-English) characters
@@ -519,13 +506,12 @@ in comments. You could set an array of allowed non-ascii chars in
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedChars
-¦ `©`
-¦ Array
+| AllowedChars
+| `©`
+| Array
 |===
 
 === References
@@ -534,15 +520,14 @@ in comments. You could set an array of allowed non-ascii chars in
 
 == Style/Attr
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.12
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.12
 |===
 
 Checks for uses of Module#attr.
@@ -566,15 +551,14 @@ attr_reader :one, :two, :three
 
 == Style/AutoResourceCleanup
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.30
-¦ -
+| Disabled
+| Yes
+| No
+| 0.30
+| -
 |===
 
 Checks for cases when you could use a block
@@ -596,15 +580,14 @@ end
 
 == Style/BarePercentLiterals
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.25
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.25
+| -
 |===
 
 Checks if usage of %() or %Q() matches configuration.
@@ -639,13 +622,12 @@ Checks if usage of %() or %Q() matches configuration.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `bare_percent`
-¦ `percent_q`, `bare_percent`
+| EnforcedStyle
+| `bare_percent`
+| `percent_q`, `bare_percent`
 |===
 
 === References
@@ -654,15 +636,14 @@ Checks if usage of %() or %Q() matches configuration.
 
 == Style/BeginBlock
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.9
-¦ -
+| Enabled
+| Yes
+| No
+| 0.9
+| -
 |===
 
 This cop checks for BEGIN blocks.
@@ -681,15 +662,14 @@ BEGIN { test }
 
 == Style/BisectedAttrAccessor
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.87
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.87
+| -
 |===
 
 Checks for places where `attr_reader` and `attr_writer`
@@ -713,15 +693,14 @@ end
 
 == Style/BlockComments
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.23
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.23
 |===
 
 Looks for uses of block comments (=begin...=end).
@@ -747,15 +726,14 @@ of comments...
 
 == Style/BlockDelimiters
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.30
-¦ 0.35
+| Enabled
+| Yes
+| Yes
+| 0.30
+| 0.35
 |===
 
 Check for uses of braces or do/end around single line or
@@ -951,41 +929,40 @@ things.map { |thing|
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `line_count_based`
-¦ `line_count_based`, `semantic`, `braces_for_chaining`, `always_braces`
+| EnforcedStyle
+| `line_count_based`
+| `line_count_based`, `semantic`, `braces_for_chaining`, `always_braces`
 
-¦ ProceduralMethods
-¦ `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `measure`, `new`, `realtime`, `tap`, `with_object`
-¦ Array
+| ProceduralMethods
+| `benchmark`, `bm`, `bmbm`, `create`, `each_with_object`, `measure`, `new`, `realtime`, `tap`, `with_object`
+| Array
 
-¦ FunctionalMethods
-¦ `let`, `let!`, `subject`, `watch`
-¦ Array
+| FunctionalMethods
+| `let`, `let!`, `subject`, `watch`
+| Array
 
-¦ AllowedMethods
-¦ `lambda`, `proc`, `it`
-¦ Array
+| AllowedMethods
+| `lambda`, `proc`, `it`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ AllowBracesOnProceduralOneLiners
-¦ `false`
-¦ Boolean
+| AllowBracesOnProceduralOneLiners
+| `false`
+| Boolean
 
-¦ BracesRequiredMethods
-¦ `[]`
-¦ Array
+| BracesRequiredMethods
+| `[]`
+| Array
 |===
 
 === References
@@ -994,15 +971,14 @@ things.map { |thing|
 
 == Style/CaseEquality
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.89
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.89
 |===
 
 If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
@@ -1056,17 +1032,16 @@ self.class === something
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowOnConstant
-¦ `false`
-¦ Boolean
+| AllowOnConstant
+| `false`
+| Boolean
 
-¦ AllowOnSelfClass
-¦ `false`
-¦ Boolean
+| AllowOnSelfClass
+| `false`
+| Boolean
 |===
 
 === References
@@ -1075,15 +1050,14 @@ self.class === something
 
 == Style/CaseLikeIf
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.88
-¦ -
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.88
+| -
 |===
 
 Identifies places where `if-elsif` constructions
@@ -1125,15 +1099,14 @@ end
 
 == Style/CharacterLiteral
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.9
+| -
 |===
 
 Checks for uses of the character literal ?x.
@@ -1165,15 +1138,14 @@ That's a good use case of ? literal so it doesn't count it as an offense.
 
 == Style/ClassAndModuleChildren
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.19
-¦ -
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.19
+| -
 |===
 
 Checks the style of children definitions at classes and
@@ -1217,13 +1189,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `nested`
-¦ `nested`, `compact`
+| EnforcedStyle
+| `nested`
+| `nested`, `compact`
 |===
 
 === References
@@ -1232,15 +1203,14 @@ end
 
 == Style/ClassCheck
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.24
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.24
+| -
 |===
 
 Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
@@ -1275,13 +1245,12 @@ var.kind_of?(String)
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `is_a?`
-¦ `is_a?`, `kind_of?`
+| EnforcedStyle
+| `is_a?`
+| `is_a?`, `kind_of?`
 |===
 
 === References
@@ -1290,15 +1259,14 @@ var.kind_of?(String)
 
 == Style/ClassEqualityComparison
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.93
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.93
+| -
 |===
 
 Enforces the use of `Object#instance_of?` instead of class comparison
@@ -1378,21 +1346,20 @@ var.class.name == 'Date'
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `==`, `equal?`, `eql?`
-¦ Array
+| AllowedMethods
+| `==`, `equal?`, `eql?`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 |===
 
 === References
@@ -1401,15 +1368,14 @@ var.class.name == 'Date'
 
 == Style/ClassMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.20
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.20
 |===
 
 Checks for uses of the class/module name instead of
@@ -1440,15 +1406,14 @@ end
 
 == Style/ClassMethodsDefinitions
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.89
-¦ -
+| Disabled
+| Yes
+| Yes
+| 0.89
+| -
 |===
 
 Enforces using `def self.method_name` or `class << self` to define class methods.
@@ -1518,13 +1483,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `def_self`
-¦ `def_self`, `self_class`
+| EnforcedStyle
+| `def_self`
+| `def_self`, `self_class`
 |===
 
 === References
@@ -1533,15 +1497,14 @@ end
 
 == Style/ClassVars
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.13
-¦ -
+| Enabled
+| Yes
+| No
+| 0.13
+| -
 |===
 
 Checks for uses of class variables. Offenses
@@ -1596,15 +1559,14 @@ end
 
 == Style/CollectionCompact
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.2
-¦ 1.3
+| Pending
+| No
+| Yes (Unsafe)
+| 1.2
+| 1.3
 |===
 
 Checks for places where custom logic on rejection nils from arrays
@@ -1644,15 +1606,14 @@ hash.compact!
 
 == Style/CollectionMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.9
-¦ 1.7
+| Disabled
+| No
+| Yes (Unsafe)
+| 0.9
+| 1.7
 |===
 
 Enforces the use of consistent method names
@@ -1697,17 +1658,16 @@ items.include?
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ PreferredMethods
-¦ `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
-¦ 
+| PreferredMethods
+| `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
+| 
 
-¦ MethodsAcceptingSymbol
-¦ `inject`, `reduce`
-¦ Array
+| MethodsAcceptingSymbol
+| `inject`, `reduce`
+| Array
 |===
 
 === References
@@ -1716,15 +1676,14 @@ items.include?
 
 == Style/ColonMethodCall
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.9
+| -
 |===
 
 Checks for methods invoked via the :: operator instead
@@ -1751,15 +1710,14 @@ Marshal.dump(obj)
 
 == Style/ColonMethodDefinition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Checks for class methods that are defined using the `::`
@@ -1788,15 +1746,14 @@ end
 
 == Style/CombinableLoops
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ No
-¦ 0.90
-¦ -
+| Enabled
+| No
+| No
+| 0.90
+| -
 |===
 
 Checks for places where multiple consecutive loops over the same data
@@ -1859,15 +1816,14 @@ end
 
 == Style/CommandLiteral
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.30
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.30
+| -
 |===
 
 Enforces using `` or %x around command literals.
@@ -1967,17 +1923,16 @@ folders = %x(find . -type d).split
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `backticks`
-¦ `backticks`, `percent_x`, `mixed`
+| EnforcedStyle
+| `backticks`
+| `backticks`, `percent_x`, `mixed`
 
-¦ AllowInnerBackticks
-¦ `false`
-¦ Boolean
+| AllowInnerBackticks
+| `false`
+| Boolean
 |===
 
 === References
@@ -1986,15 +1941,14 @@ folders = %x(find . -type d).split
 
 == Style/CommentAnnotation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.10
-¦ 1.20
+| Enabled
+| Yes
+| Yes
+| 0.10
+| 1.20
 |===
 
 Checks that comment annotation keywords are written according
@@ -2065,17 +2019,16 @@ annotation.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Keywords
-¦ `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW`, `NOTE`
-¦ Array
+| Keywords
+| `TODO`, `FIXME`, `OPTIMIZE`, `HACK`, `REVIEW`, `NOTE`
+| Array
 
-¦ RequireColon
-¦ `true`
-¦ Boolean
+| RequireColon
+| `true`
+| Boolean
 |===
 
 === References
@@ -2084,15 +2037,14 @@ annotation.
 
 == Style/CommentedKeyword
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.51
-¦ 1.19
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.51
+| 1.19
 |===
 
 Checks for comments put on the same line as some keywords.
@@ -2140,15 +2092,14 @@ end
 
 == Style/ConditionalAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.36
-¦ 0.47
+| Enabled
+| Yes
+| Yes
+| 0.36
+| 0.47
 |===
 
 Check for `if` and `case` statements where each branch is used for
@@ -2257,34 +2208,32 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `assign_to_condition`
-¦ `assign_to_condition`, `assign_inside_condition`
+| EnforcedStyle
+| `assign_to_condition`
+| `assign_to_condition`, `assign_inside_condition`
 
-¦ SingleLineConditionsOnly
-¦ `true`
-¦ Boolean
+| SingleLineConditionsOnly
+| `true`
+| Boolean
 
-¦ IncludeTernaryExpressions
-¦ `true`
-¦ Boolean
+| IncludeTernaryExpressions
+| `true`
+| Boolean
 |===
 
 == Style/ConstantVisibility
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.66
-¦ 1.10
+| Disabled
+| Yes
+| No
+| 0.66
+| 1.10
 |===
 
 Checks that constants defined in classes and modules have
@@ -2341,26 +2290,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ IgnoreModules
-¦ `false`
-¦ Boolean
+| IgnoreModules
+| `false`
+| Boolean
 |===
 
 == Style/Copyright
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.30
-¦ -
+| Disabled
+| Yes
+| Yes
+| 0.30
+| -
 |===
 
 Check that a copyright notice was given in each source file.
@@ -2377,30 +2324,28 @@ an offense is reported.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Notice
-¦ `^Copyright (\(c\) )?2[0-9]{3} .+`
-¦ String
+| Notice
+| `^Copyright (\(c\) )?2[0-9]{3} .+`
+| String
 
-¦ AutocorrectNotice
-¦ ``
-¦ String
+| AutocorrectNotice
+| ``
+| String
 |===
 
 == Style/DateTime
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.51
-¦ 0.92
+| Disabled
+| Yes
+| Yes (Unsafe)
+| 0.51
+| 0.92
 |===
 
 Checks for consistent usage of the `DateTime` class over the
@@ -2459,13 +2404,12 @@ something.to_time
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowCoercion
-¦ `false`
-¦ Boolean
+| AllowCoercion
+| `false`
+| Boolean
 |===
 
 === References
@@ -2474,15 +2418,14 @@ something.to_time
 
 == Style/DefWithParentheses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.12
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.12
 |===
 
 Checks for parentheses in the definition of a method,
@@ -2534,15 +2477,14 @@ end
 
 NOTE: Required Ruby version: 2.0
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.50
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.50
+| -
 |===
 
 Checks for places where the `#__dir__` method can replace more
@@ -2565,15 +2507,14 @@ path = __dir__
 
 == Style/DisableCopsWithinSourceCodeDirective
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.82
-¦ 1.9
+| Disabled
+| Yes
+| Yes
+| 0.82
+| 1.9
 |===
 
 Detects comments to enable/disable RuboCop.
@@ -2611,26 +2552,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedCops
-¦ `[]`
-¦ Array
+| AllowedCops
+| `[]`
+| Array
 |===
 
 == Style/DocumentDynamicEvalDefinition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ No
-¦ 1.1
-¦ 1.3
+| Pending
+| Yes
+| No
+| 1.1
+| 1.3
 |===
 
 When using `class_eval` (or other `eval`) with string interpolation,
@@ -2715,15 +2654,14 @@ class_eval("def #{unsafe_method}!(*params); end # def capitalize!(*params); end"
 
 == Style/Documentation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.9
-¦ -
+| Enabled
+| Yes
+| No
+| 0.9
+| -
 |===
 
 Checks for missing top-level documentation of classes and
@@ -2801,30 +2739,28 @@ module A
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedConstants
-¦ `[]`
-¦ Array
+| AllowedConstants
+| `[]`
+| Array
 
-¦ Exclude
-¦ `+spec/**/*+`, `+test/**/*+`
-¦ Array
+| Exclude
+| `+spec/**/*+`, `+test/**/*+`
+| Array
 |===
 
 == Style/DocumentationMethod
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.43
-¦ -
+| Disabled
+| Yes
+| No
+| 0.43
+| -
 |===
 
 Checks for missing documentation comment for public methods.
@@ -2928,30 +2864,28 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Exclude
-¦ `+spec/**/*+`, `+test/**/*+`
-¦ Array
+| Exclude
+| `+spec/**/*+`, `+test/**/*+`
+| Array
 
-¦ RequireForNonPublicMethods
-¦ `false`
-¦ Boolean
+| RequireForNonPublicMethods
+| `false`
+| Boolean
 |===
 
 == Style/DoubleCopDisableDirective
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.73
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.73
+| -
 |===
 
 Detects double disable comments on one line. This is mostly to catch
@@ -2978,15 +2912,14 @@ end
 
 == Style/DoubleNegation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.19
-¦ 1.2
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.19
+| 1.2
 |===
 
 Checks for uses of double negation (`!!`) to convert something to a boolean value.
@@ -3060,13 +2993,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `allowed_in_returns`
-¦ `allowed_in_returns`, `forbidden`
+| EnforcedStyle
+| `allowed_in_returns`
+| `allowed_in_returns`, `forbidden`
 |===
 
 === References
@@ -3075,15 +3007,14 @@ end
 
 == Style/EachForSimpleLoop
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.41
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.41
+| -
 |===
 
 Checks for loops which iterate a constant number of times,
@@ -3114,15 +3045,14 @@ This check only applies if the block takes no parameters.
 
 == Style/EachWithObject
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.22
-¦ 0.42
+| Enabled
+| Yes
+| Yes
+| 0.22
+| 0.42
 |===
 
 Looks for inject / reduce calls where the passed in object is
@@ -3145,15 +3075,14 @@ parameter is assigned to within the block.
 
 == Style/EmptyBlockParameter
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Checks for pipes for empty block parameters. Pipes for empty
@@ -3181,15 +3110,14 @@ a { do_something }
 
 == Style/EmptyCaseCondition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.40
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.40
+| -
 |===
 
 Checks for case statements with an empty condition.
@@ -3230,15 +3158,14 @@ end
 
 == Style/EmptyElse
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.28
-¦ 0.32
+| Enabled
+| Yes
+| Yes
+| 0.28
+| 0.32
 |===
 
 Checks for empty else-clauses, possibly including comments and/or an
@@ -3384,30 +3311,28 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `both`
-¦ `empty`, `nil`, `both`
+| EnforcedStyle
+| `both`
+| `empty`, `nil`, `both`
 
-¦ AllowComments
-¦ `false`
-¦ Boolean
+| AllowComments
+| `false`
+| Boolean
 |===
 
 == Style/EmptyHeredoc
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.32
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.32
+| -
 |===
 
 Checks for using empty heredoc to reduce redundancy.
@@ -3445,15 +3370,14 @@ do_something('')
 
 == Style/EmptyLambdaParameter
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Checks for parentheses for empty lambda parameters. Parentheses
@@ -3476,15 +3400,14 @@ redundant.
 
 == Style/EmptyLiteral
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.12
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.12
 |===
 
 Checks for the use of a method, the result of which
@@ -3511,15 +3434,14 @@ s = ''
 
 == Style/EmptyMethod
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.46
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.46
+| -
 |===
 
 Checks for the formatting of empty method definitions.
@@ -3576,13 +3498,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `compact`
-¦ `compact`, `expanded`
+| EnforcedStyle
+| `compact`
+| `compact`, `expanded`
 |===
 
 === References
@@ -3591,15 +3512,14 @@ end
 
 == Style/Encoding
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.50
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.50
 |===
 
 Checks ensures source files have no utf-8 encoding comments.
@@ -3620,15 +3540,14 @@ Checks ensures source files have no utf-8 encoding comments.
 
 == Style/EndBlock
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.81
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.81
 |===
 
 Checks for END blocks.
@@ -3652,15 +3571,14 @@ at_exit { puts 'Goodbye!' }
 
 NOTE: Required Ruby version: 3.0
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.8
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
 |===
 
 Checks for endless methods.
@@ -3722,13 +3640,12 @@ def my_method() = x.foo
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `allow_single_line`
-¦ `allow_single_line`, `allow_always`, `disallow`
+| EnforcedStyle
+| `allow_single_line`
+| `allow_single_line`, `allow_always`, `disallow`
 |===
 
 === References
@@ -3737,15 +3654,14 @@ def my_method() = x.foo
 
 == Style/EnvHome
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.29
-¦ -
+| Pending
+| No
+| Yes (Unsafe)
+| 1.29
+| -
 |===
 
 Checks for consistent usage of `ENV['HOME']`. If `nil` is used as
@@ -3779,15 +3695,14 @@ ENV.fetch('HOME', default)
 
 == Style/EvalWithLocation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Ensures that eval methods (`eval`, `instance_eval`, `class_eval`
@@ -3848,15 +3763,14 @@ eval code
 
 == Style/EvenOdd
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.12
-¦ 0.29
+| Enabled
+| Yes
+| Yes
+| 0.12
+| 0.29
 |===
 
 Checks for places where `Integer#even?` or `Integer#odd?`
@@ -3881,15 +3795,14 @@ end
 
 == Style/ExpandPathArguments
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.53
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.53
+| -
 |===
 
 Checks for use of the `File.expand_path` arguments.
@@ -3935,15 +3848,14 @@ Pathname.new(__dir__).expand_path
 
 == Style/ExplicitBlockArgument
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.89
-¦ 1.8
+| Enabled
+| Yes
+| Yes
+| 0.89
+| 1.8
 |===
 
 Enforces the use of explicit block argument to avoid writing
@@ -3991,15 +3903,14 @@ end
 
 == Style/ExponentialNotation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.82
-¦ -
+| Enabled
+| Yes
+| No
+| 0.82
+| -
 |===
 
 Enforces consistency when using exponential notation
@@ -4072,13 +3983,12 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `scientific`
-¦ `scientific`, `engineering`, `integral`
+| EnforcedStyle
+| `scientific`
+| `scientific`, `engineering`, `integral`
 |===
 
 === References
@@ -4087,15 +3997,14 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 
 == Style/FetchEnvVar
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.28
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.28
+| -
 |===
 
 Suggests `ENV.fetch` for the replacement of `ENV[]`.
@@ -4123,13 +4032,12 @@ ENV['X'].some_method # (e.g. `.nil?`)
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedVars
-¦ `[]`
-¦ Array
+| AllowedVars
+| `[]`
+| Array
 |===
 
 === References
@@ -4138,15 +4046,14 @@ ENV['X'].some_method # (e.g. `.nil?`)
 
 == Style/FileRead
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.24
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.24
+| -
 |===
 
 Favor `File.(bin)read` convenience methods.
@@ -4193,15 +4100,14 @@ File.binread(filename)
 
 == Style/FileWrite
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.24
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.24
+| -
 |===
 
 Favor `File.(bin)write` convenience methods.
@@ -4251,15 +4157,14 @@ File.binwrite(filename, content)
 
 == Style/FloatDivision
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.72
-¦ 1.9
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.72
+| 1.9
 |===
 
 Checks for division with integers coerced to floats.
@@ -4331,13 +4236,12 @@ a.fdiv(b)
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `single_coerce`
-¦ `left_coerce`, `right_coerce`, `single_coerce`, `fdiv`
+| EnforcedStyle
+| `single_coerce`
+| `left_coerce`, `right_coerce`, `single_coerce`, `fdiv`
 |===
 
 === References
@@ -4347,15 +4251,14 @@ a.fdiv(b)
 
 == Style/For
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.13
-¦ 1.26
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.13
+| 1.26
 |===
 
 Looks for uses of the `for` keyword or `each` method. The
@@ -4410,13 +4313,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `each`
-¦ `each`, `for`
+| EnforcedStyle
+| `each`
+| `each`, `for`
 |===
 
 === References
@@ -4425,15 +4327,14 @@ end
 
 == Style/FormatString
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.19
-¦ 0.49
+| Enabled
+| Yes
+| Yes
+| 0.19
+| 0.49
 |===
 
 Enforces the use of a single string formatting utility.
@@ -4484,13 +4385,12 @@ puts '%10s' % 'hoge'
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `format`
-¦ `format`, `sprintf`, `percent`
+| EnforcedStyle
+| `format`
+| `format`, `sprintf`, `percent`
 |===
 
 === References
@@ -4499,15 +4399,14 @@ puts '%10s' % 'hoge'
 
 == Style/FormatStringToken
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.49
-¦ 1.0
+| Enabled
+| Yes
+| Yes
+| 0.49
+| 1.0
 |===
 
 Use a consistent style for named format string tokens.
@@ -4620,44 +4519,42 @@ redirect('foo/%{bar_id}')
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `annotated`
-¦ `annotated`, `template`, `unannotated`
+| EnforcedStyle
+| `annotated`
+| `annotated`, `template`, `unannotated`
 
-¦ MaxUnannotatedPlaceholdersAllowed
-¦ `1`
-¦ Integer
+| MaxUnannotatedPlaceholdersAllowed
+| `1`
+| Integer
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 |===
 
 == Style/FrozenStringLiteralComment
 
 NOTE: Required Ruby version: 2.3
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.36
-¦ 0.79
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.36
+| 0.79
 |===
 
 Helps you transition from mutable string literals
@@ -4756,26 +4653,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `always`
-¦ `always`, `always_true`, `never`
+| EnforcedStyle
+| `always`
+| `always`, `always_true`, `never`
 |===
 
 == Style/GlobalStdStream
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.89
-¦ -
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.89
+| -
 |===
 
 Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.
@@ -4817,15 +4712,14 @@ end
 
 == Style/GlobalVars
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.13
-¦ -
+| Enabled
+| Yes
+| No
+| 0.13
+| -
 |===
 
 Looks for uses of global variables.
@@ -4851,13 +4745,12 @@ $stdin.read
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedVariables
-¦ `[]`
-¦ Array
+| AllowedVariables
+| `[]`
+| Array
 |===
 
 === References
@@ -4867,15 +4760,14 @@ $stdin.read
 
 == Style/GuardClause
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.20
-¦ 1.31
+| Enabled
+| Yes
+| Yes
+| 0.20
+| 1.31
 |===
 
 Use a guard clause instead of wrapping the code inside a conditional
@@ -4981,17 +4873,16 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ MinBodyLength
-¦ `1`
-¦ Integer
+| MinBodyLength
+| `1`
+| Integer
 
-¦ AllowConsecutiveConditionals
-¦ `false`
-¦ Boolean
+| AllowConsecutiveConditionals
+| `false`
+| Boolean
 |===
 
 === References
@@ -5000,15 +4891,14 @@ end
 
 == Style/HashAsLastArrayItem
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.88
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.88
+| -
 |===
 
 Checks for presence or absence of braces around hash literal as a last
@@ -5049,13 +4939,12 @@ EnforcedStyle.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `braces`
-¦ `braces`, `no_braces`
+| EnforcedStyle
+| `braces`
+| `braces`, `no_braces`
 |===
 
 === References
@@ -5064,15 +4953,14 @@ EnforcedStyle.
 
 == Style/HashConversion
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.10
-¦ 1.11
+| Pending
+| Yes
+| Yes
+| 1.10
+| 1.11
 |===
 
 Checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
@@ -5117,13 +5005,12 @@ Hash[*ary]
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowSplatArgument
-¦ `true`
-¦ Boolean
+| AllowSplatArgument
+| `true`
+| Boolean
 |===
 
 === References
@@ -5132,15 +5019,14 @@ Hash[*ary]
 
 == Style/HashEachMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.80
-¦ 1.16
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.80
+| 1.16
 |===
 
 Checks for uses of `each_key` and `each_value` Hash methods.
@@ -5179,13 +5065,12 @@ execute(sql).values.each { |v| p v }
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedReceivers
-¦ `[]`
-¦ Array
+| AllowedReceivers
+| `[]`
+| Array
 |===
 
 === References
@@ -5196,15 +5081,14 @@ execute(sql).values.each { |v| p v }
 
 NOTE: Required Ruby version: 3.0
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.7
-¦ 1.31
+| Pending
+| No
+| Yes (Unsafe)
+| 1.7
+| 1.39
 |===
 
 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
@@ -5216,6 +5100,11 @@ This cop should only be enabled on Ruby version 3.0 or higher.
 For safe detection, it is limited to commonly used string and symbol comparisons
 when used `==`.
 And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
+
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is a `Hash` or responds to the replacement method.
 
 === Examples
 
@@ -5235,15 +5124,14 @@ And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
 
 == Style/HashLikeCase
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.88
-¦ -
+| Enabled
+| Yes
+| No
+| 0.88
+| -
 |===
 
 Checks for places where `case-when` represents a simple 1:1
@@ -5291,26 +5179,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ MinBranchesCount
-¦ `3`
-¦ Integer
+| MinBranchesCount
+| `3`
+| Integer
 |===
 
 == Style/HashSyntax
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 1.24
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 1.24
 |===
 
 Checks hash literal syntax.
@@ -5446,25 +5332,24 @@ The supported styles are:
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `ruby19`
-¦ `ruby19`, `hash_rockets`, `no_mixed_keys`, `ruby19_no_mixed_keys`
+| EnforcedStyle
+| `ruby19`
+| `ruby19`, `hash_rockets`, `no_mixed_keys`, `ruby19_no_mixed_keys`
 
-¦ EnforcedShorthandSyntax
-¦ `always`
-¦ `always`, `never`, `either`, `consistent`
+| EnforcedShorthandSyntax
+| `always`
+| `always`, `never`, `either`, `consistent`
 
-¦ UseHashRocketsWithSymbolValues
-¦ `false`
-¦ Boolean
+| UseHashRocketsWithSymbolValues
+| `false`
+| Boolean
 
-¦ PreferHashRocketsForNonAlnumEndingSymbols
-¦ `false`
-¦ Boolean
+| PreferHashRocketsForNonAlnumEndingSymbols
+| `false`
+| Boolean
 |===
 
 === References
@@ -5475,15 +5360,14 @@ The supported styles are:
 
 NOTE: Required Ruby version: 2.5
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.80
-¦ 0.90
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.80
+| 0.90
 |===
 
 Looks for uses of `_.each_with_object({}) {...}`,
@@ -5518,15 +5402,14 @@ Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
 
 NOTE: Required Ruby version: 2.4
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.80
-¦ 0.90
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.80
+| 0.90
 |===
 
 Looks for uses of `_.each_with_object({}) {...}`,
@@ -5557,15 +5440,14 @@ Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
 
 == Style/IdenticalConditionalBranches
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.36
-¦ 1.19
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.36
+| 1.19
 |===
 
 Checks for identical expressions at the beginning or end of
@@ -5680,15 +5562,14 @@ end
 
 == Style/IfInsideElse
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.36
-¦ 1.3
+| Enabled
+| Yes
+| Yes
+| 0.36
+| 1.3
 |===
 
 If the `else` branch of a conditional consists solely of an `if` node,
@@ -5760,26 +5641,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowIfModifier
-¦ `false`
-¦ Boolean
+| AllowIfModifier
+| `false`
+| Boolean
 |===
 
 == Style/IfUnlessModifier
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.30
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.30
 |===
 
 Checks for `if` and `unless` statements that would fit on one line if
@@ -5824,15 +5703,14 @@ end
 
 == Style/IfUnlessModifierOfIfUnless
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.39
-¦ 0.87
+| Enabled
+| Yes
+| Yes
+| 0.39
+| 0.87
 |===
 
 Checks for if and unless statements used as modifiers of other if or
@@ -5860,15 +5738,14 @@ end
 
 == Style/IfWithBooleanLiteralBranches
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes (Unsafe)
-¦ 1.9
-¦ -
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.9
+| -
 |===
 
 Checks for redundant `if` with boolean literal branches.
@@ -5940,26 +5817,24 @@ num.nonzero? ? true : false
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `nonzero?`
-¦ Array
+| AllowedMethods
+| `nonzero?`
+| Array
 |===
 
 == Style/IfWithSemicolon
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.83
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.83
 |===
 
 Checks for uses of semicolon in if statements.
@@ -5981,15 +5856,14 @@ result = some_condition ? something : another_thing
 
 == Style/ImplicitRuntimeError
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.41
-¦ -
+| Disabled
+| Yes
+| No
+| 0.41
+| -
 |===
 
 Checks for `raise` or `fail` statements which do not specify an
@@ -6012,15 +5886,14 @@ raise ArgumentError, 'Error message here'
 
 NOTE: Required Ruby version: 2.7
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.16
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.16
+| -
 |===
 
 Checks for `in;` uses in `case` expressions.
@@ -6048,15 +5921,14 @@ end
 
 == Style/InfiniteLoop
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.26
-¦ 0.61
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.26
+| 0.61
 |===
 
 Use `Kernel#loop` for infinite loops.
@@ -6088,15 +5960,14 @@ end
 
 == Style/InlineComment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.23
-¦ -
+| Disabled
+| Yes
+| No
+| 0.23
+| -
 |===
 
 Checks for trailing inline comments.
@@ -6119,15 +5990,14 @@ end
 
 == Style/InverseMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.48
-¦ -
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.48
+| -
 |===
 
 Check for usages of not (`not` or `!`) called on a method
@@ -6175,30 +6045,28 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ InverseMethods
-¦ `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
-¦ 
+| InverseMethods
+| `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
+| 
 
-¦ InverseBlocks
-¦ `{:select=>:reject, :select!=>:reject!}`
-¦ 
+| InverseBlocks
+| `{:select=>:reject, :select!=>:reject!}`
+| 
 |===
 
 == Style/IpAddresses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.58
-¦ 0.91
+| Disabled
+| Yes
+| No
+| 0.58
+| 0.91
 |===
 
 Checks for hardcoded IP addresses, which can make code
@@ -6220,30 +6088,28 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedAddresses
-¦ `::`
-¦ Array
+| AllowedAddresses
+| `::`
+| Array
 
-¦ Exclude
-¦ `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`, `+**/*.gemspec+`
-¦ Array
+| Exclude
+| `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`, `+**/*.gemspec+`
+| Array
 |===
 
 == Style/KeywordParametersOrder
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.90
-¦ 1.7
+| Enabled
+| Yes
+| Yes
+| 0.90
+| 1.7
 |===
 
 Enforces that optional keyword parameters are placed at the
@@ -6284,15 +6150,14 @@ end
 
 == Style/Lambda
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.40
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.40
 |===
 
 (by default) checks for uses of the lambda literal syntax for
@@ -6355,13 +6220,12 @@ f = ->(x) do
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `line_count_dependent`
-¦ `line_count_dependent`, `lambda`, `literal`
+| EnforcedStyle
+| `line_count_dependent`
+| `line_count_dependent`, `lambda`, `literal`
 |===
 
 === References
@@ -6370,15 +6234,14 @@ f = ->(x) do
 
 == Style/LambdaCall
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.13
-¦ 0.14
+| Enabled
+| Yes
+| Yes
+| 0.13
+| 0.14
 |===
 
 Checks for use of the lambda.(args) syntax.
@@ -6409,13 +6272,12 @@ lambda.(x, y)
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `call`
-¦ `call`, `braces`
+| EnforcedStyle
+| `call`
+| `call`, `braces`
 |===
 
 === References
@@ -6424,15 +6286,14 @@ lambda.(x, y)
 
 == Style/LineEndConcatenation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.18
-¦ 0.64
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.18
+| 0.64
 |===
 
 Checks for string literal concatenation at
@@ -6470,15 +6331,14 @@ some_str = 'ala' \
 
 == Style/MagicCommentFormat
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.35
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.35
+| -
 |===
 
 Ensures magic comments are written consistently throughout your code base.
@@ -6608,34 +6468,32 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `snake_case`
-¦ `snake_case`, `kebab_case`
+| EnforcedStyle
+| `snake_case`
+| `snake_case`, `kebab_case`
 
-¦ DirectiveCapitalization
-¦ `lowercase`
-¦ String
+| DirectiveCapitalization
+| `lowercase`
+| String
 
-¦ ValueCapitalization
-¦ `<none>`
-¦ 
+| ValueCapitalization
+| `<none>`
+| 
 |===
 
 == Style/MapCompactWithConditionalBlock
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.30
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.30
+| -
 |===
 
 Prefer `select` or `reject` over `map { ... }.compact`.
@@ -6679,15 +6537,14 @@ array.reject { |e| some_condition? }
 
 NOTE: Required Ruby version: 2.6
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.24
-¦ -
+| Pending
+| No
+| Yes (Unsafe)
+| 1.24
+| -
 |===
 
 Looks for uses of `map.to_h` or `collect.to_h` that could be
@@ -6721,15 +6578,14 @@ something.to_h { |v| [v, v * 2] }
 
 == Style/MethodCallWithArgsParentheses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.47
-¦ 1.7
+| Disabled
+| Yes
+| Yes
+| 0.47
+| 1.7
 |===
 
 Enforces the presence (default) or absence of parentheses in
@@ -6962,53 +6818,52 @@ Array 1
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ IgnoreMacros
-¦ `true`
-¦ Boolean
+| IgnoreMacros
+| `true`
+| Boolean
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredPatterns
-¦ `[]`
-¦ Array
+| IgnoredPatterns
+| `[]`
+| Array
 
-¦ IncludedMacros
-¦ `[]`
-¦ Array
+| IncludedMacros
+| `[]`
+| Array
 
-¦ AllowParenthesesInMultilineCall
-¦ `false`
-¦ Boolean
+| AllowParenthesesInMultilineCall
+| `false`
+| Boolean
 
-¦ AllowParenthesesInChaining
-¦ `false`
-¦ Boolean
+| AllowParenthesesInChaining
+| `false`
+| Boolean
 
-¦ AllowParenthesesInCamelCaseMethod
-¦ `false`
-¦ Boolean
+| AllowParenthesesInCamelCaseMethod
+| `false`
+| Boolean
 
-¦ AllowParenthesesInStringInterpolation
-¦ `false`
-¦ Boolean
+| AllowParenthesesInStringInterpolation
+| `false`
+| Boolean
 
-¦ EnforcedStyle
-¦ `require_parentheses`
-¦ `require_parentheses`, `omit_parentheses`
+| EnforcedStyle
+| `require_parentheses`
+| `require_parentheses`, `omit_parentheses`
 |===
 
 === References
@@ -7017,15 +6872,14 @@ Array 1
 
 == Style/MethodCallWithoutArgsParentheses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.47
-¦ 0.55
+| Enabled
+| Yes
+| Yes
+| 0.47
+| 0.55
 |===
 
 Checks for unwanted parentheses in parameterless method calls.
@@ -7062,21 +6916,20 @@ object.foo()
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 |===
 
 === References
@@ -7085,15 +6938,14 @@ object.foo()
 
 == Style/MethodCalledOnDoEndBlock
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.14
-¦ -
+| Disabled
+| Yes
+| No
+| 0.14
+| -
 |===
 
 Checks for methods called on a do...end block. The point of
@@ -7125,15 +6977,14 @@ foo.c
 
 == Style/MethodDefParentheses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.16
-¦ 1.7
+| Enabled
+| Yes
+| Yes
+| 0.16
+| 1.7
 |===
 
 Checks for parentheses around the arguments in method
@@ -7242,13 +7093,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `require_parentheses`
-¦ `require_parentheses`, `require_no_parentheses`, `require_no_parentheses_except_multiline`
+| EnforcedStyle
+| `require_parentheses`
+| `require_parentheses`, `require_no_parentheses`, `require_no_parentheses_except_multiline`
 |===
 
 === References
@@ -7257,15 +7107,14 @@ end
 
 == Style/MinMax
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.50
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.50
+| -
 |===
 
 Checks for potential uses of `Enumerable#minmax`.
@@ -7285,15 +7134,14 @@ return foo.minmax
 
 == Style/MissingElse
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.30
-¦ 0.38
+| Disabled
+| Yes
+| No
+| 0.30
+| 0.38
 |===
 
 Checks for `if` expressions that do not have an `else` branch.
@@ -7406,26 +7254,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `both`
-¦ `if`, `case`, `both`
+| EnforcedStyle
+| `both`
+| `if`, `case`, `both`
 |===
 
 == Style/MissingRespondToMissing
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.56
-¦ -
+| Enabled
+| Yes
+| No
+| 0.56
+| -
 |===
 
 Checks for the presence of `method_missing` without also
@@ -7456,15 +7302,14 @@ end
 
 == Style/MixinGrouping
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.48
-¦ 0.49
+| Enabled
+| Yes
+| Yes
+| 0.48
+| 0.49
 |===
 
 Checks for grouping of mixins in `class` and `module` bodies.
@@ -7507,13 +7352,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `separated`
-¦ `separated`, `grouped`
+| EnforcedStyle
+| `separated`
+| `separated`, `grouped`
 |===
 
 === References
@@ -7522,15 +7366,14 @@ end
 
 == Style/MixinUsage
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.51
-¦ -
+| Enabled
+| Yes
+| No
+| 0.51
+| -
 |===
 
 Checks that `include`, `extend` and `prepend` statements appear
@@ -7577,15 +7420,14 @@ end
 
 == Style/ModuleFunction
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.11
-¦ 0.65
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.11
+| 0.65
 |===
 
 Checks for use of `extend self` or `module_function` in a module.
@@ -7695,17 +7537,16 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `module_function`
-¦ `module_function`, `extend_self`, `forbidden`
+| EnforcedStyle
+| `module_function`
+| `module_function`, `extend_self`, `forbidden`
 
-¦ Autocorrect
-¦ `false`
-¦ Boolean
+| Autocorrect
+| `false`
+| Boolean
 |===
 
 === References
@@ -7714,15 +7555,14 @@ end
 
 == Style/MultilineBlockChain
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ No
-¦ 0.13
-¦ -
+| Enabled
+| Yes
+| No
+| 0.13
+| -
 |===
 
 Checks for chaining of a block after another block that spans
@@ -7754,15 +7594,14 @@ end
 
 == Style/MultilineIfModifier
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.45
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.45
+| -
 |===
 
 Checks for uses of if/unless modifiers with multiple-lines bodies.
@@ -7786,15 +7625,14 @@ Checks for uses of if/unless modifiers with multiple-lines bodies.
 
 == Style/MultilineIfThen
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.26
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.26
 |===
 
 Checks for uses of the `then` keyword in multi-line if statements.
@@ -7823,15 +7661,14 @@ end
 
 NOTE: Required Ruby version: 2.7
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.16
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.16
+| -
 |===
 
 Checks uses of the `then` keyword in multi-line `in` statement.
@@ -7868,15 +7705,14 @@ end
 
 == Style/MultilineMemoization
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.44
-¦ 0.48
+| Enabled
+| Yes
+| Yes
+| 0.44
+| 0.48
 |===
 
 Checks expressions wrapping styles for multiline memoization.
@@ -7919,26 +7755,24 @@ foo ||= (
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `keyword`
-¦ `keyword`, `braces`
+| EnforcedStyle
+| `keyword`
+| `keyword`, `braces`
 |===
 
 == Style/MultilineMethodSignature
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.59
-¦ 1.7
+| Disabled
+| Yes
+| Yes
+| 0.59
+| 1.7
 |===
 
 Checks for method signatures that span multiple lines.
@@ -7961,15 +7795,14 @@ end
 
 == Style/MultilineTernaryOperator
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.86
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.86
 |===
 
 Checks for multi-line ternary op expressions.
@@ -8012,15 +7845,14 @@ return cond ? b : c
 
 == Style/MultilineWhenThen
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.73
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.73
+| -
 |===
 
 Checks uses of the `then` keyword
@@ -8058,15 +7890,14 @@ end
 
 == Style/MultipleComparison
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.49
-¦ 1.1
+| Enabled
+| Yes
+| Yes
+| 0.49
+| 1.1
 |===
 
 Checks against comparing a variable with multiple items, where
@@ -8121,26 +7952,24 @@ foo if [b.lightweight, b.heavyweight].include?(a)
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowMethodComparison
-¦ `true`
-¦ Boolean
+| AllowMethodComparison
+| `true`
+| Boolean
 |===
 
 == Style/MutableConstant
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.34
-¦ 1.8
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.34
+| 1.8
 |===
 
 Checks whether some constant value isn't a
@@ -8234,26 +8063,24 @@ CONST = [1, 2, 3]
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `literals`
-¦ `literals`, `strict`
+| EnforcedStyle
+| `literals`
+| `literals`, `strict`
 |===
 
 == Style/NegatedIf
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.20
-¦ 0.48
+| Enabled
+| Yes
+| Yes
+| 0.20
+| 0.48
 |===
 
 Checks for uses of if with a negated condition. Only ifs
@@ -8338,13 +8165,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `both`
-¦ `both`, `prefix`, `postfix`
+| EnforcedStyle
+| `both`
+| `both`, `prefix`, `postfix`
 |===
 
 === References
@@ -8353,15 +8179,14 @@ end
 
 == Style/NegatedIfElseCondition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.2
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.2
+| -
 |===
 
 Checks for uses of `if-else` and ternary operators with a negated condition
@@ -8394,15 +8219,14 @@ x ? do_something_else : do_something
 
 == Style/NegatedUnless
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.69
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.69
+| -
 |===
 
 Checks for uses of unless with a negated condition. Only unless
@@ -8477,13 +8301,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `both`
-¦ `both`, `prefix`, `postfix`
+| EnforcedStyle
+| `both`
+| `both`, `prefix`, `postfix`
 |===
 
 === References
@@ -8492,15 +8315,14 @@ end
 
 == Style/NegatedWhile
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.20
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.20
+| -
 |===
 
 Checks for uses of while with a negated condition.
@@ -8535,15 +8357,14 @@ bar while !foo && baz
 
 NOTE: Required Ruby version: 3.1
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.26
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.26
+| -
 |===
 
 Checks for nested `File.dirname`.
@@ -8562,15 +8383,14 @@ File.dirname(path, 2)
 
 == Style/NestedModifier
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.35
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.35
+| -
 |===
 
 Checks for nested use of if, unless, while and until in their
@@ -8593,15 +8413,14 @@ something if b && a
 
 == Style/NestedParenthesizedCalls
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.36
-¦ 0.77
+| Enabled
+| Yes
+| Yes
+| 0.36
+| 0.77
 |===
 
 Checks for unparenthesized method calls in the argument list
@@ -8632,26 +8451,24 @@ method1(foo arg)
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `be`, `be_a`, `be_an`, `be_between`, `be_falsey`, `be_kind_of`, `be_instance_of`, `be_truthy`, `be_within`, `eq`, `eql`, `end_with`, `include`, `match`, `raise_error`, `respond_to`, `start_with`
-¦ Array
+| AllowedMethods
+| `be`, `be_a`, `be_an`, `be_between`, `be_falsey`, `be_kind_of`, `be_instance_of`, `be_truthy`, `be_within`, `eq`, `eql`, `end_with`, `include`, `match`, `raise_error`, `respond_to`, `start_with`
+| Array
 |===
 
 == Style/NestedTernaryOperator
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.86
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.86
 |===
 
 Checks for nested ternary op expressions.
@@ -8677,15 +8494,14 @@ end
 
 == Style/Next
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.22
-¦ 0.35
+| Enabled
+| Yes
+| Yes
+| 0.22
+| 0.35
 |===
 
 Use `next` to skip iteration instead of a condition at the end.
@@ -8744,17 +8560,16 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `skip_modifier_ifs`
-¦ `skip_modifier_ifs`, `always`
+| EnforcedStyle
+| `skip_modifier_ifs`
+| `skip_modifier_ifs`, `always`
 
-¦ MinBodyLength
-¦ `3`
-¦ Integer
+| MinBodyLength
+| `3`
+| Integer
 |===
 
 === References
@@ -8763,15 +8578,14 @@ end
 
 == Style/NilComparison
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.12
-¦ 0.59
+| Enabled
+| Yes
+| Yes
+| 0.12
+| 0.59
 |===
 
 Checks for comparison of something with nil using `==` and
@@ -8809,13 +8623,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `predicate`
-¦ `predicate`, `comparison`
+| EnforcedStyle
+| `predicate`
+| `predicate`, `comparison`
 |===
 
 === References
@@ -8824,15 +8637,14 @@ end
 
 == Style/NilLambda
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.3
-¦ 1.15
+| Pending
+| Yes
+| Yes
+| 1.3
+| 1.15
 |===
 
 Checks for lambdas and procs that always return nil,
@@ -8870,15 +8682,14 @@ Proc.new { nil if x }
 
 == Style/NonNilCheck
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.20
-¦ 0.22
+| Enabled
+| Yes
+| Yes
+| 0.20
+| 0.22
 |===
 
 Checks for non-nil checks, which are usually redundant.
@@ -8933,13 +8744,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ IncludeSemanticChanges
-¦ `false`
-¦ Boolean
+| IncludeSemanticChanges
+| `false`
+| Boolean
 |===
 
 === References
@@ -8948,15 +8758,14 @@ end
 
 == Style/Not
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.20
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.20
 |===
 
 Checks for uses of the keyword `not` instead of `!`.
@@ -8980,15 +8789,14 @@ x = !something
 
 NOTE: Required Ruby version: 2.7
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ No
-¦ 1.22
-¦ -
+| Pending
+| Yes
+| No
+| 1.22
+| -
 |===
 
 Checks for numbered parameters.
@@ -9024,28 +8832,26 @@ collection.each { |item| puts item }
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `allow_single_line`
-¦ `allow_single_line`, `disallow`
+| EnforcedStyle
+| `allow_single_line`
+| `allow_single_line`, `disallow`
 |===
 
 == Style/NumberedParametersLimit
 
 NOTE: Required Ruby version: 2.7
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ No
-¦ 1.22
-¦ -
+| Pending
+| Yes
+| No
+| 1.22
+| -
 |===
 
 Detects use of an excessive amount of numbered parameters in a
@@ -9070,26 +8876,24 @@ foo { do_something(_1) }
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Max
-¦ `1`
-¦ Integer
+| Max
+| `1`
+| Integer
 |===
 
 == Style/NumericLiteralPrefix
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.41
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.41
+| -
 |===
 
 Checks for octal, hex, binary, and decimal literals using
@@ -9135,13 +8939,12 @@ num = 01234
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedOctalStyle
-¦ `zero_with_o`
-¦ `zero_with_o`, `zero_only`
+| EnforcedOctalStyle
+| `zero_with_o`
+| `zero_with_o`, `zero_only`
 |===
 
 === References
@@ -9150,15 +8953,14 @@ num = 01234
 
 == Style/NumericLiterals
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.48
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.48
 |===
 
 Checks for big numeric literals without `_` between groups
@@ -9212,25 +9014,24 @@ only correct to the standard pattern of an `_` every 3 digits.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ MinDigits
-¦ `5`
-¦ Integer
+| MinDigits
+| `5`
+| Integer
 
-¦ Strict
-¦ `false`
-¦ Boolean
+| Strict
+| `false`
+| Boolean
 
-¦ AllowedNumbers
-¦ `[]`
-¦ Array
+| AllowedNumbers
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 |===
 
 === References
@@ -9239,15 +9040,14 @@ only correct to the standard pattern of an `_` every 3 digits.
 
 == Style/NumericPredicate
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.42
-¦ 0.59
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.42
+| 0.59
 |===
 
 Checks for usage of comparison operators (`==`,
@@ -9351,29 +9151,28 @@ bar.baz.positive?
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `predicate`
-¦ `predicate`, `comparison`
+| EnforcedStyle
+| `predicate`
+| `predicate`, `comparison`
 
-¦ AllowedMethods
-¦ `[]`
-¦ Array
+| AllowedMethods
+| `[]`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ Exclude
-¦ `+spec/**/*+`
-¦ Array
+| Exclude
+| `+spec/**/*+`
+| Array
 |===
 
 === References
@@ -9382,15 +9181,16 @@ bar.baz.positive?
 
 == Style/ObjectThen
 
-[separator=¦]
+NOTE: Required Ruby version: 2.6
+
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.28
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.28
+| -
 |===
 
 Enforces the use of consistent method names
@@ -9422,13 +9222,12 @@ obj.yield_self { |x| x.do_something }
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `then`
-¦ `then`, `yield_self`
+| EnforcedStyle
+| `then`
+| `then`, `yield_self`
 |===
 
 === References
@@ -9437,15 +9236,14 @@ obj.yield_self { |x| x.do_something }
 
 == Style/OneLineConditional
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.90
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.90
 |===
 
 Checks for uses of if/then/else/end constructs on a single line.
@@ -9482,13 +9280,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AlwaysCorrectToMultiline
-¦ `false`
-¦ Boolean
+| AlwaysCorrectToMultiline
+| `false`
+| Boolean
 |===
 
 === References
@@ -9497,15 +9294,14 @@ end
 
 == Style/OpenStructUse
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ No
-¦ 1.23
-¦ -
+| Pending
+| Yes
+| No
+| 1.23
+| -
 |===
 
 Flags uses of OpenStruct, as it is now officially discouraged
@@ -9555,15 +9351,14 @@ allow(test_double).to receive(:a).and_return('b')
 
 == Style/OperatorMethodCall
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.37
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.37
+| -
 |===
 
 Checks for redundant dot before operator method call.
@@ -9589,15 +9384,14 @@ foo & bar
 
 == Style/OptionHash
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.33
-¦ 0.34
+| Disabled
+| Yes
+| No
+| 0.33
+| 0.34
 |===
 
 Checks for options hashes and discourages them if the
@@ -9621,30 +9415,28 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ SuspiciousParamNames
-¦ `options`, `opts`, `args`, `params`, `parameters`
-¦ Array
+| SuspiciousParamNames
+| `options`, `opts`, `args`, `params`, `parameters`
+| Array
 
-¦ Allowlist
-¦ `[]`
-¦ Array
+| Allowlist
+| `[]`
+| Array
 |===
 
 == Style/OptionalArguments
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ No
-¦ 0.33
-¦ 0.83
+| Enabled
+| No
+| No
+| 0.33
+| 0.83
 |===
 
 Checks for optional arguments to methods
@@ -9677,15 +9469,14 @@ end
 
 == Style/OptionalBooleanParameter
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ No
-¦ 0.89
-¦ -
+| Enabled
+| No
+| No
+| 0.89
+| -
 |===
 
 Checks for places where keyword arguments can be used instead of
@@ -9730,13 +9521,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowedMethods
-¦ `respond_to_missing?`
-¦ Array
+| AllowedMethods
+| `respond_to_missing?`
+| Array
 |===
 
 === References
@@ -9745,15 +9535,14 @@ end
 
 == Style/OrAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.50
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.50
+| -
 |===
 
 Checks for potential usage of the `||=` operator.
@@ -9790,15 +9579,14 @@ name ||= 'Bozhidar'
 
 == Style/ParallelAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.32
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.32
+| -
 |===
 
 Checks for simple usages of parallel assignment.
@@ -9829,15 +9617,14 @@ c = 3
 
 == Style/ParenthesesAroundCondition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.56
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.56
 |===
 
 Checks for the presence of superfluous parentheses around the
@@ -9912,17 +9699,16 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowSafeAssignment
-¦ `true`
-¦ Boolean
+| AllowSafeAssignment
+| `true`
+| Boolean
 
-¦ AllowInMultilineConditions
-¦ `false`
-¦ Boolean
+| AllowInMultilineConditions
+| `false`
+| Boolean
 |===
 
 === References
@@ -9931,15 +9717,14 @@ end
 
 == Style/PercentLiteralDelimiters
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.19
-¦ 0.48
+| Enabled
+| Yes
+| Yes
+| 0.19
+| 0.48
 |===
 
 Enforces the consistent usage of `%`-literal delimiters.
@@ -9969,13 +9754,12 @@ default.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ PreferredDelimiters
-¦ `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
-¦ 
+| PreferredDelimiters
+| `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
+| 
 |===
 
 === References
@@ -9984,15 +9768,14 @@ default.
 
 == Style/PercentQLiterals
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.25
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.25
+| -
 |===
 
 Checks for usage of the %Q() syntax when %q() would do.
@@ -10030,26 +9813,24 @@ Checks for usage of the %Q() syntax when %q() would do.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `lower_case_q`
-¦ `lower_case_q`, `upper_case_q`
+| EnforcedStyle
+| `lower_case_q`
+| `lower_case_q`, `upper_case_q`
 |===
 
 == Style/PerlBackrefs
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.13
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.13
+| -
 |===
 
 Looks for uses of Perl-style regexp match
@@ -10073,15 +9854,14 @@ puts Regexp.last_match(1)
 
 == Style/PreferredHashMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.41
-¦ 0.70
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.41
+| 0.70
 |===
 
 Checks for uses of methods `Hash#has_key?` and
@@ -10125,13 +9905,12 @@ Hash#has_value?
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `short`
-¦ `short`, `verbose`
+| EnforcedStyle
+| `short`
+| `short`, `verbose`
 |===
 
 === References
@@ -10140,15 +9919,14 @@ Hash#has_value?
 
 == Style/Proc
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.18
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.18
 |===
 
 Checks for uses of Proc.new where Kernel#proc
@@ -10171,15 +9949,14 @@ p = proc { |n| puts n }
 
 == Style/QuotedSymbols
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.16
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.16
+| -
 |===
 
 Checks if the quotes used for quoted symbols match the configured defaults.
@@ -10222,26 +9999,24 @@ style to use for symbols that require quotes.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `same_as_string_literals`
-¦ `same_as_string_literals`, `single_quotes`, `double_quotes`
+| EnforcedStyle
+| `same_as_string_literals`
+| `same_as_string_literals`, `single_quotes`, `double_quotes`
 |===
 
 == Style/RaiseArgs
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.14
-¦ 1.2
+| Enabled
+| Yes
+| Yes
+| 0.14
+| 1.2
 |===
 
 Checks the args passed to `fail` and `raise`. For exploded
@@ -10295,17 +10070,16 @@ fail 'message'
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `exploded`
-¦ `compact`, `exploded`
+| EnforcedStyle
+| `exploded`
+| `compact`, `exploded`
 
-¦ AllowedCompactTypes
-¦ `[]`
-¦ Array
+| AllowedCompactTypes
+| `[]`
+| Array
 |===
 
 === References
@@ -10314,15 +10088,14 @@ fail 'message'
 
 == Style/RandomWithOffset
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Checks for the use of randomly generated numbers,
@@ -10356,15 +10129,14 @@ rand(1...7)
 
 == Style/RedundantArgument
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.4
-¦ 1.7
+| Pending
+| No
+| Yes (Unsafe)
+| 1.4
+| 1.7
 |===
 
 Checks for a redundant argument passed to certain methods.
@@ -10419,26 +10191,24 @@ A.foo
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Methods
-¦ `{"join"=>"", "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
-¦ 
+| Methods
+| `{"join"=>"", "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
+| 
 |===
 
 == Style/RedundantAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.87
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.87
+| -
 |===
 
 Checks for redundant assignment before returning.
@@ -10481,15 +10251,14 @@ end
 
 == Style/RedundantBegin
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.10
-¦ 0.21
+| Enabled
+| Yes
+| Yes
+| 0.10
+| 0.21
 |===
 
 Checks for redundant `begin` blocks.
@@ -10561,15 +10330,14 @@ end
 
 == Style/RedundantCapitalW
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.76
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.76
+| -
 |===
 
 Checks for usage of the %W() syntax when %w() would do.
@@ -10590,15 +10358,14 @@ Checks for usage of the %W() syntax when %w() would do.
 
 == Style/RedundantCondition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.76
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.76
+| -
 |===
 
 Checks for unnecessary conditional expressions.
@@ -10636,15 +10403,14 @@ end
 
 == Style/RedundantConditional
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.50
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.50
+| -
 |===
 
 Checks for redundant returning of true/false in conditionals.
@@ -10675,15 +10441,14 @@ x != y
 
 == Style/RedundantEach
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.38
-¦ -
+| Pending
+| No
+| Yes (Unsafe)
+| 1.38
+| -
 |===
 
 Checks for redundant `each`.
@@ -10691,7 +10456,7 @@ Checks for redundant `each`.
 === Safety
 
 This cop is unsafe, as it can produce false positives if the receiver
-is not an `Enumerable`.
+is not an `Enumerator`.
 
 === Examples
 
@@ -10720,15 +10485,14 @@ array.each_with_object { |v, o| do_something(v, o) }
 
 == Style/RedundantException
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.14
-¦ 0.29
+| Enabled
+| Yes
+| Yes
+| 0.14
+| 0.29
 |===
 
 Checks for RuntimeError as the argument of raise/fail.
@@ -10755,15 +10519,14 @@ raise 'message'
 
 == Style/RedundantFetchBlock
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.86
-¦ -
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.86
+| -
 |===
 
 Identifies places where `fetch(key) { value }`
@@ -10811,13 +10574,12 @@ ENV.fetch(:key, VALUE)
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ SafeForConstants
-¦ `false`
-¦ Boolean
+| SafeForConstants
+| `false`
+| Boolean
 |===
 
 === References
@@ -10826,15 +10588,14 @@ ENV.fetch(:key, VALUE)
 
 == Style/RedundantFileExtensionInRequire
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.88
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.88
+| -
 |===
 
 Checks for the presence of superfluous `.rb` extension in
@@ -10868,15 +10629,14 @@ require_relative '../foo.so'
 
 == Style/RedundantFreeze
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.34
-¦ 0.66
+| Enabled
+| Yes
+| Yes
+| 0.34
+| 0.66
 |===
 
 Check for uses of `Object#freeze` on immutable objects.
@@ -10899,15 +10659,14 @@ CONST = 1
 
 == Style/RedundantInitialize
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.27
-¦ 1.28
+| Pending
+| No
+| Yes (Unsafe)
+| 1.27
+| 1.28
 |===
 
 Checks for `initialize` methods that are redundant.
@@ -11014,26 +10773,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowComments
-¦ `true`
-¦ Boolean
+| AllowComments
+| `true`
+| Boolean
 |===
 
 == Style/RedundantInterpolation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.76
-¦ 1.30
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.76
+| 1.30
 |===
 
 Checks for strings that are just an interpolated expression.
@@ -11076,15 +10833,14 @@ y << 'b'   # raise `FrozenError`.
 
 == Style/RedundantParentheses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.36
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.36
+| -
 |===
 
 Checks for redundant parentheses.
@@ -11102,15 +10858,14 @@ x if y.z.nil?
 
 == Style/RedundantPercentQ
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.76
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.76
+| -
 |===
 
 Checks for usage of the %q/%Q syntax when '' or "" would do.
@@ -11136,15 +10891,14 @@ question = '"What did you say?"'
 
 == Style/RedundantRegexpCharacterClass
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.85
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.85
+| -
 |===
 
 Checks for unnecessary single-element Regexp character classes.
@@ -11177,15 +10931,14 @@ r = /[ab]/
 
 == Style/RedundantRegexpEscape
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.85
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.85
+| -
 |===
 
 Checks for redundant escapes inside Regexp literals.
@@ -11224,15 +10977,14 @@ Checks for redundant escapes inside Regexp literals.
 
 == Style/RedundantReturn
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.10
-¦ 0.14
+| Enabled
+| Yes
+| Yes
+| 0.10
+| 0.14
 |===
 
 Checks for redundant `return` expressions.
@@ -11293,13 +11045,12 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowMultipleReturnValues
-¦ `false`
-¦ Boolean
+| AllowMultipleReturnValues
+| `false`
+| Boolean
 |===
 
 === References
@@ -11308,15 +11059,14 @@ end
 
 == Style/RedundantSelf
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.10
-¦ 0.13
+| Enabled
+| Yes
+| Yes
+| 0.10
+| 0.13
 |===
 
 Checks for redundant uses of `self`.
@@ -11367,15 +11117,14 @@ end
 
 == Style/RedundantSelfAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.90
-¦ -
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.90
+| -
 |===
 
 Checks for places where redundant assignments are made for in place
@@ -11410,15 +11159,14 @@ self.foo += ary
 
 == Style/RedundantSelfAssignmentBranch
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.19
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.19
+| -
 |===
 
 Checks for places where conditional branch makes redundant self-assignment.
@@ -11445,15 +11193,14 @@ foo = bar unless condition
 
 == Style/RedundantSort
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.76
-¦ 1.22
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.76
+| 1.22
 |===
 
 Identifies instances of sorting and then
@@ -11536,15 +11283,14 @@ arr.max_by(&:foo)
 
 == Style/RedundantSortBy
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.36
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.36
+| -
 |===
 
 Identifies places where `sort_by { ... }` can be replaced by
@@ -11566,15 +11312,14 @@ array.sort
 
 == Style/RedundantStringEscape
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes
-¦ 1.37
-¦ -
+| Pending
+| Yes
+| Yes
+| 1.37
+| -
 |===
 
 Checks for redundant escapes in string literals.
@@ -11615,15 +11360,14 @@ STR
 
 == Style/RegexpLiteral
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.30
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.30
 |===
 
 Enforces using // or %r around regular expressions.
@@ -11729,17 +11473,16 @@ x =~ /home\//
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `slashes`
-¦ `slashes`, `percent_r`, `mixed`
+| EnforcedStyle
+| `slashes`
+| `slashes`, `percent_r`, `mixed`
 
-¦ AllowInnerSlashes
-¦ `false`
-¦ Boolean
+| AllowInnerSlashes
+| `false`
+| Boolean
 |===
 
 === References
@@ -11748,15 +11491,14 @@ x =~ /home\//
 
 == Style/RescueModifier
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.34
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.34
 |===
 
 Checks for uses of rescue in its modifier form.
@@ -11806,15 +11548,14 @@ end
 
 == Style/RescueStandardError
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Checks for rescuing `StandardError`. There are two supported
@@ -11897,26 +11638,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `explicit`
-¦ `implicit`, `explicit`
+| EnforcedStyle
+| `explicit`
+| `implicit`, `explicit`
 |===
 
 == Style/ReturnNil
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.50
-¦ -
+| Disabled
+| Yes
+| Yes
+| 0.50
+| -
 |===
 
 Enforces consistency between 'return nil' and 'return'.
@@ -11957,28 +11696,26 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `return`
-¦ `return`, `return_nil`
+| EnforcedStyle
+| `return`
+| `return`, `return_nil`
 |===
 
 == Style/SafeNavigation
 
 NOTE: Required Ruby version: 2.3
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.43
-¦ 1.27
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.43
+| 1.27
 |===
 
 Transforms usages of a method call safeguarded by a non `nil`
@@ -12062,34 +11799,32 @@ foo.bar > 2 if foo
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ ConvertCodeThatCanStartToReturnNil
-¦ `false`
-¦ Boolean
+| ConvertCodeThatCanStartToReturnNil
+| `false`
+| Boolean
 
-¦ AllowedMethods
-¦ `present?`, `blank?`, `presence`, `try`, `try!`
-¦ Array
+| AllowedMethods
+| `present?`, `blank?`, `presence`, `try`, `try!`
+| Array
 
-¦ MaxChainLength
-¦ `2`
-¦ Integer
+| MaxChainLength
+| `2`
+| Integer
 |===
 
 == Style/Sample
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.30
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.30
+| -
 |===
 
 Identifies usages of `shuffle.first`,
@@ -12127,15 +11862,14 @@ Identifies usages of `shuffle.first`,
 
 == Style/SelectByRegexp
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes (Unsafe)
-¦ 1.22
-¦ -
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.22
+| -
 |===
 
 Looks for places where an subset of an Enumerable (array,
@@ -12185,15 +11919,14 @@ array.grep_v(regexp)
 
 == Style/SelfAssignment
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.19
-¦ 0.29
+| Enabled
+| Yes
+| Yes
+| 0.19
+| 0.29
 |===
 
 Enforces the use the shorthand for self-assignment.
@@ -12215,15 +11948,14 @@ x += 1
 
 == Style/Semicolon
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.19
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.19
 |===
 
 Checks for multiple expressions placed on the same line.
@@ -12264,13 +11996,12 @@ foo = 1; bar = 2
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowAsExpressionSeparator
-¦ `false`
-¦ Boolean
+| AllowAsExpressionSeparator
+| `false`
+| Boolean
 |===
 
 === References
@@ -12279,15 +12010,14 @@ foo = 1; bar = 2
 
 == Style/Send
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 0.33
-¦ -
+| Disabled
+| Yes
+| No
+| 0.33
+| -
 |===
 
 Checks for the use of the send method.
@@ -12311,15 +12041,14 @@ quuz.public_send(:fred)
 
 == Style/SignalException
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.11
-¦ 0.37
+| Enabled
+| Yes
+| Yes
+| 0.11
+| 0.37
 |===
 
 Checks for uses of `fail` and `raise`.
@@ -12440,13 +12169,12 @@ explicit_receiver.raise
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `only_raise`
-¦ `only_raise`, `only_fail`, `semantic`
+| EnforcedStyle
+| `only_raise`
+| `only_raise`, `only_fail`, `semantic`
 |===
 
 === References
@@ -12455,15 +12183,14 @@ explicit_receiver.raise
 
 == Style/SingleArgumentDig
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.89
-¦ -
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.89
+| -
 |===
 
 Sometimes using dig method ends up with just a single
@@ -12498,15 +12225,14 @@ keys = %i[key1 key2]
 
 == Style/SingleLineBlockParams
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.16
-¦ 1.6
+| Disabled
+| Yes
+| Yes
+| 0.16
+| 1.6
 |===
 
 Checks whether the block parameters of a single-line
@@ -12543,26 +12269,24 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Methods
-¦ `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}`
-¦ Array
+| Methods
+| `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}`
+| Array
 |===
 
 == Style/SingleLineMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 1.8
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 1.8
 |===
 
 Checks for single-line method definitions that contain a body.
@@ -12607,13 +12331,12 @@ def no_op; end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowIfMethodIsEmpty
-¦ `true`
-¦ Boolean
+| AllowIfMethodIsEmpty
+| `true`
+| Boolean
 |===
 
 === References
@@ -12624,15 +12347,14 @@ def no_op; end
 
 NOTE: Required Ruby version: 2.6
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.83
-¦ -
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.83
+| -
 |===
 
 Checks that arrays are sliced with endless ranges instead of
@@ -12665,15 +12387,14 @@ items[1..]
 
 == Style/SoleNestedConditional
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.89
-¦ 1.5
+| Enabled
+| Yes
+| Yes
+| 0.89
+| 1.5
 |===
 
 If the branch of a conditional consists solely of a conditional node,
@@ -12734,26 +12455,24 @@ end if condition_a
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowModifier
-¦ `false`
-¦ Boolean
+| AllowModifier
+| `false`
+| Boolean
 |===
 
 == Style/SpecialGlobalVars
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.13
-¦ 0.36
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.13
+| 0.36
 |===
 
 This cop looks for uses of Perl-style global variables.
@@ -12855,17 +12574,16 @@ puts $*
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ RequireEnglish
-¦ `true`
-¦ Boolean
+| RequireEnglish
+| `true`
+| Boolean
 
-¦ EnforcedStyle
-¦ `use_english_names`
-¦ `use_perl_names`, `use_english_names`, `use_builtin_english_names`
+| EnforcedStyle
+| `use_english_names`
+| `use_perl_names`, `use_english_names`, `use_builtin_english_names`
 |===
 
 === References
@@ -12874,15 +12592,14 @@ puts $*
 
 == Style/StabbyLambdaParentheses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.35
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.35
+| -
 |===
 
 Check for parentheses around stabby lambda arguments.
@@ -12914,13 +12631,12 @@ There are two different styles. Defaults to `require_parentheses`.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `require_parentheses`
-¦ `require_parentheses`, `require_no_parentheses`
+| EnforcedStyle
+| `require_parentheses`
+| `require_parentheses`, `require_no_parentheses`
 |===
 
 === References
@@ -12929,15 +12645,14 @@ There are two different styles. Defaults to `require_parentheses`.
 
 == Style/StaticClass
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ No
-¦ Yes (Unsafe)
-¦ 1.3
-¦ -
+| Disabled
+| No
+| Yes (Unsafe)
+| 1.3
+| -
 |===
 
 Checks for places where classes with only class methods can be
@@ -12991,15 +12706,14 @@ end
 
 == Style/StderrPuts
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.51
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.51
+| -
 |===
 
 Identifies places where `$stderr.puts` can be replaced by
@@ -13023,15 +12737,14 @@ warn('hello')
 
 == Style/StringChars
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ No
-¦ Yes (Unsafe)
-¦ 1.12
-¦ -
+| Pending
+| No
+| Yes (Unsafe)
+| 1.12
+| -
 |===
 
 Checks for uses of `String#split` with empty string or regexp literal argument.
@@ -13060,15 +12773,14 @@ string.chars
 
 == Style/StringConcatenation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.89
-¦ 1.18
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.89
+| 1.18
 |===
 
 Checks for places where string concatenation
@@ -13131,13 +12843,12 @@ Pathname.new('/') + 'test'
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ Mode
-¦ `aggressive`
-¦ String
+| Mode
+| `aggressive`
+| String
 |===
 
 === References
@@ -13146,15 +12857,14 @@ Pathname.new('/') + 'test'
 
 == Style/StringHashKeys
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.52
-¦ 0.75
+| Disabled
+| No
+| Yes (Unsafe)
+| 0.52
+| 0.75
 |===
 
 Checks for the use of strings as keys in hashes. The use of
@@ -13182,15 +12892,14 @@ there are instances when string keys are required.
 
 == Style/StringLiterals
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.36
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.36
 |===
 
 Checks if uses of quotes match the configured preference.
@@ -13229,17 +12938,16 @@ Checks if uses of quotes match the configured preference.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `single_quotes`
-¦ `single_quotes`, `double_quotes`
+| EnforcedStyle
+| `single_quotes`
+| `single_quotes`, `double_quotes`
 
-¦ ConsistentQuotesInMultiline
-¦ `false`
-¦ Boolean
+| ConsistentQuotesInMultiline
+| `false`
+| Boolean
 |===
 
 === References
@@ -13248,15 +12956,14 @@ Checks if uses of quotes match the configured preference.
 
 == Style/StringLiteralsInInterpolation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.27
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.27
+| -
 |===
 
 Checks that quotes inside the string interpolation
@@ -13288,26 +12995,24 @@ result = "Tests #{success ? "PASS" : "FAIL"}"
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `single_quotes`
-¦ `single_quotes`, `double_quotes`
+| EnforcedStyle
+| `single_quotes`
+| `single_quotes`, `double_quotes`
 |===
 
 == Style/StringMethods
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ Yes
-¦ 0.34
-¦ 0.34
+| Disabled
+| Yes
+| Yes
+| 0.34
+| 0.34
 |===
 
 Enforces the use of consistent method names
@@ -13328,26 +13033,24 @@ from the String class.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ PreferredMethods
-¦ `{"intern"=>"to_sym"}`
-¦ 
+| PreferredMethods
+| `{"intern"=>"to_sym"}`
+| 
 |===
 
 == Style/Strip
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.36
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.36
+| -
 |===
 
 Identifies places where `lstrip.rstrip` can be replaced by
@@ -13367,15 +13070,14 @@ Identifies places where `lstrip.rstrip` can be replaced by
 
 == Style/StructInheritance
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes (Unsafe)
-¦ 0.29
-¦ 1.20
+| Enabled
+| Yes
+| Yes (Unsafe)
+| 0.29
+| 1.20
 |===
 
 Checks for inheritance from Struct.new.
@@ -13410,15 +13112,14 @@ end
 
 == Style/SwapValues
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Pending
-¦ Yes
-¦ Yes (Unsafe)
-¦ 1.1
-¦ -
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.1
+| -
 |===
 
 Enforces the use of shorthand-style swapping of 2 variables.
@@ -13449,15 +13150,14 @@ x, y = y, x
 
 NOTE: Required Ruby version: 2.0
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.49
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.49
 |===
 
 Checks for array literals made up of symbols that are not
@@ -13498,17 +13198,16 @@ array of 2 or fewer elements.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `percent`
-¦ `percent`, `brackets`
+| EnforcedStyle
+| `percent`
+| `percent`, `brackets`
 
-¦ MinSize
-¦ `2`
-¦ Integer
+| MinSize
+| `2`
+| Integer
 |===
 
 === References
@@ -13517,15 +13216,14 @@ array of 2 or fewer elements.
 
 == Style/SymbolLiteral
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.30
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.30
+| -
 |===
 
 Checks symbol literal syntax.
@@ -13543,15 +13241,14 @@ Checks symbol literal syntax.
 
 == Style/SymbolProc
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.26
-¦ 1.28
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.26
+| 1.28
 |===
 
 Use symbols as procs when possible.
@@ -13671,42 +13368,40 @@ something.map { |s| s.upcase }
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowMethodsWithArguments
-¦ `false`
-¦ Boolean
+| AllowMethodsWithArguments
+| `false`
+| Boolean
 
-¦ AllowedMethods
-¦ `respond_to`, `define_method`
-¦ Array
+| AllowedMethods
+| `respond_to`, `define_method`
+| Array
 
-¦ AllowedPatterns
-¦ `[]`
-¦ Array
+| AllowedPatterns
+| `[]`
+| Array
 
-¦ IgnoredMethods
-¦ `[]`
-¦ Array
+| IgnoredMethods
+| `[]`
+| Array
 
-¦ AllowComments
-¦ `false`
-¦ Boolean
+| AllowComments
+| `false`
+| Boolean
 |===
 
 == Style/TernaryParentheses
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.42
-¦ 0.46
+| Enabled
+| Yes
+| Yes
+| 0.42
+| 0.46
 |===
 
 Checks for the presence of parentheses around ternary
@@ -13784,30 +13479,28 @@ foo = (bar = baz) ? a : b
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `require_no_parentheses`
-¦ `require_parentheses`, `require_no_parentheses`, `require_parentheses_when_complex`
+| EnforcedStyle
+| `require_no_parentheses`
+| `require_parentheses`, `require_no_parentheses`, `require_parentheses_when_complex`
 
-¦ AllowSafeAssignment
-¦ `true`
-¦ Boolean
+| AllowSafeAssignment
+| `true`
+| Boolean
 |===
 
 == Style/TopLevelMethodDefinition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 1.15
-¦ -
+| Disabled
+| Yes
+| No
+| 1.15
+| -
 |===
 
 Newcomers to ruby applications may write top-level methods,
@@ -13862,15 +13555,14 @@ end
 
 == Style/TrailingBodyOnClass
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.53
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.53
+| -
 |===
 
 Checks for trailing code after the class definition.
@@ -13891,15 +13583,14 @@ end
 
 == Style/TrailingBodyOnMethodDefinition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Checks for trailing code after the method definition.
@@ -13933,15 +13624,14 @@ def endless_method = do_stuff
 
 == Style/TrailingBodyOnModule
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.53
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.53
+| -
 |===
 
 Checks for trailing code after the module definition.
@@ -13962,15 +13652,14 @@ end
 
 == Style/TrailingCommaInArguments
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.36
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.36
+| -
 |===
 
 Checks for trailing comma in argument lists.
@@ -14071,13 +13760,12 @@ method(
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyleForMultiline
-¦ `no_comma`
-¦ `comma`, `consistent_comma`, `no_comma`
+| EnforcedStyleForMultiline
+| `no_comma`
+| `comma`, `consistent_comma`, `no_comma`
 |===
 
 === References
@@ -14086,15 +13774,14 @@ method(
 
 == Style/TrailingCommaInArrayLiteral
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.53
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.53
+| -
 |===
 
 Checks for trailing comma in array literals.
@@ -14192,13 +13879,12 @@ a = [
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyleForMultiline
-¦ `no_comma`
-¦ `comma`, `consistent_comma`, `no_comma`
+| EnforcedStyleForMultiline
+| `no_comma`
+| `comma`, `consistent_comma`, `no_comma`
 |===
 
 === References
@@ -14207,15 +13893,14 @@ a = [
 
 == Style/TrailingCommaInBlockArgs
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.81
-¦ -
+| Disabled
+| No
+| Yes (Unsafe)
+| 0.81
+| -
 |===
 
 Checks whether trailing commas in block arguments are
@@ -14282,15 +13967,14 @@ end
 
 == Style/TrailingCommaInHashLiteral
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.53
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.53
+| -
 |===
 
 Checks for trailing comma in hash literals.
@@ -14388,26 +14072,24 @@ a = {
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyleForMultiline
-¦ `no_comma`
-¦ `comma`, `consistent_comma`, `no_comma`
+| EnforcedStyleForMultiline
+| `no_comma`
+| `comma`, `consistent_comma`, `no_comma`
 |===
 
 == Style/TrailingMethodEndStatement
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.52
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.52
+| -
 |===
 
 Checks for trailing code after the method definition.
@@ -14446,15 +14128,14 @@ end
 
 == Style/TrailingUnderscoreVariable
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.31
-¦ 0.35
+| Enabled
+| Yes
+| Yes
+| 0.31
+| 0.35
 |===
 
 Checks for extra underscores in variable assignment.
@@ -14496,26 +14177,24 @@ a, b, _something = foo()
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ AllowNamedUnderscoreVariables
-¦ `true`
-¦ Boolean
+| AllowNamedUnderscoreVariables
+| `true`
+| Boolean
 |===
 
 == Style/TrivialAccessors
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 1.15
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 1.15
 |===
 
 Looks for trivial reader/writer methods, that could
@@ -14653,29 +14332,28 @@ end
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ ExactNameMatch
-¦ `true`
-¦ Boolean
+| ExactNameMatch
+| `true`
+| Boolean
 
-¦ AllowPredicates
-¦ `true`
-¦ Boolean
+| AllowPredicates
+| `true`
+| Boolean
 
-¦ AllowDSLWriters
-¦ `true`
-¦ Boolean
+| AllowDSLWriters
+| `true`
+| Boolean
 
-¦ IgnoreClassMethods
-¦ `false`
-¦ Boolean
+| IgnoreClassMethods
+| `false`
+| Boolean
 
-¦ AllowedMethods
-¦ `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`, `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, `to_sym`
-¦ Array
+| AllowedMethods
+| `to_ary`, `to_a`, `to_c`, `to_enum`, `to_h`, `to_hash`, `to_i`, `to_int`, `to_io`, `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, `to_sym`
+| Array
 |===
 
 === References
@@ -14684,15 +14362,14 @@ end
 
 == Style/UnlessElse
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.9
+| -
 |===
 
 Looks for `unless` expressions with `else` clauses.
@@ -14722,15 +14399,14 @@ end
 
 == Style/UnlessLogicalOperators
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Disabled
-¦ Yes
-¦ No
-¦ 1.11
-¦ -
+| Disabled
+| Yes
+| No
+| 1.11
+| -
 |===
 
 Checks for the use of logical operators in an `unless` condition.
@@ -14789,28 +14465,26 @@ return unless a?
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `forbid_mixed_logical_operators`
-¦ `forbid_mixed_logical_operators`, `forbid_logical_operators`
+| EnforcedStyle
+| `forbid_mixed_logical_operators`
+| `forbid_mixed_logical_operators`, `forbid_logical_operators`
 |===
 
 == Style/UnpackFirst
 
 NOTE: Required Ruby version: 2.4
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.54
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.54
+| -
 |===
 
 Checks for accessing the first element of `String#unpack`
@@ -14832,15 +14506,14 @@ which can be replaced with the shorter method `unpack1`.
 
 == Style/VariableInterpolation
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.20
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.20
 |===
 
 Checks for variable interpolation (like "#@ivar").
@@ -14866,15 +14539,14 @@ Checks for variable interpolation (like "#@ivar").
 
 == Style/WhenThen
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.9
+| -
 |===
 
 Checks for `when;` uses in `case` expressions.
@@ -14902,15 +14574,14 @@ end
 
 == Style/WhileUntilDo
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ -
+| Enabled
+| Yes
+| Yes
+| 0.9
+| -
 |===
 
 Checks for uses of `do` in multi-line `while/until` statements.
@@ -14949,15 +14620,14 @@ end
 
 == Style/WhileUntilModifier
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 0.30
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 0.30
 |===
 
 Checks for while and until statements that would fit on one line
@@ -15005,15 +14675,14 @@ end
 
 == Style/WordArray
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ Yes
-¦ Yes
-¦ 0.9
-¦ 1.19
+| Enabled
+| Yes
+| Yes
+| 0.9
+| 1.19
 |===
 
 Checks for array literals made up of word-like
@@ -15062,21 +14731,20 @@ array of 2 or fewer elements.
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `percent`
-¦ `percent`, `brackets`
+| EnforcedStyle
+| `percent`
+| `percent`, `brackets`
 
-¦ MinSize
-¦ `2`
-¦ Integer
+| MinSize
+| `2`
+| Integer
 
-¦ WordRegex
-¦ `(?-mix:\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z)`
-¦ 
+| WordRegex
+| `(?-mix:\A(?:\p{Word}\|\p{Word}-\p{Word}\|\n\|\t)+\z)`
+| 
 |===
 
 === References
@@ -15085,15 +14753,14 @@ array of 2 or fewer elements.
 
 == Style/YodaCondition
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.49
-¦ 0.75
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.49
+| 0.75
 |===
 
 Enforces or forbids Yoda conditions,
@@ -15187,13 +14854,12 @@ bar > 10
 
 === Configurable attributes
 
-[separator=¦]
 |===
 | Name | Default value | Configurable values
 
-¦ EnforcedStyle
-¦ `forbid_for_all_comparison_operators`
-¦ `forbid_for_all_comparison_operators`, `forbid_for_equality_operators_only`, `require_for_all_comparison_operators`, `require_for_equality_operators_only`
+| EnforcedStyle
+| `forbid_for_all_comparison_operators`
+| `forbid_for_all_comparison_operators`, `forbid_for_equality_operators_only`, `require_for_all_comparison_operators`, `require_for_equality_operators_only`
 |===
 
 === References
@@ -15202,15 +14868,14 @@ bar > 10
 
 == Style/ZeroLengthPredicate
 
-[separator=¦]
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-¦ Enabled
-¦ No
-¦ Yes (Unsafe)
-¦ 0.37
-¦ 0.39
+| Enabled
+| No
+| Yes (Unsafe)
+| 0.37
+| 0.39
 |===
 
 Checks for numeric comparisons that can be replaced
