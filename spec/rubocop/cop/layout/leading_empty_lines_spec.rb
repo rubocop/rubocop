@@ -90,11 +90,8 @@ RSpec.describe RuboCop::Cop::Layout::LeadingEmptyLines, :config do
                             })
       end
       let(:cops) do
-        cop_classes = [
-          described_class,
-          ::RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault
-        ]
-        ::RuboCop::Cop::Registry.new(cop_classes)
+        cop_classes = [described_class, RuboCop::Cop::Layout::SpaceAroundEqualsInParameterDefault]
+        RuboCop::Cop::Registry.new(cop_classes)
       end
 
       it 'does not invoke conflicts with other cops' do

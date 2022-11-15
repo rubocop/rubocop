@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Registry do
   around { |test| described_class.with_temporary_global { test.run } }
 
   it 'can be cloned' do
-    klass = ::RuboCop::Cop::Metrics::AbcSize
+    klass = RuboCop::Cop::Metrics::AbcSize
     copy = registry.dup
     copy.enlist(klass)
     expect(copy.cops).to include(klass)
@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Registry do
   end
 
   context 'when dismissing a cop class' do
-    let(:cop_class) { ::RuboCop::Cop::Metrics::AbcSize }
+    let(:cop_class) { RuboCop::Cop::Metrics::AbcSize }
 
     before { registry.enlist(cop_class) }
 

@@ -277,7 +277,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       let(:offenses) do
         [
           "unused var \xF0",
-          (+'unused var あ').force_encoding(::Encoding::ASCII_8BIT)
+          (+'unused var あ').force_encoding(Encoding::ASCII_8BIT)
         ].map do |message|
           RuboCop::Cop::Offense.new(:warning, location, message, 'Lint/UselessAssignment')
         end
