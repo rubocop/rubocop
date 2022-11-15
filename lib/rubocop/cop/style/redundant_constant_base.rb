@@ -34,7 +34,7 @@ module RuboCop
       class RedundantConstantBase < Base
         extend AutoCorrector
 
-        MSG = 'Avoid redundant `::` prefix on constant.'
+        MSG = 'Remove redundant `::`.'
 
         def on_cbase(node)
           return unless bad?(node)

@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ::Bar
-        ^^ Avoid redundant `::` prefix on constant.
+        ^^ Remove redundant `::`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ::Bar::Baz
-        ^^ Avoid redundant `::` prefix on constant.
+        ^^ Remove redundant `::`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
       expect_offense(<<~RUBY)
         class << self
           ::Bar
-          ^^ Avoid redundant `::` prefix on constant.
+          ^^ Remove redundant `::`.
         end
       RUBY
 
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
     it 'registers offense' do
       expect_offense(<<~RUBY)
         class Foo < ::Bar
-                    ^^ Avoid redundant `::` prefix on constant.
+                    ^^ Remove redundant `::`.
         end
       RUBY
 
