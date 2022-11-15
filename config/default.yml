@@ -4699,7 +4699,7 @@ Style/RedundantConditional:
   VersionAdded: '0.50'
 
 Style/RedundantConstantBase:
-  Description: Avoid meaningless `::` prefix on constant.
+  Description: Avoid redundant `::` prefix on constant.
   Enabled: pending
   VersionAdded: '<<next>>'
 

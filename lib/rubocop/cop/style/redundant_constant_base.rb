@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Avoid meaningless `::` prefix on constant.
+      # Avoid redundant `::` prefix on constant.
       #
       # @example
       #   # bad
@@ -34,7 +34,7 @@ module RuboCop
       class RedundantConstantBase < Base
         extend AutoCorrector
 
-        MSG = 'Avoid meaningless `::` prefix on constant.'
+        MSG = 'Avoid redundant `::` prefix on constant.'
 
         def on_cbase(node)
           return unless bad?(node)
