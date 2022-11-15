@@ -1568,11 +1568,6 @@ Lint/CircularArgumentReference:
   Enabled: true
   VersionAdded: '0.33'
 
-Lint/ConstantBase:
-  Description: Avoid meaningless `::` prefix on constant.
-  Enabled: pending
-  VersionAdded: '<<next>>'
-
 Lint/ConstantDefinitionInBlock:
   Description: 'Do not define constants within a block.'
   StyleGuide: '#no-constant-definition-in-block'
@@ -3417,6 +3412,11 @@ Style/ConditionalAssignment:
   # at least one multiline branch.
   SingleLineConditionsOnly: true
   IncludeTernaryExpressions: true
+
+Style/ConstantBase:
+  Description: Avoid meaningless `::` prefix on constant.
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Style/ConstantVisibility:
   Description: >-

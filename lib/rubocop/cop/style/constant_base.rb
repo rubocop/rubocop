@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Lint
+    module Style
       # Avoid meaningless `::` prefix on constant.
       #
       # @example

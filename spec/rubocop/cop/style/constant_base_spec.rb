@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ConstantBase, :config do
+RSpec.describe RuboCop::Cop::Style::ConstantBase, :config do
   context 'with prefixed constant in class' do
     it 'registers no offense' do
       expect_no_offenses(<<~RUBY)
