@@ -3413,11 +3413,6 @@ Style/ConditionalAssignment:
   SingleLineConditionsOnly: true
   IncludeTernaryExpressions: true
 
-Style/ConstantBase:
-  Description: Avoid meaningless `::` prefix on constant.
-  Enabled: pending
-  VersionAdded: '<<next>>'
-
 Style/ConstantVisibility:
   Description: >-
                  Check that class- and module constants have
@@ -4702,6 +4697,11 @@ Style/RedundantConditional:
   Description: "Don't return true/false from a conditional."
   Enabled: true
   VersionAdded: '0.50'
+
+Style/RedundantConstantBase:
+  Description: Avoid meaningless `::` prefix on constant.
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Style/RedundantEach:
   Description: 'Checks for redundant `each`.'

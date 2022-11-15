@@ -31,7 +31,7 @@ module RuboCop
       #   module A
       #     ::Const
       #   end
-      class ConstantBase < Base
+      class RedundantConstantBase < Base
         extend AutoCorrector
 
         MSG = 'Avoid meaningless `::` prefix on constant.'
