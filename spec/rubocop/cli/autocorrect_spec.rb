@@ -196,6 +196,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+      Style/HashSyntax:
+        EnforcedShorthandSyntax: always
+    YAML
+    source = <<~RUBY
+      if condition
+        do_something foo: foo
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run(['--autocorrect', '--only', 'Style/HashSyntax,Style/IfUnlessModifier'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(foo:) if condition
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: line_count_based` of `Style/BlockDelimiters` with `Style/CommentedKeyword` and `Layout/BlockEndNewline`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/BlockDelimiters:

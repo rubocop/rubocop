@@ -48,9 +48,23 @@ module RuboCop
       end
 
       def to_modifier_form(node)
-        expression = [node.body.source, node.keyword, node.condition.source].compact.join(' ')
+        body = if_body_source(node.body)
+        expression = [body, node.keyword, node.condition.source].compact.join(' ')
         parenthesized = parenthesize?(node) ? "(#{expression})" : expression
         [parenthesized, first_line_comment(node)].compact.join(' ')
+      end
+
+      def if_body_source(if_body)
+        if if_body.call_type? &&
+           if_body.last_argument&.hash_type? && if_body.last_argument.pairs.last.value_omission?
+          "#{method_source(if_body)}(#{if_body.arguments.map(&:source).join(', ')})"
+        else
+          if_body.source
+        end
+      end
+
+      def method_source(if_body)
+        range_between(if_body.loc.expression.begin_pos, if_body.loc.selector.end_pos).source
       end
 
       def first_line_comment(node)
