@@ -107,6 +107,34 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'Ruby >= 3.1', :ruby31 do
+        it 'registers an offense when the last argument of the method is a 3.1 syntax hash with no parentheses' do
+          expect_offense(<<~RUBY)
+            if condition
+            ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+              do_something 'foo', bar:
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            do_something('foo', bar:) if condition
+          RUBY
+        end
+
+        it 'registers an offense when the last argument of the method is a 3.1 syntax hash with parentheses' do
+          expect_offense(<<~RUBY)
+            if condition
+            ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+              do_something('foo', bar:)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            do_something('foo', bar:) if condition
+          RUBY
+        end
+      end
+
       describe 'IgnoreCopDirectives' do
         let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }

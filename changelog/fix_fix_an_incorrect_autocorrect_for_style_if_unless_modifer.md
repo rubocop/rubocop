@@ -1,0 +1,1 @@
+* [#11182](https://github.com/rubocop/rubocop/pull/11182): Fix an incorrect autocorrect for `Style/IfUnlessModifer` when the last argument of the method is a 3.1 syntax hash with no parentheses. ([@ydah][])
