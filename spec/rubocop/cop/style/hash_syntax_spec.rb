@@ -1054,22 +1054,39 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'does not register an offense when without parentheses call expr follows' do
-        # Prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense when without parentheses call expr follows' do
+        # Add parentheses to prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_offense(<<~RUBY)
           foo value: value
+                     ^^^^^ Omit the hash value.
           foo arg
 
           value = 'a'
           foo value: value
+                     ^^^^^ Omit the hash value.
+          foo arg
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:)
+          foo arg
+
+          value = 'a'
+          foo(value:)
           foo arg
         RUBY
       end
 
-      it 'does not register an offense when without parentheses call expr follows after nested method call' do
-        # Prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense when without parentheses call expr follows after nested method call' do
+        # Add parentheses to prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_offense(<<~RUBY)
           foo bar value: value
+                         ^^^^^ Omit the hash value.
+          baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar(value:)
           baz
         RUBY
       end
@@ -1085,9 +1102,9 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'does not register an offense when one line `if` condition follows (without parentheses)' do
+      it 'does not registers an offense when one line `if` condition follows (without parentheses)' do
         expect_no_offenses(<<~RUBY)
-          foo value: value if bar
+          foo x, value: value if bar
         RUBY
       end
 
@@ -1114,45 +1131,95 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'does not register an offense when call expr with argument and a block follows' do
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense when call expr with argument and a block follows' do
+        expect_offense(<<~RUBY)
           foo value: value
+                     ^^^^^ Omit the hash value.
+          foo arg do
+            value
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:)
           foo arg do
             value
           end
         RUBY
       end
 
-      it 'does not register an offense when call expr without arguments and with a block follows' do
-        # Prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense when call expr without arguments and with a block follows' do
+        # Add parentheses to prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_offense(<<~RUBY)
           foo value: value
+                     ^^^^^ Omit the hash value.
+          bar do
+            value
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:)
           bar do
             value
           end
         RUBY
       end
 
-      it 'does not register an offense when with parentheses call expr follows' do
-        # Prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense when with parentheses call expr follows' do
+        # Add parentheses to prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_offense(<<~RUBY)
           foo value: value
+                     ^^^^^ Omit the hash value.
+          foo(arg)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(value:)
           foo(arg)
         RUBY
       end
 
-      it 'does not register an offense when with parentheses call expr follows assignment expr' do
-        # Prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense when with parentheses safe navigation call expr follows' do
+        # Add parentheses to prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_offense(<<~RUBY)
+          x&.foo value: value
+                        ^^^^^ Omit the hash value.
+          foo(arg)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x&.foo(value:)
+          foo(arg)
+        RUBY
+      end
+
+      it 'registers an offense when with parentheses call expr follows assignment expr' do
+        # Add parentheses to prevent syntax semantic changes shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_offense(<<~RUBY)
           var = foo value: value
+                           ^^^^^ Omit the hash value.
+          foo(arg)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = foo(value:)
           foo(arg)
         RUBY
       end
 
-      it 'does not register an offense when hash key and hash value are partially the same' do
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense when hash key and hash value are partially the same' do
+        expect_offense(<<~RUBY)
           def do_something
             do_something foo: foo
+                              ^^^ Omit the hash value.
+            do_something(arg)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def do_something
+            do_something(foo:)
             do_something(arg)
           end
         RUBY
