@@ -47,6 +47,12 @@ module RuboCop
 
       def register_offense(node, message, replacement)
         add_offense(node.value, message: message) do |corrector|
+          if (def_node = def_node_that_require_parentheses(node))
+            white_spaces = range_between(def_node.loc.selector.end_pos,
+                                         def_node.first_argument.source_range.begin_pos)
+            corrector.replace(white_spaces, '(')
+            corrector.insert_after(def_node.arguments.last, ')')
+          end
           corrector.replace(node, replacement)
         end
       end
@@ -76,12 +82,25 @@ module RuboCop
       end
 
       def require_hash_value_for_around_hash_literal?(node)
-        return false unless (ancestor = node.parent.parent)
-        return false if ancestor.send_type? && ancestor.method?(:[])
+        return false unless (send_node = find_ancestor_send_node(node))
 
-        !node.parent.braces? && !use_element_of_hash_literal_as_receiver?(ancestor, node.parent) &&
-          (use_modifier_form_without_parenthesized_method_call?(ancestor) ||
-           without_parentheses_call_expr_follows?(ancestor))
+        !node.parent.braces? && !use_element_of_hash_literal_as_receiver?(send_node, node.parent) &&
+          use_modifier_form_without_parenthesized_method_call?(send_node)
+      end
+
+      def def_node_that_require_parentheses(node)
+        return unless (send_node = find_ancestor_send_node(node))
+        return unless without_parentheses_call_expr_follows?(send_node)
+
+        def_node = node.each_ancestor(:send, :csend).first
+
+        def_node unless def_node && def_node.arguments.empty?
+      end
+
+      def find_ancestor_send_node(node)
+        ancestor = node.parent.parent
+
+        ancestor if ancestor&.call_type? && !ancestor&.method?(:[])
       end
 
       def use_element_of_hash_literal_as_receiver?(ancestor, parent)
