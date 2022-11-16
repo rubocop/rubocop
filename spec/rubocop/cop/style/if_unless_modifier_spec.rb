@@ -334,6 +334,28 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     RUBY
   end
 
+  context 'multiline `if` that fits on one line and using hash value omission syntax', :ruby31 do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        if condition
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          obj.do_something foo:
+        end
+
+        if condition
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          obj&.do_something foo:
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj.do_something(foo:) if condition
+
+        obj&.do_something(foo:) if condition
+      RUBY
+    end
+  end
+
   context 'with implicit match conditional' do
     let(:body) { 'b' * 36 }
 
