@@ -14,7 +14,8 @@ module RuboCop
       #       Alternative: 'alternative_value'
       #       DeprecatedVersion: 'deprecated_version'
       #
-      # By default, `NIL`, `TRUE`, `FALSE` and `Random::DEFAULT` are configured.
+      # By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, and `Random::DEFAULT`
+      # are configured.
       #
       # @example
       #
@@ -22,12 +23,14 @@ module RuboCop
       #   NIL
       #   TRUE
       #   FALSE
+      #   Net::HTTPServerException
       #   Random::DEFAULT # Return value of Ruby 2 is `Random` instance, Ruby 3.0 is `Random` class.
       #
       #   # good
       #   nil
       #   true
       #   false
+      #   Net::HTTPClientException
       #   Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible with Ruby 2.
       #
       class DeprecatedConstants < Base
