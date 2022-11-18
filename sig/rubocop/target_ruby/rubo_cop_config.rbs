@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetRuby::RuboCopConfig < TargetRuby::Source
+  end
+end

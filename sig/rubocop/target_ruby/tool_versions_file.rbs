@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetRuby::ToolVersionsFile < TargetRuby::RubyVersionFile
+    TOOL_VERSIONS_FILENAME: String
+    TOOL_VERSIONS_PATTERN: Regexp
+  end
+end

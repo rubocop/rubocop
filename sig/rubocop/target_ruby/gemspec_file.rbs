@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetRuby::GemspecFile < TargetRuby::Source
+    GEMSPEC_EXTENSION: String
+  end
+end

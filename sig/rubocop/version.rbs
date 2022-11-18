@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+module RuboCop
+  module Version
+    STRING: String
+    MSG: String
+    CANONICAL_FEATURE_NAMES: Hash[String, String]
+    EXTENSION_PATH_NAMES: Hash[String, String]
+
+    def self.document_version: () -> String
+    def self.extension_versions: (RuboCop::CLI::Environment) -> Array[String]
+    def self.feature_version: (String) -> String | (String) -> nil
+    def self.server_mode: () -> String
+    def self.version: (?debug: bool, ?env: RuboCop::CLI::Environment) -> String
+  end
+end

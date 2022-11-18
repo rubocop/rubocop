@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetRuby
+    DEFAULT_VERSION: Float
+    KNOWN_RUBIES: Array[Float]
+    OBSOLETE_RUBIES: Hash[Float, String]
+    SOURCES: Array[Class]
+
+    @source: TargetRuby::Source
+
+    def self.supported_versions: () -> Array[Float]
+
+    def initialize: (RuboCop::Config) -> void
+
+    def source: () -> TargetRuby::Source
+
+    def supported?: () -> bool
+
+    def rubocop_version_with_support: () -> String
+  end
+end

@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetRuby::RubyVersionFile < TargetRuby::Source
+    RUBY_VERSION_FILENAME: String
+    RUBY_VERSION_PATTERN: String
+  end
+end

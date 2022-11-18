@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetRuby::Source
+    @config: Config
+    @name: String
+    @version: Float
+
+    def initialize: (Config) -> void
+
+    def name: () -> String
+    def to_s: () -> String
+    def version: () -> Float
+  end
+end

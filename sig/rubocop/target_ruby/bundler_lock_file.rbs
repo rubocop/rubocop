@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetRuby::BundlerLockFile < TargetRuby::Source
+  end
+end
