@@ -1,0 +1,38 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class TargetFinder
+    HIDDEN_PATH_SUBSTRING: String
+
+    @all_cops_include: Array[String]
+    @config_store: ConfigStore
+    @options: Hash[Symbol, Object]
+    @ruby_extensions: Array[String]
+    @ruby_filenames: Array[String]
+
+    def initialize: (ConfigStore, ?Hash[Symbol, Object]) -> void
+
+    def all_cops_include: () -> Array[String]
+    def combined_exclude_glob_patterns: (String) -> String
+    def configured_include?: (String) -> bool
+    def debug?: () -> boolish
+    def fail_fast?: () -> boolish
+    def find: (Array[String], String) -> Array[String]
+    def find_files: (String, Integer) -> Array[String]
+    def force_exclusion?: () -> boolish
+    def included_file?: (String) -> bool
+    def process_explicit_path: (String, String) -> Array[String]
+    def ruby_executable?: (String) -> bool
+    def ruby_extension?: (String) -> bool
+    def ruby_extensions: () -> Array[String]
+    def ruby_file?: (String) -> bool
+    def ruby_filename?: (String) -> bool
+    def ruby_filenames: () -> Array[String]
+    def ruby_interpreters: (String) -> Array[String]
+    def stdin?: () -> bool
+    def symlink_excluded_or_infinite_loop?: (String, String, String, Integer) -> boolish
+    def target_files_in_dir: (?String) -> Array[String]
+    def to_inspect?: (String, Array[String], untyped) -> boolish
+    def wanted_dir_patterns: (String, String, Integer) -> Array[String]
+  end
+end
