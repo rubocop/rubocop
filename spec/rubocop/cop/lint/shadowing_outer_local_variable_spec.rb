@@ -60,6 +60,38 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
     end
   end
 
+  context 'when a block local variable has same name as an outer `until` scope variable' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        until foo
+          var = do_something
+        end
+
+        if bar
+          array.each do |var|
+                         ^^^ Shadowing outer local variable - `var`.
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer `while` scope variable' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        while foo
+          var = do_something
+        end
+
+        if bar
+          array.each do |var|
+                         ^^^ Shadowing outer local variable - `var`.
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when a block local variable has same name as an outer scope variable' \
           'with same branches of same `if` condition node not in the method definition' do
     it 'registers an offense' do

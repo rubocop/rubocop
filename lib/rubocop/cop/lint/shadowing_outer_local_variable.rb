@@ -73,10 +73,11 @@ module RuboCop
           outer_local_variable_node =
             find_conditional_node_from_ascendant(outer_local_variable.declaration_node)
           return true unless outer_local_variable_node
+          return false unless outer_local_variable_node.conditional?
+          return true if variable_node == outer_local_variable_node
 
-          outer_local_variable_node.conditional? &&
-            (variable_node == outer_local_variable_node ||
-              variable_node == outer_local_variable_node.else_branch)
+          outer_local_variable_node.if_type? &&
+            variable_node == outer_local_variable_node.else_branch
         end
 
         def variable_node(variable)
