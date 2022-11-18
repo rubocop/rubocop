@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+module RuboCop
+  class StringInterpreter
+    STRING_ESCAPES: Hash[String, String]
+    STRING_ESCAPE_REGEX: Regexp
+
+    def self.interpret: (String) -> String
+
+    private
+
+    def self.interpret_string_escape: (String) -> String
+    def self.interpret_unicode: (String) -> String
+    def self.interpret_hex: (String) -> String
+    def self.interpret_octal: (String) -> String
+  end
+end
