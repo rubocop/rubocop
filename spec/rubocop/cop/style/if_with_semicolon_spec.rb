@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects for one line if/;/end without then body' do
+    expect_offense(<<~RUBY)
+      if cond; else dont end
+      ^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? nil : dont
+    RUBY
+  end
+
   it 'accepts without `else` branch' do
     # This case is corrected to a modifier form by `Style/IfUnlessModifier` cop.
     # Therefore, this cop does not handle it.

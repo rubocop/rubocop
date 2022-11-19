@@ -39,9 +39,10 @@ module RuboCop
         def autocorrect(node)
           return correct_elsif(node) if node.else_branch.if_type?
 
+          then_code = node.if_branch ? node.if_branch.source : 'nil'
           else_code = node.else_branch ? node.else_branch.source : 'nil'
 
-          "#{node.condition.source} ? #{node.if_branch.source} : #{else_code}"
+          "#{node.condition.source} ? #{then_code} : #{else_code}"
         end
 
         def correct_elsif(node)
