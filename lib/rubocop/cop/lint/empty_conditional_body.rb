@@ -68,7 +68,7 @@ module RuboCop
         MSG = 'Avoid `%<keyword>s` branches without a body.'
 
         def on_if(node)
-          return if node.body
+          return if node.body || same_line?(node.loc.begin, node.loc.end)
           return if cop_config['AllowComments'] && contains_comments?(node)
 
           add_offense(node, message: format(MSG, keyword: node.keyword)) do |corrector|
