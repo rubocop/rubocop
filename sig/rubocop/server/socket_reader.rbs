@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+module RuboCop
+  module Server
+    class SocketReader
+      # Instance Variables
+      @socket: TCPSocket
+
+      # Constructor
+      def initialize: (TCPSocket) -> void
+
+      # Instance Methods
+      def read!: () -> void
+    end
+  end
+end

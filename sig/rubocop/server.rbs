@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+module RuboCop
+  module Server
+    # Constants
+    TIMEOUT: Integer
+
+    # Class Methods
+    def self.support_server?: () -> bool
+    def self.running?: () -> bool
+    def self.wait_for_running_status!: (bool) -> void
+  end
+end
