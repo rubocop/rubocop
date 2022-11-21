@@ -438,6 +438,16 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
+    it "does not report an offense if #{kw} is inside then body of if..elsif..end" do
+      expect_no_offenses(<<~RUBY)
+        if something
+          #{kw}
+        elsif something_else
+          a
+        end
+      RUBY
+    end
+
     it "does not report an offense if #{kw} is inside if..elsif..else..end" do
       expect_no_offenses(<<~RUBY)
         if something
