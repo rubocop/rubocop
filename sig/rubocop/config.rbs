@@ -2,6 +2,63 @@
 
 module RuboCop
   class Config
+    # Constants
+    DEFAULT_RAILS_VERSION: Float
 
+    # Instance Variables
+    @loaded_features: Set[String]
+    @loaded_path: String | nil
+    @for_cop: Hash[String, instance]
+    @for_all_cops: Hash[String, instance]
+    @for_department: Hash[String, instance]
+    @signature: String
+    @validator: ::RuboCop::ConfigValidator
+    @possibly_include_hidden: bool
+    @base_dir_for_path_parameters: String
+    @target_rails_version: Float
+    @target_rails_version_from_bundler_lock_file: Float | nil
+
+    # Class Methods
+    def self.create: (Hash[String, Object], String, check: bool) -> instance
+
+    # Constructor
+    def initialize: (Hash[String, Object], ?String) -> void
+
+    # Instance Methods
+    def active_support_extensions_enabled?: () -> boolish
+    def add_excludes_from_higher_level: (Hash[String, String]) -> void
+    def allowed_camel_case_file?: (String) -> bool
+    def base_dir_for_path_parameters: () -> String
+    def bundler_lock_file_path: () -> String
+    def check: () -> instance
+    def target_rails_version: () -> Float
+    def deprecation_check: () -> void
+    def disabled_new_cops?: () -> bool
+    def enabled_new_cops?: () -> bool
+    def file_to_exclude?: (String) -> bool
+    def file_to_include?: (String) -> bool
+    def for_badge: (Object) -> instance
+    def for_cop: (String) -> instance
+    def for_department: (String) -> instance
+    def make_excludes_absolute: () -> void
+    def path_relative_to_config: (String) -> String | (String) -> nil
+    def patterns_to_exclude: () -> Array[String]
+    def patterns_to_include: () -> Array[String]
+    def pending_cops: () -> Array[String]
+    def possibly_include_hidden?: () -> bool
+    def internal?: () -> bool
+    def loaded_path: () -> String
+    def loaded_features: () -> Set[String]
+    def signature: () -> String
+    def smart_loaded_path: () -> String
+    def to_s: () -> String
+    def validate_after_resolution: () -> instance
+
+    private
+
+    def target_rails_version_from_bundler_lock_file: () -> Float | () -> nil
+    def read_rails_version_from_bundler_lock_file: () -> Float | () -> nil
+    def enable_cop?: (String, Hash[String, Object]) -> boolish
+    def department_of: (String) -> String
   end
 end
