@@ -112,6 +112,9 @@ Naming/InclusiveLanguage:
     offence:
       Suggestions:
         - offense
+    'does not registers':
+      Suggestions:
+        - does not register
   Exclude:
     - lib/rubocop/cop/naming/inclusive_language.rb
     - lib/rubocop/cop/mixin/auto_corrector.rb
