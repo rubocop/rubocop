@@ -2,6 +2,24 @@
 
 module RuboCop
   class ConfigStore
+    # Instance Variables
+    @validated: bool
+    @path_cache: Hash[String, Config]
+    @object_cache: Hash[String, Config]
+    @options_config: Config | nil
 
+    # Constructor
+    def initialize: () -> void
+
+    # Instance Methods
+    def validated?: () -> bool
+    def validated: () -> bool
+    def options_config=: (String) -> Config
+    def force_default_config!: () -> void
+    def unvalidated: () -> instance
+    def for_file: (String) -> Config
+    def for_dir: (String) -> Config
+    def for_pwd: () -> Config
+    def for: (String) -> Config
   end
 end
