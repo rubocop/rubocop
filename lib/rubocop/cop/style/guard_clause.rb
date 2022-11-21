@@ -222,7 +222,7 @@ module RuboCop
         end
 
         def accepted_if?(node, ending)
-          return true if node.modifier_form? || node.ternary?
+          return true if node.modifier_form? || node.ternary? || node.elsif_conditional?
 
           if ending
             node.else?
