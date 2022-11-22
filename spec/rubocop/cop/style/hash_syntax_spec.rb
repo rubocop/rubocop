@@ -1102,7 +1102,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'does not registers an offense when one line `if` condition follows (without parentheses)' do
+      it 'does not register an offense when one line `if` condition follows (without parentheses)' do
         expect_no_offenses(<<~RUBY)
           foo x, value: value if bar
         RUBY
