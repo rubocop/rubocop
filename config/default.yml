@@ -161,7 +161,9 @@ AllCops:
 Bundler/DuplicatedGem:
   Description: 'Checks for duplicate gem entries in Gemfile.'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.46'
+  VersionChanged: '<<next>>'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
@@ -213,7 +215,9 @@ Bundler/InsecureProtocolSource:
                  because HTTP requests are insecure. Please change your source to
                  'https://rubygems.org' if possible, or 'http://rubygems.org' if not.
   Enabled: true
+  Severity: warning
   VersionAdded: '0.50'
+  VersionChanged: '<<next>>'
   AllowHttpProtocol: true
   Include:
     - '**/*.gemfile'
@@ -252,14 +256,18 @@ Gemspec/DependencyVersion:
 Gemspec/DeprecatedAttributeAssignment:
   Description: Checks that deprecated attribute assignments are not set in a gemspec file.
   Enabled: pending
+  Severity: warning
   VersionAdded: '1.30'
+  VersionChanged: '<<next>>'
   Include:
     - '**/*.gemspec'
 
 Gemspec/DuplicatedAssignment:
   Description: 'An attribute assignment method calls should be listed only once in a gemspec.'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.52'
+  VersionChanged: '<<next>>'
   Include:
     - '**/*.gemspec'
 
@@ -278,7 +286,9 @@ Gemspec/OrderedDependencies:
 Gemspec/RequireMFA:
   Description: 'Checks that the gemspec has metadata to require Multi-Factor Authentication from RubyGems.'
   Enabled: pending
+  Severity: warning
   VersionAdded: '1.23'
+  VersionChanged: '<<next>>'
   Reference:
     - https://guides.rubygems.org/mfa-requirement-opt-in/
   Include:
@@ -287,8 +297,9 @@ Gemspec/RequireMFA:
 Gemspec/RequiredRubyVersion:
   Description: 'Checks that `required_ruby_version` of gemspec is specified and equal to `TargetRubyVersion` of .rubocop.yml.'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.52'
-  VersionChanged: '1.22'
+  VersionChanged: '<<next>>'
   Include:
     - '**/*.gemspec'
 
@@ -296,7 +307,9 @@ Gemspec/RubyVersionGlobalsUsage:
   Description: Checks usage of RUBY_VERSION in gemspec.
   StyleGuide: '#no-ruby-version-in-the-gemspec'
   Enabled: true
+  Severity: warning
   VersionAdded: '0.72'
+  VersionChanged: '<<next>>'
   Include:
     - '**/*.gemspec'
 
