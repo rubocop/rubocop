@@ -60,6 +60,13 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     RUBY
   end
 
+  # This case is registered by `Style/IfWithSemicolon` cop. Therefore, this cop does not handle it.
+  it 'does not register an offense for missing `if` body with present `else` body on single line' do
+    expect_no_offenses(<<~RUBY)
+      if condition; else do_something end
+    RUBY
+  end
+
   it 'does not register an offense for missing `if` body with a comment' do
     expect_no_offenses(<<~RUBY)
       if condition
