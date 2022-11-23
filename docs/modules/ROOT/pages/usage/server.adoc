@@ -57,6 +57,12 @@ RuboCop version incompatibility found, RuboCop server restarting...
 RuboCop server starting on 127.0.0.1:60665.
 ```
 
+If you would like to start the server in the foreground, which can be useful when running within Docker, you can pass the `--no-detach` option.
+
+```console
+% rubocop --start-server --no-detach
+```
+
 == Restart Server
 
 The started server does not reload the configuration file.
@@ -92,6 +98,9 @@ These are the command-line options for server operations:
 
 | `--server-status`
 | Show server status.
+
+| `--no-detach`
+| Run the server process in the foreground.
 |===
 
 TIP: You can specify the server host and port with the $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT environment variables.

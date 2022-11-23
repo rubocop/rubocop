@@ -27,29 +27,44 @@ module RuboCop
         self.class.token
       end
 
-      def start(host, port)
+      def start(host, port, detach: true)
         $PROGRAM_NAME = "rubocop --server #{Cache.project_dir}"
 
         require 'rubocop'
         start_server(host, port)
 
-        demonize if server_mode?
+        return unless server_mode?
+
+        detach ? detach_server : run_server
       end
 
       private
 
-      def demonize
-        Cache.write_port_and_token_files(port: @server.addr[1], token: token)
+      def detach_server
+        write_port_and_token_files
 
         pid = fork do
           Process.daemon(true)
           $stderr.reopen(Cache.stderr_path, 'w')
-          Cache.write_pid_file do
-            read_socket(@server.accept) until @server.closed?
-          end
+          process_input
         end
 
         Process.waitpid(pid)
+      end
+
+      def write_port_and_token_files
+        Cache.write_port_and_token_files(port: @server.addr[1], token: token)
+      end
+
+      def process_input
+        Cache.write_pid_file do
+          read_socket(@server.accept) until @server.closed?
+        end
+      end
+
+      def run_server
+        write_port_and_token_files
+        process_input
       end
 
       def server_mode?
