@@ -15,6 +15,11 @@ module RuboCop
       # This class is a client command to start server process.
       # @api private
       class Start < Base
+        def initialize(detach: true)
+          @detach = detach
+          super()
+        end
+
         def run
           if Server.running?
             warn "RuboCop server (#{Cache.pid_path.read}) is already running."
@@ -34,7 +39,7 @@ module RuboCop
             host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
             port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
 
-            Server::Core.new.start(host, port)
+            Server::Core.new.start(host, port, detach: @detach)
           end
         end
       end

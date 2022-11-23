@@ -98,6 +98,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --start-server               Start server process.
                   --stop-server                Stop server process.
                   --server-status              Show server status.
+                  --no-detach                  Run the server process in the foreground.
 
           Output Options:
               -f, --format FORMATTER           Choose an output formatter. This option
