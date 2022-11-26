@@ -29,6 +29,38 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallBraceLayout, :config do
     RUBY
   end
 
+  it 'registers an offense when using method chain for heredoc argument in multiline literal brace layout' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS, arg
+        text
+      EOS
+      ).do_something
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(<<~EOS, arg).do_something
+        text
+      EOS
+    RUBY
+  end
+
+  it 'registers an offense when using safe navigation method chain for heredoc argument in multiline literal brace layout' do
+    expect_offense(<<~RUBY)
+      foo(<<~EOS, arg
+        text
+      EOS
+      )&.do_something
+      ^ Closing method call brace must be on the same line as the last argument when opening brace is on the same line as the first argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(<<~EOS, arg)&.do_something
+        text
+      EOS
+    RUBY
+  end
+
   it_behaves_like 'multiline literal brace layout' do
     let(:open) { 'foo(' }
     let(:close) { ')' }
