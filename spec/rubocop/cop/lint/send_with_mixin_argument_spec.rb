@@ -127,4 +127,17 @@ RSpec.describe RuboCop::Cop::Lint::SendWithMixinArgument, :config do
       RUBY
     end
   end
+
+  context 'when multiple arguments are passed' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        Foo.send(:include, Bar, Baz)
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Use `include Bar, Baz` instead of `send(:include, Bar, Baz)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Foo.include Bar, Baz
+      RUBY
+    end
+  end
 end
