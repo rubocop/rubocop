@@ -6,9 +6,10 @@ module RuboCop
       # Checks for interpolation in a single quoted string.
       #
       # @safety
-      #   This cop is generally safe, but is marked as unsafe because
-      #   it is possible to actually intentionally have text inside
-      #   `#{...}` in a single quoted string.
+      #   This cop's autocorrection is unsafe because although it always replaces single quotes as
+      #   if it were miswritten double quotes, it is not always the case. For example,
+      #   `'#{foo} bar'` would be replaced by `"#{foo} bar"`, so the replaced code would evaluate
+      #   the expression `foo`.
       #
       # @example
       #

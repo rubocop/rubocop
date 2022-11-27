@@ -1894,11 +1894,11 @@ Lint/InheritException:
     - runtime_error
 
 Lint/InterpolationCheck:
-  Description: 'Raise warning for interpolation in single q strs.'
+  Description: 'Checks for interpolation in a single quoted string.'
   Enabled: true
-  Safe: false
+  SafeAutoCorrect: false
   VersionAdded: '0.50'
-  VersionChanged: '0.87'
+  VersionChanged: '<<next>>'
 
 Lint/LambdaWithoutLiteralBlock:
   Description: 'Checks uses of lambda without a literal block.'
