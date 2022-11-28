@@ -72,27 +72,27 @@ module RuboCop
       #
       # @example gives back a correctly qualified cop name
       #
-      #   cops = RuboCop::Cop::Cop.all
-      #   cops.
-      #     qualified_cop_name('Layout/EndOfLine') # => 'Layout/EndOfLine'
+      #   registry = RuboCop::Cop::Registry
+      #   registry.qualified_cop_name('Layout/EndOfLine', '') # => 'Layout/EndOfLine'
       #
       # @example fixes incorrect namespaces
       #
-      #   cops = RuboCop::Cop::Cop.all
-      #   cops.qualified_cop_name('Lint/EndOfLine') # => 'Layout/EndOfLine'
+      #   registry = RuboCop::Cop::Registry
+      #   registry.qualified_cop_name('Lint/EndOfLine', '') # => 'Layout/EndOfLine'
       #
       # @example namespaces bare cop identifiers
       #
-      #   cops = RuboCop::Cop::Cop.all
-      #   cops.qualified_cop_name('EndOfLine') # => 'Layout/EndOfLine'
+      #   registry = RuboCop::Cop::Registry
+      #   registry.qualified_cop_name('EndOfLine', '') # => 'Layout/EndOfLine'
       #
       # @example passes back unrecognized cop names
       #
-      #   cops = RuboCop::Cop::Cop.all
-      #   cops.qualified_cop_name('NotACop') # => 'NotACop'
+      #   registry = RuboCop::Cop::Registry
+      #   registry.qualified_cop_name('NotACop', '') # => 'NotACop'
       #
       # @param name [String] Cop name extracted from config
       # @param path [String, nil] Path of file that `name` was extracted from
+      # @param warn [Boolean] Print a warning if no department given for `name`
       #
       # @raise [AmbiguousCopName]
       #   if a bare identifier with two possible namespaces is provided
