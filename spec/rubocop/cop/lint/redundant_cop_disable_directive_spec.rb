@@ -23,10 +23,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           context 'a cop that is disabled in the config' do
             let(:other_cops) { { 'Metrics/MethodLength' => { 'Enabled' => false } } }
 
-            it 'returns an offense' do
+            it 'returns an offense when disabling same cop' do
               expect_offense(<<~RUBY)
                 # rubocop:disable Metrics/MethodLength
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+            end
+
+            it 'returns an offense when disabling parent department' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
               RUBY
             end
 
