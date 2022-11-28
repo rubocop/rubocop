@@ -78,4 +78,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
       RUBY
     end
   end
+
+  context 'with prefixed constant and prefixed super class' do
+    it 'registers offense' do
+      expect_offense(<<~RUBY)
+        class Foo < ::Bar
+                    ^^ Remove redundant `::`.
+          ::A
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo < Bar
+          ::A
+        end
+      RUBY
+    end
+  end
 end

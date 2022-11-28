@@ -58,7 +58,7 @@ module RuboCop
 
         def used_in_super_class_part?(node, class_node:)
           class_node.parent_class&.each_descendant(:cbase)&.any? do |descendant|
-            descendant.eql?(node)
+            descendant.equal?(node)
           end
         end
       end
