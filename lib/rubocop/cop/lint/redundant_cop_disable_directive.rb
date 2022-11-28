@@ -131,18 +131,21 @@ module RuboCop
         def each_already_disabled(cop, line_ranges)
           line_ranges.each_cons(2) do |previous_range, range|
             next if ignore_offense?(range)
-            next unless followed_ranges?(previous_range, range)
-
             # If a cop is disabled in a range that begins on the same line as
             # the end of the previous range, it means that the cop was
             # already disabled by an earlier comment. So it's redundant
             # whether there are offenses or not.
-            comment = processed_source.comment_at_line(range.begin)
+            next unless followed_ranges?(previous_range, range)
 
+            comment = processed_source.comment_at_line(range.begin)
+            # Disabling department can not be redundant
+            next if department_disabled?(cop, comment)
             # Comments disabling all cops don't count since it's reasonable
             # to disable a few select cops first and then all cops further
             # down in the code.
-            yield comment, cop if comment && !all_disabled?(comment)
+            next if all_disabled?(comment)
+
+            yield comment, cop if comment
           end
         end
 
