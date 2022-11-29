@@ -62,7 +62,7 @@ module RuboCop
             add_offense(asgn_node.loc.operator) do |corrector|
               next unless safe_assignment_allowed?
 
-              corrector.replace(asgn_node, "(#{asgn_node.source})")
+              corrector.wrap(asgn_node, '(', ')')
             end
           end
         end
