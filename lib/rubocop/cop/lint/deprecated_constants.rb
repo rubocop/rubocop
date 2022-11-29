@@ -14,8 +14,8 @@ module RuboCop
       #       Alternative: 'alternative_value'
       #       DeprecatedVersion: 'deprecated_version'
       #
-      # By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, and `Random::DEFAULT`
-      # are configured.
+      # By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, `Random::DEFAULT`,
+      # `Struct::Group`, and `Struct::Passwd` are configured.
       #
       # @example
       #
@@ -25,6 +25,8 @@ module RuboCop
       #   FALSE
       #   Net::HTTPServerException
       #   Random::DEFAULT # Return value of Ruby 2 is `Random` instance, Ruby 3.0 is `Random` class.
+      #   Struct::Group
+      #   Struct::Passwd
       #
       #   # good
       #   nil
@@ -32,6 +34,8 @@ module RuboCop
       #   false
       #   Net::HTTPClientException
       #   Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible with Ruby 2.
+      #   Etc::Group
+      #   Etc::Passwd
       #
       class DeprecatedConstants < Base
         extend AutoCorrector

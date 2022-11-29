@@ -11,6 +11,8 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
           'Alternative' => 'Net::HTTPClientException', 'DeprecatedVersion' => '2.6'
         },
         'Random::DEFAULT' => { 'Alternative' => 'Random.new', 'DeprecatedVersion' => '3.0' },
+        'Struct::Group' => { 'Alternative' => 'Etc::Group', 'DeprecatedVersion' => '3.0' },
+        'Struct::Passwd' => { 'Alternative' => 'Etc::Passwd', 'DeprecatedVersion' => '3.0' },
         'Triple::Nested::Constant' => { 'Alternative' => 'Value', 'DeprecatedVersion' => '2.4' },
         'Have::No::Alternative' => { 'DeprecatedVersion' => '2.4' },
         'Have::No::DeprecatedVersion' => { 'Alternative' => 'Value' }
@@ -78,6 +80,18 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
         Random::DEFAULT
       RUBY
     end
+
+    it 'does not register an offense when using `Struct::Group`' do
+      expect_no_offenses(<<~RUBY)
+        Struct::Group
+      RUBY
+    end
+
+    it 'does not register an offense when using `Struct::Passwd`' do
+      expect_no_offenses(<<~RUBY)
+        Struct::Passwd
+      RUBY
+    end
   end
 
   context 'Ruby >= 3.0', :ruby30 do
@@ -100,6 +114,28 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
 
       expect_correction(<<~RUBY)
         Random.new
+      RUBY
+    end
+
+    it 'registers and corrects an offense when using `Struct::Group`' do
+      expect_offense(<<~RUBY)
+        Struct::Group
+        ^^^^^^^^^^^^^ Use `Etc::Group` instead of `Struct::Group`, deprecated since Ruby 3.0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Etc::Group
+      RUBY
+    end
+
+    it 'registers and corrects an offense when using `Struct::Passwd`' do
+      expect_offense(<<~RUBY)
+        Struct::Passwd
+        ^^^^^^^^^^^^^^ Use `Etc::Passwd` instead of `Struct::Passwd`, deprecated since Ruby 3.0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Etc::Passwd
       RUBY
     end
   end
