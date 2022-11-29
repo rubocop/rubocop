@@ -9,12 +9,22 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if (test = 10)
+      end
+    RUBY
   end
 
   it 'registers an offense for lvar assignment in while condition' do
     expect_offense(<<~RUBY)
       while test = 10
                  ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      while (test = 10)
       end
     RUBY
   end
@@ -25,12 +35,22 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
                  ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      until (test = 10)
+      end
+    RUBY
   end
 
   it 'registers an offense for ivar assignment in condition' do
     expect_offense(<<~RUBY)
       if @test = 10
                ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (@test = 10)
       end
     RUBY
   end
@@ -41,12 +61,22 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
                 ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if (@@test = 10)
+      end
+    RUBY
   end
 
   it 'registers an offense for gvar assignment in condition' do
     expect_offense(<<~RUBY)
       if $test = 10
                ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if ($test = 10)
       end
     RUBY
   end
@@ -57,12 +87,22 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if (TEST = 10)
+      end
+    RUBY
   end
 
   it 'registers an offense for collection element assignment in condition' do
     expect_offense(<<~RUBY)
       if a[3] = 10
               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (a[3] = 10)
       end
     RUBY
   end
@@ -78,6 +118,11 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect_offense(<<~RUBY)
       if test == 10 || foobar = 1
                               ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if test == 10 || (foobar = 1)
       end
     RUBY
   end
@@ -103,6 +148,10 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
       foo { x if y = z }
                    ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo { x if (y = z) }
+    RUBY
   end
 
   it 'accepts ||= in condition' do
@@ -114,12 +163,21 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
       raise StandardError unless (foo ||= bar) || a = b
                                                     ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
     RUBY
+
+    expect_correction(<<~RUBY)
+      raise StandardError unless (foo ||= bar) || (a = b)
+    RUBY
   end
 
   it 'registers an offense for assignment methods' do
     expect_offense(<<~RUBY)
       if test.method = 10
                      ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (test.method = 10)
       end
     RUBY
   end
@@ -163,6 +221,8 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
                  ^ Use `==` if you meant to do a comparison or move the assignment up out of the condition.
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not accept []= in condition surrounded with braces' do
@@ -171,6 +231,8 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
                     ^ Use `==` if you meant to do a comparison or move the assignment up out of the condition.
         end
       RUBY
+
+      expect_no_corrections
     end
   end
 end

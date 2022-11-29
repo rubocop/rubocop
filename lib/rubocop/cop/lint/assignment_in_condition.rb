@@ -11,6 +11,10 @@ module RuboCop
       # an assignment to indicate "I know I'm using an assignment
       # as a condition. It's not a mistake."
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because it assumes that
+      #   the author meant to use an assignment result as a condition.
+      #
       # @example
       #   # bad
       #   if some_var = true
@@ -35,6 +39,8 @@ module RuboCop
       #   end
       #
       class AssignmentInCondition < Base
+        extend AutoCorrector
+
         include SafeAssignment
 
         MSG_WITH_SAFE_ASSIGNMENT_ALLOWED =
@@ -53,7 +59,11 @@ module RuboCop
             next :skip_children if skip_children?(asgn_node)
             next if allowed_construct?(asgn_node)
 
-            add_offense(asgn_node.loc.operator)
+            add_offense(asgn_node.loc.operator) do |corrector|
+              next unless safe_assignment_allowed?
+
+              corrector.replace(asgn_node, "(#{asgn_node.source})")
+            end
           end
         end
         alias on_while on_if
