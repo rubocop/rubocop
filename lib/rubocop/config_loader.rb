@@ -42,17 +42,17 @@ module RuboCop
 
         hash = load_yaml_configuration(path)
 
-        # Resolve requires first in case they define additional cops
         loaded_features = resolver.resolve_requires(path, hash)
         add_loaded_features(loaded_features)
-
-        add_missing_namespaces(path, hash)
 
         resolver.override_department_setting_for_cops({}, hash)
         resolver.resolve_inheritance_from_gems(hash)
         resolver.resolve_inheritance(path, hash, file, debug?)
-
         hash.delete('inherit_from')
+
+        # Adding missing namespaces only after resolving requires & inheritance,
+        # since both can introduce new cops that need to be considered here.
+        add_missing_namespaces(path, hash)
 
         Config.create(hash, path, check: check)
       end
