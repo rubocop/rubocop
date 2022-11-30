@@ -617,4 +617,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
       RUBY
     end
   end
+
+  context 'with escaping invalid byte sequence in UTF-8' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~'RUBY')
+        r = /[\§]/
+              ^^ Redundant escape inside regexp literal
+      RUBY
+
+      expect_correction(<<~RUBY)
+        r = /[§]/
+      RUBY
+    end
+  end
 end
