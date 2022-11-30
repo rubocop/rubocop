@@ -44,7 +44,8 @@ module RuboCop
 
         def on_regexp(node)
           each_escape(node) do |char, index, within_character_class|
-            next if allowed_escape?(node, char, index, within_character_class)
+            next if char.valid_encoding? && allowed_escape?(node, char, index,
+                                                            within_character_class)
 
             location = escape_range_at_index(node, index)
 
