@@ -4667,10 +4667,12 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
-  VersionChanged: '1.7'
+  VersionChanged: '<<next>>'
   Methods:
     # Array#join
     join: ''
+    # Array#sum
+    sum: 0
     # String#split
     split: ' '
     # String#chomp

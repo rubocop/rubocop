@@ -2,13 +2,15 @@
 
 RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   let(:cop_config) do
-    { 'Methods' => { 'join' => '', 'split' => ' ', 'chomp' => "\n", 'chomp!' => "\n" } }
+    { 'Methods' => { 'join' => '', 'sum' => 0, 'split' => ' ', 'chomp' => "\n", 'chomp!' => "\n" } }
   end
 
   it 'registers an offense and corrects when method called on variable' do
     expect_offense(<<~'RUBY')
       foo.join('')
               ^^^^ Argument '' is redundant because it is implied by default.
+      foo.sum(0)
+             ^^^ Argument 0 is redundant because it is implied by default.
       foo.split(' ')
                ^^^^^ Argument ' ' is redundant because it is implied by default.
       foo.chomp("\n")
@@ -19,6 +21,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
 
     expect_correction(<<~RUBY)
       foo.join
+      foo.sum
       foo.split
       foo.chomp
       foo.chomp!
@@ -95,6 +98,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
   it 'does not register an offense when method called with different argument' do
     expect_no_offenses(<<~RUBY)
       foo.join(',')
+      foo.sum(42)
       foo.split(',')
     RUBY
   end
