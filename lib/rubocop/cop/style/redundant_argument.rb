@@ -13,6 +13,7 @@ module RuboCop
       # ----
       # Methods:
       #   join: ''
+      #   sum: 0
       #   split: ' '
       #   chomp: "\n"
       #   chomp!: "\n"
@@ -33,6 +34,7 @@ module RuboCop
       #   # bad
       #   array.join('')
       #   [1, 2, 3].join("")
+      #   array.sum(0)
       #   string.split(" ")
       #   "first\nsecond".split(" ")
       #   string.chomp("\n")
@@ -42,6 +44,7 @@ module RuboCop
       #   # good
       #   array.join
       #   [1, 2, 3].join
+      #   array.sum
       #   string.split
       #   "first second".split
       #   string.chomp
