@@ -65,7 +65,7 @@ module RuboCop
 
         def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
           return if node.body
-          return if allow_empty_lambdas? && lambda_or_proc?(node)
+          return if allow_empty_lambdas? && node.lambda_or_proc?
           return if cop_config['AllowComments'] && allow_comment?(node)
 
           add_offense(node)
@@ -87,10 +87,6 @@ module RuboCop
         def comment_disables_cop?(comment)
           regexp_pattern = "# rubocop : (disable|todo) ([^,],)* (all|#{cop_name})"
           Regexp.new(regexp_pattern.gsub(' ', '\s*')).match?(comment)
-        end
-
-        def lambda_or_proc?(node)
-          node.lambda? || node.proc?
         end
       end
     end
