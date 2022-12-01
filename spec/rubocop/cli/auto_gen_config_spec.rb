@@ -1339,33 +1339,67 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       end
     end
 
-    it 'generates EnforcedStyle parameter if it solves all offenses' do
-      create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
+    describe 'when `--auto-gen-enforced-style` is given' do
+      it 'generates EnforcedStyle parameter if it solves all offenses' do
+        create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
 
-      expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[10..].join)
-        .to eq(<<~YAML)
-          # Configuration parameters: EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
-          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
-          # SupportedShorthandSyntax: always, never, either, consistent
-          Style/HashSyntax:
-            EnforcedStyle: hash_rockets
-        YAML
+        expect(cli.run(['--auto-gen-config', '--auto-gen-enforced-style'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+            # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+            # SupportedShorthandSyntax: always, never, either, consistent
+            Style/HashSyntax:
+              EnforcedStyle: hash_rockets
+          YAML
+      end
+
+      it 'generates Exclude if no EnforcedStyle solves all offenses' do
+        create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)', 'h(b: 2)'])
+
+        expect(cli.run(['--auto-gen-config', '--auto-gen-enforced-style'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+            # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+            # SupportedShorthandSyntax: always, never, either, consistent
+            Style/HashSyntax:
+              Exclude:
+                - 'example1.rb'
+          YAML
+      end
     end
 
-    it 'generates Exclude if no EnforcedStyle solves all offenses' do
-      create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)', 'h(b: 2)'])
+    describe 'when `--no-auto-gen-enforced-style` is given' do
+      it 'generates Exclude if it solves all offenses' do
+        create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
 
-      expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[10..].join)
-        .to eq(<<~YAML)
-          # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
-          # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
-          # SupportedShorthandSyntax: always, never, either, consistent
-          Style/HashSyntax:
-            Exclude:
-              - 'example1.rb'
+        expect(cli.run(['--auto-gen-config', '--no-auto-gen-enforced-style'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+            # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+            # SupportedShorthandSyntax: always, never, either, consistent
+            Style/HashSyntax:
+              Exclude:
+                - 'example1.rb'
         YAML
+      end
+
+      it 'generates Exclude if no EnforcedStyle solves all offenses' do
+        create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)', 'h(b: 2)'])
+
+        expect(cli.run(['--auto-gen-config', '--no-auto-gen-enforced-style'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
+            # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
+            # SupportedShorthandSyntax: always, never, either, consistent
+            Style/HashSyntax:
+              Exclude:
+                - 'example1.rb'
+          YAML
+      end
     end
 
     context 'when hash value omission enabled', :ruby31 do

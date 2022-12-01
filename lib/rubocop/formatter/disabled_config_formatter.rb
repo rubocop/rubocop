@@ -65,6 +65,10 @@ module RuboCop
         @options.fetch(:offense_counts, true)
       end
 
+      def auto_gen_enforced_style?
+        @options.fetch(:auto_gen_enforced_style, true)
+      end
+
       def command
         command = 'rubocop --auto-gen-config'
 
@@ -78,6 +82,8 @@ module RuboCop
         command += ' --no-offense-counts' unless show_offense_counts?
 
         command += ' --no-auto-gen-timestamp' unless show_timestamp?
+
+        command += ' --no-auto-gen-enforced-style' unless auto_gen_enforced_style?
 
         command
       end
@@ -172,17 +178,22 @@ module RuboCop
       end
 
       def output_cop_config(output_buffer, cfg, cop_name)
-        # 'Enabled' option will be put into file only if exclude
-        # limit is exceeded.
-        cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
-
+        filtered_cfg = filtered_config(cfg)
         output_buffer.puts "#{cop_name}:"
-        cfg_without_enabled.each do |key, value|
+        filtered_cfg.each do |key, value|
           value = value[0] if value.is_a?(Array)
           output_buffer.puts "  #{key}: #{value}"
         end
 
-        output_offending_files(output_buffer, cfg_without_enabled, cop_name)
+        output_offending_files(output_buffer, filtered_cfg, cop_name)
+      end
+
+      def filtered_config(cfg)
+        # 'Enabled' option will be put into file only if exclude
+        # limit is exceeded.
+        rejected_keys = ['Enabled']
+        rejected_keys << 'EnforcedStyle' unless auto_gen_enforced_style?
+        cfg.reject { |key| rejected_keys.include?(key) }
       end
 
       def output_offending_files(output_buffer, cfg, cop_name)
