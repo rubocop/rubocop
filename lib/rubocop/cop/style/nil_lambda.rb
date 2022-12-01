@@ -44,7 +44,7 @@ module RuboCop
         PATTERN
 
         def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
-          return unless node.lambda? || node.proc?
+          return unless node.lambda_or_proc?
           return unless nil_return?(node.body)
 
           message = format(MSG, type: node.lambda? ? 'lambda' : 'proc')
