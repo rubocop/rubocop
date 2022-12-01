@@ -49,7 +49,8 @@ module RuboCop
         MSG = 'Prefer `%<replacement>s` to `%<original_method>s` with a regexp match.'
         RESTRICT_ON_SEND = %i[select find_all reject].freeze
         REPLACEMENTS = { select: 'grep', find_all: 'grep', reject: 'grep_v' }.freeze
-        REGEXP_METHODS = %i[match? =~].to_set.freeze
+        OPPOSITE_REPLACEMENTS = { select: 'grep_v', find_all: 'grep_v', reject: 'grep' }.freeze
+        REGEXP_METHODS = %i[match? =~ !~].to_set.freeze
 
         # @!method regexp_match?(node)
         def_node_matcher :regexp_match?, <<~PATTERN
@@ -90,8 +91,10 @@ module RuboCop
           return unless (regexp_method_send_node = extract_send_node(block_node))
           return if match_predicate_without_receiver?(regexp_method_send_node)
 
+          opposite = regexp_method_send_node.send_type? && regexp_method_send_node.method?(:!~)
           regexp = find_regexp(regexp_method_send_node, block_node)
-          register_offense(node, block_node, regexp)
+
+          register_offense(node, block_node, regexp, opposite)
         end
 
         private
@@ -102,8 +105,9 @@ module RuboCop
           node.hash_type? || creates_hash?(node) || env_const?(node)
         end
 
-        def register_offense(node, block_node, regexp)
-          replacement = REPLACEMENTS[node.method_name.to_sym]
+        def register_offense(node, block_node, regexp, opposite)
+          method_name = node.method_name.to_sym
+          replacement = opposite ? OPPOSITE_REPLACEMENTS[method_name] : REPLACEMENTS[method_name]
           message = format(MSG, replacement: replacement, original_method: node.method_name)
 
           add_offense(block_node, message: message) do |corrector|
