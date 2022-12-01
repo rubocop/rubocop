@@ -321,4 +321,105 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
       end
     end
   end
+
+  { 'select' => 'grep_v', 'find_all' => 'grep_v', 'reject' => 'grep' }.each do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+
+    context "with #{method}" do
+      it 'registers an offense and corrects for `blockvar !~ regexp`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| x !~ /regexp/ }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `blockvar !~ lvar`' do
+        expect_offense(<<~RUBY, method: method)
+          lvar = /regexp/
+          array.#{method} { |x| x !~ lvar }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lvar = /regexp/
+          array.#{correction}(lvar)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `regexp !~ blockvar`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| /regexp/ !~ x }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `lvar !~ blockvar`' do
+        expect_offense(<<~RUBY, method: method)
+          lvar = /regexp/
+          array.#{method} { |x| lvar !~ x }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lvar = /regexp/
+          array.#{correction}(lvar)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when there is no explicit regexp' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| x !~ y }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^ #{message}
+          array.#{method} { |x| x !~ REGEXP }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^ #{message}
+          array.#{method} { |x| x !~ foo.bar.baz(quux) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(y)
+          array.#{correction}(REGEXP)
+          array.#{correction}(foo.bar.baz(quux))
+        RUBY
+      end
+
+      context 'with `numblock`s', :ruby27 do
+        it 'registers an offense and corrects for `blockvar !~ regexp`' do
+          expect_offense(<<~RUBY, method: method)
+            array.#{method} { _1 !~ /regexp/ }
+            ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array.#{correction}(/regexp/)
+          RUBY
+        end
+
+        it 'registers an offense and corrects for `regexp !~ blockvar`' do
+          expect_offense(<<~RUBY, method: method)
+            array.#{method} { /regexp/ !~ _1 }
+            ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array.#{correction}(/regexp/)
+          RUBY
+        end
+
+        it 'does not register an offense if there is more than one numbered param' do
+          expect_no_offenses(<<~RUBY)
+            array.#{method} { _1 !~ _2 }
+          RUBY
+        end
+      end
+    end
+  end
 end
