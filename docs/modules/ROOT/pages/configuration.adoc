@@ -645,6 +645,12 @@ prefer to exclude files, like for other cops, add `--auto-gen-only-exclude`
 when running with `--auto-gen-config`. It will still change the maximum if the
 number of excluded files is higher than the exclude limit.
 
+Some cops have a configurable option named `EnforcedStyle`.
+By default, when generating the `.rubocop_todo.yml`, if one style is used
+for all files, these cops will add the settings for the style being used.
+If you want to excluded on a file-by-file basis,
+add the `--no-auto-gen-enforced-style` option along with `--auto-gen-config`.
+
 == Updating the configuration file
 
 When you update RuboCop version, sometimes you need to change `.rubocop.yml`.

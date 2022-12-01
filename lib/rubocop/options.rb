@@ -167,6 +167,7 @@ module RuboCop
         option(opts, '--[no-]offense-counts')
         option(opts, '--[no-]auto-gen-only-exclude')
         option(opts, '--[no-]auto-gen-timestamp')
+        option(opts, '--[no-]auto-gen-enforced-style')
       end
     end
 
@@ -464,7 +465,7 @@ module RuboCop
 
   # This module contains help texts for command line options.
   # @api private
-  module OptionsHelp
+  module OptionsHelp # rubocop:disable Metrics/ModuleLength
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
@@ -486,6 +487,13 @@ module RuboCop
       auto_gen_timestamp:
                                         ['Include the date and time when the --auto-gen-config',
                                          'was run in the file it generates. Default is true.'],
+      auto_gen_enforced_style:
+                                        ['Add a setting to the TODO configuration file to enforce',
+                                         'the style used, rather than a per-file exclusion',
+                                         'if one style is used in all files for cop with',
+                                         'EnforcedStyle as a configurable option',
+                                         'when the --auto-gen-config was run',
+                                         'in the file it generates. Default is true.'],
       auto_gen_only_exclude:
                                         ['Generate only Exclude parameters and not Max',
                                          'when running --auto-gen-config, except if the',
