@@ -50,6 +50,11 @@ module RuboCop
       #   foo && foo.bar { |e| e.something }
       #   foo && foo.bar(param) { |e| e.something }
       #
+      #   foo ? foo.bar : nil
+      #   foo.nil? ? nil : foo.bar
+      #   !foo.nil? ? foo.bar : nil
+      #   !foo ? nil : foo.bar
+      #
       #   # good
       #   foo&.bar
       #   foo&.bar&.baz
@@ -105,6 +110,17 @@ module RuboCop
           }
         PATTERN
 
+        # @!method ternary_safe_navigation_candidate(node)
+        def_node_matcher :ternary_safe_navigation_candidate, <<~PATTERN
+          {
+            (if (send $_ {:nil? :!}) nil $_)
+
+            (if (send (send $_ :nil?) :!) $_ nil)
+
+            (if $_ $_ nil)
+          }
+        PATTERN
+
         # @!method not_nil_check?(node)
         def_node_matcher :not_nil_check?, '(send (send $_ :nil?) :!)'
 
@@ -118,9 +134,11 @@ module RuboCop
           check_node(node)
         end
 
+        private
+
         def check_node(node)
           checked_variable, receiver, method_chain, method = extract_parts(node)
-          return unless receiver == checked_variable
+          return if receiver != checked_variable || receiver.nil?
           return if use_var_only_in_unless_modifier?(node, checked_variable)
           return if chain_length(method_chain, method) > max_chain_length
           return if unsafe_method_used?(method_chain, method)
@@ -133,10 +151,8 @@ module RuboCop
           node.if_type? && node.unless? && !method_called?(variable)
         end
 
-        private
-
         def autocorrect(corrector, node)
-          body = node.node_parts[1]
+          body = extract_body(node)
           method_call = method_call(node)
 
           corrector.remove(begin_range(node, body))
@@ -145,6 +161,14 @@ module RuboCop
           handle_comments(corrector, node, method_call)
 
           add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
+        end
+
+        def extract_body(node)
+          if node.if_type? && node.ternary?
+            node.branches.find { |branch| !branch.nil_type? }
+          else
+            node.node_parts[1]
+          end
         end
 
         def handle_comments(corrector, node, method_call)
@@ -174,7 +198,7 @@ module RuboCop
         end
 
         def allowed_if_condition?(node)
-          node.else? || node.elsif? || node.ternary?
+          node.else? || node.elsif?
         end
 
         def method_call(node)
@@ -192,7 +216,12 @@ module RuboCop
         end
 
         def extract_parts_from_if(node)
-          variable, receiver = modifier_if_safe_navigation_candidate(node)
+          variable, receiver =
+            if node.ternary?
+              ternary_safe_navigation_candidate(node)
+            else
+              modifier_if_safe_navigation_candidate(node)
+            end
 
           checked_variable, matching_receiver, method = extract_common_parts(receiver, variable)
 
