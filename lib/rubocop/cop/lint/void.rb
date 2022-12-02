@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for operators, variables, literals, and nonmutating
+      # Checks for operators, variables, literals, lambda, proc and nonmutating
       # methods used in void context.
       #
       # @example CheckForMethodsWithNoSideEffects: false (default)
@@ -45,7 +45,7 @@ module RuboCop
         VAR_MSG = 'Variable `%<var>s` used in void context.'
         LIT_MSG = 'Literal `%<lit>s` used in void context.'
         SELF_MSG = '`self` used in void context.'
-        DEFINED_MSG = '`%<defined>s` used in void context.'
+        EXPRESSION_MSG = '`%<expression>s` used in void context.'
         NONMUTATING_MSG = 'Method `#%<method>s` used in void context. Did you mean `#%<method>s!`?'
 
         BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
@@ -87,7 +87,7 @@ module RuboCop
           check_literal(expr)
           check_var(expr)
           check_self(expr)
-          check_defined(expr)
+          check_void_expression(expr)
           return unless cop_config['CheckForMethodsWithNoSideEffects']
 
           check_nonmutating(expr)
@@ -117,10 +117,10 @@ module RuboCop
           add_offense(node, message: SELF_MSG)
         end
 
-        def check_defined(node)
-          return unless node.defined_type?
+        def check_void_expression(node)
+          return unless node.defined_type? || node.lambda_or_proc?
 
-          add_offense(node, message: format(DEFINED_MSG, defined: node.source))
+          add_offense(node, message: format(EXPRESSION_MSG, expression: node.source))
         end
 
         def check_nonmutating(node)
