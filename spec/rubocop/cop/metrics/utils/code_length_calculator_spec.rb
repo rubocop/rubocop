@@ -269,6 +269,27 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         length = described_class.new(source.ast, source, foldable_types: %i[heredoc]).calculate
         expect(length).to eq(3)
       end
+
+      it 'folds method calls if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            a = 1
+            foo(
+              1,
+              2,
+              3
+            )
+            obj&.foo(
+              1,
+              2
+            )
+            foo(1)
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[method_call]).calculate
+        expect(length).to eq(4)
+      end
     end
 
     context 'when class' do
