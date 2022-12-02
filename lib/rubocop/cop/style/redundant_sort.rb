@@ -184,7 +184,7 @@ module RuboCop
         end
 
         def arg_value(node)
-          arg_node(node).nil? ? nil : arg_node(node).node_parts.first
+          arg_node(node)&.node_parts&.first
         end
 
         # This gets the start of the accessor whether it has a dot

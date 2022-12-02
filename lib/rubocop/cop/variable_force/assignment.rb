@@ -83,7 +83,7 @@ module RuboCop
         end
 
         def multiple_assignment_node
-          grandparent_node = node.parent ? node.parent.parent : nil
+          grandparent_node = node.parent&.parent
           return nil unless grandparent_node
           return nil unless grandparent_node.type == MULTIPLE_ASSIGNMENT_TYPE
           return nil unless node.parent.type == MULTIPLE_LEFT_HAND_SIDE_TYPE
