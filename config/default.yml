@@ -3034,6 +3034,11 @@ Style/ArrayCoercion:
   Enabled: false
   VersionAdded: '0.88'
 
+Style/ArrayIntersect:
+  Description: 'Use `receiver.intersect?(argument)` instead of `(receiver & argument).any?`.'
+  Enabled: 'pending'
+  VersionAdded: '<<next>>'
+
 Style/ArrayJoin:
   Description: 'Use Array#join instead of Array#*.'
   StyleGuide: '#array-join'
