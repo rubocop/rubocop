@@ -101,6 +101,118 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
+  it 'registers an offense for void `-> { bar }` if not on last line' do
+    expect_offense(<<~RUBY)
+      def foo
+        -> { bar }
+        ^^^^^^^^^^ `-> { bar }` used in void context.
+        top
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `-> { bar }` if on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        top
+        -> { bar }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `-> { bar }.call` if not on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        -> { bar }.call
+        top
+      end
+    RUBY
+  end
+
+  it 'registers an offense for void `lambda { bar }` if not on last line' do
+    expect_offense(<<~RUBY)
+      def foo
+        lambda { bar }
+        ^^^^^^^^^^^^^^ `lambda { bar }` used in void context.
+        top
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `lambda { bar }` if on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        top
+        lambda { bar }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `lambda { bar }.call` if not on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        lambda { bar }.call
+        top
+      end
+    RUBY
+  end
+
+  it 'registers an offense for void `proc { bar }` if not on last line' do
+    expect_offense(<<~RUBY)
+      def foo
+        proc { bar }
+        ^^^^^^^^^^^^ `proc { bar }` used in void context.
+        top
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `proc { bar }` if on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        top
+        proc { bar }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `proc { bar }.call` if not on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        proc { bar }.call
+        top
+      end
+    RUBY
+  end
+
+  it 'registers an offense for void `Proc.new { bar }` if not on last line' do
+    expect_offense(<<~RUBY)
+      def foo
+        Proc.new { bar }
+        ^^^^^^^^^^^^^^^^ `Proc.new { bar }` used in void context.
+        top
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `Proc.new { bar }` if on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        top
+        Proc.new { bar }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for void `Proc.new { bar }.call` if not on last line' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        Proc.new { bar }.call
+        top
+      end
+    RUBY
+  end
+
   context 'when checking for methods with no side effects' do
     let(:config) do
       RuboCop::Config.new('Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => true })
