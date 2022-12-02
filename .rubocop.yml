@@ -187,3 +187,6 @@ InternalAffairs/NumblockHandler:
 
 Gemspec/DependencyVersion:
   Enabled: true
+
+Style/RequireOrder:
+  Enabled: true

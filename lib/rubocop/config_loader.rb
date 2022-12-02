@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'erb'
-require 'yaml'
 require 'pathname'
+require 'yaml'
 require_relative 'config_finder'
 
 module RuboCop

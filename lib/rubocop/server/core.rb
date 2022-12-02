@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'socket'
 require 'securerandom'
+require 'socket'
 
 #
 # This code is based on https://github.com/fohte/rubocop-daemon.

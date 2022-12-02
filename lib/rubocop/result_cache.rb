@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'digest/sha1'
-require 'find'
 require 'etc'
+require 'find'
 require 'zlib'
 require_relative 'cache_config'
 
