@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'support/file_helper'
 require 'rubocop/rake_task'
+require 'support/file_helper'
 
 RSpec.describe RuboCop::RakeTask do
   include FileHelper

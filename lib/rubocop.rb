@@ -4,9 +4,9 @@ require 'English'
 before_us = $LOADED_FEATURES.dup
 require 'rainbow'
 
-require 'set'
 require 'forwardable'
 require 'regexp_parser'
+require 'set'
 require 'unicode/display_width'
 
 # we have to require RuboCop's version, before rubocop-ast's
@@ -14,21 +14,23 @@ require_relative 'rubocop/version'
 require 'rubocop-ast'
 
 require_relative 'rubocop/ast_aliases'
+require_relative 'rubocop/ext/range'
 require_relative 'rubocop/ext/regexp_node'
 require_relative 'rubocop/ext/regexp_parser'
-require_relative 'rubocop/ext/range'
 
 require_relative 'rubocop/core_ext/string'
 require_relative 'rubocop/ext/processed_source'
 
-require_relative 'rubocop/path_util'
-require_relative 'rubocop/file_finder'
-require_relative 'rubocop/platform'
-require_relative 'rubocop/name_similarity'
-require_relative 'rubocop/string_interpreter'
 require_relative 'rubocop/error'
-require_relative 'rubocop/warning'
+require_relative 'rubocop/file_finder'
+require_relative 'rubocop/name_similarity'
+require_relative 'rubocop/path_util'
+require_relative 'rubocop/platform'
+require_relative 'rubocop/string_interpreter'
 require_relative 'rubocop/util'
+require_relative 'rubocop/warning'
+
+# rubocop:disable Style/RequireOrder
 
 require_relative 'rubocop/cop/util'
 require_relative 'rubocop/cop/offense'
@@ -546,6 +548,7 @@ require_relative 'rubocop/cop/style/redundant_file_extension_in_require'
 require_relative 'rubocop/cop/style/redundant_initialize'
 require_relative 'rubocop/cop/style/redundant_self_assignment'
 require_relative 'rubocop/cop/style/redundant_self_assignment_branch'
+require_relative 'rubocop/cop/style/require_order'
 require_relative 'rubocop/cop/style/sole_nested_conditional'
 require_relative 'rubocop/cop/style/static_class'
 require_relative 'rubocop/cop/style/map_compact_with_conditional_block'
@@ -719,6 +722,8 @@ require_relative 'rubocop/options'
 require_relative 'rubocop/remote_config'
 require_relative 'rubocop/target_ruby'
 require_relative 'rubocop/yaml_duplication_checker'
+
+# rubocop:enable Style/RequireOrder
 
 unless File.exist?("#{__dir__}/../rubocop.gemspec") # Check if we are a gem
   RuboCop::ResultCache.rubocop_required_features = $LOADED_FEATURES - before_us

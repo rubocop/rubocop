@@ -5,8 +5,8 @@ require 'rainbow'
 Rainbow.enabled = false
 
 require 'rubocop'
-require 'rubocop/server'
 require 'rubocop/cop/internal_affairs'
+require 'rubocop/server'
 
 require 'webmock/rspec'
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'yaml'
 require 'pathname'
+require 'yaml'
 
 module RuboCop
   # A help class for ConfigLoader that handles configuration resolution.

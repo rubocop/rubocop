@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'yard'
 require 'rubocop'
 require 'rubocop/cops_documentation_generator'
+require 'yard'
 
 YARD::Rake::YardocTask.new(:yard_for_generate_documentation) do |task|
   task.files = ['lib/rubocop/cop/*/*.rb']

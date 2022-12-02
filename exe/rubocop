@@ -11,8 +11,8 @@ exit exit_status if server_cli.exit?
 if RuboCop::Server.running?
   exit_status = RuboCop::Server::ClientCommand::Exec.new.run
 else
-  require 'rubocop'
   require 'benchmark'
+  require 'rubocop'
 
   cli = RuboCop::CLI.new
 
