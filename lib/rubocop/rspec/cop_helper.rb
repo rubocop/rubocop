@@ -44,7 +44,10 @@ module CopHelper
 
   def registry
     @registry ||= begin
-      cops = configuration.keys.map { |cop| RuboCop::Cop::Registry.global.find_by_cop_name(cop) }
+      keys = configuration.keys
+      cops =
+        keys.map { |directive| RuboCop::Cop::Registry.global.find_cops_by_directive(directive) }
+            .flatten
       cops << cop_class if defined?(cop_class) && !cops.include?(cop_class)
       cops.compact!
       RuboCop::Cop::Registry.new(cops)

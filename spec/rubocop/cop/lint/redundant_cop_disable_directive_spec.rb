@@ -23,17 +23,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           context 'a cop that is disabled in the config' do
             let(:other_cops) { { 'Metrics/MethodLength' => { 'Enabled' => false } } }
 
+            let(:offenses) do
+              [
+                RuboCop::Cop::Offense.new(:convention,
+                                          FakeLocation.new(line: 7, column: 0),
+                                          'Method has too many lines.',
+                                          'Metrics/MethodLength')
+              ]
+            end
+
             it 'returns an offense when disabling same cop' do
               expect_offense(<<~RUBY)
                 # rubocop:disable Metrics/MethodLength
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
-              RUBY
-            end
-
-            it 'returns an offense when disabling parent department' do
-              expect_offense(<<~RUBY)
-                # rubocop:disable Metrics
-                ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
               RUBY
             end
 
@@ -48,21 +50,32 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
 
             describe 'if that cop has offenses' do
-              let(:offenses) do
-                [
-                  RuboCop::Cop::Offense.new(:convention,
-                                            FakeLocation.new(line: 7, column: 0),
-                                            'Method has too many lines.',
-                                            'Metrics/MethodLength')
-                ]
-              end
-
               it 'returns an offense' do
                 expect_offense(<<~RUBY)
                   # rubocop:disable Metrics/MethodLength
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
                 RUBY
               end
+            end
+          end
+
+          context 'a department that is disabled in the config' do
+            let(:config) do
+              RuboCop::Config.new('Metrics' => { 'Enabled' => false })
+            end
+
+            it 'returns an offense when same department is disabled' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
+              RUBY
+            end
+
+            it 'returns an offense when cop from this department is disabled' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics/MethodLength
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
             end
           end
 
@@ -633,6 +646,45 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           def bar
             do_something # rubocop:disable Metrics/ClassLength - note
                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something # - note
+          end
+        RUBY
+      end
+
+      it 'removes department duplicated by department' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics
+          class One
+            # rubocop:disable Metrics
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
+            @@class_var = 1  # offense here
+          end
+          # rubocop:enable Metrics
+        RUBY
+      end
+
+      it 'removes department duplicated by department on previous line' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics
+          class One
+          @@class_var = 1  # rubocop:disable Metrics
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
+          end
+        RUBY
+      end
+
+      it 'removes department duplicated by department and leaves free text as a comment' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something # rubocop:disable Metrics - note
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
           end
         RUBY
 
