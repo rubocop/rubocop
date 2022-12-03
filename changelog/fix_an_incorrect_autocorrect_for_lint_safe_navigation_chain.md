@@ -1,0 +1,1 @@
+* [#11230](https://github.com/rubocop/rubocop/issues/11230): Fix an incorrect autocorrect for `Lint/SafeNavigationChain` when using safe navigation with `[]` operator followed by method chain. ([@koic][])

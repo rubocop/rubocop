@@ -178,6 +178,17 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense for safe navigation with [] operator followed by method chain' do
+      expect_offense(<<~RUBY)
+        x&.foo[bar].to_s
+              ^^^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.foo&.[](bar).to_s
+      RUBY
+    end
+
     it 'registers an offense for safe navigation with []= operator' do
       expect_offense(<<~RUBY)
         x&.foo[bar] = baz
