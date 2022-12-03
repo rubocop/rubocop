@@ -43,9 +43,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-
-      - name: install dependencies
-        run: bundle install --jobs 3 --retry 3
+          bundler-cache: true
       - name: spec
         run: bundle exec rake spec
       - name: ascii_spec
@@ -63,9 +61,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: jruby-9.3
-
-      - name: install dependencies
-        run: bundle install --jobs 3 --retry 3
+          bundler-cache: true
       - name: spec
         run: bundle exec rake spec
       - name: ascii_spec
