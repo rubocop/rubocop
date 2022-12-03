@@ -13,17 +13,25 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   (receiver & argument).present?
       #   (receiver & argument).any?
-      #
-      #   # good
-      #   receiver.intersect?(argument)
-      #
-      #   # bad
-      #   (receiver & argument).blank?
       #   (receiver & argument).empty?
       #
       #   # good
+      #   receiver.intersect?(argument)
+      #   !receiver.intersect?(argument)
+      #
+      # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
+      #   # good
+      #   (receiver & argument).present?
+      #   (receiver & argument).blank?
+      #
+      # @example AllCops:ActiveSupportExtensionsEnabled: true
+      #   # bad
+      #   (receiver & argument).present?
+      #   (receiver & argument).blank?
+      #
+      #   # good
+      #   receiver.intersect?(argument)
       #   !receiver.intersect?(argument)
       class ArrayIntersect < Base
         extend AutoCorrector
