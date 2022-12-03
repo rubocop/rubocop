@@ -182,8 +182,12 @@ module RuboCop
         cops.map(&:cop_name)
       end
 
+      def cops_for_department(department)
+        cops.select { |cop| cop.department == department.to_sym }
+      end
+
       def names_for_department(department)
-        cops.select { |cop| cop.department == department.to_sym }.map(&:cop_name)
+        cops_for_department(department).map(&:cop_name)
       end
 
       def ==(other)
@@ -209,6 +213,14 @@ module RuboCop
       # @return [Class, nil]
       def find_by_cop_name(cop_name)
         to_h[cop_name].first
+      end
+
+      # When a cop name is given returns a single-element array with the cop class.
+      # When a department name is given returns an array with all the cop classes
+      # for that department.
+      def find_cops_by_directive(directive)
+        cop = find_by_cop_name(directive)
+        cop ? [cop] : cops_for_department(directive)
       end
 
       def freeze

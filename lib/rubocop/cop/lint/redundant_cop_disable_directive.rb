@@ -138,14 +138,21 @@ module RuboCop
             next unless followed_ranges?(previous_range, range)
 
             comment = processed_source.comment_at_line(range.begin)
-            # Disabling department can not be redundant
-            next if department_disabled?(cop, comment)
+
+            next unless comment
             # Comments disabling all cops don't count since it's reasonable
             # to disable a few select cops first and then all cops further
             # down in the code.
             next if all_disabled?(comment)
 
-            yield comment, cop if comment
+            redundant =
+              if department_disabled?(cop, comment)
+                find_redundant_department(cop, range)
+              else
+                cop
+              end
+
+            yield comment, redundant
           end
         end
 
