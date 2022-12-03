@@ -62,15 +62,16 @@ module RuboCop
         # @param [RuboCop::AST::SendNode] send_node
         # @return [String]
         def add_safe_navigation_operator(offense_range:, send_node:)
-          source = \
-            if send_node.method?(:[]) || send_node.method?(:[]=)
+          source =
+            if (brackets = find_brackets(send_node))
               format(
-                '%<method_name>s(%<arguments>s)',
-                arguments: send_node.arguments.map(&:source).join(', '),
-                method_name: send_node.method_name
+                '%<method_name>s(%<arguments>s)%<method_chain>s',
+                arguments: brackets.arguments.map(&:source).join(', '),
+                method_name: brackets.method_name,
+                method_chain: brackets.source_range.end.join(send_node.source_range.end).source
               )
             else
-              offense_range.source.dup
+              offense_range.source
             end
           source.prepend('.') unless source.start_with?('.')
           source.prepend('&')
@@ -93,6 +94,14 @@ module RuboCop
           chain = node
           chain = chain.parent if chain.send_type? && chain.parent&.call_type?
           chain
+        end
+
+        def find_brackets(send_node)
+          return send_node if send_node.method?(:[]) || send_node.method?(:[]=)
+
+          send_node.descendants.detect do |node|
+            node.send_type? && (node.method?(:[]) || node.method?(:[]=))
+          end
         end
       end
     end
