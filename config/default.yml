@@ -3034,7 +3034,7 @@ Style/ArrayCoercion:
   VersionAdded: '0.88'
 
 Style/ArrayIntersect:
-  Description: 'Use `receiver.intersect?(argument)` instead of `(receiver & argument).any?`.'
+  Description: 'Use `array1.intersect?(array2)` instead of `(array1 & array2).any?`.'
   Enabled: 'pending'
   VersionAdded: '<<next>>'
 
