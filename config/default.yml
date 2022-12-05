@@ -5150,12 +5150,11 @@ Style/SymbolProc:
   Enabled: true
   Safe: false
   VersionAdded: '0.26'
-  VersionChanged: '1.28'
+  VersionChanged: '<<next>>'
   AllowMethodsWithArguments: false
   # A list of method names to be always allowed by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
   AllowedMethods:
-    - respond_to
     - define_method
   AllowedPatterns: []
   IgnoredMethods: [] # deprecated

@@ -7,7 +7,7 @@ module RuboCop
       #
       # If you prefer a style that allows block for method with arguments,
       # please set `true` to `AllowMethodsWithArguments`.
-      # respond_to , and `define_method?` methods are allowed by default.
+      # `define_method?` methods are allowed by default.
       # These are customizable with `AllowedMethods` option.
       #
       # @safety
@@ -72,11 +72,9 @@ module RuboCop
       #     # some comment
       #   end
       #
-      # @example AllowedMethods: [respond_to, define_method] (default)
+      # @example AllowedMethods: [define_method] (default)
       #   # good
-      #   respond_to { |foo| foo.bar }
       #   define_method(:foo) { |foo| foo.bar }
-      #
       #
       # @example AllowedPatterns: [] (default)
       #   # bad
