@@ -4721,6 +4721,11 @@ Style/RedundantConditional:
   Enabled: true
   VersionAdded: '0.50'
 
+Style/RedundantConstantBase:
+  Description: Avoid redundant `::` prefix on constant.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantEach:
   Description: 'Checks for redundant `each`.'
   Enabled: pending

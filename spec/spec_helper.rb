@@ -30,7 +30,7 @@ RSpec.configure do |config|
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples
   # get run.
-  unless defined?(::TestQueue)
+  unless defined?(TestQueue)
     # See. https://github.com/tmm1/test-queue/issues/60#issuecomment-281948929
     config.filter_run_when_matching :focus
   end
