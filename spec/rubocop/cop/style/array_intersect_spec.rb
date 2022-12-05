@@ -2,22 +2,22 @@
 
 RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
   context 'when TargetRubyVersion <= 3.0', :ruby30 do
-    it 'does not register an offense when using `(receiver & argument).any?`' do
+    it 'does not register an offense when using `(array1 & array2).any?`' do
       expect_no_offenses(<<~RUBY)
-        (receiver & argument).any?
+        (array1 & array2).any?
       RUBY
     end
   end
 
   context 'when TargetRubyVersion >= 3.1', :ruby31 do
-    it 'registers an offense when using `(receiver & argument).any?`' do
+    it 'registers an offense when using `(array1 & array2).any?`' do
       expect_offense(<<~RUBY)
-        (receiver & argument).any?
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `receiver.intersect?(argument)` instead of `(receiver & argument).any?`.
+        (array1 & array2).any?
+        ^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `(array1 & array2).any?`.
       RUBY
 
       expect_correction(<<~RUBY)
-        receiver.intersect?(argument)
+        array1.intersect?(array2)
       RUBY
     end
 

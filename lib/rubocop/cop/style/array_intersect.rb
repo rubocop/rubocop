@@ -5,34 +5,38 @@ module RuboCop
     module Style
       # In Ruby 3.1, `Array#intersect?` has been added.
       #
-      # This cop identifies places where `(receiver & argument).any?`
-      # can be replaced by `receiver.intersect?(argument)`.
+      # This cop identifies places where `(array1 & array2).any?`
+      # can be replaced by `array1.intersect?(array2)`.
       #
-      # The `receiver.intersect?(argument)` method is faster than
-      # `(receiver & argument).any?` and is more readable.
+      # The `array1.intersect?(array2)` method is faster than
+      # `(array1 & array2).any?` and is more readable.
+      #
+      # @safety
+      #   This cop cannot guarantee that array1 and array2 are
+      #   actually arrays while method `intersect?` is for arrays only.
       #
       # @example
       #   # bad
-      #   (receiver & argument).any?
-      #   (receiver & argument).empty?
+      #   (array1 & array2).any?
+      #   (array1 & array2).empty?
       #
       #   # good
-      #   receiver.intersect?(argument)
-      #   !receiver.intersect?(argument)
+      #   array1.intersect?(array2)
+      #   !array1.intersect?(array2)
       #
       # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
       #   # good
-      #   (receiver & argument).present?
-      #   (receiver & argument).blank?
+      #   (array1 & array2).present?
+      #   (array1 & array2).blank?
       #
       # @example AllCops:ActiveSupportExtensionsEnabled: true
       #   # bad
-      #   (receiver & argument).present?
-      #   (receiver & argument).blank?
+      #   (array1 & array2).present?
+      #   (array1 & array2).blank?
       #
       #   # good
-      #   receiver.intersect?(argument)
-      #   !receiver.intersect?(argument)
+      #   array1.intersect?(array2)
+      #   !array1.intersect?(array2)
       class ArrayIntersect < Base
         extend AutoCorrector
         extend TargetRubyVersion
