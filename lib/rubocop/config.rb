@@ -24,10 +24,11 @@ module RuboCop
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
-        qualified_cop_name = Cop::Registry.qualified_cop_name(cop, loaded_path)
+        cop_name = cop.respond_to?(:cop_name) ? cop.cop_name : cop
+        qualified_cop_name = Cop::Registry.qualified_cop_name(cop_name, loaded_path)
         cop_options = self[qualified_cop_name].dup || {}
         cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
-        h[cop] = cop_options
+        h[cop] = h[cop_name] = cop_options
       end
       @hash = hash
       @validator = ConfigValidator.new(self)
@@ -116,7 +117,7 @@ module RuboCop
     # Note: the 'Enabled' attribute is calculated according to the department's
     # and 'AllCops' configuration; other attributes are not inherited.
     def for_cop(cop)
-      @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
+      @for_cop[cop]
     end
 
     # @return [Config] for the given cop merged with that of its department (if any)

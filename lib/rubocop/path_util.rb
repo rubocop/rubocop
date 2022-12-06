@@ -33,11 +33,18 @@ module RuboCop
       end
     end
 
+    # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
     def match_path?(pattern, path)
       case pattern
       when String
-        File.fnmatch?(pattern, path, File::FNM_PATHNAME | File::FNM_EXTGLOB) ||
-          hidden_file_in_not_hidden_dir?(pattern, path)
+        matches =
+          if pattern == path
+            true
+          elsif pattern.match?(/[*{\[?]/)
+            File.fnmatch?(pattern, path, File::FNM_PATHNAME | File::FNM_EXTGLOB)
+          end
+
+        matches || hidden_file_in_not_hidden_dir?(pattern, path)
       when Regexp
         begin
           pattern.match?(path)
@@ -48,6 +55,7 @@ module RuboCop
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)
@@ -67,8 +75,12 @@ module RuboCop
       maybe_hidden_file?(path) && File.basename(path).start_with?('.')
     end
 
+    HIDDEN_FILE_PATTERN = "#{File::SEPARATOR}."
+
     # Loose check to reduce memory allocations
     def maybe_hidden_file?(path)
+      return false unless path.include?(HIDDEN_FILE_PATTERN)
+
       separator_index = path.rindex(File::SEPARATOR)
       return false unless separator_index
 

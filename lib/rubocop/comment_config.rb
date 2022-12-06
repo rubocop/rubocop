@@ -31,6 +31,7 @@ module RuboCop
 
     def initialize(processed_source)
       @processed_source = processed_source
+      @no_directives = !processed_source.raw_source.include?('rubocop')
     end
 
     def cop_enabled_at_line?(cop, line_number)
@@ -74,6 +75,8 @@ module RuboCop
     end
 
     def analyze # rubocop:todo Metrics/AbcSize
+      return {} if @no_directives
+
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
       inject_disabled_cops_directives(analyses)
 
@@ -146,6 +149,8 @@ module RuboCop
     end
 
     def each_directive
+      return if @no_directives
+
       processed_source.comments.each do |comment|
         directive = DirectiveComment.new(comment)
         yield directive if directive.cop_names
