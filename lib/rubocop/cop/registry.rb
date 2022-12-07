@@ -158,7 +158,7 @@ module RuboCop
       end
 
       def enabled?(cop, config)
-        return true if options.fetch(:only, []).include?(cop.cop_name)
+        return true if options[:only]&.include?(cop.cop_name)
 
         cfg = config.for_cop(cop)
 

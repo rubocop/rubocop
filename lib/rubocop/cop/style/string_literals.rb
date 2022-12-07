@@ -95,11 +95,7 @@ module RuboCop
         end
 
         def offense?(node)
-          # If it's a string within an interpolation, then it's not an offense
-          # for this cop.
-          return false if inside_interpolation?(node)
-
-          wrong_quotes?(node)
+          wrong_quotes?(node) && !inside_interpolation?(node)
         end
 
         def consistent_multiline?

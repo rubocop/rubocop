@@ -108,34 +108,26 @@ module RuboCop
         :skip_children
       end
 
-      # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+      # rubocop:disable Layout/ClassStructure
+      NODE_HANDLER_METHOD_NAMES = [
+        [VARIABLE_ASSIGNMENT_TYPE, :process_variable_assignment],
+        [REGEXP_NAMED_CAPTURE_TYPE, :process_regexp_named_captures],
+        [MULTIPLE_ASSIGNMENT_TYPE, :process_variable_multiple_assignment],
+        [VARIABLE_REFERENCE_TYPE, :process_variable_referencing],
+        [RESCUE_TYPE, :process_rescue],
+        [ZERO_ARITY_SUPER_TYPE, :process_zero_arity_super],
+        [SEND_TYPE, :process_send],
+        *ARGUMENT_DECLARATION_TYPES.product([:process_variable_declaration]),
+        *OPERATOR_ASSIGNMENT_TYPES.product([:process_variable_operator_assignment]),
+        *LOOP_TYPES.product([:process_loop]),
+        *SCOPE_TYPES.product([:process_scope])
+      ].to_h.freeze
+      private_constant :NODE_HANDLER_METHOD_NAMES
+      # rubocop:enable Layout/ClassStructure
+
       def node_handler_method_name(node)
-        case node.type
-        when VARIABLE_ASSIGNMENT_TYPE
-          :process_variable_assignment
-        when REGEXP_NAMED_CAPTURE_TYPE
-          :process_regexp_named_captures
-        when MULTIPLE_ASSIGNMENT_TYPE
-          :process_variable_multiple_assignment
-        when VARIABLE_REFERENCE_TYPE
-          :process_variable_referencing
-        when RESCUE_TYPE
-          :process_rescue
-        when ZERO_ARITY_SUPER_TYPE
-          :process_zero_arity_super
-        when SEND_TYPE
-          :process_send
-        when *ARGUMENT_DECLARATION_TYPES
-          :process_variable_declaration
-        when *OPERATOR_ASSIGNMENT_TYPES
-          :process_variable_operator_assignment
-        when *LOOP_TYPES
-          :process_loop
-        when *SCOPE_TYPES
-          :process_scope
-        end
+        NODE_HANDLER_METHOD_NAMES[node.type]
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
       def process_variable_declaration(node)
         variable_name = node.children.first
@@ -358,13 +350,12 @@ module RuboCop
         end
       end
 
-      # Use Node#equal? for accurate check.
       def scanned_node?(node)
-        scanned_nodes.any? { |scanned_node| scanned_node.equal?(node) }
+        scanned_nodes.include?(node)
       end
 
       def scanned_nodes
-        @scanned_nodes ||= []
+        @scanned_nodes ||= Set.new.compare_by_identity
       end
 
       # Hooks invoked by VariableTable.
