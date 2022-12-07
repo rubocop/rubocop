@@ -94,6 +94,7 @@ module RuboCop
       #
       class GuardClause < Base
         extend AutoCorrector
+        include RangeHelp
         include MinBodyLength
         include StatementModifier
 
@@ -179,13 +180,35 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def autocorrect(corrector, node, condition, replacement, guard)
           corrector.replace(node.loc.keyword.join(condition.loc.expression), replacement)
-          corrector.remove(node.loc.end)
-          return unless node.else?
 
-          corrector.remove(node.loc.else)
-          corrector.remove(branch_to_remove(node, guard))
+          if_branch = node.if_branch
+          else_branch = node.else_branch
+
+          if if_branch&.send_type? && if_branch.last_argument&.heredoc?
+            autocorrect_heredoc_argument(corrector, node, if_branch, else_branch, guard)
+          elsif else_branch&.send_type? && else_branch.last_argument&.heredoc?
+            autocorrect_heredoc_argument(corrector, node, else_branch, if_branch, guard)
+          else
+            corrector.remove(node.loc.end)
+            return unless node.else?
+
+            corrector.remove(node.loc.else)
+            corrector.remove(branch_to_remove(node, guard))
+          end
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def autocorrect_heredoc_argument(corrector, node, heredoc_branch, leave_branch, guard)
+          remove_whole_lines(corrector, leave_branch.source_range)
+          remove_whole_lines(corrector, node.loc.else)
+          remove_whole_lines(corrector, node.loc.end)
+          remove_whole_lines(corrector, branch_to_remove(node, guard).source_range)
+          corrector.insert_after(
+            heredoc_branch.last_argument.loc.heredoc_end, "\n#{leave_branch.source}"
+          )
         end
 
         def branch_to_remove(node, guard)
@@ -229,6 +252,10 @@ module RuboCop
           else
             !node.else? || node.elsif?
           end
+        end
+
+        def remove_whole_lines(corrector, range)
+          corrector.remove(range_by_whole_lines(range, include_final_newline: true))
         end
 
         def allowed_consecutive_conditionals?
