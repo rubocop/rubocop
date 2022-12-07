@@ -54,6 +54,70 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     RUBY
   end
 
+  it 'reports an offense for define_method with only a return' do
+    expect_offense(<<~RUBY)
+      define_method(:foo) do
+        return something
+        ^^^^^^ Redundant `return` detected.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      define_method(:foo) do
+        something
+      end
+    RUBY
+  end
+
+  it 'reports an offense for define_singleton_method with only a return' do
+    expect_offense(<<~RUBY)
+      define_singleton_method(:foo) do
+        return something
+        ^^^^^^ Redundant `return` detected.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      define_singleton_method(:foo) do
+        something
+      end
+    RUBY
+  end
+
+  it 'reports an offense for define_method ending with return' do
+    expect_offense(<<~RUBY)
+      define_method(:foo) do
+        some_preceding_statements
+        return something
+        ^^^^^^ Redundant `return` detected.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      define_method(:foo) do
+        some_preceding_statements
+        something
+      end
+    RUBY
+  end
+
+  it 'reports an offense for define_singleton_method ending with return' do
+    expect_offense(<<~RUBY)
+      define_singleton_method(:foo) do
+        some_preceding_statements
+        return something
+        ^^^^^^ Redundant `return` detected.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      define_singleton_method(:foo) do
+        some_preceding_statements
+        something
+      end
+    RUBY
+  end
+
   it 'reports an offense for def ending with return with splat argument' do
     expect_offense(<<~RUBY)
       def func
