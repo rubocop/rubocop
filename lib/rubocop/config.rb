@@ -216,7 +216,7 @@ module RuboCop
     # directory since that wouldn't work.
     def base_dir_for_path_parameters
       @base_dir_for_path_parameters ||=
-        if File.basename(loaded_path).start_with?('.rubocop') &&
+        if loaded_path && File.basename(loaded_path).start_with?('.rubocop') &&
            loaded_path != File.join(Dir.home, ConfigLoader::DOTFILE)
           File.expand_path(File.dirname(loaded_path))
         else

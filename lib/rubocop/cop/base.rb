@@ -412,15 +412,8 @@ module RuboCop
         patterns = cop_config[parameter]
         return default_result unless patterns
 
-        path = nil
-        patterns.any? do |pattern|
-          # Try to match the absolute path, as Exclude properties are absolute.
-          next true if match_path?(pattern, file)
-
-          # Try with relative path.
-          path ||= config.path_relative_to_config(file)
-          match_path?(pattern, path)
-        end
+        patterns = OptimizedPatterns.from(patterns)
+        patterns.match?(config.path_relative_to_config(file)) || patterns.match?(file)
       end
 
       def enabled_line?(line_number)
