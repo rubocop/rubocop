@@ -47,8 +47,11 @@ module RuboCop
 
         resolver.override_department_setting_for_cops({}, hash)
         resolver.resolve_inheritance_from_gems(hash)
-        resolver.resolve_inheritance(path, hash, file, debug?)
+        resolver.resolve_inheritance_for_inherit_from(path, hash, file, debug?)
+        resolver.resolve_inheritance_for_extends(path, hash, file, debug?)
+
         hash.delete('inherit_from')
+        hash.delete('extends')
 
         # Adding missing namespaces only after resolving requires & inheritance,
         # since both can introduce new cops that need to be considered here.

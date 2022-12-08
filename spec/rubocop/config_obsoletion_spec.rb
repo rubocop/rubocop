@@ -301,7 +301,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
         # Resolve `inherit_gem`
         resolver.resolve_inheritance_from_gems(hash)
-        resolver.resolve_inheritance(loaded_path, hash, loaded_path, false)
+        resolver.resolve_inheritance_for_inherit_from(loaded_path, hash, loaded_path, false)
 
         allow(configuration).to receive(:loaded_features).and_call_original
       end

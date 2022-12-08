@@ -16,8 +16,17 @@ module RuboCop
       end
     end
 
-    def resolve_inheritance(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def resolve_inheritance_for_inherit_from(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       inherited_files = Array(hash['inherit_from'])
+      resolve_inheritance(inherited_files, path, hash, file, debug, should_mark_paths_relative_to_derived_configuration: true)
+    end
+
+    def resolve_inheritance_for_extends(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      extended_files = Array(hash['extends'])
+      resolve_inheritance(extended_files, path, hash, file, debug, should_mark_paths_relative_to_derived_configuration: false)
+    end
+
+    def resolve_inheritance(inherited_files, path, hash, file, debug, should_mark_paths_relative_to_derived_configuration: true) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       base_configs(path, inherited_files, file)
         .each_with_index.reverse_each do |base_config, index|
         override_department_setting_for_cops(base_config, hash)
@@ -33,7 +42,10 @@ module RuboCop
                       inherit_mode: determine_inherit_mode(hash, k))
           end
           hash[k] = v
-          fix_include_paths(base_config.loaded_path, hash, path, k, v) if v.key?('Include')
+
+          if should_mark_paths_relative_to_derived_configuration && v.key?('Include')
+            mark_paths_relative_to_derived_configuration(base_config.loaded_path, hash, path, k, v)
+          end
         end
       end
     end
@@ -42,7 +54,7 @@ module RuboCop
     # base configuration are relative to the directory where the base configuration file is. For the
     # derived configuration, we need to make those paths relative to where the derived configuration
     # file is.
-    def fix_include_paths(base_config_path, hash, path, key, value)
+    def mark_paths_relative_to_derived_configuration(base_config_path, hash, path, key, value)
       return unless File.basename(base_config_path).start_with?('.rubocop')
 
       base_dir = File.dirname(base_config_path)
@@ -206,7 +218,15 @@ module RuboCop
     end
 
     def base_configs(path, inherit_from, file)
-      configs = Array(inherit_from).compact.map do |f|
+      inherit_froms = Array(inherit_from).compact.flat_map do |f|
+        if f.match?(/[*{\[?]/)
+          Dir.glob(f)
+        else
+          f
+        end
+      end
+
+      configs = inherit_froms.map do |f|
         ConfigLoader.load_file(inherited_file(path, f, file))
       end
 
