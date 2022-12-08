@@ -202,8 +202,6 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def heredoc?(argument)
-          return false if argument.nil?
-
           argument.respond_to?(:heredoc?) && argument.heredoc?
         end
 
