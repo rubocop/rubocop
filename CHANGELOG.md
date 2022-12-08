@@ -2,6 +2,46 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#11179](https://github.com/rubocop/rubocop/pull/11179): Add `Style/ConstantBase` cop. ([@r7kamura][])
+* [#11205](https://github.com/rubocop/rubocop/pull/11205): Add `--[no-]auto-gen-enforced-style` CLI option. ([@ydah][])
+* [#11224](https://github.com/rubocop/rubocop/pull/11224): Add `Style/RequireOrder` cop. ([@r7kamura][])
+* [#11219](https://github.com/rubocop/rubocop/issues/11219): Make `Style/SelectByRegexp` aware of `!~` method. ([@koic][])
+* [#11224](https://github.com/rubocop/rubocop/pull/11224): Add new cop `Style/ArrayIntersect` which replaces `(array1 & array2).any?` with `array1.intersect?(array2)`, method `Array#intersect?` was added in ruby 3.1. ([@KirIgor][])
+* [#11211](https://github.com/rubocop/rubocop/pull/11211): Add autocorrect for `Lint/AssignmentInCondition`. ([@r7kamura][])
+
+### Bug fixes
+
+* [#5251](https://github.com/rubocop/rubocop/issues/5251): Fix loading of configuration in multi-file edge case. ([@NobodysNightmare][])
+* [#11192](https://github.com/rubocop/rubocop/issues/11192): Fix a false positive for `Lint/ParenthesesAsGroupedExpression` when using a block argument. ([@ydah][])
+* [#11143](https://github.com/rubocop/rubocop/issues/11143): Fix RedundantCopDisableDirective errors when encountering several department comments. ([@isarcasm][])
+* [#11230](https://github.com/rubocop/rubocop/issues/11230): Fix an incorrect autocorrect for `Lint/SafeNavigationChain` when using safe navigation with `[]` operator followed by method chain. ([@koic][])
+* [#11181](https://github.com/rubocop/rubocop/pull/11181): Fix pattern to match .tool-versions files that specify multiple runtimes. ([@noelblaschke][])
+* [#11239](https://github.com/rubocop/rubocop/issues/11239): Fix an incorrect autocorrect for `Style/GuardClause` when using heredoc as an argument of raise in branch body. ([@koic][])
+* [#11182](https://github.com/rubocop/rubocop/issues/11182): Fix an incorrect autocorrect for `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1. ([@koic][])
+* [#11184](https://github.com/rubocop/rubocop/issues/11184): Fix an error for `Lint/ShadowingOuterLocalVariable` when a block local variable has same name as an outer `until` scope variable. ([@koic][])
+* [#11198](https://github.com/rubocop/rubocop/pull/11198): Fix an error for `Lint/EmptyConditionalBody` when one using line if/;/end without then boby. ([@koic][])
+* [#11196](https://github.com/rubocop/rubocop/issues/11196): Fix a false positive for `Style/GuardClause` when using `raise` in `then` body of `if..elsif..end` form. ([@koic][])
+* [#11213](https://github.com/rubocop/rubocop/pull/11213): Support redundant department disable in scope of `Lint/RedundantCopDisableDirective` cop. ([@isarcasm][])
+* [#11200](https://github.com/rubocop/rubocop/issues/11200): Fix an incorrect autocorrect for `Layout/MultilineMethodCallBraceLayout` when using method chain for heredoc argument in multiline literal brace layout. ([@koic][])
+* [#11190](https://github.com/rubocop/rubocop/pull/11190): Fix an error for `Style/IfWithSemicolon` when using one line if/;/end without then boby. ([@koic][])
+* [#11244](https://github.com/rubocop/rubocop/pull/11244): Fix a false negative for `Style/RedundantReturn` when dynamic define methods. ([@ydah][])
+
+### Changes
+
+* [#11218](https://github.com/rubocop/rubocop/pull/11218): Update severity of `Bundler/DuplicatedGem`, `Bundler/InsecureProtocolSource`, `Gemspec/DeprecatedAttributeAssignment`, `Gemspec/DuplicatedAssignment`, `Gemspec/RequireMFA`, `Gemspec/RequiredRubyVersion`, and `Gemspec/RubyVersionGlobalsUsage` cops to warning. ([@koic][])
+* [#11222](https://github.com/rubocop/rubocop/pull/11222): Make `Style/RedundantArgument` aware of `Array#sum`. ([@koic][])
+* [#11070](https://github.com/rubocop/rubocop/issues/11070): Add ability to count method calls as one line to code length related `Metric` cops. ([@fatkodima][])
+* [#11226](https://github.com/rubocop/rubocop/pull/11226): Make `Lint/Void` aware of used lambda and proc in void context. ([@koic][])
+* [#11205](https://github.com/rubocop/rubocop/pull/11205): Change `Lint/InterpolationCheck` from `Safe: false` to `SafeAutoCorrect: false`. ([@r7kamura][])
+* [#11212](https://github.com/rubocop/rubocop/issues/11212): Make `Lint/DeprecatedConstants` aware of deprecated `Struct::Group` and `Struct::Passwd` classes. ([@koic][])
+* [#11236](https://github.com/rubocop/rubocop/pull/11236): Remove `respond_to` from default value of `AllowedMethods` for `Style/SymbolProc`. ([@koic][])
+* [#11185](https://github.com/rubocop/rubocop/pull/11185): Make `Style/HashSyntax` aware of without parentheses call expr follows. ([@koic][])
+* [#11203](https://github.com/rubocop/rubocop/pull/11203): Support multiple arguments on `Lint/SendWithMixinArgument`. ([@r7kamura][])
+* [#11229](https://github.com/rubocop/rubocop/pull/11229): Add `cc` to `AllowedNames` of `MethodParameterName` cop. ([@tjschuck][])
+* [#11116](https://github.com/rubocop/rubocop/issues/11116): Handle ternaries in `Style/SafeNavigation`. ([@fatkodima][])
+
 ## 1.39.0 (2022-11-14)
 
 ### New features
@@ -6614,3 +6654,8 @@
 [@si-lens]: https://github.com/si-lens
 [@akihikodaki]: https://github.com/akihikodaki
 [@epaew]: https://github.com/epaew
+[@isarcasm]: https://github.com/isarcasm
+[@noelblaschke]: https://github.com/noelblaschke
+[@KirIgor]: https://github.com/KirIgor
+[@tjschuck]: https://github.com/tjschuck
+[@isarcasm]: https://github.com/isarcasm

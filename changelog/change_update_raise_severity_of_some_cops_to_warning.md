@@ -1,1 +1,0 @@
-* [#11218](https://github.com/rubocop/rubocop/pull/11218): Update severity of `Bundler/DuplicatedGem`, `Bundler/InsecureProtocolSource`, `Gemspec/DeprecatedAttributeAssignment`, `Gemspec/DuplicatedAssignment`, `Gemspec/RequireMFA`, `Gemspec/RequiredRubyVersion`, and `Gemspec/RubyVersionGlobalsUsage` cops to warning. ([@koic][])
