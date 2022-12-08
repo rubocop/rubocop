@@ -8,7 +8,7 @@
 
 * [#11179](https://github.com/rubocop/rubocop/pull/11179): Add `Style/ConstantBase` cop. ([@r7kamura][])
 * [#11205](https://github.com/rubocop/rubocop/pull/11205): Add `--[no-]auto-gen-enforced-style` CLI option. ([@ydah][])
-* [#11224](https://github.com/rubocop/rubocop/pull/11224): Add `Style/RequireOrder` cop. ([@r7kamura][])
+* [#11235](https://github.com/rubocop/rubocop/pull/11235): Add `Style/RequireOrder` cop. ([@r7kamura][])
 * [#11219](https://github.com/rubocop/rubocop/issues/11219): Make `Style/SelectByRegexp` aware of `!~` method. ([@koic][])
 * [#11224](https://github.com/rubocop/rubocop/pull/11224): Add new cop `Style/ArrayIntersect` which replaces `(array1 & array2).any?` with `array1.intersect?(array2)`, method `Array#intersect?` was added in ruby 3.1. ([@KirIgor][])
 * [#11211](https://github.com/rubocop/rubocop/pull/11211): Add autocorrect for `Lint/AssignmentInCondition`. ([@r7kamura][])
