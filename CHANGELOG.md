@@ -6660,4 +6660,3 @@
 [@noelblaschke]: https://github.com/noelblaschke
 [@KirIgor]: https://github.com/KirIgor
 [@tjschuck]: https://github.com/tjschuck
-[@isarcasm]: https://github.com/isarcasm
