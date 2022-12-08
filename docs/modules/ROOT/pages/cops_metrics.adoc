@@ -98,8 +98,8 @@ Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 The cop can be configured to ignore blocks passed to certain methods.
 
-You can set literals you want to fold with `CountAsOne`.
-Available are: 'array', 'hash', and 'heredoc'. Each literal
+You can set constructs you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', 'heredoc', and 'method_call'. Each construct
 will be counted as one line regardless of its actual size.
 
 
@@ -111,7 +111,7 @@ NOTE: This cop does not apply for `Struct` definitions.
 
 === Examples
 
-==== CountAsOne: ['array', 'heredoc']
+==== CountAsOne: ['array', 'heredoc', 'method_call']
 
 [source,ruby]
 ----
@@ -129,7 +129,12 @@ something do
     Heredoc
     content.
   HEREDOC
-end                 # 5 points
+
+  foo(              # +1
+    1,
+    2
+  )
+end                 # 6 points
 ----
 
 === Configurable attributes
@@ -225,15 +230,15 @@ Checks if the length a class exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 
-You can set literals you want to fold with `CountAsOne`.
-Available are: 'array', 'hash', and 'heredoc'. Each literal
+You can set constructs you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', 'heredoc', and 'method_call'. Each construct
 will be counted as one line regardless of its actual size.
 
 NOTE: This cop also applies for `Struct` definitions.
 
 === Examples
 
-==== CountAsOne: ['array', 'heredoc']
+==== CountAsOne: ['array', 'heredoc', 'method_call']
 
 [source,ruby]
 ----
@@ -251,7 +256,12 @@ class Foo
     Heredoc
     content.
   HEREDOC
-end                 # 5 points
+
+  foo(              # +1
+    1,
+    2
+  )
+end                 # 6 points
 ----
 
 === Configurable attributes
@@ -349,8 +359,8 @@ Checks if the length of a method exceeds some maximum value.
 Comment lines can optionally be allowed.
 The maximum allowed length is configurable.
 
-You can set literals you want to fold with `CountAsOne`.
-Available are: 'array', 'hash', and 'heredoc'. Each literal
+You can set constructs you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', 'heredoc', and 'method_call'. Each construct
 will be counted as one line regardless of its actual size.
 
 NOTE: The `ExcludedMethods` and `IgnoredMethods` configuration is
@@ -360,7 +370,7 @@ By default, there are no methods to allowed.
 
 === Examples
 
-==== CountAsOne: ['array', 'heredoc']
+==== CountAsOne: ['array', 'heredoc', 'method_call']
 
 [source,ruby]
 ----
@@ -378,7 +388,12 @@ def m
     Heredoc
     content.
   HEREDOC
-end               # 5 points
+
+  foo(            # +1
+    1,
+    2
+  )
+end               # 6 points
 ----
 
 === Configurable attributes
@@ -435,13 +450,13 @@ Checks if the length a module exceeds some maximum value.
 Comment lines can optionally be ignored.
 The maximum allowed length is configurable.
 
-You can set literals you want to fold with `CountAsOne`.
-Available are: 'array', 'hash', and 'heredoc'. Each literal
+You can set constructs you want to fold with `CountAsOne`.
+Available are: 'array', 'hash', 'heredoc', and 'method_call'. Each construct
 will be counted as one line regardless of its actual size.
 
 === Examples
 
-==== CountAsOne: ['array', 'heredoc']
+==== CountAsOne: ['array', 'heredoc', 'method_call']
 
 [source,ruby]
 ----
@@ -459,7 +474,12 @@ module M
     Heredoc
     content.
   HEREDOC
-end                 # 5 points
+
+  foo(              # +1
+    1,
+    2
+  )
+end                 # 6 points
 ----
 
 === Configurable attributes

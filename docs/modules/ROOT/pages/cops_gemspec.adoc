@@ -94,7 +94,7 @@ end
 | Yes
 | Yes
 | 1.30
-| -
+| 1.40
 |===
 
 Checks that deprecated attribute attributes are not set in a gemspec file.
@@ -127,6 +127,10 @@ end
 |===
 | Name | Default value | Configurable values
 
+| Severity
+| `warning`
+| String
+
 | Include
 | `+**/*.gemspec+`
 | Array
@@ -141,7 +145,7 @@ end
 | Yes
 | No
 | 0.52
-| -
+| 1.40
 |===
 
 An attribute assignment method calls should be listed only once
@@ -184,6 +188,10 @@ end
 
 |===
 | Name | Default value | Configurable values
+
+| Severity
+| `warning`
+| String
 
 | Include
 | `+**/*.gemspec+`
@@ -281,7 +289,7 @@ spec.add_dependency 'rspec'
 | Yes
 | Yes
 | 1.23
-| -
+| 1.40
 |===
 
 Requires a gemspec to have `rubygems_mfa_required` metadata set.
@@ -350,6 +358,10 @@ end
 |===
 | Name | Default value | Configurable values
 
+| Severity
+| `warning`
+| String
+
 | Include
 | `+**/*.gemspec+`
 | Array
@@ -368,7 +380,7 @@ end
 | Yes
 | No
 | 0.52
-| 1.22
+| 1.40
 |===
 
 Checks that `required_ruby_version` in a gemspec file is set to a valid
@@ -430,6 +442,10 @@ end
 |===
 | Name | Default value | Configurable values
 
+| Severity
+| `warning`
+| String
+
 | Include
 | `+**/*.gemspec+`
 | Array
@@ -444,7 +460,7 @@ end
 | Yes
 | No
 | 0.72
-| -
+| 1.40
 |===
 
 Checks that `RUBY_VERSION` constant is not used in gemspec.
@@ -476,6 +492,10 @@ end
 
 |===
 | Name | Default value | Configurable values
+
+| Severity
+| `warning`
+| String
 
 | Include
 | `+**/*.gemspec+`

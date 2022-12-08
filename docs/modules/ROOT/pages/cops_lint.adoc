@@ -339,7 +339,7 @@ do_something(/pattern/i)
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
 | -
 |===
@@ -351,6 +351,11 @@ if/while/until.
 By safe assignment we mean putting parentheses around
 an assignment to indicate "I know I'm using an assignment
 as a condition. It's not a mistake."
+
+=== Safety
+
+This cop's autocorrection is unsafe because it assumes that
+the author meant to use an assignment result as a condition.
 
 === Examples
 
@@ -953,7 +958,7 @@ Addrinfo.tcp(host, port).getnameinfo
 | Yes
 | Yes
 | 1.8
-| 1.22
+| 1.40
 |===
 
 Checks for deprecated constants.
@@ -967,7 +972,8 @@ alternative value as `Alternative`. And you can set the deprecated version as
       Alternative: 'alternative_value'
       DeprecatedVersion: 'deprecated_version'
 
-By default, `NIL`, `TRUE`, `FALSE` and `Random::DEFAULT` are configured.
+By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, `Random::DEFAULT`,
+`Struct::Group`, and `Struct::Passwd` are configured.
 
 === Examples
 
@@ -977,13 +983,19 @@ By default, `NIL`, `TRUE`, `FALSE` and `Random::DEFAULT` are configured.
 NIL
 TRUE
 FALSE
+Net::HTTPServerException
 Random::DEFAULT # Return value of Ruby 2 is `Random` instance, Ruby 3.0 is `Random` class.
+Struct::Group
+Struct::Passwd
 
 # good
 nil
 true
 false
+Net::HTTPClientException
 Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible with Ruby 2.
+Etc::Group
+Etc::Passwd
 ----
 
 === Configurable attributes
@@ -992,7 +1004,7 @@ Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible wit
 | Name | Default value | Configurable values
 
 | DeprecatedConstants
-| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}}`
+| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}, "Struct::Group"=>{"Alternative"=>"Etc::Group", "DeprecatedVersion"=>"3.0"}, "Struct::Passwd"=>{"Alternative"=>"Etc::Passwd", "DeprecatedVersion"=>"3.0"}}`
 | 
 |===
 
@@ -2881,19 +2893,20 @@ C = Class.new(RuntimeError)
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
-| No
+| Yes
 | Yes (Unsafe)
 | 0.50
-| 0.87
+| 1.40
 |===
 
 Checks for interpolation in a single quoted string.
 
 === Safety
 
-This cop is generally safe, but is marked as unsafe because
-it is possible to actually intentionally have text inside
-`#{...}` in a single quoted string.
+This cop's autocorrection is unsafe because although it always replaces single quotes as
+if it were miswritten double quotes, it is not always the case. For example,
+`'#{foo} bar'` would be replaced by `"#{foo} bar"`, so the replaced code would evaluate
+the expression `foo`.
 
 === Examples
 
@@ -7092,7 +7105,7 @@ do_something(1)
 | -
 |===
 
-Checks for operators, variables, literals, and nonmutating
+Checks for operators, variables, literals, lambda, proc and nonmutating
 methods used in void context.
 
 === Examples

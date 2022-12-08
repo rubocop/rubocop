@@ -163,7 +163,7 @@ Bundler/DuplicatedGem:
   Enabled: true
   Severity: warning
   VersionAdded: '0.46'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
@@ -217,7 +217,7 @@ Bundler/InsecureProtocolSource:
   Enabled: true
   Severity: warning
   VersionAdded: '0.50'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   AllowHttpProtocol: true
   Include:
     - '**/*.gemfile'
@@ -258,7 +258,7 @@ Gemspec/DeprecatedAttributeAssignment:
   Enabled: pending
   Severity: warning
   VersionAdded: '1.30'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   Include:
     - '**/*.gemspec'
 
@@ -267,7 +267,7 @@ Gemspec/DuplicatedAssignment:
   Enabled: true
   Severity: warning
   VersionAdded: '0.52'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   Include:
     - '**/*.gemspec'
 
@@ -288,7 +288,7 @@ Gemspec/RequireMFA:
   Enabled: pending
   Severity: warning
   VersionAdded: '1.23'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   Reference:
     - https://guides.rubygems.org/mfa-requirement-opt-in/
   Include:
@@ -299,7 +299,7 @@ Gemspec/RequiredRubyVersion:
   Enabled: true
   Severity: warning
   VersionAdded: '0.52'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   Include:
     - '**/*.gemspec'
 
@@ -309,7 +309,7 @@ Gemspec/RubyVersionGlobalsUsage:
   Enabled: true
   Severity: warning
   VersionAdded: '0.72'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   Include:
     - '**/*.gemspec'
 
@@ -393,7 +393,7 @@ Layout/AssignmentIndentation:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   # By default the indentation width from `Layout/IndentationWidth` is used,
   # but it can be overridden by setting this parameter.
   IndentationWidth: ~
@@ -1657,7 +1657,7 @@ Lint/DeprecatedConstants:
   Description: 'Checks for deprecated constants.'
   Enabled: pending
   VersionAdded: '1.8'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   # You can configure deprecated constants.
   # If there is an alternative method, you can set alternative value as `Alternative`.
   # And you can set the deprecated version as `DeprecatedVersion`.
@@ -1918,7 +1918,7 @@ Lint/InterpolationCheck:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.50'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
 
 Lint/LambdaWithoutLiteralBlock:
   Description: 'Checks uses of lambda without a literal block.'
@@ -3037,7 +3037,7 @@ Style/ArrayCoercion:
 Style/ArrayIntersect:
   Description: 'Use `array1.intersect?(array2)` instead of `(array1 & array2).any?`.'
   Enabled: 'pending'
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.40'
 
 Style/ArrayJoin:
   Description: 'Use Array#join instead of Array#*.'
@@ -4686,7 +4686,7 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   Methods:
     # Array#join
     join: ''
@@ -4729,7 +4729,7 @@ Style/RedundantConditional:
 Style/RedundantConstantBase:
   Description: Avoid redundant `::` prefix on constant.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.40'
 
 Style/RedundantEach:
   Description: 'Checks for redundant `each`.'
@@ -4875,7 +4875,7 @@ Style/RequireOrder:
   Description: Sort `require` and `require_relative` in alphabetical order.
   Enabled: false
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.40'
 
 Style/RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
@@ -5161,7 +5161,7 @@ Style/SymbolProc:
   Enabled: true
   Safe: false
   VersionAdded: '0.26'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.40'
   AllowMethodsWithArguments: false
   # A list of method names to be always allowed by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.

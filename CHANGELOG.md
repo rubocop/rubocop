@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.40.0 (2022-12-08)
+
 ### New features
 
 * [#11179](https://github.com/rubocop/rubocop/pull/11179): Add `Style/ConstantBase` cop. ([@r7kamura][])

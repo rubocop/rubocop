@@ -444,6 +444,68 @@ Array(paths).each { |path| do_something(path) }
 
 * https://rubystyle.guide#array-coercion
 
+== Style/ArrayIntersect
+
+NOTE: Required Ruby version: 3.1
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.40
+| -
+|===
+
+In Ruby 3.1, `Array#intersect?` has been added.
+
+This cop identifies places where `(array1 & array2).any?`
+can be replaced by `array1.intersect?(array2)`.
+
+The `array1.intersect?(array2)` method is faster than
+`(array1 & array2).any?` and is more readable.
+
+=== Safety
+
+This cop cannot guarantee that array1 and array2 are
+actually arrays while method `intersect?` is for arrays only.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+(array1 & array2).any?
+(array1 & array2).empty?
+
+# good
+array1.intersect?(array2)
+!array1.intersect?(array2)
+----
+
+==== AllCops:ActiveSupportExtensionsEnabled: false (default)
+
+[source,ruby]
+----
+# good
+(array1 & array2).present?
+(array1 & array2).blank?
+----
+
+==== AllCops:ActiveSupportExtensionsEnabled: true
+
+[source,ruby]
+----
+# bad
+(array1 & array2).present?
+(array1 & array2).blank?
+
+# good
+array1.intersect?(array2)
+!array1.intersect?(array2)
+----
+
 == Style/ArrayJoin
 
 |===
@@ -10136,7 +10198,7 @@ rand(1...7)
 | No
 | Yes (Unsafe)
 | 1.4
-| 1.7
+| 1.40
 |===
 
 Checks for a redundant argument passed to certain methods.
@@ -10149,6 +10211,7 @@ Method names and their redundant arguments can be configured like this:
 ----
 Methods:
   join: ''
+  sum: 0
   split: ' '
   chomp: "\n"
   chomp!: "\n"
@@ -10173,6 +10236,7 @@ This cop is unsafe because of the following limitations:
 # bad
 array.join('')
 [1, 2, 3].join("")
+array.sum(0)
 string.split(" ")
 "first\nsecond".split(" ")
 string.chomp("\n")
@@ -10182,6 +10246,7 @@ A.foo(2)
 # good
 array.join
 [1, 2, 3].join
+array.sum
 string.split
 "first second".split
 string.chomp
@@ -10195,7 +10260,7 @@ A.foo
 | Name | Default value | Configurable values
 
 | Methods
-| `{"join"=>"", "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
+| `{"join"=>"", "sum"=>0, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
 | 
 |===
 
@@ -10437,6 +10502,56 @@ x == y ? false : true
 
 # good
 x != y
+----
+
+== Style/RedundantConstantBase
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.40
+| -
+|===
+
+Avoid redundant `::` prefix on constant.
+
+How Ruby searches constant is a bit complicated, and it can often be difficult to
+understand from the code whether the `::` is intended or not. Where `Module.nesting`
+is empty, there is no need to prepend `::`, so it would be nice to consistently
+avoid such meaningless `::` prefix to avoid confusion.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+::Const
+
+# good
+Const
+
+# bad
+class << self
+  ::Const
+end
+
+# good
+class << self
+  Const
+end
+
+# good
+class A
+  ::Const
+end
+
+# good
+module A
+  ::Const
+end
 ----
 
 == Style/RedundantEach
@@ -11489,6 +11604,57 @@ x =~ /home\//
 
 * https://rubystyle.guide#percent-r
 
+== Style/RequireOrder
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| Yes
+| Yes (Unsafe)
+| 1.40
+| -
+|===
+
+Sort `require` and `require_relative` in alphabetical order.
+
+=== Safety
+
+This cop's autocorrection is unsafe because it will obviously change the execution order.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+require 'b'
+require 'a'
+
+# good
+require 'a'
+require 'b'
+
+# bad
+require_relative 'b'
+require_relative 'a'
+
+# good
+require_relative 'a'
+require_relative 'b'
+
+# good (sorted within each section separated by a blank line)
+require 'a'
+require 'd'
+
+require 'b'
+require 'c'
+
+# good
+require 'b'
+require_relative 'c'
+require 'a'
+----
+
 == Style/RescueModifier
 
 |===
@@ -11768,6 +11934,11 @@ foo && foo.bar.baz
 foo && foo.bar(param1, param2)
 foo && foo.bar { |e| e.something }
 foo && foo.bar(param) { |e| e.something }
+
+foo ? foo.bar : nil
+foo.nil? ? nil : foo.bar
+!foo.nil? ? foo.bar : nil
+!foo ? nil : foo.bar
 
 # good
 foo&.bar
@@ -13248,14 +13419,14 @@ Checks symbol literal syntax.
 | No
 | Yes (Unsafe)
 | 0.26
-| 1.28
+| 1.40
 |===
 
 Use symbols as procs when possible.
 
 If you prefer a style that allows block for method with arguments,
 please set `true` to `AllowMethodsWithArguments`.
-respond_to , and `define_method?` methods are allowed by default.
+`define_method?` methods are allowed by default.
 These are customizable with `AllowedMethods` option.
 
 === Safety
@@ -13341,12 +13512,11 @@ something.do_something do |s| # some comment
 end
 ----
 
-==== AllowedMethods: [respond_to, define_method] (default)
+==== AllowedMethods: [define_method] (default)
 
 [source,ruby]
 ----
 # good
-respond_to { |foo| foo.bar }
 define_method(:foo) { |foo| foo.bar }
 ----
 
@@ -13376,7 +13546,7 @@ something.map { |s| s.upcase }
 | Boolean
 
 | AllowedMethods
-| `respond_to`, `define_method`
+| `define_method`
 | Array
 
 | AllowedPatterns

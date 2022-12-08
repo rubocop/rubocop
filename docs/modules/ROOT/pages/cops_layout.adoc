@@ -229,9 +229,9 @@ array = [1, 2, 3,
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.49
-| 0.77
+| 1.40
 |===
 
 Checks the indentation of the first line of the

@@ -22,7 +22,7 @@ in your `Gemfile`:
 
 [source,rb]
 ----
-gem 'rubocop', '~> 1.39', require: false
+gem 'rubocop', '~> 1.40', require: false
 ----
 
 .A Modular RuboCop
