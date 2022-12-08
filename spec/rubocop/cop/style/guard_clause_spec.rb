@@ -83,6 +83,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
 
   it_behaves_like('reports offense', 'work')
   it_behaves_like('reports offense', '# TODO')
+  it_behaves_like('reports offense', 'do_something(foo)')
 
   it 'does not report an offense if body is if..elsif..end' do
     expect_no_offenses(<<~RUBY)
@@ -289,6 +290,32 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     expect_correction(<<~RUBY)
       def func
         raise <<~MESSAGE unless condition
+            oops
+          MESSAGE
+      foo
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using xstr heredoc as an argument of raise in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        unless condition
+        ^^^^^^ Use a guard clause (`raise <<~`MESSAGE` unless condition`) instead of wrapping the code inside a conditional expression.
+          raise <<~`MESSAGE`
+            oops
+          MESSAGE
+        else
+          foo
+        end
+      end
+    RUBY
+
+    # NOTE: Let `Layout/HeredocIndentation`, `Layout/ClosingHeredocIndentation`, and
+    #       `Layout/IndentationConsistency` cops autocorrect inconsistent indentations.
+    expect_correction(<<~RUBY)
+      def func
+        raise <<~`MESSAGE` unless condition
             oops
           MESSAGE
       foo

@@ -187,7 +187,7 @@ module RuboCop
           if_branch = node.if_branch
           else_branch = node.else_branch
 
-          if if_branch&.send_type? && if_branch.last_argument&.heredoc?
+          if if_branch&.send_type? && heredoc?(if_branch.last_argument)
             autocorrect_heredoc_argument(corrector, node, if_branch, else_branch, guard)
           elsif else_branch&.send_type? && else_branch.last_argument&.heredoc?
             autocorrect_heredoc_argument(corrector, node, else_branch, if_branch, guard)
@@ -200,6 +200,12 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def heredoc?(argument)
+          return false if argument.nil?
+
+          argument.respond_to?(:heredoc?) && argument.heredoc?
+        end
 
         def autocorrect_heredoc_argument(corrector, node, heredoc_branch, leave_branch, guard)
           remove_whole_lines(corrector, leave_branch.source_range)
