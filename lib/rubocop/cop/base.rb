@@ -412,7 +412,7 @@ module RuboCop
         patterns = cop_config[parameter]
         return default_result unless patterns
 
-        patterns = OptimizedPatterns.from(patterns)
+        patterns = FilePatterns.from(patterns)
         patterns.match?(config.path_relative_to_config(file)) || patterns.match?(file)
       end
 
