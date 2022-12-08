@@ -102,4 +102,12 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
       RUBY
     end
   end
+
+  context 'when `require` is a method argument' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        do_something(require)
+      RUBY
+    end
+  end
 end
