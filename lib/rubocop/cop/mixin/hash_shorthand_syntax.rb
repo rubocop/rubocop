@@ -45,17 +45,21 @@ module RuboCop
 
       private
 
+      # rubocop:disable Metrics/AbcSize
       def register_offense(node, message, replacement)
         add_offense(node.value, message: message) do |corrector|
           if (def_node = def_node_that_require_parentheses(node))
             white_spaces = range_between(def_node.loc.selector.end_pos,
                                          def_node.first_argument.source_range.begin_pos)
             corrector.replace(white_spaces, '(')
-            corrector.insert_after(def_node.arguments.last, ')')
+
+            last_argument = def_node.arguments.last
+            corrector.insert_after(last_argument, ')') if node == last_argument.pairs.last
           end
           corrector.replace(node, replacement)
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
       def ignore_mixed_hash_shorthand_syntax?(hash_node)
         target_ruby_version <= 3.0 || enforced_shorthand_syntax != 'consistent' ||

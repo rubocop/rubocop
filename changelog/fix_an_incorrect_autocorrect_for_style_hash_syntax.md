@@ -1,0 +1,1 @@
+* [#11256](https://github.com/rubocop/rubocop/issues/11256): Fix an incorrect autocorrect for `Style/HashSyntax` when without parentheses call expr follows after multiple keyword arguments method call. ([@koic][])

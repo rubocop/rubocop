@@ -1091,6 +1091,21 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense when without parentheses call expr follows after multiple keyword arguments method call' do
+        # Add parentheses to prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
+        expect_offense(<<~RUBY)
+          foo baz: baz, qux: qux
+                             ^^^ Omit the hash value.
+                   ^^^ Omit the hash value.
+          baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo(baz:, qux:)
+          baz
+        RUBY
+      end
+
       it 'registers an offense when one line `if` condition follows (with parentheses)' do
         expect_offense(<<~RUBY)
           foo(value: value) if bar
