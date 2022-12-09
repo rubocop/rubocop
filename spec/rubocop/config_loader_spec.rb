@@ -384,6 +384,53 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits from multiple files using a glob' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path, <<~YAML)
+          inherit_from:
+            - packages/*/.rubocop_todo.yml
+
+          inherit_mode:
+            merge:
+              - Exclude
+
+          Style/For:
+            Exclude:
+              - spec/requests/group_invite_spec.rb
+        YAML
+
+        create_file('packages/package_one/.rubocop_todo.yml', <<~YAML)
+          Style/For:
+            Exclude:
+              - 'spec/models/group_spec.rb'
+        YAML
+
+        create_file('packages/package_two/.rubocop_todo.yml', <<~YAML)
+          Style/For:
+            Exclude:
+              - 'spec/models/expense_spec.rb'
+        YAML
+
+
+        create_file('packages/package_three/.rubocop_todo.yml', <<~YAML)
+          Style/For:
+            Exclude:
+              - 'spec/models/order_spec.rb'
+        YAML
+      end
+
+      it 'gets the Exclude merging the inherited one' do
+        expect(configuration_from_file['Style/For']['Exclude']).to match_array([
+          File.expand_path('packages/package_two/spec/models/expense_spec.rb'),
+          File.expand_path('packages/package_one/spec/models/group_spec.rb'),
+          File.expand_path('packages/package_three/spec/models/order_spec.rb'),
+          File.expand_path('spec/requests/group_invite_spec.rb'),
+        ])
+      end
+    end
+
     context 'when a file inherits and overrides a hash with nil' do
       let(:file_path) { '.rubocop.yml' }
 
