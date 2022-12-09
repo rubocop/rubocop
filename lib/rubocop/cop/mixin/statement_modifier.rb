@@ -56,7 +56,7 @@ module RuboCop
 
       def if_body_source(if_body)
         if if_body.call_type? &&
-           if_body.last_argument&.hash_type? && if_body.last_argument.pairs.last.value_omission?
+           if_body.last_argument&.hash_type? && if_body.last_argument.pairs.last&.value_omission?
           "#{method_source(if_body)}(#{if_body.arguments.map(&:source).join(', ')})"
         else
           if_body.source
