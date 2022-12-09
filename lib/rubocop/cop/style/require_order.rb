@@ -63,7 +63,7 @@ module RuboCop
 
         def find_previous_older_sibling(node)
           node.left_siblings.reverse.find do |sibling|
-            break unless sibling.send_type?
+            break unless sibling.respond_to?(:send_type?) && sibling.send_type?
             break unless sibling.method?(node.method_name)
             break unless in_same_section?(sibling, node)
 
