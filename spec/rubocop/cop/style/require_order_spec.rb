@@ -110,4 +110,35 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
       RUBY
     end
   end
+
+  context 'when `Bundler.require` is put between unsorted `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'e'
+        Bundler.require(:default)
+        require 'c'
+      RUBY
+    end
+  end
+
+  context 'when `Bundler.require` with no arguments is put between `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'c'
+        Bundler.require
+        require 'a'
+      RUBY
+    end
+  end
+
+  context 'when something other than a method call is used between `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'a'
+        begin
+        end
+        require 'b'
+      RUBY
+    end
+  end
 end

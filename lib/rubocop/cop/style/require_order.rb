@@ -44,6 +44,8 @@ module RuboCop
         RESTRICT_ON_SEND = %i[require require_relative].freeze
 
         def on_send(node)
+          return unless node.arguments?
+
           previous_older_sibling = find_previous_older_sibling(node)
           return unless previous_older_sibling
 
@@ -63,8 +65,8 @@ module RuboCop
 
         def find_previous_older_sibling(node)
           node.left_siblings.reverse.find do |sibling|
-            break unless sibling.respond_to?(:send_type?) && sibling.send_type?
-            break unless sibling.method?(node.method_name)
+            break unless sibling.send_type? && sibling.method?(node.method_name)
+            break unless sibling.arguments? && !sibling.receiver
             break unless in_same_section?(sibling, node)
 
             node.first_argument.source < sibling.first_argument.source
