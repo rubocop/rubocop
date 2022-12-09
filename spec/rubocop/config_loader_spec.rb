@@ -305,6 +305,51 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file extends a parent file' do
+      let(:file_path) { 'dir/.rubocop.yml' }
+
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - vendor/**
+              - !ruby/regexp /[A-Z]/
+          Style/StringLiterals:
+            Include:
+              - dir/**/*.rb
+        YAML
+
+        create_file(file_path, ['extends: ../.rubocop.yml'])
+      end
+
+      it 'gets an absolute AllCops/Exclude' do
+        excludes = configuration_from_file['AllCops']['Exclude']
+        expect(excludes).to eq([File.expand_path('vendor/**'), /[A-Z]/])
+      end
+
+      it 'gets an unchanged Include' do
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['dir/**/*.rb'])
+      end
+
+      it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
+        sub_file_path = 'vendor/.rubocop.yml'
+        create_file(sub_file_path, <<~YAML)
+          AllCops:
+            Exclude:
+              - 'foo'
+        YAML
+        # dup the class so that setting ignore_parent_exclusion doesn't
+        # interfere with other specs
+        config_loader = described_class.dup
+        config_loader.ignore_parent_exclusion = true
+
+        configuration = config_loader.configuration_from_file(sub_file_path)
+        excludes = configuration['AllCops']['Exclude']
+        expect(excludes).not_to include(File.expand_path('vendor/**'))
+        expect(excludes).to include(File.expand_path('vendor/foo'))
+      end
+    end
+
     context 'when a file inherits from an empty parent file' do
       let(:file_path) { 'dir/.rubocop.yml' }
 
@@ -312,6 +357,20 @@ RSpec.describe RuboCop::ConfigLoader do
         create_file('.rubocop.yml', [''])
 
         create_file(file_path, ['inherit_from: ../.rubocop.yml'])
+      end
+
+      it 'does not fail to load' do
+        expect { configuration_from_file }.not_to raise_error
+      end
+    end
+
+    context 'when a file extends an empty parent file' do
+      let(:file_path) { 'dir/.rubocop.yml' }
+
+      before do
+        create_file('.rubocop.yml', [''])
+
+        create_file(file_path, ['extends: ../.rubocop.yml'])
       end
 
       it 'does not fail to load' do
@@ -342,6 +401,32 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'gets an Include that is relative to the subdirectory' do
         expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['../src/**/*.rb'])
+      end
+    end
+
+    context 'when a file extends a sibling file' do
+      let(:file_path) { 'dir/.rubocop.yml' }
+
+      before do
+        create_file('src/.rubocop.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - vendor/**
+          Style/StringLiterals:
+            Include:
+              - '**/*.rb'
+        YAML
+
+        create_file(file_path, ['extends: ../src/.rubocop.yml'])
+      end
+
+      it 'gets an absolute AllCops/Exclude' do
+        excludes = configuration_from_file['AllCops']['Exclude']
+        expect(excludes).to eq([File.expand_path('src/vendor/**')])
+      end
+
+      it 'gets an unchanged Include' do
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['**/*.rb'])
       end
     end
 
@@ -1824,6 +1909,42 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'gets an Exclude relative to the inherited file converted to absolute' do
         expect(config.for_cop(RuboCop::Cop::Style::CharacterLiteral)['Exclude'])
           .to eq([File.join(Dir.pwd, 'test/blargh/blah.rb')])
+      end
+    end
+
+    context 'when .rubocop.yml extends a file with a name starting with .rubocop' do
+      before do
+        create_file('test/.rubocop_rules.yml', <<~YAML)
+          Style/CharacterLiteral:
+            Exclude:
+              - blargh/blah.rb
+        YAML
+        create_file('test/.rubocop.yml', "extends: '.rubocop_rules.yml'")
+      end
+
+      it 'gets an Exclude relative to the inherited file converted to absolute' do
+        expect(config.for_cop(RuboCop::Cop::Style::CharacterLiteral)['Exclude'])
+          .to eq([File.join(Dir.pwd, 'test/blargh/blah.rb')])
+      end
+    end
+
+    context 'when .rubocop.yml extends a parent .rubocop.yml file' do
+      before do
+        create_file('test/.rubocop.yml', <<~YAML)
+          extends: '../.rubocop.yml'
+
+
+        YAML
+        create_file('.rubocop.yml', <<~YML)
+          Style/CharacterLiteral:
+            Exclude:
+              - blargh/blah.rb
+        YML
+      end
+
+      it 'gets an Exclude relative to the inherited file converted to absolute' do
+        expect(config.for_cop(RuboCop::Cop::Style::CharacterLiteral)['Exclude'])
+          .to eq([File.join(Dir.pwd, 'blargh/blah.rb')])
       end
     end
   end

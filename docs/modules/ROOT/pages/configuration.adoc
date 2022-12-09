@@ -275,6 +275,42 @@ Style/For:
 
 In this example the `Exclude` would only include `bar.rb`.
 
+=== Extending a parent .rubocop.yml using extends
+
+The optional directive `extends` allows a child `.rubocop.yml` to specify
+that it changes a parent `.rubocop.yml` without affecting path-relativity rules.
+
+Given the following configs:
+
+[source,yaml]
+----
+# .rubocop.yml
+AllCops:
+  Exclude:
+    - 'generated/**/*.rb'
+
+Layout/LineLength:
+  Enabled: true
+  Include:
+    - 'child_directory/**/*.rb'
+
+Rails/HasAndBelongsToMany:
+  Enabled: false
+----
+
+[source,yaml]
+----
+# child_directory/.rubocop.yml
+extends: '../../.rubocop.yml'
+
+Rails/HasAndBelongsToMany:
+  Enabled: true
+----
+
+Using `extends: '../../.rubocop.yml` within the child `.rubocop.yml` file allows the path relativity of the parent `.rubocop.yml` to remain the same. That is, the `Include` for `Layout/LineLength` is still relative to `.rubocop.yml` rather than relative to `child_directory/.rubocop.yml`.
+
+Contrast this with `inherit_from: '../../.rubocop.yml`, which would make the `Include` for `Layout/LineLength` be `child_directory/child_directory/**/*.rb`, since paths would be made relative to `child_directory/.rubocop.yml`.
+
 == Pre-processing
 
 Configuration files are pre-processed using the ERB templating mechanism. This
