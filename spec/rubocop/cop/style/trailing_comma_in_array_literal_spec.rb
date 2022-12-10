@@ -269,7 +269,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
         RUBY
       end
 
-      it 'accepts a multiline array with items on a single line andtrailing comma' do
+      it 'accepts a multiline array with items on a single line and trailing comma' do
         expect_no_offenses(<<~RUBY)
           foo = [
             1, 2,

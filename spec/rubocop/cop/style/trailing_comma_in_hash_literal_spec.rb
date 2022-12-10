@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
         RUBY
       end
 
-      it 'accepts a multiline hash with pairs on a single line andtrailing comma' do
+      it 'accepts a multiline hash with pairs on a single line and trailing comma' do
         expect_no_offenses(<<~RUBY)
           bar = {
             a: 1001, b: 2020,
