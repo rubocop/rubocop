@@ -28,6 +28,9 @@ module RuboCop
 
         @enrollment_queue = cops
         @options = options
+
+        @enabled_cache = {}.compare_by_identity
+        @disabled_cache = {}.compare_by_identity
       end
 
       def enlist(cop)
@@ -47,21 +50,21 @@ module RuboCop
       # @return [Registry] Cops for that specific department.
       def with_department(department)
         clear_enrollment_queue
-        with(@departments.fetch(department, []))
+        with(@departments.fetch(department.to_s, []))
       end
 
       # @return [Registry] Cops not for a specific department.
       def without_department(department)
         clear_enrollment_queue
         without_department = @departments.dup
-        without_department.delete(department)
+        without_department.delete(department.to_s)
 
         with(without_department.values.flatten)
       end
 
       # @return [Boolean] Checks if given name is department
       def department?(name)
-        departments.include? name.to_sym
+        departments.include?(name.to_s)
       end
 
       def contains_cop_matching?(names)
@@ -150,11 +153,11 @@ module RuboCop
       end
 
       def enabled(config)
-        select { |cop| enabled?(cop, config) }
+        @enabled_cache[config] ||= select { |cop| enabled?(cop, config) }
       end
 
       def disabled(config)
-        reject { |cop| enabled?(cop, config) }
+        @disabled_cache[config] ||= reject { |cop| enabled?(cop, config) }
       end
 
       def enabled?(cop, config)
@@ -183,7 +186,7 @@ module RuboCop
       end
 
       def cops_for_department(department)
-        cops.select { |cop| cop.department == department.to_sym }
+        cops.select { |cop| cop.department == department }
       end
 
       def names_for_department(department)
@@ -236,7 +239,7 @@ module RuboCop
       end
 
       def self.all
-        global.without_department(:Test).cops
+        global.without_department('Test').cops
       end
 
       def self.qualified_cop_name(name, origin)

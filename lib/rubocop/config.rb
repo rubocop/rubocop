@@ -124,7 +124,7 @@ module RuboCop
     # Note: the 'Enabled' attribute is same as that returned by `for_cop`
     def for_badge(badge)
       cop_config = for_cop(badge.to_s)
-      fetch(badge.department.to_s) { return cop_config }.merge(cop_config)
+      fetch(badge.department) { return cop_config }.merge(cop_config)
     end
 
     # @return [Config] for the given department name.

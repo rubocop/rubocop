@@ -3,23 +3,29 @@
 module RuboCop
   # Common methods and behaviors for dealing with paths.
   module PathUtil
+    class << self
+      attr_accessor :relative_paths_cache
+    end
+    self.relative_paths_cache = Hash.new { |hash, key| hash[key] = {} }
+
     module_function
 
     def relative_path(path, base_dir = Dir.pwd)
-      # Optimization for the common case where path begins with the base
-      # dir. Just cut off the first part.
-      if path.start_with?(base_dir)
-        base_dir_length = base_dir.length
-        result_length = path.length - base_dir_length - 1
-        return path[base_dir_length + 1, result_length]
-      end
-
-      path_name = Pathname.new(File.expand_path(path))
-      begin
-        path_name.relative_path_from(Pathname.new(base_dir)).to_s
-      rescue ArgumentError
-        path
-      end
+      PathUtil.relative_paths_cache[base_dir][path] ||=
+        # Optimization for the common case where path begins with the base
+        # dir. Just cut off the first part.
+        if path.start_with?(base_dir)
+          base_dir_length = base_dir.length
+          result_length = path.length - base_dir_length - 1
+          path[base_dir_length + 1, result_length]
+        else
+          path_name = Pathname.new(File.expand_path(path))
+          begin
+            path_name.relative_path_from(Pathname.new(base_dir)).to_s
+          rescue ArgumentError
+            path
+          end
+        end
     end
 
     def smart_path(path)

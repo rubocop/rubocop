@@ -42,7 +42,7 @@ module RuboCop
         MSG = 'Unnecessary enabling of %<cop>s.'
 
         def on_new_investigation
-          return if processed_source.blank?
+          return if processed_source.blank? || !processed_source.raw_source.include?('enable')
 
           offenses = processed_source.comment_config.extra_enabled_comments
           offenses.each { |comment, cop_names| register_offense(comment, cop_names) }
