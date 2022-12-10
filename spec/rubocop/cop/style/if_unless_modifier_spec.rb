@@ -213,6 +213,21 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         RUBY
       end
     end
+
+    context 'and has a method call with kwargs splat' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          if condition
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            do_this(**options)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_this(**options) if condition
+        RUBY
+      end
+    end
   end
 
   context 'modifier if that does not fit on one line, but is not the only statement on the line' do
