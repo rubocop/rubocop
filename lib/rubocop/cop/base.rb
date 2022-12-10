@@ -179,7 +179,7 @@ module RuboCop
       end
 
       def self.lint?
-        department == :Lint
+        department == 'Lint'
       end
 
       # Returns true if the cop name or the cop namespace matches any of the
@@ -187,7 +187,7 @@ module RuboCop
       def self.match?(given_names)
         return false unless given_names
 
-        given_names.include?(cop_name) || given_names.include?(department.to_s)
+        given_names.include?(cop_name) || given_names.include?(department)
       end
 
       def cop_name
@@ -292,7 +292,7 @@ module RuboCop
       end
 
       def apply_correction(corrector)
-        @current_corrector&.merge!(corrector) if corrector
+        current_corrector&.merge!(corrector) if corrector
       end
 
       ### Reserved for Commissioner:
@@ -305,6 +305,10 @@ module RuboCop
         @currently_disabled_lines ||= Set.new
       end
 
+      def current_corrector
+        @current_corrector ||= Corrector.new(@processed_source) if @processed_source.valid_syntax?
+      end
+
       private_class_method def self.restrict_on_send
         @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
       end
@@ -315,7 +319,7 @@ module RuboCop
         @current_offense_locations = nil
         @currently_disabled_lines = nil
         @processed_source = processed_source
-        @current_corrector = Corrector.new(@processed_source) if @processed_source.valid_syntax?
+        @current_corrector = nil
       end
 
       # Called to complete an investigation

@@ -18,19 +18,22 @@ module RuboCop
         new(name_deep_enough ? parts[2..] : parts.last(2))
       end
 
+      @parse_cache = {}
+
       def self.parse(identifier)
-        new(identifier.split('/').map { |i| camel_case(i) })
+        @parse_cache[identifier] ||= new(identifier.split('/').map! { |i| camel_case(i) })
       end
 
       def self.camel_case(name_part)
         return 'RSpec' if name_part == 'rspec'
+        return name_part unless name_part.match?(/^[a-z]|_[a-z]/)
 
-        name_part.gsub(/^\w|_\w/) { |match| match[-1, 1].upcase }
+        name_part.gsub(/^[a-z]|_[a-z]/) { |match| match[-1, 1].upcase }
       end
 
       def initialize(class_name_parts)
         department_parts = class_name_parts[0...-1]
-        @department = (department_parts.join('/').to_sym unless department_parts.empty?)
+        @department = (department_parts.join('/') unless department_parts.empty?)
         @cop_name = class_name_parts.last
       end
 
@@ -40,7 +43,8 @@ module RuboCop
       alias eql? ==
 
       def hash
-        [department, cop_name].hash
+        # Do hashing manually to reduce Array allocations.
+        department.hash ^ cop_name.hash # rubocop:disable Security/CompoundHash
       end
 
       def match?(other)

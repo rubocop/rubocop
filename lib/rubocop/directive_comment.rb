@@ -35,7 +35,7 @@ module RuboCop
 
     # Checks if this directive relates to single line
     def single_line?
-      !self.class.before_comment(comment.text).empty?
+      !comment.text.start_with?(DIRECTIVE_COMMENT_REGEXP)
     end
 
     # Checks if this directive contains all the given cop names
