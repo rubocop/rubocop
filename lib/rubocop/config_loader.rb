@@ -137,6 +137,14 @@ module RuboCop
         end
       end
 
+      def inject_defaults!(project_root)
+        path = File.join(project_root, 'config', 'default.yml')
+        config = load_file(path)
+        new_config = ConfigLoader.merge_with_default(config, path)
+        puts "configuration from #{path}" if debug?
+        @default_configuration = new_config
+      end
+
       # Returns the path RuboCop inferred as the root of the project. No file
       # searches will go past this directory.
       # @deprecated Use `RuboCop::ConfigFinder.project_root` instead.
