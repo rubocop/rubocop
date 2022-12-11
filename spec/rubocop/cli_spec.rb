@@ -1231,7 +1231,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Enabled: false
       YAML
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(2)
-      expect($stderr.string).to include('Error: configuration for Syntax cop found')
+      expect($stderr.string).to include('Error: configuration for Lint/Syntax cop found')
       expect($stderr.string).to include('It\'s not possible to disable this cop.')
     end
 
@@ -1951,7 +1951,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'is an invalid configuration' do
         expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(2)
         expect($stderr.string)
-          .to include('Error: configuration for Syntax cop found in .rubocop.yml')
+          .to include('Error: configuration for Lint/Syntax cop found in .rubocop.yml')
       end
     end
   end

@@ -162,7 +162,7 @@ module RuboCop
       return unless syntax_config && default_config.merge(syntax_config) != default_config
 
       raise ValidationError,
-            "configuration for Syntax cop found in #{smart_loaded_path}\n" \
+            "configuration for Lint/Syntax cop found in #{smart_loaded_path}\n" \
             'It\'s not possible to disable this cop.'
     end
 

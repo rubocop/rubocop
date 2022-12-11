@@ -410,7 +410,7 @@ RSpec.describe RuboCop::Config do
           expect { configuration.validate }
             .to raise_error(
               RuboCop::ValidationError,
-              /configuration for Syntax cop found/
+              %r{configuration for Lint/Syntax cop found}
             )
         end
       end
