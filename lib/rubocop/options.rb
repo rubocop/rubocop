@@ -465,7 +465,7 @@ module RuboCop
 
   # This module contains help texts for command line options.
   # @api private
-  module OptionsHelp # rubocop:disable Metrics/ModuleLength
+  module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
 
