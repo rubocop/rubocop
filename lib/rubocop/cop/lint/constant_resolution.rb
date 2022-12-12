@@ -16,6 +16,10 @@ module RuboCop
       # using the same name a namespace and a class. To avoid too many unnecessary
       # offenses, Enable this cop with `Only: [The, Constant, Names, Causing, Issues]`
       #
+      # NOTE: `Style/RedundantConstantBase` cop is disabled if this cop is enabled to prevent
+      # conflicting rules. Because it respects user configurations that want to enable
+      # this cop which is disabled by default.
+      #
       # @example
       #   # By default checks every constant
       #

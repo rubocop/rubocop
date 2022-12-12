@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
+  let(:other_cops) { { 'Lint/ConstantResolution' => { 'Enabled' => false } } }
+
   context 'with prefixed constant in class' do
     it 'registers no offense' do
       expect_no_offenses(<<~RUBY)
@@ -93,6 +95,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
           ::A
         end
       RUBY
+    end
+  end
+
+  context 'when `Lint/ConstantResolution` is disabling' do
+    let(:other_cops) { { 'Lint/ConstantResolution' => { 'Enabled' => true } } }
+
+    context 'with prefixed constant in neither class nor module' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          ::Bar
+        RUBY
+      end
     end
   end
 end

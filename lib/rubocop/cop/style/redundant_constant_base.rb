@@ -10,6 +10,10 @@ module RuboCop
       # is empty, there is no need to prepend `::`, so it would be nice to consistently
       # avoid such meaningless `::` prefix to avoid confusion.
       #
+      # NOTE: This cop is disabled if `Lint/ConstantResolution` cop is enabled to prevent
+      # conflicting rules. Because it respects user configurations that want to enable
+      # `Lint/ConstantResolution` cop which is disabled by default.
+      #
       # @example
       #   # bad
       #   ::Const
@@ -42,6 +46,7 @@ module RuboCop
         MSG = 'Remove redundant `::`.'
 
         def on_cbase(node)
+          return if lint_constant_resolution_cop_enabled?
           return unless bad?(node)
 
           add_offense(node) do |corrector|
@@ -50,6 +55,14 @@ module RuboCop
         end
 
         private
+
+        def lint_constant_resolution_cop_enabled?
+          lint_constant_resolution_config.fetch('Enabled', false)
+        end
+
+        def lint_constant_resolution_config
+          config.for_cop('Lint/ConstantResolution')
+        end
 
         def bad?(node)
           module_nesting_ancestors_of(node).none?
