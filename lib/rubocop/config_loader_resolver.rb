@@ -206,13 +206,7 @@ module RuboCop
     end
 
     def base_configs(path, inherit_from, file)
-      inherit_froms = Array(inherit_from).compact.flat_map do |f|
-        if f.match?(/[*{\[?]/)
-          Dir.glob(f)
-        else
-          f
-        end
-      end
+      inherit_froms = Dir.glob(Array(inherit_from).compact)
 
       configs = inherit_froms.map do |f|
         ConfigLoader.load_file(inherited_file(path, f, file))
