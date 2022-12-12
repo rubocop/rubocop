@@ -207,7 +207,7 @@ module RuboCop
 
     def base_configs(path, inherit_from, file)
       inherit_froms = Array(inherit_from).compact.flat_map do |f|
-        PathUtils.glob?(f) ? Dir.glob(f) : f
+        PathUtil.glob?(f) ? Dir.glob(f) : f
       end
 
       configs = inherit_froms.map do |f|
