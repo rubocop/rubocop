@@ -206,7 +206,9 @@ module RuboCop
     end
 
     def base_configs(path, inherit_from, file)
-      inherit_froms = Dir.glob(Array(inherit_from).compact)
+      inherit_froms = Array(inherit_from).compact.flat_map do |f|
+        PathUtils.glob?(f) ? Dir.glob(f) : f
+      end
 
       configs = inherit_froms.map do |f|
         ConfigLoader.load_file(inherited_file(path, f, file))

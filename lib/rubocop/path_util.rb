@@ -40,7 +40,7 @@ module RuboCop
         matches =
           if pattern == path
             true
-          elsif pattern.match?(/[*{\[?]/)
+          elsif glob?(pattern)
             File.fnmatch?(pattern, path, File::FNM_PATHNAME | File::FNM_EXTGLOB)
           end
 
@@ -60,6 +60,11 @@ module RuboCop
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)
       %r{\A([A-Z]:)?/}i.match?(path)
+    end
+
+    # Returns true for a glob
+    def glob?(path)
+      path.match?(/[*{\[?]/)
     end
 
     def hidden_file_in_not_hidden_dir?(pattern, path)
