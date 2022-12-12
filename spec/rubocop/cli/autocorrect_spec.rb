@@ -2705,4 +2705,48 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       (foo) ? bar : baz
     RUBY
   end
+
+  it 'respects `Lint/ConstantResolution` over `Style/RedundantConstantBase` when enabling`Lint/ConstantResolution`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      ::RSpec.configure do |config|
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Lint/ConstantResolution:
+        Enabled: true
+    YAML
+
+    status = cli.run(
+      %w[--autocorrect-all --only Lint/ConstantResolution,Style/RedundantConstantBase]
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      ::RSpec.configure do |config|
+      end
+    RUBY
+  end
+
+  it 'respects `Style/RedundantConstantBase` over `Lint/ConstantResolution` when disabling`Lint/ConstantResolution`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      ::RSpec.configure do |config|
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Lint/ConstantResolution:
+        Enabled: false
+    YAML
+
+    status = cli.run(
+      %w[--autocorrect-all --only Lint/ConstantResolution,Style/RedundantConstantBase]
+    )
+    expect(status).to eq(1)
+    expect(source_file.read).to eq(<<~RUBY)
+      RSpec.configure do |config|
+      end
+    RUBY
+  end
 end
