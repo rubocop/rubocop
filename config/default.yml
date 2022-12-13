@@ -3426,6 +3426,11 @@ Style/CommentedKeyword:
   VersionAdded: '0.51'
   VersionChanged: '1.19'
 
+Style/ConcatArrayLiterals:
+  Description: 'Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/ConditionalAssignment:
   Description: >-
                  Use the return value of `if` and `case` statements for
