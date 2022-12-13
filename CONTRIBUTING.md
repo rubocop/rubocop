@@ -71,6 +71,15 @@ We also run [codespell](https://github.com/codespell-project/codespell) with Git
 $ codespell --ignore-words=codespell.txt
 ```
 
+### Linting YAML files
+
+We are running [yamllint](https://github.com/adrienverge/yamllint) for linting YAML files. This is also run by [GitHub Actions](https://github.com/rubocop/rubocop/blob/master/.github/workflows/linting.yml).
+`yamllint` is written in [Python](https://www.python.org/) and you can run it with:
+
+```console
+$ yamllint .
+```
+
 ### Creating changelog entries
 
 Changelog entries are just files under the `changelog/` folder that will be merged
