@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
     context 'with SIGINT' do
       it 'returns false' do
-        skip unless Process.respond_to?(:fork)
+        skip '`Process` does not respond to `fork` method.' unless Process.respond_to?(:fork)
 
         # Make sure the runner works slowly and thus is interruptible
         allow(runner).to receive(:process_file) do

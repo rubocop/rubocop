@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :config do
+RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
   let(:config) do
     RuboCop::Config.new('Style/ConditionalAssignment' => {
                           'Enabled' => true,
