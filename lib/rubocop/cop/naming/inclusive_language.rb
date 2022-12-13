@@ -207,7 +207,10 @@ module RuboCop
         end
 
         def scan_for_words(input)
-          mask_input(input).enum_for(:scan, @flagged_terms_regex).map do
+          masked_input = mask_input(input)
+          return [] unless masked_input.match?(@flagged_terms_regex)
+
+          masked_input.enum_for(:scan, @flagged_terms_regex).map do
             match = Regexp.last_match
             WordLocation.new(match.to_s, match.offset(0).first)
           end

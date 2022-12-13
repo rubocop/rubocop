@@ -55,7 +55,10 @@ module RuboCop
         private
 
         def check_token_set(index)
-          predecessor, operator, successor = processed_source.tokens[index, 3]
+          tokens = processed_source.tokens
+          predecessor = tokens[index]
+          operator = tokens[index + 1]
+          successor = tokens[index + 2]
 
           return unless eligible_token_set?(predecessor, operator, successor)
 

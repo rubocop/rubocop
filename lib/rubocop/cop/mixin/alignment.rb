@@ -28,7 +28,7 @@ module RuboCop
 
         each_bad_alignment(items, base_column) do |current|
           expr = current.source_range
-          if @current_offenses.any? { |o| within?(expr, o.location) }
+          if @current_offenses&.any? { |o| within?(expr, o.location) }
             # If this offense is within a line range that is already being
             # realigned by autocorrect, we report the offense without
             # autocorrecting it. Two rewrites in the same area by the same

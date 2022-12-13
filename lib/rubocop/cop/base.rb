@@ -107,8 +107,7 @@ module RuboCop
       def add_global_offense(message = nil, severity: nil)
         severity = find_severity(nil, severity)
         message = find_message(nil, message)
-        @current_offenses <<
-          Offense.new(severity, Offense::NO_LOCATION, message, name, :unsupported)
+        current_offenses << Offense.new(severity, Offense::NO_LOCATION, message, name, :unsupported)
       end
 
       # Adds an offense on the specified range (or node with an expression)
@@ -126,7 +125,7 @@ module RuboCop
 
         status, corrector = enabled_line?(range.line) ? correct(range, &block) : :disabled
 
-        @current_offenses << Offense.new(severity, range, message, name, status, corrector)
+        current_offenses << Offense.new(severity, range, message, name, status, corrector)
       end
 
       # This method should be overridden when a cop's behavior depends
@@ -309,22 +308,33 @@ module RuboCop
         @current_corrector ||= Corrector.new(@processed_source) if @processed_source.valid_syntax?
       end
 
+      def current_offenses
+        @current_offenses ||= []
+      end
+
       private_class_method def self.restrict_on_send
         @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
       end
 
       # Called before any investigation
       def begin_investigation(processed_source)
-        @current_offenses = []
+        @current_offenses = nil
         @current_offense_locations = nil
         @currently_disabled_lines = nil
         @processed_source = processed_source
         @current_corrector = nil
       end
 
+      # rubocop:disable Layout/ClassStructure
+      EMPTY_OFFENSES = [].freeze
+      private_constant :EMPTY_OFFENSES
+      # rubocop:enable Layout/ClassStructure
+
       # Called to complete an investigation
       def complete_investigation
-        InvestigationReport.new(self, processed_source, @current_offenses, @current_corrector)
+        InvestigationReport.new(
+          self, processed_source, @current_offenses || EMPTY_OFFENSES, @current_corrector
+        )
       ensure
         reset_investigation
       end

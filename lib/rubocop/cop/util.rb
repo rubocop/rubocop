@@ -152,8 +152,11 @@ module RuboCop
         ' ' * (node.loc.column + offset)
       end
 
+      @to_supported_styles_cache = {}
+
       def to_supported_styles(enforced_style)
-        enforced_style.sub(/^Enforced/, 'Supported').sub('Style', 'Styles')
+        @to_supported_styles_cache[enforced_style] ||=
+          enforced_style.sub(/^Enforced/, 'Supported').sub('Style', 'Styles')
       end
 
       private

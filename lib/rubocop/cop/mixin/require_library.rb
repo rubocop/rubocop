@@ -7,6 +7,8 @@ module RuboCop
     module RequireLibrary
       extend NodePattern::Macros
 
+      RESTRICT_ON_SEND = [:require].freeze
+
       def ensure_required(corrector, node, library_name)
         node = node.parent while node.parent&.parent?
 

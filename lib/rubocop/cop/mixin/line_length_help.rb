@@ -57,7 +57,14 @@ module RuboCop
       def indentation_difference(line)
         return 0 unless tab_indentation_width
 
-        (line.index(/[^\t]/) || 0) * (tab_indentation_width - 1)
+        index =
+          if line.start_with?(/[^\t]/)
+            0
+          else
+            line.index(/[^\t]/) || 0
+          end
+
+        index * (tab_indentation_width - 1)
       end
 
       def extend_uri_end_position(line, end_position)

@@ -31,7 +31,10 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
+        # rubocop:disable Metrics/AbcSize
         def on_new_investigation
+          return unless processed_source.raw_source.include?('\\')
+
           last_line = last_line(processed_source)
 
           @ignored_ranges = string_literal_ranges(processed_source.ast) +
@@ -44,6 +47,7 @@ module RuboCop
             investigate(line, line_number)
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
