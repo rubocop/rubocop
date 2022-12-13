@@ -82,7 +82,8 @@ module RuboCop
         @cops.each { |cop| cop.send :begin_investigation, processed_source }
         if processed_source.valid_syntax?
           invoke(:on_new_investigation, @cops)
-          invoke(:investigate, @forces, processed_source)
+          invoke_with_argument(:investigate, @forces, processed_source)
+
           walk(processed_source.ast) unless @cops.empty?
           invoke(:on_investigation_end, @cops)
         else
@@ -149,8 +150,12 @@ module RuboCop
         map
       end
 
-      def invoke(callback, cops, *args)
-        cops.each { |cop| with_cop_error_handling(cop) { cop.send(callback, *args) } }
+      def invoke(callback, cops)
+        cops.each { |cop| with_cop_error_handling(cop) { cop.send(callback) } }
+      end
+
+      def invoke_with_argument(callback, cops, arg)
+        cops.each { |cop| with_cop_error_handling(cop) { cop.send(callback, arg) } }
       end
 
       # Allow blind rescues here, since we're absorbing and packaging or

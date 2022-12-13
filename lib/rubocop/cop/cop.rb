@@ -97,7 +97,7 @@ module RuboCop
 
       def begin_investigation(processed_source)
         super
-        @offenses = @current_offenses
+        @offenses = current_offenses
         @last_corrector = @current_corrector
       end
 

@@ -84,8 +84,6 @@ module RuboCop
       #   end
       #
       class DuplicateBranch < Base
-        include RescueNode
-
         MSG = 'Duplicate branch body detected.'
 
         def on_branching_statement(node)

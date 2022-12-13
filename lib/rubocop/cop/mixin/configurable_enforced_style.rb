@@ -20,19 +20,30 @@ module RuboCop
         style_detected(possibilities)
       end
 
+      SYMBOL_TO_STRING_CACHE = Hash.new do |hash, key|
+        hash[key] = key.to_s if key.is_a?(Symbol)
+      end
+      private_constant :SYMBOL_TO_STRING_CACHE
+
+      # rubocop:disable Metrics
       def style_detected(detected)
         return if no_acceptable_style?
 
-        # `detected` can be a single style or an Array of possible styles
-        # (if there is more than one which matches the observed code)
-        detected_as_strings = Array(detected).map(&:to_s)
+        # This logic is more complex than it needs to be
+        # to avoid allocating Arrays in the hot code path.
+        updated_list =
+          if detected_style
+            if detected_style.size == 1 && detected_style.include?(SYMBOL_TO_STRING_CACHE[detected])
+              detected_style
+            else
+              detected_as_strings = SYMBOL_TO_STRING_CACHE.values_at(*detected)
+              detected_style & detected_as_strings
+            end
+          else
+            # We haven't observed any specific style yet.
+            SYMBOL_TO_STRING_CACHE.values_at(*detected)
+          end
 
-        updated_list = if detected_style
-                         detected_style & detected_as_strings
-                       else
-                         # We haven't observed any specific style yet.
-                         detected_as_strings
-                       end
         if updated_list.empty?
           no_acceptable_style!
         else
@@ -40,6 +51,7 @@ module RuboCop
           config_to_allow_offenses[style_parameter_name] = updated_list.first
         end
       end
+      # rubocop:enable Metrics
 
       def no_acceptable_style?
         config_to_allow_offenses['Enabled'] == false

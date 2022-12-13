@@ -96,8 +96,10 @@ module RuboCop
         end
 
         def debugger_method?(send_node)
+          method_name = send_node.method_name
+
           debugger_methods.any? do |method|
-            next unless method[:method_name] == send_node.method_name
+            next unless method[:method_name] == method_name
 
             if method[:receiver].nil?
               send_node.receiver.nil?
