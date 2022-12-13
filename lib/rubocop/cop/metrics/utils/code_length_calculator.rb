@@ -58,8 +58,8 @@ module RuboCop
           end
 
           def normalize_foldable_types(types)
-            types.concat(%i[str dstr]) if types.delete(:heredoc)
-            types.concat(%i[send csend]) if types.delete(:method_call)
+            types.push(:str, :dstr) if types.delete(:heredoc)
+            types.push(:send, :csend) if types.delete(:method_call)
             types
           end
 
