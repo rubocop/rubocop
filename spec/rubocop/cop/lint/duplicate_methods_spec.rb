@@ -585,6 +585,98 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'does not register an offense when there are same `alias_method` name outside `ensure` scope' do
+    expect_no_offenses(<<~RUBY)
+      module FooTest
+        def make_save_always_fail
+          Foo.class_eval do
+            def failed_save
+              raise
+            end
+            alias_method :original_save, :save
+            alias_method :save, :failed_save
+          end
+
+          yield
+        ensure
+          Foo.class_eval do
+            alias_method :save, :original_save
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when there are duplicate `alias_method` name inside `ensure` scope' do
+    expect_offense(<<~RUBY, 'test.rb')
+      module FooTest
+        def make_save_always_fail
+          Foo.class_eval do
+            def failed_save
+              raise
+            end
+            alias_method :original_save, :save
+            alias_method :save, :failed_save
+          end
+
+          yield
+        ensure
+          Foo.class_eval do
+            alias_method :save, :original_save
+            alias_method :save, :original_save
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `FooTest::Foo#save` is defined at both test.rb:14 and test.rb:15.
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when there are same `alias_method` name outside `rescue` scope' do
+    expect_no_offenses(<<~RUBY)
+      module FooTest
+        def make_save_always_fail
+          Foo.class_eval do
+            def failed_save
+              raise
+            end
+            alias_method :original_save, :save
+            alias_method :save, :failed_save
+          end
+
+          yield
+        rescue
+          Foo.class_eval do
+            alias_method :save, :original_save
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when there are duplicate `alias_method` name inside `rescue` scope' do
+    expect_offense(<<~RUBY, 'test.rb')
+      module FooTest
+        def make_save_always_fail
+          Foo.class_eval do
+            def failed_save
+              raise
+            end
+            alias_method :original_save, :save
+            alias_method :save, :failed_save
+          end
+
+          yield
+        rescue
+          Foo.class_eval do
+            alias_method :save, :original_save
+            alias_method :save, :original_save
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `FooTest::Foo#save` is defined at both test.rb:14 and test.rb:15.
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'does not register for the same method in different scopes within `class << self`' do
     expect_no_offenses(<<~RUBY, 'test.rb')
       class A

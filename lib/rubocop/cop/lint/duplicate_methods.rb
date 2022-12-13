@@ -57,6 +57,7 @@ module RuboCop
         def initialize(config = nil, options = nil)
           super
           @definitions = {}
+          @scopes = Hash.new { |hash, key| hash[key] = [] }
         end
 
         def on_def(node)
@@ -157,16 +158,18 @@ module RuboCop
 
         def found_method(node, method_name)
           key = method_key(node, method_name)
+          scope = node.each_ancestor(:rescue, :ensure).first&.type
 
           if @definitions.key?(key)
-            loc = if DEF_TYPES.include?(node.type)
-                    node.loc.keyword.join(node.loc.name)
-                  else
-                    node.loc.expression
-                  end
+            if scope && !@scopes[scope].include?(key)
+              @definitions[key] = node
+              @scopes[scope] << key
+              return
+            end
+
             message = message_for_dup(node, method_name, key)
 
-            add_offense(loc, message: message)
+            add_offense(location(node), message: message)
           else
             @definitions[key] = node
           end
@@ -177,6 +180,14 @@ module RuboCop
             "#{ancestor_def.method_name}.#{method_name}"
           else
             method_name
+          end
+        end
+
+        def location(node)
+          if DEF_TYPES.include?(node.type)
+            node.loc.keyword.join(node.loc.name)
+          else
+            node.loc.expression
           end
         end
 
