@@ -28,7 +28,7 @@ module RuboCop
       # * always - forces use of the 3.1 syntax (e.g. {foo:})
       # * never - forces use of explicit hash literal value
       # * either - accepts both shorthand and explicit use of hash literal value
-      # * consistent - like "either", but will avoid mixing styles in a single hash
+      # * consistent - forces use of the 3.1 syntax only if all values can be omitted in the hash
       #
       # @example EnforcedStyle: ruby19 (default)
       #   # bad
@@ -92,16 +92,19 @@ module RuboCop
       #
       # @example EnforcedShorthandSyntax: consistent
       #
-      #   # bad
-      #   {foo: , bar: bar}
+      #   # bad - `foo` and `bar` values can be omitted
+      #   {foo: foo, bar: bar}
+      #
+      #   # bad - `bar` value can be omitted
+      #   {foo:, bar: bar}
+      #
+      #   # bad - mixed syntaxes
+      #   {foo:, bar: baz}
       #
       #   # good
       #   {foo:, bar:}
       #
-      #   # bad
-      #   {foo: , bar: baz}
-      #
-      #   # good
+      #   # good - can't omit `baz`
       #   {foo: foo, bar: baz}
       #
       class HashSyntax < Base

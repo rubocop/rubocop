@@ -3901,7 +3901,7 @@ Style/HashSyntax:
     - never
     # accepts both shorthand and explicit use of hash literal value.
     - either
-    # like "either", but will avoid mixing styles in a single hash
+    # forces use of the 3.1 syntax only if all values can be omitted in the hash.
     - consistent
   # Force hashes that have a symbol value to use hash rockets
   UseHashRocketsWithSymbolValues: false
