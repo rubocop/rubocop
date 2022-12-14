@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Registry do
   end
 
   it 'exposes cop departments' do
-    expect(registry.departments).to eql(%w[Lint Layout Metrics RSpec Test])
+    expect(registry.departments).to eql(%i[Lint Layout Metrics RSpec Test])
   end
 
   it 'can filter down to one type' do

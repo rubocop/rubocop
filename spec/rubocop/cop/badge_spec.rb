@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Badge do
   subject(:badge) { described_class.new(%w[Test ModuleMustBeAClassCop]) }
 
   it 'exposes department name' do
-    expect(badge.department).to eq('Test')
+    expect(badge.department).to be(:Test)
   end
 
   it 'exposes cop name' do
@@ -23,9 +23,9 @@ RSpec.describe RuboCop::Cop::Badge do
     end
 
     include_examples 'assignment of department and name', %w[Foo], nil, 'Foo'
-    include_examples 'assignment of department and name', %w[Foo Bar], 'Foo', 'Bar'
-    include_examples 'assignment of department and name', %w[Foo Bar Baz], 'Foo/Bar', 'Baz'
-    include_examples 'assignment of department and name', %w[Foo Bar Baz Qux], 'Foo/Bar/Baz', 'Qux'
+    include_examples 'assignment of department and name', %w[Foo Bar], :Foo, 'Bar'
+    include_examples 'assignment of department and name', %w[Foo Bar Baz], :'Foo/Bar', 'Baz'
+    include_examples 'assignment of department and name', %w[Foo Bar Baz Qux], :'Foo/Bar/Baz', 'Qux'
   end
 
   describe '.parse' do

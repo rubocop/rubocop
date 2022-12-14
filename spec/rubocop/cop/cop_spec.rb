@@ -213,21 +213,21 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
   context 'with no submodule' do
     it('has right name') { expect(cop_class.cop_name).to eq('Cop/Cop') }
-    it('has right department') { expect(cop_class.department).to eq('Cop') }
+    it('has right department') { expect(cop_class.department).to eq(:Cop) }
   end
 
   context 'with style cops' do
     let(:cop_class) { RuboCop::Cop::Style::For }
 
     it('has right name') { expect(cop_class.cop_name).to eq('Style/For') }
-    it('has right department') { expect(cop_class.department).to eq('Style') }
+    it('has right department') { expect(cop_class.department).to eq(:Style) }
   end
 
   context 'with lint cops' do
     let(:cop_class) { RuboCop::Cop::Lint::Loop }
 
     it('has right name') { expect(cop_class.cop_name).to eq('Lint/Loop') }
-    it('has right department') { expect(cop_class.department).to eq('Lint') }
+    it('has right department') { expect(cop_class.department).to eq(:Lint) }
   end
 
   describe 'Registry' do
@@ -235,8 +235,8 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       subject(:departments) { described_class.registry.departments }
 
       it('has departments') { expect(departments.length).not_to eq(0) }
-      it { is_expected.to include('Lint') }
-      it { is_expected.to include('Style') }
+      it { is_expected.to include(:Lint) }
+      it { is_expected.to include(:Style) }
 
       it 'contains every value only once' do
         expect(departments.length).to eq(departments.uniq.length)
