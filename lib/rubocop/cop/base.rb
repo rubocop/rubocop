@@ -178,7 +178,7 @@ module RuboCop
       end
 
       def self.lint?
-        department == 'Lint'
+        department == :Lint
       end
 
       # Returns true if the cop name or the cop namespace matches any of the
@@ -186,7 +186,7 @@ module RuboCop
       def self.match?(given_names)
         return false unless given_names
 
-        given_names.include?(cop_name) || given_names.include?(department)
+        given_names.include?(cop_name) || given_names.include?(badge.department_name)
       end
 
       def cop_name
