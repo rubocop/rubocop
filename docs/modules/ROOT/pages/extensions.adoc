@@ -99,6 +99,8 @@ Upstream best practices and coding conventions for downstream (e.g. Debian packa
 Sorbet-specific analysis
 * https://github.com/DmitryTsepelev/rubocop-graphql[rubocop-graphql] -
 GraphQL-specific analysis
+* https://github.com/dukaev/rubocop-changed[rubocop-changed] -
+Reduced CI time by analyzing only changed files
 
 Any extensions missing? Send us a Pull Request!
 
