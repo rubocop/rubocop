@@ -383,6 +383,34 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
+    it 'registers an offense when assigning `%w()` array' do
+      expect_offense(<<~RUBY)
+        FOO = %w(one@example.com two@example.com)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `['one@example.com', 'two@example.com']` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        FOO = ['one@example.com', 'two@example.com']
+      RUBY
+    end
+
+    it 'registers an offense when assigning multiline `%w()` array' do
+      expect_offense(<<~RUBY)
+        FOO = %w(
+              ^^^ Use an array literal `[...]` for an array of words.
+          one@example.com
+          two@example.com
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        FOO = [
+          'one@example.com',
+          'two@example.com'
+        ]
+      RUBY
+    end
+
     it 'registers an offense for an empty %w() array' do
       expect_offense(<<~RUBY)
         %w()
