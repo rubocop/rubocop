@@ -27,6 +27,26 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
     RUBY
   end
 
+  it 'registers an offense for non-empty class nested under self' do
+    expect_offense(<<~RUBY)
+      class self::MyClass
+      ^^^^^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class MyClass`.
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for non-empty class nested under method call' do
+    expect_offense(<<~RUBY)
+      class my_method::MyClass
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class MyClass`.
+        def method
+        end
+      end
+    RUBY
+  end
+
   it 'does not consider comment followed by empty line to be class documentation' do
     expect_offense(<<~RUBY)
       # Copyright 2014
