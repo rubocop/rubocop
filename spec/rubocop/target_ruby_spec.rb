@@ -160,6 +160,8 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
                   rails (4.1.0)
                     actionmailer (= 4.1.0)
                     actionpack (= 4.1.0)
+                    railties (= 4.1.0)
+                  railties (4.1.0)
 
                 PLATFORMS
                   ruby
@@ -188,6 +190,8 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
                   rails (4.1.0)
                     actionmailer (= 4.1.0)
                     actionpack (= 4.1.0)
+                    railties (= 4.1.0)
+                  railties (4.1.0)
 
                 PLATFORMS
                   ruby
@@ -458,6 +462,8 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
                   rails (4.1.0)
                     actionmailer (= 4.1.0)
                     actionpack (= 4.1.0)
+                    railties (= 4.1.0)
+                  railties (4.1.0)
 
                 PLATFORMS
                   ruby

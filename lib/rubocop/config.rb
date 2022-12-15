@@ -273,9 +273,10 @@ module RuboCop
       return nil unless lock_file_path
 
       File.foreach(lock_file_path) do |line|
-        # If rails is in Gemfile.lock or gems.lock, there should be a line like:
-        #         rails (X.X.X)
-        result = line.match(/^\s+rails\s+\((\d+\.\d+)/)
+        # If Rails (or one of its frameworks) is in Gemfile.lock or gems.lock, there should be
+        # a line like:
+        #         railties (X.X.X)
+        result = line.match(/^\s+railties\s+\((\d+\.\d+)/)
         return result.captures.first.to_f if result
       end
     end
