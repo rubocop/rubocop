@@ -96,7 +96,8 @@ module RuboCop
           # which lines start inside a string literal?
           return [] if ast.nil?
 
-          ast.each_node(:str, :dstr).with_object(Set.new) do |str, ranges|
+          ranges = Set.new
+          ast.each_node(:str, :dstr) do |str|
             loc = str.location
 
             if str.heredoc?
@@ -105,6 +106,7 @@ module RuboCop
               ranges << loc.expression
             end
           end
+          ranges
         end
 
         def comment_ranges(comments)

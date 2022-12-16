@@ -27,6 +27,8 @@ module RuboCop
 
         def on_new_investigation
           return if processed_source.tokens.empty?
+          # Quick check if we possibly have consecutive blank lines.
+          return unless processed_source.raw_source.include?("\n\n\n")
 
           lines = Set.new
           processed_source.each_token { |token| lines << token.line }

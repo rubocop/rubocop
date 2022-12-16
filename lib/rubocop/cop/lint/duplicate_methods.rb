@@ -63,14 +63,14 @@ module RuboCop
         def on_def(node)
           # if a method definition is inside an if, it is very likely
           # that a different definition is used depending on platform, etc.
-          return if node.ancestors.any?(&:if_type?)
+          return if node.each_ancestor.any?(&:if_type?)
           return if possible_dsl?(node)
 
           found_instance_method(node, node.method_name)
         end
 
         def on_defs(node)
-          return if node.ancestors.any?(&:if_type?)
+          return if node.each_ancestor.any?(&:if_type?)
           return if possible_dsl?(node)
 
           if node.receiver.const_type?

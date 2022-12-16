@@ -52,6 +52,21 @@ module RuboCop
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
+      def any_descendant?(node, *types)
+        if block_given?
+          node.each_descendant(*types) do |descendant|
+            return true if yield(descendant)
+          end
+        else
+          # Use a block version to avoid allocating enumerators.
+          node.each_descendant do # rubocop:disable Lint/UnreachableLoop
+            return true
+          end
+        end
+
+        false
+      end
+
       def args_begin(node)
         loc = node.loc
         selector = if node.super_type? || node.yield_type?
@@ -71,14 +86,19 @@ module RuboCop
       def on_node(syms, sexp, excludes = [], &block)
         return to_enum(:on_node, syms, sexp, excludes) unless block
 
-        yield sexp if Array(syms).include?(sexp.type)
-        return if Array(excludes).include?(sexp.type)
+        yield sexp if include_or_equal?(syms, sexp.type)
+        return if include_or_equal?(excludes, sexp.type)
 
         sexp.each_child_node { |elem| on_node(syms, elem, excludes, &block) }
       end
 
+      LINE_BEGINS_REGEX_CACHE = Hash.new do |hash, index|
+        hash[index] = /^\s{#{index}}\S/
+      end
+      private_constant :LINE_BEGINS_REGEX_CACHE
+
       def begins_its_line?(range)
-        range.source_line.index(/\S/) == range.column
+        range.source_line.match?(LINE_BEGINS_REGEX_CACHE[range.column])
       end
 
       # Returns, for example, a bare `if` node if the given node is an `if`
@@ -164,6 +184,10 @@ module RuboCop
       def compatible_external_encoding_for?(src)
         src = src.dup if RUBY_ENGINE == 'jruby'
         src.force_encoding(Encoding.default_external).valid_encoding?
+      end
+
+      def include_or_equal?(source, target)
+        source == target || (source.is_a?(Array) && source.include?(target))
       end
     end
   end

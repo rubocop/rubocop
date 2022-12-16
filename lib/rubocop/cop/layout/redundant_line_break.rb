@@ -84,11 +84,11 @@ module RuboCop
           return true if other_cop_takes_precedence?(node)
 
           !cop_config['InspectBlocks'] && (node.block_type? ||
-                                           node.each_descendant(:block).any?(&:multiline?))
+                                           any_descendant?(node, :block, &:multiline?))
         end
 
         def other_cop_takes_precedence?(node)
-          single_line_block_chain_enabled? && node.each_descendant(:block).any? do |block_node|
+          single_line_block_chain_enabled? && any_descendant?(node, :block) do |block_node|
             block_node.parent.send_type? && block_node.parent.loc.dot && !block_node.multiline?
           end
         end

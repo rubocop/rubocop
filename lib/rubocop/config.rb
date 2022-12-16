@@ -21,6 +21,7 @@ module RuboCop
     DEFAULT_RAILS_VERSION = 5.0
     attr_reader :loaded_path
 
+    # rubocop:disable Metrics/AbcSize
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
@@ -32,7 +33,11 @@ module RuboCop
       end
       @hash = hash
       @validator = ConfigValidator.new(self)
+
+      @badge_config_cache = {}.compare_by_identity
+      @clusivity_config_exists_cache = {}
     end
+    # rubocop:enable Metrics/AbcSize
 
     def self.create(hash, path, check: true)
       config = new(hash, path)
@@ -123,8 +128,25 @@ module RuboCop
     # @return [Config] for the given cop merged with that of its department (if any)
     # Note: the 'Enabled' attribute is same as that returned by `for_cop`
     def for_badge(badge)
-      cop_config = for_cop(badge.to_s)
-      fetch(badge.department_name) { return cop_config }.merge(cop_config)
+      @badge_config_cache[badge] ||= begin
+        department_config = self[badge.department_name]
+        cop_config = for_cop(badge.to_s)
+        if department_config
+          department_config.merge(cop_config)
+        else
+          cop_config
+        end
+      end
+    end
+
+    # @return [Boolean] whether config for this badge has 'Include' or 'Exclude' keys
+    # @api private
+    def clusivity_config_for_badge?(badge)
+      exists = @clusivity_config_exists_cache[badge.to_s]
+      return exists unless exists.nil?
+
+      cop_config = for_badge(badge)
+      @clusivity_config_exists_cache[badge.to_s] = cop_config['Include'] || cop_config['Exclude']
     end
 
     # @return [Config] for the given department name.

@@ -86,6 +86,8 @@ module RuboCop
         alias on_def on_potential_breakable_node
 
         def on_new_investigation
+          return unless processed_source.raw_source.include?(';')
+
           check_for_breakable_semicolons(processed_source)
         end
 

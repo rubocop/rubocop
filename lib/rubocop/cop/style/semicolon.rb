@@ -37,13 +37,14 @@ module RuboCop
         end
 
         def on_new_investigation
-          return if processed_source.blank?
+          return if processed_source.blank? || !processed_source.raw_source.include?(';')
 
           check_for_line_terminator_or_opener
         end
 
         def on_begin(node)
           return if cop_config['AllowAsExpressionSeparator']
+          return unless node.source.include?(';')
 
           exprs = node.children
 
