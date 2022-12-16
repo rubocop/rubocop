@@ -51,6 +51,8 @@ module RuboCop
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
         CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
 
+        RESTRICT_ON_SEND = [:!].freeze
+
         def self.autocorrect_incompatible_with
           [Style::Not, Style::SymbolProc]
         end

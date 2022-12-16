@@ -119,12 +119,16 @@ module RuboCop
         def ignored_ranges(ast)
           return [] unless ast
 
-          @ignored_ranges ||= on_node(:pair, ast).map do |pair|
-            next if pair.parent.single_line?
+          @ignored_ranges ||= begin
+            ranges = []
+            on_node(:pair, ast) do |pair|
+              next if pair.parent.single_line?
 
-            key, value = *pair
-            key.source_range.end_pos...value.source_range.begin_pos
-          end.compact
+              key, value = *pair
+              ranges << (key.source_range.end_pos...value.source_range.begin_pos)
+            end
+            ranges
+          end
         end
 
         def force_equal_sign_alignment?

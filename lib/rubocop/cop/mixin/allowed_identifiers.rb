@@ -11,7 +11,7 @@ module RuboCop
       end
 
       def allowed_identifiers
-        cop_config.fetch('AllowedIdentifiers', [])
+        cop_config.fetch('AllowedIdentifiers') { [] }
       end
     end
   end

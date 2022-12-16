@@ -51,7 +51,11 @@ module RuboCop
         private_constant :LINE_1_ENDING, :LINE_2_BEGINNING,
                          :LEADING_STYLE_OFFENSE, :TRAILING_STYLE_OFFENSE
 
+        # rubocop:disable Metrics/AbcSize
         def on_dstr(node)
+          # Quick check if we possibly have line continuations.
+          return unless node.source.include?('\\')
+
           end_of_first_line = node.loc.expression.begin_pos - node.loc.expression.column
 
           raw_lines(node).each_cons(2) do |raw_line_one, raw_line_two|
@@ -66,6 +70,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 

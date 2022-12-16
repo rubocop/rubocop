@@ -28,8 +28,9 @@ module RuboCop
           /^\s+# This cop (?<special>#{SPECIAL_WORDS.join('|')})?\s*(?<word>.+?) .*/.freeze
         REPLACEMENT_REGEX = /^\s+# This cop (#{SPECIAL_WORDS.join('|')})?\s*(.+?) /.freeze
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def on_class(node)
-          return unless (module_node = node.parent)
+          return unless (module_node = node.parent) && node.parent_class
 
           description_beginning = first_comment_line(module_node)
           return unless description_beginning
@@ -48,6 +49,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         private
 

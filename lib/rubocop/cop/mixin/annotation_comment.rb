@@ -41,16 +41,23 @@ module RuboCop
       def split_comment(comment)
         # Sort keywords by reverse length so that if a keyword is in a phrase
         # but also on its own, both will match properly.
-        keywords_regex = Regexp.new(
-          Regexp.union(keywords.sort_by { |w| -w.length }).source,
-          Regexp::IGNORECASE
-        )
-        regex = /^(# ?)(\b#{keywords_regex}\b)(\s*:)?(\s+)?(\S+)?/i
-
         match = comment.text.match(regex)
         return false unless match
 
         match.captures
+      end
+
+      KEYWORDS_REGEX_CACHE = {} # rubocop:disable Layout/ClassStructure, Style/MutableConstant
+      private_constant :KEYWORDS_REGEX_CACHE
+
+      def regex
+        KEYWORDS_REGEX_CACHE[keywords] ||= begin
+          keywords_regex = Regexp.new(
+            Regexp.union(keywords.sort_by { |w| -w.length }).source,
+            Regexp::IGNORECASE
+          )
+          /^(# ?)(\b#{keywords_regex}\b)(\s*:)?(\s+)?(\S+)?/i
+        end
       end
 
       def keyword_appearance?

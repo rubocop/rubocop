@@ -79,7 +79,7 @@ module RuboCop
         def ends_in_end?(processed_source)
           buffer = processed_source.buffer
 
-          return true if buffer.source.strip.start_with?('__END__')
+          return true if buffer.source.match?(/\s*__END__/)
           return false if processed_source.tokens.empty?
 
           extra = buffer.source[processed_source.tokens.last.end_pos..]

@@ -109,10 +109,14 @@ module RuboCop
         def extract_heredocs(ast)
           return [] unless ast
 
-          ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
+          heredocs = []
+          ast.each_node(:str, :dstr, :xstr) do |node|
+            next unless node.heredoc?
+
             body = node.location.heredoc_body
-            [node, body.first_line...body.last_line]
+            heredocs << [node, body.first_line...body.last_line]
           end
+          heredocs
         end
 
         def offense_range(lineno, line)

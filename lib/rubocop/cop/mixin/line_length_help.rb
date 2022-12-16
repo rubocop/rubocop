@@ -58,7 +58,7 @@ module RuboCop
         return 0 unless tab_indentation_width
 
         index =
-          if line.start_with?(/[^\t]/)
+          if line.match?(/^[^\t]/)
             0
           else
             line.index(/[^\t]/) || 0

@@ -224,6 +224,8 @@ module RuboCop
       end
 
       def relevant_file?(file)
+        return true unless @config.clusivity_config_for_badge?(self.class.badge)
+
         file == RuboCop::AST::ProcessedSource::STRING_SOURCE_NAME ||
           (file_name_matches_any?(file, 'Include', true) &&
             !file_name_matches_any?(file, 'Exclude', false))
