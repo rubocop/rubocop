@@ -1,0 +1,1 @@
+* [#11296](https://github.com/rubocop/rubocop/pull/11296): Fix an error for `Lint/NonAtomicFileOperation` when use file existence checks line break `unless` by postfix before creating file. ([@koic][])

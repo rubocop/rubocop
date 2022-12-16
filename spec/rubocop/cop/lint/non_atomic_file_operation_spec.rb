@@ -185,6 +185,32 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
   end
 
+  it 'registers an offense when use file existence checks line break `unless` by postfix before creating file' do
+    expect_offense(<<~RUBY)
+      FileUtils.mkdir(path) unless
+                            ^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+      ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+                            FileTest.exist?(path)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      FileUtils.mkdir_p(path)
+    RUBY
+  end
+
+  it 'registers an offense when use file existence checks line break `unless` (wrapped the in parentheses) by postfix before creating file' do
+    expect_offense(<<~RUBY)
+      FileUtils.mkdir(path) unless (
+                            ^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+      ^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+                            FileTest.exist?(path))
+    RUBY
+
+    expect_correction(<<~RUBY)
+      FileUtils.mkdir_p(path)
+    RUBY
+  end
+
   it 'does not register an offense when not checking for the existence' do
     expect_no_offenses(<<~RUBY)
       FileUtils.mkdir_p(path)

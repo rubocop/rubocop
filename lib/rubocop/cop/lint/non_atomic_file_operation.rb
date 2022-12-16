@@ -44,7 +44,6 @@ module RuboCop
       class NonAtomicFileOperation < Base
         extend AutoCorrector
         include Alignment
-        include RangeHelp
 
         MSG_REMOVE_FILE_EXIST_CHECK = 'Remove unnecessary existence check ' \
                                       '`%<receiver>s.%<method_name>s`.'
@@ -101,10 +100,11 @@ module RuboCop
         def register_offense(node, exist_node)
           add_offense(node, message: message_change_force_method(node)) unless force_method?(node)
 
-          range = range_between(node.parent.loc.keyword.begin_pos,
-                                exist_node.loc.expression.end_pos)
+          parent = node.parent
+          range = parent.loc.keyword.begin.join(parent.condition.source_range.end)
+
           add_offense(range, message: message_remove_file_exist_check(exist_node)) do |corrector|
-            autocorrect(corrector, node, range) unless node.parent.elsif?
+            autocorrect(corrector, node, range) unless parent.elsif?
           end
         end
 
@@ -121,10 +121,10 @@ module RuboCop
           corrector.remove(range)
           autocorrect_replace_method(corrector, node)
 
-          if node.parent.multiline?
-            corrector.remove(node.parent.loc.end)
+          if node.parent.modifier_form?
+            corrector.remove(node.source_range.end.join(node.parent.loc.keyword.begin))
           else
-            corrector.remove(node.source_range.end.join(range.begin))
+            corrector.remove(node.parent.loc.end)
           end
         end
 
