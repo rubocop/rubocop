@@ -86,6 +86,11 @@ module RuboCop
           (send nil? {:public_constant :private_constant} ({sym str} _))
         PATTERN
 
+        # @!method include_statement?(node)
+        def_node_matcher :include_statement?, <<~PATTERN
+          (send nil? {:include :extend :prepend} const)
+        PATTERN
+
         def on_class(node)
           return unless node.body
 
@@ -103,7 +108,7 @@ module RuboCop
           return if documentation_comment?(node)
           return if constant_allowed?(node)
           return if nodoc_self_or_outer_module?(node)
-          return if macro_only?(body)
+          return if include_statement_only?(body)
 
           range = range_between(node.loc.expression.begin_pos, node.loc.name.end_pos)
           message = format(MSG, type: node.type, identifier: identifier(node))
@@ -115,9 +120,10 @@ module RuboCop
             (compact_namespace?(node) && nodoc_comment?(outer_module(node).first))
         end
 
-        def macro_only?(body)
-          (body.respond_to?(:macro?) && body.macro?) ||
-            (body.respond_to?(:children) && body.children&.all? { |child| macro_only?(child) })
+        def include_statement_only?(body)
+          return true if include_statement?(body)
+
+          body.respond_to?(:children) && body.children.all? { |node| include_statement_only?(node) }
         end
 
         def namespace?(node)

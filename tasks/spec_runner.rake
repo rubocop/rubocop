@@ -4,9 +4,9 @@ require 'rspec/core'
 require 'test_queue'
 require 'test_queue/runner/rspec'
 
-# Add `failed_examples` into `TestQueue::Worker` so we can keep
-# track of the output for re-running failed examples from RSpec.
 module TestQueue
+  # Add `failed_examples` into `TestQueue::Worker` so we can keep
+  # track of the output for re-running failed examples from RSpec.
   class Worker
     attr_accessor :failed_examples
   end

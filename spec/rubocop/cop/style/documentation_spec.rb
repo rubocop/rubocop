@@ -244,8 +244,25 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
       end
     end
 
-    context 'macro-only class' do
-      it 'does not register offense with single macro' do
+    it 'registers offense with custom macro' do
+      expect_offense(<<~RUBY)
+        class Foo < ApplicationRecord
+        ^^^^^^^^^ Missing top-level documentation comment for `class Foo`.
+          belongs_to :bar
+        end
+      RUBY
+    end
+
+    context 'include statement-only class' do
+      it 'does not register offense with single `include` statements' do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            include Bar
+          end
+        RUBY
+      end
+
+      it 'does not register offense with single `extend` statements' do
         expect_no_offenses(<<~RUBY)
           module Foo
             extend Bar
@@ -253,17 +270,26 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
         RUBY
       end
 
-      it 'does not register offense with multiple macros' do
+      it 'does not register offense with single `prepend` statements' do
         expect_no_offenses(<<~RUBY)
           module Foo
-            extend A
-            extend B
-            include C
+            prepend Bar
           end
         RUBY
       end
 
-      it 'registers offense for macro with other methods' do
+      it 'does not register offense with multiple include macros' do
+        expect_no_offenses(<<~RUBY)
+          module Foo
+            include A
+            include B
+            extend C
+            prepend D
+          end
+        RUBY
+      end
+
+      it 'registers offense for include statement with other methods' do
         expect_offense(<<~RUBY)
           module Foo
           ^^^^^^^^^^ Missing top-level documentation comment for `module Foo`.
