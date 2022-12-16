@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      FileUtils.mkdir_p(path)#{trailing_whitespace}
+      FileUtils.mkdir_p(path)
     RUBY
   end
 
@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      FileUtils.rm_f(path)#{trailing_whitespace}
+      FileUtils.rm_f(path)
     RUBY
   end
 

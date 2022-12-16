@@ -120,7 +120,12 @@ module RuboCop
         def autocorrect(corrector, node, range)
           corrector.remove(range)
           autocorrect_replace_method(corrector, node)
-          corrector.remove(node.parent.loc.end) if node.parent.multiline?
+
+          if node.parent.multiline?
+            corrector.remove(node.parent.loc.end)
+          else
+            corrector.remove(node.source_range.end.join(range.begin))
+          end
         end
 
         def autocorrect_replace_method(corrector, node)
