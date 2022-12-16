@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module RuboCop
+  # The bootstrap module for formatter.
+  # @api private
   module Formatter
     require_relative 'formatter/text_util'
 

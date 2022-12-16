@@ -1,8 +1,14 @@
 # RuboCop Inspection Report
 
-4 files inspected, 22 offenses detected:
+4 files inspected, 23 offenses detected:
 
-### app/controllers/application_controller.rb - (1 offense)
+### app/controllers/application_controller.rb - (2 offenses)
+  * **Line # 1 - convention:** Style/Documentation: Missing top-level documentation comment for `class ApplicationController`.
+
+    ```rb
+    class ApplicationController < ActionController::Base
+    ```
+
   * **Line # 1 - convention:** Style/FrozenStringLiteralComment: Missing frozen string literal comment.
 
     ```rb
