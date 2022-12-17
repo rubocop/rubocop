@@ -28,5 +28,5 @@ ensure
   end
   Dir.mkdir('tmp') unless File.exist?('tmp')
   StackProf.results('tmp/stackprof.dump')
-  report&.pretty_print(scale_bytes: true)
+  report&.pretty_print(to_file: 'tmp/memory_profiler.txt', scale_bytes: true)
 end
