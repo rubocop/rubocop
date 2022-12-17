@@ -433,6 +433,21 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       expect(found_basenames).to include('ruby4.rb')
     end
 
+    it 'works if patterns are empty' do
+      allow(Dir).to receive(:glob).and_call_original
+      allow_any_instance_of(described_class).to receive(:wanted_dir_patterns).and_return([])
+
+      expect(Dir).to receive(:glob).with([File.join(base_dir, '**/*')], flags)
+      expect(found_basenames).to include(
+        'executable',
+        'file.txt',
+        'file',
+        'ruby1.rb',
+        'ruby2.rb',
+        'ruby3.rb'
+      )
+    end
+
     # Cannot create a directory with containing `*` character on Windows.
     # https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions
     unless RuboCop::Platform.windows?

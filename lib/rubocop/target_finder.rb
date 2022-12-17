@@ -88,7 +88,7 @@ module RuboCop
       patterns.map! { |dir| File.join(dir, '*') }
       # We need this special case to avoid creating the pattern
       # /**/* which searches the entire file system.
-      patterns = [File.join(dir, '**/*')] if patterns.empty?
+      patterns = [File.join(base_dir, '**/*')] if patterns.empty?
 
       Dir.glob(patterns, flags).select { |path| FileTest.file?(path) }
     end
