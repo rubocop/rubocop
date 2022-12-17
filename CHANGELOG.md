@@ -437,7 +437,7 @@
 ### Bug fixes
 
 * [#10586](https://github.com/rubocop/rubocop/issues/10586): Fix a false positive for `Style/DoubleNegation` when using `define_method` or `define_singleton_method`. ([@ydah][])
-* [#10579](https://github.com/rubocop/rubocop/issues/10579): Fix a false positive for `Style/FetchEnvVar` when calling a method with safe navigation`. ([@koic][])
+* [#10579](https://github.com/rubocop/rubocop/issues/10579): Fix a false positive for `Style/FetchEnvVar` when calling a method with safe navigation. ([@koic][])
 * [#10581](https://github.com/rubocop/rubocop/issues/10581): Fix a false positive for `Style/FetchEnvVar` when comparing with `ENV['TERM']`. ([@koic][])
 * [#10589](https://github.com/rubocop/rubocop/issues/10589): Fix autocorrect for `Style/RaiseArgs` with `EnforcedStyle: compact` and exception object is assigned to a local variable. ([@nobuyo][])
 * [#10325](https://github.com/rubocop/rubocop/issues/10325): Enhance `Style/RedundantCondition` by considering the case that variable assignments in each branch. ([@nobuyo][])
