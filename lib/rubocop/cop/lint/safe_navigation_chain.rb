@@ -45,13 +45,12 @@ module RuboCop
           bad_method?(node) do |safe_nav, method|
             return if nil_methods.include?(method) || PLUS_MINUS_METHODS.include?(node.method_name)
 
-            method_chain = method_chain(node)
             location =
               Parser::Source::Range.new(node.source_range.source_buffer,
                                         safe_nav.source_range.end_pos,
-                                        method_chain.source_range.end_pos)
+                                        node.source_range.end_pos)
             add_offense(location) do |corrector|
-              autocorrect(corrector, offense_range: location, send_node: method_chain)
+              autocorrect(corrector, offense_range: location, send_node: node)
             end
           end
         end
@@ -63,12 +62,12 @@ module RuboCop
         # @return [String]
         def add_safe_navigation_operator(offense_range:, send_node:)
           source =
-            if (brackets = find_brackets(send_node))
+            if brackets?(send_node)
               format(
                 '%<method_name>s(%<arguments>s)%<method_chain>s',
-                arguments: brackets.arguments.map(&:source).join(', '),
-                method_name: brackets.method_name,
-                method_chain: brackets.source_range.end.join(send_node.source_range.end).source
+                arguments: send_node.arguments.map(&:source).join(', '),
+                method_name: send_node.method_name,
+                method_chain: send_node.source_range.end.join(send_node.source_range.end).source
               )
             else
               offense_range.source
@@ -90,18 +89,8 @@ module RuboCop
           )
         end
 
-        def method_chain(node)
-          chain = node
-          chain = chain.parent if chain.send_type? && chain.parent&.call_type?
-          chain
-        end
-
-        def find_brackets(send_node)
-          return send_node if send_node.method?(:[]) || send_node.method?(:[]=)
-
-          send_node.descendants.detect do |node|
-            node.send_type? && (node.method?(:[]) || node.method?(:[]=))
-          end
+        def brackets?(send_node)
+          send_node.method?(:[]) || send_node.method?(:[]=)
         end
       end
     end

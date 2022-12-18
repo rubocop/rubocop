@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       expect_offense(<<~RUBY)
         something
         x&.foo.bar.baz
-              ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+              ^^^^ Do not chain ordinary method call after safe navigation operator.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
        'safe navigation method call with an argument' do
       expect_offense(<<~RUBY)
         x&.foo(x).bar(y).baz(z)
-                 ^^^^^^^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+                 ^^^^^^^ Do not chain ordinary method call after safe navigation operator.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     it 'registers an offense for safe navigation with [] operator followed by method chain' do
       expect_offense(<<~RUBY)
         x&.foo[bar].to_s
-              ^^^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+              ^^^^^ Do not chain ordinary method call after safe navigation operator.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -197,6 +197,17 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
 
       expect_correction(<<~RUBY)
         x&.foo&.[]=(bar, baz)
+      RUBY
+    end
+
+    it 'registers an offense for [] operator followed by a safe navigation and method chain' do
+      expect_offense(<<~RUBY)
+        foo[bar]&.x.y
+                   ^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo[bar]&.x&.y
       RUBY
     end
 
@@ -249,7 +260,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
         expect_offense(<<~RUBY)
           something
           x&.foo.bar.baz
-                ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -261,7 +272,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       it 'when there are methods after' do
         expect_offense(<<~RUBY)
           x&.foo.bar.baz
-                ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
           something
         RUBY
 
@@ -275,7 +286,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
         expect_offense(<<~RUBY)
           def something
             x&.foo.bar.baz
-                  ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+                  ^^^^ Do not chain ordinary method call after safe navigation operator.
           end
         RUBY
 
@@ -290,7 +301,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
         expect_offense(<<~RUBY)
           begin
             x&.foo.bar.baz
-                  ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+                  ^^^^ Do not chain ordinary method call after safe navigation operator.
           end
         RUBY
 
@@ -304,7 +315,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       it 'when used with a modifier if' do
         expect_offense(<<~RUBY)
           x&.foo.bar.baz if something
-                ^^^^^^^^ Do not chain ordinary method call after safe navigation operator.
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
         RUBY
 
         expect_correction(<<~RUBY)
