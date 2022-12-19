@@ -137,6 +137,7 @@ module RuboCop
         end
       end
 
+      # @api private
       def inject_defaults!(project_root)
         path = File.join(project_root, 'config', 'default.yml')
         config = load_file(path)
