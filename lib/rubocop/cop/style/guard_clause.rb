@@ -189,7 +189,7 @@ module RuboCop
 
           if if_branch&.send_type? && heredoc?(if_branch.last_argument)
             autocorrect_heredoc_argument(corrector, node, if_branch, else_branch, guard)
-          elsif else_branch&.send_type? && else_branch.last_argument&.heredoc?
+          elsif else_branch&.send_type? && heredoc?(else_branch.last_argument)
             autocorrect_heredoc_argument(corrector, node, else_branch, if_branch, guard)
           else
             corrector.remove(node.loc.end)

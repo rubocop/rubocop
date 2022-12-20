@@ -323,6 +323,28 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
+  it 'registers an offense when using lvar as an argument of raise in `else` branch' do
+    expect_offense(<<~RUBY)
+      if condition
+      ^^ Use a guard clause (`raise e unless condition`) instead of wrapping the code inside a conditional expression.
+        do_something
+      else
+        raise e
+      end
+    RUBY
+
+    # NOTE: Let `Layout/TrailingWhitespace`, `Layout/EmptyLine`, and
+    #       `Layout/EmptyLinesAroundMethodBody` cops autocorrect inconsistent indentations
+    #       and blank lines.
+    expect_correction(<<~RUBY)
+      raise e unless condition
+        do_something
+
+       #{trailing_whitespace}
+
+    RUBY
+  end
+
   context 'MinBodyLength: 1' do
     let(:cop_config) { { 'MinBodyLength' => 1 } }
 
