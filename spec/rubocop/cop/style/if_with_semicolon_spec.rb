@@ -23,11 +23,25 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
-  it 'accepts without `else` branch' do
-    # This case is corrected to a modifier form by `Style/IfUnlessModifier` cop.
-    # Therefore, this cop does not handle it.
-    expect_no_offenses(<<~RUBY)
+  it 'registers an offense and corrects for one line if/;/end without else body' do
+    expect_offense(<<~RUBY)
+      if cond; run else; end
+      ^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? run : nil
+    RUBY
+  end
+
+  it 'registers an offense when not using `else` branch' do
+    expect_offense(<<~RUBY)
       if cond; run end
+      ^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? run : nil
     RUBY
   end
 

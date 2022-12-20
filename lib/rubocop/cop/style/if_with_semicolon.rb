@@ -21,13 +21,12 @@ module RuboCop
         MSG_TERNARY = 'Do not use `if %<expr>s;` - use a ternary operator instead.'
 
         def on_normal_if_unless(node)
-          return unless node.else_branch
           return if node.parent&.if_type?
 
           beginning = node.loc.begin
           return unless beginning&.is?(';')
 
-          message = node.else_branch.if_type? ? MSG_IF_ELSE : MSG_TERNARY
+          message = node.else_branch&.if_type? ? MSG_IF_ELSE : MSG_TERNARY
 
           add_offense(node, message: format(message, expr: node.condition.source)) do |corrector|
             corrector.replace(node, autocorrect(node))
@@ -37,7 +36,7 @@ module RuboCop
         private
 
         def autocorrect(node)
-          return correct_elsif(node) if node.else_branch.if_type?
+          return correct_elsif(node) if node.else_branch&.if_type?
 
           then_code = node.if_branch ? node.if_branch.source : 'nil'
           else_code = node.else_branch ? node.else_branch.source : 'nil'
