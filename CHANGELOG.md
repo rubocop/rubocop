@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.41.0 (2022-12-20)
+
 ### New features
 
 * [#11305](https://github.com/rubocop/rubocop/pull/11305): Add new `Style/RedundantDoubleSplatHashBraces` cop. ([@koic][])

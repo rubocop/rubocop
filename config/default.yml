@@ -3429,7 +3429,7 @@ Style/CommentedKeyword:
 Style/ConcatArrayLiterals:
   Description: 'Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.41'
 
 Style/ConditionalAssignment:
   Description: >-
@@ -4747,7 +4747,7 @@ Style/RedundantConstantBase:
 Style/RedundantDoubleSplatHashBraces:
   Description: 'Checks for redundant uses of double splat hash braces.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.41'
 
 Style/RedundantEach:
   Description: 'Checks for redundant `each`.'

@@ -2152,6 +2152,41 @@ class X # :nodoc:
 end
 ----
 
+== Style/ConcatArrayLiterals
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.41
+| -
+|===
+
+Enforces the use of `Array#push(item)` instead of `Array#concat([item])`
+to avoid redundant array literals.
+
+=== Safety
+
+This cop is unsafe, as it can produce false positives if the receiver
+is not an `Array` object.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+list.concat([foo])
+list.concat([bar, baz])
+list.concat([qux, quux], [corge])
+
+# good
+list.push(foo)
+list.push(bar, baz)
+list.push(qux, quux, corge)
+----
+
 == Style/ConditionalAssignment
 
 |===
@@ -10523,6 +10558,10 @@ understand from the code whether the `::` is intended or not. Where `Module.nest
 is empty, there is no need to prepend `::`, so it would be nice to consistently
 avoid such meaningless `::` prefix to avoid confusion.
 
+NOTE: This cop is disabled if `Lint/ConstantResolution` cop is enabled to prevent
+conflicting rules. Because it respects user configurations that want to enable
+`Lint/ConstantResolution` cop which is disabled by default.
+
 === Examples
 
 [source,ruby]
@@ -10552,6 +10591,31 @@ end
 module A
   ::Const
 end
+----
+
+== Style/RedundantDoubleSplatHashBraces
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.41
+| -
+|===
+
+Checks for redundant uses of double splat hash braces.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+do_something(**{foo: bar, baz: qux})
+
+# good
+do_something(foo: bar, baz: qux)
 ----
 
 == Style/RedundantEach
@@ -11652,6 +11716,32 @@ require 'c'
 # good
 require 'b'
 require_relative 'c'
+require 'a'
+
+# bad
+require 'a'
+require 'c' if foo
+require 'b'
+
+# good
+require 'a'
+require 'b'
+require 'c' if foo
+
+# bad
+require 'c'
+if foo
+  require 'd'
+  require 'b'
+end
+require 'a'
+
+# good
+require 'c'
+if foo
+  require 'b'
+  require 'd'
+end
 require 'a'
 ----
 
