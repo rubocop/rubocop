@@ -421,12 +421,13 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'gets the Exclude merging the inherited one' do
-        expect(configuration_from_file['Style/For']['Exclude']).to match_array([
-                                                                                 File.expand_path('packages/package_two/spec/models/expense_spec.rb'),
-                                                                                 File.expand_path('packages/package_one/spec/models/group_spec.rb'),
-                                                                                 File.expand_path('packages/package_three/spec/models/order_spec.rb'),
-                                                                                 File.expand_path('spec/requests/group_invite_spec.rb')
-                                                                               ])
+        expected = [
+          File.expand_path('packages/package_two/spec/models/expense_spec.rb'),
+          File.expand_path('packages/package_one/spec/models/group_spec.rb'),
+          File.expand_path('packages/package_three/spec/models/order_spec.rb'),
+          File.expand_path('spec/requests/group_invite_spec.rb')
+        ]
+        expect(configuration_from_file['Style/For']['Exclude']).to match_array(expected)
       end
     end
 
