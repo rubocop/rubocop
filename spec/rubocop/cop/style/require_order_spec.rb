@@ -141,4 +141,114 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
       RUBY
     end
   end
+
+  context 'when `if` is used between `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'c'
+        if foo
+          require 'a'
+        end
+        require 'b'
+      RUBY
+    end
+  end
+
+  context 'when `unless` is used between `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'c'
+        unless foo
+          require 'a'
+        end
+        require 'b'
+      RUBY
+    end
+  end
+
+  context 'when conditional with multiple `require` is used between `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'd'
+        if foo
+          require 'a'
+          require 'b'
+        end
+        require 'c'
+      RUBY
+    end
+  end
+
+  context 'when conditional with multiple unsorted `require` is used between `require`' do
+    it 'registers no offense' do
+      expect_offense(<<~RUBY)
+        require 'd'
+        if foo
+          require 'b'
+          require 'a'
+          ^^^^^^^^^^^ Sort `require` in alphabetical order.
+        end
+        require 'c'
+      RUBY
+
+      expect_correction(<<~RUBY)
+        require 'd'
+        if foo
+          require 'a'
+          require 'b'
+        end
+        require 'c'
+      RUBY
+    end
+  end
+
+  context 'when nested conditionals is used between `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'c'
+        if foo
+          if bar
+            require 'a'
+          end
+        end
+        require 'b'
+      RUBY
+    end
+  end
+
+  context 'when modifier conditional `if` is used between `require`' do
+    it 'registers offense' do
+      expect_offense(<<~RUBY)
+        require 'c'
+        require 'a' if foo
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+        require 'b'
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        require 'a' if foo
+        require 'b'
+        require 'c'
+      RUBY
+    end
+  end
+
+  context 'when modifier conditional `unless` is used between `require`' do
+    it 'registers offense' do
+      expect_offense(<<~RUBY)
+        require 'c'
+        require 'a' unless foo
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+        require 'b'
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        require 'a' unless foo
+        require 'b'
+        require 'c'
+      RUBY
+    end
+  end
 end

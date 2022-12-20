@@ -36,6 +36,33 @@ module RuboCop
       #   require 'b'
       #   require_relative 'c'
       #   require 'a'
+      #
+      #   # bad
+      #   require 'a'
+      #   require 'c' if foo
+      #   require 'b'
+      #
+      #   # good
+      #   require 'a'
+      #   require 'b'
+      #   require 'c' if foo
+      #
+      #   # bad
+      #   require 'c'
+      #   if foo
+      #     require 'd'
+      #     require 'b'
+      #   end
+      #   require 'a'
+      #
+      #   # good
+      #   require 'c'
+      #   if foo
+      #     require 'b'
+      #     require 'd'
+      #   end
+      #   require 'a'
+      #
       class RequireOrder < Base
         extend AutoCorrector
 
@@ -43,19 +70,27 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[require require_relative].freeze
 
+        MSG = 'Sort `%<name>s` in alphabetical order.'
+
+        # @!method if_inside_only_require(node)
+        def_node_matcher :if_inside_only_require, <<~PATTERN
+          {
+            (if _ _ $(send nil? {:require :require_relative} _))
+            (if _ $(send nil? {:require :require_relative} _) _)
+          }
+        PATTERN
+
         def on_send(node)
           return unless node.arguments?
+          return if not_modifier_form?(node.parent)
 
           previous_older_sibling = find_previous_older_sibling(node)
           return unless previous_older_sibling
 
-          add_offense(
-            node,
-            message: "Sort `#{node.method_name}` in alphabetical order."
-          ) do |corrector|
+          add_offense(node, message: format(MSG, name: node.method_name)) do |corrector|
             swap(
               range_with_comments_and_lines(previous_older_sibling),
-              range_with_comments_and_lines(node),
+              range_with_comments_and_lines(node.parent.if_type? ? node.parent : node),
               corrector: corrector
             )
           end
@@ -63,14 +98,29 @@ module RuboCop
 
         private
 
-        def find_previous_older_sibling(node)
-          node.left_siblings.reverse.find do |sibling|
-            break unless sibling.send_type? && sibling.method?(node.method_name)
+        def not_modifier_form?(node)
+          node.if_type? && !node.modifier_form?
+        end
+
+        def find_previous_older_sibling(node) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+          search_node(node).left_siblings.reverse.find do |sibling|
+            sibling = sibling_node(sibling)
+            break unless sibling&.send_type? && sibling&.method?(node.method_name)
             break unless sibling.arguments? && !sibling.receiver
             break unless in_same_section?(sibling, node)
 
             node.first_argument.source < sibling.first_argument.source
           end
+        end
+
+        def search_node(node)
+          node.parent.if_type? ? node.parent : node
+        end
+
+        def sibling_node(node)
+          return if not_modifier_form?(node)
+
+          node.if_type? ? if_inside_only_require(node) : node
         end
 
         def in_same_section?(node1, node2)
