@@ -108,7 +108,7 @@ module RuboCop
           return if node.body.nil?
 
           node.body.each_descendant(:lvar, :lvasgn).any? do |lvar|
-            !lvar.parent.block_pass_type? && lvar.source == last_argument
+            !lvar.parent.block_pass_type? && lvar.node_parts[0].to_s == last_argument
           end
         end
 

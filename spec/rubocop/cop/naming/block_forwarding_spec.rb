@@ -196,6 +196,11 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
             block ||= -> { :foo }
             bar(&block)
           end
+
+          def example(&block)
+            block = proc {} unless block_given?
+            bar(&block)
+          end
         RUBY
       end
     end
