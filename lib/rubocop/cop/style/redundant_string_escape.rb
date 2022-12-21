@@ -169,9 +169,10 @@ module RuboCop
           # Allow \#{foo}, \#$foo, \#@foo, and \#@@foo
           # for escaping local, global, instance and class variable interpolations
           return true if range.source.match?(/\A\\#[{$@]/)
-
           # Also allow #\{foo}, #\$foo, #\@foo and #\@@foo
           return true if range.adjust(begin_pos: -2).source.match?(/\A[^\\]#\\[{$@]/)
+          # For `\#\{foo} allow `\#` and warn `\{`
+          return true if range.adjust(end_pos: 1).source == '\\#\\{'
 
           false
         end
