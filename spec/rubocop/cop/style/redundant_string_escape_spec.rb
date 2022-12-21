@@ -148,6 +148,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects an escaped `\{` when escaping `\#\{` to avoid interpolation' do
+      expect_offense(<<~'RUBY', l: l, r: r)
+        %{l}\#\{whatever}%{r}
+        _{l}  ^^ Redundant escape of { inside string literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{l}\\\#{whatever}#{r}
+      RUBY
+    end
+
     it 'registers an offense and corrects an escaped # at end-of-string' do
       expect_offense(<<~'RUBY', l: l, r: r)
         %{l}\#%{r}
