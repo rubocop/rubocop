@@ -3429,6 +3429,7 @@ Style/CommentedKeyword:
 Style/ConcatArrayLiterals:
   Description: 'Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.'
   Enabled: pending
+  Safe: false
   VersionAdded: '1.41'
 
 Style/ConditionalAssignment:
