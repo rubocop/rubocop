@@ -73,14 +73,14 @@ module RuboCop
 
         def offense_range(node)
           Parser::Source::Range.new(
-            node.loc.expression.source_buffer,
-            node.children.compact.last.loc.expression.end_pos,
-            end_of_method_chain(node).loc.expression.end_pos
+            node.source_range.source_buffer,
+            node.children.compact.last.source_range.end_pos,
+            end_of_method_chain(node).source_range.end_pos
           )
         end
 
         def replacement(node)
-          end_with_method_chain = node.loc.end.join(end_of_method_chain(node).loc.expression.end)
+          end_with_method_chain = node.loc.end.join(end_of_method_chain(node).source_range.end)
 
           "\n#{end_with_method_chain.source.strip}"
         end

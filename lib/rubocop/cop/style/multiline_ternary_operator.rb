@@ -83,7 +83,7 @@ module RuboCop
 
         def comments_in_condition(node)
           comments_in_range(node).map do |comment|
-            "#{comment.loc.expression.source}\n"
+            "#{comment.source_range.source}\n"
           end.join
         end
 

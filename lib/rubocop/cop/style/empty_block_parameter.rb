@@ -37,7 +37,7 @@ module RuboCop
 
         def autocorrect(corrector, node)
           block = node.parent
-          range = range_between(block.loc.begin.end_pos, node.loc.expression.end_pos)
+          range = range_between(block.loc.begin.end_pos, node.source_range.end_pos)
 
           corrector.remove(range)
         end

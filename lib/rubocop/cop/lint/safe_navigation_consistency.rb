@@ -65,7 +65,7 @@ module RuboCop
         end
 
         def location(node, unsafe_method_call)
-          node.loc.expression.join(unsafe_method_call.loc.expression)
+          node.source_range.join(unsafe_method_call.source_range)
         end
 
         def top_conditional_ancestor(node)

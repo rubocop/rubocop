@@ -131,7 +131,7 @@ module RuboCop
         end
 
         def whole_line_expression(node)
-          range_by_whole_lines(node.loc.expression, include_final_newline: true)
+          range_by_whole_lines(node.source_range, include_final_newline: true)
         end
       end
     end

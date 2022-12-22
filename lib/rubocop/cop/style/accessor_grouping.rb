@@ -79,7 +79,7 @@ module RuboCop
           if (preferred_accessors = preferred_accessors(node))
             corrector.replace(node, preferred_accessors)
           else
-            range = range_with_surrounding_space(node.loc.expression, side: :left)
+            range = range_with_surrounding_space(node.source_range, side: :left)
             corrector.remove(range)
           end
         end

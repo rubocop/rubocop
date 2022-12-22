@@ -416,7 +416,7 @@ module RuboCop
 
       def range_from_node_or_range(node_or_range)
         if node_or_range.respond_to?(:loc)
-          node_or_range.loc.expression
+          node_or_range.source_range
         elsif node_or_range.is_a?(::Parser::Source::Range)
           node_or_range
         else

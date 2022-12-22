@@ -247,7 +247,7 @@ module RuboCop
         end
 
         def argument_without_space?(node)
-          node.argument? && node.loc.expression.begin_pos == node.parent.loc.selector.end_pos
+          node.argument? && node.source_range.begin_pos == node.parent.loc.selector.end_pos
         end
 
         def autocorrect_hash_rockets(corrector, pair_node)

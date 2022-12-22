@@ -88,7 +88,7 @@ module RuboCop
 
         def remove_comments(corrector, node)
           comments_in_range(node).each do |comment|
-            range = range_by_whole_lines(comment.loc.expression, include_final_newline: true)
+            range = range_by_whole_lines(comment.source_range, include_final_newline: true)
             corrector.remove(range)
           end
         end
@@ -143,7 +143,7 @@ module RuboCop
           if empty_if_branch?(node) && else_branch?(node)
             node.source_range.with(end_pos: node.loc.else.begin_pos)
           elsif node.loc.else
-            node.source_range.with(end_pos: node.condition.loc.expression.end_pos)
+            node.source_range.with(end_pos: node.condition.source_range.end_pos)
           elsif all_branches_body_missing?(node)
             if_node = node.ancestors.detect(&:if?)
             node.source_range.with(end_pos: if_node.loc.end.end_pos)

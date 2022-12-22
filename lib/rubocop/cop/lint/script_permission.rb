@@ -53,7 +53,7 @@ module RuboCop
         private
 
         def autocorrect(comment)
-          FileUtils.chmod('+x', comment.loc.expression.source_buffer.name)
+          FileUtils.chmod('+x', comment.source_range.source_buffer.name)
         end
 
         def executable?(processed_source)

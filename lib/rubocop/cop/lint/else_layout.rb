@@ -81,7 +81,7 @@ module RuboCop
         def autocorrect(corrector, node, first_else)
           corrector.insert_after(node.loc.else, "\n")
 
-          blank_range = range_between(node.loc.else.end_pos, first_else.loc.expression.begin_pos)
+          blank_range = range_between(node.loc.else.end_pos, first_else.source_range.begin_pos)
           corrector.replace(blank_range, indentation(node))
         end
       end

@@ -26,7 +26,7 @@ module RuboCop
         def declaration_with_comment(node)
           buffer = processed_source.buffer
           begin_pos = range_by_whole_lines(get_source_range(node, comments_as_separators)).begin_pos
-          end_line = buffer.line_for_position(node.loc.expression.end_pos)
+          end_line = buffer.line_for_position(node.source_range.end_pos)
           end_pos = range_by_whole_lines(buffer.line_range(end_line),
                                          include_final_newline: true).end_pos
 

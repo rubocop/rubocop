@@ -72,7 +72,7 @@ module RuboCop
               next if allowed_method_name?(method_name.to_s, prefix)
 
               add_offense(
-                node.first_argument.loc.expression,
+                node.first_argument.source_range,
                 message: message(method_name, expected_name(method_name.to_s, prefix))
               )
             end

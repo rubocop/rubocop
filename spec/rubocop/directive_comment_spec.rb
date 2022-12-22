@@ -286,14 +286,11 @@ RSpec.describe RuboCop::DirectiveComment do
   end
 
   describe '#line_number' do
-    let(:loc) do
-      instance_double(
-        Parser::Source::Map,
-        expression: instance_double(Parser::Source::Range, line: 1)
-      )
+    let(:source_range) do
+      instance_double(Parser::Source::Range, line: 1)
     end
 
-    before { allow(comment).to receive(:loc).and_return(loc) }
+    before { allow(comment).to receive(:source_range).and_return(source_range) }
 
     it 'returns line number for directive' do
       expect(directive_comment.line_number).to eq(1)

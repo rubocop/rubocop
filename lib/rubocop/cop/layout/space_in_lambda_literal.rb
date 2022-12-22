@@ -64,8 +64,8 @@ module RuboCop
 
         def range_of_offense(node)
           range_between(
-            node.parent.loc.expression.begin_pos,
-            node.parent.arguments.loc.expression.end_pos
+            node.parent.source_range.begin_pos,
+            node.parent.arguments.source_range.end_pos
           )
         end
 

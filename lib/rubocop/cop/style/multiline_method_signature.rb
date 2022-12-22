@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def indentation_width(node)
-          processed_source.line_indentation(node.loc.expression.line)
+          processed_source.line_indentation(node.source_range.line)
         end
 
         def definition_width(node)

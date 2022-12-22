@@ -145,7 +145,7 @@ module RuboCop
         end
 
         def block_body_range(block_node, send_node)
-          range_between(send_node.loc.expression.end_pos, block_node.loc.end.end_pos)
+          range_between(send_node.source_range.end_pos, block_node.loc.end.end_pos)
         end
       end
     end

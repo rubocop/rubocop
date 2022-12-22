@@ -167,7 +167,7 @@ module RuboCop
           corrector.insert_before(condition,
                                   "#{'!' if node.unless?}#{replace_condition(node.condition)} && ")
 
-          corrector.remove(node.condition.loc.expression)
+          corrector.remove(node.condition.source_range)
           corrector.remove(range_with_surrounding_space(node.loc.keyword, newlines: false))
           corrector.replace(if_branch.loc.keyword, 'if')
         end
@@ -240,7 +240,7 @@ module RuboCop
         end
 
         def outer_condition_modify_form?(node, if_branch)
-          node.condition.loc.expression.begin_pos > if_branch.condition.loc.expression.begin_pos
+          node.condition.source_range.begin_pos > if_branch.condition.source_range.begin_pos
         end
       end
     end

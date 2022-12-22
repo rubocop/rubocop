@@ -159,7 +159,7 @@ module RuboCop
         end
 
         def strip_prefix_and_suffix(node, corrector)
-          expression = node.loc.expression
+          expression = node.source_range
           corrector.remove_leading(expression, leading)
           corrector.remove_trailing(expression, trailing)
         end
@@ -175,11 +175,11 @@ module RuboCop
         end
 
         def set_new_arg_name(transformed_argname, corrector)
-          corrector.replace(block_node.arguments.loc.expression, "|#{transformed_argname}|")
+          corrector.replace(block_node.arguments.source_range, "|#{transformed_argname}|")
         end
 
         def set_new_body_expression(transforming_body_expr, corrector)
-          body_source = transforming_body_expr.loc.expression.source
+          body_source = transforming_body_expr.source_range.source
           if transforming_body_expr.hash_type? && !transforming_body_expr.braces?
             body_source = "{ #{body_source} }"
           end

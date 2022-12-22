@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Util do
     end
 
     it 'can use ranges' do
-      expect(described_class.same_line?(node1.loc.expression, node2)).to be(true)
+      expect(described_class.same_line?(node1.source_range, node2)).to be(true)
     end
 
     it 'returns false if an argument is not a node or range' do

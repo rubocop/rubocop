@@ -85,7 +85,7 @@ module RuboCop
         end
 
         def heredoc_opening(node)
-          node.loc.expression.source_line
+          node.source_range.source_line
         end
 
         def heredoc_closing(node)

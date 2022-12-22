@@ -104,7 +104,7 @@ module RuboCop
         end
 
         def inline_comment?(comment)
-          !comment_line?(comment.loc.expression.source_line)
+          !comment_line?(comment.source_range.source_line)
         end
 
         def annotation_range(annotation)

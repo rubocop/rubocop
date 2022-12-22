@@ -102,7 +102,7 @@ module RuboCop
               node.loc.name
             when :masgn
               mlhs_node, = *node
-              mlhs_node.loc.expression
+              mlhs_node.source_range
             else
               # It is a wrapper with access modifier.
               node.child_nodes.first.loc.name
@@ -196,7 +196,7 @@ module RuboCop
           if begin_end_alignment_style == 'start_of_line'
             start_line_range(alignment_node)
           else
-            alignment_node.loc.expression
+            alignment_node.source_range
           end
         end
 

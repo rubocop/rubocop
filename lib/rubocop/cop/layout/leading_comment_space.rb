@@ -63,7 +63,7 @@ module RuboCop
             next if gemfile_ruby_comment?(comment)
 
             add_offense(comment) do |corrector|
-              expr = comment.loc.expression
+              expr = comment.source_range
 
               corrector.insert_after(hash_mark(expr), ' ')
             end

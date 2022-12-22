@@ -290,7 +290,7 @@ module RuboCop
             return heredoc.location.heredoc_end.end_pos + 1 if heredoc
           end
 
-          end_line = buffer.line_for_position(node.loc.expression.end_pos)
+          end_line = buffer.line_for_position(node.source_range.end_pos)
           buffer.line_range(end_line).end_pos
         end
 

@@ -92,7 +92,7 @@ module RuboCop
 
         def offense_range(resbody)
           variable = resbody.exception_variable
-          variable.loc.expression
+          variable.source_range
         end
 
         def variable_name_matches?(node, name)

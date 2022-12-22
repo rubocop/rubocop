@@ -97,7 +97,7 @@ module RuboCop
         end
 
         def autocorrect_variable_interpolation(corrector, embedded_node, node)
-          replacement = "#{embedded_node.loc.expression.source}.to_s"
+          replacement = "#{embedded_node.source_range.source}.to_s"
 
           corrector.replace(node, replacement)
         end
@@ -107,7 +107,7 @@ module RuboCop
 
           source = if require_parentheses?(embedded_var)
                      receiver = range_between(
-                       embedded_var.loc.expression.begin_pos, embedded_var.loc.selector.end_pos
+                       embedded_var.source_range.begin_pos, embedded_var.loc.selector.end_pos
                      )
                      arguments = embedded_var.arguments.map(&:source).join(', ')
 

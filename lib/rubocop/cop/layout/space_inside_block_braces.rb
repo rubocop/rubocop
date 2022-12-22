@@ -146,7 +146,7 @@ module RuboCop
           if single_line && /\S$/.match?(inner)
             no_space(right_brace.begin_pos, right_brace.end_pos, 'Space missing inside }.')
           else
-            column = node.loc.expression.column
+            column = node.source_range.column
             return if multiline_block?(left_brace, right_brace) &&
                       aligned_braces?(inner, right_brace, column)
 

@@ -100,7 +100,7 @@ module RuboCop
         end
 
         def correction_range(node)
-          range_between(node.loc.dot.end_pos, node.loc.expression.end_pos)
+          range_between(node.loc.dot.end_pos, node.source_range.end_pos)
         end
 
         def openssl_class(node)

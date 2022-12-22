@@ -97,9 +97,9 @@ module RuboCop
         def autocorrect(corrector, node)
           previous_token = previous_token(node)
           range = if previous_token && same_line?(node, previous_token)
-                    range_with_surrounding_space(node.loc.expression, newlines: false)
+                    range_with_surrounding_space(node.source_range, newlines: false)
                   else
-                    range_by_whole_lines(node.loc.expression, include_final_newline: true)
+                    range_by_whole_lines(node.source_range, include_final_newline: true)
                   end
 
           corrector.remove(range)
@@ -137,7 +137,7 @@ module RuboCop
         end
 
         def current_token(comment)
-          processed_source.find_token { |token| token.pos == comment.loc.expression }
+          processed_source.find_token { |token| token.pos == comment.source_range }
         end
 
         def previous_token(node)

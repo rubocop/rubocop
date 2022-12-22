@@ -231,7 +231,7 @@ module RuboCop
           cop_names = cops.sort.map { |c| describe(c) }.join(', ')
 
           add_offense(location, message: message(cop_names)) do |corrector|
-            range = comment_range_with_surrounding_space(location, comment.loc.expression)
+            range = comment_range_with_surrounding_space(location, comment.source_range)
 
             if leave_free_comment?(comment, range)
               corrector.replace(range, ' # ')
@@ -263,8 +263,8 @@ module RuboCop
 
         def cop_range(comment, cop)
           cop = remove_department_marker(cop)
-          matching_range(comment.loc.expression, cop) ||
-            matching_range(comment.loc.expression, Badge.parse(cop).cop_name) ||
+          matching_range(comment.source_range, cop) ||
+            matching_range(comment.source_range, Badge.parse(cop).cop_name) ||
             raise("Couldn't find #{cop} in comment: #{comment.text}")
         end
 

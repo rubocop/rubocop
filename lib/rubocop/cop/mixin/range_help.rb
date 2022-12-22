@@ -132,12 +132,7 @@ module RuboCop
       end
 
       def range_with_comments(node)
-        ranges = [
-          node,
-          *@processed_source.ast_with_comments[node]
-        ].map do |element|
-          element.location.expression
-        end
+        ranges = [node, *@processed_source.ast_with_comments[node]].map(&:source_range)
         ranges.reduce do |result, range|
           add_range(result, range)
         end

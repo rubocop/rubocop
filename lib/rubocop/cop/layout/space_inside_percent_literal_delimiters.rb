@@ -83,7 +83,7 @@ module RuboCop
         end
 
         def body_range(node)
-          node.location.expression.with(
+          node.source_range.with(
             begin_pos: node.location.begin.end_pos,
             end_pos: node.location.end.begin_pos
           )

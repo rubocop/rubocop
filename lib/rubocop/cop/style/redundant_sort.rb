@@ -129,13 +129,13 @@ module RuboCop
         end
 
         def offense_range(sort_node, node)
-          range_between(sort_node.loc.selector.begin_pos, node.loc.expression.end_pos)
+          range_between(sort_node.loc.selector.begin_pos, node.source_range.end_pos)
         end
 
         def message(node, sorter, accessor)
           accessor_source = range_between(
             node.loc.selector.begin_pos,
-            node.loc.expression.end_pos
+            node.source_range.end_pos
           ).source
 
           format(MSG,
@@ -146,7 +146,7 @@ module RuboCop
 
         def autocorrect(corrector, node, sort_node, sorter, accessor)
           # Remove accessor, e.g. `first` or `[-1]`.
-          corrector.remove(range_between(accessor_start(node), node.loc.expression.end_pos))
+          corrector.remove(range_between(accessor_start(node), node.source_range.end_pos))
           # Replace "sort" or "sort_by" with the appropriate min/max method.
           corrector.replace(sort_node.loc.selector, suggestion(sorter, accessor, arg_value(node)))
           # Replace to avoid syntax errors when followed by a logical operator.

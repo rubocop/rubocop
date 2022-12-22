@@ -67,7 +67,7 @@ module RuboCop
           elsif begin_loc_present?(node)
             contents_range(node)
           else
-            node.loc.expression
+            node.source_range
           end
         end
 
@@ -139,7 +139,7 @@ module RuboCop
 
         def heredoc_with_disabled_interpolation?(node)
           if heredoc?(node)
-            node.loc.expression.source.end_with?("'")
+            node.source_range.source.end_with?("'")
           elsif node.parent&.dstr_type?
             heredoc_with_disabled_interpolation?(node.parent)
           else

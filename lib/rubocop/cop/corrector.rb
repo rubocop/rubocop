@@ -104,7 +104,7 @@ module RuboCop
       def to_range(node_or_range)
         range = case node_or_range
                 when ::RuboCop::AST::Node, ::Parser::Source::Comment
-                  node_or_range.loc.expression
+                  node_or_range.source_range
                 when ::Parser::Source::Range
                   node_or_range
                 else

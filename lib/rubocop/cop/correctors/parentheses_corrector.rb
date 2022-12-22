@@ -74,7 +74,7 @@ module RuboCop
         def add_heredoc_comma(corrector, node)
           return unless heredoc?(node)
 
-          corrector.insert_after(node.child_nodes.last.loc.expression, ',')
+          corrector.insert_after(node.child_nodes.last.source_range, ',')
         end
 
         def heredoc?(node)

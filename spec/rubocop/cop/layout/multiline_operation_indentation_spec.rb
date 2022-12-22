@@ -280,7 +280,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
 
         requires_interpolation = node.children.any? do |s|
           s.type == :dstr ||
-            s.loc.expression.source =~ REGEXP
+            s.source_range.source =~ REGEXP
         end
       RUBY
     end
