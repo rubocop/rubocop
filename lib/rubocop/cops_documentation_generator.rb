@@ -33,7 +33,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     cops.with_department(department).sort!
   end
 
-  def cops_body(cop, description, examples_objects, safety_objects, pars) # rubocop:disable Metrics/AbcSize
+  def cops_body(cop, description, examples_objects, safety_objects, see_objects, pars) # rubocop:disable Metrics/AbcSize, Metrics/ParameterLists
     check_examples_to_have_the_default_enforced_style!(examples_objects, cop)
 
     content = h2(cop.cop_name)
@@ -43,7 +43,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content << safety_object(safety_objects) if safety_objects.any? { |s| !s.text.blank? }
     content << examples(examples_objects) if examples_objects.any?
     content << configurations(cop.department, pars)
-    content << references(cop)
+    content << references(cop, see_objects)
     content
   end
 
@@ -224,14 +224,16 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def references(cop)
+  def references(cop, see_objects) # rubocop:disable Metrics/AbcSize
     cop_config = config.for_cop(cop)
     urls = RuboCop::Cop::MessageAnnotator.new(config, cop.name, cop_config, {}).urls
-    return '' if urls.empty?
+    return '' if urls.empty? && see_objects.empty?
 
     content = h3('References')
     content << urls.map { |url| "* #{url}" }.join("\n")
-    content << "\n"
+    content << "\n" unless urls.empty?
+    content << see_objects.map { |see| "* #{see.name}" }.join("\n")
+    content << "\n" unless see_objects.empty?
     content
   end
 
@@ -257,7 +259,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     end
   end
 
-  def print_cop_with_doc(cop)
+  def print_cop_with_doc(cop) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     cop_config = config.for_cop(cop)
     non_display_keys = %w[
       Description Enabled StyleGuide Reference Safe SafeAutoCorrect VersionAdded
@@ -265,13 +267,14 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     ]
     pars = cop_config.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
-    examples_object = safety_object = []
+    examples_object = safety_object = see_object = []
     cop_code(cop) do |code_object|
       description = code_object.docstring unless code_object.docstring.blank?
       examples_object = code_object.tags('example')
       safety_object = code_object.tags('safety')
+      see_object = code_object.tags('see')
     end
-    cops_body(cop, description, examples_object, safety_object, pars)
+    cops_body(cop, description, examples_object, safety_object, see_object, pars)
   end
 
   def cop_code(cop)
