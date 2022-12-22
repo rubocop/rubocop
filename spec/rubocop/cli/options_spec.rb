@@ -916,15 +916,36 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       end
     end
 
-    context 'when one cop plus one namespace are given' do
+    context 'when two cop plus one namespace are given' do
       it 'runs all cops except the given' do
         # The disable comment should not be reported as unnecessary (even if
         # it is) since --except overrides configuration.
         create_file('example.rb', ['# rubocop:disable LineLength', 'if x== 0 ', "\ty = 3", 'end'])
         expect(cli.run(['--format', 'offenses',
-                        '--except', 'Style/IfUnlessModifier,Lint',
+                        '--except', 'Style/IfUnlessModifier,Lint/UselessAssignment,Layout',
                         'example.rb'])).to eq(1)
         # NOTE: No Lint/UselessAssignment offense.
+        expect($stdout.string)
+          .to eq(<<~RESULT)
+
+            1  Lint/MissingCopEnableDirective
+            1  Lint/RedundantCopDisableDirective
+            1  Migration/DepartmentName
+            1  Style/FrozenStringLiteralComment
+            1  Style/NumericPredicate
+            --
+            5  Total in 1 files
+
+          RESULT
+      end
+    end
+
+    context 'when one cop plus `Lint/RedundantCopDisableDirective` are given' do
+      it 'runs all cops except the given' do
+        create_file('example.rb', ['# rubocop:disable LineLength', 'if x== 0 ', "\ty = 3", 'end'])
+        expect(cli.run(['--format', 'offenses',
+                        '--except', 'Style/IfUnlessModifier,Lint/RedundantCopDisableDirective',
+                        'example.rb'])).to eq(1)
         expect($stdout.string)
           .to eq(<<~RESULT)
 
@@ -932,11 +953,13 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             1  Layout/IndentationWidth
             1  Layout/SpaceAroundOperators
             1  Layout/TrailingWhitespace
+            1  Lint/MissingCopEnableDirective
+            1  Lint/UselessAssignment
             1  Migration/DepartmentName
             1  Style/FrozenStringLiteralComment
             1  Style/NumericPredicate
             --
-            7  Total in 1 files
+            9  Total in 1 files
 
           RESULT
       end

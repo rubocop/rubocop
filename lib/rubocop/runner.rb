@@ -27,6 +27,11 @@ module RuboCop
     # @api private
     MAX_ITERATIONS = 200
 
+    # @api private
+    REDUNDANT_COP_DISABLE_DIRECTIVE_RULES = %w[
+      Lint/RedundantCopDisableDirective RedundantCopDisableDirective Lint
+    ].freeze
+
     attr_reader :errors, :warnings
     attr_writer :aborting
 
@@ -194,7 +199,9 @@ module RuboCop
     end
 
     def check_for_redundant_disables?(source)
-      !source.disabled_line_ranges.empty? && !filtered_run?
+      return false if source.disabled_line_ranges.empty? || except_redundant_cop_disable_directive?
+
+      !@options[:only]
     end
 
     def redundant_cop_disable_directive(file)
@@ -205,8 +212,8 @@ module RuboCop
       yield cop if cop.relevant_file?(file)
     end
 
-    def filtered_run?
-      @options[:except] || @options[:only]
+    def except_redundant_cop_disable_directive?
+      @options[:except] && (@options[:except] & REDUNDANT_COP_DISABLE_DIRECTIVE_RULES).any?
     end
 
     def file_started(file)
