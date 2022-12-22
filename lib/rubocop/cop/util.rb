@@ -81,7 +81,7 @@ module RuboCop
       end
 
       def args_end(node)
-        node.loc.expression.end
+        node.source_range.end
       end
 
       def on_node(syms, sexp, excludes = [], &block)

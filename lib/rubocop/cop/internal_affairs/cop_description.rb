@@ -59,9 +59,9 @@ module RuboCop
         end
 
         def range(node, comment_line)
-          source_buffer = node.loc.expression.source_buffer
+          source_buffer = node.source_range.source_buffer
 
-          begin_pos = node.loc.expression.begin_pos
+          begin_pos = node.source_range.begin_pos
           begin_pos += comment_index(node, comment_line)
           end_pos = begin_pos + comment_body(comment_line).length
 
@@ -77,7 +77,7 @@ module RuboCop
         end
 
         def first_comment_line(node)
-          node.loc.expression.source.lines.find { |line| comment_line?(line) }
+          node.source_range.source.lines.find { |line| comment_line?(line) }
         end
 
         def comment_body(comment_line)
@@ -86,7 +86,7 @@ module RuboCop
 
         def comment_index(node, comment_line)
           body = comment_body(comment_line)
-          node.loc.expression.source.index(body)
+          node.source_range.source.index(body)
         end
 
         def relevant_file?(file)

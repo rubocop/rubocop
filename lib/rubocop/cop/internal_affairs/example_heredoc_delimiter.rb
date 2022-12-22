@@ -92,7 +92,7 @@ module RuboCop
         # @return [Parser::Source::Range]
         def heredoc_openning_delimiter_range_from(node)
           match_data = node.source.match(Heredoc::OPENING_DELIMITER)
-          node.location.expression.begin.adjust(
+          node.source_range.begin.adjust(
             begin_pos: match_data.begin(2),
             end_pos: match_data.end(2)
           )

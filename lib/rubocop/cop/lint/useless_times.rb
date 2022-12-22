@@ -74,7 +74,7 @@ module RuboCop
         end
 
         def remove_node(corrector, node)
-          corrector.remove(range_by_whole_lines(node.loc.expression, include_final_newline: true))
+          corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
         end
 
         def autocorrect_block_pass(corrector, node, proc_name)

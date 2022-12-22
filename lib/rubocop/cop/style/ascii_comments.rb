@@ -30,7 +30,7 @@ module RuboCop
         private
 
         def first_offense_range(comment)
-          expression    = comment.loc.expression
+          expression    = comment.source_range
           first_offense = first_non_ascii_chars(comment.text)
 
           start_position = expression.begin_pos + comment.text.index(first_offense)

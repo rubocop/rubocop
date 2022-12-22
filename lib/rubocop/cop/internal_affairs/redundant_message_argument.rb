@@ -56,7 +56,7 @@ module RuboCop
         private
 
         def offending_range(node)
-          with_space = range_with_surrounding_space(node.loc.expression)
+          with_space = range_with_surrounding_space(node.source_range)
 
           range_with_surrounding_comma(with_space, :left)
         end

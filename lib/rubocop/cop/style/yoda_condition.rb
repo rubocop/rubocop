@@ -145,7 +145,7 @@ module RuboCop
         end
 
         def actual_code_range(node)
-          range_between(node.loc.expression.begin_pos, node.loc.expression.end_pos)
+          range_between(node.source_range.begin_pos, node.source_range.end_pos)
         end
 
         def reverse_comparison(operator)

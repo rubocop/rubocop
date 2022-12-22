@@ -110,7 +110,7 @@ module RuboCop
           return if nodoc_self_or_outer_module?(node)
           return if include_statement_only?(body)
 
-          range = range_between(node.loc.expression.begin_pos, node.loc.name.end_pos)
+          range = range_between(node.source_range.begin_pos, node.loc.name.end_pos)
           message = format(MSG, type: node.type, identifier: identifier(node))
           add_offense(range, message: message)
         end

@@ -89,7 +89,7 @@ module RuboCop
 
         def autocorrected_value_for_symbol(node)
           end_pos =
-            node.loc.end ? node.loc.end.begin_pos : node.loc.expression.end_pos
+            node.loc.end ? node.loc.end.begin_pos : node.source_range.end_pos
 
           range_between(node.loc.begin.end_pos, end_pos).source
         end

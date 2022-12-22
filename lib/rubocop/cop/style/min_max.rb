@@ -48,13 +48,13 @@ module RuboCop
           when :return
             argument_range(node)
           else
-            node.loc.expression
+            node.source_range
           end
         end
 
         def argument_range(node)
-          first_argument_range = node.children.first.loc.expression
-          last_argument_range  = node.children.last.loc.expression
+          first_argument_range = node.children.first.source_range
+          last_argument_range  = node.children.last.source_range
 
           first_argument_range.join(last_argument_range)
         end

@@ -83,7 +83,7 @@ module RuboCop
                           ALTERNATIVE_PROTECTED
                         end
           format(MSG, modifier: visibility,
-                      line: modifier.location.expression.line,
+                      line: modifier.source_range.line,
                       alternative: alternative)
         end
 

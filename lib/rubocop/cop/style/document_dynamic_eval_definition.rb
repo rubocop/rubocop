@@ -116,7 +116,7 @@ module RuboCop
 
         def preceding_comment_blocks(node)
           # Collect comments in the method call, but outside the heredoc
-          comments = processed_source.each_comment_in_lines(node.loc.expression.line_span)
+          comments = processed_source.each_comment_in_lines(node.source_range.line_span)
 
           comments.each_with_object({}) do |comment, hash|
             merge_adjacent_comments(comment.text, comment.loc.line, hash)

@@ -36,7 +36,7 @@ module RuboCop
         length = calculator.calculate
         return if length <= max_length
 
-        location = node.casgn_type? ? node.loc.name : node.loc.expression
+        location = node.casgn_type? ? node.loc.name : node.source_range
 
         add_offense(location, message: message(length, max_length)) { self.max = length }
       end

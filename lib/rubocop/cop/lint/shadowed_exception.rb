@@ -83,7 +83,7 @@ module RuboCop
 
         def offense_range(rescues)
           shadowing_rescue = find_shadowing_rescue(rescues)
-          expression = shadowing_rescue.loc.expression
+          expression = shadowing_rescue.source_range
           range_between(expression.begin_pos, expression.end_pos)
         end
 

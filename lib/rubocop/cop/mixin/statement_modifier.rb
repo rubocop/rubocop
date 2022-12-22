@@ -65,14 +65,14 @@ module RuboCop
       end
 
       def method_source(if_body)
-        range_between(if_body.loc.expression.begin_pos, if_body.loc.selector.end_pos).source
+        range_between(if_body.source_range.begin_pos, if_body.loc.selector.end_pos).source
       end
 
       def first_line_comment(node)
         comment = processed_source.find_comment { |c| same_line?(c, node) }
         return unless comment
 
-        comment_source = comment.loc.expression.source
+        comment_source = comment.source_range.source
         comment_source unless comment_disables_cop?(comment_source)
       end
 

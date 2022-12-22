@@ -182,7 +182,7 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def autocorrect(corrector, node, condition, replacement, guard)
-          corrector.replace(node.loc.keyword.join(condition.loc.expression), replacement)
+          corrector.replace(node.loc.keyword.join(condition.source_range), replacement)
 
           if_branch = node.if_branch
           else_branch = node.else_branch

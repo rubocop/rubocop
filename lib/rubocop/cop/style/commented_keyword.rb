@@ -66,7 +66,7 @@ module RuboCop
 
         def register_offense(comment, matched_keyword)
           add_offense(comment, message: format(MSG, keyword: matched_keyword)) do |corrector|
-            range = range_with_surrounding_space(comment.loc.expression, newlines: false)
+            range = range_with_surrounding_space(comment.source_range, newlines: false)
             corrector.remove(range)
 
             unless matched_keyword == 'end'
@@ -84,7 +84,7 @@ module RuboCop
         end
 
         def source_line(comment)
-          comment.location.expression.source_line
+          comment.source_range.source_line
         end
       end
     end

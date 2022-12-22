@@ -93,7 +93,7 @@ module RuboCop
         end
 
         def static?(heredoc)
-          heredoc.loc.expression.source.end_with? "'"
+          heredoc.source_range.source.end_with? "'"
         end
 
         def skip_heredoc?

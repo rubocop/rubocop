@@ -33,7 +33,7 @@ module RuboCop
 
         def separator_delta(pair)
           if pair.hash_rocket?
-            correct_separator_column = pair.key.loc.expression.end.column + 1
+            correct_separator_column = pair.key.source_range.end.column + 1
             actual_separator_column = pair.loc.operator.column
 
             correct_separator_column - actual_separator_column

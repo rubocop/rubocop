@@ -297,11 +297,11 @@ module RuboCop
         end
 
         def begin_range(node, method_call)
-          range_between(node.loc.expression.begin_pos, method_call.loc.expression.begin_pos)
+          range_between(node.source_range.begin_pos, method_call.source_range.begin_pos)
         end
 
         def end_range(node, method_call)
-          range_between(method_call.loc.expression.end_pos, node.loc.expression.end_pos)
+          range_between(method_call.source_range.end_pos, node.source_range.end_pos)
         end
 
         def add_safe_nav_to_all_methods_in_chain(corrector,

@@ -75,7 +75,7 @@ module RuboCop
 
       def inside_comment?(range, comma_offset)
         comment = processed_source.comment_at_line(range.line)
-        comment && comment.loc.expression.begin_pos < range.begin_pos + comma_offset
+        comment && comment.source_range.begin_pos < range.begin_pos + comma_offset
       end
 
       # Returns true if the node has round/square/curly brackets.

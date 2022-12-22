@@ -123,10 +123,10 @@ module RuboCop
         end
 
         def range(node)
-          buffer = node.loc.expression.source_buffer
+          buffer = node.source_range.source_buffer
           map_node = node.receiver.send_node
           begin_pos = map_node.loc.selector.begin_pos
-          end_pos = node.loc.expression.end_pos
+          end_pos = node.source_range.end_pos
 
           Parser::Source::Range.new(buffer, begin_pos, end_pos)
         end

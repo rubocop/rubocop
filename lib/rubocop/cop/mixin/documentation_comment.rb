@@ -23,7 +23,7 @@ module RuboCop
       # The args node1 & node2 may represent a RuboCop::AST::Node
       # or a Parser::Source::Comment. Both respond to #loc.
       def preceding_comment?(node1, node2)
-        node1 && node2 && precede?(node2, node1) && comment_line?(node2.loc.expression.source)
+        node1 && node2 && precede?(node2, node1) && comment_line?(node2.source_range.source)
       end
 
       # The args node1 & node2 may represent a RuboCop::AST::Node

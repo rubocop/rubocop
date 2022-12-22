@@ -144,7 +144,7 @@ module RuboCop
         end
 
         def range_for_parentheses(offense, left)
-          range_between(offense.source_range.begin_pos - 1, left.loc.expression.end_pos - 1)
+          range_between(offense.source_range.begin_pos - 1, left.source_range.end_pos - 1)
         end
       end
     end

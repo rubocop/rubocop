@@ -65,7 +65,7 @@ module RuboCop
         heredoc_nodes = processed_source.ast.each_descendant.select do |node|
           node.respond_to?(:heredoc?) && node.heredoc?
         end
-        heredoc_nodes.map { |node| node.loc.expression.join(node.loc.heredoc_end) }
+        heredoc_nodes.map { |node| node.source_range.join(node.loc.heredoc_end) }
                      .find { |range| range.contains?(offense_range) }
       end
 

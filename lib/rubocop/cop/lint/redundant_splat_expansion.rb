@@ -141,7 +141,7 @@ module RuboCop
           expression = loc.expression
 
           if array_new?(variable)
-            expression = node.parent.loc.expression if node.parent.array_type?
+            expression = node.parent.source_range if node.parent.array_type?
             [expression, variable.source]
           elsif !variable.array_type?
             [expression, "[#{variable.source}]"]

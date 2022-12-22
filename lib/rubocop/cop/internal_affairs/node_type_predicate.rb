@@ -30,7 +30,7 @@ module RuboCop
 
             message = format(MSG, type: node_type)
             add_offense(node, message: message) do |corrector|
-              range = node.loc.expression.with(begin_pos: receiver.loc.expression.end_pos + 1)
+              range = node.source_range.with(begin_pos: receiver.source_range.end_pos + 1)
               corrector.replace(range, "#{node_type}_type?")
             end
           end

@@ -146,7 +146,7 @@ module RuboCop
                            actual: line_node.source,
                            expected: expected)
 
-          add_offense(line_node.loc.expression, message: message) do |corrector|
+          add_offense(line_node.source_range, message: message) do |corrector|
             corrector.replace(line_node, expected)
           end
         end
@@ -175,14 +175,14 @@ module RuboCop
         end
 
         def line_difference(line_node, code)
-          string_first_line(code) - line_node.loc.expression.first_line
+          string_first_line(code) - line_node.source_range.first_line
         end
 
         def string_first_line(str_node)
           if str_node.heredoc?
             str_node.loc.heredoc_body.first_line
           else
-            str_node.loc.expression.first_line
+            str_node.source_range.first_line
           end
         end
 
@@ -210,7 +210,7 @@ module RuboCop
         def add_offense_for_missing_line(node, code)
           register_offense(node) do |corrector|
             line_str = missing_line(node, code)
-            corrector.insert_after(node.loc.expression.end, ", #{line_str}")
+            corrector.insert_after(node.source_range.end, ", #{line_str}")
           end
         end
 

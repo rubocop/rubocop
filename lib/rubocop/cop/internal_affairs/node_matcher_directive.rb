@@ -99,7 +99,7 @@ module RuboCop
           # If the pattern matcher uses arguments (`%1`, `%2`, etc.), include them in the directive
           arguments = pattern_arguments(node.arguments[1].source)
 
-          range = range_with_surrounding_space(node.loc.expression, side: :left, newlines: false)
+          range = range_with_surrounding_space(node.source_range, side: :left, newlines: false)
           indentation = range.source.match(/^\s*/)[0]
           directive = "#{indentation}# @!method #{actual_name}(#{arguments.join(', ')})\n"
           directive = "\n#{directive}" if add_newline?(node)

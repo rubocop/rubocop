@@ -45,7 +45,7 @@ module RuboCop
         end
 
         def check_cop_name(name, comment, offset)
-          start = comment.location.expression.begin_pos + offset
+          start = comment.source_range.begin_pos + offset
           range = range_between(start, start + name.length)
 
           add_offense(range) do |corrector|

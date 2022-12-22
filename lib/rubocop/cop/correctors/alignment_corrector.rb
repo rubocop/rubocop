@@ -16,7 +16,7 @@ module RuboCop
           return unless node
 
           @processed_source = processed_source
-          expr = node.respond_to?(:loc) ? node.loc.expression : node
+          expr = node.respond_to?(:loc) ? node.source_range : node
           return if block_comment_within?(expr)
 
           taboo_ranges = inside_string_ranges(node)
@@ -80,7 +80,7 @@ module RuboCop
 
         def block_comment_within?(expr)
           processed_source.comments.select(&:document?).any? do |c|
-            within?(c.loc.expression, expr)
+            within?(c.source_range, expr)
           end
         end
 

@@ -163,8 +163,8 @@ module RuboCop
             return 0 unless parenthesized?(parent)
 
             [
-              parent.loc.begin.end_pos != descendant.loc.expression.begin_pos,
-              parent.loc.end.begin_pos != descendant.loc.expression.end_pos
+              parent.loc.begin.end_pos != descendant.source_range.begin_pos,
+              parent.loc.end.begin_pos != descendant.source_range.end_pos
             ].count(true)
           end
 

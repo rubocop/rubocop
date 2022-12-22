@@ -77,7 +77,7 @@ module RuboCop
           return false unless processed_source.contains_comment?(node.source_range)
 
           line_comment = processed_source.comment_at_line(node.source_range.line)
-          !line_comment || !comment_disables_cop?(line_comment.loc.expression.source)
+          !line_comment || !comment_disables_cop?(line_comment.source_range.source)
         end
 
         def allow_empty_lambdas?

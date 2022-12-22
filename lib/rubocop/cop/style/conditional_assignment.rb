@@ -450,7 +450,7 @@ module RuboCop
         end
 
         def white_space_range(node, column)
-          expression = node.loc.expression
+          expression = node.source_range
           begin_pos = expression.begin_pos - (expression.column - column - 2)
 
           Parser::Source::Range.new(expression.source_buffer, begin_pos, expression.begin_pos)
@@ -458,9 +458,9 @@ module RuboCop
 
         def assignment(node)
           *_, condition = *node
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    node.loc.expression.begin_pos,
-                                    condition.loc.expression.begin_pos)
+          Parser::Source::Range.new(node.source_range.source_buffer,
+                                    node.source_range.begin_pos,
+                                    condition.source_range.begin_pos)
         end
 
         def correct_if_branches(corrector, cop, node)
@@ -565,7 +565,7 @@ module RuboCop
           end
 
           def move_assignment_inside_condition(corrector, node)
-            column = node.loc.expression.column
+            column = node.source_range.column
             *_var, condition = *node
             assignment = assignment(node)
 
@@ -616,7 +616,7 @@ module RuboCop
           end
 
           def move_assignment_inside_condition(corrector, node)
-            column = node.loc.expression.column
+            column = node.source_range.column
             *_var, condition = *node
             assignment = assignment(node)
 

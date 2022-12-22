@@ -124,7 +124,7 @@ module RuboCop
         end
 
         def preceding_comment?(node1, node2)
-          node1 && node2 && precede?(node2, node1) && comment_line?(node2.loc.expression.source)
+          node1 && node2 && precede?(node2, node1) && comment_line?(node2.source_range.source)
         end
 
         def ignored_gem?(node)

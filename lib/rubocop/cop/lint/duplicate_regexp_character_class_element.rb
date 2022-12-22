@@ -86,9 +86,7 @@ module RuboCop
           # Cache by loc, not by regexp content, as content can be repeated in multiple patterns
           key = node.loc
 
-          @interpolation_locs[key] ||= node.children.select(&:begin_type?).map do |interpolation|
-            interpolation.loc.expression
-          end
+          @interpolation_locs[key] ||= node.children.select(&:begin_type?).map(&:source_range)
         end
       end
     end

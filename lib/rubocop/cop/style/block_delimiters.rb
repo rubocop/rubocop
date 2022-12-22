@@ -299,7 +299,7 @@ module RuboCop
 
         def move_comment_before_block(corrector, comment, block_node, closing_brace)
           range = block_node.chained? ? end_of_chain(block_node.parent).source_range : closing_brace
-          corrector.remove(range_with_surrounding_space(comment.loc.expression, side: :right))
+          corrector.remove(range_with_surrounding_space(comment.source_range, side: :right))
           remove_trailing_whitespace(corrector, range, comment)
           corrector.insert_after(range, "\n")
 
@@ -314,7 +314,7 @@ module RuboCop
         end
 
         def remove_trailing_whitespace(corrector, range, comment)
-          range_of_trailing = range.end.join(comment.loc.expression.begin)
+          range_of_trailing = range.end.join(comment.source_range.begin)
 
           corrector.remove(range_of_trailing) if range_of_trailing.source.match?(/\A\s+\z/)
         end

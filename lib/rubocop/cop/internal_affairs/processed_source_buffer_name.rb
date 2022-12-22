@@ -30,7 +30,7 @@ module RuboCop
         def on_send(node)
           return unless processed_source_buffer_name?(node)
 
-          offense_range = node.children.first.loc.selector.begin.join(node.loc.expression.end)
+          offense_range = node.children.first.loc.selector.begin.join(node.source_range.end)
 
           add_offense(offense_range) do |corrector|
             corrector.replace(offense_range, 'file_path')

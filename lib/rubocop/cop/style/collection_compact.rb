@@ -112,7 +112,7 @@ module RuboCop
         end
 
         def range(begin_pos_node, end_pos_node)
-          range_between(begin_pos_node.loc.selector.begin_pos, end_pos_node.loc.expression.end_pos)
+          range_between(begin_pos_node.loc.selector.begin_pos, end_pos_node.source_range.end_pos)
         end
       end
     end

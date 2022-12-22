@@ -45,9 +45,9 @@ module RuboCop
 
     def range
       match = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
-      begin_pos = comment.loc.expression.begin_pos
+      begin_pos = comment.source_range.begin_pos
       Parser::Source::Range.new(
-        comment.loc.expression.source_buffer, begin_pos + match.begin(0), begin_pos + match.end(0)
+        comment.source_range.source_buffer, begin_pos + match.begin(0), begin_pos + match.end(0)
       )
     end
 
@@ -108,7 +108,7 @@ module RuboCop
 
     # Returns line number for directive
     def line_number
-      comment.loc.expression.line
+      comment.source_range.line
     end
 
     private

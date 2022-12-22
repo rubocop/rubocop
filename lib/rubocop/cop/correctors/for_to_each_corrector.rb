@@ -56,7 +56,7 @@ module RuboCop
         if collection_node.begin_type?
           collection_node.loc.end
         else
-          collection_node.loc.expression
+          collection_node.source_range
         end
       end
 
@@ -65,8 +65,8 @@ module RuboCop
       end
 
       def replacement_range(end_pos)
-        Parser::Source::Range.new(for_node.loc.expression.source_buffer,
-                                  for_node.loc.expression.begin_pos,
+        Parser::Source::Range.new(for_node.source_range.source_buffer,
+                                  for_node.source_range.begin_pos,
                                   end_pos)
       end
     end

@@ -35,15 +35,15 @@ module RuboCop
 
       def offending_range
         if block_node.arguments?
-          replacement_range(argument_node.loc.expression.end_pos)
+          replacement_range(argument_node.source_range.end_pos)
         else
           replacement_range(block_node.loc.begin.end_pos)
         end
       end
 
       def replacement_range(end_pos)
-        Parser::Source::Range.new(block_node.loc.expression.source_buffer,
-                                  block_node.loc.expression.begin_pos,
+        Parser::Source::Range.new(block_node.source_range.source_buffer,
+                                  block_node.source_range.begin_pos,
                                   end_pos)
       end
     end

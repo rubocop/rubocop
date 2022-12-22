@@ -255,7 +255,7 @@ module RuboCop
           @comment_lines ||=
             processed_source
             .comments
-            .select { |c| begins_its_line?(c.loc.expression) }
+            .select { |c| begins_its_line?(c.source_range) }
             .map { |c| c.loc.line }
         end
 

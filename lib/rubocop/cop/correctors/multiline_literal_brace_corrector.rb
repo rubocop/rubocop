@@ -52,7 +52,7 @@ module RuboCop
         return unless (parent = node.parent)
         return unless use_heredoc_argument_method_chain?(parent)
 
-        chained_method = range_between(parent.loc.dot.begin_pos, parent.loc.expression.end_pos)
+        chained_method = range_between(parent.loc.dot.begin_pos, parent.source_range.end_pos)
 
         corrector.remove(chained_method)
         corrector.insert_after(end_range, chained_method.source)
@@ -80,7 +80,7 @@ module RuboCop
       def select_content_to_be_inserted_after_last_element(corrector, node)
         range = range_between(
           node.loc.end.begin_pos,
-          range_by_whole_lines(node.loc.expression).end.end_pos
+          range_by_whole_lines(node.source_range).end.end_pos
         )
 
         remove_trailing_content_of_comment(corrector, range)

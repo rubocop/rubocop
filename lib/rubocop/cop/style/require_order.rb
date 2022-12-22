@@ -125,9 +125,7 @@ module RuboCop
         end
 
         def in_same_section?(node1, node2)
-          !node1.location.expression.with(
-            end_pos: node2.location.expression.end_pos
-          ).source.include?("\n\n")
+          !node1.source_range.with(end_pos: node2.source_range.end_pos).source.include?("\n\n")
         end
       end
     end

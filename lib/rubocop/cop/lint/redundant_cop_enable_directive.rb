@@ -74,7 +74,7 @@ module RuboCop
         end
 
         def comment_start(comment)
-          comment.loc.expression.begin_pos
+          comment.source_range.begin_pos
         end
 
         def cop_name_indention(comment, name)
@@ -82,7 +82,7 @@ module RuboCop
         end
 
         def range_with_comma(comment, name)
-          source = comment.loc.expression.source
+          source = comment.source_range.source
 
           begin_pos = cop_name_indention(comment, name)
           end_pos = begin_pos + name.size
@@ -94,14 +94,14 @@ module RuboCop
 
         def range_to_remove(begin_pos, end_pos, comment)
           start = comment_start(comment)
-          source = comment.loc.expression.source
+          source = comment.source_range.source
 
           if source[begin_pos - 1] == ','
             range_with_comma_before(start, begin_pos, end_pos)
           elsif source[end_pos] == ','
             range_with_comma_after(comment, start, begin_pos, end_pos)
           else
-            range_between(start, comment.loc.expression.end_pos)
+            range_between(start, comment.source_range.end_pos)
           end
         end
 
@@ -112,7 +112,7 @@ module RuboCop
         # If the list of cops is comma-separated, but without a empty space after the comma,
         # we should **not** remove the prepending empty space, thus begin_pos += 1
         def range_with_comma_after(comment, start, begin_pos, end_pos)
-          begin_pos += 1 if comment.loc.expression.source[end_pos + 1] != ' '
+          begin_pos += 1 if comment.source_range.source[end_pos + 1] != ' '
 
           range_between(start + begin_pos, start + end_pos + 1)
         end

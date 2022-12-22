@@ -71,7 +71,7 @@ module RuboCop
             message = format(MSG, read_method: read_method(mode))
 
             add_offense(read_node, message: message) do |corrector|
-              range = range_between(node.loc.selector.begin_pos, read_node.loc.expression.end_pos)
+              range = range_between(node.loc.selector.begin_pos, read_node.source_range.end_pos)
               replacement = "#{read_method(mode)}(#{filename.source})"
 
               corrector.replace(range, replacement)

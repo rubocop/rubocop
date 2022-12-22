@@ -67,7 +67,7 @@ module RuboCop
 
         def range_position(node)
           selector_end_pos = node.loc.selector.end_pos + 1
-          expr_end_pos = node.loc.expression.end_pos
+          expr_end_pos = node.source_range.end_pos
 
           range_between(selector_end_pos, expr_end_pos)
         end

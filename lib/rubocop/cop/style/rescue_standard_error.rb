@@ -105,11 +105,11 @@ module RuboCop
         private
 
         def offense_for_implicit_enforced_style(node, error)
-          range = node.loc.keyword.join(error.loc.expression)
+          range = node.loc.keyword.join(error.source_range)
 
           add_offense(range, message: MSG_IMPLICIT) do |corrector|
             error = rescue_standard_error?(node)
-            range = range_between(node.loc.keyword.end_pos, error.loc.expression.end_pos)
+            range = range_between(node.loc.keyword.end_pos, error.source_range.end_pos)
 
             corrector.remove(range)
           end

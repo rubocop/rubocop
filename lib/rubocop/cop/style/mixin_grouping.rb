@@ -51,9 +51,9 @@ module RuboCop
         private
 
         def range_to_remove_for_subsequent_mixin(mixins, node)
-          range = node.loc.expression
+          range = node.source_range
           prev_mixin = mixins.each_cons(2) { |m, n| break m if n == node }
-          between = prev_mixin.loc.expression.end.join(range.begin)
+          between = prev_mixin.source_range.end.join(range.begin)
           # if separated from previous mixin with only whitespace?
           unless /\S/.match?(between.source)
             range = range.join(between) # then remove that too
@@ -75,7 +75,7 @@ module RuboCop
           message = format(MSG, mixin: send_node.method_name, suffix: 'a single statement')
 
           add_offense(send_node, message: message) do |corrector|
-            range = send_node.loc.expression
+            range = send_node.source_range
             mixins = sibling_mixins(send_node)
             if send_node == mixins.first
               correction = group_mixins(send_node, mixins)
@@ -94,7 +94,7 @@ module RuboCop
           message = format(MSG, mixin: send_node.method_name, suffix: 'separate statements')
 
           add_offense(send_node, message: message) do |corrector|
-            range = send_node.loc.expression
+            range = send_node.source_range
             correction = separate_mixins(send_node)
 
             corrector.replace(range, correction)

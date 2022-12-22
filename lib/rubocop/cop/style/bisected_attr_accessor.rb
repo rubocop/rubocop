@@ -55,7 +55,7 @@ module RuboCop
         def after_class(class_node)
           @macros_to_rewrite[class_node].each do |macro|
             node = macro.node
-            range = range_by_whole_lines(node.loc.expression, include_final_newline: true)
+            range = range_by_whole_lines(node.source_range, include_final_newline: true)
 
             correct(range) do |corrector|
               if macro.writer?

@@ -235,7 +235,7 @@ module RuboCop
 
         def end_loc(node)
           if (node.def_type? || node.defs_type?) && node.endless?
-            node.loc.expression.end
+            node.source_range.end
           else
             node.loc.end
           end

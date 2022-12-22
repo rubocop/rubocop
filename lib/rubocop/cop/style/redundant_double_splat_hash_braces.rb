@@ -33,11 +33,11 @@ module RuboCop
         private
 
         def opening_brace(node)
-          node.loc.begin.join(node.children.first.loc.expression.begin)
+          node.loc.begin.join(node.children.first.source_range.begin)
         end
 
         def closing_brace(node)
-          node.children.last.loc.expression.end.join(node.loc.end)
+          node.children.last.source_range.end.join(node.loc.end)
         end
       end
     end

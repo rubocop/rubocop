@@ -82,7 +82,7 @@ module RuboCop
 
         def offense_range(node)
           if socket_const?(node.receiver) || dir_env_file_const?(node.receiver)
-            node.loc.expression.begin.join(node.loc.selector.end)
+            node.source_range.begin.join(node.loc.selector.end)
           elsif node.method?(:attr)
             node
           else
