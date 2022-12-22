@@ -132,7 +132,6 @@ module RuboCop
       #     end
       #   end
       #
-      # @see https://rubystyle.guide#consistent-classes
       class ClassStructure < Base
         include VisibilityHelp
         extend AutoCorrector
