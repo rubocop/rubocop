@@ -88,6 +88,10 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
     expect_no_offenses('do_something[foo && bar ? baz : qux]')
   end
 
+  it 'accepts missing parentheses when assigning ternary operator' do
+    expect_no_offenses('self.foo = bar && baz ? qux : quux')
+  end
+
   it 'accepts calls to methods that are setters' do
     expect_no_offenses('s.version = @version || ">= 1.8.5"')
   end

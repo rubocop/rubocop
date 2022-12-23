@@ -46,7 +46,9 @@ module RuboCop
         private
 
         def check_ternary(ternary, node)
-          return if node.method?(:[]) || !ternary.condition.operator_keyword?
+          if node.method?(:[]) || node.assignment_method? || !ternary.condition.operator_keyword?
+            return
+          end
 
           range = range_between(node.source_range.begin_pos, ternary.condition.source_range.end_pos)
 
