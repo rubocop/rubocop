@@ -78,7 +78,7 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
         expect($stdout.string).to eq(<<~OUTPUT)
           == example.rb ==
           C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-          W:  1: 21: [Corrected] Lint/UnusedMethodArgument: Unused method argument - some_arg. If it's necessary, use _ or _some_arg as an argument name to indicate that it won't be used. You can also write as ordinary_method(*) if you want the method to accept any arguments but don't care about them.
+          W:  1: 21: [Corrected] Lint/UnusedMethodArgument: Unused method argument - some_arg. If it's necessary, use _ or _some_arg as an argument name to indicate that it won't be used. If it's unnecessary, remove it. You can also write as ordinary_method(*) if you want the method to accept any arguments but don't care about them.
           C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
           W:  5: 29: [Todo] Lint/UnusedMethodArgument: Unused method argument - some_keyword_arg. You can also write as method_with_keyword_arg(*) if you want the method to accept any arguments but don't care about them.
 
