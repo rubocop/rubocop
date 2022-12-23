@@ -34,43 +34,55 @@ module RuboCop
       class ZeroLengthPredicate < Base
         extend AutoCorrector
 
-        ZERO_MSG = 'Use `empty?` instead of `%<lhs>s %<opr>s %<rhs>s`.'
-        NONZERO_MSG = 'Use `!empty?` instead of `%<lhs>s %<opr>s %<rhs>s`.'
+        ZERO_MSG = 'Use `empty?` instead of `%<current>s`.'
+        NONZERO_MSG = 'Use `!empty?` instead of `%<current>s`.'
 
         RESTRICT_ON_SEND = %i[size length].freeze
 
         def on_send(node)
           check_zero_length_predicate(node)
-          check_nonzero_length_predicate(node)
+          check_zero_length_comparison(node)
+          check_nonzero_length_comparison(node)
         end
 
         private
 
         def check_zero_length_predicate(node)
-          zero_length_predicate = zero_length_predicate(node.parent)
-          return unless zero_length_predicate
+          return unless (length_method = zero_length_predicate(node.parent))
 
-          lhs, opr, rhs = zero_length_predicate
+          offense = node.loc.selector.join(node.parent.source_range.end)
+          message = format(ZERO_MSG, current: "#{length_method}.zero?")
+
+          add_offense(offense, message: message) do |corrector|
+            corrector.replace(offense, 'empty?')
+          end
+        end
+
+        def check_zero_length_comparison(node)
+          zero_length_comparison = zero_length_comparison(node.parent)
+          return unless zero_length_comparison
+
+          lhs, opr, rhs = zero_length_comparison
 
           return if non_polymorphic_collection?(node.parent)
 
           add_offense(
-            node.parent, message: format(ZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
+            node.parent, message: format(ZERO_MSG, current: "#{lhs} #{opr} #{rhs}")
           ) do |corrector|
             corrector.replace(node.parent, replacement(node.parent))
           end
         end
 
-        def check_nonzero_length_predicate(node)
-          nonzero_length_predicate = nonzero_length_predicate(node.parent)
-          return unless nonzero_length_predicate
+        def check_nonzero_length_comparison(node)
+          nonzero_length_comparison = nonzero_length_comparison(node.parent)
+          return unless nonzero_length_comparison
 
-          lhs, opr, rhs = nonzero_length_predicate
+          lhs, opr, rhs = nonzero_length_comparison
 
           return if non_polymorphic_collection?(node.parent)
 
           add_offense(
-            node.parent, message: format(NONZERO_MSG, lhs: lhs, opr: opr, rhs: rhs)
+            node.parent, message: format(NONZERO_MSG, current: "#{lhs} #{opr} #{rhs}")
           ) do |corrector|
             corrector.replace(node.parent, replacement(node.parent))
           end
@@ -78,14 +90,19 @@ module RuboCop
 
         # @!method zero_length_predicate(node)
         def_node_matcher :zero_length_predicate, <<~PATTERN
+          (send (send (...) ${:length :size}) :zero?)
+        PATTERN
+
+        # @!method zero_length_comparison(node)
+        def_node_matcher :zero_length_comparison, <<~PATTERN
           {(send (send (...) ${:length :size}) $:== (int $0))
            (send (int $0) $:== (send (...) ${:length :size}))
            (send (send (...) ${:length :size}) $:<  (int $1))
            (send (int $1) $:> (send (...) ${:length :size}))}
         PATTERN
 
-        # @!method nonzero_length_predicate(node)
-        def_node_matcher :nonzero_length_predicate, <<~PATTERN
+        # @!method nonzero_length_comparison(node)
+        def_node_matcher :nonzero_length_comparison, <<~PATTERN
           {(send (send (...) ${:length :size}) ${:> :!=} (int $0))
            (send (int $0) ${:< :!=} (send (...) ${:length :size}))}
         PATTERN
