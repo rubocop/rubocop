@@ -100,7 +100,8 @@ module RuboCop
 
           unless variable.keyword_argument?
             message << " If it's necessary, use `_` or `_#{variable.name}` " \
-                       "as an argument name to indicate that it won't be used."
+                       "as an argument name to indicate that it won't be used. " \
+                       "If it's unnecessary, remove it."
           end
 
           scope = variable.scope
