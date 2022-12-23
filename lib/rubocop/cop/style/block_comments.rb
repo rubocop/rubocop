@@ -32,7 +32,7 @@ module RuboCop
               eq_begin, eq_end, contents = parts(comment)
 
               corrector.remove(eq_begin)
-              unless contents.length.zero?
+              unless contents.empty?
                 corrector.replace(
                   contents,
                   contents.source.gsub(/\A/, '# ').gsub(/\n\n/, "\n#\n").gsub(/\n(?=[^#])/, "\n# ")
