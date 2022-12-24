@@ -30,6 +30,7 @@ module RuboCop
           'Use `push` with elements as arguments without array brackets instead of `%<current>s`.'
         RESTRICT_ON_SEND = %i[concat].freeze
 
+        # rubocop:disable Metrics
         def on_send(node)
           return if node.arguments.empty?
           return unless node.arguments.all?(&:array_type?)
@@ -38,7 +39,12 @@ module RuboCop
           current = offense.source
 
           if node.arguments.any?(&:percent_literal?)
-            message = format(MSG_FOR_PERCENT_LITERALS, current: current)
+            if percent_literals_includes_only_basic_literals?(node)
+              prefer = preferred_method(node)
+              message = format(MSG, prefer: prefer, current: current)
+            else
+              message = format(MSG_FOR_PERCENT_LITERALS, current: current)
+            end
           else
             prefer = preferred_method(node)
             message = format(MSG, prefer: prefer, current: current)
@@ -48,6 +54,7 @@ module RuboCop
             corrector.replace(offense, prefer)
           end
         end
+        # rubocop:enable Metrics
 
         private
 
@@ -56,9 +63,22 @@ module RuboCop
         end
 
         def preferred_method(node)
-          new_arguments = node.arguments.map { |arg| arg.children.map(&:source) }.join(', ')
+          new_arguments =
+            node.arguments.map do |arg|
+              if arg.percent_literal?
+                arg.children.map(&:value).map(&:inspect)
+              else
+                arg.children.map(&:source)
+              end
+            end.join(', ')
 
           "push(#{new_arguments})"
+        end
+
+        def percent_literals_includes_only_basic_literals?(node)
+          node.arguments.select(&:percent_literal?).all? do |arg|
+            arg.children.all? { |child| child.str_type? || child.sym_type? }
+          end
         end
       end
     end
