@@ -138,17 +138,12 @@ module RuboCop
 
         HUMANIZED_NODE_TYPE = {
           casgn: :constants,
-          defs: :class_methods,
+          defs: :public_class_methods,
           def: :public_methods,
           sclass: :class_singleton
         }.freeze
 
         MSG = '`%<category>s` is supposed to appear before `%<previous>s`.'
-
-        # @!method dynamic_constant?(node)
-        def_node_matcher :dynamic_constant?, <<~PATTERN
-          (casgn nil? _ (send ...))
-        PATTERN
 
         # Validates code style on class declaration.
         # Add offense when find a node out of expected order.
@@ -259,6 +254,14 @@ module RuboCop
             return "#{node_visibility(node)}_methods"
           end
           HUMANIZED_NODE_TYPE[node.type] || node.type
+        end
+
+        def dynamic_constant?(node)
+          return false unless node.casgn_type? && node.namespace.nil?
+
+          expression = node.expression
+          expression.send_type? &&
+            !(expression.method?(:freeze) && expression.receiver&.recursive_basic_literal?)
         end
 
         def source_range_with_comment(node)

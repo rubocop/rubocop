@@ -136,6 +136,23 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     end
   end
 
+  it 'registers an offense and corrects when public instance method is before class method' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def instance_method; end
+        def self.class_method; end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ `public_class_methods` is supposed to appear before `public_methods`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        def self.class_method; end
+        def instance_method; end
+      end
+    RUBY
+  end
+
   context 'with protected methods declared before private' do
     let(:code) { <<-RUBY }
       class MyClass
@@ -252,14 +269,20 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
         LIMIT = 10
         ^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        CONST = 'wrong place'.freeze
+        RECURSIVE_BASIC_LITERALS_CONST = [1, 2].freeze
+        DYNAMIC_CONST = foo.freeze
       end
     RUBY
 
     expect_correction(<<~RUBY)
       class Foo
         LIMIT = 10
+        CONST = 'wrong place'.freeze
+        RECURSIVE_BASIC_LITERALS_CONST = [1, 2].freeze
         def name; end
 
+        DYNAMIC_CONST = foo.freeze
       end
     RUBY
   end
