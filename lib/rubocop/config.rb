@@ -21,6 +21,13 @@ module RuboCop
     DEFAULT_RAILS_VERSION = 5.0
     attr_reader :loaded_path
 
+    def self.create(hash, path, check: true)
+      config = new(hash, path)
+      config.check if check
+
+      config
+    end
+
     # rubocop:disable Metrics/AbcSize
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
@@ -38,13 +45,6 @@ module RuboCop
       @clusivity_config_exists_cache = {}
     end
     # rubocop:enable Metrics/AbcSize
-
-    def self.create(hash, path, check: true)
-      config = new(hash, path)
-      config.check if check
-
-      config
-    end
 
     def loaded_features
       @loaded_features ||= ConfigLoader.loaded_features
