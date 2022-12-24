@@ -31,14 +31,10 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        # rubocop:disable Metrics/AbcSize
         def on_new_investigation
           return unless processed_source.raw_source.include?('\\')
 
           last_line = last_line(processed_source)
-
-          @ignored_ranges = string_literal_ranges(processed_source.ast) +
-                            comment_ranges(processed_source.comments)
 
           processed_source.raw_source.lines.each_with_index do |line, index|
             break if index >= last_line
@@ -47,7 +43,6 @@ module RuboCop
             investigate(line, line_number)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
@@ -120,7 +115,12 @@ module RuboCop
         end
 
         def ignore_range?(backtick_range)
-          @ignored_ranges.any? { |range| range.contains?(backtick_range) }
+          ignored_ranges.any? { |range| range.contains?(backtick_range) }
+        end
+
+        def ignored_ranges
+          @ignored_ranges ||= string_literal_ranges(processed_source.ast) +
+                              comment_ranges(processed_source.comments)
         end
 
         def no_space_style?

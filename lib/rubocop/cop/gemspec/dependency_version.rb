@@ -58,8 +58,13 @@ module RuboCop
         FORBIDDEN_MSG = 'Dependency version specification is forbidden.'
         VERSION_SPECIFICATION_REGEX = /^\s*[~<>=]*\s*[0-9.]+/.freeze
 
-        # @!method add_dependency_method_declarations(node)
-        def_node_search :add_dependency_method_declarations, <<~PATTERN
+        ADD_DEPENDENCY_METHODS = %i[
+          add_dependency add_runtime_dependency add_development_dependency
+        ].freeze
+        RESTRICT_ON_SEND = ADD_DEPENDENCY_METHODS
+
+        # @!method add_dependency_method_declaration?(node)
+        def_node_matcher :add_dependency_method_declaration?, <<~PATTERN
           (send
             (lvar #match_block_variable_name?) #add_dependency_method? ...)
         PATTERN
@@ -74,18 +79,15 @@ module RuboCop
           (send _ #add_dependency_method? <(hash <(pair (sym {:branch :ref :tag}) (str _)) ...>) ...>)
         PATTERN
 
-        def on_new_investigation
-          return if processed_source.blank?
+        def on_send(node)
+          return unless add_dependency_method_declaration?(node)
+          return if allowed_gem?(node)
 
-          add_dependency_method_nodes.each do |node|
-            next if allowed_gem?(node)
-
-            if offense?(node)
-              add_offense(node)
-              opposite_style_detected
-            else
-              correct_style_detected
-            end
+          if offense?(node)
+            add_offense(node)
+            opposite_style_detected
+          else
+            correct_style_detected
           end
         end
 
@@ -116,11 +118,7 @@ module RuboCop
         end
 
         def add_dependency_method?(method_name)
-          method_name.to_s.end_with?('_dependency')
-        end
-
-        def add_dependency_method_nodes
-          add_dependency_method_declarations(processed_source.ast)
+          ADD_DEPENDENCY_METHODS.include?(method_name)
         end
 
         def offense?(node)
