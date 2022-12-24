@@ -47,7 +47,6 @@ module RuboCop
         MSG = 'Trailing whitespace detected.'
 
         def on_new_investigation
-          @heredocs = extract_heredocs(processed_source.ast)
           processed_source.lines.each_with_index do |line, index|
             next unless line.end_with?(' ', "\t")
 
@@ -102,8 +101,12 @@ module RuboCop
         end
 
         def find_heredoc(line_number)
-          @heredocs.each { |node, r| return node if r.include?(line_number) }
+          heredocs.each { |node, r| return node if r.include?(line_number) }
           nil
+        end
+
+        def heredocs
+          @heredocs ||= extract_heredocs(processed_source.ast)
         end
 
         def extract_heredocs(ast)

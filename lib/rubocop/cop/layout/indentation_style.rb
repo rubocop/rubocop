@@ -40,10 +40,13 @@ module RuboCop
         MSG = '%<type>s detected in indentation.'
 
         def on_new_investigation
-          str_ranges = string_literal_ranges(processed_source.ast)
+          str_ranges = nil
 
           processed_source.lines.each.with_index(1) do |line, lineno|
             next unless (range = find_offense(line, lineno))
+
+            # Perform costly calculation only when needed.
+            str_ranges ||= string_literal_ranges(processed_source.ast)
             next if in_string_literal?(str_ranges, range)
 
             add_offense(range) { |corrector| autocorrect(corrector, range) }
