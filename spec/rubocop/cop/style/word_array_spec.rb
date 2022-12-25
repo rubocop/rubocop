@@ -347,6 +347,34 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         A = %w(one two)
       RUBY
     end
+
+    it 'registers an offense and corrects for array within 2d array' do
+      expect_offense(<<~RUBY)
+        [
+          ['one', 'One'],
+          ^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+          ['two', 'Two']
+          ^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+        ]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [
+          %w(one One),
+          %w(two Two)
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense for array within 2d array containing subarrays with complex content' do
+      expect_no_offenses(<<~RUBY)
+        [
+          ['one', 'One'],
+          ['two', 'Two'],
+          ['forty two', 'Forty Two']
+        ]
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is array' do
