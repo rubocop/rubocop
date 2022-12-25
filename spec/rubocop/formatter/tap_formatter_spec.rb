@@ -86,16 +86,16 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
             RuboCop::Cop::Offense.new(
               :error,
               Parser::Source::Range.new(source_buffer,
-                                        (4 * line_length) + 1,
-                                        (4 * line_length) + 2),
+                                        (line_length * 4) + 1,
+                                        (line_length * 4) + 2),
               'bar',
               'Cop'
             ),
             RuboCop::Cop::Offense.new(
               :convention,
               Parser::Source::Range.new(source_buffer,
-                                        5 * line_length,
-                                        (5 * line_length) + 1),
+                                        line_length * 5,
+                                        (line_length * 5) + 1),
               'foo',
               'Cop'
             )

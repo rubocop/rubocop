@@ -78,6 +78,18 @@ module RuboCop
         remove(to_remove)
       end
 
+      # Swaps sources at the given ranges.
+      #
+      # @param [Parser::Source::Range, RuboCop::AST::Node] node_or_range1
+      # @param [Parser::Source::Range, RuboCop::AST::Node] node_or_range2
+      def swap(node_or_range1, node_or_range2)
+        range1 = to_range(node_or_range1)
+        range2 = to_range(node_or_range2)
+
+        replace(range1, range2.source)
+        replace(range2, range1.source)
+      end
+
       private
 
       # :nodoc:
