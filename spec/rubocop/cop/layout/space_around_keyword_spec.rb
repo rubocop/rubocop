@@ -172,6 +172,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   # Layout/SpaceAroundBlockParameters
   it_behaves_like 'accept before', '|', 'loop { |x|break }'
 
+  # Layout/SpaceInsideRangeLiteral
+  it_behaves_like 'accept before', '..', '1..super.size'
+  it_behaves_like 'accept before', '...', '1...super.size'
+
   # Layout/SpaceAroundOperators
   it_behaves_like 'accept before', '=', 'a=begin end'
   it_behaves_like 'accept before', '==', 'a==begin end'

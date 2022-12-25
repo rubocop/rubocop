@@ -653,6 +653,20 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(corrected)
   end
 
+  it 'corrects `Layout/SpaceAroundKeyword` with `Layout/SpaceInsideRangeLiteral`' do
+    source = <<~RUBY
+      def method
+        1..super
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(
+      cli.run(['-a', '--only', 'Layout/SpaceAroundKeyword,Layout/SpaceInsideRangeLiteral'])
+    ).to eq(0)
+    expect($stdout.string).to include('no offenses detected')
+    expect(File.read('example.rb')).to eq(source)
+  end
+
   it 'corrects LineEndConcatenation offenses leaving the ' \
      'RedundantInterpolation offense unchanged' do
     # If we change string concatenation from plus to backslash, the string
