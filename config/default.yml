@@ -5438,6 +5438,18 @@ Style/YodaCondition:
   VersionAdded: '0.49'
   VersionChanged: '0.75'
 
+Style/YodaExpression:
+  Description: 'Forbid the use of yoda expressions.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+  SupportedOperators:
+    - '*'
+    - '+'
+    - '&'
+    - '|'
+    - '^'
+
 Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'
   Enabled: true

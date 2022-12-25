@@ -7,7 +7,7 @@ module RuboCop
     STATUS_SUCCESS     = 0
     STATUS_OFFENSES    = 1
     STATUS_ERROR       = 2
-    STATUS_INTERRUPTED = 128 + Signal.list['INT']
+    STATUS_INTERRUPTED = Signal.list['INT'] + 128
     DEFAULT_PARALLEL_OPTIONS = %i[
       color debug display_style_guide display_time display_only_fail_level_offenses
       display_only_failed except extra_details fail_level fix_layout format

@@ -53,7 +53,7 @@ module RuboCop
       def remove_oldest_files(files, dirs, cache_root, verbose)
         # Add 1 to half the number of files, so that we remove the file if
         # there's only 1 left.
-        remove_count = 1 + (files.length / 2)
+        remove_count = (files.length / 2) + 1
         puts "Removing the #{remove_count} oldest files from #{cache_root}" if verbose
         sorted = files.sort_by { |path| File.mtime(path) }
         remove_files(sorted, dirs, remove_count)
