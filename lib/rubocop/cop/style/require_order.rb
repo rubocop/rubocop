@@ -102,8 +102,10 @@ module RuboCop
           node.if_type? && !node.modifier_form?
         end
 
-        def find_previous_older_sibling(node) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+        def find_previous_older_sibling(node) # rubocop:disable Metrics
           search_node(node).left_siblings.reverse.find do |sibling|
+            next unless sibling.is_a?(AST::Node)
+
             sibling = sibling_node(sibling)
             break unless sibling&.send_type? && sibling&.method?(node.method_name)
             break unless sibling.arguments? && !sibling.receiver
