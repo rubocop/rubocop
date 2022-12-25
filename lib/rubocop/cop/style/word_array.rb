@@ -53,6 +53,7 @@ module RuboCop
         def on_array(node)
           if bracketed_array_of?(:str, node)
             return if complex_content?(node.values)
+            return if within_2d_array_of_complex_content?(node)
 
             check_bracketed_array(node, 'w')
           elsif node.percent_literal?(:string)
@@ -61,6 +62,12 @@ module RuboCop
         end
 
         private
+
+        def within_2d_array_of_complex_content?(node)
+          return false unless (parent = node.parent)
+
+          parent.array_type? && parent.values.any? { |subarray| complex_content?(subarray.values) }
+        end
 
         def complex_content?(strings, complex_regex: word_regex)
           strings.any? do |s|
