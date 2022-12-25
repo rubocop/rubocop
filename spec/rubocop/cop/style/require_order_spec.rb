@@ -251,4 +251,37 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
       RUBY
     end
   end
+
+  context 'when rescue block' do
+    it 'registers offense for multiple unsorted `require`s' do
+      expect_offense(<<~RUBY)
+        begin
+          do_something
+        rescue
+          require 'b'
+          require 'a'
+          ^^^^^^^^^^^ Sort `require` in alphabetical order.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          do_something
+        rescue
+          require 'a'
+          require 'b'
+        end
+      RUBY
+    end
+
+    it 'registers no offense for single `require`' do
+      expect_no_offenses(<<~RUBY)
+        begin
+          do_something
+        rescue
+          require 'a'
+        end
+      RUBY
+    end
+  end
 end
