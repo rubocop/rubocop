@@ -10,6 +10,14 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
     end
   end
 
+  context 'when only one `require`' do
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        require 'a'
+      RUBY
+    end
+  end
+
   context 'when `require` is not sorted in different sections' do
     it 'registers no offense' do
       expect_no_offenses(<<~RUBY)
