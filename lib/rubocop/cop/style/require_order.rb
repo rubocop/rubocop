@@ -81,7 +81,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.arguments?
+          return unless node.parent && node.arguments?
           return if not_modifier_form?(node.parent)
 
           previous_older_sibling = find_previous_older_sibling(node)
