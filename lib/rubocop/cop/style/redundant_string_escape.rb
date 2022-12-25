@@ -58,7 +58,7 @@ module RuboCop
         private
 
         def message(range)
-          format(MSG, char: range.source.chars.last)
+          format(MSG, char: range.source[-1])
         end
 
         def str_contents_range(node)
