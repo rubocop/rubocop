@@ -216,7 +216,7 @@ module RuboCop
         def walk_over_nested_class_definition(class_node)
           class_elements(class_node).each do |node|
             classification = classify(node)
-            next if ignore?(classification)
+            next if ignore?(node, classification)
 
             yield node, classification
           end
@@ -234,17 +234,20 @@ module RuboCop
           end
         end
 
-        def ignore?(classification)
+        def ignore?(node, classification)
           classification.nil? ||
             classification.to_s.end_with?('=') ||
-            expected_order.index(classification).nil?
+            expected_order.index(classification).nil? ||
+            private_constant?(node)
         end
 
         def ignore_for_autocorrect?(node, sibling)
           classification = classify(node)
           sibling_class = classify(sibling)
 
-          ignore?(sibling_class) || classification == sibling_class || dynamic_constant?(node)
+          ignore?(sibling, sibling_class) ||
+            classification == sibling_class ||
+            dynamic_constant?(node)
         end
 
         def humanize_node(node)
@@ -262,6 +265,22 @@ module RuboCop
           expression = node.expression
           expression.send_type? &&
             !(expression.method?(:freeze) && expression.receiver&.recursive_basic_literal?)
+        end
+
+        def private_constant?(node)
+          return false unless node.casgn_type? && node.namespace.nil?
+          return false unless (parent = node.parent)
+
+          parent.each_child_node(:send) do |child_node|
+            return true if marked_as_private_constant?(child_node, node.name)
+          end
+          false
+        end
+
+        def marked_as_private_constant?(node, name)
+          return false unless node.method?(:private_constant)
+
+          node.arguments.any? { |arg| (arg.sym_type? || arg.str_type?) && arg.value == name }
         end
 
         def source_range_with_comment(node)

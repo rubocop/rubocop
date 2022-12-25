@@ -108,7 +108,6 @@ module RuboCop
         :skip_children
       end
 
-      # rubocop:disable Layout/ClassStructure
       NODE_HANDLER_METHOD_NAMES = [
         [VARIABLE_ASSIGNMENT_TYPE, :process_variable_assignment],
         [REGEXP_NAMED_CAPTURE_TYPE, :process_regexp_named_captures],
@@ -123,8 +122,6 @@ module RuboCop
         *SCOPE_TYPES.product([:process_scope])
       ].to_h.freeze
       private_constant :NODE_HANDLER_METHOD_NAMES
-      # rubocop:enable Layout/ClassStructure
-
       def node_handler_method_name(node)
         NODE_HANDLER_METHOD_NAMES[node.type]
       end

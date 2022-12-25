@@ -234,7 +234,6 @@ module RuboCop
       KNOWN_RUBIES
     end
 
-    # rubocop:disable Layout/ClassStructure
     SOURCES = [
       RuboCopConfig,
       RubyVersionFile,
@@ -245,8 +244,6 @@ module RuboCop
     ].freeze
 
     private_constant :SOURCES
-    # rubocop:enable Layout/ClassStructure
-
     def initialize(config)
       @config = config
     end
