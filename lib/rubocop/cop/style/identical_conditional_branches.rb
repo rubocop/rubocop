@@ -136,6 +136,7 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_branches(node, branches)
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else` or a branch that contains only comments.
@@ -144,9 +145,13 @@ module RuboCop
           tails = branches.map { |branch| tail(branch) }
           check_expressions(node, tails, :after_condition) if duplicated_expressions?(node, tails)
 
+          return if last_child_of_parent?(node) &&
+                    branches.any? { |branch| single_child_branch?(branch) }
+
           heads = branches.map { |branch| head(branch) }
           check_expressions(node, heads, :before_condition) if duplicated_expressions?(node, heads)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def duplicated_expressions?(node, expressions)
           unique_expressions = expressions.uniq
@@ -178,6 +183,16 @@ module RuboCop
               inserted_expression = true
             end
           end
+        end
+
+        def last_child_of_parent?(node)
+          return true unless (parent = node.parent)
+
+          parent.child_nodes.last == node
+        end
+
+        def single_child_branch?(branch_node)
+          !branch_node.begin_type? || branch_node.children.size == 1
         end
 
         def message(node)

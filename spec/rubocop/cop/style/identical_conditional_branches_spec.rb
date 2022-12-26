@@ -72,6 +72,31 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on if..else with identical leading lines, single child branch and last node of the parent' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          if something
+            do_x
+          else
+            do_x
+            1 + 2 + 3
+          end
+        end
+
+        def bar
+          y = if something
+                do_x
+              else
+                do_x
+                1 + 2 + 3
+              end
+          do_something_else
+        end
+      RUBY
+    end
+  end
+
   context 'on if..elsif with no else' do
     it "doesn't register an offense" do
       expect_no_offenses(<<~RUBY)
@@ -214,6 +239,39 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
           x2
         else
           x3
+        end
+      RUBY
+    end
+  end
+
+  context 'on case with identical leading lines, single child branch and last node of the parent' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          case something
+          when :a
+            do_x
+          when :b
+            do_x
+            x2
+          else
+            do_x
+            x3
+          end
+        end
+
+        def bar
+          x = case something
+              when :a
+                do_x
+              when :b
+                do_x
+                x2
+              else
+                do_x
+                x3
+              end
+          do_something
         end
       RUBY
     end
@@ -383,6 +441,39 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
             x2
           else
             x3
+          end
+        RUBY
+      end
+    end
+
+    context 'on case-match with identical leading lines, single child branch and last node of the parent' do
+      it "doesn't register an offense" do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            case something
+            in :a
+              do_x
+            in :b
+              do_x
+              x2
+            else
+              do_x
+              x3
+            end
+          end
+
+          def bar
+            y = case something
+                in :a
+                  do_x
+                in :b
+                  do_x
+                  x2
+                else
+                  do_x
+                  x3
+                end
+            do_something
           end
         RUBY
       end
