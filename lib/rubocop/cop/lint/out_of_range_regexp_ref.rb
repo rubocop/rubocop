@@ -68,6 +68,12 @@ module RuboCop
           @valid_ref = regexp_conditions.map { |condition| check_regexp(condition) }.compact.max
         end
 
+        def on_in_pattern(node)
+          regexp_patterns = patterns(node).select(&:regexp_type?)
+
+          @valid_ref = regexp_patterns.map { |pattern| check_regexp(pattern) }.compact.max
+        end
+
         def on_nth_ref(node)
           backref, = *node
           return if @valid_ref.nil? || backref <= @valid_ref
@@ -83,6 +89,19 @@ module RuboCop
         end
 
         private
+
+        def patterns(pattern_node)
+          pattern = pattern_node.node_parts[0]
+
+          case pattern.type
+          when :array_pattern, :match_alt
+            pattern.children
+          when :match_as
+            patterns(pattern)
+          else
+            [pattern]
+          end
+        end
 
         def check_regexp(node)
           return if node.interpolation?
