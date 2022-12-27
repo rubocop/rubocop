@@ -175,7 +175,7 @@ module RuboCop
 
       def remove_optarg_equals(asgn_tokens, processed_source)
         optargs    = processed_source.ast.each_node(:optarg)
-        optarg_eql = optargs.map { |o| o.loc.operator.begin_pos }.to_set
+        optarg_eql = optargs.to_set { |o| o.loc.operator.begin_pos }
         asgn_tokens.reject { |t| optarg_eql.include?(t.begin_pos) }
       end
     end
