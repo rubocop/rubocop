@@ -4110,6 +4110,12 @@ Style/MapToHash:
   VersionAdded: '1.24'
   Safe: false
 
+Style/MapToSet:
+  Description: 'Prefer `to_set` with a block over `map.to_set`.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
   StyleGuide: '#method-invocation-parens'
