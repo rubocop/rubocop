@@ -4174,6 +4174,12 @@ Style/MinMax:
   Enabled: true
   VersionAdded: '0.50'
 
+Style/MinMaxComparison:
+  Description: 'Enforces the use of `max` or `min` instead of comparison for greater or less.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/MissingElse:
   Description: >-
                 Require if/case expressions to have an else branches.
