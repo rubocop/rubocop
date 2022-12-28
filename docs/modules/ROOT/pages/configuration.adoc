@@ -114,6 +114,16 @@ inherit_from:
   - ../conf/.rubocop.yml
 ----
 
+`inherit_from` also accepts a glob, for example:
+
+[source,yaml]
+----
+inherit_from:
+  - packages/*/.rubocop_todo.yml
+----
+
+The example above is one potential use-case: allowing components within your repo to organize their own `.rubocop_todo.yml` files.
+
 == Inheriting configuration from a remote URL
 
 The optional `inherit_from` directive can contain a full url to a remote
