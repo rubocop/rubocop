@@ -154,7 +154,9 @@ module RuboCop
         end
 
         def less_indented?(line)
-          /^\s*(end\b|[)}\]])/.match?(line)
+          rule = config.for_cop('Layout/AccessModifierIndentation')['EnforcedStyle'] == 'outdent'
+          access_modifier = 'private|protected|public'
+          /\A\s*(end\b|[)}\]])/.match?(line) || (rule && /\A\s*(#{access_modifier})\b/.match?(line))
         end
 
         def two_alternatives?(line)

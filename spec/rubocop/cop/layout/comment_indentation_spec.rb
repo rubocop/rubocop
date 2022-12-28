@@ -292,4 +292,55 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
       RUBY
     end
   end
+
+  context 'when `Layout/AccessModifierIndentation EnforcedStyle: outdent`' do
+    let(:allow_for_alignment) { true }
+    let(:indentation_width) { 2 }
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/AccessModifierIndentation' => {
+          'Enabled' => true,
+          'EnforcedStyle' => 'outdent'
+        },
+        'Layout/CommentIndentation' => {
+          'Enabled' => true
+        },
+        'Layout/IndentationWidth' => {
+          'Width' => indentation_width
+        }
+      )
+    end
+
+    it 'does not register an offense with indentation if aligned with code on previous line' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          # rubocop:disable
+          def foo
+          end
+          # rubocop:enable
+
+        private
+
+          def bar
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense with indentation if aligned with access modifier on next line' do
+      expect_offense(<<~RUBY)
+        class A
+          # rubocop:disable
+          def foo
+          end
+        # rubocop:enable
+        ^^^^^^^^^^^^^^^^ Incorrect indentation detected (column 0 instead of 2).
+        private
+
+          def bar
+          end
+        end
+      RUBY
+    end
+  end
 end
