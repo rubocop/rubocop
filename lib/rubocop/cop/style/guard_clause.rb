@@ -196,7 +196,7 @@ module RuboCop
             return unless node.else?
 
             corrector.remove(node.loc.else)
-            corrector.remove(branch_to_remove(node, guard))
+            corrector.remove(range_of_branch_to_remove(node, guard))
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -206,20 +206,24 @@ module RuboCop
         end
 
         def autocorrect_heredoc_argument(corrector, node, heredoc_branch, leave_branch, guard)
+          return unless node.else?
+
           remove_whole_lines(corrector, leave_branch.source_range)
           remove_whole_lines(corrector, node.loc.else)
           remove_whole_lines(corrector, node.loc.end)
-          remove_whole_lines(corrector, branch_to_remove(node, guard).source_range)
+          remove_whole_lines(corrector, range_of_branch_to_remove(node, guard))
           corrector.insert_after(
             heredoc_branch.last_argument.loc.heredoc_end, "\n#{leave_branch.source}"
           )
         end
 
-        def branch_to_remove(node, guard)
-          case guard
-          when :if then node.if_branch
-          when :else then node.else_branch
-          end
+        def range_of_branch_to_remove(node, guard)
+          branch = case guard
+                   when :if then node.if_branch
+                   when :else then node.else_branch
+                   end
+
+          branch.source_range
         end
 
         def guard_clause_source(guard_clause)
