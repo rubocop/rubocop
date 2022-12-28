@@ -19,7 +19,7 @@ end
 require 'rake'
 require 'rubocop/rake_task'
 
-Dir['tasks/**/*.rake'].each { |t| load t }
+Dir['lib/rubocop/tasks/**/*.rake'].each { |t| load t }
 
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation)

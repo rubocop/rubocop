@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../tasks/changelog'
+require_relative '../../lib/rubocop/tasks/changelog'
 
 RSpec.describe Changelog do
   subject(:changelog) do
