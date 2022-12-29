@@ -329,11 +329,8 @@ module RuboCop
         @current_corrector = nil
       end
 
-      # rubocop:disable Layout/ClassStructure
       EMPTY_OFFENSES = [].freeze
       private_constant :EMPTY_OFFENSES
-      # rubocop:enable Layout/ClassStructure
-
       # Called to complete an investigation
       def complete_investigation
         InvestigationReport.new(

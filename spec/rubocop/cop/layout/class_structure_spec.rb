@@ -287,6 +287,31 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     RUBY
   end
 
+  it 'ignores misplaced private constants' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def name; end
+
+        PRIVATE_CONST1 = 1
+        PRIVATE_CONST2 = 2
+        private_constant :PRIVATE_CONST1, :PRIVATE_CONST2
+        PUBLIC_CONST = 'public'
+        ^^^^^^^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        PUBLIC_CONST = 'public'
+        def name; end
+
+        PRIVATE_CONST1 = 1
+        PRIVATE_CONST2 = 2
+        private_constant :PRIVATE_CONST1, :PRIVATE_CONST2
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when str heredoc constant is defined after public method' do
     expect_offense(<<~RUBY)
       class Foo

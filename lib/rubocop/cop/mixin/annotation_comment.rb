@@ -47,7 +47,7 @@ module RuboCop
         match.captures
       end
 
-      KEYWORDS_REGEX_CACHE = {} # rubocop:disable Layout/ClassStructure, Style/MutableConstant
+      KEYWORDS_REGEX_CACHE = {} # rubocop:disable Style/MutableConstant
       private_constant :KEYWORDS_REGEX_CACHE
 
       def regex
