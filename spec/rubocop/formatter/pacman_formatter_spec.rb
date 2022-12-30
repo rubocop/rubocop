@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Formatter::PacmanFormatter do
       end
     end
 
-    context 'when a offense is detected in a file' do
+    context 'when an offense is detected in a file' do
       let(:location) { FakeLocation.new(line: 1, column: 5) }
       let(:expected_character) { Rainbow(described_class::GHOST).red }
       let(:offenses) { [RuboCop::Cop::Offense.new(:error, location, 'message', 'CopA')] }

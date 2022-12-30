@@ -105,6 +105,9 @@ Naming/InclusiveLanguage:
   Enabled: true
   CheckStrings: true
   FlaggedTerms:
+    ' a offense':
+      Suggestions:
+        - an offense
     auto-correct:
       Suggestions:
         - autocorrect

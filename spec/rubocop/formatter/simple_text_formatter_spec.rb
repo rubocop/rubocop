@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       end
     end
 
-    context 'when a offense detected' do
+    context 'when an offense detected' do
       it 'handles pluralization correctly' do
         formatter.report_summary(1, 1, 0, 0)
         expect(output.string).to eq(<<~OUTPUT)
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       end
     end
 
-    context 'when a offense detected and a offense autocorrectable' do
+    context 'when an offense detected and an offense autocorrectable' do
       it 'handles pluralization correctly' do
         formatter.report_summary(1, 1, 0, 1)
         expect(output.string).to eq(<<~OUTPUT)

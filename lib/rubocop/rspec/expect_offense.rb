@@ -6,7 +6,7 @@ module RuboCop
     #
     # This mixin makes it easier to specify strict offense expectations
     # in a declarative and visual fashion. Just type out the code that
-    # should generate a offense, annotate code by writing '^'s
+    # should generate an offense, annotate code by writing '^'s
     # underneath each character that should be highlighted, and follow
     # the carets with a string (separated by a space) that is the
     # message of the offense. You can include multiple offenses in

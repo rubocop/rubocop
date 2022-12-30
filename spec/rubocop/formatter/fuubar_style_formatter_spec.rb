@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Formatter::FuubarStyleFormatter do
       end
     end
 
-    context 'when a offense is detected in a file and autocorrected' do
+    context 'when an offense is detected in a file and autocorrected' do
       before { formatter.file_finished(files[0], [offense(:convention, :corrected)]) }
 
       it 'is green' do
