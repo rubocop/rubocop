@@ -17,13 +17,19 @@ module RuboCop
       #     do_something
       #   end
       class RegexpAsCondition < Base
+        include IgnoredNode
         extend AutoCorrector
 
         MSG = 'Do not use regexp literal as a condition. ' \
               'The regexp literal matches `$_` implicitly.'
 
         def on_match_current_line(node)
+          return if node.ancestors.none?(&:conditional?)
+          return if part_of_ignored_node?(node)
+
           add_offense(node) { |corrector| corrector.replace(node, "#{node.source} =~ $_") }
+
+          ignore_node(node)
         end
       end
     end
