@@ -86,12 +86,12 @@ module RuboCop
 
         def on_send(node)
           return unless (block_node = node.block_node)
-          return if block_node.body.begin_type?
+          return if block_node.body&.begin_type?
           return if receiver_allowed?(block_node.receiver)
           return unless (regexp_method_send_node = extract_send_node(block_node))
           return if match_predicate_without_receiver?(regexp_method_send_node)
 
-          opposite = regexp_method_send_node.send_type? && regexp_method_send_node.method?(:!~)
+          opposite = opposite?(regexp_method_send_node)
           regexp = find_regexp(regexp_method_send_node, block_node)
 
           register_offense(node, block_node, regexp, opposite)
@@ -126,6 +126,10 @@ module RuboCop
           return unless calls_lvar?(regexp_method_send_node, block_arg_name)
 
           regexp_method_send_node
+        end
+
+        def opposite?(regexp_method_send_node)
+          regexp_method_send_node.send_type? && regexp_method_send_node.method?(:!~)
         end
 
         def find_regexp(node, block)

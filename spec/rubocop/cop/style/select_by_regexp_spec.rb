@@ -150,6 +150,12 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
         RUBY
       end
 
+      it 'does not register an offense when the block body is empty' do
+        expect_no_offenses(<<~RUBY)
+          array.#{method} { }
+        RUBY
+      end
+
       it 'registers an offense and corrects without a receiver' do
         expect_offense(<<~RUBY, method: method)
           #{method} { |x| x.match?(/regexp/) }
