@@ -76,6 +76,7 @@ module RuboCop
           node.loc.to_hash.key?(:begin) && !node.loc.begin.nil?
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def allowed_escape?(node, range)
           escaped = range.source[(1..-1)]
 
@@ -88,13 +89,14 @@ module RuboCop
           # with different versions of Ruby so that e.g. /\d/ != /d/
           return true if /[\n\\[[:alnum:]]]/.match?(escaped[0])
 
-          return true if escaped[0] == ' ' && percent_array_literal?(node)
+          return true if escaped[0] == ' ' && (percent_array_literal?(node) || node.heredoc?)
 
           return true if disabling_interpolation?(range)
           return true if delimiter?(node, escaped[0])
 
           false
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def interpolation_not_enabled?(node)
           single_quoted?(node) ||

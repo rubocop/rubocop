@@ -417,6 +417,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
         MYHEREDOC
       RUBY
     end
+
+    it 'does register an offense an escaped space' do
+      expect_no_offenses(<<~'RUBY')
+        <<~MYHEREDOC
+          \ text
+        MYHEREDOC
+      RUBY
+    end
   end
 
   context 'with an interpolation-disabled HEREDOC' do
