@@ -27,6 +27,25 @@ module RuboCop
       #   # bad (contains spaces)
       #   %w[foo\ bar baz\ quux]
       #
+      #   # bad
+      #   [
+      #     ['one', 'One'],
+      #     ['two', 'Two']
+      #   ]
+      #
+      #   # good
+      #   [
+      #     %w[one One],
+      #     %w[two Two]
+      #   ]
+      #
+      #   # good (2d array containing spaces)
+      #   [
+      #     ['one', 'One'],
+      #     ['two', 'Two'],
+      #     ['forty two', 'Forty Two']
+      #   ]
+      #
       # @example EnforcedStyle: brackets
       #   # good
       #   ['foo', 'bar', 'baz']
@@ -36,6 +55,19 @@ module RuboCop
       #
       #   # good (contains spaces)
       #   ['foo bar', 'baz quux']
+      #
+      #   # good
+      #   [
+      #     ['one', 'One'],
+      #     ['two', 'Two']
+      #   ]
+      #
+      #   # bad
+      #   [
+      #     %w[one One],
+      #     %w[two Two]
+      #   ]
+      #
       class WordArray < Base
         include ArrayMinSize
         include ArraySyntax
