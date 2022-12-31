@@ -30,7 +30,7 @@ module RuboCop
       class YodaExpression < Base
         extend AutoCorrector
 
-        MSG = 'Non literal operand should be first.'
+        MSG = 'Non-literal operand (`%<source>s`) should be first.'
 
         RESTRICT_ON_SEND = %i[* + & | ^].freeze
 
@@ -47,12 +47,12 @@ module RuboCop
 
           return if offended_ancestor?(node)
 
-          add_offense(node) do |corrector|
+          message = format(MSG, source: rhs.source)
+          add_offense(node, message: message) do |corrector|
             corrector.swap(lhs, rhs)
           end
 
-          @offended_nodes ||= Set.new.compare_by_identity
-          @offended_nodes.add(node)
+          offended_nodes.add(node)
         end
 
         private
@@ -63,6 +63,10 @@ module RuboCop
 
         def offended_ancestor?(node)
           node.each_ancestor(:send).any? { |ancestor| @offended_nodes&.include?(ancestor) }
+        end
+
+        def offended_nodes
+          @offended_nodes ||= Set.new.compare_by_identity
         end
       end
     end

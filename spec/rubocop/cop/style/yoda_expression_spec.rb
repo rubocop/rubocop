@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::YodaExpression, :config do
   it 'registers an offense when using simple offended example' do
     expect_offense(<<~RUBY)
       1 + x
-      ^^^^^ Non literal operand should be first.
+      ^^^^^ Non-literal operand (`x`) should be first.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::YodaExpression, :config do
   it 'registers an offense and corrects when using complex offended example' do
     expect_offense(<<~RUBY)
       2 + (1 + x)
-      ^^^^^^^^^^^ Non literal operand should be first.
+      ^^^^^^^^^^^ Non-literal operand (`(1 + x)`) should be first.
     RUBY
 
     expect_correction(<<~RUBY)
