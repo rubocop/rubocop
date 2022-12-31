@@ -3431,6 +3431,11 @@ Style/CommentedKeyword:
   VersionAdded: '0.51'
   VersionChanged: '1.19'
 
+Style/ComparableClamp:
+  Description: 'Enforces the use of `Comparable#clamp` instead of comparison by minimum and maximum.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/ConcatArrayLiterals:
   Description: 'Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.'
   Enabled: pending
