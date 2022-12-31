@@ -10,7 +10,9 @@ module RuboCop
       #
       # 1. Endless methods
       # 2. Argument lists containing a `forward-arg` (`...`)
-      # 3. Argument lists containing an anonymous block forwarding (`&`)
+      # 3. Argument lists containing an anonymous rest arguments forwarding (`*`)
+      # 4. Argument lists containing an anonymous keyword rest arguments forwarding (`**`)
+      # 5. Argument lists containing an anonymous block forwarding (`&`)
       #
       # Removing the parens would be a syntax error here.
       #
@@ -130,9 +132,11 @@ module RuboCop
           # Regardless of style, parentheses are necessary for:
           # 1. Endless methods
           # 2. Argument lists containing a `forward-arg` (`...`)
-          # 3. Argument lists containing an anonymous block forwarding (`&`)
+          # 3. Argument lists containing an anonymous rest arguments forwarding (`*`)
+          # 4. Argument lists containing an anonymous keyword rest arguments forwarding (`**`)
+          # 5. Argument lists containing an anonymous block forwarding (`&`)
           # Removing the parens would be a syntax error here.
-          node.endless? || node.arguments.any?(&:forward_arg_type?) || anonymous_block_arg?(node)
+          node.endless? || anonymous_arguments?(node)
         end
 
         def require_parentheses?(args)
@@ -162,7 +166,10 @@ module RuboCop
           end
         end
 
-        def anonymous_block_arg?(node)
+        def anonymous_arguments?(node)
+          return true if node.arguments.any? do |arg|
+            arg.forward_arg_type? || arg.restarg_type? || arg.kwrestarg_type?
+          end
           return false unless (last_argument = node.arguments.last)
 
           last_argument.blockarg_type? && last_argument.name.nil?
