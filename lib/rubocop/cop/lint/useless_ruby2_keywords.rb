@@ -77,10 +77,12 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          if node.first_argument.def_type?
-            inspect_def(node, node.first_argument)
+          return unless (first_argument = node.first_argument)
+
+          if first_argument.def_type?
+            inspect_def(node, first_argument)
           elsif node.first_argument.sym_type?
-            inspect_sym(node, node.first_argument)
+            inspect_sym(node, first_argument)
           end
         end
 
