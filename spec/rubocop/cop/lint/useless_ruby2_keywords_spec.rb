@@ -163,5 +163,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessRuby2Keywords, :config do
         ^^^^^^^^^^^^^^^^^^^ `ruby2_keywords` is unnecessary for method `foo`.
       RUBY
     end
+
+    it 'does not register an offense for `Proc#ruby2_keywords`' do
+      expect_no_offenses(<<~RUBY)
+        block = proc { |_, *args| klass.new(*args) }
+        block.ruby2_keywords if block.respond_to?(:ruby2_keywords)
+      RUBY
+    end
   end
 end
