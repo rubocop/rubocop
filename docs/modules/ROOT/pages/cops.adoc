@@ -480,11 +480,13 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylemagiccommentformat[Style/MagicCommentFormat]
 * xref:cops_style.adoc#stylemapcompactwithconditionalblock[Style/MapCompactWithConditionalBlock]
 * xref:cops_style.adoc#stylemaptohash[Style/MapToHash]
+* xref:cops_style.adoc#stylemaptoset[Style/MapToSet]
 * xref:cops_style.adoc#stylemethodcallwithargsparentheses[Style/MethodCallWithArgsParentheses]
 * xref:cops_style.adoc#stylemethodcallwithoutargsparentheses[Style/MethodCallWithoutArgsParentheses]
 * xref:cops_style.adoc#stylemethodcalledondoendblock[Style/MethodCalledOnDoEndBlock]
 * xref:cops_style.adoc#stylemethoddefparentheses[Style/MethodDefParentheses]
 * xref:cops_style.adoc#styleminmax[Style/MinMax]
+* xref:cops_style.adoc#styleminmaxcomparison[Style/MinMaxComparison]
 * xref:cops_style.adoc#stylemissingelse[Style/MissingElse]
 * xref:cops_style.adoc#stylemissingrespondtomissing[Style/MissingRespondToMissing]
 * xref:cops_style.adoc#stylemixingrouping[Style/MixinGrouping]
@@ -616,6 +618,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylewhileuntilmodifier[Style/WhileUntilModifier]
 * xref:cops_style.adoc#stylewordarray[Style/WordArray]
 * xref:cops_style.adoc#styleyodacondition[Style/YodaCondition]
+* xref:cops_style.adoc#styleyodaexpression[Style/YodaExpression]
 * xref:cops_style.adoc#stylezerolengthpredicate[Style/ZeroLengthPredicate]
 
 // END_COP_LIST

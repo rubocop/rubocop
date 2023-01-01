@@ -5326,7 +5326,7 @@ The supported styles are:
 * always - forces use of the 3.1 syntax (e.g. {foo:})
 * never - forces use of explicit hash literal value
 * either - accepts both shorthand and explicit use of hash literal value
-* consistent - like "either", but will avoid mixing styles in a single hash
+* consistent - forces use of the 3.1 syntax only if all values can be omitted in the hash
 
 === Examples
 
@@ -5419,16 +5419,19 @@ The supported styles are:
 
 [source,ruby]
 ----
-# bad
-{foo: , bar: bar}
+# bad - `foo` and `bar` values can be omitted
+{foo: foo, bar: bar}
+
+# bad - `bar` value can be omitted
+{foo:, bar: bar}
+
+# bad - mixed syntaxes
+{foo:, bar: baz}
 
 # good
 {foo:, bar:}
 
-# bad
-{foo: , bar: baz}
-
-# good
+# good - can't omit `baz`
 {foo: foo, bar: baz}
 ----
 
@@ -6678,6 +6681,43 @@ something.to_h { |v| [v, v * 2] }
 {foo: bar}.to_h { |k, v| [k.to_s, v.do_something] }
 ----
 
+== Style/MapToSet
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.42
+| -
+|===
+
+Looks for uses of `map.to_set` or `collect.to_set` that could be
+written with just `to_set`.
+
+=== Safety
+
+This cop is unsafe, as it can produce false positives if the receiver
+is not an `Enumerable`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+something.map { |i| i * 2 }.to_set
+
+# good
+something.to_set { |i| i * 2 }
+
+# bad
+[1, 2, 3].collect { |i| i.to_s }.to_set
+
+# good
+[1, 2, 3].to_set { |i| i.to_s }
+----
+
 == Style/MethodCallWithArgsParentheses
 
 |===
@@ -7096,7 +7136,9 @@ Regardless of style, parentheses are necessary for:
 
 1. Endless methods
 2. Argument lists containing a `forward-arg` (`...`)
-3. Argument lists containing an anonymous block forwarding (`&`)
+3. Argument lists containing an anonymous rest arguments forwarding (`*`)
+4. Argument lists containing an anonymous keyword rest arguments forwarding (`**`)
+5. Argument lists containing an anonymous block forwarding (`&`)
 
 Removing the parens would be a syntax error here.
 
@@ -7232,6 +7274,53 @@ return foo.min, foo.max
 # good
 bar = foo.minmax
 return foo.minmax
+----
+
+== Style/MinMaxComparison
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.42
+| -
+|===
+
+Enforces the use of `max` or `min` instead of comparison for greater or less.
+
+NOTE: It can be used if you want to present limit or threshold in Ruby 2.7+.
+That it is slow though. So autocorrection will apply generic `max` or `min`:
+
+[source,ruby]
+----
+a.clamp(b..) # Same as `[a, b].max`
+a.clamp(..b) # Same as `[a, b].min`
+----
+
+=== Safety
+
+This cop is unsafe because even if a value has `<` or `>` method,
+it is not necessarily `Comparable`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+a > b ? a : b
+a >= b ? a : b
+
+# good
+[a, b].max
+
+# bad
+a < b ? a : b
+a <= b ? a : b
+
+# good
+[a, b].min
 ----
 
 == Style/MissingElse
@@ -14978,6 +15067,25 @@ array of 2 or fewer elements.
 
 # bad (contains spaces)
 %w[foo\ bar baz\ quux]
+
+# bad
+[
+  ['one', 'One'],
+  ['two', 'Two']
+]
+
+# good
+[
+  %w[one One],
+  %w[two Two]
+]
+
+# good (2d array containing spaces)
+[
+  ['one', 'One'],
+  ['two', 'Two'],
+  ['forty two', 'Forty Two']
+]
 ----
 
 ==== EnforcedStyle: brackets
@@ -14992,6 +15100,18 @@ array of 2 or fewer elements.
 
 # good (contains spaces)
 ['foo bar', 'baz quux']
+
+# good
+[
+  ['one', 'One'],
+  ['two', 'Two']
+]
+
+# bad
+[
+  %w[one One],
+  %w[two Two]
+]
 ----
 
 === Configurable attributes
@@ -15130,6 +15250,57 @@ bar > 10
 === References
 
 * https://en.wikipedia.org/wiki/Yoda_conditions
+
+== Style/YodaExpression
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.42
+| -
+|===
+
+Forbids Yoda expressions, i.e. binary operations (using `*`, `+`, `&`, `|`,
+and `^` operators) where the order of expression is reversed, eg. `1 + x`.
+This cop complements `Style/YodaCondition` cop, which has a similar purpose.
+
+=== Safety
+
+This cop is unsafe because binary operators can be defined
+differently on different classes, and are not guaranteed to
+have the same result if reversed.
+
+=== Examples
+
+==== SupportedOperators: ['*', '+', '&'']
+
+[source,ruby]
+----
+# bad
+1 + x
+10 * y
+1 & z
+
+# good
+60 * 24
+x + 1
+y * 10
+z & 1
+
+# good
+1 | x
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+
+|===
 
 == Style/ZeroLengthPredicate
 

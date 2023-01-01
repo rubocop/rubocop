@@ -4114,7 +4114,7 @@ Style/MapToSet:
   Description: 'Prefer `to_set` with a block over `map.to_set`.'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.42'
 
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
@@ -4178,7 +4178,7 @@ Style/MinMaxComparison:
   Description: 'Enforces the use of `max` or `min` instead of comparison for greater or less.'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.42'
 
 Style/MissingElse:
   Description: >-
@@ -5442,7 +5442,7 @@ Style/YodaExpression:
   Description: 'Forbid the use of yoda expressions.'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.42'
   SupportedOperators:
     - '*'
     - '+'
