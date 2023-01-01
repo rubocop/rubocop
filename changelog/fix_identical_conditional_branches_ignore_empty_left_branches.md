@@ -1,1 +1,0 @@
-* [#10858](https://github.com/rubocop/rubocop/issues/10858): Fix `Style/IdenticalConditionalBranches` to ignore identical leading lines when branch has single child and is used in return context. ([@fatkodima][])

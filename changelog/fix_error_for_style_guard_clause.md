@@ -1,1 +1,0 @@
-* [#11344](https://github.com/rubocop/rubocop/pull/11344): Fix an error for `Style/GuardClause` when using heredoc as an argument of raise in `then` branch and it does not have `else` branch. ([@koic][])
