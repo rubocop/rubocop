@@ -246,5 +246,5 @@ RuboCop's changelog is available [here](CHANGELOG.md).
 
 ## Copyright
 
-Copyright (c) 2012-2022 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
+Copyright (c) 2012-2023 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
 further details.
