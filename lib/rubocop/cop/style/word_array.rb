@@ -98,7 +98,9 @@ module RuboCop
         def within_2d_array_of_complex_content?(node)
           return false unless (parent = node.parent)
 
-          parent.array_type? && parent.values.any? { |subarray| complex_content?(subarray.values) }
+          parent.array_type? &&
+            parent.values.all?(&:array_type?) &&
+            parent.values.any? { |subarray| complex_content?(subarray.values) }
         end
 
         def complex_content?(strings, complex_regex: word_regex)

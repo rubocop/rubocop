@@ -375,6 +375,17 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ]
       RUBY
     end
+
+    it 'registers an offense and corrects for nested arrays' do
+      expect_offense(<<~RUBY)
+        [['one', 'One'], 2, 3]
+         ^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [%w(one One), 2, 3]
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is array' do
