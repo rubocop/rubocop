@@ -40,6 +40,12 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys, :config do
     RUBY
   end
 
+  it 'does not register an offense when using invalid symbol in encoding UTF-8 as keys' do
+    expect_no_offenses(<<~RUBY)
+      { "Test with malformed utf8 \\251" => 'test-with-malformed-utf8' }
+    RUBY
+  end
+
   it 'does not register an offense when string key is used in IO.popen' do
     expect_no_offenses(<<~RUBY)
       IO.popen({"RUBYOPT" => '-w'}, 'ruby', 'foo.rb')
