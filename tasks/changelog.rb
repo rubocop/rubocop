@@ -53,10 +53,9 @@ class Changelog
 
     def str_to_filename(str)
       str
-        .downcase
         .split
-        .each { |s| s.gsub!(/\W/, '') }
         .reject(&:empty?)
+        .map { |s| prettify(s) }
         .inject do |result, word|
           s = "#{result}_#{word}"
           return result if s.length > MAX_LENGTH
@@ -72,6 +71,21 @@ class Changelog
       end
 
       user
+    end
+
+    private
+
+    def prettify(str)
+      str.gsub!(/\W/, '_')
+
+      # Separate word boundaries by `_`.
+      str.gsub!(/([A-Z]+)(?=[A-Z][a-z])|([a-z\d])(?=[A-Z])/) do
+        (Regexp.last_match(1) || Regexp.last_match(2)) << '_'
+      end
+
+      str.gsub!(/\A_+|_+\z/, '')
+      str.downcase!
+      str
     end
   end
 
