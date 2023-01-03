@@ -28,7 +28,7 @@ module RuboCop
           return if node.receiver.const_type?
 
           _lhs, _op, rhs = *node
-          return if rhs.nil? || rhs.children.first || rhs.forwarded_args_type?
+          return if rhs.nil? || parenthesized_argument?(rhs) || rhs.forwarded_args_type?
 
           add_offense(dot) do |corrector|
             wrap_in_parentheses_if_chained(corrector, node)
@@ -37,6 +37,10 @@ module RuboCop
         end
 
         private
+
+        def parenthesized_argument?(argument)
+          argument.children.first && argument.parent.parenthesized?
+        end
 
         def wrap_in_parentheses_if_chained(corrector, node)
           return unless node.parent&.call_type?

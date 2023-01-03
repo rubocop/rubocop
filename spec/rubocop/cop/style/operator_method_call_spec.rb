@@ -43,9 +43,20 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     end
   end
 
-  it 'does not register an offense when using `foo.+@bar.to_s`' do
+  it 'registers an offense when using `foo.+ @bar.to_s`' do
+    expect_offense(<<~RUBY)
+      foo.+ @bar.to_s
+         ^ Redundant dot detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo + @bar.to_s
+    RUBY
+  end
+
+  it 'does not register an offense when using `foo.+(@bar).to_s`' do
     expect_no_offenses(<<~RUBY)
-      foo.+ bar.to_s
+      foo.+(@bar).to_s
     RUBY
   end
 
