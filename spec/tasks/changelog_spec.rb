@@ -128,6 +128,14 @@ RSpec.describe Changelog do
         it { is_expected.to eq('Fix something') }
       end
     end
+
+    describe '#path' do
+      it 'generates correct file name' do
+        body = 'Add new `Lint/UselessRescue` cop'
+        entry = described_class.new(type: :new, body: body, user: github_user)
+        expect(entry.path).to eq('changelog/new_add_new_lint_useless_rescue_cop.md')
+      end
+    end
   end
 
   it 'parses correctly' do
