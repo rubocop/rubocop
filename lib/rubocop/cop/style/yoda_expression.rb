@@ -7,6 +7,13 @@ module RuboCop
       # and `^` operators) where the order of expression is reversed, eg. `1 + x`.
       # This cop complements `Style/YodaCondition` cop, which has a similar purpose.
       #
+      # This cop is disabled by default to respect user intentions such as:
+      #
+      # [source,ruby]
+      # ----
+      # config.server_port = 9000 + ENV["TEST_ENV_NUMBER"].to_i
+      # ----
+      #
       # @safety
       #   This cop is unsafe because binary operators can be defined
       #   differently on different classes, and are not guaranteed to
