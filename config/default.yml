@@ -2452,6 +2452,11 @@ Lint/UselessMethodDefinition:
   VersionChanged: '0.91'
   Safe: false
 
+Lint/UselessRescue:
+  Description: 'Checks for useless `rescue`s.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UselessRuby2Keywords:
   Description: 'Finds unnecessary uses of `ruby2_keywords`.'
   Enabled: pending
