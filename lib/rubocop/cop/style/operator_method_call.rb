@@ -28,7 +28,7 @@ module RuboCop
           return if node.receiver.const_type?
 
           _lhs, _op, rhs = *node
-          return if rhs.nil? || parenthesized_argument?(rhs) || rhs.forwarded_args_type?
+          return if !rhs || method_call_with_parenthesized_arg?(rhs) || anonymous_forwarding?(rhs)
 
           add_offense(dot) do |corrector|
             wrap_in_parentheses_if_chained(corrector, node)
@@ -38,8 +38,18 @@ module RuboCop
 
         private
 
-        def parenthesized_argument?(argument)
+        # Checks for an acceptable case of `foo.+(bar).baz`.
+        def method_call_with_parenthesized_arg?(argument)
+          return false unless argument.parent.parent&.send_type?
+
           argument.children.first && argument.parent.parenthesized?
+        end
+
+        def anonymous_forwarding?(argument)
+          return true if argument.forwarded_args_type? || argument.forwarded_restarg_type?
+          return true if argument.children.first&.forwarded_kwrestarg_type?
+
+          argument.block_pass_type? && argument.source == '&'
         end
 
         def wrap_in_parentheses_if_chained(corrector, node)
