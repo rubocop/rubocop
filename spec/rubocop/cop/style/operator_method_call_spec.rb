@@ -90,4 +90,12 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
       obj.!
     RUBY
   end
+
+  it 'does not register an offense when using argument is `...`', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      def m(...)
+        obj.==(...)
+      end
+    RUBY
+  end
 end
