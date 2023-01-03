@@ -5440,9 +5440,10 @@ Style/YodaCondition:
 
 Style/YodaExpression:
   Description: 'Forbid the use of yoda expressions.'
-  Enabled: pending
+  Enabled: false
   Safe: false
   VersionAdded: '1.42'
+  VersionChanged: '<<next>>'
   SupportedOperators:
     - '*'
     - '+'
