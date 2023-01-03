@@ -28,7 +28,7 @@ module RuboCop
           return if node.receiver.const_type?
 
           _lhs, _op, rhs = *node
-          return if rhs.nil? || rhs.children.first
+          return if rhs.nil? || rhs.children.first || rhs.forwarded_args_type?
 
           add_offense(dot) do |corrector|
             wrap_in_parentheses_if_chained(corrector, node)
