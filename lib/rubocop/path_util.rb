@@ -28,14 +28,19 @@ module RuboCop
         end
     end
 
-    def smart_path(path)
-      # Ideally, we calculate this relative to the project root.
-      base_dir = Dir.pwd
+    SMART_PATH_CACHE = {} # rubocop:disable Style/MutableConstant
+    private_constant :SMART_PATH_CACHE
 
-      if path.start_with? base_dir
-        relative_path(path, base_dir)
-      else
-        path
+    def smart_path(path)
+      SMART_PATH_CACHE[path] ||= begin
+        # Ideally, we calculate this relative to the project root.
+        base_dir = Dir.pwd
+
+        if path.start_with? base_dir
+          relative_path(path, base_dir)
+        else
+          path
+        end
       end
     end
 
