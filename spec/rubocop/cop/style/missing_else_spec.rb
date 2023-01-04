@@ -46,6 +46,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             if cond; foo end
             ^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause.
           RUBY
+
+          expect_no_corrections
         end
       end
     end
@@ -101,6 +103,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             case v; when a; foo; when b; bar; end
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an `else`-clause.
           RUBY
+
+          expect_no_corrections
         end
       end
     end
@@ -143,6 +147,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             if cond; foo end
             ^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause.
           RUBY
+
+          expect_no_corrections
         end
       end
     end
@@ -172,6 +178,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             unless cond; foo end
             ^^^^^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause.
           RUBY
+
+          expect_no_corrections
         end
       end
     end
@@ -201,6 +209,8 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             case v; when a; foo; when b; bar; end
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an `else`-clause.
           RUBY
+
+          expect_no_corrections
         end
       end
     end
@@ -249,6 +259,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             if cond; foo end
             ^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause with `nil` in it.
           RUBY
+
+          expect_correction(<<~RUBY)
+            if cond; foo else; nil; end
+          RUBY
         end
       end
     end
@@ -278,6 +292,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             unless cond; foo end
             ^^^^^^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause with `nil` in it.
           RUBY
+
+          expect_correction(<<~RUBY)
+            unless cond; foo else; nil; end
+          RUBY
         end
       end
     end
@@ -306,6 +324,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
           expect_offense(<<~RUBY)
             case v; when a; foo; when b; bar; end
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an `else`-clause with `nil` in it.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            case v; when a; foo; when b; bar; else; nil; end
           RUBY
         end
       end
@@ -355,6 +377,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             if cond; foo end
             ^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
           RUBY
+
+          expect_correction(<<~RUBY)
+            if cond; foo else; end
+          RUBY
         end
       end
     end
@@ -384,6 +410,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             unless cond; foo end
             ^^^^^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
           RUBY
+
+          expect_correction(<<~RUBY)
+            unless cond; foo else; end
+          RUBY
         end
       end
     end
@@ -412,6 +442,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
           expect_offense(<<~RUBY)
             case v; when a; foo; when b; bar; end
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an empty `else`-clause.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            case v; when a; foo; when b; bar; else; end
           RUBY
         end
       end
@@ -461,6 +495,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             if cond; foo end
             ^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
           RUBY
+
+          expect_correction(<<~RUBY)
+            if cond; foo else; end
+          RUBY
         end
       end
     end
@@ -489,6 +527,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
           expect_offense(<<~RUBY)
             unless cond; foo end
             ^^^^^^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            unless cond; foo else; end
           RUBY
         end
       end
@@ -615,6 +657,10 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
           expect_offense(<<~RUBY)
             case v; when a; foo; when b; bar; end
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `case` condition requires an empty `else`-clause.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            case v; when a; foo; when b; bar; else; end
           RUBY
         end
       end
