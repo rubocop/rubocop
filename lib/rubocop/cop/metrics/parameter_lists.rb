@@ -9,6 +9,20 @@ module RuboCop
       # Keyword arguments can optionally be excluded from the total count,
       # as they add less complexity than positional or optional parameters.
       #
+      # Any number of arguments for `initialize` method inside a block of
+      # `Struct.new` and `Data.define` like this is always allowed:
+      #
+      # [source,ruby]
+      # ----
+      # Struct.new(:one, :two, :three, :four, :five, keyword_init: true) do
+      #   def initialize(one:, two:, three:, four:, five:)
+      #   end
+      # end
+      # ----
+      #
+      # This is because checking the number of arguments of the `initialize` method
+      # does not make sense.
+      #
       # NOTE: Explicit block argument `&block` is not counted to prevent
       # erroneous change that is avoided by making block argument implicit.
       #
@@ -63,6 +77,16 @@ module RuboCop
         NAMED_KEYWORD_TYPES = %i[kwoptarg kwarg].freeze
         private_constant :NAMED_KEYWORD_TYPES
 
+        # @!method struct_new_or_data_define_block?(node)
+        def_node_matcher :struct_new_or_data_define_block?, <<~PATTERN
+          (block
+            {
+              (send (const {nil? cbase} :Struct) :new ...)
+              (send (const {nil? cbase} :Data) :define ...)
+            }
+            (args) ...)
+        PATTERN
+
         def on_def(node)
           optargs = node.arguments.select(&:optarg_type?)
           return if optargs.count <= max_optional_parameters
@@ -78,6 +102,9 @@ module RuboCop
         alias on_defs on_def
 
         def on_args(node)
+          parent = node.parent
+          return if parent.method?(:initialize) && struct_new_or_data_define_block?(parent.parent)
+
           count = args_count(node)
           return unless count > max_params
 
