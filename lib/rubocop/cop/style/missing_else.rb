@@ -99,6 +99,7 @@ module RuboCop
       class MissingElse < Base
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = '`%<type>s` condition requires an `else`-clause.'
         MSG_NIL = '`%<type>s` condition requires an `else`-clause with `nil` in it.'
@@ -126,7 +127,9 @@ module RuboCop
         def check(node)
           return if node.else?
 
-          add_offense(node, message: format(message_template, type: node.type))
+          add_offense(node, message: format(message_template, type: node.type)) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def message_template
@@ -137,6 +140,15 @@ module RuboCop
             MSG_EMPTY
           else
             MSG
+          end
+        end
+
+        def autocorrect(corrector, node)
+          case empty_else_style
+          when :empty
+            corrector.insert_before(node.loc.end, 'else; nil; ')
+          when :nil
+            corrector.insert_before(node.loc.end, 'else; ')
           end
         end
 
