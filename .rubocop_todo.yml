@@ -23,7 +23,7 @@ Metrics/MethodLength:
 # Offense count: 8
 # Configuration parameters: CountComments, CountAsOne.
 Metrics/ModuleLength:
-  Max: 136
+  Max: 138
 
 # Offense count: 9
 RSpec/AnyInstance:
