@@ -1240,6 +1240,21 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense when hash first arg key and hash value only are the same which has a method call on the next line' do
+        expect_offense(<<~RUBY)
+          buz foo: foo, bar: 'bar'
+                   ^^^ Omit the hash value.
+
+          def buz(foo:, bar:); end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          buz foo:, bar: 'bar'
+
+          def buz(foo:, bar:); end
+        RUBY
+      end
+
       context 'when hash roket syntax' do
         let(:enforced_style) { 'hash_rockets' }
 

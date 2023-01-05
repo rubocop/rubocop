@@ -93,6 +93,8 @@ module RuboCop
       end
 
       def def_node_that_require_parentheses(node)
+        last_pair = node.parent.pairs.last
+        return unless last_pair.key.source == last_pair.value.source
         return unless (send_node = find_ancestor_send_node(node))
         return unless without_parentheses_call_expr_follows?(send_node)
 
