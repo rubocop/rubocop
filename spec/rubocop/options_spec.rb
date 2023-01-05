@@ -200,6 +200,15 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         OUTPUT
         # rubocop:enable Naming/InclusiveLanguage
 
+        if RUBY_ENGINE == 'ruby' && !RuboCop::Platform.windows?
+          expected_help += <<~OUTPUT
+
+            Profiling Options:
+                    --profile                    Profile rubocop
+                    --memory                     Profile rubocop memory usage
+          OUTPUT
+        end
+
         expect($stdout.string).to eq(expected_help)
       end
 

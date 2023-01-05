@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'fileutils'
+
 module RuboCop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
@@ -38,14 +40,16 @@ module RuboCop
       @options, paths = Options.new.parse(args)
       @env = Environment.new(@options, @config_store, paths)
 
-      if @options[:init]
-        run_command(:init)
-      else
-        act_on_options
-        validate_options_vs_config
-        parallel_by_default!
-        apply_default_formatter
-        execute_runners
+      profile_if_needed do
+        if @options[:init]
+          run_command(:init)
+        else
+          act_on_options
+          validate_options_vs_config
+          parallel_by_default!
+          apply_default_formatter
+          execute_runners
+        end
       end
     rescue ConfigNotFoundError, IncorrectCopNameError, OptionArgumentError => e
       warn e.message
@@ -67,6 +71,48 @@ module RuboCop
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     private
+
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def profile_if_needed
+      return yield unless @options[:profile]
+
+      return STATUS_ERROR unless require_gem('stackprof')
+
+      with_memory = @options[:memory]
+      if with_memory
+        return STATUS_ERROR unless require_gem('memory_profiler')
+
+        MemoryProfiler.start
+      end
+
+      tmp_dir = File.join(ConfigFinder.project_root, 'tmp')
+      FileUtils.mkdir_p(tmp_dir)
+      status = nil
+
+      StackProf.run(out: File.join(tmp_dir, 'rubocop-stackprof.dump')) do
+        status = yield
+      end
+      puts 'Profile report generated'
+
+      if with_memory
+        puts 'Building memory report...'
+        report = MemoryProfiler.stop
+        report.pretty_print(
+          to_file: File.join(tmp_dir, 'rubocop-memory_profiler.txt'),
+          scale_bytes: true
+        )
+      end
+      status
+    end
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
+    def require_gem(name)
+      require name
+      true
+    rescue LoadError
+      warn("You don't have #{name} installed. Add it to your Gemfile and run `bundle install`")
+      false
+    end
 
     def run_command(name)
       @env.run(name)

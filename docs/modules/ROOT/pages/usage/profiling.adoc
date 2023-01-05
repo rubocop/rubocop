@@ -1,0 +1,14 @@
+= Profiling
+
+NOTE: Profiling was introduced in RuboCop 1.45.
+
+RuboCop comes with the ability to profile itself while running. It has 2 CLI options:
+
+* the `--profile` option will use a https://github.com/tmm1/stackprof[stackprof gem](you need to have it in `Gemfile`) to profile wall time and print a report at the `tmp/rubocop-stackprof.dump` location of the project. See the gem's documentation on how to interpret the results
+* the `--memory` option will additionally profile memory usage using https://github.com/SamSaffron/memory_profiler[memory_profiler gem](you need to have it in `Gemfile`) and print a report at the `tmp/rubocop-memory_profiler.txt` location of the project
+
+NOTE: Profiling memory can be very costly and time consuming when run on a large codebase. In this case, it is recommended to use it over a limited set of files (`app/` directory, for example) or use a limited set of cops (with `--only`, for example).
+
+== Reporting Back
+
+If you found a performance problem in RuboCop, you are encouraged to report back via an issue or a pull request. See xref:contributing.adoc[Contributing Guide] for more details.
