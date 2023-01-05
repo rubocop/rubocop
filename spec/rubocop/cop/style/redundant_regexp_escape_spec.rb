@@ -112,28 +112,65 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
     end
 
     context "with an escaped '-' character being the last character inside a character class" do
-      it 'registers an offense and corrects' do
-        expect_offense(<<~'RUBY')
-          foo = /[0-9\-]/
-                     ^^ Redundant escape inside regexp literal
-        RUBY
+      context 'with a regexp %r{...} literal' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~'RUBY')
+            foo = %r{[0-9\-]}
+                         ^^ Redundant escape inside regexp literal
+          RUBY
 
-        expect_correction(<<~RUBY)
-          foo = /[0-9-]/
-        RUBY
+          expect_correction(<<~RUBY)
+            foo = %r{[0-9-]}
+          RUBY
+        end
+      end
+
+      context 'with a regexp /.../ literal' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~'RUBY')
+            foo = /[0-9\-]/
+                       ^^ Redundant escape inside regexp literal
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo = /[0-9-]/
+          RUBY
+        end
       end
     end
 
     context "with an escaped '-' character being the first character inside a character class" do
-      it 'registers an offense and corrects' do
-        expect_offense(<<~'RUBY')
-          foo = /[\-0-9]/
-                  ^^ Redundant escape inside regexp literal
-        RUBY
+      context 'with a regexp %r{...} literal' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~'RUBY')
+            foo = %r{[\-0-9]}
+                      ^^ Redundant escape inside regexp literal
+          RUBY
 
-        expect_correction(<<~RUBY)
-          foo = /[-0-9]/
-        RUBY
+          expect_correction(<<~RUBY)
+            foo = %r{[-0-9]}
+          RUBY
+        end
+      end
+
+      context 'with a regexp /.../ literal' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~'RUBY')
+            foo = /[\-0-9]/
+                    ^^ Redundant escape inside regexp literal
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo = /[-0-9]/
+          RUBY
+        end
+      end
+    end
+
+    context "with an escaped '-' character being neither first nor last inside a character class" do
+      it 'does not register an offense' do
+        expect_no_offenses('foo = %r{[\w\-\#]}')
+        expect_no_offenses('foo = /[\w\-\#]/')
       end
     end
 
