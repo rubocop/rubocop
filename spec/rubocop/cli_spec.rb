@@ -1955,4 +1955,49 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
   end
+
+  if RUBY_ENGINE == 'ruby' && !RuboCop::Platform.windows?
+    describe 'profiling' do
+      let(:cpu_profile) { File.join('tmp', 'rubocop-stackprof.dump') }
+      let(:memory_profile) { File.join('tmp', 'rubocop-memory_profiler.txt') }
+
+      before do
+        # Force reload of project root
+        RuboCop::ConfigFinder.project_root = nil
+
+        FileUtils.rm_f(cpu_profile)
+        FileUtils.rm_f(memory_profile)
+
+        create_file('example1.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          'string'
+        RUBY
+        create_empty_file('Gemfile')
+      end
+
+      after do
+        # Don't leak project root change
+        RuboCop::ConfigFinder.project_root = nil
+      end
+
+      it 'does not create profile files by default' do
+        expect(cli.run(['example1.rb'])).to eq(0)
+        expect($stdout.string.include?('Profile report generated')).to be(false)
+        expect(File).not_to exist(cpu_profile)
+      end
+
+      it 'creates cpu profile file' do
+        expect(cli.run(['--profile', 'example1.rb'])).to eq(0)
+        expect($stdout.string.include?('Profile report generated')).to be(true)
+        expect(File).to exist(cpu_profile)
+      end
+
+      it 'creates memory profile file' do
+        expect(cli.run(['--profile', '--memory', 'example1.rb'])).to eq(0)
+        expect($stdout.string.include?('Building memory report...')).to be(true)
+        expect(File).to exist(memory_profile)
+      end
+    end
+  end
 end

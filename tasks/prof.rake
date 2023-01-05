@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :prof do
-  dump_path = 'tmp/stackprof.dump'
+  dump_path = 'tmp/rubocop-stackprof.dump'
 
   desc 'Run RuboCop on itself with profiling on'
   task :run, [:path] do |_task, args|
@@ -13,7 +13,7 @@ namespace :prof do
     end
 
     path = args.fetch(:path, '.')
-    cmd = "bin/rubocop-profile #{path}"
+    cmd = "exe/rubocop --profile #{path}"
     system cmd
   end
 

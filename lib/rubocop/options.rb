@@ -61,6 +61,9 @@ module RuboCop
         add_config_generation_options(opts)
         add_additional_modes(opts)
         add_general_options(opts)
+
+        # `stackprof` is not supported on JRuby and Windows.
+        add_profile_options(opts) if RUBY_ENGINE == 'ruby' && !Platform.windows?
       end
     end
 
@@ -230,6 +233,16 @@ module RuboCop
         option(opts, '--[no-]color')
         option(opts, '-v', '--version')
         option(opts, '-V', '--verbose-version')
+      end
+    end
+
+    def add_profile_options(opts)
+      section(opts, 'Profiling Options') do
+        option(opts, '--profile') do
+          @options[:profile] = true
+          @options[:cache] = 'false' unless @options.key?(:cache)
+        end
+        option(opts, '--memory')
       end
     end
 
@@ -424,6 +437,8 @@ module RuboCop
     def invalid_arguments_for_parallel
       [('--auto-gen-config' if @options.key?(:auto_gen_config)),
        ('-F/--fail-fast'    if @options.key?(:fail_fast)),
+       ('--profile'         if @options[:profile]),
+       ('--memory'          if @options[:memory]),
        ('--cache false'     if @options > { cache: 'false' })].compact
     end
 
@@ -601,7 +616,9 @@ module RuboCop
       server_status:                    'Show server status.',
       raise_cop_error:                  ['Raise cop-related errors with cause and location.',
                                          'This is used to prevent cops from failing silently.',
-                                         'Default is false.']
+                                         'Default is false.'],
+      profile:                          'Profile rubocop',
+      memory:                           'Profile rubocop memory usage'
     }.freeze
   end
 end
