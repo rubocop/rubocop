@@ -77,7 +77,8 @@ module RuboCop
           # but it's not necessry to escape hyphen if it's the first or last character
           # within the character class. This method checks if that's the case.
           # e.g. "[0-9\\-]" or "[\\-0-9]" would return true
-          node.source[index] == '[' || node.source[index + 3] == ']'
+          contents_range(node).source[index - 1] == '[' ||
+            contents_range(node).source[index + 2] == ']'
         end
 
         def delimiter?(node, char)
