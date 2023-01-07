@@ -30,7 +30,7 @@ module RuboCop
           return unless double_splat_hash_braces?(grandparent)
 
           add_offense(grandparent) do |corrector|
-            corrector.replace(grandparent, node.pairs.map(&:source).join(', '))
+            corrector.replace(grandparent, node.children.map(&:source).join(', '))
           end
         end
       end
