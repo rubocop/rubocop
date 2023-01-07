@@ -733,6 +733,16 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo(1) { 2 }')
     end
 
+    it 'accepts parens in array literal calls' do
+      expect_no_offenses(<<~RUBY)
+        [
+          foo.bar.quux(:args) do
+            pass
+          end,
+        ]
+      RUBY
+    end
+
     it 'accepts parens in calls with logical operators' do
       expect_no_offenses('foo(a) && bar(b)')
       expect_no_offenses('foo(a) || bar(b)')

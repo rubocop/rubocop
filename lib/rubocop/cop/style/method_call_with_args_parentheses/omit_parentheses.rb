@@ -102,20 +102,23 @@ module RuboCop
           end
 
           def call_in_literals?(node)
-            node.parent &&
-              (node.parent.pair_type? ||
-              node.parent.array_type? ||
-              node.parent.range_type? ||
-              splat?(node.parent) ||
-              ternary_if?(node.parent))
+            parent = node.parent&.block_type? ? node.parent.parent : node.parent
+            return unless parent
+
+            parent.pair_type? ||
+              parent.array_type? ||
+              parent.range_type? ||
+              splat?(parent) ||
+              ternary_if?(parent)
           end
 
           def call_in_logical_operators?(node)
             parent = node.parent&.block_type? ? node.parent.parent : node.parent
-            parent &&
-              (logical_operator?(parent) ||
+            return unless parent
+
+            logical_operator?(parent) ||
               (parent.send_type? &&
-              parent.arguments.any? { |argument| logical_operator?(argument) }))
+              parent.arguments.any? { |argument| logical_operator?(argument) })
           end
 
           def call_in_optional_arguments?(node)
