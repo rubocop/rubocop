@@ -3858,7 +3858,8 @@ Style/HashEachMethods:
   Safe: false
   VersionAdded: '0.80'
   VersionChanged: '1.16'
-  AllowedReceivers: []
+  AllowedReceivers:
+    - Thread.current
 
 Style/HashExcept:
   Description: >-

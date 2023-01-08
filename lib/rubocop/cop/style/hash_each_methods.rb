@@ -118,9 +118,21 @@ module RuboCop
         end
 
         def allowed_receiver?(receiver)
-          receiver_name = receiver.send_type? ? receiver.method_name.to_s : receiver.source
+          receiver_name = receiver_name(receiver)
 
           allowed_receivers.include?(receiver_name)
+        end
+
+        def receiver_name(receiver)
+          if receiver.send_type?
+            if receiver.receiver
+              "#{receiver_name(receiver.receiver)}.#{receiver.method_name}"
+            else
+              receiver.method_name.to_s
+            end
+          else
+            receiver.source
+          end
         end
 
         def allowed_receivers
