@@ -186,5 +186,15 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
     end
+
+    context "when `AllowedReceivers: ['Thread.current']`" do
+      let(:cop_config) { { 'AllowedReceivers' => ['Thread.current'] } }
+
+      it 'does not register an offense when receiver is `Thread.current` method' do
+        expect_no_offenses(<<~RUBY)
+          Thread.current.keys.each { |k| p k }
+        RUBY
+      end
+    end
   end
 end
