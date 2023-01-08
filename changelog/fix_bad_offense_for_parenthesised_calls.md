@@ -1,0 +1,1 @@
+* [#11403](https://github.com/rubocop/rubocop/pull/11403): Fix bad offense for parenthesised calls in literals for `omit_parentheses` style in `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
