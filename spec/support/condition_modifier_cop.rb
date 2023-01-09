@@ -17,6 +17,19 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
       RUBY
     end
 
+    it 'accepts it if single line would not fit on one line and body last argument is a hash type with value omission', :ruby31 do
+      # This statement is one character too long to fit.
+      condition = 'a' * (40 - keyword.length)
+      body = "#{'b' * 35}(a:)"
+      expect("#{body} #{keyword} #{condition}".length).to eq(81)
+
+      expect_no_offenses(<<~RUBY)
+        #{keyword} #{condition}
+          #{body}
+        end
+      RUBY
+    end
+
     context 'when Layout/LineLength is disabled' do
       let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => false } } }
 
