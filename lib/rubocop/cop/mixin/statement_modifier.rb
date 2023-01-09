@@ -5,6 +5,7 @@ module RuboCop
     # Common functionality for modifier cops.
     module StatementModifier
       include LineLengthHelp
+      include RangeHelp
 
       private
 
