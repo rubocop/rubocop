@@ -1106,6 +1106,19 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense when expression follows hash key assignment' do
+        expect_offense(<<~RUBY)
+          hash[:key] = { foo: foo }
+                              ^^^ Omit the hash value.
+          bar
+        RUBY
+
+        expect_correction(<<~RUBY)
+          hash[:key] = { foo: }
+          bar
+        RUBY
+      end
+
       it 'registers an offense when one line `if` condition follows (with parentheses)' do
         expect_offense(<<~RUBY)
           foo(value: value) if bar

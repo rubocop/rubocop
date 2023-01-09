@@ -3,6 +3,7 @@
 module RuboCop
   module Cop
     # This module checks for Ruby 3.1's hash value omission syntax.
+    # rubocop:disable Metrics/ModuleLength
     module HashShorthandSyntax
       OMIT_HASH_VALUE_MSG = 'Omit the hash value.'
       EXPLICIT_HASH_VALUE_MSG = 'Include the hash value.'
@@ -106,7 +107,11 @@ module RuboCop
       def find_ancestor_send_node(node)
         ancestor = node.parent.parent
 
-        ancestor if ancestor&.call_type? && !ancestor&.method?(:[])
+        ancestor if ancestor&.call_type? && !brackets?(ancestor)
+      end
+
+      def brackets?(send_node)
+        send_node.method?(:[]) || send_node.method?(:[]=)
       end
 
       def use_element_of_hash_literal_as_receiver?(ancestor, parent)
@@ -186,4 +191,5 @@ module RuboCop
       end
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end
