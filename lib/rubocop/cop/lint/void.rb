@@ -124,7 +124,7 @@ module RuboCop
         end
 
         def check_nonmutating(node)
-          return unless node.send_type? && NONMUTATING_METHODS.include?(node.method_name)
+          return unless NONMUTATING_METHODS.include?(node.method_name)
 
           add_offense(node, message: format(NONMUTATING_MSG, method: node.method_name))
         end
