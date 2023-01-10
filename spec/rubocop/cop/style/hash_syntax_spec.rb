@@ -788,6 +788,19 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
     end
 
+    context 'Ruby >= 3.1', :ruby31 do
+      it 'registers hash rockets when keys have whitespaces in them and using hash value omission' do
+        expect_offense(<<~RUBY)
+          {:"t o" => 0, b:}
+                        ^^ Don't mix styles in the same hash.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {:"t o" => 0, :b => b}
+        RUBY
+      end
+    end
+
     it 'registers an offense when keys have whitespaces and mix styles' do
       expect_offense(<<~RUBY)
         x = { :"t o" => 0, b: 1 }

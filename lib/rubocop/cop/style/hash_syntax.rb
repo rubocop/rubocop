@@ -254,6 +254,7 @@ module RuboCop
           op = pair_node.loc.operator
 
           key_with_hash_rocket = ":#{pair_node.key.source}#{pair_node.inverse_delimiter(true)}"
+          key_with_hash_rocket += pair_node.key.source if pair_node.value_omission?
           corrector.replace(pair_node.key, key_with_hash_rocket)
           corrector.remove(range_with_surrounding_space(op))
         end
