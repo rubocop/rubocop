@@ -5,7 +5,7 @@ on:
 permissions:  # added using https://github.com/step-security/secure-workflows
   contents: read
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 jobs:
   yamllint:
