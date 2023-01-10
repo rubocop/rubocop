@@ -1,1 +1,0 @@
-* [#11390](https://github.com/rubocop/rubocop/issues/11390): Fix an incorrect autocorrect for `Style/HashSyntax` when hash first argument key and hash value only are the same which has a method call on the next line. ([@koic][])
