@@ -41,7 +41,7 @@ module RuboCop
         MSG = 'Useless method definition detected.'
 
         def on_def(node)
-          return if optional_args?(node)
+          return if use_rest_or_optional_args?(node)
           return unless delegating?(node.body, node)
 
           add_offense(node) { |corrector| corrector.remove(node) }
@@ -50,8 +50,8 @@ module RuboCop
 
         private
 
-        def optional_args?(node)
-          node.arguments.any? { |arg| arg.optarg_type? || arg.kwoptarg_type? }
+        def use_rest_or_optional_args?(node)
+          node.arguments.any? { |arg| arg.restarg_type? || arg.optarg_type? || arg.kwoptarg_type? }
         end
 
         def delegating?(node, def_node)
