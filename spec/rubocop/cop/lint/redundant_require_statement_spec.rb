@@ -100,6 +100,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
     it 'does not register an offense when using requiring `pp`' do
       expect_no_offenses(<<~RUBY)
         require 'pp'
+
+        pp foo
       RUBY
     end
   end
@@ -123,6 +125,48 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
       expect_correction(<<~RUBY)
         require 'uri'
       RUBY
+    end
+
+    context 'when requiring `pp`' do
+      it 'does not register an offense and corrects when using `pretty_inspect`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pp'
+
+          foo.pretty_inspect
+        RUBY
+      end
+
+      it 'does not register an offense and corrects when using `pretty_print`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pp'
+
+          foo.pretty_print(pp_instance)
+        RUBY
+      end
+
+      it 'does not register an offense and corrects when using `pretty_print_cycle`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pp'
+
+          foo.pretty_print_cycle(pp_instance)
+        RUBY
+      end
+
+      it 'does not register an offense and corrects when using `pretty_print_inspect`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pp'
+
+          foo.pretty_print_inspect
+        RUBY
+      end
+
+      it 'does not register an offense and corrects when using `pretty_print_instance_variables`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pp'
+
+          foo.pretty_print_instance_variables
+        RUBY
+      end
     end
   end
 
