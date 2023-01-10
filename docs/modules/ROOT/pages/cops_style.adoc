@@ -5171,7 +5171,7 @@ execute(sql).values.each { |v| p v }
 | Name | Default value | Configurable values
 
 | AllowedReceivers
-| `[]`
+| `Thread.current`
 | Array
 |===
 
@@ -7330,7 +7330,7 @@ a <= b ? a : b
 
 | Disabled
 | Yes
-| No
+| Yes
 | 0.30
 | 0.38
 |===
@@ -15256,16 +15256,23 @@ bar > 10
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Pending
+| Disabled
 | No
 | Yes (Unsafe)
 | 1.42
-| -
+| 1.43
 |===
 
 Forbids Yoda expressions, i.e. binary operations (using `*`, `+`, `&`, `|`,
 and `^` operators) where the order of expression is reversed, eg. `1 + x`.
 This cop complements `Style/YodaCondition` cop, which has a similar purpose.
+
+This cop is disabled by default to respect user intentions such as:
+
+[source,ruby]
+----
+config.server_port = 9000 + ENV["TEST_ENV_NUMBER"].to_i
+----
 
 === Safety
 

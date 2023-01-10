@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.43.0 (2023-01-10)
+
 ### New features
 
 * [#11359](https://github.com/rubocop/rubocop/issues/11359): Add new `Lint/UselessRescue` cop. ([@fatkodima][])
