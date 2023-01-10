@@ -57,13 +57,27 @@ module RuboCop
         private
 
         def only_reraising?(resbody_node)
+          return false if use_exception_variable_in_ensure?(resbody_node)
+
           body = resbody_node.body
           return false if body.nil? || !body.send_type? || !body.method?(:raise)
           return true unless body.arguments?
           return false if body.arguments.size > 1
 
           exception_name = body.first_argument.source
-          [resbody_node.exception_variable&.source, '$!', '$ERROR_INFO'].include?(exception_name)
+
+          exception_objects(resbody_node).include?(exception_name)
+        end
+
+        def use_exception_variable_in_ensure?(resbody_node)
+          return false unless (exception_variable = resbody_node.exception_variable)
+          return false unless (ensure_node = resbody_node.each_ancestor(:ensure).first)
+
+          ensure_node.body.each_descendant(:lvar).map(&:source).include?(exception_variable.source)
+        end
+
+        def exception_objects(resbody_node)
+          [resbody_node.exception_variable&.source, '$!', '$ERROR_INFO']
         end
       end
     end
