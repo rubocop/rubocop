@@ -46,21 +46,22 @@ module RuboCop
 
       private
 
-      # rubocop:disable Metrics/AbcSize
-      def register_offense(node, message, replacement)
+      def register_offense(node, message, replacement) # rubocop:disable Metrics/AbcSize
         add_offense(node.value, message: message) do |corrector|
           if (def_node = def_node_that_require_parentheses(node))
+            last_argument = def_node.last_argument
+            if last_argument.nil? || !last_argument.hash_type?
+              next corrector.replace(node, replacement)
+            end
+
             white_spaces = range_between(def_node.loc.selector.end_pos,
                                          def_node.first_argument.source_range.begin_pos)
             corrector.replace(white_spaces, '(')
-
-            last_argument = def_node.arguments.last
             corrector.insert_after(last_argument, ')') if node == last_argument.pairs.last
           end
           corrector.replace(node, replacement)
         end
       end
-      # rubocop:enable Metrics/AbcSize
 
       def ignore_mixed_hash_shorthand_syntax?(hash_node)
         target_ruby_version <= 3.0 || enforced_shorthand_syntax != 'consistent' ||
