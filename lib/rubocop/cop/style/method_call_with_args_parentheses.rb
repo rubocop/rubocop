@@ -208,6 +208,8 @@ module RuboCop
         end
 
         def on_send(node)
+          return if requrie_argument_parentheses?(node)
+
           send(style, node) # call require_parentheses or omit_parentheses
         end
         alias on_csend on_send
@@ -234,6 +236,13 @@ module RuboCop
 
           first_node = node.arguments.first
           first_node.begin_type? && first_node.parenthesized_call?
+        end
+
+        def requrie_argument_parentheses?(node)
+          return false unless (last_arg = node.last_argument)
+          return true if last_arg.forwarded_restarg_type?
+
+          last_arg.hash_type? && last_arg.children.first.forwarded_kwrestarg_type?
         end
       end
     end

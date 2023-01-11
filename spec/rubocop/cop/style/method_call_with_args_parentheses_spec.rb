@@ -468,6 +468,27 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
+    context 'anonymous rest arguments in 3.2', :ruby32 do
+      it 'does not regiester an offense when method calls to have parens' do
+        expect_no_offenses(<<~RUBY)
+          def foo(*)
+            foo(*)
+            do_something
+          end
+        RUBY
+      end
+    end
+
+    context 'anonymous keyword rest arguments in 3.2', :ruby32 do
+      it 'does not regiester an offense when method calls to have parens' do
+        expect_no_offenses(<<~RUBY)
+          def foo(**)
+            foo(**)
+          end
+        RUBY
+      end
+    end
+
     it 'register an offense for parens in method call without args' do
       trailing_whitespace = ' '
 
