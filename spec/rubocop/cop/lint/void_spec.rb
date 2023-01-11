@@ -218,6 +218,28 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       RuboCop::Config.new('Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => true })
     end
 
+    it 'registers offense for nonmutating method that takes a block' do
+      expect_offense(<<~RUBY)
+        [1,2,3].map do |n|
+        ^^^^^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#map!`?
+          n.to_s
+        end
+        "done"
+      RUBY
+    end
+
+    context 'Ruby 2.7', :ruby27 do
+      it 'registers offense for nonmutating method that takes a numbered parameter block' do
+        expect_offense(<<~RUBY)
+          [1,2,3].map do
+          ^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#map!`?
+            _1.to_s
+          end
+          "done"
+        RUBY
+      end
+    end
+
     it 'registers an offense if not on last line' do
       expect_offense(<<~RUBY)
         x.sort
