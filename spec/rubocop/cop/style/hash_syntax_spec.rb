@@ -1143,9 +1143,34 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense when one line `if` condition follows super (with parentheses)' do
+        expect_offense(<<~RUBY)
+          super(value: value) unless foo
+                       ^^^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          super(value:) unless foo
+        RUBY
+      end
+
       it 'does not register an offense when one line `if` condition follows (without parentheses)' do
         expect_no_offenses(<<~RUBY)
           foo x, value: value if bar
+        RUBY
+      end
+
+      it 'does not register an offense when one line `if` condition follows super (without parentheses)' do
+        expect_no_offenses(<<~RUBY)
+          super x, value: value unless foo
+        RUBY
+      end
+
+      it 'does not register an offense when one line `if` condition follows (without parentheses) in methods' do
+        expect_no_offenses(<<~RUBY)
+          def method
+            foo x, other:, value: value if bar
+          end
         RUBY
       end
 
