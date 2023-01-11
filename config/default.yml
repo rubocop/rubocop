@@ -4036,6 +4036,35 @@ Style/InverseMethods:
     :select: :reject
     :select!: :reject!
 
+Style/InvertibleUnlessCondition:
+  Description: 'Favor `if` with inverted condition over `unless`.'
+  Enabled: false
+  VersionAdded: '<<next>>'
+  # `InverseMethods` are methods that can be inverted in a `unless` condition.
+  # The relationship of inverse methods needs to be defined in both directions.
+  # Keys and values both need to be defined as symbols.
+  InverseMethods:
+    :!=: :==
+    :>: :<=
+    :<=: :>
+    :<: :>=
+    :>=: :<
+    :!~: :=~
+    :zero?: :nonzero?
+    :nonzero?: :zero?
+    :any?: :none?
+    :none?: :any?
+    :even?: :odd?
+    :odd?: :even?
+    # `ActiveSupport` defines some common inverse methods. They are listed below,
+    # and not enabled by default.
+    # :present?: :blank?
+    # :blank?: :present?
+    # :include?: :exclude?
+    # :exclude?: :include?
+    # :one?: :many?
+    # :many?: :one?
+
 Style/IpAddresses:
   Description: "Don't include literal IP addresses in code."
   Enabled: false
