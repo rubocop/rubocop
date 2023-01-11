@@ -62,6 +62,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessRescue, :config do
     RUBY
   end
 
+  it 'does not register an offense when using exception variable in `ensure` clause' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        do_something
+      rescue => e
+        raise
+      ensure
+        do_something(e)
+      end
+    RUBY
+  end
+
   it 'registers an offense when multiple `rescue`s and last is only reraises' do
     expect_offense(<<~RUBY)
       def foo
