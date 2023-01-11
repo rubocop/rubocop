@@ -1281,6 +1281,18 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense in method receiving hash literals' do
+        expect_offense(<<~RUBY)
+          foo = {bar: bar, baz: :baz, quux: quux}.merge foo
+                                            ^^^^ Omit the hash value.
+                      ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = {bar:, baz: :baz, quux:}.merge foo
+        RUBY
+      end
+
       context 'when hash roket syntax' do
         let(:enforced_style) { 'hash_rockets' }
 
