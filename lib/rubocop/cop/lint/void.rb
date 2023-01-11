@@ -46,19 +46,23 @@ module RuboCop
         LIT_MSG = 'Literal `%<lit>s` used in void context.'
         SELF_MSG = '`self` used in void context.'
         EXPRESSION_MSG = '`%<expression>s` used in void context.'
-        NONMUTATING_MSG = 'Method `#%<method>s` used in void context. Did you mean `#%<method>s!`?'
+        NONMUTATING_MSG = 'Method `#%<method>s` used in void context. Did you mean `#%<suggest>s`?'
 
         BINARY_OPERATORS = %i[* / % + - == === != < > <= >= <=>].freeze
         UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
         OPERATORS = (BINARY_OPERATORS + UNARY_OPERATORS).freeze
         VOID_CONTEXT_TYPES = %i[def for block].freeze
-        NONMUTATING_METHODS = %i[capitalize chomp chop collect compact
-                                 delete_prefix delete_suffix downcase
-                                 encode flatten gsub lstrip map merge next
-                                 reject reverse rotate rstrip scrub select
-                                 shuffle slice sort sort_by squeeze strip sub
-                                 succ swapcase tr tr_s transform_values
-                                 unicode_normalize uniq upcase].freeze
+        NONMUTATING_METHODS_WITH_BANG_VERSION = %i[capitalize chomp chop compact
+                                                   delete_prefix delete_suffix downcase
+                                                   encode flatten gsub lstrip merge next
+                                                   reject reverse rotate rstrip scrub select
+                                                   shuffle slice sort sort_by squeeze strip sub
+                                                   succ swapcase tr tr_s transform_values
+                                                   unicode_normalize uniq upcase].freeze
+        METHODS_REPLACABLE_BY_EACH = %i[collect map].freeze
+
+        NONMUTATING_METHODS = (NONMUTATING_METHODS_WITH_BANG_VERSION +
+                               METHODS_REPLACABLE_BY_EACH).freeze
 
         def on_block(node)
           return unless node.body && !node.body.begin_type?
@@ -124,9 +128,12 @@ module RuboCop
         end
 
         def check_nonmutating(node)
-          return unless NONMUTATING_METHODS.include?(node.method_name)
+          method_name = node.method_name
+          return unless NONMUTATING_METHODS.include?(method_name)
 
-          add_offense(node, message: format(NONMUTATING_MSG, method: node.method_name))
+          suggestion = METHODS_REPLACABLE_BY_EACH.include?(method_name) ? 'each' : "#{method_name}!"
+          add_offense(node,
+                      message: format(NONMUTATING_MSG, method: method_name, suggest: suggestion))
         end
 
         def in_void_context?(node)

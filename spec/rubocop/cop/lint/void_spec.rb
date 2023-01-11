@@ -220,8 +220,8 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
 
     it 'registers offense for nonmutating method that takes a block' do
       expect_offense(<<~RUBY)
-        [1,2,3].map do |n|
-        ^^^^^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#map!`?
+        [1,2,3].collect do |n|
+        ^^^^^^^^^^^^^^^^^^^^^^ Method `#collect` used in void context. Did you mean `#each`?
           n.to_s
         end
         "done"
@@ -232,7 +232,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       it 'registers offense for nonmutating method that takes a numbered parameter block' do
         expect_offense(<<~RUBY)
           [1,2,3].map do
-          ^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#map!`?
+          ^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#each`?
             _1.to_s
           end
           "done"
