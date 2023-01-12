@@ -46,7 +46,7 @@ module RuboCop
         def register_offense(node)
           add_offense(node.loc.end, message: message(node)) do |corrector|
             offense_range = offense_range(node)
-            replacement = "\n#{offense_range.source.strip}"
+            replacement = replacement(node)
 
             if (heredoc = last_heredoc_argument(node.body))
               corrector.remove(offense_range)
@@ -77,6 +77,12 @@ module RuboCop
             node.children.compact.last.loc.expression.end_pos,
             end_of_method_chain(node).loc.expression.end_pos
           )
+        end
+
+        def replacement(node)
+          end_with_method_chain = node.loc.end.join(end_of_method_chain(node).loc.expression.end)
+
+          "\n#{end_with_method_chain.source.strip}"
         end
 
         def end_of_method_chain(node)
