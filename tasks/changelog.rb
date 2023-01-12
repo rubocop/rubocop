@@ -10,7 +10,7 @@ class Changelog
   HEADER = /### (.*)/.freeze
   PATH = 'CHANGELOG.md'
   REF_URL = 'https://github.com/rubocop/rubocop'
-  MAX_LENGTH = 40
+  MAX_LENGTH = 50
   CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
   SIGNATURE = Regexp.new(format(Regexp.escape('[@%<user>s][]'), user: '([\w-]+)'))
   EOF = "\n"
