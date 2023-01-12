@@ -87,31 +87,32 @@ module RuboCop
       end
 
       def require_hash_value_for_around_hash_literal?(node)
-        return false unless (send_node = find_ancestor_send_node(node))
+        return false unless (method_dispatch_node = find_ancestor_method_dispatch_node(node))
 
-        !node.parent.braces? && !use_element_of_hash_literal_as_receiver?(send_node, node.parent) &&
-          use_modifier_form_without_parenthesized_method_call?(send_node)
+        !node.parent.braces? &&
+          !use_element_of_hash_literal_as_receiver?(method_dispatch_node, node.parent) &&
+          use_modifier_form_without_parenthesized_method_call?(method_dispatch_node)
       end
 
       def def_node_that_require_parentheses(node)
         last_pair = node.parent.pairs.last
         return unless last_pair.key.source == last_pair.value.source
-        return unless (send_node = find_ancestor_send_node(node))
-        return unless without_parentheses_call_expr_follows?(send_node)
+        return unless (method_dispatch_node = find_ancestor_method_dispatch_node(node))
+        return unless without_parentheses_call_expr_follows?(method_dispatch_node)
 
-        def_node = node.each_ancestor(:send, :csend).first
+        def_node = node.each_ancestor(:send, :csend, :super).first
 
         def_node unless def_node && def_node.arguments.empty?
       end
 
-      def find_ancestor_send_node(node)
+      def find_ancestor_method_dispatch_node(node)
         ancestor = node.parent.parent
 
-        ancestor if ancestor&.call_type? && !brackets?(ancestor)
+        ancestor if (ancestor&.call_type? || ancestor&.super_type?) && !brackets?(ancestor)
       end
 
-      def brackets?(send_node)
-        send_node.method?(:[]) || send_node.method?(:[]=)
+      def brackets?(method_dispatch_node)
+        method_dispatch_node.method?(:[]) || method_dispatch_node.method?(:[]=)
       end
 
       def use_element_of_hash_literal_as_receiver?(ancestor, parent)
