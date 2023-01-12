@@ -115,9 +115,7 @@ module RuboCop
             def_node = find_corresponding_def_node(node)
             return unless def_node
 
-            remove_node(corrector, def_node)
-            remove_node(corrector, node)
-            insert_def(corrector, node, def_node.source)
+            replace_def(corrector, node, def_node)
           when :inline
             remove_node(corrector, node)
             select_grouped_def_nodes(node).each do |grouped_def_node|
@@ -173,7 +171,9 @@ module RuboCop
         end
 
         def find_argument_less_modifier_node(node)
-          node.parent.each_child_node(:send).find do |child|
+          return unless (parent = node.parent)
+
+          parent.each_child_node(:send).find do |child|
             child.method?(node.method_name) && child.arguments.empty?
           end
         end
@@ -184,17 +184,21 @@ module RuboCop
           end.select(&:def_type?)
         end
 
-        def insert_def(corrector, node, source)
-          source = [*processed_source.ast_with_comments[node].map(&:text), source].join("\n")
+        def replace_def(corrector, node, def_node)
+          source = def_source(node, def_node)
           argument_less_modifier_node = find_argument_less_modifier_node(node)
           if argument_less_modifier_node
             corrector.insert_after(argument_less_modifier_node, "\n\n#{source}")
+          elsif (ancestor = node.each_ancestor(:block, :class, :module).first)
+
+            corrector.insert_before(ancestor.loc.end, "#{node.method_name}\n\n#{source}\n")
           else
-            corrector.insert_before(
-              node.each_ancestor(:block, :class, :module).first.location.end,
-              "#{node.method_name}\n\n#{source}\n"
-            )
+            corrector.replace(node, "#{node.method_name}\n\n#{source}")
+            return
           end
+
+          remove_node(corrector, def_node)
+          remove_node(corrector, node)
         end
 
         def insert_inline_modifier(corrector, node, modifier_name)
@@ -203,6 +207,10 @@ module RuboCop
 
         def remove_node(corrector, node)
           corrector.remove(range_with_comments_and_lines(node))
+        end
+
+        def def_source(node, def_node)
+          [*processed_source.ast_with_comments[node].map(&:text), def_node.source].join("\n")
         end
       end
     end
