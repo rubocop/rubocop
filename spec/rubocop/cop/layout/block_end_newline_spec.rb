@@ -13,6 +13,21 @@ RSpec.describe RuboCop::Cop::Layout::BlockEndNewline, :config do
     RUBY
   end
 
+  it 'registers an offense when multiline blocks with newlines before the `; end`' do
+    expect_offense(<<~RUBY)
+      test do
+        foo
+      ; end
+        ^^^ Expression at 3, 3 should be on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test do
+        foo
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when multiline block end is not on its own line' do
     expect_offense(<<~RUBY)
       test do
