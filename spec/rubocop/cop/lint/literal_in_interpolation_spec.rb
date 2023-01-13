@@ -96,15 +96,22 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it_behaves_like('literal interpolation', '1.2e-3', '0.0012')
   it_behaves_like('literal interpolation', '0xaabb', '43707')
   it_behaves_like('literal interpolation', '0o377', '255')
+  it_behaves_like('literal interpolation', '"double_quot_string"', 'double_quot_string')
+  it_behaves_like('literal interpolation', "'single_quot_string'", 'single_quot_string')
+  it_behaves_like('literal interpolation', '"double_quot_string: \'"', "double_quot_string: '")
+  it_behaves_like('literal interpolation', "'single_quot_string: \"'", 'single_quot_string: \"')
   it_behaves_like('literal interpolation', 2.0)
   it_behaves_like('literal interpolation', '[]', '[]')
   it_behaves_like('literal interpolation', '["a", "b"]', '[\"a\", \"b\"]')
-  it_behaves_like('literal interpolation', '{"a" => "b"}', '{\"a\" => \"b\"}')
   it_behaves_like('literal interpolation', true)
   it_behaves_like('literal interpolation', false)
   it_behaves_like('literal interpolation', 'nil', '')
   it_behaves_like('literal interpolation', ':symbol', 'symbol')
   it_behaves_like('literal interpolation', ':"symbol"', 'symbol')
+  it_behaves_like('literal interpolation',
+                  ':"single quot in symbol: \'"', "single quot in symbol: '")
+  it_behaves_like('literal interpolation',
+                  ":'double quot in symbol: \"'", 'double quot in symbol: \"')
   it_behaves_like('literal interpolation', 1..2)
   it_behaves_like('literal interpolation', 1...2)
   it_behaves_like('literal interpolation', '%w[]', '[]')
@@ -114,6 +121,72 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   it_behaves_like('literal interpolation', '%I[s1 s2]', '[\"s1\", \"s2\"]')
   it_behaves_like('literal interpolation', '%i[s1     s2]', '[\"s1\", \"s2\"]')
   it_behaves_like('literal interpolation', '%i[ s1   s2 ]', '[\"s1\", \"s2\"]')
+  it_behaves_like('literal interpolation', '{"a" => "b"}', '{\"a\"=>\"b\"}')
+  it_behaves_like('literal interpolation', "{ foo: 'bar', :fiz => \"buzz\" }",
+                  '{:foo=>\"bar\", :fiz=>\"buzz\"}')
+  it_behaves_like('literal interpolation', "{ foo: { fiz: 'buzz' } }", '{:foo=>{:fiz=>\"buzz\"}}')
+  it_behaves_like(
+    'literal interpolation',
+    '{ num_hash: { separate: 1_123, long_separate: 123_456_789_123_456_789, exponent: 1.2e-3 } }',
+    '{:num_hash=>{:separate=>1123, :long_separate=>123456789123456789, :exponent=>0.0012}}'
+  )
+  it_behaves_like('literal interpolation', '{ n_adic_num_hash: { hex: 0xaabb, oct: 0o377 } }',
+                  '{:n_adic_num_hash=>{:hex=>43707, :oct=>255}}')
+  it_behaves_like(
+    'literal interpolation',
+    '{ double_quot_hash: { simple: "double_quot", single_in_double: "double_quot: \'" } }',
+    '{:double_quot_hash=>{:simple=>\"double_quot\", :single_in_double=>\"double_quot: \'\"}}'
+  )
+  it_behaves_like(
+    'literal interpolation',
+    "{ single_quot_hash: { simple: 'single_quot', double_in_single: 'single_quot: \"' } }",
+    '{:single_quot_hash=>{:simple=>\"single_quot\", :double_in_single=>\"single_quot: \\\\\\"\"}}'
+  )
+  it_behaves_like('literal interpolation', '{ bool_hash: { key: true } }',
+                  '{:bool_hash=>{:key=>true}}')
+  it_behaves_like('literal interpolation', '{ bool_hash: { key: false } }',
+                  '{:bool_hash=>{:key=>false}}')
+  it_behaves_like('literal interpolation', '{ nil_hash: { key: nil } }', '{:nil_hash=>{:key=>nil}}')
+  it_behaves_like('literal interpolation', '{ symbol_hash: { key: :symbol } }',
+                  '{:symbol_hash=>{:key=>:symbol}}')
+  it_behaves_like('literal interpolation', '{ symbol_hash: { key: :"symbol" } }',
+                  '{:symbol_hash=>{:key=>:symbol}}')
+  it_behaves_like('literal interpolation',
+                  '{ single_quot_symbol_hash: { key: :"single_quot_in_symbol: \'" } }',
+                  '{:single_quot_symbol_hash=>{:key=>:\"single_quot_in_symbol: \'\"}}')
+  it_behaves_like('literal interpolation',
+                  "{ double_quot_symbol_hash: { key: :'double_quot_in_symbol: \"' } }",
+                  '{:double_quot_symbol_hash=>{:key=>:\"double_quot_in_symbol: \\\\\"\"}}')
+  it_behaves_like('literal interpolation',
+                  '{ single_quot_symbol_hash_not_in_space: { key: :"single_quot_in_symbol:\'" } }',
+                  '{:single_quot_symbol_hash_not_in_space=>{:key=>:\"single_quot_in_symbol:\'\"}}')
+  it_behaves_like('literal interpolation',
+                  '{ single_quot_symbol_in_space_hash: { key: :"single_quot_in_symbol: " } }',
+                  '{:single_quot_symbol_in_space_hash=>{:key=>:\"single_quot_in_symbol: \"}}')
+  it_behaves_like('literal interpolation', '{ range_hash: { key: 1..2 } }',
+                  '{:range_hash=>{:key=>1..2}}')
+  it_behaves_like('literal interpolation', '{ range_hash: { key: 1...2 } }',
+                  '{:range_hash=>{:key=>1...2}}')
+  it_behaves_like('literal interpolation', '{ array_hash: { key: %w[] } }',
+                  '{:array_hash=>{:key=>[]}}')
+  it_behaves_like('literal interpolation',
+                  '{ array_hash: { key: %w[v1] } }',
+                  '{:array_hash=>{:key=>[\"v1\"]}}')
+  it_behaves_like('literal interpolation',
+                  '{ array_hash: { key: %w[v1 v2] } }',
+                  '{:array_hash=>{:key=>[\"v1\", \"v2\"]}}')
+  it_behaves_like('literal interpolation',
+                  '{ array_hash: { key: %i[s1 s2] } }',
+                  '{:array_hash=>{:key=>[\"s1\", \"s2\"]}}')
+  it_behaves_like('literal interpolation',
+                  '{ array_hash: { key: %I[s1 s2] } }',
+                  '{:array_hash=>{:key=>[\"s1\", \"s2\"]}}')
+  it_behaves_like('literal interpolation',
+                  '{ array_hash: { key: %i[s1     s2] } }',
+                  '{:array_hash=>{:key=>[\"s1\", \"s2\"]}}')
+  it_behaves_like('literal interpolation',
+                  '{ array_hash: { key: %i[ s1   s2 ] } }',
+                  '{:array_hash=>{:key=>[\"s1\", \"s2\"]}}')
 
   shared_examples 'literal interpolation in words literal' do |prefix|
     let(:word) { 'interpolation' }

@@ -58,7 +58,7 @@ module RuboCop
           (node.str_type? && !node.loc.respond_to?(:begin)) || node.source_range.is?('__LINE__')
         end
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
         def autocorrected_value(node)
           case node.type
           when :int
@@ -71,13 +71,15 @@ module RuboCop
             autocorrected_value_for_symbol(node)
           when :array
             autocorrected_value_for_array(node)
+          when :hash
+            autocorrected_value_for_hash(node)
           when :nil
             ''
           else
             node.source.gsub('"', '\"')
           end
         end
-        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
         def autocorrected_value_for_string(node)
           if node.source.start_with?("'", '%q')
@@ -91,7 +93,16 @@ module RuboCop
           end_pos =
             node.loc.end ? node.loc.end.begin_pos : node.loc.expression.end_pos
 
-          range_between(node.loc.begin.end_pos, end_pos).source
+          range_between(node.loc.begin.end_pos, end_pos).source.gsub('"', '\"')
+        end
+
+        def autocorrected_value_in_hash_for_symbol(node)
+          # TODO: We need to detect symbol unacceptable names more correctly
+          if / |"|'/.match?(node.value.to_s)
+            ":\\\"#{node.value.to_s.gsub('"') { '\\\\\"' }}\\\""
+          else
+            ":#{node.value}"
+          end
         end
 
         def autocorrected_value_for_array(node)
@@ -99,6 +110,37 @@ module RuboCop
 
           contents_range(node).source.split.to_s.gsub('"', '\"')
         end
+
+        def autocorrected_value_for_hash(node)
+          hash_string = node.children.map do |child|
+            key = autocorrected_value_in_hash(child.key)
+            value = autocorrected_value_in_hash(child.value)
+            "#{key}=>#{value}"
+          end.join(', ')
+
+          "{#{hash_string}}"
+        end
+
+        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        def autocorrected_value_in_hash(node)
+          case node.type
+          when :int
+            node.children.last.to_i.to_s
+          when :float
+            node.children.last.to_f.to_s
+          when :str
+            "\\\"#{node.value.to_s.gsub('"') { '\\\\\"' }}\\\""
+          when :sym
+            autocorrected_value_in_hash_for_symbol(node)
+          when :array
+            autocorrected_value_for_array(node)
+          when :hash
+            autocorrected_value_for_hash(node)
+          else
+            node.source.gsub('"', '\"')
+          end
+        end
+        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         # Does node print its own source when converted to a string?
         def prints_as_self?(node)
