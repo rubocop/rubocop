@@ -50,7 +50,7 @@ module RuboCop
 
       ZERO_ARITY_SUPER_TYPE = :zsuper
 
-      TWISTED_SCOPE_TYPES = %i[block class sclass defs module].freeze
+      TWISTED_SCOPE_TYPES = %i[block numblock class sclass defs module].freeze
       SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:def]).freeze
 
       SEND_TYPE = :send
