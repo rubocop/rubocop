@@ -975,6 +975,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       it 'accepts parens in the last call if any previous calls with parentheses' do
         expect_no_offenses('foo().bar(3).quux.wait(4)')
       end
+
+      it 'accepts parens in empty hashes for arguments calls' do
+        expect_no_offenses(<<~RUBY)
+          params.should eq({})
+        RUBY
+      end
     end
 
     context 'allowing parens in multi-line calls' do

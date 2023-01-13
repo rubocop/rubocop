@@ -13,8 +13,7 @@ module RuboCop
 
           private
 
-          # rubocop:disable Metrics/PerceivedComplexity
-          def omit_parentheses(node)
+          def omit_parentheses(node) # rubocop:disable Metrics/PerceivedComplexity
             return unless node.parenthesized?
             return if inside_endless_method_def?(node)
             return if require_parentheses_for_hash_value_omission?(node)
@@ -28,7 +27,6 @@ module RuboCop
               autocorrect(corrector, node)
             end
           end
-          # rubocop:enable Metrics/PerceivedComplexity
 
           def autocorrect(corrector, node)
             if parentheses_at_the_end_of_multiline_call?(node)
@@ -90,7 +88,7 @@ module RuboCop
                   .end_with?('(')
           end
 
-          def legitimate_call_with_parentheses?(node)
+          def legitimate_call_with_parentheses?(node) # rubocop:disable Metrics/PerceivedComplexity
             call_in_literals?(node) ||
               call_with_ambiguous_arguments?(node) ||
               call_in_logical_operators?(node) ||
@@ -98,7 +96,8 @@ module RuboCop
               call_in_single_line_inheritance?(node) ||
               allowed_multiline_call_with_parentheses?(node) ||
               allowed_chained_call_with_parentheses?(node) ||
-              assignment_in_condition?(node)
+              assignment_in_condition?(node) ||
+              forwards_anonymous_rest_arguments?(node)
           end
 
           def call_in_literals?(node)
@@ -215,6 +214,13 @@ module RuboCop
             return false unless grandparent
 
             parent.assignment? && (grandparent.conditional? || grandparent.when_type?)
+          end
+
+          def forwards_anonymous_rest_arguments?(node)
+            return false unless (last_argument = node.last_argument)
+            return true if last_argument.forwarded_restarg_type?
+
+            last_argument.hash_type? && last_argument.children.first&.forwarded_kwrestarg_type?
           end
         end
         # rubocop:enable Metrics/ModuleLength, Metrics/CyclomaticComplexity
