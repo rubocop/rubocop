@@ -365,6 +365,34 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
     end
   end
 
+  context 'when a block parameter has same name as a prior block body variable' do
+    context 'when assigning a block parameter' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def x(array)
+            array.each { |foo|
+              bar = foo
+            }.each { |bar|
+            }
+          end
+        RUBY
+      end
+    end
+
+    context 'when assigning a numbered block parameter', :ruby27 do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def x(array)
+            array.each {
+              bar = _1
+            }.each { |bar|
+            }
+          end
+        RUBY
+      end
+    end
+  end
+
   context 'with Ractor.new' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
