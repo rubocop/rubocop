@@ -36,6 +36,7 @@ module RuboCop
       #
       class MinMaxComparison < Base
         extend AutoCorrector
+        include RangeHelp
 
         MSG = 'Use `%<prefer>s` instead.'
         GRATER_OPERATORS = %i[> >=].freeze
@@ -54,7 +55,7 @@ module RuboCop
           replacement = "[#{lhs.source}, #{rhs.source}].#{preferred_method}"
 
           add_offense(node, message: format(MSG, prefer: replacement)) do |corrector|
-            corrector.replace(node, replacement)
+            autocorrect(corrector, node, replacement)
           end
         end
 
@@ -65,6 +66,15 @@ module RuboCop
             GRATER_OPERATORS.include?(operator) ? 'max' : 'min'
           elsif lhs == else_branch && rhs == if_branch
             LESS_OPERATORS.include?(operator) ? 'max' : 'min'
+          end
+        end
+
+        def autocorrect(corrector, node, replacement)
+          if node.elsif?
+            corrector.remove(range_between(node.parent.loc.else.begin_pos, node.loc.else.begin_pos))
+            corrector.replace(node.else_branch, replacement)
+          else
+            corrector.replace(node, replacement)
           end
         end
       end

@@ -119,6 +119,25 @@ RSpec.describe RuboCop::Cop::Style::MinMaxComparison, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using `a < b a : b` with `elsif/else`' do
+    expect_offense(<<~RUBY)
+      if x
+      elsif a < b
+      ^^^^^^^^^^^ Use `[a, b].min` instead.
+        a
+      else
+        b
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if x
+      else
+        [a, b].min
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `a > b ? c : d`' do
     expect_no_offenses(<<~RUBY)
       a > b ? c : d
