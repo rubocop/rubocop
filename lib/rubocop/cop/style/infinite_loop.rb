@@ -21,6 +21,7 @@ module RuboCop
       #     work
       #   end
       class InfiniteLoop < Base
+        include Alignment
         extend AutoCorrector
 
         LEADING_SPACE = /\A(\s*)/.freeze
@@ -106,7 +107,7 @@ module RuboCop
           else
             indentation = body.source_range.source_line[LEADING_SPACE]
 
-            ['loop do', body.source.gsub(/^/, configured_indent), 'end'].join("\n#{indentation}")
+            ['loop do', body.source.gsub(/^/, indentation(node)), 'end'].join("\n#{indentation}")
           end
         end
 
@@ -119,10 +120,6 @@ module RuboCop
                       end
 
           start_range.join(end_range)
-        end
-
-        def configured_indent
-          ' ' * config.for_cop('Layout/IndentationWidth')['Width']
         end
       end
     end

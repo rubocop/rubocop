@@ -31,6 +31,7 @@ module RuboCop
       #
       # The compact style is only forced for classes/modules with one child.
       class ClassAndModuleChildren < Base
+        include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
         extend AutoCorrector
@@ -59,7 +60,7 @@ module RuboCop
         end
 
         def nest_definition(corrector, node)
-          padding = ((' ' * indent_width) + leading_spaces(node)).to_s
+          padding = indentation(node) + leading_spaces(node)
           padding_for_trailing_end = padding.sub(' ' * node.loc.end.column, '')
 
           replace_namespace_keyword(corrector, node)
@@ -124,10 +125,6 @@ module RuboCop
           corrector.remove(range)
         end
 
-        def configured_indentation_width
-          config.for_badge(Layout::IndentationWidth.badge).fetch('Width', 2)
-        end
-
         def unindent(corrector, node)
           return if node.body.children.last.nil?
 
@@ -139,10 +136,6 @@ module RuboCop
 
         def leading_spaces(node)
           node.source_range.source_line[/\A\s*/]
-        end
-
-        def indent_width
-          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def check_style(node, body)

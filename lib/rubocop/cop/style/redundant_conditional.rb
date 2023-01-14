@@ -86,10 +86,6 @@ module RuboCop
         def indented_else_node(expression, node)
           "else\n#{indentation(node)}#{expression}"
         end
-
-        def configured_indentation_width
-          super || 2
-        end
       end
     end
   end

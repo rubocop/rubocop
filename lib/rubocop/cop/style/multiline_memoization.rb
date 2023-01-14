@@ -31,6 +31,7 @@ module RuboCop
       #     baz
       #   )
       class MultilineMemoization < Base
+        include Alignment
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 
@@ -75,11 +76,10 @@ module RuboCop
         end
 
         def keyword_begin_str(node, node_buf)
-          indent = config.for_cop('Layout/IndentationWidth')['Width'] || 2
           if node_buf.source[node.loc.begin.end_pos] == "\n"
             'begin'
           else
-            "begin\n#{' ' * (node.loc.column + indent)}"
+            "begin\n#{' ' * (node.loc.column + configured_indentation_width)}"
           end
         end
 

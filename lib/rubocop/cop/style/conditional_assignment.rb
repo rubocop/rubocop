@@ -218,11 +218,9 @@ module RuboCop
         VARIABLE_ASSIGNMENT_TYPES = %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES + %i[and_asgn or_asgn op_asgn masgn].freeze
         LINE_LENGTH = 'Layout/LineLength'
-        INDENTATION_WIDTH = 'Layout/IndentationWidth'
         ENABLED = 'Enabled'
         MAX = 'Max'
         SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'
-        WIDTH = 'Width'
 
         # The shovel operator `<<` does not have its own type. It is a `send`
         # type.
@@ -426,10 +424,6 @@ module RuboCop
 
         def max_line_length
           config.for_cop(LINE_LENGTH)[MAX]
-        end
-
-        def indentation_width
-          config.for_cop(INDENTATION_WIDTH)[WIDTH] || 2
         end
 
         def single_line_conditions_only?

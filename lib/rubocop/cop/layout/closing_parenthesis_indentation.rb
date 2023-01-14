@@ -144,7 +144,7 @@ module RuboCop
         def expected_column(left_paren, elements)
           if line_break_after_left_paren?(left_paren, elements)
             source_indent = processed_source.line_indentation(first_argument_line(elements))
-            new_indent    = source_indent - indentation_width
+            new_indent    = source_indent - configured_indentation_width
 
             new_indent.negative? ? 0 : new_indent
           elsif all_elements_aligned?(elements)
@@ -182,10 +182,6 @@ module RuboCop
           else
             format(MSG_INDENT, expected: correct_column, actual: right_paren.column)
           end
-        end
-
-        def indentation_width
-          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def line_break_after_left_paren?(left_paren, elements)

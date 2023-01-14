@@ -41,6 +41,7 @@ module RuboCop
       #     do_that
       #   end
       class ElseLayout < Base
+        include Alignment
         include RangeHelp
         extend AutoCorrector
 
@@ -81,12 +82,7 @@ module RuboCop
           corrector.insert_after(node.loc.else, "\n")
 
           blank_range = range_between(node.loc.else.end_pos, first_else.loc.expression.begin_pos)
-          indentation = indent(node, offset: indentation_width)
-          corrector.replace(blank_range, indentation)
-        end
-
-        def indentation_width
-          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
+          corrector.replace(blank_range, indentation(node))
         end
       end
     end

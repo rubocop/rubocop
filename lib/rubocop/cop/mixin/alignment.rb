@@ -12,7 +12,7 @@ module RuboCop
       attr_reader :column_delta
 
       def configured_indentation_width
-        cop_config['IndentationWidth'] || config.for_cop('Layout/IndentationWidth')['Width']
+        cop_config['IndentationWidth'] || config.for_cop('Layout/IndentationWidth')['Width'] || 2
       end
 
       def indentation(node)

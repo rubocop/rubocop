@@ -31,6 +31,7 @@ module RuboCop
       #     baz
       #   end
       class OneLineConditional < Base
+        include Alignment
         include ConfigurableEnforcedStyle
         include OnNormalIfUnless
         extend AutoCorrector
@@ -57,7 +58,7 @@ module RuboCop
 
         def autocorrect(corrector, node)
           if always_multiline? || cannot_replace_to_ternary?(node)
-            IfThenCorrector.new(node, indentation: indentation_width).call(corrector)
+            IfThenCorrector.new(node, indentation: configured_indentation_width).call(corrector)
           else
             corrector.replace(node, ternary_correction(node))
           end
@@ -115,10 +116,6 @@ module RuboCop
           return true if node.respond_to?(:prefix_not?) && node.prefix_not?
 
           node.respond_to?(:arguments?) && node.arguments? && !node.parenthesized_call?
-        end
-
-        def indentation_width
-          @config.for_cop('Layout/IndentationWidth')['Width']
         end
       end
     end

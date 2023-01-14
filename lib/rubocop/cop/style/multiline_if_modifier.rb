@@ -40,10 +40,6 @@ module RuboCop
           [condition, indented_body, indented_end].join("\n")
         end
 
-        def configured_indentation_width
-          super || 2
-        end
-
         def indented_body(body, node)
           body_source = "#{offset(node)}#{body.source}"
           body_source.each_line.map do |line|

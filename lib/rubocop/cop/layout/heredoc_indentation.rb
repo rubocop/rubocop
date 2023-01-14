@@ -22,6 +22,7 @@ module RuboCop
       #   RUBY
       #
       class HeredocIndentation < Base
+        include Alignment
         include Heredoc
         extend AutoCorrector
 
@@ -37,7 +38,7 @@ module RuboCop
           heredoc_indent_type = heredoc_indent_type(node)
 
           if heredoc_indent_type == '~'
-            expected_indent_level = base_indent_level(node) + indentation_width
+            expected_indent_level = base_indent_level(node) + configured_indentation_width
             return if expected_indent_level == body_indent_level
           else
             return unless body_indent_level.zero?
@@ -66,9 +67,9 @@ module RuboCop
           current_indent_type = "<<#{heredoc_indent_type}"
 
           if current_indent_type == '<<~'
-            width_message(indentation_width)
+            width_message(configured_indentation_width)
           else
-            type_message(indentation_width, current_indent_type)
+            type_message(configured_indentation_width, current_indent_type)
           end
         end
 
@@ -89,7 +90,7 @@ module RuboCop
 
           body = heredoc_body(node)
 
-          expected_indent = base_indent_level(node) + indentation_width
+          expected_indent = base_indent_level(node) + configured_indentation_width
           actual_indent = indent_level(body)
           increase_indent_level = expected_indent - actual_indent
 
@@ -122,7 +123,7 @@ module RuboCop
         def indented_body(node)
           body = heredoc_body(node)
           body_indent_level = indent_level(body)
-          correct_indent_level = base_indent_level(node) + indentation_width
+          correct_indent_level = base_indent_level(node) + configured_indentation_width
           body.gsub(/^[^\S\r\n]{#{body_indent_level}}/, ' ' * correct_indent_level)
         end
 
@@ -146,10 +147,6 @@ module RuboCop
         # Returns '~', '-' or nil
         def heredoc_indent_type(node)
           node.source[/^<<([~-])/, 1]
-        end
-
-        def indentation_width
-          @config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def heredoc_body(node)

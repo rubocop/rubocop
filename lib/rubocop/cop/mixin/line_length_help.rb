@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     # Help methods for determining if a line is too long.
     module LineLengthHelp
+      include Alignment
+
       private
 
       def ignore_cop_directives?
@@ -85,7 +87,7 @@ module RuboCop
 
       def tab_indentation_width
         config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
-          config.for_cop('Layout/IndentationWidth')['Width']
+          configured_indentation_width
       end
 
       def uri_regexp
