@@ -60,19 +60,18 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
   it 'can handle multiple nested ternaries' do
     expect_offense(<<~RUBY)
       a ? b : c ? d : e ? f : g
-                      ^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
-              ^^^^^^^^^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
     RUBY
 
     expect_correction(<<~RUBY)
       if a
       b
-      else
-      if c
+      elsif c
       d
+      elsif e
+      f
       else
-      e ? f : g
-      end
+      g
       end
     RUBY
   end
