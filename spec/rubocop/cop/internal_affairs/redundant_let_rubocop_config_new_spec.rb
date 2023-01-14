@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantLetRuboCopConfigNew, :con
         subject(:cop) { described_class.new(config) }
 
         let(:config) { RuboCop::Config.new(described_class.badge.to_s => cop_config) }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove `let` that is `RuboCop::Config.new` with no arguments and specify `:config` in `describe`.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove `let` that is `RuboCop::Config.new` with no arguments.
 
         let(:cop_config) { { 'Parameter' => 'Value' } }
       end
