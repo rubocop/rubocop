@@ -18,20 +18,26 @@ module RuboCop
 
         MSG = 'Remove the redundant double splat and braces, use keyword arguments directly.'
 
-        # @!method double_splat_hash_braces?(node)
-        def_node_matcher :double_splat_hash_braces?, <<~PATTERN
-          (hash (kwsplat (hash ...)))
-        PATTERN
-
         def on_hash(node)
           return if node.pairs.empty? || node.pairs.any?(&:hash_rocket?)
+          return unless (parent = node.parent)
+          return unless parent.kwsplat_type?
 
-          grandparent = node.parent&.parent
-          return unless double_splat_hash_braces?(grandparent)
-
-          add_offense(grandparent) do |corrector|
-            corrector.replace(grandparent, node.children.map(&:source).join(', '))
+          add_offense(parent) do |corrector|
+            corrector.remove(parent.loc.operator)
+            corrector.remove(opening_brace(node))
+            corrector.remove(closing_brace(node))
           end
+        end
+
+        private
+
+        def opening_brace(node)
+          node.loc.begin.join(node.children.first.loc.expression.begin)
+        end
+
+        def closing_brace(node)
+          node.children.last.loc.expression.end.join(node.loc.end)
         end
       end
     end
