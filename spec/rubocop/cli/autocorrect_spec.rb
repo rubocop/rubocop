@@ -2763,4 +2763,50 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'indents hashes correctly when adding a line break' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def example
+        { key1:
+          { key2:
+            { key3:
+              { key4:
+                { key5:
+                  :value
+                }
+              }
+            }
+          }
+        }
+      end
+    RUBY
+
+    status = cli.run(%W[--autocorrect-all --only #{%w[
+      Layout/FirstHashElementIndentation
+      Layout/FirstHashElementLineBreak
+      Layout/TrailingWhitespace
+    ].join(',')}])
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      def example
+        {
+          key1:
+          {
+            key2:
+            {
+              key3:
+              {
+                key4:
+                {
+                  key5:
+                  :value
+                }
+              }
+            }
+          }
+        }
+      end
+    RUBY
+  end
 end
