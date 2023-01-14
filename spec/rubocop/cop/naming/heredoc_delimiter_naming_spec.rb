@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
-  let(:config) { RuboCop::Config.new(described_class.badge.to_s => cop_config) }
-
   let(:cop_config) { { 'ForbiddenDelimiters' => %w[END] } }
 
   context 'with an interpolated heredoc' do

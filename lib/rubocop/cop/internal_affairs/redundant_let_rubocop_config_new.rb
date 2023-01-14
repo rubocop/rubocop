@@ -31,9 +31,17 @@ module RuboCop
             (send nil? :let
               (sym :config))
             (args)
-            (send
-              (const
-                (const nil? :RuboCop) :Config) :new))
+            {
+              (send
+                (const
+                  (const nil? :RuboCop) :Config) :new)
+              (send
+                (const
+                  (const nil? :RuboCop) :Config) :new
+                    (hash (pair (send (send (send nil? :described_class) :badge) :to_s)
+                      (send nil? :cop_config))))
+            }
+          )
         PATTERN
 
         def on_block(node)

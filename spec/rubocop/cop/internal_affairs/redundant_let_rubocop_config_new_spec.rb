@@ -55,6 +55,29 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantLetRuboCopConfigNew, :con
     RUBY
   end
 
+  it 'registers an offense when using `let(:config) { RuboCop::Config.new(described_class.badge.to_s => cop_config) }` ' \
+     'and `:config` is specified' do
+    expect_offense(<<~RUBY)
+      RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma, :config do
+        subject(:cop) { described_class.new(config) }
+
+        let(:config) { RuboCop::Config.new(described_class.badge.to_s => cop_config) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove `let` that is `RuboCop::Config.new` with no arguments and specify `:config` in `describe`.
+
+        let(:cop_config) { { 'Parameter' => 'Value' } }
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma, :config do
+        subject(:cop) { described_class.new(config) }
+
+
+        let(:cop_config) { { 'Parameter' => 'Value' } }
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `let(:config)` with arguments to `RuboCop::Config.new`' do
     expect_no_offenses(<<~RUBY)
       RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma do

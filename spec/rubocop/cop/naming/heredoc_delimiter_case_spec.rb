@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
-  let(:config) { RuboCop::Config.new(described_class.badge.to_s => cop_config) }
-
   context 'when enforced style is uppercase' do
     let(:cop_config) do
       {
