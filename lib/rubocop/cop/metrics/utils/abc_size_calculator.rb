@@ -25,10 +25,7 @@ module RuboCop
           # > http://c2.com/cgi/wiki?AbcMetric
           CONDITION_NODES = CyclomaticComplexity::COUNTED_NODES.freeze
 
-          # TODO: move to rubocop-ast
-          ARGUMENT_TYPES = %i[arg optarg restarg kwarg kwoptarg kwrestarg blockarg].freeze
-
-          private_constant :BRANCH_NODES, :CONDITION_NODES, :ARGUMENT_TYPES
+          private_constant :BRANCH_NODES, :CONDITION_NODES
 
           def self.calculate(node, discount_repeated_attributes: false)
             new(node, discount_repeated_attributes: discount_repeated_attributes).calculate
@@ -129,7 +126,7 @@ module RuboCop
           end
 
           def argument?(node)
-            ARGUMENT_TYPES.include?(node.type) && capturing_variable?(node.children.first)
+            node.argument_type? && capturing_variable?(node.children.first)
           end
 
           def condition?(node)
