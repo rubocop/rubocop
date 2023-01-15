@@ -1154,6 +1154,34 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense in super followed by ivar assignment (without parentheses)' do
+        expect_offense(<<~RUBY)
+          super value: value, other: other
+                                     ^^^^^ Omit the hash value.
+                       ^^^^^ Omit the hash value.
+          @ivar = ivar
+        RUBY
+
+        expect_correction(<<~RUBY)
+          super(value:, other:)
+          @ivar = ivar
+        RUBY
+      end
+
+      it 'registers an offense in super followed by expr without parentheses' do
+        expect_offense(<<~RUBY)
+          super value: value, other: other
+                                     ^^^^^ Omit the hash value.
+                       ^^^^^ Omit the hash value.
+          foo baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          super(value:, other:)
+          foo baz
+        RUBY
+      end
+
       it 'registers an offense when one line `if` condition follows yield (with parentheses)' do
         expect_offense(<<~RUBY)
           yield(value: value) unless foo
