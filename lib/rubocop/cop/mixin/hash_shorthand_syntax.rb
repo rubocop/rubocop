@@ -54,7 +54,7 @@ module RuboCop
               next corrector.replace(node, replacement)
             end
 
-            white_spaces = range_between(def_node.loc.selector.end_pos,
+            white_spaces = range_between(def_node.selector.end_pos,
                                          def_node.first_argument.source_range.begin_pos)
             corrector.replace(white_spaces, '(')
             corrector.insert_after(last_argument, ')') if node == last_argument.pairs.last
@@ -101,15 +101,17 @@ module RuboCop
         return unless (method_dispatch_node = find_ancestor_method_dispatch_node(node))
         return unless without_parentheses_call_expr_follows?(method_dispatch_node)
 
-        def_node = node.each_ancestor(:send, :csend, :super).first
+        def_node = node.each_ancestor(:send, :csend, :super, :yield).first
 
-        def_node unless def_node && def_node.arguments.empty?
+        DefNode.new(def_node) unless def_node && def_node.arguments.empty?
       end
 
       def find_ancestor_method_dispatch_node(node)
-        ancestor = node.parent.parent
+        return unless (ancestor = node.parent.parent)
+        return unless ancestor.call_type? || ancestor.super_type? || ancestor.yield_type?
+        return if brackets?(ancestor)
 
-        ancestor if (ancestor&.call_type? || ancestor&.super_type?) && !brackets?(ancestor)
+        ancestor
       end
 
       def brackets?(method_dispatch_node)
@@ -189,6 +191,24 @@ module RuboCop
           hash_key_source = pair_node.key.source
           replacement = "#{hash_key_source}:"
           register_offense(pair_node, OMIT_HASH_VALUE_MSG, replacement)
+        end
+      end
+
+      DefNode = Struct.new(:node) do
+        def selector
+          if node.loc.respond_to?(:selector)
+            node.loc.selector
+          else
+            node.loc.keyword
+          end
+        end
+
+        def first_argument
+          node.first_argument
+        end
+
+        def last_argument
+          node.last_argument
         end
       end
     end
