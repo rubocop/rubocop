@@ -178,8 +178,6 @@ module RuboCop
         def multi_dimensional_array?(node, token, side: :right)
           offset = side == :right ? -1 : +1
           i = index_for(node, token) + offset
-          # TODO: change this type check once
-          # https://github.com/rubocop/rubocop-ast/pull/240 is merged
           i += offset while processed_source.tokens_within(node)[i].new_line?
           if side == :right
             processed_source.tokens_within(node)[i].right_bracket?
