@@ -141,6 +141,20 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
       RUBY
     end
 
+    it 'registers an offense for a case/in block', :ruby27 do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+          case value
+          in 1
+            call_foo
+          in 2
+            call_bar
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense for &&' do
       expect_offense(<<~RUBY)
         def method_name
