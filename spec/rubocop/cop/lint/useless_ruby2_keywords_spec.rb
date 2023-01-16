@@ -97,6 +97,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessRuby2Keywords, :config do
       RUBY
     end
 
+    it 'registers an offense for an unnecessary `ruby2_keywords` in a condition' do
+      expect_offense(<<~RUBY)
+        def foo(**kwargs)
+        end
+        ruby2_keywords :foo if respond_to?(:ruby2_keywords, true)
+        ^^^^^^^^^^^^^^^^^^^ `ruby2_keywords` is unnecessary for method `foo`.
+      RUBY
+    end
+
     it 'does not register an offense for an allowed def' do
       expect_no_offenses(<<~RUBY)
         def foo(*args)
