@@ -85,6 +85,22 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
     end
   end
 
+  context 'nested `case` as a pattern matching', :ruby27 do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        if a
+          if b
+            case c
+            ^^^^^^ Avoid more than 2 levels of block nesting.
+              in C
+                puts C
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'nested `while`' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

@@ -12,7 +12,7 @@ module RuboCop
       #
       # The maximum level of nesting allowed is configurable.
       class BlockNesting < Base
-        NESTING_BLOCKS = %i[case if while while_post until until_post for resbody].freeze
+        NESTING_BLOCKS = %i[case case_match if while while_post until until_post for resbody].freeze
 
         exclude_limit 'Max'
 
