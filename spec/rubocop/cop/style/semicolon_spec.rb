@@ -108,6 +108,40 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     expect_correction(" puts 1\n")
   end
 
+  it 'registers an offense for a semicolon at the beginning of a block' do
+    expect_offense(<<~RUBY)
+      foo {; bar }
+           ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo { bar }
+    RUBY
+  end
+
+  it 'registers an offense for a semicolon at the end of a block' do
+    expect_offense(<<~RUBY)
+      foo { bar; }
+               ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo { bar }
+    RUBY
+  end
+
+  it 'registers an offense for a semicolon at the middle of a block' do
+    expect_offense(<<~RUBY)
+      foo { bar; baz }
+               ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo { bar
+       baz }
+    RUBY
+  end
+
   it 'registers an offense for range (`1..42`) with semicolon' do
     expect_offense(<<~RUBY)
       1..42;
