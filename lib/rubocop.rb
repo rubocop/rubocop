@@ -166,6 +166,7 @@ require_relative 'rubocop/cop/bundler/ordered_gems'
 
 require_relative 'rubocop/cop/gemspec/dependency_version'
 require_relative 'rubocop/cop/gemspec/deprecated_attribute_assignment'
+require_relative 'rubocop/cop/gemspec/development_dependencies'
 require_relative 'rubocop/cop/gemspec/duplicated_assignment'
 require_relative 'rubocop/cop/gemspec/ordered_dependencies'
 require_relative 'rubocop/cop/gemspec/require_mfa'
