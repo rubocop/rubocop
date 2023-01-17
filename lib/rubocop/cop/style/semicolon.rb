@@ -72,13 +72,35 @@ module RuboCop
 
         def each_semicolon
           tokens_for_lines.each do |line, tokens|
-            yield line, tokens.last.column, tokens[-2] if tokens.last.semicolon?
-            yield line, tokens.first.column if tokens.first.semicolon?
+            semicolon_pos = semicolon_position(tokens)
+            after_expr_pos = semicolon_pos == -1 ? -2 : semicolon_pos
+
+            yield line, tokens[semicolon_pos].column, tokens[after_expr_pos] if semicolon_pos
           end
         end
 
         def tokens_for_lines
           processed_source.tokens.group_by(&:line)
+        end
+
+        def semicolon_position(tokens)
+          if tokens.last.semicolon?
+            -1
+          elsif tokens.first.semicolon?
+            0
+          elsif exist_semicolon_before_right_curly_brace?(tokens)
+            -3
+          elsif exist_semicolon_after_left_curly_brace?(tokens)
+            2
+          end
+        end
+
+        def exist_semicolon_before_right_curly_brace?(tokens)
+          tokens[-2]&.right_curly_brace? && tokens[-3]&.semicolon?
+        end
+
+        def exist_semicolon_after_left_curly_brace?(tokens)
+          tokens[1]&.left_curly_brace? && tokens[2].semicolon?
         end
 
         def register_semicolon(line, column, after_expression, token_before_semicolon = nil)

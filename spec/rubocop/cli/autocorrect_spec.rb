@@ -1748,7 +1748,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
       {foo: bar,
        bar: baz,}
-      foo.each { bar; }
+      foo.each { bar }
     RUBY
   end
 
