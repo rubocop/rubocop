@@ -301,4 +301,52 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
       expect_no_offenses('format("%*.*f %*.*f", 10, 2, 20.19, 5, 1, 11.22)')
     end
   end
+
+  context 'with interpolated string in format string' do
+    it 'registers an offense when the fields do not match' do
+      expect_offense(<<~'RUBY')
+        format("#{foo} %s %s", "bar")
+        ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
+      RUBY
+    end
+
+    it 'does not register an offense when the fields match' do
+      expect_no_offenses('format("#{foo} %s", "bar")')
+    end
+
+    it 'registers an offense for String#% when the fields do not match' do
+      expect_offense(<<~'RUBY')
+        "%s %s" % ["#{foo}", 1, 2]
+                ^ Number of arguments (3) to `String#%` doesn't match the number of fields (2).
+      RUBY
+    end
+
+    it 'does not register an offense for String#% when the fields match' do
+      expect_no_offenses('"%s %s" % ["#{foo}", 1]')
+    end
+  end
+
+  context 'with interpolated string in argument' do
+    it 'registers an offense when the fields do not match' do
+      expect_offense(<<~'RUBY')
+        format("%s %s", "#{foo}")
+        ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (2).
+      RUBY
+    end
+
+    it 'does not register an offense when the fields match' do
+      expect_no_offenses('format("%s", "#{foo}")')
+    end
+
+    it 'registers an offense for String#% when the fields do not match' do
+      expect_offense(<<~'RUBY')
+        "#{foo} %s %s" % [1, 2, 3]
+                       ^ Number of arguments (3) to `String#%` doesn't match the number of fields (2).
+      RUBY
+    end
+
+    it 'does not register an offense for String#% when the fields match' do
+      expect_no_offenses('"#{foo} %s %s" % [1, 2]')
+    end
+  end
 end
