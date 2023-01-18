@@ -98,12 +98,20 @@ module RuboCop
           return unless node.parent
 
           method_name = sym_node.value
-          definition = node.parent.each_child_node.detect { |n| method_definition(n, method_name) }
+          definition = find_method_definition(node, method_name)
 
           return unless definition
           return if allowed_arguments(definition.arguments)
 
           add_offense(node, message: format(MSG, method_name: method_name))
+        end
+
+        def find_method_definition(node, method_name)
+          node.each_ancestor.lazy.map do |ancestor|
+            ancestor.each_child_node(:def, :block, :numblock).find do |child|
+              method_definition(child, method_name)
+            end
+          end.find(&:itself)
         end
 
         # `ruby2_keywords` is only allowed if there's a `restarg` and no keyword arguments
