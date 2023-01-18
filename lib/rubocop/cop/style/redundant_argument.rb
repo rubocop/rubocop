@@ -64,8 +64,11 @@ module RuboCop
           offense_range = argument_range(node)
           message = format(MSG, arg: node.arguments.first.source)
 
-          add_offense(offense_range, message: message) do |corrector|
-            corrector.remove(offense_range)
+          # add_offense(offense_range, message: message) do |corrector|
+          #   corrector.remove(offense_range)
+          # end
+          add_offense(node, message: format(MSG, arg: node.arguments.first.source)) do |corrector|
+            corrector.remove(argument_range(node))
           end
         end
 
@@ -89,7 +92,7 @@ module RuboCop
           if node.parenthesized?
             range_between(node.loc.begin.begin_pos, node.loc.end.end_pos)
           else
-            range_with_surrounding_space(node.first_argument.source_range, newlines: false)
+            range_with_surrounding_space(range: node.first_argument.source_range, newlines: false)
           end
         end
       end

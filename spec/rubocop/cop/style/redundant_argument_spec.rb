@@ -36,10 +36,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
                ^^^^ Argument ' ' is redundant because it is implied by default.
     RUBY
 
-    expect_correction(<<~RUBY)
+`    expect_correction(<<~RUBY)
       foo.join
       foo.split
-    RUBY
+    RUBY`
   end
 
   it 'registers an offense and corrects when method called on literals' do
