@@ -47,7 +47,7 @@ module RuboCop
 
         def anonymous_forwarding?(argument)
           return true if argument.forwarded_args_type? || argument.forwarded_restarg_type?
-          return true if argument.children.first&.forwarded_kwrestarg_type?
+          return true if argument.hash_type? && argument.children.first&.forwarded_kwrestarg_type?
 
           argument.block_pass_type? && argument.source == '&'
         end

@@ -19,6 +19,17 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
       RUBY
     end
 
+    it "registers an offense when using `foo.#{operator_method} 42`" do
+      expect_offense(<<~RUBY)
+        foo.#{operator_method} 42
+           ^ Redundant dot detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo #{operator_method} 42
+      RUBY
+    end
+
     it "registers an offense when using `foo.#{operator_method}(bar)`" do
       expect_offense(<<~RUBY, operator_method: operator_method)
         foo.#{operator_method}(bar)
