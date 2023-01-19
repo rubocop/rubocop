@@ -86,8 +86,16 @@ module RuboCop
         range1 = to_range(node_or_range1)
         range2 = to_range(node_or_range2)
 
-        replace(range1, range2.source)
-        replace(range2, range1.source)
+        if range1.end_pos == range2.begin_pos
+          insert_before(range1, range2.source)
+          remove(range2)
+        elsif range2.end_pos == range1.begin_pos
+          insert_before(range2, range1.source)
+          remove(range1)
+        else
+          replace(range1, range2.source)
+          replace(range2, range1.source)
+        end
       end
 
       private

@@ -88,10 +88,9 @@ module RuboCop
           return unless previous_older_sibling
 
           add_offense(node, message: format(MSG, name: node.method_name)) do |corrector|
-            swap(
+            corrector.swap(
               range_with_comments_and_lines(previous_older_sibling),
-              range_with_comments_and_lines(node.parent.if_type? ? node.parent : node),
-              corrector: corrector
+              range_with_comments_and_lines(node.parent.if_type? ? node.parent : node)
             )
           end
         end
@@ -129,12 +128,6 @@ module RuboCop
           !node1.location.expression.with(
             end_pos: node2.location.expression.end_pos
           ).source.include?("\n\n")
-        end
-
-        def swap(range1, range2, corrector:)
-          inserted = range2.source
-          corrector.insert_before(range1, inserted)
-          corrector.remove(range2)
         end
       end
     end

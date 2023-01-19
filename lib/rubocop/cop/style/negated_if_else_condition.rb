@@ -103,11 +103,7 @@ module RuboCop
           if node.if_branch.nil?
             corrector.remove(range_by_whole_lines(node.loc.else, include_final_newline: true))
           else
-            if_range = if_range(node)
-            else_range = else_range(node)
-
-            corrector.replace(if_range, else_range.source)
-            corrector.replace(else_range, if_range.source)
+            corrector.swap(if_range(node), else_range(node))
           end
         end
 
