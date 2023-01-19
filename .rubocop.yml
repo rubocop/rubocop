@@ -80,6 +80,11 @@ Lint/UselessAccessModifier:
     - 'def_matcher'
     - 'def_node_matcher'
 
+Lint/EmptyFile:
+  Exclude:
+    # This file is intentionally empty to catch rubocop cops failing on empty files.
+    - spec/rubocop/intentionally_empty_file.rb
+
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
