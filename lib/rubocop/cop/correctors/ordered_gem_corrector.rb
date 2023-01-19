@@ -18,7 +18,7 @@ module RuboCop
           current_range = declaration_with_comment(node)
           previous_range = declaration_with_comment(previous_declaration)
 
-          ->(corrector) { swap_range(corrector, current_range, previous_range) }
+          ->(corrector) { corrector.swap(current_range, previous_range) }
         end
 
         private
@@ -31,11 +31,6 @@ module RuboCop
                                          include_final_newline: true).end_pos
 
           range_between(begin_pos, end_pos)
-        end
-
-        def swap_range(corrector, range1, range2)
-          corrector.insert_before(range2, range1.source)
-          corrector.remove(range1)
         end
       end
     end
