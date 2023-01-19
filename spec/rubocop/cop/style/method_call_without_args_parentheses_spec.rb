@@ -50,6 +50,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
       expect_no_offenses('test = test()')
     end
 
+    it 'registers an offense when calling method on a receiver' do
+      expect_offense(<<~RUBY)
+        test = x.test()
+                     ^^ Do not use parentheses for method calls with no arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test = x.test
+      RUBY
+    end
+
     it 'accepts parens in default argument assignment' do
       expect_no_offenses(<<~RUBY)
         def foo(test = test())

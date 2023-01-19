@@ -62,6 +62,8 @@ module RuboCop
         end
 
         def same_name_assignment?(node)
+          return false if node.receiver
+
           any_assignment?(node) do |asgn_node|
             next variable_in_mass_assignment?(node.method_name, asgn_node) if asgn_node.masgn_type?
 
