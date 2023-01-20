@@ -142,6 +142,14 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
+  it 'does not register an offense when using a comment containing a semicolon before a block' do
+    expect_no_offenses(<<~RUBY)
+      # ;
+      foo {
+      }
+    RUBY
+  end
+
   it 'registers an offense for range (`1..42`) with semicolon' do
     expect_offense(<<~RUBY)
       1..42;

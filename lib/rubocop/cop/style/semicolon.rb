@@ -100,7 +100,7 @@ module RuboCop
         end
 
         def exist_semicolon_after_left_curly_brace?(tokens)
-          tokens[1]&.left_curly_brace? && tokens[2].semicolon?
+          tokens[1]&.left_curly_brace? && tokens[2]&.semicolon?
         end
 
         def register_semicolon(line, column, after_expression, token_before_semicolon = nil)
