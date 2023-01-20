@@ -11,6 +11,8 @@ module RuboCop
       #   File.exists?(some_path)
       #   Dir.exists?(some_path)
       #   iterator?
+      #   attr :name, true
+      #   attr :name, false
       #   ENV.freeze # Calling `Env.freeze` raises `TypeError` since Ruby 2.7.
       #   ENV.clone
       #   ENV.dup # Calling `Env.dup` raises `TypeError` since Ruby 3.1.
@@ -21,6 +23,8 @@ module RuboCop
       #   File.exist?(some_path)
       #   Dir.exist?(some_path)
       #   block_given?
+      #   attr_accessor :name
+      #   attr_reader :name
       #   ENV # `ENV.freeze` cannot prohibit changes to environment variables.
       #   ENV.to_h
       #   ENV.to_h # `ENV.dup` cannot dup `ENV`, use `ENV.to_h` to get a copy of `ENV` as a hash.
@@ -29,138 +33,84 @@ module RuboCop
       class DeprecatedClassMethods < Base
         extend AutoCorrector
 
-        # Inner class to DeprecatedClassMethods.
-        # This class exists to add abstraction and clean naming
-        # to the deprecated objects
-        class DeprecatedClassMethod
-          include RuboCop::AST::Sexp
-
-          attr_reader :method, :class_constant
-
-          def initialize(method, class_constant: nil, correctable: true)
-            @method = method
-            @class_constant = class_constant
-            @correctable = correctable
-          end
-
-          def class_nodes
-            @class_nodes ||=
-              if class_constant
-                [
-                  s(:const, nil, class_constant),
-                  s(:const, s(:cbase), class_constant)
-                ]
-              else
-                [nil]
-              end
-          end
-
-          def correctable?
-            @correctable
-          end
-
-          def to_s
-            [class_constant, method].compact.join(delimiter)
-          end
-
-          private
-
-          def delimiter
-            CLASS_METHOD_DELIMITER
-          end
-        end
-
-        # Inner class to DeprecatedClassMethods.
-        # This class exists to add abstraction and clean naming
-        # to the replacements for deprecated objects
-        class Replacement
-          attr_reader :method, :class_constant
-
-          def initialize(method, class_constant: nil, instance_method: false)
-            @method = method
-            @class_constant = class_constant
-            @instance_method = instance_method
-          end
-
-          def to_s
-            [class_constant, method].compact.join(delimiter)
-          end
-
-          private
-
-          def delimiter
-            instance_method? ? INSTANCE_METHOD_DELIMITER : CLASS_METHOD_DELIMITER
-          end
-
-          def instance_method?
-            @instance_method
-          end
-        end
-
         MSG = '`%<current>s` is deprecated in favor of `%<prefer>s`.'
+        RESTRICT_ON_SEND = %i[
+          attr clone dup exists? freeze gethostbyaddr gethostbyname iterator?
+        ].freeze
 
-        DEPRECATED_METHODS_OBJECT = {
-          DeprecatedClassMethod.new(:exists?, class_constant: :File) =>
-            Replacement.new(:exist?, class_constant: :File),
-
-          DeprecatedClassMethod.new(:exists?, class_constant: :Dir) =>
-            Replacement.new(:exist?, class_constant: :Dir),
-
-          DeprecatedClassMethod.new(:iterator?) => Replacement.new(:block_given?),
-
-          DeprecatedClassMethod.new(:freeze, class_constant: :ENV) =>
-            Replacement.new(nil, class_constant: :ENV),
-
-          DeprecatedClassMethod.new(:clone, class_constant: :ENV) =>
-            Replacement.new(:to_h, class_constant: :ENV),
-
-          DeprecatedClassMethod.new(:dup, class_constant: :ENV) =>
-            Replacement.new(:to_h, class_constant: :ENV),
-
-          DeprecatedClassMethod.new(:gethostbyaddr, class_constant: :Socket, correctable: false) =>
-            Replacement.new(:getnameinfo, class_constant: :Addrinfo, instance_method: true),
-
-          DeprecatedClassMethod.new(:gethostbyname, class_constant: :Socket, correctable: false) =>
-            Replacement.new(:getaddrinfo, class_constant: :Addrinfo, instance_method: true)
+        PREFERRED_METHDOS = {
+          clone: 'to_h',
+          dup: 'to_h',
+          exists?: 'exist?',
+          gethostbyaddr: 'Addrinfo#getnameinfo',
+          gethostbyname: 'Addrinfo#getaddrinfo',
+          iterator?: 'block_given?'
         }.freeze
 
-        RESTRICT_ON_SEND = DEPRECATED_METHODS_OBJECT.keys.map(&:method).freeze
+        DIR_ENV_FILE_CONSTANTS = %i[Dir ENV File].freeze
 
-        CLASS_METHOD_DELIMITER = '.'
-        INSTANCE_METHOD_DELIMITER = '#'
+        # @!method deprecated_class_method?(node)
+        def_node_matcher :deprecated_class_method?, <<~PATTERN
+          {
+            (send (const {cbase nil?} {:ENV}) {:clone :dup :freeze})
+            (send (const {cbase nil?} {:File :Dir}) :exists? _)
+            (send (const {cbase nil?} :Socket) {:gethostbyaddr :gethostbyname} ...)
+            (send nil? :attr _ boolean)
+            (send nil? :iterator?)
+          }
+        PATTERN
 
         def on_send(node)
-          check(node) do |deprecated|
-            prefer = replacement(deprecated)
-            message = format(MSG, current: deprecated, prefer: prefer)
-            current_method = node.loc.selector
+          return unless deprecated_class_method?(node)
 
-            add_offense(current_method, message: message) do |corrector|
-              next unless deprecated.correctable?
+          offense_range = offense_range(node)
+          prefer = preferred_method(node)
+          message = format(MSG, current: offense_range.source, prefer: prefer)
 
-              if (preferred_method = prefer.method)
-                corrector.replace(current_method, preferred_method)
-              else
-                corrector.remove(node.loc.dot)
-                corrector.remove(current_method)
-              end
+          add_offense(offense_range, message: message) do |corrector|
+            next if socket_const?(node.receiver)
+
+            if node.method?(:freeze)
+              corrector.replace(node, 'ENV')
+            else
+              corrector.replace(offense_range, prefer)
             end
           end
         end
 
         private
 
-        def check(node)
-          DEPRECATED_METHODS_OBJECT.each_key do |deprecated|
-            next unless deprecated.class_nodes.include?(node.receiver)
-            next unless node.method?(deprecated.method)
-
-            yield deprecated
+        def offense_range(node)
+          if socket_const?(node.receiver) || dir_env_file_const?(node.receiver)
+            node.loc.expression.begin.join(node.loc.selector.end)
+          elsif node.method?(:attr)
+            node
+          else
+            node.loc.selector
           end
         end
 
-        def replacement(deprecated)
-          DEPRECATED_METHODS_OBJECT[deprecated]
+        def preferred_method(node)
+          if node.method?(:attr)
+            boolean_argument = node.arguments[1].source
+            preferred_attr_method = boolean_argument == 'true' ? 'attr_accessor' : 'attr_reader'
+
+            "#{preferred_attr_method} #{node.first_argument.source}"
+          elsif dir_env_file_const?(node.receiver)
+            prefer = PREFERRED_METHDOS[node.method_name]
+
+            prefer ? "#{node.receiver.source}.#{prefer}" : 'ENV'
+          else
+            PREFERRED_METHDOS[node.method_name]
+          end
+        end
+
+        def socket_const?(node)
+          node&.short_name == :Socket
+        end
+
+        def dir_env_file_const?(node)
+          DIR_ENV_FILE_CONSTANTS.include?(node&.short_name)
         end
       end
     end
