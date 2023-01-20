@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense and corrects File.exists?' do
       expect_offense(<<~RUBY)
         File.exists?(o)
-             ^^^^^^^ `File.exists?` is deprecated in favor of `File.exist?`.
+        ^^^^^^^^^^^^ `File.exists?` is deprecated in favor of `File.exist?`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense and corrects ::File.exists?' do
       expect_offense(<<~RUBY)
         ::File.exists?(o)
-               ^^^^^^^ `File.exists?` is deprecated in favor of `File.exist?`.
+        ^^^^^^^^^^^^^^ `::File.exists?` is deprecated in favor of `::File.exist?`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense and corrects Dir.exists?' do
       expect_offense(<<~RUBY)
         Dir.exists?(o)
-            ^^^^^^^ `Dir.exists?` is deprecated in favor of `Dir.exist?`.
+        ^^^^^^^^^^^ `Dir.exists?` is deprecated in favor of `Dir.exist?`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense and corrects ::Dir.exists?' do
       expect_offense(<<~RUBY)
         ::Dir.exists?(o)
-              ^^^^^^^ `Dir.exists?` is deprecated in favor of `Dir.exist?`.
+        ^^^^^^^^^^^^^ `::Dir.exists?` is deprecated in favor of `::Dir.exist?`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -82,11 +82,75 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     end
   end
 
+  context 'prefer `attr_accessor :name` over `attr :name, true`' do
+    it 'registers an offense and corrects `attr :name` with boolean argument' do
+      expect_offense(<<~RUBY)
+        attr :name, true
+        ^^^^^^^^^^^^^^^^ `attr :name, true` is deprecated in favor of `attr_accessor :name`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        attr_accessor :name
+      RUBY
+    end
+
+    it "registers an offense and corrects `attr 'name'` with boolean argument" do
+      expect_offense(<<~RUBY)
+        attr 'name', true
+        ^^^^^^^^^^^^^^^^^ `attr 'name', true` is deprecated in favor of `attr_accessor 'name'`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        attr_accessor 'name'
+      RUBY
+    end
+
+    it 'does not register an offense for `attr` without boolean argument' do
+      expect_no_offenses('attr :name')
+    end
+
+    it 'does not register an offense for `attr` with variable argument' do
+      expect_no_offenses('attr :name, attribute')
+    end
+
+    it 'does not register an offense for `attr_accessor`' do
+      expect_no_offenses('attr_accessor :name')
+    end
+  end
+
+  context 'prefer `attr_reader :name` over `attr :name, false`' do
+    it 'registers an offense and corrects `attr :name` with boolean argument' do
+      expect_offense(<<~RUBY)
+        attr :name, false
+        ^^^^^^^^^^^^^^^^^ `attr :name, false` is deprecated in favor of `attr_reader :name`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        attr_reader :name
+      RUBY
+    end
+
+    it "registers an offense and corrects `attr 'name'` with boolean argument" do
+      expect_offense(<<~RUBY)
+        attr 'name', false
+        ^^^^^^^^^^^^^^^^^^ `attr 'name', false` is deprecated in favor of `attr_reader 'name'`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        attr_reader 'name'
+      RUBY
+    end
+
+    it 'does not register an offense for `attr_reader` without boolean argument' do
+      expect_no_offenses('attr_reader :name')
+    end
+  end
+
   context 'when using `ENV.freeze`' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ENV.freeze
-            ^^^^^^ `ENV.freeze` is deprecated in favor of `ENV`.
+        ^^^^^^^^^^ `ENV.freeze` is deprecated in favor of `ENV`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -103,7 +167,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ENV.clone
-            ^^^^^ `ENV.clone` is deprecated in favor of `ENV.to_h`.
+        ^^^^^^^^^ `ENV.clone` is deprecated in favor of `ENV.to_h`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -120,7 +184,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ENV.dup
-            ^^^ `ENV.dup` is deprecated in favor of `ENV.to_h`.
+        ^^^^^^^ `ENV.dup` is deprecated in favor of `ENV.to_h`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -137,7 +201,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense for Socket.gethostbyaddr' do
       expect_offense(<<~RUBY)
         Socket.gethostbyaddr([221,186,184,68].pack("CCCC"))
-               ^^^^^^^^^^^^^ `Socket.gethostbyaddr` is deprecated in favor of `Addrinfo#getnameinfo`.
+        ^^^^^^^^^^^^^^^^^^^^ `Socket.gethostbyaddr` is deprecated in favor of `Addrinfo#getnameinfo`.
       RUBY
 
       expect_no_corrections
@@ -146,7 +210,16 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense for ::Socket.gethostbyaddr' do
       expect_offense(<<~RUBY)
         ::Socket.gethostbyaddr([221,186,184,68].pack("CCCC"))
-                 ^^^^^^^^^^^^^ `Socket.gethostbyaddr` is deprecated in favor of `Addrinfo#getnameinfo`.
+        ^^^^^^^^^^^^^^^^^^^^^^ `::Socket.gethostbyaddr` is deprecated in favor of `Addrinfo#getnameinfo`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense for Socket.gethostbyaddr with address type argument' do
+      expect_offense(<<~RUBY)
+        Socket.gethostbyaddr([221,186,184,68].pack("CCCC"), Socket::AF_INET)
+        ^^^^^^^^^^^^^^^^^^^^ `Socket.gethostbyaddr` is deprecated in favor of `Addrinfo#getnameinfo`.
       RUBY
 
       expect_no_corrections
@@ -161,7 +234,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense for Socket.gethostbyname' do
       expect_offense(<<~RUBY)
         Socket.gethostbyname("hal")
-               ^^^^^^^^^^^^^ `Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
+        ^^^^^^^^^^^^^^^^^^^^ `Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
       RUBY
 
       expect_no_corrections
@@ -170,7 +243,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense for ::Socket.gethostbyname' do
       expect_offense(<<~RUBY)
         ::Socket.gethostbyname("hal")
-                 ^^^^^^^^^^^^^ `Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
+        ^^^^^^^^^^^^^^^^^^^^^^ `::Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
       RUBY
 
       expect_no_corrections
