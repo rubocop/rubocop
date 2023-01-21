@@ -240,6 +240,20 @@ RSpec.describe RuboCop::Server::Cache do
         end
       end
     end
+
+    context 'when using YAML alias in .rubocop.yml', :isolated_environment do
+      it 'does not raise an error' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            Style/StringLiterals: &config
+              Enable: true
+            Style/HashSyntax:
+              <<: *config
+        YAML
+
+        expect { cache_class.cache_path }.not_to raise_error
+      end
+    end
   end
 
   unless RuboCop::Platform.windows?
