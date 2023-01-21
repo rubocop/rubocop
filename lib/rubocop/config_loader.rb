@@ -241,18 +241,10 @@ module RuboCop
         raise
       end
 
-      if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
-        def yaml_safe_load!(yaml_code, filename)
-          YAML.safe_load(yaml_code,
-                         permitted_classes: [Regexp, Symbol],
-                         permitted_symbols: [],
-                         aliases: true,
-                         filename: filename)
-        end
-      else # Ruby < 2.6
-        def yaml_safe_load!(yaml_code, filename)
-          YAML.safe_load(yaml_code, [Regexp, Symbol], [], true, filename)
-        end
+      def yaml_safe_load!(yaml_code, filename)
+        YAML.safe_load(
+          yaml_code, permitted_classes: [Regexp, Symbol], aliases: true, filename: filename
+        )
       end
     end
 
