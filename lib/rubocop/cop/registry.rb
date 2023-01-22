@@ -41,6 +41,11 @@ module RuboCop
         @global = new
       end
 
+      def self.qualified_cop?(name)
+        badge = Badge.parse(name)
+        global.qualify_badge(badge).first == badge
+      end
+
       attr_reader :options
 
       def initialize(cops = [], options = {})
@@ -156,6 +161,13 @@ module RuboCop
         @unqualified_cop_names ||=
           Set.new(@cops_by_cop_name.keys.map { |qn| File.basename(qn) }) <<
           'RedundantCopDisableDirective'
+      end
+
+      def qualify_badge(badge)
+        clear_enrollment_queue
+        @departments
+          .map { |department, _| badge.with_department(department) }
+          .select { |potential_badge| registered?(potential_badge) }
       end
 
       # @return [Hash{String => Array<Class>}]
@@ -280,13 +292,6 @@ module RuboCop
 
       def with(cops)
         self.class.new(cops)
-      end
-
-      def qualify_badge(badge)
-        clear_enrollment_queue
-        @departments
-          .map { |department, _| badge.with_department(department) }
-          .select { |potential_badge| registered?(potential_badge) }
       end
 
       def resolve_badge(given_badge, real_badge, source_path)

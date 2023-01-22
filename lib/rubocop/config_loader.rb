@@ -111,8 +111,15 @@ module RuboCop
         end
 
         merge_with_default(config, config_file).tap do |merged_config|
-          warn_on_pending_cops(merged_config.pending_cops) unless possible_new_cops?(merged_config)
+          unless possible_new_cops?(merged_config)
+            pending_cops = pending_cops_only_qualified(merged_config.pending_cops)
+            warn_on_pending_cops(pending_cops) unless pending_cops.empty?
+          end
         end
+      end
+
+      def pending_cops_only_qualified(pending_cops)
+        pending_cops.select { |cop| Cop::Registry.qualified_cop?(cop.name) }
       end
 
       def possible_new_cops?(config)
@@ -167,8 +174,6 @@ module RuboCop
       BANNER
 
       def warn_on_pending_cops(pending_cops)
-        return if pending_cops.empty?
-
         warn Rainbow(PENDING_BANNER).yellow
 
         pending_cops.each { |cop| warn_pending_cop cop }

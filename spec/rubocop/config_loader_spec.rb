@@ -1852,9 +1852,26 @@ RSpec.describe RuboCop::ConfigLoader do
     context 'when NewCops is not configured in a required file' do
       let(:parent_config) { { 'AllCops' => { 'Exclude:' => ['coverage/**/*'] } } }
 
-      it 'prints a warning' do
-        expect(described_class).to receive(:warn_on_pending_cops)
-        from_file
+      context 'when `pending_cops_only_qualified` returns empty array' do
+        before do
+          allow(described_class).to receive(:pending_cops_only_qualified).and_return([])
+        end
+
+        it 'does not print a warning' do
+          expect(described_class).not_to receive(:warn_on_pending_cops)
+          from_file
+        end
+      end
+
+      context 'when `pending_cops_only_qualified` returns not empty array' do
+        before do
+          allow(described_class).to receive(:pending_cops_only_qualified).and_return(['Foo/Bar'])
+        end
+
+        it 'prints a warning' do
+          expect(described_class).to receive(:warn_on_pending_cops)
+          from_file
+        end
       end
     end
   end
