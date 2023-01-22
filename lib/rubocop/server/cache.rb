@@ -68,7 +68,9 @@ module RuboCop
             file_contents = File.read(config_path)
             yaml_code = ERB.new(file_contents).result
 
-            config_yaml = YAML.safe_load(yaml_code, permitted_classes: [Regexp, Symbol])
+            config_yaml = YAML.safe_load(
+              yaml_code, permitted_classes: [Regexp, Symbol], aliases: true
+            )
 
             # For compatibility with Ruby 3.0 or lower.
             if Gem::Version.new(Psych::VERSION) < Gem::Version.new('4.0.0')
