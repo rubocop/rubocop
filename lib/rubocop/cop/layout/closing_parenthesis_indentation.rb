@@ -157,7 +157,7 @@ module RuboCop
         def all_elements_aligned?(elements)
           elements.flat_map do |e|
             if e.hash_type?
-              e.each_pair.map { |pair| pair.loc.column }
+              e.each_child_node.map { |child| child.loc.column }
             else
               e.loc.column
             end
