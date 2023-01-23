@@ -265,7 +265,7 @@ Gemspec/DeprecatedAttributeAssignment:
 Gemspec/DevelopmentDependencies:
   Description: Checks that development dependencies are specified in Gemfile rather than gemspec.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.44'
   EnforcedStyle: Gemfile
   SupportedStyles:
     - Gemfile
@@ -3450,7 +3450,7 @@ Style/CommentedKeyword:
 Style/ComparableClamp:
   Description: 'Enforces the use of `Comparable#clamp` instead of comparison by minimum and maximum.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.44'
 
 Style/ConcatArrayLiterals:
   Description: 'Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.'
@@ -4055,7 +4055,7 @@ Style/InverseMethods:
 Style/InvertibleUnlessCondition:
   Description: 'Favor `if` with inverted condition over `unless`.'
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.44'
   # `InverseMethods` are methods that can be inverted in a `unless` condition.
   # The relationship of inverse methods needs to be defined in both directions.
   # Keys and values both need to be defined as symbols.

@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.44.0 (2023-01-23)
+
 ### New features
 
 * [#11410](https://github.com/rubocop/rubocop/issues/11410): Add new `Style/InvertibleUnlessCondition` cop. ([@fatkodima][])

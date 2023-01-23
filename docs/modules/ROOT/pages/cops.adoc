@@ -87,6 +87,7 @@ In the following section you find all available cops:
 
 * xref:cops_gemspec.adoc#gemspecdependencyversion[Gemspec/DependencyVersion]
 * xref:cops_gemspec.adoc#gemspecdeprecatedattributeassignment[Gemspec/DeprecatedAttributeAssignment]
+* xref:cops_gemspec.adoc#gemspecdevelopmentdependencies[Gemspec/DevelopmentDependencies]
 * xref:cops_gemspec.adoc#gemspecduplicatedassignment[Gemspec/DuplicatedAssignment]
 * xref:cops_gemspec.adoc#gemspecordereddependencies[Gemspec/OrderedDependencies]
 * xref:cops_gemspec.adoc#gemspecrequiremfa[Gemspec/RequireMFA]
@@ -412,6 +413,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylecommandliteral[Style/CommandLiteral]
 * xref:cops_style.adoc#stylecommentannotation[Style/CommentAnnotation]
 * xref:cops_style.adoc#stylecommentedkeyword[Style/CommentedKeyword]
+* xref:cops_style.adoc#stylecomparableclamp[Style/ComparableClamp]
 * xref:cops_style.adoc#styleconcatarrayliterals[Style/ConcatArrayLiterals]
 * xref:cops_style.adoc#styleconditionalassignment[Style/ConditionalAssignment]
 * xref:cops_style.adoc#styleconstantvisibility[Style/ConstantVisibility]
@@ -473,6 +475,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleinfiniteloop[Style/InfiniteLoop]
 * xref:cops_style.adoc#styleinlinecomment[Style/InlineComment]
 * xref:cops_style.adoc#styleinversemethods[Style/InverseMethods]
+* xref:cops_style.adoc#styleinvertibleunlesscondition[Style/InvertibleUnlessCondition]
 * xref:cops_style.adoc#styleipaddresses[Style/IpAddresses]
 * xref:cops_style.adoc#stylekeywordparametersorder[Style/KeywordParametersOrder]
 * xref:cops_style.adoc#stylelambda[Style/Lambda]
