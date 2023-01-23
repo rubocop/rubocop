@@ -300,8 +300,8 @@ RSpec.describe RuboCop::ConfigLoader do
 
         configuration = config_loader.configuration_from_file(sub_file_path)
         excludes = configuration['AllCops']['Exclude']
-        expect(excludes).not_to include(File.expand_path('vendor/**'))
-        expect(excludes).to include(File.expand_path('vendor/foo'))
+        expect(excludes.include?(File.expand_path('vendor/**'))).to be(false)
+        expect(excludes.include?(File.expand_path('vendor/foo'))).to be(true)
       end
     end
 

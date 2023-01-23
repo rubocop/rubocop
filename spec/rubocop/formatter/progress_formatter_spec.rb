@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
 
       it 'reports all detected offenses for all failed files' do
         formatter.finished(files)
-        expect(output.string).to include(<<~OUTPUT)
+        expect(output.string.include?(<<~OUTPUT)).to be(true)
           Offenses:
 
           lib/rubocop.rb:2:3: C: [Correctable] foo
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
 
       it 'does not report offenses' do
         formatter.finished(files)
-        expect(output.string).not_to include('Offenses:')
+        expect(output.string.include?('Offenses:')).to be(false)
       end
     end
 

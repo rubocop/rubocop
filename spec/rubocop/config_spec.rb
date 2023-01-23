@@ -655,7 +655,7 @@ RSpec.describe RuboCop::Config do
 
       it 'prints a warning message for the loaded path' do
         configuration.check
-        expect($stderr.string).to include("#{loaded_path} - AllCops/Includes was renamed")
+        expect($stderr.string.include?("#{loaded_path} - AllCops/Includes was renamed")).to be(true)
       end
     end
   end

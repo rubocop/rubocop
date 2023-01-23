@@ -125,19 +125,19 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'supports disabling single line with a directive at end of line' do
       eval_disabled_lines = disabled_lines_of_cop('Security/Eval')
-      expect(eval_disabled_lines).to include(12)
-      expect(eval_disabled_lines).not_to include(13)
+      expect(eval_disabled_lines.include?(12)).to be(true)
+      expect(eval_disabled_lines.include?(13)).to be(false)
     end
 
     it 'handles indented single line' do
       line_length_disabled_lines = disabled_lines_of_cop('Layout/LineLength')
-      expect(line_length_disabled_lines).to include(16)
-      expect(line_length_disabled_lines).not_to include(18)
+      expect(line_length_disabled_lines.include?(16)).to be(true)
+      expect(line_length_disabled_lines.include?(18)).to be(false)
     end
 
     it 'does not confuse a comment directive embedded in a string literal with a real comment' do
       loop_disabled_lines = disabled_lines_of_cop('Loop')
-      expect(loop_disabled_lines).not_to include(20)
+      expect(loop_disabled_lines.include?(20)).to be(false)
     end
 
     it 'supports disabling all cops except Lint/RedundantCopDisableDirective with keyword all' do
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'does not confuse a cop name including "all" with all cops' do
       alias_disabled_lines = disabled_lines_of_cop('Alias')
-      expect(alias_disabled_lines).not_to include(23)
+      expect(alias_disabled_lines.include?(23)).to be(false)
     end
 
     it 'can handle double disable of one cop' do
@@ -163,11 +163,11 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports disabling cops with multiple uppercase letters' do
-      expect(disabled_lines_of_cop('RSpec/Example')).to include(47)
+      expect(disabled_lines_of_cop('RSpec/Example').include?(47)).to be(true)
     end
 
     it 'supports disabling cops with numbers in their name' do
-      expect(disabled_lines_of_cop('Custom2/Number9')).to include(48)
+      expect(disabled_lines_of_cop('Custom2/Number9').include?(48)).to be(true)
     end
 
     it 'supports disabling cops on a comment line with an EOL comment' do

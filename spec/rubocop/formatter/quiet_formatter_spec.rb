@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       let(:file) { File.expand_path('spec/spec_helper.rb') }
 
       it 'prints as relative path' do
-        expect(output.string).to include('== spec/spec_helper.rb ==')
+        expect(output.string.include?('== spec/spec_helper.rb ==')).to be(true)
       end
     end
 
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       end
 
       it 'prints as absolute path' do
-        expect(output.string).to include("== #{file} ==")
+        expect(output.string.include?("== #{file} ==")).to be(true)
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       let(:status) { :unsupported }
 
       it 'prints message as-is' do
-        expect(output.string).to include(': This is a message with colored text.')
+        expect(output.string.include?(': This is a message with colored text.')).to be(true)
       end
     end
 
@@ -60,7 +60,8 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       let(:status) { :uncorrected }
 
       it 'prints message as-is' do
-        expect(output.string).to include(': [Correctable] This is a message with colored text.')
+        expect(output.string.include?(': [Correctable] This is a message with colored text.'))
+          .to be(true)
       end
     end
 
@@ -68,7 +69,8 @@ RSpec.describe RuboCop::Formatter::QuietFormatter do
       let(:status) { :corrected }
 
       it 'prints [Corrected] along with message' do
-        expect(output.string).to include(': [Corrected] This is a message with colored text.')
+        expect(output.string.include?(': [Corrected] This is a message with colored text.'))
+          .to be(true)
       end
     end
   end

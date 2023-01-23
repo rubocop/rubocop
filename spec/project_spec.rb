@@ -42,7 +42,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
         description = config.dig(name, 'Description')
         expect(description.nil?).to(be(false),
                                     "`Description` configuration is required for `#{name}`.")
-        expect(description).not_to include("\n")
+        expect(description.include?("\n")).to be(false)
 
         start_with_subject = description.match(/\AThis cop (?<verb>.+?) .*/)
         suggestion = start_with_subject[:verb]&.capitalize if start_with_subject

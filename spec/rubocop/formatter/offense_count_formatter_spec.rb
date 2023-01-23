@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
       it 'shows the cop and the offense count' do
         formatter.report_summary(cop_counts, 2)
-        expect(output.string).to include(<<~OUTPUT)
+        expect(output.string.include?(<<~OUTPUT)).to be(true)
           3  OffendedCop
           --
           3  Total in 2 files
