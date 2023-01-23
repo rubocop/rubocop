@@ -1,1 +1,0 @@
-* [#11418](https://github.com/rubocop/rubocop/issues/11418): Fix a false positive for `Style/MethodCallWithArgsParentheses` when using anonymous rest arguments or anonymous keyword rest arguments. ([@koic][])

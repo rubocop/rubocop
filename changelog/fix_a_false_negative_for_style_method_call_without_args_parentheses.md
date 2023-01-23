@@ -1,1 +1,0 @@
-* [#11467](https://github.com/rubocop/rubocop/issues/11467): Fix a false negative for `Style/MethodCallWithoutArgsParentheses` when calling method on a receiver and assigning to a variable with the same name. ([@koic][])
