@@ -97,8 +97,10 @@ module RuboCop
           scope_stack.reverse_each do |scope|
             variable = scope.variables[name]
             return variable if variable
+
             # Only block scope allows referencing outer scope variables.
-            return nil unless scope.node.block_type?
+            node = scope.node
+            return nil unless node.block_type? || node.numblock_type?
           end
 
           nil
