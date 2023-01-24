@@ -38,6 +38,10 @@ module RuboCop
                      'a whitespace to the right of the `%<operator>s` if it ' \
                      'should be %<possible>s.'
 
+        def self.autocorrect_incompatible_with
+          [Naming::BlockForwarding]
+        end
+
         def on_new_investigation
           processed_source.diagnostics.each do |diagnostic|
             next unless diagnostic.reason == :ambiguous_prefix

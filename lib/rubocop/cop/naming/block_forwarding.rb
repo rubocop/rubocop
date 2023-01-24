@@ -47,6 +47,10 @@ module RuboCop
 
         MSG = 'Use %<style>s block forwarding.'
 
+        def self.autocorrect_incompatible_with
+          [Lint::AmbiguousOperator]
+        end
+
         def on_def(node)
           return if node.arguments.empty?
 

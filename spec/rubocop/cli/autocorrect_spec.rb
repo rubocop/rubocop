@@ -405,6 +405,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Naming/BlockForwarding` with `Lint/AmbiguousOperator`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+    YAML
+    source = <<~RUBY
+      def foo(options, &block)
+        bar **options, &block
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Naming/BlockForwarding,Lint/AmbiguousOperator'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def foo(options, &)
+        bar(**options, &)
+      end
+    RUBY
+  end
+
   describe 'trailing comma cops' do
     let(:source) do
       <<~RUBY
