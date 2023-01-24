@@ -8,6 +8,7 @@ module RuboCop
       # Replace numbered captures with non-capturing groupings or
       # named captures.
       #
+      # @example
       #   # bad
       #   /(?<foo>FOO)(BAR)/
       #
