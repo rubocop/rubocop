@@ -51,6 +51,13 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
     RUBY
   end
 
+  it 'registers an offense when there are no expected format string' do
+    expect_offense(<<~RUBY)
+      format("something", 1)
+      ^^^^^^ Number of arguments (1) to `format` doesn't match the number of fields (0).
+    RUBY
+  end
+
   it 'registers an offense when there are more arguments than expected' do
     expect_offense(<<~RUBY)
       format("%s %s", 1, 2, 3)
@@ -314,6 +321,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
       expect_no_offenses('format("#{foo} %s", "bar")')
     end
 
+    it 'does not register an offense when only interpolated string' do
+      expect_no_offenses('format("#{foo}", "bar", "baz")')
+    end
+
     it 'registers an offense for String#% when the fields do not match' do
       expect_offense(<<~'RUBY')
         "%s %s" % ["#{foo}", 1, 2]
@@ -323,6 +334,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
 
     it 'does not register an offense for String#% when the fields match' do
       expect_no_offenses('"%s %s" % ["#{foo}", 1]')
+    end
+
+    it 'does not register an offense for String#% when only interpolated string' do
+      expect_no_offenses('"#{foo}" % [1, 2]')
     end
   end
 
