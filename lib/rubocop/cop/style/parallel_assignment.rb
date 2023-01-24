@@ -172,7 +172,9 @@ module RuboCop
         end
 
         def modifier_statement?(node)
-          node && %i[if while until].include?(node.type) && node.modifier_form?
+          return false unless node
+
+          node.basic_conditional? && node.modifier_form?
         end
 
         # An internal class for correcting parallel assignment
