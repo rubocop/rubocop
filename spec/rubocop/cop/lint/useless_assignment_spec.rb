@@ -1318,6 +1318,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'using numbered block parameter', :ruby27 do
+    it 'does not register an offense when the variable is used' do
+      expect_no_offenses(<<~RUBY)
+        var = 42
+
+        do_something { _1 == var }
+      RUBY
+    end
+  end
+
   # regression test, from problem in Locatable
   context 'when a variable is assigned in 2 identical if branches' do
     it "doesn't think 1 of the 2 assignments is useless" do
