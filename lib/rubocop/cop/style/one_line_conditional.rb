@@ -68,7 +68,7 @@ module RuboCop
           replaced_node = ternary_replacement(node)
 
           return replaced_node unless node.parent
-          return "(#{replaced_node})" if %i[and or].include?(node.parent.type)
+          return "(#{replaced_node})" if node.parent.operator_keyword?
           return "(#{replaced_node})" if node.parent.send_type? && node.parent.operator_method?
 
           replaced_node

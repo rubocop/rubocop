@@ -42,7 +42,7 @@ module RuboCop
 
           if rhs.send_type?
             check_send_node(node, rhs, var_name, var_type)
-          elsif %i[and or].include?(rhs.type)
+          elsif rhs.operator_keyword?
             check_boolean_node(node, rhs, var_name, var_type)
           end
         end
@@ -76,7 +76,7 @@ module RuboCop
 
           if rhs.send_type?
             autocorrect_send_node(corrector, node, rhs)
-          elsif %i[and or].include?(rhs.type)
+          elsif rhs.operator_keyword?
             autocorrect_boolean_node(corrector, node, rhs)
           end
         end
