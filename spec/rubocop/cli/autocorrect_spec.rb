@@ -685,7 +685,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(
       cli.run(['-a', '--only', 'Layout/SpaceAroundKeyword,Layout/SpaceInsideRangeLiteral'])
     ).to eq(0)
-    expect($stdout.string).to include('no offenses detected')
+    expect($stdout.string.include?('no offenses detected')).to be(true)
     expect(File.read('example.rb')).to eq(source)
   end
 
@@ -1209,7 +1209,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         Enabled: false
     YAML
     expect(cli.run(['--autocorrect-all'])).to eq(0)
-    expect($stdout.string).to include('no offenses detected')
+    expect($stdout.string.include?('no offenses detected')).to be(true)
     expect(File.read('example.rb')).to eq("#{source}\n")
   end
 

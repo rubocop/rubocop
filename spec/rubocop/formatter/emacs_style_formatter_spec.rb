@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
 
       it 'prints [Corrected] along with message' do
         formatter.file_finished(file, [offense])
-        expect(output.string).to include(': [Corrected] This is a message.')
+        expect(output.string.include?(': [Corrected] This is a message.')).to be(true)
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
 
       it 'prints [Todo] along with message' do
         formatter.file_finished(file, [offense])
-        expect(output.string).to include(': [Todo] This is a message.')
+        expect(output.string.include?(': [Todo] This is a message.')).to be(true)
       end
     end
 

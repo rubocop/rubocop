@@ -110,11 +110,11 @@ RSpec.describe RuboCop::Cop::Team do
       let(:cop_names) { offenses.map(&:cop_name) }
 
       it 'returns Parser warning offenses' do
-        expect(cop_names).to include('Lint/AmbiguousOperator')
+        expect(cop_names.include?('Lint/AmbiguousOperator')).to be(true)
       end
 
       it 'returns offenses from cops' do
-        expect(cop_names).to include('Layout/LineLength')
+        expect(cop_names.include?('Layout/LineLength')).to be(true)
       end
 
       context 'when a cop has no interest in the file' do
@@ -122,8 +122,8 @@ RSpec.describe RuboCop::Cop::Team do
           allow_any_instance_of(RuboCop::Cop::Layout::LineLength)
             .to receive(:excluded_file?).and_return(true)
 
-          expect(cop_names).to include('Lint/AmbiguousOperator')
-          expect(cop_names).not_to include('Layout/LineLength')
+          expect(cop_names.include?('Lint/AmbiguousOperator')).to be(true)
+          expect(cop_names.include?('Layout/LineLength')).to be(false)
         end
       end
     end
@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Team do
         team.inspect_file(source)
 
         expect(team.errors).to eq([error_message])
-        expect($stderr.string).to include(error_message)
+        expect($stderr.string.include?(error_message)).to be(true)
       end
     end
 
@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       it 'records Team#errors' do
         team.inspect_file(source)
-        expect($stderr.string).to include(error_message)
+        expect($stderr.string.include?(error_message)).to be(true)
       end
     end
 
@@ -271,8 +271,8 @@ RSpec.describe RuboCop::Cop::Team do
 
       it 'does not return instances of the classes' do
         expect(cops.empty?).to be(false)
-        expect(cop_names).not_to include('Lint/Void')
-        expect(cop_names).not_to include('Layout/LineLength')
+        expect(cop_names.include?('Lint/Void')).to be(false)
+        expect(cop_names.include?('Layout/LineLength')).to be(false)
       end
     end
   end

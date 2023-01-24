@@ -209,7 +209,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             puts 'hello'
           RUBY
           expect(cli.run(['--debug'])).to eq(0)
-          expect($stdout.string).to include('Use parallel by default.')
+          expect($stdout.string.include?('Use parallel by default.')).to be(true)
         end
       end
 
@@ -221,7 +221,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             puts "hello"
           RUBY
           expect(cli.run(['--debug', '-a'])).to eq(0)
-          expect($stdout.string).to include('Use parallel by default.')
+          expect($stdout.string.include?('Use parallel by default.')).to be(true)
           expect(File.read('example1.rb')).to eq(<<~RUBY)
             # frozen_string_literal: true
 
@@ -242,7 +242,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               UseCache: true
           YAML
           expect(cli.run(['--debug'])).to eq(0)
-          expect($stdout.string).to include('Use parallel by default.')
+          expect($stdout.string.include?('Use parallel by default.')).to be(true)
         end
       end
 
@@ -258,7 +258,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               UseCache: false
           YAML
           expect(cli.run(['--debug'])).to eq(0)
-          expect($stdout.string).not_to include('Use parallel by default.')
+          expect($stdout.string.include?('Use parallel by default.')).to be(false)
         end
       end
     end
@@ -502,7 +502,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             assert_equal nil, combinator {}.call # rubocop:disable Lint/EmptyBlock'
           RUBY
           expect(cli.run(['example.rb'])).to eq(0)
-          expect($stdout.string).to include('1 file inspected, no offenses detected')
+          expect($stdout.string.include?('1 file inspected, no offenses detected')).to be(true)
         end
       end
 
@@ -522,7 +522,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             end
           RUBY
           expect(cli.run(['example.rb'])).to eq(0)
-          expect($stdout.string).to include('1 file inspected, no offenses detected')
+          expect($stdout.string.include?('1 file inspected, no offenses detected')).to be(true)
         end
       end
 
@@ -865,10 +865,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
               - "="
         YAML
         expect(cli.run([])).to eq(2)
-        expect($stderr.string).to include('obsolete parameter ' \
-                                          '`MultiSpaceAllowedForOperators` ' \
-                                          '(for `Layout/SpaceAroundOperators`) ' \
-                                          'found')
+        expect($stderr.string.include?('obsolete parameter ' \
+                                       '`MultiSpaceAllowedForOperators` ' \
+                                       '(for `Layout/SpaceAroundOperators`) ' \
+                                       'found')).to be(true)
       end
     end
 
@@ -1231,8 +1231,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Enabled: false
       YAML
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(2)
-      expect($stderr.string).to include('Error: configuration for Lint/Syntax cop found')
-      expect($stderr.string).to include('It\'s not possible to disable this cop.')
+      expect($stderr.string.include?('Error: configuration for Lint/Syntax cop found')).to be(true)
+      expect($stderr.string.include?('It\'s not possible to disable this cop.')).to be(true)
     end
 
     it 'can be configured to merge a parameter that is a hash' do
@@ -1950,8 +1950,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       it 'is an invalid configuration' do
         expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(2)
-        expect($stderr.string)
-          .to include('Error: configuration for Lint/Syntax cop found in .rubocop.yml')
+        expect(
+          $stderr.string.include?('Error: configuration for Lint/Syntax cop found in .rubocop.yml')
+        ).to be(true)
       end
     end
   end

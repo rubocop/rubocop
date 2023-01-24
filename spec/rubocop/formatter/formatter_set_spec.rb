@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
 
   it 'responds to all formatter API methods' do
     %i[started file_started file_finished finished].each do |method|
-      expect(formatter_set).to respond_to(method)
+      expect(formatter_set.respond_to?(method)).to be(true)
     end
   end
 
