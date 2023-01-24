@@ -8,27 +8,25 @@ module RuboCop
       #
       # @example
       #   # bad
+      #   <<-SQL
+      #     bar
+      #   SQL
+      #   .strip_indent
       #
-      #      <<-SQL
-      #        bar
-      #      SQL
-      #      .strip_indent
-      #
-      #      <<-SQL
-      #        bar
-      #      SQL
-      #      .strip_indent
-      #      .trim
+      #   <<-SQL
+      #     bar
+      #   SQL
+      #   .strip_indent
+      #   .trim
       #
       #   # good
+      #   <<~SQL
+      #     bar
+      #   SQL
       #
-      #      <<~SQL
-      #        bar
-      #      SQL
-      #
-      #      <<~SQL.trim
-      #        bar
-      #      SQL
+      #   <<~SQL.trim
+      #     bar
+      #   SQL
       #
       class HeredocMethodCallPosition < Base
         include RangeHelp
