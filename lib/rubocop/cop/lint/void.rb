@@ -128,6 +128,8 @@ module RuboCop
         end
 
         def check_nonmutating(node)
+          return unless node.respond_to?(:method_name)
+
           method_name = node.method_name
           return unless NONMUTATING_METHODS.include?(method_name)
 

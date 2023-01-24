@@ -255,6 +255,13 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         top(x)
       RUBY
     end
+
+    it 'does not register an offense assigning variable' do
+      expect_no_offenses(<<~RUBY)
+        foo = bar
+        baz
+      RUBY
+    end
   end
 
   context 'when not checking for methods with no side effects' do
