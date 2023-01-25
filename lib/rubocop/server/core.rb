@@ -30,7 +30,7 @@ module RuboCop
       def start(host, port)
         $PROGRAM_NAME = "rubocop --server #{Cache.project_dir}"
 
-        require 'rubocop'
+        require_relative '../../rubocop'
         start_server(host, port)
 
         demonize if server_mode?
