@@ -2631,27 +2631,25 @@ the receiver of the call is a HEREDOC.
 [source,ruby]
 ----
 # bad
+<<-SQL
+  bar
+SQL
+.strip_indent
 
-   <<-SQL
-     bar
-   SQL
-   .strip_indent
-
-   <<-SQL
-     bar
-   SQL
-   .strip_indent
-   .trim
+<<-SQL
+  bar
+SQL
+.strip_indent
+.trim
 
 # good
+<<~SQL
+  bar
+SQL
 
-   <<~SQL
-     bar
-   SQL
-
-   <<~SQL.trim
-     bar
-   SQL
+<<~SQL.trim
+  bar
+SQL
 ----
 
 === References
@@ -3250,17 +3248,22 @@ because numbered capture is ignored if they're mixed.
 Replace numbered captures with non-capturing groupings or
 named captures.
 
-  # bad
-  /(?<foo>FOO)(BAR)/
+=== Examples
 
-  # good
-  /(?<foo>FOO)(?<bar>BAR)/
+[source,ruby]
+----
+# bad
+/(?<foo>FOO)(BAR)/
 
-  # good
-  /(?<foo>FOO)(?:BAR)/
+# good
+/(?<foo>FOO)(?<bar>BAR)/
 
-  # good
-  /(FOO)(BAR)/
+# good
+/(?<foo>FOO)(?:BAR)/
+
+# good
+/(FOO)(BAR)/
+----
 
 == Lint/MultipleComparison
 

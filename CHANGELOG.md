@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.44.1 (2023-01-25)
+
 ### Bug fixes
 
 * [#11492](https://github.com/rubocop/rubocop/issues/11492): Fix an error for `Lint/Void` when configuring `CheckForMethodsWithNoSideEffects: true`. ([@koic][])
