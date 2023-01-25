@@ -935,8 +935,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => true,
-              'AllowedPatterns' => [],
-              'IgnoredPatterns' => []
+              'AllowedPatterns' => []
             },
             'Metrics/MethodLength' => {
               'Description' =>
@@ -951,9 +950,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'Max' => 5,
               'CountAsOne' => [],
               'AllowedMethods' => [],
-              'IgnoredMethods' => [],
-              'AllowedPatterns' => [],
-              'ExcludedMethods' => []
+              'AllowedPatterns' => []
             }
           )
         expect { expect(configuration_from_file.to_h).to eq(config) }.to output('').to_stderr
@@ -1041,8 +1038,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => true,
-              'AllowedPatterns' => [],
-              'IgnoredPatterns' => []
+              'AllowedPatterns' => []
             }
           )
 

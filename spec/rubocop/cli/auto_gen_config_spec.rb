@@ -53,7 +53,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 2
               # This cop supports safe autocorrection (--autocorrect).
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, IgnoredPatterns.
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 138
@@ -166,7 +166,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 1
               # This cop supports safe autocorrection (--autocorrect).
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, IgnoredPatterns.
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 99
@@ -334,7 +334,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '# This cop supports safe autocorrection (--autocorrect).',
                 '# Configuration parameters: AllowHeredoc, ' \
                 'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-                'AllowedPatterns, IgnoredPatterns.',
+                'AllowedPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 125'])
@@ -387,7 +387,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '# This cop supports safe autocorrection (--autocorrect).',
                 '# Configuration parameters: AllowHeredoc, ' \
                 'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-                'AllowedPatterns, IgnoredPatterns.',
+                'AllowedPatterns.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
                 '  Max: 121',
@@ -494,7 +494,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # Configuration parameters: AllowedPatterns, IgnoredPatterns.
+          # Configuration parameters: AllowedPatterns.
           # SupportedStyles: snake_case, camelCase
           Naming/MethodName:
             EnforcedStyle: camelCase
@@ -775,7 +775,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'AllowedPatterns, IgnoredPatterns.',
+         'AllowedPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -868,7 +868,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'AllowedPatterns, IgnoredPatterns.',
+         'AllowedPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']
@@ -1169,7 +1169,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowHeredoc, ' \
          'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-         'AllowedPatterns, IgnoredPatterns.',
+         'AllowedPatterns.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
          '  Max: 130']

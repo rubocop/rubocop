@@ -980,7 +980,6 @@ Layout/IndentationWidth:
   # Number of spaces for each indentation level.
   Width: 2
   AllowedPatterns: []
-  IgnoredPatterns: [] # deprecated
 
 Layout/InitialIndentation:
   Description: >-
@@ -1063,7 +1062,6 @@ Layout/LineLength:
   # elements. Strings will be converted to Regexp objects. A line that matches
   # any regular expression listed in this option will be ignored by LineLength.
   AllowedPatterns: []
-  IgnoredPatterns: [] # deprecated
 
 Layout/MultilineArrayBraceLayout:
   Description: >-
@@ -1542,7 +1540,6 @@ Lint/AmbiguousBlockAssociation:
   VersionChanged: '1.13'
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
 
 Lint/AmbiguousOperator:
   Description: >-
@@ -2053,7 +2050,6 @@ Lint/NumberConversion:
   SafeAutoCorrect: false
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   IgnoredClasses:
     - Time
     - DateTime
@@ -2404,7 +2400,6 @@ Lint/UnreachableLoop:
     # RSpec uses `times` in its message expectations
     # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
-  IgnoredPatterns: [] # deprecated
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
@@ -2514,7 +2509,6 @@ Metrics/AbcSize:
   # a Float.
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   CountRepeatedAttributes: true
   Max: 17
 
@@ -2532,7 +2526,6 @@ Metrics/BlockLength:
     # associated blocks.
     - refine
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   Exclude:
     - '**/*.gemspec'
 
@@ -2564,7 +2557,6 @@ Metrics/CyclomaticComplexity:
   VersionChanged: '0.81'
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   Max: 7
 
 Metrics/MethodLength:
@@ -2576,10 +2568,8 @@ Metrics/MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
   CountAsOne: []
-  ExcludedMethods: [] # deprecated, retained for backwards compatibility
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
 
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
@@ -2609,7 +2599,6 @@ Metrics/PerceivedComplexity:
   VersionChanged: '0.81'
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   Max: 8
 
 ################## Migration #############################
@@ -2838,7 +2827,6 @@ Naming/MethodName:
   #     - '\A\s*onSelectionCleared\s*'
   #
   AllowedPatterns: []
-  IgnoredPatterns: [] # deprecated
 
 Naming/MethodParameterName:
   Description: >-
@@ -3208,7 +3196,6 @@ Style/BlockDelimiters:
     - proc
     - it
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   # The AllowBracesOnProceduralOneLiners option is ignored unless the
   # EnforcedStyle is set to `semantic`. If so:
   #
@@ -3232,7 +3219,7 @@ Style/BlockDelimiters:
   #   collection.each do |element| puts element end
   AllowBracesOnProceduralOneLiners: false
   # The BracesRequiredMethods overrides all other configurations except
-  # IgnoredMethods. It can be used to enforce that all blocks for specific
+  # AllowedMethods. It can be used to enforce that all blocks for specific
   # methods use braces. For example, you can use this to enforce Sorbet
   # signatures use braces even when the rest of your codebase enforces
   # the `line_count_based` style.
@@ -3326,7 +3313,6 @@ Style/ClassEqualityComparison:
     - equal?
     - eql?
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
 
 Style/ClassMethods:
   Description: 'Use self when defining module/class methods.'
@@ -3801,7 +3787,6 @@ Style/FormatStringToken:
   VersionChanged: '1.0'
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
 
 Style/FrozenStringLiteralComment:
   Description: >-
@@ -4180,9 +4165,7 @@ Style/MethodCallWithArgsParentheses:
   VersionChanged: '1.7'
   IgnoreMacros: true
   AllowedMethods: []
-  IgnoredMethods: [] # deprecated
   AllowedPatterns: []
-  IgnoredPatterns: [] # deprecated
   IncludedMacros: []
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false
@@ -4199,7 +4182,6 @@ Style/MethodCallWithoutArgsParentheses:
   Enabled: true
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   VersionAdded: '0.47'
   VersionChanged: '0.55'
 
@@ -4578,7 +4560,6 @@ Style/NumericPredicate:
     - comparison
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   # Exclude RSpec specs because assertions like `expect(1).to be > 0` cause
   # false positives.
   Exclude:
@@ -5255,7 +5236,6 @@ Style/SymbolProc:
   AllowedMethods:
     - define_method
   AllowedPatterns: []
-  IgnoredMethods: [] # deprecated
   AllowComments: false
 
 Style/TernaryParentheses:
