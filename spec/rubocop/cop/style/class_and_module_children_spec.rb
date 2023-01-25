@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
   context 'compact style' do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
-    it 'registers a offense for classes with nested children' do
+    it 'registers an offense for classes with nested children' do
       expect_offense(<<~RUBY)
         class FooClass
               ^^^^^^^^ Use compact module/class definition instead of nested style.
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
-    it 'registers a offense for modules with nested children' do
+    it 'registers an offense for modules with nested children' do
       expect_offense(<<~RUBY)
         module FooModule
                ^^^^^^^^^ Use compact module/class definition instead of nested style.
@@ -367,7 +367,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
-    it 'registers a offense for classes with nested one-liner children' do
+    it 'registers an offense for classes with nested one-liner children' do
       expect_offense(<<~RUBY)
         class FooClass
               ^^^^^^^^ Use compact module/class definition instead of nested style.
