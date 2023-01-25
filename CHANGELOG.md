@@ -2,6 +2,14 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#11492](https://github.com/rubocop/rubocop/issues/11492): Fix an error for `Lint/Void` when configuring `CheckForMethodsWithNoSideEffects: true`. ([@koic][])
+* [#11400](https://github.com/rubocop/rubocop/issues/11400): Fix an incorrect autocorrect for `Naming/BlockForwarding` and `Lint/AmbiguousOperator` when autocorrection conflicts for ambiguous splat argument. ([@fatkodima][])
+* [#11483](https://github.com/rubocop/rubocop/issues/11483): Fix `Layout/ClosingParenthesisIndentation` for keyword splat arguments. ([@fatkodima][])
+* [#11487](https://github.com/rubocop/rubocop/pull/11487): Fix a false positive for `Lint/FormatParameterMismatch` when format string is only interpolated string. ([@ydah][])
+* [#11485](https://github.com/rubocop/rubocop/issues/11485): Fix a false positive for `Lint/UselessAssignment` when using numbered block parameter. ([@koic][])
+
 ## 1.44.0 (2023-01-23)
 
 ### New features

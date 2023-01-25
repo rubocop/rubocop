@@ -1,1 +1,0 @@
-* [#11400](https://github.com/rubocop/rubocop/issues/11400): Fix an incorrect autocorrect for `Naming/BlockForwarding` and `Lint/AmbiguousOperator` when autocorrection conflicts for ambiguous splat argument. ([@fatkodima][])
