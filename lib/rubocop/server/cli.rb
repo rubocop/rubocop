@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'rainbow'
 require_relative '../arguments_env'
 require_relative '../arguments_file'
 
@@ -118,6 +117,8 @@ module RuboCop
       end
 
       def error(message)
+        require 'rainbow'
+
         @exit = true
         warn Rainbow(message).red
 
