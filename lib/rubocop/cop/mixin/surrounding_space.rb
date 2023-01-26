@@ -107,7 +107,7 @@ module RuboCop
         end
       end
 
-      def empty_brackets?(tokens, left_bracket_token, right_bracket_token)
+      def empty_brackets?(left_bracket_token, right_bracket_token, tokens: processed_source.tokens)
         left_index = tokens.index(left_bracket_token)
         right_index = tokens.index(right_bracket_token)
         right_index && left_index == right_index - 1
