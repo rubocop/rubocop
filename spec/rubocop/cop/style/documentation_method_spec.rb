@@ -52,6 +52,15 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
         end
       end
 
+      context 'when `initialize` method' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            def initialize
+            end
+          RUBY
+        end
+      end
+
       context 'when method is private' do
         it 'does not register an offense' do
           expect_no_offenses(<<~RUBY)
