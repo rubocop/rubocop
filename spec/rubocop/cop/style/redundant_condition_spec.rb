@@ -352,6 +352,84 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'does not register an offense when the branches contains splat argument' do
+        expect_no_offenses(<<~RUBY)
+          if foo
+            bar(foo)
+          else
+            bar(*baz)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the branches contains double splat argument' do
+        expect_no_offenses(<<~RUBY)
+          if foo
+            bar(foo)
+          else
+            bar(**baz)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the branches contains block argument' do
+        expect_no_offenses(<<~RUBY)
+          if foo
+            bar(foo)
+          else
+            bar(&baz)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the branches contains anonymous splat argument', :ruby32 do
+        expect_no_offenses(<<~RUBY)
+          def do_something(foo, *)
+            if foo
+              bar(foo)
+            else
+              bar(*)
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the branches contains anonymous double splat argument', :ruby32 do
+        expect_no_offenses(<<~RUBY)
+          def do_something(foo, **)
+            if foo
+              bar(foo)
+            else
+              bar(**)
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the branches contains anonymous block argument', :ruby31 do
+        expect_no_offenses(<<~RUBY)
+          def do_something(foo, &)
+            if foo
+              bar(foo)
+            else
+              bar(&)
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the branches contains arguments fowarding', :ruby27 do
+        expect_no_offenses(<<~RUBY)
+          def do_something(foo, ...)
+            if foo
+              bar(foo)
+            else
+              bar(...)
+            end
+          end
+        RUBY
+      end
+
       it 'does not register offenses when using `nil?` and the branches contains assignment' do
         expect_no_offenses(<<~RUBY)
           if foo.nil?
