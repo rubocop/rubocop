@@ -3886,6 +3886,11 @@ Style/HashLikeCase:
   # to trigger this cop
   MinBranchesCount: 3
 
+Style/HashNewKeywordArguments:
+  Description: Avoid passing default value to `Hash.new` as keyword arguments.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
