@@ -97,6 +97,12 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when using multiple arguments' do
+      expect_no_offenses(<<~RUBY)
+        foo.#{operator_method}(bar, baz)
+      RUBY
+    end
   end
 
   it 'registers an offense when using `foo.+({})`' do
