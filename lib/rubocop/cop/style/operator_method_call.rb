@@ -25,7 +25,7 @@ module RuboCop
 
         def on_send(node)
           return unless (dot = node.loc.dot)
-          return if node.receiver.const_type?
+          return if node.receiver.const_type? || !node.arguments.one?
 
           _lhs, _op, rhs = *node
           return if !rhs || method_call_with_parenthesized_arg?(rhs) || anonymous_forwarding?(rhs)
