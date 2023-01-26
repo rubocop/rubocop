@@ -499,7 +499,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
   context "when a variable is reassigned in loop body but won't " \
           'be referenced either next iteration or loop condition' do
     it 'registers an offense' do
-      pending 'Requires an advanced logic that checks whether the return ' \
+      pending 'Requires advanced logic that checks whether the return ' \
               'value of an operator assignment is used or not.'
       expect_offense(<<~RUBY)
         def some_method
@@ -1775,6 +1775,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         var = 42
 
         do_something { _1 == var }
+      RUBY
+    end
+
+    it 'does not register an offense when the variable is assigned and later used' do
+      expect_no_offenses(<<~RUBY)
+        var = nil
+
+        do_something { var = _1 }
+
+        something_else(var)
       RUBY
     end
   end
