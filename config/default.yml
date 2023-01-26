@@ -4237,6 +4237,11 @@ Style/HashLikeCase:
   # to trigger this cop
   MinBranchesCount: 3
 
+Style/HashNewKeywordArguments:
+  Description: Avoid passing default value to `Hash.new` as keyword arguments.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/HashSlice:
   Description: >-
                  Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
