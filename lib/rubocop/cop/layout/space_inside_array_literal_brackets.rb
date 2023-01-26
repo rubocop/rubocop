@@ -80,7 +80,7 @@ module RuboCop
 
           tokens, left, right = array_brackets(node)
 
-          if empty_brackets?(tokens, left, right)
+          if empty_brackets?(left, right, tokens: tokens)
             return empty_offenses(node, left, right, EMPTY_MSG)
           end
 
@@ -95,7 +95,7 @@ module RuboCop
         def autocorrect(corrector, node)
           tokens, left, right = array_brackets(node)
 
-          if empty_brackets?(tokens, left, right)
+          if empty_brackets?(left, right, tokens: tokens)
             SpaceCorrector.empty_corrections(processed_source, corrector, empty_config, left, right)
           elsif style == :no_space
             SpaceCorrector.remove_space(processed_source, corrector, left, right)

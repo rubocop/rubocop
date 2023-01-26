@@ -33,7 +33,7 @@ module RuboCop
 
           tokens = processed_source.tokens_within(begin_node)
           left, right = delimiters(begin_node)
-          return if empty_brackets?(tokens, left, right)
+          return if empty_brackets?(left, right, tokens: tokens)
 
           if style == :no_space
             no_space_offenses(begin_node, left, right, NO_SPACE_MSG)
