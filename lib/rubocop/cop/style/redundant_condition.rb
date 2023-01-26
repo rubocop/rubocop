@@ -36,6 +36,9 @@ module RuboCop
 
         MSG = 'Use double pipes `||` instead.'
         REDUNDANT_CONDITION = 'This condition is not needed.'
+        ARGUMENT_WITH_OPERATOR_TYPES = %i[
+          splat block_pass forwarded_restarg forwarded_kwrestarg forwarded_args
+        ].freeze
 
         def on_if(node)
           return if node.elsif_conditional?
@@ -150,11 +153,23 @@ module RuboCop
         end
 
         def single_argument_method?(node)
-          node.send_type? && !node.method?(:[]) && node.arguments.one?
+          return false if !node.send_type? || node.method?(:[]) || !node.arguments.one?
+
+          !argument_with_operator?(node.first_argument)
         end
 
         def same_method?(if_branch, else_branch)
           if_branch.method?(else_branch.method_name) && if_branch.receiver == else_branch.receiver
+        end
+
+        # If the argument is using an operator, it is an invalid syntax.
+        # e.g. `foo || *bar`, `foo || **bar`, and `foo || &bar`.
+        def argument_with_operator?(argument)
+          return true if ARGUMENT_WITH_OPERATOR_TYPES.include?(argument.type)
+          return false unless argument.hash_type?
+
+          node = argument.children.first
+          node.kwsplat_type? || node.forwarded_kwrestarg_type?
         end
 
         def if_source(if_branch, arithmetic_operation)
