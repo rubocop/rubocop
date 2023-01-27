@@ -241,7 +241,7 @@ module RuboCop
         end
 
         def accept_namespace_operator?(range)
-          ACCEPT_NAMESPACE_OPERATOR == range.source
+          range.source == ACCEPT_NAMESPACE_OPERATOR
         end
 
         def safe_navigation_call?(range, pos)

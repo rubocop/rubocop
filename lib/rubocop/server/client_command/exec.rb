@@ -41,7 +41,7 @@ module RuboCop
         end
 
         def incompatible_version?
-          RuboCop::Version::STRING != Cache.version_path.read
+          Cache.version_path.read != RuboCop::Version::STRING
         end
 
         def stderr
