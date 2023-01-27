@@ -33,12 +33,14 @@ module RuboCop
       #   "bar" != foo
       #   42 >= foo
       #   10 < bar
+      #   99 == CONST
       #
       #   # good
       #   foo == 99
       #   foo == "bar"
       #   foo <= 42
       #   bar > 10
+      #   CONST == 99
       #   "#{interpolation}" == foo
       #   /#{interpolation}/ == foo
       #
@@ -92,9 +94,10 @@ module RuboCop
         def on_send(node)
           return unless yoda_compatible_condition?(node)
           return if (equality_only? && non_equality_operator?(node)) ||
-                    file_constant_equal_program_name?(node)
+                    file_constant_equal_program_name?(node) ||
+                    valid_yoda?(node)
 
-          valid_yoda?(node) || add_offense(node) do |corrector|
+          add_offense(node) do |corrector|
             corrector.replace(actual_code_range(node), corrected_code(node))
           end
         end
@@ -119,11 +122,11 @@ module RuboCop
           lhs = node.receiver
           rhs = node.first_argument
 
-          return true if (lhs.literal? && rhs.literal?) ||
-                         (!lhs.literal? && !rhs.literal?) ||
+          return true if (constant_portion?(lhs) && constant_portion?(rhs)) ||
+                         (!constant_portion?(lhs) && !constant_portion?(rhs)) ||
                          interpolation?(lhs)
 
-          enforce_yoda? ? lhs.literal? : rhs.literal?
+          enforce_yoda? ? constant_portion?(lhs) : constant_portion?(rhs)
         end
 
         def message(node)
@@ -135,6 +138,10 @@ module RuboCop
           rhs = node.first_argument
 
           "#{rhs.source} #{reverse_comparison(node.method_name)} #{lhs.source}"
+        end
+
+        def constant_portion?(node)
+          node.literal? || node.const_type?
         end
 
         def actual_code_range(node)

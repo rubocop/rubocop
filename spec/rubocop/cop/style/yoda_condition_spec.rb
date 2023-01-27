@@ -32,6 +32,10 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
       expect_no_offenses('foo == "bar"')
     end
 
+    it 'accepts constant on right' do
+      expect_no_offenses('foo == BAR')
+    end
+
     it 'accepts interpolated string on left' do
       expect_no_offenses('"#{interpolation}" == foo')
     end
@@ -135,6 +139,17 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
 
       expect_correction(<<~RUBY)
         bar > 42
+      RUBY
+    end
+
+    it 'registers an offense constant on left of comparison' do
+      expect_offense(<<~RUBY)
+        FOO < bar
+        ^^^^^^^^^ Reverse the order of the operands `FOO < bar`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar > FOO
       RUBY
     end
 
