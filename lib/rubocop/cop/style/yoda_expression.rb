@@ -24,12 +24,14 @@ module RuboCop
       #   1 + x
       #   10 * y
       #   1 & z
+      #   1 + CONST
       #
       #   # good
       #   60 * 24
       #   x + 1
       #   y * 10
       #   z & 1
+      #   CONST + 1
       #
       #   # good
       #   1 | x
@@ -50,8 +52,7 @@ module RuboCop
 
           lhs = node.receiver
           rhs = node.first_argument
-          return if !lhs.numeric_type? || rhs.numeric_type?
-
+          return unless yoda_expression_constant?(lhs, rhs)
           return if offended_ancestor?(node)
 
           message = format(MSG, source: rhs.source)
@@ -63,6 +64,14 @@ module RuboCop
         end
 
         private
+
+        def yoda_expression_constant?(lhs, rhs)
+          constant_portion?(lhs) && !constant_portion?(rhs)
+        end
+
+        def constant_portion?(node)
+          node.numeric_type? || node.const_type?
+        end
 
         def supported_operators
           Array(cop_config['SupportedOperators'])
