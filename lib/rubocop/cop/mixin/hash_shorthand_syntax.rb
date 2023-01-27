@@ -95,16 +95,19 @@ module RuboCop
           use_modifier_form_without_parenthesized_method_call?(method_dispatch_node)
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def def_node_that_require_parentheses(node)
         last_pair = node.parent.pairs.last
         return unless last_pair.key.source == last_pair.value.source
-        return unless (method_dispatch_node = find_ancestor_method_dispatch_node(node))
-        return unless without_parentheses_call_expr_follows?(method_dispatch_node)
+        return unless (dispatch_node = find_ancestor_method_dispatch_node(node))
+        return if node.respond_to?(:parenthesized?) && !node.parenthesized?
+        return unless last_expression?(dispatch_node) || method_dispatch_as_argument?(dispatch_node)
 
         def_node = node.each_ancestor(:send, :csend, :super, :yield).first
 
         DefNode.new(def_node) unless def_node && def_node.arguments.empty?
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def find_ancestor_method_dispatch_node(node)
         return unless (ancestor = node.parent.parent)
@@ -129,15 +132,16 @@ module RuboCop
         ancestor.ancestors.any? { |node| node.respond_to?(:modifier_form?) && node.modifier_form? }
       end
 
-      def without_parentheses_call_expr_follows?(ancestor)
-        return false unless ancestor.respond_to?(:parenthesized?) && !ancestor.parenthesized?
+      def last_expression?(ancestor)
+        ancestor.right_sibling ||
+          ancestor.each_ancestor.find { |node| node.assignment? || node.send_type? }&.right_sibling
+      end
 
-        right_sibling = ancestor.right_sibling
-        right_sibling ||= ancestor.each_ancestor.find do |node|
-          node.assignment? || node.send_type?
-        end&.right_sibling
+      def method_dispatch_as_argument?(method_dispatch_node)
+        parent = method_dispatch_node.parent
+        return false unless parent
 
-        !!right_sibling
+        parent.call_type? || parent.super_type? || parent.yield_type?
       end
 
       def breakdown_value_types_of_hash(hash_node)

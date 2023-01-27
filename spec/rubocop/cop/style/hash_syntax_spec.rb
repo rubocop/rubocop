@@ -1385,6 +1385,21 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense in arguments as method calls with hash omissions' do
+        expect_offense(<<~RUBY)
+          if condition?
+            raise LongLongLongLongError.new 'A long, long, long, long, really long message', foo: foo
+                                                                                                  ^^^ Omit the hash value.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if condition?
+            raise LongLongLongLongError.new('A long, long, long, long, really long message', foo:)
+          end
+        RUBY
+      end
+
       context 'when hash roket syntax' do
         let(:enforced_style) { 'hash_rockets' }
 
